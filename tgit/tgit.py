@@ -2,17 +2,17 @@
 # Mini App to test installer stuff
 
 import sys
-import ui_tgit
+import tgit_ui
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import pyqtSlot
 
 
-class Window(QtGui.QMainWindow, ui_tgit.Ui_MainWindow):
+class TgIT(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
-        ui_tgit.Ui_MainWindow.__init__(self)
-        self.setupUi(self)
+        ui = tgit_ui.MainWindow()
+        ui.setupUi(self)
 
     @pyqtSlot()
     def on_pushButton_clicked(self):
@@ -20,9 +20,11 @@ class Window(QtGui.QMainWindow, ui_tgit.Ui_MainWindow):
 
     @pyqtSlot()
     def on_actionHit_me_to_quit_triggered(self):
-        QtGui.QApplication.quit()
+        self.close()
 
-app = QtGui.QApplication(sys.argv)
-Win = Window()
-Win.show()
-sys.exit(app.exec_())
+
+def main():
+    app = QtGui.QApplication(sys.argv)
+    tagger = TgIT()
+    tagger.show()
+    sys.exit(app.exec_())
