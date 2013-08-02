@@ -8,7 +8,7 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import pyqtSlot
 
 
-class TgIT(QtGui.QMainWindow):
+class TGiT(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
         ui = tgit_ui.MainWindow()
@@ -25,6 +25,6 @@ class TgIT(QtGui.QMainWindow):
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    tagger = TgIT()
+    tagger = TGiT()
     tagger.show()
     sys.exit(app.exec_())
