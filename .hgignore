@@ -6,3 +6,4 @@ dist
 tgit.egg-info
 .idea
 *.iml
+*.pyc
