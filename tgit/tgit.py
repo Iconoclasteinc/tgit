@@ -11,8 +11,8 @@ from PyQt4.QtCore import pyqtSlot
 class TGiT(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
-        ui = tgit_ui.MainWindow()
-        ui.setupUi(self)
+        self.ui = tgit_ui.MainWindow()
+        self.ui.setupUi(self)
 
     @pyqtSlot()
     def on_pushButton_clicked(self):
