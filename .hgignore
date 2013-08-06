@@ -1,9 +1,9 @@
 syntax: glob
 
-venv
 build
 dist
 tgit.egg-info
 .idea
 *.iml
 **/*.pyc
+.DS_Store
