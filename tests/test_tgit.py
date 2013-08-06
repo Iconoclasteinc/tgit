@@ -13,6 +13,7 @@ class TGiTTest(unittest.TestCase):
         self.tgit = TGiT()
         self.driver = self._single_widget(self._root_widgets())
         self.driver.show()
+        self.driver.raise_()
         QTest.qWaitForWindowShown(self.driver)
 
     def tearDown(self):
