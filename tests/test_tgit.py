@@ -1,16 +1,18 @@
+# -*- coding: utf-8 -*-
+
 import unittest
 
 from PyQt4.QtGui import QApplication
 from PyQt4.QtGui import QPushButton
 from PyQt4.QtTest import QTest
 
-from tgit.tgit import TGiT
+from tgit import tgit
+
 
 class TGiTTest(unittest.TestCase):
-
     def setUp(self):
         self.app = QApplication([])
-        self.tgit = TGiT()
+        self.tgit = tgit.TGiT()
         self.driver = self._single_widget(self._root_widgets())
         self.driver.show()
         self.driver.raise_()
@@ -36,7 +38,8 @@ class TGiTTest(unittest.TestCase):
         return widget if not widget.parent() else self._root_parent(widget.parent())
 
     def _single_widget(self, widgets):
-        if len(widgets) != 1: self.fail("Expected exactly 1 top level window, but got " + str(len(widgets)))
+        if len(widgets) != 1: self.fail(
+            "Expected exactly 1 top level window, but got " + str(len(widgets)))
         return widgets.pop()
 
 

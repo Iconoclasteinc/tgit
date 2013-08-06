@@ -1,17 +1,17 @@
-#!/usr/bin/env python
-# Mini App to test installer stuff
+# -*- coding: utf-8 -*-
 
 import sys
-import tgit_ui
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import pyqtSlot
+
+import ui.main
 
 
 class TGiT(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
-        self.ui = tgit_ui.MainWindow()
+        self.ui = ui.main.MainWindow()
         self.ui.setupUi(self)
 
     @pyqtSlot()
