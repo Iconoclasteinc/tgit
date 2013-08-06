@@ -2,21 +2,21 @@
 # Mini App to test installer stuff
 
 import sys
-import tgit_ui
+import tgit.tgit_ui
 
-from PyQt4 import QtGui
-from PyQt4.QtCore import pyqtSlot
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import pyqtSlot
 
 
-class TGiT(QtGui.QMainWindow):
+class TGiT(QtWidgets.QMainWindow):
     def __init__(self):
-        QtGui.QMainWindow.__init__(self)
-        self.ui = tgit_ui.MainWindow()
+        QtWidgets.QMainWindow.__init__(self)
+        self.ui = tgit.tgit_ui.MainWindow()
         self.ui.setupUi(self)
 
     @pyqtSlot()
     def on_pushButton_clicked(self):
-        print "All your QT windows are belong to us !!!!"
+        print("All your QT windows are belong to us !!!!")
 
     @pyqtSlot()
     def on_actionHit_me_to_quit_triggered(self):
@@ -24,7 +24,7 @@ class TGiT(QtGui.QMainWindow):
 
 
 def main():
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     tagger = TGiT()
     tagger.show()
     sys.exit(app.exec_())
