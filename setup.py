@@ -1,8 +1,14 @@
-from cx_Freeze import setup, Executable
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
+APP = ['tgit/tgit.py']
 DATA_FILES = []
-
-includes = ["re","sip", "atexit", "PyQt5.QtCore", "PyQt5.QtGui", "PyQt5.QtWidgets"]
+OPTIONS = {
+    'argv_emulation': True,
+    'iconfile': '/Users/vtence/Development/Projects/tgit/tgit.icns',
+    'includes': ['sip', 'PyQt4', 'PyQt4.QtCore', 'PyQt4.QtGui']}
 
 setup(
     name='tgit',
@@ -12,9 +18,12 @@ setup(
     download_url='https://bitbucket.org/tagtamusique/tgit',
     author_email='jr@iconoclaste.ca',
     version='0.1',
+    install_requires=['nose'],
     packages=['tgit'],
     scripts=[],
+    app=APP,
     data_files=DATA_FILES,
-    options={"build_exe":{ "includes": includes}},
-    executables=[Executable(script="tgit.py")]
+    options={'py2app': OPTIONS},
+    setup_requires=['py2app'],
 )
+

@@ -7,31 +7,36 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt4 import QtCore, QtGui
+
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    _fromUtf8 = lambda s: s
 
 class MainWindow(object):
     def setupUi(self, window):
-        window.setObjectName("MainWindow")
+        window.setObjectName(_fromUtf8("MainWindow"))
         window.resize(469, 266)
-        self.centralwidget = QtWidgets.QWidget(window)
-        self.centralwidget.setObjectName("centralwidget")
-        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
-        self.gridLayout.setObjectName("gridLayout")
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setObjectName("pushButton")
+        self.centralwidget = QtGui.QWidget(window)
+        self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
+        self.gridLayout = QtGui.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.pushButton = QtGui.QPushButton(self.centralwidget)
+        self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.gridLayout.addWidget(self.pushButton, 0, 0, 1, 1)
         window.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(window)
+        self.menubar = QtGui.QMenuBar(window)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 469, 21))
-        self.menubar.setObjectName("menubar")
-        self.menuQuit = QtWidgets.QMenu(self.menubar)
-        self.menuQuit.setObjectName("menuQuit")
+        self.menubar.setObjectName(_fromUtf8("menubar"))
+        self.menuQuit = QtGui.QMenu(self.menubar)
+        self.menuQuit.setObjectName(_fromUtf8("menuQuit"))
         window.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(window)
-        self.statusbar.setObjectName("statusbar")
+        self.statusbar = QtGui.QStatusBar(window)
+        self.statusbar.setObjectName(_fromUtf8("statusbar"))
         window.setStatusBar(self.statusbar)
-        self.actionHit_me_to_quit = QtWidgets.QAction(window)
-        self.actionHit_me_to_quit.setObjectName("actionHit_me_to_quit")
+        self.actionHit_me_to_quit = QtGui.QAction(window)
+        self.actionHit_me_to_quit.setObjectName(_fromUtf8("actionHit_me_to_quit"))
         self.menuQuit.addAction(self.actionHit_me_to_quit)
         self.menubar.addAction(self.menuQuit.menuAction())
 
@@ -39,8 +44,8 @@ class MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(window)
 
     def retranslateUi(self, window):
-        window.setWindowTitle(QtWidgets.QApplication.translate("MainWindow", "MainWindow", None))
-        self.pushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Hit me ...", None))
-        self.menuQuit.setTitle(QtWidgets.QApplication.translate("MainWindow", "Quit", None))
-        self.actionHit_me_to_quit.setText(QtWidgets.QApplication.translate("MainWindow", "Hit me to quit", None))
+        window.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton.setText(QtGui.QApplication.translate("MainWindow", "Hit me ...", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuQuit.setTitle(QtGui.QApplication.translate("MainWindow", "Quit", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHit_me_to_quit.setText(QtGui.QApplication.translate("MainWindow", "Hit me to quit", None, QtGui.QApplication.UnicodeUTF8))
 

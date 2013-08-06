@@ -1,7 +1,8 @@
 import unittest
 
-from PyQt5.QtWidgets import QApplication, QPushButton
-from PyQt5.QtTest import QTest
+from PyQt4.QtGui import QApplication
+from PyQt4.QtGui import QPushButton
+from PyQt4.QtTest import QTest
 
 from tgit.tgit import TGiT
 
@@ -12,7 +13,7 @@ class TGiTTest(unittest.TestCase):
         self.tgit = TGiT()
         self.driver = self._single_widget(self._root_widgets())
         self.driver.show()
-        QTest.qWaitForWindowActive(self.driver)
+        QTest.qWaitForWindowShown(self.driver)
 
     def tearDown(self):
         self.driver.close()
