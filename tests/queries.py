@@ -16,13 +16,13 @@ class Query(SelfDescribing):
 class PropertyQuery(Query):
 
     def __init__(self, name, query):
-        self.property_name = name
-        self.query = query
+        self._property_name = name
+        self._query = query
 
     def __call__(self, arg):
-        return self.query(arg)
+        return self._query(arg)
 
     def describe_to(self, description):
-        description.append_text(self.property_name)
+        description.append_text(self._property_name)
 
 

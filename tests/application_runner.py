@@ -20,7 +20,7 @@ class ApplicationRunner(object):
         del self.app
 
     def click_on_button(self):
-        main_window = self.driver.main_window()
+        main_window = self.driver.widget()
         button = main_window.findChild(QPushButton)
         QTest.mouseMove(button, delay=100)
         QTest.mousePress(button, Qt.LeftButton, delay=100)

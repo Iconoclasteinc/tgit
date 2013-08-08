@@ -33,14 +33,14 @@ class Probe(SelfDescribing):
 class Timeout(object):
 
     def __init__(self, duration):
-        self.duration = duration
-        self.start_time = time.time()
+        self._duration = duration
+        self._start_time = time.time()
 
     def has_expired(self):
-        return self.elapsed_time(time.time()) > self.duration
+        return self.elapsed_time(time.time()) > self._duration
 
     def elapsed_time(self, now):
-        return (now - self.start_time) * 1000
+        return (now - self._start_time) * 1000
 
 
 class Prober(object):
@@ -52,8 +52,8 @@ class Prober(object):
 class PollingProber(Prober):
 
     def __init__(self, delay=DEFAULT_POLL_DELAY, timeout=DEFAULT_POLL_TIMEOUT):
-        self.poll_delay = delay
-        self.poll_timeout = timeout
+        self._poll_delay = delay
+        self._poll_timeout = timeout
 
     def check(self, probe):
         if not self._poll(probe):
@@ -68,14 +68,14 @@ class PollingProber(Prober):
         return str(description)
 
     def _poll(self, probe):
-        timeout = Timeout(self.poll_timeout)
+        timeout = Timeout(self._poll_timeout)
 
         while True:
             self._run_probe(probe)
 
             if probe.is_satisfied(): return True
             if timeout.has_expired(): return False
-            self._wait_for(self.poll_delay)
+            self._wait_for(self._poll_delay)
 
     def _run_probe(self, probe):
         pass

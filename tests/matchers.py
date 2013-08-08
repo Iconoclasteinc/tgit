@@ -22,17 +22,17 @@ def with_(query, matcher):
 class QueryResultMatcher(BaseMatcher):
 
     def __init__(self, query, matcher):
-        self.query = query
-        self.result_matcher = matcher
+        self._query = query
+        self._result_matcher = matcher
 
     def _matches(self, item):
-        return item and self.result_matcher.matches(self.query(item))
+        return item and self._result_matcher.matches(self._query(item))
 
     def describe_to(self, description):
         description.append_text("with "). \
-            append_description_of(self.query). \
+            append_description_of(self._query). \
             append_text(" "). \
-            append_description_of(self.result_matcher)
+            append_description_of(self._result_matcher)
 
 
 class ShowingOnScreenMatcher(BaseMatcher):

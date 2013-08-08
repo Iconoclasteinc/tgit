@@ -16,31 +16,31 @@ class WidgetSelector(WidgetFinder):
 class RecursiveWidgetFinder(WidgetFinder):
 
     def __init__(self, widget_type, criteria, parent_or_owner_finder):
-        self.widget_type = widget_type
-        self.criteria = criteria
-        self.parent_or_owner_finder = parent_or_owner_finder
-        self.found = set()
+        self._widget_type = widget_type
+        self._criteria = criteria
+        self._parent_or_owner_finder = parent_or_owner_finder
+        self._found = set()
 
     def is_satisfied(self):
-        return self.parent_or_owner_finder.is_satisfied()
+        return self._parent_or_owner_finder.is_satisfied()
 
     def widgets(self):
-        return list(self.found)
+        return list(self._found)
 
     def test(self):
-        self.parent_or_owner_finder.test()
-        self.found.clear()
-        self._search(self.parent_or_owner_finder.widgets())
+        self._parent_or_owner_finder.test()
+        self._found.clear()
+        self._search(self._parent_or_owner_finder.widgets())
 
     def describe_to(self, description):
         self._describe_briefly_to(description)
-        description.append_text(" in ").append_description_of(self.parent_or_owner_finder)
+        description.append_text(" in ").append_description_of(self._parent_or_owner_finder)
 
     def describe_failure_to(self, description):
-        self.parent_or_owner_finder.describe_failure_to(description)
-        if self.parent_or_owner_finder.is_satisfied:
+        self._parent_or_owner_finder.describe_failure_to(description)
+        if self._parent_or_owner_finder.is_satisfied:
             description.append_text(" contained "). \
-                append_description_of(len(self.found)). \
+                append_description_of(len(self._found)). \
                 append_text(" ")
             self._describe_briefly_to(description)
 
@@ -49,22 +49,22 @@ class RecursiveWidgetFinder(WidgetFinder):
             self._search_within(widget)
 
     def _search_within(self, widget):
-        if isinstance(widget, self.widget_type) and self.criteria.matches(widget):
-            self.found.add(widget)
+        if isinstance(widget, self._widget_type) and self._criteria.matches(widget):
+            self._found.add(widget)
         else:
             self._search(widget.children())
 
     def _describe_briefly_to(self, description):
-        description.append_text(self.widget_type.__name__). \
+        description.append_text(self._widget_type.__name__). \
             append_text(" "). \
-            append_description_of(self.criteria)
+            append_description_of(self._criteria)
 
 
 class TopLevelWindowFinder(WidgetFinder):
 
     def __init__(self, app):
         super(TopLevelWindowFinder, self).__init__()
-        self.app = app
+        self._app = app
 
     def is_satisfied(self):
         return True
@@ -74,7 +74,7 @@ class TopLevelWindowFinder(WidgetFinder):
 
     def test(self):
         self.root_windows = set()
-        for top_level_widget in self.app.topLevelWidgets():
+        for top_level_widget in self._app.topLevelWidgets():
             self.root_windows.add(self._root_parent(top_level_widget))
 
     def describe_to(self, description):
@@ -91,26 +91,26 @@ class SingleWidgetFinder(WidgetSelector):
 
     def __init__(self, finder):
         super(SingleWidgetFinder, self).__init__()
-        self.finder = finder
+        self._finder = finder
 
     def is_satisfied(self):
-        return self.finder.is_satisfied() & self._is_single()
+        return self._finder.is_satisfied() & self._is_single()
 
     def test(self):
-        self.finder.test()
+        self._finder.test()
 
     def widgets(self):
-        return self.finder.widgets()
+        return self._finder.widgets()
 
     def widget(self):
         return list(self.widgets())[0]
 
     def describe_to(self, description):
-        description.append_text("exactly 1 ").append_description_of(self.finder)
+        description.append_text("exactly 1 ").append_description_of(self._finder)
 
     def describe_failure_to(self, description):
         description.append_description_of(len(self.widgets())). \
-            append_text(" ").append_description_of(self.finder)
+            append_text(" ").append_description_of(self._finder)
 
     def _is_single(self):
         return len(self.widgets()) == 1
