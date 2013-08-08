@@ -7,10 +7,12 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
+MAIN_WINDOW_NAME = "TGiT"
+
 
 class MainWindow(object):
     def setupUi(self, window):
-        window.setObjectName(_fromUtf8("MainWindow"))
+        window.setObjectName(_fromUtf8(MAIN_WINDOW_NAME))
         window.resize(469, 266)
         self.centralwidget = QtGui.QWidget(window)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))

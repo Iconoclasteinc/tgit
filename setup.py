@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import setuptools
 from cx_Freeze import setup, Executable
 
 DATA_FILES = []
@@ -14,6 +15,7 @@ setup(
     download_url='https://bitbucket.org/tagtamusique/tgit',
     author_email='jr@iconoclaste.ca',
     version='0.1',
+    test_suite='tests',
     packages=['tgit'],
     scripts=[],
     data_files=DATA_FILES,

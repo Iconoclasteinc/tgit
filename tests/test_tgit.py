@@ -2,31 +2,16 @@
 
 import unittest
 
-from PyQt4.QtGui import QApplication
-from PyQt4.QtGui import QPushButton
-from PyQt4.QtTest import QTest
-
-from tgit import tgit
-import widgets
-
+from application_runner import ApplicationRunner
 
 class TGiTTest(unittest.TestCase):
+
     def setUp(self):
-        self.app = QApplication([])
-        self.tgit = tgit.TGiT()
-        self.driver = widgets.top_level_window(self.app)
-        self.driver.show()
-        self.driver.raise_()
-        QTest.qWaitForWindowShown(self.driver)
+        self.application = ApplicationRunner()
+        self.application.start()
 
     def tearDown(self):
-        self.driver.close()
-        del self.app
+        self.application.stop()
 
     def test_clicking_on_button_to_demonstrate_simulating_events(self):
-        button = self.driver.findChild(QPushButton)
-        button.click()
-
-
-if __name__ == "__main__":
-    unittest.main()
+        self.application.click_on_button()

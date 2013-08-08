@@ -13,6 +13,7 @@ class TGiT(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         self.ui = ui.main.MainWindow()
         self.ui.setupUi(self)
+        self.show()
 
     @pyqtSlot()
     def on_pushButton_clicked(self):
@@ -25,6 +26,5 @@ class TGiT(QtGui.QMainWindow):
 
 def main():
     app = QtGui.QApplication(sys.argv)
-    tagger = TGiT()
-    tagger.show()
+    TGiT()
     sys.exit(app.exec_())

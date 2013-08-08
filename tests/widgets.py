@@ -1,76 +1,80 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest.core.selfdescribing import SelfDescribing
-from hamcrest.core.string_description import StringDescription
+from PyQt4.QtGui import QApplication
+from PyQt4.QtGui import QMainWindow
+
+from hamcrest.core import all_of
+
+from finders import SingleWidgetFinder, TopLevelWindowFinder, RecursiveWidgetFinder
+from matchers import ShowingOnScreenMatcher
 
 
-def top_level_window(app):
-    return SingleWidgetFinder(TopLevelWidgetsFinder(app)).widget()
+def main_window(*matchers):
+    return SingleWidgetFinder(RecursiveWidgetFinder(QMainWindow, all_of(*matchers),
+                                                    TopLevelWindowFinder(QApplication.instance())))
 
 
-class WidgetFinder(SelfDescribing):
-    def widgets(self):
-        pass
+class WidgetAssertionProbe():
 
-    def describe_failure_to(self, description):
-        pass
+    def __init__(self, selector, assertion):
+        self.selector = selector
+        self.assertion = assertion
+        self.assertion_met = False
 
-    def description(self):
-        return str(StringDescription().append_description_of(self))
+    def test(self):
+        self.selector.test()
+        self.assertion_met = \
+            self.selector.is_satisfied() \
+            and self.assertion.matches(self.selector.widget())
 
-    def failure_description(self):
-        description = StringDescription()
-        self.describe_failure_to(description)
-        return str(description)
-
-
-class WidgetSelector(WidgetFinder):
-    def widget(self):
-        pass
-
-
-class TopLevelWidgetsFinder(WidgetFinder):
-    def __init__(self, app):
-        super(TopLevelWidgetsFinder, self).__init__()
-        self.app = app
-
-    def widgets(self):
-        root_widgets = set()
-        for top_level_widget in self.app.topLevelWidgets():
-            root_widgets.add(self._root_parent(top_level_widget))
-
-        return root_widgets
+    def is_satisfied(self):
+        return self.assertion_met
 
     def describe_to(self, description):
-        description.append_text("top level widgets")
+        description.append_description_of(self.selector). \
+            append_text(" and check that it is "). \
+            append_description_of(self.assertion)
 
     def describe_failure_to(self, description):
-        self.describe_to(description)
+        self.selector.describe_failure_to(description)
+        if self.selector.is_satisfied():
+            description.append_text(" it ")
+            if self.assertion_met:
+                description.append_text("is ")
+            else:
+                description.append_text("is not ")
+            description.append_description_of(self.assertion)
 
-    def _root_parent(self, widget):
-        return widget if not widget.parent() else self._root_parent(widget.parent())
+
+class WidgetDriver(object):
+
+    def __init__(self, selector, prober):
+        self.selector = selector
+        self.prober = prober
+
+    def is_showing_on_screen(self):
+        self.is_(ShowingOnScreenMatcher())
+
+    def is_(self, criteria):
+        self.check(WidgetAssertionProbe(self.selector, criteria))
+
+    def check(self, probe):
+        self.prober.check(probe)
 
 
-class SingleWidgetFinder(WidgetSelector):
-    def __init__(self, finder):
-        super(SingleWidgetFinder, self).__init__()
-        self.finder = finder
+class MainWindowDriver(WidgetDriver):
 
-    def widgets(self):
-        return self.finder.widgets()
+    def __init__(self, selector, prober):
+        super(MainWindowDriver, self).__init__(selector, prober)
 
-    def widget(self):
-        if not self._is_single():
-            raise AssertionError(self.failure_description())
-        return self.widgets().pop()
+    def main_window(self):
+        self.check(self.selector)
+        return self.selector.widget()
 
-    def describe_to(self, description):
-        description.append_text("exactly 1").append_description_of(self.finder)
+    def close(self):
+        self._manipulate(lambda widget: widget.close())
 
-    def describe_failure_to(self, description):
-        description.append_value(len(self.widgets())).append_text(" ").append_description_of(self
-        .finder)
-
-    def _is_single(self):
-        return len(self.widgets()) == 1
+    def _manipulate(self, manipulation):
+        self.check(self.selector)
+        manipulation(self.selector.widget())
 
