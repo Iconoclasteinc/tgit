@@ -8,13 +8,11 @@ def name():
 
 
 class Query(SelfDescribing):
-
     def __call__(self, arg):
         pass
 
 
 class PropertyQuery(Query):
-
     def __init__(self, name, query):
         self._property_name = name
         self._query = query

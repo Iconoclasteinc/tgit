@@ -4,8 +4,8 @@ import unittest
 
 from application_runner import ApplicationRunner
 
-class TGiTTest(unittest.TestCase):
 
+class TGiTTest(unittest.TestCase):
     def setUp(self):
         self.application = ApplicationRunner()
         self.application.start()

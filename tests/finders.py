@@ -14,7 +14,6 @@ class WidgetSelector(WidgetFinder):
 
 
 class RecursiveWidgetFinder(WidgetFinder):
-
     def __init__(self, widget_type, criteria, parent_or_owner_finder):
         self._widget_type = widget_type
         self._criteria = criteria
@@ -61,7 +60,6 @@ class RecursiveWidgetFinder(WidgetFinder):
 
 
 class TopLevelWindowFinder(WidgetFinder):
-
     def __init__(self, app):
         super(TopLevelWindowFinder, self).__init__()
         self._app = app
@@ -88,7 +86,6 @@ class TopLevelWindowFinder(WidgetFinder):
 
 
 class SingleWidgetFinder(WidgetSelector):
-
     def __init__(self, finder):
         super(SingleWidgetFinder, self).__init__()
         self._finder = finder

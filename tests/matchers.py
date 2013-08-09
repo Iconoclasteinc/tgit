@@ -20,7 +20,6 @@ def with_(query, matcher):
 
 
 class QueryResultMatcher(BaseMatcher):
-
     def __init__(self, query, matcher):
         self._query = query
         self._result_matcher = matcher
@@ -36,7 +35,6 @@ class QueryResultMatcher(BaseMatcher):
 
 
 class ShowingOnScreenMatcher(BaseMatcher):
-
     def _matches(self, item):
         if not isinstance(item, QWidget):
             return False

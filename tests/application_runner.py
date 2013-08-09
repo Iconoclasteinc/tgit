@@ -10,7 +10,6 @@ ONE_SECOND = 1000
 
 
 class ApplicationRunner(object):
-
     def start(self):
         self.app = QApplication([])
         self.main_window = TGiT()

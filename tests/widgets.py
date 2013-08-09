@@ -14,7 +14,6 @@ def main_window(*matchers):
 
 
 class WidgetAssertionProbe(Probe):
-
     def __init__(self, selector, assertion):
         self._selector = selector
         self._assertion = assertion
@@ -24,7 +23,7 @@ class WidgetAssertionProbe(Probe):
         self._selector.test()
         self._assertion_met = \
             self._selector.is_satisfied() \
-            and self._assertion.matches(self._selector.widget())
+                and self._assertion.matches(self._selector.widget())
 
     def is_satisfied(self):
         return self._assertion_met
@@ -67,7 +66,6 @@ class WidgetManipulationProbe(Probe):
 
 
 class WidgetDriver(object):
-
     def __init__(self, selector, prober):
         self._selector = selector
         self._prober = prober
@@ -106,7 +104,6 @@ class WidgetDriver(object):
 
 
 class MainWindowDriver(WidgetDriver):
-
     def __init__(self, selector, prober):
         super(MainWindowDriver, self).__init__(selector, prober)
 
@@ -115,6 +112,5 @@ class MainWindowDriver(WidgetDriver):
 
 
 class PushButtonDriver(WidgetDriver):
-
     def __init__(self, selector, prober):
         super(PushButtonDriver, self).__init__(selector, prober)

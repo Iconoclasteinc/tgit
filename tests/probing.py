@@ -10,7 +10,6 @@ DEFAULT_POLL_TIMEOUT = 5000
 
 
 class Probe(SelfDescribing):
-
     def test(self):
         pass
 
@@ -22,7 +21,6 @@ class Probe(SelfDescribing):
 
 
 class InContext(object):
-
     def __init__(self, context, probe):
         self._text = context
         self._probe = probe
@@ -40,7 +38,6 @@ def in_context(text, probe):
 
 
 class Timeout(object):
-
     def __init__(self, duration_in_ms):
         self._duration = duration_in_ms
         self._start_time = time.time()
@@ -53,13 +50,11 @@ class Timeout(object):
 
 
 class Prober(object):
-
     def check(self, probe):
         pass
 
 
 class PollingProber(Prober):
-
     def __init__(self, delay=DEFAULT_POLL_DELAY, timeout=DEFAULT_POLL_TIMEOUT):
         self._poll_delay = delay
         self._poll_timeout = timeout
@@ -94,7 +89,6 @@ class PollingProber(Prober):
 
 
 class EventProcessingProber(PollingProber):
-
     def __init__(self,
                  delay_in_ms=DEFAULT_POLL_DELAY,
                  timeout_in_ms=DEFAULT_POLL_TIMEOUT):
