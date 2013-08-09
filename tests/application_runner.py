@@ -1,27 +1,25 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import Qt, QApplication, QPushButton, QTest
+from PyQt4.Qt import QApplication
 
 from tgit.tgit import TGiT
 
 from tgit_driver import TGiTDriver
+
+ONE_SECOND = 1000
 
 
 class ApplicationRunner(object):
 
     def start(self):
         self.app = QApplication([])
-        self.tgit = TGiT()
-        self.tgit.raise_()
-        self.driver = TGiTDriver(1000)
+        self.main_window = TGiT()
+        self.main_window.raise_()
+        self.tgit = TGiTDriver(timeout_in_ms=ONE_SECOND)
 
     def stop(self):
-        self.driver.close()
+        self.tgit.close()
         del self.app
 
-    def click_on_button(self):
-        main_window = self.driver.widget()
-        button = main_window.findChild(QPushButton)
-        QTest.mouseMove(button, delay=100)
-        QTest.mousePress(button, Qt.LeftButton, delay=100)
-        QTest.mouseRelease(button, Qt.LeftButton, delay=100)
+    def say_hello(self):
+        self.tgit.display_message()

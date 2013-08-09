@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QApplication
-from PyQt4.QtGui import QMainWindow
-
+from PyQt4.Qt import QApplication, QMainWindow
 from hamcrest.core import all_of
 
 from finders import SingleWidgetFinder, TopLevelWindowFinder, RecursiveWidgetFinder
@@ -60,6 +58,11 @@ class WidgetDriver(object):
     def prober(self):
         return self._prober
 
+    @classmethod
+    def find(cls, parent, widget_type, *matchers):
+        return cls(SingleWidgetFinder(
+            RecursiveWidgetFinder(widget_type, all_of(*matchers), parent.selector)), parent.prober)
+
     def is_showing_on_screen(self):
         self.is_(ShowingOnScreenMatcher())
 
@@ -69,6 +72,11 @@ class WidgetDriver(object):
     def check(self, probe):
         self.prober.check(probe)
 
+    def manipulate(self, manipulation):
+        self.check(self.selector)
+        manipulation(self.selector.widget())
+
+    # todo: replace by probes
     def widget(self):
         self.check(self.selector)
         return self.selector.widget()
@@ -80,14 +88,13 @@ class MainWindowDriver(WidgetDriver):
         super(MainWindowDriver, self).__init__(selector, prober)
 
     def close(self):
-        self._manipulate(lambda widget: widget.close())
-
-    def _manipulate(self, manipulation):
-        self.check(self.selector)
-        manipulation(self.selector.widget())
+        self.manipulate(lambda widget: widget.close())
 
 
 class PushButtonDriver(WidgetDriver):
 
     def __init__(self, selector, prober):
         super(PushButtonDriver, self).__init__(selector, prober)
+
+    def click(self):
+        self.left_click()

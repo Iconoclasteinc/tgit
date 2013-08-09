@@ -2,7 +2,6 @@
 
 import time
 from PyQt4.QtTest import QTest
-
 from hamcrest.core.selfdescribing import SelfDescribing
 from hamcrest.core.string_description import StringDescription
 
@@ -21,19 +20,11 @@ class Probe(SelfDescribing):
     def describe_failure_to(self, description):
         pass
 
-    def description(self):
-        return str(StringDescription().append_description_of(self))
-
-    def failure_description(self):
-        description = StringDescription()
-        self.describe_failure_to(description)
-        return str(description)
-
 
 class Timeout(object):
 
-    def __init__(self, duration):
-        self._duration = duration
+    def __init__(self, duration_in_ms):
+        self._duration = duration_in_ms
         self._start_time = time.time()
 
     def has_expired(self):
@@ -87,9 +78,9 @@ class PollingProber(Prober):
 class EventProcessingProber(PollingProber):
 
     def __init__(self,
-                 delay=DEFAULT_POLL_DELAY,
-                 timeout=DEFAULT_POLL_TIMEOUT):
-        super(EventProcessingProber, self).__init__(delay, timeout)
+                 delay_in_ms=DEFAULT_POLL_DELAY,
+                 timeout_in_ms=DEFAULT_POLL_TIMEOUT):
+        super(EventProcessingProber, self).__init__(delay_in_ms, timeout_in_ms)
 
     def _run_probe(self, probe):
         probe.test()

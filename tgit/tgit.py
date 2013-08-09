@@ -8,6 +8,7 @@ from PyQt4.QtCore import pyqtSlot
 import ui.main
 
 
+# todo: introduce an application class that creates a main window
 class TGiT(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)

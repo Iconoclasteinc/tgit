@@ -14,4 +14,4 @@ class TGiTTest(unittest.TestCase):
         self.application.stop()
 
     def test_clicking_on_button_to_demonstrate_simulating_events(self):
-        self.application.click_on_button()
+        self.application.say_hello()
