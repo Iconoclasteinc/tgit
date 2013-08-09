@@ -21,6 +21,24 @@ class Probe(SelfDescribing):
         pass
 
 
+class InContext(object):
+
+    def __init__(self, context, probe):
+        self._text = context
+        self._probe = probe
+
+    def describe_to(self, description):
+        description.append_text(self._text) \
+            .append_text(" ").append_description_of(self._probe)
+
+    def __getattr__(self, attr):
+        return getattr(self._probe, attr)
+
+
+def in_context(text, probe):
+    return InContext(text, probe)
+
+
 class Timeout(object):
 
     def __init__(self, duration_in_ms):
@@ -52,7 +70,7 @@ class PollingProber(Prober):
 
     def _describe_failure_of(self, probe):
         description = StringDescription()
-        description.append_text("\nTried to find:\n    ")
+        description.append_text("\nTried to:\n    ")
         probe.describe_to(description)
         description.append_text("\nbut:\n    ")
         probe.describe_failure_to(description)

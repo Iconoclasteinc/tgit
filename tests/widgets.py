@@ -3,8 +3,9 @@
 from PyQt4.Qt import QApplication, QMainWindow
 from hamcrest.core import all_of
 
+from probing import Probe, in_context
 from finders import SingleWidgetFinder, TopLevelWindowFinder, RecursiveWidgetFinder
-from matchers import ShowingOnScreenMatcher
+from matchers import showing_on_screen
 
 
 def main_window(*matchers):
@@ -12,7 +13,7 @@ def main_window(*matchers):
                                                     TopLevelWindowFinder(QApplication.instance())))
 
 
-class WidgetAssertionProbe():
+class WidgetAssertionProbe(Probe):
 
     def __init__(self, selector, assertion):
         self._selector = selector
@@ -44,6 +45,27 @@ class WidgetAssertionProbe():
             description.append_description_of(self._assertion)
 
 
+class WidgetManipulationProbe(Probe):
+    def __init__(self, finder, manipulation):
+        self._finder = finder
+        self._manipulation = manipulation
+
+    def describe_to(self, description):
+        self._finder.describe_to(description)
+
+    def describe_failure_to(self, description):
+        self._finder.describe_failure_to(description)
+
+    def is_satisfied(self):
+        return self._finder.is_satisfied()
+
+    def test(self):
+        self._finder.test()
+        if self._finder.is_satisfied():
+            for widget in self._finder.widgets():
+                self._manipulation(widget)
+
+
 class WidgetDriver(object):
 
     def __init__(self, selector, prober):
@@ -64,22 +86,23 @@ class WidgetDriver(object):
             RecursiveWidgetFinder(widget_type, all_of(*matchers), parent.selector)), parent.prober)
 
     def is_showing_on_screen(self):
-        self.is_(ShowingOnScreenMatcher())
+        self.is_(showing_on_screen())
 
     def is_(self, criteria):
-        self.check(WidgetAssertionProbe(self.selector, criteria))
+        self._find(WidgetAssertionProbe(self.selector, criteria))
 
-    def check(self, probe):
-        self.prober.check(probe)
+    def manipulate(self, description, manipulation):
+        self._check(in_context(description, WidgetManipulationProbe(self.selector, manipulation)))
 
-    def manipulate(self, manipulation):
-        self.check(self.selector)
-        manipulation(self.selector.widget())
-
-    # todo: replace by probes
     def widget(self):
-        self.check(self.selector)
-        return self.selector.widget()
+        self._find(self._selector)
+        return self._selector.widget()
+
+    def _find(self, probe):
+        self._check(in_context("find", probe))
+
+    def _check(self, probe):
+        self.prober.check(probe)
 
 
 class MainWindowDriver(WidgetDriver):
@@ -88,13 +111,10 @@ class MainWindowDriver(WidgetDriver):
         super(MainWindowDriver, self).__init__(selector, prober)
 
     def close(self):
-        self.manipulate(lambda widget: widget.close())
+        self.manipulate("close", lambda widget: widget.close())
 
 
 class PushButtonDriver(WidgetDriver):
 
     def __init__(self, selector, prober):
         super(PushButtonDriver, self).__init__(selector, prober)
-
-    def click(self):
-        self.left_click()
