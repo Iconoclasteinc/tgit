@@ -19,7 +19,7 @@ class TGiTDriver(MainWindowDriver):
         self._robot = Robot()
 
     def display_message(self):
-        self._robot.click_on(self._button("pushButton").widget())
+        self._robot.perform(self._button(main.SURPRISE_BUTTON_NAME).press())
 
     def _button(self, button_name):
         return PushButtonDriver.find(self, QPushButton, named(button_name))

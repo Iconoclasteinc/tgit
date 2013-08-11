@@ -4,30 +4,28 @@ from PyQt4.Qt import Qt, QTest
 
 
 class Robot(object):
-    LEFT_BUTTON = Qt.LeftButton
+    LEFT_MOUSE_BUTTON = Qt.LeftButton
 
-    def __init__(self, delay_in_ms=100):
+    def __init__(self, pause_in_ms=50):
         super(Robot, self).__init__()
-        self._delay = delay_in_ms
+        self._pause = pause_in_ms
 
-    def click_on(self, widget, button=LEFT_BUTTON):
-        self.move_mouse_to(widget)
-        self.wait(self._delay)
-        self.mouse_click(widget, button)
+    def perform(self, *gestures):
+        for gesture in gestures:
+            gesture(self)
 
     def move_mouse_to(self, widget):
         QTest.mouseMove(widget)
 
-    def mouse_click(self, widget, button):
-        self.mouse_press(widget, button)
-        self.wait(self._delay)
-        self.mouse_release(widget, button)
+    def click_mouse_on(self, widget, button=LEFT_MOUSE_BUTTON):
+        self.press_mouse_on(widget, button)
+        self.release_mouse_on(widget, button)
 
-    def mouse_press(self, widget, button):
-        QTest.mousePress(widget, button)
+    def press_mouse_on(self, widget, button=LEFT_MOUSE_BUTTON):
+        QTest.mousePress(widget, button, delay=self._pause)
 
-    def mouse_release(self, widget, button):
-        QTest.mouseRelease(widget, button)
+    def release_mouse_on(self, widget, button=LEFT_MOUSE_BUTTON):
+        QTest.mouseRelease(widget, button, delay=self._pause)
 
-    def wait(self, ms):
+    def wait_for(self, ms):
         QTest.qWait(ms)

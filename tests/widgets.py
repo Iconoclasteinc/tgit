@@ -6,6 +6,7 @@ from hamcrest.core import all_of
 from probing import Probe, in_context
 from finders import SingleWidgetFinder, TopLevelWindowFinder, RecursiveWidgetFinder
 from matchers import showing_on_screen
+from gestures import click_on
 
 
 def main_window(*matchers):
@@ -114,3 +115,7 @@ class MainWindowDriver(WidgetDriver):
 class PushButtonDriver(WidgetDriver):
     def __init__(self, selector, prober):
         super(PushButtonDriver, self).__init__(selector, prober)
+
+    def press(self):
+        self.is_showing_on_screen()
+        return click_on(self.widget())

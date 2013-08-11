@@ -8,6 +8,7 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 MAIN_WINDOW_NAME = "TGiT"
+SURPRISE_BUTTON_NAME = "surprise"
 
 
 class MainWindow(object):
@@ -19,7 +20,7 @@ class MainWindow(object):
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.pushButton = QtGui.QPushButton(self.centralwidget)
-        self.pushButton.setObjectName(_fromUtf8("pushButton"))
+        self.pushButton.setObjectName(_fromUtf8(SURPRISE_BUTTON_NAME))
         self.gridLayout.addWidget(self.pushButton, 0, 0, 1, 1)
         window.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(window)
