@@ -11,9 +11,7 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self):
-        self.app = QApplication([])
-        self.main_window = TGiT()
-        self.main_window.raise_()
+        self.app = TGiT()
         self.tgit = TGiTDriver(timeout_in_ms=ONE_SECOND)
 
     def stop(self):

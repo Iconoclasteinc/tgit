@@ -2,7 +2,7 @@
 
 from PyQt4.Qt import QPushButton
 
-import tgit.ui.main as main
+import tgit.ui.main_window as main
 
 from probing import EventProcessingProber
 from matchers import named, showing_on_screen

@@ -15,3 +15,7 @@ class TGiTTest(unittest.TestCase):
 
     def test_clicking_on_button_to_demonstrate_simulating_events(self):
         self.application.say_hello()
+
+
+if __name__ == '__main__':
+    unittest.main()
