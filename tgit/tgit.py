@@ -2,14 +2,14 @@
 
 import sys
 
-from PyQt4 import QtGui
+from PyQt4.Qt import QApplication
 
 from ui.main_window import MainWindow
 
 
-class TGiT(QtGui.QApplication):
+class TGiT(QApplication):
     def __init__(self):
-        QtGui.QApplication.__init__(self, [])
+        QApplication.__init__(self, [])
         self.ui = MainWindow()
         self._show_ui()
 

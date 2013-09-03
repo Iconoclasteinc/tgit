@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import QString, QRect
-from PyQt4.QtGui import (QApplication, QMainWindow, QStatusBar, QWidget, QGridLayout, QPushButton,
-                         QMenu, QMenuBar, QAction)
+from PyQt4.Qt import (QString, QRect, QApplication, QMainWindow, QStatusBar, QWidget, QGridLayout,
+                      QPushButton, QMenu, QMenuBar, QAction)
 
 try:
     _fromUtf8 = QString.fromUtf8
