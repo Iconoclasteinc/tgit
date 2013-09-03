@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import setuptools
 from cx_Freeze import setup, Executable
 
 DATA_FILES = []

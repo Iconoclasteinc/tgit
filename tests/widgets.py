@@ -3,7 +3,8 @@
 from PyQt4.Qt import QApplication, QMainWindow
 from hamcrest.core import all_of
 
-from probing import Probe, in_context
+from probing import in_context
+from probes import WidgetManipulationProbe, WidgetAssertionProbe, WidgetScreenBoundsProbe
 from finders import SingleWidgetFinder, TopLevelWindowFinder, RecursiveWidgetFinder
 from matchers import showing_on_screen
 from gestures import click_on
@@ -12,58 +13,6 @@ from gestures import click_on
 def main_window(*matchers):
     return SingleWidgetFinder(RecursiveWidgetFinder(QMainWindow, all_of(*matchers),
                                                     TopLevelWindowFinder(QApplication.instance())))
-
-
-class WidgetAssertionProbe(Probe):
-    def __init__(self, selector, assertion):
-        self._selector = selector
-        self._assertion = assertion
-        self._assertion_met = False
-
-    def test(self):
-        self._selector.test()
-        self._assertion_met = \
-            self._selector.is_satisfied() \
-                and self._assertion.matches(self._selector.widget())
-
-    def is_satisfied(self):
-        return self._assertion_met
-
-    def describe_to(self, description):
-        description.append_description_of(self._selector). \
-            append_text(" and check that it is "). \
-            append_description_of(self._assertion)
-
-    def describe_failure_to(self, description):
-        self._selector.describe_failure_to(description)
-        if self._selector.is_satisfied():
-            description.append_text(" it ")
-            if self._assertion_met:
-                description.append_text("is ")
-            else:
-                description.append_text("is not ")
-            description.append_description_of(self._assertion)
-
-
-class WidgetManipulationProbe(Probe):
-    def __init__(self, finder, manipulation):
-        self._finder = finder
-        self._manipulation = manipulation
-
-    def describe_to(self, description):
-        self._finder.describe_to(description)
-
-    def describe_failure_to(self, description):
-        self._finder.describe_failure_to(description)
-
-    def is_satisfied(self):
-        return self._finder.is_satisfied()
-
-    def test(self):
-        self._finder.test()
-        if self._finder.is_satisfied():
-            for widget in self._finder.widgets():
-                self._manipulation(widget)
 
 
 class WidgetDriver(object):
@@ -93,9 +42,10 @@ class WidgetDriver(object):
     def manipulate(self, description, manipulation):
         self._check(in_context(description, WidgetManipulationProbe(self.selector, manipulation)))
 
-    def widget(self):
-        self._find(self._selector)
-        return self._selector.widget()
+    def widget_center(self):
+        probe = WidgetScreenBoundsProbe(self._selector)
+        self._find(probe)
+        return probe.bounds().center()
 
     def _find(self, probe):
         self._check(in_context("find", probe))
@@ -117,5 +67,4 @@ class PushButtonDriver(WidgetDriver):
         super(PushButtonDriver, self).__init__(selector, prober)
 
     def press(self):
-        self.is_showing_on_screen()
-        return click_on(self.widget())
+        return click_on(self.widget_center())

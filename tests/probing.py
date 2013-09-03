@@ -9,6 +9,23 @@ DEFAULT_POLL_DELAY = 100
 DEFAULT_POLL_TIMEOUT = 5000
 
 
+def in_context(context, probe):
+    return InContext(context, probe)
+
+
+class InContext(object):
+    def __init__(self, context, probe):
+        self._context = context
+        self._probe = probe
+
+    def describe_to(self, description):
+        description.append_text(self._context) \
+            .append_text(" ").append_description_of(self._probe)
+
+    def __getattr__(self, attr):
+        return getattr(self._probe, attr)
+
+
 class Probe(SelfDescribing):
     def test(self):
         pass
@@ -18,23 +35,6 @@ class Probe(SelfDescribing):
 
     def describe_failure_to(self, description):
         pass
-
-
-class InContext(object):
-    def __init__(self, context, probe):
-        self._text = context
-        self._probe = probe
-
-    def describe_to(self, description):
-        description.append_text(self._text) \
-            .append_text(" ").append_description_of(self._probe)
-
-    def __getattr__(self, attr):
-        return getattr(self._probe, attr)
-
-
-def in_context(text, probe):
-    return InContext(text, probe)
 
 
 class Timeout(object):

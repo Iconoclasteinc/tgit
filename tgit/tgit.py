@@ -11,6 +11,9 @@ class TGiT(QtGui.QApplication):
     def __init__(self):
         QtGui.QApplication.__init__(self, [])
         self.ui = MainWindow()
+        self._show_ui()
+
+    def _show_ui(self):
         self.ui.show()
         self.ui.raise_()
 

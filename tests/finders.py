@@ -68,12 +68,12 @@ class TopLevelWindowFinder(WidgetFinder):
         return True
 
     def widgets(self):
-        return self.root_windows
+        return self._root_windows
 
     def test(self):
-        self.root_windows = set()
+        self._root_windows = set()
         for top_level_widget in self._app.topLevelWidgets():
-            self.root_windows.add(self._root_parent(top_level_widget))
+            self._root_windows.add(self._root_parent(top_level_widget))
 
     def describe_to(self, description):
         description.append_text("top level widgets")

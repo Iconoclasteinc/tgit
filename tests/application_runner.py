@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QApplication
-
 from tgit.tgit import TGiT
 
 from tgit_driver import TGiTDriver

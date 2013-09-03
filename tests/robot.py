@@ -1,31 +1,28 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import Qt, QTest
+from PyQt4.Qt import QTest
+from autopy import mouse
 
 
 class Robot(object):
-    LEFT_MOUSE_BUTTON = Qt.LeftButton
+    LEFT_MOUSE_BUTTON = mouse.LEFT_BUTTON
 
-    def __init__(self, pause_in_ms=50):
+    def __init__(self):
         super(Robot, self).__init__()
-        self._pause = pause_in_ms
 
     def perform(self, *gestures):
         for gesture in gestures:
             gesture(self)
 
-    def move_mouse_to(self, widget):
-        QTest.mouseMove(widget)
+    def move_mouse(self, point):
+        mouse.smooth_move(point.x(), point.y())
 
-    def click_mouse_on(self, widget, button=LEFT_MOUSE_BUTTON):
-        self.press_mouse_on(widget, button)
-        self.release_mouse_on(widget, button)
+    def press_mouse(self, button=LEFT_MOUSE_BUTTON):
+        mouse.toggle(True, button)
 
-    def press_mouse_on(self, widget, button=LEFT_MOUSE_BUTTON):
-        QTest.mousePress(widget, button, delay=self._pause)
+    def release_mouse(self, button=LEFT_MOUSE_BUTTON):
+        mouse.toggle(False, button)
 
-    def release_mouse_on(self, widget, button=LEFT_MOUSE_BUTTON):
-        QTest.mouseRelease(widget, button, delay=self._pause)
-
-    def wait_for(self, ms):
+    def delay(self, ms):
+        # Process Qt evens while waiting
         QTest.qWait(ms)
