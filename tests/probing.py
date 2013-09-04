@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import time
-from PyQt4.QtTest import QTest
 from hamcrest.core.selfdescribing import SelfDescribing
 from hamcrest.core.string_description import StringDescription
+
+from events import MainEventLoop
 
 DEFAULT_POLL_DELAY = 100
 DEFAULT_POLL_TIMEOUT = 5000
@@ -97,6 +98,6 @@ class EventProcessingProber(PollingProber):
     def _run_probe(self, probe):
         probe.test()
 
-    def _wait_for(self, duration):
-        QTest.qWait(duration)
+    def _wait_for(self, ms):
+        MainEventLoop.process_events_for(ms)
 

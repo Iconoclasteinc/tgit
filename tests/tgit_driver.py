@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QPushButton, QApplication, QTest
+from PyQt4.Qt import QPushButton
 
 import tgit.ui.main_window as main
 
+from events import MainEventLoop
 from probing import EventProcessingProber
 from matchers import named, showing_on_screen
 from widgets import main_window, MainWindowDriver, PushButtonDriver
@@ -17,12 +18,12 @@ class TGiTDriver(MainWindowDriver):
             main_window(named(main.MAIN_WINDOW_NAME), showing_on_screen()),
             prober)
         self._robot = Robot()
-        QApplication.processEvents()
+        MainEventLoop.process_pending_events()
 
     def display_message(self):
         self._robot.perform(self._button(main.SURPRISE_BUTTON_NAME).press())
         # until we probe for a response, we need to wait for message to be printed to console
-        QTest.qWait(100)
+        MainEventLoop.process_events_for(50)
 
     def _button(self, button_name):
         return PushButtonDriver.find(self, QPushButton, named(button_name))

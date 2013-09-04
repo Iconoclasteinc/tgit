@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QTest
 from autopy import mouse
+
+from events import MainEventLoop
 
 
 class Robot(object):
@@ -24,5 +25,4 @@ class Robot(object):
         mouse.toggle(False, button)
 
     def delay(self, ms):
-        # Process Qt evens while waiting
-        QTest.qWait(ms)
+        MainEventLoop.process_events_for(ms)
