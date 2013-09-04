@@ -14,6 +14,7 @@ class Query(SelfDescribing):
 
 class PropertyQuery(Query):
     def __init__(self, name, query):
+        super(PropertyQuery, self).__init__()
         self._property_name = name
         self._query = query
 

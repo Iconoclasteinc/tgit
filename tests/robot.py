@@ -8,9 +8,6 @@ from events import MainEventLoop
 class Robot(object):
     LEFT_MOUSE_BUTTON = mouse.LEFT_BUTTON
 
-    def __init__(self):
-        super(Robot, self).__init__()
-
     def perform(self, *gestures):
         for gesture in gestures:
             gesture(self)

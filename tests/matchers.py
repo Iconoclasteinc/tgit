@@ -21,6 +21,7 @@ def with_(query, matcher):
 
 class QueryResultMatcher(BaseMatcher):
     def __init__(self, query, matcher):
+        super(BaseMatcher, self).__init__()
         self._query = query
         self._result_matcher = matcher
 

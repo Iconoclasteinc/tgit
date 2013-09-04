@@ -15,6 +15,7 @@ class WidgetSelector(WidgetFinder):
 
 class RecursiveWidgetFinder(WidgetFinder):
     def __init__(self, widget_type, criteria, parent_or_owner_finder):
+        super(RecursiveWidgetFinder, self).__init__()
         self._widget_type = widget_type
         self._criteria = criteria
         self._parent_or_owner_finder = parent_or_owner_finder

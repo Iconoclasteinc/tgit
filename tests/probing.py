@@ -57,6 +57,7 @@ class Prober(object):
 
 class PollingProber(Prober):
     def __init__(self, delay=DEFAULT_POLL_DELAY, timeout=DEFAULT_POLL_TIMEOUT):
+        super(PollingProber, self).__init__()
         self._poll_delay = delay
         self._poll_timeout = timeout
 

@@ -13,11 +13,13 @@ from robot import Robot
 
 class TGiTDriver(MainWindowDriver):
     def __init__(self, timeout_in_ms):
-        prober = EventProcessingProber(timeout_in_ms=timeout_in_ms)
         super(TGiTDriver, self).__init__(
             main_window(named(main.MAIN_WINDOW_NAME), showing_on_screen()),
-            prober)
+            EventProcessingProber(timeout_in_ms=timeout_in_ms))
         self._robot = Robot()
+        self._wait_for_window_shown()
+
+    def _wait_for_window_shown(self):
         MainEventLoop.process_pending_events()
 
     def display_message(self):
