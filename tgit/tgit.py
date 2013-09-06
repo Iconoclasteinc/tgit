@@ -18,6 +18,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import sys
+import sip
+
+API_NAMES = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
+API_VERSION = 2
+for name in API_NAMES:
+    sip.setapi(name, API_VERSION)
 
 from PyQt4.Qt import QApplication
 
@@ -33,6 +39,7 @@ class TGiT(QApplication):
     def _show_ui(self):
         self.ui.show()
         self.ui.raise_()
+        self.ui.activateWindow()
 
     def run(self):
         return sys.exit(self.exec_())

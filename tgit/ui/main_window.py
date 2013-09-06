@@ -17,13 +17,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.Qt import (QString, QRect, QApplication, QMainWindow, QStatusBar, QWidget, QGridLayout,
+from PyQt4.Qt import (QRect, QApplication, QMainWindow, QStatusBar, QWidget, QGridLayout,
                       QPushButton, QMenu, QMenuBar, QAction)
-
-try:
-    _fromUtf8 = QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
 
 MAIN_WINDOW_CONTEXT = "MainWindow"
 MAIN_WINDOW_NAME = "TGiT"
@@ -36,7 +31,7 @@ class MainWindow(QMainWindow):
         self._setup_ui()
 
     def _setup_ui(self):
-        self.setObjectName(_fromUtf8(MAIN_WINDOW_NAME))
+        self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(469, 266)
         self.setCentralWidget(self._make_main_panel())
         self._fill_menu()
@@ -50,7 +45,7 @@ class MainWindow(QMainWindow):
         main_panel = QWidget(self)
         main_panel_layout = QGridLayout(main_panel)
         self.button = QPushButton(main_panel)
-        self.button.setObjectName(_fromUtf8(SURPRISE_BUTTON_NAME))
+        self.button.setObjectName(SURPRISE_BUTTON_NAME)
         self.button.clicked.connect(self.print_message)
         main_panel_layout.addWidget(self.button, 0, 0, 1, 1)
         return main_panel
