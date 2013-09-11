@@ -49,7 +49,7 @@ class WidgetDriver(object):
     def widget_center(self):
         probe = WidgetScreenBoundsProbe(self.selector)
         self._check(probe)
-        return probe.bounds().center()
+        return probe.bounds.center()
 
     def left_click_on_widget(self):
         return gestures.click_on(self.widget_center())
@@ -107,7 +107,7 @@ class FileDialogDriver(WidgetDriver):
     def _current_dir(self):
         probe = FileDialogCurrentDirectoryProbe(self.selector)
         self._check(probe)
-        return probe.current_dir()
+        return probe.current_dir
 
     def into_dir(self, name):
         return gestures.sequence(self.select_file(name),

@@ -27,4 +27,3 @@ class ApplicationRunner(object):
 
     def shows_music_metadata(self, artist, album, title, bitrate, duration):
         self._tgit.shows_album_metadata(album_title=album)
-        self._tgit.shows_album_metadata(album_title=album)

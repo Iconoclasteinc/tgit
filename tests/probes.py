@@ -100,6 +100,7 @@ class WidgetScreenBoundsProbe(Probe):
         super(WidgetScreenBoundsProbe, self).__init__()
         self._selector = selector
 
+    @property
     def bounds(self):
         return self._bounds
 
@@ -137,6 +138,7 @@ class FileDialogCurrentDirectoryProbe(Probe):
         super(FileDialogCurrentDirectoryProbe, self).__init__()
         self._selector = selector
 
+    @property
     def current_dir(self):
         return self._current_dir
 
