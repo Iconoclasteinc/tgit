@@ -6,9 +6,8 @@ from hamcrest.core import all_of, equal_to
 from probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                     WidgetScreenBoundsProbe)
 from finders import SingleWidgetFinder, TopLevelWindowFinder, RecursiveWidgetFinder
-from matchers import showing_on_screen
+import matchers as match
 import properties
-
 import gestures
 
 
@@ -36,9 +35,9 @@ class WidgetDriver(object):
             RecursiveWidgetFinder(widget_type, all_of(*matchers), parent.selector)), parent.prober)
 
     def is_showing_on_screen(self):
-        self.is_(showing_on_screen())
+        self.verify(match.showing_on_screen())
 
-    def is_(self, criteria):
+    def verify(self, criteria):
         self._check(WidgetAssertionProbe(self.selector, criteria))
 
     def has(self, query, criteria):
@@ -76,8 +75,9 @@ class LabelDriver(WidgetDriver):
 
 class LineEditDriver(WidgetDriver):
     def replace_text(self, text):
+        # Finish the sequence by a left click to make autocomplete go away
         return gestures.sequence(self.left_click_on_widget(), self.clear_text(),
-                                 self.type(text))
+                                 self.type(text), self.left_click_on_widget())
 
     def clear_text(self):
         return lambda robot: robot

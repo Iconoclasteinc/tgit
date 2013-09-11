@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from PyQt4.Qt import QWidget
 from hamcrest.core.core.isequal import IsEqual
 from hamcrest.core.base_matcher import BaseMatcher
-from PyQt4.Qt import QWidget
 
 import properties
 

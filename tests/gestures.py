@@ -4,7 +4,8 @@ from robot import Robot
 
 ONE_SECOND_IN_MS = 60000
 AVERAGE_WORD_LENGTH = 5         # precisely 5.1 in english
-MEDIUM_TYPING_SPEED = 240       # 240 wpm seems good for the tests
+MEDIUM_TYPING_SPEED = 240       # in wpm
+FAST_TYPING_SPEED = 480         # in wpm
 MID_MOUSE_CLICK_DELAY = 50
 
 
@@ -13,22 +14,22 @@ def sequence(*gestures):
 
 
 def type_text(text):
-    return sequence(*[_at_wpm(MEDIUM_TYPING_SPEED, type_char(c)) for c in text])
+    return sequence(*[at_speed(FAST_TYPING_SPEED, type_char(c)) for c in text])
 
 
 def type_char(char):
     return lambda robot: robot.type(char)
 
 
-def _at_wpm(wpm, typing_gesture):
+def at_speed(wpm, typing_gesture):
     return sequence(typing_gesture, pause(_keystroke_delay(wpm)))
 
 
-def _keystroke_delay(wpm):
-    return ONE_SECOND_IN_MS / _keystrokes_for_speed(wpm)
+def _keystroke_delay(typing_speed_in_wpm):
+    return ONE_SECOND_IN_MS / _keystrokes_per_minute(typing_speed_in_wpm)
 
 
-def _keystrokes_for_speed(wpm):
+def _keystrokes_per_minute(wpm):
     return wpm * AVERAGE_WORD_LENGTH
 
 

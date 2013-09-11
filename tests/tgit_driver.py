@@ -31,7 +31,7 @@ class TGiTDriver(MainWindowDriver):
 
     def open_file_dialog(self):
         open_file_button = PushButtonDriver.find(self, QPushButton,
-                                                 named(main.OPEN_FILE_BUTTON_NAME))
+                                                 named(main.ADD_FILE_BUTTON_NAME))
         self._robot.perform(open_file_button.click())
 
     def enter_manually(self, filename):
@@ -45,6 +45,6 @@ class TGiTDriver(MainWindowDriver):
         self._robot.perform(accept_button.click())
 
     def shows_music_title(self, title):
-        label = LabelDriver.find(self, QLabel, named(main.TITLE_LABEL_NAME))
-        label.has_text('Ma préférence')
+        label = LabelDriver.find(self, QLabel, named(main.ALBUM_TITLE_INPUT_NAME))
+        label.has_text(title)
 

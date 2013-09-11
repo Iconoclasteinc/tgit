@@ -17,9 +17,6 @@ class ApplicationRunner(object):
         del self._tgit
         del self._app
 
-    def say_hello(self):
-        self._tgit.display_message()
-
     def select_music_file(self, filename):
         self._tgit.open_file(filename)
 

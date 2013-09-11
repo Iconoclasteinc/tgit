@@ -17,13 +17,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.Qt import (QRect, QApplication, QMainWindow, QStatusBar, QWidget, QGridLayout,
+import datetime
+
+from PyQt4.Qt import (QDir, QRect, QApplication, QMainWindow, QStatusBar, QWidget, QGridLayout,
                       QPushButton, QMenu, QMenuBar, QAction, QLabel, QFileDialog)
 
-MAIN_WINDOW_CONTEXT = "MainWindow"
+import mutagen
+
+MAIN_WINDOW_CONTEXT = "Main Window"
 MAIN_WINDOW_NAME = "TGiT"
-OPEN_FILE_BUTTON_NAME = "OpenFile"
-TITLE_LABEL_NAME = "Title"
+ADD_FILE_BUTTON_NAME = "Add File"
+ALBUM_TITLE_INPUT_NAME = "Album Title"
 
 
 class MainWindow(QMainWindow):
@@ -34,7 +38,9 @@ class MainWindow(QMainWindow):
     def _setup_ui(self):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(469, 266)
-        self.setCentralWidget(self._make_main_panel())
+        self._make_import_file_dialog()
+        self.setCentralWidget(self._make_welcome_panel())
+        self._make_tag_album_panel()
         self._fill_menu()
         self._make_status_bar()
         self.localize_ui()
@@ -42,18 +48,25 @@ class MainWindow(QMainWindow):
     def _make_status_bar(self):
         self.setStatusBar(QStatusBar(self))
 
-    def _make_main_panel(self):
-        main_panel = QWidget(self)
-        main_panel_layout = QGridLayout(main_panel)
-        self._button = QPushButton(main_panel)
-        self._button.setObjectName(OPEN_FILE_BUTTON_NAME)
-        self._button.clicked.connect(self.open_import_file_dialog)
-        main_panel_layout.addWidget(self._button, 0, 0, 1, 1)
-        self._label = QLabel(main_panel)
-        self._label.setObjectName(TITLE_LABEL_NAME)
-        self._label.setText("Song title")
-        main_panel_layout.addWidget(self._label, 1, 0, 1, 1)
-        return main_panel
+    def _make_welcome_panel(self):
+        self._welcome_panel = QWidget()
+        welcome_panel_layout = QGridLayout(self._welcome_panel)
+        self._add_file_button = QPushButton(self._welcome_panel)
+        self._add_file_button.setObjectName(ADD_FILE_BUTTON_NAME)
+        self._add_file_button.clicked.connect(self._add_file_dialog.show)
+        welcome_panel_layout.addWidget(self._add_file_button, 0, 0, 1, 1)
+        return self._welcome_panel
+
+    def _make_tag_album_panel(self):
+        self._tag_album_panel = QWidget()
+        tag_album_layout = QGridLayout(self._tag_album_panel)
+        self._album_title_label = QLabel(self._tag_album_panel)
+        self._album_title_label.setText("Album Title: ")
+        tag_album_layout.addWidget(self._album_title_label, 0, 0, 1, 1)
+        self._album_title_input = QLabel(self._tag_album_panel)
+        self._album_title_input.setObjectName(ALBUM_TITLE_INPUT_NAME)
+        tag_album_layout.addWidget(self._album_title_input, 0, 1, 1, 1)
+        return self._tag_album_panel
 
     def _fill_menu(self):
         menu_bar = QMenuBar(self)
@@ -65,16 +78,28 @@ class MainWindow(QMainWindow):
         self.setMenuBar(menu_bar)
         menu_bar.addAction(self._quit_menu.menuAction())
 
-    def open_import_file_dialog(self):
-        dialog = QFileDialog(self)
-        dialog.setOption(QFileDialog.DontUseNativeDialog)
-        dialog.setModal(True)
-        dialog.show()
+    def _make_import_file_dialog(self):
+        self._add_file_dialog = QFileDialog(self)
+        self._add_file_dialog.setDirectory(QDir.homePath())
+        self._add_file_dialog.setOption(QFileDialog.DontUseNativeDialog)
+        self._add_file_dialog.setModal(True)
+        self._add_file_dialog.fileSelected.connect(self._import_file)
+
+    def _import_file(self, filename):
+        self.setCentralWidget(self._tag_album_panel)
+        audio = mutagen.File(str(filename))
+
+        print "Artist: " + audio["TPE1"][0]
+        print "Album: " + audio["TALB"][0]
+        print "Duration: " + str(datetime.timedelta(seconds=round(audio.info.length, 0)))
+        title = audio["TIT2"][0]
+        self._album_title_input.setText(title)
 
     def localize_ui(self):
         self.setWindowTitle(QApplication.translate(MAIN_WINDOW_CONTEXT, "Main Window", None,
                                                    QApplication.UnicodeUTF8))
-        self._button.setText(QApplication.translate(MAIN_WINDOW_CONTEXT, "Hit me ...", None,
+        self._add_file_button.setText(QApplication.translate(MAIN_WINDOW_CONTEXT,
+                                                             "Add File...", None,
                                                    QApplication.UnicodeUTF8))
         self._quit_menu.setTitle(QApplication.translate(MAIN_WINDOW_CONTEXT, "Quit", None,
                                                        QApplication.UnicodeUTF8))
