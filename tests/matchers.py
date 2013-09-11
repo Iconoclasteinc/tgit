@@ -4,11 +4,11 @@ from hamcrest.core.core.isequal import IsEqual
 from hamcrest.core.base_matcher import BaseMatcher
 from PyQt4.Qt import QWidget
 
-import queries
+import properties
 
 
 def named(name):
-    return with_(queries.name(), IsEqual(name))
+    return with_(properties.name(), IsEqual(name))
 
 
 def showing_on_screen():

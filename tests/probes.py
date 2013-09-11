@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.Qt import QPoint, QRect
-from probing import Probe
+from prober import Probe
 
 
 class WidgetAssertionProbe(Probe):
@@ -36,13 +36,48 @@ class WidgetAssertionProbe(Probe):
             description.append_description_of(self._assertion)
 
 
-class WidgetManipulationProbe(Probe):
-    def __init__(self, finder, manipulation):
-        super(WidgetManipulationProbe, self).__init__()
-        self._finder = finder
-        self._manipulation = manipulation
+class WidgetPropertyAssertionProbe(Probe):
+    def __init__(self, selector, property_value_query, property_value_matcher):
+        super(WidgetPropertyAssertionProbe, self).__init__()
+        self._selector = selector
+        self._property_value_query = property_value_query
+        self._property_value_matcher = property_value_matcher
+        self._property_value = None
+
+    def test(self):
+        self._selector.test()
+        if self._selector.is_satisfied():
+            self._property_value = self._property_value_query(self._selector.widget())
+
+    def is_satisfied(self):
+        return self._selector.is_satisfied and \
+               self._property_value_matcher.matches(self._property_value)
 
     def describe_to(self, description):
+        description.append_description_of(self._selector)\
+            .append_text(" and check that its ")\
+            .append_description_of(self._property_value_query)\
+            .append_text(" is ")\
+            .append_description_of(self._property_value_matcher)
+
+    def describe_failure_to(self, description):
+        self._selector.describe_failure_to(description)
+        if self._selector.is_satisfied():
+            description.append_text(" ")\
+                .append_description_of(self._property_value_query)\
+                .append_text(" was ")\
+                .append_value(self._property_value)
+
+
+class WidgetManipulatorProbe(Probe):
+    def __init__(self, finder, manipulation, description):
+        super(WidgetManipulatorProbe, self).__init__()
+        self._finder = finder
+        self._manipulate = manipulation
+        self._description = description
+
+    def describe_to(self, description):
+        description.append_text("and %s " % self._description)
         self._finder.describe_to(description)
 
     def describe_failure_to(self, description):
@@ -55,7 +90,7 @@ class WidgetManipulationProbe(Probe):
         self._finder.test()
         if self._finder.is_satisfied():
             for widget in self._finder.widgets():
-                self._manipulation(widget)
+                self._manipulate(widget)
 
 
 class WidgetScreenBoundsProbe(Probe):

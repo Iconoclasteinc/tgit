@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.Qt import QApplication, QMainWindow
-from hamcrest.core import all_of
+from hamcrest.core import all_of, equal_to
 
-from probing import in_context
-from probes import WidgetManipulationProbe, WidgetAssertionProbe, WidgetScreenBoundsProbe
+from probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
+                    WidgetScreenBoundsProbe)
 from finders import SingleWidgetFinder, TopLevelWindowFinder, RecursiveWidgetFinder
 from matchers import showing_on_screen
-from gestures import click_on
+import properties
+
+import gestures
 
 
 def main_window(*matchers):
@@ -37,34 +39,36 @@ class WidgetDriver(object):
         self.is_(showing_on_screen())
 
     def is_(self, criteria):
-        self._find(WidgetAssertionProbe(self.selector, criteria))
+        self._check(WidgetAssertionProbe(self.selector, criteria))
+
+    def has(self, query, criteria):
+        self._check(WidgetPropertyAssertionProbe(self.selector, query, criteria))
 
     def manipulate(self, description, manipulation):
-        self._check(in_context(description, WidgetManipulationProbe(self.selector, manipulation)))
+        self._check(WidgetManipulatorProbe(self.selector, manipulation, description))
 
     def widget_center(self):
-        probe = WidgetScreenBoundsProbe(self._selector)
-        self._find(probe)
+        probe = WidgetScreenBoundsProbe(self.selector)
+        self._check(probe)
         return probe.bounds().center()
 
-    def _find(self, probe):
-        self._check(in_context("find", probe))
+    def left_click_on_widget(self):
+        return gestures.click_on(self.widget_center())
 
     def _check(self, probe):
         self.prober.check(probe)
 
 
 class MainWindowDriver(WidgetDriver):
-    def __init__(self, selector, prober):
-        super(MainWindowDriver, self).__init__(selector, prober)
-
     def close(self):
         self.manipulate("close", lambda widget: widget.close())
 
 
 class PushButtonDriver(WidgetDriver):
-    def __init__(self, selector, prober):
-        super(PushButtonDriver, self).__init__(selector, prober)
+    def click(self):
+        return self.left_click_on_widget()
 
-    def press(self):
-        return click_on(self.widget_center())
+
+class LabelDriver(WidgetDriver):
+    def has_text(self, text):
+        self.has(properties.text(), equal_to(unicode(text, "UTF-8")))

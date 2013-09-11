@@ -18,11 +18,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.Qt import (QRect, QApplication, QMainWindow, QStatusBar, QWidget, QGridLayout,
-                      QPushButton, QMenu, QMenuBar, QAction)
+                      QPushButton, QMenu, QMenuBar, QAction, QLabel)
 
 MAIN_WINDOW_CONTEXT = "MainWindow"
 MAIN_WINDOW_NAME = "TGiT"
-SURPRISE_BUTTON_NAME = "surprise"
+OPEN_FILE_BUTTON_NAME = "OpenFile"
+TITLE_LABEL_NAME = "Title"
 
 
 class MainWindow(QMainWindow):
@@ -44,21 +45,25 @@ class MainWindow(QMainWindow):
     def _make_main_panel(self):
         main_panel = QWidget(self)
         main_panel_layout = QGridLayout(main_panel)
-        self.button = QPushButton(main_panel)
-        self.button.setObjectName(SURPRISE_BUTTON_NAME)
-        self.button.clicked.connect(self.print_message)
-        main_panel_layout.addWidget(self.button, 0, 0, 1, 1)
+        self._button = QPushButton(main_panel)
+        self._button.setObjectName(OPEN_FILE_BUTTON_NAME)
+        self._button.clicked.connect(self.print_message)
+        main_panel_layout.addWidget(self._button, 0, 0, 1, 1)
+        self._label = QLabel(main_panel)
+        self._label.setObjectName(TITLE_LABEL_NAME)
+        self._label.setText("Song title")
+        main_panel_layout.addWidget(self._label, 1, 0, 1, 1)
         return main_panel
 
     def _fill_menu(self):
         menu_bar = QMenuBar(self)
         menu_bar.setGeometry(QRect(0, 0, 469, 21))
-        self.quit_menu = QMenu(menu_bar)
-        self.quit_menu_item = QAction(self)
-        self.quit_menu_item.triggered.connect(self.close)
-        self.quit_menu.addAction(self.quit_menu_item)
+        self._quit_menu = QMenu(menu_bar)
+        self._quit_menu_item = QAction(self)
+        self._quit_menu_item.triggered.connect(self.close)
+        self._quit_menu.addAction(self._quit_menu_item)
         self.setMenuBar(menu_bar)
-        menu_bar.addAction(self.quit_menu.menuAction())
+        menu_bar.addAction(self._quit_menu.menuAction())
 
     def print_message(self):
         print "All your QT windows are belong to us !!!!"
@@ -66,9 +71,9 @@ class MainWindow(QMainWindow):
     def localize_ui(self):
         self.setWindowTitle(QApplication.translate(MAIN_WINDOW_CONTEXT, "Main Window", None,
                                                    QApplication.UnicodeUTF8))
-        self.button.setText(QApplication.translate(MAIN_WINDOW_CONTEXT, "Hit me ...", None,
+        self._button.setText(QApplication.translate(MAIN_WINDOW_CONTEXT, "Hit me ...", None,
                                                    QApplication.UnicodeUTF8))
-        self.quit_menu.setTitle(QApplication.translate(MAIN_WINDOW_CONTEXT, "Quit", None,
+        self._quit_menu.setTitle(QApplication.translate(MAIN_WINDOW_CONTEXT, "Quit", None,
                                                        QApplication.UnicodeUTF8))
-        self.quit_menu_item.setText(QApplication.translate(MAIN_WINDOW_CONTEXT, "Hit me to quit",
+        self._quit_menu_item.setText(QApplication.translate(MAIN_WINDOW_CONTEXT, "Hit me to quit",
                                                            None, QApplication.UnicodeUTF8))
