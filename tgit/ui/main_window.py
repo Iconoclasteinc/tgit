@@ -19,12 +19,10 @@
 
 import datetime
 
-from PyQt4.Qt import (QDir, QRect, QApplication, QMainWindow, QStatusBar, QWidget, QGridLayout,
+from PyQt4.Qt import (QDir, QRect, QMainWindow, QStatusBar, QWidget, QGridLayout,
                       QPushButton, QMenu, QMenuBar, QAction, QLabel, QFileDialog)
-
 import mutagen
 
-MAIN_WINDOW_CONTEXT = "Main Window"
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
 ALBUM_TITLE_INPUT_NAME = "Album Title"
@@ -96,12 +94,7 @@ class MainWindow(QMainWindow):
         self._album_title_input.setText(title)
 
     def localize_ui(self):
-        self.setWindowTitle(QApplication.translate(MAIN_WINDOW_CONTEXT, "Main Window", None,
-                                                   QApplication.UnicodeUTF8))
-        self._add_file_button.setText(QApplication.translate(MAIN_WINDOW_CONTEXT,
-                                                             "Add File...", None,
-                                                   QApplication.UnicodeUTF8))
-        self._quit_menu.setTitle(QApplication.translate(MAIN_WINDOW_CONTEXT, "Quit", None,
-                                                       QApplication.UnicodeUTF8))
-        self._quit_menu_item.setText(QApplication.translate(MAIN_WINDOW_CONTEXT, "Hit me to quit",
-                                                           None, QApplication.UnicodeUTF8))
+        self.setWindowTitle(self.tr("TGiT"))
+        self._add_file_button.setText(self.tr("Add File..."))
+        self._quit_menu.setTitle(self.tr("Quit"))
+        self._quit_menu_item.setText(self.tr("Hit me to quit"))

@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 from tgit.tgit import TGiT
 
 from tgit_driver import TGiTDriver
 
 ONE_SECOND = 1000
 
+locales_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'locales'))
+
 
 class ApplicationRunner(object):
     def start(self):
-        self._app = TGiT()
+        self._app = TGiT(locales_dir)
         self._tgit = TGiTDriver(timeout_in_ms=ONE_SECOND)
 
     def stop(self):

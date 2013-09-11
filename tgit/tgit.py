@@ -20,30 +20,49 @@
 import sys
 import sip
 
+UTF_8 = "UTF-8"
+
 API_NAMES = ["QDate", "QDateTime", "QString", "QTextStream", "QTime", "QUrl", "QVariant"]
 API_VERSION = 2
 for name in API_NAMES:
     sip.setapi(name, API_VERSION)
 
-from PyQt4.Qt import QApplication
+from PyQt4.Qt import QApplication, QTextCodec, QTranslator
 
 from ui.main_window import MainWindow
 
 
 class TGiT(QApplication):
-    def __init__(self):
+    def __init__(self, locales_dir, locale='en'):
         QApplication.__init__(self, [])
-        self.ui = MainWindow()
-        self._show_ui()
+        self._locales_dir = locales_dir
+        self.locale = locale
+        self._ui = MainWindow()
+        self._show(self._ui)
 
-    def _show_ui(self):
-        self.ui.show()
-        self.ui.raise_()
-        self.ui.activateWindow()
+    def _show(self, main_window):
+        main_window.show()
+        main_window.raise_()
+        main_window.activateWindow()
+
+    def _set_locale(self, locale):
+        QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
+        self._qt_translations = self._install_translations("qt", locale)
+        self._application_translations = self._install_translations("tgit", locale)
+
+    def _install_translations(self, file, locale):
+        translator = QTranslator()
+        if translator.load("%s_%s" % (file, locale), self._locales_dir):
+            self.installTranslator(translator)
+            return translator
+        else:
+            return None
+
+    locale = property(fset=_set_locale)
 
     def run(self):
         return sys.exit(self.exec_())
 
 
-def main():
-    TGiT().run()
+def main(locales_dir):
+    TGiT(locales_dir, locale='fr').run()
