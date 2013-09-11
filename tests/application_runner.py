@@ -1,20 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import os
-
 from tgit.tgit import TGiT
 
+import project
 from tgit_driver import TGiTDriver
 from events import MainEventLoop
 
 ONE_SECOND = 1000
 
-locales_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'locales'))
-
-
 class ApplicationRunner(object):
     def start(self):
-        self._app = TGiT(locales_dir)
+        self._app = TGiT(project.locales_dir)
         self._tgit = TGiTDriver(timeout_in_ms=ONE_SECOND)
         self._wait_for_window_shown()
 

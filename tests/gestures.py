@@ -38,7 +38,7 @@ def click_on(point):
 
 
 def mouse_move(point):
-    return lambda robot: robot.move_mouse(point)
+    return lambda robot: robot.move_mouse(point.x(), point.y())
 
 
 def mouse_click():
@@ -46,11 +46,11 @@ def mouse_click():
 
 
 def mouse_press():
-    return lambda robot: robot.press_mouse(Robot.LEFT_MOUSE_BUTTON)
+    return lambda robot: robot.press_mouse(Robot.LEFT_BUTTON)
 
 
 def mouse_release():
-    return lambda robot: robot.release_mouse(Robot.LEFT_MOUSE_BUTTON)
+    return lambda robot: robot.release_mouse(Robot.LEFT_BUTTON)
 
 
 def pause(ms):
