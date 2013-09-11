@@ -60,9 +60,9 @@ class RecursiveWidgetFinder(WidgetFinder):
             append_description_of(self._criteria)
 
 
-class TopLevelWindowFinder(WidgetFinder):
+class TopLevelFrameFinder(WidgetFinder):
     def __init__(self, app):
-        super(TopLevelWindowFinder, self).__init__()
+        super(TopLevelFrameFinder, self).__init__()
         self._app = app
 
     def is_satisfied(self):
@@ -77,7 +77,7 @@ class TopLevelWindowFinder(WidgetFinder):
             self._root_windows.add(self._root_parent(top_level_widget))
 
     def describe_to(self, description):
-        description.append_text("top level widgets")
+        description.append_text("top level frame")
 
     def describe_failure_to(self, description):
         self.describe_to(description)

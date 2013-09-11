@@ -21,13 +21,23 @@ from mutagen.mp3 import MP3
 
 
 class MP3File(object):
+    ALBUM = 'TALB'
+
     def __init__(self, filename):
         super(MP3File, self).__init__()
         self.mp3 = MP3(filename)
 
     @property
     def album_title(self):
-        return self.mp3['TALB'].text[0]
+        return self.mp3.has_key(self.ALBUM) and self.mp3[self.ALBUM].text[0] or None
+
+    @property
+    def bitrate(self):
+        return self.mp3.info.bitrate
+
+    @property
+    def bitrate_in_kbps(self):
+        return int(round(self.bitrate, -3) / 1000)
 
 # print "Artist: " + audio["TPE1"][0]
 # print "Track: " + audio["TIT2"][0]

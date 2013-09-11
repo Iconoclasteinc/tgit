@@ -14,6 +14,10 @@ import project
 from tgit.mp3 import MP3File
 
 
+TEST_MP3_BITRATE_IN_BPS = 128000
+TEST_MP3_BITRATE_IN_KBPS = 128
+
+
 class MP3FileTest(unittest.TestCase):
     def setUp(self):
         self._create_test_mp3(album="Titre de l'album")
@@ -24,6 +28,13 @@ class MP3FileTest(unittest.TestCase):
 
     def test_reads_album_title_from_id3_tags(self):
         assert_that(self.audio.album_title, equal_to("Titre de l'album"), "album title")
+
+    def test_reads_track_bitrate_from_audio_stream_information(self):
+        assert_that(self.audio.bitrate, equal_to(TEST_MP3_BITRATE_IN_BPS), "bitrate")
+
+    def test_can_report_bitrate_rounded_in_kbps(self):
+        assert_that(self.audio.bitrate_in_kbps, equal_to(TEST_MP3_BITRATE_IN_KBPS),
+                    "bitrate in kbps")
 
     def _create_test_mp3(self, album):
         self._copy_master(project.test_resource_path('base.mp3'))

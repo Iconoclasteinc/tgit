@@ -94,11 +94,10 @@ class WidgetManipulatorProbe(Probe):
 
 
 class WidgetScreenBoundsProbe(Probe):
-    _bounds = None
-
     def __init__(self, selector):
         super(WidgetScreenBoundsProbe, self).__init__()
         self._selector = selector
+        self._bounds = None
 
     @property
     def bounds(self):
@@ -132,11 +131,10 @@ class WidgetScreenBoundsProbe(Probe):
 
 
 class FileDialogCurrentDirectoryProbe(Probe):
-    _current_dir = None
-
     def __init__(self, selector):
         super(FileDialogCurrentDirectoryProbe, self).__init__()
         self._selector = selector
+        self._current_dir = None
 
     @property
     def current_dir(self):

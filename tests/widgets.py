@@ -5,7 +5,7 @@ from hamcrest.core import all_of, equal_to
 
 from probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                     WidgetScreenBoundsProbe, FileDialogCurrentDirectoryProbe)
-from finders import SingleWidgetFinder, TopLevelWindowFinder, RecursiveWidgetFinder
+from finders import SingleWidgetFinder, TopLevelFrameFinder, RecursiveWidgetFinder
 import matchers as match
 import properties
 import gestures
@@ -13,7 +13,7 @@ import gestures
 
 def main_window(*matchers):
     return SingleWidgetFinder(RecursiveWidgetFinder(QMainWindow, all_of(*matchers),
-                                                    TopLevelWindowFinder(QApplication.instance())))
+                                                    TopLevelFrameFinder(QApplication.instance())))
 
 
 class WidgetDriver(object):

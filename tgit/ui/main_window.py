@@ -24,6 +24,7 @@ from tgit.mp3 import MP3File
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
 ALBUM_TITLE_INPUT_NAME = "Album Title"
+TRACK_BITRATE_TEXT_NAME = "Bitrate"
 
 
 class MainWindow(QMainWindow):
@@ -61,6 +62,11 @@ class MainWindow(QMainWindow):
         self._album_title_input = QLineEdit(self._tag_album_panel)
         self._album_title_input.setObjectName(ALBUM_TITLE_INPUT_NAME)
         tag_album_layout.addWidget(self._album_title_input, 0, 1, 1, 1)
+        self._bitrate_label = QLabel(self._tag_album_panel)
+        tag_album_layout.addWidget(self._bitrate_label, 1, 0, 1, 1)
+        self._track_bitrate_text = QLabel(self._tag_album_panel)
+        self._track_bitrate_text.setObjectName(TRACK_BITRATE_TEXT_NAME)
+        tag_album_layout.addWidget(self._track_bitrate_text, 1, 1, 1, 1)
         return self._tag_album_panel
 
     def _fill_menu(self):
@@ -86,6 +92,7 @@ class MainWindow(QMainWindow):
     def _import_file(self, filename):
         audio = MP3File(str(filename))
         self._album_title_input.setText(audio.album_title)
+        self._track_bitrate_text.setText("%d kps" % audio.bitrate_in_kbps)
         self._show_tag_album_panel()
 
     def localize_ui(self):
@@ -94,3 +101,4 @@ class MainWindow(QMainWindow):
         self._quit_menu.setTitle(self.tr("Quit"))
         self._quit_menu_item.setText(self.tr("Hit me to quit"))
         self._album_title_label.setText(self.tr("Album Title: "))
+        self._bitrate_label.setText(self.tr("Bitrate: "))
