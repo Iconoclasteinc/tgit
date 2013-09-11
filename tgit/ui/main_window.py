@@ -17,11 +17,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import datetime
-
 from PyQt4.Qt import (QDir, QRect, QMainWindow, QStatusBar, QWidget, QGridLayout,
-                      QPushButton, QMenu, QMenuBar, QAction, QLabel, QFileDialog)
-import mutagen
+                      QPushButton, QMenu, QMenuBar, QAction, QLabel, QLineEdit, QFileDialog)
+from tgit.mp3 import MP3File
 
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
@@ -59,9 +57,8 @@ class MainWindow(QMainWindow):
         self._tag_album_panel = QWidget()
         tag_album_layout = QGridLayout(self._tag_album_panel)
         self._album_title_label = QLabel(self._tag_album_panel)
-        self._album_title_label.setText("Album Title: ")
         tag_album_layout.addWidget(self._album_title_label, 0, 0, 1, 1)
-        self._album_title_input = QLabel(self._tag_album_panel)
+        self._album_title_input = QLineEdit(self._tag_album_panel)
         self._album_title_input.setObjectName(ALBUM_TITLE_INPUT_NAME)
         tag_album_layout.addWidget(self._album_title_input, 0, 1, 1, 1)
         return self._tag_album_panel
@@ -83,18 +80,17 @@ class MainWindow(QMainWindow):
         self._add_file_dialog.setModal(True)
         self._add_file_dialog.fileSelected.connect(self._import_file)
 
-    def _import_file(self, filename):
+    def _show_tag_album_panel(self):
         self.setCentralWidget(self._tag_album_panel)
-        audio = mutagen.File(str(filename))
 
-        print "Artist: " + audio["TPE1"][0]
-        print "Track: " + audio["TIT2"][0]
-        print "Duration: " + str(datetime.timedelta(seconds=round(audio.info.length, 0)))
-        album = audio["TALB"][0]
-        self._album_title_input.setText(album)
+    def _import_file(self, filename):
+        audio = MP3File(str(filename))
+        self._album_title_input.setText(audio.album_title)
+        self._show_tag_album_panel()
 
     def localize_ui(self):
         self.setWindowTitle(self.tr("TGiT"))
         self._add_file_button.setText(self.tr("Add File..."))
         self._quit_menu.setTitle(self.tr("Quit"))
         self._quit_menu_item.setText(self.tr("Hit me to quit"))
+        self._album_title_label.setText(self.tr("Album Title: "))

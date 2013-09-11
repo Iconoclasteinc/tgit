@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import os
-from PyQt4.Qt import QPushButton, QLabel, QFileDialog
+from PyQt4.Qt import QPushButton, QLineEdit, QFileDialog
 
 import tgit.ui.main_window as main
 
 from prober import EventProcessingProber
 from matchers import named, showing_on_screen
 from widgets import main_window
-from widgets import (MainWindowDriver, PushButtonDriver, LabelDriver, FileDialogDriver)
+from widgets import (MainWindowDriver, PushButtonDriver, LineEditDriver, FileDialogDriver)
 from robot import Robot
 
 
@@ -24,6 +24,10 @@ class TGiTDriver(MainWindowDriver):
         self._select_file(path)
         self._accept_file()
 
+    def shows_album_metadata(self, album_title):
+        album_title_input = LineEditDriver.find(self, QLineEdit, named(main.ALBUM_TITLE_INPUT_NAME))
+        album_title_input.has_text(album_title)
+
     def _open_file_dialog(self):
         add_file_button = PushButtonDriver.find(self, QPushButton,
                                                 named(main.ADD_FILE_BUTTON_NAME))
@@ -37,7 +41,3 @@ class TGiTDriver(MainWindowDriver):
     def _accept_file(self):
         dialog = FileDialogDriver.find(self, QFileDialog)
         self._robot.perform(dialog.accept())
-
-    def shows_album_metadata(self, album_title):
-        label = LabelDriver.find(self, QLabel, named(main.ALBUM_TITLE_INPUT_NAME))
-        label.has_text(album_title)

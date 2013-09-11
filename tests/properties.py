@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QObject, QLabel, QAbstractButton
+from PyQt4.Qt import QObject, QLabel, QLineEdit, QAbstractButton
 
 from hamcrest.core.selfdescribing import SelfDescribing
 
@@ -11,6 +11,10 @@ def name():
 
 def label_text():
     return PropertyQuery("label text", QLabel.text)
+
+
+def input_text():
+    return PropertyQuery("input text", QLineEdit.displayText)
 
 
 def button_text():
