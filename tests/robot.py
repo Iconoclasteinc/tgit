@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from autopy import mouse
+from autopy import mouse, key
 
 from events import MainEventLoop
 
@@ -11,6 +11,9 @@ class Robot(object):
     def perform(self, *gestures):
         for gesture in gestures:
             gesture(self)
+
+    def type(self, char):
+        key.tap(char)
 
     def move_mouse(self, point):
         mouse.smooth_move(point.x(), point.y())

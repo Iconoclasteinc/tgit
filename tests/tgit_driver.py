@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QPushButton, QLabel
+from PyQt4.Qt import QPushButton, QLabel, QLineEdit, QFileDialog
 
 import tgit.ui.main_window as main
 
 from events import MainEventLoop
 from prober import EventProcessingProber
-from matchers import named, showing_on_screen
-from widgets import main_window, MainWindowDriver, PushButtonDriver, LabelDriver
+from matchers import named, with_text, showing_on_screen
+from widgets import main_window
+from widgets import (MainWindowDriver, PushButtonDriver, LabelDriver, LineEditDriver,
+                     WidgetDriver)
 from robot import Robot
 
 
@@ -22,20 +24,25 @@ class TGiTDriver(MainWindowDriver):
     def _wait_for_window_shown(self):
         MainEventLoop.process_pending_events()
 
-    def display_message(self):
-        self._robot.perform(self._button(main.OPEN_FILE_BUTTON_NAME).click())
-        # until we probe for a response, we need to wait for message to be printed to console
-        MainEventLoop.process_events_for(50)
-
-    def _button(self, button_name):
-        return PushButtonDriver.find(self, QPushButton, named(button_name))
-
     def open_file(self, filename):
-        #dialog = QFileDialog(main)
-        #dialog.setOption(QFileDialog.DontUseNativeDialog)
-        #dialog.setModal(True)
-        #dialog.show()
-        self._robot.perform(self._button(main.OPEN_FILE_BUTTON_NAME).click())
+        self.open_file_dialog()
+        self.enter_manually(filename)
+        self.accept()
+
+    def open_file_dialog(self):
+        open_file_button = PushButtonDriver.find(self, QPushButton,
+                                                 named(main.OPEN_FILE_BUTTON_NAME))
+        self._robot.perform(open_file_button.click())
+
+    def enter_manually(self, filename):
+        dialog = WidgetDriver.find(self, QFileDialog)
+        filename_input = LineEditDriver.find(dialog, QLineEdit, named("fileNameEdit"))
+        self._robot.perform(filename_input.replace_text(filename))
+
+    def accept(self):
+        dialog = WidgetDriver.find(self, QFileDialog)
+        accept_button = PushButtonDriver.find(dialog, QPushButton, with_text("&Open"))
+        self._robot.perform(accept_button.click())
 
     def shows_music_title(self, title):
         label = LabelDriver.find(self, QLabel, named(main.TITLE_LABEL_NAME))

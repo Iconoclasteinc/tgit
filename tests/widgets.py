@@ -71,4 +71,16 @@ class PushButtonDriver(WidgetDriver):
 
 class LabelDriver(WidgetDriver):
     def has_text(self, text):
-        self.has(properties.text(), equal_to(unicode(text, "UTF-8")))
+        self.has(properties.label_text(), equal_to(unicode(text, "UTF-8")))
+
+
+class LineEditDriver(WidgetDriver):
+    def replace_text(self, text):
+        return gestures.sequence(self.left_click_on_widget(), self.clear_text(),
+                                 self.type(text))
+
+    def clear_text(self):
+        return lambda robot: robot
+
+    def type(self, text):
+        return gestures.type_text(text)

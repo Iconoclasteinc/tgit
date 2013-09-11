@@ -11,12 +11,16 @@ def named(name):
     return with_(properties.name(), IsEqual(name))
 
 
-def showing_on_screen():
-    return ShowingOnScreenMatcher()
+def with_text(text):
+    return with_(properties.button_text(), IsEqual(text))
 
 
 def with_(query, matcher):
     return QueryResultMatcher(query, matcher)
+
+
+def showing_on_screen():
+    return ShowingOnScreenMatcher()
 
 
 class QueryResultMatcher(BaseMatcher):

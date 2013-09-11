@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.Qt import (QRect, QApplication, QMainWindow, QStatusBar, QWidget, QGridLayout,
-                      QPushButton, QMenu, QMenuBar, QAction, QLabel)
+                      QPushButton, QMenu, QMenuBar, QAction, QLabel, QFileDialog)
 
 MAIN_WINDOW_CONTEXT = "MainWindow"
 MAIN_WINDOW_NAME = "TGiT"
@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
         main_panel_layout = QGridLayout(main_panel)
         self._button = QPushButton(main_panel)
         self._button.setObjectName(OPEN_FILE_BUTTON_NAME)
-        self._button.clicked.connect(self.print_message)
+        self._button.clicked.connect(self.open_import_file_dialog)
         main_panel_layout.addWidget(self._button, 0, 0, 1, 1)
         self._label = QLabel(main_panel)
         self._label.setObjectName(TITLE_LABEL_NAME)
@@ -65,8 +65,11 @@ class MainWindow(QMainWindow):
         self.setMenuBar(menu_bar)
         menu_bar.addAction(self._quit_menu.menuAction())
 
-    def print_message(self):
-        print "All your QT windows are belong to us !!!!"
+    def open_import_file_dialog(self):
+        dialog = QFileDialog(self)
+        dialog.setOption(QFileDialog.DontUseNativeDialog)
+        dialog.setModal(True)
+        dialog.show()
 
     def localize_ui(self):
         self.setWindowTitle(QApplication.translate(MAIN_WINDOW_CONTEXT, "Main Window", None,
