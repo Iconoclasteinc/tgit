@@ -14,8 +14,8 @@ import project
 from tgit.mp3 import MP3File
 
 
-TEST_MP3_BITRATE_IN_BPS = 128000
-TEST_MP3_BITRATE_IN_KBPS = 128
+TEST_MP3_BITRATE_IN_BPS = 320000
+TEST_MP3_BITRATE_IN_KBPS = 320
 
 
 class MP3FileTest(unittest.TestCase):
@@ -46,6 +46,7 @@ class MP3FileTest(unittest.TestCase):
 
     def _populate_tags(self, album):
         test_mp3 = mp3.MP3(self.working_file.name)
+        test_mp3.add_tags()
         test_mp3.tags.add(id3.TALB(encoding=3, text=album))
         test_mp3.save()
 

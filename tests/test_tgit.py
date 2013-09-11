@@ -15,10 +15,10 @@ class TGiTTest(unittest.TestCase):
         self.application.stop()
 
     def test_displaying_an_existing_music_file_metadata(self):
-        self.application.select_music_file(project.test_resource_path("ma-preference.mp3"))
-        self.application.shows_music_metadata(artist='Julien Clerc',album='Triple Best Of',
-                                              title='Ma préférence', bitrate="196 kps",
-                                              duration='3:23')
+        self.application.select_music_file(project.test_resource_path("Hallelujah.mp3"))
+        self.application.shows_music_metadata(artist='The Sixteen - Harry Christophers', album='Messiah',
+                                              title='Hallelujah (Chorus)', bitrate="320 kps",
+                                              duration='3:56')
 
 if __name__ == '__main__':
     unittest.main()
