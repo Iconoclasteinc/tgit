@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QApplication, QMainWindow
+from PyQt4.Qt import QApplication, QMainWindow, QLineEdit, QPushButton
 from hamcrest.core import all_of, equal_to
 
 from probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
@@ -80,7 +80,22 @@ class LineEditDriver(WidgetDriver):
                                  self.type(text), self.left_click_on_widget())
 
     def clear_text(self):
+        # todo
         return lambda robot: robot
 
     def type(self, text):
         return gestures.type_text(text)
+
+
+class FileDialogDriver(WidgetDriver):
+    def enter_manually(self, filename):
+        return self._filename_edit().replace_text(filename)
+
+    def accept(self):
+        return self._accept_button().click()
+
+    def _filename_edit(self):
+        return LineEditDriver.find(self, QLineEdit, match.named("fileNameEdit"))
+
+    def _accept_button(self):
+        return PushButtonDriver.find(self, QPushButton, match.with_text("&Open"))

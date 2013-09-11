@@ -88,10 +88,10 @@ class MainWindow(QMainWindow):
         audio = mutagen.File(str(filename))
 
         print "Artist: " + audio["TPE1"][0]
-        print "Album: " + audio["TALB"][0]
+        print "Track: " + audio["TIT2"][0]
         print "Duration: " + str(datetime.timedelta(seconds=round(audio.info.length, 0)))
-        title = audio["TIT2"][0]
-        self._album_title_input.setText(title)
+        album = audio["TALB"][0]
+        self._album_title_input.setText(album)
 
     def localize_ui(self):
         self.setWindowTitle(self.tr("TGiT"))
