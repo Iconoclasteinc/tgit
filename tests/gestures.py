@@ -6,7 +6,8 @@ ONE_SECOND_IN_MS = 60000
 AVERAGE_WORD_LENGTH = 5         # precisely 5.1 in english
 MEDIUM_TYPING_SPEED = 240       # in wpm
 FAST_TYPING_SPEED = 480         # in wpm
-MID_MOUSE_CLICK_DELAY = 50
+MOUSE_CLICK_DELAY = 50          # in ms
+#MOUSE_DOUBLE_CLICK_DELAY = 5    # in ms
 
 
 def sequence(*gestures):
@@ -42,7 +43,7 @@ def mouse_move(point):
 
 
 def mouse_click():
-    return sequence(mouse_press(), pause(MID_MOUSE_CLICK_DELAY), mouse_release())
+    return sequence(mouse_press(), pause(MOUSE_CLICK_DELAY), mouse_release())
 
 
 def mouse_press():
@@ -51,6 +52,14 @@ def mouse_press():
 
 def mouse_release():
     return lambda robot: robot.release_mouse(Robot.LEFT_BUTTON)
+
+
+def mouse_double_click():
+    # Apparently Qt uses a special DClickEvent which is not the same as 2 clicks,
+    # so the following fails:
+    # return sequence(mouse_click(), pause(MOUSE_DOUBLE_CLICK_DELAY), mouse_click())
+    # We need a double click action from the robot itself
+    return lambda robot: robot.double_click_mouse()
 
 
 def pause(ms):

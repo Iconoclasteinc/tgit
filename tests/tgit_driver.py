@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from PyQt4.Qt import QPushButton, QLabel, QFileDialog
 
 import tgit.ui.main_window as main
@@ -18,9 +19,9 @@ class TGiTDriver(MainWindowDriver):
             EventProcessingProber(timeout_in_ms=timeout_in_ms))
         self._robot = Robot()
 
-    def add_file(self, filename):
+    def add_file(self, path):
         self._open_file_dialog()
-        self._enter_filename(filename)
+        self._select_file(path)
         self._accept_file()
 
     def _open_file_dialog(self):
@@ -28,16 +29,15 @@ class TGiTDriver(MainWindowDriver):
                                                 named(main.ADD_FILE_BUTTON_NAME))
         self._robot.perform(add_file_button.click())
 
-    def _enter_filename(self, filename):
-        self._robot.perform(self._file_dialog().enter_manually(filename))
+    def _select_file(self, path):
+        dialog = FileDialogDriver.find(self, QFileDialog)
+        self._robot.perform(dialog.navigate_to_dir(os.path.dirname(path)))
+        self._robot.perform(dialog.select_file(os.path.basename(path)))
 
     def _accept_file(self):
-        self._robot.perform(self._file_dialog().accept())
+        dialog = FileDialogDriver.find(self, QFileDialog)
+        self._robot.perform(dialog.accept())
 
     def shows_album_metadata(self, album_title):
         label = LabelDriver.find(self, QLabel, named(main.ALBUM_TITLE_INPUT_NAME))
         label.has_text(album_title)
-
-    def _file_dialog(self):
-        return FileDialogDriver.find(self, QFileDialog)
-

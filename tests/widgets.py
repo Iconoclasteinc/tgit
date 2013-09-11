@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QApplication, QMainWindow, QLineEdit, QPushButton
+from PyQt4.Qt import QApplication, QMainWindow, QLineEdit, QPushButton, QListView
 from hamcrest.core import all_of, equal_to
 
 from probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
-                    WidgetScreenBoundsProbe)
+                    WidgetScreenBoundsProbe, FileDialogCurrentDirectoryProbe)
 from finders import SingleWidgetFinder, TopLevelWindowFinder, RecursiveWidgetFinder
 import matchers as match
 import properties
@@ -88,6 +88,48 @@ class LineEditDriver(WidgetDriver):
 
 
 class FileDialogDriver(WidgetDriver):
+    NAVIGATION_DELAY = 100
+
+    def navigate_to_dir(self, path):
+        current_dir = self._current_dir()
+        navigation_path = current_dir.relativeFilePath(path).split("/")
+
+        def change_to(name):
+            # we don't support going up the directory tree just yet
+            # if name == '..' up_one_dir()
+            return lambda robot: self.into_dir(name)(robot)
+
+        return gestures.sequence(*[change_to(d) for d in navigation_path])
+
+    def _current_dir(self):
+        probe = FileDialogCurrentDirectoryProbe(self.selector)
+        self._check(probe)
+        return probe.current_dir()
+
+    def into_dir(self, name):
+        return gestures.sequence(self.select_file(name),
+                                 gestures.pause(self.NAVIGATION_DELAY),
+                                 gestures.mouse_double_click(),
+                                 gestures.pause(self.NAVIGATION_DELAY))
+
+    def select_file(self, name):
+        # todo now that it works, let's make it clean
+        # Introduce a probe, a ListViewDriver and a matcher to select child(ren) from the list
+        # Maybe something like: find item based on criteria (i.e. name of file),
+        # scroll item into view, then click on center of item
+        current_dir = self._current_dir()
+        dialog = self._selector.widget()
+        file_list = dialog.findChild(QListView, 'listView')
+        model = file_list.model()
+        parent = model.index(current_dir.absolutePath())
+        child_count = model.rowCount(parent)
+        for i in range(child_count):
+            child = model.index(i, 0, parent)
+            if model.fileName(child) == name:
+                file_list.scrollTo(child)
+                item_visible_area = file_list.visualRect(child)
+                return gestures.click_on(file_list.mapToGlobal(item_visible_area.center()))
+
     def enter_manually(self, filename):
         return self._filename_edit().replace_text(filename)
 

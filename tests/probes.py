@@ -94,6 +94,8 @@ class WidgetManipulatorProbe(Probe):
 
 
 class WidgetScreenBoundsProbe(Probe):
+    _bounds = None
+
     def __init__(self, selector):
         super(WidgetScreenBoundsProbe, self).__init__()
         self._selector = selector
@@ -117,7 +119,7 @@ class WidgetScreenBoundsProbe(Probe):
     def test(self):
         self._selector.test()
 
-        if len(self._selector.widgets()) == 0:
+        if not self._selector.is_satisfied():
             self._bounds = None
             return
 
@@ -126,3 +128,36 @@ class WidgetScreenBoundsProbe(Probe):
             self._bounds = QRect(widget.mapToGlobal(QPoint(0, 0)), widget.size())
         else:
             self._bounds = None
+
+
+class FileDialogCurrentDirectoryProbe(Probe):
+    _current_dir = None
+
+    def __init__(self, selector):
+        super(FileDialogCurrentDirectoryProbe, self).__init__()
+        self._selector = selector
+
+    def current_dir(self):
+        return self._current_dir
+
+    def describe_to(self, description):
+        description.append_text("current directory of ")
+        description.append_description_of(self._selector)
+
+    def describe_failure_to(self, description):
+        self._selector.describe_failure_to(description)
+        if self._selector.is_satisfied():
+            description.append_text(" which had no current directory")
+
+    def is_satisfied(self):
+        return self._current_dir is not None
+
+    def test(self):
+        self._selector.test()
+
+        if not self._selector.is_satisfied():
+            self._current_dir = None
+            return
+
+        widget = self._selector.widget()
+        self._current_dir = widget.directory()

@@ -22,8 +22,8 @@ class ApplicationRunner(object):
         del self._tgit
         del self._app
 
-    def select_music_file(self, filename):
-        self._tgit.add_file(filename)
+    def select_music_file(self, path):
+        self._tgit.add_file(path)
 
     def shows_music_metadata(self, artist, album, title, bitrate, duration):
         self._tgit.shows_album_metadata(album_title=album)
