@@ -30,6 +30,7 @@ DURATION_INFO_NAME = "Duration"
 SAVE_BUTTON_NAME = "Save"
 
 
+# todo start teasing apart the main window to get birth to the domain concepts
 class MainWindow(QMainWindow):
     def __init__(self, ):
         QMainWindow.__init__(self)
@@ -91,6 +92,8 @@ class MainWindow(QMainWindow):
         self.setMenuBar(menu_bar)
         menu_bar.addAction(self._quit_menu.menuAction())
 
+    # todo integration test dialog file name filtering by making sure the Accept button stay
+    # disabled when we select a non supported file type
     def _make_import_file_dialog(self):
         self._add_file_dialog = QFileDialog(self)
         self._add_file_dialog.setDirectory(QDir.homePath())
@@ -121,3 +124,4 @@ class MainWindow(QMainWindow):
         self._bitrate_label.setText(self.tr("Bitrate: "))
         self._duration_label.setText(self.tr("Duration: "))
         self._save_button.setText(self.tr("Save"))
+        self._add_file_dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
