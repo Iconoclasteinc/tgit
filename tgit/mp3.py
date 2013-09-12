@@ -39,8 +39,12 @@ class MP3File(object):
     def bitrate_in_kbps(self):
         return int(round(self.bitrate, -3) / 1000)
 
-# print "Artist: " + audio["TPE1"][0]
-# print "Track: " + audio["TIT2"][0]
-# print "Duration: " + str(datetime.timedelta(seconds=round(audio.info.length, 0)))
+    @property
+    def duration(self):
+        return self.mp3.info.length
 
+    @property
+    def duration_as_text(self):
+        minutes, seconds = divmod(round(self.duration), 60)
+        return "%02d:%02d" % (minutes, seconds)
 

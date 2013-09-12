@@ -25,11 +25,13 @@ class TGiTDriver(MainWindowDriver):
         self._select_file(path)
         self._accept_file()
 
-    def shows_album_metadata(self, album_title, bitrate):
+    def shows_album_metadata(self, album_title, bitrate, duration):
         album_title_input = LineEditDriver.find(self, QLineEdit, named(main.ALBUM_TITLE_INPUT_NAME))
         album_title_input.has_text(album_title)
-        bitrate_label = LabelDriver.find(self, QLabel, named(main.TRACK_BITRATE_TEXT_NAME))
-        bitrate_label.has_text(bitrate)
+        bitrate_info = LabelDriver.find(self, QLabel, named(main.BITRATE_INFO_NAME))
+        bitrate_info.has_text(bitrate)
+        duration_info = LabelDriver.find(self, QLabel, named(main.DURATION_INFO_NAME))
+        duration_info.has_text(duration)
 
     def _open_file_dialog(self):
         add_file_button = PushButtonDriver.find(self, QPushButton,

@@ -18,4 +18,4 @@ class TGiTTest(unittest.TestCase):
         self.application.select_music_file(project.test_resource_path("Hallelujah.mp3"))
         self.application.shows_music_metadata(artist='The Sixteen - Harry Christophers', album='Messiah',
                                               title='Hallelujah (Chorus)', bitrate="320 kps",
-                                              duration='3:56')
+                                              duration='03:56')

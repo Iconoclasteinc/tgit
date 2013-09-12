@@ -13,28 +13,37 @@ from tests.util import project
 
 from tgit.mp3 import MP3File
 
-
-TEST_MP3_BITRATE_IN_BPS = 320000
-TEST_MP3_BITRATE_IN_KBPS = 320
+ALBUM_TITLE = "Titre de l'album"
+BITRATE_IN_BPS = 320000
+BITRATE_IN_KBPS = 320
+DURATION_IN_S = 9.064475
+DURATION_AS_TEXT = "00:09"
 
 
 class MP3FileTest(unittest.TestCase):
     def setUp(self):
-        self._create_test_mp3(album="Titre de l'album")
+        self._create_test_mp3(album=ALBUM_TITLE)
         self.audio = MP3File(self.working_file.name)
 
     def tearDown(self):
         self._delete_test_mp3()
 
     def test_reads_album_title_from_id3_tags(self):
-        assert_that(self.audio.album_title, equal_to("Titre de l'album"), "album title")
+        assert_that(self.audio.album_title, equal_to(ALBUM_TITLE), "album title")
 
     def test_reads_track_bitrate_from_audio_stream_information(self):
-        assert_that(self.audio.bitrate, equal_to(TEST_MP3_BITRATE_IN_BPS), "bitrate")
+        assert_that(self.audio.bitrate, equal_to(BITRATE_IN_BPS), "bitrate")
 
     def test_can_report_bitrate_rounded_in_kbps(self):
-        assert_that(self.audio.bitrate_in_kbps, equal_to(TEST_MP3_BITRATE_IN_KBPS),
+        assert_that(self.audio.bitrate_in_kbps, equal_to(BITRATE_IN_KBPS),
                     "bitrate in kbps")
+
+    def test_reads_track_duration_from_audio_stream_information(self):
+        assert_that(self.audio.duration, equal_to(DURATION_IN_S), "duration")
+
+    def test_can_report_duration_as_human_readable_text(self):
+        assert_that(self.audio.duration_as_text, equal_to(DURATION_AS_TEXT),
+                    "duration as text")
 
     def _create_test_mp3(self, album):
         self._copy_master(project.test_resource_path('base.mp3'))
@@ -52,7 +61,3 @@ class MP3FileTest(unittest.TestCase):
 
     def _delete_test_mp3(self):
         self.working_file.close()
-
-
-if __name__ == '__main__':
-    unittest.main()

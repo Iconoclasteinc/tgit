@@ -27,4 +27,4 @@ class ApplicationRunner(object):
         self._tgit.add_file(path)
 
     def shows_music_metadata(self, artist, album, title, bitrate, duration):
-        self._tgit.shows_album_metadata(album_title=album, bitrate=bitrate)
+        self._tgit.shows_album_metadata(album_title=album, bitrate=bitrate, duration=duration)

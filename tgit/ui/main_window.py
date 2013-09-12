@@ -25,7 +25,8 @@ from tgit.mp3 import MP3File
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
 ALBUM_TITLE_INPUT_NAME = "Album Title"
-TRACK_BITRATE_TEXT_NAME = "Bitrate"
+BITRATE_INFO_NAME = "Bitrate"
+DURATION_INFO_NAME = "Duration"
 
 
 class MainWindow(QMainWindow):
@@ -65,9 +66,14 @@ class MainWindow(QMainWindow):
         tag_album_layout.addWidget(self._album_title_input, 0, 1, 1, 1)
         self._bitrate_label = QLabel(self._tag_album_panel)
         tag_album_layout.addWidget(self._bitrate_label, 1, 0, 1, 1)
-        self._track_bitrate_text = QLabel(self._tag_album_panel)
-        self._track_bitrate_text.setObjectName(TRACK_BITRATE_TEXT_NAME)
-        tag_album_layout.addWidget(self._track_bitrate_text, 1, 1, 1, 1)
+        self._bitrate_info = QLabel(self._tag_album_panel)
+        self._bitrate_info.setObjectName(BITRATE_INFO_NAME)
+        tag_album_layout.addWidget(self._bitrate_info, 1, 1, 1, 1)
+        self._duration_label = QLabel(self._tag_album_panel)
+        tag_album_layout.addWidget(self._duration_label, 2, 0, 1, 1)
+        self._duration_info = QLabel(self._tag_album_panel)
+        self._duration_info.setObjectName(DURATION_INFO_NAME)
+        tag_album_layout.addWidget(self._duration_info, 2, 1, 1, 1)
         return self._tag_album_panel
 
     def _fill_menu(self):
@@ -91,9 +97,10 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self._tag_album_panel)
 
     def _import_file(self, filename):
-        audio = MP3File(str(filename))
+        audio = MP3File(filename)
         self._album_title_input.setText(audio.album_title)
-        self._track_bitrate_text.setText("%d kps" % audio.bitrate_in_kbps)
+        self._bitrate_info.setText("%d kps" % audio.bitrate_in_kbps)
+        self._duration_info.setText(audio.duration_as_text)
         self._show_tag_album_panel()
 
     def localize_ui(self):
@@ -103,3 +110,4 @@ class MainWindow(QMainWindow):
         self._quit_menu_item.setText(self.tr("Hit me to quit"))
         self._album_title_label.setText(self.tr("Album Title: "))
         self._bitrate_label.setText(self.tr("Bitrate: "))
+        self._duration_label.setText(self.tr("Duration: "))
