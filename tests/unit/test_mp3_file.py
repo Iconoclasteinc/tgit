@@ -45,6 +45,14 @@ class MP3FileTest(unittest.TestCase):
         assert_that(self.audio.duration_as_text, equal_to(DURATION_AS_TEXT),
                     "duration as text")
 
+    def test_saves_metadata_back_to_audio_file(self):
+        self.audio.album_title = "Modified Album Title"
+        self.audio.save()
+
+        modified_audio = MP3File(self.working_file.name)
+        assert_that(modified_audio.album_title, equal_to(self.audio.album_title),
+                    "modified album title")
+
     def _create_test_mp3(self, album):
         self._copy_master(project.test_resource_path('base.mp3'))
         self._populate_tags(album)

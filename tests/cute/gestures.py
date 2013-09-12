@@ -7,7 +7,6 @@ AVERAGE_WORD_LENGTH = 5         # precisely 5.1 in english
 MEDIUM_TYPING_SPEED = 240       # in wpm
 FAST_TYPING_SPEED = 480         # in wpm
 MOUSE_CLICK_DELAY = 50          # in ms
-#MOUSE_DOUBLE_CLICK_DELAY = 5    # in ms
 
 
 def sequence(*gestures):
@@ -15,11 +14,11 @@ def sequence(*gestures):
 
 
 def type_text(text):
-    return sequence(*[at_speed(FAST_TYPING_SPEED, type_char(c)) for c in text])
+    return sequence(*[at_speed(FAST_TYPING_SPEED, type_key(c)) for c in text])
 
 
-def type_char(char):
-    return lambda robot: robot.type(char)
+def type_key(key):
+    return lambda robot: robot.type(key)
 
 
 def at_speed(wpm, typing_gesture):

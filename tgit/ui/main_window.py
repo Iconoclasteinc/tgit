@@ -27,6 +27,7 @@ ADD_FILE_BUTTON_NAME = "Add File"
 ALBUM_TITLE_INPUT_NAME = "Album Title"
 BITRATE_INFO_NAME = "Bitrate"
 DURATION_INFO_NAME = "Duration"
+SAVE_BUTTON_NAME = "Save"
 
 
 class MainWindow(QMainWindow):
@@ -74,6 +75,10 @@ class MainWindow(QMainWindow):
         self._duration_info = QLabel(self._tag_album_panel)
         self._duration_info.setObjectName(DURATION_INFO_NAME)
         tag_album_layout.addWidget(self._duration_info, 2, 1, 1, 1)
+        self._save_button = QPushButton(self._tag_album_panel)
+        self._save_button.setObjectName(SAVE_BUTTON_NAME)
+        self._save_button.clicked.connect(self._save_file)
+        tag_album_layout.addWidget(self._save_button, 3, 1, 1, 1)
         return self._tag_album_panel
 
     def _fill_menu(self):
@@ -97,11 +102,15 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self._tag_album_panel)
 
     def _import_file(self, filename):
-        audio = MP3File(filename)
-        self._album_title_input.setText(audio.album_title)
-        self._bitrate_info.setText("%d kps" % audio.bitrate_in_kbps)
-        self._duration_info.setText(audio.duration_as_text)
+        self.audio = MP3File(filename)
+        self._album_title_input.setText(self.audio.album_title)
+        self._bitrate_info.setText("%d kps" % self.audio.bitrate_in_kbps)
+        self._duration_info.setText(self.audio.duration_as_text)
         self._show_tag_album_panel()
+
+    def _save_file(self):
+        self.audio.album_title = self._album_title_input.text()
+        self.audio.save()
 
     def localize_ui(self):
         self.setWindowTitle(self.tr("TGiT"))
@@ -111,3 +120,4 @@ class MainWindow(QMainWindow):
         self._album_title_label.setText(self.tr("Album Title: "))
         self._bitrate_label.setText(self.tr("Bitrate: "))
         self._duration_label.setText(self.tr("Duration: "))
+        self._save_button.setText(self.tr("Save"))

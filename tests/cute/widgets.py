@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QApplication, QMainWindow, QLineEdit, QPushButton, QListView
+from PyQt4.Qt import (Qt, QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
+                      QToolButton, QDir)
 from hamcrest.core import all_of, equal_to
 
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
@@ -51,6 +52,7 @@ class WidgetDriver(object):
         return probe.bounds.center()
 
     def left_click_on_widget(self):
+        self.is_showing_on_screen()
         return gestures.click_on(self.widget_center())
 
     def _check(self, probe):
@@ -62,7 +64,7 @@ class MainWindowDriver(WidgetDriver):
         self.manipulate("close", lambda window: window.close())
 
 
-class PushButtonDriver(WidgetDriver):
+class AbstractButtonDriver(WidgetDriver):
     def click(self):
         return self.left_click_on_widget()
 
@@ -72,18 +74,27 @@ class LabelDriver(WidgetDriver):
         self.has(properties.label_text(), equal_to(text))
 
 
+# Caution: text edition works unreliably within file dialogs
 class LineEditDriver(WidgetDriver):
     def has_text(self, text):
         self.has(properties.input_text(), equal_to(text))
 
-    def replace_text(self, text):
-        # Finish the sequence by a left click to make autocomplete go away
-        return gestures.sequence(self.left_click_on_widget(), self.clear_text(),
-                                 self.type(text), self.left_click_on_widget())
+    def replace_all_text(self, text):
+        return gestures.sequence(self.focus_with_mouse(), self.clear_all_text(), self.type(text))
 
-    def clear_text(self):
-        # todo
-        return lambda robot: robot
+    def focus_with_mouse(self):
+        return self.left_click_on_widget()
+
+    def clear_all_text(self):
+        return gestures.sequence(self.select_all_text(),
+                                 gestures.pause(50), self.delete_selected_text())
+
+    def select_all_text(self):
+        # todo probably better to try key sequence Select-All (CTRL+A for Qt)
+        return gestures.mouse_double_click()
+
+    def delete_selected_text(self):
+        return gestures.type_key(Qt.Key_Backspace)
 
     def type(self, text):
         return gestures.type_text(text)
@@ -92,11 +103,18 @@ class LineEditDriver(WidgetDriver):
 class FileDialogDriver(WidgetDriver):
     NAVIGATION_DELAY = 100
 
+    def show_hidden_files(self):
+        # todo use a manipulation, or even better use the pop menu through gestures
+        self.selector.test()
+        dialog = self.selector.widget()
+        dialog.setFilter(dialog.filter() | QDir.Hidden)
+
     def navigate_to_dir(self, path):
         def change_to(name):
-            # we don't support going up the directory tree just yet
-            # if name == '..' up_one_dir()
-            return lambda robot: self.into_dir(name)(robot)
+            if name == '..':
+                return lambda robot: self.up_one_folder()(robot)
+            else:
+                return lambda robot: self.into_folder(name)(robot)
 
         return gestures.sequence(*[change_to(d) for d in self._navigation_path_to(path)])
 
@@ -112,7 +130,7 @@ class FileDialogDriver(WidgetDriver):
         self.manipulate("read current directory", current_dir)
         return current_dir.name
 
-    def into_dir(self, name):
+    def into_folder(self, name):
         return gestures.sequence(self.select_file(name),
                                  gestures.pause(self.NAVIGATION_DELAY),
                                  gestures.mouse_double_click(),
@@ -121,8 +139,14 @@ class FileDialogDriver(WidgetDriver):
     def select_file(self, name):
         return self._list_view().select_item(match.with_list_item_text(name))
 
+    def up_one_folder(self):
+        return self._tool_button_named('toParentButton').click()
+
+    def _tool_button_named(self, name):
+        return AbstractButtonDriver.find(self, QToolButton, match.named(name))
+
     def enter_manually(self, filename):
-        return self._filename_edit().replace_text(filename)
+        return self._filename_edit().replace_all_text(filename)
 
     def accept(self):
         return self._accept_button().click()
@@ -134,7 +158,9 @@ class FileDialogDriver(WidgetDriver):
         return LineEditDriver.find(self, QLineEdit, match.named("fileNameEdit"))
 
     def _accept_button(self):
-        return PushButtonDriver.find(self, QPushButton, match.with_button_text("&Open"))
+        # todo Query the file dialog accept button label (see QFileDialog.labelText(QFileDialog
+        # .Accept) using a widget manipulation
+        return AbstractButtonDriver.find(self, QPushButton, match.with_button_text("&Open"))
 
 
 class ListViewDriver(WidgetDriver):

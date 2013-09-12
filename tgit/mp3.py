@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from mutagen.mp3 import MP3
+from mutagen import id3
 
 
 class MP3File(object):
@@ -30,6 +31,10 @@ class MP3File(object):
     @property
     def album_title(self):
         return self.mp3.has_key(self.ALBUM) and self.mp3[self.ALBUM].text[0] or None
+
+    @album_title.setter
+    def album_title(self, title):
+        self.mp3.tags.add(id3.TALB(encoding=0, text=title))
 
     @property
     def bitrate(self):
@@ -47,4 +52,7 @@ class MP3File(object):
     def duration_as_text(self):
         minutes, seconds = divmod(round(self.duration), 60)
         return "%02d:%02d" % (minutes, seconds)
+
+    def save(self):
+        self.mp3.save()
 
