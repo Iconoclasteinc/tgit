@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from prober import Probe
+from .prober import Probe
 
 
 class WidgetFinder(Probe):

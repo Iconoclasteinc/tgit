@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from tgit.tgit import TGiT
+from tgit.tagger import TGiT
 
-import project
-from tgit_driver import TGiTDriver
-from events import MainEventLoop
+from tests.util import project
+from tests.cute.events import MainEventLoop
+from .tgit_driver import TGiTDriver
 
 ONE_SECOND = 1000
+
 
 class ApplicationRunner(object):
     def start(self):

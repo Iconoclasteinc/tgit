@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 import shutil
 from tempfile import NamedTemporaryFile
+import unittest
 
 from hamcrest import *
 
 import mutagen.mp3 as mp3
 import mutagen.id3 as id3
 
-import project
+from tests.util import project
 
 from tgit.mp3 import MP3File
 

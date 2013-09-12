@@ -2,8 +2,8 @@
 
 import unittest
 
-import project
-from application_runner import ApplicationRunner
+from tests.util import project
+from tests.endtoend.application_runner import ApplicationRunner
 
 
 class TGiTTest(unittest.TestCase):
@@ -19,6 +19,3 @@ class TGiTTest(unittest.TestCase):
         self.application.shows_music_metadata(artist='The Sixteen - Harry Christophers', album='Messiah',
                                               title='Hallelujah (Chorus)', bitrate="320 kps",
                                               duration='3:56')
-
-if __name__ == '__main__':
-    unittest.main()

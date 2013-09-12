@@ -19,5 +19,5 @@ setup(
     scripts=[],
     data_files=DATA_FILES,
     options={"build_exe": {"includes": includes}},
-    executables=[Executable(script="tgit.py", icon="tgit.icns")]
+    executables=[Executable(script="tagger.py", icon="tgit.icns")]
 )

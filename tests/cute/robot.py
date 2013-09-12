@@ -2,7 +2,7 @@
 
 from PyQt4.Qt import (QCursor, QTest, QApplication, QPoint, Qt)
 
-from events import MainEventLoop
+from .events import MainEventLoop
 
 
 class Robot(object):

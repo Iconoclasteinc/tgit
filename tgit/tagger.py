@@ -29,7 +29,7 @@ for name in API_NAMES:
 
 from PyQt4.Qt import QApplication, QTextCodec, QTranslator
 
-from ui.main_window import MainWindow
+from tgit.ui.main_window import MainWindow
 
 
 class TGiT(QApplication):

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import Qt, QWidget
+from PyQt4.Qt import QWidget
 from hamcrest.core.core.isequal import equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 
-import properties
+from . import properties
 
 
 def named(name):

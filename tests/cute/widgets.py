@@ -3,12 +3,11 @@
 from PyQt4.Qt import QApplication, QMainWindow, QLineEdit, QPushButton, QListView
 from hamcrest.core import all_of, equal_to
 
-from probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
+from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                     WidgetScreenBoundsProbe)
-from finders import SingleWidgetFinder, TopLevelFrameFinder, RecursiveWidgetFinder
-import matchers as match
-import properties
-import gestures
+from .finders import SingleWidgetFinder, TopLevelFrameFinder, RecursiveWidgetFinder
+from . import properties, gestures
+from . import matchers as match
 
 
 def main_window(*matchers):

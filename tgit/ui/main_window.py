@@ -19,6 +19,7 @@
 
 from PyQt4.Qt import (QDir, QRect, QMainWindow, QStatusBar, QWidget, QGridLayout,
                       QPushButton, QMenu, QMenuBar, QAction, QLabel, QLineEdit, QFileDialog)
+
 from tgit.mp3 import MP3File
 
 MAIN_WINDOW_NAME = "TGiT"

@@ -3,14 +3,14 @@
 import os
 from PyQt4.Qt import QPushButton, QLineEdit, QFileDialog, QLabel
 
-import tgit.ui.main_window as main
+from tests.cute.prober import EventProcessingProber
+from tests.cute.matchers import named, showing_on_screen
+from tests.cute.widgets import main_window
+from tests.cute.widgets import (MainWindowDriver, PushButtonDriver, LineEditDriver, LabelDriver,
+                                FileDialogDriver)
+from tests.cute.robot import Robot
 
-from prober import EventProcessingProber
-from matchers import named, showing_on_screen
-from widgets import main_window
-from widgets import (MainWindowDriver, PushButtonDriver, LineEditDriver, LabelDriver,
-                     FileDialogDriver)
-from robot import Robot
+import tgit.ui.main_window as main
 
 
 class TGiTDriver(MainWindowDriver):

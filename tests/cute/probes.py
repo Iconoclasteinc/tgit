@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.Qt import QPoint, QRect
-from prober import Probe
+from .prober import Probe
 
 
 class WidgetAssertionProbe(Probe):
