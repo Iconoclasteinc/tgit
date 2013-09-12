@@ -4,7 +4,7 @@ from PyQt4.Qt import QApplication, QMainWindow, QLineEdit, QPushButton, QListVie
 from hamcrest.core import all_of, equal_to
 
 from probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
-                    WidgetScreenBoundsProbe, FileDialogCurrentDirectoryProbe)
+                    WidgetScreenBoundsProbe)
 from finders import SingleWidgetFinder, TopLevelFrameFinder, RecursiveWidgetFinder
 import matchers as match
 import properties
@@ -60,7 +60,7 @@ class WidgetDriver(object):
 
 class MainWindowDriver(WidgetDriver):
     def close(self):
-        self.manipulate("close", lambda widget: widget.close())
+        self.manipulate("close", lambda window: window.close())
 
 
 class PushButtonDriver(WidgetDriver):
@@ -94,20 +94,24 @@ class FileDialogDriver(WidgetDriver):
     NAVIGATION_DELAY = 100
 
     def navigate_to_dir(self, path):
-        current_dir = self._current_dir()
-        navigation_path = current_dir.relativeFilePath(path).split("/")
-
         def change_to(name):
             # we don't support going up the directory tree just yet
             # if name == '..' up_one_dir()
             return lambda robot: self.into_dir(name)(robot)
 
-        return gestures.sequence(*[change_to(d) for d in navigation_path])
+        return gestures.sequence(*[change_to(d) for d in self._navigation_path_to(path)])
+
+    def _navigation_path_to(self, path):
+        return self._current_dir().relativeFilePath(path).split("/")
 
     def _current_dir(self):
-        probe = FileDialogCurrentDirectoryProbe(self.selector)
-        self._check(probe)
-        return probe.current_dir
+        class ReadCurrentDirectory(object):
+            def __call__(self, dialog):
+                self.name = dialog.directory()
+
+        current_dir = ReadCurrentDirectory()
+        self.manipulate("read current directory", current_dir)
+        return current_dir.name
 
     def into_dir(self, name):
         return gestures.sequence(self.select_file(name),
@@ -116,22 +120,7 @@ class FileDialogDriver(WidgetDriver):
                                  gestures.pause(self.NAVIGATION_DELAY))
 
     def select_file(self, name):
-        # todo now that it works, let's make it clean
-        # Introduce a probe, a ListViewDriver and a matcher to select child(ren) from the list
-        # Maybe something like: find item based on criteria (i.e. name of file),
-        # scroll item into view, then click on center of item
-        current_dir = self._current_dir()
-        dialog = self._selector.widget()
-        file_list = dialog.findChild(QListView, 'listView')
-        model = file_list.model()
-        parent = model.index(current_dir.absolutePath())
-        child_count = model.rowCount(parent)
-        for i in range(child_count):
-            child = model.index(i, 0, parent)
-            if model.fileName(child) == name:
-                file_list.scrollTo(child)
-                item_visible_area = file_list.visualRect(child)
-                return gestures.click_on(file_list.mapToGlobal(item_visible_area.center()))
+        return self._list_view().select_item(match.with_list_item_text(name))
 
     def enter_manually(self, filename):
         return self._filename_edit().replace_text(filename)
@@ -139,8 +128,64 @@ class FileDialogDriver(WidgetDriver):
     def accept(self):
         return self._accept_button().click()
 
+    def _list_view(self):
+        return ListViewDriver.find(self, QListView, match.named('listView'))
+
     def _filename_edit(self):
         return LineEditDriver.find(self, QLineEdit, match.named("fileNameEdit"))
 
     def _accept_button(self):
-        return PushButtonDriver.find(self, QPushButton, match.with_text("&Open"))
+        return PushButtonDriver.find(self, QPushButton, match.with_button_text("&Open"))
+
+
+class ListViewDriver(WidgetDriver):
+    def select_item(self, matcher):
+        return self._select_item(self._index_of_first_item_matching(matcher))
+
+    def _select_item(self, index):
+        self._scroll_item_to_visible(index)
+        return gestures.click_on(self._center_of_item(index))
+
+    def _scroll_item_to_visible(self, index):
+        self.manipulate("scroll item to visible", lambda list_view: list_view.scrollTo(index))
+
+    def _center_of_item(self, index):
+        class CalculateCenterOfItem(object):
+            def __call__(self, list_view):
+                item_visible_area = list_view.visualRect(index)
+                self.pos = list_view.mapToGlobal(item_visible_area.center())
+
+        center_of_item = CalculateCenterOfItem()
+        self.manipulate("calculate center of item", center_of_item)
+        return center_of_item.pos
+
+    def _index_of_first_item_matching(self, matcher):
+        from hamcrest.core.base_matcher import BaseMatcher
+
+        class ItemMatcher(BaseMatcher):
+            def __init__(self, matcher):
+                super(ItemMatcher, self).__init__()
+                self._item_matcher = matcher
+
+            def _matches(self, list_view):
+                model = list_view.model()
+                root = list_view.rootIndex()
+                item_count = model.rowCount(root)
+                for i in range(item_count):
+                    index = model.index(i, 0, root)
+                    if self._item_matcher.matches(index):
+                        self.index = index
+                        return True
+
+                return False
+
+            def describe_to(self, description):
+                description.append_text("containing an item ")
+                self._item_matcher.describe_to(description)
+
+        item_found = ItemMatcher(matcher)
+        self.verify(item_found)
+        return item_found.index
+
+
+

@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QWidget
-from hamcrest.core.core.isequal import IsEqual
+from PyQt4.Qt import Qt, QWidget
+from hamcrest.core.core.isequal import equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 
 import properties
 
 
 def named(name):
-    return with_(properties.name(), IsEqual(name))
+    return with_(properties.name(), equal_to(name))
 
 
-def with_text(text):
-    return with_(properties.button_text(), IsEqual(text))
+def with_button_text(text):
+    return with_(properties.button_text(), equal_to(text))
+
+
+def with_list_item_text(text):
+    return with_(properties.list_item_text(), equal_to(text))
 
 
 def with_(query, matcher):

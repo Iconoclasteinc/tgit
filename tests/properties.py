@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QObject, QLabel, QLineEdit, QAbstractButton
+from PyQt4.Qt import Qt, QObject, QLabel, QLineEdit, QAbstractButton
 
 from hamcrest.core.selfdescribing import SelfDescribing
 
@@ -19,6 +19,10 @@ def input_text():
 
 def button_text():
     return PropertyQuery("button text", QAbstractButton.text)
+
+
+def list_item_text():
+    return PropertyQuery("item text", lambda item: item.data(Qt.DisplayRole))
 
 
 class Query(SelfDescribing):

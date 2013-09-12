@@ -15,7 +15,7 @@ class WidgetAssertionProbe(Probe):
         self._selector.test()
         self._assertion_met = \
             self._selector.is_satisfied() \
-                and self._assertion.matches(self._selector.widget())
+            and self._assertion.matches(self._selector.widget())
 
     def is_satisfied(self):
         return self._assertion_met
@@ -128,36 +128,3 @@ class WidgetScreenBoundsProbe(Probe):
             self._bounds = QRect(widget.mapToGlobal(QPoint(0, 0)), widget.size())
         else:
             self._bounds = None
-
-
-class FileDialogCurrentDirectoryProbe(Probe):
-    def __init__(self, selector):
-        super(FileDialogCurrentDirectoryProbe, self).__init__()
-        self._selector = selector
-        self._current_dir = None
-
-    @property
-    def current_dir(self):
-        return self._current_dir
-
-    def describe_to(self, description):
-        description.append_text("current directory of ")
-        description.append_description_of(self._selector)
-
-    def describe_failure_to(self, description):
-        self._selector.describe_failure_to(description)
-        if self._selector.is_satisfied():
-            description.append_text(" which had no current directory")
-
-    def is_satisfied(self):
-        return self._current_dir is not None
-
-    def test(self):
-        self._selector.test()
-
-        if not self._selector.is_satisfied():
-            self._current_dir = None
-            return
-
-        widget = self._selector.widget()
-        self._current_dir = widget.directory()
