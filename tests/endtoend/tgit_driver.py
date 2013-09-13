@@ -25,16 +25,12 @@ class TGiTDriver(MainWindowDriver):
         self._select_file(path)
         self._accept_file()
 
-    def shows_album_metadata(self, album_title, track_title, bitrate, duration):
-        album_title_input = LineEditDriver.find(self, QLineEdit, named(main.ALBUM_TITLE_INPUT_NAME))
-        album_title_input.has_text(album_title)
-        track_title_input = LineEditDriver.find(self, QLineEdit,
-                                                named(main.TRACK_TITLE_INPUT_NAME))
-        track_title_input.has_text(track_title)
-        bitrate_info = LabelDriver.find(self, QLabel, named(main.BITRATE_INFO_NAME))
-        bitrate_info.has_text(bitrate)
-        duration_info = LabelDriver.find(self, QLabel, named(main.DURATION_INFO_NAME))
-        duration_info.has_text(duration)
+    def shows_metadata(self, tags):
+        self._album_title_input_field().has_text(tags['album'])
+        self._album_artist_input_field().has_text(tags['artist'])
+        self._track_title_input_field().has_text(tags['track'])
+        self._bitrate_info_field().has_text(tags['bitrate'])
+        self._track_duration_info_field().has_text(tags['duration'])
 
     def _open_add_file_dialog(self):
         add_file_button = AbstractButtonDriver.find(self, QPushButton,
@@ -51,13 +47,26 @@ class TGiTDriver(MainWindowDriver):
         dialog = FileDialogDriver.find(self, QFileDialog)
         dialog.accept()
 
-    def edit_metadata(self, album, track_title):
-        album_title_input = LineEditDriver.find(self, QLineEdit, named(main.ALBUM_TITLE_INPUT_NAME))
-        album_title_input.replace_all_text(album)
-        track_title_input = LineEditDriver.find(self, QLineEdit,
-                                                named(main.TRACK_TITLE_INPUT_NAME))
-        track_title_input.replace_all_text(track_title)
+    def edit_metadata(self, tags):
+        self._album_title_input_field().replace_all_text(tags['album'])
+        self._album_artist_input_field().replace_all_text(tags['artist'])
+        self._track_title_input_field().replace_all_text(tags['track'])
 
     def save_audio_file(self):
         save_button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
         save_button.click()
+
+    def _album_title_input_field(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.ALBUM_TITLE_INPUT_NAME))
+
+    def _album_artist_input_field(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.ALBUM_ARTIST_INPUT_NAME))
+
+    def _track_title_input_field(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.TRACK_TITLE_INPUT_NAME))
+
+    def _bitrate_info_field(self):
+        return LabelDriver.find(self, QLabel, named(main.BITRATE_INFO_NAME))
+
+    def _track_duration_info_field(self):
+        return LabelDriver.find(self, QLabel, named(main.DURATION_INFO_NAME))

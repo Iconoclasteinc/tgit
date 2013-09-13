@@ -25,6 +25,7 @@ from tgit.mp3 import MP3File
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
 ALBUM_TITLE_INPUT_NAME = "Album Title"
+ALBUM_ARTIST_INPUT_NAME = "Album Artist"
 TRACK_TITLE_INPUT_NAME = "Track Title"
 BITRATE_INFO_NAME = "Bitrate"
 DURATION_INFO_NAME = "Duration"
@@ -67,25 +68,30 @@ class MainWindow(QMainWindow):
         self._album_title_input = QLineEdit(self._tag_album_panel)
         self._album_title_input.setObjectName(ALBUM_TITLE_INPUT_NAME)
         tag_album_layout.addWidget(self._album_title_input, 0, 1, 1, 1)
+        self._album_artist_label = QLabel(self._tag_album_panel)
+        tag_album_layout.addWidget(self._album_artist_label, 1, 0, 1, 1)
+        self._album_artist_input = QLineEdit(self._tag_album_panel)
+        self._album_artist_input.setObjectName(ALBUM_ARTIST_INPUT_NAME)
+        tag_album_layout.addWidget(self._album_artist_input, 1, 1, 1, 1)
         self._track_title_label = QLabel(self._tag_album_panel)
-        tag_album_layout.addWidget(self._track_title_label, 1, 0, 1, 1)
+        tag_album_layout.addWidget(self._track_title_label, 2, 0, 1, 1)
         self._track_title_input = QLineEdit(self._tag_album_panel)
         self._track_title_input.setObjectName(TRACK_TITLE_INPUT_NAME)
-        tag_album_layout.addWidget(self._track_title_input, 1, 1, 1, 1)
+        tag_album_layout.addWidget(self._track_title_input, 2, 1, 1, 1)
         self._bitrate_label = QLabel(self._tag_album_panel)
-        tag_album_layout.addWidget(self._bitrate_label, 2, 0, 1, 1)
+        tag_album_layout.addWidget(self._bitrate_label, 3, 0, 1, 1)
         self._bitrate_info = QLabel(self._tag_album_panel)
         self._bitrate_info.setObjectName(BITRATE_INFO_NAME)
-        tag_album_layout.addWidget(self._bitrate_info, 2, 1, 1, 1)
+        tag_album_layout.addWidget(self._bitrate_info, 3, 1, 1, 1)
         self._duration_label = QLabel(self._tag_album_panel)
-        tag_album_layout.addWidget(self._duration_label, 3, 0, 1, 1)
+        tag_album_layout.addWidget(self._duration_label, 4, 0, 1, 1)
         self._duration_info = QLabel(self._tag_album_panel)
         self._duration_info.setObjectName(DURATION_INFO_NAME)
-        tag_album_layout.addWidget(self._duration_info, 3, 1, 1, 1)
+        tag_album_layout.addWidget(self._duration_info, 4, 1, 1, 1)
         self._save_button = QPushButton(self._tag_album_panel)
         self._save_button.setObjectName(SAVE_BUTTON_NAME)
         self._save_button.clicked.connect(self._save_file)
-        tag_album_layout.addWidget(self._save_button, 3, 1, 1, 1)
+        tag_album_layout.addWidget(self._save_button, 5, 0, 1, 1)
         return self._tag_album_panel
 
     def _fill_menu(self):
@@ -113,6 +119,7 @@ class MainWindow(QMainWindow):
     def _import_file(self, filename):
         self.audio = MP3File(filename)
         self._album_title_input.setText(self.audio.album_title)
+        self._album_artist_input.setText(self.audio.album_artist)
         self._track_title_input.setText(self.audio.track_title)
         self._bitrate_info.setText("%d kps" % self.audio.bitrate_in_kbps)
         self._duration_info.setText(self.audio.duration_as_text)
@@ -120,6 +127,7 @@ class MainWindow(QMainWindow):
 
     def _save_file(self):
         self.audio.album_title = self._album_title_input.text()
+        self.audio.album_artist = self._album_artist_input.text()
         self.audio.track_title = self._track_title_input.text()
         self.audio.save()
 
@@ -129,6 +137,7 @@ class MainWindow(QMainWindow):
         self._quit_menu.setTitle(self.tr("Quit"))
         self._quit_menu_item.setText(self.tr("Hit me to quit"))
         self._album_title_label.setText(self.tr("Album Title: "))
+        self._album_artist_label.setText(self.tr("Album Artist: "))
         self._track_title_label.setText(self.tr("Track Title: "))
         self._bitrate_label.setText(self.tr("Bitrate: "))
         self._duration_label.setText(self.tr("Duration: "))

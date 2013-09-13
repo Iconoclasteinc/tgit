@@ -23,6 +23,7 @@ from mutagen import id3
 
 class MP3File(object):
     ALBUM_TITLE = id3.TALB
+    ALBUM_ARTIST = id3.TPE1
     TRACK_TITLE = id3.TIT2
 
     def __init__(self, filename):
@@ -31,15 +32,23 @@ class MP3File(object):
 
     @property
     def album_title(self):
-        return self.get_frame_text(MP3File.ALBUM_TITLE)
+        return self._get_frame_text(MP3File.ALBUM_TITLE)
 
     @album_title.setter
     def album_title(self, album):
         self._set_frame_text(MP3File.ALBUM_TITLE, album)
 
     @property
+    def album_artist(self):
+        return self._get_frame_text(MP3File.ALBUM_ARTIST)
+
+    @album_artist.setter
+    def album_artist(self, artist):
+        self._set_frame_text(MP3File.ALBUM_ARTIST, artist)
+
+    @property
     def track_title(self):
-        return self.get_frame_text(MP3File.TRACK_TITLE)
+        return self._get_frame_text(MP3File.TRACK_TITLE)
 
     @track_title.setter
     def track_title(self, track):
@@ -65,7 +74,7 @@ class MP3File(object):
     def save(self):
         self.mp3.save()
 
-    def get_frame_text(self, frame):
+    def _get_frame_text(self, frame):
         return self.mp3.has_key(frame.__name__) and self.mp3[frame.__name__].text[0] or None
 
     def _set_frame_text(self, frame, text):

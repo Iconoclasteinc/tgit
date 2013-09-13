@@ -26,12 +26,9 @@ class ApplicationRunner(object):
     def import_audio_file(self, path):
         self._driver.add_file(path)
 
-    def shows_metadata(self, artist, album, title, bitrate, duration):
-        self._driver.shows_album_metadata(album_title=album,
-                                          track_title=title,
-                                          bitrate=bitrate,
-                                          duration=duration)
+    def shows_metadata(self, **tags):
+        self._driver.shows_metadata(tags)
 
-    def change_metadata(self, album, artist, title):
-        self._driver.edit_metadata(album=album, track_title=title)
+    def change_metadata(self, **tags):
+        self._driver.edit_metadata(tags)
         self._driver.save_audio_file()
