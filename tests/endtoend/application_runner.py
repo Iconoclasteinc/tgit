@@ -30,5 +30,5 @@ class ApplicationRunner(object):
         self._driver.shows_album_metadata(album_title=album, bitrate=bitrate, duration=duration)
 
     def change_metadata(self, album):
-        self._driver.edit_metada(album)
+        self._driver.edit_metadata(album)
         self._driver.save_audio_file()

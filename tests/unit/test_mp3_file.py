@@ -45,6 +45,8 @@ class MP3FileTest(unittest.TestCase):
         assert_that(self.audio.duration_as_text, equal_to(DURATION_AS_TEXT),
                     "duration as text")
 
+    # todo introduce a matcher for comparing all metadata
+    # something like assert_that(modified_audio, same_metada_as(original_audio))
     def test_saves_metadata_back_to_audio_file(self):
         self.audio.album_title = "Modified Album Title"
         self.audio.save()

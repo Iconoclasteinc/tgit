@@ -104,7 +104,7 @@ class FileDialogDriver(WidgetDriver):
     NAVIGATION_DELAY = 100
 
     def show_hidden_files(self):
-        # todo use a manipulation, or even better use the pop menu through gestures
+        # todo use a manipulation
         self.selector.test()
         dialog = self.selector.widget()
         dialog.setFilter(dialog.filter() | QDir.Hidden)
@@ -159,7 +159,7 @@ class FileDialogDriver(WidgetDriver):
 
     def _accept_button(self):
         # todo Query the file dialog accept button label (see QFileDialog.labelText(QFileDialog
-        # .Accept) using a widget manipulation
+        # .Accept)) using a widget manipulation
         return AbstractButtonDriver.find(self, QPushButton, match.with_button_text("&Open"))
 
 

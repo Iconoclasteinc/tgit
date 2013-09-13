@@ -35,7 +35,7 @@ class TGiTDriver(MainWindowDriver):
 
     def _open_add_file_dialog(self):
         add_file_button = AbstractButtonDriver.find(self, QPushButton,
-                                                named(main.ADD_FILE_BUTTON_NAME))
+                                                    named(main.ADD_FILE_BUTTON_NAME))
         self._perform_gestures(add_file_button.click())
 
     def _select_file(self, path):
@@ -49,7 +49,7 @@ class TGiTDriver(MainWindowDriver):
         dialog = FileDialogDriver.find(self, QFileDialog)
         self._perform_gestures(dialog.accept())
 
-    def edit_metada(self, album):
+    def edit_metadata(self, album):
         album_title_input = LineEditDriver.find(self, QLineEdit, named(main.ALBUM_TITLE_INPUT_NAME))
         self._perform_gestures(album_title_input.focus_with_mouse(),
                                album_title_input.replace_all_text(album))
