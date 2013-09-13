@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.Qt import (Qt, QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
-                      QToolButton, QDir)
+                      QToolButton, QDir, QFileDialog)
 from hamcrest.core import all_of, equal_to
 
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
@@ -129,13 +129,13 @@ class FileDialogDriver(WidgetDriver):
         return self._current_dir().relativeFilePath(path).split("/")
 
     def _current_dir(self):
-        class ReadCurrentDirectory(object):
+        class FindOutCurrentFolder(object):
             def __call__(self, dialog):
                 self.name = dialog.directory()
 
-        current_dir = ReadCurrentDirectory()
-        self.manipulate("read current directory", current_dir)
-        return current_dir.name
+        current_folder = FindOutCurrentFolder()
+        self.manipulate("find out current folder", current_folder)
+        return current_folder.name
 
     def into_folder(self, name):
         self.select_file(name)
@@ -167,9 +167,14 @@ class FileDialogDriver(WidgetDriver):
         return LineEditDriver.find(self, QLineEdit, match.named("fileNameEdit"))
 
     def _accept_button(self):
-        # todo Query the file dialog accept button label (see QFileDialog.labelText(QFileDialog
-        # .Accept)) using a widget manipulation
-        return AbstractButtonDriver.find(self, QPushButton, match.with_button_text("&Open"))
+        class FindOutAcceptButtonText(object):
+            def __call__(self, dialog):
+                self.text = dialog.labelText(QFileDialog.Accept)
+
+        accept_button = FindOutAcceptButtonText()
+        self.manipulate("find out accept button text", accept_button)
+        return AbstractButtonDriver.find(self, QPushButton, match.with_button_text(accept_button
+                                         .text))
 
 
 class ListViewDriver(WidgetDriver):
@@ -220,6 +225,7 @@ class ListViewDriver(WidgetDriver):
         item_found = ItemMatcher(matcher)
         self.verify(item_found)
         return item_found.index
+
 
 
 
