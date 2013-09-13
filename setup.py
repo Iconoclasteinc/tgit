@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from cx_Freeze import setup, Executable
 
 DATA_FILES = []
+
+# GUI applications require a different base on Windows (the default is for a
+# console application).
+base = None
+if sys.platform == "win32":
+    base = "Win32GUI"
 
 includes = ["sip", "atexit", "PyQt4.QtCore", "PyQt4.QtGui"]
 
@@ -18,6 +25,6 @@ setup(
     packages=['tgit'],
     scripts=[],
     data_files=DATA_FILES,
-    options={"build_exe": {"includes": includes}},
-    executables=[Executable(script="tagger.py", icon="tgit.icns")]
+    options={"build_exe": {"includes": includes, "include_files": ["locales"]}},
+    executables=[Executable(script="tgit.py", icon="tgit.icns", base=base)]
 )
