@@ -112,10 +112,11 @@ class FileDialogDriver(WidgetDriver):
     NAVIGATION_DELAY = 100
 
     def show_hidden_files(self):
-        # todo use a manipulation
-        self.selector.test()
-        dialog = self.selector.widget()
-        dialog.setFilter(dialog.filter() | QDir.Hidden)
+        class ShowHiddenFiles(object):
+            def __call__(self, dialog):
+                dialog.setFilter(dialog.filter() | QDir.Hidden)
+
+        self.manipulate("show hidden files", ShowHiddenFiles())
 
     def navigate_to_dir(self, path):
         for folder_name in self._navigation_path_to(path):
