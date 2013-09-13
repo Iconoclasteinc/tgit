@@ -31,6 +31,8 @@ class Robot(object):
     def type(self, key):
         QTest.keyClick(self._widget_under_cursor(), key, self._active_modifiers)
 
+    # todo To make it easier to follow mouse movements in tests, investigate a smooth
+    # movement (bezier curve?). Currently, mouse just jumps to destination
     def move_mouse(self, x, y):
         target = self._widget_at(x, y)
         # By default QTest will move mouse at the center of the widget,

@@ -17,13 +17,14 @@ class FakeAudioLibrary(object):
     def destroy(self):
         [f.close() for f in self._files]
 
-    def has_file_with_metadata(self, name, album):
+    def has_file_with_metadata(self, name, album, artist, title):
         try:
             audio_file = MP3File(name)
         except IOError:
             raise AssertionError("Audio library contains no file " + name)
 
         assert_that(audio_file.album_title, equal_to(album), "audio file album title")
+        assert_that(audio_file.track_title, equal_to(title), "audio file track title")
 
     def add_file(self, filename):
         imported_file = NamedTemporaryFile(suffix='.mp3')

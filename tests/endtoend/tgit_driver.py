@@ -25,9 +25,12 @@ class TGiTDriver(MainWindowDriver):
         self._select_file(path)
         self._accept_file()
 
-    def shows_album_metadata(self, album_title, bitrate, duration):
+    def shows_album_metadata(self, album_title, track_title, bitrate, duration):
         album_title_input = LineEditDriver.find(self, QLineEdit, named(main.ALBUM_TITLE_INPUT_NAME))
         album_title_input.has_text(album_title)
+        track_title_input = LineEditDriver.find(self, QLineEdit,
+                                                named(main.TRACK_TITLE_INPUT_NAME))
+        track_title_input.has_text(track_title)
         bitrate_info = LabelDriver.find(self, QLabel, named(main.BITRATE_INFO_NAME))
         bitrate_info.has_text(bitrate)
         duration_info = LabelDriver.find(self, QLabel, named(main.DURATION_INFO_NAME))
@@ -48,10 +51,12 @@ class TGiTDriver(MainWindowDriver):
         dialog = FileDialogDriver.find(self, QFileDialog)
         dialog.accept()
 
-    def edit_metadata(self, album):
+    def edit_metadata(self, album, track_title):
         album_title_input = LineEditDriver.find(self, QLineEdit, named(main.ALBUM_TITLE_INPUT_NAME))
-        album_title_input.focus_with_mouse()
         album_title_input.replace_all_text(album)
+        track_title_input = LineEditDriver.find(self, QLineEdit,
+                                                named(main.TRACK_TITLE_INPUT_NAME))
+        track_title_input.replace_all_text(track_title)
 
     def save_audio_file(self):
         save_button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))

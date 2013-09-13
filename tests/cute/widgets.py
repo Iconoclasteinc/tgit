@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import (Qt, QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
+from PyQt4.Qt import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                       QToolButton, QDir, QFileDialog)
 from hamcrest.core import all_of, equal_to
 

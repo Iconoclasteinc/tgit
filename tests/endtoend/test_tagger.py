@@ -27,5 +27,10 @@ class TaggerTest(unittest.TestCase):
                                         title='Hallelujah (Chorus)',
                                         bitrate="320 kps",
                                         duration='03:56')
-        self.application.change_metadata(album='Messiah (modified)')
-        self.audio_library.has_file_with_metadata(audio_file, album='Messiah (modified)')
+        self.application.change_metadata(album='Despicable Me',
+                                         title='Potato Banana Song',
+                                         artist='Tim, Mark and Phil')
+        self.audio_library.has_file_with_metadata(audio_file,
+                                                  album='Despicable Me',
+                                                  title='Potato Banana Song',
+                                                  artist='Tim, Mark and Phil')

@@ -22,7 +22,8 @@ from mutagen import id3
 
 
 class MP3File(object):
-    ALBUM = 'TALB'
+    ALBUM_TITLE = id3.TALB
+    TRACK_TITLE = id3.TIT2
 
     def __init__(self, filename):
         super(MP3File, self).__init__()
@@ -30,11 +31,19 @@ class MP3File(object):
 
     @property
     def album_title(self):
-        return self.mp3.has_key(self.ALBUM) and self.mp3[self.ALBUM].text[0] or None
+        return self.get_frame_text(MP3File.ALBUM_TITLE)
 
     @album_title.setter
-    def album_title(self, title):
-        self.mp3.tags.add(id3.TALB(encoding=0, text=title))
+    def album_title(self, album):
+        self._set_frame_text(MP3File.ALBUM_TITLE, album)
+
+    @property
+    def track_title(self):
+        return self.get_frame_text(MP3File.TRACK_TITLE)
+
+    @track_title.setter
+    def track_title(self, track):
+        self._set_frame_text(MP3File.TRACK_TITLE, track)
 
     @property
     def bitrate(self):
@@ -55,4 +64,10 @@ class MP3File(object):
 
     def save(self):
         self.mp3.save()
+
+    def get_frame_text(self, frame):
+        return self.mp3.has_key(frame.__name__) and self.mp3[frame.__name__].text[0] or None
+
+    def _set_frame_text(self, frame, text):
+        self.mp3.tags.add(frame(encoding=3, text=text))
 
