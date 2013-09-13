@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from PyQt4.Qt import Qt
+
 from .robot import Robot
 
 ONE_SECOND_IN_MS = 60000
@@ -13,12 +15,32 @@ def sequence(*gestures):
     return lambda robot: [gesture(robot) for gesture in gestures]
 
 
+def set_modifiers(modifiers):
+    return lambda robot: robot.activate_modifiers(modifiers)
+
+
+def unset_modifiers(modifiers):
+    return lambda robot: robot.deactivate_modifiers(modifiers)
+
+
+def with_modifiers(modifiers, gesture):
+    return sequence(set_modifiers(modifiers), gesture, unset_modifiers(modifiers))
+
+
 def type_text(text):
     return sequence(*[at_speed(FAST_TYPING_SPEED, type_key(c)) for c in text])
 
 
 def type_key(key):
     return lambda robot: robot.type(key)
+
+
+def press_key(key):
+    return lambda robot: robot.press_key(key)
+
+
+def release_key(key):
+    return lambda robot: robot.release_key(key)
 
 
 def at_speed(wpm, typing_gesture):

@@ -7,8 +7,7 @@ from hamcrest.core import all_of, equal_to
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                     WidgetScreenBoundsProbe)
 from .finders import SingleWidgetFinder, TopLevelFrameFinder, RecursiveWidgetFinder
-from . import properties, gestures
-from . import matchers as match
+from . import properties, gestures, keyboard_shortcuts as shortcuts, matchers as match
 
 
 def main_window(*matchers):
@@ -83,7 +82,6 @@ class LabelDriver(WidgetDriver):
         self.has(properties.label_text(), equal_to(text))
 
 
-# Caution: text edition works unreliably within file dialogs
 class LineEditDriver(WidgetDriver):
     def has_text(self, text):
         self.has(properties.input_text(), equal_to(text))
@@ -101,11 +99,10 @@ class LineEditDriver(WidgetDriver):
         self.delete_selected_text()
 
     def select_all_text(self):
-        # todo probably better to try key sequence Select-All (CTRL+A for Qt)
-        self.perform(gestures.mouse_double_click())
+        self.perform(shortcuts.Select_All)
 
     def delete_selected_text(self):
-        self.perform(gestures.type_key(Qt.Key_Backspace))
+        self.perform(shortcuts.Delete_Previous)
 
     def type(self, text):
         self.perform(gestures.type_text(text))
