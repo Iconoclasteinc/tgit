@@ -20,11 +20,13 @@ setup(
     url='http://tagtamusique.com',
     download_url='https://bitbucket.org/tagtamusique/tgit',
     author_email='jr@iconoclaste.ca',
-    version='0.1',
+    version='0.2-snapshot',
     test_suite='tests',
     packages=['tgit'],
     scripts=[],
     data_files=DATA_FILES,
-    options={"build_exe": {"includes": includes, "include_files": ["locales"]}},
+    options={"build_exe": {"includes": includes, "include_files": ["locales"]},
+             "bdist_mac": {"iconfile": 'tgit.icns'},
+             "bdist_dmg": {"volume_label": "TGiT"}},
     executables=[Executable(script="tgit.py", icon="tgit.icns", base=base)]
 )
