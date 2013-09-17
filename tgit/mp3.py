@@ -25,6 +25,7 @@ class MP3File(object):
     ALBUM_TITLE = id3.TALB
     ALBUM_ARTIST = id3.TPE1
     TRACK_TITLE = id3.TIT2
+    VERSION_INFO = id3.TPE4
 
     def __init__(self, filename):
         super(MP3File, self).__init__()
@@ -53,6 +54,14 @@ class MP3File(object):
     @track_title.setter
     def track_title(self, track):
         self._set_frame_text(MP3File.TRACK_TITLE, track)
+
+    @property
+    def version_info(self):
+        return self._get_frame_text(MP3File.VERSION_INFO)
+
+    @version_info.setter
+    def version_info(self, info):
+        self._set_frame_text(MP3File.VERSION_INFO, info)
 
     @property
     def bitrate(self):

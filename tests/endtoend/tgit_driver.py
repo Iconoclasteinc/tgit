@@ -29,6 +29,7 @@ class TGiTDriver(MainWindowDriver):
         self._album_title_input_field().has_text(tags['album'])
         self._album_artist_input_field().has_text(tags['artist'])
         self._track_title_input_field().has_text(tags['track'])
+        self._version_info_input_field().has_text(tags['version_info'])
         self._bitrate_info_field().has_text(tags['bitrate'])
         self._track_duration_info_field().has_text(tags['duration'])
 
@@ -51,6 +52,7 @@ class TGiTDriver(MainWindowDriver):
         self._album_title_input_field().replace_all_text(tags['album'])
         self._album_artist_input_field().replace_all_text(tags['artist'])
         self._track_title_input_field().replace_all_text(tags['track'])
+        self._version_info_input_field().replace_all_text(tags['version_info'])
 
     def save_audio_file(self):
         save_button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
@@ -64,6 +66,9 @@ class TGiTDriver(MainWindowDriver):
 
     def _track_title_input_field(self):
         return LineEditDriver.find(self, QLineEdit, named(main.TRACK_TITLE_INPUT_NAME))
+
+    def _version_info_input_field(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.VERSION_INFO_INPUT_NAME))
 
     def _bitrate_info_field(self):
         return LabelDriver.find(self, QLabel, named(main.BITRATE_INFO_NAME))

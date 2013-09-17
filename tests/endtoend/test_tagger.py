@@ -19,6 +19,10 @@ class TaggerTest(unittest.TestCase):
         self.application.stop()
         self.audio_library.destroy()
 
+    # todo At some point, low level details (i.e. testing modification of all tags) need to move
+    # to ui integration tests with Qt targeting the UI in isolation from the domain.
+    # This will be possible after teasing apart MainWindow  and introducing the domain concepts.
+    # The end-to-end test will then focus on the overall scenario at a higher level of details.
     def test_tagger_modifies_tags_of_an_existing_audio_file_and_saves_changes(self):
         audio_file = self.audio_library.add_file(SAMPLE_AUDIO_FILE)
         self.application.import_audio_file(audio_file)
@@ -26,11 +30,14 @@ class TaggerTest(unittest.TestCase):
                                         artist='The Sixteen - Harry Christophers',
                                         track='Hallelujah (Chorus)',
                                         bitrate="320 kps",
-                                        duration='03:56')
+                                        duration='03:56',
+                                        version_info='')
         self.application.change_metadata(album='Despicable Me',
                                          artist='Tim, Mark and Phil',
-                                         track='Potato Banana Song')
+                                         track='Potato Banana Song',
+                                         version_info='Remix')
         self.audio_library.has_file_with_metadata(audio_file,
                                                   album='Despicable Me',
                                                   artist='Tim, Mark and Phil',
-                                                  track='Potato Banana Song')
+                                                  track='Potato Banana Song',
+                                                  version_info='Remix')

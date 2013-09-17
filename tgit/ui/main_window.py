@@ -27,6 +27,7 @@ ADD_FILE_BUTTON_NAME = "Add File"
 ALBUM_TITLE_INPUT_NAME = "Album Title"
 ALBUM_ARTIST_INPUT_NAME = "Album Artist"
 TRACK_TITLE_INPUT_NAME = "Track Title"
+VERSION_INFO_INPUT_NAME = "Version Info"
 BITRATE_INFO_NAME = "Bitrate"
 DURATION_INFO_NAME = "Duration"
 SAVE_BUTTON_NAME = "Save"
@@ -63,36 +64,62 @@ class MainWindow(QMainWindow):
     def _make_tag_album_panel(self):
         self._tag_album_panel = QWidget()
         tag_album_layout = QGridLayout(self._tag_album_panel)
+        self._add_album_title(tag_album_layout, 0)
+        self._add_album_artist(tag_album_layout, 1)
+        self._add_track_title(tag_album_layout, 2)
+        self._add_version_info(tag_album_layout, 3)
+        self._add_bitrate_info(tag_album_layout, 4)
+        self._add_duration_info(tag_album_layout, 5)
+        self._add_buttons(tag_album_layout, 6)
+        return self._tag_album_panel
+
+    def _add_album_title(self, layout, row):
         self._album_title_label = QLabel(self._tag_album_panel)
-        tag_album_layout.addWidget(self._album_title_label, 0, 0, 1, 1)
+        layout.addWidget(self._album_title_label, row, 0, 1, 1)
         self._album_title_input = QLineEdit(self._tag_album_panel)
         self._album_title_input.setObjectName(ALBUM_TITLE_INPUT_NAME)
-        tag_album_layout.addWidget(self._album_title_input, 0, 1, 1, 1)
+        layout.addWidget(self._album_title_input, row, 1, 1, 1)
+
+    def _add_album_artist(self, layout, row):
         self._album_artist_label = QLabel(self._tag_album_panel)
-        tag_album_layout.addWidget(self._album_artist_label, 1, 0, 1, 1)
+        layout.addWidget(self._album_artist_label, row, 0, 1, 1)
         self._album_artist_input = QLineEdit(self._tag_album_panel)
         self._album_artist_input.setObjectName(ALBUM_ARTIST_INPUT_NAME)
-        tag_album_layout.addWidget(self._album_artist_input, 1, 1, 1, 1)
+        layout.addWidget(self._album_artist_input, row, 1, 1, 1)
+
+    def _add_track_title(self, layout, row):
         self._track_title_label = QLabel(self._tag_album_panel)
-        tag_album_layout.addWidget(self._track_title_label, 2, 0, 1, 1)
+        layout.addWidget(self._track_title_label, row, 0, 1, 1)
         self._track_title_input = QLineEdit(self._tag_album_panel)
         self._track_title_input.setObjectName(TRACK_TITLE_INPUT_NAME)
-        tag_album_layout.addWidget(self._track_title_input, 2, 1, 1, 1)
+        layout.addWidget(self._track_title_input, row, 1, 1, 1)
+
+    def _add_version_info(self, layout, row):
+        self._version_info_label = QLabel(self._tag_album_panel)
+        layout.addWidget(self._version_info_label, row, 0, 1, 1)
+        self._version_info_input = QLineEdit(self._tag_album_panel)
+        self._version_info_input.setObjectName(VERSION_INFO_INPUT_NAME)
+        layout.addWidget(self._version_info_input, row, 1, 1, 1)
+
+    def _add_bitrate_info(self, layout, row):
         self._bitrate_label = QLabel(self._tag_album_panel)
-        tag_album_layout.addWidget(self._bitrate_label, 3, 0, 1, 1)
+        layout.addWidget(self._bitrate_label, row, 0, 1, 1)
         self._bitrate_info = QLabel(self._tag_album_panel)
         self._bitrate_info.setObjectName(BITRATE_INFO_NAME)
-        tag_album_layout.addWidget(self._bitrate_info, 3, 1, 1, 1)
+        layout.addWidget(self._bitrate_info, row, 1, 1, 1)
+
+    def _add_duration_info(self, layout, row):
         self._duration_label = QLabel(self._tag_album_panel)
-        tag_album_layout.addWidget(self._duration_label, 4, 0, 1, 1)
+        layout.addWidget(self._duration_label, row, 0, 1, 1)
         self._duration_info = QLabel(self._tag_album_panel)
         self._duration_info.setObjectName(DURATION_INFO_NAME)
-        tag_album_layout.addWidget(self._duration_info, 4, 1, 1, 1)
+        layout.addWidget(self._duration_info, row, 1, 1, 1)
+
+    def _add_buttons(self, layout, row):
         self._save_button = QPushButton(self._tag_album_panel)
         self._save_button.setObjectName(SAVE_BUTTON_NAME)
         self._save_button.clicked.connect(self._save_file)
-        tag_album_layout.addWidget(self._save_button, 5, 0, 1, 1)
-        return self._tag_album_panel
+        layout.addWidget(self._save_button, row, 0, 1, 1)
 
     def _fill_menu(self):
         menu_bar = QMenuBar(self)
@@ -129,6 +156,7 @@ class MainWindow(QMainWindow):
         self.audio.album_title = self._album_title_input.text()
         self.audio.album_artist = self._album_artist_input.text()
         self.audio.track_title = self._track_title_input.text()
+        self.audio.version_info = self._version_info_input.text()
         self.audio.save()
 
     def localize_ui(self):
@@ -139,6 +167,7 @@ class MainWindow(QMainWindow):
         self._album_title_label.setText(self.tr("Album Title: "))
         self._album_artist_label.setText(self.tr("Album Artist: "))
         self._track_title_label.setText(self.tr("Track Title: "))
+        self._version_info_label.setText(self.tr("Version Information: "))
         self._bitrate_label.setText(self.tr("Bitrate: "))
         self._duration_label.setText(self.tr("Duration: "))
         self._save_button.setText(self.tr("Save"))
