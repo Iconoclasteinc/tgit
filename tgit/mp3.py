@@ -22,8 +22,8 @@ from mutagen import id3
 
 
 class MP3File(object):
-    ALBUM_TITLE = id3.TALB
-    ALBUM_ARTIST = id3.TPE1
+    RELEASE_NAME = id3.TALB
+    LEAD_PERFORMER = id3.TPE1
     TRACK_TITLE = id3.TIT2
     VERSION_INFO = id3.TPE4
 
@@ -32,20 +32,20 @@ class MP3File(object):
         self.mp3 = MP3(filename)
 
     @property
-    def album_title(self):
-        return self._get_frame_text(MP3File.ALBUM_TITLE)
+    def release_name(self):
+        return self._get_frame_text(MP3File.RELEASE_NAME)
 
-    @album_title.setter
-    def album_title(self, album):
-        self._set_frame_text(MP3File.ALBUM_TITLE, album)
+    @release_name.setter
+    def release_name(self, album):
+        self._set_frame_text(MP3File.RELEASE_NAME, album)
 
     @property
-    def album_artist(self):
-        return self._get_frame_text(MP3File.ALBUM_ARTIST)
+    def lead_performer(self):
+        return self._get_frame_text(MP3File.LEAD_PERFORMER)
 
-    @album_artist.setter
-    def album_artist(self, artist):
-        self._set_frame_text(MP3File.ALBUM_ARTIST, artist)
+    @lead_performer.setter
+    def lead_performer(self, artist):
+        self._set_frame_text(MP3File.LEAD_PERFORMER, artist)
 
     @property
     def track_title(self):

@@ -24,8 +24,8 @@ from tgit.mp3 import MP3File
 
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
-ALBUM_TITLE_INPUT_NAME = "Album Title"
-ALBUM_ARTIST_INPUT_NAME = "Album Artist"
+RELEASE_NAME_INPUT_NAME = "Release Name"
+LEAD_PERFORMER_INPUT_NAME = "Lead Performer"
 TRACK_TITLE_INPUT_NAME = "Track Title"
 VERSION_INFO_INPUT_NAME = "Version Info"
 BITRATE_INFO_NAME = "Bitrate"
@@ -64,8 +64,8 @@ class MainWindow(QMainWindow):
     def _make_tag_album_panel(self):
         self._tag_album_panel = QWidget()
         tag_album_layout = QGridLayout(self._tag_album_panel)
-        self._add_album_title(tag_album_layout, 0)
-        self._add_album_artist(tag_album_layout, 1)
+        self._add_release_name(tag_album_layout, 0)
+        self._add_lead_performer(tag_album_layout, 1)
         self._add_track_title(tag_album_layout, 2)
         self._add_version_info(tag_album_layout, 3)
         self._add_bitrate_info(tag_album_layout, 4)
@@ -73,19 +73,19 @@ class MainWindow(QMainWindow):
         self._add_buttons(tag_album_layout, 6)
         return self._tag_album_panel
 
-    def _add_album_title(self, layout, row):
-        self._album_title_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._album_title_label, row, 0, 1, 1)
-        self._album_title_input = QLineEdit(self._tag_album_panel)
-        self._album_title_input.setObjectName(ALBUM_TITLE_INPUT_NAME)
-        layout.addWidget(self._album_title_input, row, 1, 1, 1)
+    def _add_release_name(self, layout, row):
+        self._release_name_label = QLabel(self._tag_album_panel)
+        layout.addWidget(self._release_name_label, row, 0, 1, 1)
+        self._release_name_input = QLineEdit(self._tag_album_panel)
+        self._release_name_input.setObjectName(RELEASE_NAME_INPUT_NAME)
+        layout.addWidget(self._release_name_input, row, 1, 1, 1)
 
-    def _add_album_artist(self, layout, row):
-        self._album_artist_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._album_artist_label, row, 0, 1, 1)
-        self._album_artist_input = QLineEdit(self._tag_album_panel)
-        self._album_artist_input.setObjectName(ALBUM_ARTIST_INPUT_NAME)
-        layout.addWidget(self._album_artist_input, row, 1, 1, 1)
+    def _add_lead_performer(self, layout, row):
+        self._lead_performer_label = QLabel(self._tag_album_panel)
+        layout.addWidget(self._lead_performer_label, row, 0, 1, 1)
+        self._lead_performer_input = QLineEdit(self._tag_album_panel)
+        self._lead_performer_input.setObjectName(LEAD_PERFORMER_INPUT_NAME)
+        layout.addWidget(self._lead_performer_input, row, 1, 1, 1)
 
     def _add_track_title(self, layout, row):
         self._track_title_label = QLabel(self._tag_album_panel)
@@ -145,16 +145,16 @@ class MainWindow(QMainWindow):
 
     def _import_file(self, filename):
         self.audio = MP3File(filename)
-        self._album_title_input.setText(self.audio.album_title)
-        self._album_artist_input.setText(self.audio.album_artist)
+        self._release_name_input.setText(self.audio.release_name)
+        self._lead_performer_input.setText(self.audio.lead_performer)
         self._track_title_input.setText(self.audio.track_title)
         self._bitrate_info.setText("%d kps" % self.audio.bitrate_in_kbps)
         self._duration_info.setText(self.audio.duration_as_text)
         self._show_tag_album_panel()
 
     def _save_file(self):
-        self.audio.album_title = self._album_title_input.text()
-        self.audio.album_artist = self._album_artist_input.text()
+        self.audio.release_name = self._release_name_input.text()
+        self.audio.lead_performer = self._lead_performer_input.text()
         self.audio.track_title = self._track_title_input.text()
         self.audio.version_info = self._version_info_input.text()
         self.audio.save()
@@ -164,8 +164,8 @@ class MainWindow(QMainWindow):
         self._add_file_button.setText(self.tr("Add File..."))
         self._quit_menu.setTitle(self.tr("Quit"))
         self._quit_menu_item.setText(self.tr("Hit me to quit"))
-        self._album_title_label.setText(self.tr("Album Title: "))
-        self._album_artist_label.setText(self.tr("Album Artist: "))
+        self._release_name_label.setText(self.tr("Release Name: "))
+        self._lead_performer_label.setText(self.tr("Lead Performer: "))
         self._track_title_label.setText(self.tr("Track Title: "))
         self._version_info_label.setText(self.tr("Version Information: "))
         self._bitrate_label.setText(self.tr("Bitrate: "))

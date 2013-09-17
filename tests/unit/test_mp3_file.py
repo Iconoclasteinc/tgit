@@ -13,8 +13,8 @@ from tests.util import project
 
 from tgit.mp3 import MP3File
 
-ALBUM_TITLE = "Album Title"
-ALBUM_ARTIST = "Album Artist"
+RELEASE_NAME = "Release Name"
+LEAD_PERFORMER = "Lead Performer"
 TRACK_TITLE = "Track Title"
 VERSION_INFO = "Version Info"
 BITRATE_IN_BPS = 320000
@@ -25,20 +25,20 @@ DURATION_AS_TEXT = "00:09"
 
 class MP3FileTest(unittest.TestCase):
     def setUp(self):
-        self._create_test_mp3(album=ALBUM_TITLE,
-                              artist=ALBUM_ARTIST,
-                              track=TRACK_TITLE,
+        self._create_test_mp3(release_name=RELEASE_NAME,
+                              lead_performer=LEAD_PERFORMER,
+                              track_title=TRACK_TITLE,
                               version_info=VERSION_INFO)
         self.audio = MP3File(self.working_file.name)
 
     def tearDown(self):
         self._delete_test_mp3()
 
-    def test_reads_album_title_from_id3_tags(self):
-        assert_that(self.audio.album_title, equal_to(ALBUM_TITLE), "album title")
+    def test_reads_release_name_from_id3_tags(self):
+        assert_that(self.audio.release_name, equal_to(RELEASE_NAME), "release name")
 
-    def test_reads_album_artist_from_id3_tags(self):
-        assert_that(self.audio.album_artist, equal_to(ALBUM_ARTIST), "album artist")
+    def test_reads_lead_performer_from_id3_tags(self):
+        assert_that(self.audio.lead_performer, equal_to(LEAD_PERFORMER), "lead performer")
 
     def test_reads_track_title_from_id3_tags(self):
         assert_that(self.audio.track_title, equal_to(TRACK_TITLE), "track title")
@@ -63,17 +63,17 @@ class MP3FileTest(unittest.TestCase):
     # todo introduce a matcher for comparing all metadata
     # something like assert_that(modified_audio, same_metada_as(original_audio))
     def test_saves_metadata_back_to_audio_file(self):
-        self.audio.album_title = "Modified Album Title"
-        self.audio.album_artist = "Modified Album Artist"
+        self.audio.release_name = "Modified Release Name"
+        self.audio.lead_performer = "Modified Lead Performer"
         self.audio.track_title = "Modified Track Title"
         self.audio.version_info = "Modified Version Info"
         self.audio.save()
 
         modified_audio = MP3File(self.working_file.name)
-        assert_that(modified_audio.album_title, equal_to("Modified Album Title"),
-                    "modified album title")
-        assert_that(modified_audio.album_artist, equal_to("Modified Album Artist"),
-                    "modified album artist")
+        assert_that(modified_audio.release_name, equal_to("Modified Release Name"),
+                    "modified release name")
+        assert_that(modified_audio.lead_performer, equal_to("Modified Lead Performer"),
+                    "modified lead performer")
         assert_that(modified_audio.track_title, equal_to("Modified Track Title"),
                     "modified track title")
         assert_that(modified_audio.version_info, equal_to("Modified Version Info"),
@@ -90,9 +90,9 @@ class MP3FileTest(unittest.TestCase):
     def _populate_tags(self, tags):
         test_mp3 = mp3.MP3(self.working_file.name)
         test_mp3.add_tags()
-        test_mp3.tags.add(id3.TALB(encoding=3, text=tags['album']))
-        test_mp3.tags.add(id3.TPE1(encoding=3, text=tags['artist']))
-        test_mp3.tags.add(id3.TIT2(encoding=3, text=tags['track']))
+        test_mp3.tags.add(id3.TALB(encoding=3, text=tags['release_name']))
+        test_mp3.tags.add(id3.TPE1(encoding=3, text=tags['lead_performer']))
+        test_mp3.tags.add(id3.TIT2(encoding=3, text=tags['track_title']))
         test_mp3.tags.add(id3.TPE4(encoding=3, text=tags['version_info']))
         test_mp3.save()
 

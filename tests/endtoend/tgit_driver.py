@@ -26,9 +26,9 @@ class TGiTDriver(MainWindowDriver):
         self._accept_file()
 
     def shows_metadata(self, tags):
-        self._album_title_input_field().has_text(tags['album'])
-        self._album_artist_input_field().has_text(tags['artist'])
-        self._track_title_input_field().has_text(tags['track'])
+        self._release_name_input_field().has_text(tags['release_name'])
+        self._lead_performer_input_field().has_text(tags['lead_performer'])
+        self._track_title_input_field().has_text(tags['track_title'])
         self._version_info_input_field().has_text(tags['version_info'])
         self._bitrate_info_field().has_text(tags['bitrate'])
         self._track_duration_info_field().has_text(tags['duration'])
@@ -49,20 +49,20 @@ class TGiTDriver(MainWindowDriver):
         dialog.accept()
 
     def edit_metadata(self, tags):
-        self._album_title_input_field().replace_all_text(tags['album'])
-        self._album_artist_input_field().replace_all_text(tags['artist'])
-        self._track_title_input_field().replace_all_text(tags['track'])
+        self._release_name_input_field().replace_all_text(tags['release_name'])
+        self._lead_performer_input_field().replace_all_text(tags['lead_performer'])
+        self._track_title_input_field().replace_all_text(tags['track_title'])
         self._version_info_input_field().replace_all_text(tags['version_info'])
 
     def save_audio_file(self):
         save_button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
         save_button.click()
 
-    def _album_title_input_field(self):
-        return LineEditDriver.find(self, QLineEdit, named(main.ALBUM_TITLE_INPUT_NAME))
+    def _release_name_input_field(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.RELEASE_NAME_INPUT_NAME))
 
-    def _album_artist_input_field(self):
-        return LineEditDriver.find(self, QLineEdit, named(main.ALBUM_ARTIST_INPUT_NAME))
+    def _lead_performer_input_field(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.LEAD_PERFORMER_INPUT_NAME))
 
     def _track_title_input_field(self):
         return LineEditDriver.find(self, QLineEdit, named(main.TRACK_TITLE_INPUT_NAME))

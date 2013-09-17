@@ -23,9 +23,12 @@ class FakeAudioLibrary(object):
         except IOError:
             raise AssertionError("Audio library contains no file " + name)
 
-        assert_that(audio_file.album_title, equal_to(tags['album']), "audio file album title")
-        assert_that(audio_file.album_artist, equal_to(tags['artist']), "audio file album artist")
-        assert_that(audio_file.track_title, equal_to(tags['track']), "audio file track title")
+        assert_that(audio_file.release_name, equal_to(tags['release_name']),
+                    "audio file release name")
+        assert_that(audio_file.lead_performer, equal_to(tags['lead_performer']),
+                    "audio file lead performer")
+        assert_that(audio_file.track_title, equal_to(tags['track_title']),
+                    "audio file track title")
         assert_that(audio_file.version_info, equal_to(tags['version_info']),
                     "audio file version information")
 
