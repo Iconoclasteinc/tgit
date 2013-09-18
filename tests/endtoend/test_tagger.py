@@ -36,7 +36,8 @@ class TaggerTest(unittest.TestCase):
                                         track_title='Hallelujah (Chorus)',
                                         featured_guest='Carolyn Sampson',
                                         version_info='Original Version',
-                                        bitrate="320 kps",
+                                        isrc='USPR37300012',
+                                        bitrate="320 kbps",
                                         duration='03:56',
                                         front_cover_embedded_text='Title: Handel Messiah')
         self.application.change_metadata(release_name='Despicable Me',
@@ -46,6 +47,7 @@ class TaggerTest(unittest.TestCase):
                                          track_title='Potato Banana Song',
                                          version_info='Remix',
                                          featured_guest='Stuart',
+                                         isrc='FRUP11000001',
                                          front_cover_picture=SAMPLE_COVER_ART_FILE)
         self.audio_library.has_file_with_metadata(audio_file,
                                                   release_name='Despicable Me',
@@ -55,4 +57,5 @@ class TaggerTest(unittest.TestCase):
                                                   track_title='Potato Banana Song',
                                                   version_info='Remix',
                                                   featured_guest='Stuart',
+                                                  isrc='FRUP11000001',
                                                   front_cover_picture=SAMPLE_COVER_ART_FILE)

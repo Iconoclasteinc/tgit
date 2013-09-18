@@ -35,6 +35,7 @@ UPC_NAME = "UPC"
 TRACK_TITLE_NAME = "Track Title"
 VERSION_INFO_NAME = "Version Info"
 FEATURED_GUEST_NAME = "Featured Guest"
+ISRC_NAME = "ISRC"
 BITRATE_NAME = "Bitrate"
 DURATION_NAME = "Duration"
 SAVE_BUTTON_NAME = "Save"
@@ -79,9 +80,10 @@ class MainWindow(QMainWindow):
         self._add_track_title(tag_album_layout, 6)
         self._add_version_info(tag_album_layout, 7)
         self._add_featured_guest(tag_album_layout, 8)
-        self._add_bitrate(tag_album_layout, 9)
-        self._add_duration(tag_album_layout, 10)
-        self._add_buttons(tag_album_layout, 11)
+        self._add_isrc(tag_album_layout, 9)
+        self._add_bitrate(tag_album_layout, 10)
+        self._add_duration(tag_album_layout, 11)
+        self._add_buttons(tag_album_layout, 12)
         return self._tag_album_panel
 
     def _add_front_cover_picture(self, layout, row):
@@ -145,6 +147,13 @@ class MainWindow(QMainWindow):
         self._featured_guest.setObjectName(FEATURED_GUEST_NAME)
         layout.addWidget(self._featured_guest, row, 1, 1, 1)
 
+    def _add_isrc(self, layout, row):
+        self._isrc_label = QLabel(self._tag_album_panel)
+        layout.addWidget(self._isrc_label, row, 0, 1, 1)
+        self._isrc = QLineEdit(self._tag_album_panel)
+        self._isrc.setObjectName(ISRC_NAME)
+        layout.addWidget(self._isrc, row, 1, 1, 1)
+
     def _add_bitrate(self, layout, row):
         self._bitrate_label = QLabel(self._tag_album_panel)
         layout.addWidget(self._bitrate_label, row, 0, 1, 1)
@@ -198,7 +207,8 @@ class MainWindow(QMainWindow):
         self._track_title.setText(self.audio.track_title)
         self._version_info.setText(self.audio.version_info)
         self._featured_guest.setText(self.audio.featured_guest)
-        self._bitrate.setText("%d kps" % self.audio.bitrate_in_kbps)
+        self._isrc.setText(self.audio.isrc)
+        self._bitrate.setText("%d kbps" % self.audio.bitrate_in_kbps)
         self._duration.setText(self.audio.duration_as_text)
         self._show_tag_album_panel()
 
@@ -221,6 +231,7 @@ class MainWindow(QMainWindow):
         self.audio.track_title = self._track_title.text()
         self.audio.version_info = self._version_info.text()
         self.audio.featured_guest = self._featured_guest.text()
+        self.audio.isrc = self._isrc.text()
         self.audio.save()
 
     def _load_picture(self, filename):
@@ -240,6 +251,7 @@ class MainWindow(QMainWindow):
         self._track_title_label.setText(self.tr("Track Title: "))
         self._version_info_label.setText(self.tr("Version Information: "))
         self._featured_guest_label.setText(self.tr("Featured Guest: "))
+        self._isrc_label.setText(self.tr("ISRC: "))
         self._bitrate_label.setText(self.tr("Bitrate: "))
         self._duration_label.setText(self.tr("Duration: "))
         self._save_button.setText(self.tr("Save"))

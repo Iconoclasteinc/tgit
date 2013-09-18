@@ -34,6 +34,7 @@ class TGiTDriver(MainWindowDriver):
         self._track_title().has_text(tags['track_title'])
         self._featured_guest().has_text(tags['featured_guest'])
         self._version_info().has_text(tags['version_info'])
+        self._isrc().has_text(tags['isrc'])
         self._bitrate().has_text(tags['bitrate'])
         self._track_duration().has_text(tags['duration'])
 
@@ -64,6 +65,7 @@ class TGiTDriver(MainWindowDriver):
         self._track_title().replace_all_text(tags['track_title'])
         self._version_info().replace_all_text(tags['version_info'])
         self._featured_guest().replace_all_text(tags['featured_guest'])
+        self._isrc().replace_all_text(tags['isrc'])
 
     def save_audio_file(self):
         save_button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
@@ -90,11 +92,14 @@ class TGiTDriver(MainWindowDriver):
     def _track_title(self):
         return LineEditDriver.find(self, QLineEdit, named(main.TRACK_TITLE_NAME))
 
+    def _version_info(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.VERSION_INFO_NAME))
+
     def _featured_guest(self):
         return LineEditDriver.find(self, QLineEdit, named(main.FEATURED_GUEST_NAME))
 
-    def _version_info(self):
-        return LineEditDriver.find(self, QLineEdit, named(main.VERSION_INFO_NAME))
+    def _isrc(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.ISRC_NAME))
 
     def _bitrate(self):
         return LabelDriver.find(self, QLabel, named(main.BITRATE_NAME))

@@ -116,6 +116,15 @@ class MP3File(object):
         self.mp3.tags.add(id3.TXXX(encoding=3, desc='Featured Guest', text=[name]))
 
     @property
+    def isrc(self):
+        return 'TSRC' in self.mp3.tags and str(self.mp3['TSRC']) or None
+
+
+    @isrc.setter
+    def isrc(self, isrc):
+        self.mp3.tags.add(id3.TSRC(encoding=3, text=[isrc]))
+
+    @property
     def bitrate(self):
         return self.mp3.info.bitrate
 

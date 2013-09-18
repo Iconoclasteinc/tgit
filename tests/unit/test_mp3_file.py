@@ -25,6 +25,7 @@ UPC = "123456789999"
 TRACK_TITLE = "Track Title"
 VERSION_INFO = "Version Info"
 FEATURED_GUEST = "Featured Guest"
+ISRC = "AABB12345678"
 BITRATE_IN_BPS = 320000
 BITRATE_IN_KBPS = 320
 DURATION_IN_S = 9.064475
@@ -45,7 +46,8 @@ class MP3FileTest(unittest.TestCase):
                               upc=UPC,
                               track_title=TRACK_TITLE,
                               version_info=VERSION_INFO,
-                              featured_guest=FEATURED_GUEST)
+                              featured_guest=FEATURED_GUEST,
+                              isrc=ISRC)
         self.audio = MP3File(self.working_file.name)
 
     def tearDown(self):
@@ -97,6 +99,9 @@ class MP3FileTest(unittest.TestCase):
     def test_reads_featured_guest_from_custom_id3_tag(self):
         assert_that(self.audio.featured_guest, equal_to(FEATURED_GUEST), "featured guest")
 
+    def test_reads_isrc_from_id3_tags(self):
+        assert_that(self.audio.isrc, equal_to(ISRC), "isrc")
+
     def test_reads_track_bitrate_from_audio_stream_information(self):
         assert_that(self.audio.bitrate, equal_to(BITRATE_IN_BPS), "bitrate")
 
@@ -123,6 +128,7 @@ class MP3FileTest(unittest.TestCase):
         self.audio.track_title = "Modified Track Title"
         self.audio.version_info = "Modified Version Info"
         self.audio.featured_guest = "Modified Featured Guest"
+        self.audio.isrc = "ZZXX87654321"
         self.audio.save()
 
         modified_audio = MP3File(self.working_file.name)
@@ -142,6 +148,7 @@ class MP3FileTest(unittest.TestCase):
                     "modified version info")
         assert_that(modified_audio.featured_guest, equal_to("Modified Featured Guest"),
                     "modified featured guest")
+        assert_that(modified_audio.isrc, equal_to("ZZXX87654321"), "modified isrc")
 
     def _create_test_mp3(self, **tags):
         self._copy_master(SAMPLE_MP3_FILE)
@@ -170,6 +177,7 @@ class MP3FileTest(unittest.TestCase):
         test_mp3.tags.add(id3.TIT2(encoding=3, text=tags['track_title']))
         test_mp3.tags.add(id3.TPE4(encoding=3, text=tags['version_info']))
         test_mp3.tags.add(id3.TXXX(encoding=3, desc='Featured Guest', text=tags['featured_guest']))
+        test_mp3.tags.add(id3.TSRC(encoding=3, text=tags['isrc']))
         test_mp3.save()
 
     def _delete_test_mp3(self):
