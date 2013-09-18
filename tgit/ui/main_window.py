@@ -26,14 +26,14 @@ from tgit.mp3 import MP3File
 
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
-FRONT_COVER_PICTURE_FILE_INPUT_NAME = "Front Cover Picture File"
-FRONT_COVER_EMBEDDED_TEXT_INFO_NAME = "Front Cover Embedded Text"
-RELEASE_NAME_INPUT_NAME = "Release Name"
-LEAD_PERFORMER_INPUT_NAME = "Lead Performer"
-TRACK_TITLE_INPUT_NAME = "Track Title"
-VERSION_INFO_INPUT_NAME = "Version Info"
-BITRATE_INFO_NAME = "Bitrate"
-DURATION_INFO_NAME = "Duration"
+FRONT_COVER_PICTURE_FILE_NAME = "Front Cover Picture File"
+FRONT_COVER_EMBEDDED_TEXT_NAME = "Front Cover Embedded Text"
+RELEASE_NAME_NAME = "Release Name"
+LEAD_PERFORMER_NAME = "Lead Performer"
+TRACK_TITLE_NAME = "Track Title"
+VERSION_INFO_NAME = "Version Info"
+BITRATE_NAME = "Bitrate"
+DURATION_NAME = "Duration"
 SAVE_BUTTON_NAME = "Save"
 
 
@@ -73,64 +73,64 @@ class MainWindow(QMainWindow):
         self._add_lead_performer(tag_album_layout, 3)
         self._add_track_title(tag_album_layout, 4)
         self._add_version_info(tag_album_layout, 5)
-        self._add_bitrate_info(tag_album_layout, 6)
-        self._add_duration_info(tag_album_layout, 7)
+        self._add_bitrate(tag_album_layout, 6)
+        self._add_duration(tag_album_layout, 7)
         self._add_buttons(tag_album_layout, 8)
         return self._tag_album_panel
 
     def _add_front_cover_picture(self, layout, row):
-        self._front_cover_image_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._front_cover_image_label, row, 0, 1, 1)
-        self._front_cover_file_input = QLineEdit(self._tag_album_panel)
-        self._front_cover_file_input.setObjectName(
-            FRONT_COVER_PICTURE_FILE_INPUT_NAME)
-        layout.addWidget(self._front_cover_file_input, row, 1, 1, 1)
-        self._front_cover_embedded_text_info = QLabel(self._tag_album_panel)
-        self._front_cover_embedded_text_info.setObjectName(
-            FRONT_COVER_EMBEDDED_TEXT_INFO_NAME)
-        layout.addWidget(self._front_cover_embedded_text_info, row + 1, 0, 1, 1)
+        self._front_cover_image = QLabel(self._tag_album_panel)
+        layout.addWidget(self._front_cover_image, row, 0, 1, 1)
+        self._front_cover_file = QLineEdit(self._tag_album_panel)
+        self._front_cover_file.setObjectName(
+            FRONT_COVER_PICTURE_FILE_NAME)
+        layout.addWidget(self._front_cover_file, row, 1, 1, 1)
+        self._front_cover_embedded_text = QLabel(self._tag_album_panel)
+        self._front_cover_embedded_text.setObjectName(
+            FRONT_COVER_EMBEDDED_TEXT_NAME)
+        layout.addWidget(self._front_cover_embedded_text, row + 1, 0, 1, 1)
 
     def _add_release_name(self, layout, row):
         self._release_name_label = QLabel(self._tag_album_panel)
         layout.addWidget(self._release_name_label, row, 0, 1, 1)
-        self._release_name_input = QLineEdit(self._tag_album_panel)
-        self._release_name_input.setObjectName(RELEASE_NAME_INPUT_NAME)
-        layout.addWidget(self._release_name_input, row, 1, 1, 1)
+        self._release_name = QLineEdit(self._tag_album_panel)
+        self._release_name.setObjectName(RELEASE_NAME_NAME)
+        layout.addWidget(self._release_name, row, 1, 1, 1)
 
     def _add_lead_performer(self, layout, row):
         self._lead_performer_label = QLabel(self._tag_album_panel)
         layout.addWidget(self._lead_performer_label, row, 0, 1, 1)
-        self._lead_performer_input = QLineEdit(self._tag_album_panel)
-        self._lead_performer_input.setObjectName(LEAD_PERFORMER_INPUT_NAME)
-        layout.addWidget(self._lead_performer_input, row, 1, 1, 1)
+        self._lead_performer = QLineEdit(self._tag_album_panel)
+        self._lead_performer.setObjectName(LEAD_PERFORMER_NAME)
+        layout.addWidget(self._lead_performer, row, 1, 1, 1)
 
     def _add_track_title(self, layout, row):
         self._track_title_label = QLabel(self._tag_album_panel)
         layout.addWidget(self._track_title_label, row, 0, 1, 1)
-        self._track_title_input = QLineEdit(self._tag_album_panel)
-        self._track_title_input.setObjectName(TRACK_TITLE_INPUT_NAME)
-        layout.addWidget(self._track_title_input, row, 1, 1, 1)
+        self._track_title = QLineEdit(self._tag_album_panel)
+        self._track_title.setObjectName(TRACK_TITLE_NAME)
+        layout.addWidget(self._track_title, row, 1, 1, 1)
 
     def _add_version_info(self, layout, row):
         self._version_info_label = QLabel(self._tag_album_panel)
         layout.addWidget(self._version_info_label, row, 0, 1, 1)
-        self._version_info_input = QLineEdit(self._tag_album_panel)
-        self._version_info_input.setObjectName(VERSION_INFO_INPUT_NAME)
-        layout.addWidget(self._version_info_input, row, 1, 1, 1)
+        self._version_info = QLineEdit(self._tag_album_panel)
+        self._version_info.setObjectName(VERSION_INFO_NAME)
+        layout.addWidget(self._version_info, row, 1, 1, 1)
 
-    def _add_bitrate_info(self, layout, row):
+    def _add_bitrate(self, layout, row):
         self._bitrate_label = QLabel(self._tag_album_panel)
         layout.addWidget(self._bitrate_label, row, 0, 1, 1)
-        self._bitrate_info = QLabel(self._tag_album_panel)
-        self._bitrate_info.setObjectName(BITRATE_INFO_NAME)
-        layout.addWidget(self._bitrate_info, row, 1, 1, 1)
+        self._bitrate = QLabel(self._tag_album_panel)
+        self._bitrate.setObjectName(BITRATE_NAME)
+        layout.addWidget(self._bitrate, row, 1, 1, 1)
 
-    def _add_duration_info(self, layout, row):
+    def _add_duration(self, layout, row):
         self._duration_label = QLabel(self._tag_album_panel)
         layout.addWidget(self._duration_label, row, 0, 1, 1)
-        self._duration_info = QLabel(self._tag_album_panel)
-        self._duration_info.setObjectName(DURATION_INFO_NAME)
-        layout.addWidget(self._duration_info, row, 1, 1, 1)
+        self._duration = QLabel(self._tag_album_panel)
+        self._duration.setObjectName(DURATION_NAME)
+        layout.addWidget(self._duration, row, 1, 1, 1)
 
     def _add_buttons(self, layout, row):
         self._save_button = QPushButton(self._tag_album_panel)
@@ -162,15 +162,13 @@ class MainWindow(QMainWindow):
 
     def _import_file(self, filename):
         self.audio = MP3File(filename)
-        self._release_name_input.setText(self.audio.release_name)
-        self._front_cover_image_label.setPixmap(
-            self._scaled_pixmap_from(self.audio.front_cover_picture))
-        self._front_cover_embedded_text_info.setText(
-            self._embedded_text(self.audio.front_cover_picture))
-        self._lead_performer_input.setText(self.audio.lead_performer)
-        self._track_title_input.setText(self.audio.track_title)
-        self._bitrate_info.setText("%d kps" % self.audio.bitrate_in_kbps)
-        self._duration_info.setText(self.audio.duration_as_text)
+        self._release_name.setText(self.audio.release_name)
+        self._front_cover_image.setPixmap(self._scaled_pixmap_from(self.audio.front_cover_picture))
+        self._front_cover_embedded_text.setText(self._embedded_text(self.audio.front_cover_picture))
+        self._lead_performer.setText(self.audio.lead_performer)
+        self._track_title.setText(self.audio.track_title)
+        self._bitrate.setText("%d kps" % self.audio.bitrate_in_kbps)
+        self._duration.setText(self.audio.duration_as_text)
         self._show_tag_album_panel()
 
     def _embedded_text(self, image_data):
@@ -182,11 +180,11 @@ class MainWindow(QMainWindow):
         return QPixmap.fromImage(scaled_image)
 
     def _save_file(self):
-        self.audio.release_name = self._release_name_input.text()
-        self.audio.front_cover_picture = self._load_picture(self._front_cover_file_input.text())
-        self.audio.lead_performer = self._lead_performer_input.text()
-        self.audio.track_title = self._track_title_input.text()
-        self.audio.version_info = self._version_info_input.text()
+        self.audio.release_name = self._release_name.text()
+        self.audio.front_cover_picture = self._load_picture(self._front_cover_file.text())
+        self.audio.lead_performer = self._lead_performer.text()
+        self.audio.track_title = self._track_title.text()
+        self.audio.version_info = self._version_info.text()
         self.audio.save()
 
     def _load_picture(self, filename):
