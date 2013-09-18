@@ -26,6 +26,7 @@ class TGiTDriver(MainWindowDriver):
         self._accept_file()
 
     def shows_metadata(self, tags):
+        self._front_cover_text_info_field().has_text(tags['front_cover_embedded_text'])
         self._release_name_input_field().has_text(tags['release_name'])
         self._lead_performer_input_field().has_text(tags['lead_performer'])
         self._track_title_input_field().has_text(tags['track_title'])
@@ -49,6 +50,8 @@ class TGiTDriver(MainWindowDriver):
         dialog.accept()
 
     def edit_metadata(self, tags):
+        self._front_cover_picture_file_input_field().replace_all_text(
+            tags['front_cover_picture'])
         self._release_name_input_field().replace_all_text(tags['release_name'])
         self._lead_performer_input_field().replace_all_text(tags['lead_performer'])
         self._track_title_input_field().replace_all_text(tags['track_title'])
@@ -57,6 +60,13 @@ class TGiTDriver(MainWindowDriver):
     def save_audio_file(self):
         save_button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
         save_button.click()
+
+    def _front_cover_picture_file_input_field(self):
+        return LineEditDriver.find(self, QLineEdit,
+                                   named(main.FRONT_COVER_PICTURE_FILE_INPUT_NAME))
+
+    def _front_cover_text_info_field(self):
+        return LabelDriver.find(self, QLabel, named(main.FRONT_COVER_EMBEDDED_TEXT_INFO_NAME))
 
     def _release_name_input_field(self):
         return LineEditDriver.find(self, QLineEdit, named(main.RELEASE_NAME_INPUT_NAME))

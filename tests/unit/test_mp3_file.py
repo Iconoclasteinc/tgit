@@ -13,6 +13,11 @@ from tests.util import project
 
 from tgit.mp3 import MP3File
 
+SAMPLE_MP3_FILE = project.test_resource_path("base.mp3")
+FRONT_COVER_PICTURE_FILE = project.test_resource_path("front-cover-sample.jpg")
+OTHER_FRONT_COVER_PICTURE_FILE = project.test_resource_path("banana-song-cover.png")
+BACK_COVER_PICTURE_FILE = project.test_resource_path("back-cover-sample.jpg")
+
 RELEASE_NAME = "Release Name"
 LEAD_PERFORMER = "Lead Performer"
 TRACK_TITLE = "Track Title"
@@ -23,9 +28,15 @@ DURATION_IN_S = 9.064475
 DURATION_AS_TEXT = "00:09"
 
 
+def image_data(filename):
+    return open(filename).read()
+
+
 class MP3FileTest(unittest.TestCase):
     def setUp(self):
         self._create_test_mp3(release_name=RELEASE_NAME,
+                              front_cover_picture=('image/jpeg', FRONT_COVER_PICTURE_FILE),
+                              back_cover_picture=('image/jpeg', BACK_COVER_PICTURE_FILE),
                               lead_performer=LEAD_PERFORMER,
                               track_title=TRACK_TITLE,
                               version_info=VERSION_INFO)
@@ -34,8 +45,29 @@ class MP3FileTest(unittest.TestCase):
     def tearDown(self):
         self._delete_test_mp3()
 
+
+    @unittest.skip("pending")
+    def test_creates_mp3_tags_when_missing(self):
+        self.fail("Not implemented")
+
     def test_reads_release_name_from_id3_tags(self):
         assert_that(self.audio.release_name, equal_to(RELEASE_NAME), "release name")
+
+    def test_reads_front_cover_picture_from_id3_tags(self):
+        assert_that(len(self.audio.front_cover_picture),
+                    equal_to(len(image_data(FRONT_COVER_PICTURE_FILE))),
+                    "front cover picture size in bytes")
+
+    @unittest.skip("Pending")
+    def test_records_a_single_front_cover_picture(self):
+        self.fail("Not implemented")
+        # test with a front cover without a description
+        # test with a front cover with the same description
+
+    @unittest.skip("Pending")
+    def test_leaves_other_attached_pictures_unchanged(self):
+        self.fail("Not implemented")
+        # test with a other attached pictures with or without a description
 
     def test_reads_lead_performer_from_id3_tags(self):
         assert_that(self.audio.lead_performer, equal_to(LEAD_PERFORMER), "lead performer")
@@ -62,8 +94,10 @@ class MP3FileTest(unittest.TestCase):
 
     # todo introduce a matcher for comparing all metadata
     # something like assert_that(modified_audio, same_metada_as(original_audio))
+    # then test round tripping on several test data samples
     def test_saves_metadata_back_to_audio_file(self):
         self.audio.release_name = "Modified Release Name"
+        self.audio.front_cover_picture = 'image/png', image_data(OTHER_FRONT_COVER_PICTURE_FILE)
         self.audio.lead_performer = "Modified Lead Performer"
         self.audio.track_title = "Modified Track Title"
         self.audio.version_info = "Modified Version Info"
@@ -72,6 +106,9 @@ class MP3FileTest(unittest.TestCase):
         modified_audio = MP3File(self.working_file.name)
         assert_that(modified_audio.release_name, equal_to("Modified Release Name"),
                     "modified release name")
+        assert_that(len(modified_audio.front_cover_picture),
+                    equal_to(len(image_data(OTHER_FRONT_COVER_PICTURE_FILE))),
+                    "modified front cover picture size in bytes")
         assert_that(modified_audio.lead_performer, equal_to("Modified Lead Performer"),
                     "modified lead performer")
         assert_that(modified_audio.track_title, equal_to("Modified Track Title"),
@@ -80,17 +117,25 @@ class MP3FileTest(unittest.TestCase):
                     "modified version info")
 
     def _create_test_mp3(self, **tags):
-        self._copy_master(project.test_resource_path('base.mp3'))
+        self._copy_master(SAMPLE_MP3_FILE)
         self._populate_tags(tags)
 
     def _copy_master(self, master_file):
         self.working_file = NamedTemporaryFile(suffix='.mp3')
         shutil.copy(master_file, self.working_file.name)
 
+    def _image_data(self, filename):
+        return open(filename, 'rb').read()
+
+    #todo we need to build different test data each test
     def _populate_tags(self, tags):
         test_mp3 = mp3.MP3(self.working_file.name)
         test_mp3.add_tags()
         test_mp3.tags.add(id3.TALB(encoding=3, text=tags['release_name']))
+        test_mp3.tags.add(id3.APIC(3, tags['back_cover_picture'][0], 4, 'Back Cover',
+                                   self._image_data(tags['back_cover_picture'][1])))
+        test_mp3.tags.add(id3.APIC(3, tags['front_cover_picture'][0], 3, '',
+                                   self._image_data(tags['front_cover_picture'][1])))
         test_mp3.tags.add(id3.TPE1(encoding=3, text=tags['lead_performer']))
         test_mp3.tags.add(id3.TIT2(encoding=3, text=tags['track_title']))
         test_mp3.tags.add(id3.TPE4(encoding=3, text=tags['version_info']))

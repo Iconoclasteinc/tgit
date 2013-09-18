@@ -31,6 +31,11 @@ class FakeAudioLibrary(object):
                     "audio file track title")
         assert_that(audio_file.version_info, equal_to(tags['version_info']),
                     "audio file version information")
+        assert_that(len(audio_file.front_cover_picture), equal_to(len(self._file_content(
+            tags['front_cover_picture']))), "audio file front cover picture size in bytes")
+
+    def _file_content(self, filename):
+        return open(filename).read()
 
     def add_file(self, filename):
         imported_file = NamedTemporaryFile(suffix='.mp3')

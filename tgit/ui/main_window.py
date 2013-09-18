@@ -17,13 +17,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.Qt import (QDir, QRect, QMainWindow, QStatusBar, QWidget, QGridLayout,
-                      QPushButton, QMenu, QMenuBar, QAction, QLabel, QLineEdit, QFileDialog)
+import mimetypes
+from PyQt4.Qt import (Qt, QDir, QRect, QMainWindow, QStatusBar, QWidget, QGridLayout, QPixmap,
+                      QImage, QPushButton, QMenu, QMenuBar, QAction, QLabel, QLineEdit,
+                      QFileDialog)
 
 from tgit.mp3 import MP3File
 
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
+FRONT_COVER_PICTURE_FILE_INPUT_NAME = "Front Cover Picture File"
+FRONT_COVER_EMBEDDED_TEXT_INFO_NAME = "Front Cover Embedded Text"
 RELEASE_NAME_INPUT_NAME = "Release Name"
 LEAD_PERFORMER_INPUT_NAME = "Lead Performer"
 TRACK_TITLE_INPUT_NAME = "Track Title"
@@ -41,7 +45,7 @@ class MainWindow(QMainWindow):
 
     def _setup_ui(self):
         self.setObjectName(MAIN_WINDOW_NAME)
-        self.resize(469, 266)
+        self.resize(640, 480)
         self._make_import_file_dialog()
         self.setCentralWidget(self._make_welcome_panel())
         self._make_tag_album_panel()
@@ -64,14 +68,27 @@ class MainWindow(QMainWindow):
     def _make_tag_album_panel(self):
         self._tag_album_panel = QWidget()
         tag_album_layout = QGridLayout(self._tag_album_panel)
-        self._add_release_name(tag_album_layout, 0)
-        self._add_lead_performer(tag_album_layout, 1)
-        self._add_track_title(tag_album_layout, 2)
-        self._add_version_info(tag_album_layout, 3)
-        self._add_bitrate_info(tag_album_layout, 4)
-        self._add_duration_info(tag_album_layout, 5)
-        self._add_buttons(tag_album_layout, 6)
+        self._add_front_cover_picture(tag_album_layout, 0)
+        self._add_release_name(tag_album_layout, 2)
+        self._add_lead_performer(tag_album_layout, 3)
+        self._add_track_title(tag_album_layout, 4)
+        self._add_version_info(tag_album_layout, 5)
+        self._add_bitrate_info(tag_album_layout, 6)
+        self._add_duration_info(tag_album_layout, 7)
+        self._add_buttons(tag_album_layout, 8)
         return self._tag_album_panel
+
+    def _add_front_cover_picture(self, layout, row):
+        self._front_cover_image_label = QLabel(self._tag_album_panel)
+        layout.addWidget(self._front_cover_image_label, row, 0, 1, 1)
+        self._front_cover_file_input = QLineEdit(self._tag_album_panel)
+        self._front_cover_file_input.setObjectName(
+            FRONT_COVER_PICTURE_FILE_INPUT_NAME)
+        layout.addWidget(self._front_cover_file_input, row, 1, 1, 1)
+        self._front_cover_embedded_text_info = QLabel(self._tag_album_panel)
+        self._front_cover_embedded_text_info.setObjectName(
+            FRONT_COVER_EMBEDDED_TEXT_INFO_NAME)
+        layout.addWidget(self._front_cover_embedded_text_info, row + 1, 0, 1, 1)
 
     def _add_release_name(self, layout, row):
         self._release_name_label = QLabel(self._tag_album_panel)
@@ -146,18 +163,36 @@ class MainWindow(QMainWindow):
     def _import_file(self, filename):
         self.audio = MP3File(filename)
         self._release_name_input.setText(self.audio.release_name)
+        self._front_cover_image_label.setPixmap(
+            self._scaled_pixmap_from(self.audio.front_cover_picture))
+        self._front_cover_embedded_text_info.setText(
+            self._embedded_text(self.audio.front_cover_picture))
         self._lead_performer_input.setText(self.audio.lead_performer)
         self._track_title_input.setText(self.audio.track_title)
         self._bitrate_info.setText("%d kps" % self.audio.bitrate_in_kbps)
         self._duration_info.setText(self.audio.duration_as_text)
         self._show_tag_album_panel()
 
+    def _embedded_text(self, image_data):
+        return QImage.fromData(image_data).text()
+
+    def _scaled_pixmap_from(self, image_data):
+        original_image = QImage.fromData(image_data)
+        scaled_image = original_image.scaled(125, 125, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        return QPixmap.fromImage(scaled_image)
+
     def _save_file(self):
         self.audio.release_name = self._release_name_input.text()
+        self.audio.front_cover_picture = self._load_picture(self._front_cover_file_input.text())
         self.audio.lead_performer = self._lead_performer_input.text()
         self.audio.track_title = self._track_title_input.text()
         self.audio.version_info = self._version_info_input.text()
         self.audio.save()
+
+    def _load_picture(self, filename):
+        mime_type = mimetypes.guess_type(filename)
+        image_data = open(filename, "rb").read()
+        return mime_type[0], image_data
 
     def localize_ui(self):
         self.setWindowTitle(self.tr("TGiT"))
