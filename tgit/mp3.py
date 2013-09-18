@@ -107,6 +107,15 @@ class MP3File(object):
         self._set_frame_text(VERSION_INFO, info)
 
     @property
+    def featured_guest(self):
+        return 'TXXX:Featured Guest' in self.mp3.tags and str(self.mp3['TXXX:Featured Guest']) or \
+               None
+
+    @featured_guest.setter
+    def featured_guest(self, name):
+        self.mp3.tags.add(id3.TXXX(encoding=3, desc='Featured Guest', text=[name]))
+
+    @property
     def bitrate(self):
         return self.mp3.info.bitrate
 

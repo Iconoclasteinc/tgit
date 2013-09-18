@@ -34,6 +34,8 @@ class FakeAudioLibrary(object):
                     "audio file track title")
         assert_that(audio_file.version_info, equal_to(tags['version_info']),
                     "audio file version information")
+        assert_that(audio_file.featured_guest, equal_to(tags['featured_guest']),
+                    "audio file featured guest")
         assert_that(len(audio_file.front_cover_picture), equal_to(len(self._file_content(
             tags['front_cover_picture']))), "audio file front cover picture size in bytes")
 
