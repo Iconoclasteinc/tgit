@@ -27,6 +27,8 @@ class FakeAudioLibrary(object):
                     "audio file release name")
         assert_that(audio_file.lead_performer, equal_to(tags['lead_performer']),
                     "audio file lead performer")
+        assert_that(audio_file.original_release_date, equal_to(tags['original_release_date']),
+                    "audio file original release date")
         assert_that(audio_file.track_title, equal_to(tags['track_title']),
                     "audio file track title")
         assert_that(audio_file.version_info, equal_to(tags['version_info']),

@@ -31,6 +31,7 @@ class TaggerTest(unittest.TestCase):
         self.application.import_audio_file(audio_file)
         self.application.shows_metadata(release_name='Messiah',
                                         lead_performer='The Sixteen - Harry Christophers',
+                                        original_release_date='2008-03-01',
                                         track_title='Hallelujah (Chorus)',
                                         bitrate="320 kps",
                                         duration='03:56',
@@ -38,12 +39,14 @@ class TaggerTest(unittest.TestCase):
                                         front_cover_embedded_text='Title: Handel Messiah')
         self.application.change_metadata(release_name='Despicable Me',
                                          lead_performer='Tim, Mark and Phil',
+                                         original_release_date='2010-07-09',
                                          track_title='Potato Banana Song',
                                          version_info='Remix',
                                          front_cover_picture=SAMPLE_COVER_ART_FILE)
         self.audio_library.has_file_with_metadata(audio_file,
                                                   release_name='Despicable Me',
                                                   lead_performer='Tim, Mark and Phil',
+                                                  original_release_date='2010-07-09',
                                                   track_title='Potato Banana Song',
                                                   version_info='Remix',
                                                   front_cover_picture=SAMPLE_COVER_ART_FILE)

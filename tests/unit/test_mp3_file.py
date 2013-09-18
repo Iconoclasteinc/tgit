@@ -20,6 +20,7 @@ BACK_COVER_PICTURE_FILE = project.test_resource_path("back-cover-sample.jpg")
 
 RELEASE_NAME = "Release Name"
 LEAD_PERFORMER = "Lead Performer"
+ORIGINAL_RELEASE_DATE = "2013-11-15"
 TRACK_TITLE = "Track Title"
 VERSION_INFO = "Version Info"
 BITRATE_IN_BPS = 320000
@@ -38,6 +39,7 @@ class MP3FileTest(unittest.TestCase):
                               front_cover_picture=('image/jpeg', FRONT_COVER_PICTURE_FILE),
                               back_cover_picture=('image/jpeg', BACK_COVER_PICTURE_FILE),
                               lead_performer=LEAD_PERFORMER,
+                              original_release_date=ORIGINAL_RELEASE_DATE,
                               track_title=TRACK_TITLE,
                               version_info=VERSION_INFO)
         self.audio = MP3File(self.working_file.name)
@@ -72,6 +74,10 @@ class MP3FileTest(unittest.TestCase):
     def test_reads_lead_performer_from_id3_tags(self):
         assert_that(self.audio.lead_performer, equal_to(LEAD_PERFORMER), "lead performer")
 
+    def test_reads_original_release_date_from_id3_tags(self):
+        assert_that(self.audio.original_release_date, equal_to(ORIGINAL_RELEASE_DATE),
+                    "original release date")
+
     def test_reads_track_title_from_id3_tags(self):
         assert_that(self.audio.track_title, equal_to(TRACK_TITLE), "track title")
 
@@ -99,6 +105,7 @@ class MP3FileTest(unittest.TestCase):
         self.audio.release_name = "Modified Release Name"
         self.audio.front_cover_picture = 'image/png', image_data(OTHER_FRONT_COVER_PICTURE_FILE)
         self.audio.lead_performer = "Modified Lead Performer"
+        self.audio.original_release_date = "2013-12-01"
         self.audio.track_title = "Modified Track Title"
         self.audio.version_info = "Modified Version Info"
         self.audio.save()
@@ -111,6 +118,8 @@ class MP3FileTest(unittest.TestCase):
                     "modified front cover picture size in bytes")
         assert_that(modified_audio.lead_performer, equal_to("Modified Lead Performer"),
                     "modified lead performer")
+        assert_that(modified_audio.original_release_date, equal_to("2013-12-01"),
+                    "modified original release date")
         assert_that(modified_audio.track_title, equal_to("Modified Track Title"),
                     "modified track title")
         assert_that(modified_audio.version_info, equal_to("Modified Version Info"),
@@ -137,6 +146,8 @@ class MP3FileTest(unittest.TestCase):
         test_mp3.tags.add(id3.APIC(3, tags['front_cover_picture'][0], 3, '',
                                    self._image_data(tags['front_cover_picture'][1])))
         test_mp3.tags.add(id3.TPE1(encoding=3, text=tags['lead_performer']))
+        test_mp3.tags.add(id3.TDOR(encoding=3, text=[id3.ID3TimeStamp(tags[
+            'original_release_date'])]))
         test_mp3.tags.add(id3.TIT2(encoding=3, text=tags['track_title']))
         test_mp3.tags.add(id3.TPE4(encoding=3, text=tags['version_info']))
         test_mp3.save()

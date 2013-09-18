@@ -23,6 +23,7 @@ from mutagen import id3
 
 RELEASE_NAME = id3.TALB
 LEAD_PERFORMER = id3.TPE1
+ORIGINAL_RELEASE_DATE = id3.TDOR
 TRACK_TITLE = id3.TIT2
 VERSION_INFO = id3.TPE4
 ATTACHED_PICTURE = id3.APIC
@@ -73,6 +74,14 @@ class MP3File(object):
         self._set_frame_text(LEAD_PERFORMER, artist)
 
     @property
+    def original_release_date(self):
+        return self._get_frame_text(ORIGINAL_RELEASE_DATE)
+
+    @original_release_date.setter
+    def original_release_date(self, date):
+        self._set_frame_timestamp(ORIGINAL_RELEASE_DATE, date)
+
+    @property
     def track_title(self):
         return self._get_frame_text(TRACK_TITLE)
 
@@ -119,13 +128,19 @@ class MP3File(object):
         return self.mp3[name_of(frame)].__dict__.has_key('text')
 
     def _text_of(self, frame):
-        return self.mp3[name_of(frame)][0]
+        return str(self.mp3[name_of(frame)])
 
     def _set_frame_text(self, frame, text):
         self._set_frame(self._text_frame(frame, text))
 
     def _text_frame(self, frame, text):
-        return frame(encoding=UTF_8, text=text)
+        return frame(encoding=UTF_8, text=[text])
+
+    def _set_frame_timestamp(self, frame, timestamp):
+        self._set_frame(self._timestamp_frame(frame, timestamp))
+
+    def _timestamp_frame(self, frame, timestamp):
+        return self._text_frame(frame, id3.ID3TimeStamp(timestamp))
 
     def _set_frame(self, frame):
         self.mp3.tags.setall(name_of(type(frame)), [frame])

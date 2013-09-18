@@ -30,6 +30,7 @@ FRONT_COVER_PICTURE_FILE_NAME = "Front Cover Picture File"
 FRONT_COVER_EMBEDDED_TEXT_NAME = "Front Cover Embedded Text"
 RELEASE_NAME_NAME = "Release Name"
 LEAD_PERFORMER_NAME = "Lead Performer"
+ORIGINAL_RELEASE_DATE_NAME = "Original Release Date"
 TRACK_TITLE_NAME = "Track Title"
 VERSION_INFO_NAME = "Version Info"
 BITRATE_NAME = "Bitrate"
@@ -71,11 +72,12 @@ class MainWindow(QMainWindow):
         self._add_front_cover_picture(tag_album_layout, 0)
         self._add_release_name(tag_album_layout, 2)
         self._add_lead_performer(tag_album_layout, 3)
-        self._add_track_title(tag_album_layout, 4)
-        self._add_version_info(tag_album_layout, 5)
-        self._add_bitrate(tag_album_layout, 6)
-        self._add_duration(tag_album_layout, 7)
-        self._add_buttons(tag_album_layout, 8)
+        self._add_original_release_date(tag_album_layout, 4)
+        self._add_track_title(tag_album_layout, 5)
+        self._add_version_info(tag_album_layout, 6)
+        self._add_bitrate(tag_album_layout, 7)
+        self._add_duration(tag_album_layout, 8)
+        self._add_buttons(tag_album_layout, 9)
         return self._tag_album_panel
 
     def _add_front_cover_picture(self, layout, row):
@@ -103,6 +105,13 @@ class MainWindow(QMainWindow):
         self._lead_performer = QLineEdit(self._tag_album_panel)
         self._lead_performer.setObjectName(LEAD_PERFORMER_NAME)
         layout.addWidget(self._lead_performer, row, 1, 1, 1)
+
+    def _add_original_release_date(self, layout, row):
+        self._original_release_date_label = QLabel(self._tag_album_panel)
+        layout.addWidget(self._original_release_date_label, row, 0, 1, 1)
+        self._original_release_date = QLineEdit(self._tag_album_panel)
+        self._original_release_date.setObjectName(ORIGINAL_RELEASE_DATE_NAME)
+        layout.addWidget(self._original_release_date, row, 1, 1, 1)
 
     def _add_track_title(self, layout, row):
         self._track_title_label = QLabel(self._tag_album_panel)
@@ -166,6 +175,7 @@ class MainWindow(QMainWindow):
         self._front_cover_image.setPixmap(self._scaled_pixmap_from(self.audio.front_cover_picture))
         self._front_cover_embedded_text.setText(self._embedded_text(self.audio.front_cover_picture))
         self._lead_performer.setText(self.audio.lead_performer)
+        self._original_release_date.setText(self.audio.original_release_date)
         self._track_title.setText(self.audio.track_title)
         self._bitrate.setText("%d kps" % self.audio.bitrate_in_kbps)
         self._duration.setText(self.audio.duration_as_text)
@@ -183,6 +193,7 @@ class MainWindow(QMainWindow):
         self.audio.release_name = self._release_name.text()
         self.audio.front_cover_picture = self._load_picture(self._front_cover_file.text())
         self.audio.lead_performer = self._lead_performer.text()
+        self.audio.original_release_date = self._original_release_date.text()
         self.audio.track_title = self._track_title.text()
         self.audio.version_info = self._version_info.text()
         self.audio.save()
@@ -199,6 +210,7 @@ class MainWindow(QMainWindow):
         self._quit_menu_item.setText(self.tr("Hit me to quit"))
         self._release_name_label.setText(self.tr("Release Name: "))
         self._lead_performer_label.setText(self.tr("Lead Performer: "))
+        self._original_release_date_label.setText(self.tr("Original Release Date: "))
         self._track_title_label.setText(self.tr("Track Title: "))
         self._version_info_label.setText(self.tr("Version Information: "))
         self._bitrate_label.setText(self.tr("Bitrate: "))
