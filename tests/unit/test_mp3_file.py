@@ -21,6 +21,7 @@ BACK_COVER_PICTURE_FILE = project.test_resource_path("back-cover-sample.jpg")
 RELEASE_NAME = "Release Name"
 LEAD_PERFORMER = "Lead Performer"
 ORIGINAL_RELEASE_DATE = "2013-11-15"
+UPC = "123456789999"
 TRACK_TITLE = "Track Title"
 VERSION_INFO = "Version Info"
 BITRATE_IN_BPS = 320000
@@ -40,6 +41,7 @@ class MP3FileTest(unittest.TestCase):
                               back_cover_picture=('image/jpeg', BACK_COVER_PICTURE_FILE),
                               lead_performer=LEAD_PERFORMER,
                               original_release_date=ORIGINAL_RELEASE_DATE,
+                              upc=UPC,
                               track_title=TRACK_TITLE,
                               version_info=VERSION_INFO)
         self.audio = MP3File(self.working_file.name)
@@ -47,6 +49,9 @@ class MP3FileTest(unittest.TestCase):
     def tearDown(self):
         self._delete_test_mp3()
 
+    @unittest.skip("Pending")
+    def test_ignores_missing_tags(self):
+        self.fail("Not implemented")
 
     @unittest.skip("pending")
     def test_creates_mp3_tags_when_missing(self):
@@ -78,6 +83,9 @@ class MP3FileTest(unittest.TestCase):
         assert_that(self.audio.original_release_date, equal_to(ORIGINAL_RELEASE_DATE),
                     "original release date")
 
+    def test_reads_upc_from_custom_id3_tag(self):
+        assert_that(self.audio.upc, equal_to(UPC), "upc")
+
     def test_reads_track_title_from_id3_tags(self):
         assert_that(self.audio.track_title, equal_to(TRACK_TITLE), "track title")
 
@@ -106,6 +114,7 @@ class MP3FileTest(unittest.TestCase):
         self.audio.front_cover_picture = 'image/png', image_data(OTHER_FRONT_COVER_PICTURE_FILE)
         self.audio.lead_performer = "Modified Lead Performer"
         self.audio.original_release_date = "2013-12-01"
+        self.audio.upc = "987654321111"
         self.audio.track_title = "Modified Track Title"
         self.audio.version_info = "Modified Version Info"
         self.audio.save()
@@ -120,6 +129,7 @@ class MP3FileTest(unittest.TestCase):
                     "modified lead performer")
         assert_that(modified_audio.original_release_date, equal_to("2013-12-01"),
                     "modified original release date")
+        assert_that(modified_audio.upc, equal_to("987654321111"), "modified upc")
         assert_that(modified_audio.track_title, equal_to("Modified Track Title"),
                     "modified track title")
         assert_that(modified_audio.version_info, equal_to("Modified Version Info"),
@@ -148,6 +158,7 @@ class MP3FileTest(unittest.TestCase):
         test_mp3.tags.add(id3.TPE1(encoding=3, text=tags['lead_performer']))
         test_mp3.tags.add(id3.TDOR(encoding=3, text=[id3.ID3TimeStamp(tags[
             'original_release_date'])]))
+        test_mp3.tags.add(id3.TXXX(encoding=3, desc='UPC', text=tags['upc']))
         test_mp3.tags.add(id3.TIT2(encoding=3, text=tags['track_title']))
         test_mp3.tags.add(id3.TPE4(encoding=3, text=tags['version_info']))
         test_mp3.save()

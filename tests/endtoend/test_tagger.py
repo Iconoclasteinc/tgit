@@ -32,6 +32,7 @@ class TaggerTest(unittest.TestCase):
         self.application.shows_metadata(release_name='Messiah',
                                         lead_performer='The Sixteen - Harry Christophers',
                                         original_release_date='2008-03-01',
+                                        upc='123456789999',
                                         track_title='Hallelujah (Chorus)',
                                         bitrate="320 kps",
                                         duration='03:56',
@@ -40,6 +41,7 @@ class TaggerTest(unittest.TestCase):
         self.application.change_metadata(release_name='Despicable Me',
                                          lead_performer='Tim, Mark and Phil',
                                          original_release_date='2010-07-09',
+                                         upc='987654321111',
                                          track_title='Potato Banana Song',
                                          version_info='Remix',
                                          front_cover_picture=SAMPLE_COVER_ART_FILE)
@@ -47,6 +49,7 @@ class TaggerTest(unittest.TestCase):
                                                   release_name='Despicable Me',
                                                   lead_performer='Tim, Mark and Phil',
                                                   original_release_date='2010-07-09',
+                                                  upc='987654321111',
                                                   track_title='Potato Banana Song',
                                                   version_info='Remix',
                                                   front_cover_picture=SAMPLE_COVER_ART_FILE)

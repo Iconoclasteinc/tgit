@@ -36,6 +36,7 @@ def name_of(frame):
     return frame.__name__
 
 
+# todo refactor to leverage dict like behavior of id3 tags
 class MP3File(object):
     def __init__(self, filename):
         super(MP3File, self).__init__()
@@ -82,6 +83,14 @@ class MP3File(object):
         self._set_frame_timestamp(ORIGINAL_RELEASE_DATE, date)
 
     @property
+    def upc(self):
+        return 'TXXX:UPC' in self.mp3.tags and str(self.mp3['TXXX:UPC']) or None
+
+    @upc.setter
+    def upc(self, code):
+        self.mp3.tags.add(id3.TXXX(encoding=3, desc='UPC', text=[code]))
+
+    @property
     def track_title(self):
         return self._get_frame_text(TRACK_TITLE)
 
@@ -118,8 +127,8 @@ class MP3File(object):
         self.mp3.save()
 
     def _get_frame_text(self, frame):
-        return self._has_frame(frame) and self._is_text_frame(frame) and self._text_of(frame) or \
-            None
+        return self._has_frame(frame) and self._is_text_frame(frame) and self._text_of(name_of(
+            frame)) or None
 
     def _has_frame(self, frame):
         return self.mp3.has_key(name_of(frame))
@@ -127,8 +136,8 @@ class MP3File(object):
     def _is_text_frame(self, frame):
         return self.mp3[name_of(frame)].__dict__.has_key('text')
 
-    def _text_of(self, frame):
-        return str(self.mp3[name_of(frame)])
+    def _text_of(self, key):
+        return str(self.mp3[key])
 
     def _set_frame_text(self, frame, text):
         self._set_frame(self._text_frame(frame, text))

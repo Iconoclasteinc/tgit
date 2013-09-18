@@ -30,6 +30,7 @@ class TGiTDriver(MainWindowDriver):
         self._release_name().has_text(tags['release_name'])
         self._lead_performer().has_text(tags['lead_performer'])
         self._original_release_date().has_text(tags['original_release_date'])
+        self._upc().has_text(tags['upc'])
         self._track_title().has_text(tags['track_title'])
         self._version_info().has_text(tags['version_info'])
         self._bitrate().has_text(tags['bitrate'])
@@ -58,6 +59,7 @@ class TGiTDriver(MainWindowDriver):
         self._release_name().replace_all_text(tags['release_name'])
         self._lead_performer().replace_all_text(tags['lead_performer'])
         self._original_release_date().replace_all_text(tags['original_release_date'])
+        self._upc().replace_all_text(tags['upc'])
         self._track_title().replace_all_text(tags['track_title'])
         self._version_info().replace_all_text(tags['version_info'])
 
@@ -79,6 +81,9 @@ class TGiTDriver(MainWindowDriver):
 
     def _original_release_date(self):
         return LineEditDriver.find(self, QLineEdit, named(main.ORIGINAL_RELEASE_DATE_NAME))
+
+    def _upc(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.UPC_NAME))
 
     def _track_title(self):
         return LineEditDriver.find(self, QLineEdit, named(main.TRACK_TITLE_NAME))
