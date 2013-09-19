@@ -18,14 +18,14 @@ FRONT_COVER_PICTURE_FILE = project.test_resource_path("front-cover-sample.jpg")
 OTHER_FRONT_COVER_PICTURE_FILE = project.test_resource_path("banana-song-cover.png")
 BACK_COVER_PICTURE_FILE = project.test_resource_path("back-cover-sample.jpg")
 
-RELEASE_NAME = "Release Name"
-LEAD_PERFORMER = "Lead Performer"
-ORIGINAL_RELEASE_DATE = "2013-11-15"
-UPC = "123456789999"
-TRACK_TITLE = "Track Title"
-VERSION_INFO = "Version Info"
-FEATURED_GUEST = "Featured Guest"
-ISRC = "AABB12345678"
+RELEASE_NAME = u"Release Name"
+LEAD_PERFORMER = u"Lead Performer"
+ORIGINAL_RELEASE_DATE = u"2013-11-15"
+UPC = u"123456789999"
+TRACK_TITLE = u"Track Title"
+VERSION_INFO = u"Version Info"
+FEATURED_GUEST = u"Featured Guest"
+ISRC = u"AABB12345678"
 BITRATE_IN_BPS = 320000
 BITRATE_IN_KBPS = 320
 DURATION_IN_S = 9.064475
@@ -120,15 +120,15 @@ class MP3FileTest(unittest.TestCase):
     # something like assert_that(modified_audio, same_metada_as(original_audio))
     # then test round tripping on several test data samples
     def test_saves_metadata_back_to_audio_file(self):
-        self.audio.release_name = "Modified Release Name"
+        self.audio.release_name = u"Modified Release Name"
         self.audio.front_cover_picture = 'image/png', image_data(OTHER_FRONT_COVER_PICTURE_FILE)
-        self.audio.lead_performer = "Modified Lead Performer"
-        self.audio.original_release_date = "2013-12-01"
-        self.audio.upc = "987654321111"
-        self.audio.track_title = "Modified Track Title"
-        self.audio.version_info = "Modified Version Info"
-        self.audio.featured_guest = "Modified Featured Guest"
-        self.audio.isrc = "ZZXX87654321"
+        self.audio.lead_performer = u"Modified Lead Performer"
+        self.audio.original_release_date = u"2013-12-01"
+        self.audio.upc = u"987654321111"
+        self.audio.track_title = u"Modified Track Title"
+        self.audio.version_info = u"Modified Version Info"
+        self.audio.featured_guest = u"Modified Featured Guest"
+        self.audio.isrc = u"ZZXX87654321"
         self.audio.save()
 
         modified_audio = MP3File(self.working_file.name)
