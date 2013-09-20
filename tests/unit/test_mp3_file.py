@@ -61,6 +61,10 @@ class MP3FileTest(unittest.TestCase):
     def test_creates_mp3_tags_when_missing(self):
         self.fail("Not implemented")
 
+    @unittest.skip("pending")
+    def test_joins_all_texts_of_frames(self):
+        self.fail("Not implemented")
+
     def test_reads_release_name_from_id3_tags(self):
         assert_that(self.audio.release_name, equal_to(RELEASE_NAME), "release name")
 
@@ -165,7 +169,7 @@ class MP3FileTest(unittest.TestCase):
     def _populate_tags(self, tags):
         test_mp3 = mp3.MP3(self.working_file.name)
         test_mp3.add_tags()
-        test_mp3.tags.add(id3.TALB(encoding=3, text=tags['release_name']))
+        test_mp3.tags.add(id3.TALB(encoding=3, text=[tags['release_name']]))
         test_mp3.tags.add(id3.APIC(3, tags['back_cover_picture'][0], 4, 'Back Cover',
                                    self._image_data(tags['back_cover_picture'][1])))
         test_mp3.tags.add(id3.APIC(3, tags['front_cover_picture'][0], 3, '',
