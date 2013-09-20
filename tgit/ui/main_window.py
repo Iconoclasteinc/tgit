@@ -236,7 +236,7 @@ class MainWindow(QMainWindow):
         self._show_tag_album_panel()
 
     def _embedded_text(self, image_data):
-        return QImage.fromData(image_data).text()
+            return QImage.fromData(image_data).text()
 
     def _scaled_pixmap_from(self, image_data):
         if image_data is None:
@@ -282,4 +282,4 @@ class MainWindow(QMainWindow):
         self._save_button.setText(self.tr("Save"))
         self._add_file_dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
         self._select_picture_button.setText(self.tr("Select Picture..."))
-        self._select_picture_dialog.setNameFilter(self.tr("Image files") + " (*.png *.jpg)")
+        self._select_picture_dialog.setNameFilter(self.tr("Image files") + " (*.png)")
