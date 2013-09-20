@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
         welcome_panel_layout = QGridLayout(self._welcome_panel)
         self._add_file_button = QPushButton(self._welcome_panel)
         self._add_file_button.setObjectName(ADD_FILE_BUTTON_NAME)
-        self._add_file_button.clicked.connect(self._add_file_dialog.show)
+        self._add_file_button.clicked.connect(self._add_file_dialog.open)
         welcome_panel_layout.addWidget(self._add_file_button, 0, 0, 1, 1)
         return self._welcome_panel
 
@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self._front_cover_image, row, 0, 1, 1)
         self._select_picture_button = QPushButton(self._tag_album_panel)
         self._select_picture_button.setObjectName(SELECT_PICTURE_BUTTON_NAME)
-        self._select_picture_button.clicked.connect(self._select_picture_dialog.show)
+        self._select_picture_button.clicked.connect(self._select_picture_dialog.open)
         layout.addWidget(self._select_picture_button, row, 1, 1, 1)
         self._front_cover_embedded_text = QLabel(self._tag_album_panel)
         self._front_cover_embedded_text.setObjectName(
@@ -194,8 +194,8 @@ class MainWindow(QMainWindow):
         self._add_file_dialog = QFileDialog(self)
         self._add_file_dialog.setObjectName(IMPORT_TRACK_DIALOG_NAME)
         self._add_file_dialog.setDirectory(QDir.homePath())
-        self._add_file_dialog.setOption(QFileDialog.DontUseNativeDialog)
-        self._add_file_dialog.setModal(True)
+#        self._add_file_dialog.setOption(QFileDialog.DontUseNativeDialog)
+#        self._add_file_dialog.setModal(True)
         self._add_file_dialog.fileSelected.connect(self._import_track_file)
 
     # todo integration test dialog file name filtering by making sure the Accept button stay
@@ -204,8 +204,8 @@ class MainWindow(QMainWindow):
         self._select_picture_dialog = QFileDialog(self)
         self._select_picture_dialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
         self._select_picture_dialog.setDirectory(QDir.homePath())
-        self._select_picture_dialog.setOption(QFileDialog.DontUseNativeDialog)
-        self._select_picture_dialog.setModal(True)
+#        self._select_picture_dialog.setOption(QFileDialog.DontUseNativeDialog)
+#        self._select_picture_dialog.setModal(True)
         self._select_picture_dialog.fileSelected.connect(self._load_front_cover_picture)
 
     def _load_front_cover_picture(self, filename):
