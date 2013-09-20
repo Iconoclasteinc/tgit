@@ -54,6 +54,10 @@ class MP3FileTest(unittest.TestCase):
         self._delete_test_mp3()
 
     @unittest.skip("Pending")
+    def test_removes_the_existing_front_cover_when_none_is_provided(self):
+        self.fail("Not implemented")
+
+    @unittest.skip("Pending")
     def test_ignores_missing_tags(self):
         self.fail("Not implemented")
 
@@ -69,8 +73,9 @@ class MP3FileTest(unittest.TestCase):
         assert_that(self.audio.release_name, equal_to(RELEASE_NAME), "release name")
 
     def test_reads_front_cover_picture_from_id3_tags(self):
-        assert_that(len(self.audio.front_cover_picture),
-                    equal_to(len(image_data(FRONT_COVER_PICTURE_FILE))),
+        mime, data = self.audio.front_cover_picture
+        assert_that(mime, equal_to('image/jpeg'), "front cover mime type")
+        assert_that(len(data), equal_to(len(image_data(FRONT_COVER_PICTURE_FILE))),
                     "front cover picture size in bytes")
 
     @unittest.skip("Pending")
@@ -138,7 +143,9 @@ class MP3FileTest(unittest.TestCase):
         modified_audio = MP3File(self.working_file.name)
         assert_that(modified_audio.release_name, equal_to("Modified Release Name"),
                     "modified release name")
-        assert_that(len(modified_audio.front_cover_picture),
+        modified_mime, modified_cover_data = modified_audio.front_cover_picture
+        assert_that(modified_mime, equal_to('image/png'), "modified front cover mime type")
+        assert_that(len(modified_cover_data),
                     equal_to(len(image_data(OTHER_FRONT_COVER_PICTURE_FILE))),
                     "modified front cover picture size in bytes")
         assert_that(modified_audio.lead_performer, equal_to("Modified Lead Performer"),

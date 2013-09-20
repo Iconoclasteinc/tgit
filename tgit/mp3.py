@@ -36,13 +36,16 @@ class MP3File(object):
         attached_pictures = self._frames_of_type(id3.APIC)
         for pic in attached_pictures:
             if pic.type == MP3File.FRONT_COVER:
-                return pic.data
+                return pic.mime, pic.data
 
-        return None
+        return None, None
 
     @front_cover_picture.setter
     def front_cover_picture(self, picture):
         mime_type, image_data = picture
+        if image_data is None:
+            self._overwrite_frames(id3.APIC)
+            return
         front_cover = id3.APIC(encoding=MP3File.UTF_8, mime=mime_type, type=MP3File.FRONT_COVER,
                                desc='Front Cover', data=image_data)
         self._overwrite_frames(id3.APIC, front_cover)

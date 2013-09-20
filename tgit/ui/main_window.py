@@ -209,11 +209,11 @@ class MainWindow(QMainWindow):
         self._select_picture_dialog.fileSelected.connect(self._load_front_cover_picture)
 
     def _load_front_cover_picture(self, filename):
-        self._front_cover_file = filename
-        _, image_data = self._load_picture(filename)
-        self._display_front_cover(image_data)
+        self._display_front_cover(self._load_picture(filename))
 
-    def _display_front_cover(self, image_data):
+    def _display_front_cover(self, picture):
+        self._front_cover = picture
+        _, image_data = picture
         self._front_cover_image.setPixmap(self._scaled_pixmap_from(image_data))
         self._front_cover_embedded_text.setText(self._embedded_text(image_data))
 
@@ -247,7 +247,7 @@ class MainWindow(QMainWindow):
 
     def _save_file(self):
         self._audio.release_name = self._release_name.text()
-        self._audio.front_cover_picture = self._load_picture(self._front_cover_file)
+        self._audio.front_cover_picture = self._front_cover
         self._audio.lead_performer = self._lead_performer.text()
         self._audio.original_release_date = self._original_release_date.text()
         self._audio.upc = self._upc.text()
@@ -258,6 +258,8 @@ class MainWindow(QMainWindow):
         self._audio.save()
 
     def _load_picture(self, filename):
+        if filename is None:
+            return None, None
         mime_type = mimetypes.guess_type(filename)
         image_data = open(filename, "rb").read()
         return mime_type[0], image_data

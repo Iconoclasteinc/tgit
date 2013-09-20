@@ -37,7 +37,8 @@ class FakeAudioLibrary(object):
         assert_that(audio_file.featured_guest, equal_to(tags['featured_guest']),
                     "audio file featured guest")
         assert_that(audio_file.isrc, equal_to(tags['isrc']), "audio file isrc")
-        assert_that(len(audio_file.front_cover_picture), equal_to(len(self._file_content(
+        front_cover_mime_type, front_cover_data = audio_file.front_cover_picture
+        assert_that(len(front_cover_data), equal_to(len(self._file_content(
             tags['front_cover_picture']))), "audio file front cover picture size in bytes")
 
     def _file_content(self, filename):
