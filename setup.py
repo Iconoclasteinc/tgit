@@ -20,7 +20,7 @@ setup(
     url='http://tagtamusique.com',
     download_url='https://bitbucket.org/tagtamusique/tgit',
     author_email='jr@iconoclaste.ca',
-    version='0.2-snapshot',
+    version='0.2',
     test_suite='tests',
     packages=['tgit'],
     scripts=[],
