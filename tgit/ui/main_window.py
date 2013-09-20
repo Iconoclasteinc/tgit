@@ -281,5 +281,5 @@ class MainWindow(QMainWindow):
         self._duration_label.setText(self.tr("Duration: "))
         self._save_button.setText(self.tr("Save"))
         self._add_file_dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
-        self._select_picture_button.setText("Select Picture...")
+        self._select_picture_button.setText(self.tr("Select Picture..."))
         self._select_picture_dialog.setNameFilter(self.tr("Image files") + " (*.png *.jpg)")
