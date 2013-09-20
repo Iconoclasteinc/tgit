@@ -77,8 +77,8 @@ class WidgetManipulatorProbe(Probe):
         self._description = description
 
     def describe_to(self, description):
-        description.append_text("and %s " % self._description)
         self._finder.describe_to(description)
+        description.append_text(" and %s " % self._description)
 
     def describe_failure_to(self, description):
         self._finder.describe_failure_to(description)

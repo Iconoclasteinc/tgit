@@ -20,10 +20,9 @@ class TGiTDriver(MainWindowDriver):
             EventProcessingProber(timeout_in_ms=timeout_in_ms),
             Robot())
 
-    def add_file(self, path):
-        self._open_add_file_dialog()
-        self._select_file(path)
-        self._accept_file()
+    def import_track(self, path):
+        self._open_import_track_dialog()
+        self._select_track(path)
 
     def shows_metadata(self, tags):
         self._front_cover_embedded_text().has_text(tags['front_cover_embedded_text'])
@@ -38,26 +37,23 @@ class TGiTDriver(MainWindowDriver):
         self._bitrate().has_text(tags['bitrate'])
         self._track_duration().has_text(tags['duration'])
 
-    def _open_add_file_dialog(self):
+    def _open_import_track_dialog(self):
         add_file_button = AbstractButtonDriver.find(self, QPushButton,
                                                     named(main.ADD_FILE_BUTTON_NAME))
         add_file_button.click()
 
-    def _add_file_dialog(self):
-        return FileDialogDriver.find(self, QFileDialog)
-
-    def _select_file(self, path):
+    def _select_track(self, track_file):
         dialog = self._add_file_dialog()
         dialog.show_hidden_files()
-        dialog.navigate_to_dir(os.path.dirname(path))
-        dialog.select_file(os.path.basename(path))
-
-    def _accept_file(self):
-        dialog = FileDialogDriver.find(self, QFileDialog)
+        dialog.navigate_to_dir(os.path.dirname(track_file))
+        dialog.select_file(os.path.basename(track_file))
         dialog.accept()
 
+    def _add_file_dialog(self):
+        return FileDialogDriver.find(self, QFileDialog, named(main.IMPORT_TRACK_DIALOG_NAME))
+
     def edit_metadata(self, tags):
-        self._front_cover_picture().replace_all_text(tags['front_cover_picture'])
+        self._load_picture(tags['front_cover_picture'])
         self._release_name().replace_all_text(tags['release_name'])
         self._lead_performer().replace_all_text(tags['lead_performer'])
         self._original_release_date().replace_all_text(tags['original_release_date'])
@@ -66,6 +62,24 @@ class TGiTDriver(MainWindowDriver):
         self._version_info().replace_all_text(tags['version_info'])
         self._featured_guest().replace_all_text(tags['featured_guest'])
         self._isrc().replace_all_text(tags['isrc'])
+
+    def _load_picture(self, picture_file):
+        self._open_select_picture_dialog()
+        self._select_picture(picture_file)
+
+    def _open_select_picture_dialog(self):
+        select_picture_button = AbstractButtonDriver.find(self, QPushButton,
+                                                          named(main.SELECT_PICTURE_BUTTON_NAME))
+        select_picture_button.click()
+
+    def _select_picture(self, picture_file):
+        select_picture_dialog = self._select_picture_dialog()
+        select_picture_dialog.navigate_to_dir(os.path.dirname(picture_file))
+        select_picture_dialog.select_file(os.path.basename(picture_file))
+        select_picture_dialog.accept()
+
+    def _select_picture_dialog(self):
+        return FileDialogDriver.find(self, QFileDialog, named(main.SELECT_PICTURE_DIALOG_NAME))
 
     def save_audio_file(self):
         save_button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))

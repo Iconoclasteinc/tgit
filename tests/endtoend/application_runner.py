@@ -24,7 +24,7 @@ class ApplicationRunner(object):
         del self._app
 
     def import_audio_file(self, path):
-        self._driver.add_file(path)
+        self._driver.import_track(path)
 
     def shows_metadata(self, **tags):
         self._driver.shows_metadata(tags)

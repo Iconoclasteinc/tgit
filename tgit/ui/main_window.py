@@ -26,6 +26,9 @@ from tgit.mp3 import MP3File
 
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
+IMPORT_TRACK_DIALOG_NAME = "Select Track File"
+SELECT_PICTURE_BUTTON_NAME = "Select Picture"
+SELECT_PICTURE_DIALOG_NAME = "Select Picture File"
 FRONT_COVER_PICTURE_FILE_NAME = "Front Cover Picture File"
 FRONT_COVER_EMBEDDED_TEXT_NAME = "Front Cover Embedded Text"
 RELEASE_NAME_NAME = "Release Name"
@@ -51,6 +54,7 @@ class MainWindow(QMainWindow):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(640, 480)
         self._make_import_file_dialog()
+        self._make_select_picture_dialog()
         self.setCentralWidget(self._make_welcome_panel())
         self._make_tag_album_panel()
         self._fill_menu()
@@ -89,10 +93,10 @@ class MainWindow(QMainWindow):
     def _add_front_cover_picture(self, layout, row):
         self._front_cover_image = QLabel(self._tag_album_panel)
         layout.addWidget(self._front_cover_image, row, 0, 1, 1)
-        self._front_cover_file = QLineEdit(self._tag_album_panel)
-        self._front_cover_file.setObjectName(
-            FRONT_COVER_PICTURE_FILE_NAME)
-        layout.addWidget(self._front_cover_file, row, 1, 1, 1)
+        self._select_picture_button = QPushButton(self._tag_album_panel)
+        self._select_picture_button.setObjectName(SELECT_PICTURE_BUTTON_NAME)
+        self._select_picture_button.clicked.connect(self._select_picture_dialog.show)
+        layout.addWidget(self._select_picture_button, row, 1, 1, 1)
         self._front_cover_embedded_text = QLabel(self._tag_album_panel)
         self._front_cover_embedded_text.setObjectName(
             FRONT_COVER_EMBEDDED_TEXT_NAME)
@@ -188,28 +192,47 @@ class MainWindow(QMainWindow):
     # disabled when we select a non supported file type
     def _make_import_file_dialog(self):
         self._add_file_dialog = QFileDialog(self)
+        self._add_file_dialog.setObjectName(IMPORT_TRACK_DIALOG_NAME)
         self._add_file_dialog.setDirectory(QDir.homePath())
         self._add_file_dialog.setOption(QFileDialog.DontUseNativeDialog)
         self._add_file_dialog.setModal(True)
-        self._add_file_dialog.fileSelected.connect(self._import_file)
+        self._add_file_dialog.fileSelected.connect(self._import_track_file)
+
+    # todo integration test dialog file name filtering by making sure the Accept button stay
+    # disabled when we select a non supported file type
+    def _make_select_picture_dialog(self):
+        self._select_picture_dialog = QFileDialog(self)
+        self._select_picture_dialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
+        self._select_picture_dialog.setDirectory(QDir.homePath())
+        self._select_picture_dialog.setOption(QFileDialog.DontUseNativeDialog)
+        self._select_picture_dialog.setModal(True)
+        self._select_picture_dialog.fileSelected.connect(self._load_front_cover_picture)
+
+    def _load_front_cover_picture(self, filename):
+        self._front_cover_file = filename
+        _, image_data = self._load_picture(filename)
+        self._display_front_cover(image_data)
+
+    def _display_front_cover(self, image_data):
+        self._front_cover_image.setPixmap(self._scaled_pixmap_from(image_data))
+        self._front_cover_embedded_text.setText(self._embedded_text(image_data))
 
     def _show_tag_album_panel(self):
         self.setCentralWidget(self._tag_album_panel)
 
-    def _import_file(self, filename):
-        self.audio = MP3File(filename)
-        self._release_name.setText(self.audio.release_name)
-        self._front_cover_image.setPixmap(self._scaled_pixmap_from(self.audio.front_cover_picture))
-        self._front_cover_embedded_text.setText(self._embedded_text(self.audio.front_cover_picture))
-        self._lead_performer.setText(self.audio.lead_performer)
-        self._original_release_date.setText(self.audio.original_release_date)
-        self._upc.setText(self.audio.upc)
-        self._track_title.setText(self.audio.track_title)
-        self._version_info.setText(self.audio.version_info)
-        self._featured_guest.setText(self.audio.featured_guest)
-        self._isrc.setText(self.audio.isrc)
-        self._bitrate.setText("%d kbps" % self.audio.bitrate_in_kbps)
-        self._duration.setText(self.audio.duration_as_text)
+    def _import_track_file(self, filename):
+        self._audio = MP3File(filename)
+        self._release_name.setText(self._audio.release_name)
+        self._display_front_cover(self._audio.front_cover_picture)
+        self._lead_performer.setText(self._audio.lead_performer)
+        self._original_release_date.setText(self._audio.original_release_date)
+        self._upc.setText(self._audio.upc)
+        self._track_title.setText(self._audio.track_title)
+        self._version_info.setText(self._audio.version_info)
+        self._featured_guest.setText(self._audio.featured_guest)
+        self._isrc.setText(self._audio.isrc)
+        self._bitrate.setText("%d kbps" % self._audio.bitrate_in_kbps)
+        self._duration.setText(self._audio.duration_as_text)
         self._show_tag_album_panel()
 
     def _embedded_text(self, image_data):
@@ -223,16 +246,16 @@ class MainWindow(QMainWindow):
         return QPixmap.fromImage(scaled_image)
 
     def _save_file(self):
-        self.audio.release_name = self._release_name.text()
-        self.audio.front_cover_picture = self._load_picture(self._front_cover_file.text())
-        self.audio.lead_performer = self._lead_performer.text()
-        self.audio.original_release_date = self._original_release_date.text()
-        self.audio.upc = self._upc.text()
-        self.audio.track_title = self._track_title.text()
-        self.audio.version_info = self._version_info.text()
-        self.audio.featured_guest = self._featured_guest.text()
-        self.audio.isrc = self._isrc.text()
-        self.audio.save()
+        self._audio.release_name = self._release_name.text()
+        self._audio.front_cover_picture = self._load_picture(self._front_cover_file)
+        self._audio.lead_performer = self._lead_performer.text()
+        self._audio.original_release_date = self._original_release_date.text()
+        self._audio.upc = self._upc.text()
+        self._audio.track_title = self._track_title.text()
+        self._audio.version_info = self._version_info.text()
+        self._audio.featured_guest = self._featured_guest.text()
+        self._audio.isrc = self._isrc.text()
+        self._audio.save()
 
     def _load_picture(self, filename):
         mime_type = mimetypes.guess_type(filename)
@@ -256,3 +279,5 @@ class MainWindow(QMainWindow):
         self._duration_label.setText(self.tr("Duration: "))
         self._save_button.setText(self.tr("Save"))
         self._add_file_dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
+        self._select_picture_button.setText("Select Picture...")
+        self._select_picture_dialog.setNameFilter(self.tr("Image files") + " (*.png *.jpg)")
