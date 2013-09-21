@@ -11,7 +11,7 @@ base = None
 if sys.platform == "win32":
     base = "Win32GUI"
 
-includes = ["sip", "atexit", "PyQt4.QtCore", "PyQt4.QtGui"]
+includes = ["sip", "atexit", "PyQt4"]
 
 setup(
     name='tgit',

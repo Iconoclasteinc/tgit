@@ -18,9 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import mimetypes
-from PyQt4.Qt import (Qt, QDir, QRect, QMainWindow, QStatusBar, QWidget, QGridLayout, QPixmap,
-                      QImage, QPushButton, QMenu, QMenuBar, QAction, QLabel, QLineEdit,
-                      QFileDialog)
+from PyQt4.Qt import *
 
 from tgit.mp3 import MP3File
 
@@ -194,8 +192,8 @@ class MainWindow(QMainWindow):
         self._add_file_dialog = QFileDialog(self)
         self._add_file_dialog.setObjectName(IMPORT_TRACK_DIALOG_NAME)
         self._add_file_dialog.setDirectory(QDir.homePath())
-#        self._add_file_dialog.setOption(QFileDialog.DontUseNativeDialog)
-#        self._add_file_dialog.setModal(True)
+        self._add_file_dialog.setOption(QFileDialog.DontUseNativeDialog)
+        self._add_file_dialog.setModal(True)
         self._add_file_dialog.fileSelected.connect(self._import_track_file)
 
     # todo integration test dialog file name filtering by making sure the Accept button stay
@@ -204,8 +202,8 @@ class MainWindow(QMainWindow):
         self._select_picture_dialog = QFileDialog(self)
         self._select_picture_dialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
         self._select_picture_dialog.setDirectory(QDir.homePath())
-#        self._select_picture_dialog.setOption(QFileDialog.DontUseNativeDialog)
-#        self._select_picture_dialog.setModal(True)
+        self._select_picture_dialog.setOption(QFileDialog.DontUseNativeDialog)
+        self._select_picture_dialog.setModal(True)
         self._select_picture_dialog.fileSelected.connect(self._load_front_cover_picture)
 
     def _load_front_cover_picture(self, filename):
@@ -282,4 +280,4 @@ class MainWindow(QMainWindow):
         self._save_button.setText(self.tr("Save"))
         self._add_file_dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
         self._select_picture_button.setText(self.tr("Select Picture..."))
-        self._select_picture_dialog.setNameFilter(self.tr("Image files") + " (*.png)")
+        self._select_picture_dialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")
