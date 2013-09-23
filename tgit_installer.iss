@@ -35,8 +35,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\Users\vtence\Projects\tgit\build\exe.win32-2.7\tgit.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\vtence\Projects\tgit\build\exe.win32-2.7\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\vtence\Projects\tgit\dist\tgit\tgit.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\vtence\Projects\tgit\dist\tgit\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
