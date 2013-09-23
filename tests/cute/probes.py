@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.Qt import QPoint, QRect
-from .prober import Probe
+from tests.cute.prober import Probe
 
 
 class WidgetAssertionProbe(Probe):
@@ -9,27 +9,26 @@ class WidgetAssertionProbe(Probe):
         super(WidgetAssertionProbe, self).__init__()
         self._selector = selector
         self._assertion = assertion
-        self._assertion_met = False
+        self._assertionMet = False
 
     def test(self):
         self._selector.test()
-        self._assertion_met = \
-            self._selector.is_satisfied() \
-            and self._assertion.matches(self._selector.widget())
+        self._assertionMet = self._selector.isSatisfied() and \
+                             self._assertion.matches(self._selector.widget())
 
-    def is_satisfied(self):
-        return self._assertion_met
+    def isSatisfied(self):
+        return self._assertionMet
 
-    def describe_to(self, description):
+    def describeTo(self, description):
         description.append_description_of(self._selector). \
             append_text(" and check that it is "). \
             append_description_of(self._assertion)
 
-    def describe_failure_to(self, description):
-        self._selector.describe_failure_to(description)
-        if self._selector.is_satisfied():
+    def describeFailureTo(self, description):
+        self._selector.describeFailureTo(description)
+        if self._selector.isSatisfied():
             description.append_text(" it ")
-            if self._assertion_met:
+            if self._assertionMet:
                 description.append_text("is ")
             else:
                 description.append_text("is not ")
@@ -37,36 +36,36 @@ class WidgetAssertionProbe(Probe):
 
 
 class WidgetPropertyAssertionProbe(Probe):
-    def __init__(self, selector, property_value_query, property_value_matcher):
+    def __init__(self, selector, query, matcher):
         super(WidgetPropertyAssertionProbe, self).__init__()
         self._selector = selector
-        self._property_value_query = property_value_query
-        self._property_value_matcher = property_value_matcher
-        self._property_value = None
+        self._propertyValueQuery = query
+        self._propertyValueMatcher = matcher
+        self._propertyValue = None
 
     def test(self):
         self._selector.test()
-        if self._selector.is_satisfied():
-            self._property_value = self._property_value_query(self._selector.widget())
+        if self._selector.isSatisfied():
+            self._propertyValue = self._propertyValueQuery(self._selector.widget())
 
-    def is_satisfied(self):
-        return self._selector.is_satisfied and \
-               self._property_value_matcher.matches(self._property_value)
+    def isSatisfied(self):
+        return self._selector.isSatisfied and \
+               self._propertyValueMatcher.matches(self._propertyValue)
 
-    def describe_to(self, description):
-        description.append_description_of(self._selector)\
-            .append_text(" and check that its ")\
-            .append_description_of(self._property_value_query)\
-            .append_text(" is ")\
-            .append_description_of(self._property_value_matcher)
+    def describeTo(self, description):
+        description.append_description_of(self._selector) \
+            .append_text(" and check that its ") \
+            .append_description_of(self._propertyValueQuery) \
+            .append_text(" is ") \
+            .append_description_of(self._propertyValueMatcher)
 
-    def describe_failure_to(self, description):
-        self._selector.describe_failure_to(description)
-        if self._selector.is_satisfied():
-            description.append_text(" ")\
-                .append_description_of(self._property_value_query)\
-                .append_text(" was ")\
-                .append_value(self._property_value)
+    def describeFailureTo(self, description):
+        self._selector.describeFailureTo(description)
+        if self._selector.isSatisfied():
+            description.append_text(" ") \
+                .append_description_of(self._propertyValueQuery) \
+                .append_text(" was ") \
+                .append_value(self._propertyValue)
 
 
 class WidgetManipulatorProbe(Probe):
@@ -76,19 +75,19 @@ class WidgetManipulatorProbe(Probe):
         self._manipulate = manipulation
         self._description = description
 
-    def describe_to(self, description):
-        self._finder.describe_to(description)
+    def describeTo(self, description):
+        self._finder.describeTo(description)
         description.append_text(" and %s " % self._description)
 
-    def describe_failure_to(self, description):
-        self._finder.describe_failure_to(description)
+    def describeFailureTo(self, description):
+        self._finder.describeFailureTo(description)
 
-    def is_satisfied(self):
-        return self._finder.is_satisfied()
+    def isSatisfied(self):
+        return self._finder.isSatisfied()
 
     def test(self):
         self._finder.test()
-        if self._finder.is_satisfied():
+        if self._finder.isSatisfied():
             for widget in self._finder.widgets():
                 self._manipulate(widget)
 
@@ -103,23 +102,23 @@ class WidgetScreenBoundsProbe(Probe):
     def bounds(self):
         return self._bounds
 
-    def describe_to(self, description):
+    def describeTo(self, description):
         description.append_text("dimensions of ")
         description.append_description_of(self._selector)
 
-    def describe_failure_to(self, description):
-        self._selector.describe_failure_to(description)
-        if self._selector.is_satisfied():
+    def describeFailureTo(self, description):
+        self._selector.describeFailureTo(description)
+        if self._selector.isSatisfied():
             description.append_text(" which had no dimensions")
 
-    def is_satisfied(self):
+    def isSatisfied(self):
         return (self._bounds is not None and self._bounds.width > 0 and
                 self._bounds.height() > 0) or False
 
     def test(self):
         self._selector.test()
 
-        if not self._selector.is_satisfied():
+        if not self._selector.isSatisfied():
             self._bounds = None
             return
 

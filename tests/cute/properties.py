@@ -9,19 +9,19 @@ def name():
     return PropertyQuery("name", QObject.objectName)
 
 
-def label_text():
+def labelText():
     return PropertyQuery("label text", QLabel.text)
 
 
-def input_text():
+def inputText():
     return PropertyQuery("input text", QLineEdit.displayText)
 
 
-def button_text():
+def buttonText():
     return PropertyQuery("button text", QAbstractButton.text)
 
 
-def list_item_text():
+def listItemText():
     return PropertyQuery("item text", lambda item: item.data(Qt.DisplayRole))
 
 
@@ -33,13 +33,13 @@ class Query(SelfDescribing):
 class PropertyQuery(Query):
     def __init__(self, name, query):
         super(PropertyQuery, self).__init__()
-        self._property_name = name
+        self._propertyName = name
         self._query = query
 
     def __call__(self, arg):
         return self._query(arg)
 
     def describe_to(self, description):
-        description.append_text(self._property_name)
+        description.append_text(self._propertyName)
 
 

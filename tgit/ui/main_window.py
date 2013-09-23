@@ -18,7 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import mimetypes
-from PyQt4.Qt import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 from tgit.mp3 import MP3File
 
@@ -46,238 +47,237 @@ SAVE_BUTTON_NAME = "Save"
 class MainWindow(QMainWindow):
     def __init__(self, ):
         QMainWindow.__init__(self)
-        self._setup_ui()
+        self.setupUi()
 
-    def _setup_ui(self):
+    def setupUi(self):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(640, 480)
-        self._make_import_file_dialog()
-        self._make_select_picture_dialog()
-        self.setCentralWidget(self._make_welcome_panel())
-        self._make_tag_album_panel()
-        self._fill_menu()
-        self._make_status_bar()
-        self.localize_ui()
+        self._makeImportFileDialog()
+        self._makeSelectPictureDialog()
+        self.setCentralWidget(self.makeWelcomePanel())
+        self._makeTagAlbumPanel()
+        self._fillMenu()
+        self._makeStatusBar()
+        self.localizeUi()
 
-    def _make_status_bar(self):
+    def _makeStatusBar(self):
         self.setStatusBar(QStatusBar(self))
 
-    def _make_welcome_panel(self):
-        self._welcome_panel = QWidget()
-        welcome_panel_layout = QGridLayout(self._welcome_panel)
-        self._add_file_button = QPushButton(self._welcome_panel)
-        self._add_file_button.setObjectName(ADD_FILE_BUTTON_NAME)
-        self._add_file_button.clicked.connect(self._add_file_dialog.open)
-        welcome_panel_layout.addWidget(self._add_file_button, 0, 0, 1, 1)
-        return self._welcome_panel
+    def makeWelcomePanel(self):
+        self._welcomePanel = QWidget()
+        welcomePanelLayout = QGridLayout(self._welcomePanel)
+        self._addFileButton = QPushButton(self._welcomePanel)
+        self._addFileButton.setObjectName(ADD_FILE_BUTTON_NAME)
+        self._addFileButton.clicked.connect(self._addFileDialog.open)
+        welcomePanelLayout.addWidget(self._addFileButton, 0, 0, 1, 1)
+        return self._welcomePanel
 
-    def _make_tag_album_panel(self):
-        self._tag_album_panel = QWidget()
-        tag_album_layout = QGridLayout(self._tag_album_panel)
-        self._add_front_cover_picture(tag_album_layout, 0)
-        self._add_release_name(tag_album_layout, 2)
-        self._add_lead_performer(tag_album_layout, 3)
-        self._add_original_release_date(tag_album_layout, 4)
-        self._add_upc(tag_album_layout, 5)
-        self._add_track_title(tag_album_layout, 6)
-        self._add_version_info(tag_album_layout, 7)
-        self._add_featured_guest(tag_album_layout, 8)
-        self._add_isrc(tag_album_layout, 9)
-        self._add_bitrate(tag_album_layout, 10)
-        self._add_duration(tag_album_layout, 11)
-        self._add_buttons(tag_album_layout, 12)
-        return self._tag_album_panel
+    def _makeTagAlbumPanel(self):
+        self._tagAlbumPanel = QWidget()
+        tagAlbumLayout = QGridLayout(self._tagAlbumPanel)
+        self._addFrontCoverPicture(tagAlbumLayout, 0)
+        self._addReleaseName(tagAlbumLayout, 2)
+        self._addLeadPerformer(tagAlbumLayout, 3)
+        self._addOriginalReleaseDate(tagAlbumLayout, 4)
+        self._addUpc(tagAlbumLayout, 5)
+        self._addTrackTitle(tagAlbumLayout, 6)
+        self._addVersionInfo(tagAlbumLayout, 7)
+        self._addFeaturedGuest(tagAlbumLayout, 8)
+        self._addIsrc(tagAlbumLayout, 9)
+        self._addBitrate(tagAlbumLayout, 10)
+        self._addDuration(tagAlbumLayout, 11)
+        self._addButtons(tagAlbumLayout, 12)
+        return self._tagAlbumPanel
 
-    def _add_front_cover_picture(self, layout, row):
-        self._front_cover_image = QLabel(self._tag_album_panel)
-        layout.addWidget(self._front_cover_image, row, 0, 1, 1)
-        self._select_picture_button = QPushButton(self._tag_album_panel)
-        self._select_picture_button.setObjectName(SELECT_PICTURE_BUTTON_NAME)
-        self._select_picture_button.clicked.connect(self._select_picture_dialog.open)
-        layout.addWidget(self._select_picture_button, row, 1, 1, 1)
-        self._front_cover_embedded_text = QLabel(self._tag_album_panel)
-        self._front_cover_embedded_text.setObjectName(
-            FRONT_COVER_EMBEDDED_TEXT_NAME)
-        layout.addWidget(self._front_cover_embedded_text, row + 1, 0, 1, 1)
+    def _addFrontCoverPicture(self, layout, row):
+        self._frontCoverImageLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._frontCoverImageLabel, row, 0, 1, 1)
+        self._selectPictureButton = QPushButton(self._tagAlbumPanel)
+        self._selectPictureButton.setObjectName(SELECT_PICTURE_BUTTON_NAME)
+        self._selectPictureButton.clicked.connect(self._selectPictureDialog.open)
+        layout.addWidget(self._selectPictureButton, row, 1, 1, 1)
+        self._frontCoverTextLabel = QLabel(self._tagAlbumPanel)
+        self._frontCoverTextLabel.setObjectName(FRONT_COVER_EMBEDDED_TEXT_NAME)
+        layout.addWidget(self._frontCoverTextLabel, row + 1, 0, 1, 1)
 
-    def _add_release_name(self, layout, row):
-        self._release_name_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._release_name_label, row, 0, 1, 1)
-        self._release_name = QLineEdit(self._tag_album_panel)
-        self._release_name.setObjectName(RELEASE_NAME_NAME)
-        layout.addWidget(self._release_name, row, 1, 1, 1)
+    def _addReleaseName(self, layout, row):
+        self._releaseNameLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._releaseNameLabel, row, 0, 1, 1)
+        self._releaseNameEdit = QLineEdit(self._tagAlbumPanel)
+        self._releaseNameEdit.setObjectName(RELEASE_NAME_NAME)
+        layout.addWidget(self._releaseNameEdit, row, 1, 1, 1)
 
-    def _add_lead_performer(self, layout, row):
-        self._lead_performer_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._lead_performer_label, row, 0, 1, 1)
-        self._lead_performer = QLineEdit(self._tag_album_panel)
-        self._lead_performer.setObjectName(LEAD_PERFORMER_NAME)
-        layout.addWidget(self._lead_performer, row, 1, 1, 1)
+    def _addLeadPerformer(self, layout, row):
+        self._leadPerformerLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._leadPerformerLabel, row, 0, 1, 1)
+        self._leadPerformerEdit = QLineEdit(self._tagAlbumPanel)
+        self._leadPerformerEdit.setObjectName(LEAD_PERFORMER_NAME)
+        layout.addWidget(self._leadPerformerEdit, row, 1, 1, 1)
 
-    def _add_original_release_date(self, layout, row):
-        self._original_release_date_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._original_release_date_label, row, 0, 1, 1)
-        self._original_release_date = QLineEdit(self._tag_album_panel)
-        self._original_release_date.setObjectName(ORIGINAL_RELEASE_DATE_NAME)
-        layout.addWidget(self._original_release_date, row, 1, 1, 1)
+    def _addOriginalReleaseDate(self, layout, row):
+        self._originalReleaseDateLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._originalReleaseDateLabel, row, 0, 1, 1)
+        self._originalReleaseDateEdit = QLineEdit(self._tagAlbumPanel)
+        self._originalReleaseDateEdit.setObjectName(ORIGINAL_RELEASE_DATE_NAME)
+        layout.addWidget(self._originalReleaseDateEdit, row, 1, 1, 1)
 
-    def _add_upc(self, layout, row):
-        self._upc_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._upc_label, row, 0, 1, 1)
-        self._upc = QLineEdit(self._tag_album_panel)
-        self._upc.setObjectName(UPC_NAME)
-        layout.addWidget(self._upc, row, 1, 1, 1)
+    def _addUpc(self, layout, row):
+        self._upcLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._upcLabel, row, 0, 1, 1)
+        self._upcEdit = QLineEdit(self._tagAlbumPanel)
+        self._upcEdit.setObjectName(UPC_NAME)
+        layout.addWidget(self._upcEdit, row, 1, 1, 1)
 
-    def _add_track_title(self, layout, row):
-        self._track_title_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._track_title_label, row, 0, 1, 1)
-        self._track_title = QLineEdit(self._tag_album_panel)
-        self._track_title.setObjectName(TRACK_TITLE_NAME)
-        layout.addWidget(self._track_title, row, 1, 1, 1)
+    def _addTrackTitle(self, layout, row):
+        self._trackTitleLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._trackTitleLabel, row, 0, 1, 1)
+        self._trackTitleEdit = QLineEdit(self._tagAlbumPanel)
+        self._trackTitleEdit.setObjectName(TRACK_TITLE_NAME)
+        layout.addWidget(self._trackTitleEdit, row, 1, 1, 1)
 
-    def _add_version_info(self, layout, row):
-        self._version_info_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._version_info_label, row, 0, 1, 1)
-        self._version_info = QLineEdit(self._tag_album_panel)
-        self._version_info.setObjectName(VERSION_INFO_NAME)
-        layout.addWidget(self._version_info, row, 1, 1, 1)
+    def _addVersionInfo(self, layout, row):
+        self._versionInfoLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._versionInfoLabel, row, 0, 1, 1)
+        self._versionInfoEdit = QLineEdit(self._tagAlbumPanel)
+        self._versionInfoEdit.setObjectName(VERSION_INFO_NAME)
+        layout.addWidget(self._versionInfoEdit, row, 1, 1, 1)
 
-    def _add_featured_guest(self, layout, row):
-        self._featured_guest_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._featured_guest_label, row, 0, 1, 1)
-        self._featured_guest = QLineEdit(self._tag_album_panel)
-        self._featured_guest.setObjectName(FEATURED_GUEST_NAME)
-        layout.addWidget(self._featured_guest, row, 1, 1, 1)
+    def _addFeaturedGuest(self, layout, row):
+        self._featuredGuestLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._featuredGuestLabel, row, 0, 1, 1)
+        self._featuredGuestEdit = QLineEdit(self._tagAlbumPanel)
+        self._featuredGuestEdit.setObjectName(FEATURED_GUEST_NAME)
+        layout.addWidget(self._featuredGuestEdit, row, 1, 1, 1)
 
-    def _add_isrc(self, layout, row):
-        self._isrc_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._isrc_label, row, 0, 1, 1)
-        self._isrc = QLineEdit(self._tag_album_panel)
-        self._isrc.setObjectName(ISRC_NAME)
-        layout.addWidget(self._isrc, row, 1, 1, 1)
+    def _addIsrc(self, layout, row):
+        self._isrcLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._isrcLabel, row, 0, 1, 1)
+        self._isrcEdit = QLineEdit(self._tagAlbumPanel)
+        self._isrcEdit.setObjectName(ISRC_NAME)
+        layout.addWidget(self._isrcEdit, row, 1, 1, 1)
 
-    def _add_bitrate(self, layout, row):
-        self._bitrate_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._bitrate_label, row, 0, 1, 1)
-        self._bitrate = QLabel(self._tag_album_panel)
-        self._bitrate.setObjectName(BITRATE_NAME)
-        layout.addWidget(self._bitrate, row, 1, 1, 1)
+    def _addBitrate(self, layout, row):
+        self._bitrateLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._bitrateLabel, row, 0, 1, 1)
+        self._bitrateInfoLabel = QLabel(self._tagAlbumPanel)
+        self._bitrateInfoLabel.setObjectName(BITRATE_NAME)
+        layout.addWidget(self._bitrateInfoLabel, row, 1, 1, 1)
 
-    def _add_duration(self, layout, row):
-        self._duration_label = QLabel(self._tag_album_panel)
-        layout.addWidget(self._duration_label, row, 0, 1, 1)
-        self._duration = QLabel(self._tag_album_panel)
-        self._duration.setObjectName(DURATION_NAME)
-        layout.addWidget(self._duration, row, 1, 1, 1)
+    def _addDuration(self, layout, row):
+        self._durationLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._durationLabel, row, 0, 1, 1)
+        self._durationInfoLabel = QLabel(self._tagAlbumPanel)
+        self._durationInfoLabel.setObjectName(DURATION_NAME)
+        layout.addWidget(self._durationInfoLabel, row, 1, 1, 1)
 
-    def _add_buttons(self, layout, row):
-        self._save_button = QPushButton(self._tag_album_panel)
-        self._save_button.setObjectName(SAVE_BUTTON_NAME)
-        self._save_button.clicked.connect(self._save_file)
-        layout.addWidget(self._save_button, row, 0, 1, 1)
+    def _addButtons(self, layout, row):
+        self._saveButton = QPushButton(self._tagAlbumPanel)
+        self._saveButton.setObjectName(SAVE_BUTTON_NAME)
+        self._saveButton.clicked.connect(self.saveTrackFile)
+        layout.addWidget(self._saveButton, row, 0, 1, 1)
 
-    def _fill_menu(self):
-        menu_bar = QMenuBar(self)
-        menu_bar.setGeometry(QRect(0, 0, 469, 21))
-        self._quit_menu = QMenu(menu_bar)
-        self._quit_menu_item = QAction(self)
-        self._quit_menu_item.triggered.connect(self.close)
-        self._quit_menu.addAction(self._quit_menu_item)
-        self.setMenuBar(menu_bar)
-        menu_bar.addAction(self._quit_menu.menuAction())
-
-    # todo integration test dialog file name filtering by making sure the Accept button stay
-    # disabled when we select a non supported file type
-    def _make_import_file_dialog(self):
-        self._add_file_dialog = QFileDialog(self)
-        self._add_file_dialog.setObjectName(IMPORT_TRACK_DIALOG_NAME)
-        self._add_file_dialog.setDirectory(QDir.homePath())
-        self._add_file_dialog.setOption(QFileDialog.DontUseNativeDialog)
-        self._add_file_dialog.setModal(True)
-        self._add_file_dialog.fileSelected.connect(self._import_track_file)
+    def _fillMenu(self):
+        menuBar = QMenuBar(self)
+        menuBar.setGeometry(QRect(0, 0, 469, 21))
+        self._quitMenu = QMenu(menuBar)
+        self._quitMenuItem = QAction(self)
+        self._quitMenuItem.triggered.connect(self.close)
+        self._quitMenu.addAction(self._quitMenuItem)
+        self.setMenuBar(menuBar)
+        menuBar.addAction(self._quitMenu.menuAction())
 
     # todo integration test dialog file name filtering by making sure the Accept button stay
     # disabled when we select a non supported file type
-    def _make_select_picture_dialog(self):
-        self._select_picture_dialog = QFileDialog(self)
-        self._select_picture_dialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
-        self._select_picture_dialog.setDirectory(QDir.homePath())
-        self._select_picture_dialog.setOption(QFileDialog.DontUseNativeDialog)
-        self._select_picture_dialog.setModal(True)
-        self._select_picture_dialog.fileSelected.connect(self._load_front_cover_picture)
+    def _makeImportFileDialog(self):
+        self._addFileDialog = QFileDialog(self)
+        self._addFileDialog.setObjectName(IMPORT_TRACK_DIALOG_NAME)
+        self._addFileDialog.setDirectory(QDir.homePath())
+        self._addFileDialog.setOption(QFileDialog.DontUseNativeDialog)
+        self._addFileDialog.setModal(True)
+        self._addFileDialog.fileSelected.connect(self.importTrackFile)
 
-    def _load_front_cover_picture(self, filename):
-        self._display_front_cover(self._load_picture(filename))
+    # todo integration test dialog file name filtering by making sure the Accept button stay
+    # disabled when we select a non supported file type
+    def _makeSelectPictureDialog(self):
+        self._selectPictureDialog = QFileDialog(self)
+        self._selectPictureDialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
+        self._selectPictureDialog.setDirectory(QDir.homePath())
+        self._selectPictureDialog.setOption(QFileDialog.DontUseNativeDialog)
+        self._selectPictureDialog.setModal(True)
+        self._selectPictureDialog.fileSelected.connect(self.loadFrontCoverPicture)
 
-    def _display_front_cover(self, picture):
-        self._front_cover = picture
-        _, image_data = picture
-        self._front_cover_image.setPixmap(self._scaled_pixmap_from(image_data))
-        self._front_cover_embedded_text.setText(self._embedded_text(image_data))
+    def loadFrontCoverPicture(self, filename):
+        self.displayFrontCover(self.loadPicture(filename))
 
-    def _show_tag_album_panel(self):
-        self.setCentralWidget(self._tag_album_panel)
+    def displayFrontCover(self, picture):
+        self._frontCover = picture
+        _, imageData = picture
+        self._frontCoverImageLabel.setPixmap(self.scaledPixmapFrom(imageData))
+        self._frontCoverTextLabel.setText(self.getEmbeddedText(imageData))
 
-    def _import_track_file(self, filename):
+    def showTagAlbumPanel(self):
+        self.setCentralWidget(self._tagAlbumPanel)
+
+    def importTrackFile(self, filename):
         self._audio = MP3File(filename)
-        self._release_name.setText(self._audio.release_name)
-        self._display_front_cover(self._audio.front_cover_picture)
-        self._lead_performer.setText(self._audio.lead_performer)
-        self._original_release_date.setText(self._audio.original_release_date)
-        self._upc.setText(self._audio.upc)
-        self._track_title.setText(self._audio.track_title)
-        self._version_info.setText(self._audio.version_info)
-        self._featured_guest.setText(self._audio.featured_guest)
-        self._isrc.setText(self._audio.isrc)
-        self._bitrate.setText("%d kbps" % self._audio.bitrate_in_kbps)
-        self._duration.setText(self._audio.duration_as_text)
-        self._show_tag_album_panel()
+        self._releaseNameEdit.setText(self._audio.releaseName)
+        self.displayFrontCover(self._audio.frontCoverPicture)
+        self._leadPerformerEdit.setText(self._audio.leadPerformer)
+        self._originalReleaseDateEdit.setText(self._audio.originalReleaseDate)
+        self._upcEdit.setText(self._audio.upc)
+        self._trackTitleEdit.setText(self._audio.trackTitle)
+        self._versionInfoEdit.setText(self._audio.versionInfo)
+        self._featuredGuestEdit.setText(self._audio.featuredGuest)
+        self._isrcEdit.setText(self._audio.isrc)
+        self._bitrateInfoLabel.setText("%d kbps" % self._audio.bitrateInKbps)
+        self._durationInfoLabel.setText(self._audio.durationAsText)
+        self.showTagAlbumPanel()
 
-    def _embedded_text(self, image_data):
-            return QImage.fromData(image_data).text()
+    def getEmbeddedText(self, imageData):
+        return QImage.fromData(imageData).text()
 
-    def _scaled_pixmap_from(self, image_data):
-        if image_data is None:
+    def scaledPixmapFrom(self, imageData):
+        if imageData is None:
             return QPixmap()
-        original_image = QImage.fromData(image_data)
-        scaled_image = original_image.scaled(125, 125, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        return QPixmap.fromImage(scaled_image)
+        originalImage = QImage.fromData(imageData)
+        scaledImage = originalImage.scaled(125, 125, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        return QPixmap.fromImage(scaledImage)
 
-    def _save_file(self):
-        self._audio.release_name = self._release_name.text()
-        self._audio.front_cover_picture = self._front_cover
-        self._audio.lead_performer = self._lead_performer.text()
-        self._audio.original_release_date = self._original_release_date.text()
-        self._audio.upc = self._upc.text()
-        self._audio.track_title = self._track_title.text()
-        self._audio.version_info = self._version_info.text()
-        self._audio.featured_guest = self._featured_guest.text()
-        self._audio.isrc = self._isrc.text()
+    def saveTrackFile(self):
+        self._audio.releaseName = self._releaseNameEdit.text()
+        self._audio.frontCoverPicture = self._frontCover
+        self._audio.leadPerformer = self._leadPerformerEdit.text()
+        self._audio.originalReleaseDate = self._originalReleaseDateEdit.text()
+        self._audio.upc = self._upcEdit.text()
+        self._audio.trackTitle = self._trackTitleEdit.text()
+        self._audio.versionInfo = self._versionInfoEdit.text()
+        self._audio.featuredGuest = self._featuredGuestEdit.text()
+        self._audio.isrc = self._isrcEdit.text()
         self._audio.save()
 
-    def _load_picture(self, filename):
+    def loadPicture(self, filename):
         if filename is None:
             return None, None
-        mime_type = mimetypes.guess_type(filename)
-        image_data = open(filename, "rb").read()
-        return mime_type[0], image_data
+        mimeType = mimetypes.guess_type(filename)
+        imageData = open(filename, "rb").read()
+        return mimeType[0], imageData
 
-    def localize_ui(self):
+    def localizeUi(self):
         self.setWindowTitle(self.tr("TGiT"))
-        self._add_file_button.setText(self.tr("Add File..."))
-        self._quit_menu.setTitle(self.tr("Quit"))
-        self._quit_menu_item.setText(self.tr("Hit me to quit"))
-        self._release_name_label.setText(self.tr("Release Name: "))
-        self._lead_performer_label.setText(self.tr("Lead Performer: "))
-        self._original_release_date_label.setText(self.tr("Original Release Date: "))
-        self._upc_label.setText(self.tr("UPC/EAN: "))
-        self._track_title_label.setText(self.tr("Track Title: "))
-        self._version_info_label.setText(self.tr("Version Information: "))
-        self._featured_guest_label.setText(self.tr("Featured Guest: "))
-        self._isrc_label.setText(self.tr("ISRC: "))
-        self._bitrate_label.setText(self.tr("Bitrate: "))
-        self._duration_label.setText(self.tr("Duration: "))
-        self._save_button.setText(self.tr("Save"))
-        self._add_file_dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
-        self._select_picture_button.setText(self.tr("Select Picture..."))
-        self._select_picture_dialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")
+        self._addFileButton.setText(self.tr("Add File..."))
+        self._quitMenu.setTitle(self.tr("Quit"))
+        self._quitMenuItem.setText(self.tr("Hit me to quit"))
+        self._releaseNameLabel.setText(self.tr("Release Name: "))
+        self._leadPerformerLabel.setText(self.tr("Lead Performer: "))
+        self._originalReleaseDateLabel.setText(self.tr("Original Release Date: "))
+        self._upcLabel.setText(self.tr("UPC/EAN: "))
+        self._trackTitleLabel.setText(self.tr("Track Title: "))
+        self._versionInfoLabel.setText(self.tr("Version Information: "))
+        self._featuredGuestLabel.setText(self.tr("Featured Guest: "))
+        self._isrcLabel.setText(self.tr("ISRC: "))
+        self._bitrateLabel.setText(self.tr("Bitrate: "))
+        self._durationLabel.setText(self.tr("Duration: "))
+        self._saveButton.setText(self.tr("Save"))
+        self._addFileDialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
+        self._selectPictureButton.setText(self.tr("Select Picture..."))
+        self._selectPictureDialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")

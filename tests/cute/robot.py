@@ -2,7 +2,7 @@
 
 from PyQt4.Qt import (QCursor, QTest, QApplication, QPoint, Qt)
 
-from .events import MainEventLoop
+from tests.cute.events import MainEventLoop
 
 
 class Robot(object):
@@ -10,62 +10,62 @@ class Robot(object):
     RIGHT_BUTTON = Qt.RightButton
 
     def __init__(self):
-        self._active_modifiers = Qt.NoModifier
+        self._activeModifiers = Qt.NoModifier
 
     def perform(self, *gestures):
         for gesture in gestures:
             gesture(self)
 
-    def activate_modifiers(self, mask):
-        self._active_modifiers = self._active_modifiers | mask
+    def activateModifiers(self, mask):
+        self._activeModifiers = self._activeModifiers | mask
 
-    def deactivate_modifiers(self, mask):
-        self._active_modifiers = self._active_modifiers & ~mask
+    def deactivateModifiers(self, mask):
+        self._activeModifiers = self._activeModifiers & ~mask
 
-    def press_key(self, key):
-        QTest.keyPress(self._widget_under_cursor(), key, self._active_modifiers)
+    def pressKey(self, key):
+        QTest.keyPress(self._widgetUnderCursor(), key, self._activeModifiers)
 
-    def release_key(self, key):
-        QTest.keyRelease(self._widget_under_cursor(), key, self._active_modifiers)
+    def releaseKey(self, key):
+        QTest.keyRelease(self._widgetUnderCursor(), key, self._activeModifiers)
 
     def type(self, key):
-        QTest.keyClick(self._widget_under_cursor(), key, self._active_modifiers)
+        QTest.keyClick(self._widgetUnderCursor(), key, self._activeModifiers)
 
     # todo To make it easier to follow mouse movements in tests, investigate a smooth
     # movement (bezier curve?). Currently, mouse just jumps to destination
-    def move_mouse(self, x, y):
-        target = self._widget_at(x, y)
+    def moveMouse(self, x, y):
+        target = self._widgetAt(x, y)
         # By default QTest will move mouse at the center of the widget,
         # but we want a very specific position
-        QTest.mouseMove(target, self._relative_position_to(target, QPoint(x, y)))
+        QTest.mouseMove(target, self._relativePosition(target, QPoint(x, y)))
 
-    def press_mouse(self, button=LEFT_BUTTON):
-        self._mouse_action_at_cursor_position(QTest.mousePress, button)
+    def pressMouse(self, button=LEFT_BUTTON):
+        self._mouseActionAtCursorPosition(QTest.mousePress, button)
 
-    def release_mouse(self, button=LEFT_BUTTON):
-        self._mouse_action_at_cursor_position(QTest.mouseRelease, button)
+    def releaseMouse(self, button=LEFT_BUTTON):
+        self._mouseActionAtCursorPosition(QTest.mouseRelease, button)
 
-    def double_click_mouse(self, button=LEFT_BUTTON):
-        self._mouse_action_at_cursor_position(QTest.mouseDClick, button)
+    def doubleClickMouse(self, button=LEFT_BUTTON):
+        self._mouseActionAtCursorPosition(QTest.mouseDClick, button)
 
     def delay(self, ms):
-        MainEventLoop.process_events_for(ms)
+        MainEventLoop.processEventsFor(ms)
 
-    def _mouse_action_at_cursor_position(self, action, button):
-        target = self._widget_under_cursor()
+    def _mouseActionAtCursorPosition(self, action, button):
+        target = self._widgetUnderCursor()
         # By default QTest will operate mouse at the center of the widget,
         # but we want the action to occur at the current cursor position
-        click_location = self._cursor_relative_position_to(target)
-        action(target, button, self._active_modifiers, click_location)
+        clickLocation = self._cursorRelativePositionTo(target)
+        action(target, button, self._activeModifiers, clickLocation)
 
-    def _widget_under_cursor(self):
-        return self._widget_at(QCursor.pos().x(), QCursor.pos().y())
+    def _widgetUnderCursor(self):
+        return self._widgetAt(QCursor.pos().x(), QCursor.pos().y())
 
-    def _widget_at(self, x, y):
+    def _widgetAt(self, x, y):
         return QApplication.widgetAt(x, y)
 
-    def _cursor_relative_position_to(self, target):
-        return self._relative_position_to(target, QCursor.pos())
+    def _cursorRelativePositionTo(self, target):
+        return self._relativePosition(target, QCursor.pos())
 
-    def _relative_position_to(self, target, point):
+    def _relativePosition(self, target, point):
         return target.mapFromGlobal(point)

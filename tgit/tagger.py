@@ -18,18 +18,17 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import sys
+from PyQt4.Qt import QApplication, QTextCodec, QTranslator
+
+from tgit.ui.main_window import MainWindow
 
 UTF_8 = "UTF-8"
 
-from PyQt4.Qt import QApplication, QTextCodec, QTranslator
-
-from .ui.main_window import MainWindow
-
 
 class TGiT(QApplication):
-    def __init__(self, locales_dir, locale='en'):
+    def __init__(self, localesDir, locale='en'):
         QApplication.__init__(self, [])
-        self._locales_dir = locales_dir
+        self._localesDir = localesDir
         self.locale = locale
         self._ui = MainWindow()
         self._show(self._ui)
@@ -41,12 +40,12 @@ class TGiT(QApplication):
 
     def locale(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
-        self._qt_translations = self._install_translations("qt", locale)
-        self._application_translations = self._install_translations("tgit", locale)
+        self._qtTranslations = self.installTranslations("qt", locale)
+        self._appTranslations = self.installTranslations("tgit", locale)
 
-    def _install_translations(self, file, locale):
+    def installTranslations(self, file, locale):
         translator = QTranslator()
-        if translator.load("%s_%s" % (file, locale), self._locales_dir):
+        if translator.load("%s_%s" % (file, locale), self._localesDir):
             self.installTranslator(translator)
             return translator
         else:

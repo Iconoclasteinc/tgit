@@ -2,11 +2,21 @@
 
 import shutil
 from tempfile import NamedTemporaryFile
-
 from hamcrest.core.assert_that import assert_that
 from hamcrest.core.core.isequal import equal_to
 
 from tgit.mp3 import MP3File
+
+
+FRONT_COVER_PICTURE = 'frontCoverPicture'
+ISRC = 'isrc'
+FEATURED_GUEST = 'featuredGuest'
+VERSION_INFO = 'versionInfo'
+TRACK_TITLE = 'trackTitle'
+UPC = 'upc'
+ORIGINAL_RELEASE_DATE = 'originalReleaseDate'
+LEAD_PERFORMER = 'leadPerformer'
+RELEASE_NAME = 'releaseName'
 
 
 # This is very rudimentary as of now
@@ -14,38 +24,41 @@ class FakeAudioLibrary(object):
     def __init__(self):
         self._files = []
 
+    def addFile(self, filename):
+        importedFile = NamedTemporaryFile(suffix='.mp3')
+        self._files.append(importedFile)
+        shutil.copy(filename, importedFile.name)
+        return importedFile.name
+
     def destroy(self):
         [f.close() for f in self._files]
 
-    def has_file_with_metadata(self, name, **tags):
+    def hasFileWithMetadata(self, name, **tags):
         try:
-            audio_file = MP3File(name)
+            audioFile = MP3File(name)
         except IOError:
             raise AssertionError("Audio library contains no file " + name)
 
-        assert_that(audio_file.release_name, equal_to(tags['release_name']),
+        assert_that(audioFile.releaseName, equal_to(tags[RELEASE_NAME]),
                     "audio file release name")
-        assert_that(audio_file.lead_performer, equal_to(tags['lead_performer']),
+        assert_that(audioFile.leadPerformer, equal_to(tags[LEAD_PERFORMER]),
                     "audio file lead performer")
-        assert_that(audio_file.original_release_date, equal_to(tags['original_release_date']),
+        assert_that(audioFile.originalReleaseDate, equal_to(tags[ORIGINAL_RELEASE_DATE]),
                     "audio file original release date")
-        assert_that(audio_file.upc, equal_to(tags['upc']), "audio file upc")
-        assert_that(audio_file.track_title, equal_to(tags['track_title']),
+        assert_that(audioFile.upc, equal_to(tags[UPC]),
+                    "audio file UPC")
+        assert_that(audioFile.trackTitle, equal_to(tags[TRACK_TITLE]),
                     "audio file track title")
-        assert_that(audio_file.version_info, equal_to(tags['version_info']),
+        assert_that(audioFile.versionInfo, equal_to(tags[VERSION_INFO]),
                     "audio file version information")
-        assert_that(audio_file.featured_guest, equal_to(tags['featured_guest']),
+        assert_that(audioFile.featuredGuest, equal_to(tags[FEATURED_GUEST]),
                     "audio file featured guest")
-        assert_that(audio_file.isrc, equal_to(tags['isrc']), "audio file isrc")
-        front_cover_mime_type, front_cover_data = audio_file.front_cover_picture
-        assert_that(len(front_cover_data), equal_to(len(self._file_content(
-            tags['front_cover_picture']))), "audio file front cover picture size in bytes")
+        assert_that(audioFile.isrc, equal_to(tags[ISRC]),
+                    "audio file ISRC")
+        frontCoverMimeType, frontCoverData = audioFile.frontCoverPicture
+        assert_that(len(frontCoverData),
+                    equal_to(len(self._fileContent(tags[FRONT_COVER_PICTURE]))),
+                    "audio file front cover picture size in bytes")
 
-    def _file_content(self, filename):
+    def _fileContent(self, filename):
         return open(filename).read()
-
-    def add_file(self, filename):
-        imported_file = NamedTemporaryFile(suffix='.mp3')
-        self._files.append(imported_file)
-        shutil.copy(filename, imported_file.name)
-        return imported_file.name

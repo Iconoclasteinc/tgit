@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .prober import Probe
+from tests.cute.prober import Probe
 
 
 class WidgetFinder(Probe):
@@ -14,31 +14,31 @@ class WidgetSelector(WidgetFinder):
 
 
 class RecursiveWidgetFinder(WidgetFinder):
-    def __init__(self, widget_type, criteria, parent_or_owner_finder):
+    def __init__(self, widgetType, criteria, parentFinder):
         super(RecursiveWidgetFinder, self).__init__()
-        self._widget_type = widget_type
+        self._widgetType = widgetType
         self._criteria = criteria
-        self._parent_or_owner_finder = parent_or_owner_finder
+        self._parentFinder = parentFinder
         self._found = set()
 
-    def is_satisfied(self):
-        return self._parent_or_owner_finder.is_satisfied()
+    def isSatisfied(self):
+        return self._parentFinder.isSatisfied()
 
     def widgets(self):
         return list(self._found)
 
     def test(self):
-        self._parent_or_owner_finder.test()
+        self._parentFinder.test()
         self._found.clear()
-        self._search(self._parent_or_owner_finder.widgets())
+        self._search(self._parentFinder.widgets())
 
-    def describe_to(self, description):
+    def describeTo(self, description):
         self._describe_briefly_to(description)
-        description.append_text(" in ").append_description_of(self._parent_or_owner_finder)
+        description.append_text(" in ").append_description_of(self._parentFinder)
 
-    def describe_failure_to(self, description):
-        self._parent_or_owner_finder.describe_failure_to(description)
-        if self._parent_or_owner_finder.is_satisfied:
+    def describeFailureTo(self, description):
+        self._parentFinder.describeFailureTo(description)
+        if self._parentFinder.isSatisfied:
             description.append_text(" contained "). \
                 append_description_of(len(self._found)). \
                 append_text(" ")
@@ -49,13 +49,13 @@ class RecursiveWidgetFinder(WidgetFinder):
             self._search_within(widget)
 
     def _search_within(self, widget):
-        if isinstance(widget, self._widget_type) and self._criteria.matches(widget):
+        if isinstance(widget, self._widgetType) and self._criteria.matches(widget):
             self._found.add(widget)
         else:
             self._search(widget.children())
 
     def _describe_briefly_to(self, description):
-        description.append_text(self._widget_type.__name__). \
+        description.append_text(self._widgetType.__name__). \
             append_text(" "). \
             append_description_of(self._criteria)
 
@@ -65,25 +65,25 @@ class TopLevelFrameFinder(WidgetFinder):
         super(TopLevelFrameFinder, self).__init__()
         self._app = app
 
-    def is_satisfied(self):
+    def isSatisfied(self):
         return True
 
     def widgets(self):
-        return self._root_windows
+        return self._rootWindows
 
     def test(self):
-        self._root_windows = set()
-        for top_level_widget in self._app.topLevelWidgets():
-            self._root_windows.add(self._root_parent(top_level_widget))
+        self._rootWindows = set()
+        for topLevelWidget in self._app.topLevelWidgets():
+            self._rootWindows.add(self._rootParent(topLevelWidget))
 
-    def describe_to(self, description):
+    def describeTo(self, description):
         description.append_text("top level frame")
 
-    def describe_failure_to(self, description):
-        self.describe_to(description)
+    def describeFailureTo(self, description):
+        self.describeTo(description)
 
-    def _root_parent(self, widget):
-        return widget if not widget.parent() else self._root_parent(widget.parent())
+    def _rootParent(self, widget):
+        return widget if not widget.parent() else self._rootParent(widget.parent())
 
 
 class SingleWidgetFinder(WidgetSelector):
@@ -91,8 +91,8 @@ class SingleWidgetFinder(WidgetSelector):
         super(SingleWidgetFinder, self).__init__()
         self._finder = finder
 
-    def is_satisfied(self):
-        return self._finder.is_satisfied() & self._is_single()
+    def isSatisfied(self):
+        return self._finder.isSatisfied() & self._isSingle()
 
     def test(self):
         self._finder.test()
@@ -103,14 +103,14 @@ class SingleWidgetFinder(WidgetSelector):
     def widget(self):
         return list(self.widgets())[0]
 
-    def describe_to(self, description):
+    def describeTo(self, description):
         description.append_text("exactly 1 ").append_description_of(self._finder)
 
-    def describe_failure_to(self, description):
+    def describeFailureTo(self, description):
         description.append_description_of(len(self.widgets())). \
             append_text(" ").append_description_of(self._finder)
 
-    def _is_single(self):
+    def _isSingle(self):
         return len(self.widgets()) == 1
 
 

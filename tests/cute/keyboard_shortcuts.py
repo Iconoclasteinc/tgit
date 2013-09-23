@@ -2,9 +2,9 @@
 
 from PyQt4.Qt import Qt
 
-from . import gestures
+from tests.cute import gestures
 
 
-Select_All = gestures.with_modifiers(Qt.ControlModifier, gestures.type_key(Qt.Key_A))
-Delete_Previous = gestures.type_key(Qt.Key_Backspace)
-Unselect = gestures.type_key(Qt.Key_Escape)
+SelectAll = gestures.withModifiers(Qt.ControlModifier, gestures.typeKey(Qt.Key_A))
+DeletePrevious = gestures.typeKey(Qt.Key_Backspace)
+Unselect = gestures.typeKey(Qt.Key_Escape)

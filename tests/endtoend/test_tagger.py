@@ -6,19 +6,19 @@ from tests.util import project
 from tests.endtoend.application_runner import ApplicationRunner
 from tests.endtoend.fake_audio_library import FakeAudioLibrary
 
-SAMPLE_AUDIO_FILE = project.test_resource_path("Hallelujah.mp3")
-SAMPLE_COVER_ART_FILE = project.test_resource_path("banana-song-cover.png")
+SAMPLE_AUDIO_FILE = project.testResourcePath("Hallelujah.mp3")
+SAMPLE_COVER_ART_FILE = project.testResourcePath("banana-song-cover.png")
 
 
 class TaggerTest(unittest.TestCase):
     def setUp(self):
         self.application = ApplicationRunner()
-        self.audio_library = FakeAudioLibrary()
+        self.audioLibrary = FakeAudioLibrary()
         self.application.start()
 
     def tearDown(self):
         self.application.stop()
-        self.audio_library.destroy()
+        self.audioLibrary.destroy()
 
     # todo At some point, low level details (i.e. testing modification of all tags) need to move
     # to ui integration tests with Qt targeting the UI in isolation from the domain.
@@ -26,36 +26,36 @@ class TaggerTest(unittest.TestCase):
     # The end-to-end test will then focus on the overall scenario at a higher level of details.
 
     # todo create a test mp3 from a sample realistic mpeg frame and make expected values explicit
-    def test_tagger_modifies_tags_of_an_existing_audio_file_and_saves_changes(self):
-        audio_file = self.audio_library.add_file(SAMPLE_AUDIO_FILE)
-        self.application.import_audio_file(audio_file)
-        self.application.shows_metadata(release_name='Messiah',
-                                        lead_performer='The Sixteen - Harry Christophers',
-                                        original_release_date='2008-03-01',
-                                        upc='123456789999',
-                                        track_title='Hallelujah (Chorus)',
-                                        featured_guest='Carolyn Sampson',
-                                        version_info='Original Version',
-                                        isrc='USPR37300012',
-                                        bitrate="320 kbps",
-                                        duration='03:56',
-                                        front_cover_embedded_text='Title: Handel Messiah')
-        self.application.change_metadata(release_name='Despicable Me',
-                                         lead_performer='Tim, Mark and Phil',
-                                         original_release_date='2010-07-09',
-                                         upc='987654321111',
-                                         track_title='Potato Banana Song',
-                                         version_info='Remix',
-                                         featured_guest='Stuart',
-                                         isrc='FRUP11000001',
-                                         front_cover_picture=SAMPLE_COVER_ART_FILE)
-        self.audio_library.has_file_with_metadata(audio_file,
-                                                  release_name='Despicable Me',
-                                                  lead_performer='Tim, Mark and Phil',
-                                                  original_release_date='2010-07-09',
-                                                  upc='987654321111',
-                                                  track_title='Potato Banana Song',
-                                                  version_info='Remix',
-                                                  featured_guest='Stuart',
-                                                  isrc='FRUP11000001',
-                                                  front_cover_picture=SAMPLE_COVER_ART_FILE)
+    def testTaggerModifiesTagsOfAnExistingAudioFileAndSavesChanges(self):
+        audioFile = self.audioLibrary.addFile(SAMPLE_AUDIO_FILE)
+        self.application.importAudioFile(audioFile)
+        self.application.showsMetadata(releaseName='Messiah',
+                                       leadPerformer='The Sixteen - Harry Christophers',
+                                       originalReleaseDate='2008-03-01',
+                                       upc='123456789999',
+                                       trackTitle='Hallelujah (Chorus)',
+                                       featuredGuest='Carolyn Sampson',
+                                       versionInfo='Original Version',
+                                       isrc='USPR37300012',
+                                       bitrate="320 kbps",
+                                       duration='03:56',
+                                       frontCoverEmbeddedText='Title: Handel Messiah')
+        self.application.changeMetadata(releaseName='Despicable Me',
+                                        leadPerformer='Tim, Mark and Phil',
+                                        originalReleaseDate='2010-07-09',
+                                        upc='987654321111',
+                                        trackTitle='Potato Banana Song',
+                                        versionInfo='Remix',
+                                        featuredGuest='Stuart',
+                                        isrc='FRUP11000001',
+                                        frontCoverPicture=SAMPLE_COVER_ART_FILE)
+        self.audioLibrary.hasFileWithMetadata(audioFile,
+                                              releaseName='Despicable Me',
+                                              leadPerformer='Tim, Mark and Phil',
+                                              originalReleaseDate='2010-07-09',
+                                              upc='987654321111',
+                                              trackTitle='Potato Banana Song',
+                                              versionInfo='Remix',
+                                              featuredGuest='Stuart',
+                                              isrc='FRUP11000001',
+                                              frontCoverPicture=SAMPLE_COVER_ART_FILE)

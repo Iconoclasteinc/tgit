@@ -20,106 +20,106 @@
 from mutagen.mp3 import MP3
 from mutagen import id3
 
+FEATURED_GUEST = 'Featured Guest'
+UPC = 'UPC'
+FRONT_COVER = 3
+UTF_8 = 3
+
+
 class MP3File(object):
-    FEATURED_GUEST = 'Featured Guest'
-    UPC = 'UPC'
-
-    FRONT_COVER = 3
-    UTF_8 = 3
-
     def __init__(self, filename):
         super(MP3File, self).__init__()
         self._mp3 = MP3(filename)
 
     @property
-    def front_cover_picture(self):
-        attached_pictures = self._frames_of_type(id3.APIC)
-        for pic in attached_pictures:
-            if pic.type == MP3File.FRONT_COVER:
+    def frontCoverPicture(self):
+        attachedPictures = self._framesOfType(id3.APIC)
+        for pic in attachedPictures:
+            if pic.type == FRONT_COVER:
                 return pic.mime, pic.data
 
         return None, None
 
-    @front_cover_picture.setter
-    def front_cover_picture(self, picture):
-        mime_type, image_data = picture
-        if image_data is None:
-            self._overwrite_frames(id3.APIC)
+    @frontCoverPicture.setter
+    def frontCoverPicture(self, picture):
+        mimeType, imageData = picture
+        if imageData is None:
+            self._overwriteFrames(id3.APIC)
             return
-        front_cover = id3.APIC(encoding=MP3File.UTF_8, mime=mime_type, type=MP3File.FRONT_COVER,
-                               desc='Front Cover', data=image_data)
-        self._overwrite_frames(id3.APIC, front_cover)
+        frontCover = id3.APIC(encoding=UTF_8, mime=mimeType, type=FRONT_COVER,
+                              desc='Front Cover', data=imageData)
+        self._overwriteFrames(id3.APIC, frontCover)
 
     @property
-    def release_name(self):
-        return self._get_text(id3.TALB())
+    def releaseName(self):
+        return self._getText(id3.TALB())
 
-    @release_name.setter
-    def release_name(self, album):
-        self._add_text_frame(id3.TALB(text=album))
-
-    @property
-    def lead_performer(self):
-        return self._get_text(id3.TPE1())
-
-    @lead_performer.setter
-    def lead_performer(self, artist):
-        self._add_text_frame(id3.TPE1(text=artist))
+    @releaseName.setter
+    def releaseName(self, album):
+        self._addTextFrame(id3.TALB(text=album))
 
     @property
-    def original_release_date(self):
-        return self._get_text(id3.TDOR())
+    def leadPerformer(self):
+        return self._getText(id3.TPE1())
 
-    @original_release_date.setter
-    def original_release_date(self, timestamp):
-        self._add_text_frame(id3.TDOR(text=timestamp))
+    @leadPerformer.setter
+    def leadPerformer(self, artist):
+        self._addTextFrame(id3.TPE1(text=artist))
+
+    @property
+    def originalReleaseDate(self):
+        return self._getText(id3.TDOR())
+
+    @originalReleaseDate.setter
+    def originalReleaseDate(self, timestamp):
+        self._addTextFrame(id3.TDOR(text=timestamp))
 
     @property
     def upc(self):
-        return self._get_text(id3.TXXX(desc=MP3File.UPC))
+        return self._getText(id3.TXXX(desc=UPC))
 
     @upc.setter
     def upc(self, code):
-        self._add_text_frame(id3.TXXX(desc=MP3File.UPC, text=code))
+        self._addTextFrame(id3.TXXX(desc=UPC, text=code))
 
     @property
-    def track_title(self):
-        return self._get_text(id3.TIT2())
+    def trackTitle(self):
+        return self._getText(id3.TIT2())
 
-    @track_title.setter
-    def track_title(self, title):
-        self._add_text_frame(id3.TIT2(text=title))
-
-    @property
-    def version_info(self):
-        return self._get_text(id3.TPE4())
-
-    @version_info.setter
-    def version_info(self, info):
-        self._add_text_frame(id3.TPE4(text=info))
+    @trackTitle.setter
+    def trackTitle(self, title):
+        self._addTextFrame(id3.TIT2(text=title))
 
     @property
-    def featured_guest(self):
-        return self._get_text(id3.TXXX(desc=MP3File.FEATURED_GUEST))
+    def versionInfo(self):
+        return self._getText(id3.TPE4())
 
-    @featured_guest.setter
-    def featured_guest(self, name):
-        self._add_text_frame(id3.TXXX(desc=MP3File.FEATURED_GUEST, text=name))
+    @versionInfo.setter
+    def versionInfo(self, info):
+        self._addTextFrame(id3.TPE4(text=info))
+
+    @property
+    def featuredGuest(self):
+        return self._getText(id3.TXXX(desc=FEATURED_GUEST))
+
+    @featuredGuest.setter
+    def featuredGuest(self, name):
+        self._addTextFrame(id3.TXXX(desc=FEATURED_GUEST, text=name))
 
     @property
     def isrc(self):
-        return self._get_text(id3.TSRC())
+        return self._getText(id3.TSRC())
 
     @isrc.setter
     def isrc(self, isrc):
-        self._add_text_frame(id3.TSRC(text=isrc))
+        self._addTextFrame(id3.TSRC(text=isrc))
 
     @property
     def bitrate(self):
         return self._mp3.info.bitrate
 
     @property
-    def bitrate_in_kbps(self):
+    def bitrateInKbps(self):
         return int(round(self.bitrate, -3) / 1000)
 
     @property
@@ -127,34 +127,34 @@ class MP3File(object):
         return self._mp3.info.length
 
     @property
-    def duration_as_text(self):
+    def durationAsText(self):
         minutes, seconds = divmod(round(self.duration), 60)
         return "%02d:%02d" % (minutes, seconds)
 
     def save(self):
         self._mp3.save()
 
-    def _get_text(self, frame):
-        return self._has_frame(frame) and self._as_text(frame) or None
+    def _getText(self, frame):
+        return self._hasFrame(frame) and self._asText(frame) or None
 
-    def _has_frame(self, frame):
+    def _hasFrame(self, frame):
         return frame.HashKey in self._mp3.tags
 
-    def _as_text(self, frame):
+    def _asText(self, frame):
         return unicode(self._mp3[frame.HashKey])
 
-    def _add_text_frame(self, frame):
-        frame.encoding = MP3File.UTF_8
-        self._add_frame(frame)
+    def _addTextFrame(self, frame):
+        frame.encoding = UTF_8
+        self._addFrame(frame)
 
-    def _add_frame(self, frame):
+    def _addFrame(self, frame):
         self._mp3.tags.add(frame)
 
-    def _overwrite_frames(self, frame_type, *frames):
-        self._mp3.tags.setall(self._frame_id(frame_type), frames)
+    def _overwriteFrames(self, frame_type, *frames):
+        self._mp3.tags.setall(self._frameId(frame_type), frames)
 
-    def _frames_of_type(self, frame_type):
-        return self._mp3.tags.getall(self._frame_id(frame_type))
+    def _framesOfType(self, frame_type):
+        return self._mp3.tags.getall(self._frameId(frame_type))
 
-    def _frame_id(self, frame_type):
+    def _frameId(self, frame_type):
         return frame_type.__name__

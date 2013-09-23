@@ -3,32 +3,27 @@
 from tgit.tagger import TGiT
 
 from tests.util import project
-from tests.cute.events import MainEventLoop
-from .tgit_driver import TGiTDriver
+from tests.endtoend.tgit_driver import TGiTDriver
 
 ONE_SECOND = 1000
 
 
 class ApplicationRunner(object):
     def start(self):
-        self._app = TGiT(project.locales_dir)
+        self._app = TGiT(project.localesDir)
         self._driver = TGiTDriver(timeout_in_ms=ONE_SECOND)
-        self._wait_for_window_shown()
-
-    def _wait_for_window_shown(self):
-        MainEventLoop.process_pending_events()
 
     def stop(self):
         self._driver.close()
         del self._driver
         del self._app
 
-    def import_audio_file(self, path):
-        self._driver.import_track(path)
+    def importAudioFile(self, path):
+        self._driver.importTrack(path)
 
-    def shows_metadata(self, **tags):
-        self._driver.shows_metadata(tags)
+    def showsMetadata(self, **tags):
+        self._driver.showsMetadata(tags)
 
-    def change_metadata(self, **tags):
-        self._driver.edit_metadata(tags)
-        self._driver.save_audio_file()
+    def changeMetadata(self, **tags):
+        self._driver.editMetadata(tags)
+        self._driver.saveAudioFile()

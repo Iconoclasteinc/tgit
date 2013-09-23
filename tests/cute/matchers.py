@@ -4,26 +4,26 @@ from PyQt4.Qt import QWidget
 from hamcrest.core.core.isequal import equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 
-from . import properties
+from tests.cute import properties
 
 
 def named(name):
     return with_(properties.name(), equal_to(name))
 
 
-def with_button_text(text):
-    return with_(properties.button_text(), equal_to(text))
+def withButtonText(text):
+    return with_(properties.buttonText(), equal_to(text))
 
 
-def with_list_item_text(text):
-    return with_(properties.list_item_text(), equal_to(text))
+def withListItemText(text):
+    return with_(properties.listItemText(), equal_to(text))
 
 
 def with_(query, matcher):
     return QueryResultMatcher(query, matcher)
 
 
-def showing_on_screen():
+def showingOnScreen():
     return ShowingOnScreenMatcher()
 
 
@@ -31,16 +31,16 @@ class QueryResultMatcher(BaseMatcher):
     def __init__(self, query, matcher):
         super(BaseMatcher, self).__init__()
         self._query = query
-        self._result_matcher = matcher
+        self._resultMatcher = matcher
 
     def _matches(self, item):
-        return item and self._result_matcher.matches(self._query(item))
+        return item and self._resultMatcher.matches(self._query(item))
 
     def describe_to(self, description):
         description.append_text("with "). \
             append_description_of(self._query). \
             append_text(" "). \
-            append_description_of(self._result_matcher)
+            append_description_of(self._resultMatcher)
 
 
 class ShowingOnScreenMatcher(BaseMatcher):
