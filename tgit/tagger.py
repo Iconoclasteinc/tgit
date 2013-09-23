@@ -18,7 +18,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import sys
-import sip
 
 UTF_8 = "UTF-8"
 
@@ -40,7 +39,7 @@ class TGiT(QApplication):
         main_window.raise_()
         main_window.activateWindow()
 
-    def _set_locale(self, locale):
+    def locale(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
         self._qt_translations = self._install_translations("qt", locale)
         self._application_translations = self._install_translations("tgit", locale)
@@ -53,7 +52,7 @@ class TGiT(QApplication):
         else:
             return None
 
-    locale = property(fset=_set_locale)
+    locale = property(fset=locale)
 
     def run(self):
         return sys.exit(self.exec_())
