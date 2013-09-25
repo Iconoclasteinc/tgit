@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import unittest
 from hamcrest import *
 
@@ -8,30 +7,8 @@ from tests.util.mp3_builder import MP3, mp3Sample, readContent
 from tests.util import resources
 from tgit.mp3 import MP3File
 
-OTHER_FRONT_COVER_PICTURE_FILE = resources.path("banana-song-cover.png")
-BACK_COVER_PICTURE_FILE = resources.path("back-cover-sample.jpg")
-
-
-def imageData(filename):
-    return open(filename, "rb").read()
-
 
 class MP3FileTest(unittest.TestCase):
-    # def setUp(self):
-        # self._audio = MP3(mp3Sample.path,
-        #                   releaseName=u"Release Name",
-        #                   frontCoverPicture=(
-        #                   'image/jpeg', '', resources.path("front-cover-sample.jpg")),
-        #                   backCoverPicture=('image/jpeg', 'Back', BACK_COVER_PICTURE_FILE),
-        #                   leadPerformer=u"Lead Performer",
-        #                   originalReleaseDate=ORIGINAL_RELEASE_DATE,
-        #                   upc=UPC,
-        #                   trackTitle=TRACK_TITLE,
-        #                   versionInfo=VERSION_INFO,
-        #                   featuredGuest=FEATURED_GUEST,
-        #                   isrc=ISRC)
-        # self.mp3 = MP3File(self._audio.name)
-
     def tearDown(self):
         self._audioFile.delete()
 
@@ -61,23 +38,20 @@ class MP3FileTest(unittest.TestCase):
         assert_that(mp3.leadPerformer, equal_to('Lead Performer'), "lead performer")
 
     def testReadsFrontCoverPictureFromId3Tags(self):
-        frontCover = ('image/jpeg', '', resources.path("front-cover-sample.jpg"))
+        frontCover = ('image/jpeg', '', resources.path("front-cover.jpg"))
         mp3 = MP3File(self.makeMp3(frontCover=frontCover))
 
         mime, data = mp3.frontCoverPicture
         assert_that(mime, equal_to('image/jpeg'), "front cover mime type")
         assert_that(len(data),
-                    equal_to(len(readContent(resources.path("front-cover-sample.jpg")))),
+                    equal_to(len(readContent(resources.path("front-cover.jpg")))),
                     "front cover picture size in bytes")
 
-    def testRemovesExistingFrontCoverWhenSetToNone(self):
-        mp3 = MP3File(self.makeMp3(frontCover=('image/jpeg', '',
-                                               resources.path("front-cover-sample.jpg"))))
-        mp3.frontCoverPicture = (None, None)
-        mp3.save()
+    def testDoesNotConfuseFrontCoverWithOtherPictureTypes(self):
+        backCover = ('image/jpeg', '', resources.path("back-cover.jpg"))
+        mp3 = MP3File(self.makeMp3(backCover=backCover))
 
-        reloaded = MP3File(mp3.filename)
-        assert_that(reloaded.frontCoverPicture, is_((None, None)), "missing front cover")
+        assert_that(mp3.frontCoverPicture, is_((None, None)), "missing front cover")
 
     def testReadsOriginalReleaseDateFromId3Tags(self):
         mp3 = MP3File(self.makeMp3(originalReleaseDate='2013-11-15'))
@@ -119,48 +93,39 @@ class MP3FileTest(unittest.TestCase):
         mp3 = MP3File(self.makeMp3())
         assert_that(mp3.durationAsText, equal_to(mp3Sample.durationAsText), "duration as text")
 
-    # todo introduce a matcher for comparing all metadata
-    # something like assert_that(modified_audio, same_metada_as(original_audio))
-    # then test round tripping on several test data samples
     def testCanSaveAndReloadMetadataInFile(self):
-        self.mp3 = MP3File(self.makeMp3())
+        mp3 = MP3File(self.makeMp3())
+        mp3.releaseName = u"Release Name"
+        mp3.frontCoverPicture = 'image/jpeg', readContent(resources.path("salers.jpg"))
+        mp3.leadPerformer = u"Lead Performer"
+        mp3.originalReleaseDate = u"2013-12-01"
+        mp3.upc = u"987654321111"
+        mp3.trackTitle = u"Track Title"
+        mp3.versionInfo = u"Version Info"
+        mp3.featuredGuest = u"Featured Guest"
+        mp3.isrc = u"ZZXX87654321"
 
-        self.mp3.releaseName = u"Modified Release Name"
-        self.mp3.frontCoverPicture = 'image/png', imageData(OTHER_FRONT_COVER_PICTURE_FILE)
-        self.mp3.leadPerformer = u"Modified Lead Performer"
-        self.mp3.originalReleaseDate = u"2013-12-01"
-        self.mp3.upc = u"987654321111"
-        self.mp3.trackTitle = u"Modified Track Title"
-        self.mp3.versionInfo = u"Modified Version Info"
-        self.mp3.featuredGuest = u"Modified Featured Guest"
-        self.mp3.isrc = u"ZZXX87654321"
-        self.mp3.save()
+        self.assertCanBeSavedAndReloadedWithSameTags(mp3)
 
-        modifiedAudio = MP3File(self.mp3.filename)
-        assert_that(modifiedAudio.releaseName, equal_to("Modified Release Name"),
-                    "modified release name")
-        modified_mime, modified_cover_data = modifiedAudio.frontCoverPicture
-        assert_that(modified_mime, equal_to('image/png'), "modified front cover mime type")
-        assert_that(len(modified_cover_data),
-                    equal_to(len(imageData(OTHER_FRONT_COVER_PICTURE_FILE))),
-                    "modified front cover picture size in bytes")
-        assert_that(modifiedAudio.leadPerformer, equal_to("Modified Lead Performer"),
-                    "modified lead performer")
-        assert_that(modifiedAudio.originalReleaseDate, equal_to("2013-12-01"),
-                    "modified original release date")
-        assert_that(modifiedAudio.upc, equal_to("987654321111"), "modified upc")
-        assert_that(modifiedAudio.trackTitle, equal_to("Modified Track Title"),
-                    "modified track title")
-        assert_that(modifiedAudio.versionInfo, equal_to("Modified Version Info"),
-                    "modified version info")
-        assert_that(modifiedAudio.featuredGuest, equal_to("Modified Featured Guest"),
-                    "modified featured guest")
-        assert_that(modifiedAudio.isrc, equal_to("ZZXX87654321"), "modified isrc")
+    def testRemovesExistingFrontCoverWhenSetToNone(self):
+        mp3 = MP3File(self.makeMp3(frontCover=('image/jpeg', '',
+                                               resources.path("front-cover.jpg"))))
+        mp3.frontCoverPicture = (None, None)
+        mp3.save()
 
+        reloaded = MP3File(mp3.filename)
+        assert_that(reloaded.frontCoverPicture, is_((None, None)), "removed front cover")
 
-
-
-
-
-
-
+    def assertCanBeSavedAndReloadedWithSameTags(self, original):
+        original.save()
+        assert_that(MP3File(original.filename), has_properties(
+            releaseName=original.releaseName,
+            leadPerformer=original.leadPerformer,
+            originalReleaseDate=original.originalReleaseDate,
+            upc=original.upc,
+            isrc=original.isrc,
+            trackTitle=original.trackTitle,
+            versionInfo=original.versionInfo,
+            featuredGuest=original.featuredGuest,
+            frontCoverPicture=original.frontCoverPicture
+        ))

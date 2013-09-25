@@ -7,7 +7,6 @@ from tests.endtoend.application_runner import ApplicationRunner
 from tests.endtoend.fake_audio_library import FakeAudioLibrary
 
 SAMPLE_AUDIO_FILE = resources.path("Hallelujah.mp3")
-SAMPLE_COVER_ART_FILE = resources.path("banana-song-cover.png")
 
 
 class TaggerTest(unittest.TestCase):
@@ -48,14 +47,15 @@ class TaggerTest(unittest.TestCase):
                                         versionInfo='Remix',
                                         featuredGuest='Stuart',
                                         isrc='FRUP11000001',
-                                        frontCoverPicture=SAMPLE_COVER_ART_FILE)
+                                        frontCoverPicture=resources.path("minions-in-black.jpg"))
         self.audioLibrary.containsFileWithMetadata(audioFile,
-                                              releaseName='Despicable Me',
-                                              leadPerformer='Tim, Mark and Phil',
-                                              originalReleaseDate='2010-07-09',
-                                              upc='987654321111',
-                                              trackTitle='Potato Banana Song',
-                                              versionInfo='Remix',
-                                              featuredGuest='Stuart',
-                                              isrc='FRUP11000001',
-                                              frontCoverPicture=SAMPLE_COVER_ART_FILE)
+                                                   releaseName='Despicable Me',
+                                                   leadPerformer='Tim, Mark and Phil',
+                                                   originalReleaseDate='2010-07-09',
+                                                   upc='987654321111',
+                                                   trackTitle='Potato Banana Song',
+                                                   versionInfo='Remix',
+                                                   featuredGuest='Stuart',
+                                                   isrc='FRUP11000001',
+                                                   frontCoverFile=resources.path(
+                                                       "minions-in-black.jpg"))
