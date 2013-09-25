@@ -20,36 +20,33 @@
 import sys
 from PyQt4.Qt import QApplication, QTextCodec, QTranslator
 
+from tgit import resources
 from tgit.ui.main_window import MainWindow
 
 UTF_8 = "UTF-8"
 
 
 class TGiT(QApplication):
-    def __init__(self, localesDir, locale='en'):
+    def __init__(self, locale):
         QApplication.__init__(self, [])
-        self._localesDir = localesDir
-        self.locale = locale
+        self._translators = []
+        self.setLocale(locale)
         self._ui = MainWindow()
 
-    def locale(self, locale):
+    def setLocale(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
-        self._qtTranslations = self.installTranslations("qt", locale)
-        self._appTranslations = self.installTranslations("tgit", locale)
+        self._installTranslator("qt", locale),
+        self._installTranslator("tgit", locale)
 
-    def installTranslations(self, file, locale):
+    def _installTranslator(self, resource, locale):
         translator = QTranslator()
-        if translator.load("%s_%s" % (file, locale), self._localesDir):
+        if translator.load("%s_%s" % (resource, locale), ":/locales"):
             self.installTranslator(translator)
-            return translator
-        else:
-            return None
-
-    locale = property(fset=locale)
+            self._translators.append(translator)
 
     def run(self):
         return sys.exit(self.exec_())
 
 
-def main(locales_dir):
-    TGiT(locales_dir, locale='fr').run()
+def main(locale):
+    TGiT(locale).run()
