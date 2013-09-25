@@ -1,37 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import shutil
-from tempfile import NamedTemporaryFile
+import os
 import unittest
-
 from hamcrest import *
 
-import mutagen.mp3 as mp3
-import mutagen.id3 as id3
-
-from tests.util import project
-
+from tests.util.mp3_builder import MP3, mp3Sample, readContent
+from tests.util import resources
 from tgit.mp3 import MP3File
 
-SAMPLE_MP3_FILE = project.testResourcePath("base.mp3")
-FRONT_COVER_PICTURE_FILE = project.testResourcePath("front-cover-sample.jpg")
-OTHER_FRONT_COVER_PICTURE_FILE = project.testResourcePath("banana-song-cover.png")
-BACK_COVER_PICTURE_FILE = project.testResourcePath("back-cover-sample.jpg")
-
-RELEASE_NAME = u"Release Name"
-LEAD_PERFORMER = u"Lead Performer"
-ORIGINAL_RELEASE_DATE = u"2013-11-15"
-UPC = u"123456789999"
-TRACK_TITLE = u"Track Title"
-VERSION_INFO = u"Version Info"
-FEATURED_GUEST = u"Featured Guest"
-ISRC = u"AABB12345678"
-BITRATE_IN_BPS = 320000
-BITRATE_IN_KBPS = 320
-DURATION_IN_S = 9.064475
-DURATION_AS_TEXT = "00:09"
-
-UTF_8 = 3
+OTHER_FRONT_COVER_PICTURE_FILE = resources.path("banana-song-cover.png")
+BACK_COVER_PICTURE_FILE = resources.path("back-cover-sample.jpg")
 
 
 def imageData(filename):
@@ -39,110 +17,126 @@ def imageData(filename):
 
 
 class MP3FileTest(unittest.TestCase):
-    def setUp(self):
-        self._createTestMp3(releaseName=RELEASE_NAME,
-                            frontCoverPicture=('image/jpeg', FRONT_COVER_PICTURE_FILE),
-                            backCoverPicture=('image/jpeg', BACK_COVER_PICTURE_FILE),
-                            leadPerformer=LEAD_PERFORMER,
-                            originalReleaseDate=ORIGINAL_RELEASE_DATE,
-                            upc=UPC,
-                            trackTitle=TRACK_TITLE,
-                            versionInfo=VERSION_INFO,
-                            featuredGuest=FEATURED_GUEST,
-                            isrc=ISRC)
-        self.audio = MP3File(self.workingFile.name)
+    # def setUp(self):
+        # self._audio = MP3(mp3Sample.path,
+        #                   releaseName=u"Release Name",
+        #                   frontCoverPicture=(
+        #                   'image/jpeg', '', resources.path("front-cover-sample.jpg")),
+        #                   backCoverPicture=('image/jpeg', 'Back', BACK_COVER_PICTURE_FILE),
+        #                   leadPerformer=u"Lead Performer",
+        #                   originalReleaseDate=ORIGINAL_RELEASE_DATE,
+        #                   upc=UPC,
+        #                   trackTitle=TRACK_TITLE,
+        #                   versionInfo=VERSION_INFO,
+        #                   featuredGuest=FEATURED_GUEST,
+        #                   isrc=ISRC)
+        # self.mp3 = MP3File(self._audio.name)
 
     def tearDown(self):
-        self._deleteTestMp3()
+        self._audioFile.delete()
 
-    @unittest.skip("Pending")
-    def testRemovesTheExistingFrontCoverWhenNoneIsProvided(self):
-        self.fail("Not implemented")
+    def makeMp3(self, **tags):
+        self._audioFile = MP3(mp3Sample.path, **tags)
+        return self._audioFile.name
 
-    @unittest.skip("Pending")
     def testIgnoresMissingTags(self):
-        self.fail("Not implemented")
-
-    @unittest.skip("pending")
-    def testCreatesMp3TagsWhenMissing(self):
-        self.fail("Not implemented")
-
-    @unittest.skip("pending")
-    def testJoinsAllTextsOfFrames(self):
-        self.fail("Not implemented")
+        mp3 = MP3File(self.makeMp3())
+        assert_that(mp3.releaseName, is_(None), "missing release name")
 
     def testReadsReleaseNameFromId3Tags(self):
-        assert_that(self.audio.releaseName, equal_to(RELEASE_NAME), "release name")
+        mp3 = MP3File(self.makeMp3(releaseName='Release Name'))
+        assert_that(mp3.releaseName, equal_to('Release Name'), "release name")
 
-    def testReadsFrontCoverPictureFromId3Tags(self):
-        mime, data = self.audio.frontCoverPicture
-        assert_that(mime, equal_to('image/jpeg'), "front cover mime type")
-        assert_that(len(data), equal_to(len(imageData(FRONT_COVER_PICTURE_FILE))),
-                    "front cover picture size in bytes")
+    def testJoinsAllTextsOfFrames(self):
+        mp3 = MP3File(self.makeMp3(releaseName=['Release', 'Names']))
+        assert_that(mp3.releaseName, equal_to('Release\x00Names'), "release names")
 
-    @unittest.skip("Pending")
-    def testRecordsASingleFrontCoverPicture(self):
-        self.fail("Not implemented")
-        # test with a front cover without a description
-        # test with a front cover with the same description
-
-    @unittest.skip("Pending")
-    def testLeavesOtherAttachedPicturesUnchanged(self):
-        self.fail("Not implemented")
-        # test with a other attached pictures with or without a description
+    def testCreatesMp3TagsWhenMissing(self):
+        mp3 = MP3File(self.makeMp3())
+        mp3.releaseName = 'Release Name'
+        assert_that(mp3.releaseName, is_('Release Name'), "release name")
 
     def testReadsLeadPerformerFromId3Tags(self):
-        assert_that(self.audio.leadPerformer, equal_to(LEAD_PERFORMER), "lead performer")
+        mp3 = MP3File(self.makeMp3(leadPerformer='Lead Performer'))
+        assert_that(mp3.leadPerformer, equal_to('Lead Performer'), "lead performer")
+
+    def testReadsFrontCoverPictureFromId3Tags(self):
+        frontCover = ('image/jpeg', '', resources.path("front-cover-sample.jpg"))
+        mp3 = MP3File(self.makeMp3(frontCover=frontCover))
+
+        mime, data = mp3.frontCoverPicture
+        assert_that(mime, equal_to('image/jpeg'), "front cover mime type")
+        assert_that(len(data),
+                    equal_to(len(readContent(resources.path("front-cover-sample.jpg")))),
+                    "front cover picture size in bytes")
+
+    def testRemovesExistingFrontCoverWhenSetToNone(self):
+        mp3 = MP3File(self.makeMp3(frontCover=('image/jpeg', '',
+                                               resources.path("front-cover-sample.jpg"))))
+        mp3.frontCoverPicture = (None, None)
+        mp3.save()
+
+        reloaded = MP3File(mp3.filename)
+        assert_that(reloaded.frontCoverPicture, is_((None, None)), "missing front cover")
 
     def testReadsOriginalReleaseDateFromId3Tags(self):
-        assert_that(self.audio.originalReleaseDate, equal_to(ORIGINAL_RELEASE_DATE),
-                    "original release date")
+        mp3 = MP3File(self.makeMp3(originalReleaseDate='2013-11-15'))
+        assert_that(mp3.originalReleaseDate, equal_to('2013-11-15'), "original release date")
 
     def testReadsUpcFromCustomId3Tag(self):
-        assert_that(self.audio.upc, equal_to(UPC), "upc")
+        mp3 = MP3File(self.makeMp3(upc='1234567899999'))
+        assert_that(mp3.upc, equal_to('1234567899999'), "upc")
 
     def testReadsTrackTitleFromId3Tags(self):
-        assert_that(self.audio.trackTitle, equal_to(TRACK_TITLE), "track title")
+        mp3 = MP3File(self.makeMp3(trackTitle='Track Title'))
+        assert_that(mp3.trackTitle, equal_to("Track Title"), "track title")
 
     def testReadsVersionInfoFromId3Tags(self):
-        assert_that(self.audio.versionInfo, equal_to(VERSION_INFO), "version info")
+        mp3 = MP3File(self.makeMp3(versionInfo='Version Info'))
+        assert_that(mp3.versionInfo, equal_to("Version Info"), "version info")
 
     def testReadsFeaturedGuestFromCustomId3Tag(self):
-        assert_that(self.audio.featuredGuest, equal_to(FEATURED_GUEST), "featured guest")
+        mp3 = MP3File(self.makeMp3(featuredGuest='Featured Guest'))
+        assert_that(mp3.featuredGuest, equal_to("Featured Guest"), "featured guest")
 
     def testReadsIsrcFromId3Tags(self):
-        assert_that(self.audio.isrc, equal_to(ISRC), "isrc")
+        mp3 = MP3File(self.makeMp3(isrc='AABB12345678'))
+        assert_that(mp3.isrc, equal_to('AABB12345678'), "isrc")
 
     def testReadsTrackBitrateFromAudioStreamInformation(self):
-        assert_that(self.audio.bitrate, equal_to(BITRATE_IN_BPS), "bitrate")
+        mp3 = MP3File(self.makeMp3())
+        assert_that(mp3.bitrate, equal_to(mp3Sample.bitrate), "bitrate")
 
     def testCanReportBitrateRoundedInKbps(self):
-        assert_that(self.audio.bitrateInKbps, equal_to(BITRATE_IN_KBPS),
-                    "bitrate in kbps")
+        mp3 = MP3File(self.makeMp3())
+        assert_that(mp3.bitrateInKbps, equal_to(mp3Sample.bitrateInKbps), "bitrate in kbps")
 
     def testReadsTrackDurationFromAudioStreamInformation(self):
-        assert_that(self.audio.duration, equal_to(DURATION_IN_S), "duration")
+        mp3 = MP3File(self.makeMp3())
+        assert_that(mp3.duration, equal_to(mp3Sample.duration), "duration")
 
     def testCanReportDurationAsHumanReadableText(self):
-        assert_that(self.audio.durationAsText, equal_to(DURATION_AS_TEXT),
-                    "duration as text")
+        mp3 = MP3File(self.makeMp3())
+        assert_that(mp3.durationAsText, equal_to(mp3Sample.durationAsText), "duration as text")
 
     # todo introduce a matcher for comparing all metadata
     # something like assert_that(modified_audio, same_metada_as(original_audio))
     # then test round tripping on several test data samples
-    def testSavesMetadataBackToAudioFile(self):
-        self.audio.releaseName = u"Modified Release Name"
-        self.audio.frontCoverPicture = 'image/png', imageData(OTHER_FRONT_COVER_PICTURE_FILE)
-        self.audio.leadPerformer = u"Modified Lead Performer"
-        self.audio.originalReleaseDate = u"2013-12-01"
-        self.audio.upc = u"987654321111"
-        self.audio.trackTitle = u"Modified Track Title"
-        self.audio.versionInfo = u"Modified Version Info"
-        self.audio.featuredGuest = u"Modified Featured Guest"
-        self.audio.isrc = u"ZZXX87654321"
-        self.audio.save()
+    def testCanSaveAndReloadMetadataInFile(self):
+        self.mp3 = MP3File(self.makeMp3())
 
-        modifiedAudio = MP3File(self.workingFile.name)
+        self.mp3.releaseName = u"Modified Release Name"
+        self.mp3.frontCoverPicture = 'image/png', imageData(OTHER_FRONT_COVER_PICTURE_FILE)
+        self.mp3.leadPerformer = u"Modified Lead Performer"
+        self.mp3.originalReleaseDate = u"2013-12-01"
+        self.mp3.upc = u"987654321111"
+        self.mp3.trackTitle = u"Modified Track Title"
+        self.mp3.versionInfo = u"Modified Version Info"
+        self.mp3.featuredGuest = u"Modified Featured Guest"
+        self.mp3.isrc = u"ZZXX87654321"
+        self.mp3.save()
+
+        modifiedAudio = MP3File(self.mp3.filename)
         assert_that(modifiedAudio.releaseName, equal_to("Modified Release Name"),
                     "modified release name")
         modified_mime, modified_cover_data = modifiedAudio.frontCoverPicture
@@ -163,33 +157,10 @@ class MP3FileTest(unittest.TestCase):
                     "modified featured guest")
         assert_that(modifiedAudio.isrc, equal_to("ZZXX87654321"), "modified isrc")
 
-    def _createTestMp3(self, **tags):
-        self._copyMasterFile(SAMPLE_MP3_FILE)
-        self._populateTags(tags)
 
-    def _copyMasterFile(self, masterFile):
-        self.workingFile = NamedTemporaryFile(suffix='.mp3')
-        shutil.copy(masterFile, self.workingFile.name)
 
-    #todo we need to build different test data each test
-    def _populateTags(self, tags):
-        testMp3 = mp3.MP3(self.workingFile.name)
-        testMp3.add_tags()
-        testMp3.tags.add(id3.TALB(encoding=UTF_8, text=[tags['releaseName']]))
-        testMp3.tags.add(id3.APIC(UTF_8, tags['backCoverPicture'][0], 4, 'Back Cover',
-                                  imageData(tags['backCoverPicture'][1])))
-        testMp3.tags.add(id3.APIC(UTF_8, tags['frontCoverPicture'][0], 3, '',
-                                  imageData(tags['frontCoverPicture'][1])))
-        testMp3.tags.add(id3.TPE1(encoding=UTF_8, text=tags['leadPerformer']))
-        testMp3.tags.add(id3.TDOR(encoding=UTF_8, text=[id3.ID3TimeStamp(tags[
-                                  'originalReleaseDate'])]))
-        testMp3.tags.add(id3.TXXX(encoding=UTF_8, desc='UPC', text=tags['upc']))
-        testMp3.tags.add(id3.TIT2(encoding=UTF_8, text=tags['trackTitle']))
-        testMp3.tags.add(id3.TPE4(encoding=UTF_8, text=tags['versionInfo']))
-        testMp3.tags.add(id3.TXXX(encoding=UTF_8, desc='Featured Guest',
-                                  text=tags['featuredGuest']))
-        testMp3.tags.add(id3.TSRC(encoding=UTF_8, text=tags['isrc']))
-        testMp3.save()
 
-    def _deleteTestMp3(self):
-        self.workingFile.close()
+
+
+
+

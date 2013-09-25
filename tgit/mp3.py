@@ -32,6 +32,10 @@ class MP3File(object):
         self._mp3 = MP3(filename)
 
     @property
+    def filename(self):
+        return self._mp3.filename
+
+    @property
     def frontCoverPicture(self):
         attachedPictures = self._framesOfType(id3.APIC)
         for pic in attachedPictures:
@@ -138,7 +142,7 @@ class MP3File(object):
         return self._hasFrame(frame) and self._asText(frame) or None
 
     def _hasFrame(self, frame):
-        return frame.HashKey in self._mp3.tags
+        return self._mp3.tags and frame.HashKey in self._mp3.tags
 
     def _asText(self, frame):
         return unicode(self._mp3[frame.HashKey])
@@ -148,13 +152,18 @@ class MP3File(object):
         self._addFrame(frame)
 
     def _addFrame(self, frame):
+        if not self._mp3.tags:
+            self._mp3.add_tags()
         self._mp3.tags.add(frame)
 
-    def _overwriteFrames(self, frame_type, *frames):
-        self._mp3.tags.setall(self._frameId(frame_type), frames)
+    def _overwriteFrames(self, frameType, *frames):
+        self._mp3.tags.setall(self._frameId(frameType), frames)
 
-    def _framesOfType(self, frame_type):
-        return self._mp3.tags.getall(self._frameId(frame_type))
+    def _framesOfType(self, frameType):
+        if self._mp3.tags:
+            return self._mp3.tags.getall(self._frameId(frameType))
+        else:
+            return []
 
     def _frameId(self, frame_type):
         return frame_type.__name__

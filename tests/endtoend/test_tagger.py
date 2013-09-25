@@ -2,12 +2,12 @@
 
 import unittest
 
-from tests.util import project
+from tests.util import resources
 from tests.endtoend.application_runner import ApplicationRunner
 from tests.endtoend.fake_audio_library import FakeAudioLibrary
 
-SAMPLE_AUDIO_FILE = project.testResourcePath("Hallelujah.mp3")
-SAMPLE_COVER_ART_FILE = project.testResourcePath("banana-song-cover.png")
+SAMPLE_AUDIO_FILE = resources.path("Hallelujah.mp3")
+SAMPLE_COVER_ART_FILE = resources.path("banana-song-cover.png")
 
 
 class TaggerTest(unittest.TestCase):
@@ -49,7 +49,7 @@ class TaggerTest(unittest.TestCase):
                                         featuredGuest='Stuart',
                                         isrc='FRUP11000001',
                                         frontCoverPicture=SAMPLE_COVER_ART_FILE)
-        self.audioLibrary.hasFileWithMetadata(audioFile,
+        self.audioLibrary.containsFileWithMetadata(audioFile,
                                               releaseName='Despicable Me',
                                               leadPerformer='Tim, Mark and Phil',
                                               originalReleaseDate='2010-07-09',
