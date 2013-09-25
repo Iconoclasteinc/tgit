@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+from hamcrest.core.selfdescribing import SelfDescribing
 from hamcrest.core.string_description import StringDescription
 
 from tests.cute.events import MainEventLoop
@@ -9,14 +10,14 @@ DEFAULT_POLL_DELAY = 100
 DEFAULT_POLL_TIMEOUT = 5000
 
 
-class Probe(object):
+class Probe(SelfDescribing):
     def test(self):
         pass
 
     def isSatisfied(self):
         pass
 
-    def describeTo(self, description):
+    def describe_to(self, description):
         pass
 
     def describeFailureTo(self, description):
@@ -53,7 +54,7 @@ class PollingProber(Prober):
     def _describeFailureOf(self, probe):
         description = StringDescription()
         description.append_text("\nTried to:\n    find ")
-        probe.describeTo(description)
+        probe.describe_to(description)
         description.append_text("\nbut:\n    ")
         probe.describeFailureTo(description)
         return str(description)

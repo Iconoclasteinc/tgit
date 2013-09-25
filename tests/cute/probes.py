@@ -19,7 +19,7 @@ class WidgetAssertionProbe(Probe):
     def isSatisfied(self):
         return self._assertionMet
 
-    def describeTo(self, description):
+    def describe_to(self, description):
         description.append_description_of(self._selector). \
             append_text(" and check that it is "). \
             append_description_of(self._assertion)
@@ -52,7 +52,7 @@ class WidgetPropertyAssertionProbe(Probe):
         return self._selector.isSatisfied and \
                self._propertyValueMatcher.matches(self._propertyValue)
 
-    def describeTo(self, description):
+    def describe_to(self, description):
         description.append_description_of(self._selector) \
             .append_text(" and check that its ") \
             .append_description_of(self._propertyValueQuery) \
@@ -75,8 +75,8 @@ class WidgetManipulatorProbe(Probe):
         self._manipulate = manipulation
         self._description = description
 
-    def describeTo(self, description):
-        self._finder.describeTo(description)
+    def describe_to(self, description):
+        self._finder.describe_to(description)
         description.append_text(" and %s " % self._description)
 
     def describeFailureTo(self, description):
@@ -102,7 +102,7 @@ class WidgetScreenBoundsProbe(Probe):
     def bounds(self):
         return self._bounds
 
-    def describeTo(self, description):
+    def describe_to(self, description):
         description.append_text("dimensions of ")
         description.append_description_of(self._selector)
 

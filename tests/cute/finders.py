@@ -32,7 +32,7 @@ class RecursiveWidgetFinder(WidgetFinder):
         self._found.clear()
         self._search(self._parentFinder.widgets())
 
-    def describeTo(self, description):
+    def describe_to(self, description):
         self._describe_briefly_to(description)
         description.append_text(" in ").append_description_of(self._parentFinder)
 
@@ -76,11 +76,11 @@ class TopLevelFrameFinder(WidgetFinder):
         for topLevelWidget in self._app.topLevelWidgets():
             self._rootWindows.add(self._rootParent(topLevelWidget))
 
-    def describeTo(self, description):
+    def describe_to(self, description):
         description.append_text("top level frame")
 
     def describeFailureTo(self, description):
-        self.describeTo(description)
+        self.describe_to(description)
 
     def _rootParent(self, widget):
         return widget if not widget.parent() else self._rootParent(widget.parent())
@@ -103,7 +103,7 @@ class SingleWidgetFinder(WidgetSelector):
     def widget(self):
         return list(self.widgets())[0]
 
-    def describeTo(self, description):
+    def describe_to(self, description):
         description.append_text("exactly 1 ").append_description_of(self._finder)
 
     def describeFailureTo(self, description):
