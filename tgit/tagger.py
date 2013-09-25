@@ -31,12 +31,6 @@ class TGiT(QApplication):
         self._localesDir = localesDir
         self.locale = locale
         self._ui = MainWindow()
-        self._show(self._ui)
-
-    def _show(self, main_window):
-        main_window.show()
-        main_window.raise_()
-        main_window.activateWindow()
 
     def locale(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))

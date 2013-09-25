@@ -48,6 +48,9 @@ class MainWindow(QMainWindow):
     def __init__(self, ):
         QMainWindow.__init__(self)
         self.setupUi()
+        self.show()
+        self.raise_()
+        self.activateWindow()
 
     def setupUi(self):
         self.setObjectName(MAIN_WINDOW_NAME)

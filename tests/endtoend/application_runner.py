@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import use_sip_api_v2
 from tgit.tagger import TGiT
 
 from tests.util import resources

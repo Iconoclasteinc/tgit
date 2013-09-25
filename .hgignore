@@ -5,6 +5,6 @@ dist
 tgit.egg-info
 .idea
 *.iml
-**/*.pyc
+*.pyc
 .DS_Store
 .coverage
