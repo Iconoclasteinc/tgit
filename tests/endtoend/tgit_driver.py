@@ -2,9 +2,10 @@
 
 import os
 from PyQt4.Qt import QPushButton, QLineEdit, QFileDialog, QLabel
-
+from hamcrest.core import all_of
 from tests.cute.prober import EventProcessingProber
-from tests.cute.matchers import named, withBuddy, showingOnScreen
+from tests.cute.matchers import (named, withBuddy, showingOnScreen, withPixmapHeight,
+                                 withPixmapWidth)
 from tests.cute.widgets import mainWindow
 from tests.cute.widgets import (MainWindowDriver, AbstractButtonDriver, LineEditDriver, LabelDriver,
                                 FileDialogDriver)
@@ -41,6 +42,12 @@ class TGiTDriver(MainWindowDriver):
         releaseNameLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_NAME_NAME)))
         releaseNameLabel.isShowingOnScreen()
         self._releaseName().hasText(releaseName)
+
+    def displaysFrontCoverPictureWithSize(self, width, height):
+        frontCoverImage = LabelDriver.find(self, QLabel, named(main.FRONT_COVER_PICTURE_NAME))
+        frontCoverImage.isShowingOnScreen()
+        frontCoverImage.hasPixmap(withPixmapHeight(height))
+        frontCoverImage.hasPixmap(withPixmapWidth(width))
 
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
@@ -102,9 +109,6 @@ class TGiTDriver(MainWindowDriver):
     def saveAudioFile(self):
         saveButton = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
         saveButton.click()
-
-    def _frontCoverPicture(self):
-        return LineEditDriver.find(self, QLineEdit, named(main.FRONT_COVER_PICTURE_FILE_NAME))
 
     def _frontCoverEmbeddedText(self):
         return LabelDriver.find(self, QLabel, named(main.FRONT_COVER_EMBEDDED_TEXT_NAME))

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import *
+from hamcrest import assert_that, is_, equal_to, has_properties
 
 from tests.util.mp3_builder import MP3, mp3Sample, readContent
 from tests.util import resources

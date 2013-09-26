@@ -15,6 +15,14 @@ def withBuddy(matcher):
     return with_(properties.buddy(), matcher)
 
 
+def withPixmapHeight(height):
+    return with_(properties.pixmapHeight(), equal_to(height))
+
+
+def withPixmapWidth(width):
+    return with_(properties.pixmapWidth(), equal_to(width))
+
+
 def withButtonText(text):
     return with_(properties.buttonText(), equal_to(text))
 
@@ -41,10 +49,16 @@ class QueryResultMatcher(BaseMatcher):
         return item and self._resultMatcher.matches(self._query(item))
 
     def describe_to(self, description):
-        description.append_text("with "). \
-            append_description_of(self._query). \
-            append_text(" "). \
-            append_description_of(self._resultMatcher)
+        description.append_text("with ") \
+            .append_description_of(self._query) \
+            .append_text(" ") \
+            .append_description_of(self._resultMatcher)
+
+    def describe_mismatch(self, item, mismatch_description):
+        mismatch_description.append_text("was with ") \
+            .append_description_of(self._query) \
+            .append_text(" ")
+        self._resultMatcher.describe_mismatch(self._query(item), mismatch_description)
 
 
 class ShowingOnScreenMatcher(BaseMatcher):

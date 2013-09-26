@@ -37,14 +37,17 @@ class FakeAudioLibrary(object):
         assert_that(audioFile, has_properties(tags))
 
 
+# todo move to a file related utilities module
 def readContent(filename):
     return open(filename, "rb").read()
 
 
+# todo move to a file related utilities module
 def guessMimeType(filename):
     return mimetypes.guess_type(filename)[0]
 
 
+# todo move to a matchers module
 def samePictureAs(filename):
     return contains(equal_to(guessMimeType(filename)),
                     has_length(len(readContent(filename))))

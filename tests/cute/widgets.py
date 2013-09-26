@@ -81,6 +81,9 @@ class LabelDriver(WidgetDriver):
     def hasText(self, text):
         self.has(properties.labelText(), equal_to(text))
 
+    def hasPixmap(self, matcher):
+        self.has(properties.labelPixmap(), matcher)
+
 
 class LineEditDriver(WidgetDriver):
     EDITION_DELAY = 50

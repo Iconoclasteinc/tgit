@@ -60,10 +60,10 @@ class WidgetPropertyAssertionProbe(Probe):
     def describeFailureTo(self, description):
         self._selector.describeFailureTo(description)
         if self._selector.isSatisfied():
-            description.append_text("\n    ") \
+            description.append_text("\n    its ") \
                 .append_description_of(self._propertyValueQuery) \
-                .append_text(" was ") \
-                .append_value(self._propertyValue)
+                .append_text(" ")
+            self._propertyValueMatcher.describe_mismatch(self._propertyValue, description)
 
 
 class WidgetManipulatorProbe(Probe):

@@ -21,10 +21,12 @@ mp3Sample.duration = 9.064475
 mp3Sample.durationAsText = "00:09"
 
 
+# todo move to a file related utilities module
 def readContent(filename):
     return open(filename, "rb").read()
 
 
+# todo move to a file related utilities module
 def makeCopy(originalFile):
     workingFile, path = tempfile.mkstemp(suffix='.mp3')
     try:

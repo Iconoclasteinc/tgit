@@ -29,7 +29,7 @@ ADD_FILE_BUTTON_NAME = "Add File"
 IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 SELECT_PICTURE_BUTTON_NAME = "Select Picture"
 SELECT_PICTURE_DIALOG_NAME = "Select Picture File"
-FRONT_COVER_PICTURE_FILE_NAME = "Front Cover Picture File"
+FRONT_COVER_PICTURE_NAME = "Front Cover Picture"
 FRONT_COVER_EMBEDDED_TEXT_NAME = "Front Cover Embedded Text"
 RELEASE_NAME_NAME = "Release Name"
 LEAD_PERFORMER_NAME = "Lead Performer"
@@ -70,6 +70,7 @@ class MainWindow(QMainWindow):
 
     def trackSelected(self, track):
         self._releaseNameEdit.setText(track.releaseName)
+        self._displayFrontCover(track.frontCoverPicture)
         self._showTagAlbumPanel()
 
     def _makeStatusBar(self):
@@ -102,8 +103,9 @@ class MainWindow(QMainWindow):
         return self._tagAlbumPanel
 
     def _addFrontCoverPicture(self, layout, row):
-        self._frontCoverImageLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._frontCoverImageLabel, row, 0, 1, 1)
+        self._frontCoverImage = QLabel(self._tagAlbumPanel)
+        self._frontCoverImage.setObjectName(FRONT_COVER_PICTURE_NAME)
+        layout.addWidget(self._frontCoverImage, row, 0, 1, 1)
         self._selectPictureButton = QPushButton(self._tagAlbumPanel)
         self._selectPictureButton.setObjectName(SELECT_PICTURE_BUTTON_NAME)
         self._selectPictureButton.clicked.connect(self._selectPictureDialog.open)
@@ -224,8 +226,8 @@ class MainWindow(QMainWindow):
 
     def _displayFrontCover(self, picture):
         self._frontCover = picture
-        _, imageData = picture
-        self._frontCoverImageLabel.setPixmap(self._scaledPixmapFrom(imageData))
+        _, imageData = self._frontCover
+        self._frontCoverImage.setPixmap(self._scaledPixmapFrom(imageData))
         self._frontCoverTextLabel.setText(self._getEmbeddedText(imageData))
 
     def _showTagAlbumPanel(self):
@@ -235,7 +237,6 @@ class MainWindow(QMainWindow):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
         self._audio = MP3File(filename)
-        self._displayFrontCover(self._audio.frontCoverPicture)
         self._leadPerformerEdit.setText(self._audio.leadPerformer)
         self._originalReleaseDateEdit.setText(self._audio.originalReleaseDate)
         self._upcEdit.setText(self._audio.upc)

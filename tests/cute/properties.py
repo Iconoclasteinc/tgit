@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import Qt, QObject, QLabel, QLineEdit, QAbstractButton
+from PyQt4.Qt import Qt, QObject, QLabel, QLineEdit, QAbstractButton, QPixmap
 
 from hamcrest.core.selfdescribing import SelfDescribing
 
@@ -11,6 +11,18 @@ def name():
 
 def labelText():
     return PropertyQuery("text", QLabel.text)
+
+
+def labelPixmap():
+    return PropertyQuery("pixmap", QLabel.pixmap)
+
+
+def pixmapHeight():
+    return PropertyQuery("pixmap height", QPixmap.height)
+
+
+def pixmapWidth():
+    return PropertyQuery("pixmap width", QPixmap.width)
 
 
 def buddy():

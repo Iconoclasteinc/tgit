@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest.core import *
+from hamcrest.core import equal_to
 from flexmock import flexmock
 
 import use_sip_api_v2
@@ -10,7 +10,14 @@ from PyQt4.Qt import QApplication
 from tests.cute.probes import ValueMatcherProbe
 from tests.endtoend.tgit_driver import TGiTDriver
 from tests.util import resources
+from tests.endtoend.fake_audio_library import readContent
 from tgit.ui.main_window import MainWindow
+
+
+def buildTrack(**tags):
+    defaults = dict(releaseName='',
+                    frontCoverPicture=(None, None))
+    return flexmock(**dict(defaults.items() + tags.items()))
 
 
 class MainWindowTest(unittest.TestCase):
@@ -36,7 +43,17 @@ class MainWindowTest(unittest.TestCase):
         self.driver.importTrack(trackFile)
         self.driver.check(importRequest)
 
+    @unittest.skip("todo")
+    def testHasNothingToShowWhenTrackHasNoMetadata(self):
+        raise AssertionError("Not yet implemented")
+
     def testDisplaysSelectedTrackReleaseName(self):
-        track = flexmock(releaseName='Release Name')
+        track = buildTrack(releaseName='Release Name')
         self.mainWindow.trackSelected(track)
         self.driver.showsReleaseName('Release Name')
+
+    def testDisplaysSelectedTrackFrontCoverScaledToPictureDisplayArea(self):
+        frontCover = ('image/jpeg', readContent(resources.path("front-cover.jpg")))
+        track = buildTrack(frontCoverPicture=frontCover)
+        self.mainWindow.trackSelected(track)
+        self.driver.displaysFrontCoverPictureWithSize(125, 125)
