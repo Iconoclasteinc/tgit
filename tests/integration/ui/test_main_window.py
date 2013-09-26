@@ -25,7 +25,8 @@ def buildTrack(**tags):
                     versionInfo=None,
                     featuredGuest=None,
                     isrc=None,
-                    bitrate=96000)
+                    bitrate=96000,
+                    duration=200)
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
@@ -106,3 +107,8 @@ class MainWindowTest(unittest.TestCase):
         track = buildTrack(bitrate=128000)
         self.mainWindow.trackSelected(track)
         self.driver.showsBitrate('128 kbps')
+
+    def testDisplaysSelectedTrackDurationAsText(self):
+        track = buildTrack(duration=275)
+        self.mainWindow.trackSelected(track)
+        self.driver.showsDuration('04:35')

@@ -85,10 +85,6 @@ class MP3FileTest(unittest.TestCase):
         mp3 = MP3File(self.makeMp3())
         assert_that(mp3.duration, equal_to(mp3Sample.duration), "duration")
 
-    def testCanReportDurationAsHumanReadableText(self):
-        mp3 = MP3File(self.makeMp3())
-        assert_that(mp3.durationAsText, equal_to(mp3Sample.durationAsText), "duration as text")
-
     def testCanSaveAndReloadMetadataInFile(self):
         mp3 = MP3File(self.makeMp3())
         mp3.releaseName = u"Release Name"

@@ -126,11 +126,6 @@ class MP3File(object):
     def duration(self):
         return self._mp3.info.length
 
-    @property
-    def durationAsText(self):
-        minutes, seconds = divmod(round(self.duration), 60)
-        return "%02d:%02d" % (minutes, seconds)
-
     def save(self):
         self._mp3.save()
 

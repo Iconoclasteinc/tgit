@@ -88,6 +88,11 @@ class TGiTDriver(MainWindowDriver):
         label.isShowingOnScreen()
         self._bitrate().hasText(bitrate)
 
+    def showsDuration(self, duration):
+        label = LabelDriver.find(self, QLabel, withBuddy(named(main.DURATION_NAME)))
+        label.isShowingOnScreen()
+        self._duration().hasText(duration)
+
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
         self.showsReleaseName(tags[RELEASE_NAME])
@@ -99,7 +104,7 @@ class TGiTDriver(MainWindowDriver):
         self.showsFeaturedGuest(tags[FEATURED_GUEST])
         self.showsIsrc(tags[ISRC])
         self.showsBitrate(tags[BITRATE])
-        self._trackDuration().hasText(tags[DURATION])
+        self.showsDuration(tags[DURATION])
 
     def _openImportTrackDialog(self):
         addFileButton = AbstractButtonDriver.find(self, QPushButton,
@@ -179,5 +184,5 @@ class TGiTDriver(MainWindowDriver):
     def _bitrate(self):
         return LabelDriver.find(self, QLabel, named(main.BITRATE_NAME))
 
-    def _trackDuration(self):
+    def _duration(self):
         return LabelDriver.find(self, QLabel, named(main.DURATION_NAME))
