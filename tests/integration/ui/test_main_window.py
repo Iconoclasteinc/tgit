@@ -24,7 +24,8 @@ def buildTrack(**tags):
                     trackTitle=None,
                     versionInfo=None,
                     featuredGuest=None,
-                    isrc=None)
+                    isrc=None,
+                    bitrate=96000)
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
@@ -100,3 +101,8 @@ class MainWindowTest(unittest.TestCase):
         track = buildTrack(isrc='ISRC')
         self.mainWindow.trackSelected(track)
         self.driver.showsIsrc('ISRC')
+
+    def testDisplaysSelectedTrackBitrateInKbps(self):
+        track = buildTrack(bitrate=128000)
+        self.mainWindow.trackSelected(track)
+        self.driver.showsBitrate('128 kbps')

@@ -16,7 +16,6 @@ class Sample(object):
 mp3Sample = Sample()
 mp3Sample.path = resources.path("base.mp3")
 mp3Sample.bitrate = 320000
-mp3Sample.bitrateInKbps = 320
 mp3Sample.duration = 9.064475
 mp3Sample.durationAsText = "00:09"
 

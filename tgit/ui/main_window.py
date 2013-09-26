@@ -44,6 +44,10 @@ DURATION_NAME = "Duration"
 SAVE_BUTTON_NAME = "Save"
 
 
+def toKbps(bitrate):
+    return int(round(bitrate, -3) / 1000)
+
+
 # todo start teasing apart the main window to get birth to the domain concepts
 class MainWindow(QMainWindow):
     def __init__(self, ):
@@ -78,6 +82,7 @@ class MainWindow(QMainWindow):
         self._versionInfoEdit.setText(track.versionInfo)
         self._featuredGuestEdit.setText(track.featuredGuest)
         self._isrcEdit.setText(track.isrc)
+        self._bitrateInfoLabel.setText("%s kbps" % toKbps(track.bitrate))
         self._showTagAlbumPanel()
 
     def _makeStatusBar(self):
@@ -191,6 +196,7 @@ class MainWindow(QMainWindow):
         self._bitrateInfoLabel = QLabel(self._tagAlbumPanel)
         self._bitrateInfoLabel.setObjectName(BITRATE_NAME)
         layout.addWidget(self._bitrateInfoLabel, row, 1, 1, 1)
+        self._bitrateLabel.setBuddy(self._bitrateInfoLabel)
 
     def _addDuration(self, layout, row):
         self._durationLabel = QLabel(self._tagAlbumPanel)
@@ -251,7 +257,6 @@ class MainWindow(QMainWindow):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
         self._audio = MP3File(filename)
-        self._bitrateInfoLabel.setText("%d kbps" % self._audio.bitrateInKbps)
         self._durationInfoLabel.setText(self._audio.durationAsText)
         self.trackSelected(self._audio)
 

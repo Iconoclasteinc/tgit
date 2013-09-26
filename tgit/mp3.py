@@ -123,10 +123,6 @@ class MP3File(object):
         return self._mp3.info.bitrate
 
     @property
-    def bitrateInKbps(self):
-        return int(round(self.bitrate, -3) / 1000)
-
-    @property
     def duration(self):
         return self._mp3.info.length
 

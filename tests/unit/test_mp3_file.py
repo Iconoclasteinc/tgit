@@ -81,10 +81,6 @@ class MP3FileTest(unittest.TestCase):
         mp3 = MP3File(self.makeMp3())
         assert_that(mp3.bitrate, equal_to(mp3Sample.bitrate), "bitrate")
 
-    def testCanReportBitrateRoundedInKbps(self):
-        mp3 = MP3File(self.makeMp3())
-        assert_that(mp3.bitrateInKbps, equal_to(mp3Sample.bitrateInKbps), "bitrate in kbps")
-
     def testReadsTrackDurationFromAudioStreamInformation(self):
         mp3 = MP3File(self.makeMp3())
         assert_that(mp3.duration, equal_to(mp3Sample.duration), "duration")
@@ -127,5 +123,4 @@ class MP3FileTest(unittest.TestCase):
             trackTitle=original.trackTitle,
             versionInfo=original.versionInfo,
             featuredGuest=original.featuredGuest,
-            frontCoverPicture=original.frontCoverPicture
-        ))
+            frontCoverPicture=original.frontCoverPicture))
