@@ -4,7 +4,8 @@ import unittest
 from hamcrest.core import equal_to
 from flexmock import flexmock
 
-import use_sip_api_v2
+import use_sip_api_v2 as sipApi
+sipApi.useVersion(sipApi.VERSION_2)
 from PyQt4.Qt import QApplication
 
 from tests.cute.probes import ValueMatcherProbe
@@ -18,7 +19,8 @@ def buildTrack(**tags):
     defaults = dict(releaseName=None,
                     frontCoverPicture=(None, None),
                     leadPerformer=None,
-                    releaseDate=None)
+                    releaseDate=None,
+                    upc=None)
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
@@ -69,3 +71,8 @@ class MainWindowTest(unittest.TestCase):
         track = buildTrack(releaseDate='2009-08-05')
         self.mainWindow.trackSelected(track)
         self.driver.showsReleaseDate('2009-08-05')
+
+    def testDisplaysSelectedTrackAlbumUpc(self):
+        track = buildTrack(upc='1234567899999')
+        self.mainWindow.trackSelected(track)
+        self.driver.showsUpc('1234567899999')

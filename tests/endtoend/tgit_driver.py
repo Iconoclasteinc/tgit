@@ -59,12 +59,17 @@ class TGiTDriver(MainWindowDriver):
         releaseDateLabel.isShowingOnScreen()
         self._releaseDate().hasText(releaseDate)
 
+    def showsUpc(self, upc):
+        upcLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.UPC_NAME)))
+        upcLabel.isShowingOnScreen()
+        self._upc().hasText(upc)
+
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
         self.showsReleaseName(tags[RELEASE_NAME])
         self.showsLeadPerformer(tags[LEAD_PERFORMER])
         self.showsReleaseDate(tags[RELEASE_DATE])
-        self._upc().hasText(tags[UPC])
+        self.showsUpc(tags[UPC])
         self._trackTitle().hasText(tags[TRACK_TITLE])
         self._featuredGuest().hasText(tags[FEATURED_GUEST])
         self._versionInfo().hasText(tags[VERSION_INFO])
