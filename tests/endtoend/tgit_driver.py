@@ -49,10 +49,16 @@ class TGiTDriver(MainWindowDriver):
         frontCoverImage.hasPixmap(withPixmapHeight(height))
         frontCoverImage.hasPixmap(withPixmapWidth(width))
 
+    def showsLeadPerformer(self, leadPerformer):
+        leadPerformerLabel = LabelDriver.find(self, QLabel,
+                                              withBuddy(named(main.LEAD_PERFORMER_NAME)))
+        leadPerformerLabel.isShowingOnScreen()
+        self._leadPerformer().hasText(leadPerformer)
+
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
         self.showsReleaseName(tags[RELEASE_NAME])
-        self._leadPerformer().hasText(tags[LEAD_PERFORMER])
+        self.showsLeadPerformer(tags[LEAD_PERFORMER])
         self._originalReleaseDate().hasText(tags[ORIGINAL_RELEASE_DATE])
         self._upc().hasText(tags[UPC])
         self._trackTitle().hasText(tags[TRACK_TITLE])

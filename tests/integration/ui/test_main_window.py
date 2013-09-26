@@ -16,7 +16,8 @@ from tgit.ui.main_window import MainWindow
 
 def buildTrack(**tags):
     defaults = dict(releaseName='',
-                    frontCoverPicture=(None, None))
+                    frontCoverPicture=(None, None),
+                    leadPerformer='')
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
@@ -47,13 +48,18 @@ class MainWindowTest(unittest.TestCase):
     def testHasNothingToShowWhenTrackHasNoMetadata(self):
         raise AssertionError("Not yet implemented")
 
-    def testDisplaysSelectedTrackReleaseName(self):
+    def testDisplaysSelectedTrackAlbumReleaseName(self):
         track = buildTrack(releaseName='Release Name')
         self.mainWindow.trackSelected(track)
         self.driver.showsReleaseName('Release Name')
 
-    def testDisplaysSelectedTrackFrontCoverScaledToPictureDisplayArea(self):
+    def testDisplaysSelectedTrackAlbumFrontCoverScaledToPictureDisplayArea(self):
         frontCover = ('image/jpeg', readContent(resources.path("front-cover.jpg")))
         track = buildTrack(frontCoverPicture=frontCover)
         self.mainWindow.trackSelected(track)
         self.driver.displaysFrontCoverPictureWithSize(125, 125)
+
+    def testDisplaysSelectedTrackAlbumLeadPerformer(self):
+        track = buildTrack(leadPerformer='Lead Performer')
+        self.mainWindow.trackSelected(track)
+        self.driver.showsLeadPerformer('Lead Performer')
