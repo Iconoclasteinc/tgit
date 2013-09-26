@@ -18,8 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import mimetypes
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import (Qt, QDir, QRect)
+from PyQt4.QtGui import (QWidget, QMainWindow, QMenuBar, QMenu, QAction, QStatusBar, QGridLayout,
+                         QLabel, QPushButton, QLineEdit, QFileDialog, QPixmap, QImage)
 
 from tgit.mp3 import MP3File
 
@@ -67,6 +68,10 @@ class MainWindow(QMainWindow):
     def addMusicDirector(self, director):
         self._musicDirector = director
 
+    def trackSelected(self, track):
+        self._releaseNameEdit.setText(track.releaseName)
+        self._showTagAlbumPanel()
+
     def _makeStatusBar(self):
         self.setStatusBar(QStatusBar(self))
 
@@ -113,6 +118,7 @@ class MainWindow(QMainWindow):
         self._releaseNameEdit = QLineEdit(self._tagAlbumPanel)
         self._releaseNameEdit.setObjectName(RELEASE_NAME_NAME)
         layout.addWidget(self._releaseNameEdit, row, 1, 1, 1)
+        self._releaseNameLabel.setBuddy(self._releaseNameEdit)
 
     def _addLeadPerformer(self, layout, row):
         self._leadPerformerLabel = QLabel(self._tagAlbumPanel)
@@ -229,7 +235,6 @@ class MainWindow(QMainWindow):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
         self._audio = MP3File(filename)
-        self._releaseNameEdit.setText(self._audio.releaseName)
         self._displayFrontCover(self._audio.frontCoverPicture)
         self._leadPerformerEdit.setText(self._audio.leadPerformer)
         self._originalReleaseDateEdit.setText(self._audio.originalReleaseDate)
@@ -240,7 +245,7 @@ class MainWindow(QMainWindow):
         self._isrcEdit.setText(self._audio.isrc)
         self._bitrateInfoLabel.setText("%d kbps" % self._audio.bitrateInKbps)
         self._durationInfoLabel.setText(self._audio.durationAsText)
-        self._showTagAlbumPanel()
+        self.trackSelected(self._audio)
 
     def _getEmbeddedText(self, imageData):
         return QImage.fromData(imageData).text()

@@ -18,7 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import sys
-from PyQt4.Qt import QApplication, QTextCodec, QTranslator
+from PyQt4.QtCore import QTextCodec, QTranslator
+from PyQt4.QtGui import QApplication
 
 from tgit import resources
 from tgit.ui.main_window import MainWindow

@@ -13,6 +13,10 @@ def labelText():
     return PropertyQuery("text", QLabel.text)
 
 
+def buddy():
+    return PropertyQuery("buddy", QLabel.buddy)
+
+
 def inputText():
     return PropertyQuery("text", QLineEdit.displayText)
 

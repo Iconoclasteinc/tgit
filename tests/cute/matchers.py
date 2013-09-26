@@ -11,6 +11,10 @@ def named(name):
     return with_(properties.name(), equal_to(name))
 
 
+def withBuddy(matcher):
+    return with_(properties.buddy(), matcher)
+
+
 def withButtonText(text):
     return with_(properties.buttonText(), equal_to(text))
 

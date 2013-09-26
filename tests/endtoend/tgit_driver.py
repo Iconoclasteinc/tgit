@@ -4,7 +4,7 @@ import os
 from PyQt4.Qt import QPushButton, QLineEdit, QFileDialog, QLabel
 
 from tests.cute.prober import EventProcessingProber
-from tests.cute.matchers import named, showingOnScreen
+from tests.cute.matchers import named, withBuddy, showingOnScreen
 from tests.cute.widgets import mainWindow
 from tests.cute.widgets import (MainWindowDriver, AbstractButtonDriver, LineEditDriver, LabelDriver,
                                 FileDialogDriver)
@@ -37,9 +37,14 @@ class TGiTDriver(MainWindowDriver):
         self._openImportTrackDialog()
         self._selectTrack(path)
 
+    def showsReleaseName(self, releaseName):
+        releaseNameLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_NAME_NAME)))
+        releaseNameLabel.isShowingOnScreen()
+        self._releaseName().hasText(releaseName)
+
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
-        self._releaseName().hasText(tags[RELEASE_NAME])
+        self.showsReleaseName(tags[RELEASE_NAME])
         self._leadPerformer().hasText(tags[LEAD_PERFORMER])
         self._originalReleaseDate().hasText(tags[ORIGINAL_RELEASE_DATE])
         self._upc().hasText(tags[UPC])
