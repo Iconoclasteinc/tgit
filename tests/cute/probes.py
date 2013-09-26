@@ -21,17 +21,14 @@ class WidgetAssertionProbe(Probe):
 
     def describe_to(self, description):
         description.append_description_of(self._selector). \
-            append_text(" and check that it is "). \
+            append_text("\nand check that it is "). \
             append_description_of(self._assertion)
 
     def describeFailureTo(self, description):
         self._selector.describeFailureTo(description)
         if self._selector.isSatisfied():
-            description.append_text(" it ")
-            if self._assertionMet:
-                description.append_text("is ")
-            else:
-                description.append_text("is not ")
+            description.append_text("\n    it ")
+            description.append_text("is " if self._assertionMet else "is not ")
             description.append_description_of(self._assertion)
 
 
@@ -54,7 +51,7 @@ class WidgetPropertyAssertionProbe(Probe):
 
     def describe_to(self, description):
         description.append_description_of(self._selector) \
-            .append_text(" and check that its ") \
+            .append_text("\nand check that its ") \
             .append_description_of(self._propertyValueQuery) \
             .append_text(" is ") \
             .append_description_of(self._propertyValueMatcher)
@@ -62,7 +59,7 @@ class WidgetPropertyAssertionProbe(Probe):
     def describeFailureTo(self, description):
         self._selector.describeFailureTo(description)
         if self._selector.isSatisfied():
-            description.append_text(" ") \
+            description.append_text("\n    ") \
                 .append_description_of(self._propertyValueQuery) \
                 .append_text(" was ") \
                 .append_value(self._propertyValue)
@@ -77,7 +74,7 @@ class WidgetManipulatorProbe(Probe):
 
     def describe_to(self, description):
         self._finder.describe_to(description)
-        description.append_text(" and %s " % self._description)
+        description.append_text("\nand %s " % self._description)
 
     def describeFailureTo(self, description):
         self._finder.describeFailureTo(description)

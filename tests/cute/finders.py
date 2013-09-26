@@ -33,28 +33,28 @@ class RecursiveWidgetFinder(WidgetFinder):
         self._search(self._parentFinder.widgets())
 
     def describe_to(self, description):
-        self._describe_briefly_to(description)
-        description.append_text(" in ").append_description_of(self._parentFinder)
+        self._describeBrieflyTo(description)
+        description.append_text("\n    in ").append_description_of(self._parentFinder)
 
     def describeFailureTo(self, description):
         self._parentFinder.describeFailureTo(description)
-        if self._parentFinder.isSatisfied:
-            description.append_text(" contained "). \
+        if self._parentFinder.isSatisfied():
+            description.append_text("\n    contained "). \
                 append_description_of(len(self._found)). \
                 append_text(" ")
-            self._describe_briefly_to(description)
+            self._describeBrieflyTo(description)
 
     def _search(self, widgets):
         for widget in widgets:
-            self._search_within(widget)
+            self._searchWithin(widget)
 
-    def _search_within(self, widget):
+    def _searchWithin(self, widget):
         if isinstance(widget, self._widgetType) and self._criteria.matches(widget):
             self._found.add(widget)
         else:
             self._search(widget.children())
 
-    def _describe_briefly_to(self, description):
+    def _describeBrieflyTo(self, description):
         description.append_text(self._widgetType.__name__). \
             append_text(" "). \
             append_description_of(self._criteria)
@@ -77,7 +77,7 @@ class TopLevelFrameFinder(WidgetFinder):
             self._rootWindows.add(self._rootParent(topLevelWidget))
 
     def describe_to(self, description):
-        description.append_text("top level frame")
+        description.append_text("all top level widgets")
 
     def describeFailureTo(self, description):
         self.describe_to(description)
@@ -107,8 +107,7 @@ class SingleWidgetFinder(WidgetSelector):
         description.append_text("exactly 1 ").append_description_of(self._finder)
 
     def describeFailureTo(self, description):
-        description.append_description_of(len(self.widgets())). \
-            append_text(" ").append_description_of(self._finder)
+        self._finder.describeFailureTo(description)
 
     def _isSingle(self):
         return len(self.widgets()) == 1

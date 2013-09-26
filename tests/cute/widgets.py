@@ -10,7 +10,7 @@ from tests.cute.finders import SingleWidgetFinder, TopLevelFrameFinder, Recursiv
 from tests.cute import properties, gestures, keyboard_shortcuts as shortcuts, matchers as match
 
 
-def main_window(*matchers):
+def mainWindow(*matchers):
     return SingleWidgetFinder(RecursiveWidgetFinder(QMainWindow, all_of(*matchers),
                                                     TopLevelFrameFinder(QApplication.instance())))
 
@@ -141,12 +141,13 @@ class FileDialogDriver(WidgetDriver):
         return currentFolder.name
 
     def intoFolder(self, name):
+        self.perform(gestures.pause(FileDialogDriver.NAVIGATION_DELAY))
         self.selectFile(name)
         self._doubleClickOnFolder()
+        self.perform(gestures.pause(FileDialogDriver.NAVIGATION_DELAY))
 
     def _doubleClickOnFolder(self):
-        self.perform(gestures.mouseDoubleClick(),
-                     gestures.pause(self.NAVIGATION_DELAY))
+        self.perform(gestures.mouseDoubleClick())
 
     def selectFile(self, name):
         self._listView().selectItem(match.withListItemText(name))

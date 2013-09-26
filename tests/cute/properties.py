@@ -10,19 +10,19 @@ def name():
 
 
 def labelText():
-    return PropertyQuery("label text", QLabel.text)
+    return PropertyQuery("text", QLabel.text)
 
 
 def inputText():
-    return PropertyQuery("input text", QLineEdit.displayText)
+    return PropertyQuery("text", QLineEdit.displayText)
 
 
 def buttonText():
-    return PropertyQuery("button text", QAbstractButton.text)
+    return PropertyQuery("text", QAbstractButton.text)
 
 
 def listItemText():
-    return PropertyQuery("item text", lambda item: item.data(Qt.DisplayRole))
+    return PropertyQuery("text", lambda item: item.data(Qt.DisplayRole))
 
 
 class Query(SelfDescribing):

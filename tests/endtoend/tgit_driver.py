@@ -5,7 +5,7 @@ from PyQt4.Qt import QPushButton, QLineEdit, QFileDialog, QLabel
 
 from tests.cute.prober import EventProcessingProber
 from tests.cute.matchers import named, showingOnScreen
-from tests.cute.widgets import main_window
+from tests.cute.widgets import mainWindow
 from tests.cute.widgets import (MainWindowDriver, AbstractButtonDriver, LineEditDriver, LabelDriver,
                                 FileDialogDriver)
 from tests.cute.robot import Robot
@@ -29,7 +29,7 @@ FRONT_COVER_PICTURE = 'frontCoverPicture'
 class TGiTDriver(MainWindowDriver):
     def __init__(self, timeout_in_ms):
         super(TGiTDriver, self).__init__(
-            main_window(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
+            mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
             EventProcessingProber(timeoutInMs=timeout_in_ms),
             Robot())
 
