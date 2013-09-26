@@ -1,23 +1,35 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from hamcrest.core import *
 
 import use_sip_api_v2
 from PyQt4.Qt import QApplication
 
-from tgit.ui.main_window import MainWindow
+from tests.cute.probes import ValueMatcherProbe
 from tests.endtoend.tgit_driver import TGiTDriver
+from tests.util import resources
+from tgit.ui.main_window import MainWindow
 
 
 class MainWindowTest(unittest.TestCase):
     def setUp(self):
         self.app = QApplication([])
         self.mainWindow = MainWindow()
-        self.driver = TGiTDriver(100)
+        self.driver = TGiTDriver(1000)
 
     def tearDown(self):
         self.driver.close()
         del self.app
 
-    def testShowingAndClosingMainWindow(self):
-        pass
+    def testRequestsTrackToBeAddedToAlbumWhenTrackFileHasBeenSelectedForImport(self):
+        trackFile = resources.path("Hallelujah.mp3")
+        importRequest = ValueMatcherProbe(equal_to(trackFile), "request to import track file")
+
+        class DetectTrackImport(object):
+            def importTrack(self, filename):
+                importRequest.setReceivedValue(filename)
+
+        self.mainWindow.addMusicDirector(DetectTrackImport())
+        self.driver.importTrack(trackFile)
+        self.driver.check(importRequest)

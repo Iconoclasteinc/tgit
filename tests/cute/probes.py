@@ -13,13 +13,14 @@ class WidgetAssertionProbe(Probe):
 
     def test(self):
         self._selector.test()
-        self._assertionMet = self._selector.isSatisfied() and \
-                             self._assertion.matches(self._selector.widget())
+        self._assertionMet = \
+            self._selector.isSatisfied() and \
+            self._assertion.matches(self._selector.widget())
 
     def isSatisfied(self):
         return self._assertionMet
 
-    def describe_to(self, description):
+    def describeTo(self, description):
         description.append_description_of(self._selector). \
             append_text("\nand check that it is "). \
             append_description_of(self._assertion)
@@ -49,7 +50,7 @@ class WidgetPropertyAssertionProbe(Probe):
         return self._selector.isSatisfied and \
                self._propertyValueMatcher.matches(self._propertyValue)
 
-    def describe_to(self, description):
+    def describeTo(self, description):
         description.append_description_of(self._selector) \
             .append_text("\nand check that its ") \
             .append_description_of(self._propertyValueQuery) \
@@ -72,8 +73,8 @@ class WidgetManipulatorProbe(Probe):
         self._manipulate = manipulation
         self._description = description
 
-    def describe_to(self, description):
-        self._finder.describe_to(description)
+    def describeTo(self, description):
+        self._finder.describeTo(description)
         description.append_text("\nand %s " % self._description)
 
     def describeFailureTo(self, description):
@@ -99,7 +100,7 @@ class WidgetScreenBoundsProbe(Probe):
     def bounds(self):
         return self._bounds
 
-    def describe_to(self, description):
+    def describeTo(self, description):
         description.append_text("dimensions of ")
         description.append_description_of(self._selector)
 
@@ -124,3 +125,33 @@ class WidgetScreenBoundsProbe(Probe):
             self._bounds = QRect(widget.mapToGlobal(QPoint(0, 0)), widget.size())
         else:
             self._bounds = None
+
+
+class ValueMatcherProbe(Probe):
+    def __init__(self, matcher, message):
+        super(ValueMatcherProbe, self).__init__()
+        self._valueMatcher = matcher
+        self._message = message
+        self._hasReceivedAValue = False
+        self._receivedValue = None
+
+    def test(self):
+        pass
+
+    def isSatisfied(self):
+        return self._valueMatcher.matches(self._receivedValue)
+
+    def describeTo(self, description):
+        description.append_text(self._message).append_text(" ") \
+            .append_description_of(self._valueMatcher)
+
+    def describeFailureTo(self, description):
+        description.append_text(self._message).append_text(" ")
+        if self._hasReceivedAValue:
+            description.append_text("received ").append_value(self._receivedValue)
+        else:
+            description.append_text("received nothing")
+
+    def setReceivedValue(self, receivedValue):
+        self._receivedValue = receivedValue
+        self._hasReceivedAValue = True

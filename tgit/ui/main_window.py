@@ -47,26 +47,30 @@ SAVE_BUTTON_NAME = "Save"
 class MainWindow(QMainWindow):
     def __init__(self, ):
         QMainWindow.__init__(self)
-        self.setupUi()
+        self._musicDirector = None
+        self._setupUi()
         self.show()
         self.raise_()
         self.activateWindow()
 
-    def setupUi(self):
+    def _setupUi(self):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(640, 480)
         self._makeImportFileDialog()
         self._makeSelectPictureDialog()
-        self.setCentralWidget(self.makeWelcomePanel())
+        self.setCentralWidget(self._makeWelcomePanel())
         self._makeTagAlbumPanel()
         self._fillMenu()
         self._makeStatusBar()
         self.localizeUi()
 
+    def addMusicDirector(self, director):
+        self._musicDirector = director
+
     def _makeStatusBar(self):
         self.setStatusBar(QStatusBar(self))
 
-    def makeWelcomePanel(self):
+    def _makeWelcomePanel(self):
         self._welcomePanel = QWidget()
         welcomePanelLayout = QGridLayout(self._welcomePanel)
         self._addFileButton = QPushButton(self._welcomePanel)
@@ -176,7 +180,7 @@ class MainWindow(QMainWindow):
     def _addButtons(self, layout, row):
         self._saveButton = QPushButton(self._tagAlbumPanel)
         self._saveButton.setObjectName(SAVE_BUTTON_NAME)
-        self._saveButton.clicked.connect(self.saveTrackFile)
+        self._saveButton.clicked.connect(self._saveTrackFile)
         layout.addWidget(self._saveButton, row, 0, 1, 1)
 
     def _fillMenu(self):
@@ -197,7 +201,7 @@ class MainWindow(QMainWindow):
         self._addFileDialog.setDirectory(QDir.homePath())
         self._addFileDialog.setOption(QFileDialog.DontUseNativeDialog)
         self._addFileDialog.setModal(True)
-        self._addFileDialog.fileSelected.connect(self.importTrackFile)
+        self._addFileDialog.fileSelected.connect(self._importTrackFile)
 
     # todo integration test dialog file name filtering by making sure the Accept button stay
     # disabled when we select a non supported file type
@@ -207,24 +211,26 @@ class MainWindow(QMainWindow):
         self._selectPictureDialog.setDirectory(QDir.homePath())
         self._selectPictureDialog.setOption(QFileDialog.DontUseNativeDialog)
         self._selectPictureDialog.setModal(True)
-        self._selectPictureDialog.fileSelected.connect(self.loadFrontCoverPicture)
+        self._selectPictureDialog.fileSelected.connect(self._loadFrontCoverPicture)
 
-    def loadFrontCoverPicture(self, filename):
-        self.displayFrontCover(self.loadPicture(filename))
+    def _loadFrontCoverPicture(self, filename):
+        self._displayFrontCover(self._loadPicture(filename))
 
-    def displayFrontCover(self, picture):
+    def _displayFrontCover(self, picture):
         self._frontCover = picture
         _, imageData = picture
-        self._frontCoverImageLabel.setPixmap(self.scaledPixmapFrom(imageData))
-        self._frontCoverTextLabel.setText(self.getEmbeddedText(imageData))
+        self._frontCoverImageLabel.setPixmap(self._scaledPixmapFrom(imageData))
+        self._frontCoverTextLabel.setText(self._getEmbeddedText(imageData))
 
-    def showTagAlbumPanel(self):
+    def _showTagAlbumPanel(self):
         self.setCentralWidget(self._tagAlbumPanel)
 
-    def importTrackFile(self, filename):
+    def _importTrackFile(self, filename):
+        if self._musicDirector:
+            self._musicDirector.importTrack(filename)
         self._audio = MP3File(filename)
         self._releaseNameEdit.setText(self._audio.releaseName)
-        self.displayFrontCover(self._audio.frontCoverPicture)
+        self._displayFrontCover(self._audio.frontCoverPicture)
         self._leadPerformerEdit.setText(self._audio.leadPerformer)
         self._originalReleaseDateEdit.setText(self._audio.originalReleaseDate)
         self._upcEdit.setText(self._audio.upc)
@@ -234,19 +240,19 @@ class MainWindow(QMainWindow):
         self._isrcEdit.setText(self._audio.isrc)
         self._bitrateInfoLabel.setText("%d kbps" % self._audio.bitrateInKbps)
         self._durationInfoLabel.setText(self._audio.durationAsText)
-        self.showTagAlbumPanel()
+        self._showTagAlbumPanel()
 
-    def getEmbeddedText(self, imageData):
+    def _getEmbeddedText(self, imageData):
         return QImage.fromData(imageData).text()
 
-    def scaledPixmapFrom(self, imageData):
+    def _scaledPixmapFrom(self, imageData):
         if imageData is None:
             return QPixmap()
         originalImage = QImage.fromData(imageData)
         scaledImage = originalImage.scaled(125, 125, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         return QPixmap.fromImage(scaledImage)
 
-    def saveTrackFile(self):
+    def _saveTrackFile(self):
         self._audio.releaseName = self._releaseNameEdit.text()
         self._audio.frontCoverPicture = self._frontCover
         self._audio.leadPerformer = self._leadPerformerEdit.text()
@@ -258,7 +264,7 @@ class MainWindow(QMainWindow):
         self._audio.isrc = self._isrcEdit.text()
         self._audio.save()
 
-    def loadPicture(self, filename):
+    def _loadPicture(self, filename):
         if filename is None:
             return None, None
         mimeType = mimetypes.guess_type(filename)

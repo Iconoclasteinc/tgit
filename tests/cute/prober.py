@@ -17,11 +17,14 @@ class Probe(SelfDescribing):
     def isSatisfied(self):
         pass
 
-    def describe_to(self, description):
+    def describeTo(self, description):
         pass
 
     def describeFailureTo(self, description):
         pass
+
+    def describe_to(self, description):
+        self.describeTo(description)
 
 
 class Timeout(object):
@@ -54,7 +57,7 @@ class PollingProber(Prober):
     def _describeFailureOf(self, probe):
         description = StringDescription()
         description.append_text("\nTried to look for...\n    ")
-        probe.describe_to(description)
+        probe.describeTo(description)
         description.append_text("\nbut...\n    ")
         probe.describeFailureTo(description)
         return str(description)

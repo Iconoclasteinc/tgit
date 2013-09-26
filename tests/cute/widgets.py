@@ -43,17 +43,17 @@ class WidgetDriver(object):
         self.verify(match.showingOnScreen())
 
     def verify(self, criteria):
-        self._check(WidgetAssertionProbe(self.selector, criteria))
+        self.check(WidgetAssertionProbe(self.selector, criteria))
 
     def has(self, query, criteria):
-        self._check(WidgetPropertyAssertionProbe(self.selector, query, criteria))
+        self.check(WidgetPropertyAssertionProbe(self.selector, query, criteria))
 
     def manipulate(self, description, manipulation):
-        self._check(WidgetManipulatorProbe(self.selector, manipulation, description))
+        self.check(WidgetManipulatorProbe(self.selector, manipulation, description))
 
     def widgetCenter(self):
         probe = WidgetScreenBoundsProbe(self.selector)
-        self._check(probe)
+        self.check(probe)
         return probe.bounds.center()
 
     def leftClickOnWidget(self):
@@ -63,7 +63,7 @@ class WidgetDriver(object):
     def perform(self, *gestures):
         self.gesturePerformer.perform(*gestures)
 
-    def _check(self, probe):
+    def check(self, probe):
         self.prober.check(probe)
 
 
