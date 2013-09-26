@@ -20,7 +20,8 @@ def buildTrack(**tags):
                     frontCoverPicture=(None, None),
                     leadPerformer=None,
                     releaseDate=None,
-                    upc=None)
+                    upc=None,
+                    trackTitle=None)
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
@@ -76,3 +77,8 @@ class MainWindowTest(unittest.TestCase):
         track = buildTrack(upc='1234567899999')
         self.mainWindow.trackSelected(track)
         self.driver.showsUpc('1234567899999')
+
+    def testDisplaysSelectedTrackTitle(self):
+        track = buildTrack(trackTitle='Track Title')
+        self.mainWindow.trackSelected(track)
+        self.driver.showsTrackTitle('Track Title')

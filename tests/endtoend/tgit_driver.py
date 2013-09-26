@@ -64,13 +64,18 @@ class TGiTDriver(MainWindowDriver):
         upcLabel.isShowingOnScreen()
         self._upc().hasText(upc)
 
+    def showsTrackTitle(self, trackTitle):
+        trackTitleLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.TRACK_TITLE_NAME)))
+        trackTitleLabel.isShowingOnScreen()
+        self._trackTitle().hasText(trackTitle)
+
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
         self.showsReleaseName(tags[RELEASE_NAME])
         self.showsLeadPerformer(tags[LEAD_PERFORMER])
         self.showsReleaseDate(tags[RELEASE_DATE])
         self.showsUpc(tags[UPC])
-        self._trackTitle().hasText(tags[TRACK_TITLE])
+        self.showsTrackTitle(tags[TRACK_TITLE])
         self._featuredGuest().hasText(tags[FEATURED_GUEST])
         self._versionInfo().hasText(tags[VERSION_INFO])
         self._isrc().hasText(tags[ISRC])
