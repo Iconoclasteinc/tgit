@@ -22,7 +22,8 @@ def buildTrack(**tags):
                     releaseDate=None,
                     upc=None,
                     trackTitle=None,
-                    versionInfo=None)
+                    versionInfo=None,
+                    featuredGuest=None)
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
@@ -88,3 +89,8 @@ class MainWindowTest(unittest.TestCase):
         track = buildTrack(versionInfo='Version Info')
         self.mainWindow.trackSelected(track)
         self.driver.showsVersionInfo('Version Info')
+
+    def testDisplaysSelectedTrackFeaturedGuest(self):
+        track = buildTrack(featuredGuest='Featured Guest')
+        self.mainWindow.trackSelected(track)
+        self.driver.showsFeaturedGuest('Featured Guest')

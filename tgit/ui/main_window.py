@@ -76,6 +76,7 @@ class MainWindow(QMainWindow):
         self._upcEdit.setText(track.upc)
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
+        self._featuredGuestEdit.setText(track.featuredGuest)
         self._showTagAlbumPanel()
 
     def _makeStatusBar(self):
@@ -173,6 +174,7 @@ class MainWindow(QMainWindow):
         self._featuredGuestEdit = QLineEdit(self._tagAlbumPanel)
         self._featuredGuestEdit.setObjectName(FEATURED_GUEST_NAME)
         layout.addWidget(self._featuredGuestEdit, row, 1, 1, 1)
+        self._featuredGuestLabel.setBuddy(self._featuredGuestEdit)
 
     def _addIsrc(self, layout, row):
         self._isrcLabel = QLabel(self._tagAlbumPanel)

@@ -38,41 +38,45 @@ class TGiTDriver(MainWindowDriver):
         self._selectTrack(path)
 
     def showsReleaseName(self, releaseName):
-        releaseNameLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_NAME_NAME)))
-        releaseNameLabel.isShowingOnScreen()
+        label = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_NAME_NAME)))
+        label.isShowingOnScreen()
         self._releaseName().hasText(releaseName)
 
     def displaysFrontCoverPictureWithSize(self, width, height):
-        frontCoverImage = LabelDriver.find(self, QLabel, named(main.FRONT_COVER_PICTURE_NAME))
-        frontCoverImage.isShowingOnScreen()
-        frontCoverImage.hasPixmap(withPixmapHeight(height))
-        frontCoverImage.hasPixmap(withPixmapWidth(width))
+        label = LabelDriver.find(self, QLabel, named(main.FRONT_COVER_PICTURE_NAME))
+        label.isShowingOnScreen()
+        label.hasPixmap(withPixmapHeight(height))
+        label.hasPixmap(withPixmapWidth(width))
 
     def showsLeadPerformer(self, leadPerformer):
-        leadPerformerLabel = LabelDriver.find(self, QLabel,
-                                              withBuddy(named(main.LEAD_PERFORMER_NAME)))
-        leadPerformerLabel.isShowingOnScreen()
+        label = LabelDriver.find(self, QLabel, withBuddy(named(main.LEAD_PERFORMER_NAME)))
+        label.isShowingOnScreen()
         self._leadPerformer().hasText(leadPerformer)
 
     def showsReleaseDate(self, releaseDate):
-        releaseDateLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_DATE_NAME)))
-        releaseDateLabel.isShowingOnScreen()
+        label = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_DATE_NAME)))
+        label.isShowingOnScreen()
         self._releaseDate().hasText(releaseDate)
 
     def showsUpc(self, upc):
-        upcLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.UPC_NAME)))
-        upcLabel.isShowingOnScreen()
+        label = LabelDriver.find(self, QLabel, withBuddy(named(main.UPC_NAME)))
+        label.isShowingOnScreen()
         self._upc().hasText(upc)
 
     def showsTrackTitle(self, trackTitle):
-        trackTitleLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.TRACK_TITLE_NAME)))
-        trackTitleLabel.isShowingOnScreen()
+        label = LabelDriver.find(self, QLabel, withBuddy(named(main.TRACK_TITLE_NAME)))
+        label.isShowingOnScreen()
         self._trackTitle().hasText(trackTitle)
 
     def showsVersionInfo(self, versionInfo):
-        versionInfoLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.VERSION_INFO_NAME)))
-        versionInfoLabel.isShowingOnScreen()
+        label = LabelDriver.find(self, QLabel, withBuddy(named(main.VERSION_INFO_NAME)))
+        label.isShowingOnScreen()
         self._versionInfo().hasText(versionInfo)
+
+    def showsFeaturedGuest(self, featuredGuest):
+        label = LabelDriver.find(self, QLabel, withBuddy(named(main.VERSION_INFO_NAME)))
+        label.isShowingOnScreen()
+        self._featuredGuest().hasText(featuredGuest)
 
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
@@ -81,8 +85,8 @@ class TGiTDriver(MainWindowDriver):
         self.showsReleaseDate(tags[RELEASE_DATE])
         self.showsUpc(tags[UPC])
         self.showsTrackTitle(tags[TRACK_TITLE])
-        self._featuredGuest().hasText(tags[FEATURED_GUEST])
         self.showsVersionInfo(tags[VERSION_INFO])
+        self.showsFeaturedGuest(tags[FEATURED_GUEST])
         self._isrc().hasText(tags[ISRC])
         self._bitrate().hasText(tags[BITRATE])
         self._trackDuration().hasText(tags[DURATION])
