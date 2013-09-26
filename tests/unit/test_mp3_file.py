@@ -53,9 +53,9 @@ class MP3FileTest(unittest.TestCase):
 
         assert_that(mp3.frontCoverPicture, is_((None, None)), "missing front cover")
 
-    def testReadsOriginalReleaseDateFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(originalReleaseDate='2013-11-15'))
-        assert_that(mp3.originalReleaseDate, equal_to('2013-11-15'), "original release date")
+    def testReadsReleaseDateFromId3Tags(self):
+        mp3 = MP3File(self.makeMp3(releaseDate='2013-11-15'))
+        assert_that(mp3.releaseDate, equal_to('2013-11-15'), "release date")
 
     def testReadsUpcFromCustomId3Tag(self):
         mp3 = MP3File(self.makeMp3(upc='1234567899999'))
@@ -98,7 +98,7 @@ class MP3FileTest(unittest.TestCase):
         mp3.releaseName = u"Release Name"
         mp3.frontCoverPicture = 'image/jpeg', readContent(resources.path("salers.jpg"))
         mp3.leadPerformer = u"Lead Performer"
-        mp3.originalReleaseDate = u"2013-12-01"
+        mp3.releaseDate = u"2013-12-01"
         mp3.upc = u"987654321111"
         mp3.trackTitle = u"Track Title"
         mp3.versionInfo = u"Version Info"
@@ -121,7 +121,7 @@ class MP3FileTest(unittest.TestCase):
         assert_that(MP3File(original.filename), has_properties(
             releaseName=original.releaseName,
             leadPerformer=original.leadPerformer,
-            originalReleaseDate=original.originalReleaseDate,
+            releaseDate=original.releaseDate,
             upc=original.upc,
             isrc=original.isrc,
             trackTitle=original.trackTitle,

@@ -70,9 +70,9 @@ class MP3Builder(object):
             self._attachPicture(4, *tags['backCover'])
         if 'leadPerformer' in tags:
             self._mp3.tags.add(id3.TPE1(encoding=UTF_8, text=tags['leadPerformer']))
-        if 'originalReleaseDate' in tags:
-            self._mp3.tags.add(id3.TDOR(encoding=UTF_8, text=[id3.ID3TimeStamp(tags[
-                'originalReleaseDate'])]))
+        if 'releaseDate' in tags:
+            self._mp3.tags.add(id3.TDRL(encoding=UTF_8, text=[id3.ID3TimeStamp(tags[
+                'releaseDate'])]))
         if 'upc' in tags:
             self._mp3.tags.add(id3.TXXX(encoding=UTF_8, desc='UPC', text=tags['upc']))
         if 'trackTitle' in tags:

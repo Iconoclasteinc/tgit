@@ -15,9 +15,10 @@ from tgit.ui.main_window import MainWindow
 
 
 def buildTrack(**tags):
-    defaults = dict(releaseName='',
+    defaults = dict(releaseName=None,
                     frontCoverPicture=(None, None),
-                    leadPerformer='')
+                    leadPerformer=None,
+                    releaseDate=None)
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
@@ -63,3 +64,8 @@ class MainWindowTest(unittest.TestCase):
         track = buildTrack(leadPerformer='Lead Performer')
         self.mainWindow.trackSelected(track)
         self.driver.showsLeadPerformer('Lead Performer')
+
+    def testDisplaysSelectedTrackAlbumReleaseDate(self):
+        track = buildTrack(releaseDate='2009-08-05')
+        self.mainWindow.trackSelected(track)
+        self.driver.showsReleaseDate('2009-08-05')

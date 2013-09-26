@@ -2,7 +2,6 @@
 
 import os
 from PyQt4.Qt import QPushButton, QLineEdit, QFileDialog, QLabel
-from hamcrest.core import all_of
 from tests.cute.prober import EventProcessingProber
 from tests.cute.matchers import (named, withBuddy, showingOnScreen, withPixmapHeight,
                                  withPixmapWidth)
@@ -20,7 +19,7 @@ VERSION_INFO = 'versionInfo'
 FEATURED_GUEST = 'featuredGuest'
 TRACK_TITLE = 'trackTitle'
 UPC = 'upc'
-ORIGINAL_RELEASE_DATE = 'originalReleaseDate'
+RELEASE_DATE = 'releaseDate'
 LEAD_PERFORMER = 'leadPerformer'
 RELEASE_NAME = 'releaseName'
 FRONT_COVER_EMBEDDED_TEXT = 'frontCoverEmbeddedText'
@@ -55,11 +54,16 @@ class TGiTDriver(MainWindowDriver):
         leadPerformerLabel.isShowingOnScreen()
         self._leadPerformer().hasText(leadPerformer)
 
+    def showsReleaseDate(self, releaseDate):
+        releaseDateLabel = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_DATE_NAME)))
+        releaseDateLabel.isShowingOnScreen()
+        self._releaseDate().hasText(releaseDate)
+
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
         self.showsReleaseName(tags[RELEASE_NAME])
         self.showsLeadPerformer(tags[LEAD_PERFORMER])
-        self._originalReleaseDate().hasText(tags[ORIGINAL_RELEASE_DATE])
+        self.showsReleaseDate(tags[RELEASE_DATE])
         self._upc().hasText(tags[UPC])
         self._trackTitle().hasText(tags[TRACK_TITLE])
         self._featuredGuest().hasText(tags[FEATURED_GUEST])
@@ -87,7 +91,7 @@ class TGiTDriver(MainWindowDriver):
         self._loadPicture(tags[FRONT_COVER_PICTURE])
         self._releaseName().replaceAllText(tags[RELEASE_NAME])
         self._leadPerformer().replaceAllText(tags[LEAD_PERFORMER])
-        self._originalReleaseDate().replaceAllText(tags[ORIGINAL_RELEASE_DATE])
+        self._releaseDate().replaceAllText(tags[RELEASE_DATE])
         self._upc().replaceAllText(tags[UPC])
         self._trackTitle().replaceAllText(tags[TRACK_TITLE])
         self._versionInfo().replaceAllText(tags[VERSION_INFO])
@@ -125,8 +129,8 @@ class TGiTDriver(MainWindowDriver):
     def _leadPerformer(self):
         return LineEditDriver.find(self, QLineEdit, named(main.LEAD_PERFORMER_NAME))
 
-    def _originalReleaseDate(self):
-        return LineEditDriver.find(self, QLineEdit, named(main.ORIGINAL_RELEASE_DATE_NAME))
+    def _releaseDate(self):
+        return LineEditDriver.find(self, QLineEdit, named(main.RELEASE_DATE_NAME))
 
     def _upc(self):
         return LineEditDriver.find(self, QLineEdit, named(main.UPC_NAME))

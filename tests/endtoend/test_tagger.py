@@ -30,7 +30,7 @@ class TaggerTest(unittest.TestCase):
         self.application.importAudioFile(audioFile)
         self.application.showsMetadata(releaseName='Messiah',
                                        leadPerformer='The Sixteen - Harry Christophers',
-                                       originalReleaseDate='2008-03-01',
+                                       releaseDate='2009-03-01',
                                        upc='123456789999',
                                        trackTitle='Hallelujah (Chorus)',
                                        featuredGuest='Carolyn Sampson',
@@ -41,7 +41,7 @@ class TaggerTest(unittest.TestCase):
                                        frontCoverEmbeddedText='Title: Handel Messiah')
         self.application.changeMetadata(releaseName='Despicable Me',
                                         leadPerformer='Tim, Mark and Phil',
-                                        originalReleaseDate='2010-07-09',
+                                        releaseDate='2010-07-09',
                                         upc='987654321111',
                                         trackTitle='Potato Banana Song',
                                         versionInfo='Remix',
@@ -51,7 +51,7 @@ class TaggerTest(unittest.TestCase):
         self.audioLibrary.containsFileWithMetadata(audioFile,
                                                    releaseName='Despicable Me',
                                                    leadPerformer='Tim, Mark and Phil',
-                                                   originalReleaseDate='2010-07-09',
+                                                   releaseDate='2010-07-09',
                                                    upc='987654321111',
                                                    trackTitle='Potato Banana Song',
                                                    versionInfo='Remix',

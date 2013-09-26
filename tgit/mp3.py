@@ -71,12 +71,12 @@ class MP3File(object):
         self._addTextFrame(id3.TPE1(text=artist))
 
     @property
-    def originalReleaseDate(self):
-        return self._getText(id3.TDOR())
+    def releaseDate(self):
+        return self._getText(id3.TDRL())
 
-    @originalReleaseDate.setter
-    def originalReleaseDate(self, timestamp):
-        self._addTextFrame(id3.TDOR(text=timestamp))
+    @releaseDate.setter
+    def releaseDate(self, timestamp):
+        self._addTextFrame(id3.TDRL(text=timestamp))
 
     @property
     def upc(self):

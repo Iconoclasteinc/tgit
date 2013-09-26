@@ -33,7 +33,7 @@ FRONT_COVER_PICTURE_NAME = "Front Cover Picture"
 FRONT_COVER_EMBEDDED_TEXT_NAME = "Front Cover Embedded Text"
 RELEASE_NAME_NAME = "Release Name"
 LEAD_PERFORMER_NAME = "Lead Performer"
-ORIGINAL_RELEASE_DATE_NAME = "Original Release Date"
+RELEASE_DATE_NAME = "Release Date"
 UPC_NAME = "UPC"
 TRACK_TITLE_NAME = "Track Title"
 VERSION_INFO_NAME = "Version Info"
@@ -72,6 +72,7 @@ class MainWindow(QMainWindow):
         self._releaseNameEdit.setText(track.releaseName)
         self._displayFrontCover(track.frontCoverPicture)
         self._leadPerformerEdit.setText(track.leadPerformer)
+        self._releaseDateEdit.setText(track.releaseDate)
         self._showTagAlbumPanel()
 
     def _makeStatusBar(self):
@@ -92,7 +93,7 @@ class MainWindow(QMainWindow):
         self._addFrontCoverPicture(tagAlbumLayout, 0)
         self._addReleaseName(tagAlbumLayout, 2)
         self._addLeadPerformer(tagAlbumLayout, 3)
-        self._addOriginalReleaseDate(tagAlbumLayout, 4)
+        self._addReleaseDate(tagAlbumLayout, 4)
         self._addUpc(tagAlbumLayout, 5)
         self._addTrackTitle(tagAlbumLayout, 6)
         self._addVersionInfo(tagAlbumLayout, 7)
@@ -131,12 +132,13 @@ class MainWindow(QMainWindow):
         layout.addWidget(self._leadPerformerEdit, row, 1, 1, 1)
         self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
 
-    def _addOriginalReleaseDate(self, layout, row):
-        self._originalReleaseDateLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._originalReleaseDateLabel, row, 0, 1, 1)
-        self._originalReleaseDateEdit = QLineEdit(self._tagAlbumPanel)
-        self._originalReleaseDateEdit.setObjectName(ORIGINAL_RELEASE_DATE_NAME)
-        layout.addWidget(self._originalReleaseDateEdit, row, 1, 1, 1)
+    def _addReleaseDate(self, layout, row):
+        self._releaseDateLabel = QLabel(self._tagAlbumPanel)
+        layout.addWidget(self._releaseDateLabel, row, 0, 1, 1)
+        self._releaseDateEdit = QLineEdit(self._tagAlbumPanel)
+        self._releaseDateEdit.setObjectName(RELEASE_DATE_NAME)
+        layout.addWidget(self._releaseDateEdit, row, 1, 1, 1)
+        self._releaseDateLabel.setBuddy(self._releaseDateEdit)
 
     def _addUpc(self, layout, row):
         self._upcLabel = QLabel(self._tagAlbumPanel)
@@ -239,7 +241,6 @@ class MainWindow(QMainWindow):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
         self._audio = MP3File(filename)
-        self._originalReleaseDateEdit.setText(self._audio.originalReleaseDate)
         self._upcEdit.setText(self._audio.upc)
         self._trackTitleEdit.setText(self._audio.trackTitle)
         self._versionInfoEdit.setText(self._audio.versionInfo)
@@ -263,7 +264,7 @@ class MainWindow(QMainWindow):
         self._audio.releaseName = self._releaseNameEdit.text()
         self._audio.frontCoverPicture = self._frontCover
         self._audio.leadPerformer = self._leadPerformerEdit.text()
-        self._audio.originalReleaseDate = self._originalReleaseDateEdit.text()
+        self._audio.releaseDate = self._releaseDateEdit.text()
         self._audio.upc = self._upcEdit.text()
         self._audio.trackTitle = self._trackTitleEdit.text()
         self._audio.versionInfo = self._versionInfoEdit.text()
@@ -285,7 +286,7 @@ class MainWindow(QMainWindow):
         self._quitMenuItem.setText(self.tr("Hit me to quit"))
         self._releaseNameLabel.setText(self.tr("Release Name: "))
         self._leadPerformerLabel.setText(self.tr("Lead Performer: "))
-        self._originalReleaseDateLabel.setText(self.tr("Original Release Date: "))
+        self._releaseDateLabel.setText(self.tr("Release Date: "))
         self._upcLabel.setText(self.tr("UPC/EAN: "))
         self._trackTitleLabel.setText(self.tr("Track Title: "))
         self._versionInfoLabel.setText(self.tr("Version Information: "))
