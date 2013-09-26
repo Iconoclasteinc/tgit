@@ -75,6 +75,7 @@ class MainWindow(QMainWindow):
         self._releaseDateEdit.setText(track.releaseDate)
         self._upcEdit.setText(track.upc)
         self._trackTitleEdit.setText(track.trackTitle)
+        self._versionInfoEdit.setText(track.versionInfo)
         self._showTagAlbumPanel()
 
     def _makeStatusBar(self):
@@ -164,6 +165,7 @@ class MainWindow(QMainWindow):
         self._versionInfoEdit = QLineEdit(self._tagAlbumPanel)
         self._versionInfoEdit.setObjectName(VERSION_INFO_NAME)
         layout.addWidget(self._versionInfoEdit, row, 1, 1, 1)
+        self._versionInfoLabel.setBuddy(self._versionInfoEdit)
 
     def _addFeaturedGuest(self, layout, row):
         self._featuredGuestLabel = QLabel(self._tagAlbumPanel)
@@ -245,7 +247,6 @@ class MainWindow(QMainWindow):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
         self._audio = MP3File(filename)
-        self._versionInfoEdit.setText(self._audio.versionInfo)
         self._featuredGuestEdit.setText(self._audio.featuredGuest)
         self._isrcEdit.setText(self._audio.isrc)
         self._bitrateInfoLabel.setText("%d kbps" % self._audio.bitrateInKbps)
