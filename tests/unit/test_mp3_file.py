@@ -110,13 +110,17 @@ class MP3FileTest(unittest.TestCase):
 
     def assertCanBeSavedAndReloadedWithSameTags(self, original):
         original.save()
-        assert_that(MP3File(original.filename), has_properties(
-            releaseName=original.releaseName,
-            leadPerformer=original.leadPerformer,
-            releaseDate=original.releaseDate,
-            upc=original.upc,
-            isrc=original.isrc,
-            trackTitle=original.trackTitle,
-            versionInfo=original.versionInfo,
-            featuredGuest=original.featuredGuest,
-            frontCoverPicture=original.frontCoverPicture))
+        assert_that(MP3File(original.filename), sameTagsAs(original))
+
+
+def sameTagsAs(other):
+    return has_properties(releaseName=other.releaseName,
+                          leadPerformer=other.leadPerformer,
+                          releaseDate=other.releaseDate,
+                          upc=other.upc,
+                          isrc=other.isrc,
+                          trackTitle=other.trackTitle,
+                          versionInfo=other.versionInfo,
+                          featuredGuest=other.featuredGuest,
+                          frontCoverPicture=other.frontCoverPicture)
+

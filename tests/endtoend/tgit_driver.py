@@ -37,10 +37,22 @@ class TGiTDriver(MainWindowDriver):
         self._openImportTrackDialog()
         self._selectTrack(path)
 
+    def _openImportTrackDialog(self):
+        button = AbstractButtonDriver.find(self, QPushButton, named(main.ADD_FILE_BUTTON_NAME))
+        button.click()
+
+    def _selectTrack(self, trackFile):
+        dialog = FileDialogDriver.find(self, QFileDialog, named(main.IMPORT_TRACK_DIALOG_NAME))
+        dialog.showHiddenFiles()
+        dialog.navigateToDir(os.path.dirname(trackFile))
+        dialog.selectFile(os.path.basename(trackFile))
+        dialog.accept()
+        # todo probe that album panel is shown
+
     def showsReleaseName(self, releaseName):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_NAME_NAME)))
         label.isShowingOnScreen()
-        self._releaseName().hasText(releaseName)
+        self._releaseNameEdit().hasText(releaseName)
 
     def displaysFrontCoverPictureWithSize(self, width, height):
         label = LabelDriver.find(self, QLabel, named(main.FRONT_COVER_PICTURE_NAME))
@@ -51,47 +63,47 @@ class TGiTDriver(MainWindowDriver):
     def showsLeadPerformer(self, leadPerformer):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.LEAD_PERFORMER_NAME)))
         label.isShowingOnScreen()
-        self._leadPerformer().hasText(leadPerformer)
+        self._leadPerformerEdit().hasText(leadPerformer)
 
     def showsReleaseDate(self, releaseDate):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_DATE_NAME)))
         label.isShowingOnScreen()
-        self._releaseDate().hasText(releaseDate)
+        self._releaseDateEdit().hasText(releaseDate)
 
     def showsUpc(self, upc):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.UPC_NAME)))
         label.isShowingOnScreen()
-        self._upc().hasText(upc)
+        self._upcEdit().hasText(upc)
 
     def showsTrackTitle(self, trackTitle):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.TRACK_TITLE_NAME)))
         label.isShowingOnScreen()
-        self._trackTitle().hasText(trackTitle)
+        self._trackTitleEdit().hasText(trackTitle)
 
     def showsVersionInfo(self, versionInfo):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.VERSION_INFO_NAME)))
         label.isShowingOnScreen()
-        self._versionInfo().hasText(versionInfo)
+        self._versionInfoEdit().hasText(versionInfo)
 
     def showsFeaturedGuest(self, featuredGuest):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.VERSION_INFO_NAME)))
         label.isShowingOnScreen()
-        self._featuredGuest().hasText(featuredGuest)
+        self._featuredGuestEdit().hasText(featuredGuest)
 
     def showsIsrc(self, isrc):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.ISRC_NAME)))
         label.isShowingOnScreen()
-        self._isrc().hasText(isrc)
+        self._isrcEdit().hasText(isrc)
 
     def showsBitrate(self, bitrate):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.BITRATE_NAME)))
         label.isShowingOnScreen()
-        self._bitrate().hasText(bitrate)
+        self._bitrateLabel().hasText(bitrate)
 
     def showsDuration(self, duration):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.DURATION_NAME)))
         label.isShowingOnScreen()
-        self._duration().hasText(duration)
+        self._durationLabel().hasText(duration)
 
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
@@ -106,35 +118,30 @@ class TGiTDriver(MainWindowDriver):
         self.showsBitrate(tags[BITRATE])
         self.showsDuration(tags[DURATION])
 
-    def _openImportTrackDialog(self):
-        addFileButton = AbstractButtonDriver.find(self, QPushButton,
-                                                  named(main.ADD_FILE_BUTTON_NAME))
-        addFileButton.click()
-
-    def _selectTrack(self, trackFile):
-        dialog = self._addFileDialog()
-        dialog.showHiddenFiles()
-        dialog.navigateToDir(os.path.dirname(trackFile))
-        dialog.selectFile(os.path.basename(trackFile))
-        dialog.accept()
-
-    def _addFileDialog(self):
-        return FileDialogDriver.find(self, QFileDialog, named(main.IMPORT_TRACK_DIALOG_NAME))
-
     def editMetadata(self, tags):
-        self._loadPicture(tags[FRONT_COVER_PICTURE])
-        self._releaseName().replaceAllText(tags[RELEASE_NAME])
-        self._leadPerformer().replaceAllText(tags[LEAD_PERFORMER])
-        self._releaseDate().replaceAllText(tags[RELEASE_DATE])
-        self._upc().replaceAllText(tags[UPC])
-        self._trackTitle().replaceAllText(tags[TRACK_TITLE])
-        self._versionInfo().replaceAllText(tags[VERSION_INFO])
-        self._featuredGuest().replaceAllText(tags[FEATURED_GUEST])
-        self._isrc().replaceAllText(tags[ISRC])
+        if FRONT_COVER_PICTURE in tags:
+            self.changeFrontCoverPicture(tags[FRONT_COVER_PICTURE])
+        if RELEASE_NAME in tags:
+            self.changeReleaseName(tags[RELEASE_NAME])
+        if LEAD_PERFORMER in tags:
+            self.changeLeadPerformer(tags[LEAD_PERFORMER])
+        if RELEASE_DATE in tags:
+            self.changeReleaseDate(tags[RELEASE_DATE])
+        if UPC in tags:
+            self.changeUpc(tags[UPC])
+        if TRACK_TITLE in tags:
+            self.changeTrackTitle(tags[TRACK_TITLE])
+        if VERSION_INFO in tags:
+            self.changeVersionInfo(tags[VERSION_INFO])
+        if FEATURED_GUEST in tags:
+            self.changeFeaturedGuest(tags[FEATURED_GUEST])
+        if ISRC in tags:
+            self.changeIsrc(tags[ISRC])
 
-    def _loadPicture(self, pictureFile):
+    def changeFrontCoverPicture(self, pictureFile):
         self._openSelectPictureDialog()
         self._selectPicture(pictureFile)
+        self.displaysFrontCoverPictureWithSize(*main.FRONT_COVER_DISPLAY_SIZE)
 
     def _openSelectPictureDialog(self):
         selectPictureButton = AbstractButtonDriver.find(self, QPushButton,
@@ -142,47 +149,68 @@ class TGiTDriver(MainWindowDriver):
         selectPictureButton.click()
 
     def _selectPicture(self, pictureFile):
-        selectPictureDialog = self._selectPictureDialog()
-        selectPictureDialog.navigateToDir(os.path.dirname(pictureFile))
-        selectPictureDialog.selectFile(os.path.basename(pictureFile))
-        selectPictureDialog.accept()
+        dialog = FileDialogDriver.find(self, QFileDialog, named(main.SELECT_PICTURE_DIALOG_NAME))
+        dialog.navigateToDir(os.path.dirname(pictureFile))
+        dialog.selectFile(os.path.basename(pictureFile))
+        dialog.accept()
 
-    def _selectPictureDialog(self):
-        return FileDialogDriver.find(self, QFileDialog, named(main.SELECT_PICTURE_DIALOG_NAME))
+    def changeReleaseName(self, name):
+        self._releaseNameEdit().replaceAllText(name)
 
-    def saveAudioFile(self):
-        saveButton = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
-        saveButton.click()
+    def changeLeadPerformer(self, name):
+        self._leadPerformerEdit().replaceAllText(name)
+
+    def changeReleaseDate(self, date):
+        self._releaseDateEdit().replaceAllText(date)
+
+    def changeUpc(self, code):
+        self._upcEdit().replaceAllText(code)
+
+    def changeTrackTitle(self, title):
+        self._trackTitleEdit().replaceAllText(title)
+
+    def changeVersionInfo(self, info):
+        self._versionInfoEdit().replaceAllText(info)
+
+    def changeFeaturedGuest(self, name):
+        self._featuredGuestEdit().replaceAllText(name)
+
+    def changeIsrc(self, code):
+        self._isrcEdit().replaceAllText(code)
+
+    def saveTrack(self):
+        button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
+        button.click()
 
     def _frontCoverEmbeddedText(self):
         return LabelDriver.find(self, QLabel, named(main.FRONT_COVER_EMBEDDED_TEXT_NAME))
 
-    def _releaseName(self):
+    def _releaseNameEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.RELEASE_NAME_NAME))
 
-    def _leadPerformer(self):
+    def _leadPerformerEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.LEAD_PERFORMER_NAME))
 
-    def _releaseDate(self):
+    def _releaseDateEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.RELEASE_DATE_NAME))
 
-    def _upc(self):
+    def _upcEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.UPC_NAME))
 
-    def _trackTitle(self):
+    def _trackTitleEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.TRACK_TITLE_NAME))
 
-    def _versionInfo(self):
+    def _versionInfoEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.VERSION_INFO_NAME))
 
-    def _featuredGuest(self):
+    def _featuredGuestEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.FEATURED_GUEST_NAME))
 
-    def _isrc(self):
+    def _isrcEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.ISRC_NAME))
 
-    def _bitrate(self):
+    def _bitrateLabel(self):
         return LabelDriver.find(self, QLabel, named(main.BITRATE_NAME))
 
-    def _duration(self):
+    def _durationLabel(self):
         return LabelDriver.find(self, QLabel, named(main.DURATION_NAME))

@@ -18,7 +18,7 @@ class ApplicationRunner(object):
         del self._driver
         del self._app
 
-    def importAudioFile(self, path):
+    def importTrack(self, path):
         self._driver.importTrack(path)
 
     def showsMetadata(self, **tags):
@@ -26,4 +26,4 @@ class ApplicationRunner(object):
 
     def changeMetadata(self, **tags):
         self._driver.editMetadata(tags)
-        self._driver.saveAudioFile()
+        self._driver.saveTrack()

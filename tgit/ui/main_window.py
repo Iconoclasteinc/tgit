@@ -41,6 +41,8 @@ BITRATE_NAME = "Bitrate"
 DURATION_NAME = "Duration"
 SAVE_BUTTON_NAME = "Save"
 
+FRONT_COVER_DISPLAY_SIZE = (125, 125)
+
 
 def toKbps(bitrate):
     return int(round(bitrate, -3) / 1000)
@@ -102,6 +104,7 @@ class MainWindow(QMainWindow):
 
     def _addFrontCoverPicture(self, layout, row):
         self._frontCoverImage = QLabel(self._tagAlbumPanel)
+        self._frontCoverImage.setFixedSize(*FRONT_COVER_DISPLAY_SIZE)
         self._frontCoverImage.setObjectName(FRONT_COVER_PICTURE_NAME)
         layout.addWidget(self._frontCoverImage, row, 0, 1, 1)
         self._selectPictureButton = QPushButton(self._tagAlbumPanel)
@@ -264,7 +267,8 @@ class MainWindow(QMainWindow):
         self._track.versionInfo = self._versionInfoEdit.text()
         self._track.featuredGuest = self._featuredGuestEdit.text()
         self._track.isrc = self._isrcEdit.text()
-        self._track.save()
+        if self._musicDirector:
+            self._musicDirector.saveTrack(self._track)
 
     def _loadPicture(self, filename):
         if filename is None:

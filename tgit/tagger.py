@@ -58,6 +58,9 @@ class MusicDirector(object):
         track = MP3File(filename)
         self._ui.trackSelected(track)
 
+    def saveTrack(self, track):
+        track.save()
+
 
 def main(locale):
     TGiT(locale).run()

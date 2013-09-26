@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import mimetypes
 from hamcrest.core import equal_to
+from hamcrest.library import has_properties, contains, has_length
 from flexmock import flexmock
 
 import use_sip_api_v2 as sipApi
@@ -12,6 +14,7 @@ from tests.cute.probes import ValueMatcherProbe
 from tests.endtoend.tgit_driver import TGiTDriver
 from tests.util import resources
 from tests.endtoend.fake_audio_library import readContent
+from tgit.ui import main_window as main
 from tgit.ui.main_window import MainWindow
 
 
@@ -41,9 +44,9 @@ class MainWindowTest(unittest.TestCase):
         del self.driver
         del self.app
 
-    def testRequestsTrackToBeAddedToAlbumWhenTrackFileHasBeenSelectedForImport(self):
+    def testMakesRequestToAddTrackToAlbumWhenTrackFileIsSelectedUsingImportDialog(self):
         trackFile = resources.path("Hallelujah.mp3")
-        importRequest = ValueMatcherProbe(equal_to(trackFile), "request to import track file")
+        importRequest = ValueMatcherProbe(equal_to(trackFile), "request to import track")
 
         class DetectTrackImport(object):
             def importTrack(self, filename):
@@ -66,7 +69,7 @@ class MainWindowTest(unittest.TestCase):
         frontCover = ('image/jpeg', readContent(resources.path("front-cover.jpg")))
         track = buildTrack(frontCoverPicture=frontCover)
         self.mainWindow.trackSelected(track)
-        self.driver.displaysFrontCoverPictureWithSize(125, 125)
+        self.driver.displaysFrontCoverPictureWithSize(*main.FRONT_COVER_DISPLAY_SIZE)
 
     def testDisplaysSelectedTrackAlbumLeadPerformer(self):
         track = buildTrack(leadPerformer='Lead Performer')
@@ -112,3 +115,48 @@ class MainWindowTest(unittest.TestCase):
         track = buildTrack(duration=275)
         self.mainWindow.trackSelected(track)
         self.driver.showsDuration('04:35')
+
+    def testMakesRequestToSaveModifiedTrackWhenSaveButtonIsClicked(self):
+        modifications = dict(releaseName='Release Name',
+                             frontCoverPicture=resources.path("front-cover.jpg"),
+                             leadPerformer='Lead Performer',
+                             releaseDate='2009-08-05',
+                             upc='123456789999',
+                             trackTitle='Track Title',
+                             versionInfo='Version Info',
+                             featuredGuest='Featured Guest',
+                             isrc='AABB12345678')
+        saveRequest = ValueMatcherProbe(sameMetadataAs(**modifications), "request to save track")
+
+        class DetectSaveTrack(object):
+            def saveTrack(self, track):
+                saveRequest.setReceivedValue(track)
+
+        self.mainWindow.addMusicDirector(DetectSaveTrack())
+        self.mainWindow.trackSelected(buildTrack())
+        self.driver.editMetadata(modifications)
+        self.driver.saveTrack()
+        self.driver.check(saveRequest)
+
+
+def sameMetadataAs(**tags):
+    if 'frontCoverPicture' in tags:
+        tags['frontCoverPicture'] = samePictureAs(tags['frontCoverPicture'])
+    return has_properties(**tags)
+
+
+# todo move to a file related utilities module
+def readContent(filename):
+    return open(filename, "rb").read()
+
+
+# todo move to a file related utilities module
+def guessMimeType(filename):
+    return mimetypes.guess_type(filename)[0]
+
+
+# todo move to a matchers module
+def samePictureAs(filename):
+    return contains(equal_to(guessMimeType(filename)),
+                    has_length(len(readContent(filename))))
+

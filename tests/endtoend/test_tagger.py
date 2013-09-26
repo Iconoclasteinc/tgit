@@ -27,7 +27,7 @@ class TaggerTest(unittest.TestCase):
     # todo create a test mp3 from a sample realistic mpeg frame and make expected values explicit
     def testTaggerModifiesTagsOfAnExistingAudioFileAndSavesChanges(self):
         audioFile = self.audioLibrary.addFile(SAMPLE_AUDIO_FILE)
-        self.application.importAudioFile(audioFile)
+        self.application.importTrack(audioFile)
         self.application.showsMetadata(releaseName='Messiah',
                                        leadPerformer='The Sixteen - Harry Christophers',
                                        releaseDate='2009-03-01',
