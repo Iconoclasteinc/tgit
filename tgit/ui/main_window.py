@@ -77,6 +77,7 @@ class MainWindow(QMainWindow):
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
         self._featuredGuestEdit.setText(track.featuredGuest)
+        self._isrcEdit.setText(track.isrc)
         self._showTagAlbumPanel()
 
     def _makeStatusBar(self):
@@ -182,6 +183,7 @@ class MainWindow(QMainWindow):
         self._isrcEdit = QLineEdit(self._tagAlbumPanel)
         self._isrcEdit.setObjectName(ISRC_NAME)
         layout.addWidget(self._isrcEdit, row, 1, 1, 1)
+        self._isrcLabel.setBuddy(self._isrcEdit)
 
     def _addBitrate(self, layout, row):
         self._bitrateLabel = QLabel(self._tagAlbumPanel)
@@ -249,8 +251,6 @@ class MainWindow(QMainWindow):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
         self._audio = MP3File(filename)
-        self._featuredGuestEdit.setText(self._audio.featuredGuest)
-        self._isrcEdit.setText(self._audio.isrc)
         self._bitrateInfoLabel.setText("%d kbps" % self._audio.bitrateInKbps)
         self._durationInfoLabel.setText(self._audio.durationAsText)
         self.trackSelected(self._audio)

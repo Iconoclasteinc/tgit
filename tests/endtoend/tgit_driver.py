@@ -78,6 +78,11 @@ class TGiTDriver(MainWindowDriver):
         label.isShowingOnScreen()
         self._featuredGuest().hasText(featuredGuest)
 
+    def showsIsrc(self, isrc):
+        label = LabelDriver.find(self, QLabel, withBuddy(named(main.ISRC_NAME)))
+        label.isShowingOnScreen()
+        self._isrc().hasText(isrc)
+
     def showsMetadata(self, tags):
         self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
         self.showsReleaseName(tags[RELEASE_NAME])
@@ -87,7 +92,7 @@ class TGiTDriver(MainWindowDriver):
         self.showsTrackTitle(tags[TRACK_TITLE])
         self.showsVersionInfo(tags[VERSION_INFO])
         self.showsFeaturedGuest(tags[FEATURED_GUEST])
-        self._isrc().hasText(tags[ISRC])
+        self.showsIsrc(tags[ISRC])
         self._bitrate().hasText(tags[BITRATE])
         self._trackDuration().hasText(tags[DURATION])
 
