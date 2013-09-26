@@ -21,7 +21,7 @@ import sys
 from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
-from tgit import resources
+from tgit.mp3 import MP3File
 from tgit.ui.main_window import MainWindow
 
 UTF_8 = "UTF-8"
@@ -33,6 +33,7 @@ class TGiT(QApplication):
         self._translators = []
         self.setLocale(locale)
         self._ui = MainWindow()
+        self._ui.addMusicDirector(MusicDirector(self._ui))
 
     def setLocale(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
@@ -47,6 +48,15 @@ class TGiT(QApplication):
 
     def run(self):
         return sys.exit(self.exec_())
+
+
+class MusicDirector(object):
+    def __init__(self, ui):
+        self._ui = ui
+
+    def importTrack(self, filename):
+        track = MP3File(filename)
+        self._ui.trackSelected(track)
 
 
 def main(locale):

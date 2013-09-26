@@ -22,8 +22,6 @@ from PyQt4.QtCore import (Qt, QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenuBar, QMenu, QAction, QStatusBar, QGridLayout,
                          QLabel, QPushButton, QLineEdit, QFileDialog, QPixmap, QImage)
 
-from tgit.mp3 import MP3File
-
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
 IMPORT_TRACK_DIALOG_NAME = "Select Track File"
@@ -72,23 +70,6 @@ class MainWindow(QMainWindow):
         self._fillMenu()
         self._makeStatusBar()
         self.localizeUi()
-
-    def addMusicDirector(self, director):
-        self._musicDirector = director
-
-    def trackSelected(self, track):
-        self._releaseNameEdit.setText(track.releaseName)
-        self._displayFrontCover(track.frontCoverPicture)
-        self._leadPerformerEdit.setText(track.leadPerformer)
-        self._releaseDateEdit.setText(track.releaseDate)
-        self._upcEdit.setText(track.upc)
-        self._trackTitleEdit.setText(track.trackTitle)
-        self._versionInfoEdit.setText(track.versionInfo)
-        self._featuredGuestEdit.setText(track.featuredGuest)
-        self._isrcEdit.setText(track.isrc)
-        self._bitrateInfoLabel.setText("%s kbps" % toKbps(track.bitrate))
-        self._durationInfoLabel.setText(secondsAsText(track.duration))
-        self._showTagAlbumPanel()
 
     def _makeStatusBar(self):
         self.setStatusBar(QStatusBar(self))
@@ -262,8 +243,6 @@ class MainWindow(QMainWindow):
     def _importTrackFile(self, filename):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
-        self._audio = MP3File(filename)
-        self.trackSelected(self._audio)
 
     def _getEmbeddedText(self, imageData):
         return QImage.fromData(imageData).text()
@@ -276,16 +255,16 @@ class MainWindow(QMainWindow):
         return QPixmap.fromImage(scaledImage)
 
     def _saveTrackFile(self):
-        self._audio.releaseName = self._releaseNameEdit.text()
-        self._audio.frontCoverPicture = self._frontCover
-        self._audio.leadPerformer = self._leadPerformerEdit.text()
-        self._audio.releaseDate = self._releaseDateEdit.text()
-        self._audio.upc = self._upcEdit.text()
-        self._audio.trackTitle = self._trackTitleEdit.text()
-        self._audio.versionInfo = self._versionInfoEdit.text()
-        self._audio.featuredGuest = self._featuredGuestEdit.text()
-        self._audio.isrc = self._isrcEdit.text()
-        self._audio.save()
+        self._track.releaseName = self._releaseNameEdit.text()
+        self._track.frontCoverPicture = self._frontCover
+        self._track.leadPerformer = self._leadPerformerEdit.text()
+        self._track.releaseDate = self._releaseDateEdit.text()
+        self._track.upc = self._upcEdit.text()
+        self._track.trackTitle = self._trackTitleEdit.text()
+        self._track.versionInfo = self._versionInfoEdit.text()
+        self._track.featuredGuest = self._featuredGuestEdit.text()
+        self._track.isrc = self._isrcEdit.text()
+        self._track.save()
 
     def _loadPicture(self, filename):
         if filename is None:
@@ -293,6 +272,24 @@ class MainWindow(QMainWindow):
         mimeType = mimetypes.guess_type(filename)
         imageData = open(filename, "rb").read()
         return mimeType[0], imageData
+
+    def addMusicDirector(self, director):
+        self._musicDirector = director
+
+    def trackSelected(self, track):
+        self._track = track
+        self._releaseNameEdit.setText(track.releaseName)
+        self._displayFrontCover(track.frontCoverPicture)
+        self._leadPerformerEdit.setText(track.leadPerformer)
+        self._releaseDateEdit.setText(track.releaseDate)
+        self._upcEdit.setText(track.upc)
+        self._trackTitleEdit.setText(track.trackTitle)
+        self._versionInfoEdit.setText(track.versionInfo)
+        self._featuredGuestEdit.setText(track.featuredGuest)
+        self._isrcEdit.setText(track.isrc)
+        self._bitrateInfoLabel.setText("%s kbps" % toKbps(track.bitrate))
+        self._durationInfoLabel.setText(secondsAsText(track.duration))
+        self._showTagAlbumPanel()
 
     def localizeUi(self):
         self.setWindowTitle(self.tr("TGiT"))
