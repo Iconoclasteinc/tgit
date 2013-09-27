@@ -60,36 +60,6 @@ class MainWindowTest(unittest.TestCase):
     def testHasNothingToShowWhenTrackHasNoMetadata(self):
         raise AssertionError("Not yet implemented")
 
-    def testDisplaysSelectedTrackTitle(self):
-        track = buildTrack(trackTitle='Track Title')
-        self.mainWindow.trackSelected(track)
-        self.driver.showsTrackTitle('Track Title')
-
-    def testDisplaysSelectedTrackVersionInfo(self):
-        track = buildTrack(versionInfo='Version Info')
-        self.mainWindow.trackSelected(track)
-        self.driver.showsVersionInfo('Version Info')
-
-    def testDisplaysSelectedTrackFeaturedGuest(self):
-        track = buildTrack(featuredGuest='Featured Guest')
-        self.mainWindow.trackSelected(track)
-        self.driver.showsFeaturedGuest('Featured Guest')
-
-    def testDisplaysSelectedTrackIsrc(self):
-        track = buildTrack(isrc='ISRC')
-        self.mainWindow.trackSelected(track)
-        self.driver.showsIsrc('ISRC')
-
-    def testDisplaysSelectedTrackBitrateInKbps(self):
-        track = buildTrack(bitrate=128000)
-        self.mainWindow.trackSelected(track)
-        self.driver.showsBitrate('128 kbps')
-
-    def testDisplaysSelectedTrackDurationAsText(self):
-        track = buildTrack(duration=275)
-        self.mainWindow.trackSelected(track)
-        self.driver.showsDuration('04:35')
-
     def testMakesRequestToSaveModifiedTrackWhenSaveButtonIsClicked(self):
         modifications = dict(releaseName='Release Name',
                              frontCoverPicture=resources.path("front-cover.jpg"),

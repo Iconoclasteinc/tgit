@@ -17,36 +17,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import (Qt, QDir, QRect)
+from PyQt4.QtCore import (QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenuBar, QMenu, QAction, QStatusBar, QGridLayout,
-                         QLabel, QPushButton, QLineEdit, QFileDialog, QPixmap, QImage)
+                         QPushButton, QFileDialog)
 
 from tgit.ui.album_panel import AlbumPanel
+from tgit.ui.track_panel import TrackPanel
 
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
+IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 NEXT_STEP_BUTTON_NAME = "Next Step"
 SAVE_BUTTON_NAME = "Save"
 
-IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 
-TRACK_TITLE_NAME = "Track Title"
-VERSION_INFO_NAME = "Version Info"
-FEATURED_GUEST_NAME = "Featured Guest"
-ISRC_NAME = "ISRC"
-BITRATE_NAME = "Bitrate"
-DURATION_NAME = "Duration"
-
-
-def toKbps(bitrate):
-    return int(round(bitrate, -3) / 1000)
-
-
-def secondsAsText(seconds):
-    return "%02d:%02d" % divmod(round(seconds), 60)
-
-
-# todo start teasing apart the main window to get birth to the domain concepts
 class MainWindow(QMainWindow):
     def __init__(self, ):
         QMainWindow.__init__(self)
@@ -59,105 +43,36 @@ class MainWindow(QMainWindow):
     def _setupUi(self):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(640, 480)
-        self._makeImportFileDialog()
-        self.setCentralWidget(self._makeWelcomePanel())
-        self._makeTagAlbumPanel()
         self._fillMenu()
         self._makeStatusBar()
+        self._makeImportFileDialog()
+        self._makeWelcomePanel()
+        self._makeTagAlbumPanel()
+        self.setCentralWidget(self._welcomePanel)
         self.localizeUi()
 
-    def _makeStatusBar(self):
-        self.setStatusBar(QStatusBar(self))
-
-    def _makeWelcomePanel(self):
-        self._welcomePanel = QWidget()
-        welcomePanelLayout = QGridLayout(self._welcomePanel)
-        self._addFileButton = QPushButton(self._welcomePanel)
-        self._addFileButton.setObjectName(ADD_FILE_BUTTON_NAME)
-        self._addFileButton.clicked.connect(self._addFileDialog.open)
-        welcomePanelLayout.addWidget(self._addFileButton, 0, 0, 1, 1)
-        return self._welcomePanel
-
-    def _makeTagAlbumPanel(self):
-        self._tagAlbumPanel = QWidget()
-        tagAlbumLayout = QGridLayout(self._tagAlbumPanel)
-        self._albumPanel = AlbumPanel(self)
-        tagAlbumLayout.addWidget(self._albumPanel, 0, 0, 5, 3)
-        self._addTrackTitle(tagAlbumLayout, 5)
-        self._addVersionInfo(tagAlbumLayout, 6)
-        self._addFeaturedGuest(tagAlbumLayout, 7)
-        self._addIsrc(tagAlbumLayout, 8)
-        self._addBitrate(tagAlbumLayout, 9)
-        self._addDuration(tagAlbumLayout, 10)
-        self._addButtons(tagAlbumLayout, 11)
-        return self._tagAlbumPanel
-
-    def _addTrackTitle(self, layout, row):
-        self._trackTitleLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._trackTitleLabel, row, 0, 1, 1)
-        self._trackTitleEdit = QLineEdit(self._tagAlbumPanel)
-        self._trackTitleEdit.setObjectName(TRACK_TITLE_NAME)
-        layout.addWidget(self._trackTitleEdit, row, 1, 1, 1)
-        self._trackTitleLabel.setBuddy(self._trackTitleEdit)
-
-    def _addVersionInfo(self, layout, row):
-        self._versionInfoLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._versionInfoLabel, row, 0, 1, 1)
-        self._versionInfoEdit = QLineEdit(self._tagAlbumPanel)
-        self._versionInfoEdit.setObjectName(VERSION_INFO_NAME)
-        layout.addWidget(self._versionInfoEdit, row, 1, 1, 1)
-        self._versionInfoLabel.setBuddy(self._versionInfoEdit)
-
-    def _addFeaturedGuest(self, layout, row):
-        self._featuredGuestLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._featuredGuestLabel, row, 0, 1, 1)
-        self._featuredGuestEdit = QLineEdit(self._tagAlbumPanel)
-        self._featuredGuestEdit.setObjectName(FEATURED_GUEST_NAME)
-        layout.addWidget(self._featuredGuestEdit, row, 1, 1, 1)
-        self._featuredGuestLabel.setBuddy(self._featuredGuestEdit)
-
-    def _addIsrc(self, layout, row):
-        self._isrcLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._isrcLabel, row, 0, 1, 1)
-        self._isrcEdit = QLineEdit(self._tagAlbumPanel)
-        self._isrcEdit.setObjectName(ISRC_NAME)
-        layout.addWidget(self._isrcEdit, row, 1, 1, 1)
-        self._isrcLabel.setBuddy(self._isrcEdit)
-
-    def _addBitrate(self, layout, row):
-        self._bitrateLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._bitrateLabel, row, 0, 1, 1)
-        self._bitrateInfoLabel = QLabel(self._tagAlbumPanel)
-        self._bitrateInfoLabel.setObjectName(BITRATE_NAME)
-        layout.addWidget(self._bitrateInfoLabel, row, 1, 1, 1)
-        self._bitrateLabel.setBuddy(self._bitrateInfoLabel)
-
-    def _addDuration(self, layout, row):
-        self._durationLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._durationLabel, row, 0, 1, 1)
-        self._durationInfoLabel = QLabel(self._tagAlbumPanel)
-        self._durationInfoLabel.setObjectName(DURATION_NAME)
-        layout.addWidget(self._durationInfoLabel, row, 1, 1, 1)
-        self._durationLabel.setBuddy(self._durationInfoLabel)
-
-    def _addButtons(self, layout, row):
-        self._saveButton = QPushButton(self._tagAlbumPanel)
-        self._saveButton.setObjectName(SAVE_BUTTON_NAME)
-        self._saveButton.clicked.connect(self._saveTrackFile)
-        layout.addWidget(self._saveButton, row, 1)
-        self._nextStepButton = QPushButton(self._tagAlbumPanel)
-        self._nextStepButton.setObjectName(NEXT_STEP_BUTTON_NAME)
-        layout.addWidget(self._nextStepButton, row, 2)
-
     def _fillMenu(self):
-        menuBar = QMenuBar(self)
+        menuBar = QMenuBar()
         menuBar.setGeometry(QRect(0, 0, 469, 21))
         self._quitMenu = QMenu(menuBar)
-        self._quitMenuItem = QAction(self)
+        self._quitMenuItem = QAction(self._quitMenu)
         self._quitMenuItem.triggered.connect(self.close)
         self._quitMenu.addAction(self._quitMenuItem)
         self.setMenuBar(menuBar)
         menuBar.addAction(self._quitMenu.menuAction())
+
+    def _makeStatusBar(self):
+        self.setStatusBar(QStatusBar())
+
+    # todo Extract a WelcomePanel
+    def _makeWelcomePanel(self):
+        self._welcomePanel = QWidget()
+        layout = QGridLayout(self._welcomePanel)
+        self._welcomePanel.setLayout(layout)
+        self._addFileButton = QPushButton()
+        self._addFileButton.setObjectName(ADD_FILE_BUTTON_NAME)
+        self._addFileButton.clicked.connect(self._addFileDialog.open)
+        layout.addWidget(self._addFileButton, 0, 0)
 
     # todo integration test dialog file name filtering by making sure the Accept button stay
     # disabled when we select a non supported file type
@@ -169,19 +84,32 @@ class MainWindow(QMainWindow):
         self._addFileDialog.setModal(True)
         self._addFileDialog.fileSelected.connect(self._importTrackFile)
 
-    def _showTagAlbumPanel(self):
-        self.setCentralWidget(self._tagAlbumPanel)
-
     def _importTrackFile(self, filename):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
 
+    def _makeTagAlbumPanel(self):
+        self._tagAlbumPanel = QWidget()
+        layout = QGridLayout(self._tagAlbumPanel)
+        self._albumPanel = AlbumPanel(self)
+        layout.addWidget(self._albumPanel, 0, 0, 5, 3)
+        self._trackPanel = TrackPanel(self)
+        layout.addWidget(self._trackPanel, 5, 0, 6, 3)
+        self._addButtons(layout, 11)
+        return self._tagAlbumPanel
+
+    def _addButtons(self, layout, row):
+        self._saveButton = QPushButton()
+        self._saveButton.setObjectName(SAVE_BUTTON_NAME)
+        self._saveButton.clicked.connect(self._saveTrackFile)
+        layout.addWidget(self._saveButton, row, 1)
+        self._nextStepButton = QPushButton()
+        self._nextStepButton.setObjectName(NEXT_STEP_BUTTON_NAME)
+        layout.addWidget(self._nextStepButton, row, 2)
+
     def _saveTrackFile(self):
         self._albumPanel.updateTrack(self._track)
-        self._track.trackTitle = self._trackTitleEdit.text()
-        self._track.versionInfo = self._versionInfoEdit.text()
-        self._track.featuredGuest = self._featuredGuestEdit.text()
-        self._track.isrc = self._isrcEdit.text()
+        self._trackPanel.updateTrack(self._track)
         if self._musicDirector:
             self._musicDirector.saveTrack(self._track)
 
@@ -191,25 +119,17 @@ class MainWindow(QMainWindow):
     def trackSelected(self, track):
         self._track = track
         self._albumPanel.trackSelected(track)
-        self._trackTitleEdit.setText(track.trackTitle)
-        self._versionInfoEdit.setText(track.versionInfo)
-        self._featuredGuestEdit.setText(track.featuredGuest)
-        self._isrcEdit.setText(track.isrc)
-        self._bitrateInfoLabel.setText("%s kbps" % toKbps(track.bitrate))
-        self._durationInfoLabel.setText(secondsAsText(track.duration))
+        self._trackPanel.trackSelected(track)
         self._showTagAlbumPanel()
+
+    def _showTagAlbumPanel(self):
+        self.setCentralWidget(self._tagAlbumPanel)
 
     def localizeUi(self):
         self.setWindowTitle(self.tr("TGiT"))
         self._addFileButton.setText(self.tr("Add File..."))
         self._quitMenu.setTitle(self.tr("Quit"))
         self._quitMenuItem.setText(self.tr("Hit me to quit"))
-        self._trackTitleLabel.setText(self.tr("Track Title: "))
-        self._versionInfoLabel.setText(self.tr("Version Information: "))
-        self._featuredGuestLabel.setText(self.tr("Featured Guest: "))
-        self._isrcLabel.setText(self.tr("ISRC: "))
-        self._bitrateLabel.setText(self.tr("Bitrate: "))
-        self._durationLabel.setText(self.tr("Duration: "))
         self._saveButton.setText(self.tr("Save"))
         self._nextStepButton.setText(self.tr("Next"))
         self._addFileDialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
