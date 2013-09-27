@@ -21,6 +21,7 @@ import sys
 from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
+import tgit.resources
 from tgit.mp3 import MP3File
 from tgit.ui.main_window import MainWindow
 

@@ -22,11 +22,17 @@ from PyQt4.QtCore import (Qt, QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenuBar, QMenu, QAction, QStatusBar, QGridLayout,
                          QLabel, QPushButton, QLineEdit, QFileDialog, QPixmap, QImage)
 
+from tgit.ui.album_panel import AlbumPanel
+
 MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
-IMPORT_TRACK_DIALOG_NAME = "Select Track File"
+NEXT_STEP_BUTTON_NAME = "Next Step"
+SAVE_BUTTON_NAME = "Save"
 SELECT_PICTURE_BUTTON_NAME = "Select Picture"
+
+IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 SELECT_PICTURE_DIALOG_NAME = "Select Picture File"
+
 FRONT_COVER_PICTURE_NAME = "Front Cover Picture"
 RELEASE_NAME_NAME = "Release Name"
 LEAD_PERFORMER_NAME = "Lead Performer"
@@ -38,7 +44,6 @@ FEATURED_GUEST_NAME = "Featured Guest"
 ISRC_NAME = "ISRC"
 BITRATE_NAME = "Bitrate"
 DURATION_NAME = "Duration"
-SAVE_BUTTON_NAME = "Save"
 
 FRONT_COVER_DISPLAY_SIZE = (125, 125)
 
@@ -88,7 +93,8 @@ class MainWindow(QMainWindow):
         self._tagAlbumPanel = QWidget()
         tagAlbumLayout = QGridLayout(self._tagAlbumPanel)
         self._addFrontCoverPicture(tagAlbumLayout, 0)
-        self._addReleaseName(tagAlbumLayout, 1)
+        self._albumPanel = AlbumPanel(self)
+        tagAlbumLayout.addWidget(self._albumPanel, 1, 0, 1, 3)
         self._addLeadPerformer(tagAlbumLayout, 2)
         self._addReleaseDate(tagAlbumLayout, 3)
         self._addUpc(tagAlbumLayout, 4)
@@ -195,7 +201,10 @@ class MainWindow(QMainWindow):
         self._saveButton = QPushButton(self._tagAlbumPanel)
         self._saveButton.setObjectName(SAVE_BUTTON_NAME)
         self._saveButton.clicked.connect(self._saveTrackFile)
-        layout.addWidget(self._saveButton, row, 0, 1, 1)
+        layout.addWidget(self._saveButton, row, 1)
+        self._nextStepButton = QPushButton(self._tagAlbumPanel)
+        self._nextStepButton.setObjectName(NEXT_STEP_BUTTON_NAME)
+        layout.addWidget(self._nextStepButton, row, 2)
 
     def _fillMenu(self):
         menuBar = QMenuBar(self)
@@ -250,7 +259,7 @@ class MainWindow(QMainWindow):
         return QPixmap.fromImage(scaledImage)
 
     def _saveTrackFile(self):
-        self._track.releaseName = self._releaseNameEdit.text()
+        self._track.releaseName = self._albumPanel.getReleaseName()
         self._track.frontCoverPicture = self._frontCover
         self._track.leadPerformer = self._leadPerformerEdit.text()
         self._track.releaseDate = self._releaseDateEdit.text()
@@ -274,7 +283,7 @@ class MainWindow(QMainWindow):
 
     def trackSelected(self, track):
         self._track = track
-        self._releaseNameEdit.setText(track.releaseName)
+        self._albumPanel.trackSelected(track)
         self._displayFrontCover(track.frontCoverPicture)
         self._leadPerformerEdit.setText(track.leadPerformer)
         self._releaseDateEdit.setText(track.releaseDate)
@@ -292,7 +301,6 @@ class MainWindow(QMainWindow):
         self._addFileButton.setText(self.tr("Add File..."))
         self._quitMenu.setTitle(self.tr("Quit"))
         self._quitMenuItem.setText(self.tr("Hit me to quit"))
-        self._releaseNameLabel.setText(self.tr("Release Name: "))
         self._leadPerformerLabel.setText(self.tr("Lead Performer: "))
         self._releaseDateLabel.setText(self.tr("Release Date: "))
         self._upcLabel.setText(self.tr("UPC/EAN: "))
@@ -303,6 +311,7 @@ class MainWindow(QMainWindow):
         self._bitrateLabel.setText(self.tr("Bitrate: "))
         self._durationLabel.setText(self.tr("Duration: "))
         self._saveButton.setText(self.tr("Save"))
+        self._nextStepButton.setText(self.tr("Next"))
         self._addFileDialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
         self._selectPictureButton.setText(self.tr("Select Picture..."))
         self._selectPictureDialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")

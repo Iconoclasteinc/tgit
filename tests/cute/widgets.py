@@ -6,13 +6,13 @@ from hamcrest.core import all_of, equal_to
 
 from tests.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
                                WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe)
-from tests.cute.finders import SingleWidgetFinder, TopLevelFrameFinder, RecursiveWidgetFinder
+from tests.cute.finders import SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder
 from tests.cute import properties, gestures, keyboard_shortcuts as shortcuts, matchers as match
 
 
 def mainWindow(*matchers):
     return SingleWidgetFinder(RecursiveWidgetFinder(QMainWindow, all_of(*matchers),
-                                                    TopLevelFrameFinder(QApplication.instance())))
+                                                    TopLevelWidgetsFinder(QApplication.instance())))
 
 
 class WidgetDriver(object):
@@ -66,10 +66,12 @@ class WidgetDriver(object):
     def check(self, probe):
         self.prober.check(probe)
 
+    def close(self):
+        self.manipulate("close", lambda widget: widget.close())
+
 
 class MainWindowDriver(WidgetDriver):
-    def close(self):
-        self.manipulate("close", lambda window: window.close())
+    pass
 
 
 class AbstractButtonDriver(WidgetDriver):

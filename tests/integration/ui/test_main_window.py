@@ -11,7 +11,7 @@ sipApi.useVersion(sipApi.VERSION_2)
 from PyQt4.Qt import QApplication
 
 from tests.cute.probes import ValueMatcherProbe
-from tests.endtoend.tgit_driver import TGiTDriver
+from tests.drivers.tagger_driver import TaggerDriver
 from tests.util import resources
 from tests.endtoend.fake_audio_library import readContent
 from tgit.ui import main_window as main
@@ -37,7 +37,7 @@ class MainWindowTest(unittest.TestCase):
     def setUp(self):
         self.app = QApplication([])
         self.mainWindow = MainWindow()
-        self.driver = TGiTDriver(1000)
+        self.driver = TaggerDriver(1000)
 
     def tearDown(self):
         self.driver.close()
@@ -59,11 +59,6 @@ class MainWindowTest(unittest.TestCase):
     @unittest.skip("todo")
     def testHasNothingToShowWhenTrackHasNoMetadata(self):
         raise AssertionError("Not yet implemented")
-
-    def testDisplaysSelectedTrackAlbumReleaseName(self):
-        track = buildTrack(releaseName='Release Name')
-        self.mainWindow.trackSelected(track)
-        self.driver.showsReleaseName('Release Name')
 
     def testDisplaysSelectedTrackAlbumFrontCoverScaledToPictureDisplayArea(self):
         frontCover = ('image/jpeg', readContent(resources.path("front-cover.jpg")))
@@ -134,7 +129,8 @@ class MainWindowTest(unittest.TestCase):
 
         self.mainWindow.addMusicDirector(DetectSaveTrack())
         self.mainWindow.trackSelected(buildTrack())
-        self.driver.editMetadata(**modifications)
+        self.driver.editAlbumMetadata(**modifications)
+        self.driver.editTrackMetadata(**modifications)
         self.driver.saveTrack()
         self.driver.check(saveRequest)
 

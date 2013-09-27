@@ -25,7 +25,7 @@ class RecursiveWidgetFinder(WidgetFinder):
         return self._parentFinder.isSatisfied()
 
     def widgets(self):
-        return list(self._found)
+        return tuple(self._found)
 
     def test(self):
         self._parentFinder.test()
@@ -60,16 +60,16 @@ class RecursiveWidgetFinder(WidgetFinder):
             append_description_of(self._criteria)
 
 
-class TopLevelFrameFinder(WidgetFinder):
+class TopLevelWidgetsFinder(WidgetFinder):
     def __init__(self, app):
-        super(TopLevelFrameFinder, self).__init__()
+        super(TopLevelWidgetsFinder, self).__init__()
         self._app = app
 
     def isSatisfied(self):
         return True
 
     def widgets(self):
-        return self._rootWindows
+        return tuple(self._rootWindows)
 
     def test(self):
         self._rootWindows = set()
@@ -101,7 +101,7 @@ class SingleWidgetFinder(WidgetSelector):
         return self._finder.widgets()
 
     def widget(self):
-        return list(self.widgets())[0]
+        return tuple(self.widgets())[0]
 
     def describeTo(self, description):
         description.append_text("exactly 1 ").append_description_of(self._finder)

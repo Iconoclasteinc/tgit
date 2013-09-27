@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import use_sip_api_v2
+import use_sip_api_v2 as sipApi
+sipApi.useVersion(sipApi.VERSION_2)
 from tgit.tagger import TGiT
 
-from tests.endtoend.tgit_driver import TGiTDriver
+from tests.drivers.tagger_driver import TaggerDriver
 
 ONE_SECOND = 1000
 
@@ -11,7 +12,7 @@ ONE_SECOND = 1000
 class ApplicationRunner(object):
     def start(self):
         self.app = TGiT('en')
-        self.driver = TGiTDriver(timeoutInMs=ONE_SECOND)
+        self.driver = TaggerDriver(timeoutInMs=ONE_SECOND)
 
     def stop(self):
         self.driver.close()
@@ -21,9 +22,17 @@ class ApplicationRunner(object):
     def importTrack(self, path):
         self.driver.importTrack(path)
 
-    def showsMetadata(self, **tags):
-        self.driver.showsMetadata(**tags)
+    def showsAlbumMetadata(self, **tags):
+        self.driver.showsAlbumMetadata(**tags)
 
-    def changeMetadata(self, **tags):
-        self.driver.editMetadata(**tags)
+    def changeAlbumMetadata(self, **tags):
+        self.driver.editAlbumMetadata(**tags)
+        self.driver.saveTrack()
+
+    def showsTrackMetadata(self, **tags):
+        self.driver.nextStep()
+        self.driver.showsTrackMetadata(**tags)
+
+    def changeTrackMetadata(self, **tags):
+        self.driver.editTrackMetadata(**tags)
         self.driver.saveTrack()

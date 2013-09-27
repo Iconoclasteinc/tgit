@@ -23,16 +23,23 @@ class TaggerTest(unittest.TestCase):
     def testTaggerModifiesTagsOfAnExistingAudioFileAndSavesChanges(self):
         filename = self.audioLibrary.importFile(SAMPLE_AUDIO_FILE)
         self.application.importTrack(filename)
-        self.application.showsMetadata(releaseName='Messiah',
-                                       leadPerformer='The Sixteen - Harry Christophers',
-                                       trackTitle='Hallelujah (Chorus)',
-                                       duration='03:56')
-        self.application.changeMetadata(frontCoverPicture=resources.path("minions-in-black.jpg"),
-                                        releaseName='Despicable Me',
-                                        leadPerformer='Tim, Mark and Phil',
-                                        trackTitle='Potato Banana Song')
-        self.audioLibrary.containsFile(filename,
-                                       releaseName='Despicable Me',
-                                       leadPerformer='Tim, Mark and Phil',
-                                       trackTitle='Potato Banana Song',
-                                       frontCoverFile=resources.path("minions-in-black.jpg"))
+        self.application.showsAlbumMetadata(
+            releaseName='Messiah',
+            leadPerformer='The Sixteen - Harry Christophers')
+        self.application.changeAlbumMetadata(
+            frontCoverPicture=resources.path("minions-in-black.jpg"),
+            releaseName='Despicable Me',
+            leadPerformer='Tim, Mark and Phil')
+        self.application.showsTrackMetadata(
+            trackTitle='Hallelujah (Chorus)',
+            duration='03:56')
+        self.application.changeTrackMetadata(
+            trackTitle='Potato Banana Song',
+            featuredGuest='Stuart')
+        self.audioLibrary.containsFile(
+            filename,
+            releaseName='Despicable Me',
+            leadPerformer='Tim, Mark and Phil',
+            trackTitle='Potato Banana Song',
+            featuredGuest='Stuart',
+            frontCoverFile=resources.path("minions-in-black.jpg"))
