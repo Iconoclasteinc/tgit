@@ -30,7 +30,6 @@ SAVE_BUTTON_NAME = "Save"
 
 IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 
-LEAD_PERFORMER_NAME = "Lead Performer"
 RELEASE_DATE_NAME = "Release Date"
 UPC_NAME = "UPC"
 TRACK_TITLE_NAME = "Track Title"
@@ -85,8 +84,7 @@ class MainWindow(QMainWindow):
         self._tagAlbumPanel = QWidget()
         tagAlbumLayout = QGridLayout(self._tagAlbumPanel)
         self._albumPanel = AlbumPanel(self)
-        tagAlbumLayout.addWidget(self._albumPanel, 0, 0, 2, 3)
-        self._addLeadPerformer(tagAlbumLayout, 2)
+        tagAlbumLayout.addWidget(self._albumPanel, 0, 0, 3, 3)
         self._addReleaseDate(tagAlbumLayout, 3)
         self._addUpc(tagAlbumLayout, 4)
         self._addTrackTitle(tagAlbumLayout, 5)
@@ -97,14 +95,6 @@ class MainWindow(QMainWindow):
         self._addDuration(tagAlbumLayout, 10)
         self._addButtons(tagAlbumLayout, 11)
         return self._tagAlbumPanel
-
-    def _addLeadPerformer(self, layout, row):
-        self._leadPerformerLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._leadPerformerLabel, row, 0, 1, 1)
-        self._leadPerformerEdit = QLineEdit(self._tagAlbumPanel)
-        self._leadPerformerEdit.setObjectName(LEAD_PERFORMER_NAME)
-        layout.addWidget(self._leadPerformerEdit, row, 1, 1, 1)
-        self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
 
     def _addReleaseDate(self, layout, row):
         self._releaseDateLabel = QLabel(self._tagAlbumPanel)
@@ -207,9 +197,7 @@ class MainWindow(QMainWindow):
             self._musicDirector.importTrack(filename)
 
     def _saveTrackFile(self):
-        self._track.releaseName = self._albumPanel.getReleaseName()
-        self._track.frontCoverPicture = self._albumPanel.getFrontCover()
-        self._track.leadPerformer = self._leadPerformerEdit.text()
+        self._albumPanel.updateTrack(self._track)
         self._track.releaseDate = self._releaseDateEdit.text()
         self._track.upc = self._upcEdit.text()
         self._track.trackTitle = self._trackTitleEdit.text()
@@ -225,7 +213,6 @@ class MainWindow(QMainWindow):
     def trackSelected(self, track):
         self._track = track
         self._albumPanel.trackSelected(track)
-        self._leadPerformerEdit.setText(track.leadPerformer)
         self._releaseDateEdit.setText(track.releaseDate)
         self._upcEdit.setText(track.upc)
         self._trackTitleEdit.setText(track.trackTitle)
@@ -241,7 +228,6 @@ class MainWindow(QMainWindow):
         self._addFileButton.setText(self.tr("Add File..."))
         self._quitMenu.setTitle(self.tr("Quit"))
         self._quitMenuItem.setText(self.tr("Hit me to quit"))
-        self._leadPerformerLabel.setText(self.tr("Lead Performer: "))
         self._releaseDateLabel.setText(self.tr("Release Date: "))
         self._upcLabel.setText(self.tr("UPC/EAN: "))
         self._trackTitleLabel.setText(self.tr("Track Title: "))

@@ -60,11 +60,6 @@ class MainWindowTest(unittest.TestCase):
     def testHasNothingToShowWhenTrackHasNoMetadata(self):
         raise AssertionError("Not yet implemented")
 
-    def testDisplaysSelectedTrackAlbumLeadPerformer(self):
-        track = buildTrack(leadPerformer='Lead Performer')
-        self.mainWindow.trackSelected(track)
-        self.driver.showsLeadPerformer('Lead Performer')
-
     def testDisplaysSelectedTrackAlbumReleaseDate(self):
         track = buildTrack(releaseDate='2009-08-05')
         self.mainWindow.trackSelected(track)

@@ -39,7 +39,7 @@ class AlbumPanelTest(unittest.TestCase):
 
     def setUp(self):
         self.app = QApplication([])
-        self.prober = EventProcessingProber()
+        self.prober = EventProcessingProber(timeoutInMs=1000)
         self.gesturePerformer = Robot()
         self.albumPanel = AlbumPanel()
         self.view(self.albumPanel)
@@ -79,6 +79,10 @@ class AlbumPanelTest(unittest.TestCase):
         self.albumPanel.trackSelected(track)
         self.driver.showsReleaseName('Release Name')
 
+    def testDisplaysLeadPerformer(self):
+        track = buildTrack(leadPerformer='Lead Performer')
+        self.albumPanel.trackSelected(track)
+        self.driver.showsLeadPerformer('Lead Performer')
 
     def selectorFor(self, widget):
         # todo Move to finders.py

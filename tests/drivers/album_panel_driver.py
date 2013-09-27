@@ -45,3 +45,15 @@ class AlbumPanelDriver(WidgetDriver):
         edit = LineEditDriver.find(self, QLineEdit, named(ui.RELEASE_NAME_NAME))
         edit.replaceAllText(name)
 
+    def showsLeadPerformer(self, name):
+        label = LabelDriver.find(self, QLabel, withBuddy(named(ui.LEAD_PERFORMER_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.find(self, QLineEdit, named(ui.LEAD_PERFORMER_NAME))
+        edit.hasText(name)
+
+    def changeLeadPerformer(self, name):
+        edit = LineEditDriver.find(self, QLineEdit, named(ui.LEAD_PERFORMER_NAME))
+        edit.replaceAllText(name)
+
+
+

@@ -28,6 +28,7 @@ FRONT_COVER_DISPLAY_SIZE = (125, 125)
 SELECT_PICTURE_BUTTON_NAME = "Select Picture"
 SELECT_PICTURE_DIALOG_NAME = "Select Picture File"
 RELEASE_NAME_NAME = 'Release Name'
+LEAD_PERFORMER_NAME = "Lead Performer"
 
 
 class AlbumPanel(QWidget):
@@ -78,6 +79,7 @@ class AlbumPanel(QWidget):
     def _fill(self, layout):
         self._addFrontCoverPictureTo(layout, 0)
         self._addReleaseNameTo(layout, 1)
+        self._addLeadPerformer(layout, 2)
 
     def _addFrontCoverPictureTo(self, layout, row):
         self._frontCoverImage = QLabel()
@@ -97,20 +99,28 @@ class AlbumPanel(QWidget):
         layout.addWidget(self._releaseNameEdit, row, 1)
         self._releaseNameLabel.setBuddy(self._releaseNameEdit)
 
+    def _addLeadPerformer(self, layout, row):
+        self._leadPerformerLabel = QLabel()
+        layout.addWidget(self._leadPerformerLabel, row, 0)
+        self._leadPerformerEdit = QLineEdit()
+        self._leadPerformerEdit.setObjectName(LEAD_PERFORMER_NAME)
+        layout.addWidget(self._leadPerformerEdit, row, 1)
+        self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
+
     def translateUi(self):
-        self._releaseNameLabel.setText(self.tr("Release Name: "))
         self._selectPictureButton.setText(self.tr("Select Picture..."))
         self._selectPictureDialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")
+        self._releaseNameLabel.setText(self.tr("Release Name: "))
+        self._leadPerformerLabel.setText(self.tr("Lead Performer: "))
 
     def trackSelected(self, track):
         self._releaseNameEdit.setText(track.releaseName)
         self._displayFrontCover(track.frontCoverPicture)
+        self._leadPerformerEdit.setText(track.leadPerformer)
 
-    def getReleaseName(self):
-        return self._releaseNameEdit.text()
-
-    def getFrontCover(self):
-        return self._frontCover
-
+    def updateTrack(self, track):
+        track.releaseName = self._releaseNameEdit.text()
+        track.frontCoverPicture = self._frontCover
+        track.leadPerformer = self._leadPerformerEdit.text()
 
 

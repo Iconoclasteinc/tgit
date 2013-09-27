@@ -67,10 +67,8 @@ class TaggerDriver(MainWindowDriver):
     def _albumPanelDriver(self):
         return AlbumPanelDriver.find(self, QWidget, named(album.ALBUM_PANEL_NAME))
 
-    def showsLeadPerformer(self, leadPerformer):
-        label = LabelDriver.find(self, QLabel, withBuddy(named(main.LEAD_PERFORMER_NAME)))
-        label.isShowingOnScreen()
-        self._leadPerformerEdit().hasText(leadPerformer)
+    def showsLeadPerformer(self, name):
+        self._albumPanelDriver().showsLeadPerformer(name)
 
     def showsReleaseDate(self, releaseDate):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.RELEASE_DATE_NAME)))
@@ -159,7 +157,7 @@ class TaggerDriver(MainWindowDriver):
         self._albumPanelDriver().changeReleaseName(name)
 
     def changeLeadPerformer(self, name):
-        self._leadPerformerEdit().replaceAllText(name)
+        self._albumPanelDriver().changeLeadPerformer(name)
 
     def changeReleaseDate(self, date):
         self._releaseDateEdit().replaceAllText(date)
@@ -182,9 +180,6 @@ class TaggerDriver(MainWindowDriver):
     def saveTrack(self):
         button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
         button.click()
-
-    def _leadPerformerEdit(self):
-        return LineEditDriver.find(self, QLineEdit, named(main.LEAD_PERFORMER_NAME))
 
     def _releaseDateEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.RELEASE_DATE_NAME))
