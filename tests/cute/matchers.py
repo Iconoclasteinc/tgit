@@ -55,10 +55,13 @@ class QueryResultMatcher(BaseMatcher):
             .append_description_of(self._resultMatcher)
 
     def describe_mismatch(self, item, mismatch_description):
-        mismatch_description.append_text("was with ") \
-            .append_description_of(self._query) \
-            .append_text(" ")
-        self._resultMatcher.describe_mismatch(self._query(item), mismatch_description)
+        if item is None:
+            mismatch_description.append_text("was ").append_description_of(item)
+        else:
+            mismatch_description.append_text("was with ") \
+                .append_description_of(self._query) \
+                .append_text(" ")
+            self._resultMatcher.describe_mismatch(self._query(item), mismatch_description)
 
 
 class ShowingOnScreenMatcher(BaseMatcher):

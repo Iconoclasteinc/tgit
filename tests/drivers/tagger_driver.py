@@ -51,15 +51,21 @@ class TaggerDriver(MainWindowDriver):
         dialog.accept()
         # todo probe that album panel is shown
 
-    def showsReleaseName(self, name):
-        albumPanel = AlbumPanelDriver.find(self, QWidget, named(album.ALBUM_PANEL_NAME))
-        albumPanel.showsReleaseName(name)
+    def showsAlbumMetadata(self, **tags):
+        if RELEASE_NAME in tags:
+            self.showsReleaseName(tags[RELEASE_NAME])
+        if LEAD_PERFORMER in tags:
+            self.showsLeadPerformer(tags[LEAD_PERFORMER])
+        if RELEASE_DATE in tags:
+            self.showsReleaseDate(tags[RELEASE_DATE])
+        if UPC in tags:
+            self.showsUpc(tags[UPC])
 
-    def displaysFrontCoverPictureWithSize(self, width, height):
-        label = LabelDriver.find(self, QLabel, named(main.FRONT_COVER_PICTURE_NAME))
-        label.isShowingOnScreen()
-        label.hasPixmap(withPixmapHeight(height))
-        label.hasPixmap(withPixmapWidth(width))
+    def showsReleaseName(self, name):
+        self._albumPanelDriver().showsReleaseName(name)
+
+    def _albumPanelDriver(self):
+        return AlbumPanelDriver.find(self, QWidget, named(album.ALBUM_PANEL_NAME))
 
     def showsLeadPerformer(self, leadPerformer):
         label = LabelDriver.find(self, QLabel, withBuddy(named(main.LEAD_PERFORMER_NAME)))
@@ -106,16 +112,6 @@ class TaggerDriver(MainWindowDriver):
         label.isShowingOnScreen()
         self._durationLabel().hasText(duration)
 
-    def showsAlbumMetadata(self, **tags):
-        if RELEASE_NAME in tags:
-            self.showsReleaseName(tags[RELEASE_NAME])
-        if LEAD_PERFORMER in tags:
-            self.showsLeadPerformer(tags[LEAD_PERFORMER])
-        if RELEASE_DATE in tags:
-            self.showsReleaseDate(tags[RELEASE_DATE])
-        if UPC in tags:
-            self.showsUpc(tags[UPC])
-
     def editAlbumMetadata(self, **tags):
         if FRONT_COVER_PICTURE in tags:
             self.changeFrontCoverPicture(tags[FRONT_COVER_PICTURE])
@@ -156,25 +152,11 @@ class TaggerDriver(MainWindowDriver):
         if ISRC in tags:
             self.changeIsrc(tags[ISRC])
 
-    def changeFrontCoverPicture(self, pictureFile):
-        self._openSelectPictureDialog()
-        self._selectPicture(pictureFile)
-        # todo this breaks while working on layout. add back later
-        # self.displaysFrontCoverPictureWithSize(*main.FRONT_COVER_DISPLAY_SIZE)
-
-    def _openSelectPictureDialog(self):
-        selectPictureButton = AbstractButtonDriver.find(self, QPushButton,
-                                                        named(main.SELECT_PICTURE_BUTTON_NAME))
-        selectPictureButton.click()
-
-    def _selectPicture(self, pictureFile):
-        dialog = FileDialogDriver.find(self, QFileDialog, named(main.SELECT_PICTURE_DIALOG_NAME))
-        dialog.navigateToDir(os.path.dirname(pictureFile))
-        dialog.selectFile(os.path.basename(pictureFile))
-        dialog.accept()
+    def changeFrontCoverPicture(self, filename):
+        self._albumPanelDriver().changeFrontCoverPicture(filename)
 
     def changeReleaseName(self, name):
-        self._releaseNameEdit().replaceAllText(name)
+        self._albumPanelDriver().changeReleaseName(name)
 
     def changeLeadPerformer(self, name):
         self._leadPerformerEdit().replaceAllText(name)
@@ -200,9 +182,6 @@ class TaggerDriver(MainWindowDriver):
     def saveTrack(self):
         button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
         button.click()
-
-    def _releaseNameEdit(self):
-        return LineEditDriver.find(self, QLineEdit, named(main.RELEASE_NAME_NAME))
 
     def _leadPerformerEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.LEAD_PERFORMER_NAME))

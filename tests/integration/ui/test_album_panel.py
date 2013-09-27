@@ -13,8 +13,11 @@ from tests.cute.prober import EventProcessingProber
 from tests.cute.robot import Robot
 from tests.cute.finders import WidgetSelector
 from tests.drivers.album_panel_driver import AlbumPanelDriver
+from tests.util import resources
 
 from tgit.ui.album_panel import AlbumPanel
+# todo consider moving all ui constants to the same module (ui?)
+from tgit.ui import album_panel as ui
 
 
 def buildTrack(**tags):
@@ -61,10 +64,21 @@ class AlbumPanelTest(unittest.TestCase):
     def testCanShow(self):
         pass
 
+    def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
+        frontCover = ('image/jpeg', readContent(resources.path("front-cover.jpg")))
+        track = buildTrack(frontCoverPicture=frontCover)
+        self.albumPanel.trackSelected(track)
+        self.driver.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_DISPLAY_SIZE)
+
+    @unittest.skip("todo")
+    def testLetsUserSelectAFrontCoverPicture(self):
+        raise AssertionError("Not yet implemented")
+
     def testDisplaysReleaseName(self):
         track = buildTrack(releaseName='Release Name')
         self.albumPanel.trackSelected(track)
         self.driver.showsReleaseName('Release Name')
+
 
     def selectorFor(self, widget):
         # todo Move to finders.py
@@ -93,5 +107,26 @@ class AlbumPanelTest(unittest.TestCase):
                 self.describeTo(description)
 
         return WidgetIdentity(widget)
+
+
+import mimetypes
+
+from hamcrest.core import equal_to
+from hamcrest.library import contains, has_length
+
+# todo move to a file related utilities module
+def readContent(filename):
+    return open(filename, "rb").read()
+
+
+# todo move to a file related utilities module
+def guessMimeType(filename):
+    return mimetypes.guess_type(filename)[0]
+
+
+# todo move to a matchers module
+def samePictureAs(filename):
+    return contains(equal_to(guessMimeType(filename)),
+                    has_length(len(readContent(filename))))
 
 

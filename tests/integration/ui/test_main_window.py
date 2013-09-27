@@ -60,12 +60,6 @@ class MainWindowTest(unittest.TestCase):
     def testHasNothingToShowWhenTrackHasNoMetadata(self):
         raise AssertionError("Not yet implemented")
 
-    def testDisplaysSelectedTrackAlbumFrontCoverScaledToPictureDisplayArea(self):
-        frontCover = ('image/jpeg', readContent(resources.path("front-cover.jpg")))
-        track = buildTrack(frontCoverPicture=frontCover)
-        self.mainWindow.trackSelected(track)
-        self.driver.displaysFrontCoverPictureWithSize(*main.FRONT_COVER_DISPLAY_SIZE)
-
     def testDisplaysSelectedTrackAlbumLeadPerformer(self):
         track = buildTrack(leadPerformer='Lead Performer')
         self.mainWindow.trackSelected(track)

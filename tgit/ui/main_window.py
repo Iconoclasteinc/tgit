@@ -17,7 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import mimetypes
 from PyQt4.QtCore import (Qt, QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenuBar, QMenu, QAction, QStatusBar, QGridLayout,
                          QLabel, QPushButton, QLineEdit, QFileDialog, QPixmap, QImage)
@@ -28,13 +27,9 @@ MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
 NEXT_STEP_BUTTON_NAME = "Next Step"
 SAVE_BUTTON_NAME = "Save"
-SELECT_PICTURE_BUTTON_NAME = "Select Picture"
 
 IMPORT_TRACK_DIALOG_NAME = "Select Track File"
-SELECT_PICTURE_DIALOG_NAME = "Select Picture File"
 
-FRONT_COVER_PICTURE_NAME = "Front Cover Picture"
-RELEASE_NAME_NAME = "Release Name"
 LEAD_PERFORMER_NAME = "Lead Performer"
 RELEASE_DATE_NAME = "Release Date"
 UPC_NAME = "UPC"
@@ -44,8 +39,6 @@ FEATURED_GUEST_NAME = "Featured Guest"
 ISRC_NAME = "ISRC"
 BITRATE_NAME = "Bitrate"
 DURATION_NAME = "Duration"
-
-FRONT_COVER_DISPLAY_SIZE = (125, 125)
 
 
 def toKbps(bitrate):
@@ -70,7 +63,6 @@ class MainWindow(QMainWindow):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(640, 480)
         self._makeImportFileDialog()
-        self._makeSelectPictureDialog()
         self.setCentralWidget(self._makeWelcomePanel())
         self._makeTagAlbumPanel()
         self._fillMenu()
@@ -92,9 +84,8 @@ class MainWindow(QMainWindow):
     def _makeTagAlbumPanel(self):
         self._tagAlbumPanel = QWidget()
         tagAlbumLayout = QGridLayout(self._tagAlbumPanel)
-        self._addFrontCoverPicture(tagAlbumLayout, 0)
         self._albumPanel = AlbumPanel(self)
-        tagAlbumLayout.addWidget(self._albumPanel, 1, 0, 1, 3)
+        tagAlbumLayout.addWidget(self._albumPanel, 0, 0, 2, 3)
         self._addLeadPerformer(tagAlbumLayout, 2)
         self._addReleaseDate(tagAlbumLayout, 3)
         self._addUpc(tagAlbumLayout, 4)
@@ -106,24 +97,6 @@ class MainWindow(QMainWindow):
         self._addDuration(tagAlbumLayout, 10)
         self._addButtons(tagAlbumLayout, 11)
         return self._tagAlbumPanel
-
-    def _addFrontCoverPicture(self, layout, row):
-        self._frontCoverImage = QLabel(self._tagAlbumPanel)
-        self._frontCoverImage.setFixedSize(*FRONT_COVER_DISPLAY_SIZE)
-        self._frontCoverImage.setObjectName(FRONT_COVER_PICTURE_NAME)
-        layout.addWidget(self._frontCoverImage, row, 0, 1, 1)
-        self._selectPictureButton = QPushButton(self._tagAlbumPanel)
-        self._selectPictureButton.setObjectName(SELECT_PICTURE_BUTTON_NAME)
-        self._selectPictureButton.clicked.connect(self._selectPictureDialog.open)
-        layout.addWidget(self._selectPictureButton, row, 1, 1, 1)
-
-    def _addReleaseName(self, layout, row):
-        self._releaseNameLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._releaseNameLabel, row, 0, 1, 1)
-        self._releaseNameEdit = QLineEdit(self._tagAlbumPanel)
-        self._releaseNameEdit.setObjectName(RELEASE_NAME_NAME)
-        layout.addWidget(self._releaseNameEdit, row, 1, 1, 1)
-        self._releaseNameLabel.setBuddy(self._releaseNameEdit)
 
     def _addLeadPerformer(self, layout, row):
         self._leadPerformerLabel = QLabel(self._tagAlbumPanel)
@@ -226,24 +199,6 @@ class MainWindow(QMainWindow):
         self._addFileDialog.setModal(True)
         self._addFileDialog.fileSelected.connect(self._importTrackFile)
 
-    # todo integration test dialog file name filtering by making sure the Accept button stay
-    # disabled when we select a non supported file type
-    def _makeSelectPictureDialog(self):
-        self._selectPictureDialog = QFileDialog(self)
-        self._selectPictureDialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
-        self._selectPictureDialog.setDirectory(QDir.homePath())
-        self._selectPictureDialog.setOption(QFileDialog.DontUseNativeDialog)
-        self._selectPictureDialog.setModal(True)
-        self._selectPictureDialog.fileSelected.connect(self._loadFrontCoverPicture)
-
-    def _loadFrontCoverPicture(self, filename):
-        self._displayFrontCover(self._loadPicture(filename))
-
-    def _displayFrontCover(self, picture):
-        self._frontCover = picture
-        _, imageData = self._frontCover
-        self._frontCoverImage.setPixmap(self._scaledPixmapFrom(imageData))
-
     def _showTagAlbumPanel(self):
         self.setCentralWidget(self._tagAlbumPanel)
 
@@ -251,16 +206,9 @@ class MainWindow(QMainWindow):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
 
-    def _scaledPixmapFrom(self, imageData):
-        if imageData is None:
-            return QPixmap()
-        originalImage = QImage.fromData(imageData)
-        scaledImage = originalImage.scaled(125, 125, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        return QPixmap.fromImage(scaledImage)
-
     def _saveTrackFile(self):
         self._track.releaseName = self._albumPanel.getReleaseName()
-        self._track.frontCoverPicture = self._frontCover
+        self._track.frontCoverPicture = self._albumPanel.getFrontCover()
         self._track.leadPerformer = self._leadPerformerEdit.text()
         self._track.releaseDate = self._releaseDateEdit.text()
         self._track.upc = self._upcEdit.text()
@@ -271,20 +219,12 @@ class MainWindow(QMainWindow):
         if self._musicDirector:
             self._musicDirector.saveTrack(self._track)
 
-    def _loadPicture(self, filename):
-        if filename is None:
-            return None, None
-        mimeType = mimetypes.guess_type(filename)
-        imageData = open(filename, "rb").read()
-        return mimeType[0], imageData
-
     def addMusicDirector(self, director):
         self._musicDirector = director
 
     def trackSelected(self, track):
         self._track = track
         self._albumPanel.trackSelected(track)
-        self._displayFrontCover(track.frontCoverPicture)
         self._leadPerformerEdit.setText(track.leadPerformer)
         self._releaseDateEdit.setText(track.releaseDate)
         self._upcEdit.setText(track.upc)
@@ -313,5 +253,3 @@ class MainWindow(QMainWindow):
         self._saveButton.setText(self.tr("Save"))
         self._nextStepButton.setText(self.tr("Next"))
         self._addFileDialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
-        self._selectPictureButton.setText(self.tr("Select Picture..."))
-        self._selectPictureDialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")
