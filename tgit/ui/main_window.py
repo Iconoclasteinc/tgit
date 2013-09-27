@@ -30,7 +30,6 @@ SAVE_BUTTON_NAME = "Save"
 
 IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 
-UPC_NAME = "UPC"
 TRACK_TITLE_NAME = "Track Title"
 VERSION_INFO_NAME = "Version Info"
 FEATURED_GUEST_NAME = "Featured Guest"
@@ -83,8 +82,7 @@ class MainWindow(QMainWindow):
         self._tagAlbumPanel = QWidget()
         tagAlbumLayout = QGridLayout(self._tagAlbumPanel)
         self._albumPanel = AlbumPanel(self)
-        tagAlbumLayout.addWidget(self._albumPanel, 0, 0, 4, 3)
-        self._addUpc(tagAlbumLayout, 4)
+        tagAlbumLayout.addWidget(self._albumPanel, 0, 0, 5, 3)
         self._addTrackTitle(tagAlbumLayout, 5)
         self._addVersionInfo(tagAlbumLayout, 6)
         self._addFeaturedGuest(tagAlbumLayout, 7)
@@ -93,14 +91,6 @@ class MainWindow(QMainWindow):
         self._addDuration(tagAlbumLayout, 10)
         self._addButtons(tagAlbumLayout, 11)
         return self._tagAlbumPanel
-
-    def _addUpc(self, layout, row):
-        self._upcLabel = QLabel(self._tagAlbumPanel)
-        layout.addWidget(self._upcLabel, row, 0, 1, 1)
-        self._upcEdit = QLineEdit(self._tagAlbumPanel)
-        self._upcEdit.setObjectName(UPC_NAME)
-        layout.addWidget(self._upcEdit, row, 1, 1, 1)
-        self._upcLabel.setBuddy(self._upcEdit)
 
     def _addTrackTitle(self, layout, row):
         self._trackTitleLabel = QLabel(self._tagAlbumPanel)
@@ -188,7 +178,6 @@ class MainWindow(QMainWindow):
 
     def _saveTrackFile(self):
         self._albumPanel.updateTrack(self._track)
-        self._track.upc = self._upcEdit.text()
         self._track.trackTitle = self._trackTitleEdit.text()
         self._track.versionInfo = self._versionInfoEdit.text()
         self._track.featuredGuest = self._featuredGuestEdit.text()
@@ -202,7 +191,6 @@ class MainWindow(QMainWindow):
     def trackSelected(self, track):
         self._track = track
         self._albumPanel.trackSelected(track)
-        self._upcEdit.setText(track.upc)
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
         self._featuredGuestEdit.setText(track.featuredGuest)
@@ -216,7 +204,6 @@ class MainWindow(QMainWindow):
         self._addFileButton.setText(self.tr("Add File..."))
         self._quitMenu.setTitle(self.tr("Quit"))
         self._quitMenuItem.setText(self.tr("Hit me to quit"))
-        self._upcLabel.setText(self.tr("UPC/EAN: "))
         self._trackTitleLabel.setText(self.tr("Track Title: "))
         self._versionInfoLabel.setText(self.tr("Version Information: "))
         self._featuredGuestLabel.setText(self.tr("Featured Guest: "))

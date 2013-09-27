@@ -30,6 +30,7 @@ SELECT_PICTURE_DIALOG_NAME = "Select Picture File"
 RELEASE_NAME_NAME = 'Release Name'
 LEAD_PERFORMER_NAME = "Lead Performer"
 RELEASE_DATE_NAME = "Release Date"
+UPC_NAME = "UPC"
 
 
 class AlbumPanel(QWidget):
@@ -82,6 +83,7 @@ class AlbumPanel(QWidget):
         self._addReleaseNameTo(layout, 1)
         self._addLeadPerformerTo(layout, 2)
         self._addReleaseDateTo(layout, 3)
+        self._addUpc(layout, 4)
 
     def _addFrontCoverPictureTo(self, layout, row):
         self._frontCoverImage = QLabel()
@@ -117,23 +119,34 @@ class AlbumPanel(QWidget):
         layout.addWidget(self._releaseDateEdit, row, 1)
         self._releaseDateLabel.setBuddy(self._releaseDateEdit)
 
+    def _addUpc(self, layout, row):
+        self._upcLabel = QLabel()
+        layout.addWidget(self._upcLabel, row, 0)
+        self._upcEdit = QLineEdit()
+        self._upcEdit.setObjectName(UPC_NAME)
+        layout.addWidget(self._upcEdit, row, 1)
+        self._upcLabel.setBuddy(self._upcEdit)
+
     def translateUi(self):
         self._selectPictureButton.setText(self.tr("Select Picture..."))
         self._selectPictureDialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")
         self._releaseNameLabel.setText(self.tr("Release Name: "))
         self._leadPerformerLabel.setText(self.tr("Lead Performer: "))
         self._releaseDateLabel.setText(self.tr("Release Date: "))
+        self._upcLabel.setText(self.tr("UPC/EAN: "))
 
     def trackSelected(self, track):
         self._releaseNameEdit.setText(track.releaseName)
         self._displayFrontCover(track.frontCoverPicture)
         self._leadPerformerEdit.setText(track.leadPerformer)
         self._releaseDateEdit.setText(track.releaseDate)
+        self._upcEdit.setText(track.upc)
 
     def updateTrack(self, track):
         track.releaseName = self._releaseNameEdit.text()
         track.frontCoverPicture = self._frontCover
         track.leadPerformer = self._leadPerformerEdit.text()
         track.releaseDate = self._releaseDateEdit.text()
+        track.upc = self._upcEdit.text()
 
 

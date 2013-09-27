@@ -86,6 +86,11 @@ class AlbumPanelTest(unittest.TestCase):
         self.albumPanel.trackSelected(track)
         self.driver.showsReleaseDate('2009-08-05')
 
+    def testDisplaysSelectedTrackAlbumUpc(self):
+        track = buildTrack(upc='1234567899999')
+        self.albumPanel.trackSelected(track)
+        self.driver.showsUpc('1234567899999')
+
     def selectorFor(self, widget):
         # todo Move to finders.py
         class WidgetIdentity(WidgetSelector):
