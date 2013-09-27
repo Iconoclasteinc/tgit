@@ -55,5 +55,14 @@ class AlbumPanelDriver(WidgetDriver):
         edit = LineEditDriver.find(self, QLineEdit, named(ui.LEAD_PERFORMER_NAME))
         edit.replaceAllText(name)
 
+    def showsReleaseDate(self, date):
+        label = LabelDriver.find(self, QLabel, withBuddy(named(ui.RELEASE_DATE_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.find(self, QLineEdit, named(ui.RELEASE_DATE_NAME))
+        edit.hasText(date)
+
+    def changeReleaseDate(self, date):
+        edit = LineEditDriver.find(self, QLineEdit, named(ui.RELEASE_DATE_NAME))
+        edit.replaceAllText(date)
 
 

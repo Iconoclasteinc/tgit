@@ -29,7 +29,7 @@ def buildTrack(**tags):
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
-END_OF_TEST_PAUSE = 500
+END_OF_TEST_PAUSE = 250
 
 
 # todo Extract an abstract base class for ui integration tests
@@ -61,9 +61,6 @@ class AlbumPanelTest(unittest.TestCase):
         del self.driver
         del self.app
 
-    def testCanShow(self):
-        pass
-
     def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
         frontCover = ('image/jpeg', readContent(resources.path("front-cover.jpg")))
         track = buildTrack(frontCoverPicture=frontCover)
@@ -83,6 +80,11 @@ class AlbumPanelTest(unittest.TestCase):
         track = buildTrack(leadPerformer='Lead Performer')
         self.albumPanel.trackSelected(track)
         self.driver.showsLeadPerformer('Lead Performer')
+
+    def testDisplaysReleaseDate(self):
+        track = buildTrack(releaseDate='2009-08-05')
+        self.albumPanel.trackSelected(track)
+        self.driver.showsReleaseDate('2009-08-05')
 
     def selectorFor(self, widget):
         # todo Move to finders.py
