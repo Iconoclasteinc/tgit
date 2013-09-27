@@ -10,20 +10,20 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self):
-        self._app = TGiT('en')
-        self._driver = TGiTDriver(timeout_in_ms=ONE_SECOND)
+        self.app = TGiT('en')
+        self.driver = TGiTDriver(timeoutInMs=ONE_SECOND)
 
     def stop(self):
-        self._driver.close()
-        del self._driver
-        del self._app
+        self.driver.close()
+        del self.driver
+        del self.app
 
     def importTrack(self, path):
-        self._driver.importTrack(path)
+        self.driver.importTrack(path)
 
     def showsMetadata(self, **tags):
-        self._driver.showsMetadata(tags)
+        self.driver.showsMetadata(**tags)
 
     def changeMetadata(self, **tags):
-        self._driver.editMetadata(tags)
-        self._driver.saveTrack()
+        self.driver.editMetadata(**tags)
+        self.driver.saveTrack()

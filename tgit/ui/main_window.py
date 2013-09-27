@@ -28,7 +28,6 @@ IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 SELECT_PICTURE_BUTTON_NAME = "Select Picture"
 SELECT_PICTURE_DIALOG_NAME = "Select Picture File"
 FRONT_COVER_PICTURE_NAME = "Front Cover Picture"
-FRONT_COVER_EMBEDDED_TEXT_NAME = "Front Cover Embedded Text"
 RELEASE_NAME_NAME = "Release Name"
 LEAD_PERFORMER_NAME = "Lead Performer"
 RELEASE_DATE_NAME = "Release Date"
@@ -89,17 +88,17 @@ class MainWindow(QMainWindow):
         self._tagAlbumPanel = QWidget()
         tagAlbumLayout = QGridLayout(self._tagAlbumPanel)
         self._addFrontCoverPicture(tagAlbumLayout, 0)
-        self._addReleaseName(tagAlbumLayout, 2)
-        self._addLeadPerformer(tagAlbumLayout, 3)
-        self._addReleaseDate(tagAlbumLayout, 4)
-        self._addUpc(tagAlbumLayout, 5)
-        self._addTrackTitle(tagAlbumLayout, 6)
-        self._addVersionInfo(tagAlbumLayout, 7)
-        self._addFeaturedGuest(tagAlbumLayout, 8)
-        self._addIsrc(tagAlbumLayout, 9)
-        self._addBitrate(tagAlbumLayout, 10)
-        self._addDuration(tagAlbumLayout, 11)
-        self._addButtons(tagAlbumLayout, 12)
+        self._addReleaseName(tagAlbumLayout, 1)
+        self._addLeadPerformer(tagAlbumLayout, 2)
+        self._addReleaseDate(tagAlbumLayout, 3)
+        self._addUpc(tagAlbumLayout, 4)
+        self._addTrackTitle(tagAlbumLayout, 5)
+        self._addVersionInfo(tagAlbumLayout, 6)
+        self._addFeaturedGuest(tagAlbumLayout, 7)
+        self._addIsrc(tagAlbumLayout, 8)
+        self._addBitrate(tagAlbumLayout, 9)
+        self._addDuration(tagAlbumLayout, 10)
+        self._addButtons(tagAlbumLayout, 11)
         return self._tagAlbumPanel
 
     def _addFrontCoverPicture(self, layout, row):
@@ -111,9 +110,6 @@ class MainWindow(QMainWindow):
         self._selectPictureButton.setObjectName(SELECT_PICTURE_BUTTON_NAME)
         self._selectPictureButton.clicked.connect(self._selectPictureDialog.open)
         layout.addWidget(self._selectPictureButton, row, 1, 1, 1)
-        self._frontCoverTextLabel = QLabel(self._tagAlbumPanel)
-        self._frontCoverTextLabel.setObjectName(FRONT_COVER_EMBEDDED_TEXT_NAME)
-        layout.addWidget(self._frontCoverTextLabel, row + 1, 0, 1, 1)
 
     def _addReleaseName(self, layout, row):
         self._releaseNameLabel = QLabel(self._tagAlbumPanel)
@@ -238,7 +234,6 @@ class MainWindow(QMainWindow):
         self._frontCover = picture
         _, imageData = self._frontCover
         self._frontCoverImage.setPixmap(self._scaledPixmapFrom(imageData))
-        self._frontCoverTextLabel.setText(self._getEmbeddedText(imageData))
 
     def _showTagAlbumPanel(self):
         self.setCentralWidget(self._tagAlbumPanel)
@@ -246,9 +241,6 @@ class MainWindow(QMainWindow):
     def _importTrackFile(self, filename):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
-
-    def _getEmbeddedText(self, imageData):
-        return QImage.fromData(imageData).text()
 
     def _scaledPixmapFrom(self, imageData):
         if imageData is None:

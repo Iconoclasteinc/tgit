@@ -11,30 +11,30 @@ from tgit.mp3 import MP3File
 
 class FakeAudioLibrary(object):
     def __init__(self):
-        self._files = []
+        self.files = []
 
-    def addFile(self, filename):
+    def importFile(self, filename):
         mp3 = MP3(filename)
-        self._files.append(mp3)
+        self.files.append(mp3)
         return mp3.name
 
-    def destroy(self):
-        [f.delete() for f in self._files]
+    def delete(self):
+        [f.delete() for f in self.files]
 
-    def openMp3(self, name):
+    def containsFile(self, name, **tags):
+        if 'frontCoverFile' in tags:
+            tags['frontCoverPicture'] = samePictureAs(tags['frontCoverFile'])
+            del tags['frontCoverFile']
+
+        audioFile = self._openMp3(name)
+        assert_that(audioFile, has_properties(tags))
+
+    def _openMp3(self, name):
         try:
             audioFile = MP3File(name)
         except IOError:
             raise AssertionError("Missing in library: % s" % name)
         return audioFile
-
-    def containsFileWithMetadata(self, name, **tags):
-        if 'frontCoverFile' in tags:
-            tags['frontCoverPicture'] = samePictureAs(tags['frontCoverFile'])
-            del tags['frontCoverFile']
-
-        audioFile = self.openMp3(name)
-        assert_that(audioFile, has_properties(tags))
 
 
 # todo move to a file related utilities module

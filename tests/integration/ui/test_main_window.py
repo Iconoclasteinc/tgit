@@ -134,7 +134,7 @@ class MainWindowTest(unittest.TestCase):
 
         self.mainWindow.addMusicDirector(DetectSaveTrack())
         self.mainWindow.trackSelected(buildTrack())
-        self.driver.editMetadata(modifications)
+        self.driver.editMetadata(**modifications)
         self.driver.saveTrack()
         self.driver.check(saveRequest)
 

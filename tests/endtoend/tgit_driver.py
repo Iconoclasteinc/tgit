@@ -27,10 +27,10 @@ FRONT_COVER_PICTURE = 'frontCoverPicture'
 
 
 class TGiTDriver(MainWindowDriver):
-    def __init__(self, timeout_in_ms):
+    def __init__(self, timeoutInMs):
         super(TGiTDriver, self).__init__(
             mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
-            EventProcessingProber(timeoutInMs=timeout_in_ms),
+            EventProcessingProber(timeoutInMs=timeoutInMs),
             Robot())
 
     def importTrack(self, path):
@@ -105,20 +105,29 @@ class TGiTDriver(MainWindowDriver):
         label.isShowingOnScreen()
         self._durationLabel().hasText(duration)
 
-    def showsMetadata(self, tags):
-        self._frontCoverEmbeddedText().hasText(tags[FRONT_COVER_EMBEDDED_TEXT])
-        self.showsReleaseName(tags[RELEASE_NAME])
-        self.showsLeadPerformer(tags[LEAD_PERFORMER])
-        self.showsReleaseDate(tags[RELEASE_DATE])
-        self.showsUpc(tags[UPC])
-        self.showsTrackTitle(tags[TRACK_TITLE])
-        self.showsVersionInfo(tags[VERSION_INFO])
-        self.showsFeaturedGuest(tags[FEATURED_GUEST])
-        self.showsIsrc(tags[ISRC])
-        self.showsBitrate(tags[BITRATE])
-        self.showsDuration(tags[DURATION])
+    def showsMetadata(self, **tags):
+        if RELEASE_NAME in tags:
+            self.showsReleaseName(tags[RELEASE_NAME])
+        if LEAD_PERFORMER in tags:
+            self.showsLeadPerformer(tags[LEAD_PERFORMER])
+        if RELEASE_DATE in tags:
+            self.showsReleaseDate(tags[RELEASE_DATE])
+        if UPC in tags:
+            self.showsUpc(tags[UPC])
+        if TRACK_TITLE in tags:
+            self.showsTrackTitle(tags[TRACK_TITLE])
+        if VERSION_INFO in tags:
+            self.showsVersionInfo(tags[VERSION_INFO])
+        if FEATURED_GUEST in tags:
+            self.showsFeaturedGuest(tags[FEATURED_GUEST])
+        if ISRC in tags:
+            self.showsIsrc(tags[ISRC])
+        if BITRATE in tags:
+            self.showsBitrate(tags[BITRATE])
+        if DURATION in tags:
+            self.showsDuration(tags[DURATION])
 
-    def editMetadata(self, tags):
+    def editMetadata(self, **tags):
         if FRONT_COVER_PICTURE in tags:
             self.changeFrontCoverPicture(tags[FRONT_COVER_PICTURE])
         if RELEASE_NAME in tags:
@@ -181,9 +190,6 @@ class TGiTDriver(MainWindowDriver):
     def saveTrack(self):
         button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
         button.click()
-
-    def _frontCoverEmbeddedText(self):
-        return LabelDriver.find(self, QLabel, named(main.FRONT_COVER_EMBEDDED_TEXT_NAME))
 
     def _releaseNameEdit(self):
         return LineEditDriver.find(self, QLineEdit, named(main.RELEASE_NAME_NAME))
