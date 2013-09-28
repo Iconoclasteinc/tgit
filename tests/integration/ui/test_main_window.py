@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import mimetypes
 from hamcrest.core import equal_to
-from hamcrest.library import has_properties, contains, has_length
+from hamcrest.library import has_properties
 from flexmock import flexmock
 
 import use_sip_api_v2 as sipApi
 sipApi.useVersion(sipApi.VERSION_2)
-from PyQt4.Qt import QApplication
 
 from tests.cute.probes import ValueMatcherProbe
+from tests.cute.finders import WidgetIdentity
 from tests.drivers.tagger_driver import TaggerDriver
-from tests.util import resources
-from tests.endtoend.fake_audio_library import readContent
-from tgit.ui import main_window as main
+from tests.integration.ui.base_widget_test import BaseWidgetTest
+from tests.util import resources, matchers
 from tgit.ui.main_window import MainWindow
 
 
@@ -33,16 +31,15 @@ def buildTrack(**tags):
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
-class MainWindowTest(unittest.TestCase):
+class MainWindowTest(BaseWidgetTest):
     def setUp(self):
-        self.app = QApplication([])
+        super(MainWindowTest, self).setUp()
         self.mainWindow = MainWindow()
-        self.driver = TaggerDriver(1000)
+        self.view(self.mainWindow)
+        self.driver = self.createDriverFor(self.mainWindow)
 
-    def tearDown(self):
-        self.driver.close()
-        del self.driver
-        del self.app
+    def createDriverFor(self, widget):
+        return TaggerDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testMakesRequestToAddTrackToAlbumWhenTrackFileIsSelectedUsingImportDialog(self):
         trackFile = resources.path("Hallelujah.mp3")
@@ -86,22 +83,5 @@ class MainWindowTest(unittest.TestCase):
 
 def sameMetadataAs(**tags):
     if 'frontCoverPicture' in tags:
-        tags['frontCoverPicture'] = samePictureAs(tags['frontCoverPicture'])
+        tags['frontCoverPicture'] = matchers.samePictureAs(tags['frontCoverPicture'])
     return has_properties(**tags)
-
-
-# todo move to a file related utilities module
-def readContent(filename):
-    return open(filename, "rb").read()
-
-
-# todo move to a file related utilities module
-def guessMimeType(filename):
-    return mimetypes.guess_type(filename)[0]
-
-
-# todo move to a matchers module
-def samePictureAs(filename):
-    return contains(equal_to(guessMimeType(filename)),
-                    has_length(len(readContent(filename))))
-

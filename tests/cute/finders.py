@@ -113,3 +113,26 @@ class SingleWidgetFinder(WidgetSelector):
         return len(self.widgets()) == 1
 
 
+class WidgetIdentity(WidgetSelector):
+    def __init__(self, widget):
+        self._widget = widget
+
+    def test(self):
+        pass
+
+    def widgets(self):
+        return self._widget,
+
+    def widget(self):
+        return self._widget
+
+    def isSatisfied(self):
+        return True
+
+    def describeTo(self, description):
+        description.append_text("the exact ") \
+            .append_text(type(self._widget).__name__) \
+            .append_text(" '%s'" % repr(self._widget))
+
+    def describeFailureTo(self, description):
+        self.describeTo(description)
