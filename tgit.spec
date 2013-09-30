@@ -20,7 +20,6 @@ exe = EXE(pyz,
           upx=True,
           console=False)
 
-locales = Tree('locales', prefix = 'locales')
 excluded = [('QNetwork', None, None), ('QtOpenGL', None, None), ('QtSql', None, None), ('QtSvg',
 None, None), ('QtTest', None, None), ('QtWebKit', None, None), ('QtXml', None, None) ]
 
@@ -28,7 +27,6 @@ coll = COLLECT(exe,
                a.binaries - excluded,
                a.zipfiles,
                a.datas,
-               locales,
                strip=None,
                upx=True,
                name='tgit')
