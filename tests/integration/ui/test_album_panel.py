@@ -34,7 +34,7 @@ class AlbumPanelTest(BaseWidgetTest):
     def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
         frontCover = ('image/jpeg', fs.readContent(resources.path("front-cover.jpg")))
         track = buildTrack(frontCoverPicture=frontCover)
-        self.albumPanel.trackSelected(track)
+        self.albumPanel.setTrack(track)
         self.driver.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_DISPLAY_SIZE)
 
     @unittest.skip("todo")
@@ -43,20 +43,20 @@ class AlbumPanelTest(BaseWidgetTest):
 
     def testDisplaysReleaseName(self):
         track = buildTrack(releaseName='Release Name')
-        self.albumPanel.trackSelected(track)
+        self.albumPanel.setTrack(track)
         self.driver.showsReleaseName('Release Name')
 
     def testDisplaysLeadPerformer(self):
         track = buildTrack(leadPerformer='Lead Performer')
-        self.albumPanel.trackSelected(track)
+        self.albumPanel.setTrack(track)
         self.driver.showsLeadPerformer('Lead Performer')
 
     def testDisplaysReleaseDate(self):
         track = buildTrack(releaseDate='2009-08-05')
-        self.albumPanel.trackSelected(track)
+        self.albumPanel.setTrack(track)
         self.driver.showsReleaseDate('2009-08-05')
 
     def testDisplaysSelectedTrackAlbumUpc(self):
         track = buildTrack(upc='1234567899999')
-        self.albumPanel.trackSelected(track)
+        self.albumPanel.setTrack(track)
         self.driver.showsUpc('1234567899999')

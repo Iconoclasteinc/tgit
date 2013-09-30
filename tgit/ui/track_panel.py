@@ -110,7 +110,7 @@ class TrackPanel(QWidget):
         self._bitrateLabel.setText(self.tr("Bitrate: "))
         self._durationLabel.setText(self.tr("Duration: "))
 
-    def trackSelected(self, track):
+    def setTrack(self, track):
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
         self._featuredGuestEdit.setText(track.featuredGuest)

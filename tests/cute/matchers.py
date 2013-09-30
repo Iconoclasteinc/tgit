@@ -36,7 +36,19 @@ def with_(query, matcher):
 
 
 def showingOnScreen():
-    return ShowingOnScreenMatcher()
+    return WidgetStateMatcher(QWidget.isVisible, "showing on screen")
+
+
+def hidden():
+    return WidgetStateMatcher(lambda w: not w.isVisible(), "hidden")
+
+
+def enabled():
+    return WidgetStateMatcher(QWidget.isEnabled, "enabled")
+
+
+def disabled():
+    return WidgetStateMatcher(lambda w: not w.isEnabled(), "disabled")
 
 
 class QueryResultMatcher(BaseMatcher):
@@ -64,15 +76,14 @@ class QueryResultMatcher(BaseMatcher):
             self._resultMatcher.describe_mismatch(self._query(item), mismatch_description)
 
 
-class ShowingOnScreenMatcher(BaseMatcher):
-    def _matches(self, item):
-        if not isinstance(item, QWidget):
-            return False
+class WidgetStateMatcher(BaseMatcher):
+    def __init__(self, state, description):
+        super(WidgetStateMatcher, self).__init__()
+        self._state = state
+        self._stateDescription = description
 
-        return item.isVisible()
+    def _matches(self, item):
+        return self._state(item)
 
     def describe_to(self, description):
-        description.append("showing on screen")
-
-
-
+        description.append(self._stateDescription)

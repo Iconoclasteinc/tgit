@@ -35,30 +35,30 @@ class TrackPanelTest(BaseWidgetTest):
 
     def testDisplaysTrackTitle(self):
         track = buildTrack(trackTitle='Track Title')
-        self.trackPanel.trackSelected(track)
+        self.trackPanel.setTrack(track)
         self.driver.showsTrackTitle('Track Title')
 
     def testDisplaysVersionInfo(self):
         track = buildTrack(versionInfo='Version Info')
-        self.trackPanel.trackSelected(track)
+        self.trackPanel.setTrack(track)
         self.driver.showsVersionInfo('Version Info')
 
     def testDisplaysFeaturedGuest(self):
         track = buildTrack(featuredGuest='Featured Guest')
-        self.trackPanel.trackSelected(track)
+        self.trackPanel.setTrack(track)
         self.driver.showsFeaturedGuest('Featured Guest')
 
     def testDisplaysIsrc(self):
         track = buildTrack(isrc='ISRC')
-        self.trackPanel.trackSelected(track)
+        self.trackPanel.setTrack(track)
         self.driver.showsIsrc('ISRC')
 
     def testDisplaysBitrateInKbps(self):
         track = buildTrack(bitrate=128000)
-        self.trackPanel.trackSelected(track)
+        self.trackPanel.setTrack(track)
         self.driver.showsBitrate('128 kbps')
 
     def testDisplaysDurationAsText(self):
         track = buildTrack(duration=275)
-        self.trackPanel.trackSelected(track)
+        self.trackPanel.setTrack(track)
         self.driver.showsDuration('04:35')

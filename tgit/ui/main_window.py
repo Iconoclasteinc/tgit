@@ -19,7 +19,7 @@
 
 from PyQt4.QtCore import (QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenuBar, QMenu, QAction, QStatusBar, QGridLayout,
-                         QPushButton, QFileDialog)
+                         QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog)
 
 from tgit.ui.album_panel import AlbumPanel
 from tgit.ui.track_panel import TrackPanel
@@ -28,6 +28,7 @@ MAIN_WINDOW_NAME = "TGiT"
 ADD_FILE_BUTTON_NAME = "Add File"
 IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 NEXT_STEP_BUTTON_NAME = "Next Step"
+PREVIOUS_STEP_BUTTON_NAME = "Previous Step"
 SAVE_BUTTON_NAME = "Save"
 
 
@@ -45,10 +46,13 @@ class MainWindow(QMainWindow):
         self.resize(640, 480)
         self._fillMenu()
         self._makeStatusBar()
+        # todo create dialog on the fly to speed up startup time
         self._makeImportFileDialog()
         self._makeWelcomePanel()
-        self._makeTagAlbumPanel()
+        self._albumPanel = AlbumPanel()
+        self._trackPanel = TrackPanel()
         self.setCentralWidget(self._welcomePanel)
+        self._makeButtonBar()
         self.localizeUi()
 
     def _fillMenu(self):
@@ -74,8 +78,6 @@ class MainWindow(QMainWindow):
         self._addFileButton.clicked.connect(self._addFileDialog.open)
         layout.addWidget(self._addFileButton, 0, 0)
 
-    # todo integration test dialog file name filtering by making sure the Accept button stay
-    # disabled when we select a non supported file type
     def _makeImportFileDialog(self):
         self._addFileDialog = QFileDialog(self)
         self._addFileDialog.setObjectName(IMPORT_TRACK_DIALOG_NAME)
@@ -88,28 +90,28 @@ class MainWindow(QMainWindow):
         if self._musicDirector:
             self._musicDirector.importTrack(filename)
 
-    def _makeTagAlbumPanel(self):
-        self._tagAlbumPanel = QWidget()
-        layout = QGridLayout(self._tagAlbumPanel)
-        self._albumPanel = AlbumPanel(self)
-        layout.addWidget(self._albumPanel, 0, 0, 5, 3)
-        self._trackPanel = TrackPanel(self)
-        layout.addWidget(self._trackPanel, 5, 0, 6, 3)
-        self._addButtons(layout, 11)
-        return self._tagAlbumPanel
-
-    def _addButtons(self, layout, row):
+    def _makeButtonBar(self):
+        self._buttonBar = QWidget()
+        layout = QHBoxLayout()
+        self._buttonBar.setLayout(layout)
+        self._previousStepButton = QPushButton()
+        self._previousStepButton.setObjectName(PREVIOUS_STEP_BUTTON_NAME)
+        self._previousStepButton.clicked.connect(self._showAlbumPanel)
+        layout.addWidget(self._previousStepButton)
         self._saveButton = QPushButton()
         self._saveButton.setObjectName(SAVE_BUTTON_NAME)
         self._saveButton.clicked.connect(self._saveTrackFile)
-        layout.addWidget(self._saveButton, row, 1)
+        layout.addWidget(self._saveButton)
         self._nextStepButton = QPushButton()
         self._nextStepButton.setObjectName(NEXT_STEP_BUTTON_NAME)
-        layout.addWidget(self._nextStepButton, row, 2)
+        self._nextStepButton.clicked.connect(self._showTrackPanel)
+        layout.addWidget(self._nextStepButton)
 
     def _saveTrackFile(self):
-        self._albumPanel.updateTrack(self._track)
-        self._trackPanel.updateTrack(self._track)
+        if self._albumPanel:
+            self._albumPanel.updateTrack(self._track)
+        if self._trackPanel:
+            self._trackPanel.updateTrack(self._track)
         if self._musicDirector:
             self._musicDirector.saveTrack(self._track)
 
@@ -118,12 +120,40 @@ class MainWindow(QMainWindow):
 
     def trackSelected(self, track):
         self._track = track
-        self._albumPanel.trackSelected(track)
-        self._trackPanel.trackSelected(track)
-        self._showTagAlbumPanel()
+        # todo should panels really be responsible for maintaining edition state?
+        self._albumPanel.setTrack(self._track)
+        self._trackPanel.setTrack(self._track)
+        self._showAlbumPanel()
 
-    def _showTagAlbumPanel(self):
-        self.setCentralWidget(self._tagAlbumPanel)
+    # todo is there any better way to do this?
+    def _notToBeDestroyed(self, widget):
+        # transfer ownership to PyQt to avoid Qt to destroy QObject that is not in any layout
+        widget.setParent(None)
+
+    def _showAlbumPanel(self):
+        panel = QWidget()
+        layout = QVBoxLayout()
+        layout.addWidget(self._albumPanel)
+        layout.addStretch()
+        self._previousStepButton.setDisabled(True)
+        self._nextStepButton.setEnabled(True)
+        layout.addWidget(self._buttonBar)
+        panel.setLayout(layout)
+        self.setCentralWidget(panel)
+        self._notToBeDestroyed(self._trackPanel)
+
+    def _showTrackPanel(self):
+        self._albumPanel.updateTrack(self._track)
+        panel = QWidget()
+        layout = QVBoxLayout()
+        layout.addWidget(self._trackPanel)
+        layout.addStretch()
+        self._previousStepButton.setEnabled(True)
+        self._nextStepButton.setDisabled(True)
+        layout.addWidget(self._buttonBar)
+        panel.setLayout(layout)
+        self.setCentralWidget(panel)
+        self._notToBeDestroyed(self._albumPanel)
 
     def localizeUi(self):
         self.setWindowTitle(self.tr("TGiT"))
@@ -131,5 +161,6 @@ class MainWindow(QMainWindow):
         self._quitMenu.setTitle(self.tr("Quit"))
         self._quitMenuItem.setText(self.tr("Hit me to quit"))
         self._saveButton.setText(self.tr("Save"))
+        self._previousStepButton.setText(self.tr("Previous"))
         self._nextStepButton.setText(self.tr("Next"))
         self._addFileDialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")

@@ -2,7 +2,7 @@
 
 import os
 from PyQt4.Qt import QPushButton, QFileDialog, QWidget
-from tests.cute.matchers import named
+from tests.cute.matchers import named, disabled, enabled, showingOnScreen
 from tests.cute.widgets import MainWindowDriver, AbstractButtonDriver, FileDialogDriver
 from tests.drivers.album_panel_driver import AlbumPanelDriver
 from tests.drivers.track_panel_driver import TrackPanelDriver
@@ -47,59 +47,73 @@ class TaggerDriver(MainWindowDriver):
 
     def showsAlbumMetadata(self, **tags):
         if RELEASE_NAME in tags:
-            self.albumPanel().showsReleaseName(tags[RELEASE_NAME])
+            self._albumPanel().showsReleaseName(tags[RELEASE_NAME])
         if LEAD_PERFORMER in tags:
-            self.albumPanel().showsLeadPerformer(tags[LEAD_PERFORMER])
+            self._albumPanel().showsLeadPerformer(tags[LEAD_PERFORMER])
         if RELEASE_DATE in tags:
-            self.albumPanel().showsReleaseDate(tags[RELEASE_DATE])
+            self._albumPanel().showsReleaseDate(tags[RELEASE_DATE])
         if UPC in tags:
-            self.albumPanel().showsUpc(tags[UPC])
+            self._albumPanel().showsUpc(tags[UPC])
 
-    def albumPanel(self):
+    def _albumPanel(self):
         return AlbumPanelDriver.find(self, QWidget, named(album.ALBUM_PANEL_NAME))
 
     def editAlbumMetadata(self, **tags):
         if FRONT_COVER_PICTURE in tags:
-            self.albumPanel().changeFrontCoverPicture(tags[FRONT_COVER_PICTURE])
+            self._albumPanel().changeFrontCoverPicture(tags[FRONT_COVER_PICTURE])
         if RELEASE_NAME in tags:
-            self.albumPanel().changeReleaseName(tags[RELEASE_NAME])
+            self._albumPanel().changeReleaseName(tags[RELEASE_NAME])
         if LEAD_PERFORMER in tags:
-            self.albumPanel().changeLeadPerformer(tags[LEAD_PERFORMER])
+            self._albumPanel().changeLeadPerformer(tags[LEAD_PERFORMER])
         if RELEASE_DATE in tags:
-            self.albumPanel().changeReleaseDate(tags[RELEASE_DATE])
+            self._albumPanel().changeReleaseDate(tags[RELEASE_DATE])
         if UPC in tags:
-            self.albumPanel().changeUpc(tags[UPC])
+            self._albumPanel().changeUpc(tags[UPC])
+
+    def _nextStepButton(self):
+        return AbstractButtonDriver.find(self, QPushButton, named(main.NEXT_STEP_BUTTON_NAME))
 
     def nextStep(self):
-        button = AbstractButtonDriver.find(self, QPushButton, named(main.NEXT_STEP_BUTTON_NAME))
-        button.click()
+        self._nextStepButton().click()
+        self._nextStepButton().verify(disabled())
+        self._previousStepButton().verify(enabled())
+        self._trackPanel().verify(showingOnScreen())
+
+    def _previousStepButton(self):
+        return AbstractButtonDriver.find(self, QPushButton, named(main.PREVIOUS_STEP_BUTTON_NAME))
+
+    def previousStep(self):
+        self._previousStepButton().click()
+        self._previousStepButton().verify(disabled())
+        self._nextStepButton().verify(enabled())
+        self._albumPanel().verify(showingOnScreen())
 
     def showsTrackMetadata(self, **tags):
         if TRACK_TITLE in tags:
-            self.trackPanel().showsTrackTitle(tags[TRACK_TITLE])
+            self._trackPanel().showsTrackTitle(tags[TRACK_TITLE])
         if VERSION_INFO in tags:
-            self.trackPanel().showsVersionInfo(tags[VERSION_INFO])
+            self._trackPanel().showsVersionInfo(tags[VERSION_INFO])
         if FEATURED_GUEST in tags:
-            self.trackPanel().showsFeaturedGuest(tags[FEATURED_GUEST])
+            self._trackPanel().showsFeaturedGuest(tags[FEATURED_GUEST])
         if ISRC in tags:
-            self.trackPanel().showsIsrc(tags[ISRC])
+            self._trackPanel().showsIsrc(tags[ISRC])
         if BITRATE in tags:
-            self.trackPanel().showsBitrate(tags[BITRATE])
+            self._trackPanel().showsBitrate(tags[BITRATE])
         if DURATION in tags:
-            self.trackPanel().showsDuration(tags[DURATION])
+            self._trackPanel().showsDuration(tags[DURATION])
 
-    def trackPanel(self):
+    def _trackPanel(self):
         return TrackPanelDriver.find(self, QWidget, named(track.TRACK_PANEL_NAME))
 
     def editTrackMetadata(self, **tags):
         if TRACK_TITLE in tags:
-            self.trackPanel().changeTrackTitle(tags[TRACK_TITLE])
+            self._trackPanel().changeTrackTitle(tags[TRACK_TITLE])
         if VERSION_INFO in tags:
-            self.trackPanel().changeVersionInfo(tags[VERSION_INFO])
+            self._trackPanel().changeVersionInfo(tags[VERSION_INFO])
         if FEATURED_GUEST in tags:
-            self.trackPanel().changeFeaturedGuest(tags[FEATURED_GUEST])
+            self._trackPanel().changeFeaturedGuest(tags[FEATURED_GUEST])
         if ISRC in tags:
-            self.trackPanel().changeIsrc(tags[ISRC])
+            self._trackPanel().changeIsrc(tags[ISRC])
 
     def saveTrack(self):
         button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))

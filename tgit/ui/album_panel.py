@@ -43,8 +43,7 @@ class AlbumPanel(QWidget):
         self._fill(layout)
         self.translateUi()
 
-    # todo integration test dialog file filtering by making sure the Accept button stay
-    # disabled when we select a non supported file type
+    # todo create dialog on the fly to speed up startup time
     def _makeSelectPictureDialog(self):
         self._selectPictureDialog = QFileDialog(self)
         self._selectPictureDialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
@@ -71,7 +70,7 @@ class AlbumPanel(QWidget):
     def _scaleToDisplayArea(self, imageData):
         if imageData is None:
             return QPixmap()
-        # todo we can scale the pixmap directly
+        # todo can we scale the pixmap directly?
         originalImage = QImage.fromData(imageData)
         width, height = FRONT_COVER_DISPLAY_SIZE
         scaledImage = originalImage.scaled(width, height, Qt.KeepAspectRatio,
@@ -135,7 +134,7 @@ class AlbumPanel(QWidget):
         self._releaseDateLabel.setText(self.tr("Release Date: "))
         self._upcLabel.setText(self.tr("UPC/EAN: "))
 
-    def trackSelected(self, track):
+    def setTrack(self, track):
         self._releaseNameEdit.setText(track.releaseName)
         self._displayFrontCover(track.frontCoverPicture)
         self._leadPerformerEdit.setText(track.leadPerformer)

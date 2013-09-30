@@ -12,7 +12,8 @@ from tests.cute.probes import ValueMatcherProbe
 from tests.cute.finders import WidgetIdentity
 from tests.drivers.tagger_driver import TaggerDriver
 from tests.integration.ui.base_widget_test import BaseWidgetTest
-from tests.util import resources, matchers
+from tests.util import resources
+from tests.util.matchers import samePictureAs
 from tgit.ui.main_window import MainWindow
 
 
@@ -53,6 +54,12 @@ class MainWindowTest(BaseWidgetTest):
         self.driver.importTrack(trackFile)
         self.driver.check(importRequest)
 
+    def testCanNavigateBetweenAlbumAndTrackPanels(self):
+        self.mainWindow.trackSelected(buildTrack())
+        self.driver.nextStep()
+        self.driver.previousStep()
+        self.driver.nextStep()
+
     @unittest.skip("todo")
     def testHasNothingToShowWhenTrackHasNoMetadata(self):
         raise AssertionError("Not yet implemented")
@@ -76,6 +83,7 @@ class MainWindowTest(BaseWidgetTest):
         self.mainWindow.addMusicDirector(DetectSaveTrack())
         self.mainWindow.trackSelected(buildTrack())
         self.driver.editAlbumMetadata(**modifications)
+        self.driver.nextStep()
         self.driver.editTrackMetadata(**modifications)
         self.driver.saveTrack()
         self.driver.check(saveRequest)
@@ -83,5 +91,5 @@ class MainWindowTest(BaseWidgetTest):
 
 def sameMetadataAs(**tags):
     if 'frontCoverPicture' in tags:
-        tags['frontCoverPicture'] = matchers.samePictureAs(tags['frontCoverPicture'])
+        tags['frontCoverPicture'] = samePictureAs(tags['frontCoverPicture'])
     return has_properties(**tags)
