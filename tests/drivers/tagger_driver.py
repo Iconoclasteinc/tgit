@@ -2,7 +2,7 @@
 
 import os
 from PyQt4.Qt import QPushButton, QFileDialog, QWidget
-from tests.cute.matchers import named, disabled, enabled, showingOnScreen
+from tests.cute.matchers import named, disabled, enabled, showingOnScreen, hidden
 from tests.cute.widgets import MainWindowDriver, AbstractButtonDriver, FileDialogDriver
 from tests.drivers.album_panel_driver import AlbumPanelDriver
 from tests.drivers.track_panel_driver import TrackPanelDriver
@@ -78,6 +78,7 @@ class TaggerDriver(MainWindowDriver):
         self._nextStepButton().verify(disabled())
         self._previousStepButton().verify(enabled())
         self._trackPanel().verify(showingOnScreen())
+        self._albumPanel().verify(hidden())
 
     def _previousStepButton(self):
         return AbstractButtonDriver.find(self, QPushButton, named(main.PREVIOUS_STEP_BUTTON_NAME))
@@ -87,6 +88,7 @@ class TaggerDriver(MainWindowDriver):
         self._previousStepButton().verify(disabled())
         self._nextStepButton().verify(enabled())
         self._albumPanel().verify(showingOnScreen())
+        self._trackPanel().verify(hidden())
 
     def showsTrackMetadata(self, **tags):
         if TRACK_TITLE in tags:

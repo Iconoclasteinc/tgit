@@ -48,11 +48,9 @@ class MainWindow(QMainWindow):
         self._makeStatusBar()
         # todo create dialog on the fly to speed up startup time
         self._makeImportFileDialog()
-        self._makeWelcomePanel()
-        self._albumPanel = AlbumPanel()
-        self._trackPanel = TrackPanel()
-        self.setCentralWidget(self._welcomePanel)
         self._makeButtonBar()
+        self._makeMainPanel()
+        self.setCentralWidget(self._makeWelcomePanel())
         self.localizeUi()
 
     def _fillMenu(self):
@@ -67,16 +65,6 @@ class MainWindow(QMainWindow):
 
     def _makeStatusBar(self):
         self.setStatusBar(QStatusBar())
-
-    # todo Extract a WelcomePanel
-    def _makeWelcomePanel(self):
-        self._welcomePanel = QWidget()
-        layout = QGridLayout(self._welcomePanel)
-        self._welcomePanel.setLayout(layout)
-        self._addFileButton = QPushButton()
-        self._addFileButton.setObjectName(ADD_FILE_BUTTON_NAME)
-        self._addFileButton.clicked.connect(self._addFileDialog.open)
-        layout.addWidget(self._addFileButton, 0, 0)
 
     def _makeImportFileDialog(self):
         self._addFileDialog = QFileDialog(self)
@@ -124,36 +112,43 @@ class MainWindow(QMainWindow):
         self._albumPanel.setTrack(self._track)
         self._trackPanel.setTrack(self._track)
         self._showAlbumPanel()
+        self.setCentralWidget(self._mainPanel)
 
-    # todo is there any better way to do this?
-    def _notToBeDestroyed(self, widget):
-        # transfer ownership to PyQt to avoid Qt to destroy QObject that is not in any layout
-        widget.setParent(None)
-
-    def _showAlbumPanel(self):
-        panel = QWidget()
+    def _makeMainPanel(self):
+        self._mainPanel = QWidget()
         layout = QVBoxLayout()
+        self._albumPanel = AlbumPanel()
         layout.addWidget(self._albumPanel)
+        self._trackPanel = TrackPanel()
+        layout.addWidget(self._trackPanel)
         layout.addStretch()
         self._previousStepButton.setDisabled(True)
         self._nextStepButton.setEnabled(True)
         layout.addWidget(self._buttonBar)
-        panel.setLayout(layout)
-        self.setCentralWidget(panel)
-        self._notToBeDestroyed(self._trackPanel)
+        self._mainPanel.setLayout(layout)
+
+    def _showAlbumPanel(self):
+        self._trackPanel.hide()
+        self._albumPanel.show()
+        self._nextStepButton.setEnabled(True)
+        self._previousStepButton.setDisabled(True)
 
     def _showTrackPanel(self):
-        self._albumPanel.updateTrack(self._track)
-        panel = QWidget()
-        layout = QVBoxLayout()
-        layout.addWidget(self._trackPanel)
-        layout.addStretch()
-        self._previousStepButton.setEnabled(True)
+        self._albumPanel.hide()
+        self._trackPanel.show()
         self._nextStepButton.setDisabled(True)
-        layout.addWidget(self._buttonBar)
-        panel.setLayout(layout)
-        self.setCentralWidget(panel)
-        self._notToBeDestroyed(self._albumPanel)
+        self._previousStepButton.setEnabled(True)
+
+    # todo Extract a WelcomePanel
+    def _makeWelcomePanel(self):
+        self._welcomePanel = QWidget()
+        layout = QGridLayout(self._welcomePanel)
+        self._welcomePanel.setLayout(layout)
+        self._addFileButton = QPushButton()
+        self._addFileButton.setObjectName(ADD_FILE_BUTTON_NAME)
+        self._addFileButton.clicked.connect(self._addFileDialog.open)
+        layout.addWidget(self._addFileButton, 0, 0)
+        return self._welcomePanel
 
     def localizeUi(self):
         self.setWindowTitle(self.tr("TGiT"))

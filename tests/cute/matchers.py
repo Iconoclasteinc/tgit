@@ -36,19 +36,19 @@ def with_(query, matcher):
 
 
 def showingOnScreen():
-    return WidgetStateMatcher(QWidget.isVisible, "showing on screen")
+    return StateMatcher(QWidget.isVisible, "showing on screen", "hidden")
 
 
 def hidden():
-    return WidgetStateMatcher(lambda w: not w.isVisible(), "hidden")
+    return StateMatcher(lambda w: not w.isVisible(), "hidden", "visible")
 
 
 def enabled():
-    return WidgetStateMatcher(QWidget.isEnabled, "enabled")
+    return StateMatcher(QWidget.isEnabled, "enabled", "disabled")
 
 
 def disabled():
-    return WidgetStateMatcher(lambda w: not w.isEnabled(), "disabled")
+    return StateMatcher(lambda w: not w.isEnabled(), "disabled", "enabled")
 
 
 class QueryResultMatcher(BaseMatcher):
@@ -76,14 +76,19 @@ class QueryResultMatcher(BaseMatcher):
             self._resultMatcher.describe_mismatch(self._query(item), mismatch_description)
 
 
-class WidgetStateMatcher(BaseMatcher):
-    def __init__(self, state, description):
-        super(WidgetStateMatcher, self).__init__()
+class StateMatcher(BaseMatcher):
+    def __init__(self, state, description, oppositeDescription):
+        super(StateMatcher, self).__init__()
         self._state = state
         self._stateDescription = description
+        self._oppositeStateDescription = oppositeDescription
 
     def _matches(self, item):
         return self._state(item)
 
     def describe_to(self, description):
         description.append(self._stateDescription)
+
+    def describe_mismatch(self, item, mismatch_description):
+        mismatch_description.append_text("was ") \
+            .append_text(self._oppositeStateDescription)

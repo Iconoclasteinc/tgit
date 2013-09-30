@@ -230,6 +230,10 @@ class ListViewDriver(WidgetDriver):
                 description.append_text("containing an item ")
                 self._itemMatcher.describe_to(description)
 
+            def describe_mismatch(self, item, mismatch_description):
+                mismatch_description.append_text("was not containing ")
+                self._itemMatcher.describe_to(mismatch_description)
+
         itemFound = ItemMatcher(matcher)
         self.verify(itemFound)
         return itemFound.index

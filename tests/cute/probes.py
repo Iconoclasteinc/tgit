@@ -29,8 +29,7 @@ class WidgetAssertionProbe(Probe):
         self._selector.describeFailureTo(description)
         if self._selector.isSatisfied():
             description.append_text("\n    it ")
-            description.append_text("is " if self._assertionMet else "is not ")
-            description.append_description_of(self._assertion)
+            self._assertion.describe_mismatch(self._selector.widget(), description)
 
 
 class WidgetPropertyAssertionProbe(Probe):
