@@ -30,8 +30,8 @@ class ApplicationRunner(object):
     def importTrack(self, path):
         self.driver.importTrack(path)
 
-    def showsAlbumContent(self, track):
-        self.driver.showsAlbumContains(track)
+    def showsAlbumContent(self, trackTitle):
+        self.driver.showsAlbumContains(trackTitle)
 
     def showsAlbumMetadata(self, **tags):
         self.driver.showsAlbumMetadata(**tags)

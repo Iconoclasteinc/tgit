@@ -20,21 +20,22 @@ FEATURED_GUEST = 'featuredGuest'
 TRACK_TITLE = 'trackTitle'
 
 
-# todo introduce support classes to capture common user workflows
+# todo introduce support classes to capture common user workflows and separate workflows
+# from isolated interactions, which are used in ui integration tests
 class TaggerDriver(MainWindowDriver):
     def __init__(self, selector, prober, gesturePerformer):
         super(TaggerDriver, self).__init__(selector, prober, gesturePerformer)
 
     def importTrack(self, path):
-        self._openImportTrackDialog()
-        self._selectTrack(path)
+        self.openImportTrackDialog()
+        self.selectTrack(path)
         self._isShowingAlbumManagementPanel()
 
-    def _openImportTrackDialog(self):
+    def openImportTrackDialog(self):
         button = AbstractButtonDriver.find(self, QPushButton, named(main.ADD_FILE_BUTTON_NAME))
         button.click()
 
-    def _selectTrack(self, trackFile):
+    def selectTrack(self, trackFile):
         dialog = FileDialogDriver.find(self, QFileDialog, named(main.IMPORT_TRACK_DIALOG_NAME))
         dialog.showHiddenFiles()
         dialog.navigateToDir(os.path.dirname(trackFile))
@@ -49,9 +50,10 @@ class TaggerDriver(MainWindowDriver):
     def _albumManagementPanel(self):
         return WidgetDriver.find(self, QWidget, named('Album Management Panel'))
 
-    def showsAlbumContains(self, track):
+    def showsAlbumContains(self, trackTitle):
         albumContent = self._albumManagementPanel()
-        LabelDriver.find(albumContent, QLabel, withLabelText(track.trackTitle))
+        title = LabelDriver.find(albumContent, QLabel, withLabelText(trackTitle))
+        title.isShowingOnScreen()
 
     def backToAlbumManagement(self):
         self._previousStepButton().click()
