@@ -5,10 +5,31 @@ from tests.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver)
 
 import tgit.ui.track_panel as ui
 
+DURATION = 'duration'
+BITRATE = 'bitrate'
+ISRC = 'isrc'
+VERSION_INFO = 'versionInfo'
+FEATURED_GUEST = 'featuredGuest'
+TRACK_TITLE = 'trackTitle'
+
 
 class TrackPanelDriver(WidgetDriver):
     def __init__(self, selector, prober, gesturePerformer):
         super(TrackPanelDriver, self).__init__(selector, prober, gesturePerformer)
+
+    def showsMetadata(self, **tags):
+        if TRACK_TITLE in tags:
+            self.showsTrackTitle(tags[TRACK_TITLE])
+        if VERSION_INFO in tags:
+            self.showsVersionInfo(tags[VERSION_INFO])
+        if FEATURED_GUEST in tags:
+            self.showsFeaturedGuest(tags[FEATURED_GUEST])
+        if ISRC in tags:
+            self.showsIsrc(tags[ISRC])
+        if BITRATE in tags:
+            self.showsBitrate(tags[BITRATE])
+        if DURATION in tags:
+            self.showsDuration(tags[DURATION])
 
     def showsTrackTitle(self, trackTitle):
         label = LabelDriver.find(self, QLabel, withBuddy(named(ui.TRACK_TITLE_NAME)))

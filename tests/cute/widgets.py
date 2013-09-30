@@ -40,9 +40,18 @@ class WidgetDriver(object):
                                          parent.prober, parent.gesturePerformer)
 
     def isShowingOnScreen(self):
-        self.verify(match.showingOnScreen())
+        self.is_(match.showingOnScreen())
 
-    def verify(self, criteria):
+    def isHidden(self):
+        self.is_(match.hidden())
+
+    def isEnabled(self):
+        self.is_(match.enabled())
+
+    def isDisabled(self):
+        self.is_(match.disabled())
+
+    def is_(self, criteria):
         self.check(WidgetAssertionProbe(self.selector, criteria))
 
     def has(self, query, criteria):
@@ -235,7 +244,7 @@ class ListViewDriver(WidgetDriver):
                 self._itemMatcher.describe_to(mismatch_description)
 
         itemFound = ItemMatcher(matcher)
-        self.verify(itemFound)
+        self.is_(itemFound)
         return itemFound.index
 
 

@@ -9,6 +9,13 @@ from tests.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, Abstr
 
 import tgit.ui.album_panel as ui
 
+UPC = 'upc'
+RELEASE_DATE = 'releaseDate'
+LEAD_PERFORMER = 'leadPerformer'
+RELEASE_NAME = 'releaseName'
+FRONT_COVER_EMBEDDED_TEXT = 'frontCoverEmbeddedText'
+FRONT_COVER_PICTURE = 'frontCoverPicture'
+
 
 class AlbumPanelDriver(WidgetDriver):
     def __init__(self, selector, prober, gesturePerformer):
@@ -35,6 +42,16 @@ class AlbumPanelDriver(WidgetDriver):
         dialog.selectFile(os.path.basename(filename))
         dialog.accept()
 
+    def showsMetadata(self, **tags):
+        if RELEASE_NAME in tags:
+            self.showsReleaseName(tags[RELEASE_NAME])
+        if LEAD_PERFORMER in tags:
+            self.showsLeadPerformer(tags[LEAD_PERFORMER])
+        if RELEASE_DATE in tags:
+            self.showsReleaseDate(tags[RELEASE_DATE])
+        if UPC in tags:
+            self.showsUpc(tags[UPC])
+
     def showsReleaseName(self, name):
         label = LabelDriver.find(self, QLabel, withBuddy(named(ui.RELEASE_NAME_NAME)))
         label.isShowingOnScreen()
@@ -50,6 +67,18 @@ class AlbumPanelDriver(WidgetDriver):
         label.isShowingOnScreen()
         edit = LineEditDriver.find(self, QLineEdit, named(ui.LEAD_PERFORMER_NAME))
         edit.hasText(name)
+
+    def changeMetadata(self, **tags):
+        if FRONT_COVER_PICTURE in tags:
+            self.changeFrontCoverPicture(tags[FRONT_COVER_PICTURE])
+        if RELEASE_NAME in tags:
+            self.changeReleaseName(tags[RELEASE_NAME])
+        if LEAD_PERFORMER in tags:
+            self.changeLeadPerformer(tags[LEAD_PERFORMER])
+        if RELEASE_DATE in tags:
+            self.changeReleaseDate(tags[RELEASE_DATE])
+        if UPC in tags:
+            self.changeUpc(tags[UPC])
 
     def changeLeadPerformer(self, name):
         edit = LineEditDriver.find(self, QLineEdit, named(ui.LEAD_PERFORMER_NAME))

@@ -20,9 +20,11 @@ class TaggerTest(unittest.TestCase):
         self.audioLibrary.delete()
 
     # todo create a test mp3 from a sample realistic mpeg frame and make expected values explicit
+    @unittest.skip("wip")
     def testTaggerModifiesTagsOfAnExistingAudioFileAndSavesChanges(self):
         filename = self.audioLibrary.importFile(SAMPLE_AUDIO_FILE)
         self.application.importTrack(filename)
+        self.application.showsAlbumContent('Hallelujah (Chorus)')
         self.application.showsAlbumMetadata(
             releaseName='Messiah',
             leadPerformer='The Sixteen - Harry Christophers')

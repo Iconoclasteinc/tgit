@@ -42,6 +42,7 @@ class MainWindowTest(BaseWidgetTest):
     def createDriverFor(self, widget):
         return TaggerDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
+    @unittest.skip("wip")
     def testMakesRequestToAddTrackToAlbumWhenTrackFileIsSelectedUsingImportDialog(self):
         trackFile = resources.path("Hallelujah.mp3")
         importRequest = ValueMatcherProbe(equal_to(trackFile), "request to import track")
@@ -54,11 +55,14 @@ class MainWindowTest(BaseWidgetTest):
         self.driver.importTrack(trackFile)
         self.driver.check(importRequest)
 
-    def testCanNavigateBetweenAlbumAndTrackPanels(self):
+    @unittest.skip("wip")
+    def testCanNavigateBetweenPanels(self):
         self.mainWindow.trackSelected(buildTrack())
-        self.driver.nextStep()
-        self.driver.previousStep()
-        self.driver.nextStep()
+        self.driver.navigateToAlbumMetadata()
+        self.driver.navigateToTrackMetadata()
+        self.driver.backToAlbumMetadata()
+        self.driver.backToAlbumManagement()
+        self.driver.navigateToAlbumMetadata()
 
     @unittest.skip("todo")
     def testHasNothingToShowWhenTrackHasNoMetadata(self):
@@ -83,7 +87,7 @@ class MainWindowTest(BaseWidgetTest):
         self.mainWindow.addMusicDirector(DetectSaveTrack())
         self.mainWindow.trackSelected(buildTrack())
         self.driver.editAlbumMetadata(**modifications)
-        self.driver.nextStep()
+        self.driver.navigateToTrackMetadata()
         self.driver.editTrackMetadata(**modifications)
         self.driver.saveTrack()
         self.driver.check(saveRequest)

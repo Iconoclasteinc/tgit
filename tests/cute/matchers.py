@@ -23,6 +23,10 @@ def withPixmapWidth(width):
     return with_(properties.pixmapWidth(), equal_to(width))
 
 
+def withLabelText(text):
+    return with_(properties.labelText(), equal_to(text))
+
+
 def withButtonText(text):
     return with_(properties.buttonText(), equal_to(text))
 
