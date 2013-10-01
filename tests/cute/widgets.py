@@ -126,7 +126,7 @@ class LineEditDriver(WidgetDriver):
 
 
 class FileDialogDriver(WidgetDriver):
-    NAVIGATION_DELAY = 100
+    NAVIGATION_DELAY = 50
 
     def showHiddenFiles(self):
         class ShowHiddenFiles(object):

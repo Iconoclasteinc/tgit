@@ -11,6 +11,7 @@ from tests.drivers.track_panel_driver import TrackPanelDriver
 import tgit.ui.main_window as main
 import tgit.ui.album_panel as album
 import tgit.ui.track_panel as track
+import tgit.ui.album_content_panel as content
 
 DURATION = 'duration'
 BITRATE = 'bitrate'
@@ -48,7 +49,7 @@ class TaggerDriver(MainWindowDriver):
         self._previousStepButton().isDisabled()
 
     def _albumManagementPanel(self):
-        return WidgetDriver.find(self, QWidget, named('Album Management Panel'))
+        return WidgetDriver.find(self, QWidget, named(content.ALBUM_CONTENT_PANEL_NAME))
 
     def showsAlbumContains(self, trackTitle):
         albumContent = self._albumManagementPanel()

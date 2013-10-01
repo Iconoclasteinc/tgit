@@ -21,7 +21,7 @@ from PyQt4.QtCore import (QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenuBar, QMenu, QAction, QStatusBar, QGridLayout,
                          QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog)
 
-from tgit.ui.album_management_panel import AlbumManagementPanel
+from tgit.ui.album_content_panel import AlbumContentPanel
 from tgit.ui.album_panel import AlbumPanel
 from tgit.ui.track_panel import TrackPanel
 
@@ -85,7 +85,7 @@ class MainWindow(QMainWindow):
         self._buttonBar.setLayout(layout)
         self._previousStepButton = QPushButton()
         self._previousStepButton.setObjectName(PREVIOUS_STEP_BUTTON_NAME)
-        self._previousStepButton.clicked.connect(self._showAlbumManagementPanel)
+        self._previousStepButton.clicked.connect(self._showAlbumContentPanel)
         layout.addWidget(self._previousStepButton)
         self._saveButton = QPushButton()
         self._saveButton.setObjectName(SAVE_BUTTON_NAME)
@@ -110,13 +110,14 @@ class MainWindow(QMainWindow):
     def trackSelected(self, track):
         self._track = track
         # todo should panels really be responsible for maintaining edition state?
+        self._albumContentPanel.setTrack(self._track)
         self._albumPanel.setTrack(self._track)
         self._trackPanel.setTrack(self._track)
-        self._showAlbumManagementPanel()
+        self._showAlbumContentPanel()
         self.setCentralWidget(self._mainPanel)
 
-    def _showAlbumManagementPanel(self):
-        self._albumManagementPanel.show()
+    def _showAlbumContentPanel(self):
+        self._albumContentPanel.show()
         self._albumPanel.hide()
         self._trackPanel.hide()
         # todo is disconnecting/reconnecting the way to go or can we find a better alternative?
@@ -129,8 +130,8 @@ class MainWindow(QMainWindow):
     def _makeMainPanel(self):
         self._mainPanel = QWidget()
         layout = QVBoxLayout()
-        self._albumManagementPanel = AlbumManagementPanel()
-        layout.addWidget(self._albumManagementPanel)
+        self._albumContentPanel = AlbumContentPanel()
+        layout.addWidget(self._albumContentPanel)
         self._albumPanel = AlbumPanel()
         layout.addWidget(self._albumPanel)
         self._trackPanel = TrackPanel()
@@ -142,14 +143,14 @@ class MainWindow(QMainWindow):
         self._mainPanel.setLayout(layout)
 
     def _showAlbumPanel(self):
-        self._albumManagementPanel.hide()
+        self._albumContentPanel.hide()
         self._trackPanel.hide()
         self._albumPanel.show()
         self._nextStepButton.clicked.disconnect()
         self._nextStepButton.clicked.connect(self._showTrackPanel)
         self._nextStepButton.setEnabled(True)
         self._previousStepButton.clicked.disconnect()
-        self._previousStepButton.clicked.connect(self._showAlbumManagementPanel)
+        self._previousStepButton.clicked.connect(self._showAlbumContentPanel)
         self._previousStepButton.setEnabled(True)
 
     def _showTrackPanel(self):
