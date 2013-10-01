@@ -62,7 +62,10 @@ class Robot(object):
         return self._widgetAt(QCursor.pos().x(), QCursor.pos().y())
 
     def _widgetAt(self, x, y):
-        return QApplication.widgetAt(x, y)
+        widget = QApplication.widgetAt(x, y)
+        if not widget:
+            raise AssertionError("No widget at screen position (%d, %d)" % (x, y))
+        return widget
 
     def _cursorRelativePositionTo(self, target):
         return self._relativePosition(target, QCursor.pos())
