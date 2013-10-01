@@ -88,6 +88,12 @@ class AbstractButtonDriver(WidgetDriver):
     def click(self):
         return self.leftClickOnWidget()
 
+    def isUp(self):
+        self.is_(match.unchecked())
+
+    def isDown(self):
+        self.is_(match.checked())
+
 
 class LabelDriver(WidgetDriver):
     def hasText(self, matcher):

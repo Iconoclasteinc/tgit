@@ -21,7 +21,7 @@ import sys
 from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
-import tgit.resources
+from tgit.audio_player import PhononPlayer
 from tgit.mp3 import MP3File
 from tgit.ui.main_window import MainWindow
 
@@ -33,7 +33,7 @@ class TGiT(QApplication):
         QApplication.__init__(self, [])
         self._translators = []
         self.setLocale(locale)
-        self._ui = MainWindow()
+        self._ui = MainWindow(PhononPlayer())
         self._ui.addMusicDirector(MusicDirector(self._ui))
 
     def setLocale(self, locale):

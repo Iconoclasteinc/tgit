@@ -1,0 +1,68 @@
+# -*- coding: utf-8 -*-
+#
+# TGiT, Music Tagger for Professionals
+# Copyright (C) 2013 Iconoclaste Musique Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+from PyQt4.QtGui import QWidget
+from PyQt4.phonon import Phonon
+
+
+def null():
+    return NullAudio()
+
+
+class NullAudio(object):
+    def hasSource(self):
+        return False
+
+    def setSource(self, filename):
+        pass
+
+    def isPlaying(self):
+        return False
+
+    def play(self):
+        pass
+
+    def pause(self):
+        pass
+
+    def slider(self):
+        return QWidget()
+
+
+class PhononPlayer(object):
+    def __init__(self):
+        self._media = Phonon.createPlayer(Phonon.MusicCategory)
+
+    def setSource(self, filename):
+        self._media.setCurrentSource(Phonon.MediaSource(filename))
+
+    def hasSource(self):
+        return self._media.currentSource().fileName() != ''
+
+    def isPlaying(self):
+        return self._media.state() == Phonon.PlayingState
+
+    def play(self):
+        self._media.play()
+
+    def pause(self):
+        self._media.pause()
+
+    def slider(self):
+        return Phonon.SeekSlider(self._media)

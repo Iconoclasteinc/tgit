@@ -17,7 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtGui import QWidget, QGridLayout, QLabel
+import functools
+from PyQt4.QtGui import QWidget, QGridLayout, QLabel, QPushButton
+
+from tgit import audio_player as audio
 
 ALBUM_CONTENT_PANEL_NAME = 'Album Content Panel'
 TRACK_TITLE_HEADER_NAME = 'Track Title Column Header'
@@ -31,12 +34,13 @@ def asDuration(seconds):
 
 
 class AlbumContentPanel(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, player=audio.null(), parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
         self._layout = QGridLayout()
         self.setLayout(self._layout)
         self._fill(self._layout)
+        self._player = player
 
     def _fill(self, layout):
         self._addColumnHeadings(layout)
@@ -56,3 +60,17 @@ class AlbumContentPanel(QWidget):
         self._layout.addWidget(title, 1, 0)
         duration = QLabel(asDuration(track.duration))
         self._layout.addWidget(duration, 1, 1)
+        button = QPushButton()
+        button.setText(self.tr('Play'))
+        button.setCheckable(True)
+        button.clicked.connect(functools.partial(self._playOrPauseTrack, track.filename))
+        self._layout.addWidget(button, 1, 2)
+        self._layout.addWidget(self._player.slider(), 1, 3)
+
+    def _playOrPauseTrack(self, filename):
+        if not self._player.hasSource():
+            self._player.setSource(filename)
+        if self._player.isPlaying():
+            self._player.pause()
+        else:
+            self._player.play()

@@ -18,7 +18,8 @@ from tgit.ui.main_window import MainWindow
 
 
 def buildTrack(**tags):
-    defaults = dict(releaseName=None,
+    defaults = dict(filename='',
+                    releaseName=None,
                     frontCoverPicture=(None, None),
                     leadPerformer=None,
                     releaseDate=None,

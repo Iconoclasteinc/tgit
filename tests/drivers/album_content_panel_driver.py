@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel
+from PyQt4.QtGui import QLabel, QPushButton
 from hamcrest.library import contains_string
 
 from tgit.ui import album_content_panel as ui
 
-from tests.cute.widgets import WidgetDriver, LabelDriver
-from tests.cute.matchers import named, withLabelText
+from tests.cute.widgets import WidgetDriver, LabelDriver, AbstractButtonDriver
+from tests.cute.matchers import named, withLabelText, withButtonText
 
 
 class AlbumContentPanelDriver(WidgetDriver):
@@ -33,3 +33,20 @@ class AlbumContentPanelDriver(WidgetDriver):
     def showsColumnHeadings(self, title, duration):
         self.showsTitleHeader(title)
         self.showsDurationHeader(duration)
+
+    def playTrack(self):
+        button = self._locatePlayButton()
+        button.isUp()
+        button.click()
+        button.isDown()
+
+    def _locatePlayButton(self):
+        button = AbstractButtonDriver.find(self, QPushButton, withButtonText('Play'))
+        button.isShowingOnScreen()
+        return button
+
+    def pauseTrack(self):
+        button = self._locatePlayButton()
+        button.isDown()
+        button.click()
+        button.isUp()

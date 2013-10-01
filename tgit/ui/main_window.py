@@ -21,6 +21,7 @@ from PyQt4.QtCore import (QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenuBar, QMenu, QAction, QStatusBar, QGridLayout,
                          QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog)
 
+from tgit import audio_player as audio
 from tgit.ui.album_content_panel import AlbumContentPanel
 from tgit.ui.album_panel import AlbumPanel
 from tgit.ui.track_panel import TrackPanel
@@ -34,9 +35,10 @@ SAVE_BUTTON_NAME = "Save"
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, ):
+    def __init__(self, player=audio.null()):
         QMainWindow.__init__(self)
         self._musicDirector = None
+        self._player = player
         self._setupUi()
         self.show()
         self.raise_()
@@ -130,7 +132,7 @@ class MainWindow(QMainWindow):
     def _makeMainPanel(self):
         self._mainPanel = QWidget()
         layout = QVBoxLayout()
-        self._albumContentPanel = AlbumContentPanel()
+        self._albumContentPanel = AlbumContentPanel(self._player)
         layout.addWidget(self._albumContentPanel)
         self._albumPanel = AlbumPanel()
         layout.addWidget(self._albumPanel)

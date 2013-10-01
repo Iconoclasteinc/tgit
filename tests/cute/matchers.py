@@ -55,6 +55,14 @@ def disabled():
     return StateMatcher(lambda w: not w.isEnabled(), "disabled", "enabled")
 
 
+def checked():
+    return StateMatcher(lambda b: b.isChecked(), "checked", "unchecked")
+
+
+def unchecked():
+    return StateMatcher(lambda b: not b.isChecked(), "unchecked", "checked")
+
+
 class QueryResultMatcher(BaseMatcher):
     def __init__(self, query, matcher):
         super(BaseMatcher, self).__init__()
