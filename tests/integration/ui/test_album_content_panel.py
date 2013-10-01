@@ -12,14 +12,7 @@ from tgit.ui.album_content_panel import AlbumContentPanel
 from tests.integration.ui.base_widget_test import BaseWidgetTest
 from tests.cute.finders import WidgetIdentity
 from tests.drivers.album_content_panel_driver import AlbumContentPanelDriver
-
-
-# todo extract that to a builders module
-def buildTrack(**tags):
-    defaults = dict(filename='track.mp3',
-                    trackTitle=None,
-                    duration=timedelta(minutes=3, seconds=30).total_seconds())
-    return flexmock(**dict(defaults.items() + tags.items()))
+from tests.util import doubles
 
 
 class FakePlayer(object):
@@ -63,12 +56,12 @@ class AlbumContentPanelTest(BaseWidgetTest):
         self.driver.showsColumnHeadings('Track Title', 'Duration')
 
     def testDisplaysTrackTitle(self):
-        track = buildTrack(trackTitle='Banana Song')
+        track = doubles.track(trackTitle='Banana Song')
         self.panel.setTrack(track)
         self.driver.showsTrackTitle('Banana Song')
 
     def testDisplaysTrackDuration(self):
-        track = buildTrack(duration=timedelta(minutes=3, seconds=43).total_seconds())
+        track = doubles.track(duration=timedelta(minutes=3, seconds=43).total_seconds())
         self.panel.setTrack(track)
         self.driver.showsTrackDuration('03:43')
 
@@ -78,6 +71,6 @@ class AlbumContentPanelTest(BaseWidgetTest):
         self.player.should_call('play').once().when(lambda: not self.player.isPlaying())
         self.player.should_call('pause').once().when(lambda: self.player.isPlaying())
 
-        self.panel.setTrack(buildTrack(filename='track.mp3'))
+        self.panel.setTrack(doubles.track(filename='track.mp3'))
         self.driver.playTrack()
         self.driver.pauseTrack()
