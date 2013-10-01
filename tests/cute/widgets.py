@@ -3,6 +3,7 @@
 from PyQt4.Qt import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                       QToolButton, QDir, QFileDialog)
 from hamcrest.core import all_of, equal_to
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from tests.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
                                WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe)
@@ -89,8 +90,8 @@ class AbstractButtonDriver(WidgetDriver):
 
 
 class LabelDriver(WidgetDriver):
-    def hasText(self, text):
-        self.has(properties.labelText(), equal_to(text))
+    def hasText(self, matcher):
+        self.has(properties.labelText(), wrap_matcher(matcher))
 
     def hasPixmap(self, matcher):
         self.has(properties.labelPixmap(), matcher)

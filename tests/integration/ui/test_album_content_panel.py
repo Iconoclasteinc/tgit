@@ -10,17 +10,7 @@ from tgit.ui.album_content_panel import AlbumContentPanel
 
 # todo extract that to a builders module
 def buildTrack(**tags):
-    defaults = dict(releaseName=None,
-                    frontCoverPicture=(None, None),
-                    leadPerformer=None,
-                    releaseDate=None,
-                    upc=None,
-                    trackTitle=None,
-                    versionInfo=None,
-                    featuredGuest=None,
-                    isrc=None,
-                    bitrate=96000,
-                    duration=200)
+    defaults = dict(trackTitle=None)
     return flexmock(**dict(defaults.items() + tags.items()))
 
 
@@ -35,6 +25,9 @@ class AlbumContentPanelTest(BaseWidgetTest):
         return AlbumContentPanelDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysTrackTitle(self):
-        track = buildTrack(trackTitle='Track Title')
+        track = buildTrack(trackTitle='Banana Song')
         self.panel.setTrack(track)
-        self.driver.showsTrackTitle('Track Title')
+        self.driver.showsTrackTitle('Banana Song')
+
+    def testDisplaysTrackTitle(self):
+        self.driver.showsColumnHeadings('Track Title')

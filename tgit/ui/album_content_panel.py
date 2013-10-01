@@ -20,27 +20,26 @@
 from PyQt4.QtGui import QWidget, QGridLayout, QLabel
 
 ALBUM_CONTENT_PANEL_NAME = 'Album Content Panel'
-ALBUM_TRACK_TITLE_NAME = 'Album Track Title'
+TRACK_TITLE_HEADER_NAME = 'Track Title Column Header'
 
 
 class AlbumContentPanel(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
-        layout = QGridLayout()
-        self.setLayout(layout)
-        self._fill(layout)
-
-        self._track = None
+        self._layout = QGridLayout()
+        self.setLayout(self._layout)
+        self._fill(self._layout)
 
     def _fill(self, layout):
-        self._addTrackTitle(layout, 0)
+        self._addColumnHeadings(layout)
 
-    def _addTrackTitle(self, layout, row):
-        self._trackTitleLabel = QLabel()
-        self._trackTitleLabel.setObjectName(ALBUM_TRACK_TITLE_NAME)
-        layout.addWidget(self._trackTitleLabel, row, 0)
+    def _addColumnHeadings(self, layout):
+        trackTitleHeading = QLabel()
+        trackTitleHeading.setText('<strong>%s</strong>' % self.tr('Track Title<strong>'))
+        trackTitleHeading.setObjectName(TRACK_TITLE_HEADER_NAME)
+        layout.addWidget(trackTitleHeading, 0, 0)
 
     def setTrack(self, track):
-        self._track = track
-        self._trackTitleLabel.setText(self._track.trackTitle)
+        label = QLabel(track.trackTitle)
+        self._layout.addWidget(label, 1, 0)
