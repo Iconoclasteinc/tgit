@@ -3,8 +3,8 @@
 import unittest
 from hamcrest import assert_that, is_, equal_to, has_properties
 
-from tests.util.mp3_builder import MP3, mp3Sample, readContent
-from tests.util import resources
+from tests.util.mp3_maker import MP3, mp3Sample
+from tests.util import resources, fs
 from tgit.mp3 import MP3File
 
 
@@ -13,7 +13,7 @@ class MP3FileTest(unittest.TestCase):
         self._audioFile.delete()
 
     def makeMp3(self, **tags):
-        self._audioFile = MP3(mp3Sample.path, **tags)
+        self._audioFile = MP3(mp3Sample.path, **tags).make()
         return self._audioFile.name
 
     def testIgnoresMissingTags(self):
@@ -44,7 +44,7 @@ class MP3FileTest(unittest.TestCase):
         mime, data = mp3.frontCoverPicture
         assert_that(mime, equal_to('image/jpeg'), "front cover mime type")
         assert_that(len(data),
-                    equal_to(len(readContent(resources.path("front-cover.jpg")))),
+                    equal_to(len(fs.readContent(resources.path("front-cover.jpg")))),
                     "front cover picture size in bytes")
 
     def testDoesNotConfuseFrontCoverWithOtherPictureTypes(self):
@@ -88,7 +88,7 @@ class MP3FileTest(unittest.TestCase):
     def testCanSaveAndReloadMetadataInFile(self):
         mp3 = MP3File(self.makeMp3())
         mp3.releaseName = u"Release Name"
-        mp3.frontCoverPicture = 'image/jpeg', readContent(resources.path("salers.jpg"))
+        mp3.frontCoverPicture = 'image/jpeg', fs.readContent(resources.path("salers.jpg"))
         mp3.leadPerformer = u"Lead Performer"
         mp3.releaseDate = u"2013-12-01"
         mp3.upc = u"987654321111"

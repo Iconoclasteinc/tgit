@@ -4,7 +4,7 @@ import mimetypes
 
 from hamcrest import *
 
-from tests.util.mp3_builder import MP3
+from tests.util.mp3_maker import MP3
 
 from tgit.mp3 import MP3File
 

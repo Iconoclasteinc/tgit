@@ -1,48 +1,31 @@
 # -*- coding: utf-8 -*-
 
 import os
-import shutil
-import tempfile
 import mutagen.mp3 as mp3
 import mutagen.id3 as id3
 
-import resources
+import resources , fs
 
 
-class Sample(object):
+class MP3Sample(object):
     pass
 
 
-mp3Sample = Sample()
+mp3Sample = MP3Sample()
 mp3Sample.path = resources.path("base.mp3")
 mp3Sample.bitrate = 320000
 mp3Sample.duration = 9.064475
 mp3Sample.durationAsText = "00:09"
 
 
-# todo move to a file related utilities module
-def readContent(filename):
-    return open(filename, "rb").read()
-
-
-# todo move to a file related utilities module
-def makeCopy(originalFile):
-    workingFile, path = tempfile.mkstemp(suffix='.mp3')
-    try:
-        shutil.copy(originalFile, path)
-    finally:
-        os.close(workingFile)
-    return path
-
-
-def MP3(master, **tags):
-    return MP3Builder(makeCopy(master)).withTags(**tags)
+def MP3(master=mp3Sample.path, **tags):
+    return MP3Maker(fs.makeCopy(master)).withTags(**tags)
 
 
 UTF_8 = 3
 
 
-class MP3Builder(object):
+class MP3Maker(object):
     def __init__(self, path):
         self._file = path
         self._mp3 = mp3.MP3(self._file)
@@ -84,8 +67,10 @@ class MP3Builder(object):
         if 'isrc' in tags:
             self._mp3.tags.add(id3.TSRC(encoding=UTF_8, text=tags['isrc']))
 
+    def make(self):
         self._mp3.save()
+        return self
 
     def _attachPicture(self, type_, mime, desc, data):
-        self._mp3.tags.add(id3.APIC(UTF_8, mime, type_, desc, readContent(data)))
+        self._mp3.tags.add(id3.APIC(UTF_8, mime, type_, desc, fs.readContent(data)))
 
