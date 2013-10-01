@@ -21,6 +21,13 @@ from PyQt4.QtGui import QWidget, QGridLayout, QLabel
 
 ALBUM_CONTENT_PANEL_NAME = 'Album Content Panel'
 TRACK_TITLE_HEADER_NAME = 'Track Title Column Header'
+TRACK_DURATION_HEADER_NAME = 'Track Duration Column Header'
+
+
+# todo Duplicates same function in TrackPanel. Where should it go?
+# (back to MP3File?, in a shared ui module? in the ui module itself?)
+def asDuration(seconds):
+    return "%02d:%02d" % divmod(round(seconds), 60)
 
 
 class AlbumContentPanel(QWidget):
@@ -35,11 +42,17 @@ class AlbumContentPanel(QWidget):
         self._addColumnHeadings(layout)
 
     def _addColumnHeadings(self, layout):
-        trackTitleHeading = QLabel()
-        trackTitleHeading.setText('<strong>%s</strong>' % self.tr('Track Title<strong>'))
-        trackTitleHeading.setObjectName(TRACK_TITLE_HEADER_NAME)
-        layout.addWidget(trackTitleHeading, 0, 0)
+        titleHeading = QLabel()
+        titleHeading.setText('<strong>%s</strong>' % self.tr('Track Title'))
+        titleHeading.setObjectName(TRACK_TITLE_HEADER_NAME)
+        layout.addWidget(titleHeading, 0, 0)
+        durationHeading = QLabel()
+        durationHeading.setText('<strong>%s</strong>' % self.tr('Duration'))
+        durationHeading.setObjectName(TRACK_DURATION_HEADER_NAME)
+        layout.addWidget(durationHeading, 0, 1)
 
     def setTrack(self, track):
-        label = QLabel(track.trackTitle)
-        self._layout.addWidget(label, 1, 0)
+        title = QLabel(track.trackTitle)
+        self._layout.addWidget(title, 1, 0)
+        duration = QLabel(asDuration(track.duration))
+        self._layout.addWidget(duration, 1, 1)
