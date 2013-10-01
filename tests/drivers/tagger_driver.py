@@ -47,6 +47,7 @@ class TaggerDriver(MainWindowDriver):
         self._albumManagementPanel().isShowingOnScreen()
         self._nextStepButton().isEnabled()
         self._previousStepButton().isDisabled()
+        self._saveButton().isDisabled()
 
     def _albumManagementPanel(self):
         return WidgetDriver.find(self, QWidget, named(content.ALBUM_CONTENT_PANEL_NAME))
@@ -74,6 +75,7 @@ class TaggerDriver(MainWindowDriver):
         self._albumPanel().isShowingOnScreen()
         self._nextStepButton().isEnabled()
         self._previousStepButton().isEnabled()
+        self._saveButton().isEnabled()
 
     def _albumPanel(self):
         return AlbumPanelDriver.find(self, QWidget, named(album.ALBUM_PANEL_NAME))
@@ -97,9 +99,10 @@ class TaggerDriver(MainWindowDriver):
         self._trackPanel().showsMetadata(**tags)
 
     def _isShowingTrackMetadataPanel(self):
+        self._trackPanel().isShowingOnScreen()
         self._previousStepButton().isEnabled()
         self._nextStepButton().isDisabled()
-        self._trackPanel().isShowingOnScreen()
+        self._saveButton().isEnabled()
 
     def navigateToTrackMetadata(self):
         self._nextStepButton().click()
@@ -119,6 +122,9 @@ class TaggerDriver(MainWindowDriver):
         if ISRC in tags:
             self._trackPanel().changeIsrc(tags[ISRC])
 
-    def saveTrack(self):
+    def _saveButton(self):
         button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
-        button.click()
+        return button
+
+    def saveTrack(self):
+        self._saveButton().click()

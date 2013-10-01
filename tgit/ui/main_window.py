@@ -126,8 +126,9 @@ class MainWindow(QMainWindow):
         # I don't think having multiple buttons is better
         self._nextStepButton.clicked.disconnect()
         self._nextStepButton.clicked.connect(self._showAlbumPanel)
-        self._nextStepButton.setEnabled(True)
+        self._saveButton.setDisabled(True)
         self._previousStepButton.setDisabled(True)
+        self._nextStepButton.setEnabled(True)
 
     def _makeMainPanel(self):
         self._mainPanel = QWidget()
@@ -148,20 +149,22 @@ class MainWindow(QMainWindow):
         self._albumContentPanel.hide()
         self._trackPanel.hide()
         self._albumPanel.show()
-        self._nextStepButton.clicked.disconnect()
-        self._nextStepButton.clicked.connect(self._showTrackPanel)
-        self._nextStepButton.setEnabled(True)
         self._previousStepButton.clicked.disconnect()
         self._previousStepButton.clicked.connect(self._showAlbumContentPanel)
         self._previousStepButton.setEnabled(True)
+        self._saveButton.setEnabled(True)
+        self._nextStepButton.clicked.disconnect()
+        self._nextStepButton.clicked.connect(self._showTrackPanel)
+        self._nextStepButton.setEnabled(True)
 
     def _showTrackPanel(self):
         self._albumPanel.hide()
         self._trackPanel.show()
-        self._nextStepButton.setDisabled(True)
         self._previousStepButton.clicked.disconnect()
         self._previousStepButton.clicked.connect(self._showAlbumPanel)
         self._previousStepButton.setEnabled(True)
+        self._saveButton.setEnabled(True)
+        self._nextStepButton.setDisabled(True)
 
     # todo Extract a WelcomePanel
     def _makeWelcomePanel(self):
