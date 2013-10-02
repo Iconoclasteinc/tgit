@@ -26,7 +26,7 @@ class MainWindowTest(BaseWidgetTest):
     def createDriverFor(self, widget):
         return TaggerDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testMakesRequestToAddTrackToAlbumWhenTrackFileIsSelectedUsingImportDialog(self):
+    def testImportsTrackToAlbumWhenAddTrackButtonIsClicked(self):
         trackFile = resources.path("Hallelujah.mp3")
         importRequest = ValueMatcherProbe(equal_to(trackFile), "request to import track")
 
@@ -35,8 +35,19 @@ class MainWindowTest(BaseWidgetTest):
                 importRequest.setReceivedValue(filename)
 
         self.mainWindow.addMusicDirector(DetectTrackImport())
-        self.driver.openImportTrackDialog()
-        self.driver.selectTrack(trackFile)
+        self.driver.addTrackToAlbum(trackFile)
+        self.driver.check(importRequest)
+
+    def testImportsTrackToAlbumWhenImportTrackMenuItemIsSelected(self):
+        trackFile = resources.path("Hallelujah.mp3")
+        importRequest = ValueMatcherProbe(equal_to(trackFile), "request to import track")
+
+        class DetectTrackImport(object):
+            def importTrack(self, filename):
+                importRequest.setReceivedValue(filename)
+
+        self.mainWindow.addMusicDirector(DetectTrackImport())
+        self.driver.importTrackThroughMenu(trackFile)
         self.driver.check(importRequest)
 
     def testCanNavigateBetweenPanels(self):

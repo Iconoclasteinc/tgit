@@ -2,8 +2,9 @@
 
 from PyQt4.QtCore import QDir
 from PyQt4.QtGui import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
-                         QToolButton, QFileDialog)
+                         QToolButton, QFileDialog, QMenu, QAction)
 from hamcrest import all_of, equal_to
+from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from tests.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
@@ -12,9 +13,16 @@ from tests.cute.finders import SingleWidgetFinder, TopLevelWidgetsFinder, Recurs
 from tests.cute import properties, gestures, keyboard_shortcuts as shortcuts, matchers as match
 
 
+def allTopLevelWidgets():
+    return TopLevelWidgetsFinder(QApplication.instance())
+
+
+def onlyWidget(ofType, matching):
+    return SingleWidgetFinder(RecursiveWidgetFinder(ofType, matching, allTopLevelWidgets()))
+
+
 def mainWindow(*matchers):
-    return SingleWidgetFinder(RecursiveWidgetFinder(QMainWindow, all_of(*matchers),
-                                                    TopLevelWidgetsFinder(QApplication.instance())))
+    return onlyWidget(QMainWindow, all_of(*matchers))
 
 
 class WidgetDriver(object):
@@ -36,7 +44,7 @@ class WidgetDriver(object):
         return self._gesturePerformer
 
     @classmethod
-    def find(cls, parent, widgetType, *matchers):
+    def findIn(cls, parent, widgetType, *matchers):
         return cls(SingleWidgetFinder(
                    RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector)),
                                          parent.prober, parent.gesturePerformer)
@@ -67,6 +75,9 @@ class WidgetDriver(object):
         self.check(probe)
         return probe.bounds.center()
 
+    def click(self):
+        return self.leftClickOnWidget()
+
     def leftClickOnWidget(self):
         self.isShowingOnScreen()
         self.perform(gestures.clickAt(self.widgetCenter()))
@@ -86,9 +97,6 @@ class MainWindowDriver(WidgetDriver):
 
 
 class AbstractButtonDriver(WidgetDriver):
-    def click(self):
-        return self.leftClickOnWidget()
-
     def isUp(self):
         self.is_(match.unchecked())
 
@@ -172,13 +180,14 @@ class FileDialogDriver(WidgetDriver):
         self.perform(gestures.mouseDoubleClick())
 
     def selectFile(self, name):
+        self.isShowingOnScreen()
         self._listView().selectItem(match.withListItemText(name))
 
     def upOneFolder(self):
         self._toolButtonNamed('toParentButton').click()
 
     def _toolButtonNamed(self, name):
-        return AbstractButtonDriver.find(self, QToolButton, match.named(name))
+        return AbstractButtonDriver.findIn(self, QToolButton, match.named(name))
 
     def enterManually(self, filename):
         self._filenameEdit().replaceAllText(filename)
@@ -187,10 +196,10 @@ class FileDialogDriver(WidgetDriver):
         self._acceptButton().click()
 
     def _listView(self):
-        return ListViewDriver.find(self, QListView, match.named('listView'))
+        return ListViewDriver.findIn(self, QListView, match.named('listView'))
 
     def _filenameEdit(self):
-        return LineEditDriver.find(self, QLineEdit, match.named("fileNameEdit"))
+        return LineEditDriver.findIn(self, QLineEdit, match.named("fileNameEdit"))
 
     def _acceptButton(self):
         class FindOutAcceptButtonText(object):
@@ -199,12 +208,12 @@ class FileDialogDriver(WidgetDriver):
 
         acceptButton = FindOutAcceptButtonText()
         self.manipulate("find out accept button text", acceptButton)
-        return AbstractButtonDriver.find(self, QPushButton, match.withButtonText(acceptButton.text))
+        return AbstractButtonDriver.findIn(self, QPushButton, match.withButtonText(acceptButton.text))
 
 
 class ListViewDriver(WidgetDriver):
-    def selectItem(self, matcher):
-        self._selectItem(self._indexOfFirstItemMatching(matcher))
+    def selectItem(self, matching):
+        self._selectItem(self._indexOfFirstItem(matching))
 
     def _selectItem(self, index):
         self._scrollItemToVisible(index)
@@ -223,13 +232,12 @@ class ListViewDriver(WidgetDriver):
         self.manipulate("calculate center of item", centerOfItem)
         return centerOfItem.pos
 
-    def _indexOfFirstItemMatching(self, matcher):
-        from hamcrest.core.base_matcher import BaseMatcher
-
-        class ItemMatcher(BaseMatcher):
+    def _indexOfFirstItem(self, matching):
+        class ContainingItem(BaseMatcher):
             def __init__(self, matcher):
-                super(ItemMatcher, self).__init__()
+                super(ContainingItem, self).__init__()
                 self._itemMatcher = matcher
+                self.foundAtIndex = None
 
             def _matches(self, listView):
                 model = listView.model()
@@ -238,7 +246,7 @@ class ListViewDriver(WidgetDriver):
                 for i in range(itemCount):
                     index = model.index(i, 0, root)
                     if self._itemMatcher.matches(index):
-                        self.index = index
+                        self.foundAtIndex = index
                         return True
 
                 return False
@@ -251,6 +259,98 @@ class ListViewDriver(WidgetDriver):
                 mismatch_description.append_text("was not containing ")
                 self._itemMatcher.describe_to(mismatch_description)
 
-        itemFound = ItemMatcher(matcher)
-        self.is_(itemFound)
-        return itemFound.index
+        containingItem = ContainingItem(matching)
+        self.is_(containingItem)
+        return containingItem.foundAtIndex
+
+
+class MenuBarDriver(WidgetDriver):
+    def menu(self, matching):
+        # We have to make sure the menu actually exists on the menu bar
+        # Checking that the menu is a child of the menu bar is not sufficient
+        self.hasMenu(matching)
+        return MenuDriver.findIn(self, QMenu, matching)
+
+    def hasMenu(self, matching):
+        class ContainingMenu(BaseMatcher):
+            def __init__(self, matcher):
+                super(ContainingMenu, self).__init__()
+                self._matcher = matcher
+
+            def _matches(self, menuBar):
+                for menu in [action.menu() for action in menuBar.actions()]:
+                    if self._matcher.matches(menu):
+                        return True
+                return False
+
+            def describe_to(self, description):
+                description.append_text('containing a menu ')
+                self._matcher.describe_to(description)
+
+            def describe_mismatch(self, item, mismatch_description):
+                mismatch_description.append_text("was not containing a menu ")
+                self._matcher.describe_to(mismatch_description)
+
+        self.is_(ContainingMenu(matching))
+
+
+class MenuDriver(WidgetDriver):
+    def open(self):
+        # QMenuBar on Mac OS X is a wrapper for using the system-wide menu bar
+        # so we cannot just click on it, we have to pop it up manually
+        def popup(menu):
+            menuBar = menu.parent()
+            menuTitleVisibleArea = menuBar.actionGeometry(menu.menuAction())
+            # We try to pop up the menu at a position that makes sense on all platforms
+            # i.e. just below the menu title
+            menu.popup(menuBar.mapToGlobal(menuTitleVisibleArea.bottomLeft()))
+        self.manipulate("open", popup)
+
+    def selectMenuItem(self, matching):
+        # We have to make sure the item menu actually exists in the menu
+        # Checking that the item is a child of the menu is not sufficient
+        self.hasMenuItem(matching)
+        menuItem = MenuItemDriver.findIn(self, QAction, matching)
+        menuItem.click()
+
+    def hasMenuItem(self, matching):
+        class ContainingMenuItem(BaseMatcher):
+            def __init__(self, matcher):
+                super(ContainingMenuItem, self).__init__()
+                self._matcher = matcher
+                self.action = None
+
+            def _matches(self, menu):
+                for action in menu.actions():
+                    if self._matcher.matches(action):
+                        self.action = action
+                        return True
+                return False
+
+            def describe_to(self, description):
+                description.append_text('containing an item ')
+                self._matcher.describe_to(description)
+
+            def describe_mismatch(self, item, mismatch_description):
+                mismatch_description.append_text("was not containing an item ")
+                self._matcher.describe_to(mismatch_description)
+
+        containingMenuItem = ContainingMenuItem(matching)
+        self.is_(containingMenuItem)
+        return containingMenuItem.action
+
+
+class MenuItemDriver(WidgetDriver):
+    def _centerOfItem(self):
+        class CalculateCenterOfItem(object):
+            def __call__(self, item):
+                menu = item.parent()
+                itemVisibleArea = menu.actionGeometry(item)
+                self.coordinates = menu.mapToGlobal(itemVisibleArea.center())
+
+        center = CalculateCenterOfItem()
+        self.manipulate("calculate center of item", center)
+        return center.coordinates
+
+    def click(self):
+        self.perform(gestures.mouseMove(self._centerOfItem()), gestures.mouseClick())

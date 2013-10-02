@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtCore import (QDir, QRect)
-from PyQt4.QtGui import (QWidget, QMainWindow, QMenuBar, QMenu, QAction, QStatusBar, QGridLayout,
+from PyQt4.QtGui import (QWidget, QMainWindow, QMenu, QAction, QStatusBar, QGridLayout,
                          QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog)
 
 from tgit import audio_player as audio
@@ -27,6 +27,8 @@ from tgit.ui.album_panel import AlbumPanel
 from tgit.ui.track_panel import TrackPanel
 
 MAIN_WINDOW_NAME = "TGiT"
+FILE_MENU_NAME = 'File Menu'
+IMPORT_TRACK_ACTION_NAME = 'Import Track Action'
 ADD_FILE_BUTTON_NAME = "Add File"
 IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 NEXT_STEP_BUTTON_NAME = "Next Step"
@@ -47,24 +49,25 @@ class MainWindow(QMainWindow):
     def _setupUi(self):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(640, 480)
+        self._makeImportFileDialog()
         self._fillMenu()
         self._makeStatusBar()
         # todo create dialog on the fly to speed up startup time
-        self._makeImportFileDialog()
         self._makeButtonBar()
         self._makeMainPanel()
         self.setCentralWidget(self._makeWelcomePanel())
         self.localizeUi()
 
     def _fillMenu(self):
-        menuBar = QMenuBar()
+        menuBar = self.menuBar()
         menuBar.setGeometry(QRect(0, 0, 469, 21))
-        self._quitMenu = QMenu(menuBar)
-        self._quitMenuItem = QAction(self._quitMenu)
-        self._quitMenuItem.triggered.connect(self.close)
-        self._quitMenu.addAction(self._quitMenuItem)
-        self.setMenuBar(menuBar)
-        menuBar.addAction(self._quitMenu.menuAction())
+        self._fileMenu = QMenu(menuBar)
+        self._fileMenu.setObjectName(FILE_MENU_NAME)
+        self._importAction = QAction(self._fileMenu)
+        self._importAction.setObjectName(IMPORT_TRACK_ACTION_NAME)
+        self._importAction.triggered.connect(self._addFileDialog.open)
+        self._fileMenu.addAction(self._importAction)
+        menuBar.addMenu(self._fileMenu)
 
     def _makeStatusBar(self):
         self.setStatusBar(QStatusBar())
@@ -179,9 +182,9 @@ class MainWindow(QMainWindow):
 
     def localizeUi(self):
         self.setWindowTitle(self.tr("TGiT"))
+        self._fileMenu.setTitle(self.tr('File'))
+        self._importAction.setText("Import File...")
         self._addFileButton.setText(self.tr("Add File..."))
-        self._quitMenu.setTitle(self.tr("Quit"))
-        self._quitMenuItem.setText(self.tr("Hit me to quit"))
         self._saveButton.setText(self.tr("Save"))
         self._previousStepButton.setText(self.tr("Previous"))
         self._nextStepButton.setText(self.tr("Next"))

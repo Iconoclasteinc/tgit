@@ -14,7 +14,7 @@ class AlbumContentPanelDriver(WidgetDriver):
         super(AlbumContentPanelDriver, self).__init__(selector, prober, gesturePerformer)
 
     def _showsLabel(self, title):
-        LabelDriver.find(self, QLabel, withLabelText(title)).isShowingOnScreen()
+        LabelDriver.findIn(self, QLabel, withLabelText(title)).isShowingOnScreen()
 
     def showsTrackTitle(self, title):
         self._showsLabel(title)
@@ -23,11 +23,11 @@ class AlbumContentPanelDriver(WidgetDriver):
         self._showsLabel(duration)
 
     def showsTitleHeader(self, title):
-        label = LabelDriver.find(self, QLabel, named(ui.TRACK_TITLE_HEADER_NAME))
+        label = LabelDriver.findIn(self, QLabel, named(ui.TRACK_TITLE_HEADER_NAME))
         label.hasText(contains_string(title))
 
     def showsDurationHeader(self, duration):
-        label = LabelDriver.find(self, QLabel, named(ui.TRACK_DURATION_HEADER_NAME))
+        label = LabelDriver.findIn(self, QLabel, named(ui.TRACK_DURATION_HEADER_NAME))
         label.hasText(contains_string(duration))
 
     def showsColumnHeadings(self, title, duration):
@@ -41,7 +41,7 @@ class AlbumContentPanelDriver(WidgetDriver):
         button.isDown()
 
     def _locatePlayButton(self):
-        button = AbstractButtonDriver.find(self, QPushButton, withButtonText('Play'))
+        button = AbstractButtonDriver.findIn(self, QPushButton, withButtonText('Play'))
         button.isShowingOnScreen()
         return button
 
