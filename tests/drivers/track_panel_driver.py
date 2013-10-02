@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 from PyQt4.QtGui import QLabel, QLineEdit
+
+import tgit.ui.track_panel as ui
 
 from tests.cute.matchers import named, withBuddy
 from tests.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver)
-
-import tgit.ui.track_panel as ui
 
 DURATION = 'duration'
 BITRATE = 'bitrate'

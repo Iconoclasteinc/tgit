@@ -1,17 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import sys
-from cx_Freeze import setup, Executable
+from setuptools import setup
 
-DATA_FILES = []
-
-# GUI applications require a different base on Windows (the default is for a
-# console application).
-base = None
-if sys.platform == "win32":
-    base = "Win32GUI"
-
-includes = ["sip", "atexit", "PyQt4"]
+import use_sip_api_v2 as sipApi
+sipApi.useVersion(sipApi.VERSION_2)
 
 setup(
     name='tgit',
@@ -22,11 +14,8 @@ setup(
     author_email='jr@iconoclaste.ca',
     version='0.3',
     test_suite='tests',
+    py_modules=['use_sip_api_v2'],
     packages=['tgit'],
-    scripts=[],
-    data_files=DATA_FILES,
-    options={"build_exe": {"includes": includes},
-             "bdist_mac": {"iconfile": 'tgit.icns'},
-             "bdist_dmg": {"volume_label": "TGiT"}},
-    executables=[Executable(script="tgit.py", icon="tgit.icns", base=base)]
+    scripts=['tgit.py'],
+    requires=['mutagen', 'PyQt4']
 )

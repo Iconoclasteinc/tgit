@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QWidget
-from hamcrest.core.core.isequal import equal_to
+from PyQt4.QtGui import QWidget
+from hamcrest import equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 
 from tests.cute import properties

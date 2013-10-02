@@ -17,8 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from mutagen.mp3 import MP3
-from mutagen import id3
+from mutagen import mp3, id3
 
 FEATURED_GUEST = 'Featured Guest'
 UPC = 'UPC'
@@ -29,7 +28,7 @@ UTF_8 = 3
 class MP3File(object):
     def __init__(self, filename):
         super(MP3File, self).__init__()
-        self._mp3 = MP3(filename)
+        self._mp3 = mp3.MP3(filename)
 
     @property
     def filename(self):

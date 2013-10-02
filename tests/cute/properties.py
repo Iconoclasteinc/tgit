@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import Qt, QObject, QLabel, QLineEdit, QAbstractButton, QPixmap
+from PyQt4.QtCore import Qt, QObject
+from PyQt4.QtGui import QLabel, QLineEdit, QAbstractButton, QPixmap
 
 from hamcrest.core.selfdescribing import SelfDescribing
 
@@ -57,5 +58,3 @@ class PropertyQuery(Query):
 
     def describe_to(self, description):
         description.append_text(self._propertyName)
-
-

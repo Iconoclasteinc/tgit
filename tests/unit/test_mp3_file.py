@@ -3,9 +3,10 @@
 import unittest
 from hamcrest import assert_that, is_, equal_to, has_properties
 
+from tgit.mp3 import MP3File
+
 from tests.util.mp3_maker import MP3, mp3Sample
 from tests.util import resources, fs
-from tgit.mp3 import MP3File
 
 
 class MP3FileTest(unittest.TestCase):

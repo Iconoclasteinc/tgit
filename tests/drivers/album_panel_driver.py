@@ -3,11 +3,11 @@
 import os
 from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog
 
+import tgit.ui.album_panel as ui
+
 from tests.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from tests.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, AbstractButtonDriver, 
                                 FileDialogDriver)
-
-import tgit.ui.album_panel as ui
 
 UPC = 'upc'
 RELEASE_DATE = 'releaseDate'

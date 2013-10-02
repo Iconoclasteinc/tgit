@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.QtGui import QLabel, QPushButton
-from hamcrest.library import contains_string
+from hamcrest import contains_string
 
 from tgit.ui import album_content_panel as ui
 

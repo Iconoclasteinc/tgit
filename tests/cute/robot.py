@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import (QCursor, QTest, QApplication, QPoint, Qt)
+from PyQt4.QtCore import Qt, QPoint
+from PyQt4.QtGui import QCursor, QApplication
+from PyQt4.QtTest import QTest
 
 from tests.cute.events import MainEventLoop
 

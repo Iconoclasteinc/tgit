@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from tests.util import fs
+from hamcrest import equal_to, contains, has_length
 
-from hamcrest.core import equal_to
-from hamcrest.library import contains, has_length
+from tests.util import fs
 
 
 def samePictureAs(filename):

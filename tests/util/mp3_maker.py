@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-import mutagen.mp3 as mp3
-import mutagen.id3 as id3
+from mutagen import mp3, id3
 
-import resources , fs
+import resources
+import fs
 
 
 class MP3Sample(object):

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest.core import equal_to
-from hamcrest.library import has_properties
+from hamcrest import equal_to, has_properties
 
 import use_sip_api_v2 as sipApi
 sipApi.useVersion(sipApi.VERSION_2)

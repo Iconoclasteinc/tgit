@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import os
-from PyQt4.Qt import QPushButton, QFileDialog, QWidget, QLabel
-from tests.cute.matchers import named, withLabelText
-from tests.cute.widgets import (MainWindowDriver, AbstractButtonDriver, FileDialogDriver,
-                                WidgetDriver, LabelDriver)
-from tests.drivers.album_panel_driver import AlbumPanelDriver
-from tests.drivers.track_panel_driver import TrackPanelDriver
+from PyQt4.QtGui import QPushButton, QFileDialog, QWidget, QLabel
 
 import tgit.ui.main_window as main
 import tgit.ui.album_panel as album
 import tgit.ui.track_panel as track
 import tgit.ui.album_content_panel as content
+
+from tests.cute.matchers import named, withLabelText
+from tests.cute.widgets import (MainWindowDriver, AbstractButtonDriver, FileDialogDriver,
+                                WidgetDriver, LabelDriver)
+from tests.drivers.album_panel_driver import AlbumPanelDriver
+from tests.drivers.track_panel_driver import TrackPanelDriver
 
 DURATION = 'duration'
 BITRATE = 'bitrate'
@@ -123,8 +124,7 @@ class TaggerDriver(MainWindowDriver):
             self._trackPanel().changeIsrc(tags[ISRC])
 
     def _saveButton(self):
-        button = AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
-        return button
+        return AbstractButtonDriver.find(self, QPushButton, named(main.SAVE_BUTTON_NAME))
 
     def saveTrack(self):
         self._saveButton().click()

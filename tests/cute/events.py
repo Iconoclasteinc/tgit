@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QTest, QCoreApplication, QEventLoop
+from PyQt4.QtCore import QCoreApplication, QEventLoop
+from PyQt4.QtTest import QTest
 
 
 class MainEventLoop(object):

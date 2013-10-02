@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
-                      QToolButton, QDir, QFileDialog)
-from hamcrest.core import all_of, equal_to
+from PyQt4.QtCore import QDir
+from PyQt4.QtGui import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
+                         QToolButton, QFileDialog)
+from hamcrest import all_of, equal_to
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from tests.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
@@ -253,7 +254,3 @@ class ListViewDriver(WidgetDriver):
         itemFound = ItemMatcher(matcher)
         self.is_(itemFound)
         return itemFound.index
-
-
-
-

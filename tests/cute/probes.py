@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.Qt import QPoint, QRect
+from PyQt4.QtCore import QPoint, QRect
+
 from tests.cute.prober import Probe
 
 
