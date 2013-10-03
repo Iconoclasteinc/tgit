@@ -42,7 +42,7 @@ class ApplicationRunner(object):
 
     def changeAlbumMetadata(self, **tags):
         self.tagger.editAlbumMetadata(**tags)
-        self.tagger.saveTrack()
+        self.tagger.saveAlbum()
 
     def showsTrackMetadata(self, **tags):
         self.tagger.navigateToTrackMetadata()
@@ -50,4 +50,4 @@ class ApplicationRunner(object):
 
     def changeTrackMetadata(self, **tags):
         self.tagger.editTrackMetadata(**tags)
-        self.tagger.saveTrack()
+        self.tagger.saveAlbum()

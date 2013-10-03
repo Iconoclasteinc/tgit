@@ -121,7 +121,7 @@ class TaggerDriver(MainWindowDriver):
         if ISRC in tags:
             self._currentTrackPanel().changeIsrc(tags[ISRC])
 
-    def saveTrack(self):
+    def saveAlbum(self):
         self._saveButton().click()
 
     def _menuBar(self):

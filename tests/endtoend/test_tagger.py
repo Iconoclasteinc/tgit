@@ -56,7 +56,6 @@ class TaggerTest(unittest.TestCase):
             featuredGuest='Stuart',
             frontCoverFile=resources.path("minions-in-black.jpg"))
 
-    @unittest.skip("wip")
     def testTaggingMultipleTracksFromTheSameAlbum(self):
         track1 = mp3(releaseName='Album Title', trackTitle='Track 1')
         track2 = mp3(releaseName='Album Title', trackTitle='Track 2')

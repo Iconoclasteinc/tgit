@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import unittest
-from hamcrest import equal_to, has_properties
+from hamcrest import equal_to, has_properties, has_items, only_contains
 
 import use_sip_api_v2 as sipApi
 sipApi.useVersion(sipApi.VERSION_2)
@@ -112,7 +111,7 @@ class MainWindowTest(BaseWidgetTest):
         self.mainWindow.trackImported(doubles.track(releaseName='Second Album'))
         self.tagger.showsAlbumMetadata(releaseName='First Album')
 
-    def testMakesRequestToSaveModifiedTrackWhenSaveButtonIsClicked(self):
+    def testSavesAllAlbumAndTrackMetadata(self):
         modifications = dict(releaseName='Release Name',
                              frontCoverPicture=resources.path("front-cover.jpg"),
                              leadPerformer='Lead Performer',
@@ -122,23 +121,49 @@ class MainWindowTest(BaseWidgetTest):
                              versionInfo='Version Info',
                              featuredGuest='Featured Guest',
                              isrc='AABB12345678')
-        saveRequest = ValueMatcherProbe(sameMetadataAs(**modifications), "request to save track")
+        trackIncludesAlbumAndTrackModifications = \
+            ValueMatcherProbe(only_contains(hasMetadata(**modifications)), "request to save track")
 
-        class DetectSaveTrack(object):
-            def saveTrack(self, track):
-                saveRequest.setReceivedValue(track)
+        class CaptureSaveRequest(object):
+            def saveAlbum(self, album):
+                trackIncludesAlbumAndTrackModifications.setReceivedValue(album)
 
-        self.mainWindow.addMusicDirector(DetectSaveTrack())
+        self.mainWindow.addMusicDirector(CaptureSaveRequest())
         self.mainWindow.trackImported(doubles.track())
-        self.tagger.navigateToAlbumMetadata()
+        self.tagger.nextStep()
         self.tagger.editAlbumMetadata(**modifications)
-        self.tagger.navigateToTrackMetadata()
+        self.tagger.nextStep()
         self.tagger.editTrackMetadata(**modifications)
-        self.tagger.saveTrack()
-        self.tagger.check(saveRequest)
+        self.tagger.saveAlbum()
+        self.tagger.check(trackIncludesAlbumAndTrackModifications)
+
+    def testSavesAllImportedTracks(self):
+            allTracksAreSaved = ValueMatcherProbe(has_items(
+                hasMetadata(releaseName='Album', trackTitle='Track 1'),
+                hasMetadata(releaseName='Album', trackTitle='Track 2'),
+                hasMetadata(releaseName='Album', trackTitle='Track 3')), "request to save album")
+
+            class CaptureSaveRequest(object):
+                def saveAlbum(self, album):
+                    allTracksAreSaved.setReceivedValue(album)
+
+            self.mainWindow.addMusicDirector(CaptureSaveRequest())
+            self.mainWindow.trackImported(doubles.track())
+            self.mainWindow.trackImported(doubles.track())
+            self.mainWindow.trackImported(doubles.track())
+            self.tagger.nextStep()
+            self.tagger.editAlbumMetadata(releaseName='Album')
+            self.tagger.nextStep()
+            self.tagger.editTrackMetadata(trackTitle='Track 1')
+            self.tagger.nextStep()
+            self.tagger.editTrackMetadata(trackTitle='Track 2')
+            self.tagger.nextStep()
+            self.tagger.editTrackMetadata(trackTitle='Track 3')
+            self.tagger.saveAlbum()
+            self.tagger.check(allTracksAreSaved)
 
 
-def sameMetadataAs(**tags):
+def hasMetadata(**tags):
     if 'frontCoverPicture' in tags:
         tags['frontCoverPicture'] = samePictureAs(tags['frontCoverPicture'])
     return has_properties(**tags)

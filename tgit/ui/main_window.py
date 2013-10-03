@@ -118,8 +118,8 @@ class MainWindow(QMainWindow):
     def _albumPanel(self):
         return self._pages.widget(ALBUM_PANEL)
 
-    def _trackPanel(self):
-        return self._pages.widget(TRACK_PANEL)
+    def _trackPanel(self, index):
+        return self._pages.widget(TRACK_PANEL + index)
 
     def addTrack(self, track):
         trackPanel = TrackPanel()
@@ -190,13 +190,16 @@ class MainWindow(QMainWindow):
         self._previousPageButton.setEnabled(True)
         self._saveButton.setEnabled(True)
 
+    def _updateAlbumWithMetadata(self):
+        for index, track in enumerate(self._tracks):
+            self._albumPanel().updateTrack(track)
+            self._trackPanel(index).updateTrack(track)
+
     def _saveAlbum(self):
-        track = self._tracks[0]
-        self._albumPanel().updateTrack(track)
-        self._trackPanel().updateTrack(track)
+        self._updateAlbumWithMetadata()
         # todo there should be a null implementation set by default
         if self._musicDirector:
-            self._musicDirector.saveTrack(track)
+            self._musicDirector.saveAlbum(self._tracks)
 
     # todo Extract a WelcomePanel
     def _makeWelcomePanel(self):
