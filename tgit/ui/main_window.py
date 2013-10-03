@@ -19,7 +19,7 @@
 
 from PyQt4.QtCore import (QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenu, QAction, QStatusBar, QGridLayout,
-                         QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog)
+                         QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QStackedWidget)
 
 from tgit import audio_player as audio
 from tgit.ui.album_content_panel import AlbumContentPanel
@@ -34,6 +34,10 @@ IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 NEXT_STEP_BUTTON_NAME = "Next Step"
 PREVIOUS_STEP_BUTTON_NAME = "Previous Step"
 SAVE_BUTTON_NAME = "Save"
+
+TRACK_LIST_PANEL = 0
+ALBUM_PANEL = 1
+TRACK_PANEL = 2
 
 
 class MainWindow(QMainWindow):
@@ -88,86 +92,96 @@ class MainWindow(QMainWindow):
         self._buttonBar = QWidget()
         layout = QHBoxLayout()
         self._buttonBar.setLayout(layout)
-        self._previousStepButton = QPushButton()
-        self._previousStepButton.setObjectName(PREVIOUS_STEP_BUTTON_NAME)
-        self._previousStepButton.clicked.connect(self._showAlbumContentPanel)
-        layout.addWidget(self._previousStepButton)
+        self._previousPageButton = QPushButton()
+        self._previousPageButton.setObjectName(PREVIOUS_STEP_BUTTON_NAME)
+        self._previousPageButton.clicked.connect(self._showPreviousPage)
+        self._previousPageButton.setDisabled(True)
+        layout.addWidget(self._previousPageButton)
         self._saveButton = QPushButton()
         self._saveButton.setObjectName(SAVE_BUTTON_NAME)
-        self._saveButton.clicked.connect(self._saveTrackFile)
+        self._saveButton.clicked.connect(self._saveAlbum)
+        self._saveButton.setDisabled(True)
         layout.addWidget(self._saveButton)
         self._nextStepButton = QPushButton()
         self._nextStepButton.setObjectName(NEXT_STEP_BUTTON_NAME)
-        self._nextStepButton.clicked.connect(self._showAlbumPanel)
+        self._nextStepButton.clicked.connect(self._showNextPage)
         layout.addWidget(self._nextStepButton)
-
-    def _saveTrackFile(self):
-        if self._albumPanel:
-            self._albumPanel.updateTrack(self._track)
-        if self._trackPanel:
-            self._trackPanel.updateTrack(self._track)
-        if self._musicDirector:
-            self._musicDirector.saveTrack(self._track)
 
     def addMusicDirector(self, director):
         self._musicDirector = director
 
+    def _trackListPanel(self):
+        return self._pages.widget(TRACK_LIST_PANEL)
+
+    def _albumPanel(self):
+        return self._pages.widget(ALBUM_PANEL)
+
+    def _trackPanel(self):
+        return self._pages.widget(TRACK_PANEL)
+
     def trackSelected(self, track):
         self._track = track
-        # todo should panels really be responsible for maintaining edition state?
-        self._albumContentPanel.addTrack(self._track)
-        self._albumPanel.setTrack(self._track)
-        self._trackPanel.setTrack(self._track)
-        self._showAlbumContentPanel()
+        self._trackListPanel().addTrack(self._track)
+        self._albumPanel().setTrack(self._track)
+        self._trackPanel().setTrack(self._track)
+        self._showPage(TRACK_LIST_PANEL)
         self.setCentralWidget(self._mainPanel)
-
-    def _showAlbumContentPanel(self):
-        self._albumContentPanel.show()
-        self._albumPanel.hide()
-        self._trackPanel.hide()
-        # todo is disconnecting/reconnecting the way to go or can we find a better alternative?
-        # I don't think having multiple buttons is better
-        self._nextStepButton.clicked.disconnect()
-        self._nextStepButton.clicked.connect(self._showAlbumPanel)
-        self._saveButton.setDisabled(True)
-        self._previousStepButton.setDisabled(True)
-        self._nextStepButton.setEnabled(True)
 
     def _makeMainPanel(self):
         self._mainPanel = QWidget()
         layout = QVBoxLayout()
-        self._albumContentPanel = AlbumContentPanel(self._player)
-        layout.addWidget(self._albumContentPanel)
-        self._albumPanel = AlbumPanel()
-        layout.addWidget(self._albumPanel)
-        self._trackPanel = TrackPanel()
-        layout.addWidget(self._trackPanel)
+        self._pages = QStackedWidget()
+        trackListPanel = AlbumContentPanel(self._player)
+        self._pages.addWidget(trackListPanel)
+        albumPanel = AlbumPanel()
+        self._pages.addWidget(albumPanel)
+        trackPanel = TrackPanel()
+        self._pages.addWidget(trackPanel)
+        layout.addWidget(self._pages)
         layout.addStretch()
-        self._previousStepButton.setDisabled(True)
+        self._previousPageButton.setDisabled(True)
         self._nextStepButton.setEnabled(True)
         layout.addWidget(self._buttonBar)
         self._mainPanel.setLayout(layout)
 
-    def _showAlbumPanel(self):
-        self._albumContentPanel.hide()
-        self._trackPanel.hide()
-        self._albumPanel.show()
-        self._previousStepButton.clicked.disconnect()
-        self._previousStepButton.clicked.connect(self._showAlbumContentPanel)
-        self._previousStepButton.setEnabled(True)
-        self._saveButton.setEnabled(True)
-        self._nextStepButton.clicked.disconnect()
-        self._nextStepButton.clicked.connect(self._showTrackPanel)
+    def _currentPage(self):
+        return self._pages.currentIndex()
+
+    def _onFirstPage(self):
+        return self._currentPage() == 0
+
+    def _onLastPage(self):
+        return self._currentPage() == self._pages.count() - 1
+
+    def _previousPage(self):
+        return self._currentPage() - 1
+
+    def _nextPage(self):
+        return self._currentPage() + 1
+
+    def _showPage(self, page):
+        self._pages.setCurrentIndex(page)
+
+    def _showPreviousPage(self):
+        self._showPage(self._previousPage())
+        if self._onFirstPage():
+            self._saveButton.setDisabled(True)
+            self._previousPageButton.setDisabled(True)
         self._nextStepButton.setEnabled(True)
 
-    def _showTrackPanel(self):
-        self._albumPanel.hide()
-        self._trackPanel.show()
-        self._previousStepButton.clicked.disconnect()
-        self._previousStepButton.clicked.connect(self._showAlbumPanel)
-        self._previousStepButton.setEnabled(True)
+    def _showNextPage(self):
+        self._showPage(self._nextPage())
+        if self._onLastPage():
+            self._nextStepButton.setDisabled(True)
+        self._previousPageButton.setEnabled(True)
         self._saveButton.setEnabled(True)
-        self._nextStepButton.setDisabled(True)
+
+    def _saveAlbum(self):
+        self._albumPanel().updateTrack(self._track)
+        self._trackPanel().updateTrack(self._track)
+        # todo there should be a null implementation set by default
+        if self._musicDirector:
+            self._musicDirector.saveTrack(self._track)
 
     # todo Extract a WelcomePanel
     def _makeWelcomePanel(self):
@@ -186,6 +200,6 @@ class MainWindow(QMainWindow):
         self._importAction.setText("Import File...")
         self._addFileButton.setText(self.tr("Add File..."))
         self._saveButton.setText(self.tr("Save"))
-        self._previousStepButton.setText(self.tr("Previous"))
+        self._previousPageButton.setText(self.tr("Previous"))
         self._nextStepButton.setText(self.tr("Next"))
         self._addFileDialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
