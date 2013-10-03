@@ -19,7 +19,7 @@ class BaseWidgetTest(unittest.TestCase):
         self.app = QApplication([])
         self.prober = EventProcessingProber(timeoutInMs=1000)
         self.gesturePerformer = Robot()
-        self.driver = None
+        self.tagger = None
 
     def view(self, widget):
         widget.show()
@@ -30,7 +30,7 @@ class BaseWidgetTest(unittest.TestCase):
 
     def tearDown(self):
         self.pause(END_OF_TEST_PAUSE)
-        if self.driver:
-            self.driver.close()
-            del self.driver
+        if self.tagger:
+            self.tagger.close()
+            del self.tagger
         del self.app

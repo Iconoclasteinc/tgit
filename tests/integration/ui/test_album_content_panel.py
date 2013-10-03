@@ -42,7 +42,7 @@ class AlbumContentPanelTest(BaseWidgetTest):
         self.player = flexmock(FakePlayer())
         self.panel = AlbumContentPanel(player=self.player)
         self.view(self.panel)
-        self.driver = self.createDriverFor(self.panel)
+        self.tagger = self.createDriverFor(self.panel)
 
     def tearDown(self):
         super(AlbumContentPanelTest, self).tearDown()
@@ -53,21 +53,21 @@ class AlbumContentPanelTest(BaseWidgetTest):
     @unittest.skip("we cannot rely on widgets order")
     # we need to use a proper table
     def testDisplaysColumnHeadings(self):
-        self.driver.showsColumnHeadings('Track Title', 'Duration')
+        self.tagger.showsColumnHeadings('Track Title', 'Duration')
 
     @unittest.skip("we cannot rely on widgets order")
     def testDisplaysTrackDetailsInColumns(self):
         track = doubles.track(trackTitle='Banana Song',
                               duration=timedelta(minutes=3, seconds=43).total_seconds())
         self.panel.addTrack(track)
-        self.driver.showsTrackDetails(1, 'Banana Song', '03:43')
+        self.tagger.showsTrackDetails(1, 'Banana Song', '03:43')
 
     @unittest.skip("we cannot rely on widgets order")
     def testDisplaysAllTracksInRows(self):
         self.panel.addTrack(doubles.track(trackTitle='Track 1'))
         self.panel.addTrack(doubles.track(trackTitle='Track 2'))
-        self.driver.showsTrackDetails(1, 'Track 1')
-        self.driver.showsTrackDetails(2, 'Track 2')
+        self.tagger.showsTrackDetails(1, 'Track 1')
+        self.tagger.showsTrackDetails(2, 'Track 2')
 
     def _notPlaying(self, track):
         return lambda: not self.player.hasSource(track)
@@ -83,9 +83,9 @@ class AlbumContentPanelTest(BaseWidgetTest):
         self.player.should_call('play').twice().when(lambda: not self.player.isPlaying())
         self.player.should_call('stop').once().when(lambda: self.player.isPlaying())
 
-        self.driver.playTrack(1)
-        self.driver.stopTrack(1)
-        self.driver.playTrack(1)
+        self.tagger.playTrack(1)
+        self.tagger.stopTrack(1)
+        self.tagger.playTrack(1)
 
     @unittest.skip("we cannot rely on widgets order")
     def testPlayingATrackStopsCurrentlyPlayingTrack(self):
@@ -96,9 +96,9 @@ class AlbumContentPanelTest(BaseWidgetTest):
         self.player.should_call('setSource').with_args('track2.mp3').ordered()
         self.player.should_call('play').twice().when(lambda: not self.player.isPlaying())
 
-        self.driver.playTrack(1)
-        self.driver.playButton(1).isDown()
+        self.tagger.playTrack(1)
+        self.tagger.playButton(1).isDown()
 #        self.driver.playButton(2).isUp()
-        self.driver.playTrack(2)
+        self.tagger.playTrack(2)
 #        self.driver.playButton(1).isUp()
-        self.driver.playButton(2).isDown()
+        self.tagger.playButton(2).isDown()

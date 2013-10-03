@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import unittest
+
 import use_sip_api_v2 as sipApi
 sipApi.useVersion(sipApi.VERSION_2)
 
@@ -20,6 +22,10 @@ class TrackPanelTest(BaseWidgetTest):
 
     def createDriverFor(self, widget):
         return TrackPanelDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+
+    @unittest.skip("todo")
+    def testHasNothingToShowWhenTrackHasNoMetadata(self):
+        raise AssertionError("Not yet implemented")
 
     def testDisplaysTrackTitle(self):
         track = doubles.track(trackTitle='Track Title')

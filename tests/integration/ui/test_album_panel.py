@@ -17,16 +17,20 @@ class AlbumPanelTest(BaseWidgetTest):
         super(AlbumPanelTest, self).setUp()
         self.albumPanel = AlbumPanel()
         self.view(self.albumPanel)
-        self.driver = self.createDriverFor(self.albumPanel)
+        self.tagger = self.createDriverFor(self.albumPanel)
 
     def createDriverFor(self, widget):
         return AlbumPanelDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+
+    @unittest.skip("todo")
+    def testHasNothingToShowWhenAlbumHasNoMetadata(self):
+        raise AssertionError("Not yet implemented")
 
     def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
         frontCover = ('image/jpeg', fs.readContent(resources.path("front-cover.jpg")))
         track = doubles.track(frontCoverPicture=frontCover)
         self.albumPanel.setTrack(track)
-        self.driver.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_DISPLAY_SIZE)
+        self.tagger.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_DISPLAY_SIZE)
 
     @unittest.skip("todo")
     def testLetsUserSelectAFrontCoverPicture(self):
@@ -35,19 +39,19 @@ class AlbumPanelTest(BaseWidgetTest):
     def testDisplaysReleaseName(self):
         track = doubles.track(releaseName='Release Name')
         self.albumPanel.setTrack(track)
-        self.driver.showsReleaseName('Release Name')
+        self.tagger.showsReleaseName('Release Name')
 
     def testDisplaysLeadPerformer(self):
         track = doubles.track(leadPerformer='Lead Performer')
         self.albumPanel.setTrack(track)
-        self.driver.showsLeadPerformer('Lead Performer')
+        self.tagger.showsLeadPerformer('Lead Performer')
 
     def testDisplaysReleaseDate(self):
         track = doubles.track(releaseDate='2009-08-05')
         self.albumPanel.setTrack(track)
-        self.driver.showsReleaseDate('2009-08-05')
+        self.tagger.showsReleaseDate('2009-08-05')
 
     def testDisplaysSelectedTrackAlbumUpc(self):
         track = doubles.track(upc='1234567899999')
         self.albumPanel.setTrack(track)
-        self.driver.showsUpc('1234567899999')
+        self.tagger.showsUpc('1234567899999')

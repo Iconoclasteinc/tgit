@@ -37,6 +37,7 @@ class ApplicationRunner(object):
         self.tagger.showsAlbumContains(*tracks)
 
     def showsAlbumMetadata(self, **tags):
+        self.tagger.navigateToAlbumMetadata()
         self.tagger.showsAlbumMetadata(**tags)
 
     def changeAlbumMetadata(self, **tags):
@@ -44,6 +45,7 @@ class ApplicationRunner(object):
         self.tagger.saveTrack()
 
     def showsTrackMetadata(self, **tags):
+        self.tagger.navigateToTrackMetadata()
         self.tagger.showsTrackMetadata(**tags)
 
     def changeTrackMetadata(self, **tags):

@@ -57,7 +57,7 @@ class MusicDirector(object):
 
     def importTrack(self, filename):
         track = MP3File(filename)
-        self._ui.trackSelected(track)
+        self._ui.trackImported(track)
 
     def saveTrack(self, track):
         track.save()

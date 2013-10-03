@@ -45,6 +45,8 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self._musicDirector = None
         self._player = player
+        # It's surprising that we still don't have (need?) an album concept
+        self._tracks = []
         self._setupUi()
         self.show()
         self.raise_()
@@ -119,13 +121,27 @@ class MainWindow(QMainWindow):
     def _trackPanel(self):
         return self._pages.widget(TRACK_PANEL)
 
-    def trackSelected(self, track):
-        self._track = track
-        self._trackListPanel().addTrack(self._track)
-        self._albumPanel().setTrack(self._track)
-        self._trackPanel().setTrack(self._track)
-        self._showPage(TRACK_LIST_PANEL)
-        self.setCentralWidget(self._mainPanel)
+    def addTrack(self, track):
+        trackPanel = TrackPanel()
+        trackPanel.setTrack(track)
+        self._pages.addWidget(trackPanel)
+        self._tracks.append(track)
+
+    def trackImported(self, track):
+        self._trackListPanel().addTrack(track)
+
+        if self._albumEmpty():
+            self._showPage(TRACK_LIST_PANEL)
+            self._albumPanel().setTrack(track)
+            self.setCentralWidget(self._mainPanel)
+
+        if self._onLastPage():
+            self._nextStepButton.setEnabled(True)
+
+        self.addTrack(track)
+
+    def _albumEmpty(self):
+        return not self._tracks
 
     def _makeMainPanel(self):
         self._mainPanel = QWidget()
@@ -135,8 +151,6 @@ class MainWindow(QMainWindow):
         self._pages.addWidget(trackListPanel)
         albumPanel = AlbumPanel()
         self._pages.addWidget(albumPanel)
-        trackPanel = TrackPanel()
-        self._pages.addWidget(trackPanel)
         layout.addWidget(self._pages)
         layout.addStretch()
         self._previousPageButton.setDisabled(True)
@@ -177,11 +191,12 @@ class MainWindow(QMainWindow):
         self._saveButton.setEnabled(True)
 
     def _saveAlbum(self):
-        self._albumPanel().updateTrack(self._track)
-        self._trackPanel().updateTrack(self._track)
+        track = self._tracks[0]
+        self._albumPanel().updateTrack(track)
+        self._trackPanel().updateTrack(track)
         # todo there should be a null implementation set by default
         if self._musicDirector:
-            self._musicDirector.saveTrack(self._track)
+            self._musicDirector.saveTrack(track)
 
     # todo Extract a WelcomePanel
     def _makeWelcomePanel(self):

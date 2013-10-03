@@ -154,17 +154,16 @@ class NthWidgetFinder(WidgetSelector):
     def widget(self):
         return self.widgets()[0]
 
-     # This expects the parent finder to describe how many were actually found.
     def describeFailureTo(self, description):
         self._parentFinder.describeFailureTo(description)
         if self.isSatisfied():
             description.append_text("\n    the ")
-            description.append_value(self._index + 1)
+            description.append_description_of(self._index + 1)
             description.append_text("th widget")
 
     def describeTo(self, description):
         description.append_text("the ")
-        description.append_value(self._index + 1)
+        description.append_description_of(self._index + 1)
         description.append_text("th widget from those matching ")
         description.append_description_of(self._parentFinder)
 
