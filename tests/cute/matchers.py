@@ -3,12 +3,13 @@
 from PyQt4.QtGui import QWidget
 from hamcrest import equal_to
 from hamcrest.core.base_matcher import BaseMatcher
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from tests.cute import properties
 
 
 def named(name):
-    return with_(properties.name(), equal_to(name))
+    return with_(properties.name(), wrap_matcher(name))
 
 
 def withBuddy(matcher):

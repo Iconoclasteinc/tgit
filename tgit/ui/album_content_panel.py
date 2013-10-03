@@ -18,11 +18,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import functools
-from PyQt4.QtGui import QWidget, QGridLayout, QLabel, QPushButton
+from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 
 from tgit import audio_player as audio
 
 ALBUM_CONTENT_PANEL_NAME = 'Album Content Panel'
+TRACK_TABLE_HEADER_NAME = 'Track Table Heading'
+TRACK_TABLE_ROW_NAME = 'Track Table Row'
 TRACK_TITLE_HEADER_NAME = 'Track Title Column Header'
 TRACK_DURATION_HEADER_NAME = 'Track Duration Column Header'
 
@@ -37,7 +39,7 @@ class AlbumContentPanel(QWidget):
     def __init__(self, player=audio.null(), parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
-        self._layout = QGridLayout()
+        self._layout = QVBoxLayout()
         self.setLayout(self._layout)
         self._fill(self._layout)
         self._player = player
@@ -45,32 +47,42 @@ class AlbumContentPanel(QWidget):
     def _fill(self, layout):
         self._addColumnHeadings(layout)
 
+    # todo use a table, we cannot rely on widgets order of addition
     def _addColumnHeadings(self, layout):
+        header = QWidget()
+        header.setObjectName(TRACK_TABLE_HEADER_NAME)
+        headings = QHBoxLayout()
+        header.setLayout(headings)
         titleHeading = QLabel()
         titleHeading.setText('<strong>%s</strong>' % self.tr('Track Title'))
-        titleHeading.setObjectName(TRACK_TITLE_HEADER_NAME)
-        layout.addWidget(titleHeading, 0, 0)
+        headings.addWidget(titleHeading)
         durationHeading = QLabel()
         durationHeading.setText('<strong>%s</strong>' % self.tr('Duration'))
-        durationHeading.setObjectName(TRACK_DURATION_HEADER_NAME)
-        layout.addWidget(durationHeading, 0, 1)
+        headings.addWidget(durationHeading)
+        headings.addWidget(QLabel())
+        layout.addWidget(header)
 
-    def setTrack(self, track):
+    def addTrack(self, track):
+        row = QWidget()
+        row.setObjectName(TRACK_TABLE_ROW_NAME)
+        cells = QHBoxLayout()
+        row.setLayout(cells)
         title = QLabel(track.trackTitle)
-        self._layout.addWidget(title, 1, 0)
+        cells.addWidget(title)
         duration = QLabel(asDuration(track.duration))
-        self._layout.addWidget(duration, 1, 1)
+        cells.addWidget(duration)
         button = QPushButton()
         button.setText(self.tr('Play'))
         button.setCheckable(True)
-        button.clicked.connect(functools.partial(self._playOrPauseTrack, track.filename))
-        self._layout.addWidget(button, 1, 2)
-        self._layout.addWidget(self._player.slider(), 1, 3)
+        button.setAutoExclusive(True)
+        button.clicked.connect(functools.partial(self._playOrStopTrack, track.filename))
+        cells.addWidget(button)
+        self._layout.addWidget(row)
 
-    def _playOrPauseTrack(self, filename):
-        if not self._player.hasSource():
+    def _playOrStopTrack(self, filename):
+        if not self._player.hasSource(filename):
             self._player.setSource(filename)
         if self._player.isPlaying():
-            self._player.pause()
+            self._player.stop()
         else:
             self._player.play()

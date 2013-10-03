@@ -115,7 +115,7 @@ class MainWindow(QMainWindow):
     def trackSelected(self, track):
         self._track = track
         # todo should panels really be responsible for maintaining edition state?
-        self._albumContentPanel.setTrack(self._track)
+        self._albumContentPanel.addTrack(self._track)
         self._albumPanel.setTrack(self._track)
         self._trackPanel.setTrack(self._track)
         self._showAlbumContentPanel()

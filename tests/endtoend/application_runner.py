@@ -16,34 +16,36 @@ from tests.drivers.tagger_driver import TaggerDriver
 ONE_SECOND = 1000
 
 
+# todo Capture more of user workflows and leave isolated interactions to
+# TaggerDriver, which is used in ui integration tests as well
 class ApplicationRunner(object):
     def start(self):
         self.app = TGiT('en', NullAudio())
-        self.driver = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
+        self.tagger = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
             EventProcessingProber(timeoutInMs=1000),
             Robot())
 
     def stop(self):
-        self.driver.close()
-        del self.driver
+        self.tagger.close()
+        del self.tagger
         del self.app
 
     def importTrack(self, path):
-        self.driver.importTrack(path)
+        self.tagger.importTrack(path)
 
     def showsAlbumContent(self, *tracks):
-        self.driver.showsAlbumContains(*tracks)
+        self.tagger.showsAlbumContains(*tracks)
 
     def showsAlbumMetadata(self, **tags):
-        self.driver.showsAlbumMetadata(**tags)
+        self.tagger.showsAlbumMetadata(**tags)
 
     def changeAlbumMetadata(self, **tags):
-        self.driver.editAlbumMetadata(**tags)
-        self.driver.saveTrack()
+        self.tagger.editAlbumMetadata(**tags)
+        self.tagger.saveTrack()
 
     def showsTrackMetadata(self, **tags):
-        self.driver.showsTrackMetadata(**tags)
+        self.tagger.showsTrackMetadata(**tags)
 
     def changeTrackMetadata(self, **tags):
-        self.driver.editTrackMetadata(**tags)
-        self.driver.saveTrack()
+        self.tagger.editTrackMetadata(**tags)
+        self.tagger.saveTrack()

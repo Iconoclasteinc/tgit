@@ -22,8 +22,6 @@ FEATURED_GUEST = 'featuredGuest'
 TRACK_TITLE = 'trackTitle'
 
 
-# todo introduce support classes to capture common user workflows and separate workflows
-# from isolated interactions, which are used in ui integration tests
 class TaggerDriver(MainWindowDriver):
     def __init__(self, selector, prober, gesturePerformer):
         super(TaggerDriver, self).__init__(selector, prober, gesturePerformer)

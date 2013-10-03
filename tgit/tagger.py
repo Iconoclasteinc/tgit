@@ -64,4 +64,5 @@ class MusicDirector(object):
 
 
 def main(locale):
+    # todo Qt complains if we create the Phonon player before the QApplication
     TGiT(locale, PhononPlayer()).run()

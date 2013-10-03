@@ -52,7 +52,7 @@ class RecursiveWidgetFinder(WidgetFinder):
         if isinstance(widget, self._widgetType) and self._criteria.matches(widget):
             self._found.add(widget)
         else:
-            self._search(widget.children())
+            self._search(widget.findChildren(self._widgetType))
 
     def _describeBrieflyTo(self, description):
         description.append_text(self._widgetType.__name__). \
@@ -104,7 +104,7 @@ class SingleWidgetFinder(WidgetSelector):
         return tuple(self.widgets())[0]
 
     def describeTo(self, description):
-        description.append_text("exactly 1 ").append_description_of(self._finder)
+        description.append_text("a unique ").append_description_of(self._finder)
 
     def describeFailureTo(self, description):
         self._finder.describeFailureTo(description)
@@ -136,3 +136,40 @@ class WidgetIdentity(WidgetSelector):
 
     def describeFailureTo(self, description):
         self.describeTo(description)
+
+
+class NthWidgetFinder(WidgetSelector):
+    def __init__(self, parentFinder, index):
+        super(NthWidgetFinder, self).__init__()
+        self._parentFinder = parentFinder
+        self._index = index
+
+    def widgets(self):
+        widgets = self._parentFinder.widgets()
+        if widgets:
+            return (widgets[self._index],)
+        else:
+            return ()
+
+    def widget(self):
+        return self.widgets()[0]
+
+     # This expects the parent finder to describe how many were actually found.
+    def describeFailureTo(self, description):
+        self._parentFinder.describeFailureTo(description)
+        if self.isSatisfied():
+            description.append_text("\n    the ")
+            description.append_value(self._index + 1)
+            description.append_text("th widget")
+
+    def describeTo(self, description):
+        description.append_text("the ")
+        description.append_value(self._index + 1)
+        description.append_text("th widget from those matching ")
+        description.append_description_of(self._parentFinder)
+
+    def isSatisfied(self):
+        return self._parentFinder.isSatisfied() and len(self._parentFinder.widgets()) > self._index
+
+    def test(self):
+        self._parentFinder.test()

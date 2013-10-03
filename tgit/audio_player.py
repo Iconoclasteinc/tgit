@@ -17,7 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtGui import QWidget
 from PyQt4.phonon import Phonon
 
 
@@ -38,11 +37,8 @@ class NullAudio(object):
     def play(self):
         pass
 
-    def pause(self):
+    def stop(self):
         pass
-
-    def slider(self):
-        return QWidget()
 
 
 class PhononPlayer(object):
@@ -52,8 +48,8 @@ class PhononPlayer(object):
     def setSource(self, filename):
         self._media.setCurrentSource(Phonon.MediaSource(filename))
 
-    def hasSource(self):
-        return self._media.currentSource().fileName() != ''
+    def hasSource(self, filename):
+        return self._media.currentSource().fileName() == filename
 
     def isPlaying(self):
         return self._media.state() == Phonon.PlayingState
@@ -61,8 +57,5 @@ class PhononPlayer(object):
     def play(self):
         self._media.play()
 
-    def pause(self):
-        self._media.pause()
-
-    def slider(self):
-        return Phonon.SeekSlider(self._media)
+    def stop(self):
+        self._media.stop()

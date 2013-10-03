@@ -9,7 +9,8 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from tests.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
                                WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe)
-from tests.cute.finders import SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder
+from tests.cute.finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder,
+                                NthWidgetFinder)
 from tests.cute import properties, gestures, keyboard_shortcuts as shortcuts, matchers as match
 
 
@@ -46,8 +47,14 @@ class WidgetDriver(object):
     @classmethod
     def findIn(cls, parent, widgetType, *matchers):
         return cls(SingleWidgetFinder(
-                   RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector)),
-                                         parent.prober, parent.gesturePerformer)
+            RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector)),
+            parent.prober, parent.gesturePerformer)
+
+    @classmethod
+    def nthIn(cls, parent, widgetType, index, *matchers):
+        return cls(NthWidgetFinder(
+            RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector), index),
+            parent.prober, parent.gesturePerformer)
 
     def isShowingOnScreen(self):
         self.is_(match.showingOnScreen())
@@ -210,7 +217,8 @@ class FileDialogDriver(WidgetDriver):
 
         acceptButton = FindOutAcceptButtonText()
         self.manipulate("find out accept button text", acceptButton)
-        return AbstractButtonDriver.findIn(self, QPushButton, match.withButtonText(acceptButton.text))
+        return AbstractButtonDriver.findIn(self, QPushButton,
+                                           match.withButtonText(acceptButton.text))
 
 
 class ListViewDriver(WidgetDriver):
@@ -306,6 +314,7 @@ class MenuDriver(WidgetDriver):
             # We try to pop up the menu at a position that makes sense on all platforms
             # i.e. just below the menu title
             menu.popup(menuBar.mapToGlobal(menuTitleVisibleArea.bottomLeft()))
+
         self.manipulate("open", popup)
 
     def selectMenuItem(self, matching):
