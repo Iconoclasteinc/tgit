@@ -153,7 +153,9 @@ class FileDialogDriver(WidgetDriver):
 
     def navigateToDir(self, path):
         for folderName in self._navigationPathTo(path):
-            if folderName == '..':
+            if folderName == '':
+                pass
+            elif folderName == '..':
                 self.upOneFolder()
             else:
                 self.intoFolder(folderName)

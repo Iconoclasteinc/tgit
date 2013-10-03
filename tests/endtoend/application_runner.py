@@ -4,6 +4,7 @@ import use_sip_api_v2 as sipApi
 sipApi.useVersion(sipApi.VERSION_2)
 
 from tgit.tagger import TGiT
+from tgit.audio_player import NullAudio
 from tgit.ui import main_window as main
 
 from tests.cute.matchers import named, showingOnScreen
@@ -17,7 +18,7 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self):
-        self.app = TGiT('en')
+        self.app = TGiT('en', NullAudio())
         self.driver = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
             EventProcessingProber(timeoutInMs=1000),
             Robot())
@@ -30,8 +31,8 @@ class ApplicationRunner(object):
     def importTrack(self, path):
         self.driver.importTrack(path)
 
-    def showsAlbumContent(self, trackTitle):
-        self.driver.showsAlbumContains(trackTitle)
+    def showsAlbumContent(self, *tracks):
+        self.driver.showsAlbumContains(*tracks)
 
     def showsAlbumMetadata(self, **tags):
         self.driver.showsAlbumMetadata(**tags)

@@ -15,7 +15,7 @@ class MP3FileTest(unittest.TestCase):
 
     def makeMp3(self, **tags):
         self._audioFile = MP3(mp3Sample.path, **tags).make()
-        return self._audioFile.name
+        return self._audioFile.filename
 
     def testIgnoresMissingTags(self):
         mp3 = MP3File(self.makeMp3())

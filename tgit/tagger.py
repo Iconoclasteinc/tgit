@@ -29,11 +29,11 @@ UTF_8 = "UTF-8"
 
 
 class TGiT(QApplication):
-    def __init__(self, locale):
+    def __init__(self, locale, player):
         QApplication.__init__(self, [])
         self._translators = []
         self.setLocale(locale)
-        self._ui = MainWindow(PhononPlayer())
+        self._ui = MainWindow(player)
         self._ui.addMusicDirector(MusicDirector(self._ui))
 
     def setLocale(self, locale):
@@ -64,4 +64,4 @@ class MusicDirector(object):
 
 
 def main(locale):
-    TGiT(locale).run()
+    TGiT(locale, PhononPlayer()).run()

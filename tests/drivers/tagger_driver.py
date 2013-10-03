@@ -29,7 +29,7 @@ class TaggerDriver(MainWindowDriver):
         super(TaggerDriver, self).__init__(selector, prober, gesturePerformer)
 
     def importTrack(self, path):
-        self.addTrackToAlbum(path)
+        self.importTrackThroughMenu(path)
         self._isShowingAlbumManagementPanel()
 
     def _menuBar(self):
@@ -69,10 +69,11 @@ class TaggerDriver(MainWindowDriver):
     def _albumManagementPanel(self):
         return WidgetDriver.findIn(self, QWidget, named(content.ALBUM_CONTENT_PANEL_NAME))
 
-    def showsAlbumContains(self, trackTitle):
+    def showsAlbumContains(self, *tracks):
         albumContent = self._albumManagementPanel()
-        title = LabelDriver.findIn(albumContent, QLabel, withLabelText(trackTitle))
-        title.isShowingOnScreen()
+        for track in tracks:
+            title = LabelDriver.findIn(albumContent, QLabel, withLabelText(track))
+            title.isShowingOnScreen()
 
     def backToAlbumManagement(self):
         self._previousStepButton().click()

@@ -33,11 +33,11 @@ class MP3Maker(object):
             self._mp3.add_tags()
 
     @property
-    def name(self):
+    def filename(self):
         return self._file
 
     def delete(self):
-        os.remove(self.name)
+        os.remove(self.filename)
 
     def withTags(self, **tags):
         self._writeTags(tags)
