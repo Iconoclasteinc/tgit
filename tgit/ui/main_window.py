@@ -18,8 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtCore import (QDir, QRect)
-from PyQt4.QtGui import (QWidget, QMainWindow, QMenu, QAction, QStatusBar, QGridLayout,
-                         QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QStackedWidget)
+from PyQt4.QtGui import (QWidget, QMainWindow, QMenu, QAction, QStatusBar, QVBoxLayout,
+                         QHBoxLayout, QPushButton, QFileDialog, QStackedWidget)
 
 from tgit import audio as audio
 from tgit.ui.track_list_panel import TrackListPanel
@@ -99,11 +99,13 @@ class MainWindow(QMainWindow):
         self._previousPageButton.clicked.connect(self._showPreviousPage)
         self._previousPageButton.setDisabled(True)
         layout.addWidget(self._previousPageButton)
+        layout.addStretch()
         self._saveButton = QPushButton()
         self._saveButton.setObjectName(SAVE_BUTTON_NAME)
         self._saveButton.clicked.connect(self._saveAlbum)
         self._saveButton.setDisabled(True)
         layout.addWidget(self._saveButton)
+        layout.addStretch()
         self._nextStepButton = QPushButton()
         self._nextStepButton.setObjectName(NEXT_STEP_BUTTON_NAME)
         self._nextStepButton.clicked.connect(self._showNextPage)
@@ -152,7 +154,6 @@ class MainWindow(QMainWindow):
         albumPanel = AlbumPanel()
         self._pages.addWidget(albumPanel)
         layout.addWidget(self._pages)
-        layout.addStretch()
         self._previousPageButton.setDisabled(True)
         self._nextStepButton.setEnabled(True)
         layout.addWidget(self._buttonBar)
@@ -204,12 +205,14 @@ class MainWindow(QMainWindow):
     # todo Extract a WelcomePanel
     def _makeWelcomePanel(self):
         self._welcomePanel = QWidget()
-        layout = QGridLayout(self._welcomePanel)
-        self._welcomePanel.setLayout(layout)
+        layout = QHBoxLayout()
+        layout.addStretch()
         self._addFileButton = QPushButton()
         self._addFileButton.setObjectName(ADD_FILE_BUTTON_NAME)
         self._addFileButton.clicked.connect(self._addFileDialog.open)
-        layout.addWidget(self._addFileButton, 0, 0)
+        layout.addWidget(self._addFileButton)
+        layout.addStretch()
+        self._welcomePanel.setLayout(layout)
         return self._welcomePanel
 
     def localizeUi(self):

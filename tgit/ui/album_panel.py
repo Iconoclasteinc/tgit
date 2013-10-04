@@ -20,7 +20,7 @@
 import mimetypes
 from PyQt4.QtCore import Qt, QDir
 from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QPixmap, QImage,
-                         QFileDialog)
+                         QFileDialog, QHBoxLayout, QVBoxLayout)
 
 ALBUM_PANEL_NAME = 'Album Panel'
 FRONT_COVER_PICTURE_NAME = "Front Cover Picture"
@@ -37,11 +37,17 @@ class AlbumPanel(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_PANEL_NAME)
-        layout = QGridLayout()
-        self.setLayout(layout)
+        grid = QGridLayout()
         self._makeSelectPictureDialog()
-        self._fill(layout)
+        self._fill(grid)
         self.translateUi()
+        self._layout(grid)
+
+    def _layout(self, grid):
+        layout = QVBoxLayout()
+        layout.addLayout(grid)
+        layout.addStretch()
+        self.setLayout(layout)
 
     # todo create dialog on the fly to speed up startup time
     # should speed up tests as well
@@ -92,7 +98,10 @@ class AlbumPanel(QWidget):
         self._selectPictureButton = QPushButton()
         self._selectPictureButton.setObjectName(SELECT_PICTURE_BUTTON_NAME)
         self._selectPictureButton.clicked.connect(self._selectPictureDialog.open)
-        layout.addWidget(self._selectPictureButton, row, 1)
+        buttonLayout = QHBoxLayout()
+        buttonLayout.addWidget(self._selectPictureButton)
+        buttonLayout.addStretch()
+        layout.addLayout(buttonLayout, row, 1)
 
     def _addReleaseNameTo(self, layout, row):
         self._releaseNameLabel = QLabel()

@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit)
+from PyQt4.QtGui import (QWidget, QGridLayout, QVBoxLayout, QLabel, QLineEdit)
 
 # todo consider moving all ui constants to the same module (ui?)
 TRACK_PANEL_NAME = 'Track Panel'
@@ -41,10 +41,16 @@ class TrackPanel(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(TRACK_PANEL_NAME)
-        layout = QGridLayout()
-        self.setLayout(layout)
-        self._fill(layout)
+        grid = QGridLayout()
+        self._fill(grid)
         self.translateUi()
+        self._layout(grid)
+
+    def _layout(self, grid):
+        layout = QVBoxLayout()
+        layout.addLayout(grid)
+        layout.addStretch()
+        self.setLayout(layout)
 
     def _fill(self, layout):
         self._addTrackTitle(layout, 0)
