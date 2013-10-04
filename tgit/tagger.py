@@ -22,10 +22,12 @@ from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
 from tgit import resources
-from tgit.audio_player import PhononPlayer
+from tgit.audio import PhononPlayer
 from tgit.mp3 import MP3File
 from tgit.ui.main_window import MainWindow
 
+TGIT = "tgit"
+QT = "qt"
 UTF_8 = "UTF-8"
 
 
@@ -39,7 +41,7 @@ class TGiT(QApplication):
 
     def translateTo(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
-        for resource in ("qt", "tgit"):
+        for resource in (QT, TGIT):
             self._installTranslations(resource, locale),
 
     def _installTranslations(self, resource, locale):

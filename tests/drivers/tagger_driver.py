@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
-from PyQt4.QtGui import QPushButton, QFileDialog, QWidget, QLabel, QMenuBar
+from PyQt4.QtGui import QPushButton, QFileDialog, QWidget, QMenuBar
 
 import tgit.ui.main_window as main
 import tgit.ui.album_panel as album
 import tgit.ui.track_panel as track
-import tgit.ui.album_content_panel as content
+import tgit.ui.track_list_panel as content
 
-from tests.cute.matchers import named, showingOnScreen, withLabelText
+from tests.cute.matchers import named, showingOnScreen
 from tests.cute.widgets import (MainWindowDriver, AbstractButtonDriver, FileDialogDriver,
-                                WidgetDriver, LabelDriver, MenuBarDriver)
+                                MenuBarDriver)
+from tests.drivers.track_list_panel_driver import TrackListPanelDriver
 from tests.drivers.album_panel_driver import AlbumPanelDriver
 from tests.drivers.track_panel_driver import TrackPanelDriver
 
@@ -97,10 +98,9 @@ class TaggerDriver(MainWindowDriver):
         self.isShowingTrackMetadata()
 
     def showsAlbumContains(self, *tracks):
-        albumContent = self._trackListPanel()
+        trackList = self._trackListPanel()
         for track in tracks:
-            title = LabelDriver.findIn(albumContent, QLabel, withLabelText(track))
-            title.isShowingOnScreen()
+            trackList.showsTrack(track)
 
     def showsAlbumMetadata(self, **tags):
         self._albumPanel().showsMetadata(**tags)
@@ -143,7 +143,7 @@ class TaggerDriver(MainWindowDriver):
         return AbstractButtonDriver.findIn(self, QPushButton, named(main.SAVE_BUTTON_NAME))
 
     def _trackListPanel(self):
-        return WidgetDriver.findIn(self, QWidget, named(content.ALBUM_CONTENT_PANEL_NAME))
+        return TrackListPanelDriver.findIn(self, QWidget, named(content.ALBUM_CONTENT_PANEL_NAME))
 
     def _albumPanel(self):
         return AlbumPanelDriver.findIn(self, QWidget, named(album.ALBUM_PANEL_NAME))

@@ -12,28 +12,24 @@ def named(name):
     return with_(properties.name(), wrap_matcher(name))
 
 
-def withBuddy(matcher):
-    return with_(properties.buddy(), matcher)
+def withBuddy(buddy):
+    return with_(properties.buddy(), wrap_matcher(buddy))
 
 
 def withPixmapHeight(height):
-    return with_(properties.pixmapHeight(), equal_to(height))
+    return with_(properties.pixmapHeight(), wrap_matcher(height))
 
 
 def withPixmapWidth(width):
-    return with_(properties.pixmapWidth(), equal_to(width))
+    return with_(properties.pixmapWidth(), wrap_matcher(width))
 
 
-def withLabelText(text):
-    return with_(properties.labelText(), equal_to(text))
-
-
-def withButtonText(text):
-    return with_(properties.buttonText(), equal_to(text))
+def withText(text):
+    return with_(properties.text(), wrap_matcher(text))
 
 
 def withListItemText(text):
-    return with_(properties.listItemText(), equal_to(text))
+    return with_(properties.listItemText(), wrap_matcher(text))
 
 
 def with_(query, matcher):
@@ -83,9 +79,7 @@ class QueryResultMatcher(BaseMatcher):
         if item is None:
             mismatch_description.append_text("was ").append_description_of(item)
         else:
-            mismatch_description.append_text("was with ") \
-                .append_description_of(self._query) \
-                .append_text(" ")
+            mismatch_description.append_description_of(self._query).append_text(" ")
             self._resultMatcher.describe_mismatch(self._query(item), mismatch_description)
 
 

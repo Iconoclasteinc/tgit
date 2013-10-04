@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import equal_to, has_properties, has_items, only_contains
+from hamcrest import equal_to, has_properties, contains
 
-import use_sip_api_v2 as sipApi
-sipApi.useVersion(sipApi.VERSION_2)
-
-from tgit.ui.main_window import MainWindow
-
+from tests.integration.ui.base_widget_test import BaseWidgetTest
 from tests.cute.probes import ValueMatcherProbe
 from tests.cute.finders import WidgetIdentity
 from tests.drivers.tagger_driver import TaggerDriver
-from tests.integration.ui.base_widget_test import BaseWidgetTest
 from tests.util import resources, doubles
 from tests.util.matchers import samePictureAs
+
+from tgit.ui.main_window import MainWindow
 
 
 class MainWindowTest(BaseWidgetTest):
@@ -122,7 +119,7 @@ class MainWindowTest(BaseWidgetTest):
                              featuredGuest='Featured Guest',
                              isrc='AABB12345678')
         trackIncludesAlbumAndTrackModifications = \
-            ValueMatcherProbe(only_contains(hasMetadata(**modifications)), "request to save track")
+            ValueMatcherProbe(contains(hasMetadata(**modifications)), "request to save track")
 
         class CaptureSaveRequest(object):
             def saveAlbum(self, album):
@@ -138,7 +135,7 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.check(trackIncludesAlbumAndTrackModifications)
 
     def testSavesAllImportedTracks(self):
-            allTracksAreSaved = ValueMatcherProbe(has_items(
+            allTracksAreSaved = ValueMatcherProbe(contains(
                 hasMetadata(releaseName='Album', trackTitle='Track 1'),
                 hasMetadata(releaseName='Album', trackTitle='Track 2'),
                 hasMetadata(releaseName='Album', trackTitle='Track 3')), "request to save album")

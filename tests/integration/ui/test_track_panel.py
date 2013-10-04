@@ -2,15 +2,13 @@
 
 import unittest
 
-import use_sip_api_v2 as sipApi
-sipApi.useVersion(sipApi.VERSION_2)
-
-from tgit.ui.track_panel import TrackPanel
+from tests.integration.ui.base_widget_test import BaseWidgetTest
 
 from tests.cute.finders import WidgetIdentity
 from tests.drivers.track_panel_driver import TrackPanelDriver
-from tests.integration.ui.base_widget_test import BaseWidgetTest
 from tests.util import doubles
+
+from tgit.ui.track_panel import TrackPanel
 
 
 class TrackPanelTest(BaseWidgetTest):

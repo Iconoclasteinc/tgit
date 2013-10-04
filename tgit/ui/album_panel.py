@@ -44,6 +44,7 @@ class AlbumPanel(QWidget):
         self.translateUi()
 
     # todo create dialog on the fly to speed up startup time
+    # should speed up tests as well
     def _makeSelectPictureDialog(self):
         self._selectPictureDialog = QFileDialog(self)
         self._selectPictureDialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)

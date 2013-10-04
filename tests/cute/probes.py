@@ -29,7 +29,7 @@ class WidgetAssertionProbe(Probe):
     def describeFailureTo(self, description):
         self._selector.describeFailureTo(description)
         if self._selector.isSatisfied():
-            description.append_text("\n    it ")
+            description.append_text("\n    ")
             self._assertion.describe_mismatch(self._selector.widget(), description)
 
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import QDir
+from PyQt4.QtCore import QDir, QPoint
 from PyQt4.QtGui import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                          QToolButton, QFileDialog, QMenu, QAction)
 from hamcrest import all_of, equal_to
@@ -10,7 +10,7 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from tests.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
                                WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe)
 from tests.cute.finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder,
-                                NthWidgetFinder)
+                                NthWidgetFinder, WidgetSelector)
 from tests.cute import properties, gestures, keyboard_shortcuts as shortcuts, matchers as match
 
 
@@ -113,7 +113,7 @@ class AbstractButtonDriver(WidgetDriver):
 
 class LabelDriver(WidgetDriver):
     def hasText(self, matcher):
-        self.has(properties.labelText(), wrap_matcher(matcher))
+        self.has(properties.text(), wrap_matcher(matcher))
 
     def hasPixmap(self, matcher):
         self.has(properties.labelPixmap(), matcher)
@@ -217,8 +217,7 @@ class FileDialogDriver(WidgetDriver):
 
         acceptButton = FindOutAcceptButtonText()
         self.manipulate("find out accept button text", acceptButton)
-        return AbstractButtonDriver.findIn(self, QPushButton,
-                                           match.withButtonText(acceptButton.text))
+        return AbstractButtonDriver.findIn(self, QPushButton, match.withText(acceptButton.text))
 
 
 class ListViewDriver(WidgetDriver):
@@ -266,7 +265,7 @@ class ListViewDriver(WidgetDriver):
                 self._itemMatcher.describe_to(description)
 
             def describe_mismatch(self, item, mismatch_description):
-                mismatch_description.append_text("was not containing ")
+                mismatch_description.append_text("contained no item ")
                 self._itemMatcher.describe_to(mismatch_description)
 
         containingItem = ContainingItem(matching)
@@ -298,7 +297,7 @@ class MenuBarDriver(WidgetDriver):
                 self._matcher.describe_to(description)
 
             def describe_mismatch(self, item, mismatch_description):
-                mismatch_description.append_text("was not containing a menu ")
+                mismatch_description.append_text("contained no menu ")
                 self._matcher.describe_to(mismatch_description)
 
         self.is_(ContainingMenu(matching))
@@ -343,7 +342,7 @@ class MenuDriver(WidgetDriver):
                 self._matcher.describe_to(description)
 
             def describe_mismatch(self, item, mismatch_description):
-                mismatch_description.append_text("was not containing an item ")
+                mismatch_description.append_text("contained no item ")
                 self._matcher.describe_to(mismatch_description)
 
         containingMenuItem = ContainingMenuItem(matching)
@@ -365,3 +364,108 @@ class MenuItemDriver(WidgetDriver):
 
     def click(self):
         self.perform(gestures.mouseMove(self._centerOfItem()), gestures.mouseClick())
+
+
+class TableDriver(WidgetDriver):
+    def hasHeading(self, matching):
+        class ContainingHeaders(BaseMatcher):
+            def __init__(self, matcher):
+                super(ContainingHeaders, self).__init__()
+                self._matcher = matcher
+
+            def _headersOf(self, table):
+                return [table.horizontalHeaderItem(column)
+                           for column in xrange(table.columnCount())]
+
+            def _matches(self, table):
+                return self._matcher.matches(self._headersOf(table))
+
+            def describe_to(self, description):
+                description.append_text('with headers ')
+                self._matcher.describe_to(description)
+
+            def describe_mismatch(self, table, mismatch_description):
+                mismatch_description.append_text("headers ")
+                self._matcher.describe_mismatch(self._headersOf(table), mismatch_description)
+
+        self.is_(ContainingHeaders(matching))
+
+    def hasRow(self, matching):
+        class ContainingCells(BaseMatcher):
+            def __init__(self, matcher):
+                super(ContainingCells, self).__init__()
+                self._matcher = matcher
+
+            def _cellsOf(self, table, row):
+                return [table.item(row, column) for column in xrange(table.columnCount())]
+
+            def _matches(self, table):
+                for row in xrange(table.rowCount()):
+                    if self._matcher.matches(self._cellsOf(table, row)):
+                        return True
+                return False
+
+            def describe_to(self, description):
+                description.append_text('containing row ')
+                self._matcher.describe_to(description)
+
+            def describe_mismatch(self, table, mismatch_description):
+                mismatch_description.append_text("contained no row ")
+                self._matcher.describe_to(mismatch_description)
+
+        self.is_(ContainingCells(matching))
+
+    def clickOnCell(self, row, column):
+        class CalculateCellPosition(object):
+            def __call__(self, table):
+                rowOffset = table.horizontalHeader().height() + table.rowViewportPosition(row)
+                columnOffset = table.verticalHeader().width() + \
+                               table.columnViewportPosition(column)
+                relativeCenter = QPoint(columnOffset + table.columnWidth(column) / 2,
+                                        rowOffset + table.rowHeight(row) / 2)
+                self.center = table.mapToGlobal(relativeCenter)
+
+        cellPosition = CalculateCellPosition()
+        self.manipulate("calculate cell position", cellPosition)
+        self.perform(gestures.clickAt(cellPosition.center))
+
+    def widgetInCell(self, row, column):
+        class WidgetAt(WidgetSelector):
+            def __init__(self, tableSelector, row, column):
+                super(WidgetAt, self).__init__()
+                self._tableSelector = tableSelector
+                self._row = row
+                self._column = column
+
+            def describeTo(self, description):
+                description.append_text("widget in cell (%s, %s)" % (self._row,self._column))
+                description.append_text("\n    in ")
+                description.append_description_of(self._tableSelector)
+
+            def describeFailureTo(self, description):
+                self._tableSelector.describeFailureTo(description)
+                if self._tableSelector.isSatisfied():
+                    if self.isSatisfied():
+                        description.append_text("\n    cell (%s, %s)" % (self._row,self._column))
+                    else:
+                        description.append_text("\n    had no widget in cell (%s, %s) "
+                                                % (self._row, self._column))
+
+            def widgets(self):
+                return self._cellWidget,
+
+            def isSatisfied(self):
+                return self._cellWidget is not None
+
+            def test(self):
+                self._tableSelector.test()
+
+                if not self._tableSelector.isSatisfied():
+                    self._cellWidget = None
+                    return
+
+                table = self._tableSelector.widget()
+                self._cellWidget = table.cellWidget(self._row, self._column)
+
+        return WidgetDriver(WidgetAt(self.selector, row, column), self.prober,
+                            self.gesturePerformer)

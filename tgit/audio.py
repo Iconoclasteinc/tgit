@@ -20,21 +20,15 @@
 from PyQt4.phonon import Phonon
 
 
-def null():
+def noSound():
     return NullAudio()
 
 
 class NullAudio(object):
-    def hasSource(self):
-        return False
-
-    def setSource(self, filename):
-        pass
-
     def isPlaying(self):
         return False
 
-    def play(self):
+    def play(self, filename):
         pass
 
     def stop(self):
@@ -45,16 +39,11 @@ class PhononPlayer(object):
     def __init__(self):
         self._media = Phonon.createPlayer(Phonon.MusicCategory)
 
-    def setSource(self, filename):
-        self._media.setCurrentSource(Phonon.MediaSource(filename))
-
-    def hasSource(self, filename):
-        return self._media.currentSource().fileName() == filename
-
     def isPlaying(self):
         return self._media.state() == Phonon.PlayingState
 
-    def play(self):
+    def play(self, filename):
+        self._media.setCurrentSource(Phonon.MediaSource(filename))
         self._media.play()
 
     def stop(self):

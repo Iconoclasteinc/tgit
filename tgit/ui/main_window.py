@@ -21,8 +21,8 @@ from PyQt4.QtCore import (QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenu, QAction, QStatusBar, QGridLayout,
                          QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QStackedWidget)
 
-from tgit import audio_player as audio
-from tgit.ui.album_content_panel import AlbumContentPanel
+from tgit import audio as audio
+from tgit.ui.track_list_panel import TrackListPanel
 from tgit.ui.album_panel import AlbumPanel
 from tgit.ui.track_panel import TrackPanel
 
@@ -41,7 +41,7 @@ TRACK_PANEL = 2
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, player=audio.null()):
+    def __init__(self, player=audio.noSound()):
         QMainWindow.__init__(self)
         self._musicDirector = None
         self._player = player
@@ -147,7 +147,7 @@ class MainWindow(QMainWindow):
         self._mainPanel = QWidget()
         layout = QVBoxLayout()
         self._pages = QStackedWidget()
-        trackListPanel = AlbumContentPanel(self._player)
+        trackListPanel = TrackListPanel(self._player)
         self._pages.addWidget(trackListPanel)
         albumPanel = AlbumPanel()
         self._pages.addWidget(albumPanel)

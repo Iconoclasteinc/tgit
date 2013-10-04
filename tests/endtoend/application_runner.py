@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import use_sip_api_v2 as sipApi
+
 sipApi.useVersion(sipApi.VERSION_2)
 
 from tgit.tagger import TGiT
-from tgit.audio_player import NullAudio
+from tgit import audio
 from tgit.ui import main_window as main
 
 from tests.cute.matchers import named, showingOnScreen
@@ -18,10 +19,10 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self):
-        self.app = TGiT('en', NullAudio())
+        self.app = TGiT('en', audio.noSound())
         self.tagger = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
-            EventProcessingProber(timeoutInMs=ONE_SECOND),
-            Robot())
+                                   EventProcessingProber(timeoutInMs=ONE_SECOND),
+                                   Robot())
 
     def stop(self):
         self.tagger.close()

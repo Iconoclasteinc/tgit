@@ -2,15 +2,14 @@
 
 import unittest
 
-# todo consider moving all ui constants to the same module (ui?)
-from tgit.ui import album_panel as ui
-from tgit.ui.album_panel import AlbumPanel
-
 from tests.integration.ui.base_widget_test import BaseWidgetTest
 from tests.cute.finders import WidgetIdentity
 from tests.drivers.album_panel_driver import AlbumPanelDriver
 from tests.util import resources, fs, doubles
 
+# todo consider moving all ui constants to the same module (ui?)
+from tgit.ui import album_panel as ui
+from tgit.ui.album_panel import AlbumPanel
 
 class AlbumPanelTest(BaseWidgetTest):
     def setUp(self):
