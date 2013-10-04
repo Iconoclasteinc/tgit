@@ -16,13 +16,11 @@ from tests.drivers.tagger_driver import TaggerDriver
 ONE_SECOND = 1000
 
 
-# todo Capture more of user workflows and leave isolated interactions to
-# TaggerDriver, which is used in ui integration tests as well
 class ApplicationRunner(object):
     def start(self):
         self.app = TGiT('en', NullAudio())
         self.tagger = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
-            EventProcessingProber(timeoutInMs=1000),
+            EventProcessingProber(timeoutInMs=ONE_SECOND),
             Robot())
 
     def stop(self):

@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self._musicDirector = None
         self._player = player
-        # It's surprising that we still don't have (need?) an album concept
+        # We still don't have an album concept
         self._tracks = []
         self._setupUi()
         self.show()

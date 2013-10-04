@@ -70,12 +70,11 @@ class AlbumPanel(QWidget):
     def _scaleToDisplayArea(self, imageData):
         if imageData is None:
             return QPixmap()
-        # todo can we scale the pixmap directly?
-        originalImage = QImage.fromData(imageData)
-        width, height = FRONT_COVER_DISPLAY_SIZE
-        scaledImage = originalImage.scaled(width, height, Qt.KeepAspectRatio,
-                                           Qt.SmoothTransformation)
-        return QPixmap.fromImage(scaledImage)
+        image = self._scaleImage(QImage.fromData(imageData), *FRONT_COVER_DISPLAY_SIZE)
+        return QPixmap.fromImage(image)
+
+    def _scaleImage(self, image, width, height):
+        return image.scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
     def _fill(self, layout):
         self._addFrontCoverPictureTo(layout, 0)

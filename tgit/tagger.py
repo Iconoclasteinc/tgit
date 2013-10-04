@@ -21,6 +21,7 @@ import sys
 from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
+from tgit import resources
 from tgit.audio_player import PhononPlayer
 from tgit.mp3 import MP3File
 from tgit.ui.main_window import MainWindow
@@ -29,19 +30,19 @@ UTF_8 = "UTF-8"
 
 
 class TGiT(QApplication):
-    def __init__(self, locale, player):
+    def __init__(self, locale, player=None):
         QApplication.__init__(self, [])
         self._translators = []
-        self.setLocale(locale)
-        self._ui = MainWindow(player)
+        self.translateTo(locale)
+        self._ui = MainWindow(player or PhononPlayer())
         self._ui.addMusicDirector(MusicDirector(self._ui))
 
-    def setLocale(self, locale):
+    def translateTo(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
-        self._installTranslator("qt", locale),
-        self._installTranslator("tgit", locale)
+        for resource in ("qt", "tgit"):
+            self._installTranslations(resource, locale),
 
-    def _installTranslator(self, resource, locale):
+    def _installTranslations(self, resource, locale):
         translator = QTranslator()
         if translator.load("%s_%s" % (resource, locale), ":/locales"):
             self.installTranslator(translator)
@@ -51,6 +52,8 @@ class TGiT(QApplication):
         return sys.exit(self.exec_())
 
 
+# todo collect tracks in album and let album notify listeners of album changes
+# I'm thinking trackAdded, trackRemoved and trackMoved events
 class MusicDirector(object):
     def __init__(self, ui):
         self._ui = ui
@@ -65,5 +68,5 @@ class MusicDirector(object):
 
 
 def main(locale):
-    # todo Qt complains if we create the Phonon player before the QApplication
-    TGiT(locale, PhononPlayer()).run()
+    resources.load()
+    TGiT(locale).run()
