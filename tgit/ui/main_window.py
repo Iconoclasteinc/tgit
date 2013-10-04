@@ -215,7 +215,7 @@ class MainWindow(QMainWindow):
     def localizeUi(self):
         self.setWindowTitle(self.tr("TGiT"))
         self._fileMenu.setTitle(self.tr('File'))
-        self._importAction.setText("Import File...")
+        self._importAction.setText(self.tr("Import File..."))
         self._addFileButton.setText(self.tr("Add File..."))
         self._saveButton.setText(self.tr("Save"))
         self._previousPageButton.setText(self.tr("Previous"))

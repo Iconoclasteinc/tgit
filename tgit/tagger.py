@@ -21,6 +21,7 @@ import sys
 from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
+# noinspection PyUnresolvedReferences
 from tgit import resources
 from tgit.audio import PhononPlayer
 from tgit.mp3 import MP3File
@@ -70,5 +71,4 @@ class MusicDirector(object):
 
 
 def main(locale):
-    resources.load()
     TGiT(locale).run()

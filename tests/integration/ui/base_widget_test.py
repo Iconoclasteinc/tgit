@@ -3,8 +3,8 @@
 import os
 import unittest
 
-import use_sip_api_v2 as sipApi
-sipApi.useVersion(sipApi.VERSION_2)
+# noinspection PyUnresolvedReferences
+import use_sip_api_v2
 from PyQt4.QtGui import QApplication
 
 from tests.cute.events import MainEventLoop

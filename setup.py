@@ -2,8 +2,8 @@
 
 from setuptools import setup
 
-import use_sip_api_v2 as sipApi
-sipApi.useVersion(sipApi.VERSION_2)
+# noinspection PyUnresolvedReferences
+import use_sip_api_v2
 
 setup(
     name='tgit',
@@ -12,7 +12,7 @@ setup(
     url='http://tagtamusique.com',
     download_url='https://bitbucket.org/tagtamusique/tgit',
     author_email='jr@iconoclaste.ca',
-    version='0.3',
+    version='0.4',
     test_suite='tests',
     py_modules=['use_sip_api_v2'],
     packages=['tgit'],
