@@ -21,21 +21,27 @@ class TrackListPanelDriver(WidgetDriver):
         cellsMatching = [withText(detail) for detail in details]
         self._trackTable().hasRow(has_items(*cellsMatching))
 
-    def playTrack(self, track):
-        button = self._playButton(track)
-        button.isUp()
-        # We can't just click on the button, it's not aware of its position in the table
+    def isPlayingTrack(self, track):
+        self._playButton(track).isDown()
+
+    def isNotPlayingTrack(self, track):
+        self._playButton(track).isUp()
+
+    def clickPlayButton(self, track):
         row, column = self._listenCell(track)
         self._trackTable().clickOnCell(row, column)
-        button.isDown()
+
+    def playTrack(self, track):
+        self.isNotPlayingTrack(track)
+        # We can't just click on the button, it's not aware of its position in the table
+        self.clickPlayButton(track)
+        self.isPlayingTrack(track)
 
     def stopTrack(self, track):
-        button = self._playButton(track)
-        button.isDown()
+        self.isPlayingTrack(track)
         # We can't just click on the button, it's not aware of its position in the table
-        row, column = self._listenCell(track)
-        self._trackTable().clickOnCell(row, column)
-        button.isUp()
+        self.clickPlayButton(track)
+        self.isNotPlayingTrack(track)
 
     def _trackTable(self):
         return TableDriver.findIn(self, QTableWidget, named(ui.TRACK_TABLE_NAME))

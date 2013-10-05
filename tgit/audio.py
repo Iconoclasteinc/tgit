@@ -34,10 +34,28 @@ class NullAudio(object):
     def stop(self):
         pass
 
+    def addMediaListener(self, listener):
+        pass
+
+
+class MediaListener(object):
+    def mediaStopped(self, media):
+        pass
+
+    def mediaPaused(self, media):
+        pass
+
 
 class PhononPlayer(object):
+    LOADING = Phonon.LoadingState
+    STOPPED = Phonon.StoppedState
+    PLAYING = Phonon.PlayingState
+    PAUSED = Phonon.PausedState
+
     def __init__(self):
         self._media = Phonon.createPlayer(Phonon.MusicCategory)
+        self._media.stateChanged.connect(self._stateChanged)
+        self._listeners = []
 
     def isPlaying(self):
         return self._media.state() == Phonon.PlayingState
@@ -48,3 +66,24 @@ class PhononPlayer(object):
 
     def stop(self):
         self._media.stop()
+
+    def addMediaListener(self, listener):
+        self._listeners.append(listener)
+
+    def _stateChanged(self, is_, was):
+        if was == self.PLAYING:
+            if is_ == self.STOPPED:
+                self._announceStopped(self._currentTrack())
+            if is_ == self.PAUSED:
+                self._announcePaused(self._currentTrack())
+
+    def _announceStopped(self, track):
+        for listener in self._listeners:
+            listener.mediaStopped(track)
+
+    def _announcePaused(self, track):
+        for listener in self._listeners:
+            listener.mediaPaused(track)
+
+    def _currentTrack(self):
+        return self._media.currentSource().fileName()

@@ -22,7 +22,7 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem,
                          QHeaderView)
 
-from tgit import audio as audio
+from tgit import audio
 
 ALBUM_CONTENT_PANEL_NAME = 'Album Content Panel'
 TRACK_TABLE_NAME = 'Track Table'
@@ -38,12 +38,20 @@ def asDuration(seconds):
     return "%02d:%02d" % divmod(round(seconds), 60)
 
 
-class TrackListPanel(QWidget):
+class TrackListPanel(QWidget, audio.MediaListener):
     def __init__(self, player=audio.noSound(), parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
         self._player = player
+        self._player.addMediaListener(self)
         self._fill()
+        self._tracks = []
+
+    def mediaStopped(self, media):
+        self._listenButtonFor(media).setChecked(False)
+
+    def mediaPaused(self, media):
+        self.mediaStopped(media)
 
     def _fill(self):
         self._layout = QVBoxLayout()
@@ -77,15 +85,20 @@ class TrackListPanel(QWidget):
         playButton.setCheckable(True)
         playButton.clicked.connect(functools.partial(self._listenTo, track))
         self._table.setCellWidget(newRow, LISTEN, playButton)
+        self._tracks.append(track)
 
-    def allListenButtons(self):
+    def _listenButtonFor(self, media):
+        for index, track in enumerate(self._tracks):
+            if track.filename == media:
+                return self._listenButton(index)
+
+    def _listenButton(self, index):
+        return self._listenButtons()[index]
+
+    def _listenButtons(self):
         return [self._table.cellWidget(row, LISTEN) for row in xrange(self._table.rowCount())]
 
     def _listenTo(self, track):
-        for button in self.allListenButtons():
-            if button is not self.sender():
-                button.setChecked(False)
-
         if self.sender().isChecked():
             self._player.play(track.filename)
         else:

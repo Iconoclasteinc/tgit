@@ -14,16 +14,21 @@ from tgit.ui.track_list_panel import TrackListPanel
 
 class FakePlayer(object):
     def __init__(self):
-        self.playing = False
+        self.track = None
 
     def isPlaying(self):
-        return self.playing
+        return self.track is not None
 
     def play(self, track):
-        self.playing = True
+        if self.track:
+            self.listener.mediaStopped(self.track)
+        self.track = track
 
     def stop(self):
-        self.playing = False
+        self.track = None
+
+    def addMediaListener(self, listener):
+        self.listener = listener
 
 
 class TrackListPanelTest(BaseWidgetTest):
@@ -58,22 +63,31 @@ class TrackListPanelTest(BaseWidgetTest):
     def testCanPlayAndStopATrack(self):
         self.panel.addTrack(doubles.track(filename='track.mp3'))
 
-        self.player.should_call('play').twice().with_args('track.mp3').when(self._notPlayingMusic())
-        self.player.should_call('stop').once().when(self._playingMusic())
+        self.player.should_call('play').with_args('track.mp3').when(self._notPlayingMusic())
+        self.player.should_call('stop').when(self._playingMusic())
 
-        self.tagger.playTrack(1)
-        self.tagger.stopTrack(1)
-        self.tagger.playTrack(1)
+        self.tagger.isNotPlayingTrack(1)
+        self.tagger.clickPlayButton(1)
+        self.tagger.isPlayingTrack(1)
+        self.tagger.clickPlayButton(1)
+        self.tagger.isNotPlayingTrack(1)
 
     def testPlayingATrackStopsCurrentlyPlayingTrack(self):
         self.panel.addTrack(doubles.track(filename='track1.mp3'))
         self.panel.addTrack(doubles.track(filename='track2.mp3'))
 
-        self.player.should_call('play').with_args('track1.mp3').ordered()
-        self.player.should_call('play').with_args('track2.mp3').ordered()
+        self.player.should_call('play').once().with_args('track1.mp3').ordered()
+        self.player.should_call('play').once().with_args('track2.mp3').ordered()
 
         self.tagger.playTrack(1)
         self.tagger.playTrack(2)
+        self.tagger.isNotPlayingTrack(1)
+
+    def testPlayButtonIsRestoredWhenTrackHasFinishedPlaying(self):
+        self.panel.addTrack(doubles.track(filename='track.mp3'))
+        self.tagger.playTrack(1)
+        self.panel.mediaPaused('track.mp3')
+        self.tagger.isNotPlayingTrack(1)
 
     def _notPlayingMusic(self):
         return lambda: not self.player.isPlaying()
