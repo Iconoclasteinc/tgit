@@ -34,6 +34,8 @@ def copyTrack(track):
 
 def clearTags(track):
     track.clear()
+    if track.tags is None:
+        track.add_tags()
     track.save()
 
 
@@ -79,9 +81,9 @@ class PhononPlayer(object):
         return self._media.state() == Phonon.PlayingState
 
     def play(self, track):
-        self._playingTrack = track
         self._media.setCurrentSource(Phonon.MediaSource(self._source(track)))
         self._media.play()
+        self._playingTrack = track
 
     def _source(self, track):
         # On Windows, we have 2 issues with Phonon:
