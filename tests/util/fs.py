@@ -14,12 +14,10 @@ def guessMimeType(filename):
     return mimetypes.guess_type(filename)[0]
 
 
-def makeCopy(originalFile):
-    workingFile, path = tempfile.mkstemp(suffix='.mp3')
-    try:
-        shutil.copy(originalFile, path)
-    finally:
-        os.close(workingFile)
+def makeCopy(filename):
+    _, ext = os.path.splitext(filename)
+    copy, path = tempfile.mkstemp(suffix=ext)
+    os.close(copy)
+    shutil.copy(filename, path)
     return path
-
 

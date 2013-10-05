@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from hamcrest import equal_to, contains, has_length
-
 from tests.util import fs
 
 

@@ -61,10 +61,11 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.showsTrack('Track 2')
 
     def testCanPlayAndStopATrack(self):
-        self.panel.addTrack(doubles.track(filename='track.mp3'))
+        track = doubles.track()
+        self.panel.addTrack(track)
 
-        self.player.should_call('play').with_args('track.mp3').when(self._notPlayingMusic())
-        self.player.should_call('stop').when(self._playingMusic())
+        self.player.should_call('play').once().with_args(track).when(self._notPlayingMusic())
+        self.player.should_call('stop').once().when(self._playingMusic())
 
         self.tagger.isNotPlayingTrack(1)
         self.tagger.clickPlayButton(1)
@@ -73,20 +74,23 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.isNotPlayingTrack(1)
 
     def testPlayingATrackStopsCurrentlyPlayingTrack(self):
-        self.panel.addTrack(doubles.track(filename='track1.mp3'))
-        self.panel.addTrack(doubles.track(filename='track2.mp3'))
+        firstTrack = doubles.track()
+        self.panel.addTrack(firstTrack)
+        secondTrack = doubles.track()
+        self.panel.addTrack(secondTrack)
 
-        self.player.should_call('play').once().with_args('track1.mp3').ordered()
-        self.player.should_call('play').once().with_args('track2.mp3').ordered()
+        self.player.should_call('play').once().with_args(firstTrack).ordered()
+        self.player.should_call('play').once().with_args(secondTrack).ordered()
 
         self.tagger.playTrack(1)
         self.tagger.playTrack(2)
         self.tagger.isNotPlayingTrack(1)
 
     def testPlayButtonIsRestoredWhenTrackHasFinishedPlaying(self):
-        self.panel.addTrack(doubles.track(filename='track.mp3'))
+        track = doubles.track()
+        self.panel.addTrack(track)
         self.tagger.playTrack(1)
-        self.panel.mediaPaused('track.mp3')
+        self.panel.mediaPaused(track)
         self.tagger.isNotPlayingTrack(1)
 
     def _notPlayingMusic(self):

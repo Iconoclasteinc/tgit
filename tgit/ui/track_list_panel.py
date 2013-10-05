@@ -89,7 +89,7 @@ class TrackListPanel(QWidget, audio.MediaListener):
 
     def _listenButtonFor(self, media):
         for index, track in enumerate(self._tracks):
-            if track.filename == media:
+            if track == media:
                 return self._listenButton(index)
 
     def _listenButton(self, index):
@@ -100,6 +100,6 @@ class TrackListPanel(QWidget, audio.MediaListener):
 
     def _listenTo(self, track):
         if self.sender().isChecked():
-            self._player.play(track.filename)
+            self._player.play(track)
         else:
             self._player.stop()

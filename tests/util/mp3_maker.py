@@ -4,7 +4,7 @@ import os
 from mutagen import mp3, id3
 
 import resources
-import fs
+from tests.util import fs
 
 
 class MP3Sample(object):
