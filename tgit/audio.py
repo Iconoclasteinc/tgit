@@ -83,6 +83,7 @@ class PhononPlayer(object):
     def play(self, track):
         self._media.setCurrentSource(Phonon.MediaSource(self._source(track)))
         self._media.play()
+        # might want to delete the temp file for the previous track at some point
         self._playingTrack = track
 
     def _source(self, track):
@@ -101,7 +102,9 @@ class PhononPlayer(object):
 
     def _stateChanged(self, is_, was):
         if was == self.PLAYING:
-            if is_ == self.STOPPED:
+            # On OSX loading a new media source triggers a transition to the stopped state first
+            # whereas on Windows it goes straight to the LOADING state
+            if is_ == self.STOPPED or is_ == self.LOADING:
                 self._announceStopped(self._playingTrack)
             if is_ == self.PAUSED:
                 self._announcePaused(self._playingTrack)
