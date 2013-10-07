@@ -8,6 +8,7 @@ from test.cute.finders import WidgetIdentity
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import resources, doubles
 from test.util.matchers import samePictureAs
+from test.util.mp3_maker import MP3
 
 from tgit.ui.main_window import MainWindow
 
@@ -24,28 +25,28 @@ class MainWindowTest(BaseWidgetTest):
 
     # todo Move to welcome panel tests once welcome panel is extracted
     def testImportsTrackToAlbumWhenAddTrackButtonIsClicked(self):
-        trackFile = resources.path("Hallelujah.mp3")
-        importRequest = ValueMatcherProbe(equal_to(trackFile), "request to import track")
+        trackFile = MP3().make().filename
+        addTrackRequest = ValueMatcherProbe(equal_to(trackFile), "request to add track")
 
-        class DetectTrackImport(object):
-            def importTrack(self, filename):
-                importRequest.setReceivedValue(filename)
+        class AddTrackToAlbumProbe(object):
+            def addToAlbum(self, filename):
+                addTrackRequest.setReceivedValue(filename)
 
-        self.mainWindow.setMusicDirector(DetectTrackImport())
+        self.mainWindow.setMusicDirector(AddTrackToAlbumProbe())
         self.tagger.addTrackToAlbum(trackFile)
-        self.tagger.check(importRequest)
+        self.tagger.check(addTrackRequest)
 
     def testImportsTrackToAlbumWhenImportTrackMenuItemIsSelected(self):
-        trackFile = resources.path("Hallelujah.mp3")
-        importRequest = ValueMatcherProbe(equal_to(trackFile), "request to import track")
+        trackFile = MP3().make().filename
+        addTrackRequest = ValueMatcherProbe(equal_to(trackFile), "request to add track")
 
-        class DetectTrackImport(object):
-            def importTrack(self, filename):
-                importRequest.setReceivedValue(filename)
+        class AddTrackToAlbumProbe(object):
+            def addToAlbum(self, filename):
+                addTrackRequest.setReceivedValue(filename)
 
-        self.mainWindow.setMusicDirector(DetectTrackImport())
+        self.mainWindow.setMusicDirector(AddTrackToAlbumProbe())
         self.tagger.importTrackThroughMenu(trackFile)
-        self.tagger.check(importRequest)
+        self.tagger.check(addTrackRequest)
 
     def testSwitchesToTrackListWhenFirstTrackIsImported(self):
         self.tagger.isShowingWelcomePanel()

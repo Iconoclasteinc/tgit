@@ -61,7 +61,7 @@ class MusicDirector(object):
     def __init__(self, ui):
         self._ui = ui
 
-    def importTrack(self, filename):
+    def addToAlbum(self, filename):
         track = MP3File(filename)
         self._ui.trackImported(track)
 

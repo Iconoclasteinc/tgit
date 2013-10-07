@@ -56,6 +56,9 @@ class MainWindow(QMainWindow):
     def setMusicDirector(self, director):
         self._musicDirector = director
 
+    def selectTrack(self):
+        self._addFileDialog.open()
+
     def _setupUi(self):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(640, 480)
@@ -75,7 +78,7 @@ class MainWindow(QMainWindow):
         self._fileMenu.setObjectName(FILE_MENU_NAME)
         self._importAction = QAction(self._fileMenu)
         self._importAction.setObjectName(IMPORT_TRACK_ACTION_NAME)
-        self._importAction.triggered.connect(self._addFileDialog.open)
+        self._importAction.triggered.connect(self.selectTrack)
         self._fileMenu.addAction(self._importAction)
         menuBar.addMenu(self._fileMenu)
 
@@ -88,10 +91,10 @@ class MainWindow(QMainWindow):
         self._addFileDialog.setDirectory(QDir.homePath())
         self._addFileDialog.setOption(QFileDialog.DontUseNativeDialog)
         self._addFileDialog.setModal(True)
-        self._addFileDialog.fileSelected.connect(self._importTrackFile)
+        self._addFileDialog.fileSelected.connect(self._fireAddTrackToAlbum)
 
-    def _importTrackFile(self, filename):
-        self._musicDirector.importTrack(filename)
+    def _fireAddTrackToAlbum(self, filename):
+        self._musicDirector.addToAlbum(filename)
 
     def _makeButtonBar(self):
         self._buttonBar = QWidget()
@@ -149,7 +152,7 @@ class MainWindow(QMainWindow):
         self._mainPanel = QWidget()
         layout = QVBoxLayout()
         self._pages = QStackedWidget()
-        trackListPanel = TrackListPanel(self._player)
+        trackListPanel = TrackListPanel(self._player, self)
         self._pages.addWidget(trackListPanel)
         albumPanel = AlbumPanel()
         self._pages.addWidget(albumPanel)
@@ -207,7 +210,7 @@ class MainWindow(QMainWindow):
         layout.addStretch()
         self._addFileButton = QPushButton()
         self._addFileButton.setObjectName(ADD_FILE_BUTTON_NAME)
-        self._addFileButton.clicked.connect(self._addFileDialog.open)
+        self._addFileButton.clicked.connect(self.selectTrack)
         layout.addWidget(self._addFileButton)
         layout.addStretch()
         self._welcomePanel.setLayout(layout)

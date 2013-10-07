@@ -20,7 +20,7 @@
 import functools
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem,
-                         QHeaderView)
+                         QHeaderView, QHBoxLayout)
 
 from tgit import audio
 from tgit.null import Null
@@ -28,6 +28,7 @@ from tgit.null import Null
 ALBUM_CONTENT_PANEL_NAME = 'Album Content Panel'
 TRACK_TABLE_NAME = 'Track Table'
 PLAY_BUTTON_NAME = 'Play Button'
+ADD_BUTTON_NAME = 'Add Button'
 
 TITLE = 0
 DURATION = 1
@@ -40,12 +41,14 @@ def asDuration(seconds):
 
 
 class TrackListPanel(QWidget, audio.MediaListener):
-    def __init__(self, player=Null(), parent=None):
+    def __init__(self, player=Null(), handler=Null(), parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
         self._player = player
         self._player.addMediaListener(self)
+        self._requestHandler = handler
         self._fill()
+        self.localize()
         self._tracks = []
 
     def mediaStopped(self, media):
@@ -54,10 +57,14 @@ class TrackListPanel(QWidget, audio.MediaListener):
     def mediaPaused(self, media):
         self.mediaStopped(media)
 
+    def setRequestHandler(self, handler):
+        self._requestHandler = handler
+
     def _fill(self):
         self._layout = QVBoxLayout()
         self.setLayout(self._layout)
         self._addTrackTable(self._layout)
+        self._addButtons(self._layout)
 
     def _addTrackTable(self, layout):
         self._table = QTableWidget()
@@ -87,6 +94,21 @@ class TrackListPanel(QWidget, audio.MediaListener):
         playButton.clicked.connect(functools.partial(self._listenTo, track))
         self._table.setCellWidget(newRow, LISTEN, playButton)
         self._tracks.append(track)
+
+    def _addButtons(self, layout):
+        buttonLayout = QHBoxLayout()
+        self._addButton = QPushButton()
+        self._addButton.setObjectName(ADD_BUTTON_NAME)
+        self._addButton.clicked.connect(self._fireSelectTrack)
+        buttonLayout.addWidget(self._addButton)
+        buttonLayout.addStretch()
+        layout.addLayout(buttonLayout)
+
+    def _fireSelectTrack(self):
+        self._requestHandler.selectTrack()
+
+    def localize(self):
+        self._addButton.setText(self.tr('Add Track...'))
 
     def _listenButtonFor(self, media):
         for index, track in enumerate(self._tracks):

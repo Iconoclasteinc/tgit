@@ -43,6 +43,10 @@ class TrackListPanelDriver(WidgetDriver):
         self.clickPlayButton(track)
         self.isNotPlayingTrack(track)
 
+    def addTrack(self):
+        button = AbstractButtonDriver.findIn(self, QPushButton, named(ui.ADD_BUTTON_NAME))
+        button.click()
+
     def _trackTable(self):
         return TableDriver.findIn(self, QTableWidget, named(ui.TRACK_TABLE_NAME))
 
