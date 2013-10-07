@@ -19,6 +19,8 @@
 
 from PyQt4.QtGui import (QWidget, QGridLayout, QVBoxLayout, QLabel, QLineEdit)
 
+from tgit.ui import display
+
 # todo consider moving all ui constants to the same module (ui?)
 TRACK_PANEL_NAME = 'Track Panel'
 TRACK_TITLE_NAME = 'Track Title'
@@ -27,14 +29,6 @@ FEATURED_GUEST_NAME = "Featured Guest"
 ISRC_NAME = "ISRC"
 BITRATE_NAME = "Bitrate"
 DURATION_NAME = "Duration"
-
-
-def toKbps(bps):
-    return int(round(bps, -3) / 1000)
-
-
-def asDuration(seconds):
-    return "%02d:%02d" % divmod(round(seconds), 60)
 
 
 class TrackPanel(QWidget):
@@ -121,8 +115,8 @@ class TrackPanel(QWidget):
         self._versionInfoEdit.setText(track.versionInfo)
         self._featuredGuestEdit.setText(track.featuredGuest)
         self._isrcEdit.setText(track.isrc)
-        self._bitrateInfoLabel.setText("%s kbps" % toKbps(track.bitrate))
-        self._durationInfoLabel.setText(asDuration(track.duration))
+        self._bitrateInfoLabel.setText("%s kbps" % display.toKbps(track.bitrate))
+        self._durationInfoLabel.setText(display.asDuration(track.duration))
 
     def updateTrack(self, track):
         track.trackTitle = self._trackTitleEdit.text()

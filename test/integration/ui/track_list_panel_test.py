@@ -49,13 +49,18 @@ class TrackListPanelTest(BaseWidgetTest):
         return TrackListPanelDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysColumnHeadings(self):
-        self.tagger.showsColumnHeaders('Track Title', 'Duration', '')
+        self.tagger.showsColumnHeaders('Track Title', 'Lead Performer', 'Release Name',
+                                       'Bitrate', 'Duration', '')
 
     def testDisplaysTrackDetailsInColumns(self):
         track = doubles.track(trackTitle='Banana Song',
+                              leadPerformer='Tim, Stuart, Dave',
+                              releaseName='Despicable Me',
+                              bitrate=192000,
                               duration=timedelta(minutes=3, seconds=43).total_seconds())
         self.trackList.addTrack(track)
-        self.tagger.showsTrack('Banana Song', '03:43')
+        self.tagger.showsTrack('Banana Song', 'Tim, Stuart, Dave', 'Despicable Me',
+                               '192 kbps', '03:43')
 
     def testDisplaysAllTracksInRows(self):
         self.trackList.addTrack(doubles.track(trackTitle='Track 1'))

@@ -23,6 +23,7 @@ from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QTable
                          QHeaderView, QHBoxLayout)
 
 from tgit import audio
+from tgit.ui import display
 from tgit.null import Null
 
 ALBUM_CONTENT_PANEL_NAME = 'Album Content Panel'
@@ -30,14 +31,12 @@ TRACK_TABLE_NAME = 'Track Table'
 PLAY_BUTTON_NAME = 'Play Button'
 ADD_BUTTON_NAME = 'Add Button'
 
-TITLE = 0
-DURATION = 1
-LISTEN = 2
-
-
-# todo Put back in MP3File
-def asDuration(seconds):
-    return "%02d:%02d" % divmod(round(seconds), 60)
+TRACK_TITLE = 0
+LEAD_PERFORMER = 1
+RELEASE_NAME = 2
+BITRATE = 3
+DURATION = 4
+LISTEN = 5
 
 
 class TrackListPanel(QWidget, audio.MediaListener):
@@ -73,18 +72,22 @@ class TrackListPanel(QWidget, audio.MediaListener):
         self._table.setEditTriggers(QTableWidget.NoEditTriggers)
         self._table.setSelectionMode(QTableWidget.NoSelection)
         self._table.setShowGrid(False)
-        headers = [self.tr('Track Title'), self.tr('Duration'), '']
+        headers = [self.tr('Track Title'), self.tr('Lead Performer'), self.tr('Release Name'),
+                   self.tr('Bitrate'), self.tr('Duration'), self.tr('')]
         self._table.setColumnCount(len(headers))
         self._table.setHorizontalHeaderLabels(headers)
-        self._table.horizontalHeader().setResizeMode(TITLE, QHeaderView.Stretch)
+        self._table.horizontalHeader().setResizeMode(TRACK_TITLE, QHeaderView.Stretch)
         layout.addWidget(self._table)
 
     def addTrack(self, track):
         newRow = self._table.rowCount()
         self._table.insertRow(newRow)
-        title = QTableWidgetItem(track.trackTitle)
-        self._table.setItem(newRow, TITLE, title)
-        duration = QTableWidgetItem(asDuration(track.duration))
+        self._table.setItem(newRow, TRACK_TITLE, QTableWidgetItem(track.trackTitle))
+        self._table.setItem(newRow, LEAD_PERFORMER, QTableWidgetItem(track.leadPerformer))
+        self._table.setItem(newRow, RELEASE_NAME, QTableWidgetItem(track.releaseName))
+        self._table.setItem(newRow, BITRATE,
+                            QTableWidgetItem("%d kbps" % display.toKbps(track.bitrate)))
+        duration = QTableWidgetItem(display.asDuration(track.duration))
         duration.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self._table.setItem(newRow, DURATION, duration)
         playButton = QPushButton()

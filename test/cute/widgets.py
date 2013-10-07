@@ -8,9 +8,9 @@ from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from test.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
-                               WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe)
+                              WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe)
 from test.cute.finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder,
-                                NthWidgetFinder, WidgetSelector)
+                               NthWidgetFinder, WidgetSelector)
 from test.cute import properties, gestures, keyboard_shortcuts as shortcuts, matchers as match
 
 
@@ -48,13 +48,13 @@ class WidgetDriver(object):
     def findIn(cls, parent, widgetType, *matchers):
         return cls(SingleWidgetFinder(
             RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector)),
-            parent.prober, parent.gesturePerformer)
+                   parent.prober, parent.gesturePerformer)
 
     @classmethod
     def nthIn(cls, parent, widgetType, index, *matchers):
         return cls(NthWidgetFinder(
             RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector), index),
-            parent.prober, parent.gesturePerformer)
+                   parent.prober, parent.gesturePerformer)
 
     def isShowingOnScreen(self):
         self.is_(match.showingOnScreen())
@@ -375,7 +375,7 @@ class TableDriver(WidgetDriver):
 
             def _headersOf(self, table):
                 return [table.horizontalHeaderItem(column)
-                           for column in xrange(table.columnCount())]
+                        for column in xrange(table.columnCount())]
 
             def _matches(self, table):
                 return self._matcher.matches(self._headersOf(table))
@@ -415,19 +415,43 @@ class TableDriver(WidgetDriver):
 
         self.is_(ContainingCells(matching))
 
-    def clickOnCell(self, row, column):
-        class CalculateCellPosition(object):
-            def __call__(self, table):
-                rowOffset = table.horizontalHeader().height() + table.rowViewportPosition(row)
-                columnOffset = table.verticalHeader().width() + \
-                               table.columnViewportPosition(column)
-                relativeCenter = QPoint(columnOffset + table.columnWidth(column) / 2,
-                                        rowOffset + table.rowHeight(row) / 2)
-                self.center = table.mapToGlobal(relativeCenter)
+    def scrollCellToVisible(self, column, row):
+        class ScrollCellToVisible(object):
+            def __init__(self, row, column):
+                self._row = row
+                self._column = column
 
-        cellPosition = CalculateCellPosition()
-        self.manipulate("calculate cell position", cellPosition)
+            def __call__(self, table):
+                table.scrollTo(table.indexAt(QPoint(table.columnViewportPosition(self._column),
+                                                    table.rowViewportPosition(self._row))))
+
+        scrollCellToVisible = ScrollCellToVisible(row, column)
+        self.manipulate("scroll cell (%s, %s) into view" % (row, column), scrollCellToVisible)
+
+    def _clickAt(self, column, row):
+        class CalculateCellPosition(object):
+            def __init__(self, row, column):
+                self._row = row
+                self._column = column
+
+            def centerOfCell(self, table):
+                rowOffset = table.horizontalHeader().height() + \
+                            table.rowViewportPosition(self._row)
+                columnOffset = table.verticalHeader().width() + \
+                               table.columnViewportPosition(self._column)
+                return QPoint(columnOffset + table.columnWidth(column) / 2,
+                              rowOffset + table.rowHeight(row) / 2)
+
+            def __call__(self, table):
+                self.center = table.mapToGlobal(self.centerOfCell(table))
+
+        cellPosition = CalculateCellPosition(row, column)
+        self.manipulate("calculate cell (%s, %s) center position % (row, column)", cellPosition)
         self.perform(gestures.clickAt(cellPosition.center))
+
+    def clickOnCell(self, row, column):
+        self.scrollCellToVisible(column, row)
+        self._clickAt(column, row)
 
     def widgetInCell(self, row, column):
         class WidgetAt(WidgetSelector):
@@ -438,7 +462,7 @@ class TableDriver(WidgetDriver):
                 self._column = column
 
             def describeTo(self, description):
-                description.append_text("widget in cell (%s, %s)" % (self._row,self._column))
+                description.append_text("widget in cell (%s, %s)" % (self._row, self._column))
                 description.append_text("\n    in ")
                 description.append_description_of(self._tableSelector)
 
@@ -446,7 +470,7 @@ class TableDriver(WidgetDriver):
                 self._tableSelector.describeFailureTo(description)
                 if self._tableSelector.isSatisfied():
                     if self.isSatisfied():
-                        description.append_text("\n    cell (%s, %s)" % (self._row,self._column))
+                        description.append_text("\n    cell (%s, %s)" % (self._row, self._column))
                     else:
                         description.append_text("\n    had no widget in cell (%s, %s) "
                                                 % (self._row, self._column))

@@ -65,7 +65,7 @@ class Robot(object):
         widget = QApplication.widgetAt(x, y)
         if not widget:
             raise AssertionError("No widget at screen position (%d, %d)!"
-                                 "Have you moved the mouse while running the tests?" % (x, y))
+                                 " Have you moved the mouse while running the tests?" % (x, y))
         return widget
 
     def _cursorRelativePositionTo(self, target):
