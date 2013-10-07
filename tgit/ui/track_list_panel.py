@@ -23,6 +23,7 @@ from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QTable
                          QHeaderView)
 
 from tgit import audio
+from tgit.null import Null
 
 ALBUM_CONTENT_PANEL_NAME = 'Album Content Panel'
 TRACK_TABLE_NAME = 'Track Table'
@@ -39,7 +40,7 @@ def asDuration(seconds):
 
 
 class TrackListPanel(QWidget, audio.MediaListener):
-    def __init__(self, player=audio.noSound(), parent=None):
+    def __init__(self, player=Null(), parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
         self._player = player

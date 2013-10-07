@@ -21,10 +21,11 @@ from PyQt4.QtCore import (QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenu, QAction, QStatusBar, QVBoxLayout,
                          QHBoxLayout, QPushButton, QFileDialog, QStackedWidget)
 
-from tgit import audio as audio
+from tgit.null import Null
 from tgit.ui.track_list_panel import TrackListPanel
 from tgit.ui.album_panel import AlbumPanel
 from tgit.ui.track_panel import TrackPanel
+
 
 MAIN_WINDOW_NAME = "TGiT"
 FILE_MENU_NAME = 'File Menu'
@@ -41,16 +42,19 @@ TRACK_PANEL = 2
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, player=audio.noSound()):
+    def __init__(self, player=Null(), musicDirector=Null()):
         QMainWindow.__init__(self)
-        self._musicDirector = None
         self._player = player
+        self._musicDirector = musicDirector
         # We still don't have an album concept
         self._tracks = []
         self._setupUi()
         self.show()
         self.raise_()
         self.activateWindow()
+
+    def setMusicDirector(self, director):
+        self._musicDirector = director
 
     def _setupUi(self):
         self.setObjectName(MAIN_WINDOW_NAME)
@@ -87,8 +91,7 @@ class MainWindow(QMainWindow):
         self._addFileDialog.fileSelected.connect(self._importTrackFile)
 
     def _importTrackFile(self, filename):
-        if self._musicDirector:
-            self._musicDirector.importTrack(filename)
+        self._musicDirector.importTrack(filename)
 
     def _makeButtonBar(self):
         self._buttonBar = QWidget()
@@ -111,9 +114,6 @@ class MainWindow(QMainWindow):
         self._nextStepButton.clicked.connect(self._showNextPage)
         layout.addWidget(self._nextStepButton)
 
-    def addMusicDirector(self, director):
-        self._musicDirector = director
-
     def _trackListPanel(self):
         return self._pages.widget(TRACK_LIST_PANEL)
 
@@ -123,11 +123,10 @@ class MainWindow(QMainWindow):
     def _trackPanel(self, index):
         return self._pages.widget(TRACK_PANEL + index)
 
-    def addTrack(self, track):
+    def _addTrackPage(self, track):
         trackPanel = TrackPanel()
         trackPanel.setTrack(track)
         self._pages.addWidget(trackPanel)
-        self._tracks.append(track)
 
     def trackImported(self, track):
         self._trackListPanel().addTrack(track)
@@ -140,7 +139,8 @@ class MainWindow(QMainWindow):
         if self._onLastPage():
             self._nextStepButton.setEnabled(True)
 
-        self.addTrack(track)
+        self._addTrackPage(track)
+        self._tracks.append(track)
 
     def _albumEmpty(self):
         return not self._tracks
@@ -198,9 +198,7 @@ class MainWindow(QMainWindow):
 
     def _saveAlbum(self):
         self._updateAlbumWithMetadata()
-        # todo there should be a null implementation set by default
-        if self._musicDirector:
-            self._musicDirector.saveAlbum(self._tracks)
+        self._musicDirector.saveAlbum(self._tracks)
 
     # todo Extract a WelcomePanel
     def _makeWelcomePanel(self):

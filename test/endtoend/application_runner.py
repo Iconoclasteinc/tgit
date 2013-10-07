@@ -4,7 +4,7 @@
 import use_sip_api_v2
 
 from tgit.tagger import TGiT
-from tgit import audio
+from tgit.null import Null
 from tgit.ui import main_window as main
 
 from test.cute.matchers import named, showingOnScreen
@@ -18,7 +18,7 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self):
-        self.app = TGiT('en', audio.noSound())
+        self.app = TGiT(locale='en', player=Null())
         self.tagger = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())

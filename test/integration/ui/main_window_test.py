@@ -31,7 +31,7 @@ class MainWindowTest(BaseWidgetTest):
             def importTrack(self, filename):
                 importRequest.setReceivedValue(filename)
 
-        self.mainWindow.addMusicDirector(DetectTrackImport())
+        self.mainWindow.setMusicDirector(DetectTrackImport())
         self.tagger.addTrackToAlbum(trackFile)
         self.tagger.check(importRequest)
 
@@ -43,7 +43,7 @@ class MainWindowTest(BaseWidgetTest):
             def importTrack(self, filename):
                 importRequest.setReceivedValue(filename)
 
-        self.mainWindow.addMusicDirector(DetectTrackImport())
+        self.mainWindow.setMusicDirector(DetectTrackImport())
         self.tagger.importTrackThroughMenu(trackFile)
         self.tagger.check(importRequest)
 
@@ -125,7 +125,7 @@ class MainWindowTest(BaseWidgetTest):
             def saveAlbum(self, album):
                 trackIncludesAlbumAndTrackModifications.setReceivedValue(album)
 
-        self.mainWindow.addMusicDirector(CaptureSaveRequest())
+        self.mainWindow.setMusicDirector(CaptureSaveRequest())
         self.mainWindow.trackImported(doubles.track())
         self.tagger.nextStep()
         self.tagger.editAlbumMetadata(**modifications)
@@ -144,7 +144,7 @@ class MainWindowTest(BaseWidgetTest):
                 def saveAlbum(self, album):
                     allTracksAreSaved.setReceivedValue(album)
 
-            self.mainWindow.addMusicDirector(CaptureSaveRequest())
+            self.mainWindow.setMusicDirector(CaptureSaveRequest())
             self.mainWindow.trackImported(doubles.track())
             self.mainWindow.trackImported(doubles.track())
             self.mainWindow.trackImported(doubles.track())

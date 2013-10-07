@@ -39,24 +39,6 @@ def clearTags(track):
     track.save()
 
 
-def noSound():
-    return NullAudio()
-
-
-class NullAudio(object):
-    def isPlaying(self):
-        return False
-
-    def play(self, filename):
-        pass
-
-    def stop(self):
-        pass
-
-    def addMediaListener(self, listener):
-        pass
-
-
 class MediaListener(object):
     def mediaStopped(self, media):
         pass
