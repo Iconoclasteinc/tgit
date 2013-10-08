@@ -26,25 +26,25 @@ class MainWindowTest(BaseWidgetTest):
     # todo Move to welcome panel tests once welcome panel is extracted
     def testImportsTrackToAlbumWhenAddTrackButtonIsClicked(self):
         trackFile = MP3().make().filename
-        addTrackRequest = ValueMatcherProbe(equal_to(trackFile), "request to add track")
+        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(trackFile))
 
         class AddTrackToAlbumProbe(object):
             def addToAlbum(self, filename):
                 addTrackRequest.setReceivedValue(filename)
 
-        self.mainWindow.setMusicDirector(AddTrackToAlbumProbe())
+        self.mainWindow.setMusicProducer(AddTrackToAlbumProbe())
         self.tagger.addTrackToAlbum(trackFile)
         self.tagger.check(addTrackRequest)
 
     def testImportsTrackToAlbumWhenImportTrackMenuItemIsSelected(self):
         trackFile = MP3().make().filename
-        addTrackRequest = ValueMatcherProbe(equal_to(trackFile), "request to add track")
+        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(trackFile))
 
         class AddTrackToAlbumProbe(object):
             def addToAlbum(self, filename):
                 addTrackRequest.setReceivedValue(filename)
 
-        self.mainWindow.setMusicDirector(AddTrackToAlbumProbe())
+        self.mainWindow.setMusicProducer(AddTrackToAlbumProbe())
         self.tagger.importTrackThroughMenu(trackFile)
         self.tagger.check(addTrackRequest)
 
@@ -120,13 +120,13 @@ class MainWindowTest(BaseWidgetTest):
                              featuredGuest='Featured Guest',
                              isrc='AABB12345678')
         trackIncludesAlbumAndTrackModifications = \
-            ValueMatcherProbe(contains(hasMetadata(**modifications)), "request to save track")
+            ValueMatcherProbe("request to save track", contains(hasMetadata(**modifications)))
 
         class CaptureSaveRequest(object):
             def saveAlbum(self, album):
                 trackIncludesAlbumAndTrackModifications.setReceivedValue(album)
 
-        self.mainWindow.setMusicDirector(CaptureSaveRequest())
+        self.mainWindow.setMusicProducer(CaptureSaveRequest())
         self.mainWindow.trackImported(doubles.track())
         self.tagger.nextStep()
         self.tagger.editAlbumMetadata(**modifications)
@@ -136,16 +136,16 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.check(trackIncludesAlbumAndTrackModifications)
 
     def testSavesAllImportedTracks(self):
-            allTracksAreSaved = ValueMatcherProbe(contains(
+            allTracksAreSaved = ValueMatcherProbe( "request to save album", contains(
                 hasMetadata(releaseName='Album', trackTitle='Track 1'),
                 hasMetadata(releaseName='Album', trackTitle='Track 2'),
-                hasMetadata(releaseName='Album', trackTitle='Track 3')), "request to save album")
+                hasMetadata(releaseName='Album', trackTitle='Track 3')))
 
             class CaptureSaveRequest(object):
                 def saveAlbum(self, album):
                     allTracksAreSaved.setReceivedValue(album)
 
-            self.mainWindow.setMusicDirector(CaptureSaveRequest())
+            self.mainWindow.setMusicProducer(CaptureSaveRequest())
             self.mainWindow.trackImported(doubles.track())
             self.mainWindow.trackImported(doubles.track())
             self.mainWindow.trackImported(doubles.track())

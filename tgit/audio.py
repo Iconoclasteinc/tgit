@@ -47,7 +47,8 @@ class MediaListener(object):
         pass
 
 
-class PhononPlayer(object):
+# todo we need some tests
+class AudioPlayer(object):
     LOADING = Phonon.LoadingState
     STOPPED = Phonon.StoppedState
     PLAYING = Phonon.PlayingState
@@ -58,9 +59,6 @@ class PhononPlayer(object):
         self._media.stateChanged.connect(self._stateChanged)
         self._listeners = []
         self._playingTrack = None
-
-    def isPlaying(self):
-        return self._media.state() == Phonon.PlayingState
 
     def play(self, track):
         self._media.setCurrentSource(Phonon.MediaSource(self._source(track)))
@@ -91,6 +89,7 @@ class PhononPlayer(object):
             if is_ == self.PAUSED:
                 self._announcePaused(self._playingTrack)
 
+    # todo investigate using QObject signals & slots
     def _announceStopped(self, track):
         for listener in self._listeners:
             listener.mediaStopped(track)

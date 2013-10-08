@@ -21,10 +21,10 @@ import sys
 from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
+from tgit.producer import AlbumProducer
 # noinspection PyUnresolvedReferences
 from tgit import resources
-from tgit.audio import PhononPlayer
-from tgit.mp3 import MP3File
+from tgit.audio import AudioPlayer
 from tgit.ui.main_window import MainWindow
 
 TGIT = "tgit"
@@ -37,8 +37,8 @@ class TGiT(QApplication):
         QApplication.__init__(self, [])
         self._translators = []
         self.translateTo(locale)
-        self._ui = MainWindow(player or PhononPlayer())
-        self._ui.setMusicDirector(MusicDirector(self._ui))
+        self._ui = MainWindow(player or AudioPlayer())
+        self._ui.setMusicProducer(AlbumProducer(self._ui))
 
     def translateTo(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
@@ -53,21 +53,6 @@ class TGiT(QApplication):
 
     def run(self):
         return sys.exit(self.exec_())
-
-
-# todo collect tracks in album and let album notify listeners of album changes
-# I'm thinking trackAdded, trackRemoved and trackMoved events
-class MusicDirector(object):
-    def __init__(self, ui):
-        self._ui = ui
-
-    def addToAlbum(self, filename):
-        track = MP3File(filename)
-        self._ui.trackImported(track)
-
-    def saveAlbum(self, album):
-        for track in album:
-            track.save()
 
 
 def main(locale):

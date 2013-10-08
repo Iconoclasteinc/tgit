@@ -21,41 +21,49 @@ class TrackListPanelDriver(WidgetDriver):
         cellsMatching = [withText(detail) for detail in details]
         self._trackTable().hasRow(has_items(*cellsMatching))
 
-    def isPlayingTrack(self, track):
-        self._playButton(track).isDown()
+    def hasTrackCount(self, count):
+        self._trackTable().hasRowCount(count)
 
-    def isNotPlayingTrack(self, track):
-        self._playButton(track).isUp()
+    def isPlayingTrack(self, index):
+        self._showingPlayButton(index).isDown()
 
-    def clickPlayButton(self, track):
-        row, column = self._listenCell(track)
-        self._trackTable().clickOnCell(row, column)
+    def isNotPlayingTrack(self, index):
+        self._showingPlayButton(index).isUp()
 
-    def playTrack(self, track):
-        self.isNotPlayingTrack(track)
+    def clickPlayButton(self, index):
+        self._trackTable().clickOnCell(index, ui.LISTEN)
+
+    def playTrack(self, index):
+        self.isNotPlayingTrack(index)
         # We can't just click on the button, it's not aware of its position in the table
-        self.clickPlayButton(track)
-        self.isPlayingTrack(track)
+        self.clickPlayButton(index)
+        self.isPlayingTrack(index)
 
-    def stopTrack(self, track):
-        self.isPlayingTrack(track)
+    def stopTrack(self, index):
+        self.isPlayingTrack(index)
         # We can't just click on the button, it's not aware of its position in the table
-        self.clickPlayButton(track)
-        self.isNotPlayingTrack(track)
+        self.clickPlayButton(index)
+        self.isNotPlayingTrack(index)
 
     def addTrack(self):
         button = AbstractButtonDriver.findIn(self, QPushButton, named(ui.ADD_BUTTON_NAME))
         button.click()
 
-    def _trackTable(self):
-        return TableDriver.findIn(self, QTableWidget, named(ui.TRACK_TABLE_NAME))
+    def removeTrack(self, index):
+        self._showingRemoveTrackButton(index)
+        self._trackTable().clickOnCell(index, ui.REMOVE)
 
-    def _playButton(self, track):
-        row, column = self._listenCell(track)
-        button = AbstractButtonDriver.findIn(self._trackTable().widgetInCell(row, column),
-                                             QPushButton, named(ui.PLAY_BUTTON_NAME))
+    def _showingRemoveTrackButton(self, index):
+        button = AbstractButtonDriver.findIn(self._trackTable().widgetInCell(index, ui.REMOVE),
+                                             QPushButton, named(ui.REMOVE_BUTTON_NAME))
         button.isShowingOnScreen()
         return button
 
-    def _listenCell(self, track):
-        return track - 1, ui.LISTEN
+    def _trackTable(self):
+        return TableDriver.findIn(self, QTableWidget, named(ui.TRACK_TABLE_NAME))
+
+    def _showingPlayButton(self, index):
+        button = AbstractButtonDriver.findIn(self._trackTable().widgetInCell(index, ui.LISTEN),
+                                             QPushButton, named(ui.PLAY_BUTTON_NAME))
+        button.isShowingOnScreen()
+        return button

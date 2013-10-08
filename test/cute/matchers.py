@@ -60,6 +60,10 @@ def unchecked():
     return StateMatcher(lambda b: not b.isChecked(), "unchecked", "checked")
 
 
+def withRowCount(count):
+    return with_(properties.rowCount(), wrap_matcher(count))
+
+
 class QueryResultMatcher(BaseMatcher):
     def __init__(self, query, matcher):
         super(BaseMatcher, self).__init__()

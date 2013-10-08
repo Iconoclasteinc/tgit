@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from hamcrest import anything
+
 from PyQt4.QtCore import QPoint, QRect
 
 from test.cute.prober import Probe
@@ -128,12 +130,16 @@ class WidgetScreenBoundsProbe(Probe):
 
 
 class ValueMatcherProbe(Probe):
-    def __init__(self, matcher, message):
+    def __init__(self, message, matcher=anything()):
         super(ValueMatcherProbe, self).__init__()
-        self._valueMatcher = matcher
         self._message = message
-        self._hasReceivedAValue = False
+        self.expects(matcher)
+
+    def expects(self, matching):
+        self._valueMatcher = matching
         self._receivedValue = None
+        self._hasReceivedAValue = False
+        return self
 
     def test(self):
         pass

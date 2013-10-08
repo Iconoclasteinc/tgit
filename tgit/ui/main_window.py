@@ -42,10 +42,10 @@ TRACK_PANEL = 2
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, player=Null(), musicDirector=Null()):
+    def __init__(self, player=Null(), musicProducer=Null()):
         QMainWindow.__init__(self)
         self._player = player
-        self._musicDirector = musicDirector
+        self._musicProducer = musicProducer
         # We still don't have an album concept
         self._tracks = []
         self._setupUi()
@@ -53,8 +53,8 @@ class MainWindow(QMainWindow):
         self.raise_()
         self.activateWindow()
 
-    def setMusicDirector(self, director):
-        self._musicDirector = director
+    def setMusicProducer(self, producer):
+        self._musicProducer = producer
 
     def selectTrack(self):
         self._addFileDialog.open()
@@ -94,7 +94,7 @@ class MainWindow(QMainWindow):
         self._addFileDialog.fileSelected.connect(self._fireAddTrackToAlbum)
 
     def _fireAddTrackToAlbum(self, filename):
-        self._musicDirector.addToAlbum(filename)
+        self._musicProducer.addToAlbum(filename)
 
     def _makeButtonBar(self):
         self._buttonBar = QWidget()
@@ -132,7 +132,7 @@ class MainWindow(QMainWindow):
         self._pages.addWidget(trackPanel)
 
     def trackImported(self, track):
-        self._trackListPanel().addTrack(track)
+        self._trackListPanel().trackAdded(track)
 
         if self._albumEmpty():
             self._showPage(TRACK_LIST_PANEL)
@@ -201,7 +201,7 @@ class MainWindow(QMainWindow):
 
     def _saveAlbum(self):
         self._updateAlbumWithMetadata()
-        self._musicDirector.saveAlbum(self._tracks)
+        self._musicProducer.saveAlbum(self._tracks)
 
     # todo Extract a WelcomePanel
     def _makeWelcomePanel(self):

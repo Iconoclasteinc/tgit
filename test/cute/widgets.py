@@ -462,7 +462,7 @@ class TableDriver(WidgetDriver):
                 self._column = column
 
             def describeTo(self, description):
-                description.append_text("widget in cell (%s, %s)" % (self._row, self._column))
+                description.append_text("in cell (%s, %s) widget" % (self._row, self._column))
                 description.append_text("\n    in ")
                 description.append_description_of(self._tableSelector)
 
@@ -476,7 +476,10 @@ class TableDriver(WidgetDriver):
                                                 % (self._row, self._column))
 
             def widgets(self):
-                return self._cellWidget,
+                if self.isSatisfied():
+                    return self._cellWidget,
+                else:
+                    return ()
 
             def isSatisfied(self):
                 return self._cellWidget is not None
@@ -493,3 +496,6 @@ class TableDriver(WidgetDriver):
 
         return WidgetDriver(WidgetAt(self.selector, row, column), self.prober,
                             self.gesturePerformer)
+
+    def hasRowCount(self, matching):
+        self.is_(match.withRowCount(matching))
