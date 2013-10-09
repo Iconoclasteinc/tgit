@@ -6,7 +6,8 @@ ONE_SECOND_IN_MS = 60000
 AVERAGE_WORD_LENGTH = 5         # precisely 5.1 in english
 MEDIUM_TYPING_SPEED = 240       # in wpm
 FAST_TYPING_SPEED = 480         # in wpm
-MOUSE_CLICK_DELAY = 50          # in ms
+SUPER_FAST_TYPING_SPEED = 960   # in wpm
+MOUSE_CLICK_DELAY = 20          # in ms
 
 
 def sequence(*gestures):
@@ -26,7 +27,7 @@ def withModifiers(modifiers, gesture):
 
 
 def typeText(text):
-    return sequence(*[atSpeed(FAST_TYPING_SPEED, typeKey(c)) for c in text])
+    return sequence(*[atSpeed(SUPER_FAST_TYPING_SPEED, typeKey(c)) for c in text])
 
 
 def typeKey(key):

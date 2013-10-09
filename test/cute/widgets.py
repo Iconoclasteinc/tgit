@@ -120,7 +120,7 @@ class LabelDriver(WidgetDriver):
 
 
 class LineEditDriver(WidgetDriver):
-    EDITION_DELAY = 50
+    EDITION_DELAY = 20
 
     def hasText(self, text):
         self.has(properties.inputText(), equal_to(text))
@@ -149,7 +149,7 @@ class LineEditDriver(WidgetDriver):
 
 
 class FileDialogDriver(WidgetDriver):
-    NAVIGATION_DELAY = 50
+    NAVIGATION_DELAY = 20
 
     def showHiddenFiles(self):
         class ShowHiddenFiles(object):
@@ -189,7 +189,6 @@ class FileDialogDriver(WidgetDriver):
         self.perform(gestures.mouseDoubleClick())
 
     def selectFile(self, name):
-        self.isShowingOnScreen()
         self._listView().selectItem(match.withListItemText(name))
 
     def upOneFolder(self):
