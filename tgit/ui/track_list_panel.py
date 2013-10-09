@@ -90,8 +90,16 @@ class TrackListPanel(QWidget, audio.MediaListener):
                    self.tr('Bitrate'), self.tr('Duration'), self.tr(''), self.tr('')]
         self._table.setColumnCount(len(headers))
         self._table.setHorizontalHeaderLabels(headers)
-        self._table.horizontalHeader().setResizeMode(TRACK_TITLE, QHeaderView.Stretch)
+        self._table.verticalHeader().setMovable(True)
+        self._table.verticalHeader().sectionMoved.connect(self._rowMoved)
         layout.addWidget(self._table)
+
+    def _rowMoved(self, index, oldPosition, newPosition):
+        numbering = [str(self._table.verticalHeader().visualIndex(row) + 1)
+                     for row in xrange(self._table.rowCount())]
+        self._table.setVerticalHeaderLabels(numbering)
+
+        self._musicProducer.moveTrack(self._trackList[index], newPosition)
 
     def trackAdded(self, track):
         newRow = self._table.rowCount()

@@ -373,7 +373,7 @@ class TableDriver(WidgetDriver):
                 self._matcher = matcher
 
             def _headersOf(self, table):
-                return [table.horizontalHeaderItem(column)
+                return [table.horizontalHeaderItem(tableColumn(table, column))
                         for column in xrange(table.columnCount())]
 
             def _matches(self, table):
@@ -401,7 +401,7 @@ class TableDriver(WidgetDriver):
             def _matches(self, table):
                 for row in xrange(table.rowCount()):
                     if self._matcher.matches(self._cellsOf(table, row)):
-                        self.inRow = row
+                        self.inRow = table.visualRow(row)
                         return True
                 return False
 
@@ -417,30 +417,30 @@ class TableDriver(WidgetDriver):
         self.is_(containingCells)
         return containingCells.inRow
 
-    def scrollCellToVisible(self, column, row):
+    def scrollCellToVisible(self, row, column):
         class ScrollCellToVisible(object):
             def __init__(self, row, column):
                 self._row = row
                 self._column = column
 
             def __call__(self, table):
-                table.scrollTo(table.indexAt(QPoint(table.columnViewportPosition(self._column),
-                                                    table.rowViewportPosition(self._row))))
+                row, column = tableCell(table, self._row, self._column)
+                table.scrollTo(table.indexAt(QPoint(table.columnViewportPosition(column),
+                                                    table.rowViewportPosition(row))))
 
         scrollCellToVisible = ScrollCellToVisible(row, column)
         self.manipulate("scroll cell (%s, %s) into view" % (row, column), scrollCellToVisible)
 
-    def _clickAt(self, column, row):
+    def _clickAt(self, row, column):
         class CalculateCellPosition(object):
             def __init__(self, row, column):
                 self._row = row
                 self._column = column
 
             def centerOfCell(self, table):
-                rowOffset = table.horizontalHeader().height() + \
-                            table.rowViewportPosition(self._row)
-                columnOffset = table.verticalHeader().width() + \
-                               table.columnViewportPosition(self._column)
+                row, column = tableCell(table, self._row, self._column)
+                rowOffset = table.horizontalHeader().height() + table.rowViewportPosition(row)
+                columnOffset = table.verticalHeader().width() + table.columnViewportPosition(column)
                 return QPoint(columnOffset + table.columnWidth(column) / 2,
                               rowOffset + table.rowHeight(row) / 2)
 
@@ -448,12 +448,12 @@ class TableDriver(WidgetDriver):
                 self.center = table.mapToGlobal(self.centerOfCell(table))
 
         cellPosition = CalculateCellPosition(row, column)
-        self.manipulate("calculate cell (%s, %s) center position % (row, column)", cellPosition)
+        self.manipulate("calculate cell (%s, %s) center position" % (row, column), cellPosition)
         self.perform(gestures.clickAt(cellPosition.center))
 
     def clickOnCell(self, row, column):
-        self.scrollCellToVisible(column, row)
-        self._clickAt(column, row)
+        self.scrollCellToVisible(row, column)
+        self._clickAt(row, column)
 
     def widgetInCell(self, row, column):
         class WidgetAt(WidgetSelector):
@@ -494,10 +494,37 @@ class TableDriver(WidgetDriver):
                     return
 
                 table = self._tableSelector.widget()
-                self._cellWidget = table.cellWidget(self._row, self._column)
+                self._cellWidget = table.cellWidget(*tableCell(table, self._row, self._column))
 
         return WidgetDriver(WidgetAt(self.selector, row, column), self.prober,
                             self.gesturePerformer)
 
     def hasRowCount(self, matching):
         self.is_(match.withRowCount(matching))
+
+    def moveRow(self, oldPosition, newPosition):
+        class MoveRow(object):
+            def __init__(self, oldPosition, newPosition):
+                self._oldPosition = oldPosition
+                self._newPosition = newPosition
+
+            def __call__(self, table):
+                table.verticalHeader().moveSection(tableRow(table, oldPosition),
+                                                   tableRow(table, newPosition))
+
+        # We'd like to use gestures but drag and drop is not supported by our Robot
+        # so we have to use a manipulation
+        self.manipulate("move row %s to position %s" % (oldPosition, newPosition),
+                        MoveRow(oldPosition, newPosition))
+
+
+def tableColumn(table, column):
+    return table.horizontalHeader().logicalIndex(column)
+
+
+def tableRow(table, row):
+    return table.verticalHeader().logicalIndex(row)
+
+
+def tableCell(table, row, column):
+    return tableRow(table, row), tableColumn(table, column)

@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 from flexmock import flexmock
-from hamcrest import equal_to, has_property
+from hamcrest import equal_to, has_property, contains
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
 
@@ -12,6 +12,10 @@ from test.drivers.track_list_panel_driver import TrackListPanelDriver
 from test.util import doubles
 
 from tgit.ui.track_list_panel import TrackListPanel
+
+
+def hasTitle(title):
+    return has_property('trackTitle', title)
 
 
 class PlayerStub(object):
@@ -78,7 +82,7 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.clickPlayButton(0)
         self.tagger.isNotPlayingTrack(0)
 
-    def testRestoreListenButtonStateWhenTrackHasFinishedPlaying(self):
+    def testRestoresListenButtonStateWhenTrackHasFinishedPlaying(self):
         track0 = self._addTrackToList()
         track1 = self._addTrackToList()
 
@@ -90,7 +94,7 @@ class TrackListPanelTest(BaseWidgetTest):
         self.trackList.mediaPaused(track1)
         self.tagger.isNotPlayingTrack(1)
 
-    def testSelectsTrackWhenAddButtonIsClicked(self):
+    def testTriggersSelectTrackWhenAddButtonIsClicked(self):
         addTrackButtonClicked = ValueMatcherProbe("add track button", equal_to("clicked"))
 
         class SelectTrackProbe(object):
@@ -114,20 +118,20 @@ class TrackListPanelTest(BaseWidgetTest):
 
         self.trackList.setMusicProducer(RemoveTrackProbe())
 
-        trackRemoved.expects(has_property('trackTitle', 'Track 1'))
+        trackRemoved.expects(hasTitle('Track 1'))
         self.tagger.removeTrackAt(1)
         self.tagger.hasTrackCount(2)
         self.tagger.showsTrack("Track 0")
         self.tagger.showsTrack("Track 2")
         self.tagger.check(trackRemoved)
 
-        trackRemoved.expects(has_property('trackTitle', 'Track 0'))
+        trackRemoved.expects(hasTitle('Track 0'))
         self.tagger.removeTrackAt(0)
         self.tagger.hasTrackCount(1)
         self.tagger.showsTrack("Track 2")
         self.tagger.check(trackRemoved)
 
-        trackRemoved.expects(has_property('trackTitle', 'Track 2'))
+        trackRemoved.expects(hasTitle('Track 2'))
         self.tagger.removeTrackAt(0)
         self.tagger.hasTrackCount(0)
         self.tagger.check(trackRemoved)
@@ -156,6 +160,34 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.removeTrackAt(0)
         # Should be silently ignored
         self.trackList.mediaStopped(track0)
+
+    def testChangesTrackPositionInAlbumWhenTrackIsMoved(self):
+        self._addTrackToList(trackTitle="Track 0")
+        self._addTrackToList(trackTitle="Track 1")
+        self._addTrackToList(trackTitle="Track 2")
+
+        trackMoved = ValueMatcherProbe("move track")
+
+        class MoveTrackProbe(object):
+            def removeTrack(self, track):
+                pass
+
+            def moveTrack(self, track, position):
+                trackMoved.setReceivedValue((track, position))
+
+        self.trackList.setMusicProducer(MoveTrackProbe())
+
+        trackMoved.expects(contains(hasTitle('Track 2'), 1))
+        self.tagger.moveTrack(2, 1)
+        self.tagger.check(trackMoved)
+        self.tagger.removeTrackAt(2)
+        self.tagger.showsTrack("Track 2")
+
+        trackMoved.expects(contains(hasTitle('Track 2'), 0))
+        self.tagger.moveTrack(1, 0)
+        self.tagger.check(trackMoved)
+        self.tagger.removeTrackAt(1)
+        self.tagger.showsTrack("Track 2")
 
     def _addTrackToList(self, **details):
         track = doubles.track(**details)

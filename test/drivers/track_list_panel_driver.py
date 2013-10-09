@@ -59,6 +59,9 @@ class TrackListPanelDriver(WidgetDriver):
         self._showingRemoveTrackButton(index)
         self._trackTable().clickOnCell(index, ui.REMOVE)
 
+    def moveTrack(self, oldPosition, newPosition):
+        self._trackTable().moveRow(oldPosition, newPosition)
+
     def _showingRemoveTrackButton(self, index):
         button = AbstractButtonDriver.findIn(self._trackTable().widgetInCell(index, ui.REMOVE),
                                              QPushButton, named(ui.REMOVE_BUTTON_NAME))
