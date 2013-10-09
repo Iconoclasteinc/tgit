@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 from hamcrest import assert_that, has_properties
 
 from tgit.mp3 import MP3File
@@ -10,13 +9,15 @@ from test.util import matchers
 
 class FakeAudioLibrary(object):
     def __init__(self):
-        self.files = []
+        self.mp3s = []
 
-    def add(self, filename):
-        self.files.append(filename)
+    def add(self, mp3):
+        mp3.make()
+        self.mp3s.append(mp3)
+        return mp3
 
     def delete(self):
-        [os.remove(f) for f in self.files]
+        [mp3.delete() for mp3 in self.mp3s]
 
     def containsFile(self, name, **tags):
         if 'frontCoverFile' in tags:

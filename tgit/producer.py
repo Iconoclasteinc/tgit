@@ -27,13 +27,17 @@ class ProductionListener(object):
 
 # todo collect tracks in album and let album notify listeners of album changes
 # I'm thinking trackAdded, trackRemoved and trackMoved events, trackChanged, albumChanged
+# todo we need focused tests
 class AlbumProducer(object):
     def __init__(self, ui):
         self._ui = ui
 
     def addToAlbum(self, filename):
         track = MP3File(filename)
-        self._ui.trackImported(track)
+        self._ui.trackAdded(track)
+
+    def removeTrack(self, track):
+        self._ui.trackRemoved(track)
 
     def saveAlbum(self, album):
         for track in album:

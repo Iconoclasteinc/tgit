@@ -47,7 +47,7 @@ class MediaListener(object):
         pass
 
 
-# todo we need some tests
+# todo we need focused tests
 class AudioPlayer(object):
     LOADING = Phonon.LoadingState
     STOPPED = Phonon.StoppedState

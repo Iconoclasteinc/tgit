@@ -87,6 +87,10 @@ class TaggerDriver(MainWindowDriver):
     def hasNextStepDisabled(self):
         self._nextStepButton().isDisabled()
 
+    def removeTrack(self, title):
+        self.isShowingTrackList()
+        self._trackListPanel().removeTrack(title)
+
     # todo have a quick navigation button
     def navigateToAlbumMetadata(self):
         self.nextStep()
@@ -112,14 +116,7 @@ class TaggerDriver(MainWindowDriver):
         self._currentTrackPanel().showsMetadata(**tags)
 
     def editTrackMetadata(self, **tags):
-        if TRACK_TITLE in tags:
-            self._currentTrackPanel().changeTrackTitle(tags[TRACK_TITLE])
-        if VERSION_INFO in tags:
-            self._currentTrackPanel().changeVersionInfo(tags[VERSION_INFO])
-        if FEATURED_GUEST in tags:
-            self._currentTrackPanel().changeFeaturedGuest(tags[FEATURED_GUEST])
-        if ISRC in tags:
-            self._currentTrackPanel().changeIsrc(tags[ISRC])
+        self._currentTrackPanel().changeMetadata(**tags)
 
     def saveAlbum(self):
         self._saveButton().click()

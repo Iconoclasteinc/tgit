@@ -9,6 +9,7 @@ from test.drivers.tagger_driver import TaggerDriver
 from test.util import resources, doubles
 from test.util.matchers import samePictureAs
 from test.util.mp3_maker import MP3
+from test.util.fake_audio_library import FakeAudioLibrary
 
 from tgit.ui.main_window import MainWindow
 
@@ -19,55 +20,62 @@ class MainWindowTest(BaseWidgetTest):
         self.mainWindow = MainWindow()
         self.view(self.mainWindow)
         self.tagger = self.createDriverFor(self.mainWindow)
+        self.audioLibrary = FakeAudioLibrary()
+
+    def tearDown(self):
+        self.audioLibrary.delete()
+        super(MainWindowTest, self).tearDown()
 
     def createDriverFor(self, widget):
         return TaggerDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     # todo Move to welcome panel tests once welcome panel is extracted
     def testImportsTrackToAlbumWhenAddTrackButtonIsClicked(self):
-        trackFile = MP3().make().filename
-        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(trackFile))
+        mp3 = self.audioLibrary.add(MP3())
+        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(mp3.filename))
 
         class AddTrackToAlbumProbe(object):
             def addToAlbum(self, filename):
                 addTrackRequest.setReceivedValue(filename)
 
         self.mainWindow.setMusicProducer(AddTrackToAlbumProbe())
-        self.tagger.addTrackToAlbum(trackFile)
+        self.tagger.addTrackToAlbum(mp3.filename)
         self.tagger.check(addTrackRequest)
 
     def testImportsTrackToAlbumWhenImportTrackMenuItemIsSelected(self):
-        trackFile = MP3().make().filename
-        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(trackFile))
+        mp3 = self.audioLibrary.add(MP3())
+        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(mp3.filename))
 
         class AddTrackToAlbumProbe(object):
             def addToAlbum(self, filename):
                 addTrackRequest.setReceivedValue(filename)
 
         self.mainWindow.setMusicProducer(AddTrackToAlbumProbe())
-        self.tagger.importTrackThroughMenu(trackFile)
+        self.tagger.importTrackThroughMenu(mp3.filename)
         self.tagger.check(addTrackRequest)
 
     def testSwitchesToTrackListWhenFirstTrackIsImported(self):
         self.tagger.isShowingWelcomePanel()
-        self.mainWindow.trackImported(doubles.track())
+        self._addTrack()
         self.tagger.isShowingTrackList()
 
     def testAddsATrackPageForEachImportedTrack(self):
-        self.mainWindow.trackImported(doubles.track(title='First Track'))
-        self.mainWindow.trackImported(doubles.track(title='Second Track'))
-        self.mainWindow.trackImported(doubles.track(title='Third Track'))
+        self._addTrack(trackTitle='Track 1')
+        self._addTrack(trackTitle='Track 2')
+        self._addTrack(trackTitle='Track 3')
+
         self.tagger.nextStep()
         self.tagger.nextStep()
-        self.tagger.showsTrackMetadata(title='First Track')
+        self.tagger.showsTrackMetadata(trackTitle='Track 1')
         self.tagger.nextStep()
-        self.tagger.showsTrackMetadata(title='Second Track')
+        self.tagger.showsTrackMetadata(trackTitle='Track 2')
         self.tagger.nextStep()
-        self.tagger.showsTrackMetadata(title='Third Track')
+        self.tagger.showsTrackMetadata(trackTitle='Track 3')
 
     def testCanNavigateBackAndForthBetweenPages(self):
-        self.mainWindow.trackImported(doubles.track())
-        self.mainWindow.trackImported(doubles.track())
+        self._addTrack()
+        self._addTrack()
+
         self.tagger.isShowingTrackList()
         self.tagger.nextStep()
         self.tagger.isShowingAlbumMetadata()
@@ -85,31 +93,33 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.isShowingAlbumMetadata()
 
     def testNextButtonIsDisabledWhenViewingLastTrack(self):
-        self.mainWindow.trackImported(doubles.track())
+        self._addTrack()
         self.tagger.nextStep()
         self.tagger.nextStep()
         self.tagger.hasNextStepDisabled()
 
-        self.mainWindow.trackImported(doubles.track())
+        self._addTrack()
         self.tagger.nextStep()
         self.tagger.hasNextStepDisabled()
 
     def testStaysOnCurrentPageWhenASubsequentTrackIsImported(self):
-        self.mainWindow.trackImported(doubles.track(title='First Track'))
+        self._addTrack(trackTitle='Track 1')
         self.tagger.nextStep()
         self.tagger.nextStep()
-        self.tagger.showsTrackMetadata(title='First Track')
-        self.mainWindow.trackImported(doubles.track())
-        self.tagger.showsTrackMetadata(title='First Track')
+        self.tagger.showsTrackMetadata(trackTitle='Track 1')
+        self._addTrack()
+        self.tagger.showsTrackMetadata(trackTitle='Track 1')
 
     def testAlbumMetadataShowsMetadataOfFirstImportedTrack(self):
-        self.mainWindow.trackImported(doubles.track(releaseName='First Album'))
+        self._addTrack(releaseName='Album 1')
         self.tagger.nextStep()
-        self.tagger.showsAlbumMetadata(releaseName='First Album')
-        self.mainWindow.trackImported(doubles.track(releaseName='Second Album'))
-        self.tagger.showsAlbumMetadata(releaseName='First Album')
+        self.tagger.showsAlbumMetadata(releaseName='Album 1')
+        self._addTrack(releaseName='Album 2')
+        self.tagger.showsAlbumMetadata(releaseName='Album 1')
 
     def testSavesAllAlbumAndTrackMetadata(self):
+        self._addTrack()
+
         modifications = dict(releaseName='Release Name',
                              frontCoverPicture=resources.path("front-cover.jpg"),
                              leadPerformer='Lead Performer',
@@ -127,7 +137,7 @@ class MainWindowTest(BaseWidgetTest):
                 trackIncludesAlbumAndTrackModifications.setReceivedValue(album)
 
         self.mainWindow.setMusicProducer(CaptureSaveRequest())
-        self.mainWindow.trackImported(doubles.track())
+
         self.tagger.nextStep()
         self.tagger.editAlbumMetadata(**modifications)
         self.tagger.nextStep()
@@ -136,29 +146,62 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.check(trackIncludesAlbumAndTrackModifications)
 
     def testSavesAllImportedTracks(self):
-            allTracksAreSaved = ValueMatcherProbe( "request to save album", contains(
-                hasMetadata(releaseName='Album', trackTitle='Track 1'),
-                hasMetadata(releaseName='Album', trackTitle='Track 2'),
-                hasMetadata(releaseName='Album', trackTitle='Track 3')))
+        self._addTrack()
+        self._addTrack()
+        self._addTrack()
 
-            class CaptureSaveRequest(object):
-                def saveAlbum(self, album):
-                    allTracksAreSaved.setReceivedValue(album)
+        allTracksAreSaved = ValueMatcherProbe( "request to save album", contains(
+            hasMetadata(releaseName='Album', trackTitle='Track 1'),
+            hasMetadata(releaseName='Album', trackTitle='Track 2'),
+            hasMetadata(releaseName='Album', trackTitle='Track 3')))
 
-            self.mainWindow.setMusicProducer(CaptureSaveRequest())
-            self.mainWindow.trackImported(doubles.track())
-            self.mainWindow.trackImported(doubles.track())
-            self.mainWindow.trackImported(doubles.track())
-            self.tagger.nextStep()
-            self.tagger.editAlbumMetadata(releaseName='Album')
-            self.tagger.nextStep()
-            self.tagger.editTrackMetadata(trackTitle='Track 1')
-            self.tagger.nextStep()
-            self.tagger.editTrackMetadata(trackTitle='Track 2')
-            self.tagger.nextStep()
-            self.tagger.editTrackMetadata(trackTitle='Track 3')
-            self.tagger.saveAlbum()
-            self.tagger.check(allTracksAreSaved)
+        class CaptureSaveRequest(object):
+            def saveAlbum(self, album):
+                allTracksAreSaved.setReceivedValue(album)
+
+        self.mainWindow.setMusicProducer(CaptureSaveRequest())
+
+        self.tagger.nextStep()
+        self.tagger.editAlbumMetadata(releaseName='Album')
+        self.tagger.nextStep()
+        self.tagger.editTrackMetadata(trackTitle='Track 1')
+        self.tagger.nextStep()
+        self.tagger.editTrackMetadata(trackTitle='Track 2')
+        self.tagger.nextStep()
+        self.tagger.editTrackMetadata(trackTitle='Track 3')
+        self.tagger.saveAlbum()
+        self.tagger.check(allTracksAreSaved)
+
+    def testDeletesCorrespondingPageWhenTrackIsRemovedFromAlbum(self):
+        track1 = self._addTrack(trackTitle="Track 1")
+        track2 = self._addTrack(trackTitle="Track 2")
+        track3 = self._addTrack(trackTitle="Track 3")
+
+        self.mainWindow.trackRemoved(track2)
+        self.tagger.nextStep()
+        self.tagger.nextStep()
+        self.tagger.showsTrackMetadata(tracktle='Track 1')
+        self.tagger.nextStep()
+        self.tagger.showsTrackMetadata(trackTitle='Track 3')
+        # Tracks can only be removed from track list, so go back there
+        # todo when we can navigate directly to the track list, change the navigation
+        self.tagger.previousStep()
+        self.tagger.previousStep()
+        self.tagger.previousStep()
+        self.mainWindow.trackRemoved(track1)
+        self.tagger.nextStep()
+        self.tagger.nextStep()
+        self.tagger.showsTrackMetadata(tracktle='Track 3')
+        # Let's go back again to the track list
+        self.tagger.previousStep()
+        self.tagger.previousStep()
+        self.mainWindow.trackRemoved(track3)
+        self.tagger.hasNextStepDisabled()
+
+    def _addTrack(self, **details):
+        track = doubles.track(**details)
+        self.mainWindow.trackAdded(track)
+        return track
 
 
 def hasMetadata(**tags):

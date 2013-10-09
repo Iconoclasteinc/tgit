@@ -54,6 +54,9 @@ class TrackListPanel(QWidget, audio.MediaListener):
         self._build()
         self.localize()
 
+    # todo when we disallow adding the same track multiple times,
+    # track filename should be its unique, do we want to pass
+    # a filename to the player and get a filename back on notifications?
     def mediaStopped(self, media):
         try:
             self._listenButton(self._rowOf(media)).setChecked(False)

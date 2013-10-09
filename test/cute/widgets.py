@@ -255,7 +255,7 @@ class ListViewDriver(WidgetDriver):
                 for i in range(itemCount):
                     index = model.index(i, 0, root)
                     if self._itemMatcher.matches(index):
-                        self.foundAtIndex = index
+                        self.atIndex = index
                         return True
 
                 return False
@@ -270,7 +270,7 @@ class ListViewDriver(WidgetDriver):
 
         containingItem = ContainingItem(matching)
         self.is_(containingItem)
-        return containingItem.foundAtIndex
+        return containingItem.atIndex
 
 
 class MenuBarDriver(WidgetDriver):
@@ -402,6 +402,7 @@ class TableDriver(WidgetDriver):
             def _matches(self, table):
                 for row in xrange(table.rowCount()):
                     if self._matcher.matches(self._cellsOf(table, row)):
+                        self.inRow = row
                         return True
                 return False
 
@@ -413,7 +414,9 @@ class TableDriver(WidgetDriver):
                 mismatch_description.append_text("contained no row ")
                 self._matcher.describe_to(mismatch_description)
 
-        self.is_(ContainingCells(matching))
+        containingCells = ContainingCells(matching)
+        self.is_(containingCells)
+        return containingCells.inRow
 
     def scrollCellToVisible(self, column, row):
         class ScrollCellToVisible(object):

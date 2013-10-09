@@ -17,7 +17,7 @@ def guessMimeType(filename):
 def makeCopy(filename):
     _, ext = os.path.splitext(filename)
     copy, path = tempfile.mkstemp(suffix=ext)
-    os.close(copy)
     shutil.copy(filename, path)
+    os.close(copy)
     return path
 

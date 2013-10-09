@@ -27,6 +27,7 @@ class TrackListPanelDriver(WidgetDriver):
     def isPlayingTrack(self, index):
         self._showingPlayButton(index).isDown()
 
+    # todo use track titles instead of indexes
     def isNotPlayingTrack(self, index):
         self._showingPlayButton(index).isUp()
 
@@ -49,7 +50,12 @@ class TrackListPanelDriver(WidgetDriver):
         button = AbstractButtonDriver.findIn(self, QPushButton, named(ui.ADD_BUTTON_NAME))
         button.click()
 
-    def removeTrack(self, index):
+    def removeTrack(self, title):
+        trackNumber = self._trackTable().hasRow(has_items(withText(title)))
+        self.removeTrackAt(trackNumber)
+
+    # todo use removeTrack(details) in test and make this one private
+    def removeTrackAt(self, index):
         self._showingRemoveTrackButton(index)
         self._trackTable().clickOnCell(index, ui.REMOVE)
 

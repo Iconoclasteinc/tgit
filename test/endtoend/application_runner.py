@@ -37,15 +37,23 @@ class ApplicationRunner(object):
     def showsAlbumMetadata(self, **tags):
         self.tagger.navigateToAlbumMetadata()
         self.tagger.showsAlbumMetadata(**tags)
+        # todo navigate back to track list
+        # so we always no where we're starting from
 
+    # todo pass the track index as parameter
     def changeAlbumMetadata(self, **tags):
         self.tagger.editAlbumMetadata(**tags)
         self.tagger.saveAlbum()
 
+    # todo pass the track index as parameter
     def showsTrackMetadata(self, **tags):
         self.tagger.navigateToTrackMetadata()
         self.tagger.showsTrackMetadata(**tags)
 
+    # todo pass the track index as parameter
     def changeTrackMetadata(self, **tags):
         self.tagger.editTrackMetadata(**tags)
         self.tagger.saveAlbum()
+
+    def removeTrack(self, title):
+        self.tagger.removeTrack(title)

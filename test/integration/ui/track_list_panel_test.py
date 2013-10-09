@@ -115,20 +115,20 @@ class TrackListPanelTest(BaseWidgetTest):
         self.trackList.setMusicProducer(RemoveTrackProbe())
 
         trackRemoved.expects(has_property('trackTitle', 'Track 1'))
-        self.tagger.removeTrack(1)
+        self.tagger.removeTrackAt(1)
         self.tagger.hasTrackCount(2)
         self.tagger.showsTrack("Track 0")
         self.tagger.showsTrack("Track 2")
         self.tagger.check(trackRemoved)
 
         trackRemoved.expects(has_property('trackTitle', 'Track 0'))
-        self.tagger.removeTrack(0)
+        self.tagger.removeTrackAt(0)
         self.tagger.hasTrackCount(1)
         self.tagger.showsTrack("Track 2")
         self.tagger.check(trackRemoved)
 
         trackRemoved.expects(has_property('trackTitle', 'Track 2'))
-        self.tagger.removeTrack(0)
+        self.tagger.removeTrackAt(0)
         self.tagger.hasTrackCount(0)
         self.tagger.check(trackRemoved)
 
@@ -138,22 +138,22 @@ class TrackListPanelTest(BaseWidgetTest):
 
         self.tagger.playTrack(1)
         self.player.should_call('stop').never()
-        self.tagger.removeTrack(0)
+        self.tagger.removeTrackAt(0)
         self.player.should_call('stop').once()
-        self.tagger.removeTrack(0)
+        self.tagger.removeTrackAt(0)
 
     def testAccountsForRemovedTracksWhenReceivingMediaUpdates(self):
         track0 = self._addTrackToList(trackTitle="Track 0")
         track1 = self._addTrackToList(trackTitle="Track 1")
 
         self.tagger.playTrack(1)
-        self.tagger.removeTrack(0)
+        self.tagger.removeTrackAt(0)
         self.tagger.isPlayingTrack(0)
         self.trackList.mediaStopped(track1)
         self.tagger.isNotPlayingTrack(0)
 
         self.tagger.playTrack(0)
-        self.tagger.removeTrack(0)
+        self.tagger.removeTrackAt(0)
         # Should be silently ignored
         self.trackList.mediaStopped(track0)
 

@@ -38,7 +38,6 @@ class AlbumPanel(QWidget):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_PANEL_NAME)
         grid = QGridLayout()
-        self._makeSelectPictureDialog()
         self._fill(grid)
         self.translateUi()
         self._layout(grid)
@@ -48,16 +47,6 @@ class AlbumPanel(QWidget):
         layout.addLayout(grid)
         layout.addStretch()
         self.setLayout(layout)
-
-    # todo create dialog on the fly to speed up startup time
-    # should speed up tests as well
-    def _makeSelectPictureDialog(self):
-        self._selectPictureDialog = QFileDialog(self)
-        self._selectPictureDialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
-        self._selectPictureDialog.setDirectory(QDir.homePath())
-        self._selectPictureDialog.setOption(QFileDialog.DontUseNativeDialog)
-        self._selectPictureDialog.setModal(True)
-        self._selectPictureDialog.fileSelected.connect(self._loadFrontCoverPicture)
 
     def _loadFrontCoverPicture(self, filename):
         self._displayFrontCover(self._loadPicture(filename))
@@ -97,11 +86,26 @@ class AlbumPanel(QWidget):
         layout.addWidget(self._frontCoverImage, row, 0)
         self._selectPictureButton = QPushButton()
         self._selectPictureButton.setObjectName(SELECT_PICTURE_BUTTON_NAME)
-        self._selectPictureButton.clicked.connect(self._selectPictureDialog.open)
+        self._selectPictureButton.clicked.connect(self._selectPicture)
         buttonLayout = QHBoxLayout()
         buttonLayout.addWidget(self._selectPictureButton)
         buttonLayout.addStretch()
         layout.addLayout(buttonLayout, row, 1)
+
+    def _makeSelectPictureDialog(self):
+        dialog = QFileDialog(self)
+        dialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
+        dialog.setDirectory(QDir.homePath())
+        dialog.setOption(QFileDialog.DontUseNativeDialog)
+        dialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")
+        dialog.setModal(True)
+        dialog.fileSelected.connect(self._loadFrontCoverPicture)
+        return dialog
+
+    def _selectPicture(self):
+        if not hasattr(self, '_selectPictureDialog'):
+            self._selectPictureDialog = self._makeSelectPictureDialog()
+        self._selectPictureDialog.open()
 
     def _addReleaseNameTo(self, layout, row):
         self._releaseNameLabel = QLabel()
@@ -137,7 +141,6 @@ class AlbumPanel(QWidget):
 
     def translateUi(self):
         self._selectPictureButton.setText(self.tr("Select Picture..."))
-        self._selectPictureDialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")
         self._releaseNameLabel.setText(self.tr("Release Name: "))
         self._leadPerformerLabel.setText(self.tr("Lead Performer: "))
         self._releaseDateLabel.setText(self.tr("Release Date: "))

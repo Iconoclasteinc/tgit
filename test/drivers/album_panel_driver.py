@@ -43,14 +43,17 @@ class AlbumPanelDriver(WidgetDriver):
         dialog.accept()
 
     def showsMetadata(self, **tags):
-        if RELEASE_NAME in tags:
-            self.showsReleaseName(tags[RELEASE_NAME])
-        if LEAD_PERFORMER in tags:
-            self.showsLeadPerformer(tags[LEAD_PERFORMER])
-        if RELEASE_DATE in tags:
-            self.showsReleaseDate(tags[RELEASE_DATE])
-        if UPC in tags:
-            self.showsUpc(tags[UPC])
+        for tag, value in tags.iteritems():
+            if tag == RELEASE_NAME:
+                self.showsReleaseName(value)
+            elif tag == LEAD_PERFORMER:
+                self.showsLeadPerformer(value)
+            elif tag == RELEASE_DATE:
+                self.showsReleaseDate(value)
+            elif tag == UPC:
+                self.showsUpc(tags[UPC])
+            else:
+                AssertionError("Don't know how to verify <%s>" % tag)
 
     def showsReleaseName(self, name):
         label = LabelDriver.findIn(self, QLabel, withBuddy(named(ui.RELEASE_NAME_NAME)))
@@ -69,16 +72,19 @@ class AlbumPanelDriver(WidgetDriver):
         edit.hasText(name)
 
     def changeMetadata(self, **tags):
-        if FRONT_COVER_PICTURE in tags:
-            self.changeFrontCoverPicture(tags[FRONT_COVER_PICTURE])
-        if RELEASE_NAME in tags:
-            self.changeReleaseName(tags[RELEASE_NAME])
-        if LEAD_PERFORMER in tags:
-            self.changeLeadPerformer(tags[LEAD_PERFORMER])
-        if RELEASE_DATE in tags:
-            self.changeReleaseDate(tags[RELEASE_DATE])
-        if UPC in tags:
-            self.changeUpc(tags[UPC])
+        for tag, value in tags.iteritems():
+            if tag == FRONT_COVER_PICTURE:
+                self.changeFrontCoverPicture(value)
+            elif tag == RELEASE_NAME:
+                self.changeReleaseName(value)
+            elif tag == LEAD_PERFORMER:
+                self.changeLeadPerformer(value)
+            elif tag == RELEASE_DATE:
+                self.changeReleaseDate(value)
+            elif tag == UPC:
+                self.changeUpc(tags[UPC])
+            else:
+                AssertionError("Don't know how to edit <%s>" % tag)
 
     def changeLeadPerformer(self, name):
         edit = LineEditDriver.findIn(self, QLineEdit, named(ui.LEAD_PERFORMER_NAME))

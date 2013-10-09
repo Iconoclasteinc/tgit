@@ -48,28 +48,59 @@ class MainWindow(QMainWindow):
         self._musicProducer = musicProducer
         # We still don't have an album concept
         self._tracks = []
-        self._setupUi()
+        self._build()
         self.show()
         self.raise_()
         self.activateWindow()
 
     def setMusicProducer(self, producer):
         self._musicProducer = producer
+        self._trackListPanel().setMusicProducer(producer)
+
+    def trackAdded(self, track):
+        self._trackListPanel().trackAdded(track)
+
+        if self._albumEmpty():
+            self._showPage(TRACK_LIST_PANEL)
+            self._albumPanel().setTrack(track)
+            self.setCentralWidget(self._mainPanel)
+
+        if self._onLastPage():
+            self._nextStepButton.setEnabled(True)
+
+        self._addTrackPage(track)
+        self._tracks.append(track)
+
+    def trackRemoved(self, track):
+        self._removeTrackPage(track)
+        self._tracks.remove(track)
+        if self._albumEmpty():
+            self._nextStepButton.setDisabled(True)
+
+    def _makeAddFileDialog(self):
+        dialog = QFileDialog(self)
+        dialog.setObjectName(IMPORT_TRACK_DIALOG_NAME)
+        dialog.setDirectory(QDir.homePath())
+        dialog.setOption(QFileDialog.DontUseNativeDialog)
+        dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
+        dialog.setModal(True)
+        dialog.fileSelected.connect(self._fireAddTrackToAlbum)
+        return dialog
 
     def selectTrack(self):
+        if not hasattr(self, '_addFileDialog'):
+            self._addFileDialog = self._makeAddFileDialog()
         self._addFileDialog.open()
 
-    def _setupUi(self):
+    def _build(self):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(640, 480)
-        self._makeImportFileDialog()
         self._fillMenu()
         self._makeStatusBar()
-        # todo create dialog on the fly to speed up startup time
         self._makeButtonBar()
         self._makeMainPanel()
         self.setCentralWidget(self._makeWelcomePanel())
-        self.localizeUi()
+        self.localize()
 
     def _fillMenu(self):
         menuBar = self.menuBar()
@@ -84,14 +115,6 @@ class MainWindow(QMainWindow):
 
     def _makeStatusBar(self):
         self.setStatusBar(QStatusBar())
-
-    def _makeImportFileDialog(self):
-        self._addFileDialog = QFileDialog(self)
-        self._addFileDialog.setObjectName(IMPORT_TRACK_DIALOG_NAME)
-        self._addFileDialog.setDirectory(QDir.homePath())
-        self._addFileDialog.setOption(QFileDialog.DontUseNativeDialog)
-        self._addFileDialog.setModal(True)
-        self._addFileDialog.fileSelected.connect(self._fireAddTrackToAlbum)
 
     def _fireAddTrackToAlbum(self, filename):
         self._musicProducer.addToAlbum(filename)
@@ -131,28 +154,21 @@ class MainWindow(QMainWindow):
         trackPanel.setTrack(track)
         self._pages.addWidget(trackPanel)
 
-    def trackImported(self, track):
-        self._trackListPanel().trackAdded(track)
+    def _removeTrackPage(self, track):
+        self._pages.removeWidget(self._pages.widget(self._pageOf(track)))
 
-        if self._albumEmpty():
-            self._showPage(TRACK_LIST_PANEL)
-            self._albumPanel().setTrack(track)
-            self.setCentralWidget(self._mainPanel)
-
-        if self._onLastPage():
-            self._nextStepButton.setEnabled(True)
-
-        self._addTrackPage(track)
-        self._tracks.append(track)
+    def _pageOf(self, track):
+        return next(index + TRACK_PANEL for index, item in enumerate(self._tracks)
+                    if item == track)
 
     def _albumEmpty(self):
-        return not self._tracks
+        return self._pages.count() == TRACK_PANEL
 
     def _makeMainPanel(self):
         self._mainPanel = QWidget()
         layout = QVBoxLayout()
         self._pages = QStackedWidget()
-        trackListPanel = TrackListPanel(self._player, self)
+        trackListPanel = TrackListPanel(self._player, self, self._musicProducer)
         self._pages.addWidget(trackListPanel)
         albumPanel = AlbumPanel()
         self._pages.addWidget(albumPanel)
@@ -195,12 +211,14 @@ class MainWindow(QMainWindow):
         self._saveButton.setEnabled(True)
 
     def _updateAlbumWithMetadata(self):
+        # todo pass a producer to pages and let them deal details
         for index, track in enumerate(self._tracks):
             self._albumPanel().updateTrack(track)
             self._trackPanel(index).updateTrack(track)
 
     def _saveAlbum(self):
         self._updateAlbumWithMetadata()
+        # todo producer should manage tracks
         self._musicProducer.saveAlbum(self._tracks)
 
     # todo Extract a WelcomePanel
@@ -216,7 +234,7 @@ class MainWindow(QMainWindow):
         self._welcomePanel.setLayout(layout)
         return self._welcomePanel
 
-    def localizeUi(self):
+    def localize(self):
         self.setWindowTitle(self.tr("TGiT"))
         self._fileMenu.setTitle(self.tr('File'))
         self._importAction.setText(self.tr("Import File..."))
@@ -224,4 +242,3 @@ class MainWindow(QMainWindow):
         self._saveButton.setText(self.tr("Save"))
         self._previousPageButton.setText(self.tr("Previous"))
         self._nextStepButton.setText(self.tr("Next"))
-        self._addFileDialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
