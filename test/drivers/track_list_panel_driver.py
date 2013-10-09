@@ -19,7 +19,7 @@ class TrackListPanelDriver(WidgetDriver):
 
     def showsTrack(self, *details):
         cellsMatching = [withText(detail) for detail in details]
-        self._trackTable().hasRow(has_items(*cellsMatching))
+        return self._trackTable().hasRow(has_items(*cellsMatching))
 
     def hasTrackCount(self, count):
         self._trackTable().hasRowCount(count)
@@ -51,16 +51,21 @@ class TrackListPanelDriver(WidgetDriver):
         button.click()
 
     def removeTrack(self, title):
-        trackNumber = self._trackTable().hasRow(has_items(withText(title)))
-        self.removeTrackAt(trackNumber)
+        position = self.showsTrack(title)
+        self.removeTrackAt(position)
 
     # todo use removeTrack(details) in test and make this one private
     def removeTrackAt(self, index):
         self._showingRemoveTrackButton(index)
         self._trackTable().clickOnCell(index, ui.REMOVE)
 
-    def moveTrack(self, oldPosition, newPosition):
+    def changeTrackPosition(self, oldPosition, newPosition):
         self._trackTable().moveRow(oldPosition, newPosition)
+
+    def moveTrack(self, title, to):
+        from_ = self.showsTrack(title)
+        to = self.showsTrack(to)
+        self._trackTable().moveRow(from_, to)
 
     def _showingRemoveTrackButton(self, index):
         button = AbstractButtonDriver.findIn(self._trackTable().widgetInCell(index, ui.REMOVE),

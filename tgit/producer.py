@@ -40,7 +40,7 @@ class AlbumProducer(object):
         self._ui.trackRemoved(track)
 
     def moveTrack(self, track, position):
-        pass
+        self._ui.trackMoved(track, position)
 
     def saveAlbum(self, album):
         for track in album:

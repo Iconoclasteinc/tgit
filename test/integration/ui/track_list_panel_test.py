@@ -67,6 +67,7 @@ class TrackListPanelTest(BaseWidgetTest):
         self._addTrackToList(trackTitle='Track 1')
 
         self.tagger.hasTrackCount(2)
+        # todo test also that tracks are in order
         self.tagger.showsTrack('Track 0')
         self.tagger.showsTrack('Track 1')
 
@@ -178,13 +179,13 @@ class TrackListPanelTest(BaseWidgetTest):
         self.trackList.setMusicProducer(MoveTrackProbe())
 
         trackMoved.expects(contains(hasTitle('Track 2'), 1))
-        self.tagger.moveTrack(2, 1)
+        self.tagger.changeTrackPosition(2, 1)
         self.tagger.check(trackMoved)
         self.tagger.removeTrackAt(2)
         self.tagger.showsTrack("Track 2")
 
         trackMoved.expects(contains(hasTitle('Track 2'), 0))
-        self.tagger.moveTrack(1, 0)
+        self.tagger.changeTrackPosition(1, 0)
         self.tagger.check(trackMoved)
         self.tagger.removeTrackAt(1)
         self.tagger.showsTrack("Track 2")

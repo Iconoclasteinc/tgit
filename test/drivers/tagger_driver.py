@@ -91,6 +91,10 @@ class TaggerDriver(MainWindowDriver):
         self.isShowingTrackList()
         self._trackListPanel().removeTrack(title)
 
+    def moveTrack(self, title, whereTitle):
+        self.isShowingTrackList()
+        self._trackListPanel().moveTrack(title, whereTitle)
+
     # todo have a quick navigation button
     def navigateToAlbumMetadata(self):
         self.nextStep()

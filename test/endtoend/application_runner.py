@@ -59,3 +59,6 @@ class ApplicationRunner(object):
 
     def removeTrack(self, title):
         self.tagger.removeTrack(title)
+
+    def moveTrack(self, title, whereTitle):
+        self.tagger.moveTrack(title, whereTitle)

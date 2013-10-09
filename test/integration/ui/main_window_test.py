@@ -150,7 +150,7 @@ class MainWindowTest(BaseWidgetTest):
         self._addTrack()
         self._addTrack()
 
-        allTracksAreSaved = ValueMatcherProbe( "request to save album", contains(
+        allTracksAreSaved = ValueMatcherProbe("request to save album", contains(
             hasMetadata(releaseName='Album', trackTitle='Track 1'),
             hasMetadata(releaseName='Album', trackTitle='Track 2'),
             hasMetadata(releaseName='Album', trackTitle='Track 3')))
@@ -196,6 +196,20 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.previousStep()
         self.tagger.previousStep()
         self.mainWindow.trackRemoved(track3)
+        self.tagger.hasNextStepDisabled()
+
+    def testReordersPagesWhenTracksPositionsChangeInAlbum(self):
+        track1 = self._addTrack(trackTitle="Track 1")
+        track2 = self._addTrack(trackTitle="Track 2")
+        track3 = self._addTrack(trackTitle="Track 3")
+
+        self.mainWindow.trackMoved(track1, 2)
+        self.mainWindow.trackRemoved(track2)
+        self.tagger.nextStep()
+        self.tagger.nextStep()
+        self.tagger.showsTrackMetadata(trackTitle='Track 3')
+        self.tagger.nextStep()
+        self.tagger.showsTrackMetadata(trackTitle='Track 1')
         self.tagger.hasNextStepDisabled()
 
     def _addTrack(self, **details):

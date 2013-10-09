@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self._player = player
         self._musicProducer = musicProducer
-        # We still don't have an album concept
+        # We should get rid of that at some point
         self._tracks = []
         self._build()
         self.show()
@@ -76,6 +76,13 @@ class MainWindow(QMainWindow):
         self._tracks.remove(track)
         if self._albumEmpty():
             self._nextStepButton.setDisabled(True)
+
+    def trackMoved(self, track, to):
+        page = self._pages.widget(self._pageOf(track))
+        self._pages.removeWidget(page)
+        self._pages.insertWidget(to + TRACK_PANEL, page)
+        self._tracks.remove(track)
+        self._tracks.insert(to, track)
 
     def _makeAddFileDialog(self):
         dialog = QFileDialog(self)

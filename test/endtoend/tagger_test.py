@@ -77,22 +77,29 @@ class TaggerTest(unittest.TestCase):
                                        trackTitle='Potato Banana Song (Remix)')
 
     # todo Consider exercising the different ways of adding a track
-    def managingTheAlbumFromTheTrackList(self):
-        track1 = self.audioLibrary.add(mp3(releaseName='Album Title', trackTitle='Track 1'))
-        track2 = self.audioLibrary.add(mp3(releaseName='Album Title', trackTitle='Track 2'))
-        track3 = self.audioLibrary.add(mp3(releaseName='Album Title', trackTitle='Track 3'))
+    def testChangingTheAlbumCompositionFromTheTrackList(self):
+        track1 = self.audioLibrary.add(mp3(releaseName='Original Title', trackTitle='Track 1'))
+        track2 = self.audioLibrary.add(mp3(releaseName='Original Title', trackTitle='Track 2'))
+        track3 = self.audioLibrary.add(mp3(releaseName='Original Title', trackTitle='Track 3'))
 
         self.application.importTrack(track1.filename)
         self.application.importTrack(track2.filename)
         self.application.importTrack(track3.filename)
 
         self.application.showsAlbumContent('Track 1', 'Track 2', 'Track 3')
-        self.application.removeTrack('Track 1')
+        self.application.moveTrack('Track 1', 'Track 3')
         self.application.removeTrack('Track 2')
-        self.application.showsAlbumMetadata(releaseName='Album Title')
-        self.application.changeAlbumMetadata(releaseName='New Album Title')
+        self.application.showsAlbumMetadata(releaseName='Original Title')
+        self.application.changeAlbumMetadata(releaseName='Modified Title')
         self.application.showsTrackMetadata(trackTitle='Track 3')
+        self.application.showsTrackMetadata(trackTitle='Track 1')
 
-        self.audioLibrary.containsFile(track1.filename, releaseName='Album Title')
-        self.audioLibrary.containsFile(track2.filename, releaseName='Album Title')
-        self.audioLibrary.containsFile(track3.filename, releaseName='New Album Title')
+        self.audioLibrary.containsFile(track1.filename,
+                                       trackTitle='Track 1',
+                                       releaseName='Modified Title')
+        self.audioLibrary.containsFile(track2.filename,
+                                       trackTitle='Track 2',
+                                       releaseName='Original Title')
+        self.audioLibrary.containsFile(track3.filename,
+                                       trackTitle='Track 3',
+                                       releaseName='Modified Title')
