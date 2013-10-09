@@ -108,7 +108,7 @@ class TaggerDriver(MainWindowDriver):
     def showsAlbumContains(self, *tracks):
         trackList = self._trackListPanel()
         for track in tracks:
-            trackList.showsTrack(track)
+            trackList.showsTrack(*track)
 
     def showsAlbumMetadata(self, **tags):
         self._albumPanel().showsMetadata(**tags)

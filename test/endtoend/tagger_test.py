@@ -33,7 +33,7 @@ class TaggerTest(unittest.TestCase):
         track = self.audioLibrary.add(copy(SAMPLE_AUDIO_FILE))
 
         self.application.importTrack(track.filename)
-        self.application.showsAlbumContent('Hallelujah (Chorus)')
+        self.application.showsAlbumContent(['Hallelujah (Chorus)'])
         self.application.showsAlbumMetadata(
             releaseName='Messiah',
             leadPerformer='The Sixteen - Harry Christophers')
@@ -61,7 +61,7 @@ class TaggerTest(unittest.TestCase):
 
         self.application.importTrack(track1.filename)
         self.application.importTrack(track2.filename)
-        self.application.showsAlbumContent('Track 1', 'Track 2')
+        self.application.showsAlbumContent(['Track 1'], ['Track 2'])
         self.application.showsAlbumMetadata(releaseName='Album Title')
         self.application.changeAlbumMetadata(releaseName='Despicable Me')
         self.application.showsTrackMetadata(trackTitle='Track 1')
@@ -86,7 +86,7 @@ class TaggerTest(unittest.TestCase):
         self.application.importTrack(track2.filename)
         self.application.importTrack(track3.filename)
 
-        self.application.showsAlbumContent('Track 1', 'Track 2', 'Track 3')
+        self.application.showsAlbumContent(['Track 1'], ['Track 2'], ['Track 3'])
         self.application.moveTrack('Track 1', 'Track 3')
         self.application.removeTrack('Track 2')
         self.application.showsAlbumMetadata(releaseName='Original Title')

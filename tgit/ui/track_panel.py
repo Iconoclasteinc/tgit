@@ -124,3 +124,6 @@ class TrackPanel(QWidget):
         track.versionInfo = self._versionInfoEdit.text()
         track.featuredGuest = self._featuredGuestEdit.text()
         track.isrc = self._isrcEdit.text()
+
+    def forTrack(self, track):
+        return track == self._track

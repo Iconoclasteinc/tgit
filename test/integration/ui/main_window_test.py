@@ -212,6 +212,36 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.showsTrackMetadata(trackTitle='Track 1')
         self.tagger.hasNextStepDisabled()
 
+    def testUpdatesImportedTrackWithAlbumMetadata(self):
+        self._addTrack(trackTitle="Track 1", releaseName='Album')
+        self._addTrack(trackTitle="Track 2")
+        self._addTrack(trackTitle="Track 3")
+
+        self.tagger.showsAlbumContains(['Track 1', 'Album'],
+                                       ['Track 2', 'Album'],
+                                       ['Track 3', 'Album'])
+
+    def testTrackListShowsUpToDateTrackAndAlbumMetadata(self):
+        self._addTrack()
+        self._addTrack()
+        self._addTrack()
+        self.tagger.nextStep()
+        self.tagger.editAlbumMetadata(releaseName='Album')
+        self.tagger.nextStep()
+        self.tagger.editTrackMetadata(trackTitle='Track 1')
+        self.tagger.nextStep()
+        self.tagger.editTrackMetadata(trackTitle='Track 2')
+        self.tagger.nextStep()
+        self.tagger.editTrackMetadata(trackTitle='Track 3')
+        self.tagger.previousStep()
+        self.tagger.previousStep()
+        self.tagger.previousStep()
+        self.tagger.previousStep()
+
+        self.tagger.showsAlbumContains(['Track 1', 'Album'],
+                                       ['Track 2', 'Album'],
+                                       ['Track 3', 'Album'])
+
     def _addTrack(self, **details):
         track = doubles.track(**details)
         self.mainWindow.trackAdded(track)

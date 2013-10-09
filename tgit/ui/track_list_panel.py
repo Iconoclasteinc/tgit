@@ -91,10 +91,10 @@ class TrackListPanel(QWidget, audio.MediaListener):
         self._table.setColumnCount(len(headers))
         self._table.setHorizontalHeaderLabels(headers)
         self._table.verticalHeader().setMovable(True)
-        self._table.verticalHeader().sectionMoved.connect(self._rowMoved)
+        self._table.verticalHeader().sectionMoved.connect(self._moveTrack)
         layout.addWidget(self._table)
 
-    def _rowMoved(self, index, oldPosition, newPosition):
+    def _moveTrack(self, index, oldPosition, newPosition):
         numbering = [str(self._table.verticalHeader().visualIndex(row) + 1)
                      for row in xrange(self._table.rowCount())]
         self._table.setVerticalHeaderLabels(numbering)
@@ -125,6 +125,12 @@ class TrackListPanel(QWidget, audio.MediaListener):
         self._table.setCellWidget(newRow, REMOVE, removeButton)
 
         self._trackList.append(track)
+
+    def albumUpdated(self):
+        for row, track in enumerate(self._trackList):
+            self._table.item(row, TRACK_TITLE).setText(track.trackTitle)
+            self._table.item(row, LEAD_PERFORMER).setText(track.leadPerformer)
+            self._table.item(row, RELEASE_NAME).setText(track.releaseName)
 
     def _addButtons(self, layout):
         buttonLayout = QHBoxLayout()

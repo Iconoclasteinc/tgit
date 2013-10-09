@@ -57,19 +57,22 @@ class MainWindow(QMainWindow):
         self._musicProducer = producer
         self._trackListPanel().setMusicProducer(producer)
 
+    def _onWelcomePage(self):
+        return self.centralWidget() == self._welcomePanel
+
     def trackAdded(self, track):
-        self._trackListPanel().trackAdded(track)
-
         if self._albumEmpty():
-            self._showPage(TRACK_LIST_PANEL)
             self._albumPanel().setTrack(track)
-            self.setCentralWidget(self._mainPanel)
-
-        if self._onLastPage():
-            self._nextStepButton.setEnabled(True)
-
         self._addTrackPage(track)
         self._tracks.append(track)
+        self._updateAlbumWithMetadata()
+        self._trackListPanel().trackAdded(track)
+
+        if self._onWelcomePage():
+            self._showPage(TRACK_LIST_PANEL)
+            self.setCentralWidget(self._mainPanel)
+
+        self._nextStepButton.setEnabled(True)
 
     def trackRemoved(self, track):
         self._removeTrackPage(track)
@@ -91,7 +94,7 @@ class MainWindow(QMainWindow):
         dialog.setOption(QFileDialog.DontUseNativeDialog)
         dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
         dialog.setModal(True)
-        dialog.fileSelected.connect(self._fireAddTrackToAlbum)
+        dialog.fileSelected.connect(lambda filename: self._musicProducer.addToAlbum(filename))
         return dialog
 
     def selectTrack(self):
@@ -122,9 +125,6 @@ class MainWindow(QMainWindow):
 
     def _makeStatusBar(self):
         self.setStatusBar(QStatusBar())
-
-    def _fireAddTrackToAlbum(self, filename):
-        self._musicProducer.addToAlbum(filename)
 
     def _makeButtonBar(self):
         self._buttonBar = QWidget()
@@ -169,7 +169,7 @@ class MainWindow(QMainWindow):
                     if item == track)
 
     def _albumEmpty(self):
-        return self._pages.count() == TRACK_PANEL
+        return len(self._tracks) == 0
 
     def _makeMainPanel(self):
         self._mainPanel = QWidget()
@@ -188,8 +188,8 @@ class MainWindow(QMainWindow):
     def _currentPage(self):
         return self._pages.currentIndex()
 
-    def _onFirstPage(self):
-        return self._currentPage() == 0
+    def _onTrackListPage(self):
+        return self._currentPage() == TRACK_LIST_PANEL
 
     def _onLastPage(self):
         return self._currentPage() == self._pages.count() - 1
@@ -201,11 +201,12 @@ class MainWindow(QMainWindow):
         return self._currentPage() + 1
 
     def _showPage(self, page):
+        self._updateAlbumWithMetadata()
         self._pages.setCurrentIndex(page)
 
     def _showPreviousPage(self):
         self._showPage(self._previousPage())
-        if self._onFirstPage():
+        if self._onTrackListPage():
             self._saveButton.setDisabled(True)
             self._previousPageButton.setDisabled(True)
         self._nextStepButton.setEnabled(True)
@@ -222,6 +223,7 @@ class MainWindow(QMainWindow):
         for index, track in enumerate(self._tracks):
             self._albumPanel().updateTrack(track)
             self._trackPanel(index).updateTrack(track)
+        self._trackListPanel().albumUpdated()
 
     def _saveAlbum(self):
         self._updateAlbumWithMetadata()

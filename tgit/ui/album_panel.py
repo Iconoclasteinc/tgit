@@ -159,5 +159,3 @@ class AlbumPanel(QWidget):
         track.leadPerformer = self._leadPerformerEdit.text()
         track.releaseDate = self._releaseDateEdit.text()
         track.upc = self._upcEdit.text()
-
-
