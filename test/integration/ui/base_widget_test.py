@@ -3,6 +3,7 @@
 import os
 import unittest
 
+import sip
 # noinspection PyUnresolvedReferences
 import use_sip_api_v2
 from PyQt4.QtGui import QApplication
@@ -33,4 +34,6 @@ class BaseWidgetTest(unittest.TestCase):
         if self.tagger:
             self.tagger.close()
             del self.tagger
+
+        sip.delete(self.app)
         del self.app

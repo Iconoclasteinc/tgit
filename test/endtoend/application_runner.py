@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sip
 # noinspection PyUnresolvedReferences
 import use_sip_api_v2
 
@@ -26,6 +27,7 @@ class ApplicationRunner(object):
     def stop(self):
         self.tagger.close()
         del self.tagger
+        sip.delete(self.app)
         del self.app
 
     def importTrack(self, path):
