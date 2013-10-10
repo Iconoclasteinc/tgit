@@ -29,7 +29,11 @@ SELECT_PICTURE_BUTTON_NAME = "Select Picture"
 SELECT_PICTURE_DIALOG_NAME = "Select Picture File"
 RELEASE_NAME_NAME = 'Release Name'
 LEAD_PERFORMER_NAME = "Lead Performer"
-RELEASE_DATE_NAME = "Release Date"
+GUEST_PERFORMERS_NAME = "Guest Performers"
+LABEL_NAME_NAME = "Label Name"
+RECORDING_TIME_NAME = "Recording Time"
+RELEASE_TIME_NAME = "Release Time"
+ORIGINAL_RELEASE_TIME_NAME = "Original Release Time"
 UPC_NAME = "UPC"
 
 
@@ -76,8 +80,12 @@ class AlbumPanel(QWidget):
         self._addFrontCoverPictureTo(layout, 0)
         self._addReleaseNameTo(layout, 1)
         self._addLeadPerformerTo(layout, 2)
-        self._addReleaseDateTo(layout, 3)
-        self._addUpc(layout, 4)
+        self._addGuestPerformersTo(layout, 3)
+        self._addLabelNameTo(layout, 4)
+        self._addRecordingTimeTo(layout, 5)
+        self._addReleaseTimeTo(layout, 6)
+        self._addOriginalReleaseTimeTo(layout, 7)
+        self._addUpc(layout, 8)
 
     def _addFrontCoverPictureTo(self, layout, row):
         self._frontCoverImage = QLabel()
@@ -123,13 +131,45 @@ class AlbumPanel(QWidget):
         layout.addWidget(self._leadPerformerEdit, row, 1)
         self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
 
-    def _addReleaseDateTo(self, layout, row):
-        self._releaseDateLabel = QLabel()
-        layout.addWidget(self._releaseDateLabel, row, 0)
-        self._releaseDateEdit = QLineEdit()
-        self._releaseDateEdit.setObjectName(RELEASE_DATE_NAME)
-        layout.addWidget(self._releaseDateEdit, row, 1)
-        self._releaseDateLabel.setBuddy(self._releaseDateEdit)
+    def _addGuestPerformersTo(self, layout, row):
+        self._guestPerformersLabel = QLabel()
+        layout.addWidget(self._guestPerformersLabel, row, 0)
+        self._guestPerformersEdit = QLineEdit()
+        self._guestPerformersEdit.setObjectName(GUEST_PERFORMERS_NAME)
+        layout.addWidget(self._guestPerformersEdit, row, 1)
+        self._guestPerformersLabel.setBuddy(self._guestPerformersEdit)
+
+    def _addLabelNameTo(self, layout, row):
+        self._labelNameLabel = QLabel()
+        layout.addWidget(self._labelNameLabel, row, 0)
+        self._labelNameEdit = QLineEdit()
+        self._labelNameEdit.setObjectName(LABEL_NAME_NAME)
+        layout.addWidget(self._labelNameEdit, row, 1)
+        self._labelNameLabel.setBuddy(self._labelNameEdit)
+
+    def _addRecordingTimeTo(self, layout, row):
+        self._recordingTimeLabel = QLabel()
+        layout.addWidget(self._recordingTimeLabel, row, 0)
+        self._recordingTimeEdit = QLineEdit()
+        self._recordingTimeEdit.setObjectName(RECORDING_TIME_NAME)
+        layout.addWidget(self._recordingTimeEdit, row, 1)
+        self._recordingTimeLabel.setBuddy(self._recordingTimeEdit)
+
+    def _addReleaseTimeTo(self, layout, row):
+        self._releaseTimeLabel = QLabel()
+        layout.addWidget(self._releaseTimeLabel, row, 0)
+        self._releaseTimeEdit = QLineEdit()
+        self._releaseTimeEdit.setObjectName(RELEASE_TIME_NAME)
+        layout.addWidget(self._releaseTimeEdit, row, 1)
+        self._releaseTimeLabel.setBuddy(self._releaseTimeEdit)
+
+    def _addOriginalReleaseTimeTo(self, layout, row):
+        self._originalReleaseTimeLabel = QLabel()
+        layout.addWidget(self._originalReleaseTimeLabel, row, 0)
+        self._originalReleaseTimeEdit = QLineEdit()
+        self._originalReleaseTimeEdit.setObjectName(ORIGINAL_RELEASE_TIME_NAME)
+        layout.addWidget(self._originalReleaseTimeEdit, row, 1)
+        self._originalReleaseTimeLabel.setBuddy(self._originalReleaseTimeEdit)
 
     def _addUpc(self, layout, row):
         self._upcLabel = QLabel()
@@ -143,19 +183,31 @@ class AlbumPanel(QWidget):
         self._selectPictureButton.setText(self.tr("Select Picture..."))
         self._releaseNameLabel.setText(self.tr("Release Name: "))
         self._leadPerformerLabel.setText(self.tr("Lead Performer: "))
-        self._releaseDateLabel.setText(self.tr("Release Date: "))
+        self._guestPerformersLabel.setText(self.tr("Guest Performers: "))
+        self._labelNameLabel.setText(self.tr("Label Name: "))
+        self._recordingTimeLabel.setText(self.tr("Recording Time: "))
+        self._releaseTimeLabel.setText(self.tr("Release Time: "))
+        self._originalReleaseTimeLabel.setText(self.tr("Original Release Time: "))
         self._upcLabel.setText(self.tr("UPC/EAN: "))
 
     def setTrack(self, track):
         self._releaseNameEdit.setText(track.releaseName)
         self._displayFrontCover(track.frontCoverPicture)
         self._leadPerformerEdit.setText(track.leadPerformer)
-        self._releaseDateEdit.setText(track.releaseDate)
+        self._guestPerformersEdit.setText(track.guestPerformers)
+        self._labelNameEdit.setText(track.labelName)
+        self._recordingTimeEdit.setText(track.recordingTime)
+        self._releaseTimeEdit.setText(track.releaseTime)
+        self._originalReleaseTimeEdit.setText(track.originalReleaseTime)
         self._upcEdit.setText(track.upc)
 
     def updateTrack(self, track):
         track.releaseName = self._releaseNameEdit.text()
         track.frontCoverPicture = self._frontCover
         track.leadPerformer = self._leadPerformerEdit.text()
-        track.releaseDate = self._releaseDateEdit.text()
+        track.guestPerformers = self._guestPerformersEdit.text()
+        track.labelName = self._labelNameEdit.text()
+        track.recordingTime = self._recordingTimeEdit.text()
+        track.releaseTime = self._releaseTimeEdit.text()
+        track.originalReleaseTime = self._originalReleaseTimeEdit.text()
         track.upc = self._upcEdit.text()

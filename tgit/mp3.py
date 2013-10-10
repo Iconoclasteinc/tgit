@@ -70,12 +70,44 @@ class MP3File(object):
         self._addTextFrame(id3.TPE1(text=artist))
 
     @property
-    def releaseDate(self):
+    def guestPerformers(self):
+        return self._getText(id3.TPE2())
+
+    @guestPerformers.setter
+    def guestPerformers(self, artists):
+        self._addTextFrame(id3.TPE2(text=artists))
+
+    @property
+    def labelName(self):
+        return self._getText(id3.TPUB())
+
+    @labelName.setter
+    def labelName(self, label):
+        self._addTextFrame(id3.TPUB(text=label))
+
+    @property
+    def recordingTime(self):
+        return self._getText(id3.TDRC())
+
+    @recordingTime.setter
+    def recordingTime(self, timestamp):
+        self._addTextFrame(id3.TDRC(text=timestamp))
+
+    @property
+    def releaseTime(self):
         return self._getText(id3.TDRL())
 
-    @releaseDate.setter
-    def releaseDate(self, timestamp):
+    @releaseTime.setter
+    def releaseTime(self, timestamp):
         self._addTextFrame(id3.TDRL(text=timestamp))
+
+    @property
+    def originalReleaseTime(self):
+        return self._getText(id3.TDOR())
+
+    @originalReleaseTime.setter
+    def originalReleaseTime(self, timestamp):
+        self._addTextFrame(id3.TDOR(text=timestamp))
 
     @property
     def upc(self):

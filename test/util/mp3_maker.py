@@ -52,9 +52,19 @@ class MP3Maker(object):
             self._attachPicture(4, *tags['backCover'])
         if 'leadPerformer' in tags:
             self._mp3.tags.add(id3.TPE1(encoding=UTF_8, text=tags['leadPerformer']))
-        if 'releaseDate' in tags:
+        if 'guestPerformers' in tags:
+            self._mp3.tags.add(id3.TPE2(encoding=UTF_8, text=tags['guestPerformers']))
+        if 'labelName' in tags:
+            self._mp3.tags.add(id3.TPUB(encoding=UTF_8, text=tags['labelName']))
+        if 'recordingTime' in tags:
+            self._mp3.tags.add(id3.TDRC(encoding=UTF_8, text=[id3.ID3TimeStamp(tags[
+                'recordingTime'])]))
+        if 'releaseTime' in tags:
             self._mp3.tags.add(id3.TDRL(encoding=UTF_8, text=[id3.ID3TimeStamp(tags[
-                'releaseDate'])]))
+                'releaseTime'])]))
+        if 'originalReleaseTime' in tags:
+            self._mp3.tags.add(id3.TDOR(encoding=UTF_8, text=[id3.ID3TimeStamp(tags[
+                'originalReleaseTime'])]))
         if 'upc' in tags:
             self._mp3.tags.add(id3.TXXX(encoding=UTF_8, desc='UPC', text=tags['upc']))
         if 'trackTitle' in tags:

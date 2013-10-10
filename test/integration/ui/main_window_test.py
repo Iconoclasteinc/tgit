@@ -120,17 +120,23 @@ class MainWindowTest(BaseWidgetTest):
     def testSavesAllAlbumAndTrackMetadata(self):
         self._addTrack()
 
-        modifications = dict(releaseName='Release Name',
+        albumMetadata = dict(releaseName='Release Name',
                              frontCoverPicture=resources.path("front-cover.jpg"),
                              leadPerformer='Lead Performer',
-                             releaseDate='2009-08-05',
-                             upc='123456789999',
-                             trackTitle='Track Title',
+                             guestPerformers='Guest Performers',
+                             labelName='Label Name',
+                             recordingTime='2009-05-04',
+                             releaseTime='2009-08-05',
+                             originalReleaseTime='1973-08-05',
+                             upc='123456789999')
+        trackMetadata = dict(trackTitle='Track Title',
                              versionInfo='Version Info',
                              featuredGuest='Featured Guest',
                              isrc='AABB12345678')
+
+        allMetadata = dict(albumMetadata.items() + trackMetadata.items())
         trackIncludesAlbumAndTrackModifications = \
-            ValueMatcherProbe("request to save track", contains(hasMetadata(**modifications)))
+            ValueMatcherProbe("request to save track", contains(hasMetadata(**allMetadata)))
 
         class CaptureSaveRequest(object):
             def saveAlbum(self, album):
@@ -139,9 +145,9 @@ class MainWindowTest(BaseWidgetTest):
         self.mainWindow.setMusicProducer(CaptureSaveRequest())
 
         self.tagger.nextStep()
-        self.tagger.editAlbumMetadata(**modifications)
+        self.tagger.editAlbumMetadata(**albumMetadata)
         self.tagger.nextStep()
-        self.tagger.editTrackMetadata(**modifications)
+        self.tagger.editTrackMetadata(**trackMetadata)
         self.tagger.saveAlbum()
         self.tagger.check(trackIncludesAlbumAndTrackModifications)
 

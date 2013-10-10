@@ -54,9 +54,25 @@ class MP3FileTest(unittest.TestCase):
 
         assert_that(mp3.frontCoverPicture, is_((None, None)), "missing front cover")
 
-    def testReadsReleaseDateFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(releaseDate='2013-11-15'))
-        assert_that(mp3.releaseDate, equal_to('2013-11-15'), "release date")
+    def testReadsGuestPerformersFromId3Tags(self):
+        mp3 = MP3File(self.makeMp3(guestPerformers='Guest Performers'))
+        assert_that(mp3.guestPerformers, equal_to('Guest Performers'), "guest performers")
+
+    def testReadsLabelNameFromId3Tags(self):
+        mp3 = MP3File(self.makeMp3(labelName='Label Name'))
+        assert_that(mp3.labelName, equal_to('Label Name'), "label name")
+
+    def testReadsRecordingTimeFromId3Tags(self):
+        mp3 = MP3File(self.makeMp3(recordingTime='2012-07-15'))
+        assert_that(mp3.recordingTime, equal_to('2012-07-15'), "recording time")
+
+    def testReadsReleaseTimeFromId3Tags(self):
+        mp3 = MP3File(self.makeMp3(releaseTime='2013-11-15'))
+        assert_that(mp3.releaseTime, equal_to('2013-11-15'), "release time")
+
+    def testReadsOriginalReleaseTimeFromId3Tags(self):
+        mp3 = MP3File(self.makeMp3(originalReleaseTime='1999-03-15'))
+        assert_that(mp3.originalReleaseTime, equal_to('1999-03-15'), "original release time")
 
     def testReadsUpcFromCustomId3Tag(self):
         mp3 = MP3File(self.makeMp3(upc='1234567899999'))
@@ -86,12 +102,18 @@ class MP3FileTest(unittest.TestCase):
         mp3 = MP3File(self.makeMp3())
         assert_that(mp3.duration, equal_to(mp3Sample.duration), "duration")
 
+    # todo create a dict of changes, change mp3 accordingly then check that reloaded file
+    # has properties matching the changes
     def testCanSaveAndReloadMetadataInFile(self):
         mp3 = MP3File(self.makeMp3())
         mp3.releaseName = u"Release Name"
         mp3.frontCoverPicture = 'image/jpeg', fs.readContent(resources.path("salers.jpg"))
         mp3.leadPerformer = u"Lead Performer"
-        mp3.releaseDate = u"2013-12-01"
+        mp3.guestPerformers = u"Guest Performers"
+        mp3.labelName = u"Label Name"
+        mp3.recordingTime = u"2012-07-01"
+        mp3.releaseTime = u"2013-12-01"
+        mp3.originalReleaseTime = u"1999-01-01"
         mp3.upc = u"987654321111"
         mp3.trackTitle = u"Track Title"
         mp3.versionInfo = u"Version Info"
@@ -117,7 +139,11 @@ class MP3FileTest(unittest.TestCase):
 def sameTagsAs(other):
     return has_properties(releaseName=other.releaseName,
                           leadPerformer=other.leadPerformer,
-                          releaseDate=other.releaseDate,
+                          guestPerformers=other.guestPerformers,
+                          labelName=other.labelName,
+                          recordingTime=other.recordingTime,
+                          releaseTime=other.releaseTime,
+                          originalReleaseTime=other.originalReleaseTime,
                           upc=other.upc,
                           isrc=other.isrc,
                           trackTitle=other.trackTitle,
