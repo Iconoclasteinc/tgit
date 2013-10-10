@@ -1,7 +1,7 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
  <qresource>
-     <file>locales/qt_fr.qm</file>
-     <file>locales/tgit_fr.qm</file>
+     <file>resources/qt_fr.qm</file>
+     <file>resources/tgit_fr.qm</file>
  </qresource>
  </RCC>
