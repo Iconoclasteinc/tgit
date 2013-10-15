@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import equal_to, has_properties, contains
+from hamcrest import equal_to, has_properties, contains, has_length
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import resources, doubles
-from test.util.matchers import samePictureAs
-from test.util.mp3_maker import MP3
+from test.util import mp3, fs
 from test.util.fake_audio_library import FakeAudioLibrary
 
 from tgit.ui.main_window import MainWindow
@@ -31,27 +30,27 @@ class MainWindowTest(BaseWidgetTest):
 
     # todo Move to welcome panel tests once welcome panel is extracted
     def testImportsTrackToAlbumWhenAddTrackButtonIsClicked(self):
-        mp3 = self.audioLibrary.add(MP3())
-        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(mp3.filename))
+        track = self.audioLibrary.add(mp3.makeMp3())
+        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(track.filename))
 
         class AddTrackToAlbumProbe(object):
             def addToAlbum(self, filename):
                 addTrackRequest.setReceivedValue(filename)
 
         self.mainWindow.setMusicProducer(AddTrackToAlbumProbe())
-        self.tagger.addTrackToAlbum(mp3.filename)
+        self.tagger.addTrackToAlbum(track.filename)
         self.tagger.check(addTrackRequest)
 
     def testImportsTrackToAlbumWhenImportTrackMenuItemIsSelected(self):
-        mp3 = self.audioLibrary.add(MP3())
-        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(mp3.filename))
+        track = self.audioLibrary.add(mp3.makeMp3())
+        addTrackRequest = ValueMatcherProbe("request to add track", equal_to(track.filename))
 
         class AddTrackToAlbumProbe(object):
             def addToAlbum(self, filename):
                 addTrackRequest.setReceivedValue(filename)
 
         self.mainWindow.setMusicProducer(AddTrackToAlbumProbe())
-        self.tagger.importTrackThroughMenu(mp3.filename)
+        self.tagger.importTrackThroughMenu(track.filename)
         self.tagger.check(addTrackRequest)
 
     def testSwitchesToTrackListWhenFirstTrackIsImported(self):
@@ -256,5 +255,7 @@ class MainWindowTest(BaseWidgetTest):
 
 def hasMetadata(**tags):
     if 'frontCoverPicture' in tags:
-        tags['frontCoverPicture'] = samePictureAs(tags['frontCoverPicture'])
+        pictureFile = tags['frontCoverPicture']
+        tags['frontCoverPicture'] = contains(fs.guessMimeType(pictureFile),
+                                             has_length(len(fs.readContent(pictureFile))))
     return has_properties(**tags)

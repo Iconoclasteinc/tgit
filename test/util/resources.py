@@ -9,5 +9,5 @@ TEST_DIR = os.path.abspath(os.path.join(PROJECT_DIR, 'test'))
 TEST_RESOURCES_DIR = os.path.join(TEST_DIR, 'resources')
 
 
-def path(name):
-    return os.path.abspath(os.path.join(TEST_RESOURCES_DIR, name))
+def path(baseName):
+    return os.path.abspath(os.path.join(TEST_RESOURCES_DIR, baseName))

@@ -3,19 +3,11 @@
 import unittest
 
 from test.util import resources
-from test.util.mp3_maker import MP3
+from test.util.mp3 import makeMp3
 from test.endtoend.application_runner import ApplicationRunner
 from test.util.fake_audio_library import FakeAudioLibrary
 
 SAMPLE_AUDIO_FILE = resources.path("Hallelujah.mp3")
-
-
-def copy(track):
-    return MP3(track)
-
-
-def mp3(**tags):
-    return MP3(**tags)
 
 
 class TaggerTest(unittest.TestCase):
@@ -30,7 +22,7 @@ class TaggerTest(unittest.TestCase):
 
     # todo create a test mp3 from a sample realistic mpeg frame and make expected values explicit
     def testTaggingASingleTrackAndSavingChanges(self):
-        track = self.audioLibrary.add(copy(SAMPLE_AUDIO_FILE))
+        track = self.audioLibrary.add(makeMp3(SAMPLE_AUDIO_FILE))
 
         self.application.importTrack(track.filename)
         self.application.showsAlbumContent(['Hallelujah (Chorus)'])
@@ -53,11 +45,11 @@ class TaggerTest(unittest.TestCase):
             leadPerformer='Tim, Mark and Phil',
             trackTitle='Potato Banana Song',
             featuredGuest='Stuart',
-            frontCoverFile=resources.path("minions-in-black.jpg"))
+            frontCoverPicture=resources.path("minions-in-black.jpg"))
 
     def testTaggingMultipleTracksFromTheSameAlbum(self):
-        track1 = self.audioLibrary.add(mp3(releaseName='Album Title', trackTitle='Track 1'))
-        track2 = self.audioLibrary.add(mp3(releaseName='Album Title', trackTitle='Track 2'))
+        track1 = self.audioLibrary.add(makeMp3(releaseName='Album Title', trackTitle='Track 1'))
+        track2 = self.audioLibrary.add(makeMp3(releaseName='Album Title', trackTitle='Track 2'))
 
         self.application.importTrack(track1.filename)
         self.application.importTrack(track2.filename)
@@ -78,9 +70,9 @@ class TaggerTest(unittest.TestCase):
 
     # todo Consider exercising the different ways of adding a track
     def testChangingTheAlbumCompositionFromTheTrackList(self):
-        track1 = self.audioLibrary.add(mp3(releaseName='Original Title', trackTitle='Track 1'))
-        track2 = self.audioLibrary.add(mp3(releaseName='Original Title', trackTitle='Track 2'))
-        track3 = self.audioLibrary.add(mp3(releaseName='Original Title', trackTitle='Track 3'))
+        track1 = self.audioLibrary.add(makeMp3(releaseName='Original Title', trackTitle='Track 1'))
+        track2 = self.audioLibrary.add(makeMp3(releaseName='Original Title', trackTitle='Track 2'))
+        track3 = self.audioLibrary.add(makeMp3(releaseName='Original Title', trackTitle='Track 3'))
 
         self.application.importTrack(track1.filename)
         self.application.importTrack(track2.filename)

@@ -17,32 +17,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import tgit.mp3_file as mp3File
-from tgit.track import Track
 
-
-class ProductionListener(object):
-    def trackAdded(self, track):
-        pass
-
-
-# todo collect tracks in album and let album notify listeners of album changes
-# I'm thinking trackAdded, trackRemoved and trackMoved events, trackChanged, albumChanged
-# todo we need focused tests
-class AlbumProducer(object):
-    def __init__(self, ui):
-        self._ui = ui
-
-    def addToAlbum(self, filename):
-        track = Track(mp3File.load(filename))
-        self._ui.trackAdded(track)
-
-    def removeTrack(self, track):
-        self._ui.trackRemoved(track)
-
-    def moveTrack(self, track, position):
-        self._ui.trackMoved(track, position)
-
-    def saveAlbum(self, album):
-        for track in album:
-            track.save()
+TITLE = 'releaseName'
+LEAD_PERFORMER = 'leadPerformer'
+GUEST_PERFORMERS = 'guestPerformers'
+LABEL_NAME = 'labelName'
+RECORDING_TIME = 'recordingTime'
+RELEASE_TIME = 'releaseTime'
+ORIGINAL_RELEASE_TIME = 'originalReleaseTime'
+UPC = 'upc'

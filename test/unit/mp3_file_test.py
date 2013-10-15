@@ -1,153 +1,158 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import assert_that, is_, equal_to, has_properties
+from hamcrest import (assert_that, equal_to, has_entry, contains_inanyorder, has_key, has_length)
 
-from tgit.mp3 import MP3File
+from tgit import album, track
+from tgit.metadata import Metadata, Image
+import tgit.mp3_file as mp3File
 
-from test.util.mp3_maker import MP3, mp3Sample
-from test.util import resources, fs
+from test.util.mp3 import makeMp3, TestMp3
+
+BITRATE = TestMp3.bitrate
+DURATION = TestMp3.duration
 
 
 class MP3FileTest(unittest.TestCase):
     def tearDown(self):
-        self._audioFile.delete()
+        self.testFile.delete()
 
     def makeMp3(self, **tags):
-        self._audioFile = MP3(mp3Sample.path, **tags).make()
-        return self._audioFile.filename
+        self.testFile = makeMp3(TestMp3.filename, **tags)
+        return self.testFile.filename
 
-    def testIgnoresMissingTags(self):
-        mp3 = MP3File(self.makeMp3())
-        assert_that(mp3.releaseName, is_(None), "missing release name")
-
-    def testReadsReleaseNameFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(releaseName='Release Name'))
-        assert_that(mp3.releaseName, equal_to('Release Name'), "release name")
+    def testReadsAlbumTitleFromTALBFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TALB='Album'))
+        assert_that(mp3.metadata, has_entry(album.TITLE, 'Album'), 'metadata')
 
     def testJoinsAllTextsOfFrames(self):
-        mp3 = MP3File(self.makeMp3(releaseName=['Release', 'Names']))
-        assert_that(mp3.releaseName, equal_to('Release\x00Names'), "release names")
+        mp3 = mp3File.load(self.makeMp3(TALB=['Album', 'Titles']))
+        assert_that(mp3.metadata, has_entry(album.TITLE, 'Album\x00Titles'), 'metadata')
 
-    def testCreatesMp3TagsWhenMissing(self):
-        mp3 = MP3File(self.makeMp3())
-        mp3.releaseName = 'Release Name'
-        assert_that(mp3.releaseName, is_('Release Name'), "release name")
+    def testReadsLeadPerformerFromTPE1Frame(self):
+        mp3 = mp3File.load(self.makeMp3(TPE1='Lead Artist'))
+        assert_that(mp3.metadata, has_entry(album.LEAD_PERFORMER, 'Lead Artist'), 'metadata')
 
-    def testReadsLeadPerformerFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(leadPerformer='Lead Performer'))
-        assert_that(mp3.leadPerformer, equal_to('Lead Performer'), "lead performer")
+    def testReadsGuestPerformersFromTPE2Frame(self):
+        mp3 = mp3File.load(self.makeMp3(TPE2='Band'))
+        assert_that(mp3.metadata, has_entry(album.GUEST_PERFORMERS, 'Band'), 'metadata')
 
-    def testReadsFrontCoverPictureFromId3Tags(self):
-        frontCover = ('image/jpeg', '', resources.path("front-cover.jpg"))
-        mp3 = MP3File(self.makeMp3(frontCover=frontCover))
+    def testReadsLabelNameFromTPUBFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TPUB='Label Name'))
+        assert_that(mp3.metadata, has_entry(album.LABEL_NAME, 'Label Name'), 'metadata')
 
-        mime, data = mp3.frontCoverPicture
-        assert_that(mime, equal_to('image/jpeg'), "front cover mime type")
-        assert_that(len(data),
-                    equal_to(len(fs.readContent(resources.path("front-cover.jpg")))),
-                    "front cover picture size in bytes")
+    def testReadsRecordingTimeFromTDRCFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TDRC='2012-07-15'))
+        assert_that(mp3.metadata, has_entry(album.RECORDING_TIME, '2012-07-15'), 'metadata')
 
-    def testDoesNotConfuseFrontCoverWithOtherPictureTypes(self):
-        backCover = ('image/jpeg', '', resources.path("back-cover.jpg"))
-        mp3 = MP3File(self.makeMp3(backCover=backCover))
+    def testReadsReleaseTimeFromTDRLFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TDRL='2013-11-15'))
+        assert_that(mp3.metadata, has_entry(album.RELEASE_TIME, '2013-11-15'), 'metadata')
 
-        assert_that(mp3.frontCoverPicture, is_((None, None)), "missing front cover")
+    def testReadsOriginalReleaseTimeFromTDORFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TDOR='1999-03-15'))
+        assert_that(mp3.metadata, has_entry(album.ORIGINAL_RELEASE_TIME, '1999-03-15'), 'metadata')
 
-    def testReadsGuestPerformersFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(guestPerformers='Guest Performers'))
-        assert_that(mp3.guestPerformers, equal_to('Guest Performers'), "guest performers")
+    def testReadsUpcFromCustomFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TXXX_UPC='1234567899999'))
+        assert_that(mp3.metadata, has_entry(album.UPC, '1234567899999'), 'metadata')
 
-    def testReadsLabelNameFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(labelName='Label Name'))
-        assert_that(mp3.labelName, equal_to('Label Name'), "label name")
+    def testReadsTrackTitleFromTIT2Frame(self):
+        mp3 = mp3File.load(self.makeMp3(TIT2='Track Title'))
+        assert_that(mp3.metadata, has_entry(track.TITLE, 'Track Title'), 'metadata')
 
-    def testReadsRecordingTimeFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(recordingTime='2012-07-15'))
-        assert_that(mp3.recordingTime, equal_to('2012-07-15'), "recording time")
+    def testReadsVersionInfoFromTPE4Frame(self):
+        mp3 = mp3File.load(self.makeMp3(TPE4='Version Info'))
+        assert_that(mp3.metadata, has_entry(track.VERSION_INFO, 'Version Info'), 'metadata')
 
-    def testReadsReleaseTimeFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(releaseTime='2013-11-15'))
-        assert_that(mp3.releaseTime, equal_to('2013-11-15'), "release time")
+    def testReadsFeaturedGuestFromCustomFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TXXX_FEATURED_GUEST='Featured Guest'))
+        assert_that(mp3.metadata, has_entry(track.FEATURED_GUEST, 'Featured Guest'), 'metadata')
 
-    def testReadsOriginalReleaseTimeFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(originalReleaseTime='1999-03-15'))
-        assert_that(mp3.originalReleaseTime, equal_to('1999-03-15'), "original release time")
+    def testReadsIsrcFromTSRCFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TSRC='AABB12345678'))
+        assert_that(mp3.metadata, has_entry(track.ISRC, 'AABB12345678'), 'metadata')
 
-    def testReadsUpcFromCustomId3Tag(self):
-        mp3 = MP3File(self.makeMp3(upc='1234567899999'))
-        assert_that(mp3.upc, equal_to('1234567899999'), "upc")
+    def testReadsBitrateFromAudioStreamInformation(self):
+        mp3 = mp3File.load(self.makeMp3())
+        assert_that(mp3.bitrate, equal_to(BITRATE), 'bitrate')
 
-    def testReadsTrackTitleFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(trackTitle='Track Title'))
-        assert_that(mp3.trackTitle, equal_to("Track Title"), "track title")
+    def testReadsDurationFromAudioStreamInformation(self):
+        mp3 = mp3File.load(self.makeMp3())
+        assert_that(mp3.duration, equal_to(DURATION), 'duration')
 
-    def testReadsVersionInfoFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(versionInfo='Version Info'))
-        assert_that(mp3.versionInfo, equal_to("Version Info"), "version info")
+    def testReadsCoverPicturesFromAPICFrames(self):
+        mp3 = mp3File.load(self.makeMp3(
+            APIC_FRONT=('image/jpeg', 'Front', 'front-cover.jpg'),
+            APIC_BACK=('image/jpeg', 'Back', 'back-cover.jpg')))
 
-    def testReadsFeaturedGuestFromCustomId3Tag(self):
-        mp3 = MP3File(self.makeMp3(featuredGuest='Featured Guest'))
-        assert_that(mp3.featuredGuest, equal_to("Featured Guest"), "featured guest")
+        assert_that(mp3.metadata.images, contains_inanyorder(
+            Image('image/jpeg', 'front-cover.jpg', type_=Image.FRONT_COVER, desc='Front'),
+            Image('image/jpeg', 'back-cover.jpg', type_=Image.BACK_COVER, desc='Back'),
+        ))
 
-    def testReadsIsrcFromId3Tags(self):
-        mp3 = MP3File(self.makeMp3(isrc='AABB12345678'))
-        assert_that(mp3.isrc, equal_to('AABB12345678'), "isrc")
+    def testCanSaveAndReloadMetadata(self):
+        metadata = Metadata()
+        metadata.addImage('image/jpeg', 'salers.jpg', Image.FRONT_COVER)
+        metadata[album.TITLE] = u"Album"
+        metadata[album.LEAD_PERFORMER] = u"Lead Performer"
+        metadata[album.GUEST_PERFORMERS] = u"Guest Performers"
+        metadata[album.LABEL_NAME] = u"Label Name"
+        metadata[album.RECORDING_TIME] = u"2012-07-01"
+        metadata[album.RELEASE_TIME] = u"2013-12-01"
+        metadata[album.ORIGINAL_RELEASE_TIME] = u"1999-01-01"
+        metadata[album.UPC] = u"987654321111"
+        metadata[track.TITLE] = u"Track Title"
+        metadata[track.VERSION_INFO] = u"Version Info"
+        metadata[track.FEATURED_GUEST] = u"Featured Guest"
+        metadata[track.ISRC] = u"ZZXX87654321"
 
-    def testReadsTrackBitrateFromAudioStreamInformation(self):
-        mp3 = MP3File(self.makeMp3())
-        assert_that(mp3.bitrate, equal_to(mp3Sample.bitrate), "bitrate")
+        self.assertCanBeSavedAndReloadedWithSameMetadata(metadata)
 
-    def testReadsTrackDurationFromAudioStreamInformation(self):
-        mp3 = MP3File(self.makeMp3())
-        assert_that(mp3.duration, equal_to(mp3Sample.duration), "duration")
+    def testCreatesID3TagsWhenMissing(self):
+        withoutTags = mp3File.load(self.makeMp3())
+        metadata = Metadata()
+        metadata[album.TITLE] = 'Title'
+        withoutTags.update(metadata)
+        withoutTags.save()
 
-    # todo create a dict of changes, change mp3 accordingly then check that reloaded file
-    # has properties matching the changes
-    def testCanSaveAndReloadMetadataInFile(self):
-        mp3 = MP3File(self.makeMp3())
-        mp3.releaseName = u"Release Name"
-        mp3.frontCoverPicture = 'image/jpeg', fs.readContent(resources.path("salers.jpg"))
-        mp3.leadPerformer = u"Lead Performer"
-        mp3.guestPerformers = u"Guest Performers"
-        mp3.labelName = u"Label Name"
-        mp3.recordingTime = u"2012-07-01"
-        mp3.releaseTime = u"2013-12-01"
-        mp3.originalReleaseTime = u"1999-01-01"
-        mp3.upc = u"987654321111"
-        mp3.trackTitle = u"Track Title"
-        mp3.versionInfo = u"Version Info"
-        mp3.featuredGuest = u"Featured Guest"
-        mp3.isrc = u"ZZXX87654321"
+        assert_that(reload_(withoutTags).metadata, has_key(album.TITLE), 'metadata')
 
-        self.assertCanBeSavedAndReloadedWithSameTags(mp3)
-
-    def testRemovesExistingFrontCoverWhenSetToNone(self):
-        mp3 = MP3File(self.makeMp3(frontCover=('image/jpeg', '',
-                                               resources.path("front-cover.jpg"))))
-        mp3.frontCoverPicture = (None, None)
+    def testCanSaveSeveralPicturesSharingTheSameDescription(self):
+        mp3 = mp3File.load(self.makeMp3())
+        metadata = Metadata()
+        metadata.addImage('image/jpeg', 'salers.jpg', desc='Front Cover')
+        metadata.addImage('image/jpeg', 'ragber.jpg', desc='Front Cover')
+        mp3.update(metadata)
         mp3.save()
 
-        reloaded = MP3File(mp3.filename)
-        assert_that(reloaded.frontCoverPicture, is_((None, None)), "removed front cover")
+        assert_that(reload_(mp3).metadata.images, contains_inanyorder(
+            Image('image/jpeg', 'salers.jpg', type_=Image.FRONT_COVER, desc='Front Cover'),
+            Image('image/jpeg', 'ragber.jpg', type_=Image.FRONT_COVER, desc='Front Cover (2)'),
+        ))
 
-    def assertCanBeSavedAndReloadedWithSameTags(self, original):
-        original.save()
-        assert_that(MP3File(original.filename), sameTagsAs(original))
+    def testRemovesExistingAttachedPicturesUnlessNoneInMetadata(self):
+        mp3 = mp3File.load(self.makeMp3(APIC_FRONT=('image/jpeg', '', 'front-cover.jpg')))
+        metadata = Metadata()
+
+        mp3.update(metadata)
+        mp3.save()
+        assert_that(reload_(mp3).metadata.images, has_length(1), 'original images')
+
+        metadata.addImage('image/jpeg', 'Front', 'salers.jpg')
+        mp3.save()
+        assert_that(reload_(mp3).metadata.images, has_length(1), 'updated images')
+
+    def assertCanBeSavedAndReloadedWithSameMetadata(self, metadata):
+        mp3 = mp3File.load(self.makeMp3())
+        mp3.update(metadata)
+        mp3.save()
+
+        assert_that(reload_(mp3).metadata.items(), contains_inanyorder(*metadata.items()),
+                    'metadata items')
+        assert_that(reload_(mp3).metadata.images, contains_inanyorder(*metadata.images),
+                    'metadata images')
 
 
-def sameTagsAs(other):
-    return has_properties(releaseName=other.releaseName,
-                          leadPerformer=other.leadPerformer,
-                          guestPerformers=other.guestPerformers,
-                          labelName=other.labelName,
-                          recordingTime=other.recordingTime,
-                          releaseTime=other.releaseTime,
-                          originalReleaseTime=other.originalReleaseTime,
-                          upc=other.upc,
-                          isrc=other.isrc,
-                          trackTitle=other.trackTitle,
-                          versionInfo=other.versionInfo,
-                          featuredGuest=other.featuredGuest,
-                          frontCoverPicture=other.frontCoverPicture)
-
+def reload_(mp3):
+    return mp3File.load(mp3.filename)

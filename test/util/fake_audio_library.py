@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import assert_that, has_properties
+from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 
-from tgit.mp3 import MP3File
-
-from test.util import matchers
+from tgit.metadata import Image
+from tgit import mp3_file as mp3File
+from test.util import fs
 
 
 class FakeAudioLibrary(object):
@@ -19,16 +19,20 @@ class FakeAudioLibrary(object):
     def delete(self):
         [mp3.delete() for mp3 in self.mp3s]
 
-    def containsFile(self, name, **tags):
-        if 'frontCoverFile' in tags:
-            tags['frontCoverPicture'] = matchers.samePictureAs(tags['frontCoverFile'])
-            del tags['frontCoverFile']
+    def containsFile(self, filename, **tags):
+        images = []
+        if 'frontCoverPicture' in tags:
+            mime = fs.guessMimeType(tags['frontCoverPicture'])
+            images.append(Image(mime, fs.readContent(tags['frontCoverPicture']),
+                                type_=Image.FRONT_COVER, desc='Front Cover'))
+            del tags['frontCoverPicture']
 
-        mp3 = self._open(name)
-        assert_that(mp3, has_properties(tags))
+        mp3 = self._loadMp3(filename)
+        assert_that(mp3.metadata, has_entries(tags), 'metadata tags')
+        assert_that(mp3.metadata.images, contains(*images), 'attached pictures')
 
-    def _open(self, name):
+    def _loadMp3(self, name):
         try:
-            return MP3File(name)
+            return mp3File.load(name)
         except IOError:
-            raise AssertionError("Not found in library: % s" % name)
+            raise AssertionError("Not in library: % s" % name)

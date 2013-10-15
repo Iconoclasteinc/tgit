@@ -20,9 +20,9 @@
 import functools
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem,
-                         QHeaderView, QHBoxLayout)
+                         QHBoxLayout)
 
-from tgit import audio
+from tgit import player
 from tgit.ui import display
 from tgit.null import Null
 
@@ -41,7 +41,7 @@ LISTEN = 5
 REMOVE = 6
 
 
-class TrackListPanel(QWidget, audio.MediaListener):
+class TrackListPanel(QWidget, player.MediaListener):
     def __init__(self, player=Null(), handler=Null(), producer=Null(), parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
