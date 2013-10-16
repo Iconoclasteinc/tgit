@@ -34,10 +34,10 @@ class MainWindowTest(BaseWidgetTest):
         addTrackRequest = ValueMatcherProbe("request to add track", equal_to(track.filename))
 
         class AddTrackToAlbumProbe(object):
-            def addToAlbum(self, filename):
+            def addTrack(self, filename):
                 addTrackRequest.setReceivedValue(filename)
 
-        self.mainWindow.setMusicProducer(AddTrackToAlbumProbe())
+        self.mainWindow.addMusicProducer(AddTrackToAlbumProbe())
         self.tagger.addTrackToAlbum(track.filename)
         self.tagger.check(addTrackRequest)
 
@@ -46,10 +46,10 @@ class MainWindowTest(BaseWidgetTest):
         addTrackRequest = ValueMatcherProbe("request to add track", equal_to(track.filename))
 
         class AddTrackToAlbumProbe(object):
-            def addToAlbum(self, filename):
+            def addTrack(self, filename):
                 addTrackRequest.setReceivedValue(filename)
 
-        self.mainWindow.setMusicProducer(AddTrackToAlbumProbe())
+        self.mainWindow.addMusicProducer(AddTrackToAlbumProbe())
         self.tagger.importTrackThroughMenu(track.filename)
         self.tagger.check(addTrackRequest)
 
@@ -141,7 +141,7 @@ class MainWindowTest(BaseWidgetTest):
             def saveAlbum(self, album):
                 trackIncludesAlbumAndTrackModifications.setReceivedValue(album)
 
-        self.mainWindow.setMusicProducer(CaptureSaveRequest())
+        self.mainWindow.addMusicProducer(CaptureSaveRequest())
 
         self.tagger.nextStep()
         self.tagger.editAlbumMetadata(**albumMetadata)
@@ -164,7 +164,7 @@ class MainWindowTest(BaseWidgetTest):
             def saveAlbum(self, album):
                 allTracksAreSaved.setReceivedValue(album)
 
-        self.mainWindow.setMusicProducer(CaptureSaveRequest())
+        self.mainWindow.addMusicProducer(CaptureSaveRequest())
 
         self.tagger.nextStep()
         self.tagger.editAlbumMetadata(releaseName='Album')

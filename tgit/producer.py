@@ -33,7 +33,7 @@ class AlbumProducer(object):
     def __init__(self, ui):
         self._ui = ui
 
-    def addToAlbum(self, filename):
+    def addTrack(self, filename):
         track = Track(mp3File.load(filename))
         self._ui.trackAdded(track)
 

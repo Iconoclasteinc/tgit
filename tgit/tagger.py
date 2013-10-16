@@ -38,7 +38,10 @@ class TGiT(QApplication):
         self._translators = []
         self.translateTo(locale)
         self._ui = MainWindow(player or MediaPlayer())
-        self._ui.setMusicProducer(AlbumProducer(self._ui))
+        self._addMusicProducerFor(self._ui)
+
+    def _addMusicProducerFor(self, ui):
+        ui.addMusicProducer(AlbumProducer(ui))
 
     def translateTo(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))

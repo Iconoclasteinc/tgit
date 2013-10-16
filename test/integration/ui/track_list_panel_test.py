@@ -117,7 +117,7 @@ class TrackListPanelTest(BaseWidgetTest):
             def removeTrack(self, index):
                 trackRemoved.setReceivedValue(index)
 
-        self.trackList.setMusicProducer(RemoveTrackProbe())
+        self.trackList.addMusicProducer(RemoveTrackProbe())
 
         trackRemoved.expects(hasTitle('Track 1'))
         self.tagger.removeTrackAt(1)
@@ -176,7 +176,7 @@ class TrackListPanelTest(BaseWidgetTest):
             def moveTrack(self, track, position):
                 trackMoved.setReceivedValue((track, position))
 
-        self.trackList.setMusicProducer(MoveTrackProbe())
+        self.trackList.addMusicProducer(MoveTrackProbe())
 
         trackMoved.expects(contains(hasTitle('Track 2'), 1))
         self.tagger.changeTrackPosition(2, 1)

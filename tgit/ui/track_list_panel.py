@@ -22,6 +22,7 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem,
                          QHBoxLayout)
 
+from tgit.announcer import Announcer
 from tgit import player
 from tgit.ui import display
 from tgit.null import Null
@@ -42,13 +43,13 @@ REMOVE = 6
 
 
 class TrackListPanel(QWidget, player.MediaListener):
-    def __init__(self, player=Null(), handler=Null(), producer=Null(), parent=None):
+    def __init__(self, player=Null(), handler=Null(), parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
         self._player = player
         self._player.addMediaListener(self)
         self._requestHandler = handler
-        self._musicProducer = producer
+        self._musicProducers = Announcer()
         self._trackList = []
 
         self._build()
@@ -70,8 +71,8 @@ class TrackListPanel(QWidget, player.MediaListener):
     def setRequestHandler(self, handler):
         self._requestHandler = handler
 
-    def setMusicProducer(self, producer):
-        self._musicProducer = producer
+    def addMusicProducer(self, producer):
+        self._musicProducers.add(producer)
 
     def _build(self):
         self._layout = QVBoxLayout()
@@ -99,7 +100,7 @@ class TrackListPanel(QWidget, player.MediaListener):
                      for row in xrange(self._table.rowCount())]
         self._table.setVerticalHeaderLabels(numbering)
 
-        self._musicProducer.moveTrack(self._trackList[index], newPosition)
+        self._musicProducers.announce().moveTrack(self._trackList[index], newPosition)
 
     def trackAdded(self, track):
         newRow = self._table.rowCount()
@@ -167,7 +168,7 @@ class TrackListPanel(QWidget, player.MediaListener):
             self._player.stop()
 
         self._removeFromList(track)
-        self._musicProducer.removeTrack(track)
+        self._musicProducers.announce().removeTrack(track)
 
     def _removeFromList(self, track):
         self._table.removeRow(self._rowOf(track))

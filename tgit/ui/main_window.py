@@ -21,6 +21,7 @@ from PyQt4.QtCore import (QDir, QRect)
 from PyQt4.QtGui import (QWidget, QMainWindow, QMenu, QAction, QStatusBar, QVBoxLayout,
                          QHBoxLayout, QPushButton, QFileDialog, QStackedWidget)
 
+from tgit.announcer import Announcer
 from tgit.null import Null
 from tgit.ui.track_list_panel import TrackListPanel
 from tgit.ui.album_panel import AlbumPanel
@@ -42,10 +43,10 @@ TRACK_PANEL = 2
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, player=Null(), musicProducer=Null()):
+    def __init__(self, player=Null()):
         QMainWindow.__init__(self)
         self._player = player
-        self._musicProducer = musicProducer
+        self._musicProducers = Announcer()
         # We should get rid of that at some point
         self._tracks = []
         self._build()
@@ -53,9 +54,9 @@ class MainWindow(QMainWindow):
         self.raise_()
         self.activateWindow()
 
-    def setMusicProducer(self, producer):
-        self._musicProducer = producer
-        self._trackListPanel().setMusicProducer(producer)
+    def addMusicProducer(self, producer):
+        self._musicProducers.add(producer)
+        self._trackListPanel().addMusicProducer(producer)
 
     def _onWelcomePage(self):
         return self.centralWidget() == self._welcomePanel
@@ -94,7 +95,7 @@ class MainWindow(QMainWindow):
         dialog.setOption(QFileDialog.DontUseNativeDialog)
         dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
         dialog.setModal(True)
-        dialog.fileSelected.connect(lambda filename: self._musicProducer.addToAlbum(filename))
+        dialog.fileSelected.connect(self._musicProducers.announce().addTrack)
         return dialog
 
     def selectTrack(self):
@@ -175,7 +176,7 @@ class MainWindow(QMainWindow):
         self._mainPanel = QWidget()
         layout = QVBoxLayout()
         self._pages = QStackedWidget()
-        trackListPanel = TrackListPanel(self._player, self, self._musicProducer)
+        trackListPanel = TrackListPanel(self._player, self)
         self._pages.addWidget(trackListPanel)
         albumPanel = AlbumPanel()
         self._pages.addWidget(albumPanel)
@@ -228,7 +229,7 @@ class MainWindow(QMainWindow):
     def _saveAlbum(self):
         self._updateAlbumWithMetadata()
         # todo producer should manage tracks
-        self._musicProducer.saveAlbum(self._tracks)
+        self._musicProducers.announce().saveAlbum(self._tracks)
 
     # todo Extract a WelcomePanel
     def _makeWelcomePanel(self):
