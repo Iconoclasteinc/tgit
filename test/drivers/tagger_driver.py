@@ -74,12 +74,12 @@ class TaggerDriver(MainWindowDriver):
         self._previousStepButton().isEnabled()
         self._saveButton().isEnabled()
 
-    def nextStep(self):
+    def nextPage(self):
         button = self._nextStepButton()
         button.isEnabled()
         button.click()
 
-    def previousStep(self):
+    def previousPage(self):
         button = self._previousStepButton()
         button.isEnabled()
         button.click()
@@ -97,12 +97,12 @@ class TaggerDriver(MainWindowDriver):
 
     # todo have a quick navigation button
     def navigateToAlbumMetadata(self):
-        self.nextStep()
+        self.nextPage()
         self.isShowingAlbumMetadata()
 
     # todo have a quick navigation button
     def navigateToTrackMetadata(self):
-        self.nextStep()
+        self.nextPage()
         self.isShowingTrackMetadata()
 
     def showsAlbumContains(self, *tracks):

@@ -43,17 +43,19 @@ REMOVE = 6
 
 
 class TrackListPanel(QWidget, player.MediaListener):
-    def __init__(self, player=Null(), handler=Null(), parent=None):
+    def __init__(self, album, player, parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
         self._player = player
         self._player.addMediaListener(self)
-        self._requestHandler = handler
-        self._musicProducers = Announcer()
-        self._trackList = []
-
         self._build()
         self.localize()
+
+        self._album = album
+        self._trackList = []
+        self._requestListeners = Announcer()
+        self._musicProducers = Announcer()
+        self.albumStateChanged(album)
 
     # todo when we disallow adding the same track multiple times,
     # track filename should be its unique, do we want to pass
@@ -68,7 +70,7 @@ class TrackListPanel(QWidget, player.MediaListener):
     def mediaPaused(self, media):
         self.mediaStopped(media)
 
-    def setRequestHandler(self, handler):
+    def addRequestListener(self, handler):
         self._requestHandler = handler
 
     def addMusicProducer(self, producer):
@@ -106,8 +108,8 @@ class TrackListPanel(QWidget, player.MediaListener):
         newRow = self._table.rowCount()
         self._table.insertRow(newRow)
         self._table.setItem(newRow, TRACK_TITLE, QTableWidgetItem(track.trackTitle))
-        self._table.setItem(newRow, LEAD_PERFORMER, QTableWidgetItem(track.leadPerformer))
-        self._table.setItem(newRow, RELEASE_NAME, QTableWidgetItem(track.releaseName))
+        self._table.setItem(newRow, LEAD_PERFORMER, QTableWidgetItem(self._album.leadPerformer))
+        self._table.setItem(newRow, RELEASE_NAME, QTableWidgetItem(self._album.releaseName))
         self._table.setItem(newRow, BITRATE,
                             QTableWidgetItem("%d kbps" % display.inKbps(track.bitrate)))
         duration = QTableWidgetItem(display.asDuration(track.duration))
@@ -127,12 +129,6 @@ class TrackListPanel(QWidget, player.MediaListener):
 
         self._trackList.append(track)
 
-    def albumUpdated(self):
-        for row, track in enumerate(self._trackList):
-            self._table.item(row, TRACK_TITLE).setText(track.trackTitle)
-            self._table.item(row, LEAD_PERFORMER).setText(track.leadPerformer)
-            self._table.item(row, RELEASE_NAME).setText(track.releaseName)
-
     def _addButtons(self, layout):
         buttonLayout = QHBoxLayout()
         self._addButton = QPushButton()
@@ -147,6 +143,15 @@ class TrackListPanel(QWidget, player.MediaListener):
 
     def localize(self):
         self._addButton.setText(self.tr('Add Track...'))
+
+    def albumStateChanged(self, album):
+        pass
+
+    def albumUpdated(self):
+        for row, track in enumerate(self._trackList):
+            self._table.item(row, TRACK_TITLE).setText(track.trackTitle)
+            self._table.item(row, LEAD_PERFORMER).setText(self._album.leadPerformer)
+            self._table.item(row, RELEASE_NAME).setText(self._album.releaseName)
 
     def _rowOf(self, track):
         return next(index for index, item in enumerate(self._trackList) if item == track)

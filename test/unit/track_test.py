@@ -3,14 +3,12 @@
 import unittest
 from hamcrest import assert_that, equal_to, match_equality, has_entries
 
-from tgit.metadata import Metadata
 from tgit.album import TITLE as ALBUM_TITLE
 from tgit.track import Track, TITLE, VERSION_INFO, ISRC, FEATURED_GUEST
 from test.util import doubles
 
 
 class TrackTest(unittest.TestCase):
-
     def testReadsAudioInformationFromAudioFile(self):
         audio = doubles.audio(filename='file.mp3',
                               bitrate=192000,
@@ -26,7 +24,7 @@ class TrackTest(unittest.TestCase):
                               featuredGuest='Featuring',
                               isrc='Code')
         track = Track(audio)
-        assert_that(track.title, equal_to('Title'), 'title')
+        assert_that(track.trackTitle, equal_to('Title'), 'title')
         assert_that(track.versionInfo, equal_to('Remix'), 'info')
         assert_that(track.featuredGuest, equal_to('Featuring'), 'featured guest')
         assert_that(track.isrc, equal_to('Code'), 'isrc')

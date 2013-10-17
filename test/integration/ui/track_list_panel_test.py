@@ -11,6 +11,8 @@ from test.cute.probes import ValueMatcherProbe
 from test.drivers.track_list_panel_driver import TrackListPanelDriver
 from test.util import doubles
 
+from tgit.album import Album
+from tgit.track import Track
 from tgit.ui.track_list_panel import TrackListPanel
 
 
@@ -39,22 +41,20 @@ class TrackListPanelTest(BaseWidgetTest):
     def setUp(self):
         super(TrackListPanelTest, self).setUp()
         self.player = flexmock(PlayerStub())
-        self.trackList = TrackListPanel(player=self.player)
-        self.view(self.trackList)
-        self.tagger = self.createDriverFor(self.trackList)
-
-    def tearDown(self):
-        super(TrackListPanelTest, self).tearDown()
+        self.album = Album()
+        self.trackListPanel = TrackListPanel(self.album, self.player)
+        self.view(self.trackListPanel)
+        self.tagger = self.createDriverFor(self.trackListPanel)
 
     def createDriverFor(self, widget):
         return TrackListPanelDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysColumnHeadings(self):
-        self.tagger.showsColumnHeaders('Track Title', 'Lead Performer', 'Release Name',
-                                       'Bitrate', 'Duration', '', '')
+        self.tagger.showsColumnHeaders(
+            'Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration', '', '')
 
     def testDisplaysTrackDetailsInColumns(self):
-        self._addTrackToList(trackTitle='Banana Song',
+        self.addTrackToAlbum(trackTitle='Banana Song',
                              leadPerformer='Tim, Stuart, Dave',
                              releaseName='Despicable Me',
                              bitrate=192000,
@@ -63,8 +63,8 @@ class TrackListPanelTest(BaseWidgetTest):
                                '192 kbps', '03:43')
 
     def testDisplaysAllTracksInRows(self):
-        self._addTrackToList(trackTitle='Track 0')
-        self._addTrackToList(trackTitle='Track 1')
+        self.addTrackToAlbum(trackTitle='Track 0')
+        self.addTrackToAlbum(trackTitle='Track 1')
 
         self.tagger.hasTrackCount(2)
         # todo test also that tracks are in order
@@ -72,7 +72,7 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.showsTrack('Track 1')
 
     def testCanPlayAndStopATrack(self):
-        track = self._addTrackToList()
+        track = self.addTrackToAlbum()
 
         self.player.should_call('play').once().with_args(track).when(self._notPlayingMusic())
         self.player.should_call('stop').once().when(self._playingMusic())
@@ -84,15 +84,15 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.isNotPlayingTrack(0)
 
     def testRestoresListenButtonStateWhenTrackHasFinishedPlaying(self):
-        track0 = self._addTrackToList()
-        track1 = self._addTrackToList()
+        track0 = self.addTrackToAlbum()
+        track1 = self.addTrackToAlbum()
 
         self.tagger.playTrack(0)
-        self.trackList.mediaStopped(track0)
+        self.trackListPanel.mediaStopped(track0)
         self.tagger.isNotPlayingTrack(0)
 
         self.tagger.playTrack(1)
-        self.trackList.mediaPaused(track1)
+        self.trackListPanel.mediaPaused(track1)
         self.tagger.isNotPlayingTrack(1)
 
     def testTriggersSelectTrackWhenAddButtonIsClicked(self):
@@ -102,14 +102,14 @@ class TrackListPanelTest(BaseWidgetTest):
             def selectTrack(self):
                 addTrackButtonClicked.setReceivedValue("clicked")
 
-        self.trackList.setRequestHandler(SelectTrackProbe())
+        self.trackListPanel.addRequestListener(SelectTrackProbe())
         self.tagger.addTrack()
         self.tagger.check(addTrackButtonClicked)
 
     def testRemovesTrackFromAlbumWhenRemoveButtonIsClicked(self):
-        self._addTrackToList(trackTitle="Track 0")
-        self._addTrackToList(trackTitle="Track 1")
-        self._addTrackToList(trackTitle="Track 2")
+        self.addTrackToAlbum(trackTitle="Track 0")
+        self.addTrackToAlbum(trackTitle="Track 1")
+        self.addTrackToAlbum(trackTitle="Track 2")
 
         trackRemoved = ValueMatcherProbe("remove track")
 
@@ -117,7 +117,7 @@ class TrackListPanelTest(BaseWidgetTest):
             def removeTrack(self, index):
                 trackRemoved.setReceivedValue(index)
 
-        self.trackList.addMusicProducer(RemoveTrackProbe())
+        self.trackListPanel.addMusicProducer(RemoveTrackProbe())
 
         trackRemoved.expects(hasTitle('Track 1'))
         self.tagger.removeTrackAt(1)
@@ -138,8 +138,8 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.check(trackRemoved)
 
     def testStopsCurrentlyPlayingTrackWhenRemovedFromList(self):
-        self._addTrackToList()
-        self._addTrackToList()
+        self.addTrackToAlbum()
+        self.addTrackToAlbum()
 
         self.tagger.playTrack(1)
         self.player.should_call('stop').never()
@@ -148,24 +148,24 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.removeTrackAt(0)
 
     def testAccountsForRemovedTracksWhenReceivingMediaUpdates(self):
-        track0 = self._addTrackToList(trackTitle="Track 0")
-        track1 = self._addTrackToList(trackTitle="Track 1")
+        track0 = self.addTrackToAlbum(trackTitle="Track 0")
+        track1 = self.addTrackToAlbum(trackTitle="Track 1")
 
         self.tagger.playTrack(1)
         self.tagger.removeTrackAt(0)
         self.tagger.isPlayingTrack(0)
-        self.trackList.mediaStopped(track1)
+        self.trackListPanel.mediaStopped(track1)
         self.tagger.isNotPlayingTrack(0)
 
         self.tagger.playTrack(0)
         self.tagger.removeTrackAt(0)
         # Should be silently ignored
-        self.trackList.mediaStopped(track0)
+        self.trackListPanel.mediaStopped(track0)
 
     def testChangesTrackPositionInAlbumWhenTrackIsMoved(self):
-        self._addTrackToList(trackTitle="Track 0")
-        self._addTrackToList(trackTitle="Track 1")
-        self._addTrackToList(trackTitle="Track 2")
+        self.addTrackToAlbum(trackTitle="Track 0")
+        self.addTrackToAlbum(trackTitle="Track 1")
+        self.addTrackToAlbum(trackTitle="Track 2")
 
         trackMoved = ValueMatcherProbe("move track")
 
@@ -176,7 +176,7 @@ class TrackListPanelTest(BaseWidgetTest):
             def moveTrack(self, track, position):
                 trackMoved.setReceivedValue((track, position))
 
-        self.trackList.addMusicProducer(MoveTrackProbe())
+        self.trackListPanel.addMusicProducer(MoveTrackProbe())
 
         trackMoved.expects(contains(hasTitle('Track 2'), 1))
         self.tagger.changeTrackPosition(2, 1)
@@ -190,9 +190,10 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.removeTrackAt(1)
         self.tagger.showsTrack("Track 2")
 
-    def _addTrackToList(self, **details):
-        track = doubles.track(**details)
-        self.trackList.trackAdded(track)
+    def addTrackToAlbum(self, **details):
+        track = Track(doubles.audio(**details))
+        self.album.appendTrack(track)
+        self.trackListPanel.trackAdded(track)
         return track
 
     def _notPlayingMusic(self):

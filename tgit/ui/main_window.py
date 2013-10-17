@@ -175,7 +175,9 @@ class MainWindow(QMainWindow):
         self._mainPanel = QWidget()
         layout = QVBoxLayout()
         self._pages = QStackedWidget()
-        trackListPanel = TrackListPanel(self._player, self)
+        trackListPanel = TrackListPanel(self._album, self._player)
+        trackListPanel.addRequestListener(self)
+
         self._pages.addWidget(trackListPanel)
         albumPanel = AlbumPanel(self._album)
         self._pages.addWidget(albumPanel)
