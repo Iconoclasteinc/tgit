@@ -24,6 +24,8 @@ from PyQt4.QtGui import QApplication
 from tgit.producer import AlbumProducer
 # noinspection PyUnresolvedReferences
 from tgit import resources
+from tgit.album import Album
+from tgit.audio_library import AudioFiles
 from tgit.player import MediaPlayer
 from tgit.ui.main_window import MainWindow
 
@@ -37,11 +39,12 @@ class TGiT(QApplication):
         QApplication.__init__(self, [])
         self._translators = []
         self.translateTo(locale)
-        self._ui = MainWindow(player or MediaPlayer())
+        self._album = Album()
+        self._ui = MainWindow(self._album, player or MediaPlayer())
         self._addMusicProducerFor(self._ui)
 
     def _addMusicProducerFor(self, ui):
-        ui.addMusicProducer(AlbumProducer(ui))
+        ui.addMusicProducer(AlbumProducer(ui, self._album, AudioFiles()))
 
     def translateTo(self, locale):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))

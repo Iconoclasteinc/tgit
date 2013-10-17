@@ -109,7 +109,7 @@ class TrackListPanel(QWidget, player.MediaListener):
         self._table.setItem(newRow, LEAD_PERFORMER, QTableWidgetItem(track.leadPerformer))
         self._table.setItem(newRow, RELEASE_NAME, QTableWidgetItem(track.releaseName))
         self._table.setItem(newRow, BITRATE,
-                            QTableWidgetItem("%d kbps" % display.toKbps(track.bitrate)))
+                            QTableWidgetItem("%d kbps" % display.inKbps(track.bitrate)))
         duration = QTableWidgetItem(display.asDuration(track.duration))
         duration.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self._table.setItem(newRow, DURATION, duration)

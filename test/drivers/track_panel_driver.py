@@ -7,6 +7,7 @@ import tgit.ui.track_panel as ui
 from test.cute.matchers import named, withBuddy
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver)
 
+# todo use constants from album module
 DURATION = 'duration'
 BITRATE = 'bitrate'
 ISRC = 'isrc'

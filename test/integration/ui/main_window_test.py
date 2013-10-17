@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import equal_to, has_properties, contains, has_length
+from hamcrest import equal_to, has_properties, contains, has_length, has_property
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.probes import ValueMatcherProbe
@@ -10,13 +10,16 @@ from test.util import resources, doubles
 from test.util import mp3, fs
 from test.util.fake_audio_library import FakeAudioLibrary
 
+from tgit.album import Album
+from tgit.track import Track
 from tgit.ui.main_window import MainWindow
 
 
 class MainWindowTest(BaseWidgetTest):
     def setUp(self):
         super(MainWindowTest, self).setUp()
-        self.mainWindow = MainWindow()
+        self.album = Album()
+        self.mainWindow = MainWindow(self.album)
         self.view(self.mainWindow)
         self.tagger = self.createDriverFor(self.mainWindow)
         self.audioLibrary = FakeAudioLibrary()
@@ -55,13 +58,13 @@ class MainWindowTest(BaseWidgetTest):
 
     def testSwitchesToTrackListWhenFirstTrackIsImported(self):
         self.tagger.isShowingWelcomePanel()
-        self._addTrack()
+        self.addTrack()
         self.tagger.isShowingTrackList()
 
     def testAddsATrackPageForEachImportedTrack(self):
-        self._addTrack(trackTitle='Track 1')
-        self._addTrack(trackTitle='Track 2')
-        self._addTrack(trackTitle='Track 3')
+        self.addTrack(trackTitle='Track 1')
+        self.addTrack(trackTitle='Track 2')
+        self.addTrack(trackTitle='Track 3')
 
         self.tagger.nextStep()
         self.tagger.nextStep()
@@ -72,8 +75,8 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.showsTrackMetadata(trackTitle='Track 3')
 
     def testCanNavigateBackAndForthBetweenPages(self):
-        self._addTrack()
-        self._addTrack()
+        self.addTrack()
+        self.addTrack()
 
         self.tagger.isShowingTrackList()
         self.tagger.nextStep()
@@ -92,33 +95,24 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.isShowingAlbumMetadata()
 
     def testNextButtonIsDisabledWhenViewingLastTrack(self):
-        self._addTrack()
+        self.addTrack()
         self.tagger.nextStep()
         self.tagger.nextStep()
         self.tagger.hasNextStepDisabled()
 
-        self._addTrack()
+        self.addTrack()
         self.tagger.nextStep()
         self.tagger.hasNextStepDisabled()
 
     def testStaysOnCurrentPageWhenASubsequentTrackIsImported(self):
-        self._addTrack(trackTitle='Track 1')
+        self.addTrack(trackTitle='Track 1')
         self.tagger.nextStep()
         self.tagger.nextStep()
         self.tagger.showsTrackMetadata(trackTitle='Track 1')
-        self._addTrack()
+        self.addTrack()
         self.tagger.showsTrackMetadata(trackTitle='Track 1')
-
-    def testAlbumMetadataShowsMetadataOfFirstImportedTrack(self):
-        self._addTrack(releaseName='Album 1')
-        self.tagger.nextStep()
-        self.tagger.showsAlbumMetadata(releaseName='Album 1')
-        self._addTrack(releaseName='Album 2')
-        self.tagger.showsAlbumMetadata(releaseName='Album 1')
 
     def testSavesAllAlbumAndTrackMetadata(self):
-        self._addTrack()
-
         albumMetadata = dict(releaseName='Release Name',
                              frontCoverPicture=resources.path("front-cover.jpg"),
                              leadPerformer='Lead Performer',
@@ -134,37 +128,47 @@ class MainWindowTest(BaseWidgetTest):
                              isrc='AABB12345678')
 
         allMetadata = dict(albumMetadata.items() + trackMetadata.items())
-        trackIncludesAlbumAndTrackModifications = \
-            ValueMatcherProbe("request to save track", contains(hasMetadata(**allMetadata)))
+        # todo have custom matchers, such as anAlbumWithTracks
+        saveRequest = \
+            ValueMatcherProbe("request to save track",
+                              has_property('tracks', contains(hasMetadata(**allMetadata))))
 
         class CaptureSaveRequest(object):
-            def saveAlbum(self, album):
-                trackIncludesAlbumAndTrackModifications.setReceivedValue(album)
+            def __init__(self, album):
+                self._album = album
 
-        self.mainWindow.addMusicProducer(CaptureSaveRequest())
+            def saveAlbum(self):
+                saveRequest.setReceivedValue(self._album)
 
+        self.addTrack()
+        self.mainWindow.addMusicProducer(CaptureSaveRequest(self.album))
         self.tagger.nextStep()
         self.tagger.editAlbumMetadata(**albumMetadata)
         self.tagger.nextStep()
         self.tagger.editTrackMetadata(**trackMetadata)
         self.tagger.saveAlbum()
-        self.tagger.check(trackIncludesAlbumAndTrackModifications)
+        self.tagger.check(saveRequest)
 
     def testSavesAllImportedTracks(self):
-        self._addTrack()
-        self._addTrack()
-        self._addTrack()
+        self.addTrack()
+        self.addTrack()
+        self.addTrack()
 
-        allTracksAreSaved = ValueMatcherProbe("request to save album", contains(
-            hasMetadata(releaseName='Album', trackTitle='Track 1'),
-            hasMetadata(releaseName='Album', trackTitle='Track 2'),
-            hasMetadata(releaseName='Album', trackTitle='Track 3')))
+        allTracksAreSaved = ValueMatcherProbe(
+            "request to save album",
+            has_property('tracks', contains(
+                hasMetadata(releaseName='Album', trackTitle='Track 1'),
+                hasMetadata(releaseName='Album', trackTitle='Track 2'),
+                hasMetadata(releaseName='Album', trackTitle='Track 3'))))
 
         class CaptureSaveRequest(object):
-            def saveAlbum(self, album):
-                allTracksAreSaved.setReceivedValue(album)
+            def __init__(self, album):
+                self._album = album
 
-        self.mainWindow.addMusicProducer(CaptureSaveRequest())
+            def saveAlbum(self):
+                allTracksAreSaved.setReceivedValue(self._album)
+
+        self.mainWindow.addMusicProducer(CaptureSaveRequest(self.album))
 
         self.tagger.nextStep()
         self.tagger.editAlbumMetadata(releaseName='Album')
@@ -178,11 +182,11 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.check(allTracksAreSaved)
 
     def testDeletesCorrespondingPageWhenTrackIsRemovedFromAlbum(self):
-        track1 = self._addTrack(trackTitle="Track 1")
-        track2 = self._addTrack(trackTitle="Track 2")
-        track3 = self._addTrack(trackTitle="Track 3")
+        track1 = self.addTrack(trackTitle="Track 1")
+        track2 = self.addTrack(trackTitle="Track 2")
+        track3 = self.addTrack(trackTitle="Track 3")
 
-        self.mainWindow.trackRemoved(track2)
+        self.removeTrack(track2)
         self.tagger.nextStep()
         self.tagger.nextStep()
         self.tagger.showsTrackMetadata(tracktle='Track 1')
@@ -193,23 +197,23 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.previousStep()
         self.tagger.previousStep()
         self.tagger.previousStep()
-        self.mainWindow.trackRemoved(track1)
+        self.removeTrack(track1)
         self.tagger.nextStep()
         self.tagger.nextStep()
         self.tagger.showsTrackMetadata(tracktle='Track 3')
         # Let's go back again to the track list
         self.tagger.previousStep()
         self.tagger.previousStep()
-        self.mainWindow.trackRemoved(track3)
+        self.removeTrack(track3)
         self.tagger.hasNextStepDisabled()
 
     def testReordersPagesWhenTracksPositionsChangeInAlbum(self):
-        track1 = self._addTrack(trackTitle="Track 1")
-        track2 = self._addTrack(trackTitle="Track 2")
-        track3 = self._addTrack(trackTitle="Track 3")
+        track1 = self.addTrack(trackTitle="Track 1")
+        track2 = self.addTrack(trackTitle="Track 2")
+        self.addTrack(trackTitle="Track 3")
 
         self.mainWindow.trackMoved(track1, 2)
-        self.mainWindow.trackRemoved(track2)
+        self.removeTrack(track2)
         self.tagger.nextStep()
         self.tagger.nextStep()
         self.tagger.showsTrackMetadata(trackTitle='Track 3')
@@ -218,18 +222,18 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.hasNextStepDisabled()
 
     def testUpdatesImportedTrackWithAlbumMetadata(self):
-        self._addTrack(trackTitle="Track 1", releaseName='Album')
-        self._addTrack(trackTitle="Track 2")
-        self._addTrack(trackTitle="Track 3")
+        self.addTrack(trackTitle="Track 1", releaseName='Album')
+        self.addTrack(trackTitle="Track 2")
+        self.addTrack(trackTitle="Track 3")
 
         self.tagger.showsAlbumContains(['Track 1', 'Album'],
                                        ['Track 2', 'Album'],
                                        ['Track 3', 'Album'])
 
     def testTrackListShowsUpToDateTrackAndAlbumMetadata(self):
-        self._addTrack()
-        self._addTrack()
-        self._addTrack()
+        self.addTrack()
+        self.addTrack()
+        self.addTrack()
         self.tagger.nextStep()
         self.tagger.editAlbumMetadata(releaseName='Album')
         self.tagger.nextStep()
@@ -247,10 +251,15 @@ class MainWindowTest(BaseWidgetTest):
                                        ['Track 2', 'Album'],
                                        ['Track 3', 'Album'])
 
-    def _addTrack(self, **details):
-        track = doubles.track(**details)
+    def addTrack(self, **details):
+        track = Track(doubles.audio(**details))
+        self.album.appendTrack(track)
         self.mainWindow.trackAdded(track)
         return track
+
+    def removeTrack(self, track):
+        self.album.removeTrack(track)
+        self.mainWindow.trackRemoved(track)
 
 
 def hasMetadata(**tags):

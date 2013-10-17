@@ -17,7 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import tgit.mp3_file as mp3File
 from tgit.track import Track
 
 
@@ -30,19 +29,27 @@ class ProductionListener(object):
 # I'm thinking trackAdded, trackRemoved and trackMoved events, trackChanged, albumChanged
 # todo we need focused tests
 class AlbumProducer(object):
-    def __init__(self, ui):
+    def __init__(self, ui, album, library):
         self._ui = ui
+        self.album = album
+        self._library = library
+
+    def _loadAudioFile(self, filename):
+        return self._library.load(filename)
 
     def addTrack(self, filename):
-        track = Track(mp3File.load(filename))
+        track = Track(self._loadAudioFile(filename))
+        self.album.appendTrack(track)
         self._ui.trackAdded(track)
 
     def removeTrack(self, track):
+        self.album.removeTrack(track)
         self._ui.trackRemoved(track)
 
     def moveTrack(self, track, position):
+        self.album.removeTrack(track)
+        self.album.insertTrack(position, track)
         self._ui.trackMoved(track, position)
 
-    def saveAlbum(self, album):
-        for track in album:
-            track.save()
+    def saveAlbum(self):
+        self.album.save()

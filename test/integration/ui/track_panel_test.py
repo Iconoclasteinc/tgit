@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from datetime import timedelta
+from hamcrest import assert_that, equal_to
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
 
@@ -8,49 +9,44 @@ from test.cute.finders import WidgetIdentity
 from test.drivers.track_panel_driver import TrackPanelDriver
 from test.util import doubles
 
+from tgit.track import Track
 from tgit.ui.track_panel import TrackPanel
 
 
 class TrackPanelTest(BaseWidgetTest):
     def setUp(self):
         super(TrackPanelTest, self).setUp()
-        self.trackPanel = TrackPanel()
+        self.track = Track(doubles.audio(bitrate=192000,
+                                         duration=timedelta(minutes=4, seconds=35).total_seconds()))
+        self.trackPanel = TrackPanel(self.track)
         self.view(self.trackPanel)
-        self.driver = self.createDriverFor(self.trackPanel)
+        self.tagger = self.createDriverFor(self.trackPanel)
 
     def createDriverFor(self, widget):
         return TrackPanelDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    @unittest.skip("todo")
-    def testHasNothingToShowWhenTrackHasNoMetadata(self):
-        raise AssertionError("Not yet implemented")
-
     def testDisplaysTrackTitle(self):
-        track = doubles.track(trackTitle='Track Title')
-        self.trackPanel.setTrack(track)
-        self.driver.showsTrackTitle('Track Title')
+        self.track.trackTitle = 'Song'
+        self.track.versionInfo = 'Remix'
+        self.track.featuredGuest = 'Featuring'
+        self.track.isrc = 'Code'
 
-    def testDisplaysVersionInfo(self):
-        track = doubles.track(versionInfo='Version Info')
-        self.trackPanel.setTrack(track)
-        self.driver.showsVersionInfo('Version Info')
+        self.trackPanel.trackStateChanged(self.track)
+        self.tagger.showsTrackTitle('Song')
+        self.tagger.showsVersionInfo('Remix')
+        self.tagger.showsFeaturedGuest('Featuring')
+        self.tagger.showsBitrate('192 kbps')
+        self.tagger.showsIsrc('Code')
+        self.tagger.showsDuration('04:35')
 
-    def testDisplaysFeaturedGuest(self):
-        track = doubles.track(featuredGuest='Featured Guest')
-        self.trackPanel.setTrack(track)
-        self.driver.showsFeaturedGuest('Featured Guest')
+    def testUpdatesTrackMetadataWithUserEntries(self):
+        self.tagger.changeTrackTitle('Song')
+        self.tagger.changeVersionInfo('Remix')
+        self.tagger.changeFeaturedGuest('Featuring')
+        self.tagger.changeIsrc('Code')
 
-    def testDisplaysIsrc(self):
-        track = doubles.track(isrc='ISRC')
-        self.trackPanel.setTrack(track)
-        self.driver.showsIsrc('ISRC')
-
-    def testDisplaysBitrateInKbps(self):
-        track = doubles.track(bitrate=128000)
-        self.trackPanel.setTrack(track)
-        self.driver.showsBitrate('128 kbps')
-
-    def testDisplaysDurationAsText(self):
-        track = doubles.track(duration=275)
-        self.trackPanel.setTrack(track)
-        self.driver.showsDuration('04:35')
+        self.trackPanel.updateTrack()
+        assert_that(self.track.trackTitle, equal_to('Song'), 'track title')
+        assert_that(self.track.versionInfo, equal_to('Remix'), 'versio info')
+        assert_that(self.track.featuredGuest, equal_to('Featuring'), 'featured guest')
+        assert_that(self.track.isrc, equal_to('Code'), 'isrc')

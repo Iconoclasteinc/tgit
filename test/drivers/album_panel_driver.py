@@ -9,7 +9,7 @@ from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWid
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, AbstractButtonDriver,
                                 FileDialogDriver)
 
-# todo should go in a Metadata class
+# todo use constants from album module
 FRONT_COVER_PICTURE = 'frontCoverPicture'
 RELEASE_NAME = 'releaseName'
 LEAD_PERFORMER = 'leadPerformer'

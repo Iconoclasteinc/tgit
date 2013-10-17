@@ -17,10 +17,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-
-def inKbps(bps):
-    return int(round(bps, -3) / 1000)
+import tgit.mp3_file as mp3File
 
 
-def asDuration(seconds):
-    return "%02d:%02d" % divmod(round(seconds), 60)
+class AudioLibrary(object):
+    """
+    Loads an audio file from the library
+    """
+    def load(self, filename):
+        pass
+
+
+class AudioFiles(AudioLibrary):
+    def load(self, filename):
+        return mp3File.load(filename)

@@ -8,30 +8,32 @@ from tgit.metadata import Metadata, Image
 
 
 class MetadataTest(unittest.TestCase):
-    def testMissingMetadataDefaultsToEmptyString(self):
+
+    def testMissingMetadataIsConsideredEmpty(self):
         metadata = Metadata()
         assert_that(metadata['unknown'], equal_to(u''), 'missing value')
 
-    def testDropsAllKeysAndImagesWhenCleared(self):
+    def testDropsAllTagsAndImagesWhenCleared(self):
         metadata = Metadata()
-        metadata['key'] = 'value'
+        metadata['tag'] = 'value'
         metadata.addImage('img/jpeg', '...')
 
         metadata.clear()
         assert_that(metadata, empty(), 'tags')
         assert_that(list(metadata.images), empty(), 'images')
 
-    def testReplacesKeysAndImagesWhenOverwritten(self):
+    def testReplacesTagsAndImagesWhenMerged(self):
         metadata = Metadata()
-        metadata['key'] = 'value'
+        metadata['tag'] = 'original'
+        metadata['other'] = 'value'
         metadata.addImage('img/jpeg', 'image content')
 
         other = Metadata()
-        other['key'] = 'other value'
+        other['tag'] = 'replaced'
         other.addImage('img/png', 'other image')
 
-        metadata.copy(other)
-        assert_that(metadata, has_entry('key', 'other value'), 'tags')
+        metadata.merge(other)
+        assert_that(metadata, has_entry('tag', 'replaced'), 'tags')
         assert_that(metadata.images, contains(has_property('data', 'other image')), 'images')
 
     def testLooksUpImagesByType(self):

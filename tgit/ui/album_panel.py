@@ -38,13 +38,15 @@ UPC_NAME = "UPC"
 
 
 class AlbumPanel(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, album, parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(ALBUM_PANEL_NAME)
         grid = QGridLayout()
         self._fill(grid)
         self.translateUi()
         self._layout(grid)
+        self._album = album
+        self.albumStateChanged(album)
 
     def _layout(self, grid):
         layout = QVBoxLayout()
@@ -190,24 +192,24 @@ class AlbumPanel(QWidget):
         self._originalReleaseTimeLabel.setText(self.tr("Original Release Time: "))
         self._upcLabel.setText(self.tr("UPC/EAN: "))
 
-    def setTrack(self, track):
-        self._releaseNameEdit.setText(track.releaseName)
-        self._displayFrontCover(track.frontCoverPicture)
-        self._leadPerformerEdit.setText(track.leadPerformer)
-        self._guestPerformersEdit.setText(track.guestPerformers)
-        self._labelNameEdit.setText(track.labelName)
-        self._recordingTimeEdit.setText(track.recordingTime)
-        self._releaseTimeEdit.setText(track.releaseTime)
-        self._originalReleaseTimeEdit.setText(track.originalReleaseTime)
-        self._upcEdit.setText(track.upc)
+    def albumStateChanged(self, album):
+        self._displayFrontCover(album.frontCoverPicture)
+        self._releaseNameEdit.setText(album.releaseName)
+        self._leadPerformerEdit.setText(album.leadPerformer)
+        self._guestPerformersEdit.setText(album.guestPerformers)
+        self._labelNameEdit.setText(album.labelName)
+        self._recordingTimeEdit.setText(album.recordingTime)
+        self._releaseTimeEdit.setText(album.releaseTime)
+        self._originalReleaseTimeEdit.setText(album.originalReleaseTime)
+        self._upcEdit.setText(album.upc)
 
-    def updateTrack(self, track):
-        track.releaseName = self._releaseNameEdit.text()
-        track.frontCoverPicture = self._frontCover
-        track.leadPerformer = self._leadPerformerEdit.text()
-        track.guestPerformers = self._guestPerformersEdit.text()
-        track.labelName = self._labelNameEdit.text()
-        track.recordingTime = self._recordingTimeEdit.text()
-        track.releaseTime = self._releaseTimeEdit.text()
-        track.originalReleaseTime = self._originalReleaseTimeEdit.text()
-        track.upc = self._upcEdit.text()
+    def updateAlbum(self):
+        self._album.frontCoverPicture = self._frontCover
+        self._album.releaseName = self._releaseNameEdit.text()
+        self._album.leadPerformer = self._leadPerformerEdit.text()
+        self._album.guestPerformers = self._guestPerformersEdit.text()
+        self._album.labelName = self._labelNameEdit.text()
+        self._album.recordingTime = self._recordingTimeEdit.text()
+        self._album.releaseTime = self._releaseTimeEdit.text()
+        self._album.originalReleaseTime = self._originalReleaseTimeEdit.text()
+        self._album.upc = self._upcEdit.text()

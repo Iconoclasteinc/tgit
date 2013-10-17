@@ -43,10 +43,8 @@ class Image(object):
 
 
 class Metadata(dict):
-    def __init__(self, other=None):
-        super(Metadata, self).__init__()
-        if other:
-            self.copy(other)
+    def __init__(self, **kwargs):
+        super(Metadata, self).__init__(**kwargs)
         self._images = []
 
     def __missing__(self, name):
@@ -62,13 +60,16 @@ class Metadata(dict):
     def imagesOfType(self, imageType):
         return [image for image in self._images if image.type == imageType]
 
-    def copy(self, other):
-        self.clear()
-        self.merge(other)
+    def copy(self):
+        metadata = Metadata()
+        metadata.merge(self)
+        return metadata
 
     def merge(self, other):
         super(Metadata, self).update(other)
-        # merge images as well?
+        self.replaceImages(other)
+
+    def replaceImages(self, other):
         self._images = list(other.images)
 
     def removeImages(self):

@@ -9,15 +9,15 @@ from test.util import fs
 
 class FakeAudioLibrary(object):
     def __init__(self):
-        self.mp3s = []
+        self.files = []
 
     def add(self, mp3):
         mp3.make()
-        self.mp3s.append(mp3)
+        self.files.append(mp3)
         return mp3
 
     def delete(self):
-        [mp3.delete() for mp3 in self.mp3s]
+        [mp3.delete() for mp3 in self.files]
 
     def containsFile(self, filename, **tags):
         images = []
@@ -28,8 +28,8 @@ class FakeAudioLibrary(object):
             del tags['frontCoverPicture']
 
         mp3 = self._loadMp3(filename)
-        assert_that(mp3.metadata, has_entries(tags), 'metadata tags')
-        assert_that(mp3.metadata.images, contains(*images), 'attached pictures')
+        assert_that(mp3.metadata(), has_entries(tags), 'metadata tags')
+        assert_that(mp3.metadata().images, contains(*images), 'attached pictures')
 
     def _loadMp3(self, name):
         try:

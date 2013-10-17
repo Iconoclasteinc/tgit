@@ -76,6 +76,7 @@ class MP3File(object):
         self._metadata = Metadata()
         self._mpegInfo = NoMpegInfo()
 
+    # todo should we put filename, bitrate and duration in metadata?
     @property
     def filename(self):
         return self._filename
@@ -88,9 +89,8 @@ class MP3File(object):
     def duration(self):
         return self._mpegInfo.length
 
-    @property
     def metadata(self):
-        return self._metadata
+        return self._metadata.copy()
 
     def load(self):
         audioFile = mp3.MP3(self._filename)
@@ -116,22 +116,19 @@ class MP3File(object):
 
     def _addImageToMetadata(self, frame):
         imageType = self.__ID3_PICTURE_TYPES.get(frame.type, Image.OTHER)
-        self.metadata.addImage(frame.mime, frame.data, imageType, frame.desc)
+        self._metadata.addImage(frame.mime, frame.data, imageType, frame.desc)
 
-    def update(self, metadata):
-        self.metadata.copy(metadata)
-
-    def save(self, encoding=UTF_8):
+    def save(self, metadata, encoding=UTF_8):
         tags = self._loadFramesOf(self._filename)
 
-        for tag, value in self.metadata.items():
+        for tag, value in metadata.items():
             tags.add(self._newTextFrame(encoding, tag, value))
 
-        if self.metadata.images:
+        if metadata.images:
             self._deleteAttachedPictures(tags)
 
         counters = defaultdict(lambda: 0)
-        for image in self.metadata.images:
+        for image in metadata.images:
             tags.add(self._newPictureFrame(counters, image))
 
         tags.save(self._filename)

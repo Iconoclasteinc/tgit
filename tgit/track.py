@@ -18,18 +18,24 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit import album
-from tgit.metadata import Metadata, Image
+from tgit.metadata import Image
 
 TITLE = 'trackTitle'
 VERSION_INFO = 'versionInfo'
 FEATURED_GUEST = 'featuredGuest'
 ISRC = 'isrc'
 
+METADATA = [TITLE, VERSION_INFO, FEATURED_GUEST, ISRC]
+
 
 class Track(object):
     def __init__(self, audioFile):
         self._audioFile = audioFile
-        self._metadata = Metadata(audioFile.metadata)
+        self._metadata = audioFile.metadata()
+
+    @property
+    def metadata(self):
+        return self._metadata
 
     @property
     def filename(self):
@@ -123,37 +129,24 @@ class Track(object):
         self._metadata[album.UPC] = code
 
     @property
-    def trackTitle(self):
+    def title(self):
         return self._metadata[TITLE]
 
-    @trackTitle.setter
-    def trackTitle(self, title):
-        self._metadata[TITLE] = title
-
-    @property
-    def versionInfo(self):
-        return self._metadata[VERSION_INFO]
-
-    @versionInfo.setter
-    def versionInfo(self, info):
-        self._metadata[VERSION_INFO] = info
-
-    @property
-    def featuredGuest(self):
-        return self._metadata[FEATURED_GUEST]
-
-    @featuredGuest.setter
-    def featuredGuest(self, guest):
-        self._metadata[FEATURED_GUEST] = guest
-
-    @property
-    def isrc(self):
-        return self._metadata[ISRC]
-
-    @isrc.setter
-    def isrc(self, code):
-        self._metadata[ISRC] = code
-
     def save(self):
-        self._audioFile.update(self._metadata)
-        self._audioFile.save()
+        self._audioFile.save(self._metadata)
+
+
+def addMetadataPropertiesTo(cls):
+    for meta in METADATA:
+        def createProperty(name):
+            def getter(self):
+                return self._metadata[name]
+
+            def setter(self, value):
+                self._metadata[name] = value
+
+            setattr(cls, name, property(getter, setter))
+
+        createProperty(meta)
+
+addMetadataPropertiesTo(Track)

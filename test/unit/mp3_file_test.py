@@ -23,55 +23,56 @@ class MP3FileTest(unittest.TestCase):
 
     def testReadsAlbumTitleFromTALBFrame(self):
         mp3 = mp3File.load(self.makeMp3(TALB='Album'))
-        assert_that(mp3.metadata, has_entry(album.TITLE, 'Album'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(album.TITLE, 'Album'), 'metadata')
 
     def testJoinsAllTextsOfFrames(self):
         mp3 = mp3File.load(self.makeMp3(TALB=['Album', 'Titles']))
-        assert_that(mp3.metadata, has_entry(album.TITLE, 'Album\x00Titles'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(album.TITLE, 'Album\x00Titles'), 'metadata')
 
     def testReadsLeadPerformerFromTPE1Frame(self):
         mp3 = mp3File.load(self.makeMp3(TPE1='Lead Artist'))
-        assert_that(mp3.metadata, has_entry(album.LEAD_PERFORMER, 'Lead Artist'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(album.LEAD_PERFORMER, 'Lead Artist'), 'metadata')
 
     def testReadsGuestPerformersFromTPE2Frame(self):
         mp3 = mp3File.load(self.makeMp3(TPE2='Band'))
-        assert_that(mp3.metadata, has_entry(album.GUEST_PERFORMERS, 'Band'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(album.GUEST_PERFORMERS, 'Band'), 'metadata')
 
     def testReadsLabelNameFromTPUBFrame(self):
         mp3 = mp3File.load(self.makeMp3(TPUB='Label Name'))
-        assert_that(mp3.metadata, has_entry(album.LABEL_NAME, 'Label Name'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(album.LABEL_NAME, 'Label Name'), 'metadata')
 
     def testReadsRecordingTimeFromTDRCFrame(self):
         mp3 = mp3File.load(self.makeMp3(TDRC='2012-07-15'))
-        assert_that(mp3.metadata, has_entry(album.RECORDING_TIME, '2012-07-15'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(album.RECORDING_TIME, '2012-07-15'), 'metadata')
 
     def testReadsReleaseTimeFromTDRLFrame(self):
         mp3 = mp3File.load(self.makeMp3(TDRL='2013-11-15'))
-        assert_that(mp3.metadata, has_entry(album.RELEASE_TIME, '2013-11-15'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(album.RELEASE_TIME, '2013-11-15'), 'metadata')
 
     def testReadsOriginalReleaseTimeFromTDORFrame(self):
         mp3 = mp3File.load(self.makeMp3(TDOR='1999-03-15'))
-        assert_that(mp3.metadata, has_entry(album.ORIGINAL_RELEASE_TIME, '1999-03-15'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(album.ORIGINAL_RELEASE_TIME, '1999-03-15'),
+                    'metadata')
 
     def testReadsUpcFromCustomFrame(self):
         mp3 = mp3File.load(self.makeMp3(TXXX_UPC='1234567899999'))
-        assert_that(mp3.metadata, has_entry(album.UPC, '1234567899999'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(album.UPC, '1234567899999'), 'metadata')
 
     def testReadsTrackTitleFromTIT2Frame(self):
         mp3 = mp3File.load(self.makeMp3(TIT2='Track Title'))
-        assert_that(mp3.metadata, has_entry(track.TITLE, 'Track Title'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(track.TITLE, 'Track Title'), 'metadata')
 
     def testReadsVersionInfoFromTPE4Frame(self):
         mp3 = mp3File.load(self.makeMp3(TPE4='Version Info'))
-        assert_that(mp3.metadata, has_entry(track.VERSION_INFO, 'Version Info'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(track.VERSION_INFO, 'Version Info'), 'metadata')
 
     def testReadsFeaturedGuestFromCustomFrame(self):
         mp3 = mp3File.load(self.makeMp3(TXXX_FEATURED_GUEST='Featured Guest'))
-        assert_that(mp3.metadata, has_entry(track.FEATURED_GUEST, 'Featured Guest'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(track.FEATURED_GUEST, 'Featured Guest'), 'metadata')
 
     def testReadsIsrcFromTSRCFrame(self):
         mp3 = mp3File.load(self.makeMp3(TSRC='AABB12345678'))
-        assert_that(mp3.metadata, has_entry(track.ISRC, 'AABB12345678'), 'metadata')
+        assert_that(mp3.metadata(), has_entry(track.ISRC, 'AABB12345678'), 'metadata')
 
     def testReadsBitrateFromAudioStreamInformation(self):
         mp3 = mp3File.load(self.makeMp3())
@@ -86,7 +87,7 @@ class MP3FileTest(unittest.TestCase):
             APIC_FRONT=('image/jpeg', 'Front', 'front-cover.jpg'),
             APIC_BACK=('image/jpeg', 'Back', 'back-cover.jpg')))
 
-        assert_that(mp3.metadata.images, contains_inanyorder(
+        assert_that(mp3.metadata().images, contains_inanyorder(
             Image('image/jpeg', 'front-cover.jpg', type_=Image.FRONT_COVER, desc='Front'),
             Image('image/jpeg', 'back-cover.jpg', type_=Image.BACK_COVER, desc='Back'),
         ))
@@ -113,44 +114,39 @@ class MP3FileTest(unittest.TestCase):
         withoutTags = mp3File.load(self.makeMp3())
         metadata = Metadata()
         metadata[album.TITLE] = 'Title'
-        withoutTags.update(metadata)
-        withoutTags.save()
+        withoutTags.save(metadata)
 
-        assert_that(reload_(withoutTags).metadata, has_key(album.TITLE), 'metadata')
+        assert_that(reload_(withoutTags).metadata(), has_key(album.TITLE), 'metadata')
 
     def testCanSaveSeveralPicturesSharingTheSameDescription(self):
         mp3 = mp3File.load(self.makeMp3())
         metadata = Metadata()
         metadata.addImage('image/jpeg', 'salers.jpg', desc='Front Cover')
         metadata.addImage('image/jpeg', 'ragber.jpg', desc='Front Cover')
-        mp3.update(metadata)
-        mp3.save()
+        mp3.save(metadata)
 
-        assert_that(reload_(mp3).metadata.images, contains_inanyorder(
+        assert_that(reload_(mp3).metadata().images, contains_inanyorder(
             Image('image/jpeg', 'salers.jpg', type_=Image.FRONT_COVER, desc='Front Cover'),
             Image('image/jpeg', 'ragber.jpg', type_=Image.FRONT_COVER, desc='Front Cover (2)'),
         ))
 
     def testRemovesExistingAttachedPicturesUnlessNoneInMetadata(self):
         mp3 = mp3File.load(self.makeMp3(APIC_FRONT=('image/jpeg', '', 'front-cover.jpg')))
+        mp3.save(Metadata())
+        assert_that(reload_(mp3).metadata().images, has_length(1), 'original images')
+
         metadata = Metadata()
-
-        mp3.update(metadata)
-        mp3.save()
-        assert_that(reload_(mp3).metadata.images, has_length(1), 'original images')
-
-        metadata.addImage('image/jpeg', 'Front', 'salers.jpg')
-        mp3.save()
-        assert_that(reload_(mp3).metadata.images, has_length(1), 'updated images')
+        metadata.addImage(mime='image/jpeg', data='salers.jpg', desc='Front')
+        mp3.save(metadata)
+        assert_that(reload_(mp3).metadata().images, has_length(1), 'updated images')
 
     def assertCanBeSavedAndReloadedWithSameMetadata(self, metadata):
         mp3 = mp3File.load(self.makeMp3())
-        mp3.update(metadata)
-        mp3.save()
+        mp3.save(metadata)
 
-        assert_that(reload_(mp3).metadata.items(), contains_inanyorder(*metadata.items()),
+        assert_that(reload_(mp3).metadata().items(), contains_inanyorder(*metadata.items()),
                     'metadata items')
-        assert_that(reload_(mp3).metadata.images, contains_inanyorder(*metadata.images),
+        assert_that(reload_(mp3).metadata().images, contains_inanyorder(*metadata.images),
                     'metadata images')
 
 

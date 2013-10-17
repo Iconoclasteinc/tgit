@@ -20,7 +20,6 @@ class BaseWidgetTest(unittest.TestCase):
         self.app = QApplication([])
         self.prober = EventProcessingProber(timeoutInMs=1000)
         self.gesturePerformer = Robot()
-        self.tagger = None
 
     def view(self, widget):
         widget.show()

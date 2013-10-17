@@ -33,13 +33,15 @@ DURATION_NAME = "Duration"
 
 class TrackPanel(QWidget):
     # todo pass track to constructor
-    def __init__(self, parent=None):
+    def __init__(self, track, parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(TRACK_PANEL_NAME)
         grid = QGridLayout()
         self._fill(grid)
         self.translateUi()
         self._layout(grid)
+        self._track = track
+        self.trackStateChanged(track)
 
     def _layout(self, grid):
         layout = QVBoxLayout()
@@ -111,19 +113,19 @@ class TrackPanel(QWidget):
         self._bitrateLabel.setText(self.tr("Bitrate: "))
         self._durationLabel.setText(self.tr("Duration: "))
 
-    def setTrack(self, track):
+    def trackStateChanged(self, track):
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
         self._featuredGuestEdit.setText(track.featuredGuest)
         self._isrcEdit.setText(track.isrc)
-        self._bitrateInfoLabel.setText("%s kbps" % display.toKbps(track.bitrate))
+        self._bitrateInfoLabel.setText("%s kbps" % display.inKbps(track.bitrate))
         self._durationInfoLabel.setText(display.asDuration(track.duration))
 
-    def updateTrack(self, track):
-        track.trackTitle = self._trackTitleEdit.text()
-        track.versionInfo = self._versionInfoEdit.text()
-        track.featuredGuest = self._featuredGuestEdit.text()
-        track.isrc = self._isrcEdit.text()
+    def updateTrack(self):
+        self._track.trackTitle = self._trackTitleEdit.text()
+        self._track.versionInfo = self._versionInfoEdit.text()
+        self._track.featuredGuest = self._featuredGuestEdit.text()
+        self._track.isrc = self._isrcEdit.text()
 
-    def forTrack(self, track):
-        return track == self._track
+    def displays(self, track):
+        return self._track == track
