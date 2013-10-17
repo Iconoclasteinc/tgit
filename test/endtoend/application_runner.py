@@ -5,7 +5,6 @@ import sip
 import use_sip_api_v2
 
 from tgit.tagger import TGiT
-from tgit.null import Null
 from tgit.ui import main_window as main
 
 from test.cute.matchers import named, showingOnScreen
@@ -13,13 +12,14 @@ from test.cute.widgets import mainWindow
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
+from test.util.fake_media_player import FakeMediaPlayer
 
 ONE_SECOND = 1000
 
 
 class ApplicationRunner(object):
     def start(self):
-        self.app = TGiT(locale='en', player=Null())
+        self.app = TGiT(locale='en', player=FakeMediaPlayer())
         self.tagger = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())

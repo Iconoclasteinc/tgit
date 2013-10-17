@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import functools as func
+
 
 class Announcer(object):
     def __init__(self):
@@ -14,17 +16,12 @@ class Announcer(object):
     def announce(self):
         class Proxy(object):
             def __getattribute__(proxy, message):
-                class Announce(object):
-                    def __call__(announce, *args, **kwargs):
-                        self._announce(message, *args, **kwargs)
-
-                return Announce()
+                return func.partial(self._announce, message)
 
         return Proxy()
 
     def _announce(self, message, *args, **kwargs):
         for listener in self._listeners:
-            if hasattr(listener, message):
-                method = getattr(listener, message)
-                method(*args, **kwargs)
+            method = getattr(listener, message)
+            method(*args, **kwargs)
 

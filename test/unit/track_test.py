@@ -29,7 +29,7 @@ class TrackTest(unittest.TestCase):
         assert_that(track.featuredGuest, equal_to('Featuring'), 'featured guest')
         assert_that(track.isrc, equal_to('Code'), 'isrc')
 
-    def testSavesMetadataToAudioFile(self):
+    def testSavesMetadataToAudioFileWhenTagged(self):
         metadata = {
             TITLE: 'Title',
             VERSION_INFO: 'Remix',
@@ -47,4 +47,4 @@ class TrackTest(unittest.TestCase):
         track.metadata[ALBUM_TITLE] = metadata[ALBUM_TITLE]
 
         audio.should_receive('save').with_args(match_equality(has_entries(**metadata))).once()
-        track.save()
+        track.tag()

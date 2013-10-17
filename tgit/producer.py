@@ -20,36 +20,24 @@
 from tgit.track import Track
 
 
-class ProductionListener(object):
-    def trackAdded(self, track):
+class MusicProducer(object):
+    def importTrack(self, filename):
+        pass
+
+    def record(self):
         pass
 
 
-# todo collect tracks in album and let album notify listeners of album changes
-# I'm thinking trackAdded, trackRemoved and trackMoved events, trackChanged, albumChanged
-# todo we need focused tests
-class AlbumProducer(object):
-    def __init__(self, ui, album, library):
-        self._ui = ui
-        self.album = album
-        self._library = library
+class AlbumTagger(MusicProducer):
+    def __init__(self, album, audioLibrary):
+        self._album = album
+        self._audioLibrary = audioLibrary
 
     def _loadAudioFile(self, filename):
-        return self._library.load(filename)
+        return self._audioLibrary.load(filename)
 
-    def addTrack(self, filename):
-        track = Track(self._loadAudioFile(filename))
-        self.album.appendTrack(track)
-        self._ui.trackAdded(track)
+    def importTrack(self, filename):
+        self._album.addTrack(Track(self._loadAudioFile(filename)))
 
-    def removeTrack(self, track):
-        self.album.removeTrack(track)
-        self._ui.trackRemoved(track)
-
-    def moveTrack(self, track, position):
-        self.album.removeTrack(track)
-        self.album.insertTrack(position, track)
-        self._ui.trackMoved(track, position)
-
-    def saveAlbum(self):
-        self.album.save()
+    def record(self):
+        self._album.tag()

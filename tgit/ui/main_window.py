@@ -22,7 +22,7 @@ from PyQt4.QtGui import (QWidget, QMainWindow, QMenu, QAction, QStatusBar, QVBox
                          QHBoxLayout, QPushButton, QFileDialog, QStackedWidget)
 
 from tgit.announcer import Announcer
-from tgit.null import Null
+from tgit.album import AlbumListener
 from tgit.ui.track_list_panel import TrackListPanel
 from tgit.ui.album_panel import AlbumPanel
 from tgit.ui.track_panel import TrackPanel
@@ -42,12 +42,14 @@ ALBUM_PANEL = 1
 TRACK_PANEL = 2
 
 
-class MainWindow(QMainWindow):
-    def __init__(self, album, player=Null()):
-        QMainWindow.__init__(self)
+class MainWindow(QMainWindow, AlbumListener):
+    def __init__(self, album, player, parent=None):
+        QMainWindow.__init__(self, parent)
         self._album = album
+        self._album.addAlbumListener(self)
         self._player = player
         self._musicProducers = Announcer()
+
         self._build()
         self.show()
         self.raise_()
@@ -55,20 +57,12 @@ class MainWindow(QMainWindow):
 
     def addMusicProducer(self, producer):
         self._musicProducers.add(producer)
-        self._trackListPanel().addMusicProducer(producer)
 
-    def _onWelcomePage(self):
-        return self.centralWidget() == self._welcomePanel
-
-    def trackAdded(self, track):
-        # todo get rid of that
-        # the plan is that album panel is notified of changes to album,
-        # which will happen every time album composition changes
+    def trackAdded(self, track, position):
         self._albumPanel().albumStateChanged(self._album)
 
-        self._addTrackPage(track)
+        self._addTrackPage(track, position)
         self._updateAlbumAndTracks()
-        self._trackListPanel().trackAdded(track)
 
         if self._onWelcomePage():
             self._showPage(TRACK_LIST_PANEL)
@@ -76,15 +70,13 @@ class MainWindow(QMainWindow):
 
         self._nextStepButton.setEnabled(True)
 
-    def trackRemoved(self, track):
-        self._removeTrackPage(track)
+    def trackRemoved(self, track, position):
+        self._removeTrackPage(track, position)
         if self._noMoreTrackPages():
             self._nextStepButton.setDisabled(True)
 
-    def trackMoved(self, track, to):
-        page = self._pageFor(track)
-        self._pages.removeWidget(page)
-        self._pages.insertWidget(to + TRACK_PANEL, page)
+    def _onWelcomePage(self):
+        return self.centralWidget() == self._welcomePanel
 
     def _makeAddFileDialog(self):
         dialog = QFileDialog(self)
@@ -93,7 +85,7 @@ class MainWindow(QMainWindow):
         dialog.setOption(QFileDialog.DontUseNativeDialog)
         dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
         dialog.setModal(True)
-        dialog.fileSelected.connect(self._musicProducers.announce().addTrack)
+        dialog.fileSelected.connect(self._musicProducers.announce().importTrack)
         return dialog
 
     def selectTrack(self):
@@ -158,18 +150,17 @@ class MainWindow(QMainWindow):
     def _allTrackPages(self):
         return [self._pages.widget(index) for index in xrange(TRACK_PANEL, self._pages.count())]
 
-    def _addTrackPage(self, track):
-        trackPanel = TrackPanel(track)
-        self._pages.addWidget(trackPanel)
+    def _addTrackPage(self, track, position):
+        self._pages.insertWidget(TRACK_PANEL + position, TrackPanel(track))
 
-    def _removeTrackPage(self, track):
-        self._pages.removeWidget(self._pageFor(track))
+    def _removeTrackPage(self, track, position):
+        self._pages.removeWidget(self._trackPage(position))
 
-    def _pageFor(self, track):
-        return next(page for page in self._allTrackPages() if page.displays(track))
+    def _trackPage(self, position):
+        return self._pages.widget(TRACK_PANEL + position)
 
     def _noMoreTrackPages(self):
-        return self._pages.count() == TRACK_PANEL
+        return len(self._allTrackPages()) == 0
 
     def _makeMainPanel(self):
         self._mainPanel = QWidget()
@@ -224,11 +215,11 @@ class MainWindow(QMainWindow):
         self._albumPanel().updateAlbum()
         for page in self._allTrackPages():
             page.updateTrack()
-        self._trackListPanel().albumUpdated()
+        self._trackListPanel().albumStateChanged(self._album)
 
     def _saveAlbum(self):
         self._updateAlbumAndTracks()
-        self._musicProducers.announce().saveAlbum()
+        self._musicProducers.announce().record()
 
     # todo Extract a WelcomePanel
     def _makeWelcomePanel(self):

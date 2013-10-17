@@ -2,11 +2,12 @@
 
 import unittest
 from hamcrest import (assert_that, is_, contains, has_property, has_length, has_item, is_not,
-                      equal_to, has_entry, has_properties)
+                      equal_to, has_entry, has_properties, match_equality as matching)
 from hamcrest.library.collection.is_empty import empty
+from flexmock import flexmock
 
 from tgit import album
-from tgit.album import Album
+from tgit.album import Album, AlbumListener
 from tgit.track import Track
 
 from test.util import doubles
@@ -50,7 +51,7 @@ class AlbumTest(unittest.TestCase):
         self.appendTrack(trackTitle='Track 3')
 
         self.album.removeTrack(first)
-        self.album.insertTrack(1, first)
+        self.album.addTrack(first, 1)
 
         assert_that(self.album.tracks, contains(
             has_property('trackTitle', 'Track 2'),
@@ -69,18 +70,18 @@ class AlbumTest(unittest.TestCase):
         assert_that(self.album.frontCoverPicture, is_((None, None)), 'front cover picture')
 
     def testUsesMetadataOfFirstTrack(self):
-        first = Track(doubles.audio(releaseName='Album A',
-                                    leadPerformer='Artist',
-                                    guestPerformers='Band',
-                                    labelName='Label',
-                                    recordingTime='Recorded',
-                                    releaseTime='Released',
-                                    originalReleaseTime='Original Release',
-                                    upc='Barcode',
-                                    pictures=[doubles.picture('image/jpeg', 'front-cover.jpg')]))
-        self.album.appendTrack(first)
+        first = doubles.track(releaseName='Album A',
+                              leadPerformer='Artist',
+                              guestPerformers='Band',
+                              labelName='Label',
+                              recordingTime='Recorded',
+                              releaseTime='Released',
+                              originalReleaseTime='Original Release',
+                              upc='Barcode',
+                              pictures=[doubles.picture('image/jpeg', 'front-cover.jpg')])
+        self.album.addTrack(first)
         other = Track(doubles.audio(releaseName='Album B'))
-        self.album.appendTrack(other)
+        self.album.addTrack(other)
 
         assert_that(self.album.releaseName, equal_to('Album A'), 'release name')
         assert_that(self.album.leadPerformer, equal_to('Artist'), 'lead performer')
@@ -97,7 +98,11 @@ class AlbumTest(unittest.TestCase):
         self.album.removeTrack(first)
         assert_that(self.album.releaseName, equal_to('Album B'), 'updated release name')
 
-    def testUpdatesAllTracksOnMetadataChange(self):
+    # todo should verify separately that :
+    # - changing metadata affects tracks in album
+    # - new track inherits album metadata (currently this is not the case)
+    # - saving cascades to all tracks
+    def testUpdatesAllTracksWithAlbumMetadataWhenTagged(self):
         self.appendTrack(releaseName='Album A')
         self.appendTrack(releaseName='Album B')
         self.appendTrack(releaseName='Album C')
@@ -112,13 +117,41 @@ class AlbumTest(unittest.TestCase):
         self.album.upc = 'Barcode'
         self.album.frontCoverPicture = ('image/jpeg', 'front-cover.jpg')
 
-        self.album.save()
+        self.album.tag()
         for track in self.album.tracks:
             self.assertHasAlbumMetadata(track)
 
+    def testAnnouncesTrackRemovalToListeners(self):
+        listener = flexmock(AlbumListener())
+        self.album.addAlbumListener(listener)
+
+        first = self.appendTrack()
+        second = self.appendTrack()
+        listener.should_receive('trackRemoved').with_args(second, 1).once()
+        listener.should_receive('trackRemoved').with_args(first, 0).once()
+
+        self.album.removeTrack(second)
+        self.album.removeTrack(first)
+
+    def testAnnouncesTrackInsertionToListeners(self):
+        listener = flexmock(AlbumListener())
+        self.album.addAlbumListener(listener)
+
+        first = doubles.track()
+        listener.should_receive('trackAdded').with_args(first, 0).once()
+        self.album.addTrack(first)
+
+        last = doubles.track()
+        listener.should_receive('trackAdded').with_args(last, 1).once()
+        self.album.addTrack(last)
+
+        middle = doubles.track()
+        listener.should_receive('trackAdded').with_args(middle, 1).once()
+        self.album.addTrack(middle, 1)
+
     def appendTrack(self, **metadata):
-        track = Track(doubles.audio(**metadata))
-        self.album.appendTrack(track)
+        track = doubles.track(**metadata)
+        self.album.addTrack(track)
         return track
 
     def assertHasAlbumMetadata(self, track):

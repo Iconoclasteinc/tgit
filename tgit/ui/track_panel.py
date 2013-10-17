@@ -32,7 +32,6 @@ DURATION_NAME = "Duration"
 
 
 class TrackPanel(QWidget):
-    # todo pass track to constructor
     def __init__(self, track, parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName(TRACK_PANEL_NAME)
@@ -126,6 +125,3 @@ class TrackPanel(QWidget):
         self._track.versionInfo = self._versionInfoEdit.text()
         self._track.featuredGuest = self._featuredGuestEdit.text()
         self._track.isrc = self._isrcEdit.text()
-
-    def displays(self, track):
-        return self._track == track

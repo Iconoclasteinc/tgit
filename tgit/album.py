@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit.metadata import Image, Metadata
+from tgit.announcer import Announcer
 
 TITLE = 'releaseName'
 LEAD_PERFORMER = 'leadPerformer'
@@ -34,9 +35,21 @@ METADATA = [
 ]
 
 
+class AlbumListener(object):
+    def trackAdded(self, track, position):
+        pass
+
+    def trackRemoved(self, track, position):
+        pass
+
+
 class Album(object):
     def __init__(self):
         self._tracks = []
+        self._listeners = Announcer()
+
+    def addAlbumListener(self, listener):
+        self._listeners.add(listener)
 
     @property
     def frontCoverPicture(self):
@@ -55,19 +68,21 @@ class Album(object):
     def empty(self):
         return len(self._tracks) == 0
 
-    # todo return track and accept audio file
-    def appendTrack(self, track):
-        self._tracks.append(track)
+    def addTrack(self, track, position=-1):
+        if position == -1:
+            position = len(self._tracks)
+
+        self._tracks.insert(position, track)
+        self._listeners.announce().trackAdded(track, position)
 
     def removeTrack(self, track):
+        position = self._tracks.index(track)
         self._tracks.remove(track)
+        self._listeners.announce().trackRemoved(track, position)
 
-    def insertTrack(self, position, track):
-        self._tracks.insert(position, track)
-
-    def save(self):
+    def tag(self):
         for track in self._tracks:
-            track.save()
+            track.tag()
 
     @property
     def metadata(self):

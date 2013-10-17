@@ -23,7 +23,7 @@ class AlbumPanelTest(BaseWidgetTest):
     def setUp(self):
         super(AlbumPanelTest, self).setUp()
         self.album = Album()
-        self.album.appendTrack(Track(doubles.audio()))
+        self.album.addTrack(doubles.track())
         self.albumPanel = AlbumPanel(self.album)
         self.view(self.albumPanel)
         self.tagger = self.createDriverFor(self.albumPanel)

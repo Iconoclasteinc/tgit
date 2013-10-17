@@ -49,8 +49,8 @@ class WidgetPropertyAssertionProbe(Probe):
             self._propertyValue = self._propertyValueQuery(self._selector.widget())
 
     def isSatisfied(self):
-        return self._selector.isSatisfied and \
-               self._propertyValueMatcher.matches(self._propertyValue)
+        return self._selector.isSatisfied \
+            and self._propertyValueMatcher.matches(self._propertyValue)
 
     def describeTo(self, description):
         description.append_description_of(self._selector) \
@@ -161,3 +161,26 @@ class ValueMatcherProbe(Probe):
     def setReceivedValue(self, receivedValue):
         self._receivedValue = receivedValue
         self._hasReceivedAValue = True
+
+
+class AssertionProbe(Probe):
+    def __init__(self, target, assertion, description):
+        super(AssertionProbe, self).__init__()
+        self._target = target
+        self._assertion = assertion
+        self._description = description
+        self._assertionMet = False
+
+    def test(self):
+        self._assertionMet = self._assertion.matches(self._target)
+
+    def isSatisfied(self):
+        return self._assertionMet
+
+    def describeTo(self, description):
+        description.append_text("condition ").append_text(self._description) \
+            .append_text(" matches\n") \
+            .append_description_of(self._assertion)
+
+    def describeFailureTo(self, description):
+        self._assertion.describe_mismatch(self._target, description)

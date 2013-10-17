@@ -16,8 +16,8 @@ from tgit.ui.track_panel import TrackPanel
 class TrackPanelTest(BaseWidgetTest):
     def setUp(self):
         super(TrackPanelTest, self).setUp()
-        self.track = Track(doubles.audio(bitrate=192000,
-                                         duration=timedelta(minutes=4, seconds=35).total_seconds()))
+        self.track = doubles.track(bitrate=192000,
+                                   duration=timedelta(minutes=4, seconds=35).total_seconds())
         self.trackPanel = TrackPanel(self.track)
         self.view(self.trackPanel)
         self.tagger = self.createDriverFor(self.trackPanel)

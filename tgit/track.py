@@ -46,7 +46,7 @@ class Track(object):
     def duration(self):
         return self._audioFile.duration
 
-    def save(self):
+    def tag(self):
         self._audioFile.save(self._metadata)
 
 
