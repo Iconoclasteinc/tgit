@@ -178,8 +178,8 @@ class AssertionProbe(Probe):
         return self._assertionMet
 
     def describeTo(self, description):
-        description.append_text("condition ").append_text(self._description) \
-            .append_text(" matches\n") \
+        description.append_text("condition\n").append_text(self._description) \
+            .append_text(" matches ") \
             .append_description_of(self._assertion)
 
     def describeFailureTo(self, description):

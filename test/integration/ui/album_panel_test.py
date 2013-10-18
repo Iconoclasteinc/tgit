@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import assert_that, equal_to, contains, has_length
+from hamcrest import equal_to, contains, has_length
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
+from test.cute.probes import AssertionProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.album_panel_driver import AlbumPanelDriver
-from test.util import resources, fs, doubles
+from test.util import resources, fs, builders
 
 from tgit.album import Album
-from tgit.track import Track
 # todo consider moving all ui constants to the same module (ui?)
 from tgit.ui import album_panel as ui
 from tgit.ui.album_panel import AlbumPanel
@@ -23,7 +23,6 @@ class AlbumPanelTest(BaseWidgetTest):
     def setUp(self):
         super(AlbumPanelTest, self).setUp()
         self.album = Album()
-        self.album.addTrack(doubles.track())
         self.albumPanel = AlbumPanel(self.album)
         self.view(self.albumPanel)
         self.tagger = self.createDriverFor(self.albumPanel)
@@ -32,26 +31,27 @@ class AlbumPanelTest(BaseWidgetTest):
         return AlbumPanelDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
-        self.album.frontCoverPicture = 'image/jpeg', loadImage("front-cover"".jpg")
-        self.albumPanel.albumStateChanged(self.album)
+        self.albumPanel.albumStateChanged(builders.album(
+            pictures=[builders.picture('image/jpeg', loadImage('front-cover.jpg'))]
+        ))
         self.tagger.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_DISPLAY_SIZE)
 
     @unittest.skip("todo")
     def testLetsUserSelectAFrontCoverPicture(self):
         # probe that we use a picture selector
-        raise AssertionError("Not yet implemented")
+        raise NotImplementedError()
 
     def testDisplaysAlbumMetadata(self):
-        self.album.releaseName = 'Album'
-        self.album.leadPerformer = 'Artist'
-        self.album.guestPerformers = 'Band'
-        self.album.labelName = 'Label'
-        self.album.recordingTime = '2008-09-15'
-        self.album.releaseTime = '2009-01-01'
-        self.album.originalReleaseTime = '1998-03-05'
-        self.album.upc = 'Code'
+        self.albumPanel.albumStateChanged(builders.album(
+            releaseName='Album',
+            leadPerformer='Artist',
+            guestPerformers='Band',
+            labelName='Label',
+            recordingTime='2008-09-15',
+            releaseTime='2009-01-01',
+            originalReleaseTime='1998-03-05',
+            upc='Code'))
 
-        self.albumPanel.albumStateChanged(self.album)
         self.tagger.showsReleaseName('Album')
         self.tagger.showsLeadPerformer('Artist')
         self.tagger.showsGuestPerformers('Band')
@@ -61,28 +61,35 @@ class AlbumPanelTest(BaseWidgetTest):
         self.tagger.showsOriginalReleaseTime('1998-03-05')
         self.tagger.showsUpc('Code')
 
-    def testUpdatesAlbumMetadataWithUserEntries(self):
-        picture = resources.path("front-cover.jpg")
-        self.tagger.changeFrontCoverPicture(picture)
-        self.tagger.changeReleaseName('Album')
-        self.tagger.changeLeadPerformer('Artist')
-        self.tagger.changeGuestPerformers('Band')
-        self.tagger.changeLabelName('Label')
-        self.tagger.changeRecordingTime('2008-09-15')
-        self.tagger.changeReleaseTime('2009-01-01')
-        self.tagger.changeOriginalReleaseTime('1998-03-05')
-        self.tagger.changeUpc('Barcode')
+    def testUpdatesAlbumOnMetadataChange(self):
+        self.tagger.changeFrontCoverPicture(resources.path('front-cover.jpg'))
+        self.check(AssertionProbe(self.album.frontCoverPicture,
+                                  contains('image/jpeg',
+                                           has_length(len(loadImage('front-cover.jpg')))),
+                                  'front cover picture'))
 
-        self.albumPanel.updateAlbum()
-        mime, data = fs.guessMimeType(picture), fs.readContent(picture)
-        assert_that(self.album.frontCoverPicture, contains(mime, has_length(len(data))),
-                    'front cover picture')
-        assert_that(self.album.releaseName, equal_to('Album'), 'release name')
-        assert_that(self.album.leadPerformer, equal_to('Artist'), 'lead performer')
-        assert_that(self.album.guestPerformers, equal_to('Band'), 'guest performers')
-        assert_that(self.album.labelName, equal_to('Label'), 'label name')
-        assert_that(self.album.recordingTime, equal_to('2008-09-15'), 'recording time')
-        assert_that(self.album.releaseTime, equal_to('2009-01-01'), 'release time')
-        assert_that(self.album.originalReleaseTime, equal_to('1998-03-05'),
-                    'original release time')
-        assert_that(self.album.upc, equal_to('Barcode'), 'upc')
+        self.tagger.changeReleaseName('Album')
+        self.check(AssertionProbe(self.album.releaseName, equal_to('Album'), 'release name'))
+
+        self.tagger.changeLeadPerformer('Artist')
+        self.check(AssertionProbe(self.album.leadPerformer, equal_to('Artist'), 'lead performer'))
+
+        self.tagger.changeGuestPerformers('Band')
+        self.check(AssertionProbe(self.album.guestPerformers, equal_to('Band'), 'guest performers'))
+
+        self.tagger.changeLabelName('Label')
+        self.check(AssertionProbe(self.album.labelName, equal_to('Label'), 'label name'))
+
+        self.tagger.changeRecordingTime('2008-09-15')
+        self.check(AssertionProbe(self.album.recordingTime, equal_to('2008-09-15'),
+                                  'recording time'))
+
+        self.tagger.changeReleaseTime('2009-01-01')
+        self.check(AssertionProbe(self.album.releaseTime, equal_to('2009-01-01'), 'release time'))
+
+        self.tagger.changeOriginalReleaseTime('1998-03-05')
+        self.check(AssertionProbe(self.album.originalReleaseTime, equal_to('1998-03-05'),
+                                  'original release time'))
+
+        self.tagger.changeUpc('Barcode')
+        self.check(AssertionProbe(self.album.upc, equal_to('Barcode'), 'upc'))

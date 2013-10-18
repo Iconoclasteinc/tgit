@@ -51,10 +51,10 @@ class TrackListPanel(QWidget, player.MediaListener, AlbumListener):
         self._build()
         self.localize()
 
+        self._populateTableWithTracksFrom(album)
         self._album = album
         self._album.addAlbumListener(self)
         self._requestListeners = Announcer()
-        self.albumStateChanged(album)
 
     # todo when we disallow adding the same track multiple times,
     # track filename should be its unique, do we want to pass
@@ -93,48 +93,66 @@ class TrackListPanel(QWidget, player.MediaListener, AlbumListener):
         self._table.verticalHeader().sectionMoved.connect(self._moveTrack)
         layout.addWidget(self._table)
 
-    def _trackInRow(self, row):
-        return self._table.item(row, TRACK_TITLE).data(Qt.UserRole)
+    def _populateTableWithTracksFrom(self, album):
+        for row, track in enumerate(album.tracks):
+            self._removeTrackFromTable(row, track)
+            self._addTrackToTable(row, track)
 
     def _moveTrack(self, index, from_, to):
         track = self._trackInRow(from_)
         self._album.removeTrack(track)
         self._album.addTrack(track, to)
 
+    def _trackInRow(self, row):
+        return self._table.item(row, TRACK_TITLE).data(Qt.UserRole)
+
     def trackRemoved(self, track, position):
+        self._removeTrackFromTable(position, track)
+
+    def _removeTrackFromTable(self, position, track):
+        track.removeTrackListener(self)
         self._table.removeRow(position)
 
     def trackAdded(self, track, position):
+        self._addTrackToTable(position, track)
+
+    def _addTrackToTable(self, position, track):
         self._table.insertRow(position)
+        self._setTrackInRow(position, track)
+        track.addTrackListener(self)
+
+    def _setTrackInRow(self, row, track):
         item = QTableWidgetItem(track.trackTitle)
         item.setData(Qt.UserRole, track)
-        self._table.setItem(position, TRACK_TITLE, item)
-        self._table.setItem(position, LEAD_PERFORMER, QTableWidgetItem(self._album.leadPerformer))
-        self._table.setItem(position, RELEASE_NAME, QTableWidgetItem(self._album.releaseName))
-        self._table.setItem(position, BITRATE,
+        self._table.setItem(row, TRACK_TITLE, item)
+        self._table.setItem(row, LEAD_PERFORMER, QTableWidgetItem(self._album.leadPerformer))
+        self._table.setItem(row, RELEASE_NAME, QTableWidgetItem(self._album.releaseName))
+        self._table.setItem(row, BITRATE,
                             QTableWidgetItem("%d kbps" % display.inKbps(track.bitrate)))
         duration = QTableWidgetItem(display.asDuration(track.duration))
         duration.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        self._table.setItem(position, DURATION, duration)
+        self._table.setItem(row, DURATION, duration)
         playButton = QPushButton()
         playButton.setObjectName(PLAY_BUTTON_NAME)
         playButton.setText(self.tr('Play'))
         playButton.setCheckable(True)
+        playButton.setChecked(self._isPlaying(track))
         playButton.clicked.connect(func.partial(self._listenToTrack, track))
-        self._table.setCellWidget(position, LISTEN, playButton)
+        self._table.setCellWidget(row, LISTEN, playButton)
         removeButton = QPushButton()
         removeButton.setObjectName(REMOVE_BUTTON_NAME)
         removeButton.setText(self.tr('Remove'))
         removeButton.clicked.connect(func.partial(self._removeTrack, track))
-        self._table.setCellWidget(position, REMOVE, removeButton)
+        self._table.setCellWidget(row, REMOVE, removeButton)
+
+    def trackStateChanged(self, track):
+        row = self._rowFor(track)
+        self._setTrackInRow(row, track)
 
     def albumStateChanged(self, album):
-        # todo this should iterate album tracks, not rows
         for row in xrange(self._table.rowCount()):
             track = self._trackInRow(row)
-            self._table.item(row, TRACK_TITLE).setText(track.trackTitle)
-            self._table.item(row, LEAD_PERFORMER).setText(album.leadPerformer)
-            self._table.item(row, RELEASE_NAME).setText(album.releaseName)
+            self._setTrackInRow(row, track)
 
     def _addButtons(self, layout):
         buttonLayout = QHBoxLayout()
@@ -174,4 +192,4 @@ class TrackListPanel(QWidget, player.MediaListener, AlbumListener):
         self._album.removeTrack(track)
 
     def _isPlaying(self, track):
-        return self._listenButton(self._rowFor(track)).isChecked()
+        return self._player.isPlaying() and self._player.currentTrack() == track

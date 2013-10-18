@@ -10,7 +10,7 @@ from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe, AssertionProbe
 from test.drivers.track_list_panel_driver import TrackListPanelDriver
-from test.util import doubles
+from test.util import builders
 from test.util.fake_media_player import FakeMediaPlayer
 
 from tgit.album import Album
@@ -162,7 +162,7 @@ class TrackListPanelTest(BaseWidgetTest):
         self.tagger.showsTrack("Track 2")
 
     def addTrackToAlbum(self, **details):
-        track = doubles.track(**details)
+        track = builders.track(**details)
         self.album.addTrack(track)
         return track
 

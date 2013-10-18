@@ -25,6 +25,9 @@ class BaseWidgetTest(unittest.TestCase):
         widget.show()
         widget.raise_()
 
+    def check(self, probe):
+        self.prober.check(probe)
+
     def pause(self, ms):
         MainEventLoop.processEventsFor(ms)
 

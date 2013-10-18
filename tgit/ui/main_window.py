@@ -60,16 +60,15 @@ class MainWindow(QMainWindow, AlbumListener):
 
     def trackAdded(self, track, position):
         self._addTrackPage(track, position)
+        self._nextStepButton.setEnabled(True)
 
         if self._onWelcomePage():
             self._showPage(TRACK_LIST_PANEL)
             self.setCentralWidget(self._mainPanel)
 
-        self._nextStepButton.setEnabled(True)
-
     def trackRemoved(self, track, position):
         self._removeTrackPage(track, position)
-        if self._noMoreTrackPages():
+        if self._album.empty():
             self._nextStepButton.setDisabled(True)
 
     def _onWelcomePage(self):
@@ -141,23 +140,14 @@ class MainWindow(QMainWindow, AlbumListener):
     def _albumPanel(self):
         return self._pages.widget(ALBUM_PANEL)
 
-    def _trackPageAt(self, index):
-        return self._allTrackPages()[index]
-
-    def _allTrackPages(self):
-        return [self._pages.widget(index) for index in xrange(TRACK_PANEL, self._pages.count())]
+    def _trackPage(self, position):
+        return self._pages.widget(TRACK_PANEL + position)
 
     def _addTrackPage(self, track, position):
         self._pages.insertWidget(TRACK_PANEL + position, TrackPanel(track))
 
     def _removeTrackPage(self, track, position):
         self._pages.removeWidget(self._trackPage(position))
-
-    def _trackPage(self, position):
-        return self._pages.widget(TRACK_PANEL + position)
-
-    def _noMoreTrackPages(self):
-        return len(self._allTrackPages()) == 0
 
     def _makeMainPanel(self):
         self._mainPanel = QWidget()
@@ -178,11 +168,8 @@ class MainWindow(QMainWindow, AlbumListener):
     def _currentPage(self):
         return self._pages.currentIndex()
 
-    def _onTrackListPage(self):
-        return self._currentPage() == TRACK_LIST_PANEL
-
-    def _onLastPage(self):
-        return self._currentPage() == self._pages.count() - 1
+    def _onPage(self, index):
+        return self._currentPage() == index
 
     def _previousPage(self):
         return self._currentPage() - 1
@@ -190,32 +177,27 @@ class MainWindow(QMainWindow, AlbumListener):
     def _nextPage(self):
         return self._currentPage() + 1
 
+    def _lastPage(self):
+        return self._pages.count() - 1
+
     def _showPage(self, page):
-        self._updateAlbumAndTracks()
         self._pages.setCurrentIndex(page)
 
     def _showPreviousPage(self):
         self._showPage(self._previousPage())
-        if self._onTrackListPage():
+        if self._onPage(TRACK_LIST_PANEL):
             self._saveButton.setDisabled(True)
             self._previousPageButton.setDisabled(True)
         self._nextStepButton.setEnabled(True)
 
     def _showNextPage(self):
         self._showPage(self._nextPage())
-        if self._onLastPage():
+        if self._onPage(self._lastPage()):
             self._nextStepButton.setDisabled(True)
         self._previousPageButton.setEnabled(True)
         self._saveButton.setEnabled(True)
 
-    def _updateAlbumAndTracks(self):
-        self._albumPanel().updateAlbum()
-        for page in self._allTrackPages():
-            page.updateTrack()
-        self._trackListPanel().albumStateChanged(self._album)
-
     def _saveAlbum(self):
-        self._updateAlbumAndTracks()
         self._musicProducers.announce().record()
 
     # todo Extract a WelcomePanel

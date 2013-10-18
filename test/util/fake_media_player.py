@@ -5,8 +5,11 @@ class FakeMediaPlayer(object):
     def __init__(self):
         self.track = None
 
+    def currentTrack(self):
+        return self.track
+
     def isPlaying(self):
-        return self.track is not None
+        return self.currentTrack() is not None
 
     def play(self, track):
         self.track = track

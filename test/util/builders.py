@@ -3,6 +3,7 @@
 from flexmock import flexmock
 
 from tgit.metadata import Metadata, Image
+from tgit.album import Album
 from tgit.track import Track
 
 
@@ -27,3 +28,7 @@ def audio(filename='track.mp3', bitrate=9600, duration=180, **meta):
 
 def track(filename='track.mp3', bitrate=9600, duration=180, **meta):
     return Track(audio(filename, bitrate, duration, **meta))
+
+
+def album(**meta):
+    return Album(metadata(**meta))

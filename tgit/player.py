@@ -58,15 +58,21 @@ class MediaPlayer(object):
         self._media = Phonon.createPlayer(Phonon.MusicCategory)
         self._media.stateChanged.connect(self._stateChanged)
         self._listeners = []
-        self._playingTrack = None
+        self._currentTrack = None
+
+    def currentTrack(self):
+        return self._currentTrack
+
+    def isPlaying(self):
+        return self._media.state() == self.PLAYING
 
     def play(self, track):
-        self._media.setCurrentSource(Phonon.MediaSource(self._source(track)))
+        self._media.setCurrentSource(Phonon.MediaSource(self._copy(track)))
         self._media.play()
+        self._currentTrack = track
         # might want to delete the temp file for the previous track at some point
-        self._playingTrack = track
 
-    def _source(self, track):
+    def _copy(self, track):
         # On Windows, we have 2 issues with Phonon:
         # 1- It locks the file so we have to make a copy to allow tagging
         copy = copyTrack(track)
@@ -85,9 +91,9 @@ class MediaPlayer(object):
             # On OSX loading a new media source triggers a transition to the stopped state first
             # whereas on Windows it goes straight to the LOADING state
             if is_ == self.STOPPED or is_ == self.LOADING:
-                self._announceStopped(self._playingTrack)
+                self._announceStopped(self._currentTrack)
             if is_ == self.PAUSED:
-                self._announcePaused(self._playingTrack)
+                self._announcePaused(self._currentTrack)
 
     # todo investigate using QObject signals & slots
     def _announceStopped(self, track):

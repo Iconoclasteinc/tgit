@@ -17,6 +17,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from tgit.announcer import Announcer
+
 TITLE = 'trackTitle'
 VERSION_INFO = 'versionInfo'
 FEATURED_GUEST = 'featuredGuest'
@@ -25,10 +27,22 @@ ISRC = 'isrc'
 METADATA = [TITLE, VERSION_INFO, FEATURED_GUEST, ISRC]
 
 
+class TrackListener(object):
+    def trackStateChanged(self, track):
+        pass
+
+
 class Track(object):
     def __init__(self, audioFile):
         self._audioFile = audioFile
         self._metadata = audioFile.metadata()
+        self._listeners = Announcer()
+
+    def addTrackListener(self, listener):
+        self._listeners.add(listener)
+
+    def removeTrackListener(self, listener):
+        self._listeners.remove(listener)
 
     @property
     def metadata(self):
@@ -58,6 +72,7 @@ def addMetadataPropertiesTo(cls):
 
             def setter(self, value):
                 self._metadata[name] = value
+                self._listeners.announce().trackStateChanged(self)
 
             setattr(cls, name, property(getter, setter))
 

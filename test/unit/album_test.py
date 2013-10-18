@@ -8,9 +8,8 @@ from flexmock import flexmock
 
 from tgit import album
 from tgit.album import Album, AlbumListener
-from tgit.track import Track
 
-from test.util import doubles
+from test.util import builders
 
 
 class AlbumTest(unittest.TestCase):
@@ -95,6 +94,25 @@ class AlbumTest(unittest.TestCase):
         self.album.tag()
         self.assertHasAlbumMetadata(track)
 
+    def testRemovesTrackTagsAndImagesWhenAlbumMetadataIsEmpty(self):
+        track = builders.track(
+            releaseName='Album',
+            leadPerformer='Artist',
+            guestPerformers='Band',
+            labelName='Label',
+            recordingTime='2008-09-15',
+            releaseTime='2009-01-01',
+            originalReleaseTime='1998-03-05',
+            upc='Code',
+            pictures=[builders.picture('image/jpeg', 'cover.jpg')]
+        )
+
+        self.album.addTrack(track)
+        self.album.tag()
+
+        for track in self.album.tracks:
+            self.assertHasAlbumMetadata(track)
+
     def testAnnouncesTrackRemovalToListeners(self):
         listener = flexmock(AlbumListener())
         self.album.addAlbumListener(listener)
@@ -111,25 +129,48 @@ class AlbumTest(unittest.TestCase):
         listener = flexmock(AlbumListener())
         self.album.addAlbumListener(listener)
 
-        first = doubles.track()
+        first = builders.track()
         listener.should_receive('trackAdded').with_args(first, 0).once()
         self.album.addTrack(first)
 
-        last = doubles.track()
+        last = builders.track()
         listener.should_receive('trackAdded').with_args(last, 1).once()
         self.album.addTrack(last)
 
-        middle = doubles.track()
+        middle = builders.track()
         listener.should_receive('trackAdded').with_args(middle, 1).once()
         self.album.addTrack(middle, 1)
 
+    def testAnnouncesStateChangesToListener(self):
+        self.assertNotifiesListenerOnPropertyChange('releaseName', 'Album')
+        self.assertNotifiesListenerOnPropertyChange('leadPerformer', 'Artist')
+        self.assertNotifiesListenerOnPropertyChange('guestPerformers', 'Band')
+        self.assertNotifiesListenerOnPropertyChange('labelName', 'Label')
+        self.assertNotifiesListenerOnPropertyChange('recordingTime', 'Recorded')
+        self.assertNotifiesListenerOnPropertyChange('releaseTime', 'Released')
+        self.assertNotifiesListenerOnPropertyChange('originalReleaseTime', 'Original Release')
+        self.assertNotifiesListenerOnPropertyChange('upc', 'Barcode')
+        self.assertNotifiesListenerOnPropertyChange('frontCoverPicture', ('image/jpeg',
+                                                                          'front-cover.jpg'))
+
+    def assertNotifiesListenerOnPropertyChange(self, property, value):
+        album = Album()
+        listener = flexmock(AlbumListener())
+        album.addAlbumListener(listener)
+        listener.should_receive('albumStateChanged') \
+            .with_args(matching(has_property(property, value))) \
+            .once()
+
+        setattr(album, property, value)
+
     def appendTrack(self, **metadata):
-        track = doubles.track(**metadata)
+        track = builders.track(**metadata)
         self.album.addTrack(track)
         return track
 
     def assertHasAlbumMetadata(self, track):
         metadata = track.metadata
+
         assert_that(metadata, has_entry(album.TITLE, self.album.releaseName),
                     album.TITLE)
         assert_that(metadata, has_entry(album.LEAD_PERFORMER, self.album.leadPerformer),
@@ -147,7 +188,8 @@ class AlbumTest(unittest.TestCase):
                     album.ORIGINAL_RELEASE_TIME)
         assert_that(metadata, has_entry(album.UPC, self.album.upc),
                     album.UPC)
-        assert_that(metadata.images, self.sameImagesAs(self.album))
+        assert_that(metadata.images, self.sameImagesAs(self.album),
+                    'pictures')
 
     def sameImagesAs(self, album):
         matchers = []

@@ -6,7 +6,7 @@ from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.tagger_driver import TaggerDriver
-from test.util import doubles
+from test.util import builders
 from test.util import mp3
 from test.util.fake_audio_library import FakeAudioLibrary
 from test.util.fake_media_player import FakeMediaPlayer
@@ -62,9 +62,9 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.isShowingTrackList()
 
     def testAddsTrackPagesInTrackAlbumOrder(self):
-        first = doubles.track(trackTitle='Track 1')
-        second = doubles.track(trackTitle='Track 2')
-        third = doubles.track(trackTitle='Track 3')
+        first = builders.track(trackTitle='Track 1')
+        second = builders.track(trackTitle='Track 2')
+        third = builders.track(trackTitle='Track 3')
 
         self.album.addTrack(first)
         self.album.addTrack(third)
@@ -172,6 +172,7 @@ class MainWindowTest(BaseWidgetTest):
         self.removeTrack(track3)
         self.tagger.hasNextStepDisabled()
 
+    # todo move to track list panel tests
     def testTrackListShowsUpToDateTrackAndAlbumMetadata(self):
         self.addTrackToAlbum()
         self.addTrackToAlbum()
@@ -194,7 +195,7 @@ class MainWindowTest(BaseWidgetTest):
                                        ['Track 3', 'Album'])
 
     def addTrackToAlbum(self, **details):
-        track = doubles.track(**details)
+        track = builders.track(**details)
         self.album.addTrack(track)
         return track
 

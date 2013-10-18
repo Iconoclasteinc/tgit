@@ -36,6 +36,9 @@ METADATA = [
 
 
 class AlbumListener(object):
+    def albumStateChanged(self, album):
+        pass
+
     def trackAdded(self, track, position):
         pass
 
@@ -44,8 +47,10 @@ class AlbumListener(object):
 
 
 class Album(object):
-    def __init__(self):
-        self._metadata = Metadata()
+    def __init__(self, metadata=None):
+        self._metadata = metadata
+        if self._metadata is None:
+            self._metadata = Metadata()
         self._tracks = []
         self._listeners = Announcer()
 
@@ -60,6 +65,7 @@ class Album(object):
     @frontCoverPicture.setter
     def frontCoverPicture(self, picture):
         self._replaceFrontCover(self._metadata, picture)
+        self._fireStateChange()
 
     @property
     def tracks(self):
@@ -97,6 +103,9 @@ class Album(object):
         if data:
             metadata.addImage(mime, data, Image.FRONT_COVER, 'Front Cover')
 
+    def _fireStateChange(self):
+        self._listeners.announce().albumStateChanged(self)
+
     def _updateAlbumMetadataOf(self, track):
         for meta in METADATA:
             track.metadata[meta] = self._metadata[meta]
@@ -111,6 +120,7 @@ def addMetadataPropertiesTo(cls):
 
             def setter(self, value):
                 self._metadata[name] = value
+                self._fireStateChange()
 
             setattr(cls, name, property(getter, setter))
 
