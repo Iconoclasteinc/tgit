@@ -2,22 +2,26 @@
 
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 
+from tgit.audio_library import AudioLibrary
 from tgit.metadata import Image
 from tgit import mp3_file as mp3File
 from test.util import fs
 
 
-class FakeAudioLibrary(object):
+class FakeAudioLibrary(AudioLibrary):
     def __init__(self):
         self.files = []
 
-    def add(self, mp3):
-        mp3.make()
-        self.files.append(mp3)
-        return mp3
+    def add(self, file_):
+        self.files.append(file_)
+        return file_
 
-    def delete(self):
-        [mp3.delete() for mp3 in self.files]
+    def load(self, filename):
+        for file_ in self.files:
+            if file_.filename == filename:
+                return mp3File.load(filename)
+
+        raise AssertionError("Not in library: % s" % filename)
 
     def containsFile(self, filename, **tags):
         images = []
@@ -27,12 +31,9 @@ class FakeAudioLibrary(object):
                                 type_=Image.FRONT_COVER, desc='Front Cover'))
             del tags['frontCoverPicture']
 
-        mp3 = self._loadMp3(filename)
+        mp3 = self.load(filename)
         assert_that(mp3.metadata(), has_entries(tags), 'metadata tags')
         assert_that(mp3.metadata().images, contains(*images), 'attached pictures')
 
-    def _loadMp3(self, name):
-        try:
-            return mp3File.load(name)
-        except IOError:
-            raise AssertionError("Not in library: % s" % name)
+    def delete(self):
+        [mp3.delete() for mp3 in self.files]

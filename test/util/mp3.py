@@ -80,5 +80,5 @@ class Mp3(object):
 
     def make(self):
         self._mp3.save()
-        return self
+        return self._mp3
 
