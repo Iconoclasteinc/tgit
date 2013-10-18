@@ -7,16 +7,16 @@ from tgit.album import Album
 from tgit.track import Track
 
 
-def picture(mime='image/jpeg', data='...', type_=Image.FRONT_COVER, desc=''):
+def image(mime='image/jpeg', data='...', type_=Image.FRONT_COVER, desc=''):
     return mime, data, type_, desc
 
 
 def metadata(**meta):
     metadata = Metadata(**meta)
-    if 'pictures' in meta:
-        for picture in meta['pictures']:
-            metadata.addImage(*picture)
-        del metadata['pictures']
+    if 'images' in meta:
+        for image in meta['images']:
+            metadata.addImage(*image)
+        del metadata['images']
     return metadata
 
 

@@ -126,14 +126,14 @@ class MP3FileTest(unittest.TestCase):
         mp3.save(metadata)
 
         assert_that(reload_(mp3).metadata().images, contains_inanyorder(
-            Image('image/jpeg', 'salers.jpg', type_=Image.FRONT_COVER, desc='Front Cover'),
-            Image('image/jpeg', 'ragber.jpg', type_=Image.FRONT_COVER, desc='Front Cover (2)'),
+            Image('image/jpeg', 'salers.jpg', type_=Image.OTHER, desc='Front Cover'),
+            Image('image/jpeg', 'ragber.jpg', type_=Image.OTHER, desc='Front Cover (2)'),
         ))
 
-    def testRemovesExistingAttachedPicturesUnlessNoneInMetadata(self):
+    def testRemovesExistingAttachedPicturesOnSave(self):
         mp3 = mp3File.load(self.makeMp3(APIC_FRONT=('image/jpeg', '', 'front-cover.jpg')))
         mp3.save(Metadata())
-        assert_that(reload_(mp3).metadata().images, has_length(1), 'original images')
+        assert_that(reload_(mp3).metadata().images, has_length(0), 'removed images')
 
         metadata = Metadata()
         metadata.addImage(mime='image/jpeg', data='salers.jpg', desc='Front')

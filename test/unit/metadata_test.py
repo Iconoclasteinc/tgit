@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import assert_that, equal_to, has_entry, contains, has_property, contains_inanyorder
+from hamcrest import (assert_that, equal_to, has_entry, contains, has_property,
+                      contains_inanyorder, is_not, has_key)
 from hamcrest.library.collection.is_empty import empty
 
 from tgit.metadata import Metadata, Image
@@ -22,7 +23,7 @@ class MetadataTest(unittest.TestCase):
         assert_that(metadata, empty(), 'tags')
         assert_that(list(metadata.images), empty(), 'images')
 
-    def testReplacesTagsAndImagesWhenMerged(self):
+    def testReplacesTagsAndImagesWhenReplaced(self):
         metadata = Metadata()
         metadata['tag'] = 'original'
         metadata['other'] = 'value'
@@ -32,8 +33,9 @@ class MetadataTest(unittest.TestCase):
         other['tag'] = 'replaced'
         other.addImage('img/png', 'other image')
 
-        metadata.merge(other)
+        metadata.replace(other)
         assert_that(metadata, has_entry('tag', 'replaced'), 'tags')
+        assert_that(metadata, is_not(has_key('other')), 'tags')
         assert_that(metadata.images, contains(has_property('data', 'other image')), 'images')
 
     def testLooksUpImagesByType(self):

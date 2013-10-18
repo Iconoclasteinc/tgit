@@ -23,7 +23,7 @@ class Image(object):
     FRONT_COVER = 1
     BACK_COVER = 2
 
-    def __init__(self, mime, data, type_, desc):
+    def __init__(self, mime, data, type_=OTHER, desc=''):
         self.mime = mime
         self.data = data
         self.type = type_
@@ -37,6 +37,8 @@ class Image(object):
     def __eq__(self, other):
         if type(other) is type(self):
             return self.__dict__ == other.__dict__
+        else:
+            return False
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -50,9 +52,6 @@ class Metadata(dict):
     def __missing__(self, name):
         return u''
 
-    def addImage(self, mime, data, type_=Image.FRONT_COVER, desc=''):
-        self._images.append(Image(mime, data, type_, desc))
-
     @property
     def images(self):
         return list(self._images)
@@ -60,20 +59,24 @@ class Metadata(dict):
     def imagesOfType(self, imageType):
         return [image for image in self._images if image.type == imageType]
 
+    def addImage(self, mime, data, type_=Image.OTHER, desc=''):
+        self._images.append(Image(mime, data, type_, desc))
+
+    def removeImages(self):
+        del self._images[:]
+
     def copy(self):
         metadata = Metadata()
         metadata.merge(self)
         return metadata
 
+    def replace(self, other):
+        self.clear()
+        self.merge(other)
+
     def merge(self, other):
         super(Metadata, self).update(other)
-        self.replaceImages(other)
-
-    def replaceImages(self, other):
-        self._images = list(other.images)
-
-    def removeImages(self):
-        self._images = []
+        self._images[:] = other.images
 
     def clear(self):
         super(Metadata, self).clear()

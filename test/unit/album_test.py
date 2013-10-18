@@ -2,10 +2,11 @@
 
 import unittest
 from hamcrest import (assert_that, is_, contains, has_property, has_length, has_item, is_not,
-                      equal_to, has_entry, has_properties, match_equality as matching)
+                      has_entry, match_equality as matching)
 from hamcrest.library.collection.is_empty import empty
 from flexmock import flexmock
 
+from tgit.metadata import Image
 from tgit import album
 from tgit.album import Album, AlbumListener
 
@@ -66,7 +67,7 @@ class AlbumTest(unittest.TestCase):
         assert_that(self.album.releaseTime, empty(), 'release time')
         assert_that(self.album.originalReleaseTime, empty(), 'original release name')
         assert_that(self.album.upc, empty(), 'upc')
-        assert_that(self.album.frontCoverPicture, is_((None, None)), 'front cover picture')
+        assert_that(self.album.images, empty(), 'images')
 
     def testTagsTracksWithAlbumMetadata(self):
         self.appendTrack(releaseName='Album A')
@@ -81,7 +82,7 @@ class AlbumTest(unittest.TestCase):
         self.album.releaseTime = 'Released'
         self.album.originalReleaseTime = 'Original Release'
         self.album.upc = 'Barcode'
-        self.album.frontCoverPicture = ('image/jpeg', 'front-cover.jpg')
+        self.album.addFrontCover('image/jpeg', 'front-cover.jpg')
 
         self.album.tag()
         for track in self.album.tracks:
@@ -104,7 +105,7 @@ class AlbumTest(unittest.TestCase):
             releaseTime='2009-01-01',
             originalReleaseTime='1998-03-05',
             upc='Code',
-            pictures=[builders.picture('image/jpeg', 'cover.jpg')]
+            images=[builders.image('image/jpeg', 'cover.jpg')]
         )
 
         self.album.addTrack(track)
@@ -150,8 +151,7 @@ class AlbumTest(unittest.TestCase):
         self.assertNotifiesListenerOnPropertyChange('releaseTime', 'Released')
         self.assertNotifiesListenerOnPropertyChange('originalReleaseTime', 'Original Release')
         self.assertNotifiesListenerOnPropertyChange('upc', 'Barcode')
-        self.assertNotifiesListenerOnPropertyChange('frontCoverPicture', ('image/jpeg',
-                                                                          'front-cover.jpg'))
+        self.assertNotifiesListenerOnImagesChange(Image('image/jpeg', 'front-cover.jpg'))
 
     def assertNotifiesListenerOnPropertyChange(self, property, value):
         album = Album()
@@ -162,6 +162,19 @@ class AlbumTest(unittest.TestCase):
             .once()
 
         setattr(album, property, value)
+
+    def assertNotifiesListenerOnImagesChange(self, *images):
+        album = Album()
+        listener = flexmock(AlbumListener())
+        album.addAlbumListener(listener)
+        listener.should_receive('albumStateChanged')\
+            .with_args(matching(has_property('images', empty()))) \
+            .once()
+        album.removeImages()
+        for image in images:
+            listener.should_receive('albumStateChanged')\
+                .with_args(matching(has_property('images', has_item(image)))).once()
+            album.addImage(image.mime, image.data, image.type, image.desc)
 
     def appendTrack(self, **metadata):
         track = builders.track(**metadata)
@@ -188,12 +201,5 @@ class AlbumTest(unittest.TestCase):
                     album.ORIGINAL_RELEASE_TIME)
         assert_that(metadata, has_entry(album.UPC, self.album.upc),
                     album.UPC)
-        assert_that(metadata.images, self.sameImagesAs(self.album),
-                    'pictures')
-
-    def sameImagesAs(self, album):
-        matchers = []
-        mime, data = album.frontCoverPicture
-        if data is not None:
-            matchers.append(has_properties(mime=mime, data=data))
-        return contains(*matchers)
+        assert_that(metadata.images, contains(*self.album.images),
+                    'images')

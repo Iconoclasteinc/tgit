@@ -64,6 +64,7 @@ class MP3File(object):
     __PICTURES_FRAMES = ['APIC']
 
     __ID3_PICTURE_TYPES = {
+        0: Image.OTHER,
         3: Image.FRONT_COVER,
         4: Image.BACK_COVER,
     }
@@ -124,9 +125,7 @@ class MP3File(object):
         for tag, value in metadata.items():
             tags.add(self._newTextFrame(encoding, tag, value))
 
-        if metadata.images:
-            self._deleteAttachedPictures(tags)
-
+        self._deleteAttachedPictures(tags)
         counters = defaultdict(lambda: 0)
         for image in metadata.images:
             tags.add(self._newPictureFrame(counters, image))

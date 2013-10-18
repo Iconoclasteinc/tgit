@@ -34,6 +34,10 @@ METADATA = [
     ORIGINAL_RELEASE_TIME, UPC
 ]
 
+NO_METADATA = {}
+for meta in METADATA:
+    NO_METADATA[meta] = ''
+
 
 class AlbumListener(object):
     def albumStateChanged(self, album):
@@ -50,7 +54,7 @@ class Album(object):
     def __init__(self, metadata=None):
         self._metadata = metadata
         if self._metadata is None:
-            self._metadata = Metadata()
+            self._metadata = Metadata(**NO_METADATA)
         self._tracks = []
         self._listeners = Announcer()
 
@@ -58,13 +62,24 @@ class Album(object):
         self._listeners.add(listener)
 
     @property
-    def frontCoverPicture(self):
-        frontCovers = self._metadata.imagesOfType(Image.FRONT_COVER)
-        return self._firstPictureIn(frontCovers)
+    def images(self):
+        return self._metadata.images
 
-    @frontCoverPicture.setter
-    def frontCoverPicture(self, picture):
-        self._replaceFrontCover(self._metadata, picture)
+    def imagesOfType(self, type_):
+        return self._metadata.imagesOfType(type_)
+
+    def frontCovers(self):
+        return self.imagesOfType(Image.FRONT_COVER)
+
+    def addImage(self, mime, data, type_=Image.FRONT_COVER, desc=''):
+        self._metadata.addImage(mime, data, type_, desc)
+        self._fireStateChange()
+
+    def addFrontCover(self, mime, data, desc='Front Cover'):
+        self.addImage(mime, data, Image.FRONT_COVER, desc)
+
+    def removeImages(self):
+        self._metadata.removeImages()
         self._fireStateChange()
 
     @property
@@ -88,28 +103,10 @@ class Album(object):
 
     def tag(self):
         for track in self._tracks:
-            self._updateAlbumMetadataOf(track)
-            track.tag()
-
-    def _firstPictureIn(self, pictures):
-        if pictures:
-            return pictures[0].mime, pictures[0].data
-        else:
-            return None, None
-
-    def _replaceFrontCover(self, metadata, picture):
-        metadata.removeImages()
-        mime, data = picture
-        if data:
-            metadata.addImage(mime, data, Image.FRONT_COVER, 'Front Cover')
+            track.tag(self._metadata)
 
     def _fireStateChange(self):
         self._listeners.announce().albumStateChanged(self)
-
-    def _updateAlbumMetadataOf(self, track):
-        for meta in METADATA:
-            track.metadata[meta] = self._metadata[meta]
-        self._replaceFrontCover(track.metadata, self.frontCoverPicture)
 
 
 def addMetadataPropertiesTo(cls):

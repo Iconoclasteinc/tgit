@@ -4,6 +4,7 @@ import unittest
 from hamcrest import assert_that, equal_to, match_equality as matching, has_entries, has_property
 from flexmock import flexmock
 
+from tgit.metadata import Metadata
 from tgit.album import TITLE as ALBUM_TITLE
 from tgit.track import Track, TrackListener, TITLE, VERSION_INFO, ISRC, FEATURED_GUEST
 from test.util import builders
@@ -31,24 +32,26 @@ class TrackTest(unittest.TestCase):
         assert_that(track.isrc, equal_to('Code'), 'isrc')
 
     def testSavesMetadataToAudioFileWhenTagged(self):
-        metadata = {
+        trackMetadata = {
             TITLE: 'Title',
             VERSION_INFO: 'Remix',
             FEATURED_GUEST: 'Featuring',
             ISRC: 'Code',
+        }
+        albumMetadata = {
             ALBUM_TITLE: 'Album'
         }
+        allMetadata = dict(trackMetadata.items() + albumMetadata.items())
 
         audio = builders.audio()
         track = Track(audio)
-        track.trackTitle = metadata[TITLE]
-        track.versionInfo = metadata[VERSION_INFO]
-        track.featuredGuest = metadata[FEATURED_GUEST]
-        track.isrc = metadata[ISRC]
-        track.metadata[ALBUM_TITLE] = metadata[ALBUM_TITLE]
+        track.trackTitle = trackMetadata[TITLE]
+        track.versionInfo = trackMetadata[VERSION_INFO]
+        track.featuredGuest = trackMetadata[FEATURED_GUEST]
+        track.isrc = trackMetadata[ISRC]
 
-        audio.should_receive('save').with_args(matching(has_entries(**metadata))).once()
-        track.tag()
+        audio.should_receive('save').with_args(matching(has_entries(**allMetadata))).once()
+        track.tag(Metadata(**albumMetadata))
 
     def testAnnouncesStateChangesToListener(self):
         self.assertNotifiesListenerOnPropertyChange('trackTitle', 'Title')

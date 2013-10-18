@@ -46,7 +46,7 @@ class Track(object):
 
     @property
     def metadata(self):
-        return self._metadata
+        return self._metadata.copy()
 
     @property
     def filename(self):
@@ -60,7 +60,10 @@ class Track(object):
     def duration(self):
         return self._audioFile.duration
 
-    def tag(self):
+    def tag(self, metadata=None):
+        if metadata is not None:
+            self._metadata.merge(metadata)
+
         self._audioFile.save(self._metadata)
 
 

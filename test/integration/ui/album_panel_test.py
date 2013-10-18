@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import equal_to, contains, has_length
+from hamcrest import equal_to, contains, has_length, has_properties
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.probes import AssertionProbe
@@ -9,6 +9,7 @@ from test.cute.finders import WidgetIdentity
 from test.drivers.album_panel_driver import AlbumPanelDriver
 from test.util import resources, fs, builders
 
+from tgit.metadata import Image
 from tgit.album import Album
 # todo consider moving all ui constants to the same module (ui?)
 from tgit.ui import album_panel as ui
@@ -32,7 +33,7 @@ class AlbumPanelTest(BaseWidgetTest):
 
     def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
         self.albumPanel.albumStateChanged(builders.album(
-            pictures=[builders.picture('image/jpeg', loadImage('front-cover.jpg'))]
+            images=[builders.image('image/jpeg', loadImage('front-cover.jpg'))]
         ))
         self.tagger.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_DISPLAY_SIZE)
 
@@ -63,10 +64,12 @@ class AlbumPanelTest(BaseWidgetTest):
 
     def testUpdatesAlbumOnMetadataChange(self):
         self.tagger.changeFrontCoverPicture(resources.path('front-cover.jpg'))
-        self.check(AssertionProbe(self.album.frontCoverPicture,
-                                  contains('image/jpeg',
-                                           has_length(len(loadImage('front-cover.jpg')))),
-                                  'front cover picture'))
+        self.check(AssertionProbe(self.album.images, contains(
+            has_properties(
+                mime='image/jpeg',
+                data=has_length(len(loadImage('front-cover.jpg'))),
+                type=Image.FRONT_COVER,
+                desc='Front Cover')), 'front cover picture'))
 
         self.tagger.changeReleaseName('Album')
         self.check(AssertionProbe(self.album.releaseName, equal_to('Album'), 'release name'))
