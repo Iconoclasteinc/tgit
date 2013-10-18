@@ -69,40 +69,7 @@ class AlbumTest(unittest.TestCase):
         assert_that(self.album.upc, empty(), 'upc')
         assert_that(self.album.frontCoverPicture, is_((None, None)), 'front cover picture')
 
-    def testUsesMetadataOfFirstTrack(self):
-        first = doubles.track(releaseName='Album A',
-                              leadPerformer='Artist',
-                              guestPerformers='Band',
-                              labelName='Label',
-                              recordingTime='Recorded',
-                              releaseTime='Released',
-                              originalReleaseTime='Original Release',
-                              upc='Barcode',
-                              pictures=[doubles.picture('image/jpeg', 'front-cover.jpg')])
-        self.album.addTrack(first)
-        other = Track(doubles.audio(releaseName='Album B'))
-        self.album.addTrack(other)
-
-        assert_that(self.album.releaseName, equal_to('Album A'), 'release name')
-        assert_that(self.album.leadPerformer, equal_to('Artist'), 'lead performer')
-        assert_that(self.album.guestPerformers, equal_to('Band'), 'guest performers')
-        assert_that(self.album.labelName, equal_to('Label'), 'label name')
-        assert_that(self.album.recordingTime, equal_to('Recorded'), 'recording time')
-        assert_that(self.album.releaseTime, equal_to('Released'), 'release time')
-        assert_that(self.album.originalReleaseTime, equal_to('Original Release'),
-                    'original release time')
-        assert_that(self.album.upc, equal_to('Barcode'), 'upc')
-        assert_that(self.album.frontCoverPicture, is_(('image/jpeg', 'front-cover.jpg')),
-                    'front cover picture')
-
-        self.album.removeTrack(first)
-        assert_that(self.album.releaseName, equal_to('Album B'), 'updated release name')
-
-    # todo should verify separately that :
-    # - changing metadata affects tracks in album
-    # - new track inherits album metadata (currently this is not the case)
-    # - saving cascades to all tracks
-    def testUpdatesAllTracksWithAlbumMetadataWhenTagged(self):
+    def testTagsTracksWithAlbumMetadata(self):
         self.appendTrack(releaseName='Album A')
         self.appendTrack(releaseName='Album B')
         self.appendTrack(releaseName='Album C')
@@ -120,6 +87,13 @@ class AlbumTest(unittest.TestCase):
         self.album.tag()
         for track in self.album.tracks:
             self.assertHasAlbumMetadata(track)
+
+    def testNewlyAddedTracksAreTaggedWithAlbumMetadataAsWell(self):
+        self.album.releaseName = 'Album'
+
+        track = self.appendTrack()
+        self.album.tag()
+        self.assertHasAlbumMetadata(track)
 
     def testAnnouncesTrackRemovalToListeners(self):
         listener = flexmock(AlbumListener())
@@ -173,7 +147,11 @@ class AlbumTest(unittest.TestCase):
                     album.ORIGINAL_RELEASE_TIME)
         assert_that(metadata, has_entry(album.UPC, self.album.upc),
                     album.UPC)
-        assert_that(metadata.images, contains(self.sameImageAs(self.album.frontCoverPicture)))
+        assert_that(metadata.images, self.sameImagesAs(self.album))
 
-    def sameImageAs(self, picture):
-        return has_properties(mime=picture[0], data=picture[1])
+    def sameImagesAs(self, album):
+        matchers = []
+        mime, data = album.frontCoverPicture
+        if data is not None:
+            matchers.append(has_properties(mime=mime, data=data))
+        return contains(*matchers)

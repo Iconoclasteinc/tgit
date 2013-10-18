@@ -59,10 +59,7 @@ class MainWindow(QMainWindow, AlbumListener):
         self._musicProducers.add(producer)
 
     def trackAdded(self, track, position):
-        self._albumPanel().albumStateChanged(self._album)
-
         self._addTrackPage(track, position)
-        self._updateAlbumAndTracks()
 
         if self._onWelcomePage():
             self._showPage(TRACK_LIST_PANEL)

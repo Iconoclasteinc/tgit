@@ -27,8 +27,8 @@ class TaggerTest(unittest.TestCase):
         self.application.importTrack(track.filename)
         self.application.showsAlbumContent(['Hallelujah (Chorus)'])
         self.application.showsAlbumMetadata(
-            releaseName='Messiah',
-            leadPerformer='The Sixteen - Harry Christophers')
+            releaseName='',
+            leadPerformer='')
         self.application.changeAlbumMetadata(
             frontCoverPicture=resources.path("minions-in-black.jpg"),
             releaseName='Despicable Me',
@@ -48,13 +48,13 @@ class TaggerTest(unittest.TestCase):
             frontCoverPicture=resources.path("minions-in-black.jpg"))
 
     def testTaggingMultipleTracksFromTheSameAlbum(self):
-        track1 = self.audioLibrary.add(makeMp3(releaseName='Album Title', trackTitle='Track 1'))
-        track2 = self.audioLibrary.add(makeMp3(releaseName='Album Title', trackTitle='Track 2'))
+        track1 = self.audioLibrary.add(makeMp3(trackTitle='Track 1'))
+        track2 = self.audioLibrary.add(makeMp3(trackTitle='Track 2'))
 
         self.application.importTrack(track1.filename)
         self.application.importTrack(track2.filename)
         self.application.showsAlbumContent(['Track 1'], ['Track 2'])
-        self.application.showsAlbumMetadata(releaseName='Album Title')
+        self.application.showsAlbumMetadata()
         self.application.changeAlbumMetadata(releaseName='Despicable Me')
         self.application.showsTrackMetadata(trackTitle='Track 1')
         self.application.changeTrackMetadata(trackTitle='Potato Banana Song')
@@ -81,7 +81,7 @@ class TaggerTest(unittest.TestCase):
         self.application.showsAlbumContent(['Track 1'], ['Track 2'], ['Track 3'])
         self.application.moveTrack('Track 1', 'Track 3')
         self.application.removeTrack('Track 2')
-        self.application.showsAlbumMetadata(releaseName='Original Title')
+        self.application.showsAlbumMetadata()
         self.application.changeAlbumMetadata(releaseName='Modified Title')
         self.application.showsTrackMetadata(trackTitle='Track 3')
         self.application.showsTrackMetadata(trackTitle='Track 1')

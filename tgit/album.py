@@ -45,6 +45,7 @@ class AlbumListener(object):
 
 class Album(object):
     def __init__(self):
+        self._metadata = Metadata()
         self._tracks = []
         self._listeners = Announcer()
 
@@ -53,13 +54,12 @@ class Album(object):
 
     @property
     def frontCoverPicture(self):
-        frontCovers = self.metadata.imagesOfType(Image.FRONT_COVER)
+        frontCovers = self._metadata.imagesOfType(Image.FRONT_COVER)
         return self._firstPictureIn(frontCovers)
 
     @frontCoverPicture.setter
     def frontCoverPicture(self, picture):
-        for track in self._tracks:
-            self._replaceFrontCover(track, picture)
+        self._replaceFrontCover(self._metadata, picture)
 
     @property
     def tracks(self):
@@ -82,14 +82,8 @@ class Album(object):
 
     def tag(self):
         for track in self._tracks:
+            self._updateAlbumMetadataOf(track)
             track.tag()
-
-    @property
-    def metadata(self):
-        if self.empty():
-            return Metadata()
-        else:
-            return self._tracks[0].metadata
 
     def _firstPictureIn(self, pictures):
         if pictures:
@@ -97,22 +91,26 @@ class Album(object):
         else:
             return None, None
 
-    def _replaceFrontCover(self, track, picture):
-        track.metadata.removeImages()
+    def _replaceFrontCover(self, metadata, picture):
+        metadata.removeImages()
         mime, data = picture
         if data:
-            track.metadata.addImage(mime, data, Image.FRONT_COVER, 'Front Cover')
+            metadata.addImage(mime, data, Image.FRONT_COVER, 'Front Cover')
+
+    def _updateAlbumMetadataOf(self, track):
+        for meta in METADATA:
+            track.metadata[meta] = self._metadata[meta]
+        self._replaceFrontCover(track.metadata, self.frontCoverPicture)
 
 
 def addMetadataPropertiesTo(cls):
     for meta in METADATA:
         def createProperty(name):
             def getter(self):
-                return self.metadata[name]
+                return self._metadata[name]
 
             def setter(self, value):
-                for track in self._tracks:
-                    track.metadata[name] = value
+                self._metadata[name] = value
 
             setattr(cls, name, property(getter, setter))
 

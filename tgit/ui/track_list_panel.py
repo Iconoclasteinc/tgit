@@ -133,8 +133,8 @@ class TrackListPanel(QWidget, player.MediaListener, AlbumListener):
         for row in xrange(self._table.rowCount()):
             track = self._trackInRow(row)
             self._table.item(row, TRACK_TITLE).setText(track.trackTitle)
-            self._table.item(row, LEAD_PERFORMER).setText(self._album.leadPerformer)
-            self._table.item(row, RELEASE_NAME).setText(self._album.releaseName)
+            self._table.item(row, LEAD_PERFORMER).setText(album.leadPerformer)
+            self._table.item(row, RELEASE_NAME).setText(album.releaseName)
 
     def _addButtons(self, layout):
         buttonLayout = QHBoxLayout()

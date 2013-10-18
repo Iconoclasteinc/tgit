@@ -14,7 +14,6 @@ from test.util import doubles
 from test.util.fake_media_player import FakeMediaPlayer
 
 from tgit.album import Album
-from tgit.track import Track
 from tgit.ui.track_list_panel import TrackListPanel
 
 
@@ -40,10 +39,11 @@ class TrackListPanelTest(BaseWidgetTest):
 
     def testDisplaysTrackDetailsInColumns(self):
         self.addTrackToAlbum(trackTitle='Banana Song',
-                             leadPerformer='Tim, Stuart, Dave',
-                             releaseName='Despicable Me',
                              bitrate=192000,
                              duration=timedelta(minutes=3, seconds=43).total_seconds())
+        self.album.releaseName = 'Despicable Me'
+        self.album.leadPerformer = 'Tim, Stuart, Dave'
+        self.trackListPanel.albumStateChanged(self.album)
         self.tagger.showsTrack('Banana Song', 'Tim, Stuart, Dave', 'Despicable Me',
                                '192 kbps', '03:43')
 

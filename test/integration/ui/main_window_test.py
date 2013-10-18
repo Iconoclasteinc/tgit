@@ -12,7 +12,6 @@ from test.util.fake_audio_library import FakeAudioLibrary
 from test.util.fake_media_player import FakeMediaPlayer
 
 from tgit.album import Album
-from tgit.track import Track
 from tgit.ui.main_window import MainWindow
 
 
@@ -172,15 +171,6 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.previousPage()
         self.removeTrack(track3)
         self.tagger.hasNextStepDisabled()
-
-    def testUpdatesImportedTrackWithAlbumMetadata(self):
-        self.addTrackToAlbum(trackTitle="Track 1", releaseName='Album')
-        self.addTrackToAlbum(trackTitle="Track 2")
-        self.addTrackToAlbum(trackTitle="Track 3")
-
-        self.tagger.showsAlbumContains(['Track 1', 'Album'],
-                                       ['Track 2', 'Album'],
-                                       ['Track 3', 'Album'])
 
     def testTrackListShowsUpToDateTrackAndAlbumMetadata(self):
         self.addTrackToAlbum()
