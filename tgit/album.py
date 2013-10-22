@@ -73,14 +73,14 @@ class Album(object):
 
     def addImage(self, mime, data, type_=Image.FRONT_COVER, desc=''):
         self._metadata.addImage(mime, data, type_, desc)
-        self._fireStateChange()
+        self._signalStateChange()
 
     def addFrontCover(self, mime, data, desc='Front Cover'):
         self.addImage(mime, data, Image.FRONT_COVER, desc)
 
     def removeImages(self):
         self._metadata.removeImages()
-        self._fireStateChange()
+        self._signalStateChange()
 
     @property
     def tracks(self):
@@ -105,7 +105,7 @@ class Album(object):
         for track in self._tracks:
             track.tag(self._metadata)
 
-    def _fireStateChange(self):
+    def _signalStateChange(self):
         self._listeners.announce().albumStateChanged(self)
 
 
@@ -117,7 +117,7 @@ def addMetadataPropertiesTo(cls):
 
             def setter(self, value):
                 self._metadata[name] = value
-                self._fireStateChange()
+                self._signalStateChange()
 
             setattr(cls, name, property(getter, setter))
 

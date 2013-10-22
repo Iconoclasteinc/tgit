@@ -9,7 +9,7 @@ from tgit.album import Album
 from tgit.mp3_file import MP3File
 
 
-class AlbumProducerTest(unittest.TestCase):
+class AlbumTaggerTest(unittest.TestCase):
     def setUp(self):
         self.library = flexmock(load=lambda filename: MP3File(filename))
         self.album = flexmock(Album())
@@ -22,4 +22,4 @@ class AlbumProducerTest(unittest.TestCase):
 
     def testTagsAlbumWhenRecorded(self):
         self.album.should_receive('tag').once()
-        self.producer.record()
+        self.producer.recordAlbum()

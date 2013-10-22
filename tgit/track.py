@@ -66,6 +66,9 @@ class Track(object):
 
         self._audioFile.save(self._metadata)
 
+    def _signalStateChange(self):
+        self._listeners.announce().trackStateChanged(self)
+
 
 def addMetadataPropertiesTo(cls):
     for meta in METADATA:
@@ -75,7 +78,7 @@ def addMetadataPropertiesTo(cls):
 
             def setter(self, value):
                 self._metadata[name] = value
-                self._listeners.announce().trackStateChanged(self)
+                self._signalStateChange()
 
             setattr(cls, name, property(getter, setter))
 

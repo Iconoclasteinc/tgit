@@ -315,11 +315,14 @@ class MenuDriver(WidgetDriver):
 
         self.manipulate("open", popup)
 
-    def selectMenuItem(self, matching):
+    def menuItem(self, matching):
         # We have to make sure the item menu actually exists in the menu
         # Checking that the item is a child of the menu is not sufficient
         self.hasMenuItem(matching)
-        menuItem = MenuItemDriver.findIn(self, QAction, matching)
+        return MenuItemDriver.findIn(self, QAction, matching)
+
+    def selectMenuItem(self, matching):
+        menuItem = self.menuItem(matching)
         menuItem.click()
 
     def hasMenuItem(self, matching):

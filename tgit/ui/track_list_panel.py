@@ -43,18 +43,29 @@ REMOVE = 6
 
 
 class TrackListPanel(QWidget, player.MediaListener, AlbumListener):
-    def __init__(self, album, player, parent=None):
+    def __init__(self, album, player, trackSelector, parent=None):
         QWidget.__init__(self, parent)
-        self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
-        self._player = player
-        self._player.addMediaListener(self)
-        self._build()
-        self.localize()
-
-        self._populateTableWithTracksFrom(album)
         self._album = album
         self._album.addAlbumListener(self)
+        self._player = player
+        self._player.addMediaListener(self)
+        self._trackSelector = trackSelector
+        self._trackSelector.addSelectionListener(self)
         self._requestListeners = Announcer()
+
+        self.setObjectName(ALBUM_CONTENT_PANEL_NAME)
+        self._build()
+        self.localize()
+        self._populateTableWithTracksFrom(album)
+
+    def addRequestListener(self, listener):
+        self._requestListeners.add(listener)
+
+    def selectTrack(self):
+        self._trackSelector.selectTrack()
+
+    def trackSelected(self, filename):
+        self._requestListeners.announce().importTrack(filename)
 
     # todo when we disallow adding the same track multiple times,
     # track filename should be its unique, do we want to pass
@@ -68,9 +79,6 @@ class TrackListPanel(QWidget, player.MediaListener, AlbumListener):
 
     def mediaPaused(self, media):
         self.mediaStopped(media)
-
-    def addRequestListener(self, handler):
-        self._requestHandler = handler
 
     def _build(self):
         self._layout = QVBoxLayout()
@@ -158,13 +166,10 @@ class TrackListPanel(QWidget, player.MediaListener, AlbumListener):
         buttonLayout = QHBoxLayout()
         self._addButton = QPushButton()
         self._addButton.setObjectName(ADD_BUTTON_NAME)
-        self._addButton.clicked.connect(self._selectTrack)
+        self._addButton.clicked.connect(self.selectTrack)
         buttonLayout.addWidget(self._addButton)
         buttonLayout.addStretch()
         layout.addLayout(buttonLayout)
-
-    def _selectTrack(self):
-        self._requestHandler.selectTrack()
 
     def localize(self):
         self._addButton.setText(self.tr('Add Track...'))

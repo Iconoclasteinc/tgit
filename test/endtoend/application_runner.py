@@ -12,14 +12,13 @@ from test.cute.widgets import mainWindow
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
-from test.util.fake_media_player import FakeMediaPlayer
 
 ONE_SECOND = 1000
 
 
 class ApplicationRunner(object):
     def start(self):
-        self.app = TGiT(locale='en', player=FakeMediaPlayer())
+        self.app = TGiT()
         self.tagger = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())
@@ -29,6 +28,10 @@ class ApplicationRunner(object):
         del self.tagger
         sip.delete(self.app)
         del self.app
+
+    def newAlbum(self, path):
+        self.tagger.createAlbum()
+        self.tagger.selectTrack(path)
 
     def importTrack(self, path):
         self.tagger.importTrack(path)

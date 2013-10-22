@@ -1,25 +1,31 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import assert_that, equal_to, has_properties, contains
+from hamcrest import assert_that, described_as, anything, has_properties, contains
+from flexmock import flexmock
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import builders
-from test.util import mp3
 from test.util.fake_audio_library import FakeAudioLibrary
-from test.util.fake_media_player import FakeMediaPlayer
 
 from tgit.album import Album
+from tgit.producer import ProductionHouse, ProductionPortfolio, ArtisticDirector
 from tgit.ui.main_window import MainWindow
+from tgit.ui.track_selector import TrackSelector
 
 
 class MainWindowTest(BaseWidgetTest):
     def setUp(self):
         super(MainWindowTest, self).setUp()
+        # todo remove
         self.album = Album()
-        self.mainWindow = MainWindow(self.album, FakeMediaPlayer())
+        # todo remove
+        self.director = ArtisticDirector()
+        self.productions = ProductionPortfolio()
+        self.mainWindow = MainWindow(self.productions)
+        self.mainWindow.setTrackSelector(TrackSelector())
         self.view(self.mainWindow)
         self.tagger = self.createDriverFor(self.mainWindow)
         self.audioLibrary = FakeAudioLibrary()
@@ -31,41 +37,25 @@ class MainWindowTest(BaseWidgetTest):
     def createDriverFor(self, widget):
         return TaggerDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    # todo Move to welcome panel tests once welcome panel is extracted
-    def testImportsTrackToAlbumWhenAddTrackButtonIsClicked(self):
-        track = self.audioLibrary.add(mp3.makeMp3())
-        importTrackRequest = ValueMatcherProbe("request to import track", equal_to(track.filename))
+    def testRelaysUsersRequestsToRegisteredListeners(self):
+        productionHouse = flexmock(ProductionHouse())
+        self.mainWindow.addProductionHouse(productionHouse)
 
-        class ImportTrackInAlbum(object):
-            def importTrack(self, filename):
-                importTrackRequest.setReceivedValue(filename)
+        productionHouse.should_receive('newAlbum').once()
+        self.mainWindow.newAlbum()
 
-        self.mainWindow.addMusicProducer(ImportTrackInAlbum())
-        self.tagger.addTrackToAlbum(track.filename)
-        self.tagger.check(importTrackRequest)
-
-    def testImportsTrackToAlbumWhenImportTrackMenuItemIsSelected(self):
-        track = self.audioLibrary.add(mp3.makeMp3())
-        importTrackRequest = ValueMatcherProbe("request to import track", equal_to(track.filename))
-
-        class ImportTrackInAlbum(object):
-            def importTrack(self, filename):
-                importTrackRequest.setReceivedValue(filename)
-
-        self.mainWindow.addMusicProducer(ImportTrackInAlbum())
-        self.tagger.importTrackThroughMenu(track.filename)
-        self.tagger.check(importTrackRequest)
-
-    def testSwitchesToTrackListWhenFirstTrackIsImported(self):
+    def testShowsMainScreenWhenAlbumIsCreated(self):
         self.tagger.isShowingWelcomePanel()
-        self.addTrackToAlbum()
+        self.mainWindow.productionAdded(self.director, self.album)
         self.tagger.isShowingTrackList()
 
+    # todo move following tests to main screen tests
     def testAddsTrackPagesInTrackAlbumOrder(self):
         first = builders.track(trackTitle='Track 1')
         second = builders.track(trackTitle='Track 2')
         third = builders.track(trackTitle='Track 3')
 
+        self.mainWindow.productionAdded(self.director, self.album)
         self.album.addTrack(first)
         self.album.addTrack(third)
         self.album.addTrack(second, 1)
@@ -79,6 +69,7 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.showsTrackMetadata(trackTitle='Track 3')
 
     def testCanNavigateBackAndForthBetweenPages(self):
+        self.mainWindow.productionAdded(self.director, self.album)
         self.addTrackToAlbum()
         self.addTrackToAlbum()
 
@@ -99,6 +90,7 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.isShowingAlbumMetadata()
 
     def testNextButtonIsDisabledOnLastTrack(self):
+        self.mainWindow.productionAdded(self.director, self.album)
         self.addTrackToAlbum()
         self.tagger.nextPage()
         self.tagger.nextPage()
@@ -109,6 +101,7 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.hasNextStepDisabled()
 
     def testStaysOnCurrentPageWhenNewTrackIsImported(self):
+        self.mainWindow.productionAdded(self.director, self.album)
         self.addTrackToAlbum(trackTitle='Track 1')
         self.tagger.nextPage()
         self.tagger.nextPage()
@@ -117,17 +110,16 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.showsTrackMetadata(trackTitle='Track 1')
 
     def testRecordsWithAlbumAndTracksMetadata(self):
+        recordAlbumRequest = ValueMatcherProbe('record album request', described_as('', anything()))
+
+        class RecordAlbumTracker(object):
+            def recordAlbum(self):
+                recordAlbumRequest.setReceivedValue(True)
+
+        self.mainWindow.productionAdded(RecordAlbumTracker(), self.album)
         self.addTrackToAlbum()
         self.addTrackToAlbum()
         self.addTrackToAlbum()
-
-        recordRequest = ValueMatcherProbe('record album request', equal_to('received'))
-
-        class RecordAlbum(object):
-            def record(self):
-                recordRequest.setReceivedValue('received')
-
-        self.mainWindow.addMusicProducer(RecordAlbum())
 
         self.tagger.nextPage()
         self.tagger.editAlbumMetadata(releaseName='Album')
@@ -139,7 +131,7 @@ class MainWindowTest(BaseWidgetTest):
         self.tagger.editTrackMetadata(trackTitle='Track 3')
         self.tagger.saveAlbum()
 
-        self.tagger.check(recordRequest)
+        self.tagger.check(recordAlbumRequest)
         assert_that(self.album, has_properties(releaseName='Album'), 'album')
         assert_that(self.album.tracks, contains(
             has_properties(trackTitle='Track 1'),
@@ -147,6 +139,7 @@ class MainWindowTest(BaseWidgetTest):
             has_properties(trackTitle='Track 3')), 'album tracks')
 
     def testDeletesCorrespondingPageWhenTrackIsRemovedFromAlbum(self):
+        self.mainWindow.productionAdded(self.director, self.album)
         track1 = self.addTrackToAlbum(trackTitle="Track 1")
         track2 = self.addTrackToAlbum(trackTitle="Track 2")
         track3 = self.addTrackToAlbum(trackTitle="Track 3")
@@ -174,6 +167,7 @@ class MainWindowTest(BaseWidgetTest):
 
     # todo move to track list panel tests
     def testTrackListShowsUpToDateTrackAndAlbumMetadata(self):
+        self.mainWindow.productionAdded(self.director, self.album)
         self.addTrackToAlbum()
         self.addTrackToAlbum()
         self.addTrackToAlbum()

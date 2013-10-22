@@ -17,18 +17,54 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from tgit.announcer import Announcer
+from tgit.album import Album
 from tgit.track import Track
 
 
-class MusicProducer(object):
+class ProductionListener(object):
+    def productionAdded(self, director, album):
+        pass
+
+
+class ProductionPortfolio(object):
+    def __init__(self):
+        self._productions = []
+        self._productionListeners = Announcer()
+
+    def addProductionListener(self, listener):
+        self._productionListeners.add(listener)
+
+    def addProduction(self, director, album):
+        self._productions.append((director, album))
+        self._productionListeners.announce().productionAdded(director, album)
+
+
+class ProductionHouse(object):
+    def newAlbum(self):
+        pass
+
+
+class RecordLabel(ProductionHouse):
+    def __init__(self, productions, audioLibrary):
+        self._productions = productions
+        self._audioLibrary = audioLibrary
+
+    def newAlbum(self):
+        album = Album()
+        tagger = AlbumTagger(album, self._audioLibrary)
+        self._productions.addProduction(tagger, album)
+
+
+class ArtisticDirector(object):
     def importTrack(self, filename):
         pass
 
-    def record(self):
+    def recordAlbum(self):
         pass
 
 
-class AlbumTagger(MusicProducer):
+class AlbumTagger(ArtisticDirector):
     def __init__(self, album, audioLibrary):
         self._album = album
         self._audioLibrary = audioLibrary
@@ -39,5 +75,5 @@ class AlbumTagger(MusicProducer):
     def importTrack(self, filename):
         self._album.addTrack(Track(self._loadAudioFile(filename)))
 
-    def record(self):
+    def recordAlbum(self):
         self._album.tag()

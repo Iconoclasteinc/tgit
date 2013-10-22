@@ -17,207 +17,93 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import (QDir, QRect)
-from PyQt4.QtGui import (QWidget, QMainWindow, QMenu, QAction, QStatusBar, QVBoxLayout,
-                         QHBoxLayout, QPushButton, QFileDialog, QStackedWidget)
+from PyQt4.QtGui import QMainWindow, QMenu, QAction, QStatusBar
 
 from tgit.announcer import Announcer
-from tgit.album import AlbumListener
-from tgit.ui.track_list_panel import TrackListPanel
-from tgit.ui.album_panel import AlbumPanel
-from tgit.ui.track_panel import TrackPanel
+from tgit.producer import ProductionListener
+
+from tgit.player import SilentPlayer
+from tgit.ui.welcome_screen import WelcomeScreen
+from tgit.ui.main_screen import MainScreen
+from tgit.ui.track_selector import TrackSelectionDialog
 
 
+# todo eliminate constants that have been pushed down to child screens
 MAIN_WINDOW_NAME = "TGiT"
 FILE_MENU_NAME = 'File Menu'
 IMPORT_TRACK_ACTION_NAME = 'Import Track Action'
-ADD_FILE_BUTTON_NAME = "Add File"
+NEW_ALBUM_BUTTON_NAME = "New Album Button"
 IMPORT_TRACK_DIALOG_NAME = "Select Track File"
 NEXT_STEP_BUTTON_NAME = "Next Step"
 PREVIOUS_STEP_BUTTON_NAME = "Previous Step"
 SAVE_BUTTON_NAME = "Save"
 
-TRACK_LIST_PANEL = 0
-ALBUM_PANEL = 1
-TRACK_PANEL = 2
 
-
-class MainWindow(QMainWindow, AlbumListener):
-    def __init__(self, album, player, parent=None):
+class MainWindow(QMainWindow, ProductionListener):
+    def __init__(self, productionPortfolio, parent=None):
         QMainWindow.__init__(self, parent)
-        self._album = album
-        self._album.addAlbumListener(self)
-        self._player = player
+        self._productionPortfolio = productionPortfolio
+        self._productionPortfolio.addProductionListener(self)
+        self._player = SilentPlayer()
+        self._trackSelector = TrackSelectionDialog(self)
         self._musicProducers = Announcer()
+        self._productionHouses = Announcer()
 
         self._build()
         self.show()
+
+    def setMediaPlayer(self, player):
+        self._player = player
+
+    def setTrackSelector(self, selector):
+        self._trackSelector = selector
+
+    def show(self):
+        QMainWindow.show(self)
         self.raise_()
         self.activateWindow()
 
-    def addMusicProducer(self, producer):
-        self._musicProducers.add(producer)
+    def addProductionHouse(self, house):
+        self._productionHouses.add(house)
 
-    def trackAdded(self, track, position):
-        self._addTrackPage(track, position)
-        self._nextStepButton.setEnabled(True)
+    def newAlbum(self):
+        self._productionHouses.announce().newAlbum()
 
-        if self._onWelcomePage():
-            self._showPage(TRACK_LIST_PANEL)
-            self.setCentralWidget(self._mainPanel)
-
-    def trackRemoved(self, track, position):
-        self._removeTrackPage(track, position)
-        if self._album.empty():
-            self._nextStepButton.setDisabled(True)
-
-    def _onWelcomePage(self):
-        return self.centralWidget() == self._welcomePanel
-
-    def _makeAddFileDialog(self):
-        dialog = QFileDialog(self)
-        dialog.setObjectName(IMPORT_TRACK_DIALOG_NAME)
-        dialog.setDirectory(QDir.homePath())
-        dialog.setOption(QFileDialog.DontUseNativeDialog)
-        dialog.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
-        dialog.setModal(True)
-        dialog.fileSelected.connect(self._musicProducers.announce().importTrack)
-        return dialog
-
-    def selectTrack(self):
-        if not hasattr(self, '_addFileDialog'):
-            self._addFileDialog = self._makeAddFileDialog()
-        self._addFileDialog.open()
+    def productionAdded(self, director, album):
+        mainScreen = MainScreen(album, self._player, self._trackSelector, self)
+        mainScreen.addRequestListener(director)
+        self.setCentralWidget(mainScreen)
+        self._importAction.setEnabled(True)
+        mainScreen.selectTrack()
 
     def _build(self):
         self.setObjectName(MAIN_WINDOW_NAME)
         self.resize(640, 480)
         self._fillMenu()
         self._makeStatusBar()
-        self._makeButtonBar()
-        self._makeMainPanel()
-        self.setCentralWidget(self._makeWelcomePanel())
+        self.setCentralWidget(self._makeWelcomeScreen())
         self.localize()
 
     def _fillMenu(self):
         menuBar = self.menuBar()
-        menuBar.setGeometry(QRect(0, 0, 469, 21))
         self._fileMenu = QMenu(menuBar)
         self._fileMenu.setObjectName(FILE_MENU_NAME)
         self._importAction = QAction(self._fileMenu)
         self._importAction.setObjectName(IMPORT_TRACK_ACTION_NAME)
-        self._importAction.triggered.connect(self.selectTrack)
+        self._importAction.triggered.connect(lambda: self.centralWidget().selectTrack())
+        self._importAction.setDisabled(True)
         self._fileMenu.addAction(self._importAction)
         menuBar.addMenu(self._fileMenu)
 
     def _makeStatusBar(self):
         self.setStatusBar(QStatusBar())
 
-    def _makeButtonBar(self):
-        self._buttonBar = QWidget()
-        layout = QHBoxLayout()
-        self._buttonBar.setLayout(layout)
-        self._previousPageButton = QPushButton()
-        self._previousPageButton.setObjectName(PREVIOUS_STEP_BUTTON_NAME)
-        self._previousPageButton.clicked.connect(self._showPreviousPage)
-        self._previousPageButton.setDisabled(True)
-        layout.addWidget(self._previousPageButton)
-        layout.addStretch()
-        self._saveButton = QPushButton()
-        self._saveButton.setObjectName(SAVE_BUTTON_NAME)
-        self._saveButton.clicked.connect(self._saveAlbum)
-        self._saveButton.setDisabled(True)
-        layout.addWidget(self._saveButton)
-        layout.addStretch()
-        self._nextStepButton = QPushButton()
-        self._nextStepButton.setObjectName(NEXT_STEP_BUTTON_NAME)
-        self._nextStepButton.clicked.connect(self._showNextPage)
-        layout.addWidget(self._nextStepButton)
-
-    def _trackListPanel(self):
-        return self._pages.widget(TRACK_LIST_PANEL)
-
-    def _albumPanel(self):
-        return self._pages.widget(ALBUM_PANEL)
-
-    def _trackPage(self, position):
-        return self._pages.widget(TRACK_PANEL + position)
-
-    def _addTrackPage(self, track, position):
-        self._pages.insertWidget(TRACK_PANEL + position, TrackPanel(track))
-
-    def _removeTrackPage(self, track, position):
-        self._pages.removeWidget(self._trackPage(position))
-
-    def _makeMainPanel(self):
-        self._mainPanel = QWidget()
-        layout = QVBoxLayout()
-        self._pages = QStackedWidget()
-        trackListPanel = TrackListPanel(self._album, self._player)
-        trackListPanel.addRequestListener(self)
-
-        self._pages.addWidget(trackListPanel)
-        albumPanel = AlbumPanel(self._album)
-        self._pages.addWidget(albumPanel)
-        layout.addWidget(self._pages)
-        self._previousPageButton.setDisabled(True)
-        self._nextStepButton.setEnabled(True)
-        layout.addWidget(self._buttonBar)
-        self._mainPanel.setLayout(layout)
-
-    def _currentPage(self):
-        return self._pages.currentIndex()
-
-    def _onPage(self, index):
-        return self._currentPage() == index
-
-    def _previousPage(self):
-        return self._currentPage() - 1
-
-    def _nextPage(self):
-        return self._currentPage() + 1
-
-    def _lastPage(self):
-        return self._pages.count() - 1
-
-    def _showPage(self, page):
-        self._pages.setCurrentIndex(page)
-
-    def _showPreviousPage(self):
-        self._showPage(self._previousPage())
-        if self._onPage(TRACK_LIST_PANEL):
-            self._saveButton.setDisabled(True)
-            self._previousPageButton.setDisabled(True)
-        self._nextStepButton.setEnabled(True)
-
-    def _showNextPage(self):
-        self._showPage(self._nextPage())
-        if self._onPage(self._lastPage()):
-            self._nextStepButton.setDisabled(True)
-        self._previousPageButton.setEnabled(True)
-        self._saveButton.setEnabled(True)
-
-    def _saveAlbum(self):
-        self._musicProducers.announce().record()
-
-    # todo Extract a WelcomePanel
-    def _makeWelcomePanel(self):
-        self._welcomePanel = QWidget()
-        layout = QHBoxLayout()
-        layout.addStretch()
-        self._addFileButton = QPushButton()
-        self._addFileButton.setObjectName(ADD_FILE_BUTTON_NAME)
-        self._addFileButton.clicked.connect(self.selectTrack)
-        layout.addWidget(self._addFileButton)
-        layout.addStretch()
-        self._welcomePanel.setLayout(layout)
-        return self._welcomePanel
+    def _makeWelcomeScreen(self):
+        welcomeScreen = WelcomeScreen(self)
+        welcomeScreen.addRequestListener(self)
+        return welcomeScreen
 
     def localize(self):
         self.setWindowTitle(self.tr("TGiT"))
         self._fileMenu.setTitle(self.tr('File'))
         self._importAction.setText(self.tr("Import File..."))
-        self._addFileButton.setText(self.tr("Add File..."))
-        self._saveButton.setText(self.tr("Save"))
-        self._previousPageButton.setText(self.tr("Previous"))
-        self._nextStepButton.setText(self.tr("Next"))

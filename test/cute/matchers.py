@@ -45,7 +45,7 @@ def hidden():
 
 
 def enabled():
-    return StateMatcher(QWidget.isEnabled, "enabled", "disabled")
+    return StateMatcher(lambda w: w.isEnabled(), "enabled", "disabled")
 
 
 def disabled():

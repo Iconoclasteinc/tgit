@@ -18,15 +18,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import sys
-from PyQt4.QtCore import QTextCodec, QTranslator
+from PyQt4.QtCore import Qt, QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
-from tgit.producer import AlbumTagger
 # noinspection PyUnresolvedReferences
 from tgit import resources
-from tgit.album import Album
+from tgit.producer import ProductionPortfolio, RecordLabel
 from tgit.audio_library import AudioFiles
-from tgit.player import MediaPlayer
 from tgit.ui.main_window import MainWindow
 
 TGIT = "tgit"
@@ -35,21 +33,24 @@ UTF_8 = "UTF-8"
 
 
 class TGiT(QApplication):
-    def __init__(self, locale, player=None):
+    def __init__(self):
         QApplication.__init__(self, [])
         self._translators = []
-        self.translateTo(locale)
-        self._album = Album()
-        self._ui = MainWindow(self._album, player or MediaPlayer())
-        self._addMusicProducerFor(self._ui)
 
-    def _addMusicProducerFor(self, ui):
-        ui.addMusicProducer(AlbumTagger(self._album, AudioFiles()))
+        self._productions = ProductionPortfolio()
+        self._ui = MainWindow(self._productions)
+        self._addProductionHouseFor(AudioFiles())
 
-    def translateTo(self, locale):
+    def _addProductionHouseFor(self, audioLibrary):
+        self._ui.addProductionHouse(RecordLabel(self._productions, audioLibrary))
+
+    def useMediaPlayer(self, player):
+        self._ui.setMediaPlayer(player)
+
+    def translateInto(self, language):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
         for resource in (QT, TGIT):
-            self._installTranslations(resource, locale),
+            self._installTranslations(resource, language),
 
     def _installTranslations(self, resource, locale):
         translator = QTranslator()
@@ -61,5 +62,8 @@ class TGiT(QApplication):
         return sys.exit(self.exec_())
 
 
-def main(locale):
-    TGiT(locale).run()
+def main(language):
+    app = TGiT()
+    # todo use a native dialog by default in production mode
+    app.translateInto(language)
+    app.run()

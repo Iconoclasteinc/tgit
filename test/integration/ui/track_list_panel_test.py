@@ -11,22 +11,29 @@ from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe, AssertionProbe
 from test.drivers.track_list_panel_driver import TrackListPanelDriver
 from test.util import builders
-from test.util.fake_media_player import FakeMediaPlayer
 
 from tgit.album import Album
+from tgit.player import SilentPlayer
 from tgit.ui.track_list_panel import TrackListPanel
+from tgit.ui.track_selector import TrackSelector
 
 
 def hasTitle(title):
     return has_property('trackTitle', title)
 
 
+class TrackSelectorStub(TrackSelector):
+    def selectTrack(self):
+        self._signalTrackSelected(self.selectedTrack)
+
+
 class TrackListPanelTest(BaseWidgetTest):
     def setUp(self):
         super(TrackListPanelTest, self).setUp()
-        self.player = flexmock(FakeMediaPlayer())
+        self.player = flexmock(SilentPlayer())
         self.album = Album()
-        self.trackListPanel = TrackListPanel(self.album, self.player)
+        self.trackSelector = TrackSelectorStub()
+        self.trackListPanel = TrackListPanel(self.album, self.player, self.trackSelector)
         self.view(self.trackListPanel)
         self.tagger = self.createDriverFor(self.trackListPanel)
 
@@ -80,16 +87,19 @@ class TrackListPanelTest(BaseWidgetTest):
         self.trackListPanel.mediaPaused(track1)
         self.tagger.isNotPlayingTrack(1)
 
-    def testTriggersSelectTrackWhenAddButtonIsClicked(self):
-        addTrackButtonClicked = ValueMatcherProbe("add track button", equal_to("clicked"))
+    def testSelectsTrackAndSignalsImportTrackRequestWhenAddTrackButtonIsClicked(self):
+        self.trackSelector.selectedTrack = 'track.mp3'
 
-        class SelectTrackProbe(object):
-            def selectTrack(self):
-                addTrackButtonClicked.setReceivedValue("clicked")
+        importTrackRequest = ValueMatcherProbe('request to import track',
+                                               equal_to(self.trackSelector.selectedTrack))
 
-        self.trackListPanel.addRequestListener(SelectTrackProbe())
+        class ImportTrackListener(object):
+            def importTrack(self, filename):
+                importTrackRequest.setReceivedValue(filename)
+
+        self.trackListPanel.addRequestListener(ImportTrackListener())
         self.tagger.addTrack()
-        self.tagger.check(addTrackButtonClicked)
+        self.tagger.check(importTrackRequest)
 
     def testRemovesTrackFromAlbumWhenRemoveButtonIsClicked(self):
         self.addTrackToAlbum(trackTitle='Track 0')

@@ -28,40 +28,44 @@ class TaggerDriver(MainWindowDriver):
         super(TaggerDriver, self).__init__(selector, prober, gesturePerformer)
 
     def importTrack(self, path):
-        self.importTrackThroughMenu(path)
+        self.selectImportTrackMenuItem()
+        self.selectTrack(path)
         self.isShowingTrackList()
 
-    # todo having to specify how we import the track kinda sucks
-    # plus, there are so many ways to import a track it's confusing
-    def importTrackThroughMenu(self, path):
-        self._selectImportTrackMenuItem()
-        self._selectTrackInDialog(path)
+    def selectImportTrackMenuItem(self):
+        menuItem = self._importTrackMenuItem()
+        menuItem.isEnabled()
+        menuItem.click()
 
-    def _selectImportTrackMenuItem(self):
+    def _importTrackMenuItem(self):
         menu = self._fileMenu()
         menu.open()
-        menu.selectMenuItem(named(main.IMPORT_TRACK_ACTION_NAME))
+        return menu.menuItem(named(main.IMPORT_TRACK_ACTION_NAME))
 
-    def _selectTrackInDialog(self, trackFile):
+    def selectTrack(self, trackFile):
         dialog = FileDialogDriver.findIn(self, QFileDialog, named(main.IMPORT_TRACK_DIALOG_NAME))
         dialog.showHiddenFiles()
         dialog.navigateToDir(os.path.dirname(trackFile))
         dialog.selectFile(os.path.basename(trackFile))
         dialog.accept()
 
-    def addTrackToAlbum(self, path):
-        self._addTrackButton().click()
-        self._selectTrackInDialog(path)
+    def addTrack(self):
+        self._trackListPanel().addTrack()
+
+    def createAlbum(self):
+        self._newAlbumButton().click()
 
     # todo when we have our custom welcome panel, check that the panel is displayed
     def isShowingWelcomePanel(self):
-        self._addTrackButton().isShowingOnScreen()
+        self._newAlbumButton().isShowingOnScreen()
 
     def isShowingTrackList(self):
         self._trackListPanel().isShowingOnScreen()
         self._nextStepButton().isEnabled()
         self._previousStepButton().isDisabled()
         self._saveButton().isDisabled()
+        self._importTrackMenuItem().isEnabled()
+        self._fileMenu().close()
 
     def isShowingAlbumMetadata(self):
         self._albumPanel().isShowingOnScreen()
@@ -131,8 +135,8 @@ class TaggerDriver(MainWindowDriver):
     def _fileMenu(self):
         return self._menuBar().menu(named(main.FILE_MENU_NAME))
 
-    def _addTrackButton(self):
-        return AbstractButtonDriver.findIn(self, QPushButton, named(main.ADD_FILE_BUTTON_NAME))
+    def _newAlbumButton(self):
+        return AbstractButtonDriver.findIn(self, QPushButton, named(main.NEW_ALBUM_BUTTON_NAME))
 
     def _nextStepButton(self):
         return AbstractButtonDriver.findIn(self, QPushButton, named(main.NEXT_STEP_BUTTON_NAME))
@@ -144,7 +148,10 @@ class TaggerDriver(MainWindowDriver):
         return AbstractButtonDriver.findIn(self, QPushButton, named(main.SAVE_BUTTON_NAME))
 
     def _trackListPanel(self):
-        return TrackListPanelDriver.findIn(self, QWidget, named(content.ALBUM_CONTENT_PANEL_NAME))
+        trackListPanel = TrackListPanelDriver.findIn(self, QWidget,
+                                                     named(content.ALBUM_CONTENT_PANEL_NAME))
+        trackListPanel.isShowingOnScreen()
+        return trackListPanel
 
     def _albumPanel(self):
         return AlbumPanelDriver.findIn(self, QWidget, named(album.ALBUM_PANEL_NAME))

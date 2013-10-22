@@ -133,19 +133,15 @@ class ValueMatcherProbe(Probe):
     def __init__(self, message, matcher=anything()):
         super(ValueMatcherProbe, self).__init__()
         self._message = message
-        self.expects(matcher)
-
-    def expects(self, matching):
-        self._valueMatcher = matching
+        self._valueMatcher = matcher
         self._receivedValue = None
         self._hasReceivedAValue = False
-        return self
 
     def test(self):
         pass
 
     def isSatisfied(self):
-        return self._valueMatcher.matches(self._receivedValue)
+        return self._hasReceivedAValue and self._valueMatcher.matches(self._receivedValue)
 
     def describeTo(self, description):
         description.append_text(self._message).append_text(" ") \

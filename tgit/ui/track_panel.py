@@ -61,7 +61,7 @@ class TrackPanel(QWidget):
         layout.addWidget(self._trackTitleLabel, row, 0)
         self._trackTitleEdit = QLineEdit()
         self._trackTitleEdit.setObjectName(TRACK_TITLE_NAME)
-        self._trackTitleEdit.textEdited.connect(self.updateTrack)
+        self._trackTitleEdit.textEdited.connect(self._updateTrack)
         layout.addWidget(self._trackTitleEdit, row, 1)
         self._trackTitleLabel.setBuddy(self._trackTitleEdit)
 
@@ -70,7 +70,7 @@ class TrackPanel(QWidget):
         layout.addWidget(self._versionInfoLabel, row, 0)
         self._versionInfoEdit = QLineEdit()
         self._versionInfoEdit.setObjectName(VERSION_INFO_NAME)
-        self._versionInfoEdit.textEdited.connect(self.updateTrack)
+        self._versionInfoEdit.textEdited.connect(self._updateTrack)
         layout.addWidget(self._versionInfoEdit, row, 1)
         self._versionInfoLabel.setBuddy(self._versionInfoEdit)
 
@@ -79,7 +79,7 @@ class TrackPanel(QWidget):
         layout.addWidget(self._featuredGuestLabel, row, 0)
         self._featuredGuestEdit = QLineEdit()
         self._featuredGuestEdit.setObjectName(FEATURED_GUEST_NAME)
-        self._featuredGuestEdit.textEdited.connect(self.updateTrack)
+        self._featuredGuestEdit.textEdited.connect(self._updateTrack)
         layout.addWidget(self._featuredGuestEdit, row, 1)
         self._featuredGuestLabel.setBuddy(self._featuredGuestEdit)
 
@@ -88,7 +88,7 @@ class TrackPanel(QWidget):
         layout.addWidget(self._isrcLabel, row, 0)
         self._isrcEdit = QLineEdit()
         self._isrcEdit.setObjectName(ISRC_NAME)
-        self._isrcEdit.textEdited.connect(self.updateTrack)
+        self._isrcEdit.textEdited.connect(self._updateTrack)
         layout.addWidget(self._isrcEdit, row, 1)
         self._isrcLabel.setBuddy(self._isrcEdit)
 
@@ -124,7 +124,7 @@ class TrackPanel(QWidget):
         self._bitrateInfoLabel.setText("%s kbps" % display.inKbps(track.bitrate))
         self._durationInfoLabel.setText(display.asDuration(track.duration))
 
-    def updateTrack(self):
+    def _updateTrack(self):
         self._track.trackTitle = self._trackTitleEdit.text()
         self._track.versionInfo = self._versionInfoEdit.text()
         self._track.featuredGuest = self._featuredGuestEdit.text()

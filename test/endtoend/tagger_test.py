@@ -24,7 +24,7 @@ class TaggerTest(unittest.TestCase):
     def testTaggingASingleTrackAndSavingChanges(self):
         track = self.audioLibrary.add(makeMp3(SAMPLE_AUDIO_FILE))
 
-        self.application.importTrack(track.filename)
+        self.application.newAlbum(track.filename)
         self.application.showsAlbumContent(['Hallelujah (Chorus)'])
         self.application.showsAlbumMetadata(
             releaseName='',
@@ -51,7 +51,7 @@ class TaggerTest(unittest.TestCase):
         track1 = self.audioLibrary.add(makeMp3(trackTitle='Track 1'))
         track2 = self.audioLibrary.add(makeMp3(trackTitle='Track 2'))
 
-        self.application.importTrack(track1.filename)
+        self.application.newAlbum(track1.filename)
         self.application.importTrack(track2.filename)
         self.application.showsAlbumContent(['Track 1'], ['Track 2'])
         self.application.showsAlbumMetadata()
@@ -74,7 +74,7 @@ class TaggerTest(unittest.TestCase):
         track2 = self.audioLibrary.add(makeMp3(releaseName='Original Title', trackTitle='Track 2'))
         track3 = self.audioLibrary.add(makeMp3(releaseName='Original Title', trackTitle='Track 3'))
 
-        self.application.importTrack(track1.filename)
+        self.application.newAlbum(track1.filename)
         self.application.importTrack(track2.filename)
         self.application.importTrack(track3.filename)
 
