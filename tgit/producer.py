@@ -33,11 +33,11 @@ class ProductionPortfolio(object):
         self._productionListeners = Announcer()
 
     def addProductionListener(self, listener):
-        self._productionListeners.add(listener)
+        self._productionListeners.addListener(listener)
 
     def addProduction(self, director, album):
         self._productions.append((director, album))
-        self._productionListeners.announce().productionAdded(director, album)
+        self._productionListeners.productionAdded(director, album)
 
 
 class ProductionHouse(object):

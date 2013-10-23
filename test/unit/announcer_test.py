@@ -20,17 +20,17 @@ class AnnouncerTest(unittest.TestCase):
 
     def testAnnouncesToAllSubscribedListeners(self):
         self._listenersAreSubscribed()
-        self.announcer.announce().eventOccurred(self.event)
+        self.announcer.eventOccurred(self.event)
 
-    def testStopsAnnouncingToUnsubscribedListeners(self):
+    def testStopsAnnouncingToUnregisteredListeners(self):
         shouldNotNotified = flexmock(Listener())
-        self.announcer.add(shouldNotNotified)
+        self.announcer.addListener(shouldNotNotified)
 
         self._listenersAreSubscribed()
-        self.announcer.remove(shouldNotNotified)
+        self.announcer.removeListener(shouldNotNotified)
 
         shouldNotNotified.should_receive('eventOccurred').never()
-        self.announcer.announce().eventOccurred(self.event)
+        self.announcer.eventOccurred(self.event)
 
     def _listenersAreSubscribed(self):
         for i in xrange(self.listenerCount):
@@ -39,4 +39,4 @@ class AnnouncerTest(unittest.TestCase):
     def _subscribeListener(self):
         listener = flexmock(Listener())
         listener.should_receive('eventOccurred').with_args(self.event).once()
-        self.announcer.add(listener)
+        self.announcer.addListener(listener)

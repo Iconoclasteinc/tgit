@@ -16,7 +16,7 @@ class WelcomeScreen(QWidget):
         self.localize()
 
     def addRequestListener(self, listener):
-        self.requestListeners.add(listener)
+        self.requestListeners.addListener(listener)
 
     def _build(self):
         layout = QHBoxLayout()
@@ -29,7 +29,7 @@ class WelcomeScreen(QWidget):
         self.setLayout(layout)
 
     def newAlbum(self):
-        self.requestListeners.announce().newAlbum()
+        self.requestListeners.newAlbum()
 
     def localize(self):
         self._newAlbumButton.setText(self.tr("New Album..."))

@@ -39,10 +39,10 @@ class Track(object):
         self._listeners = Announcer()
 
     def addTrackListener(self, listener):
-        self._listeners.add(listener)
+        self._listeners.addListener(listener)
 
     def removeTrackListener(self, listener):
-        self._listeners.remove(listener)
+        self._listeners.removeListener(listener)
 
     @property
     def metadata(self):
@@ -67,7 +67,7 @@ class Track(object):
         self._audioFile.save(self._metadata)
 
     def _signalStateChange(self):
-        self._listeners.announce().trackStateChanged(self)
+        self._listeners.trackStateChanged(self)
 
 
 def addMetadataPropertiesTo(cls):

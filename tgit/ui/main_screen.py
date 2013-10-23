@@ -48,16 +48,13 @@ class MainScreen(QWidget, AlbumListener):
         self.localize()
 
     def addRequestListener(self, listener):
-        self._requestListeners.add(listener)
+        self._requestListeners.addListener(listener)
 
     def selectTrack(self):
         self._trackListPanel().selectTrack()
 
-    def importTrack(self, filename):
-        self._requestListeners.announce().importTrack(filename)
-
     def recordAlbum(self):
-        self._requestListeners.announce().recordAlbum()
+        self._requestListeners.recordAlbum()
 
     def _build(self):
         layout = QVBoxLayout()
@@ -65,7 +62,7 @@ class MainScreen(QWidget, AlbumListener):
 
         self._pages = QStackedWidget()
         trackListPanel = TrackListPanel(self._album, self._player, self._trackSelector)
-        trackListPanel.addRequestListener(self)
+        trackListPanel.addRequestListener(self._requestListeners)
         self._pages.addWidget(trackListPanel)
         self._pages.addWidget(AlbumPanel(self._album))
         self._pages.setCurrentIndex(TRACK_LIST_PANEL)

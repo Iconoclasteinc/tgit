@@ -37,13 +37,6 @@ class MainWindowTest(BaseWidgetTest):
     def createDriverFor(self, widget):
         return TaggerDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testRelaysUsersRequestsToRegisteredListeners(self):
-        productionHouse = flexmock(ProductionHouse())
-        self.mainWindow.addProductionHouse(productionHouse)
-
-        productionHouse.should_receive('newAlbum').once()
-        self.mainWindow.newAlbum()
-
     def testShowsMainScreenWhenAlbumIsCreated(self):
         self.tagger.isShowingWelcomePanel()
         self.mainWindow.productionAdded(self.director, self.album)

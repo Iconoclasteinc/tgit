@@ -61,10 +61,7 @@ class MainWindow(QMainWindow, ProductionListener):
         self._trackSelector = selector
 
     def addProductionHouse(self, house):
-        self._productionHouses.add(house)
-
-    def newAlbum(self):
-        self._productionHouses.announce().newAlbum()
+        self._productionHouses.addListener(house)
 
     def productionAdded(self, director, album):
         mainScreen = MainScreen(album, self._player, self._trackSelector, self)
@@ -97,7 +94,7 @@ class MainWindow(QMainWindow, ProductionListener):
 
     def _makeWelcomeScreen(self):
         welcomeScreen = WelcomeScreen(self)
-        welcomeScreen.addRequestListener(self)
+        welcomeScreen.addRequestListener(self._productionHouses)
         return welcomeScreen
 
     def localize(self):

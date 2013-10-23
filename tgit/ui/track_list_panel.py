@@ -59,13 +59,13 @@ class TrackListPanel(QWidget, player.MediaListener, AlbumListener):
         self._populateTableWithTracksFrom(album)
 
     def addRequestListener(self, listener):
-        self._requestListeners.add(listener)
+        self._requestListeners.addListener(listener)
 
     def selectTrack(self):
         self._trackSelector.selectTrack()
 
     def trackSelected(self, filename):
-        self._requestListeners.announce().importTrack(filename)
+        self._requestListeners.importTrack(filename)
 
     # todo when we disallow adding the same track multiple times,
     # track filename should be its unique, do we want to pass

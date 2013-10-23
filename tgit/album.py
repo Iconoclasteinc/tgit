@@ -59,7 +59,7 @@ class Album(object):
         self._listeners = Announcer()
 
     def addAlbumListener(self, listener):
-        self._listeners.add(listener)
+        self._listeners.addListener(listener)
 
     @property
     def images(self):
@@ -94,19 +94,19 @@ class Album(object):
             position = len(self._tracks)
 
         self._tracks.insert(position, track)
-        self._listeners.announce().trackAdded(track, position)
+        self._listeners.trackAdded(track, position)
 
     def removeTrack(self, track):
         position = self._tracks.index(track)
         self._tracks.remove(track)
-        self._listeners.announce().trackRemoved(track, position)
+        self._listeners.trackRemoved(track, position)
 
     def tag(self):
         for track in self._tracks:
             track.tag(self._metadata)
 
     def _signalStateChange(self):
-        self._listeners.announce().albumStateChanged(self)
+        self._listeners.albumStateChanged(self)
 
 
 def addMetadataPropertiesTo(cls):

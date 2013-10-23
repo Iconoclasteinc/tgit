@@ -23,10 +23,10 @@ class TrackSelector(object):
         pass
 
     def addSelectionListener(self, listener):
-        self._listeners.add(listener)
+        self._listeners.addListener(listener)
 
     def _signalTrackSelected(self, filename):
-        self._listeners.announce().trackSelected(filename)
+        self._listeners.trackSelected(filename)
 
 
 class TrackSelectionDialog(TrackSelector):
