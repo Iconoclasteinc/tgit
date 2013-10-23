@@ -4,7 +4,7 @@ import os
 from PyQt4.QtGui import QFileDialog, QWidget, QMenuBar
 
 from test.cute.matchers import named
-from test.cute.widgets import MainWindowDriver, FileDialogDriver, MenuBarDriver
+from test.cute.widgets import dialogWindow, MainWindowDriver, FileDialogDriver, MenuBarDriver
 from test.drivers.tagging_screen_driver import TaggingScreenDriver
 from test.drivers.welcome_screen_driver import WelcomeScreenDriver
 
@@ -32,7 +32,9 @@ class TaggerDriver(MainWindowDriver):
         return menu
 
     def selectAudioFile(self, trackFile):
-        dialog = FileDialogDriver.findSingle(self, QFileDialog, named(ui.SELECT_TRACK_DIALOG_NAME))
+        dialog = FileDialogDriver(dialogWindow(QFileDialog,
+                                               named(ui.CHOOSE_AUDIO_FILE_DIALOG_NAME)),
+                                  self.prober, self.gesturePerformer)
         dialog.showHiddenFiles()
         dialog.navigateToDir(os.path.dirname(trackFile))
         dialog.selectFile(os.path.basename(trackFile))

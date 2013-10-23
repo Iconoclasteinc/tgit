@@ -18,22 +18,26 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import mimetypes
-from PyQt4.QtCore import Qt, QDir
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QPixmap, QImage,
-                         QFileDialog, QHBoxLayout, QVBoxLayout)
+                         QHBoxLayout, QVBoxLayout)
 
+from tgit.file_chooser import FileChoiceListener
 from tgit.ui import constants as ui
 
 
-class AlbumPage(QWidget):
-    def __init__(self, album, parent=None):
+class AlbumPage(QWidget, FileChoiceListener):
+    def __init__(self, album, pictureChooser, parent=None):
         QWidget.__init__(self, parent)
+        self._album = album
+        self._pictureChooser = pictureChooser
+        self._pictureChooser.addChoiceListener(self)
+
         self.setObjectName(ui.ALBUM_PAGE_NAME)
         grid = QGridLayout()
         self._fill(grid)
         self.translateUi()
         self._layout(grid)
-        self._album = album
         self.albumStateChanged(album)
 
     def _layout(self, grid):
@@ -42,7 +46,7 @@ class AlbumPage(QWidget):
         layout.addStretch()
         self.setLayout(layout)
 
-    def _loadFrontCoverPicture(self, filename):
+    def fileChosen(self, filename):
         self._frontCover = self._loadImage(filename)
         self._displayFrontCover(self._frontCover)
         self._updateAlbumCover()
@@ -93,20 +97,8 @@ class AlbumPage(QWidget):
         buttonLayout.addStretch()
         layout.addLayout(buttonLayout, row, 1)
 
-    def _makeSelectPictureDialog(self):
-        dialog = QFileDialog(self)
-        dialog.setObjectName(ui.SELECT_PICTURE_DIALOG_NAME)
-        dialog.setDirectory(QDir.homePath())
-        dialog.setOption(QFileDialog.DontUseNativeDialog)
-        dialog.setNameFilter(self.tr('Image files') + ' (*.png *.jpeg *.jpg)')
-        dialog.setModal(True)
-        dialog.fileSelected.connect(self._loadFrontCoverPicture)
-        return dialog
-
     def _selectPicture(self):
-        if not hasattr(self, '_selectPictureDialog'):
-            self._selectPictureDialog = self._makeSelectPictureDialog()
-        self._selectPictureDialog.open()
+        self._pictureChooser.chooseFile()
 
     def _addReleaseNameTo(self, layout, row):
         self._releaseNameLabel = QLabel()

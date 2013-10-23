@@ -6,7 +6,8 @@ from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog
 from tgit.ui import constants as ui
 
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
-from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, AbstractButtonDriver,
+from test.cute.widgets import (dialogWindow, WidgetDriver, LabelDriver, LineEditDriver,
+                               AbstractButtonDriver,
                                FileDialogDriver)
 
 import tgit.album as album
@@ -40,7 +41,7 @@ class AlbumPageDriver(WidgetDriver):
     def changeMetadata(self, **tags):
         for tag, value in tags.iteritems():
             if tag == album.FRONT_COVER:
-                self.changeFrontCoverPicture(value)
+                self.chooseFrontCoverPicture(value)
             elif tag == album.TITLE:
                 self.changeReleaseName(value)
             elif tag == album.LEAD_PERFORMER:
@@ -66,19 +67,20 @@ class AlbumPageDriver(WidgetDriver):
         label.hasPixmap(withPixmapHeight(height))
         label.hasPixmap(withPixmapWidth(width))
 
-    def changeFrontCoverPicture(self, filename):
-        self._selectFrontCover()
-        self._selectImageFile(filename)
+    def chooseFrontCoverPicture(self, filename):
+        self.selectFrontCover()
+        self._chooseImageFile(filename)
         self.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_PIXMAP_SIZE)
 
-    def _selectFrontCover(self):
+    def selectFrontCover(self):
         button = AbstractButtonDriver.findSingle(self, QPushButton,
                                                  named(ui.SELECT_PICTURE_BUTTON_NAME))
         button.click()
 
-    def _selectImageFile(self, filename):
-        dialog = FileDialogDriver.findSingle(self, QFileDialog,
-                                             named(ui.SELECT_PICTURE_DIALOG_NAME))
+    def _chooseImageFile(self, filename):
+        dialog = FileDialogDriver(dialogWindow(QFileDialog,
+                                               named(ui.CHOOSE_IMAGE_FILE_DIALOG_NAME)),
+                                  self.prober, self.gesturePerformer)
         dialog.navigateToDir(os.path.dirname(filename))
         dialog.selectFile(os.path.basename(filename))
         dialog.accept()

@@ -20,7 +20,7 @@ class WelcomeScreenTest(BaseWidgetTest):
         return WelcomeScreenDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testSignalsNewAlbumRequestWhenNewAlbumButtonClicked(self):
-        newAlbumRequest = ValueMatcherProbe('new album request')
+        newAlbumRequest = ValueMatcherProbe('new album')
 
         class RequestTracker(object):
             def newAlbum(self):

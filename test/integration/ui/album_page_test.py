@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import unittest
 from hamcrest import equal_to, contains, has_length, has_properties
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
@@ -9,6 +8,7 @@ from test.cute.finders import WidgetIdentity
 from test.drivers.album_page_driver import AlbumPageDriver
 from test.util import resources, fs
 from test.util.builders import album, image
+from test.util.fakes import FakeFileChooser
 
 from tgit.metadata import Image
 from tgit.album import Album
@@ -25,7 +25,8 @@ class AlbumPageTest(BaseWidgetTest):
     def setUp(self):
         super(AlbumPageTest, self).setUp()
         self.album = Album()
-        self.widget = AlbumPage(self.album)
+        self.pictureChooser = FakeFileChooser()
+        self.widget = AlbumPage(self.album, self.pictureChooser)
         self.view(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
@@ -59,7 +60,8 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsUpc('Code')
 
     def testUpdatesAlbumOnMetadataChange(self):
-        self.driver.changeFrontCoverPicture(resources.path('front-cover.jpg'))
+        self.pictureChooser.chooses(resources.path('front-cover.jpg'))
+        self.driver.selectFrontCover()
         self.check(AssertionProbe(self.album.images, contains(
             has_properties(
                 mime='image/jpeg',

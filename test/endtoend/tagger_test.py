@@ -5,7 +5,7 @@ import unittest
 from test.util import resources
 from test.util.mp3 import makeMp3
 from test.endtoend.application_runner import ApplicationRunner
-from test.util.fake_audio_library import FakeAudioLibrary
+from test.util.fakes import FakeAudioLibrary
 
 SAMPLE_AUDIO_FILE = resources.path('Hallelujah.mp3')
 

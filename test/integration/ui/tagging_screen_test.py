@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
+from hamcrest import equal_to
+
 from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.tagging_screen_driver import TaggingScreenDriver
 from test.util.builders import track
+from test.util.fakes import FakeAudioPlayer, FakeFileChooser
 
 from tgit.album import Album
-from tgit.player import SilentPlayer
 from tgit.ui.tagging_screen import TaggingScreen
-from tgit.ui.track_selector import TrackSelector
 
 
 class TaggingScreenTest(BaseWidgetTest):
@@ -17,7 +18,9 @@ class TaggingScreenTest(BaseWidgetTest):
     def setUp(self):
         super(TaggingScreenTest, self).setUp()
         self.album = Album()
-        self.widget = TaggingScreen(self.album, SilentPlayer(), TrackSelector())
+        self.audioFileChooser = FakeFileChooser()
+        self.widget = TaggingScreen(self.album, FakeAudioPlayer(), self.audioFileChooser,
+                                    FakeFileChooser())
         self.view(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
@@ -28,7 +31,7 @@ class TaggingScreenTest(BaseWidgetTest):
         self.driver.isShowingTrackList()
 
     def testSignalsRecordAlbumRequestsWhenSaveButtonClicked(self):
-        recordAlbumRequest = ValueMatcherProbe('record album request')
+        recordAlbumRequest = ValueMatcherProbe('record album')
 
         class RequestTracker(object):
             def recordAlbum(self):
@@ -39,6 +42,19 @@ class TaggingScreenTest(BaseWidgetTest):
         self.driver.nextPage()
         self.driver.saveAlbum()
         self.driver.check(recordAlbumRequest)
+
+    def testChoosesAudioFileAndSignalsImportTrackRequestWhenAddTrackButtonIsClicked(self):
+        self.audioFileChooser.chooses('track.mp3')
+
+        importTrackRequest = ValueMatcherProbe('import track file', equal_to('track.mp3'))
+
+        class RequestTracker(object):
+            def importTrack(self, filename):
+                importTrackRequest.received(filename)
+
+        self.widget.addRequestListener(RequestTracker())
+        self.driver.addTrack()
+        self.driver.check(importTrackRequest)
 
     def testAddsTrackPagesInTrackAlbumOrder(self):
         self.albumContains(track(trackTitle='Track 1'),

@@ -22,41 +22,31 @@ from PyQt4.QtGui import QMainWindow, QMenu, QAction, QStatusBar
 from tgit.announcer import Announcer
 from tgit.producer import ProductionListener
 
-from tgit.player import SilentPlayer
-
 from tgit.ui import constants as ui
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen
-from tgit.ui.track_selector import TrackSelectionDialog
 
 
 class MainWindow(QMainWindow, ProductionListener):
-    def __init__(self, productionPortfolio, parent=None):
-        QMainWindow.__init__(self, parent)
+    def __init__(self, productionPortfolio, player, audioFileChooser, imageFileChooser):
+        QMainWindow.__init__(self)
 
         self._productionPortfolio = productionPortfolio
         self._productionPortfolio.addProductionListener(self)
-        self._player = SilentPlayer()
-        self._trackSelector = TrackSelectionDialog(self)
+        self._player = player
+        self._audioFileChooser = audioFileChooser
+        self._imageFileChooser = imageFileChooser
         self._productionHouses = Announcer()
 
         self._build()
         self.show()
 
-    def useNativeDialogs(self, native):
-        self._trackSelector.useNativeLookAndFeel(native)
-
-    def setMediaPlayer(self, player):
-        self._player = player
-
-    def setTrackSelector(self, selector):
-        self._trackSelector = selector
-
     def addProductionHouse(self, house):
         self._productionHouses.addListener(house)
 
     def productionAdded(self, director, album):
-        mainScreen = TaggingScreen(album, self._player, self._trackSelector, self)
+        mainScreen = TaggingScreen(album, self._player, self._audioFileChooser,
+                                   self._imageFileChooser, self)
         mainScreen.addRequestListener(director)
         self.setCentralWidget(mainScreen)
         self._importAction.setEnabled(True)
@@ -76,7 +66,7 @@ class MainWindow(QMainWindow, ProductionListener):
         self._fileMenu.setObjectName(ui.FILE_MENU_NAME)
         self._importAction = QAction(self._fileMenu)
         self._importAction.setObjectName(ui.IMPORT_TRACK_ACTION_NAME)
-        self._importAction.triggered.connect(lambda: self.centralWidget().selectAudioFile())
+        self._importAction.triggered.connect(lambda: self.centralWidget().selectTrack())
         self._importAction.setDisabled(True)
         self._fileMenu.addAction(self._importAction)
         menuBar.addMenu(self._fileMenu)

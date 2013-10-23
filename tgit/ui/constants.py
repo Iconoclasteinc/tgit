@@ -24,7 +24,7 @@ TRACK_LIST_PAGE_NAME = 'track list page'
 ALBUM_PAGE_NAME = 'album page'
 TRACK_PAGE_NAME = 'track Page'
 
-SELECT_TRACK_DIALOG_NAME = 'select track file'
+CHOOSE_AUDIO_FILE_DIALOG_NAME = 'choose audio file'
 
 NEW_ALBUM_BUTTON_NAME = 'new album'
 NEXT_PAGE_BUTTON_NAME = 'next page'
@@ -41,7 +41,7 @@ ADD_TRACK_BUTTON_NAME = 'add track'
 
 FRONT_COVER_PIXMAP_NAME = 'front cover'
 SELECT_PICTURE_BUTTON_NAME = 'select picture'
-SELECT_PICTURE_DIALOG_NAME = 'select picture file'
+CHOOSE_IMAGE_FILE_DIALOG_NAME = 'choose image file'
 RELEASE_NAME_EDIT_NAME = 'release name'
 LEAD_PERFORMER_EDIT_NAME = 'lead performer '
 GUEST_PERFORMERS_EDIT_NAME = 'guest performers'

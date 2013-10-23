@@ -5,9 +5,10 @@ from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 from test.util import fs
 
 from tgit.audio_library import AudioLibrary
-from tgit.metadata import Image
-import tgit.album as album
 from tgit import mp3_file as mp3File
+from tgit.file_chooser import FileChooser
+from tgit.metadata import Image
+from tgit import album
 
 
 class FakeAudioLibrary(AudioLibrary):
@@ -39,3 +40,32 @@ class FakeAudioLibrary(AudioLibrary):
 
     def delete(self):
         [mp3.delete() for mp3 in self.files]
+
+
+class FakeAudioPlayer(object):
+    def __init__(self):
+        self.track = None
+
+    def currentTrack(self):
+        return self.track
+
+    def isPlaying(self):
+        return self.currentTrack() is not None
+
+    def play(self, track):
+        self.track = track
+
+    def stop(self):
+        self.track = None
+
+    def addMediaListener(self, listener):
+        pass
+
+
+class FakeFileChooser(FileChooser):
+    def chooses(self, filename):
+        self.filename = filename
+
+    def chooseFile(self):
+        if hasattr(self, 'filename'):
+            self._signalFileChosen(self.filename)

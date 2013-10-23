@@ -27,6 +27,7 @@ from tgit.player import PhononPlayer
 from tgit.producer import ProductionPortfolio, RecordLabel
 from tgit.audio_library import AudioFiles
 from tgit.ui.main_window import MainWindow
+from tgit.ui.dialogs import AudioFileChooserDialog, ImageFileChooserDialog
 
 TGIT = "tgit"
 QT = "qt"
@@ -34,18 +35,31 @@ UTF_8 = "UTF-8"
 
 
 class TGiT(QApplication):
-    def __init__(self):
+    def __init__(self, player=None, audioFileChooser=None, imageFileChooser=None):
         QApplication.__init__(self, [])
-        self._translators = []
 
+        if player is None:
+            player = PhononPlayer()
+        if audioFileChooser is None:
+            audioFileChooser = AudioFileChooserDialog()
+        if imageFileChooser is None:
+            imageFileChooser = ImageFileChooserDialog()
+
+        self._translators = []
         self._productions = ProductionPortfolio()
-        self._ui = MainWindow(self._productions)
+
+        self._ui = MainWindow(self._productions, player, audioFileChooser, imageFileChooser)
+        self._attachFileChooser(audioFileChooser)
+        self._attachFileChooser(imageFileChooser)
         self._addProductionHouseFor(AudioFiles())
 
     def show(self):
         self._ui.show()
         self._ui.raise_()
         self._ui.activateWindow()
+
+    def _attachFileChooser(self, chooser):
+        chooser.setParent(self._ui)
 
     def _addProductionHouseFor(self, audioLibrary):
         self._ui.addProductionHouse(RecordLabel(self._productions, audioLibrary))
@@ -74,7 +88,5 @@ class TGiT(QApplication):
 
 def main(language):
     app = TGiT()
-    app.useNativeDialogs(True)
-    app.useMediaPlayer(PhononPlayer())
     app.translateInto(language)
     app.run()

@@ -21,6 +21,7 @@ from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget, QPush
 
 from tgit.announcer import Announcer
 from tgit.album import AlbumListener
+from tgit.file_chooser import FileChoiceListener
 
 from tgit.ui import constants as ui
 from tgit.ui.album_page import AlbumPage
@@ -32,13 +33,15 @@ ALBUM_PAGE = 1
 TRACK_PAGE = 2
 
 
-class TaggingScreen(QWidget, AlbumListener):
-    def __init__(self, album, player, trackSelector, parent=None):
+class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
+    def __init__(self, album, player, audioFileChooser, imageFileChooser, parent=None):
         QWidget.__init__(self, parent)
         self._album = album
         self._album.addAlbumListener(self)
         self._player = player
-        self._trackSelector = trackSelector
+        self._audioFileChooser = audioFileChooser
+        self._audioFileChooser.addChoiceListener(self)
+        self._imageFileChooser = imageFileChooser
         self._requestListeners = Announcer()
 
         self._build()
@@ -47,8 +50,11 @@ class TaggingScreen(QWidget, AlbumListener):
     def addRequestListener(self, listener):
         self._requestListeners.addListener(listener)
 
+    def fileChosen(self, filename):
+        self._requestListeners.importTrack(filename)
+
     def selectTrack(self):
-        self._trackListPage().selectAudioFile()
+        self._audioFileChooser.chooseFile()
 
     def recordAlbum(self):
         self._requestListeners.recordAlbum()
@@ -59,10 +65,10 @@ class TaggingScreen(QWidget, AlbumListener):
         self.setLayout(layout)
 
         self._pages = QStackedWidget()
-        page = TrackListPage(self._album, self._player, self._trackSelector)
-        page.addRequestListener(self._requestListeners)
+        page = TrackListPage(self._album, self._player)
+        page.addRequestListener(self)
         self._pages.addWidget(page)
-        self._pages.addWidget(AlbumPage(self._album))
+        self._pages.addWidget(AlbumPage(self._album, self._imageFileChooser))
         self._pages.setCurrentIndex(TRACK_LIST_PAGE)
         layout.addWidget(self._pages)
 

@@ -22,8 +22,12 @@ def onlyWidget(ofType, matching):
     return SingleWidgetFinder(RecursiveWidgetFinder(ofType, matching, allTopLevelWidgets()))
 
 
-def mainWindow(*matchers):
+def mainApplicationWindow(*matchers):
     return onlyWidget(QMainWindow, all_of(*matchers))
+
+
+def dialogWindow(ofType, *matchers):
+    return onlyWidget(ofType, all_of(*matchers))
 
 
 class WidgetDriver(object):

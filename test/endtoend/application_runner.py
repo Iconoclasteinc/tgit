@@ -5,13 +5,15 @@ import sip
 import use_sip_api_v2
 
 from test.cute.matchers import named, showingOnScreen
-from test.cute.widgets import mainWindow
+from test.cute.widgets import mainApplicationWindow
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
+from test.util.fakes import FakeAudioPlayer
 
 from tgit.tagger import TGiT
 from tgit.ui import constants as ui
+from tgit.ui.dialogs import AudioFileChooserDialog, ImageFileChooserDialog
 
 
 ONE_SECOND = 1000
@@ -19,9 +21,11 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self):
-        self.app = TGiT()
+        self.app = TGiT(FakeAudioPlayer(), AudioFileChooserDialog(native=False),
+                        ImageFileChooserDialog(native=False))
         self.app.show()
-        self.tagger = TaggerDriver(mainWindow(named(ui.MAIN_WINDOW_NAME), showingOnScreen()),
+        self.tagger = TaggerDriver(mainApplicationWindow(named(ui.MAIN_WINDOW_NAME),
+                                                         showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())
 

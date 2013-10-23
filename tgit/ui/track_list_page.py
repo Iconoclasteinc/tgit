@@ -38,14 +38,12 @@ REMOVE_COLUMN = 6
 
 
 class TrackListPage(QWidget, MediaListener, AlbumListener):
-    def __init__(self, album, player, trackSelector, parent=None):
+    def __init__(self, album, player, parent=None):
         QWidget.__init__(self, parent)
         self._album = album
         self._album.addAlbumListener(self)
         self._player = player
         self._player.addMediaListener(self)
-        self._trackSelector = trackSelector
-        self._trackSelector.addSelectionListener(self)
         self._requestListeners = Announcer()
 
         self.setObjectName(ui.TRACK_LIST_PAGE_NAME)
@@ -55,12 +53,6 @@ class TrackListPage(QWidget, MediaListener, AlbumListener):
 
     def addRequestListener(self, listener):
         self._requestListeners.addListener(listener)
-
-    def selectTrack(self):
-        self._trackSelector.selectAudioFile()
-
-    def trackSelected(self, filename):
-        self._requestListeners.importTrack(filename)
 
     def mediaStopped(self, media):
         try:
@@ -158,10 +150,13 @@ class TrackListPage(QWidget, MediaListener, AlbumListener):
         buttonLayout = QHBoxLayout()
         self._addButton = QPushButton()
         self._addButton.setObjectName(ui.ADD_TRACK_BUTTON_NAME)
-        self._addButton.clicked.connect(self.selectTrack)
+        self._addButton.clicked.connect(self._selectTrack)
         buttonLayout.addWidget(self._addButton)
         buttonLayout.addStretch()
         layout.addLayout(buttonLayout)
+
+    def _selectTrack(self):
+        self._requestListeners.selectTrack()
 
     def localize(self):
         self._addButton.setText(self.tr('Add Track...'))

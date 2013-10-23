@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 from flexmock import flexmock
-from hamcrest import equal_to, has_property, contains
+from hamcrest import has_property, contains
 from hamcrest.library.collection.is_empty import empty
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
@@ -11,30 +11,23 @@ from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe, AssertionProbe
 from test.drivers.track_list_page_driver import TrackListPageDriver
 from test.util import builders
+from test.util.fakes import FakeAudioPlayer
 
 from tgit.album import Album
-from tgit.player import SilentPlayer
 from tgit.ui.track_list_page import TrackListPage
-from tgit.ui.track_selector import TrackSelector
 
 
 def hasTitle(title):
     return has_property('trackTitle', title)
 
 
-class TrackSelectorStub(TrackSelector):
-    def selectTrack(self):
-        self._signalTrackSelected(self.selectedTrack)
-
-
 class TrackListPageTest(BaseWidgetTest):
 
     def setUp(self):
         super(TrackListPageTest, self).setUp()
-        self.player = flexmock(SilentPlayer())
+        self.player = flexmock(FakeAudioPlayer())
         self.album = Album()
-        self.trackSelector = TrackSelectorStub()
-        self.widget = TrackListPage(self.album, self.player, self.trackSelector)
+        self.widget = TrackListPage(self.album, self.player)
         self.view(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
@@ -94,19 +87,16 @@ class TrackListPageTest(BaseWidgetTest):
         self.widget.mediaPaused(track1)
         self.driver.isNotPlayingTrack(1)
 
-    def testSelectsTrackAndSignalsImportTrackRequestWhenAddTrackButtonIsClicked(self):
-        self.trackSelector.selectedTrack = 'track.mp3'
+    def testSignalsSelectTrackRequestWhenAddTrackButtonIsClicked(self):
+        selectTrackRequest = ValueMatcherProbe('select track')
 
-        importTrackRequest = ValueMatcherProbe('request to import track',
-                                               equal_to(self.trackSelector.selectedTrack))
+        class RequestTracker(object):
+            def selectTrack(self):
+                selectTrackRequest.received()
 
-        class ImportTrackListener(object):
-            def importTrack(self, filename):
-                importTrackRequest.received(filename)
-
-        self.widget.addRequestListener(ImportTrackListener())
+        self.widget.addRequestListener(RequestTracker())
         self.driver.addTrack()
-        self.driver.check(importTrackRequest)
+        self.driver.check(selectTrackRequest)
 
     def testRemovesTrackFromAlbumWhenRemoveButtonIsClicked(self):
         self.addTrackToAlbum(trackTitle='Track 0')
