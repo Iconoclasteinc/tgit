@@ -17,25 +17,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import functools as func
+import os
+import shutil
+import tempfile
+import mimetypes
 
 
-class Announcer(object):
-    def __init__(self):
-        self._listeners = []
+def readContent(filename):
+    return open(filename, 'rb').read()
 
-    def addListener(self, listener):
-        self._listeners.append(listener)
 
-    def removeListener(self, listener):
-        self._listeners.remove(listener)
+def guessMimeType(filename):
+    return mimetypes.guess_type(filename)[0]
 
-    def __getattr__(self, message):
-        return func.partial(self._announce, message)
 
-    def _announce(self, message, *args, **kwargs):
-        for listener in self._listeners:
-            if hasattr(listener, message):
-                method = getattr(listener, message)
-                method(*args, **kwargs)
+def makeCopy(filename):
+    _, ext = os.path.splitext(filename)
+    copy, path = tempfile.mkstemp(suffix=ext)
+    shutil.copy(filename, path)
+    os.close(copy)
+    return path
 

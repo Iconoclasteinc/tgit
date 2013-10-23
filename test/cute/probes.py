@@ -25,7 +25,7 @@ class WidgetAssertionProbe(Probe):
 
     def describeTo(self, description):
         description.append_description_of(self._selector). \
-            append_text("\nand check that it is "). \
+            append_text('\nand check that it is '). \
             append_description_of(self._assertion)
 
     def describeFailureTo(self, description):
@@ -54,15 +54,15 @@ class WidgetPropertyAssertionProbe(Probe):
 
     def describeTo(self, description):
         description.append_description_of(self._selector) \
-            .append_text("\nand check that its ") \
+            .append_text('\nand check that its ') \
             .append_description_of(self._propertyValueQuery) \
-            .append_text(" is ") \
+            .append_text(' is ') \
             .append_description_of(self._propertyValueMatcher)
 
     def describeFailureTo(self, description):
         self._selector.describeFailureTo(description)
         if self._selector.isSatisfied():
-            description.append_text("\n    its ") \
+            description.append_text('\n    its ') \
                 .append_description_of(self._propertyValueQuery) \
                 .append_text(" ")
             self._propertyValueMatcher.describe_mismatch(self._propertyValue, description)
@@ -77,7 +77,7 @@ class WidgetManipulatorProbe(Probe):
 
     def describeTo(self, description):
         self._finder.describeTo(description)
-        description.append_text("\nand %s " % self._description)
+        description.append_text('\nand %s ' % self._description)
 
     def describeFailureTo(self, description):
         self._finder.describeFailureTo(description)
@@ -103,13 +103,13 @@ class WidgetScreenBoundsProbe(Probe):
         return self._bounds
 
     def describeTo(self, description):
-        description.append_text("dimensions of ")
+        description.append_text('dimensions of ')
         description.append_description_of(self._selector)
 
     def describeFailureTo(self, description):
         self._selector.describeFailureTo(description)
         if self._selector.isSatisfied():
-            description.append_text(" which had no dimensions")
+            description.append_text(' which had no dimensions')
 
     def isSatisfied(self):
         return (self._bounds is not None and self._bounds.width > 0 and
@@ -154,9 +154,9 @@ class ValueMatcherProbe(Probe):
     def describeFailureTo(self, description):
         description.append_text(self._message).append_text(" ")
         if self._hasReceivedAValue:
-            description.append_text("received ").append_value(self._receivedValue)
+            description.append_text('received ').append_value(self._receivedValue)
         else:
-            description.append_text("received nothing")
+            description.append_text('received nothing')
 
     def received(self, value=None):
         self._hasReceivedAValue = True
@@ -178,8 +178,8 @@ class AssertionProbe(Probe):
         return self._assertionMet
 
     def describeTo(self, description):
-        description.append_text("condition\n").append_text(self._description) \
-            .append_text(" matches ") \
+        description.append_text('condition\n').append_text(self._description) \
+            .append_text(' matches ') \
             .append_description_of(self._assertion)
 
     def describeFailureTo(self, description):

@@ -100,7 +100,7 @@ class WidgetDriver(object):
         self.prober.check(probe)
 
     def close(self):
-        self.manipulate("close", lambda widget: widget.close())
+        self.manipulate('close', lambda widget: widget.close())
 
 
 class MainWindowDriver(WidgetDriver):
@@ -160,7 +160,7 @@ class FileDialogDriver(WidgetDriver):
             def __call__(self, dialog):
                 dialog.setFilter(dialog.filter() | QDir.Hidden)
 
-        self.manipulate("show hidden files", ShowHiddenFiles())
+        self.manipulate('show hidden files', ShowHiddenFiles())
 
     def navigateToDir(self, path):
         for folderName in self._navigationPathTo(path):
@@ -172,7 +172,7 @@ class FileDialogDriver(WidgetDriver):
                 self.intoFolder(folderName)
 
     def _navigationPathTo(self, path):
-        return self._currentDir().relativeFilePath(path).split("/")
+        return self._currentDir().relativeFilePath(path).split('/')
 
     def _currentDir(self):
         class FindOutCurrentFolder(object):
@@ -180,7 +180,7 @@ class FileDialogDriver(WidgetDriver):
                 self.name = dialog.directory()
 
         currentFolder = FindOutCurrentFolder()
-        self.manipulate("find out current folder", currentFolder)
+        self.manipulate('find out current folder', currentFolder)
         return currentFolder.name
 
     def intoFolder(self, name):
@@ -211,7 +211,7 @@ class FileDialogDriver(WidgetDriver):
         return ListViewDriver.findSingle(self, QListView, match.named('listView'))
 
     def _filenameEdit(self):
-        return LineEditDriver.findSingle(self, QLineEdit, match.named("fileNameEdit"))
+        return LineEditDriver.findSingle(self, QLineEdit, match.named('fileNameEdit'))
 
     def _acceptButton(self):
         class FindOutAcceptButtonText(object):
@@ -219,7 +219,7 @@ class FileDialogDriver(WidgetDriver):
                 self.text = dialog.labelText(QFileDialog.Accept)
 
         acceptButton = FindOutAcceptButtonText()
-        self.manipulate("find out accept button text", acceptButton)
+        self.manipulate('find out accept button text', acceptButton)
         return AbstractButtonDriver.findSingle(self, QPushButton, match.withText(acceptButton.text))
 
 
@@ -232,7 +232,7 @@ class ListViewDriver(WidgetDriver):
         self.perform(gestures.clickAt(self._centerOfItem(index)))
 
     def _scrollItemToVisible(self, index):
-        self.manipulate("scroll item to visible", lambda listView: listView.scrollTo(index))
+        self.manipulate('scroll item to visible', lambda listView: listView.scrollTo(index))
 
     def _centerOfItem(self, index):
         class CalculateCenterOfItem(object):
@@ -241,7 +241,7 @@ class ListViewDriver(WidgetDriver):
                 self.pos = listView.mapToGlobal(itemVisibleArea.center())
 
         centerOfItem = CalculateCenterOfItem()
-        self.manipulate("calculate center of item", centerOfItem)
+        self.manipulate('calculate center of item', centerOfItem)
         return centerOfItem.pos
 
     def _indexOfFirstItem(self, matching):
@@ -264,11 +264,11 @@ class ListViewDriver(WidgetDriver):
                 return False
 
             def describe_to(self, description):
-                description.append_text("containing an item ")
+                description.append_text('containing an item ')
                 self._itemMatcher.describe_to(description)
 
             def describe_mismatch(self, item, mismatch_description):
-                mismatch_description.append_text("contained no item ")
+                mismatch_description.append_text('contained no item ')
                 self._itemMatcher.describe_to(mismatch_description)
 
         containingItem = ContainingItem(matching)
@@ -300,7 +300,7 @@ class MenuBarDriver(WidgetDriver):
                 self._matcher.describe_to(description)
 
             def describe_mismatch(self, item, mismatch_description):
-                mismatch_description.append_text("contained no menu ")
+                mismatch_description.append_text('contained no menu ')
                 self._matcher.describe_to(mismatch_description)
 
         self.is_(ContainingMenu(matching))
@@ -317,7 +317,7 @@ class MenuDriver(WidgetDriver):
             # i.e. just below the menu title
             menu.popup(menuBar.mapToGlobal(menuTitleVisibleArea.bottomLeft()))
 
-        self.manipulate("open", popup)
+        self.manipulate('open', popup)
 
     def menuItem(self, matching):
         # We have to make sure the item menu actually exists in the menu
@@ -348,7 +348,7 @@ class MenuDriver(WidgetDriver):
                 self._matcher.describe_to(description)
 
             def describe_mismatch(self, item, mismatch_description):
-                mismatch_description.append_text("contained no item ")
+                mismatch_description.append_text('contained no item ')
                 self._matcher.describe_to(mismatch_description)
 
         containingMenuItem = ContainingMenuItem(matching)
@@ -365,7 +365,7 @@ class MenuItemDriver(WidgetDriver):
                 self.coordinates = menu.mapToGlobal(itemVisibleArea.center())
 
         center = CalculateCenterOfItem()
-        self.manipulate("calculate center of item", center)
+        self.manipulate('calculate center of item', center)
         return center.coordinates
 
     def click(self):
@@ -391,7 +391,7 @@ class TableDriver(WidgetDriver):
                 self._matcher.describe_to(description)
 
             def describe_mismatch(self, table, mismatch_description):
-                mismatch_description.append_text("headers ")
+                mismatch_description.append_text('headers ')
                 self._matcher.describe_mismatch(self._headersOf(table), mismatch_description)
 
         self.is_(ContainingHeaders(matching))
@@ -417,7 +417,7 @@ class TableDriver(WidgetDriver):
                 self._matcher.describe_to(description)
 
             def describe_mismatch(self, table, mismatch_description):
-                mismatch_description.append_text("contained no row ")
+                mismatch_description.append_text('contained no row ')
                 self._matcher.describe_to(mismatch_description)
 
         containingCells = ContainingCells(matching)
@@ -436,7 +436,7 @@ class TableDriver(WidgetDriver):
                                                     table.rowViewportPosition(row))))
 
         scrollCellToVisible = ScrollCellToVisible(row, column)
-        self.manipulate("scroll cell (%s, %s) into view" % (row, column), scrollCellToVisible)
+        self.manipulate('scroll cell (%s, %s) into view' % (row, column), scrollCellToVisible)
 
     def _clickAt(self, row, column):
         class CalculateCellPosition(object):
@@ -455,7 +455,7 @@ class TableDriver(WidgetDriver):
                 self.center = table.mapToGlobal(self.centerOfCell(table))
 
         cellPosition = CalculateCellPosition(row, column)
-        self.manipulate("calculate cell (%s, %s) center position" % (row, column), cellPosition)
+        self.manipulate('calculate cell (%s, %s) center position' % (row, column), cellPosition)
         self.perform(gestures.clickAt(cellPosition.center))
 
     def clickOnCell(self, row, column):
@@ -471,17 +471,17 @@ class TableDriver(WidgetDriver):
                 self._column = column
 
             def describeTo(self, description):
-                description.append_text("in cell (%s, %s) widget" % (self._row, self._column))
-                description.append_text("\n    in ")
+                description.append_text('in cell (%s, %s) widget' % (self._row, self._column))
+                description.append_text('\n    in ')
                 description.append_description_of(self._tableSelector)
 
             def describeFailureTo(self, description):
                 self._tableSelector.describeFailureTo(description)
                 if self._tableSelector.isSatisfied():
                     if self.isSatisfied():
-                        description.append_text("\n    cell (%s, %s)" % (self._row, self._column))
+                        description.append_text('\n    cell (%s, %s)' % (self._row, self._column))
                     else:
-                        description.append_text("\n    had no widget in cell (%s, %s) "
+                        description.append_text('\n    had no widget in cell (%s, %s)'
                                                 % (self._row, self._column))
 
             def widgets(self):
@@ -521,7 +521,7 @@ class TableDriver(WidgetDriver):
 
         # We'd like to use gestures but drag and drop is not supported by our Robot
         # so we have to use a manipulation
-        self.manipulate("move row %s to position %s" % (oldPosition, newPosition),
+        self.manipulate('move row %s to position %s' % (oldPosition, newPosition),
                         MoveRow(oldPosition, newPosition))
 
 

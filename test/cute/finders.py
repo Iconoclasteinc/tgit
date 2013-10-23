@@ -77,7 +77,7 @@ class TopLevelWidgetsFinder(WidgetFinder):
             self._rootWindows.add(self._rootParent(topLevelWidget))
 
     def describeTo(self, description):
-        description.append_text("all top level widgets")
+        description.append_text('all top level widgets')
 
     def describeFailureTo(self, description):
         self.describeTo(description)
@@ -101,7 +101,7 @@ class SingleWidgetFinder(WidgetSelector):
         return self._finder.widgets()
 
     def describeTo(self, description):
-        description.append_text("a unique ").append_description_of(self._finder)
+        description.append_text('a unique ').append_description_of(self._finder)
 
     def describeFailureTo(self, description):
         self._finder.describeFailureTo(description)
@@ -124,7 +124,7 @@ class WidgetIdentity(WidgetSelector):
         return True
 
     def describeTo(self, description):
-        description.append_text("the exact ") \
+        description.append_text('the exact ') \
             .append_text(type(self._widget).__name__) \
             .append_text(" '%s'" % repr(self._widget))
 
@@ -148,14 +148,14 @@ class NthWidgetFinder(WidgetSelector):
     def describeFailureTo(self, description):
         self._finder.describeFailureTo(description)
         if self.isSatisfied():
-            description.append_text("\n    the ")
+            description.append_text('\n    the ')
             description.append_description_of(self._index + 1)
-            description.append_text("th widget")
+            description.append_text('th widget')
 
     def describeTo(self, description):
-        description.append_text("the ")
+        description.append_text('the ')
         description.append_description_of(self._index + 1)
-        description.append_text("th widget from those matching ")
+        description.append_text('th widget from those matching ')
         description.append_description_of(self._finder)
 
     def isSatisfied(self):

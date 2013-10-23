@@ -37,27 +37,27 @@ def with_(query, matcher):
 
 
 def showingOnScreen():
-    return StateMatcher(QWidget.isVisible, "showing on screen", "hidden")
+    return StateMatcher(QWidget.isVisible, 'showing on screen', 'hidden')
 
 
 def hidden():
-    return StateMatcher(lambda w: not w.isVisible(), "hidden", "visible")
+    return StateMatcher(lambda w: not w.isVisible(), 'hidden', 'visible')
 
 
 def enabled():
-    return StateMatcher(lambda w: w.isEnabled(), "enabled", "disabled")
+    return StateMatcher(lambda w: w.isEnabled(), 'enabled', 'disabled')
 
 
 def disabled():
-    return StateMatcher(lambda w: not w.isEnabled(), "disabled", "enabled")
+    return StateMatcher(lambda w: not w.isEnabled(), 'disabled', 'enabled')
 
 
 def checked():
-    return StateMatcher(lambda b: b.isChecked(), "checked", "unchecked")
+    return StateMatcher(lambda b: b.isChecked(), 'checked', 'unchecked')
 
 
 def unchecked():
-    return StateMatcher(lambda b: not b.isChecked(), "unchecked", "checked")
+    return StateMatcher(lambda b: not b.isChecked(), 'unchecked', 'checked')
 
 
 def withRowCount(count):
@@ -74,14 +74,14 @@ class QueryResultMatcher(BaseMatcher):
         return item and self._resultMatcher.matches(self._query(item))
 
     def describe_to(self, description):
-        description.append_text("with ") \
+        description.append_text('with ') \
             .append_description_of(self._query) \
             .append_text(" ") \
             .append_description_of(self._resultMatcher)
 
     def describe_mismatch(self, item, mismatch_description):
         if item is None:
-            mismatch_description.append_text("was ").append_description_of(item)
+            mismatch_description.append_text('was ').append_description_of(item)
         else:
             mismatch_description.append_description_of(self._query).append_text(" ")
             self._resultMatcher.describe_mismatch(self._query(item), mismatch_description)
@@ -101,5 +101,5 @@ class StateMatcher(BaseMatcher):
         description.append(self._stateDescription)
 
     def describe_mismatch(self, item, mismatch_description):
-        mismatch_description.append_text("was ") \
+        mismatch_description.append_text('was ') \
             .append_text(self._oppositeStateDescription)

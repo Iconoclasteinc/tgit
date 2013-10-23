@@ -3,14 +3,13 @@
 import os
 from mutagen import id3, mp3
 
-from tgit import album, track
+from tgit import album, track, fs
 
 from test.util import resources as testResources
-from test.util import fs
 
 
 class TestMp3(object):
-    filename = testResources.path("base.mp3")
+    filename = testResources.path('base.mp3')
     bitrate = 320000
     duration = 9.064475
 

@@ -6,9 +6,10 @@ from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.probes import AssertionProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.album_page_driver import AlbumPageDriver
-from test.util import resources, fs
+from test.util import resources
 from test.util.builders import album, image
 from test.util.fakes import FakeFileChooser
+from tgit import fs
 
 from tgit.metadata import Image
 from tgit.album import Album

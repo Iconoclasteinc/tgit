@@ -17,26 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import os
-import tempfile
-import shutil
 from PyQt4.phonon import Phonon
 from mutagen import mp3
 
-
-def copyTrack(track):
-    _, ext = os.path.splitext(track.filename)
-    copy, path = tempfile.mkstemp(suffix=ext)
-    os.close(copy)
-    shutil.copy(track.filename, path)
-    return mp3.MP3(path)
-
-
-def clearTags(track):
-    track.clear()
-    if track.tags is None:
-        track.add_tags()
-    track.save()
+from tgit import fs
 
 
 class MediaListener(object):
@@ -72,13 +56,20 @@ class PhononPlayer(object):
         self._currentTrack = track
         # might want to delete the temp file for the previous track at some point
 
+    # todo let audio file make a copy and clear tags
     def _copy(self, track):
         # On Windows, we have 2 issues with Phonon:
         # 1- It locks the file so we have to make a copy to allow tagging
-        copy = copyTrack(track)
+        copy = mp3.MP3(fs.makeCopy(track.filename))
         # 2- It fails to play files with our tags so we have to clear the frames
-        clearTags(copy)
+        self._clearTags(copy)
         return copy.filename
+
+    def _clearTags(self, audioFile):
+        audioFile.clear()
+        if audioFile.tags is None:
+            audioFile.add_tags()
+        audioFile.save()
 
     def stop(self):
         self._media.stop()

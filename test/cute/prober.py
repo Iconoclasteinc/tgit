@@ -56,9 +56,9 @@ class PollingProber(Prober):
 
     def _describeFailureOf(self, probe):
         description = StringDescription()
-        description.append_text("\nTried to look for...\n    ")
+        description.append_text('\nTried to look for...\n    ')
         probe.describeTo(description)
-        description.append_text("\nbut...\n    ")
+        description.append_text('\nbut...\n    ')
         probe.describeFailureTo(description)
         return str(description)
 

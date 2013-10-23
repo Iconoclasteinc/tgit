@@ -17,12 +17,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import mimetypes
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QPixmap, QImage,
                          QHBoxLayout, QVBoxLayout)
 
 from tgit.file_chooser import FileChoiceListener
+from tgit import fs
 from tgit.ui import constants as ui
 
 
@@ -55,9 +55,9 @@ class AlbumPage(QWidget, FileChoiceListener):
         if filename is None:
             return None
 
-        mimeType = mimetypes.guess_type(filename)
-        imageData = open(filename, "rb").read()
-        return mimeType[0], imageData
+        mimeType = fs.guessMimeType(filename)
+        imageData = fs.readContent(filename)
+        return mimeType, imageData
 
     def _displayFrontCover(self, image):
         self._frontCoverPixmap.setPixmap(self._scaleToDisplayArea(image))

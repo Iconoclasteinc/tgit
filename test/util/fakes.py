@@ -2,10 +2,8 @@
 
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 
-from test.util import fs
-
 from tgit.audio_library import AudioLibrary
-from tgit import mp3_file as mp3File
+from tgit import mp3_file as mp3File, fs
 from tgit.file_chooser import FileChooser
 from tgit.metadata import Image
 from tgit import album

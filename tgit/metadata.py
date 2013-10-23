@@ -31,7 +31,7 @@ class Image(object):
 
     def __repr__(self):
         data = repr(self.data[:25] + '..') if len(self.data) > 25 else self.data
-        return "Image(mime=%s, type_=%s, desc=%s, data=%s)" % (self.mime, self.type, self.desc,
+        return 'Image(mime=%s, type_=%s, desc=%s, data=%s)' % (self.mime, self.type, self.desc,
                                                                data)
 
     def __eq__(self, other):

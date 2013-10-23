@@ -29,9 +29,9 @@ from tgit.audio_library import AudioFiles
 from tgit.ui.main_window import MainWindow
 from tgit.ui.dialogs import AudioFileChooserDialog, ImageFileChooserDialog
 
-TGIT = "tgit"
-QT = "qt"
-UTF_8 = "UTF-8"
+TGIT = 'tgit'
+QT = 'qt'
+UTF_8 = 'UTF-8'
 
 
 class TGiT(QApplication):
@@ -77,7 +77,7 @@ class TGiT(QApplication):
 
     def _installTranslations(self, resource, locale):
         translator = QTranslator()
-        if translator.load("%s_%s" % (resource, locale), ":/resources"):
+        if translator.load('%s_%s' % (resource, locale), ':/resources'):
             self.installTranslator(translator)
             self._translators.append(translator)
 
