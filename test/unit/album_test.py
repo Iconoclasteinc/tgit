@@ -14,6 +14,7 @@ from test.util import builders
 
 
 class AlbumTest(unittest.TestCase):
+
     def setUp(self):
         self.album = Album()
 

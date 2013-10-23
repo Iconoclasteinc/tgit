@@ -23,25 +23,17 @@ from tgit.announcer import Announcer
 from tgit.producer import ProductionListener
 
 from tgit.player import SilentPlayer
+
+from tgit.ui import constants as ui
 from tgit.ui.welcome_screen import WelcomeScreen
-from tgit.ui.main_screen import MainScreen
+from tgit.ui.tagging_screen import TaggingScreen
 from tgit.ui.track_selector import TrackSelectionDialog
-
-
-# todo eliminate constants that have been pushed down to child screens
-MAIN_WINDOW_NAME = "TGiT"
-FILE_MENU_NAME = 'File Menu'
-IMPORT_TRACK_ACTION_NAME = 'Import Track Action'
-NEW_ALBUM_BUTTON_NAME = "New Album Button"
-IMPORT_TRACK_DIALOG_NAME = "Select Track File"
-NEXT_STEP_BUTTON_NAME = "Next Step"
-PREVIOUS_STEP_BUTTON_NAME = "Previous Step"
-SAVE_BUTTON_NAME = "Save"
 
 
 class MainWindow(QMainWindow, ProductionListener):
     def __init__(self, productionPortfolio, parent=None):
         QMainWindow.__init__(self, parent)
+
         self._productionPortfolio = productionPortfolio
         self._productionPortfolio.addProductionListener(self)
         self._player = SilentPlayer()
@@ -64,15 +56,15 @@ class MainWindow(QMainWindow, ProductionListener):
         self._productionHouses.addListener(house)
 
     def productionAdded(self, director, album):
-        mainScreen = MainScreen(album, self._player, self._trackSelector, self)
+        mainScreen = TaggingScreen(album, self._player, self._trackSelector, self)
         mainScreen.addRequestListener(director)
         self.setCentralWidget(mainScreen)
         self._importAction.setEnabled(True)
         mainScreen.selectTrack()
 
     def _build(self):
-        self.setObjectName(MAIN_WINDOW_NAME)
-        self.resize(640, 480)
+        self.setObjectName(ui.MAIN_WINDOW_NAME)
+        self.resize(*ui.MAIN_WINDOW_SIZE)
         self._fillMenu()
         self._makeStatusBar()
         self.setCentralWidget(self._makeWelcomeScreen())
@@ -81,10 +73,10 @@ class MainWindow(QMainWindow, ProductionListener):
     def _fillMenu(self):
         menuBar = self.menuBar()
         self._fileMenu = QMenu(menuBar)
-        self._fileMenu.setObjectName(FILE_MENU_NAME)
+        self._fileMenu.setObjectName(ui.FILE_MENU_NAME)
         self._importAction = QAction(self._fileMenu)
-        self._importAction.setObjectName(IMPORT_TRACK_ACTION_NAME)
-        self._importAction.triggered.connect(lambda: self.centralWidget().selectTrack())
+        self._importAction.setObjectName(ui.IMPORT_TRACK_ACTION_NAME)
+        self._importAction.triggered.connect(lambda: self.centralWidget().selectAudioFile())
         self._importAction.setDisabled(True)
         self._fileMenu.addAction(self._importAction)
         menuBar.addMenu(self._fileMenu)
@@ -98,6 +90,6 @@ class MainWindow(QMainWindow, ProductionListener):
         return welcomeScreen
 
     def localize(self):
-        self.setWindowTitle(self.tr("TGiT"))
+        self.setWindowTitle(self.tr('TGiT'))
         self._fileMenu.setTitle(self.tr('File'))
-        self._importAction.setText(self.tr("Import File..."))
+        self._importAction.setText(self.tr('Import File...'))

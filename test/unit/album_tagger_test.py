@@ -10,6 +10,7 @@ from tgit.mp3_file import MP3File
 
 
 class AlbumTaggerTest(unittest.TestCase):
+
     def setUp(self):
         self.library = flexmock(load=lambda filename: MP3File(filename))
         self.album = flexmock(Album())

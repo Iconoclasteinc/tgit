@@ -7,7 +7,7 @@ from test.util.mp3 import makeMp3
 from test.endtoend.application_runner import ApplicationRunner
 from test.util.fake_audio_library import FakeAudioLibrary
 
-SAMPLE_AUDIO_FILE = resources.path("Hallelujah.mp3")
+SAMPLE_AUDIO_FILE = resources.path('Hallelujah.mp3')
 
 
 class TaggerTest(unittest.TestCase):
@@ -30,7 +30,7 @@ class TaggerTest(unittest.TestCase):
             releaseName='',
             leadPerformer='')
         self.application.changeAlbumMetadata(
-            frontCoverPicture=resources.path("minions-in-black.jpg"),
+            frontCover=resources.path('minions-in-black.jpg'),
             releaseName='Despicable Me',
             leadPerformer='Tim, Mark and Phil')
         self.application.showsTrackMetadata(
@@ -45,7 +45,7 @@ class TaggerTest(unittest.TestCase):
             leadPerformer='Tim, Mark and Phil',
             trackTitle='Potato Banana Song',
             featuredGuest='Stuart',
-            frontCoverPicture=resources.path("minions-in-black.jpg"))
+            frontCover=resources.path('minions-in-black.jpg'))
 
     def testTaggingMultipleTracksFromTheSameAlbum(self):
         track1 = self.audioLibrary.add(makeMp3(trackTitle='Track 1'))

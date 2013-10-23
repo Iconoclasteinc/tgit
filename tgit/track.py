@@ -23,6 +23,8 @@ TITLE = 'trackTitle'
 VERSION_INFO = 'versionInfo'
 FEATURED_GUEST = 'featuredGuest'
 ISRC = 'isrc'
+BITRATE = 'bitrate'
+DURATION = 'duration'
 
 METADATA = [TITLE, VERSION_INFO, FEATURED_GUEST, ISRC]
 

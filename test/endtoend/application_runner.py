@@ -4,14 +4,15 @@ import sip
 # noinspection PyUnresolvedReferences
 import use_sip_api_v2
 
-from tgit.tagger import TGiT
-from tgit.ui import main_window as main
-
 from test.cute.matchers import named, showingOnScreen
 from test.cute.widgets import mainWindow
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
+
+from tgit.tagger import TGiT
+from tgit.ui import constants as ui
+
 
 ONE_SECOND = 1000
 
@@ -20,7 +21,7 @@ class ApplicationRunner(object):
     def start(self):
         self.app = TGiT()
         self.app.show()
-        self.tagger = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
+        self.tagger = TaggerDriver(mainWindow(named(ui.MAIN_WINDOW_NAME), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())
 
@@ -32,7 +33,7 @@ class ApplicationRunner(object):
 
     def newAlbum(self, path):
         self.tagger.createAlbum()
-        self.tagger.selectTrack(path)
+        self.tagger.selectAudioFile(path)
 
     def importTrack(self, path):
         self.tagger.importTrack(path)

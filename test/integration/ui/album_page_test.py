@@ -6,44 +6,40 @@ from hamcrest import equal_to, contains, has_length, has_properties
 from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.probes import AssertionProbe
 from test.cute.finders import WidgetIdentity
-from test.drivers.album_panel_driver import AlbumPanelDriver
-from test.util import resources, fs, builders
+from test.drivers.album_page_driver import AlbumPageDriver
+from test.util import resources, fs
+from test.util.builders import album, image
 
 from tgit.metadata import Image
 from tgit.album import Album
-# todo consider moving all ui constants to the same module (ui?)
-from tgit.ui import album_panel as ui
-from tgit.ui.album_panel import AlbumPanel
+from tgit.ui import constants as ui
+from tgit.ui.album_page import AlbumPage
 
 
 def loadImage(name):
     return fs.readContent(resources.path(name))
 
 
-class AlbumPanelTest(BaseWidgetTest):
+class AlbumPageTest(BaseWidgetTest):
+
     def setUp(self):
-        super(AlbumPanelTest, self).setUp()
+        super(AlbumPageTest, self).setUp()
         self.album = Album()
-        self.albumPanel = AlbumPanel(self.album)
-        self.view(self.albumPanel)
-        self.tagger = self.createDriverFor(self.albumPanel)
+        self.widget = AlbumPage(self.album)
+        self.view(self.widget)
+        self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):
-        return AlbumPanelDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return AlbumPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
-        self.albumPanel.albumStateChanged(builders.album(
-            images=[builders.image('image/jpeg', loadImage('front-cover.jpg'))]
+        self.widget.albumStateChanged(album(
+            images=[image('image/jpeg', loadImage('front-cover.jpg'))]
         ))
-        self.tagger.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_DISPLAY_SIZE)
-
-    @unittest.skip("todo")
-    def testLetsUserSelectAFrontCoverPicture(self):
-        # probe that we use a picture selector
-        raise NotImplementedError()
+        self.driver.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_PIXMAP_SIZE)
 
     def testDisplaysAlbumMetadata(self):
-        self.albumPanel.albumStateChanged(builders.album(
+        self.widget.albumStateChanged(album(
             releaseName='Album',
             leadPerformer='Artist',
             guestPerformers='Band',
@@ -53,17 +49,17 @@ class AlbumPanelTest(BaseWidgetTest):
             originalReleaseTime='1998-03-05',
             upc='Code'))
 
-        self.tagger.showsReleaseName('Album')
-        self.tagger.showsLeadPerformer('Artist')
-        self.tagger.showsGuestPerformers('Band')
-        self.tagger.showsLabelName('Label')
-        self.tagger.showsRecordingTime('2008-09-15')
-        self.tagger.showsReleaseTime('2009-01-01')
-        self.tagger.showsOriginalReleaseTime('1998-03-05')
-        self.tagger.showsUpc('Code')
+        self.driver.showsReleaseName('Album')
+        self.driver.showsLeadPerformer('Artist')
+        self.driver.showsGuestPerformers('Band')
+        self.driver.showsLabelName('Label')
+        self.driver.showsRecordingTime('2008-09-15')
+        self.driver.showsReleaseTime('2009-01-01')
+        self.driver.showsOriginalReleaseTime('1998-03-05')
+        self.driver.showsUpc('Code')
 
     def testUpdatesAlbumOnMetadataChange(self):
-        self.tagger.changeFrontCoverPicture(resources.path('front-cover.jpg'))
+        self.driver.changeFrontCoverPicture(resources.path('front-cover.jpg'))
         self.check(AssertionProbe(self.album.images, contains(
             has_properties(
                 mime='image/jpeg',
@@ -71,28 +67,28 @@ class AlbumPanelTest(BaseWidgetTest):
                 type=Image.FRONT_COVER,
                 desc='Front Cover')), 'front cover picture'))
 
-        self.tagger.changeReleaseName('Album')
+        self.driver.changeReleaseName('Album')
         self.check(AssertionProbe(self.album.releaseName, equal_to('Album'), 'release name'))
 
-        self.tagger.changeLeadPerformer('Artist')
+        self.driver.changeLeadPerformer('Artist')
         self.check(AssertionProbe(self.album.leadPerformer, equal_to('Artist'), 'lead performer'))
 
-        self.tagger.changeGuestPerformers('Band')
+        self.driver.changeGuestPerformers('Band')
         self.check(AssertionProbe(self.album.guestPerformers, equal_to('Band'), 'guest performers'))
 
-        self.tagger.changeLabelName('Label')
+        self.driver.changeLabelName('Label')
         self.check(AssertionProbe(self.album.labelName, equal_to('Label'), 'label name'))
 
-        self.tagger.changeRecordingTime('2008-09-15')
+        self.driver.changeRecordingTime('2008-09-15')
         self.check(AssertionProbe(self.album.recordingTime, equal_to('2008-09-15'),
                                   'recording time'))
 
-        self.tagger.changeReleaseTime('2009-01-01')
+        self.driver.changeReleaseTime('2009-01-01')
         self.check(AssertionProbe(self.album.releaseTime, equal_to('2009-01-01'), 'release time'))
 
-        self.tagger.changeOriginalReleaseTime('1998-03-05')
+        self.driver.changeOriginalReleaseTime('1998-03-05')
         self.check(AssertionProbe(self.album.originalReleaseTime, equal_to('1998-03-05'),
                                   'original release time'))
 
-        self.tagger.changeUpc('Barcode')
+        self.driver.changeUpc('Barcode')
         self.check(AssertionProbe(self.album.upc, equal_to('Barcode'), 'upc'))

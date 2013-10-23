@@ -22,27 +22,13 @@ from PyQt4.QtCore import Qt, QDir
 from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QPixmap, QImage,
                          QFileDialog, QHBoxLayout, QVBoxLayout)
 
-from tgit.metadata import Image
-
-ALBUM_PANEL_NAME = 'Album Panel'
-FRONT_COVER_PICTURE_NAME = "Front Cover Picture"
-FRONT_COVER_DISPLAY_SIZE = (125, 125)
-SELECT_PICTURE_BUTTON_NAME = "Select Picture"
-SELECT_PICTURE_DIALOG_NAME = "Select Picture File"
-RELEASE_NAME_NAME = 'Release Name'
-LEAD_PERFORMER_NAME = "Lead Performer"
-GUEST_PERFORMERS_NAME = "Guest Performers"
-LABEL_NAME_NAME = "Label Name"
-RECORDING_TIME_NAME = "Recording Time"
-RELEASE_TIME_NAME = "Release Time"
-ORIGINAL_RELEASE_TIME_NAME = "Original Release Time"
-UPC_NAME = "UPC"
+from tgit.ui import constants as ui
 
 
-class AlbumPanel(QWidget):
+class AlbumPage(QWidget):
     def __init__(self, album, parent=None):
         QWidget.__init__(self, parent)
-        self.setObjectName(ALBUM_PANEL_NAME)
+        self.setObjectName(ui.ALBUM_PAGE_NAME)
         grid = QGridLayout()
         self._fill(grid)
         self.translateUi()
@@ -70,14 +56,14 @@ class AlbumPanel(QWidget):
         return mimeType[0], imageData
 
     def _displayFrontCover(self, image):
-        self._frontCoverImage.setPixmap(self._scaleToDisplayArea(image))
+        self._frontCoverPixmap.setPixmap(self._scaleToDisplayArea(image))
 
     def _scaleToDisplayArea(self, image):
         if image is None:
             return QPixmap()
 
         _, imageData = image
-        scaledImage = self._scaleImage(QImage.fromData(imageData), *FRONT_COVER_DISPLAY_SIZE)
+        scaledImage = self._scaleImage(QImage.fromData(imageData), *ui.FRONT_COVER_PIXMAP_SIZE)
         return QPixmap.fromImage(scaledImage)
 
     def _scaleImage(self, image, width, height):
@@ -95,12 +81,12 @@ class AlbumPanel(QWidget):
         self._addUpc(layout, 8)
 
     def _addFrontCoverPictureTo(self, layout, row):
-        self._frontCoverImage = QLabel()
-        self._frontCoverImage.setFixedSize(*FRONT_COVER_DISPLAY_SIZE)
-        self._frontCoverImage.setObjectName(FRONT_COVER_PICTURE_NAME)
-        layout.addWidget(self._frontCoverImage, row, 0)
+        self._frontCoverPixmap = QLabel()
+        self._frontCoverPixmap.setFixedSize(*ui.FRONT_COVER_PIXMAP_SIZE)
+        self._frontCoverPixmap.setObjectName(ui.FRONT_COVER_PIXMAP_NAME)
+        layout.addWidget(self._frontCoverPixmap, row, 0)
         self._selectPictureButton = QPushButton()
-        self._selectPictureButton.setObjectName(SELECT_PICTURE_BUTTON_NAME)
+        self._selectPictureButton.setObjectName(ui.SELECT_PICTURE_BUTTON_NAME)
         self._selectPictureButton.clicked.connect(self._selectPicture)
         buttonLayout = QHBoxLayout()
         buttonLayout.addWidget(self._selectPictureButton)
@@ -109,10 +95,10 @@ class AlbumPanel(QWidget):
 
     def _makeSelectPictureDialog(self):
         dialog = QFileDialog(self)
-        dialog.setObjectName(SELECT_PICTURE_DIALOG_NAME)
+        dialog.setObjectName(ui.SELECT_PICTURE_DIALOG_NAME)
         dialog.setDirectory(QDir.homePath())
         dialog.setOption(QFileDialog.DontUseNativeDialog)
-        dialog.setNameFilter(self.tr("Image files") + " (*.png *.jpeg *.jpg)")
+        dialog.setNameFilter(self.tr('Image files') + ' (*.png *.jpeg *.jpg)')
         dialog.setModal(True)
         dialog.fileSelected.connect(self._loadFrontCoverPicture)
         return dialog
@@ -126,7 +112,7 @@ class AlbumPanel(QWidget):
         self._releaseNameLabel = QLabel()
         layout.addWidget(self._releaseNameLabel, row, 0)
         self._releaseNameEdit = QLineEdit()
-        self._releaseNameEdit.setObjectName(RELEASE_NAME_NAME)
+        self._releaseNameEdit.setObjectName(ui.RELEASE_NAME_EDIT_NAME)
         self._releaseNameEdit.textEdited.connect(self._updateAlbum)
         layout.addWidget(self._releaseNameEdit, row, 1)
         self._releaseNameLabel.setBuddy(self._releaseNameEdit)
@@ -135,7 +121,7 @@ class AlbumPanel(QWidget):
         self._leadPerformerLabel = QLabel()
         layout.addWidget(self._leadPerformerLabel, row, 0)
         self._leadPerformerEdit = QLineEdit()
-        self._leadPerformerEdit.setObjectName(LEAD_PERFORMER_NAME)
+        self._leadPerformerEdit.setObjectName(ui.LEAD_PERFORMER_EDIT_NAME)
         self._leadPerformerEdit.textEdited.connect(self._updateAlbum)
         layout.addWidget(self._leadPerformerEdit, row, 1)
         self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
@@ -144,7 +130,7 @@ class AlbumPanel(QWidget):
         self._guestPerformersLabel = QLabel()
         layout.addWidget(self._guestPerformersLabel, row, 0)
         self._guestPerformersEdit = QLineEdit()
-        self._guestPerformersEdit.setObjectName(GUEST_PERFORMERS_NAME)
+        self._guestPerformersEdit.setObjectName(ui.GUEST_PERFORMERS_EDIT_NAME)
         self._guestPerformersEdit.textEdited.connect(self._updateAlbum)
         layout.addWidget(self._guestPerformersEdit, row, 1)
         self._guestPerformersLabel.setBuddy(self._guestPerformersEdit)
@@ -153,7 +139,7 @@ class AlbumPanel(QWidget):
         self._labelNameLabel = QLabel()
         layout.addWidget(self._labelNameLabel, row, 0)
         self._labelNameEdit = QLineEdit()
-        self._labelNameEdit.setObjectName(LABEL_NAME_NAME)
+        self._labelNameEdit.setObjectName(ui.LABEL_NAME_EDIT_NAME)
         self._labelNameEdit.textEdited.connect(self._updateAlbum)
         layout.addWidget(self._labelNameEdit, row, 1)
         self._labelNameLabel.setBuddy(self._labelNameEdit)
@@ -162,7 +148,7 @@ class AlbumPanel(QWidget):
         self._recordingTimeLabel = QLabel()
         layout.addWidget(self._recordingTimeLabel, row, 0)
         self._recordingTimeEdit = QLineEdit()
-        self._recordingTimeEdit.setObjectName(RECORDING_TIME_NAME)
+        self._recordingTimeEdit.setObjectName(ui.RECORDING_TIME_EDIT_NAME)
         self._recordingTimeEdit.textEdited.connect(self._updateAlbum)
         layout.addWidget(self._recordingTimeEdit, row, 1)
         self._recordingTimeLabel.setBuddy(self._recordingTimeEdit)
@@ -171,7 +157,7 @@ class AlbumPanel(QWidget):
         self._releaseTimeLabel = QLabel()
         layout.addWidget(self._releaseTimeLabel, row, 0)
         self._releaseTimeEdit = QLineEdit()
-        self._releaseTimeEdit.setObjectName(RELEASE_TIME_NAME)
+        self._releaseTimeEdit.setObjectName(ui.RELEASE_TIME_EDIT_NAME)
         self._releaseTimeEdit.textEdited.connect(self._updateAlbum)
         layout.addWidget(self._releaseTimeEdit, row, 1)
         self._releaseTimeLabel.setBuddy(self._releaseTimeEdit)
@@ -180,7 +166,7 @@ class AlbumPanel(QWidget):
         self._originalReleaseTimeLabel = QLabel()
         layout.addWidget(self._originalReleaseTimeLabel, row, 0)
         self._originalReleaseTimeEdit = QLineEdit()
-        self._originalReleaseTimeEdit.setObjectName(ORIGINAL_RELEASE_TIME_NAME)
+        self._originalReleaseTimeEdit.setObjectName(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME)
         self._originalReleaseTimeEdit.textEdited.connect(self._updateAlbum)
         layout.addWidget(self._originalReleaseTimeEdit, row, 1)
         self._originalReleaseTimeLabel.setBuddy(self._originalReleaseTimeEdit)
@@ -189,21 +175,21 @@ class AlbumPanel(QWidget):
         self._upcLabel = QLabel()
         layout.addWidget(self._upcLabel, row, 0)
         self._upcEdit = QLineEdit()
-        self._upcEdit.setObjectName(UPC_NAME)
+        self._upcEdit.setObjectName(ui.UPC_EDIT_NAME)
         self._upcEdit.textEdited.connect(self._updateAlbum)
         layout.addWidget(self._upcEdit, row, 1)
         self._upcLabel.setBuddy(self._upcEdit)
 
     def translateUi(self):
-        self._selectPictureButton.setText(self.tr("Select Picture..."))
-        self._releaseNameLabel.setText(self.tr("Release Name: "))
-        self._leadPerformerLabel.setText(self.tr("Lead Performer: "))
-        self._guestPerformersLabel.setText(self.tr("Guest Performers: "))
-        self._labelNameLabel.setText(self.tr("Label Name: "))
-        self._recordingTimeLabel.setText(self.tr("Recording Time: "))
-        self._releaseTimeLabel.setText(self.tr("Release Time: "))
-        self._originalReleaseTimeLabel.setText(self.tr("Original Release Time: "))
-        self._upcLabel.setText(self.tr("UPC/EAN: "))
+        self._selectPictureButton.setText(self.tr('Select Picture...'))
+        self._releaseNameLabel.setText(self.tr('Release Name: '))
+        self._leadPerformerLabel.setText(self.tr('Lead Performer: '))
+        self._guestPerformersLabel.setText(self.tr('Guest Performers: '))
+        self._labelNameLabel.setText(self.tr('Label Name: '))
+        self._recordingTimeLabel.setText(self.tr('Recording Time: '))
+        self._releaseTimeLabel.setText(self.tr('Release Time: '))
+        self._originalReleaseTimeLabel.setText(self.tr('Original Release Time: '))
+        self._upcLabel.setText(self.tr('UPC/EAN: '))
 
     def _frontCoverOf(self, album):
         frontCovers = album.frontCovers()

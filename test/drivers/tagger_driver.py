@@ -1,26 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import os
-from PyQt4.QtGui import QPushButton, QFileDialog, QWidget, QMenuBar
+from PyQt4.QtGui import QFileDialog, QWidget, QMenuBar
 
-import tgit.ui.main_window as main
-import tgit.ui.album_panel as album
-import tgit.ui.track_panel as track
-import tgit.ui.track_list_panel as content
+from test.cute.matchers import named
+from test.cute.widgets import MainWindowDriver, FileDialogDriver, MenuBarDriver
+from test.drivers.tagging_screen_driver import TaggingScreenDriver
+from test.drivers.welcome_screen_driver import WelcomeScreenDriver
 
-from test.cute.matchers import named, showingOnScreen
-from test.cute.widgets import (MainWindowDriver, AbstractButtonDriver, FileDialogDriver,
-                                MenuBarDriver)
-from test.drivers.track_list_panel_driver import TrackListPanelDriver
-from test.drivers.album_panel_driver import AlbumPanelDriver
-from test.drivers.track_panel_driver import TrackPanelDriver
-
-DURATION = 'duration'
-BITRATE = 'bitrate'
-ISRC = 'isrc'
-VERSION_INFO = 'versionInfo'
-FEATURED_GUEST = 'featuredGuest'
-TRACK_TITLE = 'trackTitle'
+from tgit.ui import constants as ui
 
 
 class TaggerDriver(MainWindowDriver):
@@ -29,133 +17,82 @@ class TaggerDriver(MainWindowDriver):
 
     def importTrack(self, path):
         self.selectImportTrackMenuItem()
-        self.selectTrack(path)
-        self.isShowingTrackList()
+        self.selectAudioFile(path)
 
     def selectImportTrackMenuItem(self):
-        menuItem = self._importTrackMenuItem()
+        menu = self._openFileMenu()
+        menuItem = self._importTrackMenuItem(menu)
         menuItem.isEnabled()
         menuItem.click()
 
-    def _importTrackMenuItem(self):
-        menu = self._fileMenu()
+    def _openFileMenu(self):
+        menuBar = MenuBarDriver.findSingle(self, QMenuBar)
+        menu = menuBar.menu(named(ui.FILE_MENU_NAME))
         menu.open()
-        return menu.menuItem(named(main.IMPORT_TRACK_ACTION_NAME))
+        return menu
 
-    def selectTrack(self, trackFile):
-        dialog = FileDialogDriver.findIn(self, QFileDialog, named(main.IMPORT_TRACK_DIALOG_NAME))
+    def selectAudioFile(self, trackFile):
+        dialog = FileDialogDriver.findSingle(self, QFileDialog, named(ui.SELECT_TRACK_DIALOG_NAME))
         dialog.showHiddenFiles()
         dialog.navigateToDir(os.path.dirname(trackFile))
         dialog.selectFile(os.path.basename(trackFile))
         dialog.accept()
 
-    def addTrack(self):
-        self._trackListPanel().addTrack()
-
     def createAlbum(self):
-        self._newAlbumButton().click()
+        self._welcomeScreen().newAlbum()
+        self.isShowingTaggingScreen()
 
-    # todo when we have our custom welcome panel, check that the panel is displayed
-    def isShowingWelcomePanel(self):
-        self._newAlbumButton().isShowingOnScreen()
+    def isShowingWelcomeScreen(self):
+        self._welcomeScreen().isShowingOnScreen()
 
-    def isShowingTrackList(self):
-        self._trackListPanel().isShowingOnScreen()
-        self._nextStepButton().isEnabled()
-        self._previousStepButton().isDisabled()
-        self._saveButton().isDisabled()
-        self._importTrackMenuItem().isEnabled()
-        self._fileMenu().close()
+    def isShowingTaggingScreen(self):
+        self._taggingScreen().isShowingOnScreen()
 
-    def isShowingAlbumMetadata(self):
-        self._albumPanel().isShowingOnScreen()
-        self._nextStepButton().isEnabled()
-        self._previousStepButton().isEnabled()
-        self._saveButton().isEnabled()
-
-    def isShowingTrackMetadata(self):
-        self._currentTrackPanel().isShowingOnScreen()
-        self._previousStepButton().isEnabled()
-        self._saveButton().isEnabled()
-
-    def nextPage(self):
-        button = self._nextStepButton()
-        button.isEnabled()
-        button.click()
-
-    def previousPage(self):
-        button = self._previousStepButton()
-        button.isEnabled()
-        button.click()
-
-    def hasNextStepDisabled(self):
-        self._nextStepButton().isDisabled()
+    def hasEnabledImportTrackMenuItem(self):
+        menu = self._openFileMenu()
+        menuItem = self._importTrackMenuItem(menu)
+        menuItem.isEnabled()
+        menu.close()
 
     def removeTrack(self, title):
-        self.isShowingTrackList()
-        self._trackListPanel().removeTrack(title)
+        self._taggingScreen().removeTrack(title)
 
     def moveTrack(self, title, whereTitle):
-        self.isShowingTrackList()
-        self._trackListPanel().moveTrack(title, whereTitle)
+        self._taggingScreen().moveTrack(title, whereTitle)
 
     # todo have a quick navigation button
     def navigateToAlbumMetadata(self):
-        self.nextPage()
-        self.isShowingAlbumMetadata()
+        self._taggingScreen().nextPage()
+        self._taggingScreen().isShowingAlbumMetadata()
 
     # todo have a quick navigation button
     def navigateToTrackMetadata(self):
-        self.nextPage()
-        self.isShowingTrackMetadata()
+        self._taggingScreen().nextPage()
+        self._taggingScreen().isShowingTrackMetadata()
 
     def showsAlbumContains(self, *tracks):
-        trackList = self._trackListPanel()
-        for track in tracks:
-            trackList.showsTrack(*track)
+        self._taggingScreen().showsAlbumContains(*tracks)
 
     def showsAlbumMetadata(self, **tags):
-        self._albumPanel().showsMetadata(**tags)
+        self._taggingScreen().showsAlbumMetadata(**tags)
 
     def editAlbumMetadata(self, **tags):
-        self._albumPanel().changeMetadata(**tags)
+        self._taggingScreen().editAlbumMetadata(**tags)
 
     def showsTrackMetadata(self, **tags):
-        self._currentTrackPanel().showsMetadata(**tags)
+        self._taggingScreen().showsTrackMetadata(**tags)
 
     def editTrackMetadata(self, **tags):
-        self._currentTrackPanel().changeMetadata(**tags)
+        self._taggingScreen().editTrackMetadata(**tags)
 
     def saveAlbum(self):
-        self._saveButton().click()
+        self._taggingScreen().saveAlbum()
 
-    def _menuBar(self):
-        return MenuBarDriver.findIn(self, QMenuBar)
+    def _taggingScreen(self):
+        return TaggingScreenDriver.findSingle(self, QWidget, named(ui.TAGGING_SCREEN_NAME))
 
-    def _fileMenu(self):
-        return self._menuBar().menu(named(main.FILE_MENU_NAME))
+    def _welcomeScreen(self):
+        return WelcomeScreenDriver.findSingle(self, QWidget, named(ui.WELCOME_SCREEN_NAME))
 
-    def _newAlbumButton(self):
-        return AbstractButtonDriver.findIn(self, QPushButton, named(main.NEW_ALBUM_BUTTON_NAME))
-
-    def _nextStepButton(self):
-        return AbstractButtonDriver.findIn(self, QPushButton, named(main.NEXT_STEP_BUTTON_NAME))
-
-    def _previousStepButton(self):
-        return AbstractButtonDriver.findIn(self, QPushButton, named(main.PREVIOUS_STEP_BUTTON_NAME))
-
-    def _saveButton(self):
-        return AbstractButtonDriver.findIn(self, QPushButton, named(main.SAVE_BUTTON_NAME))
-
-    def _trackListPanel(self):
-        trackListPanel = TrackListPanelDriver.findIn(self, QWidget,
-                                                     named(content.ALBUM_CONTENT_PANEL_NAME))
-        trackListPanel.isShowingOnScreen()
-        return trackListPanel
-
-    def _albumPanel(self):
-        return AlbumPanelDriver.findIn(self, QWidget, named(album.ALBUM_PANEL_NAME))
-
-    def _currentTrackPanel(self):
-        return TrackPanelDriver.findIn(self, QWidget, named(track.TRACK_PANEL_NAME),
-                                       showingOnScreen())
+    def _importTrackMenuItem(self, menu):
+        return menu.menuItem(named(ui.IMPORT_TRACK_ACTION_NAME))

@@ -9,23 +9,23 @@ from tgit.ui.welcome_screen import WelcomeScreen
 
 
 class WelcomeScreenTest(BaseWidgetTest):
+
     def setUp(self):
         super(WelcomeScreenTest, self).setUp()
-        self.welcomeScreen = WelcomeScreen()
-        self.view(self.welcomeScreen)
-        self.tagger = self.createDriverFor(self.welcomeScreen)
+        self.widget = WelcomeScreen()
+        self.view(self.widget)
+        self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):
         return WelcomeScreenDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testSignalsNewAlbumRequestWhenNewAlbumButtonClicked(self):
-        newAlbumRequestMade = ValueMatcherProbe('new album request')
+        newAlbumRequest = ValueMatcherProbe('new album request')
 
-        class NewAlbumListener(object):
+        class RequestTracker(object):
             def newAlbum(self):
-                newAlbumRequestMade.setReceivedValue(True)
+                newAlbumRequest.received()
 
-        self.welcomeScreen.addRequestListener(NewAlbumListener())
-
-        self.tagger.newAlbum()
-        self.tagger.check(newAlbumRequestMade)
+        self.widget.addRequestListener(RequestTracker())
+        self.driver.newAlbum()
+        self.driver.check(newAlbumRequest)

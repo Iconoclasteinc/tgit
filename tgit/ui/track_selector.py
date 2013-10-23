@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import Qt, QDir
+from PyQt4.QtCore import QDir
 from PyQt4.QtGui import QFileDialog
 
 from tgit.announcer import Announcer
-
-
-SELECT_TRACK_DIALOG_NAME = "Select Track File"
+from tgit.ui import constants as ui
 
 
 class TrackSelectionListener(object):
@@ -38,7 +36,7 @@ class TrackSelectionDialog(TrackSelector):
 
     def _makeDialog(self, parent):
         dialog = QFileDialog(parent)
-        dialog.setObjectName(SELECT_TRACK_DIALOG_NAME)
+        dialog.setObjectName(ui.SELECT_TRACK_DIALOG_NAME)
         dialog.setDirectory(QDir.homePath())
         dialog.setNameFilter('%s (*.mp3)' % dialog.tr('Audio files'))
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self._native)

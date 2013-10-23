@@ -14,6 +14,7 @@ DURATION = TestMp3.duration
 
 
 class MP3FileTest(unittest.TestCase):
+
     def tearDown(self):
         self.testFile.delete()
 

@@ -23,4 +23,4 @@ def inKbps(bps):
 
 
 def asDuration(seconds):
-    return "%02d:%02d" % divmod(round(seconds), 60)
+    return '%02d:%02d' % divmod(round(seconds), 60)

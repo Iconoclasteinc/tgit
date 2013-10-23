@@ -45,16 +45,16 @@ class WidgetDriver(object):
         return self._gesturePerformer
 
     @classmethod
-    def findIn(cls, parent, widgetType, *matchers):
+    def findSingle(cls, parent, widgetType, *matchers):
         return cls(SingleWidgetFinder(
             RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector)),
-                   parent.prober, parent.gesturePerformer)
+            parent.prober, parent.gesturePerformer)
 
     @classmethod
-    def nthIn(cls, parent, widgetType, index, *matchers):
+    def findNth(cls, parent, widgetType, index, *matchers):
         return cls(NthWidgetFinder(
             RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector), index),
-                   parent.prober, parent.gesturePerformer)
+            parent.prober, parent.gesturePerformer)
 
     def isShowingOnScreen(self):
         self.is_(match.showingOnScreen())
@@ -195,7 +195,7 @@ class FileDialogDriver(WidgetDriver):
         self._toolButtonNamed('toParentButton').click()
 
     def _toolButtonNamed(self, name):
-        return AbstractButtonDriver.findIn(self, QToolButton, match.named(name))
+        return AbstractButtonDriver.findSingle(self, QToolButton, match.named(name))
 
     def enterManually(self, filename):
         self._filenameEdit().replaceAllText(filename)
@@ -204,10 +204,10 @@ class FileDialogDriver(WidgetDriver):
         self._acceptButton().click()
 
     def _listView(self):
-        return ListViewDriver.findIn(self, QListView, match.named('listView'))
+        return ListViewDriver.findSingle(self, QListView, match.named('listView'))
 
     def _filenameEdit(self):
-        return LineEditDriver.findIn(self, QLineEdit, match.named("fileNameEdit"))
+        return LineEditDriver.findSingle(self, QLineEdit, match.named("fileNameEdit"))
 
     def _acceptButton(self):
         class FindOutAcceptButtonText(object):
@@ -216,7 +216,7 @@ class FileDialogDriver(WidgetDriver):
 
         acceptButton = FindOutAcceptButtonText()
         self.manipulate("find out accept button text", acceptButton)
-        return AbstractButtonDriver.findIn(self, QPushButton, match.withText(acceptButton.text))
+        return AbstractButtonDriver.findSingle(self, QPushButton, match.withText(acceptButton.text))
 
 
 class ListViewDriver(WidgetDriver):
@@ -277,7 +277,7 @@ class MenuBarDriver(WidgetDriver):
         # We have to make sure the menu actually exists on the menu bar
         # Checking that the menu is a child of the menu bar is not sufficient
         self.hasMenu(matching)
-        return MenuDriver.findIn(self, QMenu, matching)
+        return MenuDriver.findSingle(self, QMenu, matching)
 
     def hasMenu(self, matching):
         class ContainingMenu(BaseMatcher):
@@ -319,7 +319,7 @@ class MenuDriver(WidgetDriver):
         # We have to make sure the item menu actually exists in the menu
         # Checking that the item is a child of the menu is not sufficient
         self.hasMenuItem(matching)
-        return MenuItemDriver.findIn(self, QAction, matching)
+        return MenuItemDriver.findSingle(self, QAction, matching)
 
     def selectMenuItem(self, matching):
         menuItem = self.menuItem(matching)

@@ -3,15 +3,16 @@
 from PyQt4.QtGui import QPushButton, QTableWidget
 from hamcrest import contains, has_items
 
-from tgit.ui import track_list_panel as ui
-
 from test.cute.widgets import WidgetDriver, AbstractButtonDriver, TableDriver
 from test.cute.matchers import named, withText
 
+from tgit.ui import constants as ui
+from tgit.ui import track_list_page as page
 
-class TrackListPanelDriver(WidgetDriver):
+
+class TrackListPageDriver(WidgetDriver):
     def __init__(self, selector, prober, gesturePerformer):
-        super(TrackListPanelDriver, self).__init__(selector, prober, gesturePerformer)
+        super(TrackListPageDriver, self).__init__(selector, prober, gesturePerformer)
 
     def showsColumnHeaders(self, *titles):
         headersMatching = [withText(title) for title in titles]
@@ -32,7 +33,7 @@ class TrackListPanelDriver(WidgetDriver):
         self._showingPlayButton(index).isUp()
 
     def clickPlayButton(self, index):
-        self._trackTable().clickOnCell(index, ui.LISTEN)
+        self._trackTable().clickOnCell(index, page.LISTEN_COLUMN)
 
     def playTrack(self, index):
         self.isNotPlayingTrack(index)
@@ -47,7 +48,7 @@ class TrackListPanelDriver(WidgetDriver):
         self.isNotPlayingTrack(index)
 
     def addTrack(self):
-        button = AbstractButtonDriver.findIn(self, QPushButton, named(ui.ADD_BUTTON_NAME))
+        button = AbstractButtonDriver.findSingle(self, QPushButton, named(ui.ADD_TRACK_BUTTON_NAME))
         button.click()
 
     def removeTrack(self, title):
@@ -57,7 +58,7 @@ class TrackListPanelDriver(WidgetDriver):
     # todo use removeTrack(details) in test and make this one private
     def removeTrackAt(self, index):
         self._showingRemoveTrackButton(index)
-        self._trackTable().clickOnCell(index, ui.REMOVE)
+        self._trackTable().clickOnCell(index, page.REMOVE_COLUMN)
 
     def changeTrackPosition(self, oldPosition, newPosition):
         self._trackTable().moveRow(oldPosition, newPosition)
@@ -68,16 +69,18 @@ class TrackListPanelDriver(WidgetDriver):
         self._trackTable().moveRow(from_, to)
 
     def _showingRemoveTrackButton(self, index):
-        button = AbstractButtonDriver.findIn(self._trackTable().widgetInCell(index, ui.REMOVE),
-                                             QPushButton, named(ui.REMOVE_BUTTON_NAME))
+        button = AbstractButtonDriver.findSingle(self._trackTable().widgetInCell(
+                                                 index, page.REMOVE_COLUMN),
+                                                 QPushButton, named(ui.REMOVE_BUTTON_NAME))
         button.isShowingOnScreen()
         return button
 
     def _trackTable(self):
-        return TableDriver.findIn(self, QTableWidget, named(ui.TRACK_TABLE_NAME))
+        return TableDriver.findSingle(self, QTableWidget, named(ui.TRACK_TABLE_NAME))
 
     def _showingPlayButton(self, index):
-        button = AbstractButtonDriver.findIn(self._trackTable().widgetInCell(index, ui.LISTEN),
-                                             QPushButton, named(ui.PLAY_BUTTON_NAME))
+        button = AbstractButtonDriver.findSingle(self._trackTable().widgetInCell(
+                                                 index, page.LISTEN_COLUMN),
+                                                 QPushButton, named(ui.PLAY_BUTTON_NAME))
         button.isShowingOnScreen()
         return button

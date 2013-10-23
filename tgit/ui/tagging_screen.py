@@ -22,20 +22,17 @@ from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget, QPush
 from tgit.announcer import Announcer
 from tgit.album import AlbumListener
 
-from tgit.ui.album_panel import AlbumPanel
-from tgit.ui.track_list_panel import TrackListPanel
-from tgit.ui.track_panel import TrackPanel
+from tgit.ui import constants as ui
+from tgit.ui.album_page import AlbumPage
+from tgit.ui.track_list_page import TrackListPage
+from tgit.ui.track_page import TrackPage
 
-TRACK_LIST_PANEL = 0
-ALBUM_PANEL = 1
-TRACK_PANEL = 2
-
-NEXT_STEP_BUTTON_NAME = "Next Step"
-PREVIOUS_STEP_BUTTON_NAME = "Previous Step"
-SAVE_BUTTON_NAME = "Save"
+TRACK_LIST_PAGE = 0
+ALBUM_PAGE = 1
+TRACK_PAGE = 2
 
 
-class MainScreen(QWidget, AlbumListener):
+class TaggingScreen(QWidget, AlbumListener):
     def __init__(self, album, player, trackSelector, parent=None):
         QWidget.__init__(self, parent)
         self._album = album
@@ -51,21 +48,22 @@ class MainScreen(QWidget, AlbumListener):
         self._requestListeners.addListener(listener)
 
     def selectTrack(self):
-        self._trackListPanel().selectTrack()
+        self._trackListPage().selectAudioFile()
 
     def recordAlbum(self):
         self._requestListeners.recordAlbum()
 
     def _build(self):
+        self.setObjectName(ui.TAGGING_SCREEN_NAME)
         layout = QVBoxLayout()
         self.setLayout(layout)
 
         self._pages = QStackedWidget()
-        trackListPanel = TrackListPanel(self._album, self._player, self._trackSelector)
-        trackListPanel.addRequestListener(self._requestListeners)
-        self._pages.addWidget(trackListPanel)
-        self._pages.addWidget(AlbumPanel(self._album))
-        self._pages.setCurrentIndex(TRACK_LIST_PANEL)
+        page = TrackListPage(self._album, self._player, self._trackSelector)
+        page.addRequestListener(self._requestListeners)
+        self._pages.addWidget(page)
+        self._pages.addWidget(AlbumPage(self._album))
+        self._pages.setCurrentIndex(TRACK_LIST_PAGE)
         layout.addWidget(self._pages)
 
         layout.addWidget(self._makeButtonBar())
@@ -75,19 +73,19 @@ class MainScreen(QWidget, AlbumListener):
         layout = QHBoxLayout()
         self._buttonBar.setLayout(layout)
         self._previousPageButton = QPushButton()
-        self._previousPageButton.setObjectName(PREVIOUS_STEP_BUTTON_NAME)
+        self._previousPageButton.setObjectName(ui.PREVIOUS_PAGE_BUTTON_NAME)
         self._previousPageButton.clicked.connect(self._showPreviousPage)
         self._previousPageButton.setDisabled(True)
         layout.addWidget(self._previousPageButton)
         layout.addStretch()
         self._saveButton = QPushButton()
-        self._saveButton.setObjectName(SAVE_BUTTON_NAME)
+        self._saveButton.setObjectName(ui.SAVE_BUTTON_NAME)
         self._saveButton.clicked.connect(self.recordAlbum)
         self._saveButton.setDisabled(True)
         layout.addWidget(self._saveButton)
         layout.addStretch()
         self._nextStepButton = QPushButton()
-        self._nextStepButton.setObjectName(NEXT_STEP_BUTTON_NAME)
+        self._nextStepButton.setObjectName(ui.NEXT_PAGE_BUTTON_NAME)
         self._nextStepButton.clicked.connect(self._showNextPage)
         self._nextStepButton.setEnabled(True)
         layout.addWidget(self._nextStepButton)
@@ -104,7 +102,7 @@ class MainScreen(QWidget, AlbumListener):
             self._nextStepButton.setDisabled(True)
 
     def _addTrackPage(self, track, position):
-        self._pages.insertWidget(TRACK_PANEL + position, TrackPanel(track))
+        self._pages.insertWidget(TRACK_PAGE + position, TrackPage(track))
 
     def _removeTrackPage(self, track, position):
         self._pages.removeWidget(self._trackPage(position))
@@ -125,14 +123,14 @@ class MainScreen(QWidget, AlbumListener):
         return self._pages.count() - 1
 
     def showTrackList(self):
-        self._showPage(TRACK_LIST_PANEL)
+        self._showPage(TRACK_LIST_PAGE)
 
     def _showPage(self, page):
         self._pages.setCurrentIndex(page)
 
     def _showPreviousPage(self):
         self._showPage(self._previousPage())
-        if self._onPage(TRACK_LIST_PANEL):
+        if self._onPage(TRACK_LIST_PAGE):
             self._saveButton.setDisabled(True)
             self._previousPageButton.setDisabled(True)
         self._nextStepButton.setEnabled(True)
@@ -144,16 +142,16 @@ class MainScreen(QWidget, AlbumListener):
         self._previousPageButton.setEnabled(True)
         self._saveButton.setEnabled(True)
 
-    def _trackListPanel(self):
-        return self._pages.widget(TRACK_LIST_PANEL)
+    def _trackListPage(self):
+        return self._pages.widget(TRACK_LIST_PAGE)
 
-    def _albumPanel(self):
-        return self._pages.widget(ALBUM_PANEL)
+    def _albumPage(self):
+        return self._pages.widget(ALBUM_PAGE)
 
     def _trackPage(self, position):
-        return self._pages.widget(TRACK_PANEL + position)
+        return self._pages.widget(TRACK_PAGE + position)
 
     def localize(self):
-        self._previousPageButton.setText(self.tr("Previous"))
-        self._saveButton.setText(self.tr("Save"))
-        self._nextStepButton.setText(self.tr("Next"))
+        self._previousPageButton.setText(self.tr('Previous'))
+        self._saveButton.setText(self.tr('Save'))
+        self._nextStepButton.setText(self.tr('Next'))

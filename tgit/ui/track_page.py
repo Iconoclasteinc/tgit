@@ -19,22 +19,14 @@
 
 from PyQt4.QtGui import (QWidget, QGridLayout, QVBoxLayout, QLabel, QLineEdit)
 
+from tgit.ui import constants as ui
 from tgit.ui import display
 
-# todo consider moving all ui constants to the same module (ui?)
-TRACK_PANEL_NAME = 'Track Panel'
-TRACK_TITLE_NAME = 'Track Title'
-VERSION_INFO_NAME = "Version Info"
-FEATURED_GUEST_NAME = "Featured Guest"
-ISRC_NAME = "ISRC"
-BITRATE_NAME = "Bitrate"
-DURATION_NAME = "Duration"
 
-
-class TrackPanel(QWidget):
+class TrackPage(QWidget):
     def __init__(self, track, parent=None):
         QWidget.__init__(self, parent)
-        self.setObjectName(TRACK_PANEL_NAME)
+        self.setObjectName(ui.TRACK_PAGE_NAME)
         grid = QGridLayout()
         self._fill(grid)
         self.translateUi()
@@ -60,7 +52,7 @@ class TrackPanel(QWidget):
         self._trackTitleLabel = QLabel()
         layout.addWidget(self._trackTitleLabel, row, 0)
         self._trackTitleEdit = QLineEdit()
-        self._trackTitleEdit.setObjectName(TRACK_TITLE_NAME)
+        self._trackTitleEdit.setObjectName(ui.TRACK_TITLE_EDIT_NAME)
         self._trackTitleEdit.textEdited.connect(self._updateTrack)
         layout.addWidget(self._trackTitleEdit, row, 1)
         self._trackTitleLabel.setBuddy(self._trackTitleEdit)
@@ -69,7 +61,7 @@ class TrackPanel(QWidget):
         self._versionInfoLabel = QLabel()
         layout.addWidget(self._versionInfoLabel, row, 0)
         self._versionInfoEdit = QLineEdit()
-        self._versionInfoEdit.setObjectName(VERSION_INFO_NAME)
+        self._versionInfoEdit.setObjectName(ui.VERSION_INFO_EDIT_NAME)
         self._versionInfoEdit.textEdited.connect(self._updateTrack)
         layout.addWidget(self._versionInfoEdit, row, 1)
         self._versionInfoLabel.setBuddy(self._versionInfoEdit)
@@ -78,7 +70,7 @@ class TrackPanel(QWidget):
         self._featuredGuestLabel = QLabel()
         layout.addWidget(self._featuredGuestLabel, row, 0)
         self._featuredGuestEdit = QLineEdit()
-        self._featuredGuestEdit.setObjectName(FEATURED_GUEST_NAME)
+        self._featuredGuestEdit.setObjectName(ui.FEATURED_GUEST_EDIT_NAME)
         self._featuredGuestEdit.textEdited.connect(self._updateTrack)
         layout.addWidget(self._featuredGuestEdit, row, 1)
         self._featuredGuestLabel.setBuddy(self._featuredGuestEdit)
@@ -87,7 +79,7 @@ class TrackPanel(QWidget):
         self._isrcLabel = QLabel()
         layout.addWidget(self._isrcLabel, row, 0)
         self._isrcEdit = QLineEdit()
-        self._isrcEdit.setObjectName(ISRC_NAME)
+        self._isrcEdit.setObjectName(ui.ISRC_EDIT_NAME)
         self._isrcEdit.textEdited.connect(self._updateTrack)
         layout.addWidget(self._isrcEdit, row, 1)
         self._isrcLabel.setBuddy(self._isrcEdit)
@@ -96,7 +88,7 @@ class TrackPanel(QWidget):
         self._bitrateLabel = QLabel()
         layout.addWidget(self._bitrateLabel, row, 0)
         self._bitrateInfoLabel = QLabel()
-        self._bitrateInfoLabel.setObjectName(BITRATE_NAME)
+        self._bitrateInfoLabel.setObjectName(ui.BITRATE_NAME)
         layout.addWidget(self._bitrateInfoLabel, row, 1)
         self._bitrateLabel.setBuddy(self._bitrateInfoLabel)
 
@@ -104,24 +96,24 @@ class TrackPanel(QWidget):
         self._durationLabel = QLabel()
         layout.addWidget(self._durationLabel, row, 0)
         self._durationInfoLabel = QLabel()
-        self._durationInfoLabel.setObjectName(DURATION_NAME)
+        self._durationInfoLabel.setObjectName(ui.DURATION_NAME)
         layout.addWidget(self._durationInfoLabel, row, 1)
         self._durationLabel.setBuddy(self._durationInfoLabel)
 
     def translateUi(self):
-        self._trackTitleLabel.setText(self.tr("Track Title: "))
-        self._versionInfoLabel.setText(self.tr("Version Information: "))
-        self._featuredGuestLabel.setText(self.tr("Featured Guest: "))
-        self._isrcLabel.setText(self.tr("ISRC: "))
-        self._bitrateLabel.setText(self.tr("Bitrate: "))
-        self._durationLabel.setText(self.tr("Duration: "))
+        self._trackTitleLabel.setText(self.tr('Track Title: '))
+        self._versionInfoLabel.setText(self.tr('Version Information: '))
+        self._featuredGuestLabel.setText(self.tr('Featured Guest: '))
+        self._isrcLabel.setText(self.tr('ISRC: '))
+        self._bitrateLabel.setText(self.tr('Bitrate: '))
+        self._durationLabel.setText(self.tr('Duration: '))
 
     def trackStateChanged(self, track):
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
         self._featuredGuestEdit.setText(track.featuredGuest)
         self._isrcEdit.setText(track.isrc)
-        self._bitrateInfoLabel.setText("%s kbps" % display.inKbps(track.bitrate))
+        self._bitrateInfoLabel.setText('%s kbps' % display.inKbps(track.bitrate))
         self._durationInfoLabel.setText(display.asDuration(track.duration))
 
     def _updateTrack(self):

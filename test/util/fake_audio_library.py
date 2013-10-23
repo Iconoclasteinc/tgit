@@ -2,10 +2,12 @@
 
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 
+from test.util import fs
+
 from tgit.audio_library import AudioLibrary
 from tgit.metadata import Image
+import tgit.album as album
 from tgit import mp3_file as mp3File
-from test.util import fs
 
 
 class FakeAudioLibrary(AudioLibrary):
@@ -21,15 +23,15 @@ class FakeAudioLibrary(AudioLibrary):
             if file_.filename == filename:
                 return mp3File.load(filename)
 
-        raise AssertionError("Not in library: % s" % filename)
+        raise AssertionError('Not in library: % s' % filename)
 
     def containsFile(self, filename, **tags):
         images = []
-        if 'frontCoverPicture' in tags:
-            mime = fs.guessMimeType(tags['frontCoverPicture'])
-            images.append(Image(mime, fs.readContent(tags['frontCoverPicture']),
+        if album.FRONT_COVER in tags:
+            mime = fs.guessMimeType(tags[album.FRONT_COVER])
+            images.append(Image(mime, fs.readContent(tags[album.FRONT_COVER]),
                                 type_=Image.FRONT_COVER, desc='Front Cover'))
-            del tags['frontCoverPicture']
+            del tags[album.FRONT_COVER]
 
         mp3 = self.load(filename)
         assert_that(mp3.metadata(), has_entries(tags), 'metadata tags')

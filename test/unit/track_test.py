@@ -11,6 +11,7 @@ from test.util import builders
 
 
 class TrackTest(unittest.TestCase):
+
     def testReadsAudioInformationFromAudioFile(self):
         audio = builders.audio(filename='file.mp3',
                               bitrate=192000,
