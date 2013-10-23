@@ -19,6 +19,7 @@ ONE_SECOND = 1000
 class ApplicationRunner(object):
     def start(self):
         self.app = TGiT()
+        self.app.show()
         self.tagger = TaggerDriver(mainWindow(named(main.MAIN_WINDOW_NAME), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())

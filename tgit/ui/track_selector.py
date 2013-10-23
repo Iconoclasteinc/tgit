@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import QDir
+from PyQt4.QtCore import Qt, QDir
 from PyQt4.QtGui import QFileDialog
 
 from tgit.announcer import Announcer
@@ -29,17 +29,26 @@ class TrackSelector(object):
         self._listeners.announce().trackSelected(filename)
 
 
-class TrackSelectionDialog(QFileDialog, TrackSelector):
-    def __init__(self, parent=None):
-        QFileDialog.__init__(self, parent)
+class TrackSelectionDialog(TrackSelector):
+    def __init__(self, parent=None, native=False):
         TrackSelector.__init__(self)
+        self._parent = parent
+        self._native = native
+        self._dialog = None
 
-        self.setObjectName(SELECT_TRACK_DIALOG_NAME)
-        self.setDirectory(QDir.homePath())
-        self.setOption(QFileDialog.DontUseNativeDialog)
-        self.setNameFilter(self.tr("MP3 files") + " (*.mp3)")
-        self.setModal(True)
-        self.fileSelected.connect(self._signalTrackSelected)
+    def _makeDialog(self, parent):
+        dialog = QFileDialog(parent)
+        dialog.setObjectName(SELECT_TRACK_DIALOG_NAME)
+        dialog.setDirectory(QDir.homePath())
+        dialog.setNameFilter('%s (*.mp3)' % dialog.tr('Audio files'))
+        dialog.setOption(QFileDialog.DontUseNativeDialog, not self._native)
+        dialog.fileSelected.connect(self._signalTrackSelected)
+        return dialog
+
+    def useNativeLookAndFeel(self, native):
+        self._native = native
 
     def selectTrack(self):
-        self.open()
+        if not self._dialog:
+            self._dialog = self._makeDialog(self._parent)
+        self._dialog.open()

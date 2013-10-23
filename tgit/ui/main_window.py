@@ -46,22 +46,19 @@ class MainWindow(QMainWindow, ProductionListener):
         self._productionPortfolio.addProductionListener(self)
         self._player = SilentPlayer()
         self._trackSelector = TrackSelectionDialog(self)
-        self._musicProducers = Announcer()
         self._productionHouses = Announcer()
 
         self._build()
         self.show()
+
+    def useNativeDialogs(self, native):
+        self._trackSelector.useNativeLookAndFeel(native)
 
     def setMediaPlayer(self, player):
         self._player = player
 
     def setTrackSelector(self, selector):
         self._trackSelector = selector
-
-    def show(self):
-        QMainWindow.show(self)
-        self.raise_()
-        self.activateWindow()
 
     def addProductionHouse(self, house):
         self._productionHouses.add(house)

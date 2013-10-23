@@ -23,6 +23,7 @@ from PyQt4.QtGui import QApplication
 
 # noinspection PyUnresolvedReferences
 from tgit import resources
+from tgit.player import PhononPlayer
 from tgit.producer import ProductionPortfolio, RecordLabel
 from tgit.audio_library import AudioFiles
 from tgit.ui.main_window import MainWindow
@@ -41,11 +42,19 @@ class TGiT(QApplication):
         self._ui = MainWindow(self._productions)
         self._addProductionHouseFor(AudioFiles())
 
+    def show(self):
+        self._ui.show()
+        self._ui.raise_()
+        self._ui.activateWindow()
+
     def _addProductionHouseFor(self, audioLibrary):
         self._ui.addProductionHouse(RecordLabel(self._productions, audioLibrary))
 
     def useMediaPlayer(self, player):
         self._ui.setMediaPlayer(player)
+
+    def useNativeDialogs(self, native):
+        self._ui.useNativeDialogs(native)
 
     def translateInto(self, language):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
@@ -59,11 +68,13 @@ class TGiT(QApplication):
             self._translators.append(translator)
 
     def run(self):
+        self.show()
         return sys.exit(self.exec_())
 
 
 def main(language):
     app = TGiT()
-    # todo use a native dialog by default in production mode
+    app.useNativeDialogs(True)
+    app.useMediaPlayer(PhononPlayer())
     app.translateInto(language)
     app.run()
