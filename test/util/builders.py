@@ -31,4 +31,13 @@ def track(filename='track.mp3', bitrate=9600, duration=180, **meta):
 
 
 def album(**meta):
-    return Album(metadata(**meta))
+    tracks = []
+    if 'tracks' in meta:
+        for track in meta['tracks']:
+            tracks.append(track)
+        del metadata['tracks']
+
+    album = Album(metadata(**meta))
+    for track in tracks:
+        album.addTrack(track)
+    return album

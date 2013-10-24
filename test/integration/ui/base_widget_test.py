@@ -6,13 +6,19 @@ import unittest
 import sip
 # noinspection PyUnresolvedReferences
 import use_sip_api_v2
-from PyQt4.QtGui import QApplication
+from PyQt4.QtGui import QApplication, QTableWidgetItem
 
 from test.cute.events import MainEventLoop
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 
 END_OF_TEST_PAUSE = int(os.environ.get('END_OF_TEST_PAUSE', 0))
+
+
+def tableWidgetItemDescription(self):
+    return self.text()
+
+QTableWidgetItem.__repr__ = tableWidgetItemDescription
 
 
 class BaseWidgetTest(unittest.TestCase):

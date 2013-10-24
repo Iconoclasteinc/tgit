@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import os
+
 from mutagen import id3, mp3
 
-from tgit import album, track, fs
-
 from test.util import resources as testResources
+
+from tgit import album, track, fs
 
 
 class TestMp3(object):

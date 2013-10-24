@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import functools as func
+
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QTableWidgetItem,
                          QHBoxLayout)
@@ -25,15 +26,14 @@ from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QTable
 from tgit.announcer import Announcer
 from tgit.album import AlbumListener
 from tgit.player import MediaListener
-from tgit.ui import constants as ui
-from tgit.ui import display
+from tgit.ui import constants as ui, display
 
 TRACK_TITLE_COLUMN = 0
 LEAD_PERFORMER_COLUMN = 1
 RELEASE_NAME_COLUMN = 2
 BITRATE_COLUMN = 3
 DURATION_COLUMN = 4
-LISTEN_COLUMN = 5
+PLAY_COLUMN = 5
 REMOVE_COLUMN = 6
 
 
@@ -130,7 +130,7 @@ class TrackListPage(QWidget, MediaListener, AlbumListener):
         playButton.setCheckable(True)
         playButton.setChecked(self._isPlaying(track))
         playButton.clicked.connect(func.partial(self._listenToTrack, track))
-        self._table.setCellWidget(row, LISTEN_COLUMN, playButton)
+        self._table.setCellWidget(row, PLAY_COLUMN, playButton)
         removeButton = QPushButton()
         removeButton.setObjectName(ui.REMOVE_BUTTON_NAME)
         removeButton.setText(self.tr('Remove'))
@@ -169,7 +169,7 @@ class TrackListPage(QWidget, MediaListener, AlbumListener):
         return self._listenButtons()[index]
 
     def _listenButtons(self):
-        return [self._table.cellWidget(row, LISTEN_COLUMN) for row in
+        return [self._table.cellWidget(row, PLAY_COLUMN) for row in
                 xrange(self._table.rowCount())]
 
     def _listenToTrack(self, track):

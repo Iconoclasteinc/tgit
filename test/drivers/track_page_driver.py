@@ -6,7 +6,6 @@ from test.cute.matchers import named, withBuddy
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver)
 
 import tgit.track as track
-
 from tgit.ui import constants as ui
 
 

@@ -9,8 +9,8 @@ from test.drivers.album_page_driver import AlbumPageDriver
 from test.util import resources
 from test.util.builders import album, image
 from test.util.fakes import FakeFileChooser
-from tgit import fs
 
+from tgit import fs
 from tgit.metadata import Image
 from tgit.album import Album
 from tgit.ui import constants as ui

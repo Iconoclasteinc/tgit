@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
 from hamcrest import assert_that, contains, has_property
 from flexmock import flexmock
 

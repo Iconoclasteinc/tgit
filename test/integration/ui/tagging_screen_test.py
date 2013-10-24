@@ -127,5 +127,6 @@ class TaggingScreenTest(BaseWidgetTest):
         self.driver.isShowingAlbumMetadata()
 
     def albumContains(self, *tracks):
-        [self.album.addTrack(track) for track in tracks]
+        for track in tracks:
+            self.album.addTrack(track)
         return tracks

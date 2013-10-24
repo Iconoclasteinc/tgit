@@ -4,10 +4,11 @@ import unittest
 from hamcrest import assert_that, equal_to, match_equality as matching, has_entries, has_property
 from flexmock import flexmock
 
+from test.util import builders
+
 from tgit.metadata import Metadata
 from tgit.album import TITLE as ALBUM_TITLE
 from tgit.track import Track, TrackListener, TITLE, VERSION_INFO, ISRC, FEATURED_GUEST
-from test.util import builders
 
 
 class TrackTest(unittest.TestCase):

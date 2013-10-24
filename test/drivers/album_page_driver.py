@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog
 
-from tgit.ui import constants as ui
+from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog
 
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from test.cute.widgets import (dialogWindow, WidgetDriver, LabelDriver, LineEditDriver,
@@ -11,6 +10,7 @@ from test.cute.widgets import (dialogWindow, WidgetDriver, LabelDriver, LineEdit
                                FileDialogDriver)
 
 import tgit.album as album
+from tgit.ui import constants as ui
 
 
 class AlbumPageDriver(WidgetDriver):

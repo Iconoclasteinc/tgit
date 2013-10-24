@@ -68,8 +68,7 @@ class TaggingScreenDriver(WidgetDriver):
     def showsAlbumContains(self, *tracks):
         trackList = self._trackListPage()
         trackList.isShowingOnScreen()
-        for track in tracks:
-            trackList.showsTrack(*track)
+        trackList.showsTracksInOrder(*tracks)
 
     def showsAlbumMetadata(self, **tags):
         self._albumPage().isShowingOnScreen()

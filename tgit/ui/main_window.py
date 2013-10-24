@@ -21,7 +21,6 @@ from PyQt4.QtGui import QMainWindow, QMenu, QAction, QStatusBar
 
 from tgit.announcer import Announcer
 from tgit.producer import ProductionListener
-
 from tgit.ui import constants as ui
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen

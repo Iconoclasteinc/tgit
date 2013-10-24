@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from hamcrest.core.selfdescribing import SelfDescribing
+
 from PyQt4.QtCore import Qt, QObject
 from PyQt4.QtGui import QLabel, QLineEdit, QPixmap
-
-from hamcrest.core.selfdescribing import SelfDescribing
 
 
 def name():

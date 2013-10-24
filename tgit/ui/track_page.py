@@ -19,8 +19,7 @@
 
 from PyQt4.QtGui import (QWidget, QGridLayout, QVBoxLayout, QLabel, QLineEdit)
 
-from tgit.ui import constants as ui
-from tgit.ui import display
+from tgit.ui import constants as ui, display
 
 
 class TrackPage(QWidget):

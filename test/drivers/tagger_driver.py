@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+
 from PyQt4.QtGui import QFileDialog, QWidget, QMenuBar
 
 from test.cute.matchers import named

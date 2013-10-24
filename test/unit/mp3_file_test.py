@@ -3,11 +3,11 @@
 import unittest
 from hamcrest import (assert_that, equal_to, has_entry, contains_inanyorder, has_key, has_length)
 
+from test.util.mp3 import makeMp3, TestMp3
+
 from tgit import album, track
 from tgit.metadata import Metadata, Image
 import tgit.mp3_file as mp3File
-
-from test.util.mp3 import makeMp3, TestMp3
 
 BITRATE = TestMp3.bitrate
 DURATION = TestMp3.duration

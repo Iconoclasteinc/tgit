@@ -2,10 +2,10 @@
 
 from PyQt4.QtGui import QPushButton
 
-from tgit.ui import constants as ui
-
 from test.cute.matchers import named
 from test.cute.widgets import WidgetDriver, AbstractButtonDriver
+
+from tgit.ui import constants as ui
 
 
 class WelcomeScreenDriver(WidgetDriver):

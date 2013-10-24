@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
+
 from hamcrest import equal_to
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
-
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import AssertionProbe
 from test.drivers.track_page_driver import TrackPageDriver

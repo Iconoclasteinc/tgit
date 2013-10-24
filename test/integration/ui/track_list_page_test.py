@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
+
 from flexmock import flexmock
 from hamcrest import has_property, contains
 from hamcrest.library.collection.is_empty import empty
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
-
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe, AssertionProbe
 from test.drivers.track_list_page_driver import TrackListPageDriver
-from test.util import builders
+from test.util import builders as build
 from test.util.fakes import FakeAudioPlayer
 
 from tgit.album import Album
@@ -39,53 +39,55 @@ class TrackListPageTest(BaseWidgetTest):
             'Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration', '', '')
 
     def testDisplaysTrackDetailsInColumns(self):
-        self.addTrackToAlbum(trackTitle='Banana Song',
-                             bitrate=192000,
-                             duration=timedelta(minutes=3, seconds=43).total_seconds())
-        self.album.releaseName = 'Despicable Me'
-        self.album.leadPerformer = 'Tim, Stuart, Dave'
+        self.album.addTrack(build.track(trackTitle='My Song',
+                                        bitrate=192000,
+                                        duration=timedelta(minutes=3, seconds=43).total_seconds()))
+        self.album.releaseName = 'My Album'
+        self.album.leadPerformer = 'My Artist'
+
         self.widget.albumStateChanged(self.album)
-        self.driver.showsTrack('Banana Song', 'Tim, Stuart, Dave', 'Despicable Me',
-                               '192 kbps', '03:43')
+        self.driver.showsTrack('My Song', 'My Artist', 'My Album', '192 kbps', '03:43')
 
     def testShowsUpToDateTrackInformation(self):
-        track = self.addTrackToAlbum(trackTitle='')
+        track = build.track(trackTitle='')
+        self.album.addTrack(track)
         track.trackTitle = 'Banana Song'
         self.widget.trackStateChanged(track)
         self.driver.showsTrack('Banana Song')
 
     def testDisplaysAllTracksInRows(self):
-        self.addTrackToAlbum(trackTitle='Track 0')
-        self.addTrackToAlbum(trackTitle='Track 1')
+        self.album.addTrack(build.track(trackTitle='First'))
+        self.album.addTrack(build.track(trackTitle='Second'))
 
         self.driver.hasTrackCount(2)
-        # todo test also that tracks are in order
-        self.driver.showsTrack('Track 0')
-        self.driver.showsTrack('Track 1')
+        self.driver.showsTracksInOrder(['First'], ['Second'])
 
     def testCanPlayAndStopATrack(self):
-        track = self.addTrackToAlbum()
+        track = build.track(trackTitle='Song')
+        self.album.addTrack(track)
 
         self.player.should_call('play').once().with_args(track).when(self._notPlayingMusic())
         self.player.should_call('stop').once().when(self._playingMusic())
 
-        self.driver.isNotPlayingTrack(0)
-        self.driver.clickPlayButton(0)
-        self.driver.isPlayingTrack(0)
-        self.driver.clickPlayButton(0)
-        self.driver.isNotPlayingTrack(0)
+        self.driver.isNotPlaying('Song')
+        self.driver.playOrStop('Song')
+        self.driver.isPlaying('Song')
+        self.driver.playOrStop('Song')
+        self.driver.isNotPlaying('Song')
 
-    def testRestoresListenButtonStateWhenTrackHasFinishedPlaying(self):
-        track0 = self.addTrackToAlbum()
-        track1 = self.addTrackToAlbum()
+    def testRestoresPlayButtonStateWhenTrackHasFinishedPlaying(self):
+        first = build.track(trackTitle='Song #1')
+        self.album.addTrack(first)
+        second = build.track(trackTitle='Song #2')
+        self.album.addTrack(second)
 
-        self.driver.playTrack(0)
-        self.widget.mediaStopped(track0)
-        self.driver.isNotPlayingTrack(0)
+        self.driver.play('Song #1')
+        self.widget.mediaStopped(first)
+        self.driver.isNotPlaying('Song #1')
 
-        self.driver.playTrack(1)
-        self.widget.mediaPaused(track1)
-        self.driver.isNotPlayingTrack(1)
+        self.driver.play('Song #2')
+        self.widget.mediaPaused(second)
+        self.driver.isNotPlaying('Song #2')
 
     def testSignalsSelectTrackRequestWhenAddTrackButtonIsClicked(self):
         selectTrackRequest = ValueMatcherProbe('select track')
@@ -99,79 +101,74 @@ class TrackListPageTest(BaseWidgetTest):
         self.driver.check(selectTrackRequest)
 
     def testRemovesTrackFromAlbumWhenRemoveButtonIsClicked(self):
-        self.addTrackToAlbum(trackTitle='Track 0')
-        self.addTrackToAlbum(trackTitle='Track 1')
-        self.addTrackToAlbum(trackTitle='Track 2')
+        self.album.addTrack(build.track(trackTitle='Song #1'))
+        self.album.addTrack(build.track(trackTitle='Song #2'))
+        self.album.addTrack(build.track(trackTitle='Song #3'))
 
-        self.driver.removeTrack('Track 1')
-        self.driver.check(AssertionProbe(
-            self.album, has_property('tracks', contains(hasTitle('Track 0'), hasTitle('Track 2'))),
-            'album'))
+        self.driver.removeTrack('Song #2')
+        self.driver.check(AssertionProbe(self.album.tracks,
+                                         contains(hasTitle('Song #1'), hasTitle('Song #3')),
+                                         'tracks'))
         self.driver.hasTrackCount(2)
-        self.driver.showsTrack('Track 0')
-        self.driver.showsTrack('Track 2')
+        self.driver.showsTracksInOrder(['Song #1'], ['Song #3'])
 
-        self.driver.removeTrack('Track 0')
-        self.driver.check(AssertionProbe(
-            self.album, has_property('tracks', contains(hasTitle('Track 2'))), 'album'))
+        self.driver.removeTrack('Song #1')
+        self.driver.check(AssertionProbe(self.album.tracks,
+                                         contains(hasTitle('Song #3')), 'tracks'))
         self.driver.hasTrackCount(1)
-        self.driver.showsTrack('Track 2')
+        self.driver.showsTrack('Song #3')
 
-        self.driver.removeTrack('Track 2')
-        self.driver.check(AssertionProbe(self.album, has_property('tracks', empty()), 'album'))
+        self.driver.removeTrack('Song #3')
+        self.driver.check(AssertionProbe(self.album.tracks, empty(), 'tracks'))
         self.driver.hasTrackCount(0)
 
     def testStopsCurrentlyPlayingTrackWhenRemovedFromList(self):
-        self.addTrackToAlbum()
-        self.addTrackToAlbum()
+        self.album.addTrack(build.track(trackTitle='Song #1'))
+        self.album.addTrack(build.track(trackTitle='Song #2'))
 
-        self.driver.playTrack(1)
+        self.driver.play('Song #2')
         self.player.should_call('stop').never()
-        self.driver.removeTrackAt(0)
+        self.driver.removeTrack('Song #1')
         self.player.should_call('stop').once()
-        self.driver.removeTrackAt(0)
+        self.driver.removeTrack('Song #2')
 
     def testAccountsForRemovedTracksWhenReceivingMediaUpdates(self):
-        track0 = self.addTrackToAlbum(trackTitle="Track 0")
-        track1 = self.addTrackToAlbum(trackTitle="Track 1")
+        first = build.track(trackTitle='Song #1')
+        second = build.track(trackTitle='Song #2')
+        self.album.addTrack(first)
+        self.album.addTrack(second)
 
-        self.driver.playTrack(1)
-        self.driver.removeTrackAt(0)
-        self.driver.isPlayingTrack(0)
-        self.widget.mediaStopped(track1)
-        self.driver.isNotPlayingTrack(0)
+        self.driver.play('Song #2')
+        self.driver.removeTrack('Song #1')
+        self.driver.isPlaying('Song #2')
+        self.widget.mediaStopped(second)
+        self.driver.isNotPlaying('Song #2')
 
-        self.driver.playTrack(0)
-        self.driver.removeTrackAt(0)
+        self.driver.play('Song #2')
+        self.driver.removeTrack('Song #2')
         # Should be silently ignored
-        self.widget.mediaStopped(track0)
+        self.widget.mediaStopped(second)
 
     def testChangesTrackPositionInAlbumWhenTrackIsMoved(self):
-        self.addTrackToAlbum(trackTitle="Track 0")
-        self.addTrackToAlbum(trackTitle="Track 1")
-        self.addTrackToAlbum(trackTitle="Track 2")
+        self.album.addTrack(build.track(trackTitle='Song #1'))
+        self.album.addTrack(build.track(trackTitle='Song #2'))
+        self.album.addTrack(build.track(trackTitle='Song #3'))
 
-        self.driver.changeTrackPosition(2, 1)
-        self.driver.check(AssertionProbe(
-            self.album, has_property('tracks', contains(hasTitle('Track 0'),
-                                                        hasTitle('Track 2'),
-                                                        hasTitle('Track 1'))), 'album'))
+        self.driver.moveTrack('Song #3', 'Song #2')
         self.driver.hasTrackCount(3)
-        self.driver.removeTrackAt(2)
-        self.driver.showsTrack("Track 2")
+        self.driver.showsTracksInOrder(['Song #1'], ['Song #3'], ['Song #2'])
+        self.driver.check(AssertionProbe(self.album.tracks,
+                                         contains(hasTitle('Song #1'),
+                                                  hasTitle('Song #3'),
+                                                  hasTitle('Song #2')), 'tracks'))
+        self.driver.removeTrack('Song #2')
 
-        self.driver.changeTrackPosition(1, 0)
-        self.driver.check(AssertionProbe(
-            self.album, has_property('tracks', contains(hasTitle('Track 2'),
-                                                        hasTitle('Track 0'))), 'album'))
+        self.driver.moveTrack('Song #3', 'Song #1')
         self.driver.hasTrackCount(2)
-        self.driver.removeTrackAt(1)
-        self.driver.showsTrack("Track 2")
-
-    def addTrackToAlbum(self, **details):
-        track = builders.track(**details)
-        self.album.addTrack(track)
-        return track
+        self.driver.showsTracksInOrder(['Song #3'], ['Song #1'])
+        self.driver.check(AssertionProbe(self.album.tracks,
+                                         contains(hasTitle('Song #3'),
+                                                  hasTitle('Song #1')), 'tracks'))
 
     def _notPlayingMusic(self):
         return lambda: not self.player.isPlaying()

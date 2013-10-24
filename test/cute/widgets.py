@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
+from Carbon.Controls import errDataBrowserInvalidPropertyPart
+
+from hamcrest import all_of, equal_to
+from hamcrest.core.base_matcher import BaseMatcher
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from PyQt4.QtCore import QDir, QPoint
 from PyQt4.QtGui import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                          QToolButton, QFileDialog, QMenu, QAction)
-from hamcrest import all_of, equal_to
-from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from test.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
                               WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe)
@@ -52,13 +54,13 @@ class WidgetDriver(object):
     def findSingle(cls, parent, widgetType, *matchers):
         return cls(SingleWidgetFinder(
             RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector)),
-            parent.prober, parent.gesturePerformer)
+                   parent.prober, parent.gesturePerformer)
 
     @classmethod
     def findNth(cls, parent, widgetType, index, *matchers):
         return cls(NthWidgetFinder(
             RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector), index),
-            parent.prober, parent.gesturePerformer)
+                   parent.prober, parent.gesturePerformer)
 
     def isShowingOnScreen(self):
         self.is_(match.showingOnScreen())
@@ -109,9 +111,11 @@ class MainWindowDriver(WidgetDriver):
 
 class AbstractButtonDriver(WidgetDriver):
     def isUp(self):
+        self.isShowingOnScreen()
         self.is_(match.unchecked())
 
     def isDown(self):
+        self.isShowingOnScreen()
         self.is_(match.checked())
 
 
@@ -374,9 +378,9 @@ class MenuItemDriver(WidgetDriver):
 
 class TableDriver(WidgetDriver):
     def hasHeading(self, matching):
-        class ContainingHeaders(BaseMatcher):
+        class WithHeaders(BaseMatcher):
             def __init__(self, matcher):
-                super(ContainingHeaders, self).__init__()
+                super(WithHeaders, self).__init__()
                 self._matcher = matcher
 
             def _headersOf(self, table):
@@ -394,12 +398,12 @@ class TableDriver(WidgetDriver):
                 mismatch_description.append_text('headers ')
                 self._matcher.describe_mismatch(self._headersOf(table), mismatch_description)
 
-        self.is_(ContainingHeaders(matching))
+        self.is_(WithHeaders(matching))
 
     def hasRow(self, matching):
-        class ContainingCells(BaseMatcher):
+        class RowInTable(BaseMatcher):
             def __init__(self, matcher):
-                super(ContainingCells, self).__init__()
+                super(RowInTable, self).__init__()
                 self._matcher = matcher
 
             def _cellsOf(self, table, row):
@@ -420,9 +424,38 @@ class TableDriver(WidgetDriver):
                 mismatch_description.append_text('contained no row ')
                 self._matcher.describe_to(mismatch_description)
 
-        containingCells = ContainingCells(matching)
-        self.is_(containingCells)
-        return containingCells.inRow
+        rowInTable = RowInTable(matching)
+        self.is_(rowInTable)
+        return rowInTable.inRow
+
+    def containsRows(self, matching):
+        class WithRows(BaseMatcher):
+            def __init__(self, matcher):
+                super(WithRows, self).__init__()
+                self._matcher = matcher
+
+            def _cellsIn(self, table, row):
+                return [table.item(row, column) for column in xrange(table.columnCount())]
+
+            def _rowsIn(self, table):
+                rows = []
+                for row in xrange(table.rowCount()):
+                    rows.append(self._cellsIn(table, row))
+                return rows
+
+            def _matches(self, table):
+                return self._matcher.matches(self._rowsIn(table))
+
+            def describe_to(self, description):
+                description.append_text('with rows ')
+                self._matcher.describe_to(description)
+
+            def describe_mismatch(self, table, mismatch_description):
+                mismatch_description.append_text('rows ')
+                self._matcher.describe_mismatch(self._rowsIn(table),
+                                                mismatch_description)
+
+        self.is_(WithRows(matching))
 
     def scrollCellToVisible(self, row, column):
         class ScrollCellToVisible(object):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+
 from hamcrest.core.selfdescribing import SelfDescribing
 from hamcrest.core.string_description import StringDescription
 

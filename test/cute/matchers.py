@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QWidget
-
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
+
+from PyQt4.QtGui import QWidget
 
 from test.cute import properties
 

@@ -6,15 +6,14 @@ from hamcrest import (assert_that, is_, contains, has_property, has_length, has_
 from hamcrest.library.collection.is_empty import empty
 from flexmock import flexmock
 
+from test.util import builders as build
+
 from tgit.metadata import Image
 from tgit import album
 from tgit.album import Album, AlbumListener
 
-from test.util import builders
-
 
 class AlbumTest(unittest.TestCase):
-
     def setUp(self):
         self.album = Album()
 
@@ -22,9 +21,9 @@ class AlbumTest(unittest.TestCase):
         assert_that(self.album.empty(), is_(True), 'empty')
 
     def testHoldsAListOfTracksInOrder(self):
-        self.appendTrack(trackTitle='Track 1')
-        self.appendTrack(trackTitle='Track 2')
-        self.appendTrack(trackTitle='Track 3')
+        self.album.addTrack(build.track(trackTitle='Track 1'))
+        self.album.addTrack(build.track(trackTitle='Track 2'))
+        self.album.addTrack(build.track(trackTitle='Track 3'))
 
         assert_that(self.album.tracks, contains(
             has_property('trackTitle', 'Track 1'),
@@ -32,14 +31,15 @@ class AlbumTest(unittest.TestCase):
             has_property('trackTitle', 'Track 3')), 'tracks')
 
     def testIsNoLongerEmptyWhenHoldingTracks(self):
-        self.appendTrack()
+        self.album.addTrack(build.track())
         assert_that(self.album.empty(), is_(False), 'empty')
 
     def testSupportsRemovingTracks(self):
-        self.appendTrack(trackTitle='Track 1')
-        second = self.appendTrack(trackTitle='Track 2')
-        self.appendTrack(trackTitle='Track 3')
+        self.album.addTrack(build.track(trackTitle='Track 1'))
+        self.album.addTrack(build.track(trackTitle='Track 2'))
+        self.album.addTrack(build.track(trackTitle='Track 3'))
 
+        second = self.album.tracks[1]
         self.album.removeTrack(second)
 
         assert_that(self.album.tracks, has_length(2), 'remaining tracks')
@@ -47,10 +47,11 @@ class AlbumTest(unittest.TestCase):
                     'tracks')
 
     def testSupportsInsertingTracksAtASpecificPosition(self):
-        first = self.appendTrack(trackTitle='Track 1')
-        self.appendTrack(trackTitle='Track 2')
-        self.appendTrack(trackTitle='Track 3')
+        self.album.addTrack(build.track(trackTitle='Track 1'))
+        self.album.addTrack(build.track(trackTitle='Track 2'))
+        self.album.addTrack(build.track(trackTitle='Track 3'))
 
+        first = self.album.tracks[0]
         self.album.removeTrack(first)
         self.album.addTrack(first, 1)
 
@@ -71,9 +72,9 @@ class AlbumTest(unittest.TestCase):
         assert_that(self.album.images, empty(), 'images')
 
     def testTagsTracksWithAlbumMetadata(self):
-        self.appendTrack(releaseName='Album A')
-        self.appendTrack(releaseName='Album B')
-        self.appendTrack(releaseName='Album C')
+        self.album.addTrack(build.track(releaseName='Album A'))
+        self.album.addTrack(build.track(releaseName='Album B'))
+        self.album.addTrack(build.track(releaseName='Album C'))
 
         self.album.releaseName = 'Album X'
         self.album.leadPerformer = 'Artist'
@@ -92,12 +93,13 @@ class AlbumTest(unittest.TestCase):
     def testNewlyAddedTracksAreTaggedWithAlbumMetadataAsWell(self):
         self.album.releaseName = 'Album'
 
-        track = self.appendTrack()
+        self.album.addTrack(build.track())
+        newTrack = self.album.tracks[0]
         self.album.tag()
-        self.assertHasAlbumMetadata(track)
+        self.assertHasAlbumMetadata(newTrack)
 
     def testRemovesTrackTagsAndImagesWhenAlbumMetadataIsEmpty(self):
-        track = builders.track(
+        self.album.addTrack(build.track(
             releaseName='Album',
             leadPerformer='Artist',
             guestPerformers='Band',
@@ -106,21 +108,21 @@ class AlbumTest(unittest.TestCase):
             releaseTime='2009-01-01',
             originalReleaseTime='1998-03-05',
             upc='Code',
-            images=[builders.image('image/jpeg', 'cover.jpg')]
-        )
-
-        self.album.addTrack(track)
+            images=[build.image('image/jpeg', 'cover.jpg')]
+        ))
         self.album.tag()
 
         for track in self.album.tracks:
             self.assertHasAlbumMetadata(track)
 
     def testAnnouncesTrackRemovalToListeners(self):
+        self.album.addTrack(build.track())
+        self.album.addTrack(build.track())
         listener = flexmock(AlbumListener())
         self.album.addAlbumListener(listener)
 
-        first = self.appendTrack()
-        second = self.appendTrack()
+        first = self.album.tracks[0]
+        second = self.album.tracks[1]
         listener.should_receive('trackRemoved').with_args(second, 1).once()
         listener.should_receive('trackRemoved').with_args(first, 0).once()
 
@@ -131,15 +133,15 @@ class AlbumTest(unittest.TestCase):
         listener = flexmock(AlbumListener())
         self.album.addAlbumListener(listener)
 
-        first = builders.track()
+        first = build.track()
         listener.should_receive('trackAdded').with_args(first, 0).once()
         self.album.addTrack(first)
 
-        last = builders.track()
+        last = build.track()
         listener.should_receive('trackAdded').with_args(last, 1).once()
         self.album.addTrack(last)
 
-        middle = builders.track()
+        middle = build.track()
         listener.should_receive('trackAdded').with_args(middle, 1).once()
         self.album.addTrack(middle, 1)
 
@@ -168,19 +170,14 @@ class AlbumTest(unittest.TestCase):
         album = Album()
         listener = flexmock(AlbumListener())
         album.addAlbumListener(listener)
-        listener.should_receive('albumStateChanged')\
+        listener.should_receive('albumStateChanged') \
             .with_args(matching(has_property('images', empty()))) \
             .once()
         album.removeImages()
         for image in images:
-            listener.should_receive('albumStateChanged')\
+            listener.should_receive('albumStateChanged') \
                 .with_args(matching(has_property('images', has_item(image)))).once()
             album.addImage(image.mime, image.data, image.type, image.desc)
-
-    def appendTrack(self, **metadata):
-        track = builders.track(**metadata)
-        self.album.addTrack(track)
-        return track
 
     def assertHasAlbumMetadata(self, track):
         metadata = track.metadata

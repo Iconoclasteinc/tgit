@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QPushButton, QTableWidget
 from hamcrest import contains, has_items
+
+from PyQt4.QtGui import QPushButton, QTableWidget
 
 from test.cute.widgets import WidgetDriver, AbstractButtonDriver, TableDriver
 from test.cute.matchers import named, withText
@@ -18,47 +19,48 @@ class TrackListPageDriver(WidgetDriver):
         headersMatching = [withText(title) for title in titles]
         self._trackTable().hasHeading(contains(*headersMatching))
 
-    def showsTrack(self, *details):
-        cellsMatching = [withText(detail) for detail in details]
-        return self._trackTable().hasRow(has_items(*cellsMatching))
+    def showsTrack(self, *columns):
+        cells = [withText(column) for column in columns]
+        return self._trackTable().hasRow(has_items(*cells))
+
+    def showsTracksInOrder(self, *tracks):
+        rows = [has_items(*[withText(column) for column in track]) for track in tracks]
+        return self._trackTable().containsRows(contains(*rows))
 
     def hasTrackCount(self, count):
         self._trackTable().hasRowCount(count)
 
-    def isPlayingTrack(self, index):
-        self._showingPlayButton(index).isDown()
+    def isPlaying(self, title):
+        row = self.showsTrack(title)
+        self._playButtonAt(row).isDown()
 
-    # todo use track titles instead of indexes
-    def isNotPlayingTrack(self, index):
-        self._showingPlayButton(index).isUp()
+    def isNotPlaying(self, title):
+        row = self.showsTrack(title)
+        self._playButtonAt(row).isUp()
 
-    def clickPlayButton(self, index):
-        self._trackTable().clickOnCell(index, page.LISTEN_COLUMN)
+    def playOrStop(self, title):
+        row = self.showsTrack(title)
+        self._playButtonAt(row).isShowingOnScreen()
+        self._clickPlayButtonAt(row)
 
-    def playTrack(self, index):
-        self.isNotPlayingTrack(index)
-        # We can't just click on the button, it's not aware of its position in the table
-        self.clickPlayButton(index)
-        self.isPlayingTrack(index)
+    def play(self, title):
+        self.isNotPlaying(title)
+        self.playOrStop(title)
+        self.isPlaying(title)
 
-    def stopTrack(self, index):
-        self.isPlayingTrack(index)
-        # We can't just click on the button, it's not aware of its position in the table
-        self.clickPlayButton(index)
-        self.isNotPlayingTrack(index)
+    def stopTrack(self, title):
+        self.isPlaying(title)
+        self.playOrStop(title)
+        self.isNotPlaying(title)
 
     def addTrack(self):
         button = AbstractButtonDriver.findSingle(self, QPushButton, named(ui.ADD_TRACK_BUTTON_NAME))
         button.click()
 
     def removeTrack(self, title):
-        position = self.showsTrack(title)
-        self.removeTrackAt(position)
-
-    # todo use removeTrack(details) in test and make this one private
-    def removeTrackAt(self, index):
-        self._showingRemoveTrackButton(index)
-        self._trackTable().clickOnCell(index, page.REMOVE_COLUMN)
+        row = self.showsTrack(title)
+        self._removeButtonAt(row).isShowingOnScreen()
+        self._clickRemoveButtonAt(row)
 
     def changeTrackPosition(self, oldPosition, newPosition):
         self._trackTable().moveRow(oldPosition, newPosition)
@@ -68,19 +70,25 @@ class TrackListPageDriver(WidgetDriver):
         to = self.showsTrack(to)
         self._trackTable().moveRow(from_, to)
 
-    def _showingRemoveTrackButton(self, index):
-        button = AbstractButtonDriver.findSingle(self._trackTable().widgetInCell(
-                                                 index, page.REMOVE_COLUMN),
-                                                 QPushButton, named(ui.REMOVE_BUTTON_NAME))
-        button.isShowingOnScreen()
-        return button
+    def _removeButtonAt(self, row):
+        return AbstractButtonDriver.findSingle(self._removeWidget(row), QPushButton,
+                                               named(ui.REMOVE_BUTTON_NAME))
+
+    def _removeWidget(self, index):
+        return self._trackTable().widgetInCell(index, page.REMOVE_COLUMN)
+
+    def _clickRemoveButtonAt(self, row):
+        self._trackTable().clickOnCell(row, page.REMOVE_COLUMN)
+
+    def _playButtonAt(self, index):
+        return AbstractButtonDriver.findSingle(self._playWidget(index), QPushButton,
+                                               named(ui.PLAY_BUTTON_NAME))
+
+    def _playWidget(self, index):
+        return self._trackTable().widgetInCell(index, page.PLAY_COLUMN)
+
+    def _clickPlayButtonAt(self, row):
+        self._trackTable().clickOnCell(row, page.PLAY_COLUMN)
 
     def _trackTable(self):
         return TableDriver.findSingle(self, QTableWidget, named(ui.TRACK_TABLE_NAME))
-
-    def _showingPlayButton(self, index):
-        button = AbstractButtonDriver.findSingle(self._trackTable().widgetInCell(
-                                                 index, page.LISTEN_COLUMN),
-                                                 QPushButton, named(ui.PLAY_BUTTON_NAME))
-        button.isShowingOnScreen()
-        return button
