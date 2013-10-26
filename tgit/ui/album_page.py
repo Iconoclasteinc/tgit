@@ -30,9 +30,13 @@ class AlbumPage(QWidget, FileChoiceListener):
     def __init__(self, album, pictureChooser, parent=None):
         QWidget.__init__(self, parent)
         self._album = album
+        self._album.addAlbumListener(self)
         self._pictureChooser = pictureChooser
         self._pictureChooser.addChoiceListener(self)
 
+        self._assemble(album)
+
+    def _assemble(self, album):
         self.setObjectName(ui.ALBUM_PAGE_NAME)
         grid = QGridLayout()
         self._fill(grid)
@@ -105,7 +109,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._releaseNameLabel, row, 0)
         self._releaseNameEdit = QLineEdit()
         self._releaseNameEdit.setObjectName(ui.RELEASE_NAME_EDIT_NAME)
-        self._releaseNameEdit.textEdited.connect(self._updateAlbum)
+        self._releaseNameEdit.editingFinished.connect(self._updateReleaseName)
         layout.addWidget(self._releaseNameEdit, row, 1)
         self._releaseNameLabel.setBuddy(self._releaseNameEdit)
 
@@ -114,7 +118,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._leadPerformerLabel, row, 0)
         self._leadPerformerEdit = QLineEdit()
         self._leadPerformerEdit.setObjectName(ui.LEAD_PERFORMER_EDIT_NAME)
-        self._leadPerformerEdit.textEdited.connect(self._updateAlbum)
+        self._leadPerformerEdit.editingFinished.connect(self._updateLeadPerformer)
         layout.addWidget(self._leadPerformerEdit, row, 1)
         self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
 
@@ -123,7 +127,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._guestPerformersLabel, row, 0)
         self._guestPerformersEdit = QLineEdit()
         self._guestPerformersEdit.setObjectName(ui.GUEST_PERFORMERS_EDIT_NAME)
-        self._guestPerformersEdit.textEdited.connect(self._updateAlbum)
+        self._guestPerformersEdit.editingFinished.connect(self._updateGuestPerformers)
         layout.addWidget(self._guestPerformersEdit, row, 1)
         self._guestPerformersLabel.setBuddy(self._guestPerformersEdit)
 
@@ -132,7 +136,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._labelNameLabel, row, 0)
         self._labelNameEdit = QLineEdit()
         self._labelNameEdit.setObjectName(ui.LABEL_NAME_EDIT_NAME)
-        self._labelNameEdit.textEdited.connect(self._updateAlbum)
+        self._labelNameEdit.editingFinished.connect(self._updateLabelName)
         layout.addWidget(self._labelNameEdit, row, 1)
         self._labelNameLabel.setBuddy(self._labelNameEdit)
 
@@ -141,7 +145,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._recordingTimeLabel, row, 0)
         self._recordingTimeEdit = QLineEdit()
         self._recordingTimeEdit.setObjectName(ui.RECORDING_TIME_EDIT_NAME)
-        self._recordingTimeEdit.textEdited.connect(self._updateAlbum)
+        self._recordingTimeEdit.editingFinished.connect(self._updateRecordingTime)
         layout.addWidget(self._recordingTimeEdit, row, 1)
         self._recordingTimeLabel.setBuddy(self._recordingTimeEdit)
 
@@ -150,7 +154,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._releaseTimeLabel, row, 0)
         self._releaseTimeEdit = QLineEdit()
         self._releaseTimeEdit.setObjectName(ui.RELEASE_TIME_EDIT_NAME)
-        self._releaseTimeEdit.textEdited.connect(self._updateAlbum)
+        self._releaseTimeEdit.editingFinished.connect(self._updateReleaseTime)
         layout.addWidget(self._releaseTimeEdit, row, 1)
         self._releaseTimeLabel.setBuddy(self._releaseTimeEdit)
 
@@ -159,7 +163,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._originalReleaseTimeLabel, row, 0)
         self._originalReleaseTimeEdit = QLineEdit()
         self._originalReleaseTimeEdit.setObjectName(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME)
-        self._originalReleaseTimeEdit.textEdited.connect(self._updateAlbum)
+        self._originalReleaseTimeEdit.editingFinished.connect(self._updateOriginalReleaseTime)
         layout.addWidget(self._originalReleaseTimeEdit, row, 1)
         self._originalReleaseTimeLabel.setBuddy(self._originalReleaseTimeEdit)
 
@@ -168,7 +172,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._upcLabel, row, 0)
         self._upcEdit = QLineEdit()
         self._upcEdit.setObjectName(ui.UPC_EDIT_NAME)
-        self._upcEdit.textEdited.connect(self._updateAlbum)
+        self._upcEdit.editingFinished.connect(self._updateUpc)
         layout.addWidget(self._upcEdit, row, 1)
         self._upcLabel.setBuddy(self._upcEdit)
 
@@ -184,7 +188,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._upcLabel.setText(self.tr('UPC/EAN: '))
 
     def _frontCoverOf(self, album):
-        frontCovers = album.frontCovers()
+        frontCovers = album.frontCovers
         if frontCovers:
             return frontCovers[0].mime, frontCovers[0].data
         else:
@@ -206,12 +210,26 @@ class AlbumPage(QWidget, FileChoiceListener):
         if self._frontCover is not None:
             self._album.addFrontCover(self._frontCover[0], self._frontCover[1])
 
-    def _updateAlbum(self):
+    def _updateReleaseName(self):
         self._album.releaseName = self._releaseNameEdit.text()
+
+    def _updateLeadPerformer(self):
         self._album.leadPerformer = self._leadPerformerEdit.text()
+
+    def _updateGuestPerformers(self):
         self._album.guestPerformers = self._guestPerformersEdit.text()
+
+    def _updateLabelName(self):
         self._album.labelName = self._labelNameEdit.text()
+
+    def _updateRecordingTime(self):
         self._album.recordingTime = self._recordingTimeEdit.text()
+
+    def _updateReleaseTime(self):
         self._album.releaseTime = self._releaseTimeEdit.text()
+
+    def _updateOriginalReleaseTime(self):
         self._album.originalReleaseTime = self._originalReleaseTimeEdit.text()
+
+    def _updateUpc(self):
         self._album.upc = self._upcEdit.text()

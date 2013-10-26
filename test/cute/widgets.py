@@ -128,7 +128,7 @@ class LabelDriver(WidgetDriver):
 
 
 class LineEditDriver(WidgetDriver):
-    EDITION_DELAY = 20
+    EDITION_DELAY = 50
 
     def hasText(self, text):
         self.has(properties.inputText(), equal_to(text))
@@ -137,6 +137,7 @@ class LineEditDriver(WidgetDriver):
         self.focusWithMouse()
         self.clearAllText()
         self.type(text)
+        self.perform(shortcuts.Enter)
 
     def focusWithMouse(self):
         self.leftClickOnWidget()

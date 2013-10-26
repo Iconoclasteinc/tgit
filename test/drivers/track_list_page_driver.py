@@ -62,12 +62,8 @@ class TrackListPageDriver(WidgetDriver):
         self._removeButtonAt(row).isShowingOnScreen()
         self._clickRemoveButtonAt(row)
 
-    def changeTrackPosition(self, oldPosition, newPosition):
-        self._trackTable().moveRow(oldPosition, newPosition)
-
     def moveTrack(self, title, to):
         from_ = self.showsTrack(title)
-        to = self.showsTrack(to)
         self._trackTable().moveRow(from_, to)
 
     def _removeButtonAt(self, row):

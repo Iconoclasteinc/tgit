@@ -17,7 +17,8 @@ class TrackPageTest(BaseWidgetTest):
 
     def setUp(self):
         super(TrackPageTest, self).setUp()
-        self.track = track()
+        self.track = track(bitrate=192000,
+                           duration=timedelta(minutes=4, seconds=35).total_seconds())
         self.widget = TrackPage(self.track)
         self.view(self.widget)
         self.driver = self.createDriverFor(self.widget)
@@ -26,19 +27,16 @@ class TrackPageTest(BaseWidgetTest):
         return TrackPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysTrackMetadata(self):
-        self.widget.trackStateChanged(track(
-            trackTitle='Song',
-            versionInfo='Remix',
-            featuredGuest='Featuring',
-            isrc='Code',
-            bitrate=192000,
-            duration=timedelta(minutes=4, seconds=35).total_seconds()))
-
+        self.track.trackTitle='Song'
         self.driver.showsTrackTitle('Song')
+        self.track.versionInfo='Remix'
         self.driver.showsVersionInfo('Remix')
+        self.track.featuredGuest='Featuring'
         self.driver.showsFeaturedGuest('Featuring')
-        self.driver.showsBitrate('192 kbps')
+        self.track.isrc='Code'
         self.driver.showsIsrc('Code')
+
+        self.driver.showsBitrate('192 kbps')
         self.driver.showsDuration('04:35')
 
     def testUpdatesTrackOnMetadataChange(self):

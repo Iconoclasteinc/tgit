@@ -7,7 +7,6 @@ from test.cute.probes import AssertionProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.album_page_driver import AlbumPageDriver
 from test.util import resources
-from test.util.builders import album, image
 from test.util.fakes import FakeFileChooser
 
 from tgit import fs
@@ -35,32 +34,28 @@ class AlbumPageTest(BaseWidgetTest):
         return AlbumPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
-        self.widget.albumStateChanged(album(
-            images=[image('image/jpeg', loadImage('front-cover.jpg'))]
-        ))
+        self.album.addImage('image/jpeg', loadImage('front-cover.jpg'))
         self.driver.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_PIXMAP_SIZE)
 
     def testDisplaysAlbumMetadata(self):
-        self.widget.albumStateChanged(album(
-            releaseName='Album',
-            leadPerformer='Artist',
-            guestPerformers='Band',
-            labelName='Label',
-            recordingTime='2008-09-15',
-            releaseTime='2009-01-01',
-            originalReleaseTime='1998-03-05',
-            upc='Code'))
-
+        self.album.releaseName = 'Album'
         self.driver.showsReleaseName('Album')
+        self.album.leadPerformer = 'Artist'
         self.driver.showsLeadPerformer('Artist')
+        self.album.guestPerformers = 'Band'
         self.driver.showsGuestPerformers('Band')
+        self.album.labelName = 'Label'
         self.driver.showsLabelName('Label')
+        self.album.recordingTime = '2008-09-15'
         self.driver.showsRecordingTime('2008-09-15')
+        self.album.releaseTime = '2009-01-01'
         self.driver.showsReleaseTime('2009-01-01')
+        self.album.originalReleaseTime = '1998-03-05'
         self.driver.showsOriginalReleaseTime('1998-03-05')
+        self.album.upc = 'Code'
         self.driver.showsUpc('Code')
 
-    def testUpdatesAlbumOnMetadataChange(self):
+    def testUpdatesAlbumWhenMetadataEdited(self):
         self.pictureChooser.chooses(resources.path('front-cover.jpg'))
         self.driver.selectFrontCover()
         self.check(AssertionProbe(self.album.images, contains(

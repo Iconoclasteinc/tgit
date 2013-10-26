@@ -50,9 +50,11 @@ class Mp3(object):
             if tag == album.TITLE or tag == 'TALB':
                 self._tags.add(id3.TALB(encoding=UTF_8, text=value))
             elif tag == 'frontCover' or tag == 'APIC_FRONT':
-                self._tags.add(id3.APIC(UTF_8, value[0], FRONT_COVER, value[1], value[2]))
+                mime, desc, data = value
+                self._tags.add(id3.APIC(UTF_8, mime, FRONT_COVER, desc, data))
             elif tag == 'backCover' or tag == 'APIC_BACK':
-                self._tags.add(id3.APIC(UTF_8, value[0], BACK_COVER, value[1], value[2]))
+                mime, desc, data = value
+                self._tags.add(id3.APIC(UTF_8, mime, BACK_COVER, desc, data))
             elif tag == album.LEAD_PERFORMER or tag == 'TPE1':
                 self._tags.add(id3.TPE1(encoding=UTF_8, text=value))
             elif tag == album.GUEST_PERFORMERS or tag == 'TPE2':

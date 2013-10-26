@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import (assert_that, equal_to, has_entry, contains, has_property,
+from hamcrest import (assert_that, equal_to, has_entries, contains, has_property,
                       contains_inanyorder, is_not, has_key)
 from hamcrest.library.collection.is_empty import empty
 
@@ -16,27 +16,44 @@ class MetadataTest(unittest.TestCase):
 
     def testDropsAllTagsAndImagesWhenCleared(self):
         metadata = Metadata()
-        metadata['tag'] = 'value'
+        metadata['artist'] = 'John Doe'
         metadata.addImage('img/jpeg', '...')
 
         metadata.clear()
-        assert_that(metadata, empty(), 'tags')
-        assert_that(list(metadata.images), empty(), 'images')
+        assert_that(metadata, empty(), 'cleared tags')
+        assert_that(list(metadata.images), empty(), 'cleared images')
 
-    def testReplacesTagsAndImagesWhenReplaced(self):
+    def testUpdatesTagsAndReplacesImagesWhenUpdated(self):
         metadata = Metadata()
-        metadata['tag'] = 'original'
-        metadata['other'] = 'value'
-        metadata.addImage('img/jpeg', 'image content')
+        metadata['artist'] = 'Pascal Obispo'
+        metadata['album'] = ''
+        metadata.addImage('img/jpeg', 'missing')
 
         other = Metadata()
-        other['tag'] = 'replaced'
-        other.addImage('img/png', 'other image')
+        other['album'] = "Un jour comme aujourd'hui"
+        other.addImage('img/png', 'cover.png')
 
-        metadata.replace(other)
-        assert_that(metadata, has_entry('tag', 'replaced'), 'tags')
-        assert_that(metadata, is_not(has_key('other')), 'tags')
-        assert_that(metadata.images, contains(has_property('data', 'other image')), 'images')
+        metadata.update(other)
+        assert_that(metadata, has_entries(artist='Pascal Obispo',
+                                          album="Un jour comme aujourd'hui"), 'updated tags')
+        assert_that(metadata.images, contains(has_property('data', 'cover.png')), 'updated images')
+
+    def testCanReturnASelectionOfItsTagsWithImages(self):
+        metadata = Metadata(artist='Alain Souchon', album=u"C'est déjà ça",
+                            track='Foule sentimentale')
+        metadata.addImage('img/jpeg', 'front-cover.jpg')
+        metadata.addImage('img/jpeg', 'back-cover.jpg')
+
+        selection = metadata.select('artist', 'album', 'label')
+
+        assert_that(selection, has_entries(artist='Alain Souchon',
+                                           album=u"C'est déjà ça",
+                                           label=''),
+                    'selected tags')
+        assert_that(selection, is_not(has_key('track')), 'selected tags')
+        assert_that(selection.images, contains(has_property('data', 'front-cover.jpg'),
+                                               has_property('data', 'back-cover.jpg')),
+                    'selected images')
 
     def testLooksUpImagesByType(self):
         metadata = Metadata()

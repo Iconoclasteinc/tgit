@@ -37,8 +37,8 @@ class TaggingScreenDriver(WidgetDriver):
     def removeTrack(self, title):
         self._trackListPage().removeTrack(title)
 
-    def moveTrack(self, title, whereTitle):
-        self._trackListPage().moveTrack(title, whereTitle)
+    def moveTrack(self, title, to):
+        self._trackListPage().moveTrack(title, to)
 
     def nextPage(self):
         button = self._nextPageButton()

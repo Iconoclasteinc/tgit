@@ -25,13 +25,18 @@ from tgit.ui import constants as ui, display
 class TrackPage(QWidget):
     def __init__(self, track, parent=None):
         QWidget.__init__(self, parent)
+        self._track = track
+        self._track.addTrackListener(self)
+
+        self._assemble()
+
+    def _assemble(self):
         self.setObjectName(ui.TRACK_PAGE_NAME)
         grid = QGridLayout()
         self._fill(grid)
         self.translateUi()
         self._layout(grid)
-        self._track = track
-        self.trackStateChanged(track)
+        self.trackStateChanged(self._track)
 
     def _layout(self, grid):
         layout = QVBoxLayout()
@@ -52,7 +57,7 @@ class TrackPage(QWidget):
         layout.addWidget(self._trackTitleLabel, row, 0)
         self._trackTitleEdit = QLineEdit()
         self._trackTitleEdit.setObjectName(ui.TRACK_TITLE_EDIT_NAME)
-        self._trackTitleEdit.textEdited.connect(self._updateTrack)
+        self._trackTitleEdit.editingFinished.connect(self._updateTrackTitle)
         layout.addWidget(self._trackTitleEdit, row, 1)
         self._trackTitleLabel.setBuddy(self._trackTitleEdit)
 
@@ -61,7 +66,7 @@ class TrackPage(QWidget):
         layout.addWidget(self._versionInfoLabel, row, 0)
         self._versionInfoEdit = QLineEdit()
         self._versionInfoEdit.setObjectName(ui.VERSION_INFO_EDIT_NAME)
-        self._versionInfoEdit.textEdited.connect(self._updateTrack)
+        self._versionInfoEdit.editingFinished.connect(self._updateVersionInfo)
         layout.addWidget(self._versionInfoEdit, row, 1)
         self._versionInfoLabel.setBuddy(self._versionInfoEdit)
 
@@ -70,7 +75,7 @@ class TrackPage(QWidget):
         layout.addWidget(self._featuredGuestLabel, row, 0)
         self._featuredGuestEdit = QLineEdit()
         self._featuredGuestEdit.setObjectName(ui.FEATURED_GUEST_EDIT_NAME)
-        self._featuredGuestEdit.textEdited.connect(self._updateTrack)
+        self._featuredGuestEdit.editingFinished.connect(self._updateFeaturedGuest)
         layout.addWidget(self._featuredGuestEdit, row, 1)
         self._featuredGuestLabel.setBuddy(self._featuredGuestEdit)
 
@@ -79,7 +84,7 @@ class TrackPage(QWidget):
         layout.addWidget(self._isrcLabel, row, 0)
         self._isrcEdit = QLineEdit()
         self._isrcEdit.setObjectName(ui.ISRC_EDIT_NAME)
-        self._isrcEdit.textEdited.connect(self._updateTrack)
+        self._isrcEdit.editingFinished.connect(self._updateIsrc)
         layout.addWidget(self._isrcEdit, row, 1)
         self._isrcLabel.setBuddy(self._isrcEdit)
 
@@ -115,8 +120,14 @@ class TrackPage(QWidget):
         self._bitrateInfoLabel.setText('%s kbps' % display.inKbps(track.bitrate))
         self._durationInfoLabel.setText(display.asDuration(track.duration))
 
-    def _updateTrack(self):
+    def _updateTrackTitle(self):
         self._track.trackTitle = self._trackTitleEdit.text()
+
+    def _updateVersionInfo(self):
         self._track.versionInfo = self._versionInfoEdit.text()
+
+    def _updateFeaturedGuest(self):
         self._track.featuredGuest = self._featuredGuestEdit.text()
+
+    def _updateIsrc(self):
         self._track.isrc = self._isrcEdit.text()

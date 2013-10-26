@@ -60,16 +60,16 @@ class TaggerDriver(MainWindowDriver):
     def removeTrack(self, title):
         self._taggingScreen().removeTrack(title)
 
-    def moveTrack(self, title, whereTitle):
-        self._taggingScreen().moveTrack(title, whereTitle)
+    def moveTrack(self, title, to):
+        self._taggingScreen().moveTrack(title, to)
 
     # todo have a quick navigation button
-    def navigateToAlbumMetadata(self):
+    def toAlbum(self):
         self._taggingScreen().nextPage()
         self._taggingScreen().isShowingAlbumMetadata()
 
     # todo have a quick navigation button
-    def navigateToTrackMetadata(self):
+    def toNextTrack(self):
         self._taggingScreen().nextPage()
         self._taggingScreen().isShowingTrackMetadata()
 

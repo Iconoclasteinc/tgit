@@ -154,7 +154,7 @@ class TrackListPageTest(BaseWidgetTest):
         self.album.addTrack(build.track(trackTitle='Song #2'))
         self.album.addTrack(build.track(trackTitle='Song #3'))
 
-        self.driver.moveTrack('Song #3', 'Song #2')
+        self.driver.moveTrack('Song #3', 1)
         self.driver.hasTrackCount(3)
         self.driver.showsTracksInOrder(['Song #1'], ['Song #3'], ['Song #2'])
         self.driver.check(AssertionProbe(self.album.tracks,
@@ -163,7 +163,7 @@ class TrackListPageTest(BaseWidgetTest):
                                                   hasTitle('Song #2')), 'tracks'))
         self.driver.removeTrack('Song #2')
 
-        self.driver.moveTrack('Song #3', 'Song #1')
+        self.driver.moveTrack('Song #3', 0)
         self.driver.hasTrackCount(2)
         self.driver.showsTracksInOrder(['Song #3'], ['Song #1'])
         self.driver.check(AssertionProbe(self.album.tracks,

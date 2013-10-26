@@ -30,14 +30,10 @@ ORIGINAL_RELEASE_TIME = 'originalReleaseTime'
 UPC = 'upc'
 FRONT_COVER = 'frontCover'
 
-METADATA = [
+ALBUM_TAGS = [
     TITLE, LEAD_PERFORMER, GUEST_PERFORMERS, LABEL_NAME, RECORDING_TIME, RELEASE_TIME,
     ORIGINAL_RELEASE_TIME, UPC
 ]
-
-NO_METADATA = {}
-for meta in METADATA:
-    NO_METADATA[meta] = ''
 
 
 class AlbumListener(object):
@@ -53,9 +49,7 @@ class AlbumListener(object):
 
 class Album(object):
     def __init__(self, metadata=None):
-        self._metadata = metadata
-        if self._metadata is None:
-            self._metadata = Metadata(**NO_METADATA)
+        self._metadata = metadata or Metadata()
         self._tracks = []
         self._listeners = Announcer()
 
@@ -69,6 +63,7 @@ class Album(object):
     def imagesOfType(self, type_):
         return self._metadata.imagesOfType(type_)
 
+    @property
     def frontCovers(self):
         return self.imagesOfType(Image.FRONT_COVER)
 
@@ -87,15 +82,21 @@ class Album(object):
     def tracks(self):
         return list(self._tracks)
 
+    def updateMetadata(self, track):
+        self._metadata.update(track.metadata(*ALBUM_TAGS))
+        self._signalStateChange()
+
     def empty(self):
         return len(self._tracks) == 0
 
     def addTrack(self, track, position=-1):
+        if not self._metadata:
+            self.updateMetadata(track)
+
         if position == -1:
             position = len(self._tracks)
-
-        self._tracks.insert(position, track)
         self._listeners.trackAdded(track, position)
+        self._tracks.insert(position, track)
 
     def removeTrack(self, track):
         position = self._tracks.index(track)
@@ -111,7 +112,7 @@ class Album(object):
 
 
 def addMetadataPropertiesTo(cls):
-    for meta in METADATA:
+    for meta in ALBUM_TAGS:
         def createProperty(name):
             def getter(self):
                 return self._metadata[name]

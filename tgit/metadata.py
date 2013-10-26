@@ -30,7 +30,7 @@ class Image(object):
         self.desc = desc
 
     def __repr__(self):
-        data = repr(self.data[:25] + '..') if len(self.data) > 25 else self.data
+        data = repr((self.data[:25] + '..') if len(self.data) > 25 else self.data)
         return 'Image(mime=%s, type_=%s, desc=%s, data=%s)' % (self.mime, self.type, self.desc,
                                                                data)
 
@@ -45,8 +45,8 @@ class Image(object):
 
 
 class Metadata(dict):
-    def __init__(self, **kwargs):
-        super(Metadata, self).__init__(**kwargs)
+    def __init__(self, **meta):
+        super(Metadata, self).__init__(**meta)
         self._images = []
 
     def __missing__(self, name):
@@ -62,21 +62,28 @@ class Metadata(dict):
     def addImage(self, mime, data, type_=Image.OTHER, desc=''):
         self._images.append(Image(mime, data, type_, desc))
 
+    def addImages(self, *images):
+        for image in images:
+            self.addImage(image.mime, image.data, image.type, image.desc)
+
     def removeImages(self):
         del self._images[:]
 
+    def update(self, other=None, **meta):
+        super(Metadata, self).update(other, **meta)
+        if other:
+            self._images[:] = other.images
+
     def copy(self):
+        return self.select(*self.keys())
+
+    def select(self, *keys):
         metadata = Metadata()
-        metadata.merge(self)
+        for key in keys:
+            metadata[key] = self[key]
+
+        metadata.addImages(*self.images)
         return metadata
-
-    def replace(self, other):
-        self.clear()
-        self.merge(other)
-
-    def merge(self, other):
-        super(Metadata, self).update(other)
-        self._images[:] = other.images
 
     def clear(self):
         super(Metadata, self).clear()

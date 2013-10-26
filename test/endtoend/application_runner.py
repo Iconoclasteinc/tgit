@@ -46,7 +46,7 @@ class ApplicationRunner(object):
         self.tagger.showsAlbumContains(*tracks)
 
     def showsAlbumMetadata(self, **tags):
-        self.tagger.navigateToAlbumMetadata()
+        self.tagger.toAlbum()
         self.tagger.showsAlbumMetadata(**tags)
         # todo navigate back to track list
         # so we always no where we're starting from
@@ -57,8 +57,8 @@ class ApplicationRunner(object):
         self.tagger.saveAlbum()
 
     # todo pass the track index as parameter
-    def showsTrackMetadata(self, **tags):
-        self.tagger.navigateToTrackMetadata()
+    def showsNextTrackMetadata(self, **tags):
+        self.tagger.toNextTrack()
         self.tagger.showsTrackMetadata(**tags)
 
     # todo pass the track index as parameter
@@ -69,5 +69,5 @@ class ApplicationRunner(object):
     def removeTrack(self, title):
         self.tagger.removeTrack(title)
 
-    def moveTrack(self, title, whereTitle):
-        self.tagger.moveTrack(title, whereTitle)
+    def changeTrackPosition(self, title, to):
+        self.tagger.moveTrack(title, to - 1)

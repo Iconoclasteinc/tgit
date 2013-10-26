@@ -26,7 +26,7 @@ ISRC = 'isrc'
 BITRATE = 'bitrate'
 DURATION = 'duration'
 
-METADATA = [TITLE, VERSION_INFO, FEATURED_GUEST, ISRC]
+TRACK_TAGS = [TITLE, VERSION_INFO, FEATURED_GUEST, ISRC]
 
 
 class TrackListener(object):
@@ -46,9 +46,8 @@ class Track(object):
     def removeTrackListener(self, listener):
         self._listeners.removeListener(listener)
 
-    @property
-    def metadata(self):
-        return self._metadata.copy()
+    def metadata(self, *tags):
+        return self._metadata.select(*tags)
 
     @property
     def filename(self):
@@ -64,7 +63,7 @@ class Track(object):
 
     def tag(self, metadata=None):
         if metadata is not None:
-            self._metadata.merge(metadata)
+            self._metadata.update(metadata)
 
         self._audioFile.save(self._metadata)
 
@@ -73,7 +72,7 @@ class Track(object):
 
 
 def addMetadataPropertiesTo(cls):
-    for meta in METADATA:
+    for meta in TRACK_TAGS:
         def createProperty(name):
             def getter(self):
                 return self._metadata[name]

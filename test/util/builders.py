@@ -35,7 +35,7 @@ def album(**meta):
     if 'tracks' in meta:
         for track in meta['tracks']:
             tracks.append(track)
-        del metadata['tracks']
+        del meta['tracks']
 
     album = Album(metadata(**meta))
     for track in tracks:
