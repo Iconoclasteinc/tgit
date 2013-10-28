@@ -82,11 +82,11 @@ class TrackListPageTest(BaseWidgetTest):
         self.album.addTrack(second)
 
         self.driver.play('Song #1')
-        self.widget.mediaStopped(first)
+        self.widget.trackStopped(first)
         self.driver.isNotPlaying('Song #1')
 
         self.driver.play('Song #2')
-        self.widget.mediaPaused(second)
+        self.widget.trackPaused(second)
         self.driver.isNotPlaying('Song #2')
 
     def testSignalsSelectTrackRequestWhenAddTrackButtonIsClicked(self):
@@ -141,13 +141,13 @@ class TrackListPageTest(BaseWidgetTest):
         self.driver.play('Song #2')
         self.driver.removeTrack('Song #1')
         self.driver.isPlaying('Song #2')
-        self.widget.mediaStopped(second)
+        self.widget.trackStopped(second)
         self.driver.isNotPlaying('Song #2')
 
         self.driver.play('Song #2')
         self.driver.removeTrack('Song #2')
         # Should be silently ignored
-        self.widget.mediaStopped(second)
+        self.widget.trackStopped(second)
 
     def testChangesTrackPositionInAlbumWhenTrackIsMoved(self):
         self.album.addTrack(build.track(trackTitle='Song #1'))

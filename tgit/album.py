@@ -17,23 +17,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.metadata import Image, Metadata
 from tgit.announcer import Announcer
-
-TITLE = 'releaseName'
-LEAD_PERFORMER = 'leadPerformer'
-GUEST_PERFORMERS = 'guestPerformers'
-LABEL_NAME = 'labelName'
-RECORDING_TIME = 'recordingTime'
-RELEASE_TIME = 'releaseTime'
-ORIGINAL_RELEASE_TIME = 'originalReleaseTime'
-UPC = 'upc'
-FRONT_COVER = 'frontCover'
-
-ALBUM_TAGS = [
-    TITLE, LEAD_PERFORMER, GUEST_PERFORMERS, LABEL_NAME, RECORDING_TIME, RELEASE_TIME,
-    ORIGINAL_RELEASE_TIME, UPC
-]
+from tgit.metadata import Image, Metadata
+from tgit import tags
 
 
 class AlbumListener(object):
@@ -83,7 +69,7 @@ class Album(object):
         return list(self._tracks)
 
     def updateMetadata(self, track):
-        self._metadata.update(track.metadata(*ALBUM_TAGS))
+        self._metadata.update(track.metadata(*tags.ALBUM_TAGS))
         self._signalStateChange()
 
     def empty(self):
@@ -112,7 +98,7 @@ class Album(object):
 
 
 def addMetadataPropertiesTo(cls):
-    for meta in ALBUM_TAGS:
+    for meta in tags.ALBUM_TAGS:
         def createProperty(name):
             def getter(self):
                 return self._metadata[name]

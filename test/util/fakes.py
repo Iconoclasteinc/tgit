@@ -6,7 +6,7 @@ from tgit.audio_library import AudioLibrary
 from tgit import mp3_file as mp3File, fs
 from tgit.file_chooser import FileChooser
 from tgit.metadata import Image
-from tgit import album
+from tgit import tags as tagging
 
 
 class FakeAudioLibrary(AudioLibrary):
@@ -26,15 +26,15 @@ class FakeAudioLibrary(AudioLibrary):
 
     def containsFile(self, filename, **tags):
         images = []
-        if album.FRONT_COVER in tags:
-            mime = fs.guessMimeType(tags[album.FRONT_COVER])
-            images.append(Image(mime, fs.readContent(tags[album.FRONT_COVER]),
+        if tagging.FRONT_COVER in tags:
+            mime = fs.guessMimeType(tags[tagging.FRONT_COVER])
+            images.append(Image(mime, fs.readContent(tags[tagging.FRONT_COVER]),
                                 type_=Image.FRONT_COVER, desc='Front Cover'))
-            del tags[album.FRONT_COVER]
+            del tags[tagging.FRONT_COVER]
 
         mp3 = self.load(filename)
-        assert_that(mp3.metadata(), has_entries(tags), 'metadata tags')
-        assert_that(mp3.metadata().images, contains(*images), 'attached pictures')
+        assert_that(mp3.metadata, has_entries(tags), 'metadata tags')
+        assert_that(mp3.metadata.images, contains(*images), 'attached pictures')
 
     def delete(self):
         [mp3.delete() for mp3 in self.files]
@@ -56,7 +56,7 @@ class FakeAudioPlayer(object):
     def stop(self):
         self.track = None
 
-    def addMediaListener(self, listener):
+    def addPlayerListener(self, listener):
         pass
 
 

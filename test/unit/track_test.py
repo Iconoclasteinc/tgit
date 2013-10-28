@@ -7,8 +7,8 @@ from flexmock import flexmock
 from test.util import builders as build
 
 from tgit.metadata import Metadata
-from tgit.album import TITLE as ALBUM_TITLE
-from tgit.track import Track, TrackListener, TITLE, VERSION_INFO, ISRC, FEATURED_GUEST
+import tgit.tags as tags
+from tgit.track import Track, TrackListener
 
 
 class TrackTest(unittest.TestCase):
@@ -34,22 +34,22 @@ class TrackTest(unittest.TestCase):
 
     def testSavesMetadataToAudioFileWhenTagged(self):
         metadata = {
-            ALBUM_TITLE: 'Album',
-            TITLE: 'Title',
-            VERSION_INFO: 'Remix',
-            FEATURED_GUEST: 'Featuring',
-            ISRC: 'Code',
+            tags.RELEASE_NAME: 'Album',
+            tags.TRACK_TITLE: 'Title',
+            tags.VERSION_INFO: 'Remix',
+            tags.FEATURED_GUEST: 'Featuring',
+            tags.ISRC: 'Code',
         }
 
         audio = build.audio()
         audio.should_receive('save').with_args(matching(has_entries(**metadata))).once()
 
         track = Track(audio)
-        track.trackTitle = metadata[TITLE]
-        track.versionInfo = metadata[VERSION_INFO]
-        track.featuredGuest = metadata[FEATURED_GUEST]
-        track.isrc = metadata[ISRC]
-        albumMetadata = Metadata(**metadata).select(ALBUM_TITLE)
+        track.trackTitle = metadata[tags.TRACK_TITLE]
+        track.versionInfo = metadata[tags.VERSION_INFO]
+        track.featuredGuest = metadata[tags.FEATURED_GUEST]
+        track.isrc = metadata[tags.ISRC]
+        albumMetadata = Metadata(**metadata).select(tags.RELEASE_NAME)
         track.tag(albumMetadata)
 
     def testAnnouncesStateChangesToListener(self):
@@ -58,14 +58,14 @@ class TrackTest(unittest.TestCase):
         self.assertNotifiesListenerOnPropertyChange('featuredGuest', 'Featuring')
         self.assertNotifiesListenerOnPropertyChange('isrc', 'Code')
 
-    def assertNotifiesListenerOnPropertyChange(self, property, value):
+    def assertNotifiesListenerOnPropertyChange(self, prop, value):
         track = Track(build.audio())
-        track.addTrackListener(self.listenerExpectingNotification(property, value))
-        setattr(track, property, value)
+        track.addTrackListener(self.listenerExpectingNotification(prop, value))
+        setattr(track, prop, value)
 
-    def listenerExpectingNotification(self, property, value):
+    def listenerExpectingNotification(self, prop, value):
         listener = flexmock(TrackListener())
         listener.should_receive('trackStateChanged') \
-            .with_args(matching(has_property(property, value))) \
+            .with_args(matching(has_property(prop, value))) \
             .once()
         return listener

@@ -25,7 +25,7 @@ from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QTable
 
 from tgit.announcer import Announcer
 from tgit.album import AlbumListener
-from tgit.player import MediaListener
+from tgit.player import PlayerListener
 from tgit.ui import constants as ui, display
 
 TRACK_TITLE_COLUMN = 0
@@ -37,13 +37,13 @@ PLAY_COLUMN = 5
 REMOVE_COLUMN = 6
 
 
-class TrackListPage(QWidget, MediaListener, AlbumListener):
+class TrackListPage(QWidget, PlayerListener, AlbumListener):
     def __init__(self, album, player, parent=None):
         QWidget.__init__(self, parent)
         self._album = album
         self._album.addAlbumListener(self)
         self._player = player
-        self._player.addMediaListener(self)
+        self._player.addPlayerListener(self)
         self._requestListeners = Announcer()
 
         self.setObjectName(ui.TRACK_LIST_PAGE_NAME)
@@ -54,15 +54,15 @@ class TrackListPage(QWidget, MediaListener, AlbumListener):
     def addRequestListener(self, listener):
         self._requestListeners.addListener(listener)
 
-    def mediaStopped(self, media):
+    def trackStopped(self, track):
         try:
-            self._listenButton(self._rowFor(media)).setChecked(False)
+            self._listenButton(self._rowFor(track)).setChecked(False)
         except StopIteration:
             #Track has been removed
             pass
 
-    def mediaPaused(self, media):
-        self.mediaStopped(media)
+    def trackPaused(self, track):
+        self.trackStopped(track)
 
     def _build(self):
         self._layout = QVBoxLayout()
@@ -185,4 +185,4 @@ class TrackListPage(QWidget, MediaListener, AlbumListener):
         self._album.removeTrack(track)
 
     def _isPlaying(self, track):
-        return self._player.isPlaying() and self._player.currentTrack() == track
+        return self._player.isPlaying() and track == self._player.currentTrack()

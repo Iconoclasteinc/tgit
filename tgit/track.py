@@ -18,15 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit.announcer import Announcer
-
-TITLE = 'trackTitle'
-VERSION_INFO = 'versionInfo'
-FEATURED_GUEST = 'featuredGuest'
-ISRC = 'isrc'
-BITRATE = 'bitrate'
-DURATION = 'duration'
-
-TRACK_TAGS = [TITLE, VERSION_INFO, FEATURED_GUEST, ISRC]
+from tgit import tags
 
 
 class TrackListener(object):
@@ -37,7 +29,7 @@ class TrackListener(object):
 class Track(object):
     def __init__(self, audioFile):
         self._audioFile = audioFile
-        self._metadata = audioFile.metadata()
+        self._metadata = audioFile.metadata.copy()
         self._listeners = Announcer()
 
     def addTrackListener(self, listener):
@@ -53,13 +45,8 @@ class Track(object):
     def filename(self):
         return self._audioFile.filename
 
-    @property
-    def bitrate(self):
-        return self._audioFile.bitrate
-
-    @property
-    def duration(self):
-        return self._audioFile.duration
+    def playAudio(self, player):
+        self._audioFile.play(player)
 
     def tag(self, metadata=None):
         if metadata is not None:
@@ -72,7 +59,7 @@ class Track(object):
 
 
 def addMetadataPropertiesTo(cls):
-    for meta in TRACK_TAGS:
+    for meta in tags.TRACK_TAGS:
         def createProperty(name):
             def getter(self):
                 return self._metadata[name]

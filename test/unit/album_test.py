@@ -10,7 +10,7 @@ from test.util import builders as build
 
 from tgit.metadata import Image
 from tgit.album import Album, AlbumListener
-import tgit.album as tags
+import tgit.tags as tags
 
 
 class AlbumTest(unittest.TestCase):
@@ -227,8 +227,8 @@ class AlbumTest(unittest.TestCase):
     def assertHasAlbumMetadata(self, track, album):
         metadata = track.metadata(*tags.ALBUM_TAGS)
 
-        assert_that(metadata, has_entry(tags.TITLE, album.releaseName),
-                    tags.TITLE)
+        assert_that(metadata, has_entry(tags.RELEASE_NAME, album.releaseName),
+                    tags.RELEASE_NAME)
         assert_that(metadata, has_entry(tags.LEAD_PERFORMER, album.leadPerformer),
                     tags.LEAD_PERFORMER)
         assert_that(metadata, has_entry(tags.GUEST_PERFORMERS, album.guestPerformers),

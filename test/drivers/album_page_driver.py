@@ -9,7 +9,7 @@ from test.cute.widgets import (dialogWindow, WidgetDriver, LabelDriver, LineEdit
                                AbstractButtonDriver,
                                FileDialogDriver)
 
-import tgit.album as album
+import tgit.tags as tags
 from tgit.ui import constants as ui
 
 
@@ -17,46 +17,46 @@ class AlbumPageDriver(WidgetDriver):
     def __init__(self, selector, prober, gesturePerformer):
         super(AlbumPageDriver, self).__init__(selector, prober, gesturePerformer)
 
-    def showsMetadata(self, **tags):
-        for tag, value in tags.iteritems():
-            if tag == album.TITLE:
+    def showsMetadata(self, **meta):
+        for tag, value in meta.iteritems():
+            if tag == tags.RELEASE_NAME:
                 self.showsReleaseName(value)
-            elif tag == album.LEAD_PERFORMER:
+            elif tag == tags.LEAD_PERFORMER:
                 self.showsLeadPerformer(value)
-            elif tag == album.GUEST_PERFORMERS:
+            elif tag == tags.GUEST_PERFORMERS:
                 self.showsGuestPerformers(value)
-            elif tag == album.LABEL_NAME:
+            elif tag == tags.LABEL_NAME:
                 self.showsLabelName(value)
-            elif tag == album.RECORDING_TIME:
+            elif tag == tags.RECORDING_TIME:
                 self.showsRecordingTime(value)
-            elif tag == album.RELEASE_TIME:
+            elif tag == tags.RELEASE_TIME:
                 self.showsReleaseTime(value)
-            elif tag == album.ORIGINAL_RELEASE_TIME:
+            elif tag == tags.ORIGINAL_RELEASE_TIME:
                 self.showsOriginalReleaseTime(value)
-            elif tag == album.UPC:
+            elif tag == tags.UPC:
                 self.showsUpc(value)
             else:
                 raise AssertionError("Don't know how to verify '%s'" % tag)
 
-    def changeMetadata(self, **tags):
-        for tag, value in tags.iteritems():
-            if tag == album.FRONT_COVER:
+    def changeMetadata(self, **meta):
+        for tag, value in meta.iteritems():
+            if tag == tags.FRONT_COVER:
                 self.chooseFrontCoverPicture(value)
-            elif tag == album.TITLE:
+            elif tag == tags.RELEASE_NAME:
                 self.changeReleaseName(value)
-            elif tag == album.LEAD_PERFORMER:
+            elif tag == tags.LEAD_PERFORMER:
                 self.changeLeadPerformer(value)
-            elif tag == album.GUEST_PERFORMERS:
+            elif tag == tags.GUEST_PERFORMERS:
                 self.changeGuestPerformers(value)
-            elif tag == album.LABEL_NAME:
+            elif tag == tags.LABEL_NAME:
                 self.changeLabelName(value)
-            elif tag == album.RECORDING_TIME:
+            elif tag == tags.RECORDING_TIME:
                 self.changeRecordingTime(value)
-            elif tag == album.RELEASE_TIME:
+            elif tag == tags.RELEASE_TIME:
                 self.changeReleaseTime(value)
-            elif tag == album.ORIGINAL_RELEASE_TIME:
+            elif tag == tags.ORIGINAL_RELEASE_TIME:
                 self.changeOriginalReleaseTime(value)
-            elif tag == album.UPC:
+            elif tag == tags.UPC:
                 self.changeUpc(value)
             else:
                 raise AssertionError("Don't know how to edit '%s'" % tag)

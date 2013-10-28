@@ -5,7 +5,7 @@ from PyQt4.QtGui import QLabel, QLineEdit
 from test.cute.matchers import named, withBuddy
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver)
 
-import tgit.track as track
+import tgit.tags as tags
 from tgit.ui import constants as ui
 
 
@@ -13,32 +13,32 @@ class TrackPageDriver(WidgetDriver):
     def __init__(self, selector, prober, gesturePerformer):
         super(TrackPageDriver, self).__init__(selector, prober, gesturePerformer)
 
-    def showsMetadata(self, **tags):
-        for tag, value in tags.iteritems():
-            if tag == track.TITLE:
+    def showsMetadata(self, **meta):
+        for tag, value in meta.iteritems():
+            if tag == tags.TRACK_TITLE:
                 self.showsTrackTitle(value)
-            elif tag == track.VERSION_INFO:
+            elif tag == tags.VERSION_INFO:
                 self.showsVersionInfo(value)
-            elif tag == track.FEATURED_GUEST:
+            elif tag == tags.FEATURED_GUEST:
                 self.showsFeaturedGuest(value)
-            elif tag == track.ISRC:
+            elif tag == tags.ISRC:
                 self.showsIsrc(value)
-            elif tag == track.BITRATE:
+            elif tag == tags.BITRATE:
                 self.showsBitrate(value)
-            elif tag == track.DURATION:
+            elif tag == tags.DURATION:
                 self.showsDuration(value)
             else:
                 raise AssertionError("Don't know how to verify <%s>" % tag)
 
-    def changeMetadata(self, **tags):
-        for tag, value in tags.iteritems():
-            if tag == track.TITLE:
+    def changeMetadata(self, **meta):
+        for tag, value in meta.iteritems():
+            if tag == tags.TRACK_TITLE:
                 self.changeTrackTitle(value)
-            elif tag == track.VERSION_INFO:
+            elif tag == tags.VERSION_INFO:
                 self.changeVersionInfo(value)
-            elif tag == track.FEATURED_GUEST:
+            elif tag == tags.FEATURED_GUEST:
                 self.changeFeaturedGuest(value)
-            elif tag == track.ISRC:
+            elif tag == tags.ISRC:
                 self.changeIsrc(value)
             else:
                 raise AssertionError("Don't know how to edit <%s>" % tag)

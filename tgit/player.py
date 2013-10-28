@@ -17,21 +17,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+import os
+
 from PyQt4.phonon import Phonon
-from mutagen import mp3
 
 from tgit import fs
+from tgit.announcer import Announcer
+from tgit.metadata import Metadata
 
 
-class MediaListener(object):
-    def mediaStopped(self, media):
+class PlayerListener(object):
+    def trackStopped(self, track):
         pass
 
-    def mediaPaused(self, media):
+    def trackPaused(self, track):
         pass
 
 
-# todo we need focused tests
 class PhononPlayer(object):
     LOADING = Phonon.LoadingState
     STOPPED = Phonon.StoppedState
@@ -41,7 +43,7 @@ class PhononPlayer(object):
     def __init__(self):
         self._media = Phonon.createPlayer(Phonon.MusicCategory)
         self._media.stateChanged.connect(self._stateChanged)
-        self._listeners = []
+        self._announce = Announcer()
         self._currentTrack = None
 
     def currentTrack(self):
@@ -51,46 +53,37 @@ class PhononPlayer(object):
         return self._media.state() == self.PLAYING
 
     def play(self, track):
-        self._media.setCurrentSource(Phonon.MediaSource(self._copy(track)))
-        self._media.play()
+        track.playAudio(self)
         self._currentTrack = track
-        # might want to delete the temp file for the previous track at some point
 
-    # todo let audio file make a copy and clear tags
-    def _copy(self, track):
+    def playMp3(self, mp3):
+        self._media.setCurrentSource(self._mediaSourceFor(mp3))
+        self._media.play()
+
+    def _mediaSourceFor(self, mp3):
         # On Windows, we have 2 issues with Phonon:
         # 1- It locks the file so we have to make a copy to allow tagging
-        copy = mp3.MP3(fs.makeCopy(track.filename))
         # 2- It fails to play files with our tags so we have to clear the frames
-        self._clearTags(copy)
-        return copy.filename
-
-    def _clearTags(self, audioFile):
-        audioFile.clear()
-        if audioFile.tags is None:
-            audioFile.add_tags()
-        audioFile.save()
+        copy = fs.makeCopy(mp3.filename)
+        mp3.save(metadata=Metadata(), overwrite=True, filename=copy)
+        return Phonon.MediaSource(copy)
 
     def stop(self):
         self._media.stop()
 
-    def addMediaListener(self, listener):
-        self._listeners.append(listener)
+    def addPlayerListener(self, listener):
+        self._announce.addListener(listener)
 
     def _stateChanged(self, is_, was):
         if was == self.PLAYING:
             # On OSX loading a new media source triggers a transition to the stopped state first
             # whereas on Windows it goes straight to the LOADING state
             if is_ == self.STOPPED or is_ == self.LOADING:
-                self._announceStopped(self._currentTrack)
+                self._deleteMediaSourceFile()
+                self._announce.trackStopped(self._currentTrack)
             if is_ == self.PAUSED:
-                self._announcePaused(self._currentTrack)
+                self._deleteMediaSourceFile()
+                self._announce.trackPaused(self._currentTrack)
 
-    # todo investigate using QObject signals & slots
-    def _announceStopped(self, track):
-        for listener in self._listeners:
-            listener.mediaStopped(track)
-
-    def _announcePaused(self, track):
-        for listener in self._listeners:
-            listener.mediaPaused(track)
+    def _deleteMediaSourceFile(self):
+        os.remove(self._media.currentSource().fileName())

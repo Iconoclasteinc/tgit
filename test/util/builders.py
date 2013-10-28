@@ -11,8 +11,8 @@ def image(mime='image/jpeg', data='...', type_=Image.FRONT_COVER, desc=''):
     return mime, data, type_, desc
 
 
-def metadata(**meta):
-    metadata = Metadata(**meta)
+def metadata(bitrate=9600, duration=180, **meta):
+    metadata = Metadata(bitrate=bitrate, duration=duration, **meta)
     if 'images' in meta:
         for image in meta['images']:
             metadata.addImage(*image)
@@ -20,14 +20,14 @@ def metadata(**meta):
     return metadata
 
 
-def audio(filename='track.mp3', bitrate=9600, duration=180, **meta):
-    return flexmock(filename=filename, bitrate=bitrate, duration=duration,
-                    metadata=lambda: metadata(**meta),
+def audio(filename='track.mp3', **meta):
+    return flexmock(filename=filename,
+                    metadata=metadata(**meta),
                     save=lambda metadata: 'saved!')
 
 
-def track(filename='track.mp3', bitrate=9600, duration=180, **meta):
-    return Track(audio(filename, bitrate, duration, **meta))
+def track(filename='track.mp3', **meta):
+    return Track(audio(filename, **meta))
 
 
 def album(**meta):
