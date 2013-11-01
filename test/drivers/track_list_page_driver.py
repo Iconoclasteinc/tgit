@@ -8,7 +8,7 @@ from test.cute.widgets import WidgetDriver, AbstractButtonDriver, TableViewDrive
 from test.cute.matchers import named
 
 from tgit.ui import constants as ui
-from tgit.ui import track_list_page as page
+from tgit.ui.album_table_model import Columns
 
 
 class TrackListPageDriver(WidgetDriver):
@@ -71,20 +71,20 @@ class TrackListPageDriver(WidgetDriver):
                                                named(ui.REMOVE_BUTTON_NAME))
 
     def _removeWidget(self, index):
-        return self._trackTable().widgetInCell(index, page.REMOVE_COLUMN)
+        return self._trackTable().widgetInCell(index, Columns.index(Columns.remove))
 
     def _clickRemoveButtonAt(self, row):
-        self._trackTable().clickOnCell(row, page.REMOVE_COLUMN)
+        self._trackTable().clickOnCell(row, Columns.index(Columns.remove))
 
     def _playButtonAt(self, index):
         return AbstractButtonDriver.findSingle(self._playWidget(index), QPushButton,
                                                named(ui.PLAY_BUTTON_NAME))
 
     def _playWidget(self, index):
-        return self._trackTable().widgetInCell(index, page.PLAY_COLUMN)
+        return self._trackTable().widgetInCell(index, Columns.index(Columns.play))
 
     def _clickPlayButtonAt(self, row):
-        self._trackTable().clickOnCell(row, page.PLAY_COLUMN)
+        self._trackTable().clickOnCell(row, Columns.index(Columns.play))
 
     def _trackTable(self):
         return TableViewDriver.findSingle(self, QTableView, named(ui.TRACK_TABLE_NAME))

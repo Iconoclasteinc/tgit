@@ -26,9 +26,6 @@ from tgit.player import PlayerListener
 from tgit.ui.album_table_model import AlbumTableModel, Columns
 from tgit.ui import constants as ui
 
-TRACK_TITLE_COLUMN, LEAD_PERFORMER_COLUMN, RELEASE_NAME_COLUMN, BITRATE_COLUMN, DURATION_COLUMN,\
-    PLAY_COLUMN, REMOVE_COLUMN = xrange(7)
-
 
 class PlayButtonDelegate(QItemDelegate):
     def __init__(self, view):
