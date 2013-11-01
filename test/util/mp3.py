@@ -59,8 +59,8 @@ class Mp3(object):
                 self._tags.add(id3.TPE1(encoding=UTF_8, text=value))
             elif tag == tagging.GUEST_PERFORMERS or tag == 'TPE2':
                 self._tags.add(id3.TPE2(encoding=UTF_8, text=value))
-            elif tag == tagging.LABEL_NAME or tag == 'TPUB':
-                self._tags.add(id3.TPUB(encoding=UTF_8, text=value))
+            elif tag == tagging.LABEL_NAME or tag == 'TOWN':
+                self._tags.add(id3.TOWN(encoding=UTF_8, text=value))
             elif tag == tagging.RECORDING_TIME or tag == 'TDRC':
                 self._tags.add(id3.TDRC(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
             elif tag == tagging.RELEASE_TIME or tag == 'TDRL':

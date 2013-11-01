@@ -16,7 +16,8 @@ DURATION = TestMp3.duration
 class MP3FileTest(unittest.TestCase):
 
     def tearDown(self):
-        self.testFile.delete()
+        if hasattr(self, 'testFile'):
+            self.testFile.delete()
 
     def makeMp3(self, **tags):
         self.testFile = makeMp3(TestMp3.filename, **tags)
@@ -38,8 +39,8 @@ class MP3FileTest(unittest.TestCase):
         mp3 = mp3File.load(self.makeMp3(TPE2='Band'))
         assert_that(mp3.metadata, has_entry(tags.GUEST_PERFORMERS, 'Band'), 'metadata')
 
-    def testReadsLabelNameFromTPUBFrame(self):
-        mp3 = mp3File.load(self.makeMp3(TPUB='Label Name'))
+    def testReadsLabelNameFromTOWNFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TOWN='Label Name'))
         assert_that(mp3.metadata, has_entry(tags.LABEL_NAME, 'Label Name'), 'metadata')
 
     def testReadsRecordingTimeFromTDRCFrame(self):

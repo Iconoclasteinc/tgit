@@ -55,7 +55,7 @@ class MP3File(object):
         'TALB': tagging.RELEASE_NAME,
         'TPE1': tagging.LEAD_PERFORMER,
         'TPE2': tagging.GUEST_PERFORMERS,
-        'TPUB': tagging.LABEL_NAME,
+        'TOWN': tagging.LABEL_NAME,
         'TDRC': tagging.RECORDING_TIME,
         'TDRL': tagging.RELEASE_TIME,
         'TDOR': tagging.ORIGINAL_RELEASE_TIME,
