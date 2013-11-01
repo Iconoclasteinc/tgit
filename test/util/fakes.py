@@ -6,6 +6,7 @@ from tgit.audio_library import AudioLibrary
 from tgit import mp3_file as mp3File, fs
 from tgit.file_chooser import FileChooser
 from tgit.metadata import Image
+from tgit.announcer import Announcer
 from tgit import tags as tagging
 
 
@@ -42,22 +43,28 @@ class FakeAudioLibrary(AudioLibrary):
 
 class FakeAudioPlayer(object):
     def __init__(self):
-        self.track = None
+        self._track = None
+        self._announce = Announcer()
 
-    def currentTrack(self):
-        return self.track
+    def track(self):
+        return self._track
 
     def isPlaying(self):
-        return self.currentTrack() is not None
+        return self._track is not None
 
     def play(self, track):
-        self.track = track
+        self._track = track
+        self._announce.started(self._track)
 
     def stop(self):
-        self.track = None
+        self._announce.stopped(self._track)
+        self._track = None
 
     def addPlayerListener(self, listener):
-        pass
+        self._announce.addListener(listener)
+
+    def removePlayerListener(self, listener):
+        self._announce.removeListener(listener)
 
 
 class FakeFileChooser(FileChooser):

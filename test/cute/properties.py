@@ -38,10 +38,6 @@ def listItemText():
     return PropertyQuery('text', lambda item: item.data(Qt.DisplayRole))
 
 
-def rowCount():
-    return PropertyQuery('row count', lambda w: w.rowCount())
-
-
 class Query(SelfDescribing):
     def __call__(self, arg):
         pass

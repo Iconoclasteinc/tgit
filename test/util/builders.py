@@ -11,7 +11,7 @@ def image(mime='image/jpeg', data='...', type_=Image.FRONT_COVER, desc=''):
     return mime, data, type_, desc
 
 
-def metadata(bitrate=9600, duration=180, **meta):
+def metadata(bitrate=96000, duration=200, **meta):
     metadata = Metadata(bitrate=bitrate, duration=duration, **meta)
     if 'images' in meta:
         for image in meta['images']:

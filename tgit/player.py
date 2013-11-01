@@ -27,10 +27,13 @@ from tgit.metadata import Metadata
 
 
 class PlayerListener(object):
-    def trackStopped(self, track):
+    def started(self, track):
         pass
 
-    def trackPaused(self, track):
+    def stopped(self, track):
+        pass
+
+    def paused(self, track):
         pass
 
 
@@ -44,17 +47,18 @@ class PhononPlayer(object):
         self._media = Phonon.createPlayer(Phonon.MusicCategory)
         self._media.stateChanged.connect(self._stateChanged)
         self._announce = Announcer()
-        self._currentTrack = None
+        self._previous = None
+        self._track = None
 
-    def currentTrack(self):
-        return self._currentTrack
+    def track(self):
+        return self._track
 
     def isPlaying(self):
         return self._media.state() == self.PLAYING
 
     def play(self, track):
+        self._starting = track
         track.playAudio(self)
-        self._currentTrack = track
 
     def playMp3(self, mp3):
         self._media.setCurrentSource(self._mediaSourceFor(mp3))
@@ -74,16 +78,22 @@ class PhononPlayer(object):
     def addPlayerListener(self, listener):
         self._announce.addListener(listener)
 
+    def removePlayerListener(self, listener):
+        self._announce.removeListener(listener)
+
     def _stateChanged(self, is_, was):
-        if was == self.PLAYING:
+        if is_ == self.PLAYING:
+            self._announce.started(self._starting)
+            self._track = self._starting
+        elif was == self.PLAYING:
             # On OSX loading a new media source triggers a transition to the stopped state first
             # whereas on Windows it goes straight to the LOADING state
             if is_ == self.STOPPED or is_ == self.LOADING:
                 self._deleteMediaSourceFile()
-                self._announce.trackStopped(self._currentTrack)
+                self._announce.stopped(self._track)
             if is_ == self.PAUSED:
                 self._deleteMediaSourceFile()
-                self._announce.trackPaused(self._currentTrack)
+                self._announce.paused(self._track)
 
     def _deleteMediaSourceFile(self):
         os.remove(self._media.currentSource().fileName())

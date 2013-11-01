@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import contains, has_items
+from hamcrest import contains, has_items, equal_to
 
-from PyQt4.QtGui import QPushButton, QTableWidget
+from PyQt4.QtGui import QPushButton, QTableView
 
-from test.cute.widgets import WidgetDriver, AbstractButtonDriver, TableDriver
-from test.cute.matchers import named, withText
+from test.cute.widgets import WidgetDriver, AbstractButtonDriver, TableViewDriver
+from test.cute.matchers import named
 
 from tgit.ui import constants as ui
 from tgit.ui import track_list_page as page
@@ -16,19 +16,19 @@ class TrackListPageDriver(WidgetDriver):
         super(TrackListPageDriver, self).__init__(selector, prober, gesturePerformer)
 
     def showsColumnHeaders(self, *titles):
-        headersMatching = [withText(title) for title in titles]
-        self._trackTable().hasHeading(contains(*headersMatching))
+        headers = [title for title in titles]
+        self._trackTable().hasHeaders(contains(*headers))
 
     def showsTrack(self, *columns):
-        cells = [withText(column) for column in columns]
+        cells = [column for column in columns]
         return self._trackTable().hasRow(has_items(*cells))
 
     def showsTracksInOrder(self, *tracks):
-        rows = [has_items(*[withText(column) for column in track]) for track in tracks]
+        rows = [has_items(*[column for column in track]) for track in tracks]
         return self._trackTable().containsRows(contains(*rows))
 
     def hasTrackCount(self, count):
-        self._trackTable().hasRowCount(count)
+        self._trackTable().hasRowCount(equal_to(count))
 
     def isPlaying(self, title):
         row = self.showsTrack(title)
@@ -87,4 +87,4 @@ class TrackListPageDriver(WidgetDriver):
         self._trackTable().clickOnCell(row, page.PLAY_COLUMN)
 
     def _trackTable(self):
-        return TableDriver.findSingle(self, QTableWidget, named(ui.TRACK_TABLE_NAME))
+        return TableViewDriver.findSingle(self, QTableView, named(ui.TRACK_TABLE_NAME))

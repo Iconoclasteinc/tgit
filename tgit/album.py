@@ -75,14 +75,17 @@ class Album(object):
     def empty(self):
         return len(self._tracks) == 0
 
+    def indexOf(self, track):
+        return self.tracks.index(track)
+
     def addTrack(self, track, position=-1):
         if not self._metadata:
             self.updateMetadata(track)
 
         if position == -1:
             position = len(self._tracks)
-        self._listeners.trackAdded(track, position)
         self._tracks.insert(position, track)
+        self._listeners.trackAdded(track, position)
 
     def removeTrack(self, track):
         position = self._tracks.index(track)

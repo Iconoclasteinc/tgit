@@ -29,6 +29,8 @@ class TrackListPageTest(BaseWidgetTest):
         self.album = Album()
         self.widget = TrackListPage(self.album, self.player)
         self.view(self.widget)
+        # so that all columns are displayed and buttons are created
+        self.widget.resize(800, 600)
         self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):
@@ -44,15 +46,12 @@ class TrackListPageTest(BaseWidgetTest):
                                         duration=timedelta(minutes=3, seconds=43).total_seconds()))
         self.album.releaseName = 'My Album'
         self.album.leadPerformer = 'My Artist'
-
-        self.widget.albumStateChanged(self.album)
         self.driver.showsTrack('My Song', 'My Artist', 'My Album', '192 kbps', '03:43')
 
     def testShowsUpToDateTrackInformation(self):
         track = build.track(trackTitle='')
         self.album.addTrack(track)
         track.trackTitle = 'Banana Song'
-        self.widget.trackStateChanged(track)
         self.driver.showsTrack('Banana Song')
 
     def testDisplaysAllTracksInRows(self):
@@ -66,8 +65,8 @@ class TrackListPageTest(BaseWidgetTest):
         track = build.track(trackTitle='Song')
         self.album.addTrack(track)
 
-        self.player.should_call('play').once().with_args(track).when(self._notPlayingMusic())
-        self.player.should_call('stop').once().when(self._playingMusic())
+        self.player.should_call('play').once().with_args(track).when(self._notPlaying())
+        self.player.should_call('stop').once().when(self._playing())
 
         self.driver.isNotPlaying('Song')
         self.driver.playOrStop('Song')
@@ -82,11 +81,11 @@ class TrackListPageTest(BaseWidgetTest):
         self.album.addTrack(second)
 
         self.driver.play('Song #1')
-        self.widget.trackStopped(first)
+        self.player.stop()
         self.driver.isNotPlaying('Song #1')
 
         self.driver.play('Song #2')
-        self.widget.trackPaused(second)
+        self.player.stop()
         self.driver.isNotPlaying('Song #2')
 
     def testSignalsSelectTrackRequestWhenAddTrackButtonIsClicked(self):
@@ -132,23 +131,6 @@ class TrackListPageTest(BaseWidgetTest):
         self.player.should_call('stop').once()
         self.driver.removeTrack('Song #2')
 
-    def testAccountsForRemovedTracksWhenReceivingMediaUpdates(self):
-        first = build.track(trackTitle='Song #1')
-        second = build.track(trackTitle='Song #2')
-        self.album.addTrack(first)
-        self.album.addTrack(second)
-
-        self.driver.play('Song #2')
-        self.driver.removeTrack('Song #1')
-        self.driver.isPlaying('Song #2')
-        self.widget.trackStopped(second)
-        self.driver.isNotPlaying('Song #2')
-
-        self.driver.play('Song #2')
-        self.driver.removeTrack('Song #2')
-        # Should be silently ignored
-        self.widget.trackStopped(second)
-
     def testChangesTrackPositionInAlbumWhenTrackIsMoved(self):
         self.album.addTrack(build.track(trackTitle='Song #1'))
         self.album.addTrack(build.track(trackTitle='Song #2'))
@@ -170,8 +152,8 @@ class TrackListPageTest(BaseWidgetTest):
                                          contains(hasTitle('Song #3'),
                                                   hasTitle('Song #1')), 'tracks'))
 
-    def _notPlayingMusic(self):
+    def _notPlaying(self):
         return lambda: not self.player.isPlaying()
 
-    def _playingMusic(self):
+    def _playing(self):
         return lambda: self.player.isPlaying()
