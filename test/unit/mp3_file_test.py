@@ -64,6 +64,10 @@ class MP3FileTest(unittest.TestCase):
         assert_that(mp3.metadata, has_entry(tags.ORIGINAL_RELEASE_TIME, '1999-03-15'),
                     'metadata')
 
+    def testReadsRecordingStudiosFromCustomFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TXXX_RECORDING_STUDIOS='Studio Name'))
+        assert_that(mp3.metadata, has_entry(tags.RECORDING_STUDIOS, 'Studio Name'), 'metadata')
+
     def testReadsTrackTitleFromTIT2Frame(self):
         mp3 = mp3File.load(self.makeMp3(TIT2='Track Title'))
         assert_that(mp3.metadata, has_entry(tags.TRACK_TITLE, 'Track Title'), 'metadata')
@@ -110,6 +114,7 @@ class MP3FileTest(unittest.TestCase):
         metadata[tags.RECORDING_TIME] = u"2012-07-01"
         metadata[tags.RELEASE_TIME] = u"2013-12-01"
         metadata[tags.ORIGINAL_RELEASE_TIME] = u"1999-01-01"
+        metadata[tags.RECORDING_STUDIOS] = u'Studio Name'
         metadata[tags.TRACK_TITLE] = u"Track Title"
         metadata[tags.VERSION_INFO] = u"Version Info"
         metadata[tags.FEATURED_GUEST] = u"Featured Guest"

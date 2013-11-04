@@ -29,44 +29,52 @@ class TaggerTest(unittest.TestCase):
         self.application.showsAlbumMetadata(
             releaseName=u'',
             leadPerformer=u'',
+            guestPerformers=u'',
             labelName=u'',
             catalogNumber=u'',
             upc=u'',
+            recordingStudios=u'',
             recordingTime=u'',
             releaseTime='')
         self.application.changeAlbumMetadata(
             frontCover=resources.path('sheller-en-solitaire.jpg'),
             releaseName=u'Sheller en solitaire',
             leadPerformer=u'William Sheller',
+            guestPerformers=u'-',
             labelName=u'Philips',
             catalogNumber=u'848 786-2',
             upc=u'042284878623',
+            recordingStudios=u'Mercury',
             recordingTime=u'1991',
             releaseTime=u'1991')
-
         self.application.showsNextTrackMetadata(
             trackTitle=u'',
+            versionInfo='',
+            featuredGuest='',
             bitrate='320 kbps',
             duration='00:09',
             isrc=u'')
         self.application.changeTrackMetadata(
             trackTitle=u'Un homme heureux',
             versionInfo=u'Version originale',
+            featuredGuest='-',
             isrc=u'FRZ039105290')
         self.audioLibrary.containsFile(
             track.filename,
             frontCover=resources.path('sheller-en-solitaire.jpg'),
             releaseName=u'Sheller en solitaire',
             leadPerformer=u'William Sheller',
+            guestPerformers=u'-',
             labelName=u'Philips',
             catalogNumber=u'848 786-2',
             upc=u'042284878623',
             recordingTime=u'1991',
             releaseTime=u'1991',
+            recordingStudios=u'Mercury',
             trackTitle=u'Un homme heureux',
             versionInfo=u'Version originale',
+            featuredGuest='-',
             isrc=u'FRZ039105290')
-
 
     def testTaggingMultipleTracksInAnAlbum(self):
         maPreference = self.audioLibrary.add(makeMp3(

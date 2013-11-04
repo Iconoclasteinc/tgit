@@ -56,6 +56,8 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsReleaseTime('2009-01-01')
         self.album.originalReleaseTime = '1998-03-05'
         self.driver.showsOriginalReleaseTime('1998-03-05')
+        self.album.recordingStudios = 'Studio A, Studio B'
+        self.driver.showsRecordingStudios('Studio A, Studio B')
 
     def testUpdatesAlbumWhenMetadataEdited(self):
         self.pictureChooser.chooses(resources.path('front-cover.jpg'))
@@ -95,3 +97,8 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.changeOriginalReleaseTime('1998-03-05')
         self.check(AssertionProbe(self.album.originalReleaseTime, equal_to('1998-03-05'),
                                   'original release time'))
+
+        self.driver.changeRecordingStudios('Studios')
+        self.check(AssertionProbe(self.album.recordingStudios, equal_to('Studios'),
+                                  'recording studios'))
+

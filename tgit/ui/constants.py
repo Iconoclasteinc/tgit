@@ -51,6 +51,7 @@ UPC_EDIT_NAME = 'upc'
 RECORDING_TIME_EDIT_NAME = 'recording time'
 RELEASE_TIME_EDIT_NAME = 'release time'
 ORIGINAL_RELEASE_TIME_EDIT_NAME = 'original release time'
+RECORDING_STUDIOS_EDIT_NAME = 'recording studios'
 
 TRACK_TITLE_EDIT_NAME = 'track title'
 VERSION_INFO_EDIT_NAME = 'version info'

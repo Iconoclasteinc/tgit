@@ -22,11 +22,12 @@ RELEASE_NAME = 'releaseName'
 LEAD_PERFORMER = 'leadPerformer'
 GUEST_PERFORMERS = 'guestPerformers'
 LABEL_NAME = 'labelName'
+UPC = 'upc'
+CATALOG_NUMBER = 'catalogNumber'
 RELEASE_TIME = 'releaseTime'
 ORIGINAL_RELEASE_TIME = 'originalReleaseTime'
 RECORDING_TIME = 'recordingTime'
-UPC = 'upc'
-CATALOG_NUMBER = 'catalogNumber'
+RECORDING_STUDIOS = 'recordingStudios'
 
 ALBUM_TAGS = [
     RELEASE_NAME,
@@ -38,6 +39,7 @@ ALBUM_TAGS = [
     RECORDING_TIME,
     RELEASE_TIME,
     ORIGINAL_RELEASE_TIME,
+    RECORDING_STUDIOS
 ]
 
 BITRATE = 'bitrate'

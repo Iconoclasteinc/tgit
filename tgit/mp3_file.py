@@ -61,6 +61,7 @@ class MP3File(object):
         'TDRC': tagging.RECORDING_TIME,
         'TDRL': tagging.RELEASE_TIME,
         'TDOR': tagging.ORIGINAL_RELEASE_TIME,
+        'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
         'TIT2': tagging.TRACK_TITLE,
         'TPE4': tagging.VERSION_INFO,
         'TXXX:Featured Guest': tagging.FEATURED_GUEST,

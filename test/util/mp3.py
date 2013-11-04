@@ -71,6 +71,8 @@ class Mp3(object):
                 self._tags.add(id3.TDRL(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
             elif tag == tagging.ORIGINAL_RELEASE_TIME or tag == 'TDOR':
                 self._tags.add(id3.TDOR(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
+            elif tag == tagging.RECORDING_STUDIOS or tag == 'TXXX_RECORDING_STUDIOS':
+                self._tags.add(id3.TXXX(encoding=UTF_8, desc='Recording Studios', text=value))
             elif tag == tagging.TRACK_TITLE or tag == 'TIT2':
                 self._tags.add(id3.TIT2(encoding=UTF_8, text=value))
             elif tag == tagging.VERSION_INFO or tag == 'TPE4':

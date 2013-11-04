@@ -37,6 +37,8 @@ class AlbumPageDriver(WidgetDriver):
                 self.showsReleaseTime(value)
             elif tag == tags.ORIGINAL_RELEASE_TIME:
                 self.showsOriginalReleaseTime(value)
+            elif tag == tags.RECORDING_STUDIOS:
+                self.showsRecordingStudios(value)
             else:
                 raise AssertionError("Don't know how to verify '%s'" % tag)
 
@@ -62,6 +64,8 @@ class AlbumPageDriver(WidgetDriver):
                 self.changeReleaseTime(value)
             elif tag == tags.ORIGINAL_RELEASE_TIME:
                 self.changeOriginalReleaseTime(value)
+            elif tag == tags.RECORDING_STUDIOS:
+                self.changeRecordingStudios(value)
             else:
                 raise AssertionError("Don't know how to edit '%s'" % tag)
 
@@ -181,3 +185,14 @@ class AlbumPageDriver(WidgetDriver):
     def changeOriginalReleaseTime(self, time):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME))
         edit.replaceAllText(time)
+
+    def showsRecordingStudios(self, studios):
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(ui.RECORDING_STUDIOS_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RECORDING_STUDIOS_EDIT_NAME))
+        edit.hasText(studios)
+
+    def changeRecordingStudios(self, studios):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RECORDING_STUDIOS_EDIT_NAME))
+        edit.replaceAllText(studios)

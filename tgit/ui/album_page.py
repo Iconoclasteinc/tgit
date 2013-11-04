@@ -83,11 +83,12 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._addLeadPerformerTo(layout, 2)
         self._addGuestPerformersTo(layout, 3)
         self._addLabelNameTo(layout, 4)
-        self._addCatalogNumber(layout, 5)
-        self._addUpc(layout, 6)
+        self._addCatalogNumberTo(layout, 5)
+        self._addUpcTo(layout, 6)
         self._addRecordingTimeTo(layout, 7)
         self._addReleaseTimeTo(layout, 8)
         self._addOriginalReleaseTimeTo(layout, 9)
+        self._addRecordingStudiosTo(layout, 10)
 
     def _addFrontCoverPictureTo(self, layout, row):
         self._frontCoverPixmap = QLabel()
@@ -141,7 +142,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._labelNameEdit, row, 1)
         self._labelNameLabel.setBuddy(self._labelNameEdit)
 
-    def _addCatalogNumber(self, layout, row):
+    def _addCatalogNumberTo(self, layout, row):
         self._catalogNumberLabel = QLabel()
         layout.addWidget(self._catalogNumberLabel, row, 0)
         self._catalogNumberEdit = QLineEdit()
@@ -150,7 +151,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._catalogNumberEdit, row, 1)
         self._catalogNumberLabel.setBuddy(self._catalogNumberEdit)
 
-    def _addUpc(self, layout, row):
+    def _addUpcTo(self, layout, row):
         self._upcLabel = QLabel()
         layout.addWidget(self._upcLabel, row, 0)
         self._upcEdit = QLineEdit()
@@ -186,6 +187,15 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._originalReleaseTimeEdit, row, 1)
         self._originalReleaseTimeLabel.setBuddy(self._originalReleaseTimeEdit)
 
+    def _addRecordingStudiosTo(self, layout, row):
+        self._recordingStudiosLabel = QLabel()
+        layout.addWidget(self._recordingStudiosLabel, row, 0)
+        self._recordingStudiosEdit = QLineEdit()
+        self._recordingStudiosEdit.setObjectName(ui.RECORDING_STUDIOS_EDIT_NAME)
+        self._recordingStudiosEdit.editingFinished.connect(self._updateRecordingStudios)
+        layout.addWidget(self._recordingStudiosEdit, row, 1)
+        self._recordingStudiosLabel.setBuddy(self._recordingStudiosEdit)
+
     def translateUi(self):
         self._selectPictureButton.setText(self.tr('Select Picture...'))
         self._releaseNameLabel.setText(self.tr('Release Name: '))
@@ -197,6 +207,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._recordingTimeLabel.setText(self.tr('Recording Time: '))
         self._releaseTimeLabel.setText(self.tr('Release Time: '))
         self._originalReleaseTimeLabel.setText(self.tr('Original Release Time: '))
+        self._recordingStudiosLabel.setText(self.tr('Recording Studios: '))
 
     def _frontCoverOf(self, album):
         frontCovers = album.frontCovers
@@ -216,6 +227,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._recordingTimeEdit.setText(album.recordingTime)
         self._releaseTimeEdit.setText(album.releaseTime)
         self._originalReleaseTimeEdit.setText(album.originalReleaseTime)
+        self._recordingStudiosEdit.setText(album.recordingStudios)
 
     def _updateAlbumCover(self):
         self._album.removeImages()
@@ -248,3 +260,6 @@ class AlbumPage(QWidget, FileChoiceListener):
 
     def _updateOriginalReleaseTime(self):
         self._album.originalReleaseTime = self._originalReleaseTimeEdit.text()
+
+    def _updateRecordingStudios(self):
+        self._album.recordingStudios = self._recordingStudiosEdit.text()
