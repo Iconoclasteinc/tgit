@@ -61,14 +61,16 @@ class Mp3(object):
                 self._tags.add(id3.TPE2(encoding=UTF_8, text=value))
             elif tag == tagging.LABEL_NAME or tag == 'TOWN':
                 self._tags.add(id3.TOWN(encoding=UTF_8, text=value))
+            elif tag == tagging.CATALOG_NUMBER or tag == 'TXXX_CATALOG_NUMBER':
+                self._tags.add(id3.TXXX(encoding=UTF_8, desc='Catalog Number', text=value))
+            elif tag == tagging.UPC or tag == 'TXXX_UPC':
+                self._tags.add(id3.TXXX(encoding=UTF_8, desc='UPC', text=value))
             elif tag == tagging.RECORDING_TIME or tag == 'TDRC':
                 self._tags.add(id3.TDRC(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
             elif tag == tagging.RELEASE_TIME or tag == 'TDRL':
                 self._tags.add(id3.TDRL(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
             elif tag == tagging.ORIGINAL_RELEASE_TIME or tag == 'TDOR':
                 self._tags.add(id3.TDOR(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
-            elif tag == tagging.UPC or tag == 'TXXX_UPC':
-                self._tags.add(id3.TXXX(encoding=UTF_8, desc='UPC', text=value))
             elif tag == tagging.TRACK_TITLE or tag == 'TIT2':
                 self._tags.add(id3.TIT2(encoding=UTF_8, text=value))
             elif tag == tagging.VERSION_INFO or tag == 'TPE4':

@@ -43,6 +43,14 @@ class MP3FileTest(unittest.TestCase):
         mp3 = mp3File.load(self.makeMp3(TOWN='Label Name'))
         assert_that(mp3.metadata, has_entry(tags.LABEL_NAME, 'Label Name'), 'metadata')
 
+    def testReadsCatalogNumberFromCustomFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TXXX_CATALOG_NUMBER='123 456-1'))
+        assert_that(mp3.metadata, has_entry(tags.CATALOG_NUMBER, '123 456-1'), 'metadata')
+
+    def testReadsUpcFromCustomFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TXXX_UPC='1234567899999'))
+        assert_that(mp3.metadata, has_entry(tags.UPC, '1234567899999'), 'metadata')
+
     def testReadsRecordingTimeFromTDRCFrame(self):
         mp3 = mp3File.load(self.makeMp3(TDRC='2012-07-15'))
         assert_that(mp3.metadata, has_entry(tags.RECORDING_TIME, '2012-07-15'), 'metadata')
@@ -55,10 +63,6 @@ class MP3FileTest(unittest.TestCase):
         mp3 = mp3File.load(self.makeMp3(TDOR='1999-03-15'))
         assert_that(mp3.metadata, has_entry(tags.ORIGINAL_RELEASE_TIME, '1999-03-15'),
                     'metadata')
-
-    def testReadsUpcFromCustomFrame(self):
-        mp3 = mp3File.load(self.makeMp3(TXXX_UPC='1234567899999'))
-        assert_that(mp3.metadata, has_entry(tags.UPC, '1234567899999'), 'metadata')
 
     def testReadsTrackTitleFromTIT2Frame(self):
         mp3 = mp3File.load(self.makeMp3(TIT2='Track Title'))
@@ -101,10 +105,11 @@ class MP3FileTest(unittest.TestCase):
         metadata[tags.LEAD_PERFORMER] = u"Lead Performer"
         metadata[tags.GUEST_PERFORMERS] = u"Guest Performers"
         metadata[tags.LABEL_NAME] = u"Label Name"
+        metadata[tags.CATALOG_NUMBER] = u"123 456-1"
+        metadata[tags.UPC] = u"987654321111"
         metadata[tags.RECORDING_TIME] = u"2012-07-01"
         metadata[tags.RELEASE_TIME] = u"2013-12-01"
         metadata[tags.ORIGINAL_RELEASE_TIME] = u"1999-01-01"
-        metadata[tags.UPC] = u"987654321111"
         metadata[tags.TRACK_TITLE] = u"Track Title"
         metadata[tags.VERSION_INFO] = u"Version Info"
         metadata[tags.FEATURED_GUEST] = u"Featured Guest"

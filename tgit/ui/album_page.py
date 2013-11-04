@@ -83,10 +83,11 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._addLeadPerformerTo(layout, 2)
         self._addGuestPerformersTo(layout, 3)
         self._addLabelNameTo(layout, 4)
-        self._addRecordingTimeTo(layout, 5)
-        self._addReleaseTimeTo(layout, 6)
-        self._addOriginalReleaseTimeTo(layout, 7)
-        self._addUpc(layout, 8)
+        self._addCatalogNumber(layout, 5)
+        self._addUpc(layout, 6)
+        self._addRecordingTimeTo(layout, 7)
+        self._addReleaseTimeTo(layout, 8)
+        self._addOriginalReleaseTimeTo(layout, 9)
 
     def _addFrontCoverPictureTo(self, layout, row):
         self._frontCoverPixmap = QLabel()
@@ -140,6 +141,24 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._labelNameEdit, row, 1)
         self._labelNameLabel.setBuddy(self._labelNameEdit)
 
+    def _addCatalogNumber(self, layout, row):
+        self._catalogNumberLabel = QLabel()
+        layout.addWidget(self._catalogNumberLabel, row, 0)
+        self._catalogNumberEdit = QLineEdit()
+        self._catalogNumberEdit.setObjectName(ui.CATALOG_NUMBER_EDIT_NAME)
+        self._catalogNumberEdit.editingFinished.connect(self._updateCatalogNumber)
+        layout.addWidget(self._catalogNumberEdit, row, 1)
+        self._catalogNumberLabel.setBuddy(self._catalogNumberEdit)
+
+    def _addUpc(self, layout, row):
+        self._upcLabel = QLabel()
+        layout.addWidget(self._upcLabel, row, 0)
+        self._upcEdit = QLineEdit()
+        self._upcEdit.setObjectName(ui.UPC_EDIT_NAME)
+        self._upcEdit.editingFinished.connect(self._updateUpc)
+        layout.addWidget(self._upcEdit, row, 1)
+        self._upcLabel.setBuddy(self._upcEdit)
+
     def _addRecordingTimeTo(self, layout, row):
         self._recordingTimeLabel = QLabel()
         layout.addWidget(self._recordingTimeLabel, row, 0)
@@ -167,25 +186,17 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._originalReleaseTimeEdit, row, 1)
         self._originalReleaseTimeLabel.setBuddy(self._originalReleaseTimeEdit)
 
-    def _addUpc(self, layout, row):
-        self._upcLabel = QLabel()
-        layout.addWidget(self._upcLabel, row, 0)
-        self._upcEdit = QLineEdit()
-        self._upcEdit.setObjectName(ui.UPC_EDIT_NAME)
-        self._upcEdit.editingFinished.connect(self._updateUpc)
-        layout.addWidget(self._upcEdit, row, 1)
-        self._upcLabel.setBuddy(self._upcEdit)
-
     def translateUi(self):
         self._selectPictureButton.setText(self.tr('Select Picture...'))
         self._releaseNameLabel.setText(self.tr('Release Name: '))
         self._leadPerformerLabel.setText(self.tr('Lead Performer: '))
         self._guestPerformersLabel.setText(self.tr('Guest Performers: '))
         self._labelNameLabel.setText(self.tr('Label Name: '))
+        self._catalogNumberLabel.setText(self.tr('Catalog Number: '))
+        self._upcLabel.setText(self.tr('UPC/EAN: '))
         self._recordingTimeLabel.setText(self.tr('Recording Time: '))
         self._releaseTimeLabel.setText(self.tr('Release Time: '))
         self._originalReleaseTimeLabel.setText(self.tr('Original Release Time: '))
-        self._upcLabel.setText(self.tr('UPC/EAN: '))
 
     def _frontCoverOf(self, album):
         frontCovers = album.frontCovers
@@ -200,10 +211,11 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._leadPerformerEdit.setText(album.leadPerformer)
         self._guestPerformersEdit.setText(album.guestPerformers)
         self._labelNameEdit.setText(album.labelName)
+        self._catalogNumberEdit.setText(album.catalogNumber)
+        self._upcEdit.setText(album.upc)
         self._recordingTimeEdit.setText(album.recordingTime)
         self._releaseTimeEdit.setText(album.releaseTime)
         self._originalReleaseTimeEdit.setText(album.originalReleaseTime)
-        self._upcEdit.setText(album.upc)
 
     def _updateAlbumCover(self):
         self._album.removeImages()
@@ -222,6 +234,12 @@ class AlbumPage(QWidget, FileChoiceListener):
     def _updateLabelName(self):
         self._album.labelName = self._labelNameEdit.text()
 
+    def _updateCatalogNumber(self):
+        self._album.catalogNumber = self._catalogNumberEdit.text()
+
+    def _updateUpc(self):
+        self._album.upc = self._upcEdit.text()
+
     def _updateRecordingTime(self):
         self._album.recordingTime = self._recordingTimeEdit.text()
 
@@ -230,6 +248,3 @@ class AlbumPage(QWidget, FileChoiceListener):
 
     def _updateOriginalReleaseTime(self):
         self._album.originalReleaseTime = self._originalReleaseTimeEdit.text()
-
-    def _updateUpc(self):
-        self._album.upc = self._upcEdit.text()

@@ -46,14 +46,16 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsGuestPerformers('Band')
         self.album.labelName = 'Label'
         self.driver.showsLabelName('Label')
+        self.album.catalogNumber = 'Number'
+        self.driver.showsCatalogNumber('Number')
+        self.album.upc = 'Code'
+        self.driver.showsUpc('Code')
         self.album.recordingTime = '2008-09-15'
         self.driver.showsRecordingTime('2008-09-15')
         self.album.releaseTime = '2009-01-01'
         self.driver.showsReleaseTime('2009-01-01')
         self.album.originalReleaseTime = '1998-03-05'
         self.driver.showsOriginalReleaseTime('1998-03-05')
-        self.album.upc = 'Code'
-        self.driver.showsUpc('Code')
 
     def testUpdatesAlbumWhenMetadataEdited(self):
         self.pictureChooser.chooses(resources.path('front-cover.jpg'))
@@ -77,6 +79,12 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.changeLabelName('Label')
         self.check(AssertionProbe(self.album.labelName, equal_to('Label'), 'label name'))
 
+        self.driver.changeCatalogNumber('Number')
+        self.check(AssertionProbe(self.album.catalogNumber, equal_to('Number'), 'catalog number'))
+
+        self.driver.changeUpc('Barcode')
+        self.check(AssertionProbe(self.album.upc, equal_to('Barcode'), 'upc'))
+
         self.driver.changeRecordingTime('2008-09-15')
         self.check(AssertionProbe(self.album.recordingTime, equal_to('2008-09-15'),
                                   'recording time'))
@@ -87,6 +95,3 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.changeOriginalReleaseTime('1998-03-05')
         self.check(AssertionProbe(self.album.originalReleaseTime, equal_to('1998-03-05'),
                                   'original release time'))
-
-        self.driver.changeUpc('Barcode')
-        self.check(AssertionProbe(self.album.upc, equal_to('Barcode'), 'upc'))

@@ -27,14 +27,16 @@ class AlbumPageDriver(WidgetDriver):
                 self.showsGuestPerformers(value)
             elif tag == tags.LABEL_NAME:
                 self.showsLabelName(value)
+            elif tag == tags.CATALOG_NUMBER:
+                self.showsCatalogNumber(value)
+            elif tag == tags.UPC:
+                self.showsUpc(value)
             elif tag == tags.RECORDING_TIME:
                 self.showsRecordingTime(value)
             elif tag == tags.RELEASE_TIME:
                 self.showsReleaseTime(value)
             elif tag == tags.ORIGINAL_RELEASE_TIME:
                 self.showsOriginalReleaseTime(value)
-            elif tag == tags.UPC:
-                self.showsUpc(value)
             else:
                 raise AssertionError("Don't know how to verify '%s'" % tag)
 
@@ -50,14 +52,16 @@ class AlbumPageDriver(WidgetDriver):
                 self.changeGuestPerformers(value)
             elif tag == tags.LABEL_NAME:
                 self.changeLabelName(value)
+            elif tag == tags.CATALOG_NUMBER:
+                self.changeCatalogNumber(value)
+            elif tag == tags.UPC:
+                self.changeUpc(value)
             elif tag == tags.RECORDING_TIME:
                 self.changeRecordingTime(value)
             elif tag == tags.RELEASE_TIME:
                 self.changeReleaseTime(value)
             elif tag == tags.ORIGINAL_RELEASE_TIME:
                 self.changeOriginalReleaseTime(value)
-            elif tag == tags.UPC:
-                self.changeUpc(value)
             else:
                 raise AssertionError("Don't know how to edit '%s'" % tag)
 
@@ -126,6 +130,26 @@ class AlbumPageDriver(WidgetDriver):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LABEL_NAME_EDIT_NAME))
         edit.replaceAllText(name)
 
+    def showsCatalogNumber(self, number):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.CATALOG_NUMBER_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.CATALOG_NUMBER_EDIT_NAME))
+        edit.hasText(number)
+
+    def changeCatalogNumber(self, number):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.CATALOG_NUMBER_EDIT_NAME))
+        edit.replaceAllText(number)
+
+    def showsUpc(self, code):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.UPC_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.UPC_EDIT_NAME))
+        edit.hasText(code)
+
+    def changeUpc(self, code):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.UPC_EDIT_NAME))
+        edit.replaceAllText(code)
+
     def showsRecordingTime(self, time):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.RECORDING_TIME_EDIT_NAME)))
         label.isShowingOnScreen()
@@ -157,13 +181,3 @@ class AlbumPageDriver(WidgetDriver):
     def changeOriginalReleaseTime(self, time):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME))
         edit.replaceAllText(time)
-
-    def showsUpc(self, code):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.UPC_EDIT_NAME)))
-        label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.UPC_EDIT_NAME))
-        edit.hasText(code)
-
-    def changeUpc(self, code):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.UPC_EDIT_NAME))
-        edit.replaceAllText(code)

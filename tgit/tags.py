@@ -17,25 +17,27 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+FRONT_COVER = 'frontCover'
 RELEASE_NAME = 'releaseName'
 LEAD_PERFORMER = 'leadPerformer'
 GUEST_PERFORMERS = 'guestPerformers'
 LABEL_NAME = 'labelName'
-RECORDING_TIME = 'recordingTime'
 RELEASE_TIME = 'releaseTime'
 ORIGINAL_RELEASE_TIME = 'originalReleaseTime'
+RECORDING_TIME = 'recordingTime'
 UPC = 'upc'
-FRONT_COVER = 'frontCover'
+CATALOG_NUMBER = 'catalogNumber'
 
 ALBUM_TAGS = [
     RELEASE_NAME,
     LEAD_PERFORMER,
     GUEST_PERFORMERS,
     LABEL_NAME,
+    UPC,
+    CATALOG_NUMBER,
     RECORDING_TIME,
     RELEASE_TIME,
     ORIGINAL_RELEASE_TIME,
-    UPC
 ]
 
 BITRATE = 'bitrate'
