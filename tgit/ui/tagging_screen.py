@@ -17,6 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget, QPushButton
 
 from tgit.announcer import Announcer
@@ -85,6 +86,7 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
         layout.addStretch()
         self._saveButton = QPushButton()
         self._saveButton.setObjectName(ui.SAVE_BUTTON_NAME)
+        self._saveButton.setFocusPolicy(Qt.ClickFocus)
         self._saveButton.clicked.connect(self.recordAlbum)
         self._saveButton.setDisabled(True)
         layout.addWidget(self._saveButton)
