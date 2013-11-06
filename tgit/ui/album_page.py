@@ -89,6 +89,8 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._addReleaseTimeTo(layout, 8)
         self._addOriginalReleaseTimeTo(layout, 9)
         self._addRecordingStudiosTo(layout, 10)
+        self._addProducerTo(layout, 11)
+        self._addMixerTo(layout, 12)
 
     def _addFrontCoverPictureTo(self, layout, row):
         self._frontCoverPixmap = QLabel()
@@ -196,6 +198,24 @@ class AlbumPage(QWidget, FileChoiceListener):
         layout.addWidget(self._recordingStudiosEdit, row, 1)
         self._recordingStudiosLabel.setBuddy(self._recordingStudiosEdit)
 
+    def _addProducerTo(self, layout, row):
+        self._producerLabel = QLabel()
+        layout.addWidget(self._producerLabel, row, 0)
+        self._producerEdit = QLineEdit()
+        self._producerEdit.setObjectName(ui.PRODUCER_EDIT_NAME)
+        self._producerEdit.editingFinished.connect(self._updateProducer)
+        layout.addWidget(self._producerEdit, row, 1)
+        self._producerLabel.setBuddy(self._producerEdit)
+
+    def _addMixerTo(self, layout, row):
+        self._mixerLabel = QLabel()
+        layout.addWidget(self._mixerLabel, row, 0)
+        self._mixerEdit = QLineEdit()
+        self._mixerEdit.setObjectName(ui.MIXER_EDIT_NAME)
+        self._mixerEdit.editingFinished.connect(self._updateMixer)
+        layout.addWidget(self._mixerEdit, row, 1)
+        self._mixerLabel.setBuddy(self._mixerEdit)
+
     def translateUi(self):
         self._selectPictureButton.setText(self.tr('Select Picture...'))
         self._releaseNameLabel.setText(self.tr('Release Name: '))
@@ -208,6 +228,8 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._releaseTimeLabel.setText(self.tr('Release Time: '))
         self._originalReleaseTimeLabel.setText(self.tr('Original Release Time: '))
         self._recordingStudiosLabel.setText(self.tr('Recording Studios: '))
+        self._producerLabel.setText(self.tr('Producer: '))
+        self._mixerLabel.setText(self.tr('Mixer: '))
 
     def _frontCoverOf(self, album):
         frontCovers = album.frontCovers
@@ -228,6 +250,8 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._releaseTimeEdit.setText(album.releaseTime)
         self._originalReleaseTimeEdit.setText(album.originalReleaseTime)
         self._recordingStudiosEdit.setText(album.recordingStudios)
+        self._producerEdit.setText(album.producer)
+        self._mixerEdit.setText(album.mixer)
 
     def _updateAlbumCover(self):
         self._album.removeImages()
@@ -263,3 +287,9 @@ class AlbumPage(QWidget, FileChoiceListener):
 
     def _updateRecordingStudios(self):
         self._album.recordingStudios = self._recordingStudiosEdit.text()
+
+    def _updateProducer(self):
+        self._album.producer = self._producerEdit.text()
+
+    def _updateMixer(self):
+        self._album.mixer = self._mixerEdit.text()

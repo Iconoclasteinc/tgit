@@ -128,7 +128,7 @@ class LabelDriver(WidgetDriver):
 
 
 class LineEditDriver(WidgetDriver):
-    EDITION_DELAY = 50
+    EDITION_DELAY = 20
 
     def hasText(self, text):
         self.has(properties.inputText(), equal_to(text))

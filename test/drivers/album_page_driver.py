@@ -39,6 +39,10 @@ class AlbumPageDriver(WidgetDriver):
                 self.showsOriginalReleaseTime(value)
             elif tag == tags.RECORDING_STUDIOS:
                 self.showsRecordingStudios(value)
+            elif tag == tags.PRODUCER:
+                self.showsProducer(value)
+            elif tag == tags.MIXER:
+                self.showsMixer(value)
             else:
                 raise AssertionError("Don't know how to verify '%s'" % tag)
 
@@ -66,6 +70,10 @@ class AlbumPageDriver(WidgetDriver):
                 self.changeOriginalReleaseTime(value)
             elif tag == tags.RECORDING_STUDIOS:
                 self.changeRecordingStudios(value)
+            elif tag == tags.PRODUCER:
+                self.changeProducer(value)
+            elif tag == tags.MIXER:
+                self.changeMixer(value)
             else:
                 raise AssertionError("Don't know how to edit '%s'" % tag)
 
@@ -196,3 +204,23 @@ class AlbumPageDriver(WidgetDriver):
     def changeRecordingStudios(self, studios):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RECORDING_STUDIOS_EDIT_NAME))
         edit.replaceAllText(studios)
+
+    def showsProducer(self, producer):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.PRODUCER_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PRODUCER_EDIT_NAME))
+        edit.hasText(producer)
+
+    def changeProducer(self, producer):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PRODUCER_EDIT_NAME))
+        edit.replaceAllText(producer)
+
+    def showsMixer(self, mixer):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.MIXER_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.MIXER_EDIT_NAME))
+        edit.hasText(mixer)
+
+    def changeMixer(self, mixer):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.MIXER_EDIT_NAME))
+        edit.replaceAllText(mixer)

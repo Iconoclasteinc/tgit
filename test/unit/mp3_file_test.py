@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import (assert_that, has_entry, contains_inanyorder, has_key, has_length)
+from hamcrest import (assert_that, has_entry, contains_inanyorder, has_key, has_length, contains,
+                      is_not)
 
 from test.util.mp3 import makeMp3, TestMp3
 
@@ -44,6 +45,11 @@ class MP3FileTest(unittest.TestCase):
                                                 ('Guitar', 'Bassist'),
                                                 ('Piano', 'Pianist'))), 'metadata')
 
+    def testIgnoresTMCLEntriesWithBlankNames(self):
+        mp3 = mp3File.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Piano', '']]))
+        assert_that(mp3.metadata, has_entry(tags.GUEST_PERFORMERS,
+                                            contains(('Guitar', 'Guitarist'))), 'metadata')
+
     def testReadsLabelNameFromTOWNFrame(self):
         mp3 = mp3File.load(self.makeMp3(TOWN='Label Name'))
         assert_that(mp3.metadata, has_entry(tags.LABEL_NAME, 'Label Name'), 'metadata')
@@ -72,6 +78,22 @@ class MP3FileTest(unittest.TestCase):
     def testReadsRecordingStudiosFromCustomFrame(self):
         mp3 = mp3File.load(self.makeMp3(TXXX_RECORDING_STUDIOS='Studio Name'))
         assert_that(mp3.metadata, has_entry(tags.RECORDING_STUDIOS, 'Studio Name'), 'metadata')
+
+    def testReadsArtisticProducerFromTIPLFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TIPL=[['producer', 'Artistic Producer']]))
+        assert_that(mp3.metadata, has_entry(tags.PRODUCER, 'Artistic Producer'), 'metadata')
+
+    def testTakesIntoAccountLastOfMultipleRoleDefinitions(self):
+        mp3 = mp3File.load(self.makeMp3(TIPL=[['producer', 'first'], ['producer', 'last']]))
+        assert_that(mp3.metadata, has_entry(tags.PRODUCER, 'last'), 'metadata')
+
+    def testIgnoresTPILEntriesWithBlankNames(self):
+        mp3 = mp3File.load(self.makeMp3(TIPL=[['producer', '']]))
+        assert_that(mp3.metadata, is_not(has_key(tags.PRODUCER)), 'metadata')
+
+    def testReadsMixingEngineerFromTIPLFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TIPL=[['mix', 'Mixing Engineer']]))
+        assert_that(mp3.metadata, has_entry(tags.MIXER, 'Mixing Engineer'), 'metadata')
 
     def testReadsTrackTitleFromTIT2Frame(self):
         mp3 = mp3File.load(self.makeMp3(TIT2='Track Title'))
@@ -122,6 +144,11 @@ class MP3FileTest(unittest.TestCase):
         metadata[tags.RELEASE_TIME] = u"2013-12-01"
         metadata[tags.ORIGINAL_RELEASE_TIME] = u"1999-01-01"
         metadata[tags.RECORDING_STUDIOS] = u'Studio Name'
+        metadata[tags.PRODUCER] = u'Artistic Producer'
+        metadata[tags.MIXER] = u'Mixing Engineer'
+        metadata[tags.CONTRIBUTORS] = [('recording', 'Recording Eng.'),
+                                 ('mastering', 'Mastering Eng.'),
+                                 ('recording', 'Assistant Recording Eng.')]
         metadata[tags.TRACK_TITLE] = u"Track Title"
         metadata[tags.VERSION_INFO] = u"Version Info"
         metadata[tags.FEATURED_GUEST] = u"Featured Guest"

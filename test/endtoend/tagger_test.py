@@ -33,9 +33,11 @@ class TaggerTest(unittest.TestCase):
             labelName=u'',
             catalogNumber=u'',
             upc=u'',
-            recordingStudios=u'',
             recordingTime=u'',
-            releaseTime='')
+            releaseTime='',
+            recordingStudios=u'',
+            producer=u'',
+            mixer=u'')
         self.application.changeAlbumMetadata(
             frontCover=resources.path('sheller-en-solitaire.jpg'),
             releaseName=u'Sheller en solitaire',
@@ -44,9 +46,11 @@ class TaggerTest(unittest.TestCase):
             labelName=u'Philips',
             catalogNumber=u'848 786-2',
             upc=u'042284878623',
-            recordingStudios=u'Mercury',
             recordingTime=u'1991',
-            releaseTime=u'1991')
+            releaseTime=u'1991',
+            recordingStudios=u'Mercury',
+            producer=u'Mick Lanaro',
+            mixer=u'-')
         self.application.showsNextTrackMetadata(
             trackTitle=u'',
             versionInfo='',
@@ -71,6 +75,8 @@ class TaggerTest(unittest.TestCase):
             recordingTime=u'1991',
             releaseTime=u'1991',
             recordingStudios=u'Mercury',
+            producer=u'Mick Lanaro',
+            mixer='-',
             trackTitle=u'Un homme heureux',
             versionInfo=u'Version originale',
             featuredGuest='-',

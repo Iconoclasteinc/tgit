@@ -29,6 +29,10 @@ RELEASE_TIME = 'releaseTime'
 ORIGINAL_RELEASE_TIME = 'originalReleaseTime'
 RECORDING_TIME = 'recordingTime'
 RECORDING_STUDIOS = 'recordingStudios'
+PRODUCER = 'producer'
+MIXER = 'mixer'
+CONTRIBUTORS = 'contributors'
+
 
 ALBUM_TAGS = [
     RELEASE_NAME,
@@ -40,7 +44,10 @@ ALBUM_TAGS = [
     RECORDING_TIME,
     RELEASE_TIME,
     ORIGINAL_RELEASE_TIME,
-    RECORDING_STUDIOS
+    RECORDING_STUDIOS,
+    PRODUCER,
+    MIXER,
+    CONTRIBUTORS
 ]
 
 BITRATE = 'bitrate'

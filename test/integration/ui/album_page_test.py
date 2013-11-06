@@ -58,6 +58,10 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsOriginalReleaseTime('1998-03-05')
         self.album.recordingStudios = 'Studio A, Studio B'
         self.driver.showsRecordingStudios('Studio A, Studio B')
+        self.album.producer = 'Artistic Producer'
+        self.driver.showsProducer('Artistic Producer')
+        self.album.mixer = 'Mixing Engineer'
+        self.driver.showsMixer('Mixing Engineer')
 
     def testUpdatesAlbumWhenMetadataEdited(self):
         self.pictureChooser.chooses(resources.path('front-cover.jpg'))
@@ -104,3 +108,8 @@ class AlbumPageTest(BaseWidgetTest):
         self.check(AssertionProbe(self.album.recordingStudios, equal_to('Studios'),
                                   'recording studios'))
 
+        self.driver.changeProducer('Producer')
+        self.check(AssertionProbe(self.album.producer, equal_to('Producer'), 'producer'))
+
+        self.driver.changeMixer('Mixing Engineer')
+        self.check(AssertionProbe(self.album.mixer, equal_to('Mixing Engineer'), 'mixer'))

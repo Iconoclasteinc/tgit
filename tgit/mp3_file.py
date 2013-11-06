@@ -101,23 +101,36 @@ class MP3File(object):
                                                desc=description, data=image.data)
 
     class PeopleRecords(object):
-        def __init__(self, mapping):
+        def __init__(self, mapping, roles):
             self._mapping = mapping
+            self._knownRoles = roles
 
         def collectMetadata(self, metadata, frames):
             for frameKey, tag in self._mapping.items():
                 if frameKey in frames:
                     metadata[tag] = []
                     for role, name in frames[frameKey].people:
-                        metadata[tag].append((role, name))
+                        if not name:
+                            continue
+                        if role in self._knownRoles:
+                            metadata[self._knownRoles[role]] = name
+                        else:
+                            metadata[tag].append((role, name))
 
         def collectFrames(self, frames, encoding, metadata):
             for frameKey, tag in self._mapping.items():
+                frame = getattr(id3, frameKey)(encoding=encoding)
+                frame.people.extend(self._listKnownRolesIn(metadata))
                 if tag in metadata:
-                    frame = getattr(id3, frameKey)(encoding=encoding)
-                    for role, name in metadata[tag]:
-                        frame.people.append([role, name])
-                    frames.add(frame)
+                    frame.people.extend(self._listOtherRolesIn(metadata[tag]))
+                frames.add(frame)
+
+        def _listKnownRolesIn(self, metadata):
+            return [[role, metadata[tag]] for role, tag in self._knownRoles.items()
+                    if tag in metadata]
+
+        def _listOtherRolesIn(self, tag):
+            return [[role, name] for role, name in tag]
 
     __TEXT_FRAMES = {'TALB': tagging.RELEASE_NAME,
                      'TPE1': tagging.LEAD_PERFORMER,
@@ -134,21 +147,28 @@ class MP3File(object):
                      'TXXX:Featured Guest': tagging.FEATURED_GUEST, }
 
     __PICTURES_FRAMES = 'APIC'
-
     __PICTURES_TYPES = {
         0: Image.OTHER,
         3: Image.FRONT_COVER,
         4: Image.BACK_COVER,
     }
 
-    __MUSICIANS_FRAMES = {
+    __PERFORMERS = {
         'TMCL': tagging.GUEST_PERFORMERS
+    }
+    __CONTRIBUTORS = {
+        'TIPL': tagging.CONTRIBUTORS
+    }
+    __CONTRIBUTOR_ROLES = {
+        'producer': tagging.PRODUCER,
+        'mix': tagging.MIXER
     }
 
     __RECORDS = [
         TextRecords(__TEXT_FRAMES),
         ImageRecords(__PICTURES_FRAMES, __PICTURES_TYPES),
-        PeopleRecords(__MUSICIANS_FRAMES)
+        PeopleRecords(__PERFORMERS, {}),
+        PeopleRecords(__CONTRIBUTORS, __CONTRIBUTOR_ROLES),
     ]
 
     def __init__(self, filename):
