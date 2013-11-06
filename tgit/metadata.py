@@ -45,6 +45,8 @@ class Image(object):
 
 
 class Metadata(dict):
+    IMAGES = 'images'
+
     def __init__(self, **meta):
         super(Metadata, self).__init__(**meta)
         self._images = []

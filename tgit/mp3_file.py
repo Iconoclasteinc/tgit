@@ -17,16 +17,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import functools
 from collections import defaultdict
 
 from mutagen import mp3, id3
 
 from tgit import tags as tagging
 from tgit.metadata import Metadata, Image
-
-CUSTOM_FRAME_PREFIX = 'TXXX:'
-UTF_8 = 3
 
 
 def invert(mapping):
@@ -51,34 +47,109 @@ def save(filename, metadata):
 
 
 class MP3File(object):
-    __ID3_TEXT_FRAMES = {
-        'TALB': tagging.RELEASE_NAME,
-        'TPE1': tagging.LEAD_PERFORMER,
-        'TPE2': tagging.GUEST_PERFORMERS,
-        'TOWN': tagging.LABEL_NAME,
-        'TXXX:Catalog Number': tagging.CATALOG_NUMBER,
-        'TXXX:UPC': tagging.UPC,
-        'TDRC': tagging.RECORDING_TIME,
-        'TDRL': tagging.RELEASE_TIME,
-        'TDOR': tagging.ORIGINAL_RELEASE_TIME,
-        'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
-        'TIT2': tagging.TRACK_TITLE,
-        'TPE4': tagging.VERSION_INFO,
-        'TXXX:Featured Guest': tagging.FEATURED_GUEST,
-        'TSRC': tagging.ISRC
-    }
+    UTF_8 = 3
 
-    __METADATA_TAGS = invert(__ID3_TEXT_FRAMES)
+    class TextRecords(object):
+        def __init__(self, mapping):
+            self._mapping = mapping
 
-    __PICTURES_FRAMES = ['APIC']
+        def collectMetadata(self, metadata, frames):
+            for frameKey, tag in self._mapping.items():
+                if frameKey in frames:
+                    metadata[tag] = unicode(frames[frameKey])
 
-    __ID3_PICTURE_TYPES = {
+        def collectFrames(self, frames, encoding, metadata):
+            for frameKey, tag in self._mapping.items():
+                if tag in metadata:
+                    id, desc, = self._decompose(frameKey)
+                    frames.add(getattr(id3, id)(encoding=encoding, desc=desc, text=metadata[tag]))
+
+        def _decompose(self, key):
+            if ':' in key:
+                return key.split(':')
+            else:
+                return key, None
+
+    class ImageRecords(object):
+        def __init__(self, frameId, pictureTypes):
+            self._frameId = frameId
+            self._pictureTypes = pictureTypes
+
+        def collectMetadata(self, metadata, frames):
+            for picture in self._pictureFrames(frames):
+                imageType = self._pictureTypes.get(picture.type, Image.OTHER)
+                metadata.addImage(picture.mime, picture.data, imageType, picture.desc)
+
+        def _pictureFrames(self, frames):
+            return [frame for key, frame in frames.items() if key.startswith(self._frameId)]
+
+        def collectFrames(self, frames, encoding, metadata):
+            frames.delall(self._frameId)
+            count = defaultdict(lambda: 0)
+
+            for image in metadata.images:
+                frames.add(self._makePictureFrame(count, encoding, image))
+
+        def _makePictureFrame(self, count, encoding, image):
+            description = image.desc
+            if count[image.desc] > 0:
+                description += " (%i)" % (count[image.desc] + 1)
+            count[image.desc] += 1
+            imagesTypes = invert(self._pictureTypes)
+            return getattr(id3, self._frameId)(encoding=encoding, mime=image.mime,
+                                               type=imagesTypes[image.type],
+                                               desc=description, data=image.data)
+
+    class PeopleRecords(object):
+        def __init__(self, mapping):
+            self._mapping = mapping
+
+        def collectMetadata(self, metadata, frames):
+            for frameKey, tag in self._mapping.items():
+                if frameKey in frames:
+                    metadata[tag] = []
+                    for role, name in frames[frameKey].people:
+                        metadata[tag].append((role, name))
+
+        def collectFrames(self, frames, encoding, metadata):
+            for frameKey, tag in self._mapping.items():
+                if tag in metadata:
+                    frame = getattr(id3, frameKey)(encoding=encoding)
+                    for role, name in metadata[tag]:
+                        frame.people.append([role, name])
+                    frames.add(frame)
+
+    __TEXT_FRAMES = {'TALB': tagging.RELEASE_NAME,
+                     'TPE1': tagging.LEAD_PERFORMER,
+                     'TOWN': tagging.LABEL_NAME,
+                     'TDRC': tagging.RECORDING_TIME,
+                     'TDRL': tagging.RELEASE_TIME,
+                     'TDOR': tagging.ORIGINAL_RELEASE_TIME,
+                     'TIT2': tagging.TRACK_TITLE,
+                     'TPE4': tagging.VERSION_INFO,
+                     'TSRC': tagging.ISRC,
+                     'TXXX:Catalog Number': tagging.CATALOG_NUMBER,
+                     'TXXX:UPC': tagging.UPC,
+                     'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
+                     'TXXX:Featured Guest': tagging.FEATURED_GUEST, }
+
+    __PICTURES_FRAMES = 'APIC'
+
+    __PICTURES_TYPES = {
         0: Image.OTHER,
         3: Image.FRONT_COVER,
         4: Image.BACK_COVER,
     }
 
-    __METADATA_IMAGE_TYPES = invert(__ID3_PICTURE_TYPES)
+    __MUSICIANS_FRAMES = {
+        'TMCL': tagging.GUEST_PERFORMERS
+    }
+
+    __RECORDS = [
+        TextRecords(__TEXT_FRAMES),
+        ImageRecords(__PICTURES_FRAMES, __PICTURES_TYPES),
+        PeopleRecords(__MUSICIANS_FRAMES)
+    ]
 
     def __init__(self, filename):
         super(MP3File, self).__init__()
@@ -99,31 +170,15 @@ class MP3File(object):
     def load(self):
         audioFile = mp3.MP3(self._filename)
 
-        tags = audioFile.tags or {}
-        for frame in tags.values():
-            if self._isTextFrame(frame):
-                self._addMetadataText(self._metadata, frame)
-            elif self._isAttachedPicture(frame):
-                self._addMetadataImage(self._metadata, frame)
+        frames = audioFile.tags or {}
+
+        for record in self.__RECORDS:
+            record.collectMetadata(self._metadata, frames)
 
         self._metadata[tagging.DURATION] = audioFile.info.length
         self._metadata[tagging.BITRATE] = audioFile.info.bitrate
 
         return self._metadata
-
-    def _isTextFrame(self, frame):
-        return frame.HashKey in self.__ID3_TEXT_FRAMES
-
-    def _addMetadataText(self, metadata, frame):
-        tag = self.__ID3_TEXT_FRAMES[frame.HashKey]
-        metadata[tag] = unicode(frame)
-
-    def _isAttachedPicture(self, frame):
-        return frame.FrameID in self.__PICTURES_FRAMES
-
-    def _addMetadataImage(self, metadata, frame):
-        imageType = self.__ID3_PICTURE_TYPES.get(frame.type, Image.OTHER)
-        metadata.addImage(frame.mime, frame.data, imageType, frame.desc)
 
     def save(self, metadata=None, encoding=UTF_8, overwrite=False, filename=None):
         if filename is None:
@@ -131,53 +186,17 @@ class MP3File(object):
         if metadata is None:
             metadata = self._metadata
 
-        tags = self._loadTags(filename)
+        frames = self._loadFrames(filename)
         if overwrite:
-            tags.clear()
+            frames.clear()
 
-        for tag, value in metadata.items():
-            if tag == tagging.BITRATE or tag == tagging.DURATION:
-                continue
-            tags.add(self._newTextFrame(encoding, tag, value))
+        for record in self.__RECORDS:
+            record.collectFrames(frames, encoding, metadata)
 
-        self._deleteAttachedPictures(tags)
-        counters = defaultdict(lambda: 0)
-        for image in metadata.images:
-            tags.add(self._newPictureFrame(counters, image))
+        frames.save(filename)
 
-        tags.save(filename)
-
-    def _loadTags(self, filename):
+    def _loadFrames(self, filename):
         try:
             return id3.ID3(filename)
         except id3.ID3NoHeaderError:
             return id3.ID3()
-
-    def _newTextFrame(self, encoding, tag, value):
-        return self._convertTagToID3Frame(tag)(encoding=encoding, text=value)
-
-    def _convertTagToID3Frame(self, meta):
-        frameKey = self.__METADATA_TAGS[meta]
-        if frameKey.startswith(CUSTOM_FRAME_PREFIX):
-            return self._toCustomFrame(frameKey)
-        else:
-            return self._toTextFrame(frameKey)
-
-    def _toCustomFrame(self, frameKey):
-        return functools.partial(id3.TXXX, desc=frameKey[len(CUSTOM_FRAME_PREFIX):])
-
-    def _toTextFrame(self, frameKey):
-        return getattr(id3, frameKey)
-
-    def _deleteAttachedPictures(self, tags):
-        for frame in self.__PICTURES_FRAMES:
-            tags.delall(frame)
-
-    def _newPictureFrame(self, count, image):
-        description = image.desc
-        if count[image.desc] > 0:
-            description += " (%i)" % (count[image.desc] + 1)
-        count[image.desc] += 1
-        return id3.APIC(encoding=UTF_8, mime=image.mime,
-                        type=self.__METADATA_IMAGE_TYPES[image.type],
-                        desc=description, data=image.data)

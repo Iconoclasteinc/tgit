@@ -23,7 +23,7 @@ from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, Q
 
 from tgit.file_chooser import FileChoiceListener
 from tgit import fs
-from tgit.ui import constants as ui
+from tgit.ui import constants as ui, display
 
 
 class AlbumPage(QWidget, FileChoiceListener):
@@ -220,7 +220,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._displayFrontCover(self._frontCoverOf(album))
         self._releaseNameEdit.setText(album.releaseName)
         self._leadPerformerEdit.setText(album.leadPerformer)
-        self._guestPerformersEdit.setText(album.guestPerformers)
+        self._guestPerformersEdit.setText(display.toPeopleList(album.guestPerformers))
         self._labelNameEdit.setText(album.labelName)
         self._catalogNumberEdit.setText(album.catalogNumber)
         self._upcEdit.setText(album.upc)
@@ -241,7 +241,7 @@ class AlbumPage(QWidget, FileChoiceListener):
         self._album.leadPerformer = self._leadPerformerEdit.text()
 
     def _updateGuestPerformers(self):
-        self._album.guestPerformers = self._guestPerformersEdit.text()
+        self._album.guestPerformers = display.fromPeopleList(self._guestPerformersEdit.text())
 
     def _updateLabelName(self):
         self._album.labelName = self._labelNameEdit.text()

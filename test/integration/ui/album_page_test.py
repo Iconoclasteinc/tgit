@@ -42,8 +42,8 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsReleaseName('Album')
         self.album.leadPerformer = 'Artist'
         self.driver.showsLeadPerformer('Artist')
-        self.album.guestPerformers = 'Band'
-        self.driver.showsGuestPerformers('Band')
+        self.album.guestPerformers = [('Guitar', 'Guitarist'), ('Piano', 'Pianist')]
+        self.driver.showsGuestPerformers('Guitar: Guitarist; Piano: Pianist')
         self.album.labelName = 'Label'
         self.driver.showsLabelName('Label')
         self.album.catalogNumber = 'Number'
@@ -75,8 +75,10 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.changeLeadPerformer('Artist')
         self.check(AssertionProbe(self.album.leadPerformer, equal_to('Artist'), 'lead performer'))
 
-        self.driver.changeGuestPerformers('Band')
-        self.check(AssertionProbe(self.album.guestPerformers, equal_to('Band'), 'guest performers'))
+        self.driver.changeGuestPerformers('Guitar: Guitarist; Guitar: Bassist; Piano: Pianist')
+        self.check(AssertionProbe(self.album.guestPerformers, equal_to(
+            [('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]),
+            'guest performers'))
 
         self.driver.changeLabelName('Label')
         self.check(AssertionProbe(self.album.labelName, equal_to('Label'), 'label name'))

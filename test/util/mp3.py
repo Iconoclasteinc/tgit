@@ -57,8 +57,8 @@ class Mp3(object):
                 self._tags.add(id3.APIC(UTF_8, mime, BACK_COVER, desc, data))
             elif tag == tagging.LEAD_PERFORMER or tag == 'TPE1':
                 self._tags.add(id3.TPE1(encoding=UTF_8, text=value))
-            elif tag == tagging.GUEST_PERFORMERS or tag == 'TPE2':
-                self._tags.add(id3.TPE2(encoding=UTF_8, text=value))
+            elif tag == tagging.GUEST_PERFORMERS or tag == 'TMCL':
+                self._tags.add(id3.TMCL(encoding=UTF_8, people=value))
             elif tag == tagging.LABEL_NAME or tag == 'TOWN':
                 self._tags.add(id3.TOWN(encoding=UTF_8, text=value))
             elif tag == tagging.CATALOG_NUMBER or tag == 'TXXX_CATALOG_NUMBER':

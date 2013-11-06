@@ -79,7 +79,7 @@ class AlbumTest(unittest.TestCase):
         master = build.track(trackTitle='Song',
                              releaseName='Album',
                              leadPerformer='Artist',
-                             guestPerformers='Band',
+                             guestPerformers=[('Guitar', 'Guitarist')],
                              labelName='Label',
                              recordingTime='Recorded',
                              releaseTime='Released',
@@ -90,7 +90,7 @@ class AlbumTest(unittest.TestCase):
 
         assert_that(album.releaseName, equal_to('Album'), 'release name')
         assert_that(album.leadPerformer, equal_to('Artist'), 'lead performer')
-        assert_that(album.guestPerformers, equal_to('Band'), 'guest performers')
+        assert_that(album.guestPerformers, equal_to([('Guitar', 'Guitarist')]), 'guest performers')
         assert_that(album.labelName, equal_to('Label'), 'label name')
         assert_that(album.recordingTime, equal_to('Recorded'), 'recording time')
         assert_that(album.releaseTime, equal_to('Released'), 'release time')
@@ -117,8 +117,8 @@ class AlbumTest(unittest.TestCase):
 
         album.releaseName = 'Album X'
         album.leadPerformer = 'Artist'
-        album.guestPerformers = 'Band'
         album.labelName = 'Label'
+        album.guestPerformers = [('Guitar', 'Guitarist')]
         album.recordingTime = 'Recorded'
         album.releaseTime = 'Released'
         album.originalReleaseTime = 'Original Release'
@@ -137,7 +137,7 @@ class AlbumTest(unittest.TestCase):
         album.addTrack(build.track(
             releaseName='Album',
             leadPerformer='Artist',
-            guestPerformers='Band',
+            guestPerformers=[('Guitar', 'Guitarist')],
             labelName='Label',
             recordingTime='2008-09-15',
             releaseTime='2009-01-01',

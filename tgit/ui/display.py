@@ -23,3 +23,21 @@ def inKbps(bps):
 
 def asDuration(seconds):
     return '%02d:%02d' % divmod(round(seconds), 60)
+
+
+def toPeopleList(people):
+    return '; '.join(['%s: %s' % (role, name) for role, name in people])
+
+
+def fromPeopleList(text):
+    people = []
+    involvements = text.split(';')
+
+    for involvement in involvements:
+        try:
+            role, name = involvement.split(':')
+            people.append((role.strip(), name.strip()))
+        except ValueError:
+            pass
+
+    return people

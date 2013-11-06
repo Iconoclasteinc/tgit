@@ -35,9 +35,14 @@ class MP3FileTest(unittest.TestCase):
         mp3 = mp3File.load(self.makeMp3(TPE1='Lead Artist'))
         assert_that(mp3.metadata, has_entry(tags.LEAD_PERFORMER, 'Lead Artist'), 'metadata')
 
-    def testReadsGuestPerformersFromTPE2Frame(self):
-        mp3 = mp3File.load(self.makeMp3(TPE2='Band'))
-        assert_that(mp3.metadata, has_entry(tags.GUEST_PERFORMERS, 'Band'), 'metadata')
+    def testReadsGuestPerformersFromTMCLFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Guitar', 'Bassist'],
+                                              ['Piano','Pianist']]))
+        assert_that(mp3.metadata, has_entry(tags.GUEST_PERFORMERS,
+                                            contains_inanyorder(
+                                                ('Guitar', 'Guitarist'),
+                                                ('Guitar', 'Bassist'),
+                                                ('Piano', 'Pianist'))), 'metadata')
 
     def testReadsLabelNameFromTOWNFrame(self):
         mp3 = mp3File.load(self.makeMp3(TOWN='Label Name'))
@@ -107,7 +112,9 @@ class MP3FileTest(unittest.TestCase):
         metadata.addImage('image/jpeg', 'salers.jpg', Image.FRONT_COVER)
         metadata[tags.RELEASE_NAME] = u"Album"
         metadata[tags.LEAD_PERFORMER] = u"Lead Performer"
-        metadata[tags.GUEST_PERFORMERS] = u"Guest Performers"
+        metadata[tags.GUEST_PERFORMERS] = [
+            ('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')
+        ]
         metadata[tags.LABEL_NAME] = u"Label Name"
         metadata[tags.CATALOG_NUMBER] = u"123 456-1"
         metadata[tags.UPC] = u"987654321111"
