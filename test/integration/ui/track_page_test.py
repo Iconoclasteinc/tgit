@@ -14,7 +14,6 @@ from tgit.ui.track_page import TrackPage
 
 
 class TrackPageTest(BaseWidgetTest):
-
     def setUp(self):
         super(TrackPageTest, self).setUp()
         self.track = track(bitrate=192000,
@@ -27,13 +26,19 @@ class TrackPageTest(BaseWidgetTest):
         return TrackPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysTrackMetadata(self):
-        self.track.trackTitle='Song'
+        self.track.trackTitle = 'Song'
         self.driver.showsTrackTitle('Song')
-        self.track.versionInfo='Remix'
+        self.track.versionInfo = 'Remix'
         self.driver.showsVersionInfo('Remix')
-        self.track.featuredGuest='Featuring'
+        self.track.featuredGuest = 'Featuring'
         self.driver.showsFeaturedGuest('Featuring')
-        self.track.isrc='Code'
+        self.track.lyricist = 'Lyricist'
+        self.driver.showsLyricist('Lyricist')
+        self.track.composer = 'Composer'
+        self.driver.showsComposer('Composer')
+        self.track.publisher = 'Publisher'
+        self.driver.showsPublisher('Publisher')
+        self.track.isrc = 'Code'
         self.driver.showsIsrc('Code')
 
         self.driver.showsBitrate('192 kbps')
@@ -49,6 +54,15 @@ class TrackPageTest(BaseWidgetTest):
         self.driver.changeFeaturedGuest('Featuring')
         self.check(AssertionProbe(self.track.featuredGuest, equal_to('Featuring'),
                                   'featured guest'))
+
+        self.driver.changeLyricist('Lyricist')
+        self.check(AssertionProbe(self.track.lyricist, equal_to('Lyricist'), 'lyricist'))
+
+        self.driver.changeComposer('Composer')
+        self.check(AssertionProbe(self.track.composer, equal_to('Composer'),  'composer'))
+
+        self.driver.changePublisher('Publisher')
+        self.check(AssertionProbe(self.track.publisher, equal_to('Publisher'), 'publisher'))
 
         self.driver.changeIsrc('Code')
         self.check(AssertionProbe(self.track.isrc, equal_to('Code'), 'isrc'))

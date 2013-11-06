@@ -107,6 +107,18 @@ class MP3FileTest(unittest.TestCase):
         mp3 = mp3File.load(self.makeMp3(TXXX_FEATURED_GUEST='Featured Guest'))
         assert_that(mp3.metadata, has_entry(tags.FEATURED_GUEST, 'Featured Guest'), 'metadata')
 
+    def testReadsLyricistFromTEXTFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TEXT='Lyricist'))
+        assert_that(mp3.metadata, has_entry(tags.LYRICIST, 'Lyricist'), 'metadata')
+
+    def testReadsComposerFromTCOMFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TCOM='Composer'))
+        assert_that(mp3.metadata, has_entry(tags.COMPOSER, 'Composer'), 'metadata')
+
+    def testReadsPublisherFromTPUBFrame(self):
+        mp3 = mp3File.load(self.makeMp3(TPUB='Publisher'))
+        assert_that(mp3.metadata, has_entry(tags.PUBLISHER, 'Publisher'), 'metadata')
+
     def testReadsIsrcFromTSRCFrame(self):
         mp3 = mp3File.load(self.makeMp3(TSRC='AABB12345678'))
         assert_that(mp3.metadata, has_entry(tags.ISRC, 'AABB12345678'), 'metadata')
@@ -132,27 +144,30 @@ class MP3FileTest(unittest.TestCase):
     def testCanSaveAndReloadMetadata(self):
         metadata = Metadata()
         metadata.addImage('image/jpeg', 'salers.jpg', Image.FRONT_COVER)
-        metadata[tags.RELEASE_NAME] = u"Album"
-        metadata[tags.LEAD_PERFORMER] = u"Lead Performer"
+        metadata[tags.RELEASE_NAME] = u'Album'
+        metadata[tags.LEAD_PERFORMER] = u'Lead Performer'
         metadata[tags.GUEST_PERFORMERS] = [
             ('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')
         ]
-        metadata[tags.LABEL_NAME] = u"Label Name"
-        metadata[tags.CATALOG_NUMBER] = u"123 456-1"
-        metadata[tags.UPC] = u"987654321111"
-        metadata[tags.RECORDING_TIME] = u"2012-07-01"
-        metadata[tags.RELEASE_TIME] = u"2013-12-01"
-        metadata[tags.ORIGINAL_RELEASE_TIME] = u"1999-01-01"
+        metadata[tags.LABEL_NAME] = u'Label Name'
+        metadata[tags.CATALOG_NUMBER] = u'123 456-1'
+        metadata[tags.UPC] = u'987654321111'
+        metadata[tags.RECORDING_TIME] = u'2012-07-01'
+        metadata[tags.RELEASE_TIME] = u'2013-12-01'
+        metadata[tags.ORIGINAL_RELEASE_TIME] = u'1999-01-01'
         metadata[tags.RECORDING_STUDIOS] = u'Studio Name'
         metadata[tags.PRODUCER] = u'Artistic Producer'
         metadata[tags.MIXER] = u'Mixing Engineer'
         metadata[tags.CONTRIBUTORS] = [('recording', 'Recording Eng.'),
                                  ('mastering', 'Mastering Eng.'),
                                  ('recording', 'Assistant Recording Eng.')]
-        metadata[tags.TRACK_TITLE] = u"Track Title"
-        metadata[tags.VERSION_INFO] = u"Version Info"
-        metadata[tags.FEATURED_GUEST] = u"Featured Guest"
-        metadata[tags.ISRC] = u"ZZXX87654321"
+        metadata[tags.TRACK_TITLE] = u'Track Title'
+        metadata[tags.VERSION_INFO] = u'Version Info'
+        metadata[tags.FEATURED_GUEST] = u'Featured Guest'
+        metadata[tags.LYRICIST] = u'Lyricist'
+        metadata[tags.COMPOSER] = u'Composer'
+        metadata[tags.PUBLISHER] = u'Publisher'
+        metadata[tags.ISRC] = u'ZZXX87654321'
         metadata[tags.DURATION] = DURATION
         metadata[tags.BITRATE] = BITRATE
 

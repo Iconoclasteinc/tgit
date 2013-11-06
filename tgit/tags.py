@@ -55,12 +55,18 @@ DURATION = 'duration'
 TRACK_TITLE = 'trackTitle'
 VERSION_INFO = 'versionInfo'
 FEATURED_GUEST = 'featuredGuest'
+LYRICIST = 'lyricist'
+COMPOSER = 'composer'
+PUBLISHER = 'publisher'
 ISRC = 'isrc'
 
 TRACK_TAGS = [
     TRACK_TITLE,
     VERSION_INFO,
     FEATURED_GUEST,
+    PUBLISHER,
+    LYRICIST,
+    COMPOSER,
     ISRC,
     BITRATE,
     DURATION

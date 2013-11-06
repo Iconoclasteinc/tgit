@@ -81,6 +81,12 @@ class Mp3(object):
                 self._tags.add(id3.TPE4(encoding=UTF_8, text=value))
             elif tag == tagging.FEATURED_GUEST or tag == 'TXXX_FEATURED_GUEST':
                 self._tags.add(id3.TXXX(encoding=UTF_8, desc='Featured Guest', text=value))
+            elif tag == tagging.LYRICIST or tag == 'TEXT':
+                self._tags.add(id3.TEXT(encoding=UTF_8, text=value))
+            elif tag == tagging.COMPOSER or tag == 'TCOM':
+                self._tags.add(id3.TCOM(encoding=UTF_8, text=value))
+            elif tag == tagging.PUBLISHER or tag == 'TPUB':
+                self._tags.add(id3.TPUB(encoding=UTF_8, text=value))
             elif tag == tagging.ISRC or tag == 'TSRC':
                 self._tags.add(id3.TSRC(encoding=UTF_8, text=value))
             else:

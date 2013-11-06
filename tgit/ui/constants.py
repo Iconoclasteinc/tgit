@@ -58,9 +58,12 @@ MIXER_EDIT_NAME = 'mixer'
 TRACK_TITLE_EDIT_NAME = 'track title'
 VERSION_INFO_EDIT_NAME = 'version info'
 FEATURED_GUEST_EDIT_NAME = 'featured guest'
-ISRC_EDIT_NAME = "isrc"
-BITRATE_NAME = "bitrate"
-DURATION_NAME = "duration"
+LYRICIST_EDIT_NAME = 'lyricist'
+COMPOSER_EDIT_NAME = 'composer'
+PUBLISHER_EDIT_NAME = 'publisher'
+ISRC_EDIT_NAME = 'isrc'
+BITRATE_NAME = 'bitrate'
+DURATION_NAME = 'duration'
 
 MAIN_WINDOW_SIZE = (800, 600)
 FRONT_COVER_PIXMAP_SIZE = (125, 125)

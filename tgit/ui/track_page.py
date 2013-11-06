@@ -48,9 +48,12 @@ class TrackPage(QWidget):
         self._addTrackTitle(layout, 0)
         self._addVersionInfo(layout, 1)
         self._addFeaturedGuest(layout, 2)
-        self._addIsrc(layout, 3)
-        self._addBitrate(layout, 4)
-        self._addDuration(layout, 5)
+        self._addLyricist(layout, 3)
+        self._addComposer(layout, 4)
+        self._addPublisher(layout, 5)
+        self._addIsrc(layout, 6)
+        self._addBitrate(layout, 7)
+        self._addDuration(layout, 8)
 
     def _addTrackTitle(self, layout, row):
         self._trackTitleLabel = QLabel()
@@ -78,6 +81,33 @@ class TrackPage(QWidget):
         self._featuredGuestEdit.editingFinished.connect(self._updateFeaturedGuest)
         layout.addWidget(self._featuredGuestEdit, row, 1)
         self._featuredGuestLabel.setBuddy(self._featuredGuestEdit)
+
+    def _addLyricist(self, layout, row):
+        self._lyricistLabel = QLabel()
+        layout.addWidget(self._lyricistLabel, row, 0)
+        self._lyricistEdit = QLineEdit()
+        self._lyricistEdit.setObjectName(ui.LYRICIST_EDIT_NAME)
+        self._lyricistEdit.editingFinished.connect(self._updateLyricist)
+        layout.addWidget(self._lyricistEdit, row, 1)
+        self._lyricistLabel.setBuddy(self._lyricistEdit)
+
+    def _addComposer(self, layout, row):
+        self._composerLabel = QLabel()
+        layout.addWidget(self._composerLabel, row, 0)
+        self._composerEdit = QLineEdit()
+        self._composerEdit.setObjectName(ui.COMPOSER_EDIT_NAME)
+        self._composerEdit.editingFinished.connect(self._updateComposer)
+        layout.addWidget(self._composerEdit, row, 1)
+        self._composerLabel.setBuddy(self._composerEdit)
+
+    def _addPublisher(self, layout, row):
+        self._publisherLabel = QLabel()
+        layout.addWidget(self._publisherLabel, row, 0)
+        self._publisherEdit = QLineEdit()
+        self._publisherEdit.setObjectName(ui.PUBLISHER_EDIT_NAME)
+        self._publisherEdit.editingFinished.connect(self._updatePublisher)
+        layout.addWidget(self._publisherEdit, row, 1)
+        self._publisherLabel.setBuddy(self._publisherEdit)
 
     def _addIsrc(self, layout, row):
         self._isrcLabel = QLabel()
@@ -108,6 +138,9 @@ class TrackPage(QWidget):
         self._trackTitleLabel.setText(self.tr('Track Title: '))
         self._versionInfoLabel.setText(self.tr('Version Information: '))
         self._featuredGuestLabel.setText(self.tr('Featured Guest: '))
+        self._lyricistLabel.setText(self.tr('Lyricist: '))
+        self._composerLabel.setText(self.tr('Composer: '))
+        self._publisherLabel.setText(self.tr('Publisher: '))
         self._isrcLabel.setText(self.tr('ISRC: '))
         self._bitrateLabel.setText(self.tr('Bitrate: '))
         self._durationLabel.setText(self.tr('Duration: '))
@@ -116,6 +149,9 @@ class TrackPage(QWidget):
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
         self._featuredGuestEdit.setText(track.featuredGuest)
+        self._lyricistEdit.setText(track.lyricist)
+        self._composerEdit.setText(track.composer)
+        self._publisherEdit.setText(track.publisher)
         self._isrcEdit.setText(track.isrc)
         self._bitrateInfoLabel.setText('%s kbps' % display.inKbps(track.bitrate))
         self._durationInfoLabel.setText(display.asDuration(track.duration))
@@ -128,6 +164,15 @@ class TrackPage(QWidget):
 
     def _updateFeaturedGuest(self):
         self._track.featuredGuest = self._featuredGuestEdit.text()
+
+    def _updateLyricist(self):
+        self._track.lyricist = self._lyricistEdit.text()
+
+    def _updateComposer(self):
+        self._track.composer = self._composerEdit.text()
+
+    def _updatePublisher(self):
+        self._track.publisher = self._publisherEdit.text()
 
     def _updateIsrc(self):
         self._track.isrc = self._isrcEdit.text()

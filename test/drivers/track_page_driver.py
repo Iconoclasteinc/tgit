@@ -21,6 +21,12 @@ class TrackPageDriver(WidgetDriver):
                 self.showsVersionInfo(value)
             elif tag == tags.FEATURED_GUEST:
                 self.showsFeaturedGuest(value)
+            elif tag == tags.LYRICIST:
+                self.showsLyricist(value)
+            elif tag == tags.COMPOSER:
+                self.showsComposer(value)
+            elif tag == tags.PUBLISHER:
+                self.showsPublisher(value)
             elif tag == tags.ISRC:
                 self.showsIsrc(value)
             elif tag == tags.BITRATE:
@@ -38,6 +44,12 @@ class TrackPageDriver(WidgetDriver):
                 self.changeVersionInfo(value)
             elif tag == tags.FEATURED_GUEST:
                 self.changeFeaturedGuest(value)
+            elif tag == tags.LYRICIST:
+                self.changeLyricist(value)
+            elif tag == tags.COMPOSER:
+                self.changeComposer(value)
+            elif tag == tags.PUBLISHER:
+                self.changePublisher(value)
             elif tag == tags.ISRC:
                 self.changeIsrc(value)
             else:
@@ -63,14 +75,44 @@ class TrackPageDriver(WidgetDriver):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.VERSION_INFO_EDIT_NAME))
         edit.replaceAllText(info)
 
-    def showsFeaturedGuest(self, featuredGuest):
+    def showsFeaturedGuest(self, name):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.VERSION_INFO_EDIT_NAME)))
         label.isShowingOnScreen()
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.FEATURED_GUEST_EDIT_NAME))
-        edit.hasText(featuredGuest)
+        edit.hasText(name)
 
     def changeFeaturedGuest(self, name):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.FEATURED_GUEST_EDIT_NAME))
+        edit.replaceAllText(name)
+
+    def showsLyricist(self, name):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LYRICIST_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LYRICIST_EDIT_NAME))
+        edit.hasText(name)
+
+    def changeLyricist(self, name):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LYRICIST_EDIT_NAME))
+        edit.replaceAllText(name)
+
+    def showsComposer(self, name):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.COMPOSER_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.COMPOSER_EDIT_NAME))
+        edit.hasText(name)
+
+    def changeComposer(self, name):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.COMPOSER_EDIT_NAME))
+        edit.replaceAllText(name)
+
+    def showsPublisher(self, name):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.PUBLISHER_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PUBLISHER_EDIT_NAME))
+        edit.hasText(name)
+
+    def changePublisher(self, name):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PUBLISHER_EDIT_NAME))
         edit.replaceAllText(name)
 
     def showsIsrc(self, isrc):
