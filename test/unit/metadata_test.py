@@ -2,7 +2,7 @@
 
 import unittest
 from hamcrest import (assert_that, equal_to, has_entries, contains, has_property,
-                      contains_inanyorder, is_not, has_key)
+                      contains_inanyorder, is_not, has_key, has_length, is_in, is_not)
 from hamcrest.library.collection.is_empty import empty
 
 from tgit.metadata import Metadata, Image
@@ -10,9 +10,20 @@ from tgit.metadata import Metadata, Image
 
 class MetadataTest(unittest.TestCase):
 
-    def testMissingMetadataIsConsideredEmpty(self):
+    def testIsAMutableContainer(self):
+        metadata = Metadata(artist='James Blunt')
+        assert_that(metadata['artist'], equal_to('James Blunt'), 'accessed item')
+        metadata['artist'] = 'Adele'
+        assert_that(metadata['artist'], equal_to('Adele'), 'assigned item')
+        metadata['album'] = 'Adele 21'
+        assert_that(metadata, has_length(2), 'length')
+        assert_that('artist', is_in(metadata), 'member')
+        del metadata['artist']
+        assert_that('title', is_not(is_in(metadata)), 'member')
+
+    def testMissingTagIsConsideredEmpty(self):
         metadata = Metadata()
-        assert_that(metadata['unknown'], equal_to(u''), 'missing value')
+        assert_that(metadata['missing'], equal_to(u''), 'missing value')
 
     def testDropsAllTagsAndImagesWhenCleared(self):
         metadata = Metadata()

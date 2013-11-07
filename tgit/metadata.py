@@ -44,15 +44,31 @@ class Image(object):
         return not self.__eq__(other)
 
 
-class Metadata(dict):
-    IMAGES = 'images'
-
-    def __init__(self, **meta):
-        super(Metadata, self).__init__(**meta)
+class Metadata(object):
+    def __init__(self, **metadata):
         self._images = []
+        self._tags = dict(**metadata)
 
-    def __missing__(self, name):
-        return u''
+    def __getitem__(self, key):
+        return self._tags.get(key, '')
+
+    def __setitem__(self, key, value):
+        self._tags[key] = value
+
+    def __delitem__(self, key):
+        del self._tags[key]
+
+    def __contains__(self, key):
+        return key in self._tags
+
+    def __len__(self):
+        return len(self._tags)
+
+    def keys(self):
+        return self._tags.keys()
+
+    def items(self):
+        return self._tags.items()
 
     @property
     def images(self):
@@ -71,13 +87,12 @@ class Metadata(dict):
     def removeImages(self):
         del self._images[:]
 
-    def update(self, other=None, **meta):
-        super(Metadata, self).update(other, **meta)
-        if other:
-            self._images[:] = other.images
+    def update(self, other):
+        self._tags.update(other._tags)
+        self._images[:] = other.images
 
     def copy(self):
-        return self.select(*self.keys())
+        return self.select(*self._tags.keys())
 
     def select(self, *keys):
         metadata = Metadata()
@@ -88,5 +103,8 @@ class Metadata(dict):
         return metadata
 
     def clear(self):
-        super(Metadata, self).clear()
+        self._tags.clear()
         self.removeImages()
+
+    def __str__(self):
+        return str(self._tags)
