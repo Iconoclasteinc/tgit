@@ -49,42 +49,42 @@ def save(filename, metadata):
 class MP3File(object):
     UTF_8 = 3
 
-    class TextRecords(object):
-        def __init__(self, mapping):
-            self._mapping = mapping
+    class TextProcessor(object):
+        def __init__(self, key, tag):
+            self._key = key
+            self._tag = tag
 
-        def collectMetadata(self, metadata, frames):
-            for frameKey, tag in self._mapping.items():
-                if frameKey in frames:
-                    metadata[tag] = unicode(frames[frameKey])
+        def processFrames(self, metadata, frames):
+            if self._key in frames:
+                frame = frames[self._key]
+                metadata[self._tag] = unicode(frame)
 
-        def collectFrames(self, frames, encoding, metadata):
-            for frameKey, tag in self._mapping.items():
-                if tag in metadata:
-                    id, desc, = self._decompose(frameKey)
-                    frames.add(getattr(id3, id)(encoding=encoding, desc=desc, text=metadata[tag]))
+        def processMetadata(self, frames, encoding, metadata):
+            if self._tag in metadata:
+                id, desc = self._decompose(self._key)
+                text = metadata[self._tag]
+                frames.add(getattr(id3, id)(encoding=encoding, desc=desc, text=text))
 
         def _decompose(self, key):
-            if ':' in key:
-                return key.split(':')
-            else:
-                return key, None
+            parts = key.split(':')
+            return parts[0], (parts[1] if len(parts) > 1 else None)
 
-    class ImageRecords(object):
-        def __init__(self, frameId, pictureTypes):
-            self._frameId = frameId
+    class ImageProcessor(object):
+        def __init__(self, key, pictureTypes):
+            self._key = key
             self._pictureTypes = pictureTypes
 
-        def collectMetadata(self, metadata, frames):
-            for picture in self._pictureFrames(frames):
+        def processFrames(self, metadata, frames):
+            for key in self._pictureFrames(frames):
+                picture = frames[key]
                 imageType = self._pictureTypes.get(picture.type, Image.OTHER)
                 metadata.addImage(picture.mime, picture.data, imageType, picture.desc)
 
         def _pictureFrames(self, frames):
-            return [frame for key, frame in frames.items() if key.startswith(self._frameId)]
+            return [key for key in frames if key.startswith(self._key)]
 
-        def collectFrames(self, frames, encoding, metadata):
-            frames.delall(self._frameId)
+        def processMetadata(self, frames, encoding, metadata):
+            frames.delall(self._key)
             count = defaultdict(lambda: 0)
 
             for image in metadata.images:
@@ -96,43 +96,63 @@ class MP3File(object):
                 description += " (%i)" % (count[image.desc] + 1)
             count[image.desc] += 1
             imagesTypes = invert(self._pictureTypes)
-            return getattr(id3, self._frameId)(encoding=encoding, mime=image.mime,
-                                               type=imagesTypes[image.type],
-                                               desc=description, data=image.data)
+            return getattr(id3, self._key)(encoding=encoding, mime=image.mime,
+                                           type=imagesTypes[image.type],
+                                           desc=description, data=image.data)
 
-    class PeopleRecords(object):
-        def __init__(self, mapping, roles):
-            self._mapping = mapping
-            self._knownRoles = roles
+    class PairProcessor(object):
+        def __init__(self, key, tag, roles):
+            self._key = key
+            self._tag = tag
+            self._roles = roles
 
-        def collectMetadata(self, metadata, frames):
-            for frameKey, tag in self._mapping.items():
-                if frameKey in frames:
-                    metadata[tag] = []
-                    for role, name in frames[frameKey].people:
-                        if not name:
-                            continue
-                        if role in self._knownRoles:
-                            metadata[self._knownRoles[role]] = name
-                        else:
-                            metadata[tag].append((role, name))
+        def processFrames(self, metadata, frames):
+            if self._key in frames:
+                metadata[self._tag] = []
+                frame = frames[self._key]
+                for role, name in self._knownId3Roles(self._significantRoles(frame.people)):
+                    metadata[role] = name
+                for role, name in self._otherId3Roles(self._significantRoles(frame.people)):
+                    metadata[self._tag].append((role, name))
 
-        def collectFrames(self, frames, encoding, metadata):
-            for frameKey, tag in self._mapping.items():
-                frame = getattr(id3, frameKey)(encoding=encoding)
-                frame.people.extend(self._listKnownRolesIn(metadata))
-                if tag in metadata:
-                    frame.people.extend(self._listOtherRolesIn(metadata[tag]))
-                frames.add(frame)
+        def _significantRoles(self, pairs):
+            return [(role, name) for role, name in pairs if name]
 
-        def _listKnownRolesIn(self, metadata):
-            return [[role, metadata[tag]] for role, tag in self._knownRoles.items()
+        def _knownId3Roles(self, pairs):
+            return [(self._roles[role], name) for role, name in pairs if role in self._roles]
+
+        def _otherId3Roles(self, pairs):
+            return [(role, name) for role, name in pairs if role not in self._roles]
+
+        def processMetadata(self, frames, encoding, metadata):
+            frame = getattr(id3, self._key)(encoding=encoding)
+            frame.people.extend(self._significantRoles(self._knownMetadataRoles(metadata)))
+            frame.people.extend(self._significantRoles(self._otherMetadataRoles(metadata)))
+            frames.add(frame)
+
+        def _knownMetadataRoles(self, metadata):
+            return [[role, metadata[tag]] for role, tag in self._roles.items()
                     if tag in metadata]
 
-        def _listOtherRolesIn(self, tag):
-            return [[role, name] for role, name in tag]
+        def _otherMetadataRoles(self, metadata):
+            if not self._tag in metadata:
+                return []
+            return [[role, name] for role, name in metadata[self._tag]]
 
-    __TEXT_FRAMES = {'TALB': tagging.RELEASE_NAME,
+    processors = [
+        ImageProcessor('APIC', {
+            0: Image.OTHER,
+            3: Image.FRONT_COVER,
+            4: Image.BACK_COVER,
+        }),
+        PairProcessor('TMCL', tagging.GUEST_PERFORMERS, {}),
+        PairProcessor('TIPL', tagging.CONTRIBUTORS, {
+            'producer': tagging.PRODUCER,
+            'mix': tagging.MIXER
+        })
+    ]
+
+    for key, tag in {'TALB': tagging.RELEASE_NAME,
                      'TPE1': tagging.LEAD_PERFORMER,
                      'TOWN': tagging.LABEL_NAME,
                      'TDRC': tagging.RECORDING_TIME,
@@ -147,32 +167,8 @@ class MP3File(object):
                      'TXXX:Catalog Number': tagging.CATALOG_NUMBER,
                      'TXXX:UPC': tagging.UPC,
                      'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
-                     'TXXX:Featured Guest': tagging.FEATURED_GUEST, }
-
-    __PICTURES_FRAMES = 'APIC'
-    __PICTURES_TYPES = {
-        0: Image.OTHER,
-        3: Image.FRONT_COVER,
-        4: Image.BACK_COVER,
-    }
-
-    __PERFORMERS = {
-        'TMCL': tagging.GUEST_PERFORMERS
-    }
-    __CONTRIBUTORS = {
-        'TIPL': tagging.CONTRIBUTORS
-    }
-    __CONTRIBUTOR_ROLES = {
-        'producer': tagging.PRODUCER,
-        'mix': tagging.MIXER
-    }
-
-    __RECORDS = [
-        TextRecords(__TEXT_FRAMES),
-        ImageRecords(__PICTURES_FRAMES, __PICTURES_TYPES),
-        PeopleRecords(__PERFORMERS, {}),
-        PeopleRecords(__CONTRIBUTORS, __CONTRIBUTOR_ROLES),
-    ]
+                     'TXXX:Featured Guest': tagging.FEATURED_GUEST, }.items():
+        processors.append(TextProcessor(key, tag))
 
     def __init__(self, filename):
         super(MP3File, self).__init__()
@@ -195,8 +191,8 @@ class MP3File(object):
 
         frames = audioFile.tags or {}
 
-        for record in self.__RECORDS:
-            record.collectMetadata(self._metadata, frames)
+        for processor in self.processors:
+            processor.processFrames(self._metadata, frames)
 
         self._metadata[tagging.DURATION] = audioFile.info.length
         self._metadata[tagging.BITRATE] = audioFile.info.bitrate
@@ -213,8 +209,8 @@ class MP3File(object):
         if overwrite:
             frames.clear()
 
-        for record in self.__RECORDS:
-            record.collectFrames(frames, encoding, metadata)
+        for processor in self.processors:
+            processor.processMetadata(frames, encoding, metadata)
 
         frames.save(filename)
 

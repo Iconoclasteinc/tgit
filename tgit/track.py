@@ -52,7 +52,7 @@ class Track(object):
         if metadata is not None:
             self._metadata.update(metadata)
 
-        self._audioFile.save(self._metadata)
+        self._audioFile.save(self._metadata.copy())
 
     def _signalStateChange(self):
         self._listeners.trackStateChanged(self)

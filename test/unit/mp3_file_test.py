@@ -202,7 +202,7 @@ class MP3FileTest(unittest.TestCase):
         assert_that(reloadMetadata(mp3).images, has_length(1), 'updated images')
 
     def assertCanBeSavedAndReloadedWithSameState(self, metadata):
-        mp3 = mp3File.save(self.makeMp3(), metadata)
+        mp3 = mp3File.save(self.makeMp3(), metadata.copy())
 
         assert_that(reloadMetadata(mp3).items(), contains_inanyorder(*metadata.items()),
                     'metadata items')
