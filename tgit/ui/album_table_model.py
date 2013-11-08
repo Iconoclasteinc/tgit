@@ -59,7 +59,7 @@ class Row(QObject, TrackListener, PlayerListener):
 
     def play(self, player):
         self._playing = True
-        player.play(self._track)
+        player.play(self._track.filename)
 
     def stop(self, player):
         self._playing = False
@@ -78,16 +78,16 @@ class Row(QObject, TrackListener, PlayerListener):
     def trackStateChanged(self, track):
         self.signalRowChange()
 
-    def started(self, track):
-        if track == self._track:
+    def started(self, filename):
+        if filename == self._track.filename:
             self._playing = True
             self.signalRowChange()
 
-    def paused(self, track):
-        self.stopped(track)
+    def paused(self, filename):
+        self.stopped(filename)
 
-    def stopped(self, track):
-        if track == self._track:
+    def stopped(self, filename):
+        if filename == self._track.filename:
             self._playing = False
             self.signalRowChange()
 
@@ -217,4 +217,4 @@ class AlbumTableModel(QAbstractTableModel, AlbumListener, TrackListener):
         self.endRemoveRows()
 
     def _inPlay(self, track):
-        return self._player.isPlaying() and self._player.track() == track
+        return self._player.isPlaying() and self._player.media == track.filename

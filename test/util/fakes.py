@@ -43,22 +43,23 @@ class FakeAudioLibrary(AudioLibrary):
 
 class FakeAudioPlayer(object):
     def __init__(self):
-        self._track = None
+        self._filename = None
         self._announce = Announcer()
 
-    def track(self):
-        return self._track
+    @property
+    def media(self):
+        return self._filename
 
     def isPlaying(self):
-        return self._track is not None
+        return self._filename is not None
 
-    def play(self, track):
-        self._track = track
-        self._announce.started(self._track)
+    def play(self, filename):
+        self._filename = filename
+        self._announce.started(self._filename)
 
     def stop(self):
-        self._announce.stopped(self._track)
-        self._track = None
+        self._announce.stopped(self._filename)
+        self._filename = None
 
     def addPlayerListener(self, listener):
         self._announce.addListener(listener)

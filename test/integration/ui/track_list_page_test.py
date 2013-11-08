@@ -65,10 +65,10 @@ class TrackListPageTest(BaseWidgetTest):
         self.driver.showsTracksInOrder(['First'], ['Second'])
 
     def testCanPlayAndStopATrack(self):
-        track = build.track(trackTitle='Song')
+        track = build.track(filename='track.mp3', trackTitle='Song')
         self.album.addTrack(track)
 
-        self.player.should_call('play').once().with_args(track).when(self._notPlaying())
+        self.player.should_call('play').once().with_args('track.mp3').when(self._notPlaying())
         self.player.should_call('stop').once().when(self._playing())
 
         self.driver.isNotPlaying('Song')
@@ -78,9 +78,9 @@ class TrackListPageTest(BaseWidgetTest):
         self.driver.isNotPlaying('Song')
 
     def testRestoresPlayButtonStateWhenTrackHasFinishedPlaying(self):
-        first = build.track(trackTitle='Song #1')
+        first = build.track(filename='track1.mp3', trackTitle='Song #1')
         self.album.addTrack(first)
-        second = build.track(trackTitle='Song #2')
+        second = build.track(filename='track2.mp3', trackTitle='Song #2')
         self.album.addTrack(second)
 
         self.driver.play('Song #1')
@@ -125,8 +125,8 @@ class TrackListPageTest(BaseWidgetTest):
         self.driver.hasTrackCount(0)
 
     def testStopsCurrentlyPlayingTrackWhenRemovedFromList(self):
-        self.album.addTrack(build.track(trackTitle='Song #1'))
-        self.album.addTrack(build.track(trackTitle='Song #2'))
+        self.album.addTrack(build.track(filename='track1.mp3', trackTitle='Song #1'))
+        self.album.addTrack(build.track(filename='track2.mp3', trackTitle='Song #2'))
 
         self.driver.play('Song #2')
         self.player.should_call('stop').never()
@@ -154,6 +154,14 @@ class TrackListPageTest(BaseWidgetTest):
         self.driver.check(AssertionProbe(self.album.tracks,
                                          contains(hasTitle('Song #3'),
                                                   hasTitle('Song #1')), 'tracks'))
+
+    def testPreservesPlayingStateWhenTracksAredMoved(self):
+        self.album.addTrack(build.track(filename='track1.mp3', trackTitle='Song #1'))
+        self.album.addTrack(build.track(filename='track2.mp3', trackTitle='Song #2'))
+
+        self.driver.play('Song #1')
+        self.driver.moveTrack('Song #1', 1)
+        self.driver.isPlaying('Song #1')
 
     def _notPlaying(self):
         return lambda: not self.player.isPlaying()

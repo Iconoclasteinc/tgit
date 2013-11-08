@@ -23,6 +23,7 @@ from PyQt4.QtGui import QApplication
 
 # noinspection PyUnresolvedReferences
 from tgit import resources
+from tgit.audio import Mp3Files
 from tgit.player import PhononPlayer
 from tgit.producer import ProductionPortfolio, RecordLabel
 from tgit.audio_library import AudioFiles
@@ -39,7 +40,7 @@ class TGiT(QApplication):
         QApplication.__init__(self, [])
 
         if player is None:
-            player = PhononPlayer()
+            player = PhononPlayer(Mp3Files())
         if audioFileChooser is None:
             audioFileChooser = AudioFileChooserDialog()
         if imageFileChooser is None:

@@ -78,11 +78,11 @@ class RowTest(unittest.TestCase):
     def testStartsAndStopsPlayingTrack(self):
         player = flexmock(fakes.FakeAudioPlayer())
 
-        album = build.album(tracks=[build.track()])
+        album = build.album(tracks=[build.track(filename='track.mp3')])
         track = album.tracks[0]
         row = Row(album, track)
 
-        player.should_receive('play').with_args(track).once()
+        player.should_receive('play').with_args('track.mp3').once()
         row.play(player)
         assert_that(row.playing(), is_(True), 'playing once started')
 
@@ -92,40 +92,40 @@ class RowTest(unittest.TestCase):
 
     def testSignalsRowChangedWhenTrackHasStartedPlaying(self):
         album = build.album()
-        track1 = build.track(trackTitle='Track #1')
-        track2 = build.track(trackTitle='Track #2')
-        album.addTrack(track1)
-        album.addTrack(track2)
+        track = build.track(filename='track.mp3')
+        other = build.track(filename='other.mp3')
+        album.addTrack(track)
+        album.addTrack(other)
 
-        row = Row(album, track1, False)
+        row = Row(album, track, False)
         listener = flexmock()
         row.rowChanged.connect(lambda row: listener.rowChanged(row))
 
         listener.should_receive('rowChanged').never()
-        row.started(track2)
+        row.started('other.mp3')
         assert_that(row.playing(), is_(False), 'playing when not started')
 
         listener.should_receive('rowChanged').with_args(row).once()
-        row.started(track1)
+        row.started('track.mp3')
         assert_that(row.playing(), is_(True), 'playing once started')
 
     def testSignalsRowChangedWhenTrackHasStoppedPlaying(self):
         album = build.album()
-        track1 = build.track(trackTitle='Track #1')
-        track2 = build.track(trackTitle='Track #2')
-        album.addTrack(track1)
-        album.addTrack(track2)
+        track = build.track(filename='track.mp3')
+        other = build.track(filename='other.mp3')
+        album.addTrack(track)
+        album.addTrack(other)
 
-        row = Row(album, track1, True)
+        row = Row(album, track, True)
         listener = flexmock()
         row.rowChanged.connect(lambda row: listener.rowChanged(row))
 
         listener.should_receive('rowChanged').never()
-        row.stopped(track2)
+        row.stopped('other.mp3')
         assert_that(row.playing(), is_(True), 'playing when not stopped')
 
         listener.should_receive('rowChanged').with_args(row).once()
-        row.stopped(track1)
+        row.stopped('track.mp3')
         assert_that(row.playing(), is_(False), 'playing once stopped')
 
 

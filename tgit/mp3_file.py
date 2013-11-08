@@ -29,20 +29,15 @@ def invert(mapping):
     return dict([(v, k) for k, v in mapping.iteritems()])
 
 
-class NoMpegInfo(object):
-    bitrate = 0
-    length = 0
-
-
 def load(filename):
     mp3 = MP3File(filename)
     mp3.load()
     return mp3
 
 
-def save(filename, metadata):
+def save(filename, metadata, overwrite=False):
     mp3 = MP3File(filename)
-    mp3.save(metadata)
+    mp3.save(metadata=metadata, overwrite=overwrite)
     return mp3
 
 
@@ -178,9 +173,6 @@ class MP3File(object):
     @property
     def filename(self):
         return self._filename
-
-    def play(self, player):
-        player.playMp3(self)
 
     @property
     def metadata(self):

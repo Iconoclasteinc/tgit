@@ -46,9 +46,6 @@ class Track(object):
     def filename(self):
         return self._audioFile.filename
 
-    def playAudio(self, player):
-        self._audioFile.play(player)
-
     def tag(self, metadata=None):
         if metadata is not None:
             self._metadata.update(metadata)
