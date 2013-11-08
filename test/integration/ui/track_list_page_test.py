@@ -40,6 +40,9 @@ class TrackListPageTest(BaseWidgetTest):
         self.driver.showsColumnHeaders(
             'Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration', '', '')
 
+    def testTrackListIsInitiallyEmpty(self):
+        self.driver.showsTracksInOrder()
+
     def testDisplaysTrackDetailsInColumns(self):
         self.album.addTrack(build.track(trackTitle='My Song',
                                         bitrate=192000,

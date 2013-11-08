@@ -64,11 +64,23 @@ class Metadata(object):
     def __len__(self):
         return len(self._tags)
 
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self._tags == other._tags and self._images == other._images
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def keys(self):
         return self._tags.keys()
 
     def items(self):
         return self._tags.items()
+
+    def empty(self):
+        return len(self) == 0 and len(self.images) == 0
 
     @property
     def images(self):
@@ -91,10 +103,10 @@ class Metadata(object):
         self._tags.update(other._tags)
         self._images[:] = other.images
 
-    def copy(self):
-        return self.select(*self._tags.keys())
+    def copy(self, *keys):
+        if not keys:
+            keys = self.keys()
 
-    def select(self, *keys):
         metadata = Metadata()
         for key in keys:
             metadata[key] = self[key]

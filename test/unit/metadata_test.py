@@ -2,7 +2,7 @@
 
 import unittest
 from hamcrest import (assert_that, equal_to, has_entries, contains, has_property,
-                      contains_inanyorder, is_not, has_key, has_length, is_in, is_not)
+                      contains_inanyorder, is_not, has_key, has_length, is_in, is_)
 from hamcrest.library.collection.is_empty import empty
 
 from tgit.metadata import Metadata, Image
@@ -25,14 +25,33 @@ class MetadataTest(unittest.TestCase):
         metadata = Metadata()
         assert_that(metadata['missing'], equal_to(u''), 'missing value')
 
-    def testDropsAllTagsAndImagesWhenCleared(self):
+    def testIsInitiallyEmpty(self):
+        metadata = Metadata()
+
+        assert_that(metadata, empty(), 'tags')
+        assert_that(list(metadata.images), empty(), 'images')
+        assert_that(metadata.empty(), is_(True), 'emptiness')
+
+    def testIsNotEmptyWhenContainingImages(self):
+        metadata = Metadata()
+        metadata.addImage('img/jpeg', '...')
+
+        assert_that(metadata.empty(), is_(False), 'emptiness')
+
+    def testIsNotEmptyWhenHoldingTags(self):
+        metadata = Metadata()
+        metadata['artist'] = 'John Doe'
+        metadata.addImage('img/jpeg', '...')
+
+        assert_that(metadata.empty(), is_(False), 'emptiness')
+
+    def testIsEmptyWhenCleared(self):
         metadata = Metadata()
         metadata['artist'] = 'John Doe'
         metadata.addImage('img/jpeg', '...')
 
         metadata.clear()
-        assert_that(metadata, empty(), 'cleared tags')
-        assert_that(list(metadata.images), empty(), 'cleared images')
+        assert_that(metadata.empty(), is_(True), 'emptiness')
 
     def testUpdatesTagsAndReplacesImagesWhenUpdated(self):
         metadata = Metadata()
@@ -55,7 +74,7 @@ class MetadataTest(unittest.TestCase):
         metadata.addImage('img/jpeg', 'front-cover.jpg')
         metadata.addImage('img/jpeg', 'back-cover.jpg')
 
-        selection = metadata.select('artist', 'album', 'label')
+        selection = metadata.copy('artist', 'album', 'label')
 
         assert_that(selection, has_entries(artist='Alain Souchon',
                                            album=u"C'est déjà ça",

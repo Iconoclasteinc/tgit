@@ -68,10 +68,6 @@ class Album(object):
     def tracks(self):
         return list(self._tracks)
 
-    def updateMetadata(self, track):
-        self._metadata.update(track.metadata(*tags.ALBUM_TAGS))
-        self._signalStateChange()
-
     def empty(self):
         return len(self._tracks) == 0
 
@@ -79,13 +75,17 @@ class Album(object):
         return self.tracks.index(track)
 
     def addTrack(self, track, position=-1):
-        if not self._metadata:
-            self.updateMetadata(track)
+        self._copyTrackMetadataIfEmpty(track)
 
         if position == -1:
             position = len(self._tracks)
         self._tracks.insert(position, track)
         self._listeners.trackAdded(track, position)
+
+    def _copyTrackMetadataIfEmpty(self, track):
+        if self._metadata.empty():
+            self._metadata.update(track.metadata.copy(*tags.ALBUM_TAGS))
+            self._signalStateChange()
 
     def removeTrack(self, track):
         position = self._tracks.index(track)

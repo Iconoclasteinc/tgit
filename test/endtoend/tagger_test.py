@@ -20,154 +20,102 @@ class TaggerTest(unittest.TestCase):
         self.application.stop()
         self.audioLibrary.delete()
 
-    def testTaggingASingleTrackWithAlbumAndTrackMetadata(self):
-        track = self.audioLibrary.add(makeMp3())
-
-        self.application.newAlbum(track.filename)
-        self.application.showsAlbumContent([u''])
-
-        self.application.showsAlbumMetadata(
-            releaseName=u'',
-            leadPerformer=u'',
-            guestPerformers=u'',
-            labelName=u'',
-            catalogNumber=u'',
-            upc=u'',
-            recordingTime=u'',
-            releaseTime='',
-            recordingStudios=u'',
-            producer=u'',
-            mixer=u'')
-        self.application.changeAlbumMetadata(
-            frontCover=resources.path('sheller-en-solitaire.jpg'),
-            releaseName=u'Sheller en solitaire',
-            leadPerformer=u'William Sheller',
-            guestPerformers=u'Piano: William Shelley; Vocals: William Shiller',
-            labelName=u'Philips',
-            catalogNumber=u'848 786-2',
-            upc=u'042284878623',
-            recordingTime=u'1991-03-19',
-            releaseTime=u'1991-06',
-            recordingStudios=u'Mercury',
-            producer=u'Mick Lanaro',
-            mixer=u'-')
-        self.application.showsNextTrackMetadata(
-            trackTitle=u'',
-            versionInfo='',
-            featuredGuest='',
-            bitrate='320 kbps',
-            duration='00:09',
-            lyricist='',
-            composer='',
-            publisher='',
-            isrc=u'')
-        self.application.changeTrackMetadata(
-            trackTitle=u'Un homme heureux',
-            versionInfo=u'Version originale',
-            featuredGuest='-',
-            lyricist=u'William Sheller',
-            composer=u'William Sheller',
-            publisher='Mercury',
-            isrc=u'FRZ039105290')
-        self.audioLibrary.containsFile(
-            track.filename,
-            frontCover=resources.path('sheller-en-solitaire.jpg'),
-            releaseName=u'Sheller en solitaire',
-            leadPerformer=u'William Sheller',
-            guestPerformers=[('Piano', 'William Shelley'), ('Vocals', 'William Shiller')],
-            labelName=u'Philips',
-            catalogNumber=u'848 786-2',
-            upc=u'042284878623',
-            recordingTime=u'1991-03-19',
-            releaseTime=u'1991-06',
-            recordingStudios=u'Mercury',
-            producer=u'Mick Lanaro',
-            mixer='-',
-            trackTitle=u'Un homme heureux',
-            versionInfo=u'Version originale',
-            featuredGuest='-',
-            lyricist=u'William Sheller',
-            composer=u'William Sheller',
-            publisher=u'Mercury',
-            isrc=u'FRZ039105290')
-
-    def testTaggingMultipleTracksInAnAlbum(self):
+    def testCreatesAndTagsANewAlbum(self):
         maPreference = self.audioLibrary.add(makeMp3(
             trackTitle=u'Ma préférence',
+            releaseName='Jaloux',
+            frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('jaloux.jpg'))),
             leadPerformer='Julien Clerc',
-            frontCover=('image/gif', 'Front Cover',
-                        fs.readContent(resources.path('triple-best-of.gif')))))
-        faisMoiUnePlace = self.audioLibrary.add(makeMp3(trackTitle=u'Fais moi une place'))
-        ceNestRien = self.audioLibrary.add(makeMp3(trackTitle=u"Ce n'est rien"))
+            labelName='EMI',
+            releaseTime='1978'))
+        faisMoiUnePlace = self.audioLibrary.add(makeMp3(
+            trackTitle='Fais moi une place',
+            releaseName='Fais moi une place',
+            frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('une-place.jpg'))),
+            labelName='Virgin',
+            releaseTime='1990',
+            upc='3268440307258'))
+        rolo = self.audioLibrary.add(makeMp3(
+            trackTitle='Rolo le Baroudeur',
+            releaseName='Niagara',
+            frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('niagara.jpg'))),
+            releaseTime='1971',
+            lyricist=u'Étienne Roda-Gil'
+        ))
+        ceNestRien = self.audioLibrary.add(makeMp3(
+            trackTitle="Ce n'est rien",
+            releaseName='Niagara',
+            frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('niagara.jpg'))),
+            releaseTime='1971',
+            lyricist=u'Étienne Roda-Gil'))
 
-        self.application.newAlbum(maPreference.filename)
-        self.application.importTrack(faisMoiUnePlace.filename)
-        self.application.importTrack(ceNestRien.filename)
-        self.application.showsAlbumContent([u'Ma préférence', '', ''],
-                                           [u'Fais moi une place', '', ''],
+        self.application.newAlbum(maPreference)
+        self.application.importTrack(faisMoiUnePlace)
+        self.application.importTrack(rolo)
+        self.application.importTrack(ceNestRien)
+
+        self.application.showsAlbumContent([u'Ma préférence'],
+                                           [u'Fais moi une place'],
+                                           [u'Rolo le Baroudeur'],
                                            [u"Ce n'est rien"])
-        self.application.showsAlbumMetadata(leadPerformer='Julien Clerc')
+        self.application.removeTrack('Rolo le Baroudeur')
+        self.application.changeTrackPosition(u"Ce n'est rien", 1)
+
+        self.application.showsAlbumMetadata(
+            releaseName='Jaloux',
+            leadPerformer='Julien Clerc',
+            labelName='EMI',
+            releaseTime='1978')
         self.application.changeAlbumMetadata(
-            releaseName='Triple Best Of',
-            labelName='EMI France')
-        self.application.showsNextTrackMetadata(trackTitle=u'Ma préférence')
-        self.application.changeTrackMetadata(versionInfo='Compilation')
-        self.application.showsNextTrackMetadata(trackTitle=u'Fais moi une place')
-        self.application.changeTrackMetadata(versionInfo='Compilation')
+            releaseName='Best Of',
+            frontCover=resources.path('best-of.jpg'),
+            labelName='EMI Music France',
+            releaseTime='2009-04-06')
+
         self.application.showsNextTrackMetadata(trackTitle=u"Ce n'est rien")
-        self.application.changeTrackMetadata(versionInfo='Compilation')
+        self.application.changeTrackMetadata(
+            composer='Julien Clerc')
 
-        self.audioLibrary.containsFile(maPreference.filename,
-                                       frontCover=resources.path('triple-best-of.gif'),
-                                       releaseName='Triple Best Of',
-                                       leadPerformer='Julien Clerc',
-                                       labelName='EMI France',
-                                       trackTitle=u'Ma préférence',
-                                       versionInfo='Compilation')
-        self.audioLibrary.containsFile(faisMoiUnePlace.filename,
-                                       frontCover=resources.path('triple-best-of.gif'),
-                                       releaseName='Triple Best Of',
-                                       leadPerformer='Julien Clerc',
-                                       labelName='EMI France',
-                                       trackTitle=u'Fais moi une place',
-                                       versionInfo='Compilation')
-        self.audioLibrary.containsFile(ceNestRien.filename,
-                                       frontCover=resources.path('triple-best-of.gif'),
-                                       releaseName='Triple Best Of',
-                                       leadPerformer='Julien Clerc',
-                                       labelName='EMI France',
-                                       trackTitle=u"Ce n'est rien",
-                                       versionInfo='Compilation')
+        self.application.showsNextTrackMetadata(trackTitle=u'Ma préférence')
+        self.application.changeTrackMetadata(
+            composer='Julien Clerc',
+            lyricist='Jean-Loup Dabadie')
 
-    def testChangingTheAlbumCompositionFromTheTrackList(self):
-        myNameIsJonasz = self.audioLibrary.add(makeMp3(trackTitle='My name is JONASZ'))
-        ditesMoi = self.audioLibrary.add(makeMp3(trackTitle='Dites-moi'))
-        fanfan = self.audioLibrary.add(makeMp3(trackTitle='Fanfan', releaseName='?'))
-        superNana = self.audioLibrary.add(makeMp3(trackTitle='Supernana'))
+        self.application.showsNextTrackMetadata(trackTitle=u'Fais moi une place')
+        self.application.changeTrackMetadata(
+            composer='Julien Clerc',
+            lyricist='Francoise Hardy')
 
-        self.application.newAlbum(myNameIsJonasz.filename)
-        self.application.importTrack(ditesMoi.filename)
-        self.application.importTrack(fanfan.filename)
-        self.application.importTrack(superNana.filename)
-
-        self.application.showsAlbumContent(['My name is JONASZ'],
-                                           ['Dites-moi'],
-                                           ['Fanfan'],
-                                           ['Supernana'])
-        self.application.changeTrackPosition('My name is JONASZ', 4)
-        self.application.changeTrackPosition('Supernana', 2)
-        self.application.removeTrack('Fanfan')
-        self.application.showsAlbumContent(['Dites-moi'],
-                                           ['Supernana'],
-                                           ['My name is JONASZ'])
-
-        self.application.showsAlbumMetadata()
-        self.application.changeAlbumMetadata(releaseName='Michel Jonasz')
-        self.application.showsNextTrackMetadata(trackTitle='Dites-moi')
-        self.application.showsNextTrackMetadata(trackTitle='Supernana')
-        self.application.showsNextTrackMetadata(trackTitle='My name is JONASZ')
-
-        self.audioLibrary.containsFile(ditesMoi.filename, releaseName='Michel Jonasz')
-        self.audioLibrary.containsFile(superNana.filename, releaseName='Michel Jonasz')
-        self.audioLibrary.containsFile(myNameIsJonasz.filename, releaseName='Michel Jonasz')
-        self.audioLibrary.containsFile(fanfan.filename, releaseName='?')
+        self.audioLibrary.contains(maPreference,
+                                   frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
+                                   releaseName='Best Of',
+                                   leadPerformer='Julien Clerc',
+                                   labelName='EMI Music France',
+                                   releaseTime='2009-04-06',
+                                   trackTitle=u'Ma préférence',
+                                   composer='Julien Clerc',
+                                   lyricist='Jean-Loup Dabadie')
+        self.audioLibrary.contains(faisMoiUnePlace,
+                                   frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
+                                   releaseName='Best Of',
+                                   leadPerformer='Julien Clerc',
+                                   labelName='EMI Music France',
+                                   releaseTime='2009-04-06',
+                                   trackTitle=u'Fais moi une place',
+                                   composer='Julien Clerc',
+                                   lyricist='Francoise Hardy')
+        self.audioLibrary.contains(ceNestRien,
+                                   frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
+                                   releaseName='Best Of',
+                                   leadPerformer='Julien Clerc',
+                                   labelName='EMI Music France',
+                                   releaseTime='2009-04-06',
+                                   trackTitle=u"Ce n'est rien",
+                                   composer='Julien Clerc',
+                                   lyricist=u'Étienne Roda-Gil')
+        self.audioLibrary.contains(rolo,
+                                   releaseName='Niagara',
+                                   frontCover=(resources.path('niagara.jpg'), 'Cover'),
+                                   releaseTime='1971',
+                                   trackTitle='Rolo le Baroudeur',
+                                   lyricist=u'Étienne Roda-Gil')

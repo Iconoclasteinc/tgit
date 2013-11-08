@@ -12,25 +12,25 @@ from tgit import tags as tagging
 
 class FakeAudioLibrary(AudioLibrary):
     def __init__(self):
-        self.files = []
+        self.recordings = []
 
-    def add(self, file_):
-        self.files.append(file_)
-        return file_
+    def add(self, recording):
+        self.recordings.append(recording)
+        return recording.filename
 
     def load(self, filename):
-        for file_ in self.files:
+        for file_ in self.recordings:
             if file_.filename == filename:
                 return mp3File.load(filename)
 
         raise AssertionError('Not in library: % s' % filename)
 
-    def containsFile(self, filename, **tags):
+    def contains(self, filename, **tags):
         images = []
         if tagging.FRONT_COVER in tags:
-            mime = fs.guessMimeType(tags[tagging.FRONT_COVER])
-            images.append(Image(mime, fs.readContent(tags[tagging.FRONT_COVER]),
-                                type_=Image.FRONT_COVER, desc='Front Cover'))
+            image, desc = tags[tagging.FRONT_COVER]
+            mime = fs.guessMimeType(image)
+            images.append(Image(mime, fs.readContent(image), type_=Image.FRONT_COVER, desc=desc))
             del tags[tagging.FRONT_COVER]
 
         mp3 = self.load(filename)
@@ -38,7 +38,7 @@ class FakeAudioLibrary(AudioLibrary):
         assert_that(mp3.metadata.images, contains(*images), 'attached pictures')
 
     def delete(self):
-        [mp3.delete() for mp3 in self.files]
+        [recording.delete() for recording in self.recordings]
 
 
 class FakeAudioPlayer(object):

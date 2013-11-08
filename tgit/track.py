@@ -38,8 +38,9 @@ class Track(object):
     def removeTrackListener(self, listener):
         self._listeners.removeListener(listener)
 
-    def metadata(self, *tags):
-        return self._metadata.select(*tags)
+    @property
+    def metadata(self):
+        return self._metadata
 
     @property
     def filename(self):

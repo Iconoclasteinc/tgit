@@ -17,8 +17,7 @@ DURATION = TestMp3.duration
 class MP3FileTest(unittest.TestCase):
 
     def tearDown(self):
-        if hasattr(self, 'testFile'):
-            self.testFile.delete()
+        self.testFile.delete()
 
     def makeMp3(self, **tags):
         self.testFile = makeMp3(TestMp3.filename, **tags)
