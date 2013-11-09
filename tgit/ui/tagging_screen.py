@@ -22,7 +22,7 @@ from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget, QPush
 
 from tgit.announcer import Announcer
 from tgit.album import AlbumListener
-from tgit.file_chooser import FileChoiceListener
+from tgit.ui.file_chooser import FileChoiceListener
 from tgit.ui import constants as ui
 from tgit.ui.album_page import AlbumPage
 from tgit.ui.track_list_page import TrackListPage

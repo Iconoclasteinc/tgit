@@ -17,6 +17,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+# todo move tags to album.py
+
 FRONT_COVER = 'frontCover'
 
 RELEASE_NAME = 'releaseName'
@@ -49,6 +51,8 @@ ALBUM_TAGS = [
     MIXER,
     CONTRIBUTORS
 ]
+
+# todo move tags to track.py
 
 BITRATE = 'bitrate'
 DURATION = 'duration'

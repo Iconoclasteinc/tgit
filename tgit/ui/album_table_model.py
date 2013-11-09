@@ -17,14 +17,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import functools as func
-
 from PyQt4.QtCore import QObject, QAbstractTableModel, QModelIndex, Qt, pyqtSignal
 
-from tgit.announcer import Announcer
 from tgit.album import AlbumListener
 from tgit.track import TrackListener
-from tgit.player import PlayerListener
+from tgit.audio.player import PlayerListener
 from tgit.ui import display
 
 

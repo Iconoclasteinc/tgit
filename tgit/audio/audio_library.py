@@ -19,9 +19,9 @@
 
 import os
 
-from tgit import fs
-from tgit import id3_tagger as mp3
 from tgit.metadata import Metadata
+from tgit.mp3 import id3_tagger as mp3
+from tgit.util import fs
 
 
 class MediaLibrary(object):
@@ -32,30 +32,30 @@ class MediaLibrary(object):
         pass
 
 
-class MediaFile(object):
-    def __init__(self, name, filename):
-        self._name = name
+class Mp3Audio(object):
+    def __init__(self, filename):
         self._filename = filename
+        self._playableCopy = self._copy(filename)
 
     @property
     def name(self):
-        return self._name
-
-    def source(self):
         return self._filename
 
-    def delete(self):
-        os.unlink(self._filename)
+    def source(self):
+        return self._playableCopy
 
-
-class Mp3Files(MediaLibrary):
-    def load(self, name):
+    def _copy(self, filename):
         # On Windows, we have 2 issues with Phonon:
         # 1- It locks the file so we have to make a copy to allow tagging
+        copy = fs.makeCopy(filename)
         # 2- It fails to play files with our tags so we have to clear the frames
-        copy = fs.makeCopy(name)
         mp3.save(metadata=Metadata(), overwrite=True, filename=copy)
-        return MediaFile(name, copy)
+        return copy
 
-    def release(self, media):
-        media.delete()
+    def release(self):
+        os.unlink(self._playableCopy)
+
+
+class AudioFiles(MediaLibrary):
+    def load(self, filename):
+        return Mp3Audio(filename)

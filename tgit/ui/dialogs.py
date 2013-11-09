@@ -20,7 +20,7 @@
 from PyQt4.QtCore import QDir
 from PyQt4.QtGui import QFileDialog
 
-from tgit.file_chooser import FileChooser
+from tgit.ui.file_chooser import FileChooser
 from tgit.ui import constants as ui
 
 

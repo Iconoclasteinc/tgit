@@ -7,7 +7,8 @@ from mutagen.mp3 import MP3
 
 from test.util import resources as testResources
 
-from tgit import tags as tagging, fs
+from tgit import tags as tagging
+from tgit.util import fs
 
 
 class TestMp3(object):

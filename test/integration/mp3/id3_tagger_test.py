@@ -8,7 +8,7 @@ from test.util.mp3_file import makeMp3, TestMp3
 
 from tgit import tags
 from tgit.metadata import Metadata, Image
-import tgit.id3_tagger as tagger
+import tgit.mp3.id3_tagger as tagger
 
 BITRATE = TestMp3.bitrate
 DURATION = TestMp3.duration

@@ -9,11 +9,11 @@ from test.drivers.album_page_driver import AlbumPageDriver
 from test.util import resources
 from test.util.fakes import FakeFileChooser
 
-from tgit import fs
 from tgit.metadata import Image
 from tgit.album import Album
 from tgit.ui import constants as ui
 from tgit.ui.album_page import AlbumPage
+from tgit.util import fs
 
 
 def loadImage(name):

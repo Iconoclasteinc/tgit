@@ -18,15 +18,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import sys
-from PyQt4.QtCore import Qt, QTextCodec, QTranslator
+from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
 # noinspection PyUnresolvedReferences
-from tgit import resources
-from tgit.audio import Mp3Files
-from tgit.player import PhononPlayer
-from tgit.record_label import ProductionPortfolio, RecordLabel, AlbumDirector
-from tgit.embedded_metadata import EmbeddedMetadata
+from tgit.audio.audio_library import AudioFiles
+from tgit.audio.player import PhononPlayer
+from tgit.record_label import ProductionPortfolio, RecordLabel
+from tgit.mp3.embedded_metadata import EmbeddedMetadata
 from tgit.ui.main_window import MainWindow
 from tgit.ui.dialogs import AudioFileChooserDialog, ImageFileChooserDialog
 
@@ -42,7 +41,7 @@ class TGiT(QApplication):
         self._productions = ProductionPortfolio()
 
         if player is None:
-            player = PhononPlayer(Mp3Files())
+            player = PhononPlayer(AudioFiles())
         if audioFileChooser is None:
             audioFileChooser = AudioFileChooserDialog()
         if imageFileChooser is None:

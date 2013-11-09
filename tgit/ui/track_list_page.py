@@ -22,7 +22,7 @@ import functools as func
 from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableView, QHBoxLayout, QItemDelegate)
 
 from tgit.announcer import Announcer
-from tgit.player import PlayerListener
+from tgit.audio.player import PlayerListener
 from tgit.ui.album_table_model import AlbumTableModel, Columns
 from tgit.ui import constants as ui
 

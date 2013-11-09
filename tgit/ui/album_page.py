@@ -21,10 +21,10 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QPixmap, QImage,
                          QHBoxLayout, QVBoxLayout)
 
-from tgit.file_chooser import FileChoiceListener
-from tgit import fs
 from tgit.album import AlbumListener
 from tgit.ui import constants as ui, display
+from tgit.ui.file_chooser import FileChoiceListener
+from tgit.util import fs
 
 
 class AlbumPage(QWidget, FileChoiceListener, AlbumListener):

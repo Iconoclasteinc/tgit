@@ -7,7 +7,7 @@ from test.util.mp3_file import makeMp3
 from test.util.fakes import FakeMetadataStore
 from test.endtoend.application_runner import ApplicationRunner
 
-from tgit import fs
+from tgit.util import fs
 
 
 class TaggerTest(unittest.TestCase):
