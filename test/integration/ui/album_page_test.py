@@ -34,7 +34,7 @@ class AlbumPageTest(BaseWidgetTest):
         return AlbumPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
-        self.album.addImage('image/jpeg', loadImage('front-cover.jpg'))
+        self.album.addFrontCover('image/jpeg', loadImage('front-cover.jpg'))
         self.driver.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_PIXMAP_SIZE)
 
     def testDisplaysAlbumMetadata(self):

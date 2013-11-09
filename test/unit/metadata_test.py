@@ -56,7 +56,6 @@ class MetadataTest(unittest.TestCase):
     def testUpdatesTagsAndReplacesImagesWhenUpdated(self):
         metadata = Metadata()
         metadata['artist'] = 'Pascal Obispo'
-        metadata['album'] = ''
         metadata.addImage('img/jpeg', 'missing')
 
         other = Metadata()
@@ -68,7 +67,18 @@ class MetadataTest(unittest.TestCase):
                                           album="Un jour comme aujourd'hui"), 'updated tags')
         assert_that(metadata.images, contains(has_property('data', 'cover.png')), 'updated images')
 
-    def testCanReturnASelectionOfItsTagsWithImages(self):
+    def testRemovesTagsNotInOtherOnUpdate(self):
+        metadata = Metadata()
+        metadata['artist'] = 'Pascal Obispo'
+        metadata['album'] = 'Superflu'
+
+        other = Metadata()
+        other['album'] = "Un jour comme aujourd'hui"
+
+        metadata.update(other, 'artist', 'album')
+        assert_that(metadata, is_not(has_key('artist')), 'removed tags')
+
+    def testCopiesASelectionOfItsTagsWithImages(self):
         metadata = Metadata(artist='Alain Souchon', album=u"C'est déjà ça",
                             track='Foule sentimentale')
         metadata.addImage('img/jpeg', 'front-cover.jpg')
@@ -76,13 +86,13 @@ class MetadataTest(unittest.TestCase):
 
         selection = metadata.copy('artist', 'album', 'label')
 
-        assert_that(selection, has_entries(artist='Alain Souchon',
-                                           album=u"C'est déjà ça",
-                                           label=''),
-                    'selected tags')
+        assert_that(selection, has_length(2))
+        assert_that(selection,
+                    has_entries(artist='Alain Souchon', album=u"C'est déjà ça"), 'selected tags')
         assert_that(selection, is_not(has_key('track')), 'selected tags')
-        assert_that(selection.images, contains(has_property('data', 'front-cover.jpg'),
-                                               has_property('data', 'back-cover.jpg')),
+        assert_that(selection.images,
+                    contains(has_property('data', 'front-cover.jpg'),
+                             has_property('data', 'back-cover.jpg')),
                     'selected images')
 
     def testLooksUpImagesByType(self):

@@ -255,13 +255,13 @@ class AlbumTableModelTest(unittest.TestCase):
         assert_that(self.model.rowCount(), equal_to(0), 'row count after removal')
 
     def testNoLongerSignalsTrackStateChangedWhenRowHasBeenRemoved(self):
-        modelListener = flexmock()
-        self.model.dataChanged.connect(lambda start, end: modelListener.dataChanged(start, end))
-        modelListener.should_receive('dataChanged').never()
-
         track = build.track()
         self.album.addTrack(track)
         self.album.removeTrack(track)
+
+        modelListener = flexmock()
+        self.model.dataChanged.connect(lambda start, end: modelListener.dataChanged(start, end))
+        modelListener.should_receive('dataChanged').never()
         track.trackTitle = 'Track'
 
     def assertRowMatchesAlbum(self, row, album):

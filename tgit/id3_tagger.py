@@ -30,19 +30,21 @@ def invert(mapping):
 
 
 def load(filename):
-    mp3 = MP3File(filename)
-    mp3.load()
-    return mp3
+    tagger = Id3Tagger()
+    return tagger.load(filename)
 
 
 def save(filename, metadata, overwrite=False):
-    mp3 = MP3File(filename)
-    mp3.save(metadata=metadata, overwrite=overwrite)
-    return mp3
+    tagger = Id3Tagger(overwrite)
+    tagger.save(filename=filename, metadata=metadata)
 
 
-class MP3File(object):
+class Id3Tagger(object):
     UTF_8 = 3
+
+    def __init__(self, encoding=UTF_8, overwrite=False):
+        self._encoding = encoding
+        self._overwrite = overwrite
 
     class TextProcessor(object):
         def __init__(self, key, tag):
@@ -55,10 +57,9 @@ class MP3File(object):
                 metadata[self._tag] = unicode(frame)
 
         def processMetadata(self, frames, encoding, metadata):
-            if self._tag in metadata:
-                id, desc = self._decompose(self._key)
-                text = metadata[self._tag]
-                frames.add(getattr(id3, id)(encoding=encoding, desc=desc, text=text))
+            id, desc = self._decompose(self._key)
+            text = metadata[self._tag]
+            frames.add(getattr(id3, id)(encoding=encoding, desc=desc, text=text))
 
         def _decompose(self, key):
             parts = key.split(':')
@@ -165,44 +166,27 @@ class MP3File(object):
                      'TXXX:Featured Guest': tagging.FEATURED_GUEST, }.items():
         processors.append(TextProcessor(key, tag))
 
-    def __init__(self, filename):
-        super(MP3File, self).__init__()
-        self._filename = filename
-        self._metadata = Metadata()
-
-    @property
-    def filename(self):
-        return self._filename
-
-    @property
-    def metadata(self):
-        return self._metadata
-
-    def load(self):
-        audioFile = mp3.MP3(self._filename)
+    def load(self, filename):
+        audioFile = mp3.MP3(filename)
 
         frames = audioFile.tags or {}
 
+        metadata = Metadata()
         for processor in self.processors:
-            processor.processFrames(self._metadata, frames)
+            processor.processFrames(metadata, frames)
 
-        self._metadata[tagging.DURATION] = audioFile.info.length
-        self._metadata[tagging.BITRATE] = audioFile.info.bitrate
+        metadata[tagging.DURATION] = audioFile.info.length
+        metadata[tagging.BITRATE] = audioFile.info.bitrate
 
-        return self._metadata
+        return metadata
 
-    def save(self, metadata=None, encoding=UTF_8, overwrite=False, filename=None):
-        if filename is None:
-            filename = self._filename
-        if metadata is None:
-            metadata = self._metadata
-
+    def save(self, filename, metadata):
         frames = self._loadFrames(filename)
-        if overwrite:
+        if self._overwrite:
             frames.clear()
 
         for processor in self.processors:
-            processor.processMetadata(frames, encoding, metadata)
+            processor.processMetadata(frames, self._encoding, metadata)
 
         frames.save(filename)
 

@@ -17,24 +17,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import functools as func
+from tgit.track import Track
 
 
-class Announcer(object):
-    def __init__(self):
-        self._listeners = []
+class AlbumDirector(object):
+    def __init__(self, metadataStore):
+        self._metadataStore = metadataStore
 
-    def addListener(self, listener):
-        self._listeners.append(listener)
+    def addTrack(self, album, filename):
+        album.addTrack(Track(filename, self._loadMetadata(filename)))
 
-    def removeListener(self, listener):
-        self._listeners.remove(listener)
+    def _loadMetadata(self, filename):
+        return self._metadataStore.load(filename)
 
-    def __getattr__(self, message):
-        return func.partial(self._announce, message)
-
-    def _announce(self, message, *args, **kwargs):
-        for listener in self._listeners:
-            method = getattr(listener, message)
-            method(*args, **kwargs)
-
+    def recordAlbum(self, album):
+        album.save(self._metadataStore)

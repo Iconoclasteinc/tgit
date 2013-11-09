@@ -99,16 +99,24 @@ class Metadata(object):
     def removeImages(self):
         del self._images[:]
 
-    def update(self, other):
-        self._tags.update(other._tags)
+    def update(self, other, *tags):
+        if not tags:
+            tags = other.keys()
+
+        for tag in [tag for tag in tags if tag in other]:
+            self[tag] = other[tag]
+        for tag in [tag for tag in tags if not tag in other and tag in self]:
+            del self[tag]
+
         self._images[:] = other.images
+        return self
 
     def copy(self, *keys):
         if not keys:
             keys = self.keys()
 
         metadata = Metadata()
-        for key in keys:
+        for key in [key for key in keys if key in self]:
             metadata[key] = self[key]
 
         metadata.addImages(*self.images)

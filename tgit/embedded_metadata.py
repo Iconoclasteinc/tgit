@@ -17,17 +17,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import tgit.mp3_file as mp3File
+from tgit.id3_tagger import Id3Tagger
 
 
-class AudioLibrary(object):
-    """
-    Loads an audio file from the library
-    """
+class EmbeddedMetadata():
+    def __init__(self):
+        self._id3 = Id3Tagger()
+
     def load(self, filename):
-        pass
+        return self._id3.load(filename)
 
-
-class AudioFiles(AudioLibrary):
-    def load(self, filename):
-        return mp3File.load(filename)
+    def save(self, filename, metadata):
+        self._id3.save(filename, metadata)

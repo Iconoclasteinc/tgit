@@ -53,7 +53,7 @@ class Album(object):
     def frontCovers(self):
         return self.imagesOfType(Image.FRONT_COVER)
 
-    def addImage(self, mime, data, type_=Image.FRONT_COVER, desc=''):
+    def addImage(self, mime, data, type_=Image.OTHER, desc=''):
         self._metadata.addImage(mime, data, type_, desc)
         self._signalStateChange()
 
@@ -75,26 +75,30 @@ class Album(object):
         return self.tracks.index(track)
 
     def addTrack(self, track, position=-1):
-        self._copyTrackMetadataIfEmpty(track)
+        if self._metadata.empty():
+            self._updateAlbumMetadataFrom(track)
 
         if position == -1:
             position = len(self._tracks)
         self._tracks.insert(position, track)
         self._listeners.trackAdded(track, position)
 
-    def _copyTrackMetadataIfEmpty(self, track):
-        if self._metadata.empty():
-            self._metadata.update(track.metadata.copy(*tags.ALBUM_TAGS))
-            self._signalStateChange()
-
     def removeTrack(self, track):
         position = self._tracks.index(track)
         self._tracks.remove(track)
         self._listeners.trackRemoved(track, position)
 
-    def tag(self):
+    def save(self, store):
         for track in self._tracks:
-            track.tag(self._metadata)
+            self._updateAlbumMetadataOf(track)
+            track.save(store)
+
+    def _updateAlbumMetadataFrom(self, track):
+        self._metadata.update(track.metadata(*tags.ALBUM_TAGS))
+        self._signalStateChange()
+
+    def _updateAlbumMetadataOf(self, track):
+        track.update(self._metadata, *tags.ALBUM_TAGS)
 
     def _signalStateChange(self):
         self._listeners.albumStateChanged(self)

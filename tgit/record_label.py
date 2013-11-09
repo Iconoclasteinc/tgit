@@ -19,7 +19,7 @@
 
 from tgit.announcer import Announcer
 from tgit.album import Album
-from tgit.track import Track
+from tgit.album_director import AlbumDirector
 
 
 class ProductionListener(object):
@@ -36,44 +36,14 @@ class ProductionPortfolio(object):
         self._productionListeners.addListener(listener)
 
     def addProduction(self, director, album):
-        self._productions.append((director, album))
+        self._productions.append(album)
         self._productionListeners.productionAdded(director, album)
 
 
-class ProductionHouse(object):
-    def newAlbum(self):
-        pass
-
-
-class RecordLabel(ProductionHouse):
-    def __init__(self, productions, audioLibrary):
+class RecordLabel(object):
+    def __init__(self, productions, metadataStore):
         self._productions = productions
-        self._audioLibrary = audioLibrary
+        self._metadataStore = metadataStore
 
     def newAlbum(self):
-        album = Album()
-        tagger = AlbumTagger(album, self._audioLibrary)
-        self._productions.addProduction(tagger, album)
-
-
-class ArtisticDirector(object):
-    def importTrack(self, filename):
-        pass
-
-    def recordAlbum(self):
-        pass
-
-
-class AlbumTagger(ArtisticDirector):
-    def __init__(self, album, audioLibrary):
-        self._album = album
-        self._audioLibrary = audioLibrary
-
-    def _loadAudioFile(self, filename):
-        return self._audioLibrary.load(filename)
-
-    def importTrack(self, filename):
-        self._album.addTrack(Track(self._loadAudioFile(filename)))
-
-    def recordAlbum(self):
-        self._album.tag()
+        self._productions.addProduction(AlbumDirector(self._metadataStore), Album())

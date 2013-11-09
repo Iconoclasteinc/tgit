@@ -31,11 +31,11 @@ class TaggingScreenTest(BaseWidgetTest):
         self.driver.isShowingTrackList()
 
     def testSignalsRecordAlbumRequestsWhenSaveButtonClicked(self):
-        recordAlbumRequest = ValueMatcherProbe('record album')
+        recordAlbumRequest = ValueMatcherProbe('record album', equal_to(self.album))
 
         class RequestTracker(object):
-            def recordAlbum(self):
-                recordAlbumRequest.received()
+            def recordAlbum(self, album):
+                recordAlbumRequest.received(album)
 
         self.widget.addRequestListener(RequestTracker())
         self.album.addTrack(track())
@@ -46,15 +46,15 @@ class TaggingScreenTest(BaseWidgetTest):
     def testChoosesAudioFileAndSignalsImportTrackRequestWhenAddTrackButtonIsClicked(self):
         self.audioFileChooser.chooses('track.mp3')
 
-        importTrackRequest = ValueMatcherProbe('import track file', equal_to('track.mp3'))
+        addTrackRequest = ValueMatcherProbe('import track file', equal_to('track.mp3'))
 
         class RequestTracker(object):
-            def importTrack(self, filename):
-                importTrackRequest.received(filename)
+            def addTrack(self, album, filename):
+                addTrackRequest.received(filename)
 
         self.widget.addRequestListener(RequestTracker())
         self.driver.addTrack()
-        self.driver.check(importTrackRequest)
+        self.driver.check(addTrackRequest)
 
     def testAddsTrackPagesInTrackAlbumOrder(self):
         self.albumContains(track(trackTitle='Track 1'),

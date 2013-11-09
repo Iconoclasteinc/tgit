@@ -3,8 +3,8 @@
 import unittest
 
 from test.util import resources
-from test.util.mp3 import makeMp3
-from test.util.fakes import FakeAudioLibrary
+from test.util.mp3_file import makeMp3
+from test.util.fakes import FakeMetadataStore
 from test.endtoend.application_runner import ApplicationRunner
 
 from tgit import fs
@@ -13,7 +13,7 @@ from tgit import fs
 class TaggerTest(unittest.TestCase):
     def setUp(self):
         self.application = ApplicationRunner()
-        self.audioLibrary = FakeAudioLibrary()
+        self.audioLibrary = FakeMetadataStore()
         self.application.start()
 
     def tearDown(self):

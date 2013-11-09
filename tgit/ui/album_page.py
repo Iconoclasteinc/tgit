@@ -23,10 +23,11 @@ from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, Q
 
 from tgit.file_chooser import FileChoiceListener
 from tgit import fs
+from tgit.album import AlbumListener
 from tgit.ui import constants as ui, display
 
 
-class AlbumPage(QWidget, FileChoiceListener):
+class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
     def __init__(self, album, pictureChooser, parent=None):
         QWidget.__init__(self, parent)
         self._album = album

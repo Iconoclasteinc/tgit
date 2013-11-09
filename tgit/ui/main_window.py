@@ -20,19 +20,20 @@
 from PyQt4.QtGui import QMainWindow, QMenu, QAction, QStatusBar
 
 from tgit.announcer import Announcer
-from tgit.producer import ProductionListener
+from tgit.record_label import ProductionListener
 from tgit.ui import constants as ui
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen
 
 
 class MainWindow(QMainWindow, ProductionListener):
-    def __init__(self, productionPortfolio, player, audioFileChooser, imageFileChooser):
+    def __init__(self, productionPortfolio, audioPlayer, audioFileChooser,
+                 imageFileChooser):
         QMainWindow.__init__(self)
 
         self._productionPortfolio = productionPortfolio
         self._productionPortfolio.addProductionListener(self)
-        self._player = player
+        self._audioPlayer = audioPlayer
         self._audioFileChooser = audioFileChooser
         self._imageFileChooser = imageFileChooser
         self._productionHouses = Announcer()
@@ -44,7 +45,7 @@ class MainWindow(QMainWindow, ProductionListener):
         self._productionHouses.addListener(house)
 
     def productionAdded(self, director, album):
-        mainScreen = TaggingScreen(album, self._player, self._audioFileChooser,
+        mainScreen = TaggingScreen(album, self._audioPlayer, self._audioFileChooser,
                                    self._imageFileChooser, self)
         mainScreen.addRequestListener(director)
         self.setCentralWidget(mainScreen)

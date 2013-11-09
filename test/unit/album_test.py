@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import (assert_that, equal_to, is_, contains, has_property, has_properties,
-                      has_length, has_item, is_not, has_entry, match_equality as matching)
+from hamcrest import (assert_that, equal_to, is_, contains, has_property,
+                      has_length, has_item, is_not, match_equality as matching)
 from hamcrest.library.collection.is_empty import empty
 from flexmock import flexmock
 
@@ -79,37 +79,6 @@ class AlbumTest(unittest.TestCase):
         assert_that(album.releaseName, equal_to('First Album'), 'metadata')
         assert_that(album.images, contains(has_property('data', 'first-cover.jpg')), 'images')
 
-    def testTagsTracksWithAlbumMetadata(self):
-        metadata = build.metadata(releaseName='Album',
-                                  leadPerformer='Artist',
-                                  guestPerformers=[('Guitar', 'Guitarist')],
-                                  labelName='Label',
-                                  upc='Barcode',
-                                  catalogNumber='Reference',
-                                  recordingStudios='Studios',
-                                  producer='',
-                                  mixer='',
-                                  contributors=[('Mastering', 'Mastering Eng.')],
-                                  recordingTime='2010-01-01',
-                                  releaseTime='2010-02-15',
-                                  originalReleaseTime='1980-06-05',
-                                  images=[build.image('image/jpeg', 'front-cover.jpg',
-                                                      desc='Front Cover')])
-
-        album = build.album(tracks=[
-            build.track(releaseName='Other album'),
-            build.track(producer='Producer')]
-        )
-        for tag, value in metadata.items():
-            setattr(album, tag, value)
-
-        # add a track after modifying album metadata
-        album.addTrack(build.track(mixer='Mixer'))
-
-        album.tag()
-        for track in album.tracks:
-            self.assertHasMetadata(track, metadata)
-
     def testSignalsStateChangesToListener(self):
         self.assertNotifiesListenerOnPropertyChange('releaseName', 'Album')
         self.assertNotifiesListenerOnPropertyChange('leadPerformer', 'Artist')
@@ -183,7 +152,3 @@ class AlbumTest(unittest.TestCase):
         album = Album()
         album.addAlbumListener(self.listenerExpectingNotification('images', has_item(image)))
         album.addImage(image.mime, image.data, image.type, image.desc)
-
-    def assertHasMetadata(self, track, metadata):
-        for tag, value in metadata.items():
-            assert_that(track.metadata, has_entry(tag, value), 'track metadata')

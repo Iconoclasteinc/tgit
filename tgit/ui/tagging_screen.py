@@ -51,13 +51,13 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
         self._requestListeners.addListener(listener)
 
     def fileChosen(self, filename):
-        self._requestListeners.importTrack(filename)
+        self._requestListeners.addTrack(self._album, filename)
 
     def selectTrack(self):
         self._audioFileChooser.chooseFile()
 
     def recordAlbum(self):
-        self._requestListeners.recordAlbum()
+        self._requestListeners.recordAlbum(self._album)
 
     def _build(self):
         self.setObjectName(ui.TAGGING_SCREEN_NAME)

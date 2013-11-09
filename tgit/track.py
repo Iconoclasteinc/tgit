@@ -19,6 +19,7 @@
 
 from tgit.announcer import Announcer
 from tgit import tags
+from metadata import Metadata
 
 
 class TrackListener(object):
@@ -27,9 +28,9 @@ class TrackListener(object):
 
 
 class Track(object):
-    def __init__(self, audioFile):
-        self._audioFile = audioFile
-        self._metadata = audioFile.metadata.copy()
+    def __init__(self, filename, metadata=None):
+        self._filename = filename
+        self._metadata = metadata or Metadata()
         self._listeners = Announcer()
 
     def addTrackListener(self, listener):
@@ -39,18 +40,17 @@ class Track(object):
         self._listeners.removeListener(listener)
 
     @property
-    def metadata(self):
-        return self._metadata
-
-    @property
     def filename(self):
-        return self._audioFile.filename
+        return self._filename
 
-    def tag(self, metadata=None):
-        if metadata is not None:
-            self._metadata.update(metadata)
+    def metadata(self, *tags):
+        return self._metadata.copy(*tags)
 
-        self._audioFile.save(self._metadata.copy())
+    def update(self, metadata, *tags):
+        self._metadata.update(metadata, *tags)
+
+    def save(self, store):
+        store.save(self.filename, self._metadata)
 
     def _signalStateChange(self):
         self._listeners.trackStateChanged(self)

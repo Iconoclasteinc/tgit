@@ -7,7 +7,7 @@ from tgit.album import Album
 from tgit.track import Track
 
 
-def image(mime='image/jpeg', data='...', type_=Image.FRONT_COVER, desc=''):
+def image(mime='image/jpeg', data='...', type_=Image.OTHER, desc=''):
     return mime, data, type_, desc
 
 
@@ -20,24 +20,24 @@ def metadata(bitrate=96000, duration=200, **meta):
     return metadata
 
 
-def audio(filename='track.mp3', **meta):
-    return flexmock(filename=filename,
-                    metadata=metadata(**meta),
-                    save=lambda metadata: 'saved!')
-
-
 def track(filename='track.mp3', **meta):
-    return Track(audio(filename, **meta))
+    # todo album tags go in metadata
+    # track tags are set via attributes
+    return Track(filename, metadata(**meta))
 
 
 def album(**meta):
-    tracks = []
+    album = Album()
     if 'tracks' in meta:
         for track in meta['tracks']:
-            tracks.append(track)
+            album.addTrack(track)
         del meta['tracks']
+    if 'images' in meta:
+        for image in meta['images']:
+            album.addImage(*image)
+        del meta['images']
 
-    album = Album(metadata(**meta))
-    for track in tracks:
-        album.addTrack(track)
+    for tag, value in meta.items():
+        setattr(album, tag, value)
+
     return album

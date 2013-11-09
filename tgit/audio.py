@@ -20,7 +20,7 @@
 import os
 
 from tgit import fs
-from tgit import mp3_file as mp3
+from tgit import id3_tagger as mp3
 from tgit.metadata import Metadata
 
 

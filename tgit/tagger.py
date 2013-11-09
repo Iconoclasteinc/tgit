@@ -25,8 +25,8 @@ from PyQt4.QtGui import QApplication
 from tgit import resources
 from tgit.audio import Mp3Files
 from tgit.player import PhononPlayer
-from tgit.producer import ProductionPortfolio, RecordLabel
-from tgit.audio_library import AudioFiles
+from tgit.record_label import ProductionPortfolio, RecordLabel, AlbumDirector
+from tgit.embedded_metadata import EmbeddedMetadata
 from tgit.ui.main_window import MainWindow
 from tgit.ui.dialogs import AudioFileChooserDialog, ImageFileChooserDialog
 
@@ -38,6 +38,8 @@ UTF_8 = 'UTF-8'
 class TGiT(QApplication):
     def __init__(self, player=None, audioFileChooser=None, imageFileChooser=None):
         QApplication.__init__(self, [])
+        self._translators = []
+        self._productions = ProductionPortfolio()
 
         if player is None:
             player = PhononPlayer(Mp3Files())
@@ -45,14 +47,10 @@ class TGiT(QApplication):
             audioFileChooser = AudioFileChooserDialog()
         if imageFileChooser is None:
             imageFileChooser = ImageFileChooserDialog()
-
-        self._translators = []
-        self._productions = ProductionPortfolio()
-
         self._ui = MainWindow(self._productions, player, audioFileChooser, imageFileChooser)
         self._attachFileChooser(audioFileChooser)
         self._attachFileChooser(imageFileChooser)
-        self._addProductionHouseFor(AudioFiles())
+        self._addProductionHouseFor(EmbeddedMetadata())
 
     def show(self):
         self._ui.show()
@@ -62,8 +60,8 @@ class TGiT(QApplication):
     def _attachFileChooser(self, chooser):
         chooser.setParent(self._ui)
 
-    def _addProductionHouseFor(self, audioLibrary):
-        self._ui.addProductionHouse(RecordLabel(self._productions, audioLibrary))
+    def _addProductionHouseFor(self, metadataStore):
+        self._ui.addProductionHouse(RecordLabel(self._productions, metadataStore))
 
     def useMediaPlayer(self, player):
         self._ui.setMediaPlayer(player)
