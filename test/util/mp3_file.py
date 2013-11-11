@@ -77,6 +77,9 @@ class Mp3File(object):
                 self.addTag(id3.TXXX(encoding=UTF_8, desc='Recording Studios', text=value))
             elif tag == 'TIPL':
                 self.addTag(id3.TIPL(encoding=UTF_8, people=value))
+            elif tag == tagging.COMMENTS or tag == 'COMM':
+                text, lang = value
+                self.addTag(id3.COMM(encoding=UTF_8, text=text, desc='', lang=lang))
             elif tag == tagging.TRACK_TITLE or tag == 'TIT2':
                 self.addTag(id3.TIT2(encoding=UTF_8, text=value))
             elif tag == tagging.VERSION_INFO or tag == 'TPE4':

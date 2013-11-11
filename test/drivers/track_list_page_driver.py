@@ -4,7 +4,7 @@ from hamcrest import contains, has_items, equal_to
 
 from PyQt4.QtGui import QPushButton, QTableView
 
-from test.cute.widgets import WidgetDriver, AbstractButtonDriver, TableViewDriver
+from test.cute.widgets import WidgetDriver, ButtonDriver, TableViewDriver
 from test.cute.matchers import named
 
 from tgit.ui import constants as ui
@@ -54,7 +54,7 @@ class TrackListPageDriver(WidgetDriver):
         self.isNotPlaying(title)
 
     def addTrack(self):
-        button = AbstractButtonDriver.findSingle(self, QPushButton, named(ui.ADD_TRACK_BUTTON_NAME))
+        button = ButtonDriver.findSingle(self, QPushButton, named(ui.ADD_TRACK_BUTTON_NAME))
         button.click()
 
     def removeTrack(self, title):
@@ -67,8 +67,8 @@ class TrackListPageDriver(WidgetDriver):
         self._trackTable().moveRow(from_, to)
 
     def _removeButtonAt(self, row):
-        return AbstractButtonDriver.findSingle(self._removeWidget(row), QPushButton,
-                                               named(ui.REMOVE_BUTTON_NAME))
+        return ButtonDriver.findSingle(self._removeWidget(row), QPushButton,
+                                       named(ui.REMOVE_BUTTON_NAME))
 
     def _removeWidget(self, index):
         return self._trackTable().widgetInCell(index, Columns.index(Columns.remove))
@@ -77,7 +77,7 @@ class TrackListPageDriver(WidgetDriver):
         self._trackTable().clickOnCell(row, Columns.index(Columns.remove))
 
     def _playButtonAt(self, index):
-        return AbstractButtonDriver.findSingle(self._playWidget(index), QPushButton,
+        return ButtonDriver.findSingle(self._playWidget(index), QPushButton,
                                                named(ui.PLAY_BUTTON_NAME))
 
     def _playWidget(self, index):

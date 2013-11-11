@@ -15,7 +15,6 @@ DURATION = TestMp3.duration
 
 
 class Id3TaggerTest(unittest.TestCase):
-
     def tearDown(self):
         self.mp3.delete()
 
@@ -37,16 +36,16 @@ class Id3TaggerTest(unittest.TestCase):
 
     def testReadsGuestPerformersFromTMCLFrame(self):
         metadata = tagger.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Guitar', 'Bassist'],
-                                              ['Piano','Pianist']]))
+                                                  ['Piano', 'Pianist']]))
         assert_that(metadata, has_entry(tags.GUEST_PERFORMERS, contains_inanyorder(
-                                                ('Guitar', 'Guitarist'),
-                                                ('Guitar', 'Bassist'),
-                                                ('Piano', 'Pianist'))), 'metadata')
+            ('Guitar', 'Guitarist'),
+            ('Guitar', 'Bassist'),
+            ('Piano', 'Pianist'))), 'metadata')
 
     def testIgnoresTMCLEntriesWithBlankNames(self):
         metadata = tagger.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Piano', '']]))
         assert_that(metadata, has_entry(tags.GUEST_PERFORMERS,
-                                            contains(('Guitar', 'Guitarist'))), 'metadata')
+                                        contains(('Guitar', 'Guitarist'))), 'metadata')
 
     def testReadsLabelNameFromTOWNFrame(self):
         metadata = tagger.load(self.makeMp3(TOWN='Label Name'))
@@ -92,6 +91,10 @@ class Id3TaggerTest(unittest.TestCase):
     def testReadsMixingEngineerFromTIPLFrame(self):
         metadata = tagger.load(self.makeMp3(TIPL=[['mix', 'Mixing Engineer']]))
         assert_that(metadata, has_entry(tags.MIXER, 'Mixing Engineer'), 'metadata')
+
+    def testReadsCommentsFromCOMMFrame(self):
+        metadata = tagger.load(self.makeMp3(COMM=('Comments', 'fra')))
+        assert_that(metadata, has_entry(tags.COMMENTS, 'Comments'), 'metadata')
 
     def testReadsTrackTitleFromTIT2Frame(self):
         metadata = tagger.load(self.makeMp3(TIT2='Track Title'))
@@ -157,8 +160,9 @@ class Id3TaggerTest(unittest.TestCase):
         metadata[tags.PRODUCER] = u'Artistic Producer'
         metadata[tags.MIXER] = u'Mixing Engineer'
         metadata[tags.CONTRIBUTORS] = [('recording', 'Recording Eng.'),
-                                 ('mastering', 'Mastering Eng.'),
-                                 ('recording', 'Assistant Recording Eng.')]
+                                       ('mastering', 'Mastering Eng.'),
+                                       ('recording', 'Assistant Recording Eng.')]
+        metadata[tags.COMMENTS] = u'Comments'
         metadata[tags.TRACK_TITLE] = u'Track Title'
         metadata[tags.VERSION_INFO] = u'Version Info'
         metadata[tags.FEATURED_GUEST] = u'Featured Guest'

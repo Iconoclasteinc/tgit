@@ -2,12 +2,11 @@
 
 import os
 
-from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog
+from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit
 
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from test.cute.widgets import (dialogWindow, WidgetDriver, LabelDriver, LineEditDriver,
-                               AbstractButtonDriver,
-                               FileDialogDriver)
+                               ButtonDriver, FileDialogDriver, TextEditDriver)
 
 import tgit.tags as tags
 from tgit.ui import constants as ui
@@ -89,7 +88,7 @@ class AlbumPageDriver(WidgetDriver):
         self.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_PIXMAP_SIZE)
 
     def selectFrontCover(self):
-        button = AbstractButtonDriver.findSingle(self, QPushButton,
+        button = ButtonDriver.findSingle(self, QPushButton,
                                                  named(ui.SELECT_PICTURE_BUTTON_NAME))
         button.click()
 
@@ -224,3 +223,17 @@ class AlbumPageDriver(WidgetDriver):
     def changeMixer(self, mixer):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.MIXER_EDIT_NAME))
         edit.replaceAllText(mixer)
+
+    def showsComments(self, comments):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.COMMENTS_TEXT_NAME)))
+        label.isShowingOnScreen()
+        edit = TextEditDriver.findSingle(self, QTextEdit, named(ui.COMMENTS_TEXT_NAME))
+        edit.hasPlainText(comments)
+
+    def addComments(self, *comments):
+        edit = TextEditDriver.findSingle(self, QTextEdit, named(ui.COMMENTS_TEXT_NAME))
+        for comment in comments:
+            edit.addLine(comment)
+        edit.clearFocus()
+
+

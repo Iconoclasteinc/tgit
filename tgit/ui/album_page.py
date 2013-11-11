@@ -17,14 +17,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, pyqtSignal
 from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QPixmap, QImage,
-                         QHBoxLayout, QVBoxLayout)
+                         QHBoxLayout, QVBoxLayout, QTextEdit)
 
 from tgit.album import AlbumListener
 from tgit.ui import constants as ui, display
 from tgit.ui.file_chooser import FileChoiceListener
 from tgit.util import fs
+
+
+class TextArea(QTextEdit):
+    editingFinished = pyqtSignal()
+
+    def focusOutEvent(self, event):
+        self.editingFinished.emit()
+        QTextEdit.focusOutEvent(self, event)
 
 
 class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
@@ -92,6 +100,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._addRecordingStudiosTo(layout, 10)
         self._addProducerTo(layout, 11)
         self._addMixerTo(layout, 12)
+        self._addCommentsTo(layout, 13)
 
     def _addFrontCoverPictureTo(self, layout, row):
         self._frontCoverPixmap = QLabel()
@@ -217,6 +226,15 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         layout.addWidget(self._mixerEdit, row, 1)
         self._mixerLabel.setBuddy(self._mixerEdit)
 
+    def _addCommentsTo(self, layout, row):
+        self._commentsLabel = QLabel()
+        layout.addWidget(self._commentsLabel, row, 0)
+        self._commentsEdit = TextArea()
+        self._commentsEdit.setObjectName(ui.COMMENTS_TEXT_NAME)
+        self._commentsEdit.editingFinished.connect(self._updateComments)
+        layout.addWidget(self._commentsEdit, row, 1)
+        self._commentsLabel.setBuddy(self._commentsEdit)
+
     def translateUi(self):
         self._selectPictureButton.setText(self.tr('Select Picture...'))
         self._releaseNameLabel.setText(self.tr('Release Name: '))
@@ -231,6 +249,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._recordingStudiosLabel.setText(self.tr('Recording Studios: '))
         self._producerLabel.setText(self.tr('Producer: '))
         self._mixerLabel.setText(self.tr('Mixer: '))
+        self._commentsLabel.setText(self.tr('Comments: '))
 
     def _frontCoverOf(self, album):
         frontCovers = album.frontCovers
@@ -253,6 +272,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._recordingStudiosEdit.setText(album.recordingStudios)
         self._producerEdit.setText(album.producer)
         self._mixerEdit.setText(album.mixer)
+        self._commentsEdit.setText(album.comments)
 
     def _updateAlbumCover(self):
         self._album.removeImages()
@@ -294,3 +314,6 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _updateMixer(self):
         self._album.mixer = self._mixerEdit.text()
+
+    def _updateComments(self):
+        self._album.comments = self._commentsEdit.toPlainText()

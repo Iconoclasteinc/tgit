@@ -57,13 +57,16 @@ class Id3Tagger(object):
                 metadata[self._tag] = unicode(frame)
 
         def processMetadata(self, frames, encoding, metadata):
-            id, desc = self._decompose(self._key)
+            id, desc, lang = self._decompose(self._key)
             text = metadata[self._tag]
-            frames.add(getattr(id3, id)(encoding=encoding, desc=desc, text=text))
+            frames.add(getattr(id3, id)(encoding=encoding, desc=desc, lang=lang, text=text))
 
         def _decompose(self, key):
-            parts = key.split(':')
-            return parts[0], (parts[1] if len(parts) > 1 else None)
+            parts = (key + '::').split(':')
+            return parts[0], parts[1], self.unquote(parts[2])
+
+        def unquote(self, text):
+            return text[1:len(text) - 1]
 
     class ImageProcessor(object):
         def __init__(self, key, pictureTypes):
@@ -163,7 +166,9 @@ class Id3Tagger(object):
                      'TXXX:Catalog Number': tagging.CATALOG_NUMBER,
                      'TXXX:UPC': tagging.UPC,
                      'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
-                     'TXXX:Featured Guest': tagging.FEATURED_GUEST, }.items():
+                     'TXXX:Featured Guest': tagging.FEATURED_GUEST,
+                     "COMM::'fra'": tagging.COMMENTS
+        }.items():
         processors.append(TextProcessor(key, tag))
 
     def load(self, filename):

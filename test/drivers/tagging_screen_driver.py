@@ -2,7 +2,7 @@
 
 from PyQt4.QtGui import QWidget, QPushButton
 
-from test.cute.widgets import WidgetDriver, AbstractButtonDriver
+from test.cute.widgets import WidgetDriver, ButtonDriver
 from test.cute.matchers import named, showingOnScreen
 from test.drivers.track_list_page_driver import TrackListPageDriver
 from test.drivers.album_page_driver import AlbumPageDriver
@@ -95,11 +95,11 @@ class TaggingScreenDriver(WidgetDriver):
                                           showingOnScreen())
 
     def _nextPageButton(self):
-        return AbstractButtonDriver.findSingle(self, QPushButton, named(ui.NEXT_PAGE_BUTTON_NAME))
+        return ButtonDriver.findSingle(self, QPushButton, named(ui.NEXT_PAGE_BUTTON_NAME))
 
     def _previousPageButton(self):
-        return AbstractButtonDriver.findSingle(self, QPushButton,
+        return ButtonDriver.findSingle(self, QPushButton,
                                                named(ui.PREVIOUS_PAGE_BUTTON_NAME))
 
     def _saveButton(self):
-        return AbstractButtonDriver.findSingle(self, QPushButton, named(ui.SAVE_BUTTON_NAME))
+        return ButtonDriver.findSingle(self, QPushButton, named(ui.SAVE_BUTTON_NAME))

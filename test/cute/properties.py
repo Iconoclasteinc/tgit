@@ -3,7 +3,7 @@
 from hamcrest.core.selfdescribing import SelfDescribing
 
 from PyQt4.QtCore import Qt, QObject
-from PyQt4.QtGui import QLabel, QLineEdit, QPixmap
+from PyQt4.QtGui import QLabel, QLineEdit, QPixmap, QTextEdit
 
 
 def name():
@@ -31,7 +31,11 @@ def buddy():
 
 
 def inputText():
-    return PropertyQuery('text', QLineEdit.displayText)
+    return PropertyQuery('display text', QLineEdit.displayText)
+
+
+def plainText():
+    return PropertyQuery('plain text', QTextEdit.toPlainText)
 
 
 def listItemText():

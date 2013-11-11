@@ -104,12 +104,15 @@ class WidgetDriver(object):
     def close(self):
         self.manipulate('close', lambda widget: widget.close())
 
+    def clearFocus(self):
+        self.manipulate('clear focus', lambda widget: widget.clearFocus())
+
 
 class MainWindowDriver(WidgetDriver):
     pass
 
 
-class AbstractButtonDriver(WidgetDriver):
+class ButtonDriver(WidgetDriver):
     def isUp(self):
         self.isShowingOnScreen()
         self.is_(match.unchecked())
@@ -127,11 +130,8 @@ class LabelDriver(WidgetDriver):
         self.has(properties.labelPixmap(), matcher)
 
 
-class LineEditDriver(WidgetDriver):
+class AbstractEditDriver(WidgetDriver):
     EDITION_DELAY = 20
-
-    def hasText(self, text):
-        self.has(properties.inputText(), equal_to(text))
 
     def replaceAllText(self, text):
         self.focusWithMouse()
@@ -155,6 +155,21 @@ class LineEditDriver(WidgetDriver):
 
     def type(self, text):
         self.perform(gestures.typeText(text))
+
+
+class LineEditDriver(AbstractEditDriver):
+    def hasText(self, text):
+        self.has(properties.inputText(), equal_to(text))
+
+
+class TextEditDriver(AbstractEditDriver):
+    def hasPlainText(self, text):
+        self.has(properties.plainText(), equal_to(text))
+
+    def addLine(self, text):
+        self.focusWithMouse()
+        self.type(text)
+        self.perform(shortcuts.Enter)
 
 
 class FileDialogDriver(WidgetDriver):
@@ -204,7 +219,7 @@ class FileDialogDriver(WidgetDriver):
         self._toolButtonNamed('toParentButton').click()
 
     def _toolButtonNamed(self, name):
-        return AbstractButtonDriver.findSingle(self, QToolButton, match.named(name))
+        return ButtonDriver.findSingle(self, QToolButton, match.named(name))
 
     def enterManually(self, filename):
         self._filenameEdit().replaceAllText(filename)
@@ -225,7 +240,7 @@ class FileDialogDriver(WidgetDriver):
 
         acceptButton = FindOutAcceptButtonText()
         self.manipulate('find out accept button text', acceptButton)
-        return AbstractButtonDriver.findSingle(self, QPushButton, match.withText(acceptButton.text))
+        return ButtonDriver.findSingle(self, QPushButton, match.withText(acceptButton.text))
 
 
 class ListViewDriver(WidgetDriver):

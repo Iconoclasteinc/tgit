@@ -54,6 +54,7 @@ ORIGINAL_RELEASE_TIME_EDIT_NAME = 'original release time'
 RECORDING_STUDIOS_EDIT_NAME = 'recording studios'
 PRODUCER_EDIT_NAME = 'producer'
 MIXER_EDIT_NAME = 'mixer'
+COMMENTS_TEXT_NAME = 'comments'
 
 TRACK_TITLE_EDIT_NAME = 'track title'
 VERSION_INFO_EDIT_NAME = 'version info'
@@ -65,7 +66,7 @@ ISRC_EDIT_NAME = 'isrc'
 BITRATE_NAME = 'bitrate'
 DURATION_NAME = 'duration'
 
-MAIN_WINDOW_SIZE = (800, 600)
+MAIN_WINDOW_SIZE = (1024, 768)
 FRONT_COVER_PIXMAP_SIZE = (125, 125)
 
 

@@ -62,6 +62,8 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsProducer('Artistic Producer')
         self.album.mixer = 'Mixing Engineer'
         self.driver.showsMixer('Mixing Engineer')
+        self.album.comments = 'Comments'
+        self.driver.showsComments('Comments')
 
     def testUpdatesAlbumWhenMetadataEdited(self):
         self.pictureChooser.chooses(resources.path('front-cover.jpg'))
@@ -113,3 +115,7 @@ class AlbumPageTest(BaseWidgetTest):
 
         self.driver.changeMixer('Mixing Engineer')
         self.check(AssertionProbe(self.album.mixer, equal_to('Mixing Engineer'), 'mixer'))
+
+        self.driver.addComments('Comments')
+        self.driver.addComments('...')
+        self.check(AssertionProbe(self.album.comments, equal_to('Comments\n...\n'), 'comments'))

@@ -34,6 +34,7 @@ RECORDING_STUDIOS = 'recordingStudios'
 PRODUCER = 'producer'
 MIXER = 'mixer'
 CONTRIBUTORS = 'contributors'
+COMMENTS = 'comments'
 
 
 ALBUM_TAGS = [
@@ -49,7 +50,8 @@ ALBUM_TAGS = [
     RECORDING_STUDIOS,
     PRODUCER,
     MIXER,
-    CONTRIBUTORS
+    CONTRIBUTORS,
+    COMMENTS
 ]
 
 # todo move tags to track.py
