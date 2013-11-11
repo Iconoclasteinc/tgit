@@ -50,7 +50,7 @@ class Metadata(object):
         self._tags = dict(**metadata)
 
     def __getitem__(self, key):
-        return self._tags.get(key, '')
+        return self._tags.get(key, None)
 
     def __setitem__(self, key, value):
         self._tags[key] = value
@@ -99,26 +99,23 @@ class Metadata(object):
     def removeImages(self):
         del self._images[:]
 
-    def update(self, other, *tags):
-        if not tags:
-            tags = other.keys()
-
-        for tag in [tag for tag in tags if tag in other]:
-            self[tag] = other[tag]
-        for tag in [tag for tag in tags if not tag in other and tag in self]:
-            del self[tag]
-
+    def merge(self, other):
+        self._tags.update(other)
         self._images[:] = other.images
         return self
 
-    def copy(self, *keys):
-        if not keys:
-            keys = self.keys()
+    def copy(self):
+        return self.subsetWithImages(*self.keys())
 
+    def subset(self, *keys):
         metadata = Metadata()
         for key in [key for key in keys if key in self]:
             metadata[key] = self[key]
 
+        return metadata
+
+    def subsetWithImages(self, *keys):
+        metadata = self.subset(*keys)
         metadata.addImages(*self.images)
         return metadata
 
@@ -127,4 +124,4 @@ class Metadata(object):
         self.removeImages()
 
     def __str__(self):
-        return str(self._tags)
+        return str(self._tags) + ' with '+ str(self._images)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import (assert_that, equal_to, is_, contains, has_property,
+from hamcrest import (assert_that, equal_to, is_, contains, has_property, none,
                       has_length, has_item, is_not, match_equality as matching)
 from hamcrest.library.collection.is_empty import empty
 from flexmock import flexmock
@@ -21,6 +21,12 @@ class AlbumTest(unittest.TestCase):
         album = Album()
         album.addTrack(build.track())
         assert_that(album.empty(), is_(False), 'emptiness')
+
+    def testAssociatesTrackToAlbum(self):
+        album = Album()
+        track = build.track()
+        album.addTrack(track)
+        assert_that(track.album, is_(album), 'album of track')
 
     def testHoldsAListOfTracksInOrder(self):
         album = Album()
@@ -54,7 +60,7 @@ class AlbumTest(unittest.TestCase):
 
         first = album.tracks[0]
         album.removeTrack(first)
-        album.addTrack(first, 1)
+        album.insertTrack(first, 1)
 
         assert_that(album.tracks, contains(
             has_property('trackTitle', 'Track 2'),
@@ -64,16 +70,19 @@ class AlbumTest(unittest.TestCase):
     def testHasInitiallyNoMetadataOrImages(self):
         album = Album()
         for tag in tags.ALBUM_TAGS:
-            assert_that(getattr(album, tag), empty(), tag)
+            assert_that(getattr(album, tag), none(), tag)
 
         assert_that(album.images, empty(), 'images')
 
-    def testDefaultsToMetadataOfInitialFirstTrack(self):
-        album = Album()
-        master = build.track(releaseName='First Album',
-                             images=[build.image('image/jpeg', 'first-cover.jpg')])
-        album.addTrack(master)
-        album.removeTrack(master)
+    def testCopiesMetadataOfInitialFirstTrack(self):
+        originalRelease = build.album(releaseName='First Album',
+                                      images=[build.image('image/jpeg', 'first-cover.jpg')])
+        track = build.track()
+        track.album = originalRelease
+
+        album = build.album()
+        album.addTrack(track)
+        album.removeTrack(track)
         album.addTrack(build.track(releaseName='Second Album'))
 
         assert_that(album.releaseName, equal_to('First Album'), 'metadata')
@@ -105,13 +114,14 @@ class AlbumTest(unittest.TestCase):
 
         middle = build.track()
         listener.should_receive('trackAdded').with_args(middle, 1).once()
-        album.addTrack(middle, 1)
+        album.insertTrack(middle, 1)
 
     def testSignalsStateChangeWhenFirstTrackInserted(self):
         album = Album()
         album.addAlbumListener(self.listenerExpectingNotification('releaseName', 'Album'))
 
-        album.addTrack(build.track(releaseName='Album'))
+        track = build.track(album=build.album(releaseName='Album'))
+        album.addTrack(track)
 
     def testSignalsTrackRemovalToListeners(self):
         album = build.album(tracks=[build.track(), build.track()])

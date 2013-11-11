@@ -66,7 +66,7 @@ class Row(QObject, TrackListener, PlayerListener):
         self._album.removeTrack(self._track)
 
     def insert(self, position):
-        self._album.addTrack(self._track, position)
+        self._album.insertTrack(self._track, position)
 
     def moveTo(self, position):
         self.remove()
@@ -119,7 +119,7 @@ class Columns:
     leadPerformer = Column(name='Lead Performer', value=Row.leadPerformer)
     releaseName = Column(name='Release Name', value=Row.releaseName)
     bitrate = Column(name='Bitrate',
-                     value=lambda track: '%d kbps' % display.inKbps(track.bitrate()))
+                     value=lambda track: '%s kbps' % display.inKbps(track.bitrate()))
     duration = Column(name='Duration',
                       value=lambda track: display.asDuration(track.duration()))
     play = Column(name='', value=Row.playing)

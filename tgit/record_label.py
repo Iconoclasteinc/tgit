@@ -19,31 +19,36 @@
 
 from tgit.announcer import Announcer
 from tgit.album import Album
-from tgit.album_director import AlbumDirector
 
 
-class ProductionListener(object):
-    def productionAdded(self, director, album):
+class AlbumPortfolioListener(object):
+    def albumCreated(self, album):
         pass
 
 
-class ProductionPortfolio(object):
+class AlbumPortfolio(object):
     def __init__(self):
-        self._productions = []
-        self._productionListeners = Announcer()
+        self._albums = []
+        self._portfolioListeners = Announcer()
 
-    def addProductionListener(self, listener):
-        self._productionListeners.addListener(listener)
+    def addPortfolioListener(self, listener):
+        self._portfolioListeners.addListener(listener)
 
-    def addProduction(self, director, album):
-        self._productions.append(album)
-        self._productionListeners.productionAdded(director, album)
+    def addAlbum(self, album):
+        self._albums.append(album)
+        self._portfolioListeners.albumCreated(album)
 
 
 class RecordLabel(object):
-    def __init__(self, productions, metadataStore):
-        self._productions = productions
-        self._metadataStore = metadataStore
+    def __init__(self, portfolio, trackCatalog):
+        self._albumPortfolio = portfolio
+        self._trackCatalog = trackCatalog
 
     def newAlbum(self):
-        self._productions.addProduction(AlbumDirector(self._metadataStore), Album())
+        self._albumPortfolio.addAlbum(Album())
+
+    def addTrackToAlbum(self, album, filename):
+        album.addTrack(self._trackCatalog.load(filename))
+
+    def recordAlbum(self, album):
+        album.eachTrack(self._trackCatalog.save)

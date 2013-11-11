@@ -24,8 +24,9 @@ from PyQt4.QtGui import QApplication
 # noinspection PyUnresolvedReferences
 from tgit.audio.audio_library import AudioFiles
 from tgit.audio.player import PhononPlayer
-from tgit.record_label import ProductionPortfolio, RecordLabel
-from tgit.mp3.embedded_metadata import EmbeddedMetadata
+from tgit.record_label import AlbumPortfolio, RecordLabel
+from tgit.mp3.track_files import TrackFiles
+from tgit.mp3.id3_tagger import Id3Tagger
 from tgit.ui.main_window import MainWindow
 from tgit.ui.dialogs import AudioFileChooserDialog, ImageFileChooserDialog
 
@@ -38,7 +39,7 @@ class TGiT(QApplication):
     def __init__(self, player=None, audioFileChooser=None, imageFileChooser=None):
         QApplication.__init__(self, [])
         self._translators = []
-        self._productions = ProductionPortfolio()
+        self._albums = AlbumPortfolio()
 
         if player is None:
             player = PhononPlayer(AudioFiles())
@@ -46,10 +47,10 @@ class TGiT(QApplication):
             audioFileChooser = AudioFileChooserDialog()
         if imageFileChooser is None:
             imageFileChooser = ImageFileChooserDialog()
-        self._ui = MainWindow(self._productions, player, audioFileChooser, imageFileChooser)
+        self._ui = MainWindow(self._albums, player, audioFileChooser, imageFileChooser)
         self._attachFileChooser(audioFileChooser)
         self._attachFileChooser(imageFileChooser)
-        self._addProductionHouseFor(EmbeddedMetadata())
+        self._addProductionHouseFor(TrackFiles(Id3Tagger()))
 
     def show(self):
         self._ui.show()
@@ -59,8 +60,8 @@ class TGiT(QApplication):
     def _attachFileChooser(self, chooser):
         chooser.setParent(self._ui)
 
-    def _addProductionHouseFor(self, metadataStore):
-        self._ui.addProductionHouse(RecordLabel(self._productions, metadataStore))
+    def _addProductionHouseFor(self, trackCatalog):
+        self._ui.addProductionHouse(RecordLabel(self._albums, trackCatalog))
 
     def useMediaPlayer(self, player):
         self._ui.setMediaPlayer(player)

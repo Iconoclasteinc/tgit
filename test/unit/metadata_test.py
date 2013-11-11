@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import (assert_that, equal_to, has_entries, contains, has_property,
-                      contains_inanyorder, is_not, has_key, has_length, is_in, is_)
+from hamcrest import (assert_that, equal_to, has_entries, contains, has_property, all_of,
+                      contains_inanyorder, is_not, has_key, has_length, is_in, is_, none)
 from hamcrest.library.collection.is_empty import empty
 
 from tgit.metadata import Metadata, Image
@@ -21,9 +21,9 @@ class MetadataTest(unittest.TestCase):
         del metadata['artist']
         assert_that('title', is_not(is_in(metadata)), 'member')
 
-    def testMissingTagIsConsideredEmpty(self):
+    def testMissingTagIsConsideredNone(self):
         metadata = Metadata()
-        assert_that(metadata['missing'], equal_to(u''), 'missing value')
+        assert_that(metadata['missing'], none(), 'missing value')
 
     def testIsInitiallyEmpty(self):
         metadata = Metadata()
@@ -62,21 +62,10 @@ class MetadataTest(unittest.TestCase):
         other['album'] = "Un jour comme aujourd'hui"
         other.addImage('img/png', 'cover.png')
 
-        metadata.update(other)
+        metadata.merge(other)
         assert_that(metadata, has_entries(artist='Pascal Obispo',
                                           album="Un jour comme aujourd'hui"), 'updated tags')
         assert_that(metadata.images, contains(has_property('data', 'cover.png')), 'updated images')
-
-    def testRemovesTagsNotInOtherOnUpdate(self):
-        metadata = Metadata()
-        metadata['artist'] = 'Pascal Obispo'
-        metadata['album'] = 'Superflu'
-
-        other = Metadata()
-        other['album'] = "Un jour comme aujourd'hui"
-
-        metadata.update(other, 'artist', 'album')
-        assert_that(metadata, is_not(has_key('artist')), 'removed tags')
 
     def testCopiesASelectionOfItsTagsWithImages(self):
         metadata = Metadata(artist='Alain Souchon', album=u"C'est déjà ça",
@@ -84,12 +73,12 @@ class MetadataTest(unittest.TestCase):
         metadata.addImage('img/jpeg', 'front-cover.jpg')
         metadata.addImage('img/jpeg', 'back-cover.jpg')
 
-        selection = metadata.copy('artist', 'album', 'label')
+        selection = metadata.subsetWithImages('artist', 'album', 'label')
 
         assert_that(selection, has_length(2))
         assert_that(selection,
-                    has_entries(artist='Alain Souchon', album=u"C'est déjà ça"), 'selected tags')
-        assert_that(selection, is_not(has_key('track')), 'selected tags')
+                    all_of(has_entries(artist='Alain Souchon', album=u"C'est déjà ça"),
+                           is_not(has_key('track')), is_not(has_key('label'))), 'selected tags')
         assert_that(selection.images,
                     contains(has_property('data', 'front-cover.jpg'),
                              has_property('data', 'back-cover.jpg')),

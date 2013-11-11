@@ -28,10 +28,11 @@ class TrackListener(object):
 
 
 class Track(object):
-    def __init__(self, filename, metadata=None):
+    def __init__(self, filename, metadata=None, album=None):
         self._filename = filename
         self._metadata = metadata or Metadata()
         self._listeners = Announcer()
+        self._album = album
 
     def addTrackListener(self, listener):
         self._listeners.addListener(listener)
@@ -43,14 +44,17 @@ class Track(object):
     def filename(self):
         return self._filename
 
-    def metadata(self, *tags):
-        return self._metadata.copy(*tags)
+    @property
+    def metadata(self):
+        return self._metadata
 
-    def update(self, metadata, *tags):
-        self._metadata.update(metadata, *tags)
+    @property
+    def album(self):
+        return self._album
 
-    def save(self, store):
-        store.save(self.filename, self._metadata)
+    @album.setter
+    def album(self, album):
+        self._album = album
 
     def _signalStateChange(self):
         self._listeners.trackStateChanged(self)

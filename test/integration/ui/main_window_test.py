@@ -6,7 +6,7 @@ from test.drivers.tagger_driver import TaggerDriver
 from test.util.fakes import FakeAudioPlayer, FakeFileChooser
 
 from tgit.album import Album
-from tgit.record_label import ProductionPortfolio
+from tgit.record_label import AlbumPortfolio
 from tgit.ui.main_window import MainWindow
 
 
@@ -14,7 +14,7 @@ class MainWindowTest(BaseWidgetTest):
 
     def setUp(self):
         super(MainWindowTest, self).setUp()
-        self.widget = MainWindow(ProductionPortfolio(), FakeAudioPlayer(), FakeFileChooser(),
+        self.widget = MainWindow(AlbumPortfolio(), FakeAudioPlayer(), FakeFileChooser(),
                                  FakeFileChooser())
         self.view(self.widget)
         self.driver = self.createDriverFor(self.widget)
@@ -26,6 +26,6 @@ class MainWindowTest(BaseWidgetTest):
         self.driver.isShowingWelcomeScreen()
 
     def testShowsMainScreenAndEnablesAlbumCommandsWhenAlbumCreated(self):
-        self.widget.productionAdded(None, Album())
+        self.widget.albumCreated(Album())
         self.driver.isShowingTaggingScreen()
         self.driver.hasEnabledImportTrackMenuItem()

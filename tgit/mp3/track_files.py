@@ -18,17 +18,22 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit.track import Track
+from tgit.album import Album
+
+from tgit import tags
 
 
-class AlbumDirector(object):
-    def __init__(self, metadataStore):
-        self._metadataStore = metadataStore
+class TrackFiles(object):
+    def __init__(self, container):
+        self._container = container
 
-    def addTrack(self, album, filename):
-        album.addTrack(Track(filename, self._loadMetadata(filename)))
+    def load(self, filename):
+        metadata = self._container.load(filename)
+        album = Album(metadata.subsetWithImages(*tags.ALBUM_TAGS))
+        track = Track(filename, metadata.subset(*tags.TRACK_TAGS), album)
+        return track
 
-    def _loadMetadata(self, filename):
-        return self._metadataStore.load(filename)
-
-    def recordAlbum(self, album):
-        album.save(self._metadataStore)
+    def save(self, track):
+        metadata = track.metadata.copy()
+        metadata.merge(track.album.metadata)
+        self._container.save(track.filename, metadata)

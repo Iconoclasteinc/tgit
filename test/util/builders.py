@@ -11,8 +11,8 @@ def image(mime='image/jpeg', data='...', type_=Image.OTHER, desc=''):
     return mime, data, type_, desc
 
 
-def metadata(bitrate=96000, duration=200, **meta):
-    metadata = Metadata(bitrate=bitrate, duration=duration, **meta)
+def metadata(**meta):
+    metadata = Metadata(**meta)
     if 'images' in meta:
         for image in meta['images']:
             metadata.addImage(*image)
@@ -21,9 +21,15 @@ def metadata(bitrate=96000, duration=200, **meta):
 
 
 def track(filename='track.mp3', **meta):
-    # todo album tags go in metadata
-    # track tags are set via attributes
-    return Track(filename, metadata(**meta))
+    album = None
+    if 'album' in meta:
+        album = meta['album']
+        del meta['album']
+
+    track = Track(filename, album=album)
+    for tag, value in meta.items():
+        setattr(track, tag, value)
+    return track
 
 
 def album(**meta):

@@ -18,15 +18,15 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 def inKbps(bps):
-    return int(round(bps, -3) / 1000)
+    return bps and int(round(bps, -3) / 1000) or ''
 
 
 def asDuration(seconds):
-    return '%02d:%02d' % divmod(round(seconds), 60)
+    return seconds and '%02d:%02d' % divmod(round(seconds), 60) or ''
 
 
 def toPeopleList(people):
-    return '; '.join(['%s: %s' % (role, name) for role, name in people])
+    return people and '; '.join(['%s: %s' % (role, name) for role, name in people]) or ''
 
 
 def fromPeopleList(text):

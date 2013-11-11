@@ -270,8 +270,10 @@ class AlbumTableModelTest(unittest.TestCase):
 
     def assertRowMatchesTrack(self, row, track):
         self.assertCellDisplays(row, Columns.trackTitle, track.trackTitle)
-        self.assertCellDisplays(row, Columns.bitrate, '%d kbps' % display.inKbps(track.bitrate))
-        self.assertCellDisplays(row, Columns.duration, display.asDuration(track.duration))
+        if track.bitrate:
+            self.assertCellDisplays(row, Columns.bitrate, '%d kbps' % display.inKbps(track.bitrate))
+        if track.duration:
+            self.assertCellDisplays(row, Columns.duration, display.asDuration(track.duration))
 
     def assertCellDisplays(self, row, column, value):
         assert_that(self.cellValue(column, row), equal_to(value),

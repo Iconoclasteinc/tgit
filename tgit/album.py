@@ -39,6 +39,15 @@ class Album(object):
         self._tracks = []
         self._listeners = Announcer()
 
+    @property
+    def metadata(self):
+        return self._metadata
+
+    @metadata.setter
+    def metadata(self, metadata):
+        self._metadata = metadata
+        self._signalStateChange()
+
     def addAlbumListener(self, listener):
         self._listeners.addListener(listener)
 
@@ -74,13 +83,15 @@ class Album(object):
     def indexOf(self, track):
         return self.tracks.index(track)
 
-    def addTrack(self, track, position=-1):
-        if self._metadata.empty():
-            self._updateAlbumMetadataFrom(track)
+    def addTrack(self, track):
+        self.insertTrack(track, len(self._tracks))
 
-        if position == -1:
-            position = len(self._tracks)
+    def insertTrack(self, track, position=-1):
+        if self._metadata.empty() and track.album:
+            self.metadata = track.album.metadata
+
         self._tracks.insert(position, track)
+        track.album = self
         self._listeners.trackAdded(track, position)
 
     def removeTrack(self, track):
@@ -88,17 +99,9 @@ class Album(object):
         self._tracks.remove(track)
         self._listeners.trackRemoved(track, position)
 
-    def save(self, store):
+    def eachTrack(self, do):
         for track in self._tracks:
-            self._updateAlbumMetadataOf(track)
-            track.save(store)
-
-    def _updateAlbumMetadataFrom(self, track):
-        self._metadata.update(track.metadata(*tags.ALBUM_TAGS))
-        self._signalStateChange()
-
-    def _updateAlbumMetadataOf(self, track):
-        track.update(self._metadata, *tags.ALBUM_TAGS)
+            do(track)
 
     def _signalStateChange(self):
         self._listeners.albumStateChanged(self)

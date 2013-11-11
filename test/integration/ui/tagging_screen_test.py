@@ -49,7 +49,7 @@ class TaggingScreenTest(BaseWidgetTest):
         addTrackRequest = ValueMatcherProbe('import track file', equal_to('track.mp3'))
 
         class RequestTracker(object):
-            def addTrack(self, album, filename):
+            def addTrackToAlbum(self, album, filename):
                 addTrackRequest.received(filename)
 
         self.widget.addRequestListener(RequestTracker())
