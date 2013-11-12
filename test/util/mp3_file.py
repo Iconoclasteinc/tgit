@@ -94,6 +94,8 @@ class Mp3File(object):
                 self.addTag(id3.TPUB(encoding=UTF_8, text=value))
             elif tag == tagging.ISRC or tag == 'TSRC':
                 self.addTag(id3.TSRC(encoding=UTF_8, text=value))
+            elif tag == tagging.TAGS or tag == 'TXXX_TAGS':
+                self.addTag(id3.TXXX(encoding=UTF_8, desc='Tags', text=value))
             else:
                 raise AssertionError("Knows nothing about '%s'" % tag)
 

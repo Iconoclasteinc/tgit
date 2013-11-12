@@ -124,6 +124,10 @@ class Id3TaggerTest(unittest.TestCase):
         metadata = tagger.load(self.makeMp3(TSRC='AABB12345678'))
         assert_that(metadata, has_entry(tags.ISRC, 'AABB12345678'), 'metadata')
 
+    def testReadsTagsFromCustomFrame(self):
+        metadata = tagger.load(self.makeMp3(TXXX_TAGS='Tag1 Tag2 Tag3'))
+        assert_that(metadata, has_entry(tags.TAGS, 'Tag1 Tag2 Tag3'), 'metadata')
+
     def testReadsBitrateFromAudioStreamInformation(self):
         metadata = tagger.load(self.makeMp3())
         assert_that(metadata, has_entry(tags.BITRATE, BITRATE), 'bitrate')
@@ -170,6 +174,7 @@ class Id3TaggerTest(unittest.TestCase):
         metadata[tags.COMPOSER] = u'Composer'
         metadata[tags.PUBLISHER] = u'Publisher'
         metadata[tags.ISRC] = u'ZZXX87654321'
+        metadata[tags.TAGS] = u'Tag1 Tag2 Tag3'
 
         self.assertCanBeSavedAndReloadedWithSameState(metadata)
 

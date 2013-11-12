@@ -167,8 +167,8 @@ class Id3Tagger(object):
                      'TXXX:UPC': tagging.UPC,
                      'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
                      'TXXX:Featured Guest': tagging.FEATURED_GUEST,
-                     "COMM::'fra'": tagging.COMMENTS
-        }.items():
+                     'TXXX:Tags': tagging.TAGS,
+                     "COMM::'fra'": tagging.COMMENTS,}.items():
         processors.append(TextProcessor(key, tag))
 
     def load(self, filename):

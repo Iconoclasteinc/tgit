@@ -65,6 +65,7 @@ LYRICIST = 'lyricist'
 COMPOSER = 'composer'
 PUBLISHER = 'publisher'
 ISRC = 'isrc'
+TAGS = 'tags'
 
 TRACK_TAGS = [
     TRACK_TITLE,
@@ -74,6 +75,7 @@ TRACK_TAGS = [
     LYRICIST,
     COMPOSER,
     ISRC,
+    TAGS,
     BITRATE,
     DURATION
 ]

@@ -125,6 +125,16 @@ class TrackPageDriver(WidgetDriver):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.ISRC_EDIT_NAME))
         edit.replaceAllText(code)
 
+    def showsTags(self, tags):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.TAGS_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.TAGS_EDIT_NAME))
+        edit.hasText(tags)
+
+    def changeTags(self, tags):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.TAGS_EDIT_NAME))
+        edit.replaceAllText(tags)
+
     def showsBitrate(self, text):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.BITRATE_NAME)))
         label.isShowingOnScreen()

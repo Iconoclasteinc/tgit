@@ -40,6 +40,8 @@ class TrackPageTest(BaseWidgetTest):
         self.driver.showsPublisher('Publisher')
         self.track.isrc = 'Code'
         self.driver.showsIsrc('Code')
+        self.track.tags = 'Tag1 Tag2 Tag3'
+        self.driver.showsTags('Tag1 Tag2 Tag3')
 
         self.driver.showsBitrate('192 kbps')
         self.driver.showsDuration('04:35')
@@ -66,3 +68,6 @@ class TrackPageTest(BaseWidgetTest):
 
         self.driver.changeIsrc('Code')
         self.check(AssertionProbe(self.track.isrc, equal_to('Code'), 'isrc'))
+
+        self.driver.changeTags('Tag1 Tag2 Tag3')
+        self.check(AssertionProbe(self.track.tags, equal_to('Tag1 Tag2 Tag3'), 'tags'))

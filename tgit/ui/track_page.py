@@ -52,8 +52,9 @@ class TrackPage(QWidget):
         self._addComposer(layout, 4)
         self._addPublisher(layout, 5)
         self._addIsrc(layout, 6)
-        self._addBitrate(layout, 7)
-        self._addDuration(layout, 8)
+        self._addTags(layout, 7)
+        self._addBitrate(layout, 8)
+        self._addDuration(layout, 9)
 
     def _addTrackTitle(self, layout, row):
         self._trackTitleLabel = QLabel()
@@ -118,6 +119,15 @@ class TrackPage(QWidget):
         layout.addWidget(self._isrcEdit, row, 1)
         self._isrcLabel.setBuddy(self._isrcEdit)
 
+    def _addTags(self, layout, row):
+        self._tagsLabel = QLabel()
+        layout.addWidget(self._tagsLabel, row, 0)
+        self._tagsEdit = QLineEdit()
+        self._tagsEdit.setObjectName(ui.TAGS_EDIT_NAME)
+        self._tagsEdit.editingFinished.connect(self._updateTags)
+        layout.addWidget(self._tagsEdit, row, 1)
+        self._tagsLabel.setBuddy(self._tagsEdit)
+
     def _addBitrate(self, layout, row):
         self._bitrateLabel = QLabel()
         layout.addWidget(self._bitrateLabel, row, 0)
@@ -142,6 +152,7 @@ class TrackPage(QWidget):
         self._composerLabel.setText(self.tr('Composer: '))
         self._publisherLabel.setText(self.tr('Publisher: '))
         self._isrcLabel.setText(self.tr('ISRC: '))
+        self._tagsLabel.setText(self.tr('Tags: '))
         self._bitrateLabel.setText(self.tr('Bitrate: '))
         self._durationLabel.setText(self.tr('Duration: '))
 
@@ -153,6 +164,7 @@ class TrackPage(QWidget):
         self._composerEdit.setText(track.composer)
         self._publisherEdit.setText(track.publisher)
         self._isrcEdit.setText(track.isrc)
+        self._tagsEdit.setText(track.tags)
         self._bitrateInfoLabel.setText('%s kbps' % display.inKbps(track.bitrate))
         self._durationInfoLabel.setText(display.asDuration(track.duration))
 
@@ -176,3 +188,6 @@ class TrackPage(QWidget):
 
     def _updateIsrc(self):
         self._track.isrc = self._isrcEdit.text()
+
+    def _updateTags(self):
+        self._track.tags = self._tagsEdit.text()

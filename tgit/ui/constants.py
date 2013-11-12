@@ -63,6 +63,7 @@ LYRICIST_EDIT_NAME = 'lyricist'
 COMPOSER_EDIT_NAME = 'composer'
 PUBLISHER_EDIT_NAME = 'publisher'
 ISRC_EDIT_NAME = 'isrc'
+TAGS_EDIT_NAME = 'tags'
 BITRATE_NAME = 'bitrate'
 DURATION_NAME = 'duration'
 
