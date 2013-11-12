@@ -147,6 +147,16 @@ class TrackPageDriver(WidgetDriver):
             edit.addLine(lyric)
         edit.clearFocus()
 
+    def showsLanguage(self, text):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LANGUAGE_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LANGUAGE_EDIT_NAME))
+        edit.hasText(text)
+
+    def changeLanguage(self, tags):
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LANGUAGE_EDIT_NAME))
+        edit.replaceAllText(tags)
+
     def showsBitrate(self, text):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.BITRATE_NAME)))
         label.isShowingOnScreen()

@@ -165,6 +165,7 @@ class Id3Tagger(object):
                      'TCOM': tagging.COMPOSER,
                      'TPUB': tagging.PUBLISHER,
                      'TSRC': tagging.ISRC,
+                     'TLAN': tagging.LANGUAGE,
                      'TXXX:Catalog Number': tagging.CATALOG_NUMBER,
                      'TXXX:UPC': tagging.UPC,
                      'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,

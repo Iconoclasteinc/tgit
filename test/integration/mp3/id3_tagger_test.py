@@ -133,6 +133,10 @@ class Id3TaggerTest(unittest.TestCase):
         metadata = tagger.load(self.makeMp3(USLT=('Lyrics', 'fra')))
         assert_that(metadata, has_entry(tags.LYRICS, 'Lyrics'), 'metadata')
 
+    def testReadsLanguageFromTLANFrame(self):
+        metadata = tagger.load(self.makeMp3(TLAN='fra'))
+        assert_that(metadata, has_entry(tags.LANGUAGE, 'fra'), 'metadata')
+
     def testReadsBitrateFromAudioStreamInformation(self):
         metadata = tagger.load(self.makeMp3())
         assert_that(metadata, has_entry(tags.BITRATE, BITRATE), 'bitrate')
@@ -185,6 +189,7 @@ class Id3TaggerTest(unittest.TestCase):
         metadata[tags.ISRC] = u'ZZXX87654321'
         metadata[tags.TAGS] = u'Tag1 Tag2 Tag3'
         metadata[tags.LYRICS] = u'Lyrics'
+        metadata[tags.LANGUAGE] = u'fra'
         self.assertCanBeSavedAndReloadedWithSameState(metadata)
 
     def testRemovesFrameWhenTagNotInMetadata(self):
@@ -229,9 +234,9 @@ class Id3TaggerTest(unittest.TestCase):
     def assertContainsMetadata(self, filename, expected):
         expectedLength = len(expected) + len([tags.BITRATE, tags.DURATION])
         metadata = load(filename)
-        assert_that(metadata, has_length(expectedLength), 'metadata count')
         assert_that(metadata.items(), has_items(*expected.items()),
                     'metadata items')
+        assert_that(metadata, has_length(expectedLength), 'metadata count')
         assert_that(metadata.images, has_items(*expected.images),
                     'metadata images')
 

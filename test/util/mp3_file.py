@@ -99,6 +99,8 @@ class Mp3File(object):
             elif tag == tagging.LYRICS or tag == 'USLT':
                 text, lang = value
                 self.addTag(id3.USLT(encoding=UTF_8, text=text, desc='', lang=lang))
+            elif tag == tagging.LANGUAGE or tag == 'TLAN':
+                self.addTag(id3.TLAN(encoding=UTF_8, text=value))
             else:
                 raise AssertionError("Knows nothing about '%s'" % tag)
 

@@ -44,6 +44,8 @@ class TrackPageTest(BaseWidgetTest):
         self.driver.showsTags('Tag1 Tag2 Tag3')
         self.track.lyrics = 'Lyrics\n...\n...'
         self.driver.showsLyrics('Lyrics\n...\n...')
+        self.track.language = 'eng'
+        self.driver.showsLanguage('eng')
 
         self.driver.showsBitrate('192 kbps')
         self.driver.showsDuration('04:35')
@@ -77,3 +79,6 @@ class TrackPageTest(BaseWidgetTest):
         self.driver.addLyrics('Lyrics')
         self.driver.addLyrics('...')
         self.check(AssertionProbe(self.track.lyrics, equal_to('Lyrics\n...\n'), 'lyrics'))
+
+        self.driver.changeLanguage('eng')
+        self.check(AssertionProbe(self.track.language, equal_to('eng'), 'language'))

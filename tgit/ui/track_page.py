@@ -57,6 +57,7 @@ class TrackPage(QWidget):
         self._addIsrc(layout, 8)
         self._addTags(layout, 9)
         self._addLyrics(layout, 10)
+        self._addLanguage(layout, 11)
 
     def _addTrackTitle(self, layout, row):
         self._trackTitleLabel = QLabel()
@@ -155,6 +156,15 @@ class TrackPage(QWidget):
         layout.addWidget(self._lyricsEdit, row, 1)
         self._lyricsLabel.setBuddy(self._lyricsEdit)
 
+    def _addLanguage(self, layout, row):
+        self._languageLabel = QLabel()
+        layout.addWidget(self._languageLabel, row, 0)
+        self._languageEdit = QLineEdit()
+        self._languageEdit.setObjectName(ui.LANGUAGE_EDIT_NAME)
+        self._languageEdit.editingFinished.connect(self._updateLanguage)
+        layout.addWidget(self._languageEdit, row, 1)
+        self._languageLabel.setBuddy(self._languageEdit)
+
     def translateUi(self):
         self._trackTitleLabel.setText(self.tr('Track Title: '))
         self._versionInfoLabel.setText(self.tr('Version Information: '))
@@ -167,6 +177,7 @@ class TrackPage(QWidget):
         self._isrcLabel.setText(self.tr('ISRC: '))
         self._tagsLabel.setText(self.tr('Tags: '))
         self._lyricsLabel.setText(self.tr('Lyrics: '))
+        self._languageLabel.setText(self.tr('Language: '))
 
     def trackStateChanged(self, track):
         self._trackTitleEdit.setText(track.trackTitle)
@@ -180,6 +191,7 @@ class TrackPage(QWidget):
         self._isrcEdit.setText(track.isrc)
         self._tagsEdit.setText(track.tags)
         self._lyricsEdit.setPlainText(track.lyrics)
+        self._languageEdit.setText(track.language)
 
     def _updateTrackTitle(self):
         self._track.trackTitle = self._trackTitleEdit.text()
@@ -207,3 +219,6 @@ class TrackPage(QWidget):
 
     def _updateLyrics(self):
         self._track.lyrics = self._lyricsEdit.toPlainText()
+
+    def _updateLanguage(self):
+        self._track.language = self._languageEdit.text()
