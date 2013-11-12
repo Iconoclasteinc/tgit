@@ -17,22 +17,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import Qt, pyqtSignal
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QPixmap, QImage,
-                         QHBoxLayout, QVBoxLayout, QTextEdit)
+                         QHBoxLayout, QVBoxLayout)
 
 from tgit.album import AlbumListener
 from tgit.ui import constants as ui, display
+from tgit.ui.text_area import TextArea
 from tgit.ui.file_chooser import FileChoiceListener
 from tgit.util import fs
-
-
-class TextArea(QTextEdit):
-    editingFinished = pyqtSignal()
-
-    def focusOutEvent(self, event):
-        self.editingFinished.emit()
-        QTextEdit.focusOutEvent(self, event)
 
 
 class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
@@ -272,7 +265,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._recordingStudiosEdit.setText(album.recordingStudios)
         self._producerEdit.setText(album.producer)
         self._mixerEdit.setText(album.mixer)
-        self._commentsEdit.setText(album.comments)
+        self._commentsEdit.setPlainText(album.comments)
 
     def _updateAlbumCover(self):
         self._album.removeImages()

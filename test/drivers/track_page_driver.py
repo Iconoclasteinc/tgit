@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel, QLineEdit
+from PyQt4.QtGui import QLabel, QLineEdit, QTextEdit
 
 from test.cute.matchers import named, withBuddy
-from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver)
+from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEditDriver)
 
 import tgit.tags as tags
 from tgit.ui import constants as ui
@@ -134,6 +134,18 @@ class TrackPageDriver(WidgetDriver):
     def changeTags(self, tags):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.TAGS_EDIT_NAME))
         edit.replaceAllText(tags)
+
+    def showsLyrics(self, lyrics):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LYRICS_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = TextEditDriver.findSingle(self, QTextEdit, named(ui.LYRICS_EDIT_NAME))
+        edit.hasPlainText(lyrics)
+
+    def addLyrics(self, *lyrics):
+        edit = TextEditDriver.findSingle(self, QTextEdit, named(ui.LYRICS_EDIT_NAME))
+        for lyric in lyrics:
+            edit.addLine(lyric)
+        edit.clearFocus()
 
     def showsBitrate(self, text):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.BITRATE_NAME)))

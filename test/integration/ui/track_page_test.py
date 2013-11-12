@@ -42,6 +42,8 @@ class TrackPageTest(BaseWidgetTest):
         self.driver.showsIsrc('Code')
         self.track.tags = 'Tag1 Tag2 Tag3'
         self.driver.showsTags('Tag1 Tag2 Tag3')
+        self.track.lyrics = 'Lyrics\n...\n...'
+        self.driver.showsLyrics('Lyrics\n...\n...')
 
         self.driver.showsBitrate('192 kbps')
         self.driver.showsDuration('04:35')
@@ -71,3 +73,7 @@ class TrackPageTest(BaseWidgetTest):
 
         self.driver.changeTags('Tag1 Tag2 Tag3')
         self.check(AssertionProbe(self.track.tags, equal_to('Tag1 Tag2 Tag3'), 'tags'))
+
+        self.driver.addLyrics('Lyrics')
+        self.driver.addLyrics('...')
+        self.check(AssertionProbe(self.track.lyrics, equal_to('Lyrics\n...\n'), 'lyrics'))

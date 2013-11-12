@@ -35,7 +35,7 @@ def load(filename):
 
 
 def save(filename, metadata, overwrite=False):
-    tagger = Id3Tagger(overwrite)
+    tagger = Id3Tagger(overwrite=overwrite)
     tagger.save(filename=filename, metadata=metadata)
 
 
@@ -57,9 +57,11 @@ class Id3Tagger(object):
                 metadata[self._tag] = unicode(frame)
 
         def processMetadata(self, frames, encoding, metadata):
-            id, desc, lang = self._decompose(self._key)
+            frame, desc, lang = self._decompose(self._key)
             text = metadata[self._tag]
-            frames.add(getattr(id3, id)(encoding=encoding, desc=desc, lang=lang, text=text))
+            frames.delall(self._key)
+            if text:
+                frames.add(getattr(id3, frame)(encoding=encoding, desc=desc, lang=lang, text=text))
 
         def _decompose(self, key):
             parts = (key + '::').split(':')
@@ -168,7 +170,9 @@ class Id3Tagger(object):
                      'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
                      'TXXX:Featured Guest': tagging.FEATURED_GUEST,
                      'TXXX:Tags': tagging.TAGS,
-                     "COMM::'fra'": tagging.COMMENTS,}.items():
+                     "COMM::'fra'": tagging.COMMENTS,
+                     "USLT::'fra'": tagging.LYRICS,
+                     }.items():
         processors.append(TextProcessor(key, tag))
 
     def load(self, filename):

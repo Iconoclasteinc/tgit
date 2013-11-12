@@ -20,6 +20,7 @@
 from PyQt4.QtGui import (QWidget, QGridLayout, QVBoxLayout, QLabel, QLineEdit)
 
 from tgit.ui import constants as ui, display
+from tgit.ui.text_area import TextArea
 
 
 class TrackPage(QWidget):
@@ -47,14 +48,15 @@ class TrackPage(QWidget):
     def _fill(self, layout):
         self._addTrackTitle(layout, 0)
         self._addVersionInfo(layout, 1)
-        self._addFeaturedGuest(layout, 2)
-        self._addLyricist(layout, 3)
-        self._addComposer(layout, 4)
-        self._addPublisher(layout, 5)
-        self._addIsrc(layout, 6)
-        self._addTags(layout, 7)
-        self._addBitrate(layout, 8)
-        self._addDuration(layout, 9)
+        self._addBitrate(layout, 2)
+        self._addDuration(layout, 3)
+        self._addFeaturedGuest(layout, 4)
+        self._addLyricist(layout, 5)
+        self._addComposer(layout, 6)
+        self._addPublisher(layout, 7)
+        self._addIsrc(layout, 8)
+        self._addTags(layout, 9)
+        self._addLyrics(layout, 10)
 
     def _addTrackTitle(self, layout, row):
         self._trackTitleLabel = QLabel()
@@ -73,6 +75,22 @@ class TrackPage(QWidget):
         self._versionInfoEdit.editingFinished.connect(self._updateVersionInfo)
         layout.addWidget(self._versionInfoEdit, row, 1)
         self._versionInfoLabel.setBuddy(self._versionInfoEdit)
+
+    def _addBitrate(self, layout, row):
+        self._bitrateLabel = QLabel()
+        layout.addWidget(self._bitrateLabel, row, 0)
+        self._bitrateInfoLabel = QLabel()
+        self._bitrateInfoLabel.setObjectName(ui.BITRATE_NAME)
+        layout.addWidget(self._bitrateInfoLabel, row, 1)
+        self._bitrateLabel.setBuddy(self._bitrateInfoLabel)
+
+    def _addDuration(self, layout, row):
+        self._durationLabel = QLabel()
+        layout.addWidget(self._durationLabel, row, 0)
+        self._durationInfoLabel = QLabel()
+        self._durationInfoLabel.setObjectName(ui.DURATION_NAME)
+        layout.addWidget(self._durationInfoLabel, row, 1)
+        self._durationLabel.setBuddy(self._durationInfoLabel)
 
     def _addFeaturedGuest(self, layout, row):
         self._featuredGuestLabel = QLabel()
@@ -128,45 +146,40 @@ class TrackPage(QWidget):
         layout.addWidget(self._tagsEdit, row, 1)
         self._tagsLabel.setBuddy(self._tagsEdit)
 
-    def _addBitrate(self, layout, row):
-        self._bitrateLabel = QLabel()
-        layout.addWidget(self._bitrateLabel, row, 0)
-        self._bitrateInfoLabel = QLabel()
-        self._bitrateInfoLabel.setObjectName(ui.BITRATE_NAME)
-        layout.addWidget(self._bitrateInfoLabel, row, 1)
-        self._bitrateLabel.setBuddy(self._bitrateInfoLabel)
-
-    def _addDuration(self, layout, row):
-        self._durationLabel = QLabel()
-        layout.addWidget(self._durationLabel, row, 0)
-        self._durationInfoLabel = QLabel()
-        self._durationInfoLabel.setObjectName(ui.DURATION_NAME)
-        layout.addWidget(self._durationInfoLabel, row, 1)
-        self._durationLabel.setBuddy(self._durationInfoLabel)
+    def _addLyrics(self, layout, row):
+        self._lyricsLabel = QLabel()
+        layout.addWidget(self._lyricsLabel, row, 0)
+        self._lyricsEdit = TextArea()
+        self._lyricsEdit.setObjectName(ui.LYRICS_EDIT_NAME)
+        self._lyricsEdit.editingFinished.connect(self._updateLyrics)
+        layout.addWidget(self._lyricsEdit, row, 1)
+        self._lyricsLabel.setBuddy(self._lyricsEdit)
 
     def translateUi(self):
         self._trackTitleLabel.setText(self.tr('Track Title: '))
         self._versionInfoLabel.setText(self.tr('Version Information: '))
+        self._bitrateLabel.setText(self.tr('Bitrate: '))
+        self._durationLabel.setText(self.tr('Duration: '))
         self._featuredGuestLabel.setText(self.tr('Featured Guest: '))
         self._lyricistLabel.setText(self.tr('Lyricist: '))
         self._composerLabel.setText(self.tr('Composer: '))
         self._publisherLabel.setText(self.tr('Publisher: '))
         self._isrcLabel.setText(self.tr('ISRC: '))
         self._tagsLabel.setText(self.tr('Tags: '))
-        self._bitrateLabel.setText(self.tr('Bitrate: '))
-        self._durationLabel.setText(self.tr('Duration: '))
+        self._lyricsLabel.setText(self.tr('Lyrics: '))
 
     def trackStateChanged(self, track):
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
+        self._bitrateInfoLabel.setText('%s kbps' % display.inKbps(track.bitrate))
+        self._durationInfoLabel.setText(display.asDuration(track.duration))
         self._featuredGuestEdit.setText(track.featuredGuest)
         self._lyricistEdit.setText(track.lyricist)
         self._composerEdit.setText(track.composer)
         self._publisherEdit.setText(track.publisher)
         self._isrcEdit.setText(track.isrc)
         self._tagsEdit.setText(track.tags)
-        self._bitrateInfoLabel.setText('%s kbps' % display.inKbps(track.bitrate))
-        self._durationInfoLabel.setText(display.asDuration(track.duration))
+        self._lyricsEdit.setPlainText(track.lyrics)
 
     def _updateTrackTitle(self):
         self._track.trackTitle = self._trackTitleEdit.text()
@@ -191,3 +204,6 @@ class TrackPage(QWidget):
 
     def _updateTags(self):
         self._track.tags = self._tagsEdit.text()
+
+    def _updateLyrics(self):
+        self._track.lyrics = self._lyricsEdit.toPlainText()

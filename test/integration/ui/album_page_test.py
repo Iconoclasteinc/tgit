@@ -62,8 +62,8 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsProducer('Artistic Producer')
         self.album.mixer = 'Mixing Engineer'
         self.driver.showsMixer('Mixing Engineer')
-        self.album.comments = 'Comments'
-        self.driver.showsComments('Comments')
+        self.album.comments = 'Comments\n...'
+        self.driver.showsComments('Comments\n...')
 
     def testUpdatesAlbumWhenMetadataEdited(self):
         self.pictureChooser.chooses(resources.path('front-cover.jpg'))

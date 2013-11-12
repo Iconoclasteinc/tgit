@@ -14,6 +14,7 @@ BITRATE = TestMp3.bitrate
 DURATION = TestMp3.duration
 
 
+# todo we need dedicated focused tests for the processors
 class Id3TaggerTest(unittest.TestCase):
     def tearDown(self):
         self.mp3.delete()
@@ -92,7 +93,7 @@ class Id3TaggerTest(unittest.TestCase):
         metadata = tagger.load(self.makeMp3(TIPL=[['mix', 'Mixing Engineer']]))
         assert_that(metadata, has_entry(tags.MIXER, 'Mixing Engineer'), 'metadata')
 
-    def testReadsCommentsFromCOMMFrame(self):
+    def testReadsCommentsFromFrenchCOMMFrame(self):
         metadata = tagger.load(self.makeMp3(COMM=('Comments', 'fra')))
         assert_that(metadata, has_entry(tags.COMMENTS, 'Comments'), 'metadata')
 
@@ -128,6 +129,10 @@ class Id3TaggerTest(unittest.TestCase):
         metadata = tagger.load(self.makeMp3(TXXX_TAGS='Tag1 Tag2 Tag3'))
         assert_that(metadata, has_entry(tags.TAGS, 'Tag1 Tag2 Tag3'), 'metadata')
 
+    def testReadsLyricsFromUSLTFrenchFrame(self):
+        metadata = tagger.load(self.makeMp3(USLT=('Lyrics', 'fra')))
+        assert_that(metadata, has_entry(tags.LYRICS, 'Lyrics'), 'metadata')
+
     def testReadsBitrateFromAudioStreamInformation(self):
         metadata = tagger.load(self.makeMp3())
         assert_that(metadata, has_entry(tags.BITRATE, BITRATE), 'bitrate')
@@ -145,6 +150,10 @@ class Id3TaggerTest(unittest.TestCase):
             Image('image/jpeg', 'front-cover.jpg', type_=Image.FRONT_COVER, desc='Front'),
             Image('image/jpeg', 'back-cover.jpg', type_=Image.BACK_COVER, desc='Back'),
         ))
+
+    def testRoundTripsEmptyMetadataToFile(self):
+        metadata = Metadata()
+        self.assertCanBeSavedAndReloadedWithSameState(metadata)
 
     def testRoundTripsMetadataToFile(self):
         metadata = Metadata()
@@ -175,17 +184,17 @@ class Id3TaggerTest(unittest.TestCase):
         metadata[tags.PUBLISHER] = u'Publisher'
         metadata[tags.ISRC] = u'ZZXX87654321'
         metadata[tags.TAGS] = u'Tag1 Tag2 Tag3'
-
+        metadata[tags.LYRICS] = u'Lyrics'
         self.assertCanBeSavedAndReloadedWithSameState(metadata)
 
-    def testRemovesID3TagWhenNotInMetadata(self):
+    def testRemovesFrameWhenTagNotInMetadata(self):
         filename = self.makeMp3(TALB='Album',
                                 TMCL=[['Guitar', 'Guitarist']],
-                                TIPL=[['mix', 'Mixing Engineer']])
+                                TIPL=[['mix', 'Mixing Engineer']],
+                                USLT=('', 'fra'))
 
         tagger.save(filename, Metadata())
-
-        assert_that(load(filename), has_length(len(['bitrate', 'duration'])), 'metadata')
+        self.assertContainsMetadata(filename, Metadata())
 
     def testCanSaveSeveralPicturesSharingTheSameDescription(self):
         filename = self.makeMp3()
@@ -215,10 +224,15 @@ class Id3TaggerTest(unittest.TestCase):
     def assertCanBeSavedAndReloadedWithSameState(self, metadata):
         filename = self.makeMp3()
         tagger.save(filename, metadata.copy())
+        self.assertContainsMetadata(filename, metadata)
 
-        assert_that(load(filename).items(), has_items(*metadata.items()),
+    def assertContainsMetadata(self, filename, expected):
+        expectedLength = len(expected) + len([tags.BITRATE, tags.DURATION])
+        metadata = load(filename)
+        assert_that(metadata, has_length(expectedLength), 'metadata count')
+        assert_that(metadata.items(), has_items(*expected.items()),
                     'metadata items')
-        assert_that(load(filename).images, has_items(*metadata.images),
+        assert_that(metadata.images, has_items(*expected.images),
                     'metadata images')
 
 

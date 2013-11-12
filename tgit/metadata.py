@@ -124,4 +124,4 @@ class Metadata(object):
         self.removeImages()
 
     def __str__(self):
-        return str(self._tags) + ' with '+ str(self._images)
+        return str(self._tags) + ' with images '+ str(self._images)
