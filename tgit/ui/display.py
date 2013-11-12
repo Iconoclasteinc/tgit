@@ -17,6 +17,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from PyQt4.QtGui import QApplication
+
+
 def inKbps(bps):
     return bps and int(round(bps, -3) / 1000) or ''
 
@@ -41,3 +44,10 @@ def fromPeopleList(text):
             pass
 
     return people
+
+
+def centeredOnScreen(widget):
+    position = widget.frameGeometry()
+    desktop = QApplication.desktop()
+    position.moveCenter(desktop.availableGeometry().center())
+    widget.move(position.topLeft())

@@ -12,6 +12,9 @@ from test.cute.events import MainEventLoop
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 
+from tgit.ui import constants as ui
+from tgit.ui import display
+
 END_OF_TEST_PAUSE = int(os.environ.get('END_OF_TEST_PAUSE', 0))
 
 
@@ -29,8 +32,16 @@ class BaseWidgetTest(unittest.TestCase):
         self.gesturePerformer = Robot()
 
     def view(self, widget):
+        widget.setFixedSize(*ui.MAIN_WINDOW_SIZE)
+        display.centeredOnScreen(widget)
         widget.show()
         widget.raise_()
+
+    def centerOnScreen(self, widget):
+        position = widget.frameGeometry()
+        desktop = self.app.desktop()
+        position.moveCenter(desktop.availableGeometry().center())
+        widget.move(position.topLeft())
 
     def check(self, probe):
         self.prober.check(probe)

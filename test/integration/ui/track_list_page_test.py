@@ -29,8 +29,6 @@ class TrackListPageTest(BaseWidgetTest):
         self.album = Album()
         self.widget = TrackListPage(self.album, self.player)
         self.view(self.widget)
-        # so that all columns are displayed and buttons are created
-        self.widget.resize(800, 600)
         self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):

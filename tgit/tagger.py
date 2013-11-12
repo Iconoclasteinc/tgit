@@ -29,6 +29,7 @@ from tgit.mp3.track_files import TrackFiles
 from tgit.mp3.id3_tagger import Id3Tagger
 from tgit.ui.main_window import MainWindow
 from tgit.ui.dialogs import AudioFileChooserDialog, ImageFileChooserDialog
+from tgit.ui import display
 
 TGIT = 'tgit'
 QT = 'qt'
@@ -53,6 +54,7 @@ class TGiT(QApplication):
         self._addProductionHouseFor(TrackFiles(Id3Tagger()))
 
     def show(self):
+        display.centeredOnScreen(self._ui)
         self._ui.show()
         self._ui.raise_()
         self._ui.activateWindow()
