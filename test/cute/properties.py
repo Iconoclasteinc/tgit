@@ -3,7 +3,7 @@
 from hamcrest.core.selfdescribing import SelfDescribing
 
 from PyQt4.QtCore import Qt, QObject
-from PyQt4.QtGui import QLabel, QLineEdit, QPixmap, QTextEdit
+from PyQt4.QtGui import QLabel, QLineEdit, QPixmap, QTextEdit, QDateTimeEdit
 
 
 def name():
@@ -40,6 +40,10 @@ def plainText():
 
 def listItemText():
     return PropertyQuery('text', lambda item: item.data(Qt.DisplayRole))
+
+
+def time():
+    return PropertyQuery('time', QDateTimeEdit.time)
 
 
 class Query(SelfDescribing):

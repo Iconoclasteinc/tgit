@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from Carbon.Controls import errDataBrowserInvalidPropertyPart
 
 from hamcrest import all_of, equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
-from PyQt4.QtCore import QDir, QPoint, Qt
+from PyQt4.QtCore import QDir, QPoint, Qt, QTime
 from PyQt4.QtGui import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                          QToolButton, QFileDialog, QMenu, QAction)
 
@@ -172,6 +171,18 @@ class TextEditDriver(AbstractEditDriver):
         self.perform(shortcuts.Enter)
 
 
+class DateTimeEditDriver(WidgetDriver):
+    def hasTime(self, time):
+        class QueryDisplayFormat(object):
+            def __call__(self, dateTimeEdit):
+                self.result = dateTimeEdit.displayFormat()
+
+        queryDisplayFormat = QueryDisplayFormat()
+        self.manipulate('query display format', queryDisplayFormat)
+
+        self.has(properties.time(), equal_to(QTime.fromString(time, queryDisplayFormat.result)))
+
+
 class FileDialogDriver(WidgetDriver):
     NAVIGATION_DELAY = 20
 
@@ -234,13 +245,13 @@ class FileDialogDriver(WidgetDriver):
         return LineEditDriver.findSingle(self, QLineEdit, match.named('fileNameEdit'))
 
     def _acceptButton(self):
-        class FindOutAcceptButtonText(object):
+        class QueryAcceptButtonText(object):
             def __call__(self, dialog):
                 self.text = dialog.labelText(QFileDialog.Accept)
 
-        acceptButton = FindOutAcceptButtonText()
-        self.manipulate('find out accept button text', acceptButton)
-        return ButtonDriver.findSingle(self, QPushButton, match.withText(acceptButton.text))
+        queryAcceptButton = QueryAcceptButtonText()
+        self.manipulate('query accept button text', queryAcceptButton)
+        return ButtonDriver.findSingle(self, QPushButton, match.withText(queryAcceptButton.text))
 
 
 class ListViewDriver(WidgetDriver):

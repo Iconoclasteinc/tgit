@@ -64,18 +64,20 @@ RELEASE_TYPE_EDIT_NAME = 'release style'
 
 TRACK_TITLE_EDIT_NAME = 'track title'
 VERSION_INFO_EDIT_NAME = 'version info'
+BITRATE_NAME = 'bitrate'
+DURATION_NAME = 'duration'
 FEATURED_GUEST_EDIT_NAME = 'featured guest'
 LYRICIST_EDIT_NAME = 'lyricist'
 COMPOSER_EDIT_NAME = 'composer'
 PUBLISHER_EDIT_NAME = 'publisher'
 ISRC_EDIT_NAME = 'isrc'
+ISWC_EDIT_NAME = 'iswc'
 TAGS_EDIT_NAME = 'tags'
 LYRICS_EDIT_NAME = 'lyrics'
 LANGUAGE_EDIT_NAME = 'language'
-BITRATE_NAME = 'bitrate'
-DURATION_NAME = 'duration'
+PREVIEW_TIME_EDIT_NAME = 'preview time'
 
-MAIN_WINDOW_SIZE = (800, 600)
+MAIN_WINDOW_SIZE = (1024, 768)
 FRONT_COVER_PIXMAP_SIZE = (125, 125)
 
 

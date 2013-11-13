@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel, QLineEdit, QTextEdit
+from PyQt4.QtGui import QLabel, QLineEdit, QTextEdit, QTimeEdit
 
 from test.cute.matchers import named, withBuddy
-from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEditDriver)
+from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEditDriver,
+                               DateTimeEditDriver)
 
 import tgit.tags as tags
 from tgit.ui import constants as ui
@@ -75,6 +76,18 @@ class TrackPageDriver(WidgetDriver):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.VERSION_INFO_EDIT_NAME))
         edit.replaceAllText(info)
 
+    def showsBitrate(self, text):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.BITRATE_NAME)))
+        label.isShowingOnScreen()
+        info = LabelDriver.findSingle(self, QLabel, named(ui.BITRATE_NAME))
+        info.hasText(text)
+
+    def showsDuration(self, text):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.DURATION_NAME)))
+        label.isShowingOnScreen()
+        info = LabelDriver.findSingle(self, QLabel, named(ui.DURATION_NAME))
+        info.hasText(text)
+
     def showsFeaturedGuest(self, name):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.VERSION_INFO_EDIT_NAME)))
         label.isShowingOnScreen()
@@ -115,15 +128,22 @@ class TrackPageDriver(WidgetDriver):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PUBLISHER_EDIT_NAME))
         edit.replaceAllText(name)
 
-    def showsIsrc(self, isrc):
+    def showsIsrc(self, code):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.ISRC_EDIT_NAME)))
         label.isShowingOnScreen()
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.ISRC_EDIT_NAME))
-        edit.hasText(isrc)
+        edit.hasText(code)
 
     def changeIsrc(self, code):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.ISRC_EDIT_NAME))
         edit.replaceAllText(code)
+
+    def showsIswc(self, code):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.ISWC_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.ISWC_EDIT_NAME))
+        edit.isDisabled()
+        edit.hasText(code)
 
     def showsTags(self, tags):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.TAGS_EDIT_NAME)))
@@ -157,14 +177,6 @@ class TrackPageDriver(WidgetDriver):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LANGUAGE_EDIT_NAME))
         edit.replaceAllText(tags)
 
-    def showsBitrate(self, text):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.BITRATE_NAME)))
-        label.isShowingOnScreen()
-        info = LabelDriver.findSingle(self, QLabel, named(ui.BITRATE_NAME))
-        info.hasText(text)
-
-    def showsDuration(self, text):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.DURATION_NAME)))
-        label.isShowingOnScreen()
-        info = LabelDriver.findSingle(self, QLabel, named(ui.DURATION_NAME))
-        info.hasText(text)
+    def showsPreviewTime(self, time):
+        edit = DateTimeEditDriver.findSingle(self, QTimeEdit, named(ui.PREVIEW_TIME_EDIT_NAME))
+        edit.hasTime(time)

@@ -40,12 +40,14 @@ class TrackPageTest(BaseWidgetTest):
         self.driver.showsPublisher('Publisher')
         self.track.isrc = 'Code'
         self.driver.showsIsrc('Code')
+        self.driver.showsIswc('')
         self.track.tags = 'Tag1 Tag2 Tag3'
         self.driver.showsTags('Tag1 Tag2 Tag3')
         self.track.lyrics = 'Lyrics\n...\n...'
         self.driver.showsLyrics('Lyrics\n...\n...')
         self.track.language = 'eng'
         self.driver.showsLanguage('eng')
+        self.driver.showsPreviewTime('00:00')
 
         self.driver.showsBitrate('192 kbps')
         self.driver.showsDuration('04:35')

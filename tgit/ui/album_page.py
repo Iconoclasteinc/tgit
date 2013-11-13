@@ -221,8 +221,8 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         layout.addWidget(self._originalReleaseTimeLabel, row, 0)
         self._originalReleaseTimeEdit = QLineEdit()
         self._originalReleaseTimeEdit.setObjectName(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME)
-        self._originalReleaseTimeEdit.setDisabled(True)
-        # self._originalReleaseTimeEdit.editingFinished.connect(self._updateOriginalReleaseTime)
+        # self._originalReleaseTimeEdit.setDisabled(True)
+        self._originalReleaseTimeEdit.editingFinished.connect(self._updateOriginalReleaseTime)
         layout.addWidget(self._originalReleaseTimeEdit, row, 1)
         self._originalReleaseTimeLabel.setBuddy(self._originalReleaseTimeEdit)
 
