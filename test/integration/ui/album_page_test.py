@@ -46,6 +46,8 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsGuestPerformers('Guitar: Guitarist; Piano: Pianist')
         self.album.labelName = 'Label'
         self.driver.showsLabelName('Label')
+        self.driver.showsTown('')
+        self.driver.showsCountry('')
         self.album.catalogNumber = 'Number'
         self.driver.showsCatalogNumber('Number')
         self.album.upc = 'Code'
@@ -54,6 +56,7 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsRecordingTime('2008-09-15')
         self.album.releaseTime = '2009-01-01'
         self.driver.showsReleaseTime('2009-01-01')
+        self.driver.showsDigitalReleaseTime('')
         self.album.originalReleaseTime = '1998-03-05'
         self.driver.showsOriginalReleaseTime('1998-03-05')
         self.album.recordingStudios = 'Studio A, Studio B'
@@ -64,6 +67,9 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsMixer('Mixing Engineer')
         self.album.comments = 'Comments\n...'
         self.driver.showsComments('Comments\n...')
+        self.driver.showsPrimaryStyle('')
+        self.driver.showsMediaType('')
+        self.driver.showsReleaseType('')
 
     def testUpdatesAlbumWhenMetadataEdited(self):
         self.pictureChooser.chooses(resources.path('front-cover.jpg'))

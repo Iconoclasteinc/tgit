@@ -46,15 +46,21 @@ RELEASE_NAME_EDIT_NAME = 'release name'
 LEAD_PERFORMER_EDIT_NAME = 'lead performer '
 GUEST_PERFORMERS_EDIT_NAME = 'guest performers'
 LABEL_NAME_EDIT_NAME = 'label name'
+TOWN_EDIT_NAME = 'town'
+COUNTRY_EDIT_NAME = 'country'
 CATALOG_NUMBER_EDIT_NAME = 'catalog number'
 UPC_EDIT_NAME = 'upc'
 RECORDING_TIME_EDIT_NAME = 'recording time'
 RELEASE_TIME_EDIT_NAME = 'release time'
+DIGITAL_RELEASE_TIME_EDIT_NAME = 'digital release time'
 ORIGINAL_RELEASE_TIME_EDIT_NAME = 'original release time'
 RECORDING_STUDIOS_EDIT_NAME = 'recording studios'
 PRODUCER_EDIT_NAME = 'producer'
 MIXER_EDIT_NAME = 'mixer'
 COMMENTS_TEXT_NAME = 'comments'
+PRIMARY_STYLE_EDIT_NAME = 'primary style'
+MEDIA_TYPE_EDIT_NAME = 'media type'
+RELEASE_TYPE_EDIT_NAME = 'release style'
 
 TRACK_TITLE_EDIT_NAME = 'track title'
 VERSION_INFO_EDIT_NAME = 'version info'
@@ -69,7 +75,7 @@ LANGUAGE_EDIT_NAME = 'language'
 BITRATE_NAME = 'bitrate'
 DURATION_NAME = 'duration'
 
-MAIN_WINDOW_SIZE = (1024, 768)
+MAIN_WINDOW_SIZE = (800, 600)
 FRONT_COVER_PIXMAP_SIZE = (125, 125)
 
 

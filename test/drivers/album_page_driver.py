@@ -141,6 +141,20 @@ class AlbumPageDriver(WidgetDriver):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LABEL_NAME_EDIT_NAME))
         edit.replaceAllText(name)
 
+    def showsTown(self, town):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.TOWN_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.TOWN_EDIT_NAME))
+        edit.isDisabled()
+        edit.hasText(town)
+
+    def showsCountry(self, country):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.COUNTRY_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.COUNTRY_EDIT_NAME))
+        edit.isDisabled()
+        edit.hasText(country)
+
     def showsCatalogNumber(self, number):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.CATALOG_NUMBER_EDIT_NAME)))
         label.isShowingOnScreen()
@@ -180,6 +194,14 @@ class AlbumPageDriver(WidgetDriver):
     def changeReleaseTime(self, time):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RELEASE_TIME_EDIT_NAME))
         edit.replaceAllText(time)
+
+    def showsDigitalReleaseTime(self, time):
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(ui.DIGITAL_RELEASE_TIME_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.DIGITAL_RELEASE_TIME_EDIT_NAME))
+        edit.isDisabled()
+        edit.hasText(time)
 
     def showsOriginalReleaseTime(self, time):
         label = LabelDriver.findSingle(self, QLabel,
@@ -236,4 +258,23 @@ class AlbumPageDriver(WidgetDriver):
             edit.addLine(comment)
         edit.clearFocus()
 
+    def showsPrimaryStyle(self, style):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.PRIMARY_STYLE_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PRIMARY_STYLE_EDIT_NAME))
+        edit.isDisabled()
+        edit.hasText(style)
 
+    def showsMediaType(self, type_):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.MEDIA_TYPE_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.MEDIA_TYPE_EDIT_NAME))
+        edit.isDisabled()
+        edit.hasText(type_)
+
+    def showsReleaseType(self, type_):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.RELEASE_TYPE_EDIT_NAME)))
+        label.isShowingOnScreen()
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RELEASE_TYPE_EDIT_NAME))
+        edit.isDisabled()
+        edit.hasText(type_)
