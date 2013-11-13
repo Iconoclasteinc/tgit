@@ -46,7 +46,7 @@ class Track(object):
 
     @property
     def metadata(self):
-        return self._metadata
+        return self._metadata.copy()
 
     @property
     def album(self):

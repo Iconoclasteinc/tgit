@@ -109,7 +109,7 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
             self._nextStepButton.setDisabled(True)
 
     def _addTrackPage(self, track, position):
-        self._pages.insertWidget(TRACK_PAGE + position, TrackPage(track))
+        self._pages.insertWidget(TRACK_PAGE + position, TrackPage(self._album, track))
 
     def _removeTrackPage(self, track, position):
         self._pages.removeWidget(self._trackPage(position))

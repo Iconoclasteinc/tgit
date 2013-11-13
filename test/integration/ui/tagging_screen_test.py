@@ -46,11 +46,12 @@ class TaggingScreenTest(BaseWidgetTest):
     def testChoosesAudioFileAndSignalsImportTrackRequestWhenAddTrackButtonIsClicked(self):
         self.audioFileChooser.chooses('track.mp3')
 
-        addTrackRequest = ValueMatcherProbe('import track file', equal_to('track.mp3'))
+        addTrackRequest = ValueMatcherProbe('import track file',
+                                            equal_to((self.album, 'track.mp3')))
 
         class RequestTracker(object):
             def addTrackToAlbum(self, album, filename):
-                addTrackRequest.received(filename)
+                addTrackRequest.received((album, filename))
 
         self.widget.addRequestListener(RequestTracker())
         self.driver.addTrack()
@@ -63,11 +64,17 @@ class TaggingScreenTest(BaseWidgetTest):
 
         self.driver.nextPage()
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Track 1')
+        self.driver.showsTrackMetadata(trackTitle='Track 1',
+                                       trackNumber='1',
+                                       totalTracks='3')
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Track 2')
+        self.driver.showsTrackMetadata(trackTitle='Track 2',
+                                       trackNumber='2',
+                                       totalTracks='3')
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Track 3')
+        self.driver.showsTrackMetadata(trackTitle='Track 3',
+                                       trackNumber='3',
+                                       totalTracks='3')
 
     def testStaysOnCurrentPageWhenNewTrackImported(self):
         self.albumContains(track(trackTitle='Track 1'))
@@ -96,12 +103,18 @@ class TaggingScreenTest(BaseWidgetTest):
         self.album.removeTrack(tracks[1])
         self.driver.nextPage()
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Track 1')
+        self.driver.showsTrackMetadata(trackTitle='Track 1',
+                                       trackNumber='1',
+                                       totalTracks='2')
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Track 3')
+        self.driver.showsTrackMetadata(trackTitle='Track 3',
+                                       trackNumber='2',
+                                       totalTracks='2')
 
         self.album.removeTrack(tracks[2])
-        self.driver.showsTrackMetadata(trackTitle='Track 1')
+        self.driver.showsTrackMetadata(trackTitle='Track 1',
+                                       trackNumber='1',
+                                       totalTracks='1')
         self.driver.hasDisabledNextPageButton()
 
         self.album.removeTrack(tracks[0])

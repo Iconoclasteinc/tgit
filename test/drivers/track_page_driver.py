@@ -14,6 +14,7 @@ class TrackPageDriver(WidgetDriver):
     def __init__(self, selector, prober, gesturePerformer):
         super(TrackPageDriver, self).__init__(selector, prober, gesturePerformer)
 
+    # todo use keyword arguments instead?
     def showsMetadata(self, **meta):
         for tag, value in meta.iteritems():
             if tag == tags.TRACK_TITLE:
@@ -34,6 +35,10 @@ class TrackPageDriver(WidgetDriver):
                 self.showsBitrate(value)
             elif tag == tags.DURATION:
                 self.showsDuration(value)
+            elif tag == 'trackNumber':
+                self.showsTrackNumber(value)
+            elif tag == 'totalTracks':
+                self.showsTotalTracks(value)
             else:
                 raise AssertionError("Don't know how to verify <%s>" % tag)
 
@@ -79,14 +84,26 @@ class TrackPageDriver(WidgetDriver):
     def showsBitrate(self, text):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.BITRATE_NAME)))
         label.isShowingOnScreen()
-        info = LabelDriver.findSingle(self, QLabel, named(ui.BITRATE_NAME))
-        info.hasText(text)
+        value = LabelDriver.findSingle(self, QLabel, named(ui.BITRATE_NAME))
+        value.hasText(text)
+
+    def showsTrackNumber(self, number):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.TRACK_NUMBER_NAME)))
+        label.isShowingOnScreen()
+        value = LabelDriver.findSingle(self, QLabel, named(ui.TRACK_NUMBER_NAME))
+        value.hasText(number)
+
+    def showsTotalTracks(self, count):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.TOTAL_TRACKS_NAME)))
+        label.isShowingOnScreen()
+        value = LabelDriver.findSingle(self, QLabel, named(ui.TOTAL_TRACKS_NAME))
+        value.hasText(count)
 
     def showsDuration(self, text):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.DURATION_NAME)))
         label.isShowingOnScreen()
-        info = LabelDriver.findSingle(self, QLabel, named(ui.DURATION_NAME))
-        info.hasText(text)
+        value = LabelDriver.findSingle(self, QLabel, named(ui.DURATION_NAME))
+        value.hasText(text)
 
     def showsFeaturedGuest(self, name):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.VERSION_INFO_EDIT_NAME)))

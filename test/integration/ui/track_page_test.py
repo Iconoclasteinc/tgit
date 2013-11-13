@@ -8,7 +8,7 @@ from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import AssertionProbe
 from test.drivers.track_page_driver import TrackPageDriver
-from test.util.builders import track
+from test.util import builders as build
 
 from tgit.ui.track_page import TrackPage
 
@@ -16,9 +16,11 @@ from tgit.ui.track_page import TrackPage
 class TrackPageTest(BaseWidgetTest):
     def setUp(self):
         super(TrackPageTest, self).setUp()
-        self.track = track(bitrate=192000,
-                           duration=timedelta(minutes=4, seconds=35).total_seconds())
-        self.widget = TrackPage(self.track)
+        self.album = build.album()
+        self.track = build.track(bitrate=192000,
+                                 duration=timedelta(minutes=4, seconds=35).total_seconds())
+        self.album.addTrack(self.track)
+        self.widget = TrackPage(self.album, self.track)
         self.view(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
@@ -30,6 +32,10 @@ class TrackPageTest(BaseWidgetTest):
         self.driver.showsTrackTitle('Song')
         self.track.versionInfo = 'Remix'
         self.driver.showsVersionInfo('Remix')
+        self.driver.showsBitrate('192 kbps')
+        self.driver.showsTrackNumber('1')
+        self.driver.showsTotalTracks('1')
+        self.driver.showsDuration('04:35')
         self.track.featuredGuest = 'Featuring'
         self.driver.showsFeaturedGuest('Featuring')
         self.track.lyricist = 'Lyricist'
@@ -49,10 +55,33 @@ class TrackPageTest(BaseWidgetTest):
         self.driver.showsLanguage('eng')
         self.driver.showsPreviewTime('00:00')
 
-        self.driver.showsBitrate('192 kbps')
-        self.driver.showsDuration('04:35')
+    def testUpdatesTotalNumberOfTracksWhenAlbumCompositionChanges(self):
+        for i in xrange(11):
+            self.album.addTrack(build.track())
 
-    def testUpdatesTrackOnMetadataChange(self):
+        self.driver.showsTotalTracks('12')
+
+    def testUpdatesTrackNumberWhenTrackPositionInAlbumChanges(self):
+        for i in xrange(11):
+            self.album.insertTrack(build.track(), 0)
+
+        self.driver.showsTrackNumber('12')
+
+    def testIgnoresUpdatesToAlbumCompositionWhenTrackRemovedFromAlbum(self):
+        for i in xrange(11):
+            self.album.addTrack(build.track())
+
+        for track in self.album.tracks:
+            self.album.removeTrack(track)
+
+        assert True
+
+    def testIgnoresUpdatesToTrackStateWhenTrackRemovedFromAlbum(self):
+        self.album.removeTrack(self.track)
+        self.widget.trackStateChanged(self.track)
+        assert True
+
+    def testUpdatesTrackWhenEdited(self):
         self.driver.changeTrackTitle('Song')
         self.check(AssertionProbe(self.track.trackTitle, equal_to('Song'), 'track title'))
 

@@ -21,12 +21,7 @@ def metadata(**meta):
 
 
 def track(filename='track.mp3', **meta):
-    album = None
-    if 'album' in meta:
-        album = meta['album']
-        del meta['album']
-
-    track = Track(filename, album=album)
+    track = Track(filename)
     for tag, value in meta.items():
         setattr(track, tag, value)
     return track

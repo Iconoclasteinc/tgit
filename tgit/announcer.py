@@ -30,11 +30,15 @@ class Announcer(object):
     def removeListener(self, listener):
         self._listeners.remove(listener)
 
+    @property
+    def listeners(self):
+        return list(self._listeners)
+
     def __getattr__(self, message):
         return func.partial(self._announce, message)
 
     def _announce(self, message, *args, **kwargs):
-        for listener in self._listeners:
+        for listener in self.listeners:
             method = getattr(listener, message)
             method(*args, **kwargs)
 

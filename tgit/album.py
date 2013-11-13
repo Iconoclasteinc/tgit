@@ -41,15 +41,13 @@ class Album(object):
 
     @property
     def metadata(self):
-        return self._metadata
-
-    @metadata.setter
-    def metadata(self, metadata):
-        self._metadata = metadata
-        self._signalStateChange()
+        return self._metadata.copy()
 
     def addAlbumListener(self, listener):
         self._listeners.addListener(listener)
+
+    def removeAlbumListener(self, listener):
+        self._listeners.removeListener(listener)
 
     @property
     def images(self):
@@ -78,7 +76,10 @@ class Album(object):
         return list(self._tracks)
 
     def empty(self):
-        return len(self._tracks) == 0
+        return self.totalTracks() == 0
+
+    def totalTracks(self):
+        return len(self._tracks)
 
     def indexOf(self, track):
         return self.tracks.index(track)
@@ -86,10 +87,13 @@ class Album(object):
     def addTrack(self, track):
         self.insertTrack(track, len(self._tracks))
 
-    def insertTrack(self, track, position=-1):
+    def _copyMetadataOf(self, track):
         if self._metadata.empty() and track.album:
-            self.metadata = track.album.metadata
+            self._metadata = track.album.metadata
+            self._signalStateChange()
 
+    def insertTrack(self, track, position):
+        self._copyMetadataOf(track)
         self._tracks.insert(position, track)
         track.album = self
         self._listeners.trackAdded(track, position)
