@@ -19,8 +19,8 @@
 
 import os
 
-from tgit.metadata import Metadata
-from tgit.mp3 import id3_tagger as mp3
+from mutagen import id3
+
 from tgit.util import fs
 
 
@@ -49,7 +49,7 @@ class Mp3Audio(object):
         # 1- It locks the file so we have to make a copy to allow tagging
         copy = fs.makeCopy(filename)
         # 2- It fails to play files with our tags so we have to clear the frames
-        mp3.save(metadata=Metadata(), overwrite=True, filename=copy)
+        id3.delete(filename=copy)
         return copy
 
     def release(self):
