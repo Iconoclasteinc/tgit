@@ -1,175 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_CA" sourcelanguage="en_US">
+<!DOCTYPE TS>
+<TS version="2.0" language="fr_CA" sourcelanguage="en_US">
 <context>
-    <name>AlbumPanel</name>
+    <name>AlbumPage</name>
     <message>
-        <location filename="album_panel.py" line="183"/>
+        <location filename="album_page.py" line="293"/>
         <source>Select Picture...</source>
         <translation>Choisir une image...</translation>
     </message>
     <message>
-        <location filename="album_panel.py" line="108"/>
-        <source>Image files</source>
-        <translation>Fichiers images</translation>
-    </message>
-    <message>
-        <location filename="album_panel.py" line="184"/>
+        <location filename="album_page.py" line="294"/>
         <source>Release Name: </source>
         <translation>Titre de l&apos;album: </translation>
     </message>
     <message>
-        <location filename="album_panel.py" line="185"/>
+        <location filename="album_page.py" line="295"/>
         <source>Lead Performer: </source>
         <translation>Artiste principal: </translation>
     </message>
     <message>
-        <location filename="album_panel.py" line="191"/>
-        <source>UPC/EAN: </source>
-        <translation>UPC/EAN: </translation>
-    </message>
-    <message>
-        <location filename="album_panel.py" line="186"/>
+        <location filename="album_page.py" line="296"/>
         <source>Guest Performers: </source>
-        <translation>Artistes invités: </translation>
+        <translation>Musiciens de l&apos;album: </translation>
     </message>
     <message>
-        <location filename="album_panel.py" line="187"/>
+        <location filename="album_page.py" line="297"/>
         <source>Label Name: </source>
         <translation>Maison de disque: </translation>
     </message>
     <message>
-        <location filename="album_panel.py" line="188"/>
+        <location filename="album_page.py" line="298"/>
+        <source>Town: </source>
+        <translation>Ville :</translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="299"/>
+        <source>Country: </source>
+        <translation>Territoire: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="300"/>
+        <source>Catalog Number: </source>
+        <translation>Numéro de catalogue: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="301"/>
+        <source>UPC/EAN: </source>
+        <translation>UPC/EAN: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="302"/>
         <source>Recording Time: </source>
         <translation>Date d&apos;enregistrement: </translation>
     </message>
     <message>
-        <location filename="album_panel.py" line="189"/>
+        <location filename="album_page.py" line="303"/>
         <source>Release Time: </source>
         <translation>Date de mise en marché: </translation>
     </message>
     <message>
-        <location filename="album_panel.py" line="190"/>
+        <location filename="album_page.py" line="304"/>
+        <source>Digital Release Time: </source>
+        <translation>Date de parution numérique: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="305"/>
         <source>Original Release Time: </source>
         <translation>Date de sortie originale: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="306"/>
+        <source>Recording Studios: </source>
+        <translation>Studios d&apos;enregistrement: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="307"/>
+        <source>Producer: </source>
+        <translation>Réalisateur: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="308"/>
+        <source>Mixer: </source>
+        <translation>Mixeur: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="309"/>
+        <source>Comments: </source>
+        <translation>Commentaires: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="310"/>
+        <source>Primary Style: </source>
+        <translation>Genre :</translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="311"/>
+        <source>Media Type: </source>
+        <translation>Type de format: </translation>
+    </message>
+    <message>
+        <location filename="album_page.py" line="312"/>
+        <source>Release Type: </source>
+        <translation>Type de version :</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="main_window.py" line="247"/>
+        <location filename="main_window.py" line="91"/>
         <source>TGiT</source>
         <translation>TGiT</translation>
     </message>
     <message>
-        <location filename="main_window.py" line="250"/>
-        <source>Add File...</source>
-        <translation>Ajouter un fichier...</translation>
-    </message>
-    <message>
-        <location filename="main_window.py" line="251"/>
-        <source>Save</source>
-        <translation>Enregistrer</translation>
-    </message>
-    <message>
-        <location filename="main_window.py" line="95"/>
-        <source>MP3 files</source>
-        <translation>Fichiers mp3</translation>
-    </message>
-    <message>
-        <location filename="main_window.py" line="252"/>
-        <source>Previous</source>
-        <translation>Précédent</translation>
-    </message>
-    <message>
-        <location filename="main_window.py" line="253"/>
-        <source>Next</source>
-        <translation>Suivant</translation>
-    </message>
-    <message>
-        <location filename="main_window.py" line="248"/>
+        <location filename="main_window.py" line="92"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="main_window.py" line="249"/>
-        <source>Import File...</source>
-        <translation>Importer un fichier...</translation>
+        <location filename="main_window.py" line="93"/>
+        <source>Add Files...</source>
+        <translation>Ajouter des fichiers... </translation>
+    </message>
+    <message>
+        <location filename="main_window.py" line="94"/>
+        <source>Add Folder...</source>
+        <translation>Ajouter un dossier... </translation>
     </message>
 </context>
 <context>
-    <name>TrackListPanel</name>
+    <name>PlayButtonDelegate</name>
     <message>
-        <location filename="track_list_panel.py" line="89"/>
-        <source>Track Title</source>
-        <translation>Titre de la piste</translation>
-    </message>
-    <message>
-        <location filename="track_list_panel.py" line="90"/>
-        <source>Duration</source>
-        <translation>Durée</translation>
-    </message>
-    <message>
-        <location filename="track_list_panel.py" line="117"/>
+        <location filename="track_list_page.py" line="36"/>
         <source>Play</source>
         <translation>Écouter/Arrêter</translation>
     </message>
+</context>
+<context>
+    <name>RemoveButtonDelegate</name>
     <message>
-        <location filename="track_list_panel.py" line="89"/>
-        <source>Lead Performer</source>
-        <translation>Artiste principal</translation>
-    </message>
-    <message>
-        <location filename="track_list_panel.py" line="89"/>
-        <source>Release Name</source>
-        <translation>Titre de l&apos;album</translation>
-    </message>
-    <message>
-        <location filename="track_list_panel.py" line="90"/>
-        <source>Bitrate</source>
-        <translation>Débit</translation>
-    </message>
-    <message>
-        <location filename="track_list_panel.py" line="123"/>
+        <location filename="track_list_page.py" line="52"/>
         <source>Remove</source>
         <translation>Supprimer</translation>
     </message>
+</context>
+<context>
+    <name>TaggingScreen</name>
     <message>
-        <location filename="track_list_panel.py" line="148"/>
-        <source>Add Track...</source>
-        <translation>Ajouter...</translation>
+        <location filename="tagging_screen.py" line="166"/>
+        <source>Previous</source>
+        <translation>Précédent</translation>
+    </message>
+    <message>
+        <location filename="tagging_screen.py" line="167"/>
+        <source>Save</source>
+        <translation>Enregistrer</translation>
+    </message>
+    <message>
+        <location filename="tagging_screen.py" line="168"/>
+        <source>Next</source>
+        <translation>Suivant</translation>
     </message>
 </context>
 <context>
-    <name>TrackPanel</name>
+    <name>TrackListPage</name>
     <message>
-        <location filename="track_panel.py" line="107"/>
+        <location filename="track_list_page.py" line="107"/>
+        <source>Add Files...</source>
+        <translation>Ajouter des fichiers... </translation>
+    </message>
+</context>
+<context>
+    <name>TrackPage</name>
+    <message>
+        <location filename="track_page.py" line="216"/>
         <source>Track Title: </source>
         <translation>Titre de la piste: </translation>
     </message>
     <message>
-        <location filename="track_panel.py" line="108"/>
+        <location filename="track_page.py" line="217"/>
         <source>Version Information: </source>
         <translation>Infos sur la version: </translation>
     </message>
     <message>
-        <location filename="track_panel.py" line="109"/>
-        <source>Featured Guest: </source>
-        <translation>Invité spécial: </translation>
+        <location filename="track_page.py" line="218"/>
+        <source>Duration: </source>
+        <translation>Durée:</translation>
     </message>
     <message>
-        <location filename="track_panel.py" line="110"/>
-        <source>ISRC: </source>
-        <translation>ISRC: </translation>
+        <location filename="track_page.py" line="219"/>
+        <source>Track: </source>
+        <translation>Piste: </translation>
     </message>
     <message>
-        <location filename="track_panel.py" line="111"/>
+        <location filename="track_page.py" line="220"/>
+        <source>Of: </source>
+        <translation>De: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="221"/>
         <source>Bitrate: </source>
         <translation>Débit: </translation>
     </message>
     <message>
-        <location filename="track_panel.py" line="112"/>
-        <source>Duration: </source>
-        <translation>Durée:</translation>
+        <location filename="track_page.py" line="222"/>
+        <source>Featured Guest: </source>
+        <translation>Invité spécial: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="223"/>
+        <source>Lyricist: </source>
+        <translation>Auteur: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="224"/>
+        <source>Composer: </source>
+        <translation>Compositeur: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="225"/>
+        <source>Publisher: </source>
+        <translation>Éditeur: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="226"/>
+        <source>ISRC: </source>
+        <translation>ISRC: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="227"/>
+        <source>ISWC: </source>
+        <translation>ISWC: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="228"/>
+        <source>Tags: </source>
+        <translation>Tags: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="229"/>
+        <source>Lyrics: </source>
+        <translation>Paroles: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="230"/>
+        <source>Language: </source>
+        <translation>Langue: </translation>
+    </message>
+    <message>
+        <location filename="track_page.py" line="231"/>
+        <source>Preview Time: </source>
+        <translation>Minutage pour pré-écoute: </translation>
+    </message>
+</context>
+<context>
+    <name>WelcomeScreen</name>
+    <message>
+        <location filename="welcome_screen.py" line="35"/>
+        <source>New Album...</source>
+        <translation>Nouvel album... </translation>
+    </message>
+</context>
+<context>
+    <name>dialog</name>
+    <message>
+        <location filename="dialogs.py" line="43"/>
+        <source>Audio files</source>
+        <translation>Fichiers audio</translation>
+    </message>
+    <message>
+        <location filename="dialogs.py" line="95"/>
+        <source>Image files</source>
+        <translation>Fichiers images</translation>
     </message>
 </context>
 </TS>

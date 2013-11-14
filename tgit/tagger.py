@@ -21,7 +21,6 @@ import sys
 from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
 
-# noinspection PyUnresolvedReferences
 from tgit.audio.audio_library import AudioFiles
 from tgit.audio.player import PhononPlayer
 from tgit.record_label import AlbumPortfolio, RecordLabel
@@ -30,6 +29,8 @@ from tgit.mp3.id3_tagger import Id3Tagger
 from tgit.ui.main_window import MainWindow
 from tgit.ui.dialogs import AudioFileChooserDialog, ImageFileChooserDialog
 from tgit.ui import display
+# noinspection PyUnresolvedReferences
+from tgit.ui import resources
 
 TGIT = 'tgit'
 QT = 'qt'
@@ -37,7 +38,7 @@ UTF_8 = 'UTF-8'
 
 
 class TGiT(QApplication):
-    def __init__(self, player=None, audioFileChooser=None, imageFileChooser=None):
+    def __init__(self, language, player=None, audioFileChooser=None, imageFileChooser=None):
         QApplication.__init__(self, [])
         self._translators = []
         self._albums = AlbumPortfolio()
@@ -48,6 +49,8 @@ class TGiT(QApplication):
             audioFileChooser = AudioFileChooserDialog()
         if imageFileChooser is None:
             imageFileChooser = ImageFileChooserDialog()
+
+        self.changeLanguage(language)
         self._ui = MainWindow(self._albums, player, audioFileChooser, imageFileChooser)
         self._attachFileChooser(audioFileChooser)
         self._attachFileChooser(imageFileChooser)
@@ -71,7 +74,7 @@ class TGiT(QApplication):
     def useNativeDialogs(self, native):
         self._ui.useNativeDialogs(native)
 
-    def translateInto(self, language):
+    def changeLanguage(self, language):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
         for resource in (QT, TGIT):
             self._installTranslations(resource, language),
@@ -88,6 +91,5 @@ class TGiT(QApplication):
 
 
 def main(language):
-    app = TGiT()
-    app.translateInto(language)
+    app = TGiT(language)
     app.run()

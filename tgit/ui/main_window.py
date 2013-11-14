@@ -38,7 +38,6 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self._productionHouses = Announcer()
 
         self._build()
-        self.show()
 
     def addProductionHouse(self, house):
         self._productionHouses.addListener(house)
