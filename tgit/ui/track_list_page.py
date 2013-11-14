@@ -94,14 +94,14 @@ class TrackListPage(QWidget, PlayerListener):
     def _addButtons(self, layout):
         buttonLayout = QHBoxLayout()
         self._addButton = QPushButton()
-        self._addButton.setObjectName(ui.ADD_TRACK_BUTTON_NAME)
-        self._addButton.clicked.connect(self._selectTrack)
+        self._addButton.setObjectName(ui.ADD_FILES_BUTTON_NAME)
+        self._addButton.clicked.connect(self._selectFiles)
         buttonLayout.addWidget(self._addButton)
         buttonLayout.addStretch()
         layout.addLayout(buttonLayout)
 
-    def _selectTrack(self):
-        self._requestListeners.selectTrack()
+    def _selectFiles(self):
+        self._requestListeners.selectFiles()
 
     def localize(self):
-        self._addButton.setText(self.tr('Add Track...'))
+        self._addButton.setText(self.tr('Add Files...'))

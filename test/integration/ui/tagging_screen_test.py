@@ -43,7 +43,8 @@ class TaggingScreenTest(BaseWidgetTest):
         self.driver.saveAlbum()
         self.driver.check(recordAlbumRequest)
 
-    def testChoosesAudioFileAndSignalsImportTrackRequestWhenAddTrackButtonIsClicked(self):
+    # todo select multiple files
+    def testChoosesAudioFilesWhenAddFilesButtonIsClicked(self):
         self.audioFileChooser.chooses('track.mp3')
 
         addTrackRequest = ValueMatcherProbe('import track file',
@@ -54,7 +55,7 @@ class TaggingScreenTest(BaseWidgetTest):
                 addTrackRequest.received((album, filename))
 
         self.widget.addRequestListener(RequestTracker())
-        self.driver.addTrack()
+        self.driver.addFiles()
         self.driver.check(addTrackRequest)
 
     def testAddsTrackPagesInTrackAlbumOrder(self):

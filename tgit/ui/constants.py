@@ -24,7 +24,7 @@ TRACK_LIST_PAGE_NAME = 'track list page'
 ALBUM_PAGE_NAME = 'album page'
 TRACK_PAGE_NAME = 'track Page'
 
-CHOOSE_AUDIO_FILE_DIALOG_NAME = 'choose audio file'
+CHOOSE_AUDIO_FILES_DIALOG_NAME = 'choose audio files'
 
 NEW_ALBUM_BUTTON_NAME = 'new album'
 NEXT_PAGE_BUTTON_NAME = 'next page'
@@ -32,12 +32,14 @@ PREVIOUS_PAGE_BUTTON_NAME = 'previous page'
 SAVE_BUTTON_NAME = 'save'
 
 FILE_MENU_NAME = 'file'
-IMPORT_TRACK_ACTION_NAME = 'import track'
+ADD_FILES_ACTION_NAME = 'add files'
+ADD_FOLDER_ACTION_NAME = 'add folder'
+
 
 TRACK_TABLE_NAME = 'track list'
 PLAY_BUTTON_NAME = 'play track'
 REMOVE_BUTTON_NAME = 'remove track'
-ADD_TRACK_BUTTON_NAME = 'add track'
+ADD_FILES_BUTTON_NAME = 'add files'
 
 FRONT_COVER_PIXMAP_NAME = 'front cover'
 SELECT_PICTURE_BUTTON_NAME = 'select picture'

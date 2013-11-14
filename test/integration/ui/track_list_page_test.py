@@ -7,6 +7,8 @@ from hamcrest import has_property, contains
 from hamcrest.library.collection.is_empty import empty
 
 from test.integration.ui.base_widget_test import BaseWidgetTest
+from PyQt4.QtGui import QTableWidgetItem
+
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe, AssertionProbe
 from test.drivers.track_list_page_driver import TrackListPageDriver
@@ -15,6 +17,12 @@ from test.util.fakes import FakeAudioPlayer
 
 from tgit.album import Album
 from tgit.ui.track_list_page import TrackListPage
+
+
+def tableWidgetItemDescription(self):
+    return self.text()
+
+QTableWidgetItem.__repr__ = tableWidgetItemDescription
 
 
 def hasTitle(title):
@@ -89,16 +97,16 @@ class TrackListPageTest(BaseWidgetTest):
         self.player.stop()
         self.driver.isNotPlaying('Song #2')
 
-    def testSignalsSelectTrackRequestWhenAddTrackButtonIsClicked(self):
-        selectTrackRequest = ValueMatcherProbe('select track')
+    def testSelectsFilesWhenAddFilesButtonIsClicked(self):
+        filesSelected = ValueMatcherProbe('files selected')
 
-        class RequestTracker(object):
-            def selectTrack(self):
-                selectTrackRequest.received()
+        class SelectFiles(object):
+            def selectFiles(self):
+                filesSelected.received()
 
-        self.widget.addRequestListener(RequestTracker())
-        self.driver.addTrack()
-        self.driver.check(selectTrackRequest)
+        self.widget.addRequestListener(SelectFiles())
+        self.driver.addFiles()
+        self.driver.check(filesSelected)
 
     def testRemovesTrackFromAlbumWhenRemoveButtonIsClicked(self):
         self.album.addTrack(build.track(trackTitle='Song #1'))

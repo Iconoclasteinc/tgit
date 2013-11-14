@@ -31,8 +31,8 @@ class TaggingScreenDriver(WidgetDriver):
         self._previousPageButton().isEnabled()
         self._saveButton().isEnabled()
 
-    def addTrack(self):
-        self._trackListPage().addTrack()
+    def addFiles(self):
+        self._trackListPage().addFiles()
 
     def removeTrack(self, title):
         self._trackListPage().removeTrack(title)

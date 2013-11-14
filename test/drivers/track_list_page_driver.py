@@ -53,8 +53,8 @@ class TrackListPageDriver(WidgetDriver):
         self.playOrStop(title)
         self.isNotPlaying(title)
 
-    def addTrack(self):
-        button = ButtonDriver.findSingle(self, QPushButton, named(ui.ADD_TRACK_BUTTON_NAME))
+    def addFiles(self):
+        button = ButtonDriver.findSingle(self, QPushButton, named(ui.ADD_FILES_BUTTON_NAME))
         button.click()
 
     def removeTrack(self, title):

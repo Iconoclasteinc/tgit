@@ -39,8 +39,8 @@ class ApplicationRunner(object):
         self.tagger.createAlbum()
         self.tagger.selectAudioFile(path)
 
-    def importTrack(self, path):
-        self.tagger.importTrack(path)
+    def addTrack(self, path):
+        self.tagger.addTrack(path)
 
     def showsAlbumContent(self, *tracks):
         self.tagger.showsAlbumContains(*tracks)

@@ -27,7 +27,7 @@ def mainApplicationWindow(*matchers):
     return onlyWidget(QMainWindow, all_of(*matchers))
 
 
-def dialogWindow(ofType, *matchers):
+def window(ofType, *matchers):
     return onlyWidget(ofType, all_of(*matchers))
 
 
@@ -143,7 +143,7 @@ class AbstractEditDriver(WidgetDriver):
 
     def clearAllText(self):
         self.selectAllText()
-        self.perform(gestures.pause(LineEditDriver.EDITION_DELAY))
+        self.perform(gestures.pause(self.EDITION_DELAY))
         self.deleteSelectedText()
 
     def selectAllText(self):
@@ -215,16 +215,19 @@ class FileDialogDriver(WidgetDriver):
         return currentFolder.name
 
     def intoFolder(self, name):
-        self.perform(gestures.pause(FileDialogDriver.NAVIGATION_DELAY))
+        self.perform(gestures.pause(self.NAVIGATION_DELAY))
         self.selectFile(name)
         self._doubleClickOnFolder()
-        self.perform(gestures.pause(FileDialogDriver.NAVIGATION_DELAY))
+        self.perform(gestures.pause(self.NAVIGATION_DELAY))
 
     def _doubleClickOnFolder(self):
         self.perform(gestures.mouseDoubleClick())
 
     def selectFile(self, name):
-        self._listView().selectItem(match.withListItemText(name))
+        self.selectFiles(name)
+
+    def selectFiles(self, *names):
+        self._listView().selectItems(*[match.withListItemText(name) for name in names])
 
     def upOneFolder(self):
         self._toolButtonNamed('toParentButton').click()
@@ -236,7 +239,10 @@ class FileDialogDriver(WidgetDriver):
         self._filenameEdit().replaceAllText(filename)
 
     def accept(self):
-        self._acceptButton().click()
+        self.acceptButton().click()
+
+    def reject(self):
+        self.acceptButton().click()
 
     def _listView(self):
         return ListViewDriver.findSingle(self, QListView, match.named('listView'))
@@ -244,19 +250,39 @@ class FileDialogDriver(WidgetDriver):
     def _filenameEdit(self):
         return LineEditDriver.findSingle(self, QLineEdit, match.named('fileNameEdit'))
 
-    def _acceptButton(self):
-        class QueryAcceptButtonText(object):
-            def __call__(self, dialog):
-                self.text = dialog.labelText(QFileDialog.Accept)
+    def acceptButton(self):
+        return self._dialogButton(QFileDialog.Accept)
 
-        queryAcceptButton = QueryAcceptButtonText()
-        self.manipulate('query accept button text', queryAcceptButton)
-        return ButtonDriver.findSingle(self, QPushButton, match.withText(queryAcceptButton.text))
+    def rejectButton(self):
+        return self._dialogButton(QFileDialog.Reject)
+
+    def _dialogButton(self, label):
+        class QueryButtonText(object):
+            def __init__(self, label):
+                super(QueryButtonText, self).__init__()
+                self._label = label
+
+            def __call__(self, dialog):
+                self.text = dialog.labelText(self._label)
+
+        buttonText = QueryButtonText(label)
+        self.manipulate('query button text', buttonText)
+        return ButtonDriver.findSingle(self, QPushButton, match.withText(buttonText.text))
 
 
 class ListViewDriver(WidgetDriver):
-    def selectItem(self, matching):
-        self._selectItem(self._indexOfFirstItem(matching))
+    def selectItems(self, *matchers):
+        self._selectItems([self._indexOfFirstItem(matching) for matching in matchers])
+
+    def _selectItems(self, indexes):
+        self._selectItem(indexes.pop(0))
+        for index in indexes:
+            self._multiSelectItem(index)
+
+    def _multiSelectItem(self, index):
+        self._scrollItemToVisible(index)
+        self.perform(
+            gestures.withModifiers(Qt.ControlModifier, gestures.clickAt(self._centerOfItem(index))))
 
     def _selectItem(self, index):
         self._scrollItemToVisible(index)

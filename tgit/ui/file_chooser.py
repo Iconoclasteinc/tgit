@@ -24,17 +24,26 @@ class FileChoiceListener(object):
     def fileChosen(self, filename):
         pass
 
+    def filesChosen(self, *filenames):
+        pass
+
 
 class FileChooser(object):
     def __init__(self):
         super(FileChooser, self).__init__()
         self._listeners = Announcer()
 
-    def chooseFile(self):
+    def chooseSingleFile(self):
+        pass
+
+    def chooseFiles(self):
         pass
 
     def addChoiceListener(self, listener):
         self._listeners.addListener(listener)
 
-    def _signalFileChosen(self, filename):
+    def signalFileChosen(self, filename):
         self._listeners.fileChosen(filename)
+
+    def signalFilesChosen(self, filenames):
+        self._listeners.filesChosen(*filenames)

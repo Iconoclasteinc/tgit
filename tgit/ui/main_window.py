@@ -48,8 +48,12 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
                                    self._imageFileChooser, self)
         mainScreen.addRequestListener(self._productionHouses)
         self.setCentralWidget(mainScreen)
-        self._importAction.setEnabled(True)
-        mainScreen.selectTrack()
+        self._enableFileActions()
+        mainScreen.selectFiles()
+
+    def _enableFileActions(self):
+        self._addFilesAction.setEnabled(True)
+        self._addFolderAction.setEnabled(True)
 
     def _build(self):
         self.setObjectName(ui.MAIN_WINDOW_NAME)
@@ -63,11 +67,16 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         menuBar = self.menuBar()
         self._fileMenu = QMenu(menuBar)
         self._fileMenu.setObjectName(ui.FILE_MENU_NAME)
-        self._importAction = QAction(self._fileMenu)
-        self._importAction.setObjectName(ui.IMPORT_TRACK_ACTION_NAME)
-        self._importAction.triggered.connect(lambda: self.centralWidget().selectTrack())
-        self._importAction.setDisabled(True)
-        self._fileMenu.addAction(self._importAction)
+        self._addFilesAction = QAction(self._fileMenu)
+        self._addFilesAction.setObjectName(ui.ADD_FILES_ACTION_NAME)
+        self._addFilesAction.triggered.connect(lambda: self.centralWidget().selectFiles())
+        self._addFilesAction.setDisabled(True)
+        self._fileMenu.addAction(self._addFilesAction)
+        self._addFolderAction = QAction(self._fileMenu)
+        self._addFolderAction.setObjectName(ui.ADD_FOLDER_ACTION_NAME)
+        self._addFolderAction.triggered.connect(lambda: self.centralWidget().selectDirectory())
+        self._addFolderAction.setDisabled(True)
+        self._fileMenu.addAction(self._addFolderAction)
         menuBar.addMenu(self._fileMenu)
 
     def _makeStatusBar(self):
@@ -81,4 +90,5 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
     def localize(self):
         self.setWindowTitle(self.tr('TGiT'))
         self._fileMenu.setTitle(self.tr('File'))
-        self._importAction.setText(self.tr('Import File...'))
+        self._addFilesAction.setText(self.tr('Add Files...'))
+        self._addFolderAction.setText(self.tr('Add Folder...'))

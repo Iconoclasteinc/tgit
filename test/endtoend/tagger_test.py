@@ -50,9 +50,9 @@ class TaggerTest(unittest.TestCase):
             lyricist=u'Étienne Roda-Gil'))
 
         self.application.newAlbum(maPreference)
-        self.application.importTrack(faisMoiUnePlace)
-        self.application.importTrack(rolo)
-        self.application.importTrack(ceNestRien)
+        self.application.addTrack(faisMoiUnePlace)
+        self.application.addTrack(rolo)
+        self.application.addTrack(ceNestRien)
 
         self.application.showsAlbumContent([u'Ma préférence'],
                                            [u'Fais moi une place'],

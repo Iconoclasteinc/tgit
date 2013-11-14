@@ -5,7 +5,7 @@ import os
 from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit
 
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
-from test.cute.widgets import (dialogWindow, WidgetDriver, LabelDriver, LineEditDriver,
+from test.cute.widgets import (window, WidgetDriver, LabelDriver, LineEditDriver,
                                ButtonDriver, FileDialogDriver, TextEditDriver)
 
 import tgit.tags as tags
@@ -93,8 +93,7 @@ class AlbumPageDriver(WidgetDriver):
         button.click()
 
     def _chooseImageFile(self, filename):
-        dialog = FileDialogDriver(dialogWindow(QFileDialog,
-                                               named(ui.CHOOSE_IMAGE_FILE_DIALOG_NAME)),
+        dialog = FileDialogDriver(window(QFileDialog, named(ui.CHOOSE_IMAGE_FILE_DIALOG_NAME)),
                                   self.prober, self.gesturePerformer)
         dialog.navigateToDir(os.path.dirname(filename))
         dialog.selectFile(os.path.basename(filename))

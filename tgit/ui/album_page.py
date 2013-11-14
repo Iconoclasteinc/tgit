@@ -115,7 +115,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         layout.addLayout(buttonLayout, row, 1)
 
     def _selectPicture(self):
-        self._pictureChooser.chooseFile()
+        self._pictureChooser.chooseSingleFile()
 
     def _addReleaseNameTo(self, layout, row):
         self._releaseNameLabel = QLabel()

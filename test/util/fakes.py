@@ -71,9 +71,15 @@ class FakeAudioPlayer(object):
 
 
 class FakeFileChooser(FileChooser):
-    def chooses(self, filename):
-        self.filename = filename
+    def __init__(self):
+        super(FakeFileChooser, self).__init__()
+        self.choices = []
 
-    def chooseFile(self):
-        if hasattr(self, 'filename'):
-            self._signalFileChosen(self.filename)
+    def chooses(self, filename):
+        self.choices.append(filename)
+
+    def chooseSingleFile(self):
+        self.signalFileChosen(self.choices[0])
+
+    def chooseFiles(self):
+        self.signalFilesChosen(self.choices)

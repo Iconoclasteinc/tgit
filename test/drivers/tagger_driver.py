@@ -5,7 +5,7 @@ import os
 from PyQt4.QtGui import QFileDialog, QWidget, QMenuBar
 
 from test.cute.matchers import named
-from test.cute.widgets import dialogWindow, MainWindowDriver, FileDialogDriver, MenuBarDriver
+from test.cute.widgets import window, MainWindowDriver, FileDialogDriver, MenuBarDriver
 from test.drivers.tagging_screen_driver import TaggingScreenDriver
 from test.drivers.welcome_screen_driver import WelcomeScreenDriver
 
@@ -16,13 +16,13 @@ class TaggerDriver(MainWindowDriver):
     def __init__(self, selector, prober, gesturePerformer):
         super(TaggerDriver, self).__init__(selector, prober, gesturePerformer)
 
-    def importTrack(self, path):
-        self.selectImportTrackMenuItem()
+    def addTrack(self, path):
+        self.selectAddFilesMenuItem()
         self.selectAudioFile(path)
 
-    def selectImportTrackMenuItem(self):
+    def selectAddFilesMenuItem(self):
         menu = self._openFileMenu()
-        menuItem = self._importTrackMenuItem(menu)
+        menuItem = self._addFilesMenuItem(menu)
         menuItem.isEnabled()
         menuItem.click()
 
@@ -32,13 +32,12 @@ class TaggerDriver(MainWindowDriver):
         menu.open()
         return menu
 
-    def selectAudioFile(self, trackFile):
-        dialog = FileDialogDriver(dialogWindow(QFileDialog,
-                                               named(ui.CHOOSE_AUDIO_FILE_DIALOG_NAME)),
+    def selectAudioFile(self, filename):
+        dialog = FileDialogDriver(window(QFileDialog, named(ui.CHOOSE_AUDIO_FILES_DIALOG_NAME)),
                                   self.prober, self.gesturePerformer)
         dialog.showHiddenFiles()
-        dialog.navigateToDir(os.path.dirname(trackFile))
-        dialog.selectFile(os.path.basename(trackFile))
+        dialog.navigateToDir(os.path.dirname(filename))
+        dialog.selectFile(os.path.basename(filename))
         dialog.accept()
 
     def createAlbum(self):
@@ -51,9 +50,15 @@ class TaggerDriver(MainWindowDriver):
     def isShowingTaggingScreen(self):
         self._taggingScreen().isShowingOnScreen()
 
-    def hasEnabledImportTrackMenuItem(self):
+    def hasEnabledAddFilesMenuItem(self):
         menu = self._openFileMenu()
-        menuItem = self._importTrackMenuItem(menu)
+        menuItem = self._addFilesMenuItem(menu)
+        menuItem.isEnabled()
+        menu.close()
+
+    def hasEnabledAddFolderMenuItem(self):
+        menu = self._openFileMenu()
+        menuItem = self._addFolderMenuItem(menu)
         menuItem.isEnabled()
         menu.close()
 
@@ -97,5 +102,8 @@ class TaggerDriver(MainWindowDriver):
     def _welcomeScreen(self):
         return WelcomeScreenDriver.findSingle(self, QWidget, named(ui.WELCOME_SCREEN_NAME))
 
-    def _importTrackMenuItem(self, menu):
-        return menu.menuItem(named(ui.IMPORT_TRACK_ACTION_NAME))
+    def _addFilesMenuItem(self, menu):
+        return menu.menuItem(named(ui.ADD_FILES_ACTION_NAME))
+
+    def _addFolderMenuItem(self, menu):
+        return menu.menuItem(named(ui.ADD_FOLDER_ACTION_NAME))
