@@ -25,8 +25,6 @@ class MainWindowTest(BaseWidgetTest):
     def testStartsOnWelcomeScreen(self):
         self.driver.isShowingWelcomeScreen()
 
-    def testShowsMainScreenAndEnablesAlbumCommandsWhenAlbumCreated(self):
+    def testShowsMainScreenWhenAlbumCreated(self):
         self.widget.albumCreated(Album())
         self.driver.isShowingTaggingScreen()
-        self.driver.hasEnabledAddFilesMenuItem()
-        self.driver.hasEnabledAddFolderMenuItem()

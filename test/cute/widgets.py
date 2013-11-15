@@ -333,7 +333,7 @@ class ListViewDriver(WidgetDriver):
         return containingItem.atIndex
 
 
-class MenuBarDriver(WidgetDriver):
+class QMenuBarDriver(WidgetDriver):
     def menu(self, matching):
         # We have to make sure the menu actually exists on the menu bar
         # Checking that the menu is a child of the menu bar is not sufficient

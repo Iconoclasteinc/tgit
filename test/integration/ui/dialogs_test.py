@@ -21,8 +21,10 @@ class AudioFileChooserDialogTest(BaseWidgetTest):
         mainWindow = QMainWindow()
         self.view(mainWindow)
         self.chooser = AudioFileChooserDialog(native=False, parent=mainWindow)
+        self.driver = self.createDriver()
 
-        self.driver = FileDialogDriver(
+    def createDriver(self):
+        return FileDialogDriver(
             window(QFileDialog, named(ui.CHOOSE_AUDIO_FILES_DIALOG_NAME)),
             self.prober, self.gesturePerformer)
 

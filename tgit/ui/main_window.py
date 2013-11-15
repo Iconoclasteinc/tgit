@@ -17,11 +17,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtGui import QMainWindow, QMenu, QAction, QStatusBar
+from PyQt4.QtGui import QMainWindow, QStatusBar
 
 from tgit.announcer import Announcer
 from tgit.record_label import AlbumPortfolioListener
 from tgit.ui import constants as ui
+from tgit.ui.menu_bar import MenuBar
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen
 
@@ -43,43 +44,34 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self._productionHouses.addListener(house)
 
     def albumCreated(self, album):
-        mainScreen = TaggingScreen(album, self._audioPlayer, self._audioFileChooser,
+        taggingScreen = TaggingScreen(album, self._audioPlayer, self._audioFileChooser,
                                    self._imageFileChooser, self)
-        mainScreen.addRequestListener(self._productionHouses)
-        self.setCentralWidget(mainScreen)
-        self._enableFileActions()
-        mainScreen.selectFiles()
-
-    def _enableFileActions(self):
-        self._addFilesAction.setEnabled(True)
-        self._addFolderAction.setEnabled(True)
+        taggingScreen.addRequestListener(self._productionHouses)
+        self.setCentralWidget(taggingScreen)
+        taggingScreen.selectFiles()
 
     def _build(self):
         self.setObjectName(ui.MAIN_WINDOW_NAME)
         self.resize(*ui.MAIN_WINDOW_SIZE)
-        self._fillMenu()
-        self._makeStatusBar()
+        self.setMenuBar(self._makeMenuBar())
+        self.setStatusBar(self._makeStatusBar())
         self.setCentralWidget(self._makeWelcomeScreen())
         self.localize()
 
-    def _fillMenu(self):
-        menuBar = self.menuBar()
-        self._fileMenu = QMenu(menuBar)
-        self._fileMenu.setObjectName(ui.FILE_MENU_NAME)
-        self._addFilesAction = QAction(self._fileMenu)
-        self._addFilesAction.setObjectName(ui.ADD_FILES_ACTION_NAME)
-        self._addFilesAction.triggered.connect(lambda: self.centralWidget().selectFiles())
-        self._addFilesAction.setDisabled(True)
-        self._fileMenu.addAction(self._addFilesAction)
-        self._addFolderAction = QAction(self._fileMenu)
-        self._addFolderAction.setObjectName(ui.ADD_FOLDER_ACTION_NAME)
-        self._addFolderAction.triggered.connect(lambda: self.centralWidget().selectDirectory())
-        self._addFolderAction.setDisabled(True)
-        self._fileMenu.addAction(self._addFolderAction)
-        menuBar.addMenu(self._fileMenu)
+    def _makeMenuBar(self):
+        menuBar = MenuBar()
+        menuBar.announceTo(self)
+        self._albumPortfolio.addPortfolioListener(menuBar)
+        return menuBar
+
+    def selectFiles(self):
+        self.centralWidget().selectFiles()
+
+    def selectFolder(self):
+        self.centralWidget().selectFolder()
 
     def _makeStatusBar(self):
-        self.setStatusBar(QStatusBar())
+        return QStatusBar()
 
     def _makeWelcomeScreen(self):
         welcomeScreen = WelcomeScreen(self)
@@ -88,6 +80,3 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
 
     def localize(self):
         self.setWindowTitle(self.tr('TGiT'))
-        self._fileMenu.setTitle(self.tr('File'))
-        self._addFilesAction.setText(self.tr('Add Files...'))
-        self._addFolderAction.setText(self.tr('Add Folder...'))

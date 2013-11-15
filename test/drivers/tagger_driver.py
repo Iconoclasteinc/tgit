@@ -2,10 +2,11 @@
 
 import os
 
-from PyQt4.QtGui import QFileDialog, QWidget, QMenuBar
+from PyQt4.QtGui import QFileDialog, QWidget
 
 from test.cute.matchers import named
-from test.cute.widgets import window, MainWindowDriver, FileDialogDriver, MenuBarDriver
+from test.cute.widgets import window, MainWindowDriver, FileDialogDriver
+from test.drivers.menu_bar_driver import menuBar
 from test.drivers.tagging_screen_driver import TaggingScreenDriver
 from test.drivers.welcome_screen_driver import WelcomeScreenDriver
 
@@ -17,20 +18,8 @@ class TaggerDriver(MainWindowDriver):
         super(TaggerDriver, self).__init__(selector, prober, gesturePerformer)
 
     def addTrack(self, path):
-        self.selectAddFilesMenuItem()
+        menuBar(self).addFiles()
         self.selectAudioFile(path)
-
-    def selectAddFilesMenuItem(self):
-        menu = self._openFileMenu()
-        menuItem = self._addFilesMenuItem(menu)
-        menuItem.isEnabled()
-        menuItem.click()
-
-    def _openFileMenu(self):
-        menuBar = MenuBarDriver.findSingle(self, QMenuBar)
-        menu = menuBar.menu(named(ui.FILE_MENU_NAME))
-        menu.open()
-        return menu
 
     def selectAudioFile(self, filename):
         dialog = FileDialogDriver(window(QFileDialog, named(ui.CHOOSE_AUDIO_FILES_DIALOG_NAME)),
@@ -49,18 +38,6 @@ class TaggerDriver(MainWindowDriver):
 
     def isShowingTaggingScreen(self):
         self._taggingScreen().isShowingOnScreen()
-
-    def hasEnabledAddFilesMenuItem(self):
-        menu = self._openFileMenu()
-        menuItem = self._addFilesMenuItem(menu)
-        menuItem.isEnabled()
-        menu.close()
-
-    def hasEnabledAddFolderMenuItem(self):
-        menu = self._openFileMenu()
-        menuItem = self._addFolderMenuItem(menu)
-        menuItem.isEnabled()
-        menu.close()
 
     def removeTrack(self, title):
         self._taggingScreen().removeTrack(title)
@@ -101,9 +78,3 @@ class TaggerDriver(MainWindowDriver):
 
     def _welcomeScreen(self):
         return WelcomeScreenDriver.findSingle(self, QWidget, named(ui.WELCOME_SCREEN_NAME))
-
-    def _addFilesMenuItem(self, menu):
-        return menu.menuItem(named(ui.ADD_FILES_ACTION_NAME))
-
-    def _addFolderMenuItem(self, menu):
-        return menu.menuItem(named(ui.ADD_FOLDER_ACTION_NAME))
