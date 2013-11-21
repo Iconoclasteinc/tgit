@@ -4,6 +4,7 @@ from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.finders import WidgetIdentity
 from test.drivers.tagger_driver import TaggerDriver
 from test.util.fakes import FakeAudioPlayer, FakeFileChooser
+from test.util import builders as build
 
 from tgit.album import Album
 from tgit.record_label import AlbumPortfolio
@@ -25,6 +26,10 @@ class MainWindowTest(BaseWidgetTest):
     def testStartsOnWelcomeScreen(self):
         self.driver.isShowingWelcomeScreen()
 
-    def testShowsMainScreenWhenAlbumCreated(self):
+    def testShowsMainScreenOnAlbumCreation(self):
         self.widget.albumCreated(Album())
         self.driver.isShowingTaggingScreen()
+
+    def testShowsExportAsDialogOnExport(self):
+        self.widget.export(build.album())
+        self.driver.isShowingExportAsDialog()

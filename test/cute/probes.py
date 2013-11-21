@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import anything, described_as
+from hamcrest import described_as, none
 
 from PyQt4.QtCore import QPoint, QRect
 
@@ -129,12 +129,12 @@ class WidgetScreenBoundsProbe(Probe):
             self._bounds = None
 
 
-def received():
-    return described_as("", anything())
+def nothing():
+    return described_as("nothing", none())
 
 
 class ValueMatcherProbe(Probe):
-    def __init__(self, message, matcher=received()):
+    def __init__(self, message, matcher=nothing()):
         super(ValueMatcherProbe, self).__init__()
         self._message = message
         self._valueMatcher = matcher
@@ -148,7 +148,7 @@ class ValueMatcherProbe(Probe):
         return self._hasReceivedAValue and self._valueMatcher.matches(self._receivedValue)
 
     def describeTo(self, description):
-        description.append_text(self._message).append_text(" ") \
+        description.append_text(self._message).append_text(" with ") \
             .append_description_of(self._valueMatcher)
 
     def describeFailureTo(self, description):
@@ -156,7 +156,7 @@ class ValueMatcherProbe(Probe):
         if self._hasReceivedAValue:
             description.append_text('received ').append_value(self._receivedValue)
         else:
-            description.append_text('received nothing')
+            description.append_text('was not received')
 
     def received(self, value=None):
         self._hasReceivedAValue = True

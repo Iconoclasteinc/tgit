@@ -57,7 +57,7 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
     def selectFiles(self):
         self._audioFileChooser.chooseFiles()
 
-    def selectDirectory(self):
+    def selectFolder(self):
         self._audioFileChooser.chooseDirectory()
 
     def recordAlbum(self):

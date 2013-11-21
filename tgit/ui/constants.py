@@ -25,6 +25,7 @@ ALBUM_PAGE_NAME = 'album page'
 TRACK_PAGE_NAME = 'track Page'
 
 CHOOSE_AUDIO_FILES_DIALOG_NAME = 'choose audio files'
+EXPORT_AS_DIALOG_NAME = 'export as'
 
 NEW_ALBUM_BUTTON_NAME = 'new album'
 NEXT_PAGE_BUTTON_NAME = 'next page'
@@ -34,7 +35,7 @@ SAVE_BUTTON_NAME = 'save'
 FILE_MENU_NAME = 'file'
 ADD_FILES_ACTION_NAME = 'add files'
 ADD_FOLDER_ACTION_NAME = 'add folder'
-
+EXPORT_ACTION_NAME = 'export'
 
 TRACK_TABLE_NAME = 'track list'
 PLAY_BUTTON_NAME = 'play track'

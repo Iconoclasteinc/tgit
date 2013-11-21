@@ -21,10 +21,12 @@ from PyQt4.QtGui import QMainWindow, QStatusBar
 
 from tgit.announcer import Announcer
 from tgit.record_label import AlbumPortfolioListener
+from tgit.csv.csv_format import CsvFormat
 from tgit.ui import constants as ui
 from tgit.ui.menu_bar import MenuBar
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen
+from tgit.ui.export_as_dialog import ExportAsDialog
 
 
 class MainWindow(QMainWindow, AlbumPortfolioListener):
@@ -45,7 +47,7 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
 
     def albumCreated(self, album):
         taggingScreen = TaggingScreen(album, self._audioPlayer, self._audioFileChooser,
-                                   self._imageFileChooser, self)
+                                      self._imageFileChooser, self)
         taggingScreen.addRequestListener(self._productionHouses)
         self.setCentralWidget(taggingScreen)
         taggingScreen.selectFiles()
@@ -72,6 +74,19 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
 
     def _makeStatusBar(self):
         return QStatusBar()
+
+    #todo Organize properly
+    def export(self, album):
+        dialog = ExportAsDialog(native=True, parent=self)
+
+        class Exporter(object):
+            def export(self, album, filename):
+                with open(filename, 'wb') as out:
+                    format_ = CsvFormat('ISO-8859-1')
+                    format_.write(album, out)
+
+        dialog.announceTo(Exporter())
+        dialog.show(album)
 
     def _makeWelcomeScreen(self):
         welcomeScreen = WelcomeScreen(self)

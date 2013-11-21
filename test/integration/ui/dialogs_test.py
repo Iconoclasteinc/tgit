@@ -46,7 +46,7 @@ class AudioFileChooserDialogTest(BaseWidgetTest):
 
         self.check(filesChosen)
 
-    def testSelectsAudioFilesAudioFilesInDirectoryAndNotifiesListeners(self):
+    def testSelectsAudioFilesInDirectoryAndNotifiesListeners(self):
         files = (resources.path('audio', '1.mp3'),
                  resources.path('audio', '2.mp3'),
                  resources.path('audio', '3.mp3'))

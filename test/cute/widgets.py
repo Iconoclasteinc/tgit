@@ -94,6 +94,9 @@ class WidgetDriver(object):
         self.isShowingOnScreen()
         self.perform(gestures.clickAt(self.widgetCenter()))
 
+    def enter(self):
+        self.perform(shortcuts.Enter)
+
     def perform(self, *gestures):
         self.gesturePerformer.perform(*gestures)
 
@@ -112,6 +115,9 @@ class MainWindowDriver(WidgetDriver):
 
 
 class ButtonDriver(WidgetDriver):
+    def hasText(self, matcher):
+        self.has(properties.text(), wrap_matcher(matcher))
+
     def isUp(self):
         self.isShowingOnScreen()
         self.is_(match.unchecked())
@@ -132,11 +138,14 @@ class LabelDriver(WidgetDriver):
 class AbstractEditDriver(WidgetDriver):
     EDITION_DELAY = 20
 
+    def changeText(self, text):
+        self.replaceAllText(text)
+        self.enter()
+
     def replaceAllText(self, text):
         self.focusWithMouse()
         self.clearAllText()
         self.type(text)
-        self.perform(shortcuts.Enter)
 
     def focusWithMouse(self):
         self.leftClickOnWidget()

@@ -15,19 +15,25 @@ def menuBar(parent):
 class MenuBarDriver(QMenuBarDriver):
     def addFiles(self):
         menu = self._openFileMenu()
-        menuItem = self._addFilesMenuItem(menu)
+        menuItem = addFilesMenuItem(menu)
+        menuItem.isEnabled()
+        menuItem.click()
+
+    def export(self):
+        menu = self._openFileMenu()
+        menuItem = exportMenuItem(menu)
         menuItem.isEnabled()
         menuItem.click()
 
     def hasEnabledAddFilesMenuItem(self):
         menu = self._openFileMenu()
-        menuItem = self._addFilesMenuItem(menu)
+        menuItem = addFilesMenuItem(menu)
         menuItem.isEnabled()
         menu.close()
 
     def hasEnabledAddFolderMenuItem(self):
         menu = self._openFileMenu()
-        menuItem = self._addFolderMenuItem(menu)
+        menuItem = addFolderMenuItem(menu)
         menuItem.isEnabled()
         menu.close()
 
@@ -37,8 +43,14 @@ class MenuBarDriver(QMenuBarDriver):
         menu.open()
         return menu
 
-    def _addFilesMenuItem(self, menu):
-        return menu.menuItem(named(ui.ADD_FILES_ACTION_NAME))
 
-    def _addFolderMenuItem(self, menu):
-        return menu.menuItem(named(ui.ADD_FOLDER_ACTION_NAME))
+def addFilesMenuItem(menu):
+    return menu.menuItem(named(ui.ADD_FILES_ACTION_NAME))
+
+
+def addFolderMenuItem(menu):
+    return menu.menuItem(named(ui.ADD_FOLDER_ACTION_NAME))
+
+
+def exportMenuItem(menu):
+    return menu.menuItem(named(ui.EXPORT_ACTION_NAME))

@@ -69,7 +69,7 @@ class TrackPageDriver(WidgetDriver):
 
     def changeTrackTitle(self, title):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.TRACK_TITLE_EDIT_NAME))
-        edit.replaceAllText(title)
+        edit.changeText(title)
 
     def showsVersionInfo(self, versionInfo):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.VERSION_INFO_EDIT_NAME)))
@@ -79,7 +79,7 @@ class TrackPageDriver(WidgetDriver):
 
     def changeVersionInfo(self, info):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.VERSION_INFO_EDIT_NAME))
-        edit.replaceAllText(info)
+        edit.changeText(info)
 
     def showsBitrate(self, text):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.BITRATE_NAME)))
@@ -113,7 +113,7 @@ class TrackPageDriver(WidgetDriver):
 
     def changeFeaturedGuest(self, name):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.FEATURED_GUEST_EDIT_NAME))
-        edit.replaceAllText(name)
+        edit.changeText(name)
 
     def showsLyricist(self, name):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LYRICIST_EDIT_NAME)))
@@ -123,7 +123,7 @@ class TrackPageDriver(WidgetDriver):
 
     def changeLyricist(self, name):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LYRICIST_EDIT_NAME))
-        edit.replaceAllText(name)
+        edit.changeText(name)
 
     def showsComposer(self, name):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.COMPOSER_EDIT_NAME)))
@@ -133,7 +133,7 @@ class TrackPageDriver(WidgetDriver):
 
     def changeComposer(self, name):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.COMPOSER_EDIT_NAME))
-        edit.replaceAllText(name)
+        edit.changeText(name)
 
     def showsPublisher(self, name):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.PUBLISHER_EDIT_NAME)))
@@ -143,7 +143,7 @@ class TrackPageDriver(WidgetDriver):
 
     def changePublisher(self, name):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PUBLISHER_EDIT_NAME))
-        edit.replaceAllText(name)
+        edit.changeText(name)
 
     def showsIsrc(self, code):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.ISRC_EDIT_NAME)))
@@ -153,7 +153,7 @@ class TrackPageDriver(WidgetDriver):
 
     def changeIsrc(self, code):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.ISRC_EDIT_NAME))
-        edit.replaceAllText(code)
+        edit.changeText(code)
 
     def showsIswc(self, code):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.ISWC_EDIT_NAME)))
@@ -170,7 +170,7 @@ class TrackPageDriver(WidgetDriver):
 
     def changeTags(self, tags):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.TAGS_EDIT_NAME))
-        edit.replaceAllText(tags)
+        edit.changeText(tags)
 
     def showsLyrics(self, lyrics):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LYRICS_EDIT_NAME)))
@@ -192,7 +192,7 @@ class TrackPageDriver(WidgetDriver):
 
     def changeLanguage(self, tags):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LANGUAGE_EDIT_NAME))
-        edit.replaceAllText(tags)
+        edit.changeText(tags)
 
     def showsPreviewTime(self, time):
         edit = DateTimeEditDriver.findSingle(self, QTimeEdit, named(ui.PREVIEW_TIME_EDIT_NAME))

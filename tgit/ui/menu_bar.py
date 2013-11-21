@@ -35,29 +35,49 @@ class MenuBar(QMenuBar):
     def announceTo(self, listener):
         self._announce.addListener(listener)
 
-    def albumCreated(self, _):
-        self._enableAlbumActions()
+    def albumCreated(self, album):
+        self._updateAlbumMenu(album)
 
     def _assemble(self):
+        self.addMenu(self._makeFileMenu())
+
+    def _makeFileMenu(self):
         self._fileMenu = QMenu(self)
         self._fileMenu.setObjectName(ui.FILE_MENU_NAME)
-        self._addFilesAction = QAction(self._fileMenu)
+        self._addAddFilesMenuItemTo(self._fileMenu)
+        self._addAddFolderMenuItemTo(self._fileMenu)
+        self._addExportMenuItemTo(self._fileMenu)
+        return self._fileMenu
+
+    def _addAddFilesMenuItemTo(self, menu):
+        self._addFilesAction = QAction(menu)
         self._addFilesAction.setObjectName(ui.ADD_FILES_ACTION_NAME)
         self._addFilesAction.triggered.connect(lambda checked: self._announce.selectFiles())
         self._addFilesAction.setDisabled(True)
-        self._fileMenu.addAction(self._addFilesAction)
-        self._addFolderAction = QAction(self._fileMenu)
+        menu.addAction(self._addFilesAction)
+
+    def _addAddFolderMenuItemTo(self, menu):
+        self._addFolderAction = QAction(menu)
         self._addFolderAction.setObjectName(ui.ADD_FOLDER_ACTION_NAME)
         self._addFolderAction.triggered.connect(lambda checked: self._announce.selectFolder())
         self._addFolderAction.setDisabled(True)
-        self._fileMenu.addAction(self._addFolderAction)
-        self.addMenu(self._fileMenu)
+        menu.addAction(self._addFolderAction)
 
-    def _enableAlbumActions(self):
-        self._addFilesAction.setEnabled(True)
-        self._addFolderAction.setEnabled(True)
+    def _addExportMenuItemTo(self, menu):
+        self._exportMenuAction = QAction(menu)
+        self._exportMenuAction.setObjectName(ui.EXPORT_ACTION_NAME)
+        self._exportMenuAction.triggered.connect(
+            lambda checked: self._announce.export(self._exportMenuAction.data()))
+        self._exportMenuAction.setDisabled(True)
+        menu.addAction(self._exportMenuAction)
+
+    def _updateAlbumMenu(self, album):
+        for action in [self._addFilesAction, self._addFolderAction, self._exportMenuAction]:
+            action.setData(album)
+            action.setEnabled(True)
 
     def localize(self):
         self._fileMenu.setTitle(self.tr('File'))
         self._addFilesAction.setText(self.tr('Add Files...'))
         self._addFolderAction.setText(self.tr('Add Folder...'))
+        self._exportMenuAction.setText(self.tr('Export...'))

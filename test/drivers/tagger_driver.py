@@ -39,6 +39,9 @@ class TaggerDriver(MainWindowDriver):
     def isShowingTaggingScreen(self):
         self._taggingScreen().isShowingOnScreen()
 
+    def isShowingExportAsDialog(self):
+        self._exportAsDialog().isShowingOnScreen()
+
     def removeTrack(self, title):
         self._taggingScreen().removeTrack(title)
 
@@ -78,3 +81,7 @@ class TaggerDriver(MainWindowDriver):
 
     def _welcomeScreen(self):
         return WelcomeScreenDriver.findSingle(self, QWidget, named(ui.WELCOME_SCREEN_NAME))
+
+    def _exportAsDialog(self):
+        return FileDialogDriver(window(QFileDialog, named(ui.EXPORT_AS_DIALOG_NAME)),
+                                self.prober, self.gesturePerformer)

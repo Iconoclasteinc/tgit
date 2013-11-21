@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from hamcrest import equal_to
+
 from test.integration.ui.base_widget_test import BaseWidgetTest
 from PyQt4.QtGui import QMainWindow
 from test.cute.finders import WidgetIdentity
+from test.cute.probes import ValueMatcherProbe
 from test.drivers.menu_bar_driver import MenuBarDriver
 from test.util import builders as build
 from tgit.ui.menu_bar import MenuBar
@@ -23,3 +26,16 @@ class MenuBarTest(BaseWidgetTest):
         self.widget.albumCreated(build.album())
         self.driver.hasEnabledAddFilesMenuItem()
         self.driver.hasEnabledAddFolderMenuItem()
+
+    def testSignalsExportAlbumWhenExportMenuItemIsClicked(self):
+        album = build.album()
+        exportCommand = ValueMatcherProbe('export command', equal_to(album))
+
+        class ExportCommandListener(object):
+            def export(self, album):
+                exportCommand.received(album)
+
+        self.widget.announceTo(ExportCommandListener())
+        self.widget.albumCreated(album)
+        self.driver.export()
+        self.driver.check(exportCommand)

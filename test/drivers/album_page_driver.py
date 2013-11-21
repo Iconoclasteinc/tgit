@@ -107,7 +107,7 @@ class AlbumPageDriver(WidgetDriver):
         
     def changeReleaseName(self, name):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RELEASE_NAME_EDIT_NAME))
-        edit.replaceAllText(name)
+        edit.changeText(name)
 
     def showsLeadPerformer(self, name):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LEAD_PERFORMER_EDIT_NAME)))
@@ -117,7 +117,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeLeadPerformer(self, name):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LEAD_PERFORMER_EDIT_NAME))
-        edit.replaceAllText(name)
+        edit.changeText(name)
 
     def showsGuestPerformers(self, names):
         label = LabelDriver.findSingle(self, QLabel,
@@ -128,7 +128,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeGuestPerformers(self, names):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.GUEST_PERFORMERS_EDIT_NAME))
-        edit.replaceAllText(names)
+        edit.changeText(names)
 
     def showsLabelName(self, name):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LABEL_NAME_EDIT_NAME)))
@@ -138,7 +138,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeLabelName(self, name):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LABEL_NAME_EDIT_NAME))
-        edit.replaceAllText(name)
+        edit.changeText(name)
 
     def showsTown(self, town):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.TOWN_EDIT_NAME)))
@@ -162,7 +162,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeCatalogNumber(self, number):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.CATALOG_NUMBER_EDIT_NAME))
-        edit.replaceAllText(number)
+        edit.changeText(number)
 
     def showsUpc(self, code):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.UPC_EDIT_NAME)))
@@ -172,7 +172,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeUpc(self, code):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.UPC_EDIT_NAME))
-        edit.replaceAllText(code)
+        edit.changeText(code)
 
     def showsRecordingTime(self, time):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.RECORDING_TIME_EDIT_NAME)))
@@ -182,7 +182,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeRecordingTime(self, time):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RECORDING_TIME_EDIT_NAME))
-        edit.replaceAllText(time)
+        edit.changeText(time)
 
     def showsReleaseTime(self, time):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.RELEASE_TIME_EDIT_NAME)))
@@ -192,7 +192,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeReleaseTime(self, time):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RELEASE_TIME_EDIT_NAME))
-        edit.replaceAllText(time)
+        edit.changeText(time)
 
     def showsDigitalReleaseTime(self, time):
         label = LabelDriver.findSingle(self, QLabel,
@@ -212,7 +212,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeOriginalReleaseTime(self, time):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME))
-        edit.replaceAllText(time)
+        edit.changeText(time)
 
     def showsRecordingStudios(self, studios):
         label = LabelDriver.findSingle(self, QLabel,
@@ -223,7 +223,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeRecordingStudios(self, studios):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RECORDING_STUDIOS_EDIT_NAME))
-        edit.replaceAllText(studios)
+        edit.changeText(studios)
 
     def showsProducer(self, producer):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.PRODUCER_EDIT_NAME)))
@@ -233,7 +233,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeProducer(self, producer):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PRODUCER_EDIT_NAME))
-        edit.replaceAllText(producer)
+        edit.changeText(producer)
 
     def showsMixer(self, mixer):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.MIXER_EDIT_NAME)))
@@ -243,7 +243,7 @@ class AlbumPageDriver(WidgetDriver):
 
     def changeMixer(self, mixer):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.MIXER_EDIT_NAME))
-        edit.replaceAllText(mixer)
+        edit.changeText(mixer)
 
     def showsComments(self, comments):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.COMMENTS_TEXT_NAME)))
