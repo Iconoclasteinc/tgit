@@ -19,7 +19,9 @@
 
 import functools as func
 
-from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableView, QHBoxLayout, QItemDelegate)
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableView, QHBoxLayout,
+                         QItemDelegate, QHeaderView)
 
 from tgit.announcer import Announcer
 from tgit.audio.player import PlayerListener
@@ -57,6 +59,8 @@ class RemoveButtonDelegate(QItemDelegate):
 
 
 class TrackListPage(QWidget, PlayerListener):
+    COLUMNS_WIDTHS = [300, 210, 200, 70, 70, 121, 105]
+
     def __init__(self, album, player, parent=None):
         QWidget.__init__(self, parent)
         self._tracks = AlbumTableModel(album, player, self)
@@ -75,6 +79,10 @@ class TrackListPage(QWidget, PlayerListener):
         self._addTrackTable(self._layout)
         self._addButtons(self._layout)
 
+    def _resizeColumns(self):
+        for index, width in enumerate(self.COLUMNS_WIDTHS):
+            self._table.horizontalHeader().resizeSection(index, width)
+
     def _addTrackTable(self, layout):
         self._table = QTableView()
         self._table.setObjectName(ui.TRACK_TABLE_NAME)
@@ -87,8 +95,11 @@ class TrackListPage(QWidget, PlayerListener):
         self._table.setEditTriggers(QTableView.NoEditTriggers)
         self._table.setSelectionMode(QTableView.NoSelection)
         self._table.setShowGrid(False)
+        self._table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
+        self._table.verticalHeader().setResizeMode(QHeaderView.Fixed)
         self._table.verticalHeader().setMovable(True)
         self._table.verticalHeader().sectionMoved.connect(self._tracks.move)
+        self._resizeColumns()
         layout.addWidget(self._table)
 
     def _addButtons(self, layout):

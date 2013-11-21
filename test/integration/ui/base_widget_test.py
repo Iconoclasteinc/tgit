@@ -31,12 +31,6 @@ class BaseWidgetTest(unittest.TestCase):
         widget.show()
         widget.raise_()
 
-    def centerOnScreen(self, widget):
-        position = widget.frameGeometry()
-        desktop = self.app.desktop()
-        position.moveCenter(desktop.availableGeometry().center())
-        widget.move(position.topLeft())
-
     def check(self, probe):
         self.prober.check(probe)
 
