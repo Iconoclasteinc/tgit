@@ -95,11 +95,10 @@ class TaggingScreenDriver(WidgetDriver):
                                           showingOnScreen())
 
     def _nextPageButton(self):
-        return ButtonDriver.findSingle(self, QPushButton, named(ui.NEXT_PAGE_BUTTON_NAME))
+        return ButtonDriver.findSingle(self, QPushButton, named(ui.NEXT_BUTTON_NAME))
 
     def _previousPageButton(self):
-        return ButtonDriver.findSingle(self, QPushButton,
-                                               named(ui.PREVIOUS_PAGE_BUTTON_NAME))
+        return ButtonDriver.findSingle(self, QPushButton, named(ui.PREVIOUS_BUTTON_NAME))
 
     def _saveButton(self):
         return ButtonDriver.findSingle(self, QPushButton, named(ui.SAVE_BUTTON_NAME))

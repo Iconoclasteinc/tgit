@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtGui import QMainWindow, QStatusBar
+from PyQt4.QtGui import QMainWindow
 
 from tgit.announcer import Announcer
 from tgit.record_label import AlbumPortfolioListener
@@ -27,7 +27,7 @@ from tgit.ui.menu_bar import MenuBar
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen
 from tgit.ui.export_as_dialog import ExportAsDialog
-from tgit.ui import stylesheets
+from tgit.ui import styles
 
 
 class MainWindow(QMainWindow, AlbumPortfolioListener):
@@ -55,12 +55,11 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
 
     def _build(self):
         self.setObjectName(ui.MAIN_WINDOW_NAME)
-        self.setStyleSheet(stylesheets.Main)
-        self.resize(*ui.MAIN_WINDOW_SIZE)
+        self.setStyleSheet(styles.Main)
         self.setMenuBar(self._makeMenuBar())
-        self.setStatusBar(self._makeStatusBar())
         self.setCentralWidget(self._makeWelcomeScreen())
         self.localize()
+        self.resize(*ui.MAIN_WINDOW_SIZE)
 
     def _makeMenuBar(self):
         menuBar = MenuBar()
@@ -73,9 +72,6 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
 
     def selectFolder(self):
         self.centralWidget().selectFolder()
-
-    def _makeStatusBar(self):
-        return QStatusBar()
 
     #todo Organize properly
     def export(self, album):

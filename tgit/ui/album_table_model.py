@@ -115,12 +115,13 @@ class ColumnEnum(type):
 class Columns:
     __metaclass__ = ColumnEnum
 
-    trackTitle = Column(name='Track Title', value=Row.trackTitle)
-    leadPerformer = Column(name='Lead Performer', value=Row.leadPerformer)
-    releaseName = Column(name='Release Name', value=Row.releaseName)
-    bitrate = Column(name='Bitrate',
+    # todo i18n on column names
+    trackTitle = Column(name='Titre de la piste', value=Row.trackTitle)
+    leadPerformer = Column(name='Artiste principal', value=Row.leadPerformer)
+    releaseName = Column(name="Titre de l'album", value=Row.releaseName)
+    bitrate = Column(name=u'Débit',
                      value=lambda track: '%s kbps' % display.inKbps(track.bitrate()))
-    duration = Column(name='Duration',
+    duration = Column(name=u'Durée',
                       value=lambda track: display.asDuration(track.duration()))
     play = Column(name='', value=Row.playing)
     remove = Column(name='', value=lambda track: None)

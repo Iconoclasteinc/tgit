@@ -19,9 +19,9 @@
 
 import functools as func
 
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import (QWidget, QVBoxLayout, QPushButton, QTableView, QHBoxLayout,
-                         QItemDelegate, QHeaderView)
+from PyQt4.QtCore import Qt, QModelIndex, QAbstractItemModel
+from PyQt4.QtGui import (QWidget, QVBoxLayout, QTableView, QHBoxLayout,
+                         QStyledItemDelegate, QHeaderView, QLabel, QToolButton)
 
 from tgit.announcer import Announcer
 from tgit.audio.player import PlayerListener
@@ -29,14 +29,15 @@ from tgit.ui.album_table_model import AlbumTableModel, Columns
 from tgit.ui import constants as ui
 
 
-class PlayButtonDelegate(QItemDelegate):
+class PlayButtonDelegate(QStyledItemDelegate):
     def __init__(self, view):
-        QItemDelegate.__init__(self, view)
+        QStyledItemDelegate.__init__(self, view)
 
     def paint(self, painter, option, index):
         if not self.parent().indexWidget(index):
-            button = QPushButton(self.tr('Play'))
+            button = QToolButton()
             button.setObjectName(ui.PLAY_BUTTON_NAME)
+            button.setCursor(Qt.PointingHandCursor)
             button.clicked.connect(func.partial(index.model().togglePlay,
                                                 index.model().trackAt(index.row())))
             button.setCheckable(True)
@@ -44,22 +45,38 @@ class PlayButtonDelegate(QItemDelegate):
 
         self.parent().indexWidget(index).setChecked(index.model().data(index))
 
+        # This is awful, I need to paint a button and react to mouse events instead of
+        #  using a real button
+        class WackyHack(QModelIndex):
+            def model(self):
+                class FakeModel(QAbstractItemModel):
+                    def data(self, index):
+                        return ''
 
-class RemoveButtonDelegate(QItemDelegate):
+                return FakeModel()
+
+        # We need to call the super implementation to style the column according to the stylesheet
+        super(PlayButtonDelegate, self).paint(painter, option, WackyHack())
+
+
+class RemoveButtonDelegate(QStyledItemDelegate):
     def __init__(self, view):
-        QItemDelegate.__init__(self, view)
+        QStyledItemDelegate.__init__(self, view)
 
     def paint(self, painter, option, index):
         if not self.parent().indexWidget(index):
-            button = QPushButton(self.tr('Remove'))
+            button = QToolButton()
             button.setObjectName(ui.REMOVE_BUTTON_NAME)
+            button.setCursor(Qt.PointingHandCursor)
             button.clicked.connect(func.partial(index.model().remove,
                                                 index.model().trackAt(index.row())))
             self.parent().setIndexWidget(index, button)
 
+        super(RemoveButtonDelegate, self).paint(painter, option, index)
+
 
 class TrackListPage(QWidget, PlayerListener):
-    COLUMNS_WIDTHS = [300, 210, 200, 70, 70, 121, 105]
+    COLUMNS_WIDTHS = [375, 291, 175, 70, 70, 30, 30]
 
     def __init__(self, album, player, parent=None):
         QWidget.__init__(self, parent)
@@ -74,45 +91,52 @@ class TrackListPage(QWidget, PlayerListener):
         self._requestListeners.addListener(listener)
 
     def _build(self):
-        self._layout = QVBoxLayout()
-        self.setLayout(self._layout)
-        self._addTrackTable(self._layout)
-        self._addButtons(self._layout)
+        layout = QVBoxLayout()
+        layout.addWidget(self._makeHeader())
+        layout.addWidget(self._makeTrackTable())
+        self.setLayout(layout)
 
-    def _resizeColumns(self):
-        for index, width in enumerate(self.COLUMNS_WIDTHS):
-            self._table.horizontalHeader().resizeSection(index, width)
-
-    def _addTrackTable(self, layout):
-        self._table = QTableView()
-        self._table.setObjectName(ui.TRACK_TABLE_NAME)
-        self._table.setModel(self._tracks)
-        self._table.setItemDelegateForColumn(Columns.index(Columns.play),
-                                             PlayButtonDelegate(self._table))
-        self._table.setItemDelegateForColumn(Columns.index(Columns.remove),
-                                             RemoveButtonDelegate(self._table))
-        self._table.setAlternatingRowColors(True)
-        self._table.setEditTriggers(QTableView.NoEditTriggers)
-        self._table.setSelectionMode(QTableView.NoSelection)
-        self._table.setShowGrid(False)
-        self._table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
-        self._table.verticalHeader().setResizeMode(QHeaderView.Fixed)
-        self._table.verticalHeader().setMovable(True)
-        self._table.verticalHeader().sectionMoved.connect(self._tracks.move)
-        self._resizeColumns()
-        layout.addWidget(self._table)
-
-    def _addButtons(self, layout):
-        buttonLayout = QHBoxLayout()
-        self._addButton = QPushButton()
-        self._addButton.setObjectName(ui.ADD_FILES_BUTTON_NAME)
+    def _makeHeader(self):
+        header = QWidget()
+        layout = QHBoxLayout()
+        layout.addWidget(QLabel(self.tr('Organize tracks in album.')))
+        layout.addStretch()
+        self._addButton = QToolButton()
+        self._addButton.setObjectName(ui.ADD_BUTTON_NAME)
         self._addButton.clicked.connect(self._selectFiles)
-        buttonLayout.addWidget(self._addButton)
-        buttonLayout.addStretch()
-        layout.addLayout(buttonLayout)
+        self._addButton.setCursor(Qt.PointingHandCursor)
+        layout.addWidget(self._addButton)
+        header.setLayout(layout)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        return header
+
+    def _makeTrackTable(self):
+        table = QTableView()
+        table.setObjectName(ui.TRACK_TABLE_NAME)
+        table.setModel(self._tracks)
+        table.setItemDelegateForColumn(Columns.index(Columns.play), PlayButtonDelegate(table))
+        table.setItemDelegateForColumn(Columns.index(Columns.remove), RemoveButtonDelegate(table))
+        table.setAlternatingRowColors(True)
+        table.setEditTriggers(QTableView.NoEditTriggers)
+        table.setSelectionMode(QTableView.NoSelection)
+        table.setShowGrid(False)
+        table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
+        table.horizontalHeader().setResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
+        table.horizontalHeader().setResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
+        table.verticalHeader().setResizeMode(QHeaderView.Fixed)
+        table.verticalHeader().setMovable(True)
+        table.verticalHeader().sectionMoved.connect(self._tracks.move)
+        self._resizeColumns(table)
+
+        return table
+
+    def _resizeColumns(self, table):
+        for index, width in enumerate(self.COLUMNS_WIDTHS):
+            table.horizontalHeader().resizeSection(index, width)
 
     def _selectFiles(self):
         self._requestListeners.selectFiles()
 
     def localize(self):
-        self._addButton.setText(self.tr('Add Files...'))
+        self._addButton.setText(self.tr('ADD'))

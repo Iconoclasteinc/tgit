@@ -44,7 +44,7 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
         self._imageFileChooser = imageFileChooser
         self._requestListeners = Announcer()
 
-        self._build()
+        self._assemble()
         self.localize()
 
     def addRequestListener(self, listener):
@@ -63,27 +63,39 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
     def recordAlbum(self):
         self._requestListeners.recordAlbum(self._album)
 
-    def _build(self):
+    def _assemble(self):
         self.setObjectName(ui.TAGGING_SCREEN_NAME)
         layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
+        layout.addWidget(self._makeNavigationBar())
+        layout.addWidget(self._makePages())
+        layout.addWidget(self._makeButtonBar())
+
+    def _makeNavigationBar(self):
+        self._navigationBar = QWidget()
+        self._navigationBar.setObjectName(ui.NAVIGATION_BAR)
+        layout = QHBoxLayout()
+        self._navigationBar.setLayout(layout)
+        return self._navigationBar
+
+    def _makePages(self):
         self._pages = QStackedWidget()
         page = TrackListPage(self._album, self._player)
         page.addRequestListener(self)
         self._pages.addWidget(page)
         self._pages.addWidget(AlbumPage(self._album, self._imageFileChooser))
         self._pages.setCurrentIndex(TRACK_LIST_PAGE)
-        layout.addWidget(self._pages)
-
-        layout.addWidget(self._makeButtonBar())
+        return self._pages
 
     def _makeButtonBar(self):
         self._buttonBar = QWidget()
+        self._buttonBar.setObjectName(ui.BUTTON_BAR)
         layout = QHBoxLayout()
         self._buttonBar.setLayout(layout)
         self._previousPageButton = QPushButton()
-        self._previousPageButton.setObjectName(ui.PREVIOUS_PAGE_BUTTON_NAME)
+        self._previousPageButton.setObjectName(ui.PREVIOUS_BUTTON_NAME)
         self._previousPageButton.clicked.connect(self._showPreviousPage)
         self._previousPageButton.setDisabled(True)
         layout.addWidget(self._previousPageButton)
@@ -96,7 +108,8 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
         layout.addWidget(self._saveButton)
         layout.addStretch()
         self._nextStepButton = QPushButton()
-        self._nextStepButton.setObjectName(ui.NEXT_PAGE_BUTTON_NAME)
+        self._nextStepButton.setObjectName(ui.NEXT_BUTTON_NAME)
+        self._nextStepButton.setCursor(Qt.PointingHandCursor)
         self._nextStepButton.clicked.connect(self._showNextPage)
         self._nextStepButton.setEnabled(True)
         layout.addWidget(self._nextStepButton)
@@ -165,4 +178,4 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
     def localize(self):
         self._previousPageButton.setText(self.tr('Previous'))
         self._saveButton.setText(self.tr('Save'))
-        self._nextStepButton.setText(self.tr('Next'))
+        self._nextStepButton.setText(self.tr('NEXT'))

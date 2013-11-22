@@ -105,68 +105,65 @@
     </message>
 </context>
 <context>
-    <name>MainWindow</name>
+    <name>Exporter</name>
     <message>
-        <location filename="main_window.py" line="91"/>
+        <location filename="main_window.py" line="95"/>
         <source>TGiT</source>
         <translation>TGiT</translation>
     </message>
+</context>
+<context>
+    <name>MenuBar</name>
     <message>
-        <location filename="main_window.py" line="92"/>
+        <location filename="menu_bar.py" line="80"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="main_window.py" line="93"/>
+        <location filename="menu_bar.py" line="81"/>
         <source>Add Files...</source>
         <translation>Ajouter des fichiers... </translation>
     </message>
     <message>
-        <location filename="main_window.py" line="94"/>
+        <location filename="menu_bar.py" line="82"/>
         <source>Add Folder...</source>
         <translation>Ajouter un dossier... </translation>
     </message>
-</context>
-<context>
-    <name>PlayButtonDelegate</name>
     <message>
-        <location filename="track_list_page.py" line="36"/>
-        <source>Play</source>
-        <translation>Écouter/Arrêter</translation>
-    </message>
-</context>
-<context>
-    <name>RemoveButtonDelegate</name>
-    <message>
-        <location filename="track_list_page.py" line="52"/>
-        <source>Remove</source>
-        <translation>Supprimer</translation>
+        <location filename="menu_bar.py" line="83"/>
+        <source>Export...</source>
+        <translation>Exporter...</translation>
     </message>
 </context>
 <context>
     <name>TaggingScreen</name>
     <message>
-        <location filename="tagging_screen.py" line="166"/>
+        <location filename="tagging_screen.py" line="179"/>
         <source>Previous</source>
         <translation>Précédent</translation>
     </message>
     <message>
-        <location filename="tagging_screen.py" line="167"/>
+        <location filename="tagging_screen.py" line="180"/>
         <source>Save</source>
         <translation>Enregistrer</translation>
     </message>
     <message>
-        <location filename="tagging_screen.py" line="168"/>
-        <source>Next</source>
-        <translation>Suivant</translation>
+        <location filename="tagging_screen.py" line="181"/>
+        <source>NEXT</source>
+        <translation>ÉTAPE SUIVANTE</translation>
     </message>
 </context>
 <context>
     <name>TrackListPage</name>
     <message>
-        <location filename="track_list_page.py" line="107"/>
-        <source>Add Files...</source>
-        <translation>Ajouter des fichiers... </translation>
+        <location filename="track_list_page.py" line="102"/>
+        <source>Organize tracks in album.</source>
+        <translation>Organisez les pistes qui composent l&apos;album.</translation>
+    </message>
+    <message>
+        <location filename="track_list_page.py" line="142"/>
+        <source>ADD</source>
+        <translation>AJOUTER</translation>
     </message>
 </context>
 <context>
@@ -271,6 +268,11 @@
         <location filename="dialogs.py" line="95"/>
         <source>Image files</source>
         <translation>Fichiers images</translation>
+    </message>
+    <message>
+        <location filename="export_as_dialog.py" line="42"/>
+        <source>&amp;Save</source>
+        <translation>&amp;Enregistrer</translation>
     </message>
 </context>
 </TS>

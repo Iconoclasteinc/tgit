@@ -43,8 +43,8 @@ class TrackListPageTest(BaseWidgetTest):
         return TrackListPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysColumnHeadings(self):
-        self.driver.showsColumnHeaders(
-            'Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration', '', '')
+        self.driver.showsColumnHeaders(u'Titre de la piste', 'Artiste principal',
+                                       "Titre de l'album", u'Débit', u'Durée', '', '')
 
     def testTrackListIsInitiallyEmpty(self):
         self.driver.showsTracksInOrder()
