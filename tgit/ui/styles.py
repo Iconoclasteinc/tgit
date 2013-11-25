@@ -93,6 +93,7 @@ Main = """
         border-top: 1px solid #F7C3B7;
         border-bottom: 1px solid #F7C3B7;
         border-right: 1px solid  #F2F2F2;
+        min-height: 15px;
     }
 
     QTableView QHeaderView::section:vertical {
