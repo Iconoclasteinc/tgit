@@ -36,10 +36,10 @@ class ExportAsDialog(object):
 
     def show(self, album):
         dialog = QFileDialog(self._parent)
+        dialog.setAcceptMode(QFileDialog.AcceptSave)
         dialog.setObjectName(ui.EXPORT_AS_DIALOG_NAME)
         dialog.setDirectory(QDir.homePath())
         dialog.setFileMode(QFileDialog.AnyFile)
-        dialog.setLabelText(QFileDialog.Accept, dialog.tr('&Save'))
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self._native)
         dialog.fileSelected.connect(lambda filename: self._announce.export(album, filename))
         dialog.open()
