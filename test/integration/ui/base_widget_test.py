@@ -30,8 +30,6 @@ class BaseWidgetTest(unittest.TestCase):
         widget.setStyleSheet(styles.Main)
         widget.setFixedSize(*ui.MAIN_WINDOW_SIZE)
         display.centeredOnScreen(widget)
-        widget.show()
-        widget.raise_()
 
     def check(self, probe):
         self.prober.check(probe)

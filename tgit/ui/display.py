@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtGui import QApplication
+from PyQt4.QtGui import QApplication, QWidget, QHBoxLayout
 
 
 def inKbps(bps):
@@ -47,7 +47,29 @@ def fromPeopleList(text):
 
 
 def centeredOnScreen(widget):
+    centerOnScreen(widget)
+    activate(widget)
+
+
+def centerOnScreen(widget):
     position = widget.frameGeometry()
     desktop = QApplication.desktop()
     position.moveCenter(desktop.availableGeometry().center())
     widget.move(position.topLeft())
+
+
+def activate(widget):
+    widget.show()
+    widget.raise_()
+    widget.activateWindow()
+
+
+def centeredHorizontally(widget):
+    container = QWidget()
+    layout = QHBoxLayout()
+    layout.setContentsMargins(0, 0, 0, 0)
+    container.setLayout(layout)
+    layout.addStretch()
+    layout.addWidget(widget)
+    layout.addStretch()
+    return container

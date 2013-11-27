@@ -18,7 +18,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 MAIN_WINDOW_NAME = 'main window'
-WELCOME_SCREEN_NAME = 'welcome screen'
 TAGGING_SCREEN_NAME = 'tagging screen'
 TRACK_LIST_PAGE_NAME = 'track list page'
 ALBUM_PAGE_NAME = 'album page'
@@ -29,7 +28,6 @@ EXPORT_AS_DIALOG_NAME = 'export as'
 
 NAVIGATION_BAR = 'navigation'
 BUTTON_BAR = 'buttons'
-NEW_ALBUM_BUTTON_NAME = 'new album'
 NEXT_BUTTON_NAME = 'next'
 PREVIOUS_BUTTON_NAME = 'previous'
 SAVE_BUTTON_NAME = 'save'

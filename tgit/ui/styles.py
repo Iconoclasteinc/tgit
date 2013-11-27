@@ -24,6 +24,49 @@ Main = """
         padding: 0;
     }
 
+    WelcomeScreen {
+        background-color: rgba(0, 0, 0, 70%);
+    }
+
+    WelcomeScreen #welcome-dialog {
+        padding: 20px;
+        min-width: 500px;
+        max-width: 500px;
+        min-height: 300px;
+        max-height: 300px;
+        background: white url(':/logo.png') no-repeat top left;
+    }
+
+    WelcomeScreen #welcome-dialog #logo {
+        min-width: 58;
+        min-height: 105;
+    }
+
+    WelcomeScreen #welcome-dialog QPushButton {
+        background-color: #EC2327;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        padding: 16px 16px 13px;
+    }
+
+    WelcomeScreen #welcome-dialog QPushButton:hover {
+        background-color: #D42023;
+    }
+
+    WelcomeScreen #welcome-dialog QLabel[title='h1'] {
+        font-size: 28px;
+        font-weight: bold;
+        margin-top: 35px;
+        margin-bottom: 50px;
+    }
+
+    WelcomeScreen #welcome-dialog QLabel {
+        color: #2D2D25;
+        font-size: 16px;
+    }
+
     QStackedWidget {
         margin: 15px;
     }
@@ -67,6 +110,7 @@ Main = """
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
         background-color: white;
         padding: 10px;
+        qproperty-alternatingRowColors: true;
     }
 
     QTableView QHeaderView {
@@ -146,3 +190,4 @@ Main = """
         border-image: url(:/remove-pressed.png);
     }
 """
+

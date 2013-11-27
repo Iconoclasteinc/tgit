@@ -4,8 +4,11 @@ from PyQt4.QtGui import QPushButton
 
 from test.cute.matchers import named
 from test.cute.widgets import WidgetDriver, ButtonDriver
+from tgit.ui.welcome_screen import WelcomeScreen
 
-from tgit.ui import constants as ui
+
+def welcomeScreen(parent):
+    return WelcomeScreenDriver.findSingle(parent, WelcomeScreen)
 
 
 class WelcomeScreenDriver(WidgetDriver):
@@ -13,5 +16,6 @@ class WelcomeScreenDriver(WidgetDriver):
         super(WelcomeScreenDriver, self).__init__(selector, prober, gesturePerformer)
 
     def newAlbum(self):
-        button = ButtonDriver.findSingle(self, QPushButton, named(ui.NEW_ALBUM_BUTTON_NAME))
+        button = ButtonDriver.findSingle(self, QPushButton,
+                                         named(WelcomeScreen.NEW_ALBUM_BUTTON_NAME))
         button.click()

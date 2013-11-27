@@ -41,7 +41,7 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self._imageFileChooser = imageFileChooser
         self._productionHouses = Announcer()
 
-        self._build()
+        self._assemble()
 
     def addProductionHouse(self, house):
         self._productionHouses.addListener(house)
@@ -53,7 +53,7 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self.setCentralWidget(taggingScreen)
         taggingScreen.selectFiles()
 
-    def _build(self):
+    def _assemble(self):
         self.setObjectName(ui.MAIN_WINDOW_NAME)
         self.setStyleSheet(styles.Main)
         self.setMenuBar(self._makeMenuBar())

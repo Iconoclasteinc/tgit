@@ -24,12 +24,12 @@ class MainWindowTest(BaseWidgetTest):
         return TaggerDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testStartsOnWelcomeScreen(self):
-        self.driver.isShowingWelcomeScreen()
+        self.driver.showsWelcomeScreen()
 
     def testShowsMainScreenOnAlbumCreation(self):
         self.widget.albumCreated(Album())
-        self.driver.isShowingTaggingScreen()
+        self.driver.showsTaggingScreen()
 
     def testShowsExportAsDialogOnExport(self):
         self.widget.export(build.album())
-        self.driver.isShowingExportAsDialog()
+        self.driver.showsExportAsDialog()

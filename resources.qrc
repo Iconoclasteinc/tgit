@@ -13,5 +13,6 @@
      <file alias='remove-hover.png'>resources/images/remove-hover.png</file>
      <file alias='remove-pressed.png'>resources/images/remove-pressed.png</file>
      <file alias='next.png'>resources/images/next.png</file>
+     <file alias='logo.png'>resources/images/logo.png</file>
  </qresource>
  </RCC>

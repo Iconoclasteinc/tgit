@@ -84,21 +84,24 @@ class TrackListPage(QWidget, PlayerListener):
         self._requestListeners = Announcer()
 
         self.setObjectName(ui.TRACK_LIST_PAGE_NAME)
-        self._build()
+        self._assemble()
         self.localize()
 
     def addRequestListener(self, listener):
         self._requestListeners.addListener(listener)
 
-    def _build(self):
+    def _assemble(self):
         layout = QVBoxLayout()
+        self.setLayout(layout)
+        layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self._makeHeader())
         layout.addWidget(self._makeTrackTable())
-        self.setLayout(layout)
 
     def _makeHeader(self):
         header = QWidget()
         layout = QHBoxLayout()
+        header.setLayout(layout)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(QLabel(self.tr('Organize tracks in album.')))
         layout.addStretch()
         self._addButton = QToolButton()
@@ -106,8 +109,6 @@ class TrackListPage(QWidget, PlayerListener):
         self._addButton.clicked.connect(self._selectFiles)
         self._addButton.setCursor(Qt.PointingHandCursor)
         layout.addWidget(self._addButton)
-        header.setLayout(layout)
-        layout.setContentsMargins(0, 0, 0, 0)
 
         return header
 
@@ -117,7 +118,6 @@ class TrackListPage(QWidget, PlayerListener):
         table.setModel(self._tracks)
         table.setItemDelegateForColumn(Columns.index(Columns.play), PlayButtonDelegate(table))
         table.setItemDelegateForColumn(Columns.index(Columns.remove), RemoveButtonDelegate(table))
-        table.setAlternatingRowColors(True)
         table.setEditTriggers(QTableView.NoEditTriggers)
         table.setSelectionMode(QTableView.NoSelection)
         table.setShowGrid(False)

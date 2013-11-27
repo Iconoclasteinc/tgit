@@ -58,9 +58,6 @@ class TGiT(QApplication):
 
     def show(self):
         display.centeredOnScreen(self._ui)
-        self._ui.show()
-        self._ui.raise_()
-        self._ui.activateWindow()
 
     def _attachFileChooser(self, chooser):
         chooser.setParent(self._ui)

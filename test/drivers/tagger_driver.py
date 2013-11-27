@@ -8,7 +8,7 @@ from test.cute.matchers import named
 from test.cute.widgets import window, MainWindowDriver, FileDialogDriver
 from test.drivers.menu_bar_driver import menuBar
 from test.drivers.tagging_screen_driver import TaggingScreenDriver
-from test.drivers.welcome_screen_driver import WelcomeScreenDriver
+from test.drivers.welcome_screen_driver import welcomeScreen
 
 from tgit.ui import constants as ui
 
@@ -30,16 +30,16 @@ class TaggerDriver(MainWindowDriver):
         dialog.accept()
 
     def createAlbum(self):
-        self._welcomeScreen().newAlbum()
-        self.isShowingTaggingScreen()
+        welcomeScreen(self).newAlbum()
+        self.showsTaggingScreen()
 
-    def isShowingWelcomeScreen(self):
-        self._welcomeScreen().isShowingOnScreen()
+    def showsWelcomeScreen(self):
+        welcomeScreen(self).isShowingOnScreen()
 
-    def isShowingTaggingScreen(self):
+    def showsTaggingScreen(self):
         self._taggingScreen().isShowingOnScreen()
 
-    def isShowingExportAsDialog(self):
+    def showsExportAsDialog(self):
         self._exportAsDialog().isShowingOnScreen()
 
     def removeTrack(self, title):
@@ -78,9 +78,6 @@ class TaggerDriver(MainWindowDriver):
 
     def _taggingScreen(self):
         return TaggingScreenDriver.findSingle(self, QWidget, named(ui.TAGGING_SCREEN_NAME))
-
-    def _welcomeScreen(self):
-        return WelcomeScreenDriver.findSingle(self, QWidget, named(ui.WELCOME_SCREEN_NAME))
 
     def _exportAsDialog(self):
         return FileDialogDriver(window(QFileDialog, named(ui.EXPORT_AS_DIALOG_NAME)),

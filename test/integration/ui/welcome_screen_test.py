@@ -9,7 +9,6 @@ from tgit.ui.welcome_screen import WelcomeScreen
 
 
 class WelcomeScreenTest(BaseWidgetTest):
-
     def setUp(self):
         super(WelcomeScreenTest, self).setUp()
         self.widget = WelcomeScreen()
@@ -19,7 +18,7 @@ class WelcomeScreenTest(BaseWidgetTest):
     def createDriverFor(self, widget):
         return WelcomeScreenDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testSignalsNewAlbumRequestWhenNewAlbumButtonClicked(self):
+    def testCreatesNewAlbumWhenNewAlbumButtonClicked(self):
         newAlbumRequest = ValueMatcherProbe('new album')
 
         class RequestTracker(object):
