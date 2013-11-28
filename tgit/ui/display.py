@@ -47,21 +47,25 @@ def fromPeopleList(text):
 
 
 def centeredOnScreen(widget):
+    show(widget)
     centerOnScreen(widget)
     activate(widget)
 
 
+def show(widget):
+    widget.show()
+
+
 def centerOnScreen(widget):
-    position = widget.frameGeometry()
     desktop = QApplication.desktop()
+    position = widget.frameGeometry()
     position.moveCenter(desktop.availableGeometry().center())
     widget.move(position.topLeft())
 
 
 def activate(widget):
-    widget.show()
-    widget.raise_()
     widget.activateWindow()
+    widget.raise_()
 
 
 def centeredHorizontally(widget):
