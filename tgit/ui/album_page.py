@@ -83,10 +83,10 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._addFrontCoverPictureTo(layout, 0)
         self._addReleaseNameTo(layout, 1)
         self._addLeadPerformerTo(layout, 2)
-        self._addGuestPerformersTo(layout, 3)
-        self._addLabelNameTo(layout, 4)
-        self._addTownTo(layout, 5)
-        self._addCountryTo(layout, 6)
+        self._addAreaTo(layout, 3)
+        self._addGuestPerformersTo(layout, 4)
+        self._addLabelNameTo(layout, 5)
+        self._addTownTo(layout, 6)
         self._addCatalogNumberTo(layout, 7)
         self._addUpcTo(layout, 8)
         self._addRecordingTimeTo(layout, 9)
@@ -135,6 +135,16 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         layout.addWidget(self._leadPerformerEdit, row, 1)
         self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
 
+    def _addAreaTo(self, layout, row):
+        self._areaLabel = QLabel()
+        self._areaLabel.setDisabled(True)
+        layout.addWidget(self._areaLabel, row, 0)
+        self._areaEdit = QLineEdit()
+        self._areaEdit.setDisabled(True)
+        self._areaEdit.setObjectName(ui.AREA_EDIT_NAME)
+        layout.addWidget(self._areaEdit, row, 1)
+        self._areaLabel.setBuddy(self._areaEdit)
+
     def _addGuestPerformersTo(self, layout, row):
         self._guestPerformersLabel = QLabel()
         layout.addWidget(self._guestPerformersLabel, row, 0)
@@ -162,16 +172,6 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._townEdit.setObjectName(ui.TOWN_EDIT_NAME)
         layout.addWidget(self._townEdit, row, 1)
         self._townLabel.setBuddy(self._townEdit)
-
-    def _addCountryTo(self, layout, row):
-        self._countryLabel = QLabel()
-        self._countryLabel.setDisabled(True)
-        layout.addWidget(self._countryLabel, row, 0)
-        self._countryEdit = QLineEdit()
-        self._countryEdit.setDisabled(True)
-        self._countryEdit.setObjectName(ui.COUNTRY_EDIT_NAME)
-        layout.addWidget(self._countryEdit, row, 1)
-        self._countryLabel.setBuddy(self._countryEdit)
 
     def _addCatalogNumberTo(self, layout, row):
         self._catalogNumberLabel = QLabel()
@@ -301,12 +301,12 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._releaseNameLabel.setText(self.tr('Release Name: '))
         self._leadPerformerLabel.setText(self.tr('Lead Performer: '))
         self._leadPerformerEdit.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
+        self._areaLabel.setText(self.tr('Area: '))
         self._guestPerformersLabel.setText(self.tr('Guest Performers: '))
         self._guestPerformersEdit.setPlaceholderText(self.tr('Instrument1: Performer1; '
                                                              'Instrument2: Performer2; ...'))
         self._labelNameLabel.setText(self.tr('Label Name: '))
         self._townLabel.setText(self.tr('Town: '))
-        self._countryLabel.setText(self.tr('Country: '))
         self._catalogNumberLabel.setText(self.tr('Catalog Number: '))
         self._upcLabel.setText(self.tr('UPC/EAN: '))
         self._recordingTimeLabel.setText(self.tr('Recording Time: '))

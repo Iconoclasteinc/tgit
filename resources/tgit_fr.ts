@@ -11,22 +11,22 @@
     <message>
         <location filename="album_page.py" line="294"/>
         <source>Release Name: </source>
-        <translation>Titre de l&apos;album: </translation>
+        <translation>Titre de l&apos;album : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="295"/>
         <source>Lead Performer: </source>
-        <translation>Artiste principal: </translation>
+        <translation>Artiste principal : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="296"/>
         <source>Guest Performers: </source>
-        <translation>Musiciens de l&apos;album: </translation>
+        <translation>Musiciens de l&apos;album : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="297"/>
         <source>Label Name: </source>
-        <translation>Maison de disque: </translation>
+        <translation>Maison de disque : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="298"/>
@@ -35,58 +35,58 @@
     </message>
     <message>
         <location filename="album_page.py" line="299"/>
-        <source>Country: </source>
-        <translation>Territoire: </translation>
+        <source>Area: </source>
+        <translation>Lieu d'origine : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="300"/>
         <source>Catalog Number: </source>
-        <translation>Numéro de catalogue: </translation>
+        <translation>Numéro de catalogue : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="301"/>
         <source>UPC/EAN: </source>
-        <translation>UPC/EAN: </translation>
+        <translation>UPC/EAN : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="302"/>
         <source>Recording Time: </source>
-        <translation>Date d&apos;enregistrement: </translation>
+        <translation>Date d&apos;enregistrement : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="303"/>
         <source>Release Time: </source>
-        <translation>Date de mise en marché: </translation>
+        <translation>Date de mise en marché : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="304"/>
         <source>Digital Release Time: </source>
-        <translation>Date de parution numérique: </translation>
+        <translation>Date de parution numérique : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="305"/>
         <source>Original Release Time: </source>
-        <translation>Date de sortie originale: </translation>
+        <translation>Date de sortie originale : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="306"/>
         <source>Recording Studios: </source>
-        <translation>Studios d&apos;enregistrement: </translation>
+        <translation>Studios d&apos;enregistrement : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="307"/>
         <source>Producer: </source>
-        <translation>Réalisateur: </translation>
+        <translation>Réalisateur : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="308"/>
         <source>Mixer: </source>
-        <translation>Mixeur: </translation>
+        <translation>Mixeur : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="309"/>
         <source>Comments: </source>
-        <translation>Commentaires: </translation>
+        <translation>Commentaires : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="310"/>
@@ -96,7 +96,7 @@
     <message>
         <location filename="album_page.py" line="311"/>
         <source>Media Type: </source>
-        <translation>Type de format: </translation>
+        <translation>Type de format : </translation>
     </message>
     <message>
         <location filename="album_page.py" line="312"/>
@@ -171,42 +171,42 @@
     <message>
         <location filename="track_page.py" line="216"/>
         <source>Track Title: </source>
-        <translation>Titre de la piste: </translation>
+        <translation>Titre de la piste : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="217"/>
         <source>Version Information: </source>
-        <translation>Infos sur la version: </translation>
+        <translation>Infos sur la version : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="218"/>
         <source>Duration: </source>
-        <translation>Durée:</translation>
+        <translation>Durée :</translation>
     </message>
     <message>
         <location filename="track_page.py" line="219"/>
         <source>Track: </source>
-        <translation>Piste: </translation>
+        <translation>Piste : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="220"/>
         <source>Of: </source>
-        <translation>De: </translation>
+        <translation>De : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="221"/>
         <source>Bitrate: </source>
-        <translation>Débit: </translation>
+        <translation>Débit : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="222"/>
         <source>Featured Guest: </source>
-        <translation>Invité spécial: </translation>
+        <translation>Invité spécial : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="223"/>
         <source>Lyricist: </source>
-        <translation>Auteur: </translation>
+        <translation>Auteur : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="224"/>
@@ -216,7 +216,7 @@
     <message>
         <location filename="track_page.py" line="225"/>
         <source>Publisher: </source>
-        <translation>Éditeur: </translation>
+        <translation>Éditeur : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="226"/>
@@ -226,27 +226,27 @@
     <message>
         <location filename="track_page.py" line="227"/>
         <source>ISWC: </source>
-        <translation>ISWC: </translation>
+        <translation>ISWC : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="228"/>
         <source>Tags: </source>
-        <translation>Tags: </translation>
+        <translation>Tags : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="229"/>
         <source>Lyrics: </source>
-        <translation>Paroles: </translation>
+        <translation>Paroles : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="230"/>
         <source>Language: </source>
-        <translation>Langue: </translation>
+        <translation>Langue : </translation>
     </message>
     <message>
         <location filename="track_page.py" line="231"/>
         <source>Preview Time: </source>
-        <translation>Minutage pour pré-écoute: </translation>
+        <translation>Minutage pour pré-écoute : </translation>
     </message>
 </context>
 <context>

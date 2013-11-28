@@ -148,9 +148,9 @@ class AlbumPageDriver(WidgetDriver):
         edit.hasText(town)
 
     def showsCountry(self, country):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.COUNTRY_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.AREA_EDIT_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.COUNTRY_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.AREA_EDIT_NAME))
         edit.isDisabled()
         edit.hasText(country)
 
