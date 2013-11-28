@@ -50,8 +50,8 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         taggingScreen = TaggingScreen(album, self._audioPlayer, self._audioFileChooser,
                                       self._imageFileChooser, self)
         taggingScreen.addRequestListener(self._productionHouses)
-        self.setCentralWidget(taggingScreen)
         taggingScreen.selectFiles()
+        self.setCentralWidget(taggingScreen)
 
     def _assemble(self):
         self.setObjectName(ui.MAIN_WINDOW_NAME)
