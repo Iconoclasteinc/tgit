@@ -42,8 +42,8 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self.setObjectName(ui.ALBUM_PAGE_NAME)
         grid = QGridLayout()
         self._fill(grid)
-        self.translateUi()
         self._layout(grid)
+        self.localize()
         self.albumStateChanged(album)
 
     def _layout(self, grid):
@@ -155,6 +155,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _addTownTo(self, layout, row):
         self._townLabel = QLabel()
+        self._townLabel.setDisabled(True)
         layout.addWidget(self._townLabel, row, 0)
         self._townEdit = QLineEdit()
         self._townEdit.setDisabled(True)
@@ -164,6 +165,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _addCountryTo(self, layout, row):
         self._countryLabel = QLabel()
+        self._countryLabel.setDisabled(True)
         layout.addWidget(self._countryLabel, row, 0)
         self._countryEdit = QLineEdit()
         self._countryEdit.setDisabled(True)
@@ -209,6 +211,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _addDigitalReleaseTimeTo(self, layout, row):
         self._digitalReleaseTimeLabel = QLabel()
+        self._digitalReleaseTimeLabel.setDisabled(True)
         layout.addWidget(self._digitalReleaseTimeLabel, row, 0)
         self._digitalReleaseTimeEdit = QLineEdit()
         self._digitalReleaseTimeEdit.setDisabled(True)
@@ -218,10 +221,11 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _addOriginalReleaseTimeTo(self, layout, row):
         self._originalReleaseTimeLabel = QLabel()
+        self._originalReleaseTimeLabel.setDisabled(True)
         layout.addWidget(self._originalReleaseTimeLabel, row, 0)
         self._originalReleaseTimeEdit = QLineEdit()
         self._originalReleaseTimeEdit.setObjectName(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME)
-        # self._originalReleaseTimeEdit.setDisabled(True)
+        self._originalReleaseTimeEdit.setDisabled(True)
         self._originalReleaseTimeEdit.editingFinished.connect(self._updateOriginalReleaseTime)
         layout.addWidget(self._originalReleaseTimeEdit, row, 1)
         self._originalReleaseTimeLabel.setBuddy(self._originalReleaseTimeEdit)
@@ -264,6 +268,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _addPrimaryStyleTo(self, layout, row):
         self._primaryStyleLabel = QLabel()
+        self._primaryStyleLabel.setDisabled(True)
         layout.addWidget(self._primaryStyleLabel, row, 0)
         self._primaryStyleEdit = QLineEdit()
         self._primaryStyleEdit.setDisabled(True)
@@ -273,6 +278,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _addMediaTypeTo(self, layout, row):
         self._mediaTypeLabel = QLabel()
+        self._mediaTypeLabel.setDisabled(True)
         layout.addWidget(self._mediaTypeLabel, row, 0)
         self._mediaTypeEdit = QLineEdit()
         self._mediaTypeEdit.setDisabled(True)
@@ -282,6 +288,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _addReleaseTypeTo(self, layout, row):
         self._releaseTypeLabel = QLabel()
+        self._releaseTypeLabel.setDisabled(True)
         layout.addWidget(self._releaseTypeLabel, row, 0)
         self._releaseTypeEdit = QLineEdit()
         self._releaseTypeEdit.setDisabled(True)
@@ -289,18 +296,23 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         layout.addWidget(self._releaseTypeEdit, row, 1)
         self._releaseTypeLabel.setBuddy(self._releaseTypeEdit)
 
-    def translateUi(self):
+    def localize(self):
         self._selectPictureButton.setText(self.tr('Select Picture...'))
         self._releaseNameLabel.setText(self.tr('Release Name: '))
         self._leadPerformerLabel.setText(self.tr('Lead Performer: '))
+        self._leadPerformerEdit.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
         self._guestPerformersLabel.setText(self.tr('Guest Performers: '))
+        self._guestPerformersEdit.setPlaceholderText(self.tr('Instrument1: Performer1; '
+                                                             'Instrument2: Performer2; ...'))
         self._labelNameLabel.setText(self.tr('Label Name: '))
         self._townLabel.setText(self.tr('Town: '))
         self._countryLabel.setText(self.tr('Country: '))
         self._catalogNumberLabel.setText(self.tr('Catalog Number: '))
         self._upcLabel.setText(self.tr('UPC/EAN: '))
         self._recordingTimeLabel.setText(self.tr('Recording Time: '))
+        self._recordingTimeEdit.setPlaceholderText(self.tr('YYYY-MM-DD, YYYY-MM or YYYY'))
         self._releaseTimeLabel.setText(self.tr('Release Time: '))
+        self._releaseTimeEdit.setPlaceholderText(self.tr('YYYY-MM-DD,  YYYY-MM or YYYY'))
         self._digitalReleaseTimeLabel.setText(self.tr('Digital Release Time: '))
         self._originalReleaseTimeLabel.setText(self.tr('Original Release Time: '))
         self._recordingStudiosLabel.setText(self.tr('Recording Studios: '))

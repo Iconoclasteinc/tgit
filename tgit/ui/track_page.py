@@ -167,6 +167,7 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
 
     def _addIswc(self, layout, row):
         self._iswcLabel = QLabel()
+        self._iswcLabel.setDisabled(True)
         layout.addWidget(self._iswcLabel, row, 0)
         self._iswcEdit = QLineEdit()
         self._iswcEdit.setObjectName(ui.ISWC_EDIT_NAME)
@@ -203,6 +204,7 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
 
     def _addPreviewTime(self, layout, row):
         self._previewTimeLabel = QLabel()
+        self._previewTimeLabel.setDisabled(True)
         layout.addWidget(self._previewTimeLabel, row, 0)
         self._previewTimeEdit = QTimeEdit()
         self._previewTimeEdit.setDisplayFormat(DURATION_FORMAT)
@@ -224,10 +226,14 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._composerLabel.setText(self.tr('Composer: '))
         self._publisherLabel.setText(self.tr('Publisher: '))
         self._isrcLabel.setText(self.tr('ISRC: '))
+        self._isrcEdit.setPlaceholderText(self.tr('ZZZ12345678'))
         self._iswcLabel.setText(self.tr('ISWC: '))
         self._tagsLabel.setText(self.tr('Tags: '))
+        self._tagsEdit.setPlaceholderText(self.tr('tag1, tag2, tag3 ...'))
         self._lyricsLabel.setText(self.tr('Lyrics: '))
         self._languageLabel.setText(self.tr('Language: '))
+        self._languageEdit.setPlaceholderText(self.tr('fra, eng, und (for undetermined), '
+                                                      'or mul (for multiple languages)'))
         self._previewTimeLabel.setText(self.tr('Preview Time: '))
 
     def trackAdded(self, track, position):
