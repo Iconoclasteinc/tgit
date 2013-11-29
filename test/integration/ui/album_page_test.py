@@ -11,7 +11,6 @@ from test.util.fakes import FakeFileChooser
 
 from tgit.metadata import Image
 from tgit.album import Album
-from tgit.ui import constants as ui
 from tgit.ui.album_page import AlbumPage
 from tgit.util import fs
 
@@ -35,7 +34,7 @@ class AlbumPageTest(BaseWidgetTest):
 
     def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
         self.album.addFrontCover('image/jpeg', loadImage('front-cover.jpg'))
-        self.driver.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_PIXMAP_SIZE)
+        self.driver.displaysFrontCoverPictureWithSize(*AlbumPage.FRONT_COVER_SIZE)
 
     def testDisplaysAlbumMetadata(self):
         self.album.releaseName = 'Album'
@@ -46,8 +45,8 @@ class AlbumPageTest(BaseWidgetTest):
         self.driver.showsGuestPerformers('Guitar: Guitarist; Piano: Pianist')
         self.album.labelName = 'Label'
         self.driver.showsLabelName('Label')
-        self.driver.showsTown('')
-        self.driver.showsCountry('')
+        self.driver.showsLabelTown('')
+        self.driver.showsArea('')
         self.album.catalogNumber = 'Number'
         self.driver.showsCatalogNumber('Number')
         self.album.upc = 'Code'
@@ -57,8 +56,6 @@ class AlbumPageTest(BaseWidgetTest):
         self.album.releaseTime = '2009-01-01'
         self.driver.showsReleaseTime('2009-01-01')
         self.driver.showsDigitalReleaseTime('')
-        self.album.originalReleaseTime = '1998-03-05'
-        self.driver.showsOriginalReleaseTime('1998-03-05')
         self.album.recordingStudios = 'Studio A, Studio B'
         self.driver.showsRecordingStudios('Studio A, Studio B')
         self.album.producer = 'Artistic Producer'
@@ -107,10 +104,6 @@ class AlbumPageTest(BaseWidgetTest):
 
         self.driver.changeReleaseTime('2009-01-01')
         self.check(AssertionProbe(self.album.releaseTime, equal_to('2009-01-01'), 'release time'))
-
-        self.driver.changeOriginalReleaseTime('1998-03-05')
-        self.check(AssertionProbe(self.album.originalReleaseTime, equal_to('1998-03-05'),
-                                  'original release time'))
 
         self.driver.changeRecordingStudios('Studios')
         self.check(AssertionProbe(self.album.recordingStudios, equal_to('Studios'),

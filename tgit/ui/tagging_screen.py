@@ -102,7 +102,7 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
         layout.addStretch()
         self._saveButton = QPushButton()
         self._saveButton.setObjectName(ui.SAVE_BUTTON_NAME)
-        self._saveButton.setFocusPolicy(Qt.ClickFocus)
+        self._saveButton.setFocusPolicy(Qt.StrongFocus)
         self._saveButton.clicked.connect(self.recordAlbum)
         self._saveButton.setDisabled(True)
         layout.addWidget(self._saveButton)

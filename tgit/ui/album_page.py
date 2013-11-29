@@ -18,8 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import (QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QPixmap, QImage,
-                         QHBoxLayout, QVBoxLayout)
+from PyQt4.QtGui import *
 
 from tgit.album import AlbumListener
 from tgit.ui import constants as ui, display
@@ -29,6 +28,34 @@ from tgit.util import fs
 
 
 class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
+    FRONT_COVER_FIELD_NAME = 'front-cover'
+    FRONT_COVER_SIZE = (125, 125)
+    SELECT_PICTURE_BUTTON_NAME = 'select-picture'
+    CHOOSE_IMAGE_FILE_DIALOG_NAME = 'choose-image-file'
+
+    RELEASE_NAME_FIELD_NAME = 'release-name'
+    LEAD_PERFORMER_FIELD_NAME = 'lead-performer'
+    AREA_FIELD_NAME = 'area'
+    GUEST_PERFORMERS_FIELD_NAME = 'guest performers'
+
+    LABEL_NAME_FIELD_NAME = 'label-name'
+    LABEL_TOWN_FIELD_NAME = 'label-town'
+    CATALOG_NUMBER_FIELD_NAME = 'catalog-number'
+    UPC_FIELD_NAME = 'upc'
+    MEDIA_TYPE_FIELD_NAME = 'media-type'
+    RELEASE_TYPE_FIELD_NAME = 'release-type'
+    COMMENTS_FIELD_NAME = 'comments'
+
+    RELEASE_TIME_FIELD_NAME = 'release-time'
+    DIGITAL_RELEASE_FIELD_NAME = 'digital-release-time'
+    ORIGINAL_RELEASE_TIME_FIELD_NAME = 'original-release-time'
+    RECORDING_TIME_FIELD_NAME = 'recording-time'
+
+    RECORDING_STUDIOS_FIELD_NAME = 'recording-studios'
+    PRODUCER_FIELD_NAME = 'producer'
+    MIXER_FIELD_NAME = 'mixer'
+    PRIMARY_STYLE_FIELD_NAME = 'primary-style'
+
     def __init__(self, album, pictureChooser, parent=None):
         QWidget.__init__(self, parent)
         self._album = album
@@ -36,25 +63,303 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._pictureChooser = pictureChooser
         self._pictureChooser.addChoiceListener(self)
 
-        self._assemble(album)
-
-    def _assemble(self, album):
-        self.setObjectName(ui.ALBUM_PAGE_NAME)
-        grid = QGridLayout()
-        self._fill(grid)
-        self._layout(grid)
+        self._build()
         self.localize()
         self.albumStateChanged(album)
 
-    def _layout(self, grid):
-        layout = QVBoxLayout()
-        layout.addLayout(grid)
-        layout.addStretch()
+    def _build(self):
+        self.setObjectName(ui.ALBUM_PAGE_NAME)
+        self._fillContent()
+        self._disableTeaserFields()
+
+    def _fillContent(self):
+        layout = QHBoxLayout()
+        layout.addWidget(self._makeLeftColumn())
+        layout.addWidget(self._makeRightColumn())
         self.setLayout(layout)
 
+    def _makeLeftColumn(self):
+        column = QWidget()
+
+        layout = QVBoxLayout()
+        layout.addWidget(self._makeFrontCoverPanel())
+        layout.addWidget(self._makeDatesFieldSet())
+        layout.addStretch()
+
+        column.setLayout(layout)
+        return column
+
+    def _makeRightColumn(self):
+        column = QWidget()
+
+        layout = QVBoxLayout()
+        layout.addWidget(self._makeAlbumFieldSet())
+        layout.addWidget(self._makeRecordFieldSet())
+        layout.addWidget(self._makeRecordingFieldSet())
+        layout.addStretch()
+
+        column.setLayout(layout)
+        return column
+
+    def _makeFrontCoverPanel(self):
+        panel = QWidget()
+        self._frontCoverPictureLabel = self._makeFrontCoverPictureField()
+        self._selectPictureButton = self._makeSelectPictureButton()
+
+        layout = QVBoxLayout()
+        layout.addWidget(self._frontCoverPictureLabel)
+        buttons = QHBoxLayout()
+        buttons.addStretch()
+        buttons.addWidget(self._selectPictureButton)
+        buttons.addStretch()
+        layout.addLayout(buttons)
+
+        panel.setLayout(layout)
+        return panel
+
+    def _makeFrontCoverPictureField(self):
+        label = QLabel()
+        label.setObjectName(AlbumPage.FRONT_COVER_FIELD_NAME)
+        label.setFixedSize(*AlbumPage.FRONT_COVER_SIZE)
+        return label
+
+    def _makeSelectPictureButton(self):
+        button = QPushButton()
+        button.setObjectName(AlbumPage.SELECT_PICTURE_BUTTON_NAME)
+        button.clicked.connect(self._selectPicture)
+        return button
+
+    def _makeDatesFieldSet(self):
+        # todo move to localize()
+        fieldSet = QGroupBox(self.tr('DATES'))
+        self._releaseTimeLineEdit = self._makeReleaseTimeField()
+        self._digitalReleaseTimeLineEdit = self._makeDigitalReleaseTimeField()
+        self._originalReleaseTimeLineEdit = self._makeOriginalReleaseTimeField()
+        self._recordingTimeLineEdit = self._makeRecordingTimeField()
+
+        form = QFormLayout()
+        form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        self._addLabelledFields(form, self._releaseTimeLineEdit, self._digitalReleaseTimeLineEdit,
+                                self._originalReleaseTimeLineEdit, self._recordingTimeLineEdit)
+
+        fieldSet.setLayout(form)
+        return fieldSet
+
+    def _addLabelledFields(self, form, *fields):
+        for field in fields:
+            # When label have empty text, form layout seems to ignore setting their buddy
+            label = QLabel()
+            label.setBuddy(field)
+            form.addRow(label, field)
+
+    # todo once we connect all editingFinished signals to a single updateAlbum slot,
+    # we can probably get away with a single _makeTextField(name)
+    def _makeReleaseTimeField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.RELEASE_TIME_FIELD_NAME)
+        edit.editingFinished.connect(self._updateReleaseTime)
+        return edit
+
+    def _makeDigitalReleaseTimeField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.DIGITAL_RELEASE_FIELD_NAME)
+        return edit
+
+    def _makeOriginalReleaseTimeField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.ORIGINAL_RELEASE_TIME_FIELD_NAME)
+        return edit
+
+    def _makeRecordingTimeField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.RECORDING_TIME_FIELD_NAME)
+        edit.editingFinished.connect(self._updateRecordingTime)
+        return edit
+
+    def _makeAlbumFieldSet(self):
+        # todo move to localize()
+        fieldSet = QGroupBox(self.tr('ALBUM'))
+        self._releaseNameLineEdit = self._makeReleaseNameField()
+        self._leadPerformerLineEdit = self._makeLeadPerformerField()
+        self._areaLineEdit = self._makeAreaField()
+        self._guestPerformersLineEdit = self._makeGuestPerformersField()
+
+        form = QFormLayout()
+        form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        self._addLabelledFields(form, self._releaseNameLineEdit, self._leadPerformerLineEdit,
+                                self._areaLineEdit, self._guestPerformersLineEdit)
+
+        fieldSet.setLayout(form)
+        return fieldSet
+
+    def _makeReleaseNameField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.RELEASE_NAME_FIELD_NAME)
+        edit.editingFinished.connect(self._updateReleaseName)
+        return edit
+
+    def _makeLeadPerformerField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.LEAD_PERFORMER_FIELD_NAME)
+        edit.editingFinished.connect(self._updateLeadPerformer)
+        return edit
+
+    def _makeAreaField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.AREA_FIELD_NAME)
+        return edit
+
+    def _makeGuestPerformersField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.GUEST_PERFORMERS_FIELD_NAME)
+        edit.editingFinished.connect(self._updateGuestPerformers)
+        return edit
+
+    def _makeRecordFieldSet(self):
+        # todo move to localize()
+        fieldSet = QGroupBox(self.tr('RECORD'))
+        self._labelNameLineEdit = self._makeLabelNameField()
+        self._labelTownLineEdit = self._makeLabelTownField()
+        self._catalogNumberLineEdit = self._makeCatalogNumberField()
+        self._upcLineEdit = self._makeUpcField()
+        self._mediaTypeLineEdit = self._makeMediaTypeField()
+        self._releaseTypeLineEdit = self._makeReleaseTypeField()
+        self._commentsTextArea = self._makeCommentsField()
+
+        form = QFormLayout()
+        form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        self._addLabelledFields(form, self._labelNameLineEdit, self._labelTownLineEdit,
+                                self._catalogNumberLineEdit, self._upcLineEdit,
+                                self._mediaTypeLineEdit, self._releaseTypeLineEdit,
+                                self._commentsTextArea)
+
+        fieldSet.setLayout(form)
+        return fieldSet
+
+    def _makeLabelNameField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.LABEL_NAME_FIELD_NAME)
+        edit.editingFinished.connect(self._updateLabelName)
+        return edit
+
+    def _makeLabelTownField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.LABEL_TOWN_FIELD_NAME)
+        return edit
+
+    def _makeCatalogNumberField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.CATALOG_NUMBER_FIELD_NAME)
+        edit.editingFinished.connect(self._updateCatalogNumber)
+        return edit
+
+    def _makeUpcField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.UPC_FIELD_NAME)
+        edit.editingFinished.connect(self._updateUpc)
+        return edit
+
+    def _makeMediaTypeField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.MEDIA_TYPE_FIELD_NAME)
+        return edit
+
+    def _makeReleaseTypeField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.RELEASE_TYPE_FIELD_NAME)
+        return edit
+
+    def _makeCommentsField(self):
+        text = TextArea()
+        text.setObjectName(AlbumPage.COMMENTS_FIELD_NAME)
+        text.editingFinished.connect(self._updateComments)
+        return text
+
+    def _makeRecordingFieldSet(self):
+        # todo move to localize()
+        fieldSet = QGroupBox(self.tr('RECORDING'))
+        self._recordingStudiosLineEdit = self._makeRecordingStudiosField()
+        self._producerLineEdit = self._makeProducerField()
+        self._mixerLineEdit = self._makeMixerField()
+        self._primaryStyleLineEdit = self._makePrimaryStyleField()
+
+        form = QFormLayout()
+        form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        self._addLabelledFields(form, self._recordingStudiosLineEdit, self._producerLineEdit,
+                                self._mixerLineEdit, self._primaryStyleLineEdit)
+
+        fieldSet.setLayout(form)
+        return fieldSet
+
+    def _makeRecordingStudiosField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.RECORDING_STUDIOS_FIELD_NAME)
+        edit.editingFinished.connect(self._updateRecordingStudios)
+        return edit
+
+    def _makeProducerField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.PRODUCER_FIELD_NAME)
+        edit.editingFinished.connect(self._updateProducer)
+        return edit
+
+    def _makeMixerField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.MIXER_FIELD_NAME)
+        edit.editingFinished.connect(self._updateMixer)
+        return edit
+
+    def _makePrimaryStyleField(self):
+        edit = QLineEdit()
+        edit.setObjectName(AlbumPage.PRIMARY_STYLE_FIELD_NAME)
+        return edit
+
+    def _disableTeaserFields(self):
+        self._disableField(self._digitalReleaseTimeLineEdit)
+        self._disableField(self._originalReleaseTimeLineEdit)
+        self._disableField(self._areaLineEdit)
+        self._disableField(self._labelTownLineEdit)
+        self._disableField(self._mediaTypeLineEdit)
+        self._disableField(self._releaseTypeLineEdit)
+        self._disableField(self._primaryStyleLineEdit)
+
+    def _disableField(self, field):
+        field.setDisabled(True)
+        self._labelFor(field).setDisabled(True)
+
+    def localize(self):
+        self._selectPictureButton.setText(self.tr('Select Picture...'))
+        self._labelFor(self._releaseNameLineEdit).setText(self.tr('Release Name:'))
+        self._labelFor(self._leadPerformerLineEdit).setText(self.tr('Lead Performer:'))
+        self._leadPerformerLineEdit.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
+        self._labelFor(self._areaLineEdit).setText(self.tr('Area:'))
+        self._labelFor(self._guestPerformersLineEdit).setText(self.tr('Guest Performers:'))
+        self._guestPerformersLineEdit.setPlaceholderText(
+            self.tr('Instrument1: Performer1; Instrument2: Performer2; ...'))
+        self._labelFor(self._labelNameLineEdit).setText(self.tr('Label Name:'))
+        self._labelFor(self._labelTownLineEdit).setText(self.tr('Label Town:'))
+        self._labelFor(self._catalogNumberLineEdit).setText(self.tr('Catalog Number:'))
+        self._labelFor(self._upcLineEdit).setText(self.tr('UPC/EAN:'))
+        self._labelFor(self._mediaTypeLineEdit).setText(self.tr('Media Type:'))
+        self._labelFor(self._releaseTypeLineEdit).setText(self.tr('Release Type:'))
+        self._labelFor(self._commentsTextArea).setText(self.tr('Comments:'))
+        self._labelFor(self._releaseTimeLineEdit).setText(self.tr('Release Time:'))
+        self._releaseTimeLineEdit.setPlaceholderText(self.tr('YYYY-MM-DD'))
+        self._labelFor(self._digitalReleaseTimeLineEdit).setText(self.tr('Digital Release Time:'))
+        self._labelFor(self._originalReleaseTimeLineEdit).setText(self.tr('Original Release Time:'))
+        self._labelFor(self._recordingTimeLineEdit).setText(self.tr('Recording Time: '))
+        self._recordingTimeLineEdit.setPlaceholderText(self.tr('YYYY-MM-DD'))
+        self._labelFor(self._recordingStudiosLineEdit).setText(self.tr('Recording Studios:'))
+        self._labelFor(self._producerLineEdit).setText(self.tr('Producer:'))
+        self._labelFor(self._mixerLineEdit).setText(self.tr('Mixer:'))
+        self._labelFor(self._primaryStyleLineEdit).setText(self.tr('Primary Style:'))
+
+    def _labelFor(self, widget):
+        return next(label for label in self.findChildren(QLabel) if label.buddy() == widget)
+
     def fileChosen(self, filename):
-        self._frontCover = self._loadImage(filename)
-        self._displayFrontCover(self._frontCover)
+        self._frontCoverImage = self._loadImage(filename)
+        self._displayFrontCover(self._frontCoverImage)
         self._updateAlbumCover()
 
     def _loadImage(self, filename):
@@ -66,262 +371,21 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         return mimeType, imageData
 
     def _displayFrontCover(self, image):
-        self._frontCoverPixmap.setPixmap(self._scaleToDisplayArea(image))
+        self._frontCoverPictureLabel.setPixmap(self._scaleToDisplayArea(image))
 
     def _scaleToDisplayArea(self, image):
         if image is None:
             return QPixmap()
 
-        _, imageData = image
-        scaledImage = self._scaleImage(QImage.fromData(imageData), *ui.FRONT_COVER_PIXMAP_SIZE)
+        _, data = image
+        scaledImage = self._scaleImage(QImage.fromData(data), *AlbumPage.FRONT_COVER_SIZE)
         return QPixmap.fromImage(scaledImage)
 
     def _scaleImage(self, image, width, height):
         return image.scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
-    def _fill(self, layout):
-        self._addFrontCoverPictureTo(layout, 0)
-        self._addReleaseNameTo(layout, 1)
-        self._addLeadPerformerTo(layout, 2)
-        self._addAreaTo(layout, 3)
-        self._addGuestPerformersTo(layout, 4)
-        self._addLabelNameTo(layout, 5)
-        self._addTownTo(layout, 6)
-        self._addCatalogNumberTo(layout, 7)
-        self._addUpcTo(layout, 8)
-        self._addRecordingTimeTo(layout, 9)
-        self._addReleaseTimeTo(layout, 10)
-        self._addDigitalReleaseTimeTo(layout, 11)
-        self._addOriginalReleaseTimeTo(layout, 12)
-        self._addRecordingStudiosTo(layout, 13)
-        self._addProducerTo(layout, 14)
-        self._addMixerTo(layout, 15)
-        self._addCommentsTo(layout, 16)
-        self._addPrimaryStyleTo(layout, 17)
-        self._addMediaTypeTo(layout, 18)
-        self._addReleaseTypeTo(layout, 19)
-
-    def _addFrontCoverPictureTo(self, layout, row):
-        self._frontCoverPixmap = QLabel()
-        self._frontCoverPixmap.setFixedSize(*ui.FRONT_COVER_PIXMAP_SIZE)
-        self._frontCoverPixmap.setObjectName(ui.FRONT_COVER_PIXMAP_NAME)
-        layout.addWidget(self._frontCoverPixmap, row, 0)
-        self._selectPictureButton = QPushButton()
-        self._selectPictureButton.setObjectName(ui.SELECT_PICTURE_BUTTON_NAME)
-        self._selectPictureButton.clicked.connect(self._selectPicture)
-        buttonLayout = QHBoxLayout()
-        buttonLayout.addWidget(self._selectPictureButton)
-        buttonLayout.addStretch()
-        layout.addLayout(buttonLayout, row, 1)
-
     def _selectPicture(self):
         self._pictureChooser.chooseSingleFile()
-
-    def _addReleaseNameTo(self, layout, row):
-        self._releaseNameLabel = QLabel()
-        layout.addWidget(self._releaseNameLabel, row, 0)
-        self._releaseNameEdit = QLineEdit()
-        self._releaseNameEdit.setObjectName(ui.RELEASE_NAME_EDIT_NAME)
-        self._releaseNameEdit.editingFinished.connect(self._updateReleaseName)
-        layout.addWidget(self._releaseNameEdit, row, 1)
-        self._releaseNameLabel.setBuddy(self._releaseNameEdit)
-
-    def _addLeadPerformerTo(self, layout, row):
-        self._leadPerformerLabel = QLabel()
-        layout.addWidget(self._leadPerformerLabel, row, 0)
-        self._leadPerformerEdit = QLineEdit()
-        self._leadPerformerEdit.setObjectName(ui.LEAD_PERFORMER_EDIT_NAME)
-        self._leadPerformerEdit.editingFinished.connect(self._updateLeadPerformer)
-        layout.addWidget(self._leadPerformerEdit, row, 1)
-        self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
-
-    def _addAreaTo(self, layout, row):
-        self._areaLabel = QLabel()
-        self._areaLabel.setDisabled(True)
-        layout.addWidget(self._areaLabel, row, 0)
-        self._areaEdit = QLineEdit()
-        self._areaEdit.setDisabled(True)
-        self._areaEdit.setObjectName(ui.AREA_EDIT_NAME)
-        layout.addWidget(self._areaEdit, row, 1)
-        self._areaLabel.setBuddy(self._areaEdit)
-
-    def _addGuestPerformersTo(self, layout, row):
-        self._guestPerformersLabel = QLabel()
-        layout.addWidget(self._guestPerformersLabel, row, 0)
-        self._guestPerformersEdit = QLineEdit()
-        self._guestPerformersEdit.setObjectName(ui.GUEST_PERFORMERS_EDIT_NAME)
-        self._guestPerformersEdit.editingFinished.connect(self._updateGuestPerformers)
-        layout.addWidget(self._guestPerformersEdit, row, 1)
-        self._guestPerformersLabel.setBuddy(self._guestPerformersEdit)
-
-    def _addLabelNameTo(self, layout, row):
-        self._labelNameLabel = QLabel()
-        layout.addWidget(self._labelNameLabel, row, 0)
-        self._labelNameEdit = QLineEdit()
-        self._labelNameEdit.setObjectName(ui.LABEL_NAME_EDIT_NAME)
-        self._labelNameEdit.editingFinished.connect(self._updateLabelName)
-        layout.addWidget(self._labelNameEdit, row, 1)
-        self._labelNameLabel.setBuddy(self._labelNameEdit)
-
-    def _addTownTo(self, layout, row):
-        self._townLabel = QLabel()
-        self._townLabel.setDisabled(True)
-        layout.addWidget(self._townLabel, row, 0)
-        self._townEdit = QLineEdit()
-        self._townEdit.setDisabled(True)
-        self._townEdit.setObjectName(ui.TOWN_EDIT_NAME)
-        layout.addWidget(self._townEdit, row, 1)
-        self._townLabel.setBuddy(self._townEdit)
-
-    def _addCatalogNumberTo(self, layout, row):
-        self._catalogNumberLabel = QLabel()
-        layout.addWidget(self._catalogNumberLabel, row, 0)
-        self._catalogNumberEdit = QLineEdit()
-        self._catalogNumberEdit.setObjectName(ui.CATALOG_NUMBER_EDIT_NAME)
-        self._catalogNumberEdit.editingFinished.connect(self._updateCatalogNumber)
-        layout.addWidget(self._catalogNumberEdit, row, 1)
-        self._catalogNumberLabel.setBuddy(self._catalogNumberEdit)
-
-    def _addUpcTo(self, layout, row):
-        self._upcLabel = QLabel()
-        layout.addWidget(self._upcLabel, row, 0)
-        self._upcEdit = QLineEdit()
-        self._upcEdit.setObjectName(ui.UPC_EDIT_NAME)
-        self._upcEdit.editingFinished.connect(self._updateUpc)
-        layout.addWidget(self._upcEdit, row, 1)
-        self._upcLabel.setBuddy(self._upcEdit)
-
-    def _addRecordingTimeTo(self, layout, row):
-        self._recordingTimeLabel = QLabel()
-        layout.addWidget(self._recordingTimeLabel, row, 0)
-        self._recordingTimeEdit = QLineEdit()
-        self._recordingTimeEdit.setObjectName(ui.RECORDING_TIME_EDIT_NAME)
-        self._recordingTimeEdit.editingFinished.connect(self._updateRecordingTime)
-        layout.addWidget(self._recordingTimeEdit, row, 1)
-        self._recordingTimeLabel.setBuddy(self._recordingTimeEdit)
-
-    def _addReleaseTimeTo(self, layout, row):
-        self._releaseTimeLabel = QLabel()
-        layout.addWidget(self._releaseTimeLabel, row, 0)
-        self._releaseTimeEdit = QLineEdit()
-        self._releaseTimeEdit.setObjectName(ui.RELEASE_TIME_EDIT_NAME)
-        self._releaseTimeEdit.editingFinished.connect(self._updateReleaseTime)
-        layout.addWidget(self._releaseTimeEdit, row, 1)
-        self._releaseTimeLabel.setBuddy(self._releaseTimeEdit)
-
-    def _addDigitalReleaseTimeTo(self, layout, row):
-        self._digitalReleaseTimeLabel = QLabel()
-        self._digitalReleaseTimeLabel.setDisabled(True)
-        layout.addWidget(self._digitalReleaseTimeLabel, row, 0)
-        self._digitalReleaseTimeEdit = QLineEdit()
-        self._digitalReleaseTimeEdit.setDisabled(True)
-        self._digitalReleaseTimeEdit.setObjectName(ui.DIGITAL_RELEASE_TIME_EDIT_NAME)
-        layout.addWidget(self._digitalReleaseTimeEdit, row, 1)
-        self._digitalReleaseTimeLabel.setBuddy(self._digitalReleaseTimeEdit)
-
-    def _addOriginalReleaseTimeTo(self, layout, row):
-        self._originalReleaseTimeLabel = QLabel()
-        self._originalReleaseTimeLabel.setDisabled(True)
-        layout.addWidget(self._originalReleaseTimeLabel, row, 0)
-        self._originalReleaseTimeEdit = QLineEdit()
-        self._originalReleaseTimeEdit.setObjectName(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME)
-        self._originalReleaseTimeEdit.setDisabled(True)
-        self._originalReleaseTimeEdit.editingFinished.connect(self._updateOriginalReleaseTime)
-        layout.addWidget(self._originalReleaseTimeEdit, row, 1)
-        self._originalReleaseTimeLabel.setBuddy(self._originalReleaseTimeEdit)
-
-    def _addRecordingStudiosTo(self, layout, row):
-        self._recordingStudiosLabel = QLabel()
-        layout.addWidget(self._recordingStudiosLabel, row, 0)
-        self._recordingStudiosEdit = QLineEdit()
-        self._recordingStudiosEdit.setObjectName(ui.RECORDING_STUDIOS_EDIT_NAME)
-        self._recordingStudiosEdit.editingFinished.connect(self._updateRecordingStudios)
-        layout.addWidget(self._recordingStudiosEdit, row, 1)
-        self._recordingStudiosLabel.setBuddy(self._recordingStudiosEdit)
-
-    def _addProducerTo(self, layout, row):
-        self._producerLabel = QLabel()
-        layout.addWidget(self._producerLabel, row, 0)
-        self._producerEdit = QLineEdit()
-        self._producerEdit.setObjectName(ui.PRODUCER_EDIT_NAME)
-        self._producerEdit.editingFinished.connect(self._updateProducer)
-        layout.addWidget(self._producerEdit, row, 1)
-        self._producerLabel.setBuddy(self._producerEdit)
-
-    def _addMixerTo(self, layout, row):
-        self._mixerLabel = QLabel()
-        layout.addWidget(self._mixerLabel, row, 0)
-        self._mixerEdit = QLineEdit()
-        self._mixerEdit.setObjectName(ui.MIXER_EDIT_NAME)
-        self._mixerEdit.editingFinished.connect(self._updateMixer)
-        layout.addWidget(self._mixerEdit, row, 1)
-        self._mixerLabel.setBuddy(self._mixerEdit)
-
-    def _addCommentsTo(self, layout, row):
-        self._commentsLabel = QLabel()
-        layout.addWidget(self._commentsLabel, row, 0)
-        self._commentsEdit = TextArea()
-        self._commentsEdit.setObjectName(ui.COMMENTS_TEXT_NAME)
-        self._commentsEdit.editingFinished.connect(self._updateComments)
-        layout.addWidget(self._commentsEdit, row, 1)
-        self._commentsLabel.setBuddy(self._commentsEdit)
-
-    def _addPrimaryStyleTo(self, layout, row):
-        self._primaryStyleLabel = QLabel()
-        self._primaryStyleLabel.setDisabled(True)
-        layout.addWidget(self._primaryStyleLabel, row, 0)
-        self._primaryStyleEdit = QLineEdit()
-        self._primaryStyleEdit.setDisabled(True)
-        self._primaryStyleEdit.setObjectName(ui.PRIMARY_STYLE_EDIT_NAME)
-        layout.addWidget(self._primaryStyleEdit, row, 1)
-        self._primaryStyleLabel.setBuddy(self._primaryStyleEdit)
-
-    def _addMediaTypeTo(self, layout, row):
-        self._mediaTypeLabel = QLabel()
-        self._mediaTypeLabel.setDisabled(True)
-        layout.addWidget(self._mediaTypeLabel, row, 0)
-        self._mediaTypeEdit = QLineEdit()
-        self._mediaTypeEdit.setDisabled(True)
-        self._mediaTypeEdit.setObjectName(ui.MEDIA_TYPE_EDIT_NAME)
-        layout.addWidget(self._mediaTypeEdit, row, 1)
-        self._mediaTypeLabel.setBuddy(self._mediaTypeEdit)
-
-    def _addReleaseTypeTo(self, layout, row):
-        self._releaseTypeLabel = QLabel()
-        self._releaseTypeLabel.setDisabled(True)
-        layout.addWidget(self._releaseTypeLabel, row, 0)
-        self._releaseTypeEdit = QLineEdit()
-        self._releaseTypeEdit.setDisabled(True)
-        self._releaseTypeEdit.setObjectName(ui.RELEASE_TYPE_EDIT_NAME)
-        layout.addWidget(self._releaseTypeEdit, row, 1)
-        self._releaseTypeLabel.setBuddy(self._releaseTypeEdit)
-
-    def localize(self):
-        self._selectPictureButton.setText(self.tr('Select Picture...'))
-        self._releaseNameLabel.setText(self.tr('Release Name: '))
-        self._leadPerformerLabel.setText(self.tr('Lead Performer: '))
-        self._leadPerformerEdit.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
-        self._areaLabel.setText(self.tr('Area: '))
-        self._guestPerformersLabel.setText(self.tr('Guest Performers: '))
-        self._guestPerformersEdit.setPlaceholderText(self.tr('Instrument1: Performer1; '
-                                                             'Instrument2: Performer2; ...'))
-        self._labelNameLabel.setText(self.tr('Label Name: '))
-        self._townLabel.setText(self.tr('Town: '))
-        self._catalogNumberLabel.setText(self.tr('Catalog Number: '))
-        self._upcLabel.setText(self.tr('UPC/EAN: '))
-        self._recordingTimeLabel.setText(self.tr('Recording Time: '))
-        self._recordingTimeEdit.setPlaceholderText(self.tr('YYYY-MM-DD, YYYY-MM or YYYY'))
-        self._releaseTimeLabel.setText(self.tr('Release Time: '))
-        self._releaseTimeEdit.setPlaceholderText(self.tr('YYYY-MM-DD,  YYYY-MM or YYYY'))
-        self._digitalReleaseTimeLabel.setText(self.tr('Digital Release Time: '))
-        self._originalReleaseTimeLabel.setText(self.tr('Original Release Time: '))
-        self._recordingStudiosLabel.setText(self.tr('Recording Studios: '))
-        self._producerLabel.setText(self.tr('Producer: '))
-        self._mixerLabel.setText(self.tr('Mixer: '))
-        self._commentsLabel.setText(self.tr('Comments: '))
-        self._primaryStyleLabel.setText(self.tr('Primary Style: '))
-        self._mediaTypeLabel.setText(self.tr('Media Type: '))
-        self._releaseTypeLabel.setText(self.tr('Release Type: '))
 
     def _frontCoverOf(self, album):
         frontCovers = album.frontCovers
@@ -332,60 +396,56 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def albumStateChanged(self, album):
         self._displayFrontCover(self._frontCoverOf(album))
-        self._releaseNameEdit.setText(album.releaseName)
-        self._leadPerformerEdit.setText(album.leadPerformer)
-        self._guestPerformersEdit.setText(display.toPeopleList(album.guestPerformers))
-        self._labelNameEdit.setText(album.labelName)
-        self._catalogNumberEdit.setText(album.catalogNumber)
-        self._upcEdit.setText(album.upc)
-        self._recordingTimeEdit.setText(album.recordingTime)
-        self._releaseTimeEdit.setText(album.releaseTime)
-        self._originalReleaseTimeEdit.setText(album.originalReleaseTime)
-        self._recordingStudiosEdit.setText(album.recordingStudios)
-        self._producerEdit.setText(album.producer)
-        self._mixerEdit.setText(album.mixer)
-        self._commentsEdit.setPlainText(album.comments)
+        self._releaseNameLineEdit.setText(album.releaseName)
+        self._leadPerformerLineEdit.setText(album.leadPerformer)
+        self._guestPerformersLineEdit.setText(display.toPeopleList(album.guestPerformers))
+        self._labelNameLineEdit.setText(album.labelName)
+        self._catalogNumberLineEdit.setText(album.catalogNumber)
+        self._upcLineEdit.setText(album.upc)
+        self._commentsTextArea.setPlainText(album.comments)
+        self._releaseTimeLineEdit.setText(album.releaseTime)
+        self._recordingTimeLineEdit.setText(album.recordingTime)
+        self._recordingStudiosLineEdit.setText(album.recordingStudios)
+        self._producerLineEdit.setText(album.producer)
+        self._mixerLineEdit.setText(album.mixer)
 
     def _updateAlbumCover(self):
         self._album.removeImages()
-        if self._frontCover is not None:
-            self._album.addFrontCover(self._frontCover[0], self._frontCover[1])
+        if self._frontCoverImage is not None:
+            self._album.addFrontCover(self._frontCoverImage[0], self._frontCoverImage[1])
 
     def _updateReleaseName(self):
-        self._album.releaseName = self._releaseNameEdit.text()
+        self._album.releaseName = self._releaseNameLineEdit.text()
 
     def _updateLeadPerformer(self):
-        self._album.leadPerformer = self._leadPerformerEdit.text()
+        self._album.leadPerformer = self._leadPerformerLineEdit.text()
 
     def _updateGuestPerformers(self):
-        self._album.guestPerformers = display.fromPeopleList(self._guestPerformersEdit.text())
+        self._album.guestPerformers = display.fromPeopleList(self._guestPerformersLineEdit.text())
 
     def _updateLabelName(self):
-        self._album.labelName = self._labelNameEdit.text()
+        self._album.labelName = self._labelNameLineEdit.text()
 
     def _updateCatalogNumber(self):
-        self._album.catalogNumber = self._catalogNumberEdit.text()
+        self._album.catalogNumber = self._catalogNumberLineEdit.text()
 
     def _updateUpc(self):
-        self._album.upc = self._upcEdit.text()
+        self._album.upc = self._upcLineEdit.text()
 
     def _updateRecordingTime(self):
-        self._album.recordingTime = self._recordingTimeEdit.text()
+        self._album.recordingTime = self._recordingTimeLineEdit.text()
 
     def _updateReleaseTime(self):
-        self._album.releaseTime = self._releaseTimeEdit.text()
-
-    def _updateOriginalReleaseTime(self):
-        self._album.originalReleaseTime = self._originalReleaseTimeEdit.text()
+        self._album.releaseTime = self._releaseTimeLineEdit.text()
 
     def _updateRecordingStudios(self):
-        self._album.recordingStudios = self._recordingStudiosEdit.text()
+        self._album.recordingStudios = self._recordingStudiosLineEdit.text()
 
     def _updateProducer(self):
-        self._album.producer = self._producerEdit.text()
+        self._album.producer = self._producerLineEdit.text()
 
     def _updateMixer(self):
-        self._album.mixer = self._mixerEdit.text()
+        self._album.mixer = self._mixerLineEdit.text()
 
     def _updateComments(self):
-        self._album.comments = self._commentsEdit.toPlainText()
+        self._album.comments = self._commentsTextArea.toPlainText()

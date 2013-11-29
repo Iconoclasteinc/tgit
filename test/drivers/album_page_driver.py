@@ -9,7 +9,7 @@ from test.cute.widgets import (window, WidgetDriver, LabelDriver, LineEditDriver
                                ButtonDriver, FileDialogDriver, TextEditDriver)
 
 import tgit.tags as tags
-from tgit.ui import constants as ui
+from tgit.ui import AlbumPage
 
 
 class AlbumPageDriver(WidgetDriver):
@@ -77,7 +77,7 @@ class AlbumPageDriver(WidgetDriver):
                 raise AssertionError("Don't know how to edit '%s'" % tag)
 
     def displaysFrontCoverPictureWithSize(self, width, height):
-        label = LabelDriver.findSingle(self, QLabel, named(ui.FRONT_COVER_PIXMAP_NAME))
+        label = LabelDriver.findSingle(self, QLabel, named(AlbumPage.FRONT_COVER_FIELD_NAME))
         label.isShowingOnScreen()
         label.hasPixmap(withPixmapHeight(height))
         label.hasPixmap(withPixmapWidth(width))
@@ -85,195 +85,222 @@ class AlbumPageDriver(WidgetDriver):
     def chooseFrontCoverPicture(self, filename):
         self.selectFrontCover()
         self._chooseImageFile(filename)
-        self.displaysFrontCoverPictureWithSize(*ui.FRONT_COVER_PIXMAP_SIZE)
+        self.displaysFrontCoverPictureWithSize(*AlbumPage.FRONT_COVER_SIZE)
 
     def selectFrontCover(self):
         button = ButtonDriver.findSingle(self, QPushButton,
-                                                 named(ui.SELECT_PICTURE_BUTTON_NAME))
+                                         named(AlbumPage.SELECT_PICTURE_BUTTON_NAME))
         button.click()
 
     def _chooseImageFile(self, filename):
-        dialog = FileDialogDriver(window(QFileDialog, named(ui.CHOOSE_IMAGE_FILE_DIALOG_NAME)),
-                                  self.prober, self.gesturePerformer)
+        dialog = FileDialogDriver(
+            window(QFileDialog, named(AlbumPage.CHOOSE_IMAGE_FILE_DIALOG_NAME)),
+            self.prober, self.gesturePerformer)
         dialog.navigateToDir(os.path.dirname(filename))
         dialog.selectFile(os.path.basename(filename))
         dialog.accept()
 
     def showsReleaseName(self, name):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.RELEASE_NAME_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.RELEASE_NAME_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RELEASE_NAME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.RELEASE_NAME_FIELD_NAME))
         edit.hasText(name)
-        
+
     def changeReleaseName(self, name):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RELEASE_NAME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.RELEASE_NAME_FIELD_NAME))
         edit.changeText(name)
 
     def showsLeadPerformer(self, name):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LEAD_PERFORMER_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.LEAD_PERFORMER_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LEAD_PERFORMER_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.LEAD_PERFORMER_FIELD_NAME))
         edit.hasText(name)
 
     def changeLeadPerformer(self, name):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LEAD_PERFORMER_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.LEAD_PERFORMER_FIELD_NAME))
         edit.changeText(name)
 
     def showsGuestPerformers(self, names):
         label = LabelDriver.findSingle(self, QLabel,
-                                       withBuddy(named(ui.GUEST_PERFORMERS_EDIT_NAME)))
+                                       withBuddy(named(AlbumPage.GUEST_PERFORMERS_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.GUEST_PERFORMERS_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.GUEST_PERFORMERS_FIELD_NAME))
         edit.hasText(names)
 
     def changeGuestPerformers(self, names):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.GUEST_PERFORMERS_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.GUEST_PERFORMERS_FIELD_NAME))
         edit.changeText(names)
 
     def showsLabelName(self, name):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LABEL_NAME_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.LABEL_NAME_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LABEL_NAME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.LABEL_NAME_FIELD_NAME))
         edit.hasText(name)
 
     def changeLabelName(self, name):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.LABEL_NAME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.LABEL_NAME_FIELD_NAME))
         edit.changeText(name)
 
-    def showsTown(self, town):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.TOWN_EDIT_NAME)))
+    def showsLabelTown(self, town):
+        # todo I'd rather have label = self.labelWithBuddy(named(AlbumPage.LABEL_TOWN))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.LABEL_TOWN_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.TOWN_EDIT_NAME))
+        # todo I'd rather have lineEdit = self.lineEdit(named(AlbumPage.LABEL_TOWN))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.LABEL_TOWN_FIELD_NAME))
         edit.isDisabled()
         edit.hasText(town)
 
-    def showsCountry(self, country):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.AREA_EDIT_NAME)))
+    def showsArea(self, area):
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(AlbumPage.AREA_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.AREA_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.AREA_FIELD_NAME))
         edit.isDisabled()
-        edit.hasText(country)
+        edit.hasText(area)
 
     def showsCatalogNumber(self, number):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.CATALOG_NUMBER_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.CATALOG_NUMBER_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.CATALOG_NUMBER_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.CATALOG_NUMBER_FIELD_NAME))
         edit.hasText(number)
 
     def changeCatalogNumber(self, number):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.CATALOG_NUMBER_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.CATALOG_NUMBER_FIELD_NAME))
         edit.changeText(number)
 
     def showsUpc(self, code):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.UPC_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(AlbumPage.UPC_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.UPC_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.UPC_FIELD_NAME))
         edit.hasText(code)
 
     def changeUpc(self, code):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.UPC_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.UPC_FIELD_NAME))
         edit.changeText(code)
 
     def showsRecordingTime(self, time):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.RECORDING_TIME_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.RECORDING_TIME_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RECORDING_TIME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.RECORDING_TIME_FIELD_NAME))
         edit.hasText(time)
 
     def changeRecordingTime(self, time):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RECORDING_TIME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.RECORDING_TIME_FIELD_NAME))
         edit.changeText(time)
 
     def showsReleaseTime(self, time):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.RELEASE_TIME_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.RELEASE_TIME_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RELEASE_TIME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.RELEASE_TIME_FIELD_NAME))
         edit.hasText(time)
 
     def changeReleaseTime(self, time):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RELEASE_TIME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.RELEASE_TIME_FIELD_NAME))
         edit.changeText(time)
 
     def showsDigitalReleaseTime(self, time):
         label = LabelDriver.findSingle(self, QLabel,
-                                       withBuddy(named(ui.DIGITAL_RELEASE_TIME_EDIT_NAME)))
+                                       withBuddy(named(AlbumPage.DIGITAL_RELEASE_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.DIGITAL_RELEASE_TIME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.DIGITAL_RELEASE_FIELD_NAME))
         edit.isDisabled()
         edit.hasText(time)
 
     def showsOriginalReleaseTime(self, time):
         label = LabelDriver.findSingle(self, QLabel,
-                                       withBuddy(named(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME)))
+                                       withBuddy(named(AlbumPage.ORIGINAL_RELEASE_TIME_FIELD_NAME)))
         label.isShowingOnScreen()
         edit = LineEditDriver.findSingle(self, QLineEdit,
-                                         named(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME))
+                                         named(AlbumPage.ORIGINAL_RELEASE_TIME_FIELD_NAME))
         edit.hasText(time)
 
     def changeOriginalReleaseTime(self, time):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.ORIGINAL_RELEASE_TIME_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.ORIGINAL_RELEASE_TIME_FIELD_NAME))
         edit.changeText(time)
 
     def showsRecordingStudios(self, studios):
         label = LabelDriver.findSingle(self, QLabel,
-                                       withBuddy(named(ui.RECORDING_STUDIOS_EDIT_NAME)))
+                                       withBuddy(named(AlbumPage.RECORDING_STUDIOS_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RECORDING_STUDIOS_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.RECORDING_STUDIOS_FIELD_NAME))
         edit.hasText(studios)
 
     def changeRecordingStudios(self, studios):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RECORDING_STUDIOS_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit,
+                                         named(AlbumPage.RECORDING_STUDIOS_FIELD_NAME))
         edit.changeText(studios)
 
     def showsProducer(self, producer):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.PRODUCER_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.PRODUCER_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PRODUCER_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.PRODUCER_FIELD_NAME))
         edit.hasText(producer)
 
     def changeProducer(self, producer):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PRODUCER_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.PRODUCER_FIELD_NAME))
         edit.changeText(producer)
 
     def showsMixer(self, mixer):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.MIXER_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(AlbumPage.MIXER_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.MIXER_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.MIXER_FIELD_NAME))
         edit.hasText(mixer)
 
     def changeMixer(self, mixer):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.MIXER_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.MIXER_FIELD_NAME))
         edit.changeText(mixer)
 
     def showsComments(self, comments):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.COMMENTS_TEXT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.COMMENTS_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = TextEditDriver.findSingle(self, QTextEdit, named(ui.COMMENTS_TEXT_NAME))
+        edit = TextEditDriver.findSingle(self, QTextEdit, named(AlbumPage.COMMENTS_FIELD_NAME))
         edit.hasPlainText(comments)
 
     def addComments(self, *comments):
-        edit = TextEditDriver.findSingle(self, QTextEdit, named(ui.COMMENTS_TEXT_NAME))
+        edit = TextEditDriver.findSingle(self, QTextEdit, named(AlbumPage.COMMENTS_FIELD_NAME))
         for comment in comments:
             edit.addLine(comment)
         edit.clearFocus()
 
     def showsPrimaryStyle(self, style):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.PRIMARY_STYLE_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.PRIMARY_STYLE_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.PRIMARY_STYLE_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.PRIMARY_STYLE_FIELD_NAME))
         edit.isDisabled()
         edit.hasText(style)
 
     def showsMediaType(self, type_):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.MEDIA_TYPE_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.MEDIA_TYPE_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.MEDIA_TYPE_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.MEDIA_TYPE_FIELD_NAME))
         edit.isDisabled()
         edit.hasText(type_)
 
     def showsReleaseType(self, type_):
-        label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.RELEASE_TYPE_EDIT_NAME)))
+        label = LabelDriver.findSingle(self, QLabel,
+                                       withBuddy(named(AlbumPage.RELEASE_TYPE_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(ui.RELEASE_TYPE_EDIT_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumPage.RELEASE_TYPE_FIELD_NAME))
         edit.isDisabled()
         edit.hasText(type_)

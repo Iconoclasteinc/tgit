@@ -17,6 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+# todo progressively move to their respective views
 MAIN_WINDOW_NAME = 'main window'
 TAGGING_SCREEN_NAME = 'tagging screen'
 TRACK_LIST_PAGE_NAME = 'track list page'
@@ -42,29 +43,6 @@ PLAY_BUTTON_NAME = 'play'
 REMOVE_BUTTON_NAME = 'remove'
 ADD_BUTTON_NAME = 'add'
 
-FRONT_COVER_PIXMAP_NAME = 'front cover'
-SELECT_PICTURE_BUTTON_NAME = 'select picture'
-CHOOSE_IMAGE_FILE_DIALOG_NAME = 'choose image file'
-RELEASE_NAME_EDIT_NAME = 'release name'
-LEAD_PERFORMER_EDIT_NAME = 'lead performer '
-GUEST_PERFORMERS_EDIT_NAME = 'guest performers'
-LABEL_NAME_EDIT_NAME = 'label name'
-TOWN_EDIT_NAME = 'town'
-AREA_EDIT_NAME = 'area'
-CATALOG_NUMBER_EDIT_NAME = 'catalog number'
-UPC_EDIT_NAME = 'upc'
-RECORDING_TIME_EDIT_NAME = 'recording time'
-RELEASE_TIME_EDIT_NAME = 'release time'
-DIGITAL_RELEASE_TIME_EDIT_NAME = 'digital release time'
-ORIGINAL_RELEASE_TIME_EDIT_NAME = 'original release time'
-RECORDING_STUDIOS_EDIT_NAME = 'recording studios'
-PRODUCER_EDIT_NAME = 'producer'
-MIXER_EDIT_NAME = 'mixer'
-COMMENTS_TEXT_NAME = 'comments'
-PRIMARY_STYLE_EDIT_NAME = 'primary style'
-MEDIA_TYPE_EDIT_NAME = 'media type'
-RELEASE_TYPE_EDIT_NAME = 'release style'
-
 TRACK_TITLE_EDIT_NAME = 'track title'
 VERSION_INFO_EDIT_NAME = 'version info'
 DURATION_NAME = 'duration'
@@ -83,6 +61,4 @@ LANGUAGE_EDIT_NAME = 'language'
 PREVIEW_TIME_EDIT_NAME = 'preview time'
 
 MAIN_WINDOW_SIZE = (1150, 915)
-FRONT_COVER_PIXMAP_SIZE = (125, 125)
-
 

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import sip
-# noinspection PyUnresolvedReferences
-import use_sip_api_v2
 
 from test.cute.matchers import named, showingOnScreen
 from test.cute.widgets import mainApplicationWindow
@@ -32,6 +30,7 @@ class ApplicationRunner(object):
     def stop(self):
         self.tagger.close()
         del self.tagger
+        # force deletion of C++ objects in the background, for extra safety
         sip.delete(self.app)
         del self.app
 

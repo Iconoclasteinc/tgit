@@ -4,8 +4,6 @@ import os
 import unittest
 
 import sip
-# noinspection PyUnresolvedReferences
-import use_sip_api_v2
 from PyQt4.QtGui import QApplication
 
 from test.cute.events import MainEventLoop
@@ -20,11 +18,11 @@ END_OF_TEST_PAUSE = int(os.environ.get('END_OF_TEST_PAUSE', 0))
 
 
 class BaseWidgetTest(unittest.TestCase):
-
     def setUp(self):
         self.app = QApplication([])
         self.prober = EventProcessingProber(timeoutInMs=1000)
         self.gesturePerformer = Robot()
+        self.driver = None
 
     def view(self, widget):
         widget.setStyleSheet(styles.Main)

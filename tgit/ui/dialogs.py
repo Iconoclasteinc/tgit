@@ -21,8 +21,7 @@ from PyQt4.QtCore import QDir, QFileInfo
 from PyQt4.QtGui import QFileDialog
 
 from tgit.ui.file_chooser import FileChooser
-from tgit.ui import constants as ui
-
+from tgit.ui import constants as ui, AlbumPage
 
 class AudioFileChooserDialog(FileChooser):
     MP3_FILTER = '*.mp3'
@@ -90,7 +89,7 @@ class ImageFileChooserDialog(FileChooser):
 
     def _makeDialog(self, parent):
         dialog = QFileDialog(parent)
-        dialog.setObjectName(ui.CHOOSE_IMAGE_FILE_DIALOG_NAME)
+        dialog.setObjectName(AlbumPage.CHOOSE_IMAGE_FILE_DIALOG_NAME)
         dialog.setDirectory(QDir.homePath())
         dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % dialog.tr('Image files'))
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self._native)
