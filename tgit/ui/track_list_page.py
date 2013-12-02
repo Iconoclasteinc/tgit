@@ -21,12 +21,12 @@ import functools as func
 
 from PyQt4.QtCore import Qt, QModelIndex, QAbstractItemModel
 from PyQt4.QtGui import (QWidget, QVBoxLayout, QTableView, QHBoxLayout,
-                         QStyledItemDelegate, QHeaderView, QLabel, QToolButton)
+                         QStyledItemDelegate, QHeaderView, QLabel, QToolButton, QFrame, QPalette)
 
 from tgit.announcer import Announcer
 from tgit.audio.player import PlayerListener
 from tgit.ui.album_table_model import AlbumTableModel, Columns
-from tgit.ui import constants as ui
+from tgit.ui import constants as ui, style
 
 
 class PlayButtonDelegate(QStyledItemDelegate):
@@ -56,7 +56,7 @@ class PlayButtonDelegate(QStyledItemDelegate):
                 return FakeModel()
 
         # We need to call the super implementation to style the column according to the stylesheet
-        super(PlayButtonDelegate, self).paint(painter, option, WackyHack())
+        QStyledItemDelegate.paint(self, painter, option, WackyHack())
 
 
 class RemoveButtonDelegate(QStyledItemDelegate):
@@ -72,12 +72,10 @@ class RemoveButtonDelegate(QStyledItemDelegate):
                                                 index.model().trackAt(index.row())))
             self.parent().setIndexWidget(index, button)
 
-        super(RemoveButtonDelegate, self).paint(painter, option, index)
+        QStyledItemDelegate.paint(self, painter, option, index)
 
 
 class TrackListPage(QWidget, PlayerListener):
-    COLUMNS_WIDTHS = [345, 205, 215, 85, 65, 30, 30]
-
     def __init__(self, album, player, parent=None):
         QWidget.__init__(self, parent)
         self._tracks = AlbumTableModel(album, player, self)
@@ -95,7 +93,7 @@ class TrackListPage(QWidget, PlayerListener):
         self.setLayout(layout)
         layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self._makeHeader())
-        layout.addWidget(self._makeTrackTable())
+        layout.addWidget(self._makeTableFrame(self._makeTrackTable()))
 
     def _makeHeader(self):
         header = QWidget()
@@ -112,14 +110,31 @@ class TrackListPage(QWidget, PlayerListener):
 
         return header
 
+    def _makeTableFrame(self, table):
+        frame = QFrame()
+        frame.setFrameStyle(style.TABLE_BORDER_STYLE)
+        frame.setAutoFillBackground(True)
+        palette = frame.palette()
+        palette.setColor(QPalette.Background, style.TABLE_BACKGROUND_COLOR)
+        palette.setColor(QPalette.WindowText, style.TABLE_BORDER_COLOR)
+        frame.setPalette(palette)
+        layout = QVBoxLayout()
+        layout.setContentsMargins(10, 10, 10, 10)
+        frame.setLayout(layout)
+
+        layout.addWidget(table)
+        return frame
+
     def _makeTrackTable(self):
         table = QTableView()
+        table.setFrameStyle(QFrame.NoFrame)
         table.setObjectName(ui.TRACK_TABLE_NAME)
         table.setModel(self._tracks)
         table.setItemDelegateForColumn(Columns.index(Columns.play), PlayButtonDelegate(table))
         table.setItemDelegateForColumn(Columns.index(Columns.remove), RemoveButtonDelegate(table))
         table.setEditTriggers(QTableView.NoEditTriggers)
         table.setSelectionMode(QTableView.NoSelection)
+        table.setAlternatingRowColors(True)
         table.setShowGrid(False)
         table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
         table.horizontalHeader().setResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
@@ -132,7 +147,7 @@ class TrackListPage(QWidget, PlayerListener):
         return table
 
     def _resizeColumns(self, table):
-        for index, width in enumerate(self.COLUMNS_WIDTHS):
+        for index, width in enumerate(style.TABLE_COLUMNS_WIDTHS):
             table.horizontalHeader().resizeSection(index, width)
 
     def _selectFiles(self):

@@ -18,7 +18,15 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QHBoxLayout, QVBoxLayout, QFormLayout
+from PyQt4.QtGui import QHBoxLayout, QVBoxLayout, QFormLayout, QColor, QFrame
+
+
+# Using stylesheets on the table corrupts the display of the button widgets in the
+# cells, at least on OSX. So we have to style programmatically
+TABLE_COLUMNS_WIDTHS = [345, 205, 215, 85, 65, 30, 30]
+TABLE_BACKGROUND_COLOR = Qt.white
+TABLE_BORDER_COLOR = QColor.fromRgb(0xDDDDDD)
+TABLE_BORDER_STYLE = QFrame.Panel | QFrame.Plain
 
 
 def enableButton(button):
@@ -201,14 +209,6 @@ Sheet = """
         border-image: url(:/nothing.png) 1 1 1 1;
         background-color: transparent;
         color: transparent;
-    }
-
-    QTableView {
-        border: 1px solid #DDDDDD;
-        border-bottom: 2px solid rgba(0, 0, 0, 20%);
-        background-color: white;
-        padding: 10px;
-        qproperty-alternatingRowColors: true;
     }
 
     QTableView QHeaderView {
