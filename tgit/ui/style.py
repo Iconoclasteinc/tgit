@@ -336,7 +336,7 @@ Sheet = """
         font-size: 12px;
         font-weight: bold;
         color: white;
-        padding: 12px 12px 9px 30px;
+        padding: 12px 12px 9px 36px;
         min-width: 125px;
     }
 

@@ -71,7 +71,7 @@ class WelcomeScreen(QFrame):
         layout.addWidget(self._makeWelcomeDialog(), 0, 0)
 
     def localize(self):
-        self._dialogTitle.setText('Welcome to TGiT!')
-        self._msg.setText("You album is empty right now.")
-        self._help.setText("Click on the button below to add some tracks.")
+        self._dialogTitle.setText(self.tr('Welcome to TGiT!'))
+        self._msg.setText(self.tr('Your album is empty right now.'))
+        self._help.setText(self.tr('Click on the button below to add some tracks.'))
         self._newAlbumButton.setText(self.tr('ADD FILES...'))
