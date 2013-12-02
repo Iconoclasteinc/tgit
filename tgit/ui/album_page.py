@@ -32,6 +32,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
     FRONT_COVER_FIELD_NAME = 'front-cover'
     FRONT_COVER_SIZE = (350, 350)
     SELECT_PICTURE_BUTTON_NAME = 'select-picture'
+    REMOVE_PICTURE_BUTTON_NAME = 'remove-picture'
     CHOOSE_IMAGE_FILE_DIALOG_NAME = 'choose-image-file'
 
     RELEASE_NAME_FIELD_NAME = 'release-name'
@@ -109,12 +110,14 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         fieldSet.setObjectName(AlbumPage.PICTURES_FIELD_SET_NAME)
         self._frontCoverPictureLabel = self._makeFrontCoverPictureField()
         self._selectPictureButton = self._makeSelectPictureButton()
+        self._removePictureButton = self._makeRemovePictureButton()
 
         layout = style.verticalLayout()
         layout.addWidget(self._frontCoverPictureLabel)
         buttons = style.horizontalLayout()
         buttons.addStretch()
         buttons.addWidget(self._selectPictureButton)
+        buttons.addWidget(self._removePictureButton)
         buttons.addStretch()
         layout.addLayout(buttons)
 
@@ -132,6 +135,12 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         button.setObjectName(AlbumPage.SELECT_PICTURE_BUTTON_NAME)
         button.clicked.connect(self._selectPicture)
         button.setCursor(Qt.PointingHandCursor)
+        return button
+
+    def _makeRemovePictureButton(self):
+        button = QPushButton()
+        button.setObjectName(AlbumPage.REMOVE_PICTURE_BUTTON_NAME)
+        button.clicked.connect(self._removePicture)
         return button
 
     def _makeDatesFieldSet(self):
@@ -335,6 +344,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def localize(self):
         self._selectPictureButton.setText(self.tr('SELECT PICTURE...'))
+        self._removePictureButton.setText(self.tr('REMOVE'))
         self._labelFor(self._releaseNameLineEdit).setText(self.tr('Release Name:'))
         self._labelFor(self._leadPerformerLineEdit).setText(self.tr('Lead Performer:'))
         self._leadPerformerLineEdit.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
@@ -364,9 +374,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         return next(label for label in self.findChildren(QLabel) if label.buddy() == widget)
 
     def fileChosen(self, filename):
-        self._frontCoverImage = self._loadImage(filename)
-        self._displayFrontCover(self._frontCoverImage)
-        self._updateAlbumCover()
+        self._setFrontCover(self._loadImage(filename))
 
     def _loadImage(self, filename):
         if filename is None:
@@ -393,15 +401,23 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
     def _selectPicture(self):
         self._pictureChooser.chooseSingleFile()
 
-    def _frontCoverOf(self, album):
-        frontCovers = album.frontCovers
-        if frontCovers:
-            return frontCovers[0].mime, frontCovers[0].data
-        else:
+    def _setFrontCover(self, image):
+        self._frontCoverImage = image
+        self._displayFrontCover(image)
+        self._updateAlbumCover()
+
+    def _removePicture(self):
+        self._setFrontCover(None)
+
+    def _mainCoverOf(self, album):
+        cover = album.mainCover
+        if not cover:
             return None
 
+        return cover.mime, cover.data
+
     def albumStateChanged(self, album):
-        self._displayFrontCover(self._frontCoverOf(album))
+        self._displayFrontCover(self._mainCoverOf(album))
         self._releaseNameLineEdit.setText(album.releaseName)
         self._leadPerformerLineEdit.setText(album.leadPerformer)
         self._guestPerformersLineEdit.setText(display.toPeopleList(album.guestPerformers))

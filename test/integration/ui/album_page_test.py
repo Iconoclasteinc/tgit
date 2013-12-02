@@ -31,9 +31,14 @@ class AlbumPageTest(BaseWidgetTest):
     def createDriverFor(self, widget):
         return AlbumPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testDisplaysFrontCoverScaledToPictureDisplayArea(self):
+    def testDisplaysMainCoverScaledToPictureDisplayArea(self):
         self.album.addFrontCover('image/jpeg', loadImage('front-cover.jpg'))
         self.driver.displaysFrontCoverPictureWithSize(*AlbumPage.FRONT_COVER_SIZE)
+
+    def testRemovesCoverWhenRemoveButtonClicked(self):
+        self.album.addFrontCover('image/jpeg', loadImage('front-cover.jpg'))
+        self.driver.removeFrontCover()
+        self.driver.displaysNoFrontCoverPicture()
 
     def testDisplaysAlbumMetadata(self):
         self.album.releaseName = 'Album'

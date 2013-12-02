@@ -57,6 +57,16 @@ class Album(object):
         return self._metadata.imagesOfType(type_)
 
     @property
+    def mainCover(self):
+        if not self.images:
+            return None
+
+        if self.frontCovers:
+            return self.frontCovers[0]
+
+        return self.images[0]
+
+    @property
     def frontCovers(self):
         return self.imagesOfType(Image.FRONT_COVER)
 

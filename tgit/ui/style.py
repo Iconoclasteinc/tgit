@@ -336,15 +336,30 @@ Sheet = """
         font-size: 12px;
         font-weight: bold;
         color: white;
-        padding: 12px 12px 9px 37px;
+        padding: 12px 12px 9px 30px;
         min-width: 125px;
     }
 
-    #album-page QPushButton#select-picture:hover, #album-page QPushButton#select-picture:focus {
+    #album-page QPushButton#remove-picture {
+        background-color: #F25C0A;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        color: white;
+        padding: 12px 12px 9px 12px;
+        min-width: 75px;
+        margin-left: 10px;
+    }
+
+    #album-page QPushButton#select-picture:hover,
+    #album-page QPushButton#select-picture:focus,
+    #album-page QPushButton#remove-picture:hover,
+    #album-page QPushButton#remove-picture:focus {
         background-color: #D95109;
     }
 
-    #album-page QPushButton#select-picture:pressed {
+    #album-page QPushButton#select-picture:pressed,
+    #album-page QPushButton#remove-picture:pressed {
         border: 2px solid rgba(0, 0, 0, 30%);
     }
 

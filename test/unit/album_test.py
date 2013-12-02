@@ -67,6 +67,14 @@ class AlbumTest(unittest.TestCase):
             has_property('trackTitle', 'Track 1'),
             has_property('trackTitle', 'Track 3')), 'tracks')
 
+    def testUsesFirstFrontCoverOrFirstImageAsMainCover(self):
+        album = build.album()
+        assert_that(album.mainCover, is_(None))
+        album.addImage('image/jepg', 'back cover image')
+        assert_that(album.mainCover, has_property('data', 'back cover image'))
+        album.addFrontCover('image/jpeg', 'front cover image')
+        assert_that(album.mainCover, has_property('data', 'front cover image'))
+
     def testHasInitiallyNoMetadataOrImages(self):
         album = Album()
         for tag in tags.ALBUM_TAGS:

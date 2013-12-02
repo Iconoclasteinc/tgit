@@ -82,6 +82,9 @@ class AlbumPageDriver(WidgetDriver):
         label.hasPixmap(withPixmapHeight(height))
         label.hasPixmap(withPixmapWidth(width))
 
+    def displaysNoFrontCoverPicture(self):
+        self.displaysFrontCoverPictureWithSize(0, 0)
+
     def chooseFrontCoverPicture(self, filename):
         self.selectFrontCover()
         self._chooseImageFile(filename)
@@ -90,6 +93,11 @@ class AlbumPageDriver(WidgetDriver):
     def selectFrontCover(self):
         button = ButtonDriver.findSingle(self, QPushButton,
                                          named(AlbumPage.SELECT_PICTURE_BUTTON_NAME))
+        button.click()
+
+    def removeFrontCover(self):
+        button = ButtonDriver.findSingle(self, QPushButton,
+                                         named(AlbumPage.REMOVE_PICTURE_BUTTON_NAME))
         button.click()
 
     def _chooseImageFile(self, filename):
