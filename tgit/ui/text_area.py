@@ -18,12 +18,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtCore import pyqtSignal
-from PyQt4.QtGui import QTextEdit
+from PyQt4.QtGui import *
 
 
-class TextArea(QTextEdit):
+class TextArea(QPlainTextEdit):
     editingFinished = pyqtSignal()
 
     def focusOutEvent(self, event):
         self.editingFinished.emit()
-        QTextEdit.focusOutEvent(self, event)
+        QPlainTextEdit.focusOutEvent(self, event)

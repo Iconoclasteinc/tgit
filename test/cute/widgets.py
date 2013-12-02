@@ -59,7 +59,7 @@ class WidgetDriver(object):
     def findNth(cls, parent, widgetType, index, *matchers):
         return cls(NthWidgetFinder(
             RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector), index),
-                   parent.prober, parent.gesturePerformer)
+            parent.prober, parent.gesturePerformer)
 
     def isShowingOnScreen(self):
         self.is_(match.showingOnScreen())
@@ -75,6 +75,9 @@ class WidgetDriver(object):
 
     def is_(self, criteria):
         self.check(WidgetAssertionProbe(self.selector, criteria))
+
+    def hasCursorShape(self, shape):
+        self.has(properties.cursorShape(), wrap_matcher(shape))
 
     def has(self, query, criteria):
         self.check(WidgetPropertyAssertionProbe(self.selector, query, criteria))

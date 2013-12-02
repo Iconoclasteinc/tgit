@@ -2,7 +2,7 @@
 
 import os
 
-from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog, QTextEdit
+from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog, QPlainTextEdit
 
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from test.cute.widgets import (window, WidgetDriver, LabelDriver, LineEditDriver,
@@ -272,11 +272,11 @@ class AlbumPageDriver(WidgetDriver):
         label = LabelDriver.findSingle(self, QLabel,
                                        withBuddy(named(AlbumPage.COMMENTS_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = TextEditDriver.findSingle(self, QTextEdit, named(AlbumPage.COMMENTS_FIELD_NAME))
+        edit = TextEditDriver.findSingle(self, QPlainTextEdit, named(AlbumPage.COMMENTS_FIELD_NAME))
         edit.hasPlainText(comments)
 
     def addComments(self, *comments):
-        edit = TextEditDriver.findSingle(self, QTextEdit, named(AlbumPage.COMMENTS_FIELD_NAME))
+        edit = TextEditDriver.findSingle(self, QPlainTextEdit, named(AlbumPage.COMMENTS_FIELD_NAME))
         for comment in comments:
             edit.addLine(comment)
         edit.clearFocus()

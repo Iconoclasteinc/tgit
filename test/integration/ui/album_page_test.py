@@ -20,7 +20,6 @@ def loadImage(name):
 
 
 class AlbumPageTest(BaseWidgetTest):
-
     def setUp(self):
         super(AlbumPageTest, self).setUp()
         self.album = Album()

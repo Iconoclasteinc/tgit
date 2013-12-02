@@ -74,4 +74,4 @@ class WelcomeScreen(QFrame):
         self._dialogTitle.setText('Welcome to TGiT!')
         self._msg.setText("You album is empty right now.")
         self._help.setText("Click on the button below to add some tracks.")
-        self._newAlbumButton.setText(self.tr('New Album'))
+        self._newAlbumButton.setText(self.tr('ADD FILES...'))

@@ -10,7 +10,7 @@ from test.cute.events import MainEventLoop
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 
-from tgit.ui import styles
+from tgit.ui import style
 from tgit.ui import constants as ui
 from tgit.ui import display
 
@@ -25,7 +25,7 @@ class BaseWidgetTest(unittest.TestCase):
         self.driver = None
 
     def view(self, widget):
-        widget.setStyleSheet(styles.Main)
+        widget.setStyleSheet(style.Sheet)
         widget.setFixedSize(*ui.MAIN_WINDOW_SIZE)
         display.centeredOnScreen(widget)
 

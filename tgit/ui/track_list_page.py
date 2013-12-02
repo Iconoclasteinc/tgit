@@ -76,7 +76,7 @@ class RemoveButtonDelegate(QStyledItemDelegate):
 
 
 class TrackListPage(QWidget, PlayerListener):
-    COLUMNS_WIDTHS = [375, 291, 175, 70, 70, 30, 30]
+    COLUMNS_WIDTHS = [345, 205, 215, 85, 65, 30, 30]
 
     def __init__(self, album, player, parent=None):
         QWidget.__init__(self, parent)

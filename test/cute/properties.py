@@ -3,7 +3,7 @@
 from hamcrest.core.selfdescribing import SelfDescribing
 
 from PyQt4.QtCore import Qt, QObject
-from PyQt4.QtGui import QLabel, QLineEdit, QPixmap, QTextEdit, QDateTimeEdit
+from PyQt4.QtGui import QWidget, QLabel, QLineEdit, QPixmap, QDateTimeEdit
 
 
 def name():
@@ -35,7 +35,7 @@ def inputText():
 
 
 def plainText():
-    return PropertyQuery('plain text', QTextEdit.toPlainText)
+    return PropertyQuery('plain text', lambda w: w.toPlainText())
 
 
 def listItemText():
@@ -44,6 +44,10 @@ def listItemText():
 
 def time():
     return PropertyQuery('time', QDateTimeEdit.time)
+
+
+def cursorShape():
+    return PropertyQuery('cursor shape', lambda w: w.cursor().shape())
 
 
 class Query(SelfDescribing):

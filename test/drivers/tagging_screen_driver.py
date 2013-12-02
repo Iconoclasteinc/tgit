@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QWidget, QPushButton
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 from test.cute.widgets import WidgetDriver, ButtonDriver
 from test.cute.matchers import named, showingOnScreen
@@ -17,19 +18,27 @@ class TaggingScreenDriver(WidgetDriver):
 
     def isShowingTrackList(self):
         self._trackListPage().isShowingOnScreen()
-        self._nextPageButton().isEnabled()
-        self._previousPageButton().isDisabled()
-        self._saveButton().isDisabled()
+        self._isDisabled(self._previousPageButton())
+        self._isDisabled(self._saveButton())
+        self._isEnabled(self._nextPageButton())
+
+    def _isDisabled(self, button):
+        button.isDisabled()
+        button.hasCursorShape(Qt.ArrowCursor)
+
+    def _isEnabled(self, button):
+        button.isEnabled()
+        button.hasCursorShape(Qt.PointingHandCursor)
 
     def isShowingAlbumMetadata(self):
         self._albumPage().isShowingOnScreen()
-        self._previousPageButton().isEnabled()
-        self._saveButton().isEnabled()
+        self._isEnabled(self._previousPageButton())
+        self._isEnabled(self._saveButton())
 
     def isShowingTrackMetadata(self):
         self._currentTrackPage().isShowingOnScreen()
-        self._previousPageButton().isEnabled()
-        self._saveButton().isEnabled()
+        self._isEnabled(self._previousPageButton())
+        self._isEnabled(self._saveButton())
 
     def addFiles(self):
         self._trackListPage().addFiles()

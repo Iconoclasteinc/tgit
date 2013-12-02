@@ -27,7 +27,7 @@ from tgit.ui.menu_bar import MenuBar
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen
 from tgit.ui.export_as_dialog import ExportAsDialog
-from tgit.ui import styles
+from tgit.ui import style
 
 
 class MainWindow(QMainWindow, AlbumPortfolioListener):
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
 
     def _assemble(self):
         self.setObjectName(ui.MAIN_WINDOW_NAME)
-        self.setStyleSheet(styles.Main)
+        self.setStyleSheet(style.Sheet)
         self.setMenuBar(self._makeMenuBar())
         self.setCentralWidget(self._makeWelcomeScreen())
         self.localize()

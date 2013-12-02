@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel, QLineEdit, QTextEdit, QTimeEdit
+from PyQt4.QtGui import QLabel, QLineEdit, QPlainTextEdit, QTimeEdit
 
 from test.cute.matchers import named, withBuddy
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEditDriver,
@@ -175,11 +175,11 @@ class TrackPageDriver(WidgetDriver):
     def showsLyrics(self, lyrics):
         label = LabelDriver.findSingle(self, QLabel, withBuddy(named(ui.LYRICS_EDIT_NAME)))
         label.isShowingOnScreen()
-        edit = TextEditDriver.findSingle(self, QTextEdit, named(ui.LYRICS_EDIT_NAME))
+        edit = TextEditDriver.findSingle(self, QPlainTextEdit, named(ui.LYRICS_EDIT_NAME))
         edit.hasPlainText(lyrics)
 
     def addLyrics(self, *lyrics):
-        edit = TextEditDriver.findSingle(self, QTextEdit, named(ui.LYRICS_EDIT_NAME))
+        edit = TextEditDriver.findSingle(self, QPlainTextEdit, named(ui.LYRICS_EDIT_NAME))
         for lyric in lyrics:
             edit.addLine(lyric)
         edit.clearFocus()

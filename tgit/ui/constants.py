@@ -21,7 +21,7 @@
 MAIN_WINDOW_NAME = 'main window'
 TAGGING_SCREEN_NAME = 'tagging screen'
 TRACK_LIST_PAGE_NAME = 'track list page'
-ALBUM_PAGE_NAME = 'album page'
+ALBUM_PAGE_NAME = 'album-page'
 TRACK_PAGE_NAME = 'track Page'
 
 CHOOSE_AUDIO_FILES_DIALOG_NAME = 'choose audio files'
@@ -60,5 +60,5 @@ LYRICS_EDIT_NAME = 'lyrics'
 LANGUAGE_EDIT_NAME = 'language'
 PREVIEW_TIME_EDIT_NAME = 'preview time'
 
-MAIN_WINDOW_SIZE = (1150, 915)
+MAIN_WINDOW_SIZE = (1100, 750)
 

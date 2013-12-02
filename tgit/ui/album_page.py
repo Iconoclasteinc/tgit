@@ -21,15 +21,16 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import *
 
 from tgit.album import AlbumListener
-from tgit.ui import constants as ui, display
+from tgit.ui import constants as ui, display, style
 from tgit.ui.text_area import TextArea
 from tgit.ui.file_chooser import FileChoiceListener
 from tgit.util import fs
 
 
 class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
+    PICTURES_FIELD_SET_NAME = 'pictures'
     FRONT_COVER_FIELD_NAME = 'front-cover'
-    FRONT_COVER_SIZE = (125, 125)
+    FRONT_COVER_SIZE = (350, 350)
     SELECT_PICTURE_BUTTON_NAME = 'select-picture'
     CHOOSE_IMAGE_FILE_DIALOG_NAME = 'choose-image-file'
 
@@ -70,19 +71,22 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
     def _build(self):
         self.setObjectName(ui.ALBUM_PAGE_NAME)
         self._fillContent()
+        self._disableFocusFrameOnMac()
         self._disableTeaserFields()
 
     def _fillContent(self):
-        layout = QHBoxLayout()
+        layout = style.horizontalLayout()
+        layout.setSpacing(0)
         layout.addWidget(self._makeLeftColumn())
         layout.addWidget(self._makeRightColumn())
         self.setLayout(layout)
 
     def _makeLeftColumn(self):
         column = QWidget()
+        column.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self._makeFrontCoverPanel())
+        layout = style.verticalLayout()
+        layout.addWidget(self._makeFrontCoverFieldSet())
         layout.addWidget(self._makeDatesFieldSet())
         layout.addStretch()
 
@@ -91,8 +95,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _makeRightColumn(self):
         column = QWidget()
-
-        layout = QVBoxLayout()
+        layout = style.verticalLayout()
         layout.addWidget(self._makeAlbumFieldSet())
         layout.addWidget(self._makeRecordFieldSet())
         layout.addWidget(self._makeRecordingFieldSet())
@@ -101,21 +104,22 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         column.setLayout(layout)
         return column
 
-    def _makeFrontCoverPanel(self):
-        panel = QWidget()
+    def _makeFrontCoverFieldSet(self):
+        fieldSet = QGroupBox(self.tr('PICTURES'))
+        fieldSet.setObjectName(AlbumPage.PICTURES_FIELD_SET_NAME)
         self._frontCoverPictureLabel = self._makeFrontCoverPictureField()
         self._selectPictureButton = self._makeSelectPictureButton()
 
-        layout = QVBoxLayout()
+        layout = style.verticalLayout()
         layout.addWidget(self._frontCoverPictureLabel)
-        buttons = QHBoxLayout()
+        buttons = style.horizontalLayout()
         buttons.addStretch()
         buttons.addWidget(self._selectPictureButton)
         buttons.addStretch()
         layout.addLayout(buttons)
 
-        panel.setLayout(layout)
-        return panel
+        fieldSet.setLayout(layout)
+        return fieldSet
 
     def _makeFrontCoverPictureField(self):
         label = QLabel()
@@ -127,6 +131,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         button = QPushButton()
         button.setObjectName(AlbumPage.SELECT_PICTURE_BUTTON_NAME)
         button.clicked.connect(self._selectPicture)
+        button.setCursor(Qt.PointingHandCursor)
         return button
 
     def _makeDatesFieldSet(self):
@@ -137,8 +142,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._originalReleaseTimeLineEdit = self._makeOriginalReleaseTimeField()
         self._recordingTimeLineEdit = self._makeRecordingTimeField()
 
-        form = QFormLayout()
-        form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        form = style.formLayout()
         self._addLabelledFields(form, self._releaseTimeLineEdit, self._digitalReleaseTimeLineEdit,
                                 self._originalReleaseTimeLineEdit, self._recordingTimeLineEdit)
 
@@ -147,8 +151,8 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
 
     def _addLabelledFields(self, form, *fields):
         for field in fields:
-            # When label have empty text, form layout seems to ignore setting their buddy
             label = QLabel()
+            label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
             label.setBuddy(field)
             form.addRow(label, field)
 
@@ -184,8 +188,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._areaLineEdit = self._makeAreaField()
         self._guestPerformersLineEdit = self._makeGuestPerformersField()
 
-        form = QFormLayout()
-        form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        form = style.formLayout()
         self._addLabelledFields(form, self._releaseNameLineEdit, self._leadPerformerLineEdit,
                                 self._areaLineEdit, self._guestPerformersLineEdit)
 
@@ -226,8 +229,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._releaseTypeLineEdit = self._makeReleaseTypeField()
         self._commentsTextArea = self._makeCommentsField()
 
-        form = QFormLayout()
-        form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        form = style.formLayout()
         self._addLabelledFields(form, self._labelNameLineEdit, self._labelTownLineEdit,
                                 self._catalogNumberLineEdit, self._upcLineEdit,
                                 self._mediaTypeLineEdit, self._releaseTypeLineEdit,
@@ -272,6 +274,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
     def _makeCommentsField(self):
         text = TextArea()
         text.setObjectName(AlbumPage.COMMENTS_FIELD_NAME)
+        text.setTabChangesFocus(True)
         text.editingFinished.connect(self._updateComments)
         return text
 
@@ -283,8 +286,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._mixerLineEdit = self._makeMixerField()
         self._primaryStyleLineEdit = self._makePrimaryStyleField()
 
-        form = QFormLayout()
-        form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        form = style.formLayout()
         self._addLabelledFields(form, self._recordingStudiosLineEdit, self._producerLineEdit,
                                 self._mixerLineEdit, self._primaryStyleLineEdit)
 
@@ -327,8 +329,12 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         field.setDisabled(True)
         self._labelFor(field).setDisabled(True)
 
+    def _disableFocusFrameOnMac(self):
+        for widget in self.findChildren(QWidget):
+            widget.setAttribute(Qt.WA_MacShowFocusRect, False)
+
     def localize(self):
-        self._selectPictureButton.setText(self.tr('Select Picture...'))
+        self._selectPictureButton.setText(self.tr('SELECT PICTURE...'))
         self._labelFor(self._releaseNameLineEdit).setText(self.tr('Release Name:'))
         self._labelFor(self._leadPerformerLineEdit).setText(self.tr('Lead Performer:'))
         self._leadPerformerLineEdit.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
