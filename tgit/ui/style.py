@@ -86,20 +86,21 @@ Sheet = """
 
     WelcomeScreen #welcome-dialog QPushButton {
         background-color: #EC2327;
+        border: 2px solid #EC2327;
         border-radius: 4px;
         font-size: 16px;
         font-weight: bold;
         color: white;
-        padding: 16px 16px 13px;
-        min-width: 150px;
+        padding: 14px 14px 11px 14px;
     }
 
     WelcomeScreen #welcome-dialog QPushButton:hover {
         background-color: #D42023;
+        border-color: #D42023;
     }
 
     WelcomeScreen #welcome-dialog QPushButton:pressed {
-        border: 2px solid rgba(0, 0, 0, 30%);
+        border: 2px solid white;
     }
 
     WelcomeScreen #welcome-dialog QLabel[title='h1'] {
@@ -128,20 +129,21 @@ Sheet = """
 
     QToolButton#add {
         background-color: #EC2327;
+        border: 2px solid #EC2327;
         border-radius: 4px;
         font-size: 12px;
         font-weight: bold;
         color: white;
-        padding: 12px 12px 9px;
-        min-width: 100px;
+        padding: 10px 10px 7px 10px;
     }
 
     QToolButton#add:hover {
         background-color: #D42023;
+        border-color: #D42023;
     }
 
     QToolButton#add:pressed {
-        border: 2px solid rgba(0, 0, 0, 30%);
+        border: 2px solid #F6F6F6;
     }
 
     #navigation, #buttons {
@@ -169,26 +171,28 @@ Sheet = """
     }
 
     #buttons QPushButton#save {
+        border: 2px solid #F25C0A;
         border-radius: 5px;
         background-color: #F25C0A;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: bold;
         color: white;
-        padding: 12px 12px 9px;
-        min-width: 150px;
-    }
-
-    #buttons QPushButton#save:pressed {
-        border: 2px solid rgba(0, 0, 0, 30%);
+        padding: 13px 13px 10px 13px;
     }
 
     #buttons QPushButton#save:disabled {
         background-color: transparent;
+        border: none;
         color: transparent;
     }
 
-    #buttons QPushButton#save:focus, #buttons QPushButton#save:hover  {
+    #buttons QPushButton#save:focus, #buttons QPushButton#save:hover {
         background-color: #D95109;
+        border-color: #D95109;
+    }
+
+    #buttons QPushButton#save:pressed {
+        border: 2px solid #595959;
     }
 
     #buttons QPushButton#next {
@@ -332,22 +336,22 @@ Sheet = """
         background-position: left center;
         background-origin: border;
         background-color: #F25C0A;
+        border: 2px solid #F25C0A;
         border-radius: 4px;
         font-size: 12px;
         font-weight: bold;
         color: white;
-        padding: 12px 12px 9px 36px;
-        min-width: 125px;
+        padding: 10px 10px 7px 34px;
     }
 
     #album-page QPushButton#remove-picture {
         background-color: #F25C0A;
+        border: 2px solid #F25C0A;
         border-radius: 4px;
         font-size: 12px;
         font-weight: bold;
         color: white;
-        padding: 12px 12px 9px 12px;
-        min-width: 75px;
+        padding: 10px 10px 7px 10px;
         margin-left: 10px;
     }
 
@@ -356,13 +360,13 @@ Sheet = """
     #album-page QPushButton#remove-picture:hover,
     #album-page QPushButton#remove-picture:focus {
         background-color: #D95109;
+        border-color: #D95109;
     }
 
     #album-page QPushButton#select-picture:pressed,
     #album-page QPushButton#remove-picture:pressed {
-        border: 2px solid rgba(0, 0, 0, 30%);
+        border: 2px solid white;
     }
-
 
     #album-page QLineEdit, #album-page TextArea {
         background-color: #F9F9F9;

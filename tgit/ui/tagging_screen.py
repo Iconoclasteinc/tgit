@@ -110,7 +110,7 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
         self._nextStepButton = QPushButton()
         self._nextStepButton.setObjectName(ui.NEXT_BUTTON_NAME)
         self._nextStepButton.clicked.connect(self._showNextPage)
-        style.enableButton(self._nextStepButton)
+        style.disableButton(self._nextStepButton)
         layout.addWidget(self._nextStepButton)
 
         return self._buttonBar

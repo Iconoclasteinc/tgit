@@ -29,6 +29,7 @@ class TaggingScreenTest(BaseWidgetTest):
 
     def testStartsOnTrackListPage(self):
         self.driver.isShowingTrackList()
+        self.driver.hasDisabledNextPageButton()
 
     def testSignalsRecordAlbumRequestsWhenSaveButtonClicked(self):
         recordAlbumRequest = ValueMatcherProbe('record album', equal_to(self.album))

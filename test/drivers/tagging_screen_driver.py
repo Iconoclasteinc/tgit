@@ -20,7 +20,6 @@ class TaggingScreenDriver(WidgetDriver):
         self._trackListPage().isShowingOnScreen()
         self._isDisabled(self._previousPageButton())
         self._isDisabled(self._saveButton())
-        self._isEnabled(self._nextPageButton())
 
     def _isDisabled(self, button):
         button.isDisabled()

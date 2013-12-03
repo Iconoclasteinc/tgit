@@ -134,13 +134,14 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         button = QPushButton()
         button.setObjectName(AlbumPage.SELECT_PICTURE_BUTTON_NAME)
         button.clicked.connect(self._selectPicture)
-        button.setCursor(Qt.PointingHandCursor)
+        style.enableButton(button)
         return button
 
     def _makeRemovePictureButton(self):
         button = QPushButton()
         button.setObjectName(AlbumPage.REMOVE_PICTURE_BUTTON_NAME)
         button.clicked.connect(self._removePicture)
+        style.enableButton(button)
         return button
 
     def _makeDatesFieldSet(self):
