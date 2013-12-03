@@ -151,8 +151,7 @@ Sheet = """
     }
 
     #buttons QPushButton#previous {
-        padding: 2px;
-        padding-left: 12px;
+        padding: 4px 2px 2px 12px;
         color: white;
         background-color: transparent;
         border-image: url(:/previous.png) 1 1 1 12;
@@ -174,7 +173,9 @@ Sheet = """
         border: 2px solid #F25C0A;
         border-radius: 5px;
         background-color: #F25C0A;
-        font-size: 14px;
+        font-size: 15px;
+        min-width: 150px;
+        min-height: 15px;
         font-weight: bold;
         color: white;
         padding: 13px 13px 10px 13px;
@@ -196,8 +197,7 @@ Sheet = """
     }
 
     #buttons QPushButton#next {
-        padding: 2px;
-        padding-right: 12px;
+        padding: 4px 12px 2px 2px;
         color: #F25C0A;
         background-color: transparent;
         border-image: url(:/next.png) 1 12 1 1;
@@ -377,7 +377,6 @@ Sheet = """
 
     #album-page QLineEdit:focus, #album-page TextArea:focus {
         border: 1px solid #F79D6C;
-        selection-background-color: qlineargradient(x1:0, y1:0, x2:0, y2: 1, stop:0 #FFB200 stop:1 #FFA200);
     }
 
     #album-page QLineEdit:disabled, #album-page TextArea:disabled {
