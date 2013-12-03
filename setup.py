@@ -12,7 +12,7 @@ setup(
     url='http://tagtamusique.com',
     download_url='https://bitbucket.org/tagtamusique/tgit',
     author_email='jr@iconoclaste.ca',
-    version='0.7',
+    version='0.8',
     test_suite='test',
     py_modules=['use_sip_api_v2'],
     packages=['tgit'],
