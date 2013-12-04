@@ -64,8 +64,8 @@ def centerOnScreen(widget):
 
 
 def activate(widget):
+    # widget.raise_()
     widget.activateWindow()
-    widget.raise_()
 
 
 def centeredHorizontally(widget):
