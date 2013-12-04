@@ -29,6 +29,8 @@ from tgit.ui.tagging_screen import TaggingScreen
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui import style
 
+WIN_LATIN1_ENCODING = 'Windows-1252'
+
 
 class MainWindow(QMainWindow, AlbumPortfolioListener):
     def __init__(self, albumPortfolio, audioPlayer, audioFileChooser, imageFileChooser):
@@ -80,7 +82,7 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         class Exporter(object):
             def export(self, album, filename):
                 with open(filename, 'wb') as out:
-                    format_ = CsvFormat('ISO-8859-1')
+                    format_ = CsvFormat(WIN_LATIN1_ENCODING)
                     format_.write(album, out)
 
         dialog.announceTo(Exporter())

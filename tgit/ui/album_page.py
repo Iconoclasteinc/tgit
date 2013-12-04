@@ -232,7 +232,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         # todo move to localize()
         fieldSet = QGroupBox(self.tr('RECORD'))
         self._labelNameLineEdit = self._makeLabelNameField()
-        self._labelTownLineEdit = self._makeLabelTownField()
+        self._labelTerritoryEdit = self._makeLabelTerritoryField()
         self._catalogNumberLineEdit = self._makeCatalogNumberField()
         self._upcLineEdit = self._makeUpcField()
         self._mediaTypeLineEdit = self._makeMediaTypeField()
@@ -240,7 +240,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._commentsTextArea = self._makeCommentsField()
 
         form = style.formLayout()
-        self._addLabelledFields(form, self._labelNameLineEdit, self._labelTownLineEdit,
+        self._addLabelledFields(form, self._labelNameLineEdit, self._labelTerritoryEdit,
                                 self._catalogNumberLineEdit, self._upcLineEdit,
                                 self._mediaTypeLineEdit, self._releaseTypeLineEdit,
                                 self._commentsTextArea)
@@ -254,7 +254,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         edit.editingFinished.connect(self._updateLabelName)
         return edit
 
-    def _makeLabelTownField(self):
+    def _makeLabelTerritoryField(self):
         edit = QLineEdit()
         edit.setObjectName(AlbumPage.LABEL_TOWN_FIELD_NAME)
         return edit
@@ -330,7 +330,7 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._disableField(self._digitalReleaseTimeLineEdit)
         self._disableField(self._originalReleaseTimeLineEdit)
         self._disableField(self._areaLineEdit)
-        self._disableField(self._labelTownLineEdit)
+        self._disableField(self._labelTerritoryEdit)
         self._disableField(self._mediaTypeLineEdit)
         self._disableField(self._releaseTypeLineEdit)
         self._disableField(self._primaryStyleLineEdit)
@@ -354,9 +354,10 @@ class AlbumPage(QWidget, FileChoiceListener, AlbumListener):
         self._guestPerformersLineEdit.setPlaceholderText(
             self.tr('Instrument1: Performer1; Instrument2: Performer2; ...'))
         self._labelFor(self._labelNameLineEdit).setText(self.tr('Label Name:'))
-        self._labelFor(self._labelTownLineEdit).setText(self.tr('Label Town:'))
+        self._labelFor(self._labelTerritoryEdit).setText(self.tr('Territory:'))
         self._labelFor(self._catalogNumberLineEdit).setText(self.tr('Catalog Number:'))
         self._labelFor(self._upcLineEdit).setText(self.tr('UPC/EAN:'))
+        self._upcLineEdit.setPlaceholderText(self.tr('1234567899999'))
         self._labelFor(self._mediaTypeLineEdit).setText(self.tr('Media Type:'))
         self._labelFor(self._releaseTypeLineEdit).setText(self.tr('Release Type:'))
         self._labelFor(self._commentsTextArea).setText(self.tr('Comments:'))

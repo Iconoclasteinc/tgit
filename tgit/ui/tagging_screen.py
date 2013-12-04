@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget, QPushButton
+from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget, QPushButton, QLabel
 
 from tgit.announcer import Announcer
 from tgit.album import AlbumListener
@@ -31,6 +31,8 @@ from tgit.ui.track_page import TrackPage
 TRACK_LIST_PAGE = 0
 ALBUM_PAGE = 1
 TRACK_PAGE = 2
+
+HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
 
 
 class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
@@ -76,9 +78,22 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
     def _makeNavigationBar(self):
         self._navigationBar = QWidget()
         self._navigationBar.setObjectName(ui.NAVIGATION_BAR)
+        helpLink = self._makeHelpLink()
         layout = QHBoxLayout()
+        layout.setContentsMargins(25, 10, 25, 10)
+        layout.addStretch()
+        layout.addWidget(helpLink)
+
         self._navigationBar.setLayout(layout)
         return self._navigationBar
+
+    def _makeHelpLink(self):
+        label = QLabel()
+        label.setText('<a style="color: white" href="%s">%s</a>' % (HELP_URL, self.tr('Help')))
+        label.setTextFormat(Qt.RichText)
+        label.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        label.setOpenExternalLinks(True)
+        return label
 
     def _makePages(self):
         self._pages = QStackedWidget()
