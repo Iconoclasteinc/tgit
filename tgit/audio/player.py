@@ -75,8 +75,8 @@ class PhononPlayer(object):
             # On OSX loading a new media source triggers a transition to the stopped state first
             # whereas on Windows it goes straight to the LOADING state
             if is_ == self.STOPPED or is_ == self.LOADING:
-                self._media.release()
+                self._mediaLibrary.release(self._media)
                 self._announce.stopped(self._media.name)
             if is_ == self.PAUSED:
-                self._media.release()
+                self._mediaLibrary.release(self._media)
                 self._announce.paused(self._media.name)

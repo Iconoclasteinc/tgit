@@ -59,3 +59,6 @@ class Mp3Audio(object):
 class AudioFiles(MediaLibrary):
     def load(self, filename):
         return Mp3Audio(filename)
+
+    def release(self, media):
+        media.release()

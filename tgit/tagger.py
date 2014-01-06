@@ -32,9 +32,11 @@ from tgit.ui import display
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
 
+
 TGIT = 'tgit'
 QT = 'qt'
 UTF_8 = 'UTF-8'
+RESOURCES = ':/resources'
 
 
 class TGiT(QApplication):
@@ -64,20 +66,14 @@ class TGiT(QApplication):
     def _addProductionHouseFor(self, trackCatalog):
         self._ui.addProductionHouse(RecordLabel(self._albums, trackCatalog))
 
-    def useMediaPlayer(self, player):
-        self._ui.setMediaPlayer(player)
-
-    def useNativeDialogs(self, native):
-        self._ui.useNativeDialogs(native)
-
-    def changeLanguage(self, language):
+    def setLanguage(self, language):
         QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
         for resource in (QT, TGIT):
-            self._installTranslations(resource, language),
+            self._installTranslations(resource, language)
 
     def _installTranslations(self, resource, locale):
         translator = QTranslator()
-        if translator.load('%s_%s' % (resource, locale), ':/resources'):
+        if translator.load('%s_%s' % (resource, locale), RESOURCES):
             self.installTranslator(translator)
             self._translators.append(translator)
 

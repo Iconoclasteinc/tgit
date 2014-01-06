@@ -30,13 +30,11 @@ def invert(mapping):
 
 
 def load(filename):
-    tagger = Id3Tagger()
-    return tagger.load(filename)
+    return Id3Tagger().load(filename)
 
 
 def save(filename, metadata, overwrite=False):
-    tagger = Id3Tagger(overwrite=overwrite)
-    tagger.save(filename=filename, metadata=metadata)
+    Id3Tagger(overwrite=overwrite).save(filename=filename, metadata=metadata)
 
 
 class Id3Tagger(object):
