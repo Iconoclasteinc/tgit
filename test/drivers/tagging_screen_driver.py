@@ -4,12 +4,16 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from test.cute.widgets import WidgetDriver, ButtonDriver
-from test.cute.matchers import named, showingOnScreen
-from test.drivers.track_list_page_driver import TrackListPageDriver
-from test.drivers.album_page_driver import AlbumPageDriver
-from test.drivers.track_page_driver import TrackPageDriver
+from test.cute.matchers import named
+from test.drivers.album_page_driver import albumPage
+from test.drivers.track_list_page_driver import trackListPage
+from test.drivers.track_page_driver import trackPage
 
 from tgit.ui import constants as ui
+
+
+def taggingScreen(parent):
+    return TaggingScreenDriver.findSingle(parent, QWidget, named(ui.TAGGING_SCREEN_NAME))
 
 
 class TaggingScreenDriver(WidgetDriver):
@@ -17,7 +21,7 @@ class TaggingScreenDriver(WidgetDriver):
         super(TaggingScreenDriver, self).__init__(selector, prober, gesturePerformer)
 
     def isShowingTrackList(self):
-        self._trackListPage().isShowingOnScreen()
+        trackListPage(self).isShowingOnScreen()
         self._isDisabled(self._previousPageButton())
         self._isDisabled(self._saveButton())
 
@@ -30,23 +34,23 @@ class TaggingScreenDriver(WidgetDriver):
         button.hasCursorShape(Qt.PointingHandCursor)
 
     def isShowingAlbumMetadata(self):
-        self._albumPage().isShowingOnScreen()
+        albumPage(self).isShowingOnScreen()
         self._isEnabled(self._previousPageButton())
         self._isEnabled(self._saveButton())
 
     def isShowingTrackMetadata(self):
-        self._currentTrackPage().isShowingOnScreen()
+        trackPage(self).isShowingOnScreen()
         self._isEnabled(self._previousPageButton())
         self._isEnabled(self._saveButton())
 
     def addFiles(self):
-        self._trackListPage().addFiles()
+        trackListPage(self).addFiles()
 
     def removeTrack(self, title):
-        self._trackListPage().removeTrack(title)
+        trackListPage(self).removeTrack(title)
 
     def moveTrack(self, title, to):
-        self._trackListPage().moveTrack(title, to)
+        trackListPage(self).moveTrack(title, to)
 
     def nextPage(self):
         button = self._nextPageButton()
@@ -74,33 +78,21 @@ class TaggingScreenDriver(WidgetDriver):
         self.isShowingTrackMetadata()
 
     def showsAlbumContains(self, *tracks):
-        trackList = self._trackListPage()
-        trackList.isShowingOnScreen()
-        trackList.showsTracksInOrder(*tracks)
+        trackListPage(self).isShowingOnScreen()
+        trackListPage(self).showsTracksInOrder(*tracks)
 
     def showsAlbumMetadata(self, **tags):
-        self._albumPage().isShowingOnScreen()
-        self._albumPage().showsMetadata(**tags)
+        albumPage(self).isShowingOnScreen()
+        albumPage(self).showsMetadata(**tags)
 
     def editAlbumMetadata(self, **tags):
-        self._albumPage().changeMetadata(**tags)
+        albumPage(self).changeMetadata(**tags)
 
     def showsTrackMetadata(self, **tags):
-        self._currentTrackPage().isShowingOnScreen()
-        self._currentTrackPage().showsMetadata(**tags)
+        trackPage(self).showsMetadata(**tags)
 
     def editTrackMetadata(self, **tags):
-        self._currentTrackPage().changeMetadata(**tags)
-
-    def _trackListPage(self):
-        return TrackListPageDriver.findSingle(self, QWidget, named(ui.TRACK_LIST_PAGE_NAME))
-
-    def _albumPage(self):
-        return AlbumPageDriver.findSingle(self, QWidget, named(ui.ALBUM_PAGE_NAME))
-
-    def _currentTrackPage(self):
-        return TrackPageDriver.findSingle(self, QWidget, named(ui.TRACK_PAGE_NAME),
-                                          showingOnScreen())
+        trackPage(self).changeMetadata(**tags)
 
     def _nextPageButton(self):
         return ButtonDriver.findSingle(self, QPushButton, named(ui.NEXT_BUTTON_NAME))

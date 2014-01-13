@@ -50,7 +50,7 @@ class TGiT(QApplication):
         if imageFileChooser is None:
             imageFileChooser = ImageFileChooserDialog()
 
-        self.changeLanguage(language)
+        self.setLanguage(language)
         self._ui = MainWindow(self._albums, player(AudioFiles()), audioFileChooser,
                               imageFileChooser)
         self._attachFileChooser(audioFileChooser)

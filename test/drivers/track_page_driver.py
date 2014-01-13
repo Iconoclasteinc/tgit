@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel, QLineEdit, QPlainTextEdit, QTimeEdit
+from PyQt4.QtGui import QLabel, QLineEdit, QPlainTextEdit, QTimeEdit, QWidget
 
-from test.cute.matchers import named, withBuddy
+from test.cute.matchers import named, withBuddy, showingOnScreen
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEditDriver,
                                DateTimeEditDriver)
 
 import tgit.tags as tags
 from tgit.ui import constants as ui
+
+
+def trackPage(parent):
+    return TrackPageDriver.findSingle(parent, QWidget, named(ui.TRACK_PAGE_NAME),
+                                      showingOnScreen())
 
 
 class TrackPageDriver(WidgetDriver):

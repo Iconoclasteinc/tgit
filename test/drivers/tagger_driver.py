@@ -7,7 +7,7 @@ from PyQt4.QtGui import QFileDialog, QWidget
 from test.cute.matchers import named
 from test.cute.widgets import window, MainWindowDriver, FileDialogDriver
 from test.drivers.menu_bar_driver import menuBar
-from test.drivers.tagging_screen_driver import TaggingScreenDriver
+from test.drivers.tagging_screen_driver import TaggingScreenDriver, taggingScreen
 from test.drivers.welcome_screen_driver import welcomeScreen
 
 from tgit.ui import constants as ui
@@ -37,47 +37,44 @@ class TaggerDriver(MainWindowDriver):
         welcomeScreen(self).isShowingOnScreen()
 
     def showsTaggingScreen(self):
-        self._taggingScreen().isShowingOnScreen()
+        taggingScreen(self).isShowingOnScreen()
 
     def showsExportAsDialog(self):
         self._exportAsDialog().isShowingOnScreen()
 
     def removeTrack(self, title):
-        self._taggingScreen().removeTrack(title)
+        taggingScreen(self).removeTrack(title)
 
     def moveTrack(self, title, to):
-        self._taggingScreen().moveTrack(title, to)
+        taggingScreen(self).moveTrack(title, to)
 
     # todo have a quick navigation button
     def toAlbum(self):
-        self._taggingScreen().nextPage()
-        self._taggingScreen().isShowingAlbumMetadata()
+        taggingScreen(self).nextPage()
+        taggingScreen(self).isShowingAlbumMetadata()
 
     # todo have a quick navigation button
     def toNextTrack(self):
-        self._taggingScreen().nextPage()
-        self._taggingScreen().isShowingTrackMetadata()
+        taggingScreen(self).nextPage()
+        taggingScreen(self).isShowingTrackMetadata()
 
     def showsAlbumContains(self, *tracks):
-        self._taggingScreen().showsAlbumContains(*tracks)
+        taggingScreen(self).showsAlbumContains(*tracks)
 
     def showsAlbumMetadata(self, **tags):
-        self._taggingScreen().showsAlbumMetadata(**tags)
+        taggingScreen(self).showsAlbumMetadata(**tags)
 
     def editAlbumMetadata(self, **tags):
-        self._taggingScreen().editAlbumMetadata(**tags)
+        taggingScreen(self).editAlbumMetadata(**tags)
 
     def showsTrackMetadata(self, **tags):
-        self._taggingScreen().showsTrackMetadata(**tags)
+        taggingScreen(self).showsTrackMetadata(**tags)
 
     def editTrackMetadata(self, **tags):
-        self._taggingScreen().editTrackMetadata(**tags)
+        taggingScreen(self).editTrackMetadata(**tags)
 
     def saveAlbum(self):
-        self._taggingScreen().saveAlbum()
-
-    def _taggingScreen(self):
-        return TaggingScreenDriver.findSingle(self, QWidget, named(ui.TAGGING_SCREEN_NAME))
+        taggingScreen(self).saveAlbum()
 
     def _exportAsDialog(self):
         return FileDialogDriver(window(QFileDialog, named(ui.EXPORT_AS_DIALOG_NAME)),

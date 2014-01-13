@@ -2,14 +2,18 @@
 
 import os
 
-from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog, QPlainTextEdit
+from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QFileDialog, QPlainTextEdit, QWidget
 
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from test.cute.widgets import (window, WidgetDriver, LabelDriver, LineEditDriver,
                                ButtonDriver, FileDialogDriver, TextEditDriver)
 
 import tgit.tags as tags
-from tgit.ui import AlbumPage
+from tgit.ui import AlbumPage, constants
+
+
+def albumPage(parent):
+    return AlbumPageDriver.findSingle(parent, QWidget, named(constants.ALBUM_PAGE_NAME))
 
 
 class AlbumPageDriver(WidgetDriver):

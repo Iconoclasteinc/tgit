@@ -2,13 +2,17 @@
 
 from hamcrest import contains, has_items, equal_to
 
-from PyQt4.QtGui import QAbstractButton, QTableView
+from PyQt4.QtGui import QAbstractButton, QTableView, QWidget
 
 from test.cute.widgets import WidgetDriver, ButtonDriver, TableViewDriver
 from test.cute.matchers import named
 
 from tgit.ui import constants as ui
 from tgit.ui.album_table_model import Columns
+
+
+def trackListPage(parent):
+    return TrackListPageDriver.findSingle(parent, QWidget, named(ui.TRACK_LIST_PAGE_NAME))
 
 
 class TrackListPageDriver(WidgetDriver):
