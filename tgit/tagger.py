@@ -38,20 +38,19 @@ UTF_8 = 'UTF-8'
 
 
 class TGiT(QApplication):
-    def __init__(self, language, player=None, audioFileChooser=None, imageFileChooser=None):
+    def __init__(self, language, player=PhononPlayer, audioFileChooser=None, imageFileChooser=None):
         QApplication.__init__(self, [])
         self._translators = []
         self._albums = AlbumPortfolio()
 
-        if player is None:
-            player = PhononPlayer(AudioFiles())
         if audioFileChooser is None:
             audioFileChooser = AudioFileChooserDialog()
         if imageFileChooser is None:
             imageFileChooser = ImageFileChooserDialog()
 
         self.changeLanguage(language)
-        self._ui = MainWindow(self._albums, player, audioFileChooser, imageFileChooser)
+        self._ui = MainWindow(self._albums, player(AudioFiles()), audioFileChooser,
+                              imageFileChooser)
         self._attachFileChooser(audioFileChooser)
         self._attachFileChooser(imageFileChooser)
         self._addProductionHouseFor(TrackFiles(Id3Tagger()))

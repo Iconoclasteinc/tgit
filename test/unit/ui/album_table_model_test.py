@@ -76,7 +76,7 @@ class RowTest(unittest.TestCase):
             has_property('trackTitle', 'Track #1')), 'album tracks')
 
     def testStartsAndStopsPlayingTrack(self):
-        player = flexmock(fakes.FakeAudioPlayer())
+        player = flexmock(fakes.audioPlayer())
 
         album = build.album(tracks=[build.track(filename='track.mp3')])
         track = album.tracks[0]
@@ -149,7 +149,7 @@ class ColumnsTest(unittest.TestCase):
 class AlbumTableModelTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
-        self.player = flexmock(fakes.FakeAudioPlayer())
+        self.player = flexmock(fakes.audioPlayer())
         self.model = flexmock(TestAlbumTableModel(self.album, self.player))
 
     def testHasEnoughColumns(self):

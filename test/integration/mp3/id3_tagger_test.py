@@ -4,14 +4,14 @@ import unittest
 from hamcrest import (assert_that, has_entry, has_items, has_key, has_length, contains,
                       is_not, contains_inanyorder)
 
-from test.util.mp3_file import makeMp3, TestMp3
+from test.util import mp3_file as mp3
 
 from tgit import tags
 from tgit.metadata import Metadata, Image
 import tgit.mp3.id3_tagger as tagger
 
-BITRATE = TestMp3.bitrate
-DURATION = TestMp3.duration
+BITRATE = mp3.Base.bitrate
+DURATION = mp3.Base.duration
 
 
 # todo we need dedicated focused tests for the processors
@@ -20,7 +20,7 @@ class Id3TaggerTest(unittest.TestCase):
         self.mp3.delete()
 
     def makeMp3(self, **tags):
-        self.mp3 = makeMp3(TestMp3.filename, **tags)
+        self.mp3 = mp3.make(**tags)
         return self.mp3.filename
 
     def testReadsAlbumTitleFromTALBFrame(self):

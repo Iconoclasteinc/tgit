@@ -12,8 +12,7 @@ from PyQt4.QtGui import QTableWidgetItem
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe, AssertionProbe
 from test.drivers.track_list_page_driver import TrackListPageDriver
-from test.util import builders as build
-from test.util.fakes import FakeAudioPlayer
+from test.util import builders as build, fakes
 
 from tgit.album import Album
 from tgit.ui.track_list_page import TrackListPage
@@ -33,7 +32,7 @@ class TrackListPageTest(BaseWidgetTest):
 
     def setUp(self):
         super(TrackListPageTest, self).setUp()
-        self.player = flexmock(FakeAudioPlayer())
+        self.player = flexmock(fakes.audioPlayer())
         self.album = Album()
         self.widget = TrackListPage(self.album, self.player)
         self.view(self.widget)

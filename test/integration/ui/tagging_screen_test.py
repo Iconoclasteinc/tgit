@@ -7,7 +7,7 @@ from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.tagging_screen_driver import TaggingScreenDriver
 from test.util.builders import track
-from test.util.fakes import FakeAudioPlayer, FakeFileChooser
+from test.util import fakes
 
 from tgit.album import Album
 from tgit.ui.tagging_screen import TaggingScreen
@@ -18,9 +18,9 @@ class TaggingScreenTest(BaseWidgetTest):
     def setUp(self):
         super(TaggingScreenTest, self).setUp()
         self.album = Album()
-        self.audioFileChooser = FakeFileChooser()
-        self.widget = TaggingScreen(self.album, FakeAudioPlayer(), self.audioFileChooser,
-                                    FakeFileChooser())
+        self.audioFileChooser = fakes.fileChooser()
+        self.widget = TaggingScreen(self.album, fakes.audioPlayer(), self.audioFileChooser,
+                                    fakes.fileChooser())
         self.view(self.widget)
         self.driver = self.createDriverFor(self.widget)
 

@@ -3,8 +3,7 @@
 from test.integration.ui.base_widget_test import BaseWidgetTest
 from test.cute.finders import WidgetIdentity
 from test.drivers.tagger_driver import TaggerDriver
-from test.util.fakes import FakeAudioPlayer, FakeFileChooser
-from test.util import builders as build
+from test.util import builders as build, fakes
 
 from tgit.album import Album
 from tgit.record_label import AlbumPortfolio
@@ -15,8 +14,8 @@ class MainWindowTest(BaseWidgetTest):
 
     def setUp(self):
         super(MainWindowTest, self).setUp()
-        self.widget = MainWindow(AlbumPortfolio(), FakeAudioPlayer(), FakeFileChooser(),
-                                 FakeFileChooser())
+        self.widget = MainWindow(AlbumPortfolio(), fakes.audioPlayer(), fakes.fileChooser(),
+                                 fakes.fileChooser())
         self.view(self.widget)
         self.driver = self.createDriverFor(self.widget)
 

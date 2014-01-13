@@ -7,7 +7,7 @@ from test.cute.widgets import mainApplicationWindow
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
-from test.util.fakes import FakeAudioPlayer
+from test.util import fakes
 
 from tgit.tagger import TGiT
 from tgit.ui import constants as ui
@@ -19,7 +19,7 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self):
-        self.app = TGiT(ENGLISH, FakeAudioPlayer(), AudioFileChooserDialog(native=False),
+        self.app = TGiT(ENGLISH, fakes.audioPlayer, AudioFileChooserDialog(native=False),
                         ImageFileChooserDialog(native=False))
         self.app.show()
         self.tagger = TaggerDriver(mainApplicationWindow(named(ui.MAIN_WINDOW_NAME),

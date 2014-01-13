@@ -11,7 +11,7 @@ from tgit import tags as tagging
 from tgit.util import fs
 
 
-class TestMp3(object):
+class Base(object):
     filename = testResources.path('base.mp3')
     bitrate = 320000
     duration = 9.064475
@@ -21,7 +21,7 @@ FRONT_COVER = 3
 BACK_COVER = 4
 
 
-def makeMp3(from_=TestMp3.filename, **tags):
+def make(from_=Base.filename, **tags):
     return Mp3File(fs.makeCopy(from_)).withTags(**tags).make()
 
 

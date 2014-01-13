@@ -10,6 +10,10 @@ from tgit import tags as tagging
 from tgit.mp3 import id3_tagger as tagger
 
 
+def metadataStore():
+    return FakeMetadataStore()
+
+
 class FakeMetadataStore(object):
     def __init__(self):
         self.files = []
@@ -43,6 +47,10 @@ class FakeMetadataStore(object):
         [recording.delete() for recording in self.files]
 
 
+def audioPlayer(*args):
+    return FakeAudioPlayer()
+
+
 class FakeAudioPlayer(object):
     def __init__(self):
         self._filename = None
@@ -68,6 +76,10 @@ class FakeAudioPlayer(object):
 
     def removePlayerListener(self, listener):
         self._announce.removeListener(listener)
+
+
+def fileChooser():
+    return FakeFileChooser()
 
 
 class FakeFileChooser(FileChooser):

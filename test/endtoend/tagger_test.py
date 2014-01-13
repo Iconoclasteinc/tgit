@@ -2,9 +2,7 @@
 
 import unittest
 
-from test.util import resources
-from test.util.mp3_file import makeMp3
-from test.util.fakes import FakeMetadataStore
+from test.util import resources, fakes, mp3_file as mp3
 from test.endtoend.application_runner import ApplicationRunner
 
 from tgit.util import fs
@@ -13,7 +11,7 @@ from tgit.util import fs
 class TaggerTest(unittest.TestCase):
     def setUp(self):
         self.application = ApplicationRunner()
-        self.audioLibrary = FakeMetadataStore()
+        self.audioLibrary = fakes.metadataStore()
         self.application.start()
 
     def tearDown(self):
@@ -21,28 +19,28 @@ class TaggerTest(unittest.TestCase):
         self.audioLibrary.delete()
 
     def testCreatesAndTagsANewAlbum(self):
-        maPreference = self.audioLibrary.add(makeMp3(
+        maPreference = self.audioLibrary.add(mp3.make(
             trackTitle=u'Ma préférence',
             releaseName='Jaloux',
             frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('jaloux.jpg'))),
             leadPerformer='Julien Clerc',
             labelName='EMI',
             releaseTime='1978'))
-        faisMoiUnePlace = self.audioLibrary.add(makeMp3(
+        faisMoiUnePlace = self.audioLibrary.add(mp3.make(
             trackTitle='Fais moi une place',
             releaseName='Fais moi une place',
             frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('une-place.jpg'))),
             labelName='Virgin',
             releaseTime='1990',
             upc='3268440307258'))
-        rolo = self.audioLibrary.add(makeMp3(
+        rolo = self.audioLibrary.add(mp3.make(
             trackTitle='Rolo le Baroudeur',
             releaseName='Niagara',
             frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('niagara.jpg'))),
             releaseTime='1971',
             lyricist=u'Étienne Roda-Gil'
         ))
-        ceNestRien = self.audioLibrary.add(makeMp3(
+        ceNestRien = self.audioLibrary.add(mp3.make(
             trackTitle="Ce n'est rien",
             releaseName='Niagara',
             frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('niagara.jpg'))),
