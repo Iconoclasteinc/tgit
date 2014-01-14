@@ -6,11 +6,10 @@ import shutil
 
 from hamcrest import equal_to
 
-from test.integration.ui.base_widget_test import BaseWidgetTest
+from test.integration.ui.view_test import ViewTest
 from PyQt4.QtGui import QMainWindow, QFileDialog
 from test.cute.probes import ValueMatcherProbe
 from test.cute.widgets import FileDialogDriver, window
-from test.cute.properties import text
 from test.cute.matchers import named
 from test.util import builders as build
 
@@ -18,11 +17,11 @@ from tgit.ui import constants as ui
 from tgit.ui.export_as_dialog import ExportAsDialog
 
 
-class ExportAsDialogTest(BaseWidgetTest):
+class ExportAsDialogTest(ViewTest):
     def setUp(self):
         super(ExportAsDialogTest, self).setUp()
         mainWindow = QMainWindow()
-        self.view(mainWindow)
+        self.show(mainWindow)
         self.dialog = ExportAsDialog(native=False, parent=mainWindow)
         self.driver = self.createDriver()
         self.exportDir = createTempDir()

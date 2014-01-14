@@ -27,7 +27,7 @@ from tgit.record_label import AlbumPortfolio, RecordLabel
 from tgit.mp3.track_files import TrackFiles
 from tgit.mp3.id3_tagger import Id3Tagger
 from tgit.ui.main_window import MainWindow
-from tgit.ui.dialogs import AudioFileChooserDialog, ImageFileChooserDialog
+from tgit.ui.dialogs import AudioFileChooserDialog
 from tgit.ui import display
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
@@ -40,21 +40,17 @@ RESOURCES = ':/resources'
 
 
 class TGiT(QApplication):
-    def __init__(self, language, player=PhononPlayer, audioFileChooser=None, imageFileChooser=None):
+    def __init__(self, language, player=PhononPlayer, audioFileChooser=None):
         QApplication.__init__(self, [])
         self._translators = []
         self._albums = AlbumPortfolio()
 
         if audioFileChooser is None:
             audioFileChooser = AudioFileChooserDialog()
-        if imageFileChooser is None:
-            imageFileChooser = ImageFileChooserDialog()
 
         self.setLanguage(language)
-        self._ui = MainWindow(self._albums, player(AudioFiles()), audioFileChooser,
-                              imageFileChooser)
+        self._ui = MainWindow(self._albums, player(AudioFiles()), audioFileChooser)
         self._attachFileChooser(audioFileChooser)
-        self._attachFileChooser(imageFileChooser)
         self._addProductionHouseFor(TrackFiles(Id3Tagger()))
 
     def show(self):

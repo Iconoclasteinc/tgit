@@ -53,7 +53,7 @@ class WidgetDriver(object):
     def findSingle(cls, parent, widgetType, *matchers):
         return cls(SingleWidgetFinder(
             RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector)),
-                   parent.prober, parent.gesturePerformer)
+            parent.prober, parent.gesturePerformer)
 
     @classmethod
     def findNth(cls, parent, widgetType, index, *matchers):
@@ -253,8 +253,14 @@ class FileDialogDriver(WidgetDriver):
     def accept(self):
         self.acceptButton().click()
 
+    def acceptButtonIs(self, criteria):
+        return self._dialogButton(QFileDialog.Accept).is_(criteria)
+
     def reject(self):
         self.acceptButton().click()
+
+    def rejectButtonIs(self, criteria):
+        return self._dialogButton(QFileDialog.Reject).is_(criteria)
 
     def _listView(self):
         return ListViewDriver.findSingle(self, QListView, match.named('listView'))

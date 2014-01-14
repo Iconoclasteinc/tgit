@@ -33,14 +33,13 @@ WIN_LATIN1_ENCODING = 'Windows-1252'
 
 
 class MainWindow(QMainWindow, AlbumPortfolioListener):
-    def __init__(self, albumPortfolio, audioPlayer, audioFileChooser, imageFileChooser):
+    def __init__(self, albumPortfolio, audioPlayer, audioFileChooser):
         QMainWindow.__init__(self)
 
         self._albumPortfolio = albumPortfolio
         self._albumPortfolio.addPortfolioListener(self)
         self._audioPlayer = audioPlayer
         self._audioFileChooser = audioFileChooser
-        self._imageFileChooser = imageFileChooser
         self._productionHouses = Announcer()
 
         self._assemble()
@@ -49,8 +48,7 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self._productionHouses.addListener(house)
 
     def albumCreated(self, album):
-        taggingScreen = TaggingScreen(album, self._audioPlayer, self._audioFileChooser,
-                                      self._imageFileChooser, self)
+        taggingScreen = TaggingScreen(album, self._audioPlayer, self._audioFileChooser)
         taggingScreen.addRequestListener(self._productionHouses)
         taggingScreen.selectFiles()
         self.setCentralWidget(taggingScreen)

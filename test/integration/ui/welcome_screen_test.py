@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from test.integration.ui.base_widget_test import BaseWidgetTest
+from test.integration.ui.view_test import ViewTest
 from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.welcome_screen_driver import WelcomeScreenDriver
@@ -8,11 +8,11 @@ from test.drivers.welcome_screen_driver import WelcomeScreenDriver
 from tgit.ui.welcome_screen import WelcomeScreen
 
 
-class WelcomeScreenTest(BaseWidgetTest):
+class WelcomeScreenTest(ViewTest):
     def setUp(self):
         super(WelcomeScreenTest, self).setUp()
         self.widget = WelcomeScreen()
-        self.view(self.widget)
+        self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):

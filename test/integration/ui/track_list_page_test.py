@@ -6,7 +6,7 @@ from flexmock import flexmock
 from hamcrest import has_property, contains
 from hamcrest.library.collection.is_empty import empty
 
-from test.integration.ui.base_widget_test import BaseWidgetTest
+from test.integration.ui.view_test import ViewTest
 from PyQt4.QtGui import QTableWidgetItem
 
 from test.cute.finders import WidgetIdentity
@@ -28,14 +28,14 @@ def hasTitle(title):
     return has_property('trackTitle', title)
 
 
-class TrackListPageTest(BaseWidgetTest):
+class TrackListPageTest(ViewTest):
 
     def setUp(self):
         super(TrackListPageTest, self).setUp()
         self.player = flexmock(fakes.audioPlayer())
         self.album = Album()
         self.widget = TrackListPage(self.album, self.player)
-        self.view(self.widget)
+        self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):

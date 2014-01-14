@@ -3,6 +3,7 @@
 from hamcrest import described_as, none
 
 from PyQt4.QtCore import QPoint, QRect
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from test.cute.prober import Probe
 
@@ -137,9 +138,12 @@ class ValueMatcherProbe(Probe):
     def __init__(self, message, matcher=nothing()):
         super(ValueMatcherProbe, self).__init__()
         self._message = message
-        self._valueMatcher = matcher
-        self._receivedValue = None
+        self.expect(matcher)
+
+    def expect(self, matcher):
+        self._valueMatcher = wrap_matcher(matcher)
         self._hasReceivedAValue = False
+        self._receivedValue = None
 
     def test(self):
         pass

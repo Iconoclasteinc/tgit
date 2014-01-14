@@ -2,7 +2,7 @@
 
 from hamcrest import equal_to
 
-from test.integration.ui.base_widget_test import BaseWidgetTest
+from test.integration.ui.view_test import ViewTest
 from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.tagging_screen_driver import TaggingScreenDriver
@@ -13,15 +13,14 @@ from tgit.album import Album
 from tgit.ui.tagging_screen import TaggingScreen
 
 
-class TaggingScreenTest(BaseWidgetTest):
+class TaggingScreenTest(ViewTest):
 
     def setUp(self):
         super(TaggingScreenTest, self).setUp()
         self.album = Album()
         self.audioFileChooser = fakes.fileChooser()
-        self.widget = TaggingScreen(self.album, fakes.audioPlayer(), self.audioFileChooser,
-                                    fakes.fileChooser())
-        self.view(self.widget)
+        self.widget = TaggingScreen(self.album, fakes.audioPlayer(), self.audioFileChooser)
+        self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):

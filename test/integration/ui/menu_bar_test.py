@@ -2,7 +2,7 @@
 
 from hamcrest import equal_to
 
-from test.integration.ui.base_widget_test import BaseWidgetTest
+from test.integration.ui.view_test import ViewTest
 from PyQt4.QtGui import QMainWindow
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
@@ -11,11 +11,11 @@ from test.util import builders as build
 from tgit.ui.menu_bar import MenuBar
 
 
-class MenuBarTest(BaseWidgetTest):
+class MenuBarTest(ViewTest):
     def setUp(self):
         super(MenuBarTest, self).setUp()
         self.mainWindow = QMainWindow()
-        self.view(self.mainWindow)
+        self.show(self.mainWindow)
         self.widget = MenuBar(self.mainWindow)
         self.driver = self.createDriverFor(self.widget)
 

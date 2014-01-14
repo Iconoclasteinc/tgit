@@ -9,8 +9,12 @@ TEST_DIR = os.path.abspath(os.path.join(PROJECT_DIR, 'test'))
 TEST_RESOURCES_DIR = os.path.join(TEST_DIR, 'resources')
 
 
+def root():
+    return TEST_RESOURCES_DIR
+
+
 def path(path, *more):
-    filename = os.path.join(TEST_RESOURCES_DIR, path)
+    filename = os.path.join(root(), path)
     for path in more:
         filename = os.path.join(filename, path)
 

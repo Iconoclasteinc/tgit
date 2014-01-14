@@ -4,7 +4,7 @@ from datetime import timedelta
 
 from hamcrest import equal_to
 
-from test.integration.ui.base_widget_test import BaseWidgetTest
+from test.integration.ui.view_test import ViewTest
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import AssertionProbe
 from test.drivers.track_page_driver import TrackPageDriver
@@ -13,7 +13,7 @@ from test.util import builders as build
 from tgit.ui.track_page import TrackPage
 
 
-class TrackPageTest(BaseWidgetTest):
+class TrackPageTest(ViewTest):
     def setUp(self):
         super(TrackPageTest, self).setUp()
         self.album = build.album()
@@ -21,7 +21,7 @@ class TrackPageTest(BaseWidgetTest):
                                  duration=timedelta(minutes=4, seconds=35).total_seconds())
         self.album.addTrack(self.track)
         self.widget = TrackPage(self.album, self.track)
-        self.view(self.widget)
+        self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):

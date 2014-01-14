@@ -17,14 +17,14 @@ from tgit.ui import display
 END_OF_TEST_PAUSE = int(os.environ.get('END_OF_TEST_PAUSE', 0))
 
 
-class BaseWidgetTest(unittest.TestCase):
+class ViewTest(unittest.TestCase):
     def setUp(self):
         self.app = QApplication([])
         self.prober = EventProcessingProber(timeoutInMs=1000)
         self.gesturePerformer = Robot()
         self.driver = None
 
-    def view(self, widget):
+    def show(self, widget):
         widget.setStyleSheet(style.Sheet)
         widget.setFixedSize(*ui.MAIN_WINDOW_SIZE)
         display.centeredOnScreen(widget)

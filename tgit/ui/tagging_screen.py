@@ -24,7 +24,7 @@ from tgit.announcer import Announcer
 from tgit.album import AlbumListener
 from tgit.ui.file_chooser import FileChoiceListener
 from tgit.ui import constants as ui, style
-from tgit.ui.album_page import AlbumPage
+from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.track_list_page import TrackListPage
 from tgit.ui.track_page import TrackPage
 
@@ -36,14 +36,13 @@ HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
 
 
 class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
-    def __init__(self, album, player, audioFileChooser, imageFileChooser, parent=None):
-        QWidget.__init__(self, parent)
+    def __init__(self, album, player, audioFileChooser):
+        QWidget.__init__(self)
         self._album = album
         self._album.addAlbumListener(self)
         self._player = player
         self._audioFileChooser = audioFileChooser
         self._audioFileChooser.addChoiceListener(self)
-        self._imageFileChooser = imageFileChooser
         self._requestListeners = Announcer()
 
         self._assemble()
@@ -100,7 +99,10 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
         page = TrackListPage(self._album, self._player)
         page.addRequestListener(self)
         self._pages.addWidget(page)
-        self._pages.addWidget(AlbumPage(self._album, self._imageFileChooser))
+        albumPage = QWidget()
+        editor = AlbumEditor(self._album)
+        editor.render(albumPage)
+        self._pages.addWidget(albumPage)
         self._pages.setCurrentIndex(TRACK_LIST_PAGE)
         return self._pages
 
