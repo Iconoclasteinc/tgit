@@ -30,7 +30,8 @@ class TrackFiles(object):
     def load(self, filename):
         metadata = self._container.load(filename)
         album = Album(metadata.subsetWithImages(*tags.ALBUM_TAGS))
-        track = Track(filename, metadata.subset(*tags.TRACK_TAGS), album)
+        track = Track(filename, metadata.subset(*tags.TRACK_TAGS))
+        album.addTrack(track)
         return track
 
     def save(self, track):

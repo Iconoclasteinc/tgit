@@ -25,8 +25,10 @@ from tgit.album import AlbumListener
 from tgit.ui.file_chooser import FileChoiceListener
 from tgit.ui import constants as ui, style
 from tgit.ui.album_editor import AlbumEditor
+from tgit.ui.track_editor import TrackEditor
 from tgit.ui.track_list_page import TrackListPage
-from tgit.ui.track_page import TrackPage
+from tgit.ui.views.track_page import TrackPage
+
 
 TRACK_LIST_PAGE = 0
 ALBUM_PAGE = 1
@@ -142,7 +144,10 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
             style.disableButton(self._nextStepButton)
 
     def _addTrackPage(self, track, position):
-        self._pages.insertWidget(TRACK_PAGE + position, TrackPage(self._album, track))
+        trackPage = QWidget()
+        editor = TrackEditor(self._album, track)
+        editor.render(trackPage)
+        self._pages.insertWidget(TRACK_PAGE + position, trackPage)
 
     def _removeTrackPage(self, track, position):
         self._pages.removeWidget(self._trackPage(position))

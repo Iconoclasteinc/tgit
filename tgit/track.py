@@ -28,11 +28,11 @@ class TrackListener(object):
 
 
 class Track(object):
-    def __init__(self, filename, metadata=None, album=None):
+    def __init__(self, filename, metadata=None):
         self._filename = filename
         self._metadata = metadata or Metadata()
+        self._album = None
         self._listeners = Announcer()
-        self._album = album
 
     def addTrackListener(self, listener):
         self._listeners.addListener(listener)
@@ -51,6 +51,13 @@ class Track(object):
     @property
     def album(self):
         return self._album
+
+    @property
+    def albumMetadata(self):
+        if self.album is not None:
+            return self.album.metadata
+        else:
+            return Metadata()
 
     @album.setter
     def album(self, album):

@@ -17,40 +17,56 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtGui import (QWidget, QGridLayout, QVBoxLayout, QLabel, QLineEdit, QTimeEdit)
+from PyQt4.QtGui import (QGridLayout, QVBoxLayout, QLabel, QLineEdit, QTimeEdit)
 
-from tgit.album import AlbumListener
-from tgit.track import TrackListener
-from tgit.ui import constants as ui, display
+from tgit.announcer import Announcer
+from tgit.ui import display
 from tgit.ui.text_area import TextArea
 
 
 DURATION_FORMAT = 'mm:ss'
 
 
-class TrackPage(QWidget, AlbumListener, TrackListener):
-    def __init__(self, album, track, parent=None):
-        QWidget.__init__(self, parent)
-        self._album = album
-        self._album.addAlbumListener(self)
-        self._track = track
-        self._track.addTrackListener(self)
+class TrackPage(object):
+    NAME = 'track-page'
 
-        self._assemble()
+    TRACK_TITLE_FIELD_NAME = 'track-title'
+    VERSION_INFO_FIELD_NAME = 'version-info'
+    FEATURED_GUEST_FIELD_NAME = 'featured-guest'
+    DURATION_FIELD_NAME = 'duration'
+    TRACK_NUMBER_FIELD_NAME = 'track-number'
+    TOTAL_TRACKS_FIELD_NAME = 'total-tracks'
+    BITRATE_FIELD_NAME = 'bitrate'
+    LYRICIST_FIELD_NAME = 'lyricist'
+    COMPOSER_FIELD_NAME = 'composer'
+    PUBLISHER_FIELD_NAME = 'publisher'
+    ISRC_FIELD_NAME = 'isrc'
+    ISWC_FIELD_NAME = 'iswc'
+    TAGS_FIELD_NAME = 'tags'
+    LYRICS_FIELD_NAME = 'lyrics'
+    LANGUAGE_FIELD_NAME = 'language'
+    PREVIEW_TIME_FIELD_NAME = 'preview-time'
 
-    def _assemble(self):
-        self.setObjectName(ui.TRACK_PAGE_NAME)
+    DURATION_FORMAT = 'mm:ss'
+
+    def __init__(self):
+        self._announce = Announcer()
+
+    def announceTo(self, listener):
+        self._announce.addListener(listener)
+
+    def render(self, widget):
+        widget.setObjectName(TrackPage.NAME)
+        self._build(widget)
+        self.translate(widget)
+
+    def _build(self, widget):
+        layout = QVBoxLayout()
         grid = QGridLayout()
         self._fill(grid)
-        self.translateUi()
-        self._layout(grid)
-        self.trackStateChanged(self._track)
-
-    def _layout(self, grid):
-        layout = QVBoxLayout()
         layout.addLayout(grid)
         layout.addStretch()
-        self.setLayout(layout)
+        widget.setLayout(layout)
 
     def _fill(self, layout):
         self._addTrackTitle(layout, 0)
@@ -74,8 +90,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._trackTitleLabel = QLabel()
         layout.addWidget(self._trackTitleLabel, row, 0)
         self._trackTitleEdit = QLineEdit()
-        self._trackTitleEdit.setObjectName(ui.TRACK_TITLE_EDIT_NAME)
-        self._trackTitleEdit.editingFinished.connect(self._updateTrackTitle)
+        self._trackTitleEdit.setObjectName(TrackPage.TRACK_TITLE_FIELD_NAME)
+        self._trackTitleEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._trackTitleEdit, row, 1)
         self._trackTitleLabel.setBuddy(self._trackTitleEdit)
 
@@ -83,8 +99,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._versionInfoLabel = QLabel()
         layout.addWidget(self._versionInfoLabel, row, 0)
         self._versionInfoEdit = QLineEdit()
-        self._versionInfoEdit.setObjectName(ui.VERSION_INFO_EDIT_NAME)
-        self._versionInfoEdit.editingFinished.connect(self._updateVersionInfo)
+        self._versionInfoEdit.setObjectName(self.VERSION_INFO_FIELD_NAME)
+        self._versionInfoEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._versionInfoEdit, row, 1)
         self._versionInfoLabel.setBuddy(self._versionInfoEdit)
 
@@ -92,7 +108,7 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._durationLabel = QLabel()
         layout.addWidget(self._durationLabel, row, 0)
         self._durationValueLabel = QLabel()
-        self._durationValueLabel.setObjectName(ui.DURATION_NAME)
+        self._durationValueLabel.setObjectName(self.DURATION_FIELD_NAME)
         layout.addWidget(self._durationValueLabel, row, 1)
         self._durationLabel.setBuddy(self._durationValueLabel)
 
@@ -100,7 +116,7 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._trackNumberLabel = QLabel()
         layout.addWidget(self._trackNumberLabel, row, 0)
         self._trackNumberValueLabel = QLabel()
-        self._trackNumberValueLabel.setObjectName(ui.TRACK_NUMBER_NAME)
+        self._trackNumberValueLabel.setObjectName(self.TRACK_NUMBER_FIELD_NAME)
         layout.addWidget(self._trackNumberValueLabel, row, 1)
         self._trackNumberLabel.setBuddy(self._trackNumberValueLabel)
 
@@ -108,7 +124,7 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._totalTracksLabel = QLabel()
         layout.addWidget(self._totalTracksLabel, row, 0)
         self._totalTracksValueLabel = QLabel()
-        self._totalTracksValueLabel.setObjectName(ui.TOTAL_TRACKS_NAME)
+        self._totalTracksValueLabel.setObjectName(self.TOTAL_TRACKS_FIELD_NAME)
         layout.addWidget(self._totalTracksValueLabel, row, 1)
         self._totalTracksLabel.setBuddy(self._totalTracksValueLabel)
 
@@ -116,7 +132,7 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._bitrateLabel = QLabel()
         layout.addWidget(self._bitrateLabel, row, 0)
         self._bitrateValueLabel = QLabel()
-        self._bitrateValueLabel.setObjectName(ui.BITRATE_NAME)
+        self._bitrateValueLabel.setObjectName(self.BITRATE_FIELD_NAME)
         layout.addWidget(self._bitrateValueLabel, row, 1)
         self._bitrateLabel.setBuddy(self._bitrateValueLabel)
 
@@ -124,8 +140,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._featuredGuestLabel = QLabel()
         layout.addWidget(self._featuredGuestLabel, row, 0)
         self._featuredGuestEdit = QLineEdit()
-        self._featuredGuestEdit.setObjectName(ui.FEATURED_GUEST_EDIT_NAME)
-        self._featuredGuestEdit.editingFinished.connect(self._updateFeaturedGuest)
+        self._featuredGuestEdit.setObjectName(self.FEATURED_GUEST_FIELD_NAME)
+        self._featuredGuestEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._featuredGuestEdit, row, 1)
         self._featuredGuestLabel.setBuddy(self._featuredGuestEdit)
 
@@ -133,8 +149,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._lyricistLabel = QLabel()
         layout.addWidget(self._lyricistLabel, row, 0)
         self._lyricistEdit = QLineEdit()
-        self._lyricistEdit.setObjectName(ui.LYRICIST_EDIT_NAME)
-        self._lyricistEdit.editingFinished.connect(self._updateLyricist)
+        self._lyricistEdit.setObjectName(self.LYRICIST_FIELD_NAME)
+        self._lyricistEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._lyricistEdit, row, 1)
         self._lyricistLabel.setBuddy(self._lyricistEdit)
 
@@ -142,8 +158,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._composerLabel = QLabel()
         layout.addWidget(self._composerLabel, row, 0)
         self._composerEdit = QLineEdit()
-        self._composerEdit.setObjectName(ui.COMPOSER_EDIT_NAME)
-        self._composerEdit.editingFinished.connect(self._updateComposer)
+        self._composerEdit.setObjectName(self.COMPOSER_FIELD_NAME)
+        self._composerEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._composerEdit, row, 1)
         self._composerLabel.setBuddy(self._composerEdit)
 
@@ -151,8 +167,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._publisherLabel = QLabel()
         layout.addWidget(self._publisherLabel, row, 0)
         self._publisherEdit = QLineEdit()
-        self._publisherEdit.setObjectName(ui.PUBLISHER_EDIT_NAME)
-        self._publisherEdit.editingFinished.connect(self._updatePublisher)
+        self._publisherEdit.setObjectName(self.PUBLISHER_FIELD_NAME)
+        self._publisherEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._publisherEdit, row, 1)
         self._publisherLabel.setBuddy(self._publisherEdit)
 
@@ -160,8 +176,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._isrcLabel = QLabel()
         layout.addWidget(self._isrcLabel, row, 0)
         self._isrcEdit = QLineEdit()
-        self._isrcEdit.setObjectName(ui.ISRC_EDIT_NAME)
-        self._isrcEdit.editingFinished.connect(self._updateIsrc)
+        self._isrcEdit.setObjectName(self.ISRC_FIELD_NAME)
+        self._isrcEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._isrcEdit, row, 1)
         self._isrcLabel.setBuddy(self._isrcEdit)
 
@@ -170,7 +186,7 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._iswcLabel.setDisabled(True)
         layout.addWidget(self._iswcLabel, row, 0)
         self._iswcEdit = QLineEdit()
-        self._iswcEdit.setObjectName(ui.ISWC_EDIT_NAME)
+        self._iswcEdit.setObjectName(self.ISWC_FIELD_NAME)
         self._iswcEdit.setDisabled(True)
         layout.addWidget(self._iswcEdit, row, 1)
         self._iswcLabel.setBuddy(self._iswcEdit)
@@ -179,8 +195,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._tagsLabel = QLabel()
         layout.addWidget(self._tagsLabel, row, 0)
         self._tagsEdit = QLineEdit()
-        self._tagsEdit.setObjectName(ui.TAGS_EDIT_NAME)
-        self._tagsEdit.editingFinished.connect(self._updateTags)
+        self._tagsEdit.setObjectName(self.TAGS_FIELD_NAME)
+        self._tagsEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._tagsEdit, row, 1)
         self._tagsLabel.setBuddy(self._tagsEdit)
 
@@ -188,8 +204,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._lyricsLabel = QLabel()
         layout.addWidget(self._lyricsLabel, row, 0)
         self._lyricsEdit = TextArea()
-        self._lyricsEdit.setObjectName(ui.LYRICS_EDIT_NAME)
-        self._lyricsEdit.editingFinished.connect(self._updateLyrics)
+        self._lyricsEdit.setObjectName(self.LYRICS_FIELD_NAME)
+        self._lyricsEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._lyricsEdit, row, 1)
         self._lyricsLabel.setBuddy(self._lyricsEdit)
 
@@ -197,8 +213,8 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._languageLabel = QLabel()
         layout.addWidget(self._languageLabel, row, 0)
         self._languageEdit = QLineEdit()
-        self._languageEdit.setObjectName(ui.LANGUAGE_EDIT_NAME)
-        self._languageEdit.editingFinished.connect(self._updateLanguage)
+        self._languageEdit.setObjectName(self.LANGUAGE_FIELD_NAME)
+        self._languageEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._languageEdit, row, 1)
         self._languageLabel.setBuddy(self._languageEdit)
 
@@ -207,53 +223,19 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._previewTimeLabel.setDisabled(True)
         layout.addWidget(self._previewTimeLabel, row, 0)
         self._previewTimeEdit = QTimeEdit()
-        self._previewTimeEdit.setDisplayFormat(DURATION_FORMAT)
+        self._previewTimeEdit.setDisplayFormat(self.DURATION_FORMAT)
         # self._previewTimeEdit.setTime(QTime.fromString('00:00'))
-        self._previewTimeEdit.setObjectName(ui.PREVIEW_TIME_EDIT_NAME)
+        self._previewTimeEdit.setObjectName(self.PREVIEW_TIME_FIELD_NAME)
         self._previewTimeEdit.setDisabled(True)
         layout.addWidget(self._previewTimeEdit, row, 1)
         self._previewTimeLabel.setBuddy(self._previewTimeEdit)
 
-    def translateUi(self):
-        self._trackTitleLabel.setText(self.tr('Track Title: '))
-        self._versionInfoLabel.setText(self.tr('Version Information: '))
-        self._durationLabel.setText(self.tr('Duration: '))
-        self._trackNumberLabel.setText(self.tr('Track: '))
-        self._totalTracksLabel.setText(self.tr('Of: '))
-        self._bitrateLabel.setText(self.tr('Bitrate: '))
-        self._featuredGuestLabel.setText(self.tr('Featured Guest: '))
-        self._lyricistLabel.setText(self.tr('Lyricist: '))
-        self._composerLabel.setText(self.tr('Composer: '))
-        self._publisherLabel.setText(self.tr('Publisher: '))
-        self._isrcLabel.setText(self.tr('ISRC: '))
-        self._isrcEdit.setPlaceholderText(self.tr('ZZZ123456789'))
-        self._iswcLabel.setText(self.tr('ISWC: '))
-        self._tagsLabel.setText(self.tr('Tags: '))
-        self._tagsEdit.setPlaceholderText(self.tr('tag1, tag2, tag3 ...'))
-        self._lyricsLabel.setText(self.tr('Lyrics: '))
-        self._languageLabel.setText(self.tr('Language: '))
-        self._languageEdit.setPlaceholderText(self.tr('fra, eng, und (for undetermined), '
-                                                      'or mul (for multiple languages)'))
-        self._previewTimeLabel.setText(self.tr('Preview Time: '))
-
-    def trackAdded(self, track, position):
-        self.trackStateChanged(self._track)
-
-    def trackRemoved(self, track, position):
-        if track == self._track:
-            self._album.removeAlbumListener(self)
-        else:
-            self.trackStateChanged(self._track)
-
-    def trackStateChanged(self, track):
-        if not track in self._album.tracks:
-            return
-
+    def refresh(self, album, track):
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
         self._durationValueLabel.setText(display.asDuration(track.duration))
-        self._trackNumberValueLabel.setText(str(self._album.indexOf(track) + 1))
-        self._totalTracksValueLabel.setText(str(self._album.totalTracks()))
+        self._trackNumberValueLabel.setText(str(album.positionOf(track)))
+        self._totalTracksValueLabel.setText(str(len(album)))
         self._bitrateValueLabel.setText('%s kbps' % display.inKbps(track.bitrate))
         self._featuredGuestEdit.setText(track.featuredGuest)
         self._lyricistEdit.setText(track.lyricist)
@@ -264,32 +246,42 @@ class TrackPage(QWidget, AlbumListener, TrackListener):
         self._lyricsEdit.setPlainText(track.lyrics)
         self._languageEdit.setText(track.language)
 
-    def _updateTrackTitle(self):
-        self._track.trackTitle = self._trackTitleEdit.text()
+    def _signalMetadataChange(self):
+        class Snapshot(object):
+            pass
 
-    def _updateVersionInfo(self):
-        self._track.versionInfo = self._versionInfoEdit.text()
+        snapshot = Snapshot()
+        snapshot.trackTitle = self._trackTitleEdit.text()
+        snapshot.versionInfo = self._versionInfoEdit.text()
+        snapshot.featuredGuest = self._featuredGuestEdit.text()
+        snapshot.lyricist = self._lyricistEdit.text()
+        snapshot.composer = self._composerEdit.text()
+        snapshot.publisher = self._publisherEdit.text()
+        snapshot.isrc = self._isrcEdit.text()
+        snapshot.tags = self._tagsEdit.text()
+        snapshot.lyrics = self._lyricsEdit.toPlainText()
+        snapshot.language = self._languageEdit.text()
 
-    def _updateFeaturedGuest(self):
-        self._track.featuredGuest = self._featuredGuestEdit.text()
+        self._announce.metadataEdited(snapshot)
 
-    def _updateLyricist(self):
-        self._track.lyricist = self._lyricistEdit.text()
-
-    def _updateComposer(self):
-        self._track.composer = self._composerEdit.text()
-
-    def _updatePublisher(self):
-        self._track.publisher = self._publisherEdit.text()
-
-    def _updateIsrc(self):
-        self._track.isrc = self._isrcEdit.text()
-
-    def _updateTags(self):
-        self._track.tags = self._tagsEdit.text()
-
-    def _updateLyrics(self):
-        self._track.lyrics = self._lyricsEdit.toPlainText()
-
-    def _updateLanguage(self):
-        self._track.language = self._languageEdit.text()
+    def translate(self, widget):
+        self._trackTitleLabel.setText(widget.tr('Track Title: '))
+        self._versionInfoLabel.setText(widget.tr('Version Information: '))
+        self._durationLabel.setText(widget.tr('Duration: '))
+        self._trackNumberLabel.setText(widget.tr('Track: '))
+        self._totalTracksLabel.setText(widget.tr('Of: '))
+        self._bitrateLabel.setText(widget.tr('Bitrate: '))
+        self._featuredGuestLabel.setText(widget.tr('Featured Guest: '))
+        self._lyricistLabel.setText(widget.tr('Lyricist: '))
+        self._composerLabel.setText(widget.tr('Composer: '))
+        self._publisherLabel.setText(widget.tr('Publisher: '))
+        self._isrcLabel.setText(widget.tr('ISRC: '))
+        self._isrcEdit.setPlaceholderText(widget.tr('ZZZ123456789'))
+        self._iswcLabel.setText(widget.tr('ISWC: '))
+        self._tagsLabel.setText(widget.tr('Tags: '))
+        self._tagsEdit.setPlaceholderText(widget.tr('tag1, tag2, tag3 ...'))
+        self._lyricsLabel.setText(widget.tr('Lyrics: '))
+        self._languageLabel.setText(widget.tr('Language: '))
+        self._languageEdit.setPlaceholderText(widget.tr('fra, eng, und (for undetermined), '
+                                                        'or mul (for multiple languages)'))
+        self._previewTimeLabel.setText(widget.tr('Preview Time: '))

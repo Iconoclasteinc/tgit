@@ -85,25 +85,25 @@ class Album(object):
     def tracks(self):
         return list(self._tracks)
 
-    def empty(self):
-        return self.totalTracks() == 0
-
-    def totalTracks(self):
+    def __len__(self):
         return len(self._tracks)
 
-    def indexOf(self, track):
-        return self.tracks.index(track)
+    def empty(self):
+        return len(self) == 0
+
+    def positionOf(self, track):
+        return self.tracks.index(track) + 1
 
     def addTrack(self, track):
         self.insertTrack(track, len(self._tracks))
 
-    def _copyMetadataOf(self, track):
-        if self._metadata.empty() and track.album:
-            self._metadata = track.album.metadata
+    def _inheritMetadataOf(self, track):
+        if self._metadata.empty():
+            self._metadata = track.albumMetadata
             self._signalStateChange()
 
     def insertTrack(self, track, position):
-        self._copyMetadataOf(track)
+        self._inheritMetadataOf(track)
         self._tracks.insert(position, track)
         track.album = self
         self._listeners.trackAdded(track, position)
