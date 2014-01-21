@@ -9,8 +9,7 @@ from tgit.ui.views import PictureSelectionDialog
 
 def pictureSelectionDialog(parent):
     return PictureSelectionDialogDriver(
-        window(QFileDialog, named(PictureSelectionDialog.NAME)), parent.prober,
-        parent.gesturePerformer)
+        window(QFileDialog, named(PictureSelectionDialog.NAME)), parent.prober, parent.gesturePerformer)
 
 
 class PictureSelectionDialogDriver(FileDialogDriver):

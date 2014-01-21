@@ -13,7 +13,7 @@ from tgit.ui.main_window import MainWindow
 class MainWindowTest(ViewTest):
     def setUp(self):
         super(MainWindowTest, self).setUp()
-        self.widget = MainWindow(AlbumPortfolio(), fakes.audioPlayer(), fakes.fileChooser())
+        self.widget = MainWindow(AlbumPortfolio(), fakes.audioPlayer())
         self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)
 

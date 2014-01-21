@@ -24,6 +24,7 @@ from tgit.record_label import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
 from tgit.ui import constants as ui
 from tgit.ui.menu_bar import MenuBar
+from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen
 from tgit.ui.export_as_dialog import ExportAsDialog
@@ -33,13 +34,13 @@ WIN_LATIN1_ENCODING = 'Windows-1252'
 
 
 class MainWindow(QMainWindow, AlbumPortfolioListener):
-    def __init__(self, albumPortfolio, audioPlayer, audioFileChooser):
+    def __init__(self, albumPortfolio, audioPlayer):
         QMainWindow.__init__(self)
 
         self._albumPortfolio = albumPortfolio
         self._albumPortfolio.addPortfolioListener(self)
         self._audioPlayer = audioPlayer
-        self._audioFileChooser = audioFileChooser
+        self._audioFileChooser = TrackSelectionDialog()
         self._productionHouses = Announcer()
 
         self._assemble()

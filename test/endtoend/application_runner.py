@@ -11,7 +11,7 @@ from test.util import fakes
 
 from tgit.tagger import TGiT
 from tgit.ui import constants as ui
-from tgit.ui.dialogs import AudioFileChooserDialog
+from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.views import PictureSelectionDialog
 
 ENGLISH = 'en'
@@ -21,7 +21,8 @@ ONE_SECOND = 1000
 class ApplicationRunner(object):
     def start(self):
         PictureSelectionDialog.native = False
-        self.app = TGiT(ENGLISH, fakes.audioPlayer, AudioFileChooserDialog(native=False))
+        TrackSelectionDialog.native = False
+        self.app = TGiT(ENGLISH, fakes.audioPlayer)
         self.app.show()
         self.tagger = TaggerDriver(mainApplicationWindow(named(ui.MAIN_WINDOW_NAME),
                                                          showingOnScreen()),

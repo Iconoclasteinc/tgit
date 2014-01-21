@@ -246,7 +246,8 @@ class TrackPage(object):
         self._lyricsEdit.setPlainText(track.lyrics)
         self._languageEdit.setText(track.language)
 
-    def _signalMetadataChange(self):
+    @property
+    def trackMetadata(self):
         class Snapshot(object):
             pass
 
@@ -261,8 +262,10 @@ class TrackPage(object):
         snapshot.tags = self._tagsEdit.text()
         snapshot.lyrics = self._lyricsEdit.toPlainText()
         snapshot.language = self._languageEdit.text()
+        return snapshot
 
-        self._announce.metadataEdited(snapshot)
+    def _signalMetadataChange(self):
+        self._announce.metadataEdited(self.trackMetadata)
 
     def translate(self, widget):
         self._trackTitleLabel.setText(widget.tr('Track Title: '))

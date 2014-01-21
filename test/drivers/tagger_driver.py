@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import os
-
-from PyQt4.QtGui import QFileDialog, QWidget
+from PyQt4.QtGui import QFileDialog
 
 from test.cute.matchers import named
 from test.cute.widgets import window, MainWindowDriver, FileDialogDriver
 from test.drivers.menu_bar_driver import menuBar
-from test.drivers.tagging_screen_driver import TaggingScreenDriver, taggingScreen
+from test.drivers.tagging_screen_driver import taggingScreen
+from test.drivers.track_selection_dialog_driver import trackSelectionDialog
 from test.drivers.welcome_screen_driver import welcomeScreen
 
 from tgit.ui import constants as ui
@@ -22,12 +21,7 @@ class TaggerDriver(MainWindowDriver):
         self.selectAudioFile(path)
 
     def selectAudioFile(self, filename):
-        dialog = FileDialogDriver(window(QFileDialog, named(ui.CHOOSE_AUDIO_FILES_DIALOG_NAME)),
-                                  self.prober, self.gesturePerformer)
-        dialog.showHiddenFiles()
-        dialog.navigateToDir(os.path.dirname(filename))
-        dialog.selectFile(os.path.basename(filename))
-        dialog.accept()
+        trackSelectionDialog(self).selectTracks(filename)
 
     def createAlbum(self):
         welcomeScreen(self).newAlbum()
