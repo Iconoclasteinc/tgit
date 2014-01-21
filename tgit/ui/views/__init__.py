@@ -28,3 +28,4 @@ def mainWindow():
 from album_page import AlbumPage
 from picture_selection_dialog import PictureSelectionDialog
 from track_page import TrackPage
+from track_selection_dialog import TrackSelectionDialog

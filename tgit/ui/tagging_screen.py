@@ -22,12 +22,13 @@ from PyQt4.QtGui import QWidget, QVBoxLayout, QHBoxLayout, QStackedWidget, QPush
 
 from tgit.announcer import Announcer
 from tgit.album import AlbumListener
-from tgit.ui.file_chooser import FileChoiceListener
+from tgit.mp3.id3_tagger import Id3Tagger
+from tgit.mp3.track_files import TrackFiles
+from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui import constants as ui, style
 from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.track_editor import TrackEditor
 from tgit.ui.track_list_page import TrackListPage
-from tgit.ui.views.track_page import TrackPage
 
 
 TRACK_LIST_PAGE = 0
@@ -37,14 +38,12 @@ TRACK_PAGE = 2
 HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
 
 
-class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
-    def __init__(self, album, player, audioFileChooser):
+class TaggingScreen(QWidget, AlbumListener):
+    def __init__(self, album, player):
         QWidget.__init__(self)
         self._album = album
         self._album.addAlbumListener(self)
         self._player = player
-        self._audioFileChooser = audioFileChooser
-        self._audioFileChooser.addChoiceListener(self)
         self._requestListeners = Announcer()
 
         self._assemble()
@@ -53,15 +52,11 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
     def addRequestListener(self, listener):
         self._requestListeners.addListener(listener)
 
-    def filesChosen(self, *filenames):
-        for filename in filenames:
-            self._requestListeners.addTrackToAlbum(self._album, filename)
-
-    def selectFiles(self):
-        self._audioFileChooser.chooseFiles()
-
-    def selectFolder(self):
-        self._audioFileChooser.chooseDirectory()
+    # Eventually, event will bubble up to top level presenter.
+    # For that we need to do some prep work on the menubar first.
+    def selectFiles(self, folders=False):
+        mixer = AlbumMixer(self._album, TrackFiles(Id3Tagger()))
+        mixer.show(folders=folders)
 
     def recordAlbum(self):
         self._requestListeners.recordAlbum(self._album)
@@ -103,7 +98,7 @@ class TaggingScreen(QWidget, AlbumListener, FileChoiceListener):
         self._pages.addWidget(page)
         albumPage = QWidget()
         editor = AlbumEditor(self._album)
-        editor.render(albumPage)
+        editor.show(albumPage)
         self._pages.addWidget(albumPage)
         self._pages.setCurrentIndex(TRACK_LIST_PAGE)
         return self._pages

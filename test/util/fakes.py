@@ -3,7 +3,6 @@
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 
 from tgit.util import fs
-from tgit.ui.file_chooser import FileChooser
 from tgit.metadata import Image
 from tgit.announcer import Announcer
 from tgit import tags as tagging
@@ -78,20 +77,16 @@ class FakeAudioPlayer(object):
         self._announce.removeListener(listener)
 
 
-def fileChooser():
-    return FakeFileChooser()
+def trackCatalog():
+    return FakeTrackCatalog()
 
 
-class FakeFileChooser(FileChooser):
+class FakeTrackCatalog(object):
     def __init__(self):
-        super(FakeFileChooser, self).__init__()
-        self.choices = []
+        self.tracks = []
 
-    def chooses(self, filename):
-        self.choices.append(filename)
+    def add(self, track):
+        self.tracks.append(track)
 
-    def chooseSingleFile(self):
-        self.signalFileChosen(self.choices[0])
-
-    def chooseFiles(self):
-        self.signalFilesChosen(self.choices)
+    def load(self, name):
+        return next((track for track in self.tracks if track.filename == name), None)

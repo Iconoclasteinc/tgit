@@ -29,11 +29,11 @@ class PictureSelectionDialogTest(ViewTest):
                 pictureSelected.received(filename)
 
         self.dialog.announceTo(SelectionListener())
-        self.dialog.show()
+        self.dialog.render()
         self.driver.selectPicture(resources.path('front-cover.jpg'))
 
         self.check(pictureSelected)
 
     def testOnlyAcceptsAudioFiles(self):
-        self.dialog.show()
+        self.dialog.render()
         self.driver.rejectsSelectionOf(resources.path('base.mp3'))

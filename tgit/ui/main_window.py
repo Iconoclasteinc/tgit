@@ -24,7 +24,6 @@ from tgit.record_label import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
 from tgit.ui import constants as ui
 from tgit.ui.menu_bar import MenuBar
-from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen
 from tgit.ui.export_as_dialog import ExportAsDialog
@@ -40,7 +39,6 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self._albumPortfolio = albumPortfolio
         self._albumPortfolio.addPortfolioListener(self)
         self._audioPlayer = audioPlayer
-        self._audioFileChooser = TrackSelectionDialog()
         self._productionHouses = Announcer()
 
         self._assemble()
@@ -49,10 +47,10 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self._productionHouses.addListener(house)
 
     def albumCreated(self, album):
-        taggingScreen = TaggingScreen(album, self._audioPlayer, self._audioFileChooser)
+        taggingScreen = TaggingScreen(album, self._audioPlayer)
         taggingScreen.addRequestListener(self._productionHouses)
-        taggingScreen.selectFiles()
         self.setCentralWidget(taggingScreen)
+        taggingScreen.selectFiles()
 
     def _assemble(self):
         self.setObjectName(ui.MAIN_WINDOW_NAME)
@@ -69,10 +67,10 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         return menuBar
 
     def selectFiles(self):
-        self.centralWidget().selectFiles()
+        self.centralWidget().selectFiles(folders=False)
 
     def selectFolder(self):
-        self.centralWidget().selectFolder()
+        self.centralWidget().selectFiles(folders=True)
 
     #todo Organize properly
     def export(self, album):

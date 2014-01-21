@@ -8,11 +8,9 @@ from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import fakes
-
 from tgit.tagger import TGiT
 from tgit.ui import constants as ui
-from tgit.ui.track_selection_dialog import TrackSelectionDialog
-from tgit.ui.views import PictureSelectionDialog
+from tgit.ui.views import PictureSelectionDialog, TrackSelectionDialog
 
 ENGLISH = 'en'
 ONE_SECOND = 1000

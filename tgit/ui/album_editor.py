@@ -28,7 +28,7 @@ class AlbumEditor(AlbumListener):
         self._page = AlbumPage()
         self._page.announceTo(self)
 
-    def render(self, widget):
+    def show(self, widget):
         self._page.render(widget)
         self._page.refresh(self._album)
         self._album.addAlbumListener(self)
@@ -53,7 +53,7 @@ class AlbumEditor(AlbumListener):
     def addPicture(self):
         self._pictureDialog = PictureSelectionDialog()
         self._pictureDialog.announceTo(self)
-        self._pictureDialog.show()
+        self._pictureDialog.render()
 
     def pictureSelected(self, filename):
         self._album.removeImages()

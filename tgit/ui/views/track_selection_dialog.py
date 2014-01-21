@@ -17,57 +17,45 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QDir, QFileInfo, Qt
+from PyQt4.QtCore import QDir, Qt
 from PyQt4.QtGui import QFileDialog
-
-from tgit.ui.file_chooser import FileChooser
+from tgit.announcer import Announcer
 from tgit.ui.views import mainWindow
 
 
-class TrackSelectionDialog(FileChooser):
+def trackSelectionDialog(listener):
+    dialog = TrackSelectionDialog()
+    dialog.announceTo(listener)
+    return dialog
+
+
+class TrackSelectionDialog(object):
     NAME = 'track-selection-dialog'
-    MP3_FILTER = '*.mp3'
+
+    ALL_FILES = '*.*'
 
     #todo Introduce Preferences
     native = True
 
     def __init__(self):
-        FileChooser.__init__(self)
+        self._announce = Announcer()
+        self.filter = TrackSelectionDialog.ALL_FILES
 
-    def _createDialog(self):
+    def announceTo(self, listener):
+        self._announce.addListener(listener)
+
+    def render(self, folderMode=False):
         dialog = QFileDialog(mainWindow())
         dialog.setObjectName(TrackSelectionDialog.NAME)
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
         dialog.setDirectory(QDir.homePath())
-        dialog.setNameFilter('%s (%s)' % (dialog.tr('Audio files'), self.MP3_FILTER))
-        dialog.filesSelected.connect(self._selectAudioFiles)
+        dialog.setNameFilter('%s (%s)' % (dialog.tr('Audio files'), self.filter))
+        dialog.filesSelected.connect(self._announce.tracksSelected)
         dialog.setAttribute(Qt.WA_DeleteOnClose)
-        return dialog
 
-    def _selectAudioFiles(self, selection):
-        self.signalFilesChosen(self._audioFilesFrom(selection))
+        if folderMode:
+            dialog.setFileMode(QFileDialog.Directory)
+        else:
+            dialog.setFileMode(QFileDialog.ExistingFiles)
 
-    def _audioFilesFrom(self, selection):
-        audioFiles = []
-        for filename in selection:
-            if self._isDir(filename):
-                audioFiles.extend(self._listAudioFilesIn(QDir(filename)))
-            else:
-                audioFiles.append(filename)
-        return audioFiles
-
-    def _listAudioFilesIn(self, folder):
-        return [f.canonicalFilePath() for f in folder.entryInfoList([self.MP3_FILTER])]
-
-    def _isDir(self, filename):
-        return QFileInfo(filename).isDir()
-
-    def chooseFiles(self):
-        dialog = self._createDialog()
-        dialog.setFileMode(QFileDialog.ExistingFiles)
-        dialog.open()
-
-    def chooseDirectory(self):
-        dialog = self._createDialog()
-        dialog.setFileMode(QFileDialog.Directory)
         dialog.open()

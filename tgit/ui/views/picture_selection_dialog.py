@@ -35,7 +35,7 @@ class PictureSelectionDialog(object):
     def announceTo(self, listener):
         self._announce.addListener(listener)
 
-    def show(self):
+    def render(self):
         dialog = QFileDialog(mainWindow())
         dialog.setObjectName(self.NAME)
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)

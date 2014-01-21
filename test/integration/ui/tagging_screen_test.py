@@ -18,8 +18,7 @@ class TaggingScreenTest(ViewTest):
     def setUp(self):
         super(TaggingScreenTest, self).setUp()
         self.album = Album()
-        self.audioFileChooser = fakes.fileChooser()
-        self.widget = TaggingScreen(self.album, fakes.audioPlayer(), self.audioFileChooser)
+        self.widget = TaggingScreen(self.album, fakes.audioPlayer())
         self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
@@ -42,21 +41,6 @@ class TaggingScreenTest(ViewTest):
         self.driver.nextPage()
         self.driver.saveAlbum()
         self.driver.check(recordAlbumRequest)
-
-    # todo select multiple files
-    def testChoosesAudioFilesWhenAddFilesButtonIsClicked(self):
-        self.audioFileChooser.chooses('track.mp3')
-
-        addTrackRequest = ValueMatcherProbe('import track file',
-                                            equal_to((self.album, 'track.mp3')))
-
-        class RequestTracker(object):
-            def addTrackToAlbum(self, album, filename):
-                addTrackRequest.received((album, filename))
-
-        self.widget.addRequestListener(RequestTracker())
-        self.driver.addFiles()
-        self.driver.check(addTrackRequest)
 
     def testAddsTrackPagesInTrackAlbumOrder(self):
         self.albumContains(track(trackTitle='Track 1'),

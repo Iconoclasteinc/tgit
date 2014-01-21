@@ -20,20 +20,6 @@ class RecordLabelTest(unittest.TestCase):
     def testAddsNewAlbumToPortfolio(self):
         self.portfolio.should_receive('add').with_args(Album)
 
-    def testLoadsTracksToAlbumInOrder(self):
-        self.catalog.should_receive('load').with_args('my favorite things') \
-            .and_return(build.track(filename='my favorite things', trackTitle='My Favorite Things'))
-        self.catalog.should_receive('load').with_args('summertime') \
-            .and_return(build.track(filename='summertime', trackTitle='Summertime'))
-
-        timeOut = build.album()
-        self.label.addTrackToAlbum(timeOut, 'my favorite things')
-        self.label.addTrackToAlbum(timeOut, 'summertime')
-
-        assert_that(timeOut.tracks, contains(
-            has_properties(filename='my favorite things', trackTitle='My Favorite Things'),
-            has_properties(filename='summertime', trackTitle='Summertime')), 'album tracks')
-
     def testSavesAllTracksInAlbum(self):
         timeOut = build.album()
 

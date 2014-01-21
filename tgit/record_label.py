@@ -47,9 +47,5 @@ class RecordLabel(object):
     def newAlbum(self):
         self._albumPortfolio.addAlbum(Album())
 
-    #todo make that add tracks to album and accept multiple filenames
-    def addTrackToAlbum(self, album, filename):
-        album.addTrack(self._trackCatalog.load(filename))
-
     def recordAlbum(self, album):
         album.eachTrack(self._trackCatalog.save)
