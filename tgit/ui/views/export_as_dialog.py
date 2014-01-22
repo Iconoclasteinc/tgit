@@ -16,30 +16,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-
 from PyQt4.QtCore import QDir
 from PyQt4.QtGui import QFileDialog
 
 from tgit.announcer import Announcer
-from tgit.ui import constants as ui
+from tgit.ui.views import mainWindow
+
+
+def exportAsDialog(listener):
+    dialog = ExportAsDialog()
+    dialog.announceTo(listener)
+    return dialog
 
 
 class ExportAsDialog(object):
-    def __init__(self, native=True, parent=None):
-        self._native = native
-        self._parent = parent
+    NAME = 'export-as-dialog'
+
+    #todo Introduce Preferences
+    native = True
+
+    def __init__(self):
         self._announce = Announcer()
 
     def announceTo(self, listener):
         self._announce.addListener(listener)
 
-    def show(self, album):
-        dialog = QFileDialog(self._parent)
-        dialog.setAcceptMode(QFileDialog.AcceptSave)
-        dialog.setObjectName(ui.EXPORT_AS_DIALOG_NAME)
-        dialog.setDirectory(QDir.homePath())
-        dialog.setFileMode(QFileDialog.AnyFile)
-        dialog.setOption(QFileDialog.DontUseNativeDialog, not self._native)
-        dialog.fileSelected.connect(lambda filename: self._announce.export(album, filename))
-        dialog.open()
+    def render(self):
+        self._dialog = QFileDialog(mainWindow())
+        self._dialog.setObjectName(ExportAsDialog.NAME)
+        self._dialog.setAcceptMode(QFileDialog.AcceptSave)
+        self._dialog.setDirectory(QDir.homePath())
+        self._dialog.setFileMode(QFileDialog.AnyFile)
+        self._dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
+        self._dialog.fileSelected.connect(self._announce.exportTo)
+
+    def show(self):
+        self._dialog.open()

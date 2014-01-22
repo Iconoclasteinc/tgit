@@ -16,8 +16,8 @@ class CsvFormatTest(unittest.TestCase):
         self.format = CsvFormat(self.encoding)
         self.out = StringIO()
 
-    def encoded(self, name):
-        return name.encode(self.encoding)
+    def encoded(self, text):
+        return text.encode(self.encoding)
 
     def testIncludesEncodedHeaderRow(self):
         album = build.album()
@@ -125,7 +125,7 @@ class CsvFormatTest(unittest.TestCase):
         assert_that(csv.next(), has_item('Comments\rspanning\rseveral lines'),
                     'row with line feeds')
 
-    def testEncodesUnicodeRecordContents(self):
+    def testEncodesNonAsciiRecordContents(self):
         album = build.album(comments=u'en français dans le texte', tracks=[build.track()])
         self.format.write(album, self.out)
 

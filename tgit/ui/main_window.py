@@ -23,10 +23,10 @@ from tgit.announcer import Announcer
 from tgit.record_label import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
 from tgit.ui import constants as ui
+from tgit.ui.album_exporter import AlbumExporter
 from tgit.ui.menu_bar import MenuBar
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui.tagging_screen import TaggingScreen
-from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui import style
 
 WIN_LATIN1_ENCODING = 'Windows-1252'
@@ -72,18 +72,9 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
     def selectFolder(self):
         self.centralWidget().selectFiles(folders=True)
 
-    #todo Organize properly
     def export(self, album):
-        dialog = ExportAsDialog(native=True, parent=self)
-
-        class Exporter(object):
-            def export(self, album, filename):
-                with open(filename, 'wb') as out:
-                    format_ = CsvFormat(WIN_LATIN1_ENCODING)
-                    format_.write(album, out)
-
-        dialog.announceTo(Exporter())
-        dialog.show(album)
+        exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING))
+        exporter.show()
 
     def _makeWelcomeScreen(self):
         welcomeScreen = WelcomeScreen(self)

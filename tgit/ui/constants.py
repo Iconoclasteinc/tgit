@@ -21,11 +21,6 @@
 MAIN_WINDOW_NAME = 'main window'
 TAGGING_SCREEN_NAME = 'tagging screen'
 TRACK_LIST_PAGE_NAME = 'track-list-page'
-ALBUM_PAGE_NAME = 'album-page'
-TRACK_PAGE_NAME = 'track Page'
-
-CHOOSE_AUDIO_FILES_DIALOG_NAME = 'choose audio files'
-EXPORT_AS_DIALOG_NAME = 'export as'
 
 NAVIGATION_BAR = 'navigation'
 BUTTON_BAR = 'buttons'

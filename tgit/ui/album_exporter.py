@@ -16,17 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-from PyQt4.QtGui import QApplication, QMainWindow
-
-def mainWindow():
-    for window in QApplication.topLevelWidgets():
-        if isinstance(window, QMainWindow):
-            return window
+from tgit.ui.views import exportAsDialog
 
 
-from album_page import albumPage
-from picture_selection_dialog import pictureSelectionDialog
-from track_page import trackPage
-from track_selection_dialog import trackSelectionDialog
-from export_as_dialog import exportAsDialog
+class AlbumExporter(object):
+    def __init__(self, album, format_):
+        self._album = album
+        self._format = format_
+
+    def show(self):
+        self._view = exportAsDialog(self)
+        self._view.render()
+        self._view.show()
+
+    def exportTo(self, destination):
+        with open(destination, 'wb') as out:
+            self._format.write(self._album, out)

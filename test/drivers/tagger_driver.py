@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QFileDialog
-
-from test.cute.matchers import named
-from test.cute.widgets import window, MainWindowDriver, FileDialogDriver
+from test.cute.widgets import MainWindowDriver
+from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.drivers.menu_bar_driver import menuBar
 from test.drivers.tagging_screen_driver import taggingScreen
 from test.drivers.track_selection_dialog_driver import trackSelectionDialog
 from test.drivers.welcome_screen_driver import welcomeScreen
-
-from tgit.ui import constants as ui
 
 
 class TaggerDriver(MainWindowDriver):
@@ -34,7 +30,7 @@ class TaggerDriver(MainWindowDriver):
         taggingScreen(self).isShowingOnScreen()
 
     def showsExportAsDialog(self):
-        self._exportAsDialog().isShowingOnScreen()
+        exportAsDialog(self).isShowingOnScreen()
 
     def removeTrack(self, title):
         taggingScreen(self).removeTrack(title)
@@ -69,7 +65,3 @@ class TaggerDriver(MainWindowDriver):
 
     def saveAlbum(self):
         taggingScreen(self).saveAlbum()
-
-    def _exportAsDialog(self):
-        return FileDialogDriver(window(QFileDialog, named(ui.EXPORT_AS_DIALOG_NAME)),
-                                self.prober, self.gesturePerformer)

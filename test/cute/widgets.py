@@ -256,11 +256,17 @@ class FileDialogDriver(WidgetDriver):
     def acceptButtonIs(self, criteria):
         return self._dialogButton(QFileDialog.Accept).is_(criteria)
 
+    def acceptButtonHasText(self, text):
+        return self.acceptButton().hasText(text)
+
     def reject(self):
-        self.acceptButton().click()
+        return self.rejectButton().click()
 
     def rejectButtonIs(self, criteria):
-        return self._dialogButton(QFileDialog.Reject).is_(criteria)
+        return self.rejectButton().is_(criteria)
+
+    def rejectButtonHasText(self, text):
+        return self.rejectButton().hasText(text)
 
     def _listView(self):
         return ListViewDriver.findSingle(self, QListView, match.named('listView'))
