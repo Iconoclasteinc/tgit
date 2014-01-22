@@ -41,9 +41,10 @@ def addLabelledFields(form, *fields):
         form.addRow(label, field)
 
 
-def disableMacFocusFrame(widget):
-    for child in widget.findChildren(QWidget):
-        child.setAttribute(Qt.WA_MacShowFocusRect, False)
+def albumPage(listener):
+    page = AlbumPage()
+    page.announceTo(listener)
+    return page
 
 
 class AlbumPage(object):
@@ -84,19 +85,22 @@ class AlbumPage(object):
     def announceTo(self, listener):
         self._announce.addListener(listener)
 
-    def render(self, widget):
-        self._build(widget)
-        disableMacFocusFrame(widget)
+    def render(self):
+        self._widget = self._build()
+        self._disableMacFocusFrame()
         self._disableTeaserFields()
-        self.translate(widget)
+        self.translate()
+        return self._widget
 
-    def _build(self, widget):
+    def _build(self):
+        widget = QWidget()
         widget.setObjectName(AlbumPage.NAME)
         layout = style.horizontalLayout()
         layout.setSpacing(0)
         layout.addWidget(self._makeLeftColumn())
         layout.addWidget(self._makeRightColumn())
         widget.setLayout(layout)
+        return widget
 
     def _makeLeftColumn(self):
         column = QWidget()
@@ -255,7 +259,7 @@ class AlbumPage(object):
         field.setDisabled(True)
         self._labelFor(field).setDisabled(True)
 
-    def refresh(self, album):
+    def show(self, album):
         self._displayAttachedPicture(album.mainCover)
         self._releaseNameLineEdit.setText(album.releaseName)
         self._leadPerformerLineEdit.setText(album.leadPerformer)
@@ -294,54 +298,61 @@ class AlbumPage(object):
 
         self._announce.metadataEdited(snapshot)
 
-    def translate(self, widget):
-        self._translatePictureFields(widget)
-        self._translateAlbumFields(widget)
-        self._translateRecordFields(widget)
-        self._translateDateFields(widget)
-        self._translateRecordingFields(widget)
+    def _disableMacFocusFrame(self):
+        for child in self._widget.findChildren(QWidget):
+            child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
-    def _translatePictureFields(self, widget):
-        self._picturesFieldSet.setTitle(widget.tr('PICTURES'))
-        self._selectPictureButton.setText(widget.tr('SELECT PICTURE...'))
-        self._removePictureButton.setText(widget.tr('REMOVE'))
+    def translate(self):
+        self._translatePictureFields()
+        self._translateAlbumFields()
+        self._translateRecordFields()
+        self._translateDateFields()
+        self._translateRecordingFields()
 
-    def _translateAlbumFields(self, widget):
-        self._albumFieldSet.setTitle(widget.tr('ALBUM'))
-        self._labelFor(self._releaseNameLineEdit).setText(widget.tr('Release Name:'))
-        self._labelFor(self._leadPerformerLineEdit).setText(widget.tr('Lead Performer:'))
-        self._leadPerformerLineEdit.setPlaceholderText(widget.tr('Artist, Band or Various Artists'))
-        self._labelFor(self._areaLineEdit).setText(widget.tr('Area:'))
-        self._labelFor(self._guestPerformersLineEdit).setText(widget.tr('Guest Performers:'))
+    def _translatePictureFields(self):
+        self._picturesFieldSet.setTitle(self.tr('PICTURES'))
+        self._selectPictureButton.setText(self.tr('SELECT PICTURE...'))
+        self._removePictureButton.setText(self.tr('REMOVE'))
+
+    def _translateAlbumFields(self):
+        self._albumFieldSet.setTitle(self.tr('ALBUM'))
+        self._labelFor(self._releaseNameLineEdit).setText(self.tr('Release Name:'))
+        self._labelFor(self._leadPerformerLineEdit).setText(self.tr('Lead Performer:'))
+        self._leadPerformerLineEdit.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
+        self._labelFor(self._areaLineEdit).setText(self.tr('Area:'))
+        self._labelFor(self._guestPerformersLineEdit).setText(self.tr('Guest Performers:'))
         self._guestPerformersLineEdit.setPlaceholderText(
-            widget.tr('Instrument1: Performer1; Instrument2: Performer2; ...'))
-        self._labelFor(self._labelNameLineEdit).setText(widget.tr('Label Name:'))
+            self.tr('Instrument1: Performer1; Instrument2: Performer2; ...'))
+        self._labelFor(self._labelNameLineEdit).setText(self.tr('Label Name:'))
 
-    def _translateRecordFields(self, widget):
-        self._recordFieldSet.setTitle(widget.tr('RECORD'))
-        self._labelFor(self._labelTerritoryEdit).setText(widget.tr('Territory:'))
-        self._labelFor(self._catalogNumberLineEdit).setText(widget.tr('Catalog Number:'))
-        self._labelFor(self._upcLineEdit).setText(widget.tr('UPC/EAN:'))
-        self._upcLineEdit.setPlaceholderText(widget.tr('1234567899999'))
-        self._labelFor(self._mediaTypeLineEdit).setText(widget.tr('Media Type:'))
+    def _translateRecordFields(self):
+        self._recordFieldSet.setTitle(self.tr('RECORD'))
+        self._labelFor(self._labelTerritoryEdit).setText(self.tr('Territory:'))
+        self._labelFor(self._catalogNumberLineEdit).setText(self.tr('Catalog Number:'))
+        self._labelFor(self._upcLineEdit).setText(self.tr('UPC/EAN:'))
+        self._upcLineEdit.setPlaceholderText(self.tr('1234567899999'))
+        self._labelFor(self._mediaTypeLineEdit).setText(self.tr('Media Type:'))
 
-    def _translateDateFields(self, widget):
-        self._datesFieldSet.setTitle(widget.tr('DATES'))
-        self._labelFor(self._releaseTypeLineEdit).setText(widget.tr('Release Type:'))
-        self._labelFor(self._commentsTextArea).setText(widget.tr('Comments:'))
-        self._labelFor(self._releaseTimeLineEdit).setText(widget.tr('Release Time:'))
-        self._releaseTimeLineEdit.setPlaceholderText(widget.tr('YYYY-MM-DD'))
-        self._labelFor(self._digitalReleaseTimeLineEdit).setText(widget.tr('Digital Release Time:'))
-        self._labelFor(self._originalReleaseTimeLineEdit).setText(widget.tr('Original Release Time:'))
-        self._labelFor(self._recordingTimeLineEdit).setText(widget.tr('Recording Time: '))
-        self._recordingTimeLineEdit.setPlaceholderText(widget.tr('YYYY-MM-DD'))
+    def _translateDateFields(self):
+        self._datesFieldSet.setTitle(self.tr('DATES'))
+        self._labelFor(self._releaseTypeLineEdit).setText(self.tr('Release Type:'))
+        self._labelFor(self._commentsTextArea).setText(self.tr('Comments:'))
+        self._labelFor(self._releaseTimeLineEdit).setText(self.tr('Release Time:'))
+        self._releaseTimeLineEdit.setPlaceholderText(self.tr('YYYY-MM-DD'))
+        self._labelFor(self._digitalReleaseTimeLineEdit).setText(self.tr('Digital Release Time:'))
+        self._labelFor(self._originalReleaseTimeLineEdit).setText(self.tr('Original Release Time:'))
+        self._labelFor(self._recordingTimeLineEdit).setText(self.tr('Recording Time: '))
+        self._recordingTimeLineEdit.setPlaceholderText(self.tr('YYYY-MM-DD'))
 
-    def _translateRecordingFields(self, widget):
-        self._recordingFieldSet.setTitle(widget.tr('RECORDING'))
-        self._labelFor(self._recordingStudiosLineEdit).setText(widget.tr('Recording Studios:'))
-        self._labelFor(self._producerLineEdit).setText(widget.tr('Producer:'))
-        self._labelFor(self._mixerLineEdit).setText(widget.tr('Mixer:'))
-        self._labelFor(self._primaryStyleLineEdit).setText(widget.tr('Primary Style:'))
+    def _translateRecordingFields(self):
+        self._recordingFieldSet.setTitle(self.tr('RECORDING'))
+        self._labelFor(self._recordingStudiosLineEdit).setText(self.tr('Recording Studios:'))
+        self._labelFor(self._producerLineEdit).setText(self.tr('Producer:'))
+        self._labelFor(self._mixerLineEdit).setText(self.tr('Mixer:'))
+        self._labelFor(self._primaryStyleLineEdit).setText(self.tr('Primary Style:'))
+
+    def tr(self, text):
+        return self._widget.tr(text)
 
     def _labelFor(self, widget):
-        return next(label for label in widget.parent().findChildren(QLabel) if label.buddy() == widget)
+        return next(label for label in self._widget.findChildren(QLabel) if label.buddy() == widget)

@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtGui import (QGridLayout, QVBoxLayout, QLabel, QLineEdit, QTimeEdit)
+from PyQt4.QtGui import (QGridLayout, QVBoxLayout, QLabel, QLineEdit, QTimeEdit, QWidget)
 
 from tgit.announcer import Announcer
 from tgit.ui import display
@@ -25,6 +25,12 @@ from tgit.ui.text_area import TextArea
 
 
 DURATION_FORMAT = 'mm:ss'
+
+
+def trackPage(listener):
+    page = TrackPage()
+    page.announceTo(listener)
+    return page
 
 
 class TrackPage(object):
@@ -55,18 +61,21 @@ class TrackPage(object):
     def announceTo(self, listener):
         self._announce.addListener(listener)
 
-    def render(self, widget):
-        widget.setObjectName(TrackPage.NAME)
-        self._build(widget)
-        self.translate(widget)
+    def render(self):
+        self._widget = self._build()
+        self.translate()
+        return self._widget
 
-    def _build(self, widget):
+    def _build(self):
+        widget = QWidget()
+        widget.setObjectName(TrackPage.NAME)
         layout = QVBoxLayout()
         grid = QGridLayout()
         self._fill(grid)
         layout.addLayout(grid)
         layout.addStretch()
         widget.setLayout(layout)
+        return widget
 
     def _fill(self, layout):
         self._addTrackTitle(layout, 0)
@@ -230,7 +239,7 @@ class TrackPage(object):
         layout.addWidget(self._previewTimeEdit, row, 1)
         self._previewTimeLabel.setBuddy(self._previewTimeEdit)
 
-    def refresh(self, album, track):
+    def show(self, album, track):
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
         self._durationValueLabel.setText(display.asDuration(track.duration))
@@ -267,24 +276,27 @@ class TrackPage(object):
     def _signalMetadataChange(self):
         self._announce.metadataEdited(self.trackMetadata)
 
-    def translate(self, widget):
-        self._trackTitleLabel.setText(widget.tr('Track Title: '))
-        self._versionInfoLabel.setText(widget.tr('Version Information: '))
-        self._durationLabel.setText(widget.tr('Duration: '))
-        self._trackNumberLabel.setText(widget.tr('Track: '))
-        self._totalTracksLabel.setText(widget.tr('Of: '))
-        self._bitrateLabel.setText(widget.tr('Bitrate: '))
-        self._featuredGuestLabel.setText(widget.tr('Featured Guest: '))
-        self._lyricistLabel.setText(widget.tr('Lyricist: '))
-        self._composerLabel.setText(widget.tr('Composer: '))
-        self._publisherLabel.setText(widget.tr('Publisher: '))
-        self._isrcLabel.setText(widget.tr('ISRC: '))
-        self._isrcEdit.setPlaceholderText(widget.tr('ZZZ123456789'))
-        self._iswcLabel.setText(widget.tr('ISWC: '))
-        self._tagsLabel.setText(widget.tr('Tags: '))
-        self._tagsEdit.setPlaceholderText(widget.tr('tag1, tag2, tag3 ...'))
-        self._lyricsLabel.setText(widget.tr('Lyrics: '))
-        self._languageLabel.setText(widget.tr('Language: '))
-        self._languageEdit.setPlaceholderText(widget.tr('fra, eng, und (for undetermined), '
+    def translate(self):
+        self._trackTitleLabel.setText(self.tr('Track Title: '))
+        self._versionInfoLabel.setText(self.tr('Version Information: '))
+        self._durationLabel.setText(self.tr('Duration: '))
+        self._trackNumberLabel.setText(self.tr('Track: '))
+        self._totalTracksLabel.setText(self.tr('Of: '))
+        self._bitrateLabel.setText(self.tr('Bitrate: '))
+        self._featuredGuestLabel.setText(self.tr('Featured Guest: '))
+        self._lyricistLabel.setText(self.tr('Lyricist: '))
+        self._composerLabel.setText(self.tr('Composer: '))
+        self._publisherLabel.setText(self.tr('Publisher: '))
+        self._isrcLabel.setText(self.tr('ISRC: '))
+        self._isrcEdit.setPlaceholderText(self.tr('ZZZ123456789'))
+        self._iswcLabel.setText(self.tr('ISWC: '))
+        self._tagsLabel.setText(self.tr('Tags: '))
+        self._tagsEdit.setPlaceholderText(self.tr('tag1, tag2, tag3 ...'))
+        self._lyricsLabel.setText(self.tr('Lyrics: '))
+        self._languageLabel.setText(self.tr('Language: '))
+        self._languageEdit.setPlaceholderText(self.tr('fra, eng, und (for undetermined), '
                                                         'or mul (for multiple languages)'))
-        self._previewTimeLabel.setText(widget.tr('Preview Time: '))
+        self._previewTimeLabel.setText(self.tr('Preview Time: '))
+
+    def tr(self, text):
+        return self._widget.tr(text)

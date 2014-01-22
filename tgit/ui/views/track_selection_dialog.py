@@ -44,18 +44,18 @@ class TrackSelectionDialog(object):
     def announceTo(self, listener):
         self._announce.addListener(listener)
 
-    def render(self, folderMode=False):
-        dialog = QFileDialog(mainWindow())
-        dialog.setObjectName(TrackSelectionDialog.NAME)
-        dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        dialog.setDirectory(QDir.homePath())
-        dialog.setNameFilter('%s (%s)' % (dialog.tr('Audio files'), self.filter))
-        dialog.filesSelected.connect(self._announce.tracksSelected)
-        dialog.setAttribute(Qt.WA_DeleteOnClose)
+    def render(self):
+        self._dialog = QFileDialog(mainWindow())
+        self._dialog.setObjectName(TrackSelectionDialog.NAME)
+        self._dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
+        self._dialog.setDirectory(QDir.homePath())
+        self._dialog.setNameFilter('%s (%s)' % (self._dialog.tr('Audio files'), self.filter))
+        self._dialog.filesSelected.connect(self._announce.tracksSelected)
+        self._dialog.setAttribute(Qt.WA_DeleteOnClose)
 
-        if folderMode:
-            dialog.setFileMode(QFileDialog.Directory)
+    def show(self, folders=False):
+        if folders:
+            self._dialog.setFileMode(QFileDialog.Directory)
         else:
-            dialog.setFileMode(QFileDialog.ExistingFiles)
-
-        dialog.open()
+            self._dialog.setFileMode(QFileDialog.ExistingFiles)
+        self._dialog.open()

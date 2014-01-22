@@ -96,10 +96,8 @@ class TaggingScreen(QWidget, AlbumListener):
         page = TrackListPage(self._album, self._player)
         page.addRequestListener(self)
         self._pages.addWidget(page)
-        albumPage = QWidget()
         editor = AlbumEditor(self._album)
-        editor.show(albumPage)
-        self._pages.addWidget(albumPage)
+        self._pages.addWidget(editor.render())
         self._pages.setCurrentIndex(TRACK_LIST_PAGE)
         return self._pages
 
@@ -139,10 +137,8 @@ class TaggingScreen(QWidget, AlbumListener):
             style.disableButton(self._nextStepButton)
 
     def _addTrackPage(self, track, position):
-        trackPage = QWidget()
         editor = TrackEditor(self._album, track)
-        editor.render(trackPage)
-        self._pages.insertWidget(TRACK_PAGE + position, trackPage)
+        self._pages.insertWidget(TRACK_PAGE + position, editor.render())
 
     def _removeTrackPage(self, track, position):
         self._pages.removeWidget(self._trackPage(position))

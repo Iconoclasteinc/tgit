@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtCore import QDir, QFileInfo
-from tgit.ui.views.track_selection_dialog import trackSelectionDialog
+from tgit.ui.views import trackSelectionDialog
 
 
 class AlbumMixer(object):
@@ -27,11 +27,12 @@ class AlbumMixer(object):
     def __init__(self, album, catalog):
         self._album = album
         self._trackCatalog = catalog
+        self._dialog = trackSelectionDialog(self)
+        self._dialog.filter = AlbumMixer.MP3_FILES
 
     def show(self, folders=False):
-        dialog = trackSelectionDialog(self)
-        dialog.filter = AlbumMixer.MP3_FILES
-        dialog.render(folderMode=folders)
+        self._dialog.render()
+        self._dialog.show(folders=folders)
 
     def tracksSelected(self, selection):
         for filename in self._listFilesIn(selection):

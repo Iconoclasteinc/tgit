@@ -10,7 +10,8 @@ from test.drivers.tagger_driver import TaggerDriver
 from test.util import fakes
 from tgit.tagger import TGiT
 from tgit.ui import constants as ui
-from tgit.ui.views import PictureSelectionDialog, TrackSelectionDialog
+from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
+from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 
 ENGLISH = 'en'
 ONE_SECOND = 1000

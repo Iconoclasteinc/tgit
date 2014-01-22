@@ -18,6 +18,7 @@ class TrackSelectionDialogTest(ViewTest):
         self.dialog = TrackSelectionDialog()
         self.dialog.native = False
         self.dialog.filter = '*.mp3'
+        self.dialog.render()
         self.driver = trackSelectionDialog(self)
 
     def testSignalsWhenAudioFilesSelected(self):
@@ -31,7 +32,7 @@ class TrackSelectionDialogTest(ViewTest):
                 selection.received(files)
 
         self.dialog.announceTo(SelectionListener())
-        self.dialog.render()
+        self.dialog.show()
         self.driver.selectTracks(*audioFiles)
         self.check(selection)
 
@@ -44,11 +45,11 @@ class TrackSelectionDialogTest(ViewTest):
                 selection.received(files)
 
         self.dialog.announceTo(SelectionListener())
-        self.dialog.render(folderMode=True)
+        self.dialog.show(folders=True)
         self.driver.selectTracksInFolder(audioFolder)
         self.check(selection)
 
     def testRejectsNonAudioFiles(self):
-        self.dialog.render()
+        self.dialog.show()
         unsupportedFile = resources.path('front-cover.jpg')
         self.driver.rejectsSelectionOf(unsupportedFile)

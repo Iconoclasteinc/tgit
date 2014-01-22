@@ -13,7 +13,7 @@ from test.drivers import TrackPageDriver
 from test.integration.ui import ViewTest
 from test.util import builders as build
 
-from tgit.ui.views import TrackPage
+from tgit.ui.views.track_page import TrackPage
 
 
 class TrackPageTest(ViewTest):
@@ -21,8 +21,7 @@ class TrackPageTest(ViewTest):
         super(TrackPageTest, self).setUp()
         self.album = build.album()
         self.view = TrackPage()
-        self.widget = QWidget()
-        self.view.render(self.widget)
+        self.widget = self.view.render()
         self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
@@ -45,7 +44,7 @@ class TrackPageTest(ViewTest):
         album = build.album(tracks=[build.track(), build.track()])
         album.insertTrack(track, 0)
 
-        self.view.refresh(album, track)
+        self.view.show(album, track)
 
         self.driver.showsTrackTitle('Song')
         self.driver.showsVersionInfo('Remix')

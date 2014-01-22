@@ -7,8 +7,7 @@ from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEd
                                DateTimeEditDriver)
 
 import tgit.tags as tags
-from tgit.ui import constants as ui
-from tgit.ui.views import TrackPage
+from tgit.ui.views.track_page import TrackPage
 
 
 def trackPage(parent):

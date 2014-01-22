@@ -18,23 +18,24 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from tgit.album import AlbumListener
 
-from tgit.ui.views import AlbumPage, PictureSelectionDialog
+from tgit.ui.views import albumPage, pictureSelectionDialog
 from tgit.util import fs
 
 
 class AlbumEditor(AlbumListener):
     def __init__(self, album):
         self._album = album
-        self._page = AlbumPage()
-        self._page.announceTo(self)
+        self._page = albumPage(self)
+        self._pictureDialog = pictureSelectionDialog(self)
 
-    def show(self, widget):
-        self._page.render(widget)
-        self._page.refresh(self._album)
+    def render(self):
+        widget = self._page.render()
+        self._page.show(self._album)
         self._album.addAlbumListener(self)
+        return widget
 
     def albumStateChanged(self, state):
-        self._page.refresh(state)
+        self._page.show(state)
 
     def metadataEdited(self, state):
         self._album.releaseName = state.releaseName
@@ -51,9 +52,8 @@ class AlbumEditor(AlbumListener):
         self._album.mixer = state.mixer
 
     def addPicture(self):
-        self._pictureDialog = PictureSelectionDialog()
-        self._pictureDialog.announceTo(self)
         self._pictureDialog.render()
+        self._pictureDialog.show()
 
     def pictureSelected(self, filename):
         self._album.removeImages()

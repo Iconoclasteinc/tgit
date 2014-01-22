@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import QWidget
 from hamcrest import has_properties
 
 # noinspection PyUnresolvedReferences
@@ -11,7 +10,7 @@ from test.drivers import AlbumPageDriver
 from test.integration.ui import ViewTest
 from test.util import resources, builders as build
 
-from tgit.ui.views import AlbumPage
+from tgit.ui.views.album_page import AlbumPage
 from tgit.util import fs
 
 
@@ -23,8 +22,7 @@ class AlbumPageTest(ViewTest):
     def setUp(self):
         super(AlbumPageTest, self).setUp()
         self.view = AlbumPage()
-        self.widget = QWidget()
-        self.view.render(self.widget)
+        self.widget = self.view.render()
         self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)
 
@@ -33,13 +31,13 @@ class AlbumPageTest(ViewTest):
 
     def testDisplaysPicturePlaceholderForAlbumWithoutCover(self):
         album = build.album()
-        self.view.refresh(album)
+        self.view.show(album)
         self.driver.showsPicturePlaceholder()
 
     def testDisplaysMainAlbumCover(self):
         album = build.album()
         album.addFrontCover('image/jpeg', loadImage('front-cover.jpg'))
-        self.view.refresh(album)
+        self.view.show(album)
         self.driver.showsPicture()
 
     def testDisplaysAlbumMetadata(self):
@@ -57,7 +55,7 @@ class AlbumPageTest(ViewTest):
             mixer='Mixing Engineer',
             comments='Comments\n...')
 
-        self.view.refresh(album)
+        self.view.show(album)
 
         self.driver.showsReleaseName('Album')
         self.driver.showsLeadPerformer('Artist')
@@ -79,7 +77,7 @@ class AlbumPageTest(ViewTest):
         self.driver.showsReleaseType('')
 
     def testSignalsWhenAddPictureButtonClicked(self):
-        self.view.refresh(build.album())
+        self.view.show(build.album())
 
         addPictureSignal = ValueMatcherProbe('add picture')
 
@@ -93,7 +91,7 @@ class AlbumPageTest(ViewTest):
         self.check(addPictureSignal)
 
     def testSignalsWhenRemovePictureButtonClicked(self):
-        self.view.refresh(build.album())
+        self.view.show(build.album())
 
         removePictureSignal = ValueMatcherProbe('remove picture')
 
@@ -107,7 +105,7 @@ class AlbumPageTest(ViewTest):
         self.check(removePictureSignal)
 
     def testSignalsWhenAlbumMetadataEdited(self):
-        self.view.refresh(build.album())
+        self.view.show(build.album())
 
         changes = ValueMatcherProbe('album changed')
 

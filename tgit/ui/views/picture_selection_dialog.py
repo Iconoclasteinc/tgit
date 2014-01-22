@@ -23,6 +23,12 @@ from tgit.announcer import Announcer
 from tgit.ui.views import mainWindow
 
 
+def pictureSelectionDialog(listener):
+    dialog = PictureSelectionDialog()
+    dialog.announceTo(listener)
+    return dialog
+
+
 class PictureSelectionDialog(object):
     NAME = 'picture-selection-dialog'
 
@@ -36,12 +42,14 @@ class PictureSelectionDialog(object):
         self._announce.addListener(listener)
 
     def render(self):
-        dialog = QFileDialog(mainWindow())
-        dialog.setObjectName(self.NAME)
-        dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        dialog.setDirectory(QDir.homePath())
-        dialog.setFileMode(QFileDialog.ExistingFile)
-        dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % dialog.tr('Image files'))
-        dialog.fileSelected.connect(self._announce.pictureSelected)
-        dialog.setAttribute(Qt.WA_DeleteOnClose)
-        dialog.open()
+        self._dialog = QFileDialog(mainWindow())
+        self._dialog.setObjectName(self.NAME)
+        self._dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
+        self._dialog.setDirectory(QDir.homePath())
+        self._dialog.setFileMode(QFileDialog.ExistingFile)
+        self._dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % self._dialog.tr('Image files'))
+        self._dialog.fileSelected.connect(self._announce.pictureSelected)
+        self._dialog.setAttribute(Qt.WA_DeleteOnClose)
+
+    def show(self):
+        self._dialog.open()

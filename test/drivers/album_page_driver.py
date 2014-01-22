@@ -8,7 +8,7 @@ from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver,
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
 
 import tgit.tags as tags
-from tgit.ui.views import AlbumPage
+from tgit.ui.views.album_page import AlbumPage
 
 
 def albumPage(parent):
