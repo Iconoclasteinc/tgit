@@ -4,7 +4,7 @@ from flexmock import flexmock
 from hamcrest import assert_that, equal_to
 from test.util import builders as build
 from tgit.ui.track_editor import TrackEditor
-from tgit.ui.views.track_page import TrackPage
+from tgit.ui.views.track_edition_page import TrackEditionPage
 
 ANY_POSITION = 0
 
@@ -45,23 +45,23 @@ class TrackEditorTest(unittest.TestCase):
         assert_that(self.track.language, equal_to('und'), 'language')
 
     def testRefreshesPageOnTrackChange(self):
-        flexmock(TrackPage).should_receive('show').with_args(self.album, self.track).once()
+        flexmock(TrackEditionPage).should_receive('show').with_args(self.album, self.track).once()
         self.editor.trackStateChanged(self.track)
 
     def testRefreshesPageWhenTracksAreRemovedFromAlbum(self):
         otherTrack = build.track()
-        flexmock(TrackPage).should_receive('show').with_args(self.album, self.track).once()
+        flexmock(TrackEditionPage).should_receive('show').with_args(self.album, self.track).once()
         self.editor.trackRemoved(otherTrack, position=ANY_POSITION)
 
     def testRefreshesPageWhenTracksAreAddedToAlbum(self):
         otherTrack = build.track()
-        flexmock(TrackPage).should_receive('show').with_args(self.album, self.track).once()
+        flexmock(TrackEditionPage).should_receive('show').with_args(self.album, self.track).once()
         self.editor.trackAdded(otherTrack, position=ANY_POSITION)
 
     def testStopsRefreshingPageAfterTrackRemoval(self):
         self.album.addAlbumListener(self.editor)
         self.track.addTrackListener(self.editor)
-        flexmock(TrackPage).should_receive('show').never()
+        flexmock(TrackEditionPage).should_receive('show').never()
 
         self.editor.trackRemoved(self.track, position=ANY_POSITION)
         self.album.addTrack(build.track())

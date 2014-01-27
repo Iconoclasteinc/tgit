@@ -3,6 +3,7 @@
 
 from datetime import timedelta
 import unittest
+
 from flexmock import flexmock
 from hamcrest import assert_that, equal_to, is_, has_property, contains
 
@@ -14,7 +15,7 @@ from test.util import builders as build
 from test.util import fakes
 
 from tgit.ui import display
-from tgit.ui.album_table_model import AlbumTableModel, Columns, Row
+from tgit.ui.views.album_composition_model import AlbumCompositionModel, Columns, Row
 
 
 QModelIndex.__str__ = lambda self: '(%s, %s)' % (self.row(), self.column())
@@ -24,7 +25,7 @@ def anInvalidIndex():
     return QModelIndex()
 
 
-class TestAlbumTableModel(AlbumTableModel):
+class StubAlbumCompositionModel(AlbumCompositionModel):
     inserting = False
     removing = False
 
@@ -50,7 +51,7 @@ class RowTest(unittest.TestCase):
 
         row = Row(album, track)
 
-        assert_that(row.trackTitle(), equal_to('Song'), 'track title')
+        assert_that(row.trackTitle, equal_to('Song'), 'track title')
         assert_that(row.leadPerformer(), equal_to('Artist'), 'lead performer')
         assert_that(row.releaseName(), equal_to('Album'), 'release name')
         assert_that(row.bitrate(), equal_to(192000), 'bitrate')
@@ -64,7 +65,7 @@ class RowTest(unittest.TestCase):
         listener.should_receive('rowChanged').with_args(row).once()
         row.trackStateChanged(build.track())
 
-    def movesTrackInAlbum(self):
+    def testMovesTrackInAlbum(self):
         album = build.album(tracks=[
             build.track(trackTitle='Track #1'),
             build.track(trackTitle='Track #2')])
@@ -146,11 +147,11 @@ class ColumnsTest(unittest.TestCase):
         assert_that(Columns.remove.value(row), is_(None), 'remove')
 
 
-class AlbumTableModelTest(unittest.TestCase):
+class AlbumCompositionModelTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
         self.player = flexmock(fakes.audioPlayer())
-        self.model = flexmock(TestAlbumTableModel(self.album, self.player))
+        self.model = flexmock(StubAlbumCompositionModel(self.album, self.player))
 
     def testHasEnoughColumns(self):
         assert_that(self.model.columnCount(), equal_to(len(Columns)), 'column count')

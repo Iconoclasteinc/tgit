@@ -196,7 +196,7 @@ class DateTimeEditDriver(WidgetDriver):
 
 
 class FileDialogDriver(WidgetDriver):
-    NAVIGATION_DELAY = 20
+    NAVIGATION_DELAY = 50
 
     def showHiddenFiles(self):
         class ShowHiddenFiles(object):

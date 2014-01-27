@@ -127,7 +127,7 @@ Sheet = """
         min-height: 64px;
     }
 
-    QToolButton#add {
+    QToolButton#add-tracks {
         background-color: #EC2327;
         border: 2px solid #EC2327;
         border-radius: 4px;
@@ -137,12 +137,12 @@ Sheet = """
         padding: 10px 10px 7px 10px;
     }
 
-    QToolButton#add:hover {
+    QToolButton#add-tracks:hover {
         background-color: #D42023;
         border-color: #D42023;
     }
 
-    QToolButton#add:pressed {
+    QToolButton#add-tracks:pressed {
         border: 2px solid #F6F6F6;
     }
 
@@ -256,43 +256,43 @@ Sheet = """
         background-color: #F9F7F7;
     }
 
-    QToolButton#play {
+    QToolButton#play-track {
         border-image: url(:/play.png);
     }
 
-    QToolButton#play:hover {
+    QToolButton#play-track:hover {
         border-image: url(:/play-hover.png);
     }
 
-    QToolButton#play:pressed {
+    QToolButton#play-track:pressed {
         border-image: url(:/play-pressed.png);
     }
 
-    QToolButton#play:checked {
+    QToolButton#play-track:checked {
         border-image: url(:/stop.png);
     }
 
-    QToolButton#play:checked:hover {
+    QToolButton#play-track:checked:hover {
         border-image: url(:/stop-hover.png);
     }
 
-    QToolButton#play:checked:pressed {
+    QToolButton#play-track:checked:pressed {
         border-image: url(:/stop-pressed.png);
     }
 
-    QToolButton#remove {
+    QToolButton#remove-track {
         border-image: url(:/remove.png);
     }
 
-    QToolButton#remove:hover {
+    QToolButton#remove-track:hover {
         border-image: url(:/remove-hover.png);
     }
 
-    QToolButton#remove:pressed {
+    QToolButton#remove-track-track:pressed {
         border-image: url(:/remove-pressed.png);
     }
 
-    #album-page QGroupBox {
+    #album-edition-page QGroupBox {
         border: 1px solid #DDDDDD;
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
         background-color: white;
@@ -301,7 +301,7 @@ Sheet = """
         font-size: 10px;
     }
 
-    #album-page QGroupBox::title {
+    #album-edition-page QGroupBox::title {
         subcontrol-origin: margin;
         subcontrol-position: top left;
         left: 1px;
@@ -311,17 +311,17 @@ Sheet = """
         background-color: #F7F7F7;
      }
 
-    #album-page QGroupBox#pictures {
+    #album-edition-page QGroupBox#pictures {
         padding: 13px 14px 10px 14px;
      }
 
-    #album-page QGroupBox#pictures::title {
+    #album-edition-page QGroupBox#pictures::title {
         background-color: transparent;
         color: transparent;
         border: none;
      }
 
-    #album-page QGroupBox#pictures #front-cover {
+    #album-edition-page QGroupBox#pictures #front-cover {
         min-width: 350px;
         max-width: 350px;
         min-height: 350px;
@@ -330,7 +330,7 @@ Sheet = """
         border: 1px solid #F79D6C;
     }
 
-    #album-page QPushButton#select-picture {
+    #album-edition-page QPushButton#select-picture {
         background-image: url(:/add-picture.png);
         background-repeat: no-repeat;
         background-position: left center;
@@ -344,7 +344,7 @@ Sheet = """
         padding: 10px 10px 7px 34px;
     }
 
-    #album-page QPushButton#remove-picture {
+    #album-edition-page QPushButton#remove-picture {
         background-color: #F25C0A;
         border: 2px solid #F25C0A;
         border-radius: 4px;
@@ -355,46 +355,45 @@ Sheet = """
         margin-left: 10px;
     }
 
-    #album-page QPushButton#select-picture:hover,
-    #album-page QPushButton#select-picture:focus,
-    #album-page QPushButton#remove-picture:hover,
-    #album-page QPushButton#remove-picture:focus {
+    #album-edition-page QPushButton#select-picture:hover,
+    #album-edition-page QPushButton#select-picture:focus,
+    #album-edition-page QPushButton#remove-picture:hover,
+    #album-edition-page QPushButton#remove-picture:focus {
         background-color: #D95109;
         border-color: #D95109;
     }
 
-    #album-page QPushButton#select-picture:pressed,
-    #album-page QPushButton#remove-picture:pressed {
+    #album-edition-page QPushButton#select-picture:pressed,
+    #album-edition-page QPushButton#remove-picture:pressed {
         border: 2px solid white;
     }
 
-    #album-page QLineEdit, #album-page TextArea {
+    #album-edition-page QLineEdit, #album-page TextArea {
         background-color: #F9F9F9;
         border: 1px solid #B1B1B1;
         color: #222222;
         min-height: 20px;
     }
 
-    #album-page QLineEdit:focus, #album-page TextArea:focus {
+    #album-edition-page QLineEdit:focus, #album-page TextArea:focus {
         border: 1px solid #F79D6C;
     }
 
-    #album-page QLineEdit:disabled, #album-page TextArea:disabled {
+    #album-edition-page QLineEdit:disabled, #album-page TextArea:disabled {
         background-color: #FCFCFC;
         border-color: #E7E7E7;
     }
 
-    #album-page #comments {
+    #album-edition-page #comments {
         max-height: 3.5em;
     }
 
-    #album-page QLabel {
+    #album-edition-page QLabel {
         color: #444444;
         min-width: 175px;
     }
 
-    #album-page QLabel:disabled {
+    #album-edition-page QLabel:disabled {
         color: #C2C2C2;
     }
 """
-

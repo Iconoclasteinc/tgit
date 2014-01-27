@@ -25,8 +25,9 @@ def mainWindow():
             return window
 
 
-from album_page import albumPage
+from album_edition_page import albumEditionPage
 from picture_selection_dialog import pictureSelectionDialog
-from track_page import trackPage
+from track_edition_page import trackEditionPage
 from track_selection_dialog import trackSelectionDialog
 from export_as_dialog import exportAsDialog
+from album_composition_page import albumCompositionPage

@@ -6,7 +6,7 @@ from PyQt4.QtGui import *
 from test.cute.widgets import WidgetDriver, ButtonDriver
 from test.cute.matchers import named
 from test.drivers.album_page_driver import albumPage
-from test.drivers.track_list_page_driver import trackListPage
+from test.drivers.album_composition_page_driver import albumCompositionPage
 from test.drivers.track_page_driver import trackPage
 
 from tgit.ui import constants as ui
@@ -21,7 +21,7 @@ class TaggingScreenDriver(WidgetDriver):
         super(TaggingScreenDriver, self).__init__(selector, prober, gesturePerformer)
 
     def isShowingTrackList(self):
-        trackListPage(self).isShowingOnScreen()
+        albumCompositionPage(self).isShowingOnScreen()
         self._isDisabled(self._previousPageButton())
         self._isDisabled(self._saveButton())
 
@@ -44,13 +44,13 @@ class TaggingScreenDriver(WidgetDriver):
         self._isEnabled(self._saveButton())
 
     def addFiles(self):
-        trackListPage(self).addFiles()
+        albumCompositionPage(self).addFiles()
 
     def removeTrack(self, title):
-        trackListPage(self).removeTrack(title)
+        albumCompositionPage(self).removeTrack(title)
 
     def moveTrack(self, title, to):
-        trackListPage(self).moveTrack(title, to)
+        albumCompositionPage(self).moveTrack(title, to)
 
     def nextPage(self):
         button = self._nextPageButton()
@@ -78,8 +78,8 @@ class TaggingScreenDriver(WidgetDriver):
         self.isShowingTrackMetadata()
 
     def showsAlbumContains(self, *tracks):
-        trackListPage(self).isShowingOnScreen()
-        trackListPage(self).showsTracksInOrder(*tracks)
+        albumCompositionPage(self).isShowingOnScreen()
+        albumCompositionPage(self).showsTracksInOrder(*tracks)
 
     def showsAlbumMetadata(self, **tags):
         albumPage(self).isShowingOnScreen()

@@ -34,6 +34,7 @@ class Row(QObject, TrackListener, PlayerListener):
         self._track = track
         self._playing = playing
 
+    @property
     def trackTitle(self):
         return self._track.trackTitle
 
@@ -116,7 +117,7 @@ class Columns:
     __metaclass__ = ColumnEnum
 
     # todo i18n on column names
-    trackTitle = Column(name='Titre de la piste', value=Row.trackTitle)
+    trackTitle = Column(name='Titre de la piste', value=lambda track: track.trackTitle)
     leadPerformer = Column(name='Artiste principal', value=Row.leadPerformer)
     releaseName = Column(name="Titre de l'album", value=Row.releaseName)
     bitrate = Column(name=u'Débit',
@@ -129,7 +130,7 @@ class Columns:
     __values__ = trackTitle, leadPerformer, releaseName, bitrate, duration, play, remove
 
 
-class AlbumTableModel(QAbstractTableModel, AlbumListener, TrackListener):
+class AlbumCompositionModel(QAbstractTableModel, AlbumListener, TrackListener):
     def __init__(self, album, player, parent=None):
         QAbstractTableModel.__init__(self, parent)
 
@@ -137,6 +138,10 @@ class AlbumTableModel(QAbstractTableModel, AlbumListener, TrackListener):
         self._album.addAlbumListener(self)
         self._player = player
         self._tracks = []
+
+    @property
+    def tracks(self):
+        return tuple(self._tracks)
 
     def columnCount(self, index=QModelIndex()):
         return len(Columns)
@@ -179,7 +184,7 @@ class AlbumTableModel(QAbstractTableModel, AlbumListener, TrackListener):
             track.stop(self._player)
         track.remove()
 
-    def move(self, index, fromPosition, toPosition):
+    def move(self, fromPosition, toPosition):
         self.trackAt(fromPosition).moveTo(toPosition)
 
     def albumStateChanged(self, album):

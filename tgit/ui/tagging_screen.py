@@ -24,11 +24,11 @@ from tgit.announcer import Announcer
 from tgit.album import AlbumListener
 from tgit.mp3.id3_tagger import Id3Tagger
 from tgit.mp3.track_files import TrackFiles
-from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui import constants as ui, style
+from tgit.ui.album_composer import AlbumComposer
+from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.track_editor import TrackEditor
-from tgit.ui.track_list_page import TrackListPage
 
 
 TRACK_LIST_PAGE = 0
@@ -54,7 +54,7 @@ class TaggingScreen(QWidget, AlbumListener):
 
     # Eventually, event will bubble up to top level presenter.
     # For that we need to do some prep work on the menubar first.
-    def selectFiles(self, folders=False):
+    def addTracksToAlbum(self, folders=False):
         mixer = AlbumMixer(self._album, TrackFiles(Id3Tagger()))
         mixer.show(folders=folders)
 
@@ -93,9 +93,9 @@ class TaggingScreen(QWidget, AlbumListener):
 
     def _makePages(self):
         self._pages = QStackedWidget()
-        page = TrackListPage(self._album, self._player)
-        page.addRequestListener(self)
-        self._pages.addWidget(page)
+        composer = AlbumComposer(self._album, self._player)
+        composer.announceTo(self)
+        self._pages.addWidget(composer.render())
         editor = AlbumEditor(self._album)
         self._pages.addWidget(editor.render())
         self._pages.setCurrentIndex(TRACK_LIST_PAGE)

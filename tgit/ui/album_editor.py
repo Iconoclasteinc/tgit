@@ -18,14 +18,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from tgit.album import AlbumListener
 
-from tgit.ui.views import albumPage, pictureSelectionDialog
+from tgit.ui.views import albumEditionPage, pictureSelectionDialog
 from tgit.util import fs
 
 
 class AlbumEditor(AlbumListener):
     def __init__(self, album):
         self._album = album
-        self._page = albumPage(self)
+        self._page = albumEditionPage(self)
         self._pictureDialog = pictureSelectionDialog(self)
 
     def render(self):

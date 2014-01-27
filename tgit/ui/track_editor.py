@@ -19,14 +19,14 @@
 
 from tgit.album import AlbumListener
 from tgit.track import TrackListener
-from tgit.ui.views import trackPage
+from tgit.ui.views import trackEditionPage
 
 
 class TrackEditor(AlbumListener, TrackListener):
     def __init__(self, album, track):
         self._album = album
         self._track = track
-        self._page = trackPage(self)
+        self._page = trackEditionPage(self)
 
     def render(self):
         widget = self._page.render()

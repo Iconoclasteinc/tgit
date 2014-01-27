@@ -13,14 +13,14 @@ from test.drivers import TrackPageDriver
 from test.integration.ui import ViewTest
 from test.util import builders as build
 
-from tgit.ui.views.track_page import TrackPage
+from tgit.ui.views.track_edition_page import TrackEditionPage
 
 
-class TrackPageTest(ViewTest):
+class TrackEditionPageTest(ViewTest):
     def setUp(self):
-        super(TrackPageTest, self).setUp()
+        super(TrackEditionPageTest, self).setUp()
         self.album = build.album()
-        self.view = TrackPage()
+        self.view = TrackEditionPage()
         self.widget = self.view.render()
         self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)

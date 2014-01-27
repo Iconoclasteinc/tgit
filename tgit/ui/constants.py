@@ -20,7 +20,6 @@
 # todo progressively move to their respective views
 MAIN_WINDOW_NAME = 'main window'
 TAGGING_SCREEN_NAME = 'tagging screen'
-TRACK_LIST_PAGE_NAME = 'track-list-page'
 
 NAVIGATION_BAR = 'navigation'
 BUTTON_BAR = 'buttons'
@@ -32,11 +31,6 @@ FILE_MENU_NAME = 'file'
 ADD_FILES_ACTION_NAME = 'add files'
 ADD_FOLDER_ACTION_NAME = 'add folder'
 EXPORT_ACTION_NAME = 'export'
-
-TRACK_TABLE_NAME = 'track-list'
-PLAY_BUTTON_NAME = 'play'
-REMOVE_BUTTON_NAME = 'remove'
-ADD_BUTTON_NAME = 'add'
 
 TRACK_TITLE_EDIT_NAME = 'track title'
 VERSION_INFO_EDIT_NAME = 'version info'

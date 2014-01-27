@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
 
 from hamcrest import contains, has_items, equal_to
-
 from PyQt4.QtGui import QAbstractButton, QTableView, QWidget
 
 from test.cute.widgets import WidgetDriver, ButtonDriver, TableViewDriver
 from test.cute.matchers import named
-
-from tgit.ui import constants as ui
-from tgit.ui.album_table_model import Columns
-
-
-def trackListPage(parent):
-    return TrackListPageDriver.findSingle(parent, QWidget, named(ui.TRACK_LIST_PAGE_NAME))
+from tgit.ui.views.album_composition_model import Columns
+from tgit.ui.views.album_composition_page import AlbumCompositionPage
 
 
-class TrackListPageDriver(WidgetDriver):
+def albumCompositionPage(parent):
+    return AlbumCompositionPageDriver.findSingle(parent, QWidget, named(AlbumCompositionPage.NAME))
+
+
+class AlbumCompositionPageDriver(WidgetDriver):
     def __init__(self, selector, prober, gesturePerformer):
-        super(TrackListPageDriver, self).__init__(selector, prober, gesturePerformer)
+        super(AlbumCompositionPageDriver, self).__init__(selector, prober, gesturePerformer)
 
     def showsColumnHeaders(self, *titles):
         headers = [title for title in titles]
@@ -57,8 +55,8 @@ class TrackListPageDriver(WidgetDriver):
         self.playOrStop(title)
         self.isNotPlaying(title)
 
-    def addFiles(self):
-        button = ButtonDriver.findSingle(self, QAbstractButton, named(ui.ADD_BUTTON_NAME))
+    def addTracks(self):
+        button = ButtonDriver.findSingle(self, QAbstractButton, named(AlbumCompositionPage.ADD_BUTTON_NAME))
         button.click()
 
     def removeTrack(self, title):
@@ -72,7 +70,7 @@ class TrackListPageDriver(WidgetDriver):
 
     def _removeButtonAt(self, row):
         return ButtonDriver.findSingle(self._removeWidget(row), QAbstractButton,
-                                       named(ui.REMOVE_BUTTON_NAME))
+                                       named(AlbumCompositionPage.REMOVE_BUTTON_NAME))
 
     def _removeWidget(self, index):
         return self._trackTable().widgetInCell(index, Columns.index(Columns.remove))
@@ -82,7 +80,7 @@ class TrackListPageDriver(WidgetDriver):
 
     def _playButtonAt(self, index):
         return ButtonDriver.findSingle(self._playWidget(index), QAbstractButton,
-                                       named(ui.PLAY_BUTTON_NAME))
+                                       named(AlbumCompositionPage.PLAY_BUTTON_NAME))
 
     def _playWidget(self, index):
         return self._trackTable().widgetInCell(index, Columns.index(Columns.play))
@@ -91,4 +89,4 @@ class TrackListPageDriver(WidgetDriver):
         self._trackTable().clickOnCell(row, Columns.index(Columns.play))
 
     def _trackTable(self):
-        return TableViewDriver.findSingle(self, QTableView, named(ui.TRACK_TABLE_NAME))
+        return TableViewDriver.findSingle(self, QTableView, named(AlbumCompositionPage.TRACK_TABLE_NAME))

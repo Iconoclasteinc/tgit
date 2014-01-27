@@ -10,7 +10,7 @@ from test.drivers import AlbumPageDriver
 from test.integration.ui import ViewTest
 from test.util import resources, builders as build
 
-from tgit.ui.views.album_page import AlbumPage
+from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.util import fs
 
 
@@ -18,10 +18,10 @@ def loadImage(name):
     return fs.readContent(resources.path(name))
 
 
-class AlbumPageTest(ViewTest):
+class AlbumEditionPageTest(ViewTest):
     def setUp(self):
-        super(AlbumPageTest, self).setUp()
-        self.view = AlbumPage()
+        super(AlbumEditionPageTest, self).setUp()
+        self.view = AlbumEditionPage()
         self.widget = self.view.render()
         self.show(self.widget)
         self.driver = self.createDriverFor(self.widget)

@@ -27,14 +27,14 @@ from tgit.ui.text_area import TextArea
 DURATION_FORMAT = 'mm:ss'
 
 
-def trackPage(listener):
-    page = TrackPage()
+def trackEditionPage(listener):
+    page = TrackEditionPage()
     page.announceTo(listener)
     return page
 
 
-class TrackPage(object):
-    NAME = 'track-page'
+class TrackEditionPage(object):
+    NAME = 'track-edition-page'
 
     TRACK_TITLE_FIELD_NAME = 'track-title'
     VERSION_INFO_FIELD_NAME = 'version-info'
@@ -68,7 +68,7 @@ class TrackPage(object):
 
     def _build(self):
         widget = QWidget()
-        widget.setObjectName(TrackPage.NAME)
+        widget.setObjectName(TrackEditionPage.NAME)
         layout = QVBoxLayout()
         grid = QGridLayout()
         self._fill(grid)
@@ -99,7 +99,7 @@ class TrackPage(object):
         self._trackTitleLabel = QLabel()
         layout.addWidget(self._trackTitleLabel, row, 0)
         self._trackTitleEdit = QLineEdit()
-        self._trackTitleEdit.setObjectName(TrackPage.TRACK_TITLE_FIELD_NAME)
+        self._trackTitleEdit.setObjectName(TrackEditionPage.TRACK_TITLE_FIELD_NAME)
         self._trackTitleEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._trackTitleEdit, row, 1)
         self._trackTitleLabel.setBuddy(self._trackTitleEdit)

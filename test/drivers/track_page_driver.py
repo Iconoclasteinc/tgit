@@ -7,11 +7,11 @@ from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEd
                                DateTimeEditDriver)
 
 import tgit.tags as tags
-from tgit.ui.views.track_page import TrackPage
+from tgit.ui.views.track_edition_page import TrackEditionPage
 
 
 def trackPage(parent):
-    return TrackPageDriver.findSingle(parent, QWidget, named(TrackPage.NAME), showingOnScreen())
+    return TrackPageDriver.findSingle(parent, QWidget, named(TrackEditionPage.NAME), showingOnScreen())
 
 
 class TrackPageDriver(WidgetDriver):
@@ -71,144 +71,144 @@ class TrackPageDriver(WidgetDriver):
         return LineEditDriver.findSingle(self, QLineEdit, matching)
 
     def showsTrackTitle(self, trackTitle):
-        label = self._label(withBuddy(named(TrackPage.TRACK_TITLE_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.TRACK_TITLE_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.TRACK_TITLE_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.TRACK_TITLE_FIELD_NAME))
         edit.hasText(trackTitle)
 
     def changeTrackTitle(self, title):
-        edit = self._lineEdit(named(TrackPage.TRACK_TITLE_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.TRACK_TITLE_FIELD_NAME))
         edit.changeText(title)
 
     def showsVersionInfo(self, versionInfo):
-        label = self._label(withBuddy(named(TrackPage.VERSION_INFO_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.VERSION_INFO_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.VERSION_INFO_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.VERSION_INFO_FIELD_NAME))
         edit.hasText(versionInfo)
 
     def changeVersionInfo(self, info):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(TrackPage.VERSION_INFO_FIELD_NAME))
+        edit = LineEditDriver.findSingle(self, QLineEdit, named(TrackEditionPage.VERSION_INFO_FIELD_NAME))
         edit.changeText(info)
 
     def showsBitrate(self, text):
-        label = self._label(withBuddy(named(TrackPage.BITRATE_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.BITRATE_FIELD_NAME)))
         label.isShowingOnScreen()
-        value = self._label(named(TrackPage.BITRATE_FIELD_NAME))
+        value = self._label(named(TrackEditionPage.BITRATE_FIELD_NAME))
         value.hasText(text)
 
     def showsTrackNumber(self, number):
-        label = self._label(withBuddy(named(TrackPage.TRACK_NUMBER_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.TRACK_NUMBER_FIELD_NAME)))
         label.isShowingOnScreen()
-        value = self._label(named(TrackPage.TRACK_NUMBER_FIELD_NAME))
+        value = self._label(named(TrackEditionPage.TRACK_NUMBER_FIELD_NAME))
         value.hasText(number)
 
     def showsTotalTracks(self, count):
-        label = self._label(withBuddy(named(TrackPage.TOTAL_TRACKS_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.TOTAL_TRACKS_FIELD_NAME)))
         label.isShowingOnScreen()
-        value = self._label(named(TrackPage.TOTAL_TRACKS_FIELD_NAME))
+        value = self._label(named(TrackEditionPage.TOTAL_TRACKS_FIELD_NAME))
         value.hasText(count)
 
     def showsDuration(self, text):
-        label = self._label(withBuddy(named(TrackPage.DURATION_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.DURATION_FIELD_NAME)))
         label.isShowingOnScreen()
-        value = self._label(named(TrackPage.DURATION_FIELD_NAME))
+        value = self._label(named(TrackEditionPage.DURATION_FIELD_NAME))
         value.hasText(text)
 
     def showsFeaturedGuest(self, name):
-        label = self._label(withBuddy(named(TrackPage.FEATURED_GUEST_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.FEATURED_GUEST_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.FEATURED_GUEST_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.FEATURED_GUEST_FIELD_NAME))
         edit.hasText(name)
 
     def changeFeaturedGuest(self, name):
-        edit = self._lineEdit(named(TrackPage.FEATURED_GUEST_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.FEATURED_GUEST_FIELD_NAME))
         edit.changeText(name)
 
     def showsLyricist(self, name):
-        label = self._label(withBuddy(named(TrackPage.LYRICIST_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.LYRICIST_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.LYRICIST_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.LYRICIST_FIELD_NAME))
         edit.hasText(name)
 
     def changeLyricist(self, name):
-        edit = self._lineEdit(named(TrackPage.LYRICIST_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.LYRICIST_FIELD_NAME))
         edit.changeText(name)
 
     def showsComposer(self, name):
-        label = self._label(withBuddy(named(TrackPage.COMPOSER_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.COMPOSER_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.COMPOSER_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.COMPOSER_FIELD_NAME))
         edit.hasText(name)
 
     def changeComposer(self, name):
-        edit = self._lineEdit(named(TrackPage.COMPOSER_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.COMPOSER_FIELD_NAME))
         edit.changeText(name)
 
     def showsPublisher(self, name):
-        label = self._label(withBuddy(named(TrackPage.PUBLISHER_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.PUBLISHER_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.PUBLISHER_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.PUBLISHER_FIELD_NAME))
         edit.hasText(name)
 
     def changePublisher(self, name):
-        edit = self._lineEdit(named(TrackPage.PUBLISHER_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.PUBLISHER_FIELD_NAME))
         edit.changeText(name)
 
     def showsIsrc(self, code):
-        label = self._label(withBuddy(named(TrackPage.ISRC_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.ISRC_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.ISRC_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.ISRC_FIELD_NAME))
         edit.hasText(code)
 
     def changeIsrc(self, code):
-        edit = self._lineEdit(named(TrackPage.ISRC_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.ISRC_FIELD_NAME))
         edit.changeText(code)
 
     def showsIswc(self, code):
-        label = self._label(withBuddy(named(TrackPage.ISWC_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.ISWC_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.ISWC_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.ISWC_FIELD_NAME))
         edit.isDisabled()
         edit.hasText(code)
 
     def showsTags(self, tags):
-        label = self._label(withBuddy(named(TrackPage.TAGS_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.TAGS_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.TAGS_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.TAGS_FIELD_NAME))
         edit.hasText(tags)
 
     def changeTags(self, tags):
-        edit = self._lineEdit(named(TrackPage.TAGS_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.TAGS_FIELD_NAME))
         edit.changeText(tags)
 
     def _textEdit(self, matching):
         return TextEditDriver.findSingle(self, QPlainTextEdit, matching)
 
     def showsLyrics(self, lyrics):
-        label = self._label(withBuddy(named(TrackPage.LYRICS_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.LYRICS_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._textEdit(named(TrackPage.LYRICS_FIELD_NAME))
+        edit = self._textEdit(named(TrackEditionPage.LYRICS_FIELD_NAME))
         edit.hasPlainText(lyrics)
 
     def addLyrics(self, *lyrics):
-        edit = self._textEdit(named(TrackPage.LYRICS_FIELD_NAME))
+        edit = self._textEdit(named(TrackEditionPage.LYRICS_FIELD_NAME))
         for lyric in lyrics:
             edit.addLine(lyric)
         edit.clearFocus()
 
     def showsLanguage(self, text):
-        label = self._label(withBuddy(named(TrackPage.LANGUAGE_FIELD_NAME)))
+        label = self._label(withBuddy(named(TrackEditionPage.LANGUAGE_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackPage.LANGUAGE_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
         edit.hasText(text)
 
     def changeLanguage(self, tags):
-        edit = self._lineEdit(named(TrackPage.LANGUAGE_FIELD_NAME))
+        edit = self._lineEdit(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
         edit.changeText(tags)
 
     def _dateTimeEdit(self, matching):
         return DateTimeEditDriver.findSingle(self, QTimeEdit, matching)
 
     def showsPreviewTime(self, time):
-        edit = self._dateTimeEdit(named(TrackPage.PREVIEW_TIME_FIELD_NAME))
+        edit = self._dateTimeEdit(named(TrackEditionPage.PREVIEW_TIME_FIELD_NAME))
         edit.hasTime(time)

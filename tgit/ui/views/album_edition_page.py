@@ -41,14 +41,14 @@ def addLabelledFields(form, *fields):
         form.addRow(label, field)
 
 
-def albumPage(listener):
-    page = AlbumPage()
+def albumEditionPage(listener):
+    page = AlbumEditionPage()
     page.announceTo(listener)
     return page
 
 
-class AlbumPage(object):
-    NAME = 'album-page'
+class AlbumEditionPage(object):
+    NAME = 'album-edition-page'
 
     PICTURES_FIELD_SET_NAME = 'pictures'
     FRONT_COVER_FIELD_NAME = 'front-cover'
@@ -94,7 +94,7 @@ class AlbumPage(object):
 
     def _build(self):
         widget = QWidget()
-        widget.setObjectName(AlbumPage.NAME)
+        widget.setObjectName(self.NAME)
         layout = style.horizontalLayout()
         layout.setSpacing(0)
         layout.addWidget(self._makeLeftColumn())
@@ -133,7 +133,7 @@ class AlbumPage(object):
 
     def _makePicturesFieldSet(self):
         fieldSet = QGroupBox()
-        fieldSet.setObjectName(AlbumPage.PICTURES_FIELD_SET_NAME)
+        fieldSet.setObjectName(self.PICTURES_FIELD_SET_NAME)
         self._attachedPictureLabel = self._makeFrontCoverPictureField()
         self._selectPictureButton = self._makeSelectPictureButton()
         self._removePictureButton = self._makeRemovePictureButton()
@@ -152,21 +152,21 @@ class AlbumPage(object):
 
     def _makeFrontCoverPictureField(self):
         label = QLabel()
-        label.setObjectName(AlbumPage.FRONT_COVER_FIELD_NAME)
-        label.setFixedSize(*AlbumPage.FRONT_COVER_SIZE)
+        label.setObjectName(self.FRONT_COVER_FIELD_NAME)
+        label.setFixedSize(*self.FRONT_COVER_SIZE)
         self._attachedPicture = None
         return label
 
     def _makeSelectPictureButton(self):
         button = QPushButton()
-        button.setObjectName(AlbumPage.SELECT_PICTURE_BUTTON_NAME)
+        button.setObjectName(self.SELECT_PICTURE_BUTTON_NAME)
         button.clicked.connect(lambda: self._announce.addPicture())
         style.enableButton(button)
         return button
 
     def _makeRemovePictureButton(self):
         button = QPushButton()
-        button.setObjectName(AlbumPage.REMOVE_PICTURE_BUTTON_NAME)
+        button.setObjectName(self.REMOVE_PICTURE_BUTTON_NAME)
         button.clicked.connect(lambda: self._announce.removePicture())
         style.enableButton(button)
         return button
@@ -276,7 +276,7 @@ class AlbumPage(object):
 
     def _displayAttachedPicture(self, image):
         self._attachedPicture = image
-        self._attachedPictureLabel.setPixmap(scaleTo(image, *AlbumPage.FRONT_COVER_SIZE))
+        self._attachedPictureLabel.setPixmap(scaleTo(image, *self.FRONT_COVER_SIZE))
 
     def _signalMetadataChange(self):
         class Snapshot(object):

@@ -50,7 +50,7 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         taggingScreen = TaggingScreen(album, self._audioPlayer)
         taggingScreen.addRequestListener(self._productionHouses)
         self.setCentralWidget(taggingScreen)
-        taggingScreen.selectFiles()
+        taggingScreen.addTracksToAlbum()
 
     def _assemble(self):
         self.setObjectName(ui.MAIN_WINDOW_NAME)
@@ -67,10 +67,10 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         return menuBar
 
     def selectFiles(self):
-        self.centralWidget().selectFiles(folders=False)
+        self.centralWidget().addTracksToAlbum()
 
     def selectFolder(self):
-        self.centralWidget().selectFiles(folders=True)
+        self.centralWidget().addTracksToAlbum(folders=True)
 
     def export(self, album):
         exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING))
