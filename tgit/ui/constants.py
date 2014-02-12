@@ -19,13 +19,6 @@
 
 # todo progressively move to their respective views
 MAIN_WINDOW_NAME = 'main window'
-TAGGING_SCREEN_NAME = 'tagging screen'
-
-NAVIGATION_BAR = 'navigation'
-BUTTON_BAR = 'buttons'
-NEXT_BUTTON_NAME = 'next'
-PREVIOUS_BUTTON_NAME = 'previous'
-SAVE_BUTTON_NAME = 'save'
 
 FILE_MENU_NAME = 'file'
 ADD_FILES_ACTION_NAME = 'add files'

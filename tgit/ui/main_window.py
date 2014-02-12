@@ -20,13 +20,15 @@
 from PyQt4.QtGui import QMainWindow
 
 from tgit.announcer import Announcer
+from tgit.mp3.id3_tagger import Id3Tagger
+from tgit.mp3.track_files import TrackFiles
 from tgit.record_label import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
 from tgit.ui import constants as ui
+from tgit.ui.album_director import AlbumDirector
 from tgit.ui.album_exporter import AlbumExporter
 from tgit.ui.menu_bar import MenuBar
 from tgit.ui.welcome_screen import WelcomeScreen
-from tgit.ui.tagging_screen import TaggingScreen
 from tgit.ui import style
 
 WIN_LATIN1_ENCODING = 'Windows-1252'
@@ -47,10 +49,9 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self._productionHouses.addListener(house)
 
     def albumCreated(self, album):
-        taggingScreen = TaggingScreen(album, self._audioPlayer)
-        taggingScreen.addRequestListener(self._productionHouses)
-        self.setCentralWidget(taggingScreen)
-        taggingScreen.addTracksToAlbum()
+        self._director = AlbumDirector(album, TrackFiles(Id3Tagger()), self._audioPlayer)
+        self.setCentralWidget(self._director.render())
+        self._director.addTracksToAlbum()
 
     def _assemble(self):
         self.setObjectName(ui.MAIN_WINDOW_NAME)
@@ -67,10 +68,10 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         return menuBar
 
     def selectFiles(self):
-        self.centralWidget().addTracksToAlbum()
+        self._director.addTracksToAlbum()
 
     def selectFolder(self):
-        self.centralWidget().addTracksToAlbum(folders=True)
+        self._director.addTracksToAlbum(folders=True)
 
     def export(self, album):
         exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING))

@@ -6,7 +6,7 @@ import use_sip_api_v2
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
-from test.drivers import AlbumPageDriver
+from test.drivers import AlbumEditionPageDriver
 from test.integration.ui import ViewTest
 from test.util import resources, builders as build
 
@@ -27,7 +27,7 @@ class AlbumEditionPageTest(ViewTest):
         self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):
-        return AlbumPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return AlbumEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysPicturePlaceholderForAlbumWithoutCover(self):
         album = build.album()

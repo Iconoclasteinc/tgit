@@ -92,7 +92,7 @@ class Album(object):
         return len(self) == 0
 
     def positionOf(self, track):
-        return self.tracks.index(track) + 1
+        return self.tracks.index(track)
 
     def addTrack(self, track):
         self.insertTrack(track, len(self._tracks))

@@ -16,10 +16,7 @@ from tgit.ui.views.album_composition_model import AlbumCompositionModel
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
 
 
-def tableWidgetItemDescription(self):
-    return self.text()
-
-QTableWidgetItem.__repr__ = tableWidgetItemDescription
+# QTableWidgetItem.__repr__ = lambda widget: widget.text()
 
 
 def hasTitle(title):
@@ -27,7 +24,6 @@ def hasTitle(title):
 
 
 class AlbumCompositionPageTest(ViewTest):
-
     def setUp(self):
         super(AlbumCompositionPageTest, self).setUp()
         self.player = flexmock(fakes.audioPlayer())
@@ -115,9 +111,3 @@ class AlbumCompositionPageTest(ViewTest):
 
         self.driver.moveTrack('Song #3', toPosition)
         self.driver.check(moveTrackProbe)
-
-    def _notPlaying(self):
-        return lambda: not self.player.isPlaying()
-
-    def _playing(self):
-        return lambda: self.player.isPlaying()

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
-from PyQt4.QtGui import QWidget
 from hamcrest import has_properties
 
 # noinspection PyUnresolvedReferences
@@ -9,7 +8,7 @@ import use_sip_api_v2
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
-from test.drivers import TrackPageDriver
+from test.drivers import TrackEditionPageDriver
 from test.integration.ui import ViewTest
 from test.util import builders as build
 
@@ -26,7 +25,7 @@ class TrackEditionPageTest(ViewTest):
         self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):
-        return TrackPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return TrackEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysTrackMetadata(self):
         track = build.track(bitrate=192000,

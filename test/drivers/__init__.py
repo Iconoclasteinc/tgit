@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 
-from track_page_driver import TrackPageDriver
-from album_page_driver import AlbumPageDriver
+from track_edition_page_driver import TrackEditionPageDriver
+from album_edition_page_driver import AlbumEditionPageDriver

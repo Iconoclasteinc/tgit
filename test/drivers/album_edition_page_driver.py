@@ -11,13 +11,13 @@ import tgit.tags as tags
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 
 
-def albumPage(parent):
-    return AlbumPageDriver.findSingle(parent, QWidget, named(AlbumEditionPage.NAME))
+def albumEditionPage(parent):
+    return AlbumEditionPageDriver.findSingle(parent, QWidget, named(AlbumEditionPage.NAME))
 
 
-class AlbumPageDriver(WidgetDriver):
+class AlbumEditionPageDriver(WidgetDriver):
     def __init__(self, selector, prober, gesturePerformer):
-        super(AlbumPageDriver, self).__init__(selector, prober, gesturePerformer)
+        super(AlbumEditionPageDriver, self).__init__(selector, prober, gesturePerformer)
 
     def showsMetadata(self, **meta):
         for tag, value in meta.iteritems():

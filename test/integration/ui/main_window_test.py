@@ -25,7 +25,7 @@ class MainWindowTest(ViewTest):
 
     def testShowsMainScreenOnAlbumCreation(self):
         self.widget.albumCreated(Album())
-        self.driver.showsTaggingScreen()
+        self.driver.showsAlbumScreen()
 
     def testShowsExportAsDialogOnExport(self):
         self.widget.export(build.album())

@@ -3,7 +3,7 @@
 from test.cute.widgets import MainWindowDriver
 from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.drivers.menu_bar_driver import menuBar
-from test.drivers.tagging_screen_driver import taggingScreen
+from test.drivers.album_screen_driver import albumScreen
 from test.drivers.track_selection_dialog_driver import trackSelectionDialog
 from test.drivers.welcome_screen_driver import welcomeScreen
 
@@ -21,47 +21,47 @@ class TaggerDriver(MainWindowDriver):
 
     def createAlbum(self):
         welcomeScreen(self).newAlbum()
-        self.showsTaggingScreen()
+        self.showsAlbumScreen()
 
     def showsWelcomeScreen(self):
         welcomeScreen(self).isShowingOnScreen()
 
-    def showsTaggingScreen(self):
-        taggingScreen(self).isShowingOnScreen()
+    def showsAlbumScreen(self):
+        albumScreen(self).isShowingOnScreen()
 
     def showsExportAsDialog(self):
         exportAsDialog(self).isShowingOnScreen()
 
     def removeTrack(self, title):
-        taggingScreen(self).removeTrack(title)
+        albumScreen(self).removeTrack(title)
 
     def moveTrack(self, title, to):
-        taggingScreen(self).moveTrack(title, to)
+        albumScreen(self).moveTrack(title, to)
 
     # todo have a quick navigation button
     def toAlbum(self):
-        taggingScreen(self).nextPage()
-        taggingScreen(self).isShowingAlbumMetadata()
+        albumScreen(self).nextPage()
+        albumScreen(self).isShowingAlbumEditionPage()
 
     # todo have a quick navigation button
     def toNextTrack(self):
-        taggingScreen(self).nextPage()
-        taggingScreen(self).isShowingTrackMetadata()
+        albumScreen(self).nextPage()
+        albumScreen(self).isShowingTrackEditionPage()
 
     def showsAlbumContains(self, *tracks):
-        taggingScreen(self).showsAlbumContains(*tracks)
+        albumScreen(self).showsAlbumContains(*tracks)
 
     def showsAlbumMetadata(self, **tags):
-        taggingScreen(self).showsAlbumMetadata(**tags)
+        albumScreen(self).showsAlbumMetadata(**tags)
 
     def editAlbumMetadata(self, **tags):
-        taggingScreen(self).editAlbumMetadata(**tags)
+        albumScreen(self).editAlbumMetadata(**tags)
 
     def showsTrackMetadata(self, **tags):
-        taggingScreen(self).showsTrackMetadata(**tags)
+        albumScreen(self).showsTrackMetadata(**tags)
 
     def editTrackMetadata(self, **tags):
-        taggingScreen(self).editTrackMetadata(**tags)
+        albumScreen(self).editTrackMetadata(**tags)
 
     def saveAlbum(self):
-        taggingScreen(self).saveAlbum()
+        albumScreen(self).save()

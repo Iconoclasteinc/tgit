@@ -61,6 +61,9 @@ class WidgetDriver(object):
             RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector), index),
             parent.prober, parent.gesturePerformer)
 
+    def exists(self):
+        self.is_(match.existing())
+
     def isShowingOnScreen(self):
         self.is_(match.showingOnScreen())
 
@@ -196,7 +199,7 @@ class DateTimeEditDriver(WidgetDriver):
 
 
 class FileDialogDriver(WidgetDriver):
-    NAVIGATION_DELAY = 50
+    DISPLAY_DELAY = 250
 
     def showHiddenFiles(self):
         class ShowHiddenFiles(object):
@@ -207,6 +210,7 @@ class FileDialogDriver(WidgetDriver):
 
     def navigateToDir(self, path):
         for folderName in self._navigationPathTo(path):
+            print "Navigating to '" + folderName + "'"
             if folderName == '':
                 pass
             elif folderName == '..':
@@ -227,10 +231,8 @@ class FileDialogDriver(WidgetDriver):
         return currentFolder.name
 
     def intoFolder(self, name):
-        self.perform(gestures.pause(self.NAVIGATION_DELAY))
         self.selectFile(name)
         self._doubleClickOnFolder()
-        self.perform(gestures.pause(self.NAVIGATION_DELAY))
 
     def _doubleClickOnFolder(self):
         self.perform(gestures.mouseDoubleClick())
@@ -239,6 +241,7 @@ class FileDialogDriver(WidgetDriver):
         self.selectFiles(name)
 
     def selectFiles(self, *names):
+        self.perform(gestures.pause(self.DISPLAY_DELAY))
         self._listView().selectItems(*[match.withListItemText(name) for name in names])
 
     def upOneFolder(self):

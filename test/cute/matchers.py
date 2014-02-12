@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from hamcrest import anything
 
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
@@ -34,6 +35,10 @@ def withListItemText(text):
 
 def with_(query, matcher):
     return QueryResultMatcher(query, matcher)
+
+
+def existing():
+    return anything()
 
 
 def showingOnScreen():

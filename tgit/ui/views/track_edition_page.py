@@ -243,7 +243,7 @@ class TrackEditionPage(object):
         self._trackTitleEdit.setText(track.trackTitle)
         self._versionInfoEdit.setText(track.versionInfo)
         self._durationValueLabel.setText(display.asDuration(track.duration))
-        self._trackNumberValueLabel.setText(str(album.positionOf(track)))
+        self._trackNumberValueLabel.setText(str(album.positionOf(track) + 1))
         self._totalTracksValueLabel.setText(str(len(album)))
         self._bitrateValueLabel.setText('%s kbps' % display.inKbps(track.bitrate))
         self._featuredGuestEdit.setText(track.featuredGuest)

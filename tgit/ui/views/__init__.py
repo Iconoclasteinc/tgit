@@ -31,3 +31,4 @@ from track_edition_page import trackEditionPage
 from track_selection_dialog import trackSelectionDialog
 from export_as_dialog import exportAsDialog
 from album_composition_page import albumCompositionPage
+from album_screen import albumScreen

@@ -123,7 +123,7 @@ Sheet = """
         min-height: 48px;
     }
 
-    #buttons {
+    #controls {
         min-height: 64px;
     }
 
@@ -146,11 +146,11 @@ Sheet = """
         border: 2px solid #F6F6F6;
     }
 
-    #navigation, #buttons {
+    #navigation, #controls {
         background-color: #595959;
     }
 
-    #buttons QPushButton#previous {
+    #controls QPushButton#previous {
         padding: 4px 2px 2px 12px;
         color: white;
         background-color: transparent;
@@ -163,13 +163,13 @@ Sheet = """
         text-align: left;
     }
 
-    #buttons QPushButton#previous:disabled {
+    #controls QPushButton#previous:disabled {
         border-image: url(:/nothing.png) 1 1 1 1;
         background-color: transparent;
         color: transparent;
     }
 
-    #buttons QPushButton#save {
+    #controls QPushButton#save {
         border: 2px solid #F25C0A;
         border-radius: 5px;
         background-color: #F25C0A;
@@ -181,22 +181,22 @@ Sheet = """
         padding: 13px 13px 10px 13px;
     }
 
-    #buttons QPushButton#save:disabled {
+    #controls QPushButton#save:disabled {
         background-color: transparent;
         border: none;
         color: transparent;
     }
 
-    #buttons QPushButton#save:focus, #buttons QPushButton#save:hover {
+    #controls QPushButton#save:focus, #controls QPushButton#save:hover {
         background-color: #D95109;
         border-color: #D95109;
     }
 
-    #buttons QPushButton#save:pressed {
+    #controls QPushButton#save:pressed {
         border: 2px solid #595959;
     }
 
-    #buttons QPushButton#next {
+    #controls QPushButton#next {
         padding: 4px 12px 2px 2px;
         color: #F25C0A;
         background-color: transparent;
@@ -209,7 +209,7 @@ Sheet = """
         text-align: right;
     }
 
-    #buttons QPushButton#next:disabled {
+    #controls QPushButton#next:disabled {
         border-image: url(:/nothing.png) 1 1 1 1;
         background-color: transparent;
         color: transparent;

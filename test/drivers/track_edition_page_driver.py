@@ -10,13 +10,13 @@ import tgit.tags as tags
 from tgit.ui.views.track_edition_page import TrackEditionPage
 
 
-def trackPage(parent):
-    return TrackPageDriver.findSingle(parent, QWidget, named(TrackEditionPage.NAME), showingOnScreen())
+def trackEditionPage(parent):
+    return TrackEditionPageDriver.findSingle(parent, QWidget, named(TrackEditionPage.NAME), showingOnScreen())
 
 
-class TrackPageDriver(WidgetDriver):
+class TrackEditionPageDriver(WidgetDriver):
     def __init__(self, selector, prober, gesturePerformer):
-        super(TrackPageDriver, self).__init__(selector, prober, gesturePerformer)
+        super(TrackEditionPageDriver, self).__init__(selector, prober, gesturePerformer)
 
     def showsMetadata(self, **meta):
         for tag, value in meta.iteritems():
