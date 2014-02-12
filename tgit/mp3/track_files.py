@@ -36,5 +36,5 @@ class TrackFiles(object):
 
     def save(self, track):
         metadata = track.metadata
-        metadata.merge(track.album.metadata)
+        metadata.merge(track.albumMetadata)
         self._container.save(track.filename, metadata)

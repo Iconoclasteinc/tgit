@@ -37,6 +37,7 @@ class CsvFormatTest(unittest.TestCase):
                                       "Studios d'enregistrement",
                                       self.encoded(u'Réalisateur'),
                                       'Mixeur',
+                                      "Genre de l'album",
                                       'Titre de la piste',
                                       'Infos sur la version',
                                       self.encoded(u'Invité spécial'),
@@ -62,6 +63,7 @@ class CsvFormatTest(unittest.TestCase):
             recordingStudios='Studios',
             producer='Artistic Producer',
             mixer='Mixing Engineer',
+            primaryStyle='Genre',
             tracks=[build.track(
                 trackTitle='Track Title',
                 versionInfo='Version Info',
@@ -91,6 +93,7 @@ class CsvFormatTest(unittest.TestCase):
                                   'Studios',
                                   'Artistic Producer',
                                   'Mixing Engineer',
+                                  'Genre',
                                   'Track Title',
                                   'Version Info',
                                   'Featuring',

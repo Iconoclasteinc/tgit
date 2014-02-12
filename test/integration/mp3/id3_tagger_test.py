@@ -137,6 +137,10 @@ class Id3TaggerTest(unittest.TestCase):
         metadata = tagger.load(self.makeMp3(TLAN='fra'))
         assert_that(metadata, has_entry(tags.LANGUAGE, 'fra'), 'metadata')
 
+    def testReadsPrimaryStyleFromTCONFrame(self):
+        metadata = tagger.load(self.makeMp3(TCON='Jazz'))
+        assert_that(metadata, has_entry(tags.PRIMARY_STYLE, 'Jazz'), 'metadata')
+
     def testReadsBitrateFromAudioStreamInformation(self):
         metadata = tagger.load(self.makeMp3())
         assert_that(metadata, has_entry(tags.BITRATE, BITRATE), 'bitrate')
@@ -180,6 +184,7 @@ class Id3TaggerTest(unittest.TestCase):
                                        ('mastering', 'Mastering Eng.'),
                                        ('recording', 'Assistant Recording Eng.')]
         metadata[tags.COMMENTS] = u'Comments'
+        metadata[tags.PRIMARY_STYLE] = u'Jazz'
         metadata[tags.TRACK_TITLE] = u'Track Title'
         metadata[tags.VERSION_INFO] = u'Version Info'
         metadata[tags.FEATURED_GUEST] = u'Featured Guest'

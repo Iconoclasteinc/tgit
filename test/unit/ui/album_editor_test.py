@@ -29,6 +29,7 @@ class AlbumEditorTest(unittest.TestCase):
         changes.recordingStudios = 'Studios'
         changes.producer = 'Producer'
         changes.mixer = 'Engineer'
+        changes.primaryStyle = 'Style'
 
         self.editor.metadataEdited(changes)
 
@@ -45,6 +46,7 @@ class AlbumEditorTest(unittest.TestCase):
         assert_that(self.album.recordingStudios, equal_to('Studios'), 'recording studios')
         assert_that(self.album.producer, equal_to('Producer'), 'producer')
         assert_that(self.album.mixer, equal_to('Engineer'), 'mixer')
+        assert_that(self.album.primaryStyle, equal_to('Style'), 'primary style')
 
     def testRemovesAlbumImagesUponRequest(self):
         self.album.addFrontCover('image/jpeg', 'image data')

@@ -254,9 +254,6 @@ class AlbumEditionPageDriver(WidgetDriver):
         edit = self._lineEdit(named(AlbumEditionPage.MIXER_FIELD_NAME))
         edit.changeText(mixer)
 
-    def _textEdit(self, matching):
-        return TextEditDriver.findSingle(self, QPlainTextEdit, matching)
-
     def showsComments(self, comments):
         label = self._label(withBuddy(named(AlbumEditionPage.COMMENTS_FIELD_NAME)))
         label.isShowingOnScreen()
@@ -273,8 +270,11 @@ class AlbumEditionPageDriver(WidgetDriver):
         label = self._label(withBuddy(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME)))
         label.isShowingOnScreen()
         edit = self._lineEdit(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
-        edit.isDisabled()
         edit.hasText(style)
+
+    def changePrimaryStyle(self, style):
+        edit = self._lineEdit(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
+        edit.changeText(style)
 
     def showsMediaType(self, type_):
         label = self._label(withBuddy(named(AlbumEditionPage.MEDIA_TYPE_FIELD_NAME)))
@@ -289,3 +289,6 @@ class AlbumEditionPageDriver(WidgetDriver):
         edit = self._lineEdit(named(AlbumEditionPage.RELEASE_TYPE_FIELD_NAME))
         edit.isDisabled()
         edit.hasText(type_)
+
+    def _textEdit(self, matching):
+        return TextEditDriver.findSingle(self, QPlainTextEdit, matching)

@@ -13,7 +13,7 @@ class CsvFormat(object):
     Headers = ["Titre de l'album", "Nom de l'artiste principal", "Musiciens de l'album",
                "Nom de la maison de disques", u'Numéro de catalogue', 'UPC/EAN', 'Commentaires',
                u"Date de mise en marché de l'album", "Date de l'enregistrement",
-               "Studios d'enregistrement", u'Réalisateur', 'Mixeur',
+               "Studios d'enregistrement", u'Réalisateur', 'Mixeur', "Genre de l'album",
                'Titre de la piste', 'Infos sur la version', u'Invité spécial', 'Paroles',
                'Langue des paroles', u'Éditeur', 'Auteur', 'Compositeur', 'ISRC', 'Tags']
 
@@ -33,7 +33,7 @@ class CsvFormat(object):
         row = album.releaseName, album.leadPerformer, toPeopleList(album.guestPerformers), \
             album.labelName, album.catalogNumber, album.upc, album.comments, \
             album.releaseTime, album.recordingTime, album.recordingStudios, album.producer, \
-            album.mixer, track.trackTitle, track.versionInfo, track.featuredGuest, \
+            album.mixer, album.primaryStyle, track.trackTitle, track.versionInfo, track.featuredGuest, \
             track.lyrics, track.language, track.publisher, track.lyricist, track.composer, \
             track.isrc, track.tags
         writer.writerow(self._encode(row))

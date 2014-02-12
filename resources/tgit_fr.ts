@@ -141,7 +141,7 @@
     <message>
         <location filename="album_page.py" line="373"/>
         <source>Primary Style:</source>
-        <translation>Genre :</translation>
+        <translation>Genre de l&apos;album :</translation>
     </message>
     <message>
         <location filename="album_page.py" line="357"/>

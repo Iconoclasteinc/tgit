@@ -53,7 +53,8 @@ class AlbumEditionPageTest(ViewTest):
             recordingStudios='Studio A, Studio B',
             producer='Artistic Producer',
             mixer='Mixing Engineer',
-            comments='Comments\n...')
+            comments='Comments\n...',
+            primaryStyle='Style')
 
         self.view.show(album)
 
@@ -72,7 +73,7 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsProducer('Artistic Producer')
         self.driver.showsMixer('Mixing Engineer')
         self.driver.showsComments('Comments\n...')
-        self.driver.showsPrimaryStyle('')
+        self.driver.showsPrimaryStyle('Style')
         self.driver.showsMediaType('')
         self.driver.showsReleaseType('')
 
@@ -164,4 +165,8 @@ class AlbumEditionPageTest(ViewTest):
 
         changes.expect(has_properties(mixer='Mixer'))
         self.driver.changeMixer('Mixer')
+        self.check(changes)
+
+        changes.expect(has_properties(primaryStyle='Style'))
+        self.driver.changePrimaryStyle('Style')
         self.check(changes)

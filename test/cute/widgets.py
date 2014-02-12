@@ -145,6 +145,7 @@ class AbstractEditDriver(WidgetDriver):
     EDITION_DELAY = 20
 
     def changeText(self, text):
+        self.isEnabled()
         self.replaceAllText(text)
         self.enter()
 

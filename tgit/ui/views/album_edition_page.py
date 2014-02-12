@@ -253,7 +253,6 @@ class AlbumEditionPage(object):
         self._disableField(self._labelTerritoryEdit)
         self._disableField(self._mediaTypeLineEdit)
         self._disableField(self._releaseTypeLineEdit)
-        self._disableField(self._primaryStyleLineEdit)
 
     def _disableField(self, field):
         field.setDisabled(True)
@@ -273,6 +272,7 @@ class AlbumEditionPage(object):
         self._recordingStudiosLineEdit.setText(album.recordingStudios)
         self._producerLineEdit.setText(album.producer)
         self._mixerLineEdit.setText(album.mixer)
+        self._primaryStyleLineEdit.setText(album.primaryStyle)
 
     def _displayAttachedPicture(self, image):
         self._attachedPicture = image
@@ -295,6 +295,7 @@ class AlbumEditionPage(object):
         snapshot.recordingStudios = self._recordingStudiosLineEdit.text()
         snapshot.producer = self._producerLineEdit.text()
         snapshot.mixer = self._mixerLineEdit.text()
+        snapshot.primaryStyle = self._primaryStyleLineEdit.text()
 
         self._announce.metadataEdited(snapshot)
 

@@ -171,6 +171,7 @@ class Id3Tagger(object):
                      'TXXX:Tags': tagging.TAGS,
                      "COMM::'fra'": tagging.COMMENTS,
                      "USLT::'fra'": tagging.LYRICS,
+                     "TCON": tagging.PRIMARY_STYLE,
                      }.items():
         processors.append(TextProcessor(key, tag))
 

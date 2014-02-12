@@ -50,6 +50,7 @@ class AlbumEditor(AlbumListener):
         self._album.recordingStudios = state.recordingStudios
         self._album.producer = state.producer
         self._album.mixer = state.mixer
+        self._album.primaryStyle = state.primaryStyle
 
     def addPicture(self):
         self._pictureDialog.render()
