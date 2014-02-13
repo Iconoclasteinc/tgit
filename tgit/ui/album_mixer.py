@@ -24,9 +24,9 @@ from tgit.ui.views import trackSelectionDialog
 class AlbumMixer(object):
     MP3_FILES = '*.mp3'
 
-    def __init__(self, album, catalog):
+    def __init__(self, album, trackLibrary):
         self._album = album
-        self._trackCatalog = catalog
+        self._trackLibrary = trackLibrary
         self._dialog = trackSelectionDialog(self)
         self._dialog.filter = AlbumMixer.MP3_FILES
 
@@ -36,7 +36,7 @@ class AlbumMixer(object):
 
     def tracksSelected(self, selection):
         for filename in self._listFilesIn(selection):
-            self._album.addTrack(self._trackCatalog.load(filename))
+            self._album.addTrack(self._trackLibrary.fetch(filename))
 
     def _listFilesIn(self, selection):
         files = []

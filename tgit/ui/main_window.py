@@ -18,11 +18,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtGui import QMainWindow
+from tgit.album import Album
 
-from tgit.announcer import Announcer
-from tgit.mp3.id3_tagger import Id3Tagger
-from tgit.mp3.track_files import TrackFiles
-from tgit.record_label import AlbumPortfolioListener
+from tgit.mp3.id3_tagger import ID3Tagger
+from tgit.embedded_metadata import EmbeddedMetadata
+from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
 from tgit.ui import constants as ui
 from tgit.ui.album_director import AlbumDirector
@@ -41,15 +41,11 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self._albumPortfolio = albumPortfolio
         self._albumPortfolio.addPortfolioListener(self)
         self._audioPlayer = audioPlayer
-        self._productionHouses = Announcer()
 
         self._assemble()
 
-    def addProductionHouse(self, house):
-        self._productionHouses.addListener(house)
-
     def albumCreated(self, album):
-        self._director = AlbumDirector(album, TrackFiles(Id3Tagger()), self._audioPlayer)
+        self._director = AlbumDirector(album, EmbeddedMetadata(ID3Tagger()), self._audioPlayer)
         self.setCentralWidget(self._director.render())
         self._director.addTracksToAlbum()
 
@@ -77,9 +73,12 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING))
         exporter.show()
 
+    def newAlbum(self):
+        self._albumPortfolio.addAlbum(Album())
+
     def _makeWelcomeScreen(self):
         welcomeScreen = WelcomeScreen(self)
-        welcomeScreen.addRequestListener(self._productionHouses)
+        welcomeScreen.addRequestListener(self)
         return welcomeScreen
 
     def localize(self):

@@ -18,16 +18,16 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import sys
+
 from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
+from tgit.album_portfolio import AlbumPortfolio
 
 from tgit.audio.audio_library import AudioFiles
 from tgit.audio.player import PhononPlayer
-from tgit.record_label import AlbumPortfolio, RecordLabel
-from tgit.mp3.track_files import TrackFiles
-from tgit.mp3.id3_tagger import Id3Tagger
 from tgit.ui.main_window import MainWindow
 from tgit.ui import display
+
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
 
@@ -39,25 +39,17 @@ RESOURCES = ':/resources'
 
 
 class TGiT(QApplication):
-    def __init__(self, language, player=PhononPlayer):
+    def __init__(self, player, codec=UTF_8):
         QApplication.__init__(self, [])
+        self._player = player
+        QTextCodec.setCodecForTr(QTextCodec.codecForName(codec))
+
+    def _setLocale(self, locale):
         self._translators = []
-        self._albums = AlbumPortfolio()
-
-        self.setLanguage(language)
-        self._ui = MainWindow(self._albums, player(AudioFiles()))
-        self._addProductionHouseFor(TrackFiles(Id3Tagger()))
-
-    def show(self):
-        display.centeredOnScreen(self._ui)
-
-    def _addProductionHouseFor(self, trackCatalog):
-        self._ui.addProductionHouse(RecordLabel(self._albums, trackCatalog))
-
-    def setLanguage(self, language):
-        QTextCodec.setCodecForTr(QTextCodec.codecForName(UTF_8))
         for resource in (QT, TGIT):
-            self._installTranslations(resource, language)
+            self._installTranslations(resource, locale)
+
+    locale = property(fset=_setLocale)
 
     def _installTranslations(self, resource, locale):
         translator = QTranslator()
@@ -65,11 +57,19 @@ class TGiT(QApplication):
             self.installTranslator(translator)
             self._translators.append(translator)
 
-    def run(self):
+    def show(self):
+        self._ui = MainWindow(AlbumPortfolio(), self._player(AudioFiles()))
+        display.centeredOnScreen(self._ui)
+
+    def launch(self):
         self.show()
+        self.run()
+
+    def run(self):
         return sys.exit(self.exec_())
 
 
-def main(language):
-    app = TGiT(language)
-    app.run()
+def main(locale):
+    app = TGiT(PhononPlayer)
+    app.locale = locale
+    app.launch()

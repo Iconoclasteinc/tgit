@@ -13,18 +13,20 @@ from tgit.ui import constants as ui
 from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 
-ENGLISH = 'en'
 ONE_SECOND = 1000
+
+
+def disableNativeDialogs():
+    PictureSelectionDialog.native = False
+    TrackSelectionDialog.native = False
 
 
 class ApplicationRunner(object):
     def start(self):
-        PictureSelectionDialog.native = False
-        TrackSelectionDialog.native = False
-        self.app = TGiT(ENGLISH, fakes.audioPlayer)
+        disableNativeDialogs()
+        self.app = TGiT(fakes.audioPlayer)
         self.app.show()
-        self.tagger = TaggerDriver(mainApplicationWindow(named(ui.MAIN_WINDOW_NAME),
-                                                         showingOnScreen()),
+        self.tagger = TaggerDriver(mainApplicationWindow(named(ui.MAIN_WINDOW_NAME), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())
 

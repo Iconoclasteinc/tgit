@@ -105,18 +105,15 @@ class Metadata(object):
         return self
 
     def copy(self):
-        return self.subsetWithImages(*self.keys())
+        copy = self.subset(*self.keys())
+        copy.addImages(*self.images)
+        return copy
 
     def subset(self, *keys):
         metadata = Metadata()
         for key in [key for key in keys if key in self]:
             metadata[key] = self[key]
 
-        return metadata
-
-    def subsetWithImages(self, *keys):
-        metadata = self.subset(*keys)
-        metadata.addImages(*self.images)
         return metadata
 
     def clear(self):

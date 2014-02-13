@@ -67,22 +67,13 @@ class MetadataTest(unittest.TestCase):
                                           album="Un jour comme aujourd'hui"), 'updated tags')
         assert_that(metadata.images, contains(has_property('data', 'cover.png')), 'updated images')
 
-    def testCopiesASelectionOfItsTagsWithImages(self):
-        metadata = Metadata(artist='Alain Souchon', album=u"C'est déjà ça",
-                            track='Foule sentimentale')
-        metadata.addImage('img/jpeg', 'front-cover.jpg')
-        metadata.addImage('img/jpeg', 'back-cover.jpg')
-
-        selection = metadata.subsetWithImages('artist', 'album', 'label')
-
+    def testCopiesASelectionOfItsTags(self):
+        metadata = Metadata(artist='Alain Souchon', album=u"C'est déjà ça", track='Foule sentimentale')
+        selection = metadata.subset('artist', 'album', 'label')
         assert_that(selection, has_length(2))
-        assert_that(selection,
-                    all_of(has_entries(artist='Alain Souchon', album=u"C'est déjà ça"),
-                           is_not(has_key('track')), is_not(has_key('label'))), 'selected tags')
-        assert_that(selection.images,
-                    contains(has_property('data', 'front-cover.jpg'),
-                             has_property('data', 'back-cover.jpg')),
-                    'selected images')
+        assert_that(selection, all_of(
+            has_entries(artist='Alain Souchon', album=u"C'est déjà ça"),
+            is_not(has_key('track')), is_not(has_key('label'))), 'selected tags')
 
     def testLooksUpImagesByType(self):
         metadata = Metadata()

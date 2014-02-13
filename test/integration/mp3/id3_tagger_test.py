@@ -14,8 +14,8 @@ BITRATE = mp3.Base.bitrate
 DURATION = mp3.Base.duration
 
 
-# todo we need dedicated focused tests for the processors
-class Id3TaggerTest(unittest.TestCase):
+# todo introduce dedicated focused tests for the processors?
+class ID3TaggerTest(unittest.TestCase):
     def tearDown(self):
         self.mp3.delete()
 

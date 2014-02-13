@@ -17,24 +17,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.track import Track
-from tgit.album import Album
-
-from tgit import tags
+from tgit.announcer import Announcer
 
 
-class TrackFiles(object):
-    def __init__(self, container):
-        self._container = container
+class AlbumPortfolioListener(object):
+    def albumCreated(self, album):
+        pass
 
-    def load(self, filename):
-        metadata = self._container.load(filename)
-        album = Album(metadata.subsetWithImages(*tags.ALBUM_TAGS))
-        track = Track(filename, metadata.subset(*tags.TRACK_TAGS))
-        album.addTrack(track)
-        return track
 
-    def save(self, track):
-        metadata = track.metadata
-        metadata.merge(track.albumMetadata)
-        self._container.save(track.filename, metadata)
+class AlbumPortfolio(object):
+    def __init__(self):
+        self._albums = []
+        self._portfolioListeners = Announcer()
+
+    def addPortfolioListener(self, listener):
+        self._portfolioListeners.addListener(listener)
+
+    def addAlbum(self, album):
+        self._albums.append(album)
+        self._portfolioListeners.albumCreated(album)

@@ -27,9 +27,9 @@ INDEX_OF_TRACK_PAGES = 2
 
 
 class AlbumDirector(AlbumListener):
-    def __init__(self, album, trackCatalog, player):
+    def __init__(self, album, trackLibrary, player):
         self._album = album
-        self._trackCatalog = trackCatalog
+        self._trackLibrary = trackLibrary
         self._player = player
         self._view = albumScreen(self)
 
@@ -48,7 +48,7 @@ class AlbumDirector(AlbumListener):
     # Eventually, event will bubble up to top level presenter.
     # For that we need to do some prep work on the menubar first.
     def addTracksToAlbum(self, folders=False):
-        mixer = AlbumMixer(self._album, self._trackCatalog)
+        mixer = AlbumMixer(self._album, self._trackLibrary)
         mixer.show(folders=folders)
 
     def trackAdded(self, track, position):
@@ -66,4 +66,4 @@ class AlbumDirector(AlbumListener):
 
     def recordAlbum(self):
         for track in self._album.tracks:
-            self._trackCatalog.save(track)
+            self._trackLibrary.store(track)

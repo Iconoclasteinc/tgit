@@ -6,7 +6,7 @@ from test.drivers.tagger_driver import TaggerDriver
 from test.util import builders as build, fakes
 
 from tgit.album import Album
-from tgit.record_label import AlbumPortfolio
+from tgit.album_portfolio import AlbumPortfolio
 from tgit.ui.main_window import MainWindow
 
 

@@ -211,7 +211,6 @@ class FileDialogDriver(WidgetDriver):
 
     def navigateToDir(self, path):
         for folderName in self._navigationPathTo(path):
-            print "Navigating to '" + folderName + "'"
             if folderName == '':
                 pass
             elif folderName == '..':

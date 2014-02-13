@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
-
+from test.util import mp3_file as mp3
 from tgit.util import fs
 from tgit.metadata import Image
 from tgit.announcer import Announcer
@@ -9,18 +9,18 @@ from tgit import tags as tagging
 from tgit.mp3 import id3_tagger as tagger
 
 
-def metadataStore():
-    return FakeMetadataStore()
+def metadataContainer():
+    return FakeMetadataContainer()
 
 
-class FakeMetadataStore(object):
+class FakeMetadataContainer(object):
     def __init__(self):
         self.files = []
 
-    # todo accept metadata tags and create mp3
-    def add(self, recording):
-        self.files.append(recording)
-        return recording.filename
+    def add(self, **metadata):
+        file = mp3.make(**metadata)
+        self.files.append(file)
+        return file.filename
 
     def load(self, filename):
         for file_ in self.files:
@@ -77,16 +77,16 @@ class FakeAudioPlayer(object):
         self._announce.removeListener(listener)
 
 
-def trackCatalog():
-    return FakeTrackCatalog()
+def trackLibrary():
+    return FakeTrackLibrary()
 
 
-class FakeTrackCatalog(object):
+class FakeTrackLibrary(object):
     def __init__(self):
         self.tracks = []
 
     def add(self, track):
         self.tracks.append(track)
 
-    def load(self, name):
+    def fetch(self, name):
         return next((track for track in self.tracks if track.filename == name), None)

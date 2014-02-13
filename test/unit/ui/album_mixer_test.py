@@ -16,13 +16,13 @@ def audioFile(audio):
 class AlbumMixerTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
-        self.catalog = fakes.trackCatalog()
-        self.mixer = AlbumMixer(self.album, self.catalog)
+        self.library = fakes.trackLibrary()
+        self.mixer = AlbumMixer(self.album, self.library)
 
     def populateTrackCatalog(self):
-        self.catalog.add(build.track(filename=audioFile('1.mp3'), trackTitle='first'))
-        self.catalog.add(build.track(filename=audioFile('2.mp3'), trackTitle='second'))
-        self.catalog.add(build.track(filename=audioFile('3.mp3'), trackTitle='third'))
+        self.library.add(build.track(filename=audioFile('1.mp3'), trackTitle='first'))
+        self.library.add(build.track(filename=audioFile('2.mp3'), trackTitle='second'))
+        self.library.add(build.track(filename=audioFile('3.mp3'), trackTitle='third'))
 
     def testAddsSelectedTracksToAlbumInSelectionOrder(self):
         self.populateTrackCatalog()

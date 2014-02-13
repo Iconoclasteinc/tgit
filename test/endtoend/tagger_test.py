@@ -2,7 +2,7 @@
 
 import unittest
 
-from test.util import resources, fakes, mp3_file as mp3
+from test.util import resources, fakes
 from test.endtoend.application_runner import ApplicationRunner
 
 from tgit.util import fs
@@ -11,41 +11,41 @@ from tgit.util import fs
 class TaggerTest(unittest.TestCase):
     def setUp(self):
         self.application = ApplicationRunner()
-        self.audioLibrary = fakes.metadataStore()
+        self.metadataContainer = fakes.metadataContainer()
         self.application.start()
 
     def tearDown(self):
         self.application.stop()
-        self.audioLibrary.delete()
+        self.metadataContainer.delete()
 
     def testCreatesAndTagsANewAlbum(self):
-        maPreference = self.audioLibrary.add(mp3.make(
+        maPreference = self.metadataContainer.add(
             trackTitle=u'Ma préférence',
             releaseName='Jaloux',
             frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('jaloux.jpg'))),
             leadPerformer='Julien Clerc',
             labelName='EMI',
-            releaseTime='1978'))
-        faisMoiUnePlace = self.audioLibrary.add(mp3.make(
+            releaseTime='1978')
+        faisMoiUnePlace = self.metadataContainer.add(
             trackTitle='Fais moi une place',
             releaseName='Fais moi une place',
             frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('une-place.jpg'))),
             labelName='Virgin',
             releaseTime='1990',
-            upc='3268440307258'))
-        rolo = self.audioLibrary.add(mp3.make(
+            upc='3268440307258')
+        rolo = self.metadataContainer.add(
             trackTitle='Rolo le Baroudeur',
             releaseName='Niagara',
             frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('niagara.jpg'))),
             releaseTime='1971',
             lyricist=u'Étienne Roda-Gil'
-        ))
-        ceNestRien = self.audioLibrary.add(mp3.make(
+        )
+        ceNestRien = self.metadataContainer.add(
             trackTitle="Ce n'est rien",
             releaseName='Niagara',
             frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('niagara.jpg'))),
             releaseTime='1971',
-            lyricist=u'Étienne Roda-Gil'))
+            lyricist=u'Étienne Roda-Gil')
 
         self.application.newAlbum(maPreference)
         self.application.addTrack(faisMoiUnePlace)
@@ -84,7 +84,7 @@ class TaggerTest(unittest.TestCase):
             composer='Julien Clerc',
             lyricist='Francoise Hardy')
 
-        self.audioLibrary.contains(maPreference,
+        self.metadataContainer.contains(maPreference,
                                    frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
                                    releaseName='Best Of',
                                    leadPerformer='Julien Clerc',
@@ -93,7 +93,7 @@ class TaggerTest(unittest.TestCase):
                                    trackTitle=u'Ma préférence',
                                    composer='Julien Clerc',
                                    lyricist='Jean-Loup Dabadie')
-        self.audioLibrary.contains(faisMoiUnePlace,
+        self.metadataContainer.contains(faisMoiUnePlace,
                                    frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
                                    releaseName='Best Of',
                                    leadPerformer='Julien Clerc',
@@ -102,7 +102,7 @@ class TaggerTest(unittest.TestCase):
                                    trackTitle=u'Fais moi une place',
                                    composer='Julien Clerc',
                                    lyricist='Francoise Hardy')
-        self.audioLibrary.contains(ceNestRien,
+        self.metadataContainer.contains(ceNestRien,
                                    frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
                                    releaseName='Best Of',
                                    leadPerformer='Julien Clerc',
@@ -111,7 +111,7 @@ class TaggerTest(unittest.TestCase):
                                    trackTitle=u"Ce n'est rien",
                                    composer='Julien Clerc',
                                    lyricist=u'Étienne Roda-Gil')
-        self.audioLibrary.contains(rolo,
+        self.metadataContainer.contains(rolo,
                                    releaseName='Niagara',
                                    frontCover=(resources.path('niagara.jpg'), 'Cover'),
                                    releaseTime='1971',

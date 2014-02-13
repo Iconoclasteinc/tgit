@@ -97,13 +97,13 @@ class Album(object):
     def addTrack(self, track):
         self.insertTrack(track, len(self._tracks))
 
-    def _inheritMetadataOf(self, track):
+    def _inheritMetadataIfInitialTrack(self, track):
         if self._metadata.empty():
             self._metadata = track.albumMetadata
             self._signalStateChange()
 
     def insertTrack(self, track, position):
-        self._inheritMetadataOf(track)
+        self._inheritMetadataIfInitialTrack(track)
         self._tracks.insert(position, track)
         track.album = self
         self._listeners.trackAdded(track, position)

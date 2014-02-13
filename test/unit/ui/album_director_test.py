@@ -17,9 +17,9 @@ class AlbumDirectorTest(unittest.TestCase):
         self.album.addTrack(build.track(trackTitle='second'))
         self.album.addTrack(build.track(trackTitle='third'))
 
-        self.catalog.should_receive('save').with_args(hasTitle('first')).once()
-        self.catalog.should_receive('save').with_args(hasTitle('second')).once()
-        self.catalog.should_receive('save').with_args(hasTitle('third')).once()
+        self.catalog.should_receive('store').with_args(hasTitle('first')).once()
+        self.catalog.should_receive('store').with_args(hasTitle('second')).once()
+        self.catalog.should_receive('store').with_args(hasTitle('third')).once()
 
         self.director.recordAlbum()
 

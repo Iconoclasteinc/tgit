@@ -17,35 +17,34 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.announcer import Announcer
+from tgit.track import Track
 from tgit.album import Album
 
-
-class AlbumPortfolioListener(object):
-    def albumCreated(self, album):
-        pass
+from tgit import tags
 
 
-class AlbumPortfolio(object):
-    def __init__(self):
-        self._albums = []
-        self._portfolioListeners = Announcer()
+class EmbeddedMetadata(object):
+    def __init__(self, container):
+        self._container = container
 
-    def addPortfolioListener(self, listener):
-        self._portfolioListeners.addListener(listener)
+    def fetch(self, name):
+        metadata = self._container.load(name)
+        album = Album(albumMetadataFrom(metadata))
+        track = Track(name,trackMetadataFrom(metadata))
+        album.addTrack(track)
+        return track
 
-    def addAlbum(self, album):
-        self._albums.append(album)
-        self._portfolioListeners.albumCreated(album)
+    def store(self, track):
+        metadata = track.metadata
+        metadata.merge(track.albumMetadata)
+        self._container.save(track.filename, metadata)
 
 
-class RecordLabel(object):
-    def __init__(self, portfolio, trackCatalog):
-        self._albumPortfolio = portfolio
-        self._trackCatalog = trackCatalog
+def albumMetadataFrom(metadata):
+    albumMetadata = metadata.subset(*tags.ALBUM_TAGS)
+    albumMetadata.addImages(*metadata.images)
+    return albumMetadata
 
-    def newAlbum(self):
-        self._albumPortfolio.addAlbum(Album())
 
-    def recordAlbum(self, album):
-        album.eachTrack(self._trackCatalog.save)
+def trackMetadataFrom(metadata):
+    return metadata.subset(*tags.TRACK_TAGS)

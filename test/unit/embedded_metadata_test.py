@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
 from flexmock import flexmock
 from hamcrest import assert_that, all_of, has_property, equal_to
 
 from test.util import builders as build
-
 from tgit.metadata import Metadata
 from tgit import tags
-from tgit.mp3.track_files import TrackFiles
+from tgit.embedded_metadata import EmbeddedMetadata
 
 
-class TrackFilesTest(unittest.TestCase):
+class EmbeddedMetadataTest(unittest.TestCase):
     def setUp(self):
         self.container = flexmock()
-        self.catalog = TrackFiles(self.container)
+        self.library = EmbeddedMetadata(self.container)
 
     def merge(self, *metadata):
         merge = Metadata()
@@ -29,7 +29,7 @@ class TrackFilesTest(unittest.TestCase):
 
         self.container.should_receive('load').with_args('summertime.mp3').and_return(metadata)
 
-        track = self.catalog.load('summertime.mp3')
+        track = self.library.fetch('summertime.mp3')
 
         assert_that(track, hasTrackMetadata(metadata), 'track metadata')
         assert_that(track.album, hasAlbumMetadata(metadata), 'album metadata')
@@ -44,7 +44,7 @@ class TrackFilesTest(unittest.TestCase):
         self.container.should_receive('save').\
             with_args('summertime.mp3', self.merge(track.metadata, album.metadata)).once()
 
-        self.catalog.save(track)
+        self.library.store(track)
 
 
 def hasTrackMetadata(metadata):
