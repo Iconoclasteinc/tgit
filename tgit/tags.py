@@ -36,6 +36,7 @@ MIXER = 'mixer'
 CONTRIBUTORS = 'contributors'
 COMMENTS = 'comments'
 PRIMARY_STYLE = 'primaryStyle'
+COMPILATION = 'compilation'
 
 
 ALBUM_TAGS = [

@@ -103,6 +103,8 @@ class Mp3File(object):
                 self.addTag(id3.TLAN(encoding=UTF_8, text=value))
             elif tag == tagging.PRIMARY_STYLE or tag == 'TCON':
                 self.addTag(id3.TCON(encoding=UTF_8, text=value))
+            elif tag == tagging.COMPILATION or tag == 'TCMP':
+                self.addTag(id3.TCMP(encoding=UTF_8, text=value))
             else:
                 raise AssertionError("Knows nothing about '%s'" % tag)
 

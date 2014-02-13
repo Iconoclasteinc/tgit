@@ -44,12 +44,12 @@ class TGiT(QApplication):
         self._player = player
         QTextCodec.setCodecForTr(QTextCodec.codecForName(codec))
 
-    def _setLocale(self, locale):
+    def _locale(self, locale):
         self._translators = []
         for resource in (QT, TGIT):
             self._installTranslations(resource, locale)
 
-    locale = property(fset=_setLocale)
+    locale = property(fset=_locale)
 
     def _installTranslations(self, resource, locale):
         translator = QTranslator()
