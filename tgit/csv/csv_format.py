@@ -4,13 +4,17 @@ import csv
 import functools as func
 
 
+def toBoolean(value):
+    return value and 'True' or 'False'
+
+
 def toPeopleList(people):
     return people and '; '.join(['%s: %s' % (role, name) for role, name in people]) or ''
 
 
 class CsvFormat(object):
     # todo pass a dictionary responsible for translation rather than hardcoding header names
-    Headers = ["Titre de l'album", "Nom de l'artiste principal", "Musiciens de l'album",
+    Headers = ["Titre de l'album", 'Compilation', "Nom de l'artiste principal", "Musiciens de l'album",
                "Nom de la maison de disques", u'Numéro de catalogue', 'UPC/EAN', 'Commentaires',
                u"Date de mise en marché de l'album", "Date de l'enregistrement",
                "Studios d'enregistrement", u'Réalisateur', 'Mixeur', "Genre de l'album",
@@ -30,7 +34,7 @@ class CsvFormat(object):
         writer.writerow(self._encode(self.Headers))
 
     def writeRecord(self, writer, album, track):
-        row = album.releaseName, album.leadPerformer, toPeopleList(album.guestPerformers), \
+        row = album.releaseName, toBoolean(album.compilation), album.leadPerformer, toPeopleList(album.guestPerformers), \
             album.labelName, album.catalogNumber, album.upc, album.comments, \
             album.releaseTime, album.recordingTime, album.recordingStudios, album.producer, \
             album.mixer, album.primaryStyle, track.trackTitle, track.versionInfo, track.featuredGuest, \
