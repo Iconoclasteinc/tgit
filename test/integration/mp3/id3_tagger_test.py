@@ -142,8 +142,10 @@ class ID3TaggerTest(unittest.TestCase):
         assert_that(metadata, has_entry(tags.PRIMARY_STYLE, 'Jazz'), 'metadata')
 
     def testReadsCompilationFlagFromNonStandardTCMPFlag(self):
+        metadata = tagger.load(self.makeMp3(TCMP='0'))
+        assert_that(metadata, has_entry(tags.COMPILATION, False), 'metadata')
         metadata = tagger.load(self.makeMp3(TCMP='1'))
-        assert_that(metadata, has_entry(tags.COMPILATION, '1'), 'metadata')
+        assert_that(metadata, has_entry(tags.COMPILATION, True), 'metadata')
 
     def testReadsBitrateFromAudioStreamInformation(self):
         metadata = tagger.load(self.makeMp3())
@@ -169,7 +171,7 @@ class ID3TaggerTest(unittest.TestCase):
         metadata = Metadata()
         metadata.addImage('image/jpeg', 'salers.jpg', Image.FRONT_COVER)
         metadata[tags.RELEASE_NAME] = u'Album'
-        metadata[tags.COMPILATION] = u'1'
+        metadata[tags.COMPILATION] = True
         metadata[tags.LEAD_PERFORMER] = u'Lead Performer'
         metadata[tags.GUEST_PERFORMERS] = [
             ('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')

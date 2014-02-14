@@ -37,106 +37,129 @@ def save(filename, metadata, overwrite=False):
     ID3Tagger(overwrite=overwrite).save(filename=filename, metadata=metadata)
 
 
+class TextProcessor(object):
+    def __init__(self, key, tag, frameToTag, tagToFrame):
+        self._key = key
+        self._tag = tag
+        self._toTag = frameToTag
+        self._toFrame = tagToFrame
+
+    def processFrames(self, metadata, frames):
+        if self._key in frames:
+            frame = frames[self._key]
+            metadata[self._tag] = self._toTag(frame)
+
+    def processMetadata(self, frames, encoding, metadata):
+        frame, desc, lang = self._decompose(self._key)
+        text = metadata[self._tag]
+        frames.delall(self._key)
+        if text:
+            frames.add(getattr(id3, frame)(encoding=encoding, desc=desc, lang=lang, text=self._toFrame(text)))
+
+    def _decompose(self, key):
+        parts = (key + '::').split(':')
+        return parts[0], parts[1], self.unquote(parts[2])
+
+    def unquote(self, text):
+        return text[1:len(text) - 1]
+
+
+class UnicodeProcessor(TextProcessor):
+    def __init__(self, key, tag):
+        super(UnicodeProcessor, self).__init__(key, tag, unicode, str)
+
+
+class BooleanProcessor(TextProcessor):
+    @staticmethod
+    def toBoolean(text):
+        return text == '1'
+
+    @staticmethod
+    def toText(boolean):
+        return boolean and '1' or '0'
+
+    def __init__(self, key, tag):
+        super(BooleanProcessor, self).__init__(key, tag, self.toBoolean, self.toText)
+
+
+class ImageProcessor(object):
+    def __init__(self, key, pictureTypes):
+        self._key = key
+        self._pictureTypes = pictureTypes
+
+    def processFrames(self, metadata, frames):
+        for key in self._pictureFrames(frames):
+            picture = frames[key]
+            imageType = self._pictureTypes.get(picture.type, Image.OTHER)
+            metadata.addImage(picture.mime, picture.data, imageType, picture.desc)
+
+    def _pictureFrames(self, frames):
+        return [key for key in frames if key.startswith(self._key)]
+
+    def processMetadata(self, frames, encoding, metadata):
+        frames.delall(self._key)
+        count = defaultdict(lambda: 0)
+
+        for image in metadata.images:
+            frames.add(self._makePictureFrame(count, encoding, image))
+
+    def _makePictureFrame(self, count, encoding, image):
+        description = image.desc
+        if count[image.desc] > 0:
+            description += " (%i)" % (count[image.desc] + 1)
+        count[image.desc] += 1
+        imagesTypes = invert(self._pictureTypes)
+        return getattr(id3, self._key)(encoding=encoding, mime=image.mime,
+                                       type=imagesTypes[image.type],
+                                       desc=description, data=image.data)
+
+
+class PairProcessor(object):
+    def __init__(self, key, tag, roles):
+        self._key = key
+        self._tag = tag
+        self._roles = roles
+
+    def processFrames(self, metadata, frames):
+        if self._key in frames:
+            metadata[self._tag] = []
+            frame = frames[self._key]
+            for role, name in self._knownId3Roles(self._significantRoles(frame.people)):
+                metadata[role] = name
+            for role, name in self._otherId3Roles(self._significantRoles(frame.people)):
+                metadata[self._tag].append((role, name))
+
+    def _significantRoles(self, pairs):
+        return [(role, name) for role, name in pairs if name]
+
+    def _knownId3Roles(self, pairs):
+        return [(self._roles[role], name) for role, name in pairs if role in self._roles]
+
+    def _otherId3Roles(self, pairs):
+        return [(role, name) for role, name in pairs if role not in self._roles]
+
+    def processMetadata(self, frames, encoding, metadata):
+        frame = getattr(id3, self._key)(encoding=encoding)
+        frame.people.extend(self._significantRoles(self._knownMetadataRoles(metadata)))
+        frame.people.extend(self._significantRoles(self._otherMetadataRoles(metadata)))
+        frames.add(frame)
+
+    def _knownMetadataRoles(self, metadata):
+        return [[role, metadata[tag]] for role, tag in self._roles.items()
+                if tag in metadata]
+
+    def _otherMetadataRoles(self, metadata):
+        if not self._tag in metadata:
+            return []
+        return [[role, name] for role, name in metadata[self._tag]]
+
+
 class ID3Tagger(object):
     UTF_8 = 3
 
     def __init__(self, encoding=UTF_8, overwrite=False):
         self._encoding = encoding
         self._overwrite = overwrite
-
-    class TextProcessor(object):
-        def __init__(self, key, tag):
-            self._key = key
-            self._tag = tag
-
-        def processFrames(self, metadata, frames):
-            if self._key in frames:
-                frame = frames[self._key]
-                metadata[self._tag] = unicode(frame)
-
-        def processMetadata(self, frames, encoding, metadata):
-            frame, desc, lang = self._decompose(self._key)
-            text = metadata[self._tag]
-            frames.delall(self._key)
-            if text:
-                frames.add(getattr(id3, frame)(encoding=encoding, desc=desc, lang=lang, text=text))
-
-        def _decompose(self, key):
-            parts = (key + '::').split(':')
-            return parts[0], parts[1], self.unquote(parts[2])
-
-        def unquote(self, text):
-            return text[1:len(text) - 1]
-
-    class ImageProcessor(object):
-        def __init__(self, key, pictureTypes):
-            self._key = key
-            self._pictureTypes = pictureTypes
-
-        def processFrames(self, metadata, frames):
-            for key in self._pictureFrames(frames):
-                picture = frames[key]
-                imageType = self._pictureTypes.get(picture.type, Image.OTHER)
-                metadata.addImage(picture.mime, picture.data, imageType, picture.desc)
-
-        def _pictureFrames(self, frames):
-            return [key for key in frames if key.startswith(self._key)]
-
-        def processMetadata(self, frames, encoding, metadata):
-            frames.delall(self._key)
-            count = defaultdict(lambda: 0)
-
-            for image in metadata.images:
-                frames.add(self._makePictureFrame(count, encoding, image))
-
-        def _makePictureFrame(self, count, encoding, image):
-            description = image.desc
-            if count[image.desc] > 0:
-                description += " (%i)" % (count[image.desc] + 1)
-            count[image.desc] += 1
-            imagesTypes = invert(self._pictureTypes)
-            return getattr(id3, self._key)(encoding=encoding, mime=image.mime,
-                                           type=imagesTypes[image.type],
-                                           desc=description, data=image.data)
-
-    class PairProcessor(object):
-        def __init__(self, key, tag, roles):
-            self._key = key
-            self._tag = tag
-            self._roles = roles
-
-        def processFrames(self, metadata, frames):
-            if self._key in frames:
-                metadata[self._tag] = []
-                frame = frames[self._key]
-                for role, name in self._knownId3Roles(self._significantRoles(frame.people)):
-                    metadata[role] = name
-                for role, name in self._otherId3Roles(self._significantRoles(frame.people)):
-                    metadata[self._tag].append((role, name))
-
-        def _significantRoles(self, pairs):
-            return [(role, name) for role, name in pairs if name]
-
-        def _knownId3Roles(self, pairs):
-            return [(self._roles[role], name) for role, name in pairs if role in self._roles]
-
-        def _otherId3Roles(self, pairs):
-            return [(role, name) for role, name in pairs if role not in self._roles]
-
-        def processMetadata(self, frames, encoding, metadata):
-            frame = getattr(id3, self._key)(encoding=encoding)
-            frame.people.extend(self._significantRoles(self._knownMetadataRoles(metadata)))
-            frame.people.extend(self._significantRoles(self._otherMetadataRoles(metadata)))
-            frames.add(frame)
-
-        def _knownMetadataRoles(self, metadata):
-            return [[role, metadata[tag]] for role, tag in self._roles.items()
-                    if tag in metadata]
-
-        def _otherMetadataRoles(self, metadata):
-            if not self._tag in metadata:
-                return []
-            return [[role, name] for role, name in metadata[self._tag]]
 
     processors = [
         ImageProcessor('APIC', {
@@ -171,10 +194,12 @@ class ID3Tagger(object):
                      'TXXX:Tags': tagging.TAGS,
                      "COMM::'fra'": tagging.COMMENTS,
                      "USLT::'fra'": tagging.LYRICS,
-                     'TCON': tagging.PRIMARY_STYLE,
-                     'TCMP': tagging.COMPILATION,
+                     'TCON': tagging.PRIMARY_STYLE
                      }.items():
-        processors.append(TextProcessor(key, tag))
+        processors.append(UnicodeProcessor(key, tag))
+
+    for key, tag in {'TCMP' : tagging.COMPILATION}.items():
+        processors.append(BooleanProcessor(key, tag))
 
     def load(self, filename):
         audioFile = mp3.MP3(filename)
