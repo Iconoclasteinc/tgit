@@ -30,7 +30,7 @@ class EmbeddedMetadata(object):
     def fetch(self, name):
         metadata = self._container.load(name)
         album = Album(albumMetadataFrom(metadata))
-        track = Track(name,trackMetadataFrom(metadata))
+        track = Track(name, trackMetadataFrom(metadata))
         album.addTrack(track)
         return track
 

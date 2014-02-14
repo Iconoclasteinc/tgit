@@ -39,6 +39,7 @@ class AlbumEditor(AlbumListener):
 
     def metadataEdited(self, state):
         self._album.releaseName = state.releaseName
+        self._album.compilation = state.compilation
         self._album.leadPerformer = state.leadPerformer
         self._album.guestPerformers = state.guestPerformers
         self._album.labelName = state.labelName

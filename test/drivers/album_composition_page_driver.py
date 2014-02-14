@@ -34,11 +34,11 @@ class AlbumCompositionPageDriver(WidgetDriver):
 
     def isPlaying(self, title):
         row = self.showsTrack(title)
-        self._playButtonAt(row).isDown()
+        self._playButtonAt(row).isChecked()
 
     def isNotPlaying(self, title):
         row = self.showsTrack(title)
-        self._playButtonAt(row).isUp()
+        self._playButtonAt(row).isUnchecked()
 
     def playOrStop(self, title):
         row = self.showsTrack(title)

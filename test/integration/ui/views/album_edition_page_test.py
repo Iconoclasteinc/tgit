@@ -59,6 +59,7 @@ class AlbumEditionPageTest(ViewTest):
         self.view.show(album)
 
         self.driver.showsReleaseName('Album')
+        self.driver.showsCompilation(False)
         self.driver.showsLeadPerformer('Artist')
         self.driver.showsArea('')
         self.driver.showsGuestPerformers('Guitar: Guitarist; Piano: Pianist')
@@ -76,6 +77,19 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsPrimaryStyle('Style')
         self.driver.showsMediaType('')
         self.driver.showsReleaseType('')
+
+    def testIndicatesWhetherAlbumIsACompilation(self):
+        album = build.album()
+        self.view.show(album)
+        self.driver.showsCompilation(False)
+
+        album.compilation = True
+        self.view.show(album)
+        self.driver.showsCompilation(True)
+
+        album.compilation = False
+        self.view.show(album)
+        self.driver.showsCompilation(False)
 
     def testSignalsWhenAddPictureButtonClicked(self):
         self.view.show(build.album())
@@ -118,6 +132,14 @@ class AlbumEditionPageTest(ViewTest):
 
         changes.expect(has_properties(releaseName='Title'))
         self.driver.changeReleaseName('Title')
+        self.check(changes)
+
+        changes.expect(has_properties(compilation=True))
+        self.driver.toggleCompilation()
+        self.check(changes)
+
+        changes.expect(has_properties(compilation=False))
+        self.driver.toggleCompilation()
         self.check(changes)
 
         changes.expect(has_properties(leadPerformer='Artist'))

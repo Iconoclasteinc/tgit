@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QPlainTextEdit, QWidget
+from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QPlainTextEdit, QWidget, QCheckBox
 
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver,
@@ -79,9 +79,6 @@ class AlbumEditionPageDriver(WidgetDriver):
             else:
                 raise AssertionError("Don't know how to edit '%s'" % tag)
 
-    def _label(self, matching):
-        return LabelDriver.findSingle(self, QLabel, matching)
-
     def _displaysPictureWithSize(self, width, height):
         label = self._label(named(AlbumEditionPage.FRONT_COVER_FIELD_NAME))
         label.isShowingOnScreen()
@@ -110,9 +107,6 @@ class AlbumEditionPageDriver(WidgetDriver):
         button = self._button(named(AlbumEditionPage.REMOVE_PICTURE_BUTTON_NAME))
         button.click()
 
-    def _lineEdit(self, matching):
-        return LineEditDriver.findSingle(self, QLineEdit, matching)
-
     def showsReleaseName(self, name):
         label = self._label(withBuddy(named(AlbumEditionPage.RELEASE_NAME_FIELD_NAME)))
         label.isShowingOnScreen()
@@ -122,6 +116,16 @@ class AlbumEditionPageDriver(WidgetDriver):
     def changeReleaseName(self, name):
         edit = self._lineEdit(named(AlbumEditionPage.RELEASE_NAME_FIELD_NAME))
         edit.changeText(name)
+
+    def showsCompilation(self, flag):
+        label = self._label(withBuddy(named(AlbumEditionPage.COMPILATION_FIELD_NAME)))
+        label.isShowingOnScreen()
+        checkbox = self._checkbox(named(AlbumEditionPage.COMPILATION_FIELD_NAME))
+        checkbox.isChecked(flag)
+
+    def toggleCompilation(self):
+        checkbox = self._checkbox(named(AlbumEditionPage.COMPILATION_FIELD_NAME))
+        checkbox.click()
 
     def showsLeadPerformer(self, name):
         label = self._label(withBuddy(named(AlbumEditionPage.LEAD_PERFORMER_FIELD_NAME)))
@@ -290,5 +294,14 @@ class AlbumEditionPageDriver(WidgetDriver):
         edit.isDisabled()
         edit.hasText(type_)
 
+    def _label(self, matching):
+        return LabelDriver.findSingle(self, QLabel, matching)
+
+    def _lineEdit(self, matching):
+        return LineEditDriver.findSingle(self, QLineEdit, matching)
+
     def _textEdit(self, matching):
         return TextEditDriver.findSingle(self, QPlainTextEdit, matching)
+
+    def _checkbox(self, matching):
+        return ButtonDriver.findSingle(self, QCheckBox, matching)

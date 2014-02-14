@@ -19,7 +19,7 @@
 
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QSizePolicy, QGroupBox, QLabel, QPushButton, QLineEdit,
-                         QPixmap, QImage)
+                         QPixmap, QImage, QCheckBox)
 
 from tgit.announcer import Announcer
 from tgit.ui import display, style
@@ -57,9 +57,10 @@ class AlbumEditionPage(object):
     REMOVE_PICTURE_BUTTON_NAME = 'remove-picture'
 
     RELEASE_NAME_FIELD_NAME = 'release-name'
+    COMPILATION_FIELD_NAME = 'compilation'
     LEAD_PERFORMER_FIELD_NAME = 'lead-performer'
     AREA_FIELD_NAME = 'area'
-    GUEST_PERFORMERS_FIELD_NAME = 'guest performers'
+    GUEST_PERFORMERS_FIELD_NAME = 'guest-performers'
 
     LABEL_NAME_FIELD_NAME = 'label-name'
     LABEL_TERRITORY_FIELD_NAME = 'label-town'
@@ -175,8 +176,7 @@ class AlbumEditionPage(object):
         fieldSet = QGroupBox()
         self._releaseTimeLineEdit = self._makeLineEdit(self.RELEASE_TIME_FIELD_NAME)
         self._digitalReleaseTimeLineEdit = self._makeLineEdit(self.DIGITAL_RELEASE_FIELD_NAME)
-        self._originalReleaseTimeLineEdit = \
-            self._makeLineEdit(self.ORIGINAL_RELEASE_TIME_FIELD_NAME)
+        self._originalReleaseTimeLineEdit = self._makeLineEdit(self.ORIGINAL_RELEASE_TIME_FIELD_NAME)
         self._recordingTimeLineEdit = self._makeLineEdit(self.RECORDING_TIME_FIELD_NAME)
 
         form = style.formLayout()
@@ -192,15 +192,22 @@ class AlbumEditionPage(object):
         edit.editingFinished.connect(self._signalMetadataChange)
         return edit
 
+    def _makeCheckBox(self, name):
+        checkbox = QCheckBox()
+        checkbox.setObjectName(name)
+        checkbox.stateChanged.connect(self._signalMetadataChange)
+        return checkbox
+
     def _makeAlbumFieldSet(self):
         fieldSet = QGroupBox()
         self._releaseNameLineEdit = self._makeLineEdit(self.RELEASE_NAME_FIELD_NAME)
+        self._compilationCheckBox = self._makeCheckBox(self.COMPILATION_FIELD_NAME)
         self._leadPerformerLineEdit = self._makeLineEdit(self.LEAD_PERFORMER_FIELD_NAME)
         self._areaLineEdit = self._makeLineEdit(self.AREA_FIELD_NAME)
         self._guestPerformersLineEdit = self._makeLineEdit(self.GUEST_PERFORMERS_FIELD_NAME)
 
         form = style.formLayout()
-        addLabelledFields(form, self._releaseNameLineEdit, self._leadPerformerLineEdit,
+        addLabelledFields(form, self._releaseNameLineEdit, self._compilationCheckBox, self._leadPerformerLineEdit,
                           self._areaLineEdit, self._guestPerformersLineEdit)
 
         fieldSet.setLayout(form)
@@ -261,6 +268,8 @@ class AlbumEditionPage(object):
     def show(self, album):
         self._displayAttachedPicture(album.mainCover)
         self._releaseNameLineEdit.setText(album.releaseName)
+        # todo we really need typed metadata
+        self._compilationCheckBox.setChecked(album.compilation or False)
         self._leadPerformerLineEdit.setText(album.leadPerformer)
         self._guestPerformersLineEdit.setText(display.toPeopleList(album.guestPerformers))
         self._labelNameLineEdit.setText(album.labelName)
@@ -280,10 +289,12 @@ class AlbumEditionPage(object):
 
     def _signalMetadataChange(self):
         class Snapshot(object):
-            pass
+            def __str__(self):
+                return str(self.__dict__)
 
         snapshot = Snapshot()
         snapshot.releaseName = self._releaseNameLineEdit.text()
+        snapshot.compilation = self._compilationCheckBox.isChecked()
         snapshot.leadPerformer = self._leadPerformerLineEdit.text()
         snapshot.guestPerformers = display.fromPeopleList(self._guestPerformersLineEdit.text())
         snapshot.labelName = self._labelNameLineEdit.text()
@@ -318,6 +329,7 @@ class AlbumEditionPage(object):
     def _translateAlbumFields(self):
         self._albumFieldSet.setTitle(self.tr('ALBUM'))
         self._labelFor(self._releaseNameLineEdit).setText(self.tr('Release Name:'))
+        self._labelFor(self._compilationCheckBox).setText(self.tr('Compilation:'))
         self._labelFor(self._leadPerformerLineEdit).setText(self.tr('Lead Performer:'))
         self._leadPerformerLineEdit.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
         self._labelFor(self._areaLineEdit).setText(self.tr('Area:'))

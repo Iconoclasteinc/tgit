@@ -18,6 +18,7 @@ class AlbumEditorTest(unittest.TestCase):
 
         changes = Snapshot()
         changes.releaseName = 'Title'
+        changes.compilation = True
         changes.leadPerformer = 'Artist'
         changes.guestPerformers = [('Guitar', 'Guitarist')]
         changes.labelName = 'Label'
@@ -34,6 +35,7 @@ class AlbumEditorTest(unittest.TestCase):
         self.editor.metadataEdited(changes)
 
         assert_that(self.album.releaseName, equal_to('Title'), 'release name')
+        assert_that(self.album.compilation, equal_to(True), 'compilation')
         assert_that(self.album.leadPerformer, equal_to('Artist'), 'lead performer')
         assert_that(self.album.guestPerformers,
                     equal_to([('Guitar', 'Guitarist')]), 'guest performers')

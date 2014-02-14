@@ -124,13 +124,12 @@ class ButtonDriver(WidgetDriver):
     def hasText(self, matcher):
         self.has(properties.text(), wrap_matcher(matcher))
 
-    def isUp(self):
-        self.isShowingOnScreen()
-        self.is_(match.unchecked())
+    def isUnchecked(self):
+        self.isChecked(False)
 
-    def isDown(self):
+    def isChecked(self, checked=True):
         self.isShowingOnScreen()
-        self.is_(match.checked())
+        self.is_(checked and match.checked() or match.unchecked())
 
 
 class LabelDriver(WidgetDriver):

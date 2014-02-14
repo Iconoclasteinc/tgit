@@ -384,6 +384,10 @@ Sheet = """
         border-color: #E7E7E7;
     }
 
+    #album-edition-page QCheckBox {
+        min-height: 20px;
+    }
+
     #album-edition-page #comments {
         max-height: 3.5em;
     }
