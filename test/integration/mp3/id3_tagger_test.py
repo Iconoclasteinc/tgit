@@ -202,6 +202,11 @@ class ID3TaggerTest(unittest.TestCase):
         metadata[tags.LANGUAGE] = u'fra'
         self.assertCanBeSavedAndReloadedWithSameState(metadata)
 
+    def testHandlesUnicodeMetadata(self):
+        metadata = Metadata()
+        metadata[tags.RELEASE_NAME] = u'Titre en Français'
+        self.assertCanBeSavedAndReloadedWithSameState(metadata)
+
     def testRemovesFrameWhenTagNotInMetadata(self):
         filename = self.makeMp3(TALB='Album',
                                 TMCL=[['Guitar', 'Guitarist']],

@@ -66,7 +66,7 @@ class TextProcessor(object):
 
 class UnicodeProcessor(TextProcessor):
     def __init__(self, key, tag):
-        super(UnicodeProcessor, self).__init__(key, tag, unicode, str)
+        super(UnicodeProcessor, self).__init__(key, tag, unicode, unicode)
 
 
 class BooleanProcessor(TextProcessor):
