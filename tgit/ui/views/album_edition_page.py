@@ -195,7 +195,7 @@ class AlbumEditionPage(object):
     def _makeCheckBox(self, name):
         checkbox = QCheckBox()
         checkbox.setObjectName(name)
-        checkbox.stateChanged.connect(self._signalMetadataChange)
+        checkbox.clicked.connect(self._signalMetadataChange)
         return checkbox
 
     def _makeAlbumFieldSet(self):
