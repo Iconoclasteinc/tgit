@@ -235,8 +235,18 @@ class AlbumCompositionModelTest(unittest.TestCase):
 
         modelListener = flexmock()
         self.model.dataChanged.connect(lambda start, end: modelListener.dataChanged(start, end))
+        # album has changed
         modelListener.should_receive('dataChanged').with_args(self.model.index(0, 1),
                                                               self.model.index(2, 2)).once()
+
+        # each track in album also triggers a data change
+        # todo change this behavior. What do we want to see?
+        modelListener.should_receive('dataChanged').with_args(self.model.index(0, 0),
+                                                              self.model.index(0, 6)).once()
+        modelListener.should_receive('dataChanged').with_args(self.model.index(1, 0),
+                                                              self.model.index(1, 6)).once()
+        modelListener.should_receive('dataChanged').with_args(self.model.index(2, 0),
+                                                              self.model.index(2, 6)).once()
 
         self.album.releaseName = 'Album'
         self.album.leadPerfomer = 'Artist'

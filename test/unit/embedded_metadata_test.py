@@ -3,12 +3,11 @@
 import unittest
 
 from flexmock import flexmock
-from hamcrest import assert_that, all_of, has_property, equal_to
+from hamcrest import assert_that, equal_to
 
 from test.util import builders as build
-from tgit.metadata import Metadata
-from tgit import tags
 from tgit.embedded_metadata import EmbeddedMetadata
+from tgit.track import Track
 
 
 class EmbeddedMetadataTest(unittest.TestCase):
@@ -16,42 +15,19 @@ class EmbeddedMetadataTest(unittest.TestCase):
         self.container = flexmock()
         self.library = EmbeddedMetadata(self.container)
 
-    def merge(self, *metadata):
-        merge = Metadata()
-        for data in metadata:
-            merge.merge(data)
-        return merge
-
-    def testLoadsAlbumAndTrackMetadataFromContainer(self):
+    def testLoadsTrackMetadataFromContainer(self):
         metadata = build.metadata(trackTitle='Summertime',
                                   releaseName='My Favorite Things',
                                   images=[('image/jpeg', 'Front Cover', 'data')])
 
         self.container.should_receive('load').with_args('summertime.mp3').and_return(metadata)
-
         track = self.library.fetch('summertime.mp3')
+        assert_that(track.metadata, equal_to(metadata), 'track metadata')
 
-        assert_that(track, hasTrackMetadata(metadata), 'track metadata')
-        assert_that(track.album, hasAlbumMetadata(metadata), 'album metadata')
+    def testSavesTrackMetadataToContainer(self):
+        metadata = build.metadata(trackTitle='Summertime',
+                                  releaseName='My Favorite Things',
+                                  images=[('image/jpeg', 'Front Cover', 'data')])
 
-    def testSavesAlbumAndTrackMetadataToContainer(self):
-        track = build.track(filename='summertime.mp3',
-                            trackTitle='Summertime')
-        album = build.album(releaseName='My Favorite Things',
-                            images=[build.image('image/jpeg', 'data', 'Front Cover')])
-        track.album = album
-
-        self.container.should_receive('save').\
-            with_args('summertime.mp3', self.merge(track.metadata, album.metadata)).once()
-
-        self.library.store(track)
-
-
-def hasTrackMetadata(metadata):
-    return all_of(*[has_property(tag, metadata[tag]) for tag in tags.TRACK_TAGS])
-
-
-def hasAlbumMetadata(metadata):
-    matchers = [has_property(tag, metadata[tag]) for tag in tags.ALBUM_TAGS]
-    matchers.append(has_property('images', equal_to(metadata.images)))
-    return all_of(*matchers)
+        self.container.should_receive('save').with_args('summertime.mp3', metadata).once()
+        self.library.store(Track('summertime.mp3', metadata))

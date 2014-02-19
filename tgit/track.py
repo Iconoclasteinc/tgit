@@ -52,16 +52,29 @@ class Track(object):
     def album(self):
         return self._album
 
-    @property
-    def albumMetadata(self):
-        if self.album is not None:
-            return self.album.metadata
-        else:
-            return Metadata()
+    @album.deleter
+    def album(self):
+        self._album.removeAlbumListener(self)
+        self._album = None
 
     @album.setter
     def album(self, album):
         self._album = album
+        self.update(album.metadata)
+        album.addAlbumListener(self)
+
+    def update(self, metadata):
+        self._metadata.update(metadata)
+        self._signalStateChange()
+
+    def albumStateChanged(self, album):
+        self.update(album.metadata)
+
+    def trackAdded(self, track, position):
+        pass
+
+    def trackRemoved(self, track, position):
+        pass
 
     def _signalStateChange(self):
         self._listeners.trackStateChanged(self)

@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from collections import defaultdict
+from collections import Counter
 
 from mutagen import mp3, id3
 
@@ -26,7 +26,7 @@ from tgit.metadata import Metadata, Image
 
 
 def invert(mapping):
-    return dict([(v, k) for k, v in mapping.iteritems()])
+    return dict(zip(mapping.values(), mapping.keys()))
 
 
 def load(filename):
@@ -38,6 +38,8 @@ def save(filename, metadata, overwrite=False):
 
 
 class TextProcessor(object):
+    UNQUOTE = slice(1, -1)
+
     def __init__(self, key, tag, frameToTag, tagToFrame):
         self._key = key
         self._tag = tag
@@ -58,10 +60,7 @@ class TextProcessor(object):
 
     def _decompose(self, key):
         parts = (key + '::').split(':')
-        return parts[0], parts[1], self.unquote(parts[2])
-
-    def unquote(self, text):
-        return text[1:len(text) - 1]
+        return parts[0], parts[1], parts[2][self.UNQUOTE]
 
 
 class UnicodeProcessor(TextProcessor):
@@ -98,16 +97,16 @@ class ImageProcessor(object):
 
     def processMetadata(self, frames, encoding, metadata):
         frames.delall(self._key)
-        count = defaultdict(lambda: 0)
-
+        count = Counter()
         for image in metadata.images:
+            count[image.desc] +=1
             frames.add(self._makePictureFrame(count, encoding, image))
 
     def _makePictureFrame(self, count, encoding, image):
         description = image.desc
-        if count[image.desc] > 0:
-            description += " (%i)" % (count[image.desc] + 1)
-        count[image.desc] += 1
+        if count[image.desc] > 1:
+            description += ' ({})'.format(count[image.desc])
+
         imagesTypes = invert(self._pictureTypes)
         return getattr(id3, self._key)(encoding=encoding, mime=image.mime,
                                        type=imagesTypes[image.type],

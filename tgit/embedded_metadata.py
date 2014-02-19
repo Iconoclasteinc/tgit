@@ -18,9 +18,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit.track import Track
-from tgit.album import Album
-
-from tgit import tags
 
 
 class EmbeddedMetadata(object):
@@ -29,22 +26,9 @@ class EmbeddedMetadata(object):
 
     def fetch(self, name):
         metadata = self._container.load(name)
-        album = Album(albumMetadataFrom(metadata))
-        track = Track(name, trackMetadataFrom(metadata))
-        album.addTrack(track)
+        track = Track(name, metadata)
         return track
 
     def store(self, track):
         metadata = track.metadata
-        metadata.merge(track.albumMetadata)
         self._container.save(track.filename, metadata)
-
-
-def albumMetadataFrom(metadata):
-    albumMetadata = metadata.subset(*tags.ALBUM_TAGS)
-    albumMetadata.addImages(*metadata.images)
-    return albumMetadata
-
-
-def trackMetadataFrom(metadata):
-    return metadata.subset(*tags.TRACK_TAGS)

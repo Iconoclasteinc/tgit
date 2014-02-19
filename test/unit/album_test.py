@@ -45,12 +45,18 @@ class AlbumTest(unittest.TestCase):
             build.track(trackTitle='Track 2'),
             build.track(trackTitle='Track 3')])
 
-        second = album.tracks[1]
-        album.removeTrack(second)
+        removed = album.tracks[1]
+        album.removeTrack(removed)
 
         assert_that(album.tracks, has_length(2), 'remaining tracks')
-        assert_that(album.tracks, is_not(has_item(has_property('trackTitle', 'Track 2'))),
-                    'tracks')
+        assert_that(album.tracks, is_not(has_item(has_property('trackTitle', 'Track 2'))), 'tracks')
+
+    def testRemovesAssociationOfTrackToAlbum(self):
+        track = build.track()
+        album = build.album(tracks=[track])
+
+        album.removeTrack(track)
+        assert_that(track.album, none(), 'associated album')
 
     def testSupportsInsertingTracksAtASpecificPositions(self):
         album = build.album(tracks=[
@@ -82,7 +88,7 @@ class AlbumTest(unittest.TestCase):
 
         assert_that(album.images, empty(), 'images')
 
-    def testCopiesMetadataOfInitialFirstTrack(self):
+    def testCopiesAlbumMetadataOfInitialFirstTrack(self):
         originalRelease = build.album(releaseName='First Album',
                                       images=[build.image('image/jpeg', 'first-cover.jpg')])
         track = build.track()

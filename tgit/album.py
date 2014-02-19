@@ -99,7 +99,7 @@ class Album(object):
 
     def _inheritMetadataIfInitialTrack(self, track):
         if self._metadata.empty():
-            self._metadata = track.albumMetadata
+            self._metadata = track.metadata.copy(*tags.ALBUM_TAGS)
             self._signalStateChange()
 
     def insertTrack(self, track, position):
@@ -109,13 +109,10 @@ class Album(object):
         self._listeners.trackAdded(track, position)
 
     def removeTrack(self, track):
+        del track.album
         position = self._tracks.index(track)
         self._tracks.remove(track)
         self._listeners.trackRemoved(track, position)
-
-    def eachTrack(self, do):
-        for track in self._tracks:
-            do(track)
 
     def _signalStateChange(self):
         self._listeners.albumStateChanged(self)
