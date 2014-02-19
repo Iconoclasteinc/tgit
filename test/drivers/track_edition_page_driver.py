@@ -80,6 +80,16 @@ class TrackEditionPageDriver(WidgetDriver):
         edit = self._lineEdit(named(TrackEditionPage.TRACK_TITLE_FIELD_NAME))
         edit.changeText(title)
 
+    def showsLeadPerformer(self, name):
+        label = self._label(withBuddy(named(TrackEditionPage.LEAD_PERFORMER_FIELD_NAME)))
+        label.isShowingOnScreen()
+        edit = self._lineEdit(named(TrackEditionPage.LEAD_PERFORMER_FIELD_NAME))
+        edit.hasText(name)
+
+    def changeLeadPerformer(self, name):
+        edit = self._lineEdit(named(TrackEditionPage.LEAD_PERFORMER_FIELD_NAME))
+        edit.changeText(name)
+
     def showsVersionInfo(self, versionInfo):
         label = self._label(withBuddy(named(TrackEditionPage.VERSION_INFO_FIELD_NAME)))
         label.isShowingOnScreen()

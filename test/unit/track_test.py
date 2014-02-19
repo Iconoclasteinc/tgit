@@ -13,12 +13,22 @@ class TrackTest(unittest.TestCase):
     def testUpdatesMetadataFromAlbumMetadata(self):
         track = build.track(filename='track.mp3', trackTitle='Track Title')
         album = build.album(releaseName='Album Title',
+                            leadPerformer='Album Artist',
                             images=[build.image('image/jpeg', '<image data>')])
         track.album = album
 
         assert_that(track.metadata, all_of(
             has_entry(tags.RELEASE_NAME, 'Album Title'),
+            has_entry(tags.LEAD_PERFORMER, 'Album Artist'),
             has_property('images', contains(has_property('data', '<image data>')))), 'updated track metadata')
+
+    def testIgnoresLeadPerformerChangesWhenAlbumIsACompilation(self):
+        track = build.track(leadPerformer='Track Artist')
+        track.update(build.metadata(compilation=True, leadPerformer='Album Artist'))
+        assert_that(track.metadata, has_entry('leadPerformer', 'Track Artist'), 'track lead performer')
+
+        track.update(build.metadata(compilation=True))
+        assert_that(track.metadata, has_entry('leadPerformer', 'Track Artist'), 'track lead performer')
 
     def testAnnouncesStateChangesToListeners(self):
         self.assertNotifiesListenerOnPropertyChange('trackTitle', 'Title')

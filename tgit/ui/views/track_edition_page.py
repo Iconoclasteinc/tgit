@@ -37,6 +37,7 @@ class TrackEditionPage(object):
     NAME = 'track-edition-page'
 
     TRACK_TITLE_FIELD_NAME = 'track-title'
+    LEAD_PERFORMER_FIELD_NAME = 'lead-performer'
     VERSION_INFO_FIELD_NAME = 'version-info'
     FEATURED_GUEST_FIELD_NAME = 'featured-guest'
     DURATION_FIELD_NAME = 'duration'
@@ -79,21 +80,22 @@ class TrackEditionPage(object):
 
     def _fill(self, layout):
         self._addTrackTitle(layout, 0)
-        self._addVersionInfo(layout, 1)
-        self._addFeaturedGuest(layout, 2)
-        self._addDuration(layout, 3)
-        self._addTrackNumber(layout, 4)
-        self._addTotalTracks(layout, 5)
-        self._addBitrate(layout, 6)
-        self._addLyricist(layout, 7)
-        self._addComposer(layout, 8)
-        self._addPublisher(layout, 9)
-        self._addIsrc(layout, 10)
-        self._addIswc(layout, 11)
-        self._addTags(layout, 12)
-        self._addLyrics(layout, 13)
-        self._addLanguage(layout, 14)
-        self._addPreviewTime(layout, 15)
+        self._addLeadPerformer(layout, 1)
+        self._addVersionInfo(layout, 2)
+        self._addFeaturedGuest(layout, 3)
+        self._addDuration(layout, 4)
+        self._addTrackNumber(layout, 5)
+        self._addTotalTracks(layout, 6)
+        self._addBitrate(layout, 7)
+        self._addLyricist(layout, 8)
+        self._addComposer(layout, 9)
+        self._addPublisher(layout, 10)
+        self._addIsrc(layout, 11)
+        self._addIswc(layout, 12)
+        self._addTags(layout, 13)
+        self._addLyrics(layout, 14)
+        self._addLanguage(layout, 15)
+        self._addPreviewTime(layout, 16)
 
     def _addTrackTitle(self, layout, row):
         self._trackTitleLabel = QLabel()
@@ -103,6 +105,15 @@ class TrackEditionPage(object):
         self._trackTitleEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._trackTitleEdit, row, 1)
         self._trackTitleLabel.setBuddy(self._trackTitleEdit)
+
+    def _addLeadPerformer(self, layout, row):
+        self._leadPerformerLabel = QLabel()
+        layout.addWidget(self._leadPerformerLabel, row, 0)
+        self._leadPerformerEdit = QLineEdit()
+        self._leadPerformerEdit.setObjectName(TrackEditionPage.LEAD_PERFORMER_FIELD_NAME)
+        self._leadPerformerEdit.editingFinished.connect(self._signalMetadataChange)
+        layout.addWidget(self._leadPerformerEdit, row, 1)
+        self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
 
     def _addVersionInfo(self, layout, row):
         self._versionInfoLabel = QLabel()
@@ -241,6 +252,7 @@ class TrackEditionPage(object):
 
     def show(self, album, track):
         self._trackTitleEdit.setText(track.trackTitle)
+        self._leadPerformerEdit.setText(track.leadPerformer)
         self._versionInfoEdit.setText(track.versionInfo)
         self._durationValueLabel.setText(display.asDuration(track.duration))
         self._trackNumberValueLabel.setText(str(album.positionOf(track) + 1))
@@ -258,10 +270,12 @@ class TrackEditionPage(object):
     @property
     def trackMetadata(self):
         class Snapshot(object):
-            pass
+            def __str__(self):
+                return str(self.__dict__)
 
         snapshot = Snapshot()
         snapshot.trackTitle = self._trackTitleEdit.text()
+        snapshot.leadPerformer = self._leadPerformerEdit.text()
         snapshot.versionInfo = self._versionInfoEdit.text()
         snapshot.featuredGuest = self._featuredGuestEdit.text()
         snapshot.lyricist = self._lyricistEdit.text()
@@ -278,6 +292,7 @@ class TrackEditionPage(object):
 
     def translate(self):
         self._trackTitleLabel.setText(self.tr('Track Title: '))
+        self._leadPerformerLabel.setText(self.tr('Lead Performer: '))
         self._versionInfoLabel.setText(self.tr('Version Information: '))
         self._durationLabel.setText(self.tr('Duration: '))
         self._trackNumberLabel.setText(self.tr('Track: '))

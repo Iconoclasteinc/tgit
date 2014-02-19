@@ -37,6 +37,7 @@ class TrackEditor(AlbumListener, TrackListener):
 
     def metadataEdited(self, state):
         self._track.trackTitle = state.trackTitle
+        self._track.leadPerformer = state.leadPerformer
         self._track.versionInfo = state.versionInfo
         self._track.featuredGuest = state.featuredGuest
         self._track.lyricist = state.lyricist

@@ -10,7 +10,6 @@ ANY_POSITION = 0
 
 
 class TrackEditorTest(unittest.TestCase):
-
     def setUp(self):
         self.album, self.track = build.album(), build.track()
         self.editor = TrackEditor(self.album, self.track)
@@ -21,6 +20,7 @@ class TrackEditorTest(unittest.TestCase):
 
         state = Snapshot()
         state.trackTitle = 'Title'
+        state.leadPerformer = 'Artist'
         state.versionInfo = 'Version'
         state.featuredGuest = 'Featuring'
         state.lyricist = 'Lyricist'
@@ -34,6 +34,7 @@ class TrackEditorTest(unittest.TestCase):
         self.editor.metadataEdited(state)
 
         assert_that(self.track.trackTitle, equal_to('Title'), 'track title')
+        assert_that(self.track.leadPerformer, equal_to('Artist'), 'lead performer')
         assert_that(self.track.versionInfo, equal_to('Version'), 'version info')
         assert_that(self.track.featuredGuest, equal_to('Featuring'), 'featured guest')
         assert_that(self.track.lyricist, equal_to('Lyricist'), 'lyricist')

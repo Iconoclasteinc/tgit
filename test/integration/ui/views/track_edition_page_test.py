@@ -30,6 +30,7 @@ class TrackEditionPageTest(ViewTest):
     def testDisplaysTrackMetadata(self):
         track = build.track(bitrate=192000,
                             duration=timedelta(minutes=4, seconds=35).total_seconds(),
+                            leadPerformer='Artist',
                             trackTitle='Song',
                             versionInfo='Remix',
                             featuredGuest='Featuring',
@@ -46,6 +47,7 @@ class TrackEditionPageTest(ViewTest):
         self.view.show(album, track)
 
         self.driver.showsTrackTitle('Song')
+        self.driver.showsLeadPerformer('Artist')
         self.driver.showsVersionInfo('Remix')
         self.driver.showsBitrate('192 kbps')
         self.driver.showsDuration('04:35')
@@ -73,6 +75,10 @@ class TrackEditionPageTest(ViewTest):
 
         changes.expect(has_properties(trackTitle='Title'))
         self.driver.changeTrackTitle('Title')
+        self.check(changes)
+
+        changes.expect(has_properties(leadPerformer='Artist'))
+        self.driver.changeLeadPerformer('Artist')
         self.check(changes)
 
         changes.expect(has_properties(versionInfo='Remix'))

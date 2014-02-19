@@ -64,6 +64,9 @@ class Track(object):
         album.addAlbumListener(self)
 
     def update(self, metadata):
+        changes = metadata
+        if changes[tags.COMPILATION] and tags.LEAD_PERFORMER in changes:
+            del changes[tags.LEAD_PERFORMER]
         self._metadata.update(metadata)
         self._signalStateChange()
 
