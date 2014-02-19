@@ -39,7 +39,7 @@ class Row(QObject, TrackListener, PlayerListener):
         return self._track.trackTitle
 
     def leadPerformer(self):
-        return self._album.leadPerformer
+        return self._track.leadPerformer
 
     def releaseName(self):
         return self._album.releaseName
@@ -188,7 +188,7 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener, TrackListener):
         self.trackAt(fromPosition).moveTo(toPosition)
 
     def albumStateChanged(self, album):
-        self.dataChanged.emit(self.index(0, Columns.index(Columns.leadPerformer)),
+        self.dataChanged.emit(self.index(0, Columns.index(Columns.releaseName)),
                               self.index(self.rowCount() - 1, Columns.index(Columns.releaseName)))
 
     def trackAdded(self, track, position):

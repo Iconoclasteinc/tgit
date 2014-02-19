@@ -45,9 +45,10 @@ class StubAlbumCompositionModel(AlbumCompositionModel):
 class RowTest(unittest.TestCase):
     def testHoldsTrackDetails(self):
         track = build.track(trackTitle='Song',
+                            leadPerformer='Artist',
                             bitrate=192000,
                             duration=100)
-        album = build.album(releaseName='Album', leadPerformer='Artist')
+        album = build.album(releaseName='Album')
 
         row = Row(album, track)
 
@@ -59,11 +60,12 @@ class RowTest(unittest.TestCase):
         assert_that(row.playing(), equal_to(False), 'playing')
 
     def testSignalsRowChangedWhenTrackStateChanges(self):
-        row = Row(build.album(), build.track())
+        track = build.track()
+        row = Row(build.album(), track)
         listener = flexmock()
         row.rowChanged.connect(lambda row: listener.rowChanged(row))
         listener.should_receive('rowChanged').with_args(row).once()
-        row.trackStateChanged(build.track())
+        row.trackStateChanged(track)
 
     def testMovesTrackInAlbum(self):
         album = build.album(tracks=[
@@ -133,9 +135,10 @@ class RowTest(unittest.TestCase):
 class ColumnsTest(unittest.TestCase):
     def testFormatsRowForDisplay(self):
         track = build.track(trackTitle='Song',
+                            leadPerformer='Artist',
                             bitrate=192000,
                             duration=timedelta(minutes=4, seconds=37).total_seconds())
-        album = build.album(releaseName='Album', leadPerformer='Artist')
+        album = build.album(releaseName='Album')
 
         row = Row(album, track, True)
         assert_that(Columns.trackTitle.value(row), equal_to('Song'), 'track title')
@@ -193,12 +196,11 @@ class AlbumCompositionModelTest(unittest.TestCase):
         self.assertRowMatchesTrack(0, track)
 
     def testDisplaysTrackDetailsInColumns(self):
+        self.album.releaseName = 'Album'
         track = build.track(trackTitle='Song',
-                            releaseName='Album',
                             leadPerformer='Artist',
                             duration=timedelta(minutes=3, seconds=56).total_seconds(),
                             bitrate=192000)
-
         self.album.addTrack(track)
         self.assertRowMatchesTrack(0, track)
         self.assertRowMatchesAlbum(0, self.album)
@@ -236,7 +238,7 @@ class AlbumCompositionModelTest(unittest.TestCase):
         modelListener = flexmock()
         self.model.dataChanged.connect(lambda start, end: modelListener.dataChanged(start, end))
         # album has changed
-        modelListener.should_receive('dataChanged').with_args(self.model.index(0, 1),
+        modelListener.should_receive('dataChanged').with_args(self.model.index(0, 2),
                                                               self.model.index(2, 2)).once()
 
         # each track in album also triggers a data change
@@ -276,19 +278,18 @@ class AlbumCompositionModelTest(unittest.TestCase):
         track.trackTitle = 'Track'
 
     def assertRowMatchesAlbum(self, row, album):
-        self.assertCellDisplays(row, Columns.leadPerformer, album.leadPerformer)
         self.assertCellDisplays(row, Columns.releaseName, album.releaseName)
 
     def assertRowMatchesTrack(self, row, track):
         self.assertCellDisplays(row, Columns.trackTitle, track.trackTitle)
+        self.assertCellDisplays(row, Columns.leadPerformer, track.leadPerformer)
         if track.bitrate:
             self.assertCellDisplays(row, Columns.bitrate, '%d kbps' % display.inKbps(track.bitrate))
         if track.duration:
             self.assertCellDisplays(row, Columns.duration, display.asDuration(track.duration))
 
     def assertCellDisplays(self, row, column, value):
-        assert_that(self.cellValue(column, row), equal_to(value),
-                    'cell (%d, %d)' % (row, Columns.index(column)))
+        assert_that(self.cellValue(column, row), equal_to(value), 'cell (%d, %d)' % (row, Columns.index(column)))
 
     def cellValue(self, column, row):
         return self.model.data(self.model.index(row, Columns.index(column)), Qt.DisplayRole)
