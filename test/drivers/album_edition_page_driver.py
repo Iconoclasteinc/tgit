@@ -157,13 +157,6 @@ class AlbumEditionPageDriver(WidgetDriver):
         edit = self._lineEdit(named(AlbumEditionPage.LABEL_NAME_FIELD_NAME))
         edit.changeText(name)
 
-    def showsLabelTerritory(self, town):
-        label = self._label(withBuddy(named(AlbumEditionPage.LABEL_TERRITORY_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.LABEL_TERRITORY_FIELD_NAME))
-        edit.isDisabled()
-        edit.hasText(town)
-
     def showsArea(self, area):
         label = self._label(withBuddy(named(AlbumEditionPage.AREA_FIELD_NAME)))
         label.isShowingOnScreen()

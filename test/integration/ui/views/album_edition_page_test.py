@@ -64,7 +64,6 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsArea('')
         self.driver.showsGuestPerformers('Guitar: Guitarist; Piano: Pianist')
         self.driver.showsLabelName('Label')
-        self.driver.showsLabelTerritory('')
         self.driver.showsCatalogNumber('XXX123456789')
         self.driver.showsUpc('123456789999')
         self.driver.showsRecordingTime('2008-09-15')

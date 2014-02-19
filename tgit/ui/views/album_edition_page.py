@@ -63,7 +63,6 @@ class AlbumEditionPage(object):
     GUEST_PERFORMERS_FIELD_NAME = 'guest-performers'
 
     LABEL_NAME_FIELD_NAME = 'label-name'
-    LABEL_TERRITORY_FIELD_NAME = 'label-town'
     CATALOG_NUMBER_FIELD_NAME = 'catalog-number'
     UPC_FIELD_NAME = 'upc'
     MEDIA_TYPE_FIELD_NAME = 'media-type'
@@ -216,7 +215,6 @@ class AlbumEditionPage(object):
     def _makeRecordFieldSet(self):
         fieldSet = QGroupBox()
         self._labelNameLineEdit = self._makeLineEdit(self.LABEL_NAME_FIELD_NAME)
-        self._labelTerritoryEdit = self._makeLineEdit(self.LABEL_TERRITORY_FIELD_NAME)
         self._catalogNumberLineEdit = self._makeLineEdit(self.CATALOG_NUMBER_FIELD_NAME)
         self._upcLineEdit = self._makeLineEdit(self.UPC_FIELD_NAME)
         self._mediaTypeLineEdit = self._makeLineEdit(self.MEDIA_TYPE_FIELD_NAME)
@@ -224,10 +222,8 @@ class AlbumEditionPage(object):
         self._commentsTextArea = self._makeTextArea(self.COMMENTS_FIELD_NAME)
 
         form = style.formLayout()
-        addLabelledFields(form, self._labelNameLineEdit, self._labelTerritoryEdit,
-                          self._catalogNumberLineEdit, self._upcLineEdit,
-                          self._mediaTypeLineEdit, self._releaseTypeLineEdit,
-                          self._commentsTextArea)
+        addLabelledFields(form, self._labelNameLineEdit,  self._catalogNumberLineEdit, self._upcLineEdit,
+                          self._mediaTypeLineEdit, self._releaseTypeLineEdit, self._commentsTextArea)
 
         fieldSet.setLayout(form)
         return fieldSet
@@ -257,7 +253,6 @@ class AlbumEditionPage(object):
         self._disableField(self._digitalReleaseTimeLineEdit)
         self._disableField(self._originalReleaseTimeLineEdit)
         self._disableField(self._areaLineEdit)
-        self._disableField(self._labelTerritoryEdit)
         self._disableField(self._mediaTypeLineEdit)
         self._disableField(self._releaseTypeLineEdit)
 
@@ -340,7 +335,6 @@ class AlbumEditionPage(object):
 
     def _translateRecordFields(self):
         self._recordFieldSet.setTitle(self.tr('RECORD'))
-        self._labelFor(self._labelTerritoryEdit).setText(self.tr('Territory:'))
         self._labelFor(self._catalogNumberLineEdit).setText(self.tr('Catalog Number:'))
         self._labelFor(self._upcLineEdit).setText(self.tr('UPC/EAN:'))
         self._upcLineEdit.setPlaceholderText(self.tr('1234567899999'))
