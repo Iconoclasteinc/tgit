@@ -253,6 +253,7 @@ class TrackEditionPage(object):
     def show(self, album, track):
         self._trackTitleEdit.setText(track.trackTitle)
         self._leadPerformerEdit.setText(track.leadPerformer)
+        self._leadPerformerEdit.setEnabled(track.compilation is True)
         self._versionInfoEdit.setText(track.versionInfo)
         self._durationValueLabel.setText(display.asDuration(track.duration))
         self._trackNumberValueLabel.setText(str(album.positionOf(track) + 1))

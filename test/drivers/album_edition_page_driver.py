@@ -127,11 +127,12 @@ class AlbumEditionPageDriver(WidgetDriver):
         checkbox = self._checkbox(named(AlbumEditionPage.COMPILATION_FIELD_NAME))
         checkbox.click()
 
-    def showsLeadPerformer(self, name):
+    def showsLeadPerformer(self, name, disabled=False):
         label = self._label(withBuddy(named(AlbumEditionPage.LEAD_PERFORMER_FIELD_NAME)))
         label.isShowingOnScreen()
         edit = self._lineEdit(named(AlbumEditionPage.LEAD_PERFORMER_FIELD_NAME))
         edit.hasText(name)
+        edit.isDisabled(disabled)
 
     def changeLeadPerformer(self, name):
         edit = self._lineEdit(named(AlbumEditionPage.LEAD_PERFORMER_FIELD_NAME))

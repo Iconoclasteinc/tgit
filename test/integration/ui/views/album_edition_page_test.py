@@ -90,6 +90,11 @@ class AlbumEditionPageTest(ViewTest):
         self.view.show(album)
         self.driver.showsCompilation(False)
 
+    def testDisablesLeadPerformerEditionWhenAlbumIsACompilation(self):
+        album = build.album(compilation=True, leadPerformer='Album Artist')
+        self.view.show(album)
+        self.driver.showsLeadPerformer('Various Artists', disabled=True)
+
     def testSignalsWhenAddPictureButtonClicked(self):
         self.view.show(build.album())
 

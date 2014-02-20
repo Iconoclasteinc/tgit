@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from hamcrest import assert_that, equal_to, contains, has_properties
+from hamcrest import assert_that, equal_to, contains, has_properties, is_
 from test.util import builders as build, resources
 from tgit.metadata import Image
 from tgit.ui.album_editor import AlbumEditor
@@ -35,7 +35,7 @@ class AlbumEditorTest(unittest.TestCase):
         self.editor.metadataEdited(changes)
 
         assert_that(self.album.releaseName, equal_to('Title'), 'release name')
-        assert_that(self.album.compilation, equal_to(True), 'compilation')
+        assert_that(self.album.compilation, is_(True), 'compilation')
         assert_that(self.album.leadPerformer, equal_to('Artist'), 'lead performer')
         assert_that(self.album.guestPerformers,
                     equal_to([('Guitar', 'Guitarist')]), 'guest performers')

@@ -70,11 +70,11 @@ class WidgetDriver(object):
     def isHidden(self):
         self.is_(match.hidden())
 
-    def isEnabled(self):
-        self.is_(match.enabled())
+    def isEnabled(self, enabled=True):
+        self.is_(enabled and match.enabled() or match.disabled())
 
-    def isDisabled(self):
-        self.is_(match.disabled())
+    def isDisabled(self, disabled=True):
+        self.isEnabled(not disabled)
 
     def is_(self, criteria):
         self.check(WidgetAssertionProbe(self.selector, criteria))
@@ -124,8 +124,8 @@ class ButtonDriver(WidgetDriver):
     def hasText(self, matcher):
         self.has(properties.text(), wrap_matcher(matcher))
 
-    def isUnchecked(self):
-        self.isChecked(False)
+    def isUnchecked(self, unchecked=True):
+        self.isChecked(not unchecked)
 
     def isChecked(self, checked=True):
         self.isShowingOnScreen()

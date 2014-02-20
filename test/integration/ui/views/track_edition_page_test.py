@@ -29,6 +29,7 @@ class TrackEditionPageTest(ViewTest):
 
     def testDisplaysTrackMetadata(self):
         track = build.track(bitrate=192000,
+                            compilation=True,
                             duration=timedelta(minutes=4, seconds=35).total_seconds(),
                             leadPerformer='Artist',
                             trackTitle='Song',
@@ -42,7 +43,7 @@ class TrackEditionPageTest(ViewTest):
                             lyrics='Lyrics\n...\n...',
                             language='eng')
         album = build.album(tracks=[build.track(), build.track()])
-        album.insertTrack(track, 0)
+        album.insertTrack(track, 1)
 
         self.view.show(album, track)
 
@@ -51,7 +52,7 @@ class TrackEditionPageTest(ViewTest):
         self.driver.showsVersionInfo('Remix')
         self.driver.showsBitrate('192 kbps')
         self.driver.showsDuration('04:35')
-        self.driver.showsTrackNumber('1')
+        self.driver.showsTrackNumber('2')
         self.driver.showsTotalTracks('3')
         self.driver.showsFeaturedGuest('Featuring')
         self.driver.showsLyricist('Lyricist')
@@ -63,6 +64,14 @@ class TrackEditionPageTest(ViewTest):
         self.driver.showsLyrics('Lyrics\n...\n...')
         self.driver.showsLanguage('eng')
         self.driver.showsPreviewTime('00:00')
+
+    def testDisablesLeadPerformerEditionWhenAlbumIsNotACompilation(self):
+        album = build.album(compilation=False, leadPerformer='Album Artist')
+        track = build.track()
+        album.addTrack(track)
+
+        self.view.show(album, track)
+        self.driver.showsLeadPerformer('Album Artist', disabled=True)
 
     def testSignalsWhenTrackMetadataEdited(self):
         changes = ValueMatcherProbe('track changed')

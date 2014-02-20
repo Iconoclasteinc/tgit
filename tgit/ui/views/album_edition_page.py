@@ -264,8 +264,12 @@ class AlbumEditionPage(object):
         self._displayAttachedPicture(album.mainCover)
         self._releaseNameLineEdit.setText(album.releaseName)
         # todo we really need typed metadata
-        self._compilationCheckBox.setChecked(album.compilation or False)
-        self._leadPerformerLineEdit.setText(album.leadPerformer)
+        self._compilationCheckBox.setChecked(album.compilation is True)
+        self._leadPerformerLineEdit.setDisabled(album.compilation is True)
+        if album.compilation:
+            self._leadPerformerLineEdit.setText(self.tr('Various Artists'))
+        else:
+            self._leadPerformerLineEdit.setText(album.leadPerformer)
         self._guestPerformersLineEdit.setText(display.toPeopleList(album.guestPerformers))
         self._labelNameLineEdit.setText(album.labelName)
         self._catalogNumberLineEdit.setText(album.catalogNumber)
