@@ -451,16 +451,6 @@ Sheet = """
     QComboBox::down-arrow:on, QComboBox::down-arrow:focus {
         image: url(:/down-arrow-on.png);
     }
-
-    #album-edition-page QComboBox QAbstractItemView {
-        padding: 0;
-        margin: 0;
-    }
-
-    #album-edition-page QComboBox QAbstractItemView::item {
-        padding: 0;
-        margin: 0;
-    }
  """
 
 MAC = hasattr(QtGui, "qt_mac_set_native_menubar")
