@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt4 import QtGui
 
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QHBoxLayout, QVBoxLayout, QFormLayout, QColor, QFrame
@@ -438,8 +439,6 @@ Sheet = """
     #album-edition-page QComboBox {
         padding-left: 1px;
         padding-top: 1px;
-        margin-left: 3px;
-        margin-right: 3px;
     }
 
     #album-edition-page QComboBox::drop-down {
@@ -468,6 +467,18 @@ Sheet = """
         margin: 0;
     }
  """
+
+MAC = hasattr(QtGui, "qt_mac_set_native_menubar")
+
+if MAC:
+    Sheet += """
+        #album-edition-page QComboBox {
+            padding-left: 1px;
+            padding-top: 1px;
+            margin-left: 3px;
+            margin-right: 2px;
+        }
+    """
 
     #album-edition-page QComboBox QAbstractItemView QScrollBar {
     #     padding: 0;
