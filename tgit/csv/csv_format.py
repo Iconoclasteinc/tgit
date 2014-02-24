@@ -34,7 +34,7 @@ class CsvFormat(object):
         writer.writerow(self._encode(self.Headers))
 
     def writeRecord(self, writer, album, track):
-        row = album.releaseName, toBoolean(album.compilation), album.leadPerformer, toPeopleList(album.guestPerformers), \
+        row = album.releaseName, toBoolean(album.compilation), track.leadPerformer, toPeopleList(album.guestPerformers), \
             album.labelName, album.catalogNumber, album.upc, album.comments, \
             album.releaseTime, album.recordingTime, album.recordingStudios, album.producer, \
             album.mixer, album.primaryStyle, track.trackTitle, track.versionInfo, track.featuredGuest, \

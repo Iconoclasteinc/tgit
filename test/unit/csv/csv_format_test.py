@@ -54,7 +54,6 @@ class CsvFormatTest(unittest.TestCase):
     def testWritesTrackMetadataInColumns(self):
         album = build.album(
             releaseName='Release Name',
-            leadPerformer='Lead Performer',
             guestPerformers=[('Instrument1', 'Performer1'), ('Instrument2', 'Performer2')],
             labelName='Label Name',
             catalogNumber='Catalog Number',
@@ -68,6 +67,7 @@ class CsvFormatTest(unittest.TestCase):
             primaryStyle='Genre',
             tracks=[build.track(
                 trackTitle='Track Title',
+                leadPerformer='Lead Performer',
                 versionInfo='Version Info',
                 featuredGuest='Featuring',
                 lyrics='Lyrics\n...\...\n...',
