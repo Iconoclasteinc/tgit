@@ -368,18 +368,21 @@ Sheet = """
         border: 2px solid white;
     }
 
-    #album-edition-page QLineEdit, #album-page TextArea {
+    #album-edition-page QLineEdit, #album-edition-page TextArea, #album-edition-page QComboBox,
+    #album-edition-page QComboBox::drop-down, #album-edition-page QComboBox QAbstractItemView {
         background-color: #F9F9F9;
         border: 1px solid #B1B1B1;
         color: #222222;
         min-height: 20px;
     }
 
-    #album-edition-page QLineEdit:focus, #album-page TextArea:focus {
+    #album-edition-page QLineEdit:focus, #album-edition-page TextArea:focus, #album-edition-page QComboBox:focus,
+    #album-edition-page QComboBox:on, #album-edition-page QComboBox::drop-down:focus,
+    #album-edition-page QComboBox::drop-down:on, #album-edition-page QComboBox QAbstractItemView:focus {
         border: 1px solid #F79D6C;
     }
 
-    #album-edition-page QLineEdit:disabled, #album-page TextArea:disabled {
+    #album-edition-page QLineEdit:disabled, #album-edition-page TextArea:disabled {
         background-color: #FCFCFC;
         border-color: #E7E7E7;
     }
@@ -400,4 +403,44 @@ Sheet = """
     #album-edition-page QLabel:disabled {
         color: #C2C2C2;
     }
-"""
+
+    #album-edition-page QComboBox {
+        padding-left: 1px;
+        padding-top: 1px;
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+
+    #album-edition-page QComboBox::drop-down {
+        padding: 0;
+        margin: 0;
+        subcontrol-origin: border;
+        subcontrol-position: top right;
+        width: 20px;
+    }
+
+    QComboBox::down-arrow {
+        image: url(:/down-arrow.png);
+    }
+
+    QComboBox::down-arrow:on, QComboBox::down-arrow:focus {
+        image: url(:/down-arrow-on.png);
+    }
+
+    #album-edition-page QComboBox QAbstractItemView {
+        padding: 0;
+        margin: 0;
+    }
+
+    #album-edition-page QComboBox QAbstractItemView::item {
+        padding: 0;
+        margin: 0;
+    }
+ """
+
+    #album-edition-page QComboBox QAbstractItemView QScrollBar {
+    #     padding: 0;
+    #     margin: 0;
+    #     background: transparent;
+    #     width: 20px;
+    # }

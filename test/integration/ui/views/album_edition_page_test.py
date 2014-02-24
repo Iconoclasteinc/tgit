@@ -193,6 +193,10 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.changeMixer('Mixer')
         self.check(changes)
 
-        changes.expect(has_properties(primaryStyle='Style'))
-        self.driver.changePrimaryStyle('Style')
+        changes.expect(has_properties(primaryStyle='Jazz'))
+        self.driver.selectPrimaryStyle('Jazz')
+        self.check(changes)
+
+        changes.expect(has_properties(primaryStyle='Custom'))
+        self.driver.changePrimaryStyle('Custom')
         self.check(changes)

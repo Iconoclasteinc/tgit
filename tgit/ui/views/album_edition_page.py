@@ -19,9 +19,9 @@
 
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QSizePolicy, QGroupBox, QLabel, QPushButton, QLineEdit,
-                         QPixmap, QImage, QCheckBox)
-
+                         QPixmap, QImage, QCheckBox, QComboBox)
 from tgit.announcer import Announcer
+from tgit.genres import GENRES
 from tgit.ui import display, style
 from tgit.ui.text_area import TextArea
 
@@ -194,8 +194,19 @@ class AlbumEditionPage(object):
     def _makeCheckBox(self, name):
         checkbox = QCheckBox()
         checkbox.setObjectName(name)
+        checkbox.setFocusPolicy(Qt.StrongFocus)
         checkbox.clicked.connect(self._signalMetadataChange)
         return checkbox
+
+    def _makeComboBox(self, name):
+        combo = QComboBox()
+        combo.setObjectName(name)
+        combo.setEditable(True)
+        combo.setInsertPolicy(QComboBox.NoInsert)
+        combo.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
+        combo.activated.connect(self._signalMetadataChange)
+        combo.lineEdit().textEdited.connect(self._signalMetadataChange)
+        return combo
 
     def _makeAlbumFieldSet(self):
         fieldSet = QGroupBox()
@@ -240,7 +251,8 @@ class AlbumEditionPage(object):
         self._recordingStudiosLineEdit = self._makeLineEdit(self.RECORDING_STUDIOS_FIELD_NAME)
         self._producerLineEdit = self._makeLineEdit(self.PRODUCER_FIELD_NAME)
         self._mixerLineEdit = self._makeLineEdit(self.MIXER_FIELD_NAME)
-        self._primaryStyleLineEdit = self._makeLineEdit(self.PRIMARY_STYLE_FIELD_NAME)
+        self._primaryStyleLineEdit = self._makeComboBox(self.PRIMARY_STYLE_FIELD_NAME)
+        self._primaryStyleLineEdit.addItems(GENRES)
 
         form = style.formLayout()
         addLabelledFields(form, self._recordingStudiosLineEdit, self._producerLineEdit,
@@ -280,7 +292,7 @@ class AlbumEditionPage(object):
         self._recordingStudiosLineEdit.setText(album.recordingStudios)
         self._producerLineEdit.setText(album.producer)
         self._mixerLineEdit.setText(album.mixer)
-        self._primaryStyleLineEdit.setText(album.primaryStyle)
+        self._primaryStyleLineEdit.setEditText(album.primaryStyle)
 
     def _displayAttachedPicture(self, image):
         self._attachedPicture = image
@@ -305,7 +317,7 @@ class AlbumEditionPage(object):
         snapshot.recordingStudios = self._recordingStudiosLineEdit.text()
         snapshot.producer = self._producerLineEdit.text()
         snapshot.mixer = self._mixerLineEdit.text()
-        snapshot.primaryStyle = self._primaryStyleLineEdit.text()
+        snapshot.primaryStyle = self._primaryStyleLineEdit.currentText()
 
         self._announce.metadataEdited(snapshot)
 

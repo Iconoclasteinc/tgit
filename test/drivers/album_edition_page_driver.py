@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QPlainTextEdit, QWidget, QCheckBox
+from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QPlainTextEdit, QWidget, QCheckBox, QComboBox
 
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver,
-                               ButtonDriver, TextEditDriver)
+                               ButtonDriver, TextEditDriver, ComboBoxDriver)
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
 
 import tgit.tags as tags
@@ -267,12 +267,16 @@ class AlbumEditionPageDriver(WidgetDriver):
     def showsPrimaryStyle(self, style):
         label = self._label(withBuddy(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
-        edit.hasText(style)
+        edit = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
+        edit.hasCurrentText(style)
 
     def changePrimaryStyle(self, style):
-        edit = self._lineEdit(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
+        edit = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
         edit.changeText(style)
+
+    def selectPrimaryStyle(self, style):
+        edit = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
+        edit.selectOption(style)
 
     def showsMediaType(self, type_):
         label = self._label(withBuddy(named(AlbumEditionPage.MEDIA_TYPE_FIELD_NAME)))
@@ -299,3 +303,6 @@ class AlbumEditionPageDriver(WidgetDriver):
 
     def _checkbox(self, matching):
         return ButtonDriver.findSingle(self, QCheckBox, matching)
+
+    def _combobox(self, matching):
+        return ComboBoxDriver.findSingle(self, QComboBox, matching)

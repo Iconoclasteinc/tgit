@@ -17,5 +17,7 @@
      <file alias='next.png'>resources/images/next.png</file>
      <file alias='logo.png'>resources/images/logo.png</file>
      <file alias='add-picture.png'>resources/images/add-picture.png</file>
+     <file alias='down-arrow.png'>resources/images/down-arrow.png</file>
+     <file alias='down-arrow-on.png'>resources/images/down-arrow-on.png</file>
  </qresource>
  </RCC>

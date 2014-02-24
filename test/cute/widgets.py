@@ -186,6 +186,19 @@ class TextEditDriver(AbstractEditDriver):
         self.perform(shortcuts.Enter)
 
 
+class ComboBoxDriver(AbstractEditDriver):
+    def selectOption(self, matching):
+        popup = self._popup()
+        popup.selectItem(match.withListItemText(matching))
+
+    def _popup(self):
+        self.manipulate('pop up', lambda w: w.showPopup())
+        return ListViewDriver.findSingle(self, QListView)
+
+    def hasCurrentText(self, matching):
+        self.has(properties.currentText(), wrap_matcher(matching))
+
+
 class DateTimeEditDriver(WidgetDriver):
     def hasTime(self, time):
         class QueryDisplayFormat(object):
@@ -297,6 +310,9 @@ class FileDialogDriver(WidgetDriver):
 
 
 class ListViewDriver(WidgetDriver):
+    def selectItem(self, matching):
+        self.selectItems(matching)
+
     def selectItems(self, *matchers):
         self._selectItems([self._indexOfFirstItem(matching) for matching in matchers])
 
@@ -307,8 +323,7 @@ class ListViewDriver(WidgetDriver):
 
     def _multiSelectItem(self, index):
         self._scrollItemToVisible(index)
-        self.perform(
-            gestures.withModifiers(Qt.ControlModifier, gestures.clickAt(self._centerOfItem(index))))
+        self.perform(gestures.withModifiers(Qt.ControlModifier, gestures.clickAt(self._centerOfItem(index))))
 
     def _selectItem(self, index):
         self._scrollItemToVisible(index)
