@@ -436,11 +436,6 @@ Sheet = """
         color: #C2C2C2;
     }
 
-    #album-edition-page QComboBox {
-        padding-left: 1px;
-        padding-top: 1px;
-    }
-
     #album-edition-page QComboBox::drop-down {
         padding: 0;
         margin: 0;
@@ -472,6 +467,11 @@ MAC = hasattr(QtGui, "qt_mac_set_native_menubar")
 
 if MAC:
     Sheet += """
+        #album-edition-page QComboBox {
+            padding-left: 1px;
+            padding-top: 1px;
+        }
+
         #album-edition-page QComboBox {
             padding-left: 1px;
             padding-top: 1px;
