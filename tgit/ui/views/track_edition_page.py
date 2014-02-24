@@ -304,7 +304,7 @@ class TrackEditionPage(object):
         self._composerLabel.setText(self.tr('Composer: '))
         self._publisherLabel.setText(self.tr('Publisher: '))
         self._isrcLabel.setText(self.tr('ISRC: '))
-        self._isrcEdit.setPlaceholderText(self.tr('ZZZ123456789'))
+        self._isrcEdit.setPlaceholderText('ZZZ123456789')
         self._iswcLabel.setText(self.tr('ISWC: '))
         self._tagsLabel.setText(self.tr('Tags: '))
         self._tagsEdit.setPlaceholderText(self.tr('tag1, tag2, tag3 ...'))

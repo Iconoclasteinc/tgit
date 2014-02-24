@@ -173,7 +173,7 @@ class AlbumCompositionPage(object):
 
     def translate(self):
         self._addButton.setText(self.tr('ADD'))
-        self._helpLabel.setText('Organize tracks in album.')
+        self._helpLabel.setText(self.tr('Organize tracks in album.'))
 
     def tr(self, text):
         return self._widget.tr(text)

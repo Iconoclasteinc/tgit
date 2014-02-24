@@ -353,7 +353,7 @@ class AlbumEditionPage(object):
         self._recordFieldSet.setTitle(self.tr('RECORD'))
         self._labelFor(self._catalogNumberLineEdit).setText(self.tr('Catalog Number:'))
         self._labelFor(self._upcLineEdit).setText(self.tr('UPC/EAN:'))
-        self._upcLineEdit.setPlaceholderText(self.tr('1234567899999'))
+        self._upcLineEdit.setPlaceholderText('1234567899999')
         self._labelFor(self._mediaTypeLineEdit).setText(self.tr('Media Type:'))
 
     def _translateDateFields(self):

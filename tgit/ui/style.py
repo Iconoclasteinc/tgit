@@ -402,7 +402,7 @@ Sheet = """
         image: url(:/checkbox.png);
     }
 
-    QCheckBox::indicator:unchecked:hover {
+    QCheckBox::indicator:unchecked:hover, QCheckBox::indicator:unchecked:focus {
         image: url(:/checkbox-hover.png);
     }
 
@@ -414,7 +414,7 @@ Sheet = """
         image: url(:/checkbox-checked.png);
     }
 
-    QCheckBox::indicator:checked:hover {
+    QCheckBox::indicator:checked:hover, QCheckBox::indicator:checked:focus {
         image: url(:/checkbox-checked-hover.png);
     }
 
