@@ -15,7 +15,7 @@
     </message>
 </context>
 <context>
-    <name>AlbumEditionPage</name>
+    <name>QWidget</name>
     <message>
         <location filename="album_edition_page.py" line="282"/>
         <source>Various Artists</source>
