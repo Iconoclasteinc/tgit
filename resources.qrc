@@ -19,5 +19,11 @@
      <file alias='add-picture.png'>resources/images/add-picture.png</file>
      <file alias='down-arrow.png'>resources/images/down-arrow.png</file>
      <file alias='down-arrow-on.png'>resources/images/down-arrow-on.png</file>
+     <file alias='checkbox.png'>resources/images/checkbox.png</file>
+     <file alias='checkbox-hover.png'>resources/images/checkbox-hover.png</file>
+     <file alias='checkbox-pressed.png'>resources/images/checkbox-pressed.png</file>
+     <file alias='checkbox-checked.png'>resources/images/checkbox-checked.png</file>
+     <file alias='checkbox-checked-hover.png'>resources/images/checkbox-checked-hover.png</file>
+     <file alias='checkbox-checked-pressed.png'>resources/images/checkbox-checked-pressed.png</file>
  </qresource>
  </RCC>

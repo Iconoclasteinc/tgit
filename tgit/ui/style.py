@@ -389,6 +389,37 @@ Sheet = """
 
     #album-edition-page QCheckBox {
         min-height: 20px;
+        padding: 1px 2px 2px 2px;
+    }
+
+    QCheckBox::indicator {
+        width: 14px;
+        height: 14px;
+        subcontrol-position: left center;
+    }
+
+    QCheckBox::indicator:unchecked {
+        image: url(:/checkbox.png);
+    }
+
+    QCheckBox::indicator:unchecked:hover {
+        image: url(:/checkbox-hover.png);
+    }
+
+    QCheckBox::indicator:unchecked:pressed {
+        image: url(:/checkbox-pressed.png);
+    }
+
+    QCheckBox::indicator:checked {
+        image: url(:/checkbox-checked.png);
+    }
+
+    QCheckBox::indicator:checked:hover {
+        image: url(:/checkbox-checked-hover.png);
+    }
+
+    QCheckBox::indicator:checked:pressed {
+        image: url(:/checkbox-checked-pressed.png);
     }
 
     #album-edition-page #comments {
