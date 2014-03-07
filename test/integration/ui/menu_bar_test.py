@@ -1,41 +1,62 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import equal_to
+from PyQt4.QtGui import QMainWindow
 
 from test.integration.ui.view_test import ViewTest
-from PyQt4.QtGui import QMainWindow
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.menu_bar_driver import MenuBarDriver
-from test.util import builders as build
-from tgit.ui.menu_bar import MenuBar
+from tgit.ui.views.menu_bar import MenuBar
 
 
 class MenuBarTest(ViewTest):
     def setUp(self):
         super(MenuBarTest, self).setUp()
+        self.menuBar = MenuBar()
+        self.widget = self.menuBar.render()
         self.mainWindow = QMainWindow()
+        self.mainWindow.setMenuBar(self.widget)
         self.show(self.mainWindow)
-        self.widget = MenuBar(self.mainWindow)
         self.driver = self.createDriverFor(self.widget)
 
     def createDriverFor(self, widget):
         return MenuBarDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testEnablesFileCommandsWhenAlbumCreated(self):
-        self.widget.albumCreated(build.album())
-        self.driver.hasEnabledAddFilesMenuItem()
-        self.driver.hasEnabledAddFolderMenuItem()
+    def testHasAlbumMenuInitiallyDisabled(self):
+        self.driver.hasDisabledAlbumMenu()
 
-    def testSignalsExportAlbumWhenExportMenuItemIsClicked(self):
-        album = build.album()
-        exportCommand = ValueMatcherProbe('export command', equal_to(album))
+    def testSignalsWhenAddFilesMenuItemClicked(self):
+        addFilesSignal = ValueMatcherProbe('add files')
 
-        class ExportCommandListener(object):
-            def export(self, album):
-                exportCommand.received(album)
+        class AddFilesListener(object):
+            def addFiles(self):
+                addFilesSignal.received()
 
-        self.widget.announceTo(ExportCommandListener())
-        self.widget.albumCreated(album)
+        self.menuBar.announceTo(AddFilesListener())
+        self.menuBar.enableAlbumMenu()
+        self.driver.addFiles()
+        self.driver.check(addFilesSignal)
+
+    def testSignalsWhenAddFolderMenuItemClicked(self):
+        addFilesSignal = ValueMatcherProbe('add folder')
+
+        class AddFolderListener(object):
+            def addFolder(self):
+                addFilesSignal.received()
+
+        self.menuBar.announceTo(AddFolderListener())
+        self.menuBar.enableAlbumMenu()
+        self.driver.addFolder()
+        self.driver.check(addFilesSignal)
+
+    def testSignalsWhenExportMenuItemClicked(self):
+        exportAlbumSignal = ValueMatcherProbe('export album')
+
+        class ExportAlbumListener(object):
+            def export(self):
+                exportAlbumSignal.received()
+
+        self.menuBar.announceTo(ExportAlbumListener())
+        self.menuBar.enableAlbumMenu()
         self.driver.export()
-        self.driver.check(exportCommand)
+        self.driver.check(exportAlbumSignal)

@@ -11,8 +11,8 @@ from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 
 from tgit.ui import style
-from tgit.ui import constants as ui
 from tgit.ui import display
+from tgit.ui.main_window import MainWindow
 
 END_OF_TEST_PAUSE = int(os.environ.get('END_OF_TEST_PAUSE', 0))
 
@@ -26,7 +26,7 @@ class ViewTest(unittest.TestCase):
 
     def show(self, widget):
         widget.setStyleSheet(style.Sheet)
-        widget.setFixedSize(*ui.MAIN_WINDOW_SIZE)
+        widget.setFixedSize(*MainWindow.SIZE)
         display.centeredOnScreen(widget)
 
     def check(self, probe):

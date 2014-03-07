@@ -467,6 +467,7 @@ class MenuItemDriver(WidgetDriver):
         return center.coordinates
 
     def click(self):
+        self.isEnabled()
         self.perform(gestures.mouseMove(self._centerOfItem()), gestures.mouseClick())
 
 

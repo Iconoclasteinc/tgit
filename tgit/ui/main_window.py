@@ -18,41 +18,49 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtGui import QMainWindow
-from tgit.album import Album
 
+from tgit.album import Album
 from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.embedded_metadata import EmbeddedMetadata
 from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
-from tgit.ui import constants as ui
 from tgit.ui.album_director import AlbumDirector
 from tgit.ui.album_exporter import AlbumExporter
-from tgit.ui.menu_bar import MenuBar
+from tgit.ui.views.menu_bar import MenuBar
 from tgit.ui.welcome_screen import WelcomeScreen
 from tgit.ui import style
+
 
 WIN_LATIN1_ENCODING = 'Windows-1252'
 
 
 class MainWindow(QMainWindow, AlbumPortfolioListener):
+    NAME = 'main-window'
+    SIZE = (1100, 750)
+
     def __init__(self, albumPortfolio, audioPlayer):
         QMainWindow.__init__(self)
 
         self._albumPortfolio = albumPortfolio
         self._albumPortfolio.addPortfolioListener(self)
         self._audioPlayer = audioPlayer
+        self._menuBar = MenuBar()
+        self._menuBar.announceTo(self)
+        self._welcomeScreen = WelcomeScreen()
+        self._welcomeScreen.announceTo(self)
 
         self._assemble()
 
     def albumCreated(self, album):
+        self._menuBar.enableAlbumMenu()
         self._director = AlbumDirector(album, EmbeddedMetadata(ID3Tagger()), self._audioPlayer)
+        self._director.addTracksToAlbum()
         self.setCentralWidget(self._director.render())
+
+    def addFiles(self):
         self._director.addTracksToAlbum()
 
-    def selectFiles(self):
-        self._director.addTracksToAlbum()
-
-    def selectFolder(self):
+    def addFolder(self):
         self._director.addTracksToAlbum(folders=True)
 
     def export(self, album):
@@ -63,23 +71,12 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self._albumPortfolio.addAlbum(Album())
 
     def _assemble(self):
-        self.setObjectName(ui.MAIN_WINDOW_NAME)
+        self.setObjectName(self.NAME)
         self.setStyleSheet(style.Sheet)
-        self.setMenuBar(self._makeMenuBar())
-        self.setCentralWidget(self._makeWelcomeScreen())
+        self.setMenuBar(self._menuBar.render())
+        self.setCentralWidget(self._welcomeScreen.render())
         self.translate()
-        self.resize(*ui.MAIN_WINDOW_SIZE)
-
-    def _makeMenuBar(self):
-        menuBar = MenuBar()
-        menuBar.announceTo(self)
-        self._albumPortfolio.addPortfolioListener(menuBar)
-        return menuBar
-
-    def _makeWelcomeScreen(self):
-        welcomeScreen = WelcomeScreen()
-        welcomeScreen.announceTo(self)
-        return welcomeScreen.render()
+        self.resize(*self.SIZE)
 
     def translate(self):
         self.setWindowTitle(self.tr('TGiT'))

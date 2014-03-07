@@ -9,7 +9,7 @@ from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import fakes
 from tgit.tagger import TGiT
-from tgit.ui import constants as ui
+from tgit.ui.main_window import MainWindow
 from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 
@@ -26,7 +26,7 @@ class ApplicationRunner(object):
         disableNativeDialogs()
         self.app = TGiT(fakes.audioPlayer)
         self.app.show()
-        self.tagger = TaggerDriver(mainApplicationWindow(named(ui.MAIN_WINDOW_NAME), showingOnScreen()),
+        self.tagger = TaggerDriver(mainApplicationWindow(named(MainWindow.NAME), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())
 

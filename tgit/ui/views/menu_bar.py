@@ -21,29 +21,33 @@
 from PyQt4.QtGui import QMenuBar, QMenu, QAction
 
 from tgit.announcer import Announcer
-from tgit.ui import constants as ui
 
 
-class MenuBar(QMenuBar):
-    def __init__(self, parent=None):
-        QMenuBar.__init__(self, parent)
+class MenuBar(object):
+    FILE_MENU_NAME = 'file'
+    ADD_FILES_ACTION_NAME = 'add files'
+    ADD_FOLDER_ACTION_NAME = 'add folder'
+    EXPORT_ACTION_NAME = 'export'
 
+    def __init__(self):
         self._announce = Announcer()
-        self._assemble()
-        self.localize()
 
     def announceTo(self, listener):
         self._announce.addListener(listener)
 
-    def albumCreated(self, album):
-        self._updateAlbumMenu(album)
+    def render(self):
+        self._widget = self._assemble()
+        self.localize()
+        return self._widget
 
     def _assemble(self):
-        self.addMenu(self._makeFileMenu())
+        menuBar = QMenuBar()
+        menuBar.addMenu(self._makeFileMenu(menuBar))
+        return menuBar
 
-    def _makeFileMenu(self):
-        self._fileMenu = QMenu(self)
-        self._fileMenu.setObjectName(ui.FILE_MENU_NAME)
+    def _makeFileMenu(self, menuBar):
+        self._fileMenu = QMenu(menuBar)
+        self._fileMenu.setObjectName(self.FILE_MENU_NAME)
         self._addAddFilesMenuItemTo(self._fileMenu)
         self._addAddFolderMenuItemTo(self._fileMenu)
         self._addExportMenuItemTo(self._fileMenu)
@@ -51,29 +55,28 @@ class MenuBar(QMenuBar):
 
     def _addAddFilesMenuItemTo(self, menu):
         self._addFilesAction = QAction(menu)
-        self._addFilesAction.setObjectName(ui.ADD_FILES_ACTION_NAME)
-        self._addFilesAction.triggered.connect(lambda checked: self._announce.selectFiles())
+        self._addFilesAction.setObjectName(self.ADD_FILES_ACTION_NAME)
+        self._addFilesAction.triggered.connect(lambda checked: self._announce.addFiles())
         self._addFilesAction.setDisabled(True)
         menu.addAction(self._addFilesAction)
 
     def _addAddFolderMenuItemTo(self, menu):
         self._addFolderAction = QAction(menu)
-        self._addFolderAction.setObjectName(ui.ADD_FOLDER_ACTION_NAME)
-        self._addFolderAction.triggered.connect(lambda checked: self._announce.selectFolder())
+        self._addFolderAction.setObjectName(self.ADD_FOLDER_ACTION_NAME)
+        self._addFolderAction.triggered.connect(lambda checked: self._announce.addFolder())
         self._addFolderAction.setDisabled(True)
         menu.addAction(self._addFolderAction)
 
     def _addExportMenuItemTo(self, menu):
         self._exportMenuAction = QAction(menu)
-        self._exportMenuAction.setObjectName(ui.EXPORT_ACTION_NAME)
+        self._exportMenuAction.setObjectName(self.EXPORT_ACTION_NAME)
         self._exportMenuAction.triggered.connect(
-            lambda checked: self._announce.export(self._exportMenuAction.data()))
+            lambda checked: self._announce.export())
         self._exportMenuAction.setDisabled(True)
         menu.addAction(self._exportMenuAction)
 
-    def _updateAlbumMenu(self, album):
+    def enableAlbumMenu(self):
         for action in [self._addFilesAction, self._addFolderAction, self._exportMenuAction]:
-            action.setData(album)
             action.setEnabled(True)
 
     def localize(self):
@@ -81,3 +84,6 @@ class MenuBar(QMenuBar):
         self._addFilesAction.setText(self.tr('Add Files...'))
         self._addFolderAction.setText(self.tr('Add Folder...'))
         self._exportMenuAction.setText(self.tr('Export...'))
+
+    def tr(self, text):
+        return self._widget.tr(text)
