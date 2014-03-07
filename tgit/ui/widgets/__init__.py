@@ -16,20 +16,3 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-from PyQt4.QtGui import QApplication, QMainWindow
-
-
-def mainWindow():
-    for window in QApplication.topLevelWidgets():
-        if isinstance(window, QMainWindow):
-            return window
-
-
-from album_edition_page import albumEditionPage
-from picture_selection_dialog import pictureSelectionDialog
-from track_edition_page import trackEditionPage
-from track_selection_dialog import trackSelectionDialog
-from export_as_dialog import exportAsDialog
-from album_composition_page import albumCompositionPage
-from album_screen import albumScreen

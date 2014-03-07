@@ -20,10 +20,11 @@
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QSizePolicy, QGroupBox, QLabel, QPushButton, QLineEdit,
                          QPixmap, QImage, QCheckBox, QComboBox)
+
 from tgit.announcer import Announcer
 from tgit.genres import GENRES
 from tgit.ui import display, style
-from tgit.ui.text_area import TextArea
+from tgit.ui.widgets.text_area import TextArea
 
 
 def scaleTo(image, width, height):

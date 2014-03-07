@@ -21,11 +21,11 @@ import sys
 
 from PyQt4.QtCore import QTextCodec, QTranslator
 from PyQt4.QtGui import QApplication
-from tgit.album_portfolio import AlbumPortfolio
 
+from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio.audio_library import AudioFiles
 from tgit.audio.player import PhononPlayer
-from tgit.ui.main_window import MainWindow
+from tgit.ui.tagger import Tagger
 from tgit.ui import display
 
 # noinspection PyUnresolvedReferences
@@ -58,8 +58,8 @@ class TGiT(QApplication):
             self._translators.append(translator)
 
     def show(self):
-        self._ui = MainWindow(AlbumPortfolio(), self._player(AudioFiles()))
-        display.centeredOnScreen(self._ui)
+        self._tagger = Tagger(AlbumPortfolio(), self._player(AudioFiles()))
+        display.centeredOnScreen(self._tagger.render())
 
     def launch(self):
         self.show()

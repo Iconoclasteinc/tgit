@@ -4,7 +4,7 @@ from PyQt4.QtGui import QPushButton, QWidget
 
 from test.cute.matchers import named
 from test.cute.widgets import WidgetDriver, ButtonDriver
-from tgit.ui.welcome_screen import WelcomeScreen
+from tgit.ui.views.welcome_screen import WelcomeScreen
 
 
 def welcomeScreen(parent):

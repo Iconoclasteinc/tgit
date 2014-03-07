@@ -17,19 +17,32 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtGui import QApplication, QMainWindow
+from PyQt4.QtGui import QMainWindow
+
+from tgit.ui import style
 
 
-def mainWindow():
-    for window in QApplication.topLevelWidgets():
-        if isinstance(window, QMainWindow):
-            return window
+class MainWindow(object):
+    NAME = 'main-window'
+    SIZE = (1100, 750)
 
+    def render(self):
+        self._mainWindow = self._build()
+        self.translate()
+        return self._mainWindow
 
-from album_edition_page import albumEditionPage
-from picture_selection_dialog import pictureSelectionDialog
-from track_edition_page import trackEditionPage
-from track_selection_dialog import trackSelectionDialog
-from export_as_dialog import exportAsDialog
-from album_composition_page import albumCompositionPage
-from album_screen import albumScreen
+    def show(self, view):
+        self._mainWindow.setCentralWidget(view)
+
+    def setMenuBar(self, menuBar):
+        self._mainWindow.setMenuBar(menuBar)
+
+    def _build(self):
+        mainWindow = QMainWindow()
+        mainWindow.setObjectName(self.NAME)
+        mainWindow.setStyleSheet(style.Sheet)
+        mainWindow.resize(*self.SIZE)
+        return mainWindow
+
+    def translate(self):
+        self._mainWindow.setWindowTitle(self._mainWindow.tr('TGiT'))

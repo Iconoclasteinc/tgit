@@ -8,7 +8,7 @@ from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.welcome_screen_driver import WelcomeScreenDriver
 
-from tgit.ui.welcome_screen import WelcomeScreen
+from tgit.ui.views.welcome_screen import WelcomeScreen
 
 
 class WelcomeScreenTest(ViewTest):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-from tgit import tagger
+from tgit import app
 
-tagger.main('fr')
+app.main('fr')

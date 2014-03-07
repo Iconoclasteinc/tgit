@@ -21,7 +21,7 @@ from PyQt4.QtGui import (QGridLayout, QVBoxLayout, QLabel, QLineEdit, QTimeEdit,
 
 from tgit.announcer import Announcer
 from tgit.ui import display
-from tgit.ui.text_area import TextArea
+from tgit.ui.widgets.text_area import TextArea
 
 
 DURATION_FORMAT = 'mm:ss'

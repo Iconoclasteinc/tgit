@@ -2,17 +2,17 @@
 
 import os
 import unittest
-
 import sip
+
 from PyQt4.QtGui import QApplication
 
 from test.cute.events import MainEventLoop
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
-
 from tgit.ui import style
 from tgit.ui import display
-from tgit.ui.main_window import MainWindow
+from tgit.ui.views.main_window import MainWindow
+
 
 END_OF_TEST_PAUSE = int(os.environ.get('END_OF_TEST_PAUSE', 0))
 
