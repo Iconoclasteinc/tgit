@@ -23,9 +23,6 @@ from tgit.ui.track_editor import TrackEditor
 from tgit.ui.views import albumScreen
 
 
-INDEX_OF_TRACK_PAGES = 2
-
-
 class AlbumDirector(AlbumListener):
     def __init__(self, album, trackLibrary, player):
         self._album = album
@@ -37,11 +34,9 @@ class AlbumDirector(AlbumListener):
         widget = self._view.render()
         composer = AlbumComposer(self._album, self._player)
         composer.announceTo(self)
-        # todo consider having setAlbumComposer ...
-        self._view.appendPage(composer.render())
-        # todo ... and setAlbumEditor
+        self._view.setAlbumCompositionPage(composer.render())
         editor = AlbumEditor(self._album)
-        self._view.appendPage(editor.render())
+        self._view.setAlbumEditionPage(editor.render())
         self._album.addAlbumListener(self)
         return widget
 
@@ -53,14 +48,12 @@ class AlbumDirector(AlbumListener):
 
     def trackAdded(self, track, position):
         editor = TrackEditor(self._album, track)
-        # todo consider having insertTrackEditor...
-        self._view.insertPage(editor.render(), INDEX_OF_TRACK_PAGES + position)
+        self._view.addTrackEditionPage(editor.render(), position)
         if not self._album.empty():
             self._view.allowSaves(True)
 
     def trackRemoved(self, track, position):
-        # todo ... along with removeTrackEditor
-        self._view.removePage(INDEX_OF_TRACK_PAGES + position)
+        self._view.removeTrackEditionPage(position)
         if self._album.empty():
             self._view.allowSaves(False)
 

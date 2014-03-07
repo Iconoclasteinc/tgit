@@ -28,9 +28,6 @@ def albumScreen(listener):
     return screen
 
 
-HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
-
-
 class AlbumScreen(object):
     NAME = 'album-screen'
 
@@ -40,6 +37,9 @@ class AlbumScreen(object):
     NEXT_PAGE_BUTTON_NAME = 'next'
     SAVE_BUTTON_NAME = 'save'
     HELP_LINK_NAME = 'help-link'
+
+    HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
+    COMPOSITION_PAGE, ALBUM_PAGE, TRACK_PAGES = range(0, 3)
 
     def __init__(self):
         self._announce = Announcer()
@@ -139,6 +139,18 @@ class AlbumScreen(object):
         else:
             style.disableButton(self._saveButton)
 
+    def setAlbumCompositionPage(self, page):
+        self.insertPage(page, self.COMPOSITION_PAGE)
+
+    def setAlbumEditionPage(self, page):
+        self.insertPage(page, self.ALBUM_PAGE)
+
+    def addTrackEditionPage(self, page, position):
+        self.insertPage(page, self.TRACK_PAGES + position)
+
+    def removeTrackEditionPage(self, position):
+        self.removePage(self.TRACK_PAGES + position)
+
     def appendPage(self, widget):
         self._pages.addWidget(widget)
         self._updateNavigationControls()
@@ -175,7 +187,7 @@ class AlbumScreen(object):
         self._previousButton.setText(self.tr('PREVIOUS'))
         self._saveButton.setText(self.tr('SAVE'))
         self._nextButton.setText(self.tr('NEXT'))
-        self._helpLink.setText('<a style="color: white" href="%s">%s</a>' % (HELP_URL, self.tr('Help')))
+        self._helpLink.setText('<a style="color: white" href="%s">%s</a>' % (self.HELP_URL, self.tr('Help')))
 
     def tr(self, text):
         return self._widget.tr(text)
