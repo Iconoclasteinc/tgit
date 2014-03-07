@@ -49,20 +49,6 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
         self.setCentralWidget(self._director.render())
         self._director.addTracksToAlbum()
 
-    def _assemble(self):
-        self.setObjectName(ui.MAIN_WINDOW_NAME)
-        self.setStyleSheet(style.Sheet)
-        self.setMenuBar(self._makeMenuBar())
-        self.setCentralWidget(self._makeWelcomeScreen())
-        self.localize()
-        self.resize(*ui.MAIN_WINDOW_SIZE)
-
-    def _makeMenuBar(self):
-        menuBar = MenuBar()
-        menuBar.announceTo(self)
-        self._albumPortfolio.addPortfolioListener(menuBar)
-        return menuBar
-
     def selectFiles(self):
         self._director.addTracksToAlbum()
 
@@ -76,10 +62,24 @@ class MainWindow(QMainWindow, AlbumPortfolioListener):
     def newAlbum(self):
         self._albumPortfolio.addAlbum(Album())
 
-    def _makeWelcomeScreen(self):
-        welcomeScreen = WelcomeScreen(self)
-        welcomeScreen.addRequestListener(self)
-        return welcomeScreen
+    def _assemble(self):
+        self.setObjectName(ui.MAIN_WINDOW_NAME)
+        self.setStyleSheet(style.Sheet)
+        self.setMenuBar(self._makeMenuBar())
+        self.setCentralWidget(self._makeWelcomeScreen())
+        self.translate()
+        self.resize(*ui.MAIN_WINDOW_SIZE)
 
-    def localize(self):
+    def _makeMenuBar(self):
+        menuBar = MenuBar()
+        menuBar.announceTo(self)
+        self._albumPortfolio.addPortfolioListener(menuBar)
+        return menuBar
+
+    def _makeWelcomeScreen(self):
+        welcomeScreen = WelcomeScreen()
+        welcomeScreen.announceTo(self)
+        return welcomeScreen.render()
+
+    def translate(self):
         self.setWindowTitle(self.tr('TGiT'))

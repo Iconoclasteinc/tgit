@@ -67,11 +67,11 @@ Sheet = """
         padding: 0;
     }
 
-    WelcomeScreen {
+    #welcome-screen {
         background-color: rgba(0, 0, 0, 70%);
     }
 
-    WelcomeScreen #welcome-dialog {
+    #welcome-screen #welcome-dialog {
         padding: 20px;
         min-width: 500px;
         max-width: 500px;
@@ -80,12 +80,12 @@ Sheet = """
         background: white url(':/logo.png') no-repeat top left;
     }
 
-    WelcomeScreen #welcome-dialog #logo {
+    #welcome-screen #welcome-dialog #logo {
         min-width: 58;
         min-height: 105;
     }
 
-    WelcomeScreen #welcome-dialog QPushButton {
+    #welcome-screen #welcome-dialog QPushButton {
         background-color: #EC2327;
         border: 2px solid #EC2327;
         border-radius: 4px;
@@ -95,23 +95,23 @@ Sheet = """
         padding: 14px 14px 11px 14px;
     }
 
-    WelcomeScreen #welcome-dialog QPushButton:hover {
+    #welcome-screen #welcome-dialog QPushButton:hover {
         background-color: #D42023;
         border-color: #D42023;
     }
 
-    WelcomeScreen #welcome-dialog QPushButton:pressed {
+    #welcome-screen #welcome-dialog QPushButton:pressed {
         border: 2px solid white;
     }
 
-    WelcomeScreen #welcome-dialog QLabel[title='h1'] {
+    #welcome-screen #welcome-dialog QLabel[title='h1'] {
         font-size: 28px;
         font-weight: bold;
         margin-top: 35px;
         margin-bottom: 50px;
     }
 
-    WelcomeScreen #welcome-dialog QLabel {
+    #welcome-screen #welcome-dialog QLabel {
         color: #2D2D25;
         font-size: 16px;
     }

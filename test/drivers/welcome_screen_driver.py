@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QPushButton
+from PyQt4.QtGui import QPushButton, QWidget
 
 from test.cute.matchers import named
 from test.cute.widgets import WidgetDriver, ButtonDriver
@@ -8,7 +8,7 @@ from tgit.ui.welcome_screen import WelcomeScreen
 
 
 def welcomeScreen(parent):
-    return WelcomeScreenDriver.findSingle(parent, WelcomeScreen)
+    return WelcomeScreenDriver.findSingle(parent, QWidget, named(WelcomeScreen.NAME))
 
 
 class WelcomeScreenDriver(WidgetDriver):

@@ -10,26 +10,37 @@ from tgit.ui import display
 
 # We have to inherit from QFrame and not QWidget if we want a background without
 # reimplementing paintEvent()
-class WelcomeScreen(QFrame):
+class WelcomeScreen():
+
+    NAME = "welcome-screen"
     WELCOME_DIALOG_NAME = 'welcome-dialog'
     NEW_ALBUM_BUTTON_NAME = 'new-album'
 
     TITLE_TYPE = 'title'
     H1 = 'h1'
 
-    def __init__(self, parent=None):
-        QWidget.__init__(self, parent)
-        self.requestListeners = Announcer()
+    def __init__(self):
+        self._announce = Announcer()
 
-        self._assemble()
-        self.localize()
+    def announceTo(self, listener):
+        self._announce.addListener(listener)
 
-    def addRequestListener(self, listener):
-        self.requestListeners.addListener(listener)
+    def render(self):
+        self._widget = self._build()
+        self.translate()
+        return self._widget
+
+    def _build(self):
+        frame = QFrame()
+        frame.setObjectName(self.NAME)
+        layout = QGridLayout()
+        frame.setLayout(layout)
+        layout.addWidget(self._makeWelcomeDialog(), 0, 0)
+        return frame
 
     def _makeWelcomeDialog(self):
         welcomeDialog = QWidget()
-        welcomeDialog.setObjectName(WelcomeScreen.WELCOME_DIALOG_NAME)
+        welcomeDialog.setObjectName(self.WELCOME_DIALOG_NAME)
         layout = QVBoxLayout()
         welcomeDialog.setLayout(layout)
         self._addTitle(layout)
@@ -60,18 +71,16 @@ class WelcomeScreen(QFrame):
         self._newAlbumButton = QPushButton()
         self._newAlbumButton.setObjectName(self.NEW_ALBUM_BUTTON_NAME)
         self._newAlbumButton.setCursor(Qt.PointingHandCursor)
-        self._newAlbumButton.clicked.connect(lambda: self.requestListeners.newAlbum())
+        self._newAlbumButton.clicked.connect(lambda: self._announce.newAlbum())
         layout.addWidget(self._newAlbumButton)
         layout.addStretch()
         return buttons
 
-    def _assemble(self):
-        layout = QGridLayout()
-        self.setLayout(layout)
-        layout.addWidget(self._makeWelcomeDialog(), 0, 0)
-
-    def localize(self):
+    def translate(self):
         self._dialogTitle.setText(self.tr('Welcome to TGiT!'))
         self._msg.setText(self.tr('Your album is empty right now.'))
         self._help.setText(self.tr('Click on the button below to add some tracks.'))
         self._newAlbumButton.setText(self.tr('ADD FILES...'))
+
+    def tr(self, text):
+        return self._widget.tr(text)
