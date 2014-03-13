@@ -27,13 +27,13 @@ from tgit.ui.widgets.text_area import TextArea
 DURATION_FORMAT = 'mm:ss'
 
 
-def trackEditionPage(listener):
+def trackEditionPage(editor):
     page = TrackEditionPage()
-    page.announceTo(listener)
+    editor.add(page)
     return page
 
 
-class TrackEditionPage(object):
+class TrackEditionPage(QWidget):
     NAME = 'track-edition-page'
 
     TRACK_TITLE_FIELD_NAME = 'track-title'
@@ -57,26 +57,32 @@ class TrackEditionPage(object):
     DURATION_FORMAT = 'mm:ss'
 
     def __init__(self):
-        self._announce = Announcer()
-
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
-
-    def render(self):
-        self._widget = self._build()
+        QWidget.__init__(self)
+        self._build()
         self.translate()
-        return self._widget
+
+    def onMetadataChange(self, callback):
+        for field in (self._trackTitleEdit,
+                      self._leadPerformerEdit,
+                      self._versionInfoEdit,
+                      self._featuredGuestEdit,
+                      self._lyricistEdit,
+                      self._composerEdit,
+                      self._publisherEdit,
+                      self._isrcEdit,
+                      self._tagsEdit,
+                      self._lyricsEdit,
+                      self._languageEdit):
+            field.editingFinished.connect(lambda : callback(self.trackMetadata))
 
     def _build(self):
-        widget = QWidget()
-        widget.setObjectName(TrackEditionPage.NAME)
+        self.setObjectName(TrackEditionPage.NAME)
         layout = QVBoxLayout()
         grid = QGridLayout()
         self._fill(grid)
         layout.addLayout(grid)
         layout.addStretch()
-        widget.setLayout(layout)
-        return widget
+        self.setLayout(layout)
 
     def _fill(self, layout):
         self._addTrackTitle(layout, 0)
@@ -102,7 +108,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._trackTitleLabel, row, 0)
         self._trackTitleEdit = QLineEdit()
         self._trackTitleEdit.setObjectName(TrackEditionPage.TRACK_TITLE_FIELD_NAME)
-        self._trackTitleEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._trackTitleEdit, row, 1)
         self._trackTitleLabel.setBuddy(self._trackTitleEdit)
 
@@ -111,7 +116,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._leadPerformerLabel, row, 0)
         self._leadPerformerEdit = QLineEdit()
         self._leadPerformerEdit.setObjectName(TrackEditionPage.LEAD_PERFORMER_FIELD_NAME)
-        self._leadPerformerEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._leadPerformerEdit, row, 1)
         self._leadPerformerLabel.setBuddy(self._leadPerformerEdit)
 
@@ -120,7 +124,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._versionInfoLabel, row, 0)
         self._versionInfoEdit = QLineEdit()
         self._versionInfoEdit.setObjectName(self.VERSION_INFO_FIELD_NAME)
-        self._versionInfoEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._versionInfoEdit, row, 1)
         self._versionInfoLabel.setBuddy(self._versionInfoEdit)
 
@@ -161,7 +164,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._featuredGuestLabel, row, 0)
         self._featuredGuestEdit = QLineEdit()
         self._featuredGuestEdit.setObjectName(self.FEATURED_GUEST_FIELD_NAME)
-        self._featuredGuestEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._featuredGuestEdit, row, 1)
         self._featuredGuestLabel.setBuddy(self._featuredGuestEdit)
 
@@ -170,7 +172,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._lyricistLabel, row, 0)
         self._lyricistEdit = QLineEdit()
         self._lyricistEdit.setObjectName(self.LYRICIST_FIELD_NAME)
-        self._lyricistEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._lyricistEdit, row, 1)
         self._lyricistLabel.setBuddy(self._lyricistEdit)
 
@@ -179,7 +180,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._composerLabel, row, 0)
         self._composerEdit = QLineEdit()
         self._composerEdit.setObjectName(self.COMPOSER_FIELD_NAME)
-        self._composerEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._composerEdit, row, 1)
         self._composerLabel.setBuddy(self._composerEdit)
 
@@ -188,7 +188,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._publisherLabel, row, 0)
         self._publisherEdit = QLineEdit()
         self._publisherEdit.setObjectName(self.PUBLISHER_FIELD_NAME)
-        self._publisherEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._publisherEdit, row, 1)
         self._publisherLabel.setBuddy(self._publisherEdit)
 
@@ -197,7 +196,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._isrcLabel, row, 0)
         self._isrcEdit = QLineEdit()
         self._isrcEdit.setObjectName(self.ISRC_FIELD_NAME)
-        self._isrcEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._isrcEdit, row, 1)
         self._isrcLabel.setBuddy(self._isrcEdit)
 
@@ -216,7 +214,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._tagsLabel, row, 0)
         self._tagsEdit = QLineEdit()
         self._tagsEdit.setObjectName(self.TAGS_FIELD_NAME)
-        self._tagsEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._tagsEdit, row, 1)
         self._tagsLabel.setBuddy(self._tagsEdit)
 
@@ -225,7 +222,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._lyricsLabel, row, 0)
         self._lyricsEdit = TextArea()
         self._lyricsEdit.setObjectName(self.LYRICS_FIELD_NAME)
-        self._lyricsEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._lyricsEdit, row, 1)
         self._lyricsLabel.setBuddy(self._lyricsEdit)
 
@@ -234,7 +230,6 @@ class TrackEditionPage(object):
         layout.addWidget(self._languageLabel, row, 0)
         self._languageEdit = QLineEdit()
         self._languageEdit.setObjectName(self.LANGUAGE_FIELD_NAME)
-        self._languageEdit.editingFinished.connect(self._signalMetadataChange)
         layout.addWidget(self._languageEdit, row, 1)
         self._languageLabel.setBuddy(self._languageEdit)
 
@@ -250,7 +245,7 @@ class TrackEditionPage(object):
         layout.addWidget(self._previewTimeEdit, row, 1)
         self._previewTimeLabel.setBuddy(self._previewTimeEdit)
 
-    def show(self, album, track):
+    def updateTrack(self, track, album):
         self._trackTitleEdit.setText(track.trackTitle)
         self._leadPerformerEdit.setText(track.leadPerformer)
         self._leadPerformerEdit.setEnabled(track.compilation is True)
@@ -288,9 +283,6 @@ class TrackEditionPage(object):
         snapshot.language = self._languageEdit.text()
         return snapshot
 
-    def _signalMetadataChange(self):
-        self._announce.metadataEdited(self.trackMetadata)
-
     def translate(self):
         self._trackTitleLabel.setText(self.tr('Track Title: '))
         self._leadPerformerLabel.setText(self.tr('Lead Performer: '))
@@ -311,8 +303,5 @@ class TrackEditionPage(object):
         self._lyricsLabel.setText(self.tr('Lyrics: '))
         self._languageLabel.setText(self.tr('Language: '))
         self._languageEdit.setPlaceholderText(self.tr('fra, eng, und (for undetermined), '
-                                                        'or mul (for multiple languages)'))
+                                                      'or mul (for multiple languages)'))
         self._previewTimeLabel.setText(self.tr('Preview Time: '))
-
-    def tr(self, text):
-        return self._widget.tr(text)

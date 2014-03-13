@@ -25,6 +25,7 @@ def mainWindow():
         if isinstance(window, QMainWindow):
             return window
 
+# todo remove what's not longer used
 
 from album_edition_page import albumEditionPage
 from picture_selection_dialog import pictureSelectionDialog

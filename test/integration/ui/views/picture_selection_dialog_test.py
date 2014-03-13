@@ -8,7 +8,7 @@ from PyQt4.QtGui import QMainWindow
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
 from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
 from test.cute.probes import ValueMatcherProbe
-from test.integration.ui.view_test import ViewTest
+from test.integration.ui.views.view_test import ViewTest
 from test.util import resources
 
 

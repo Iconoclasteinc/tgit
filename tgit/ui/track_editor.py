@@ -19,21 +19,20 @@
 
 from tgit.album import AlbumListener
 from tgit.track import TrackListener
-from tgit.ui.views import trackEditionPage
 
 
 class TrackEditor(AlbumListener, TrackListener):
     def __init__(self, album, track):
         self._album = album
-        self._track = track
-        self._page = trackEditionPage(self)
-
-    def render(self):
-        widget = self._page.render()
-        self._page.show(self._album, self._track)
-        self._track.addTrackListener(self)
         self._album.addAlbumListener(self)
-        return widget
+        self._track = track
+        self._track.addTrackListener(self)
+        self._pages = []
+
+    def add(self, page):
+        page.onMetadataChange(self.metadataEdited)
+        self._update(page)
+        self._pages.append(page)
 
     def metadataEdited(self, state):
         self._track.trackTitle = state.trackTitle
@@ -49,14 +48,21 @@ class TrackEditor(AlbumListener, TrackListener):
         self._track.language = state.language
 
     def trackStateChanged(self, track):
-        self._page.show(self._album, self._track)
+        self._updatePages()
 
     def trackAdded(self, track, position):
-        self._page.show(self._album, self._track)
+        self._updatePages()
 
     def trackRemoved(self, track, position):
         if track == self._track:
             self._album.removeAlbumListener(self)
             self._track.removeTrackListener(self)
         else:
-            self.trackStateChanged(self._track)
+            self._updatePages()
+
+    def _updatePages(self):
+        for page in self._pages:
+            self._update(page)
+
+    def _update(self, page):
+        page.updateTrack(self._track, self._album)

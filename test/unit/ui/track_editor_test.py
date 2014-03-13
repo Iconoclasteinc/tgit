@@ -4,17 +4,41 @@ from flexmock import flexmock
 from hamcrest import assert_that, equal_to
 from test.util import builders as build
 from tgit.ui.track_editor import TrackEditor
-from tgit.ui.views.track_edition_page import TrackEditionPage
 
-ANY_POSITION = 0
+
+class PageStub(object):
+    def onMetadataChange(self, callback):
+        self.callback = callback
+
+    def updateTrack(self, track, album):
+        self.track = track
+        self.album = album
+
+    def clear(self):
+        self.track = None
+        self.album = None
+
+    def triggerChange(self, state):
+        self.callback(state)
 
 
 class TrackEditorTest(unittest.TestCase):
     def setUp(self):
         self.album, self.track = build.album(), build.track()
+        self.album.addTrack(self.track)
         self.editor = TrackEditor(self.album, self.track)
 
+    def testUpdatesPagesWhenAdded(self):
+        page = PageStub()
+        self.editor.add(page)
+
+        assert_that(page.track, equal_to(self.track), 'page track')
+        assert_that(page.album, equal_to(self.album), 'page album')
+
     def testUpdatesTrackMetadataOnEdition(self):
+        page = PageStub()
+        self.editor.add(page)
+
         class Snapshot(object):
             pass
 
@@ -31,7 +55,7 @@ class TrackEditorTest(unittest.TestCase):
         state.lyrics = 'Lyrics\nLyrics\n...'
         state.language = 'und'
 
-        self.editor.metadataEdited(state)
+        page.triggerChange(state)
 
         assert_that(self.track.trackTitle, equal_to('Title'), 'track title')
         assert_that(self.track.leadPerformer, equal_to('Artist'), 'lead performer')
@@ -46,24 +70,31 @@ class TrackEditorTest(unittest.TestCase):
         assert_that(self.track.language, equal_to('und'), 'language')
 
     def testRefreshesPageOnTrackChange(self):
-        flexmock(TrackEditionPage).should_receive('show').with_args(self.album, self.track).once()
-        self.editor.trackStateChanged(self.track)
+        page = flexmock(PageStub())
+        self.editor.add(page)
 
-    def testRefreshesPageWhenTracksAreRemovedFromAlbum(self):
-        otherTrack = build.track()
-        flexmock(TrackEditionPage).should_receive('show').with_args(self.album, self.track).once()
-        self.editor.trackRemoved(otherTrack, position=ANY_POSITION)
+        page.should_receive('updateTrack').with_args(self.track, self.album).at_least().once()
+        self._triggerTrackChange()
 
-    def testRefreshesPageWhenTracksAreAddedToAlbum(self):
-        otherTrack = build.track()
-        flexmock(TrackEditionPage).should_receive('show').with_args(self.album, self.track).once()
-        self.editor.trackAdded(otherTrack, position=ANY_POSITION)
+    def testRefreshesPageWhenAlbumCompositionChanges(self):
+        page = flexmock(PageStub())
+        self.editor.add(page)
+
+        flexmock(page).should_receive('updateTrack').with_args(self.track, self.album).at_least().times(2)
+
+        other = build.track()
+        self.album.addTrack(other)
+        self.album.removeTrack(other)
 
     def testStopsRefreshingPageAfterTrackRemoval(self):
-        self.album.addAlbumListener(self.editor)
-        self.track.addTrackListener(self.editor)
-        flexmock(TrackEditionPage).should_receive('show').never()
+        page = flexmock(PageStub())
+        self.editor.add(page)
 
-        self.editor.trackRemoved(self.track, position=ANY_POSITION)
-        self.album.addTrack(build.track())
-        self.track.trackTitle = 'Updated title'
+        flexmock(page).should_receive('updateTrack').with_args(self.track, self.album).never()
+
+        self.album.removeTrack(self.track)
+        self._triggerTrackChange()
+
+    def _triggerTrackChange(self):
+        self.track.trackTitle = 'change'
+

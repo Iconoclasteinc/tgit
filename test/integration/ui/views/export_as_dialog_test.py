@@ -3,13 +3,14 @@ import tempfile
 import shutil
 
 from hamcrest import equal_to
+
 # noinspection PyUnresolvedReferences
 import use_sip_api_v2
 from PyQt4.QtGui import QMainWindow
 
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.export_as_dialog_driver import exportAsDialog
-from test.integration.ui.view_test import ViewTest
+from test.integration.ui.views.view_test import ViewTest
 
 from tgit.ui.views.export_as_dialog import ExportAsDialog
 

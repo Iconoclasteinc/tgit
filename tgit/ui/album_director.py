@@ -16,11 +16,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from tgit.album import AlbumListener
+from tgit.ui import views
 from tgit.ui.album_composer import AlbumComposer
 from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui.track_editor import TrackEditor
-from tgit.ui.views import albumScreen
+from tgit.ui.views import albumScreen, trackEditionPage
+from tgit.ui.views.track_edition_page import TrackEditionPage
 
 
 class AlbumDirector(AlbumListener):
@@ -47,8 +49,7 @@ class AlbumDirector(AlbumListener):
         mixer.show(folders=folders)
 
     def trackAdded(self, track, position):
-        editor = TrackEditor(self._album, track)
-        self._view.addTrackEditionPage(editor.render(), position)
+        self._view.addTrackEditionPage(views.trackEditionPage(TrackEditor(self._album, track)), position)
         if not self._album.empty():
             self._view.allowSaves(True)
 

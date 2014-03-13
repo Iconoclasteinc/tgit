@@ -18,11 +18,9 @@ from tgit.ui.views.track_edition_page import TrackEditionPage
 class TrackEditionPageTest(ViewTest):
     def setUp(self):
         super(TrackEditionPageTest, self).setUp()
-        self.album = build.album()
-        self.view = TrackEditionPage()
-        self.widget = self.view.render()
-        self.show(self.widget)
-        self.driver = self.createDriverFor(self.widget)
+        self.page = TrackEditionPage()
+        self.driver = self.createDriverFor(self.page)
+        self.show(self.page)
 
     def createDriverFor(self, widget):
         return TrackEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
@@ -45,7 +43,7 @@ class TrackEditionPageTest(ViewTest):
         album = build.album(tracks=[build.track(), build.track()])
         album.insertTrack(track, 1)
 
-        self.view.show(album, track)
+        self.page.updateTrack(track, album)
 
         self.driver.showsTrackTitle('Song')
         self.driver.showsLeadPerformer('Artist')
@@ -70,17 +68,12 @@ class TrackEditionPageTest(ViewTest):
         track = build.track()
         album.addTrack(track)
 
-        self.view.show(album, track)
+        self.page.updateTrack(track, album)
         self.driver.showsLeadPerformer('Album Artist', disabled=True)
 
     def testSignalsWhenTrackMetadataEdited(self):
         changes = ValueMatcherProbe('track changed')
-
-        class TrackChangedListener(object):
-            def metadataEdited(self, state):
-                changes.received(state)
-
-        self.view.announceTo(TrackChangedListener())
+        self.page.onMetadataChange(changes.received)
 
         changes.expect(has_properties(trackTitle='Title'))
         self.driver.changeTrackTitle('Title')

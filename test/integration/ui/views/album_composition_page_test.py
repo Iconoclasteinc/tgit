@@ -4,9 +4,8 @@ from datetime import timedelta
 
 from flexmock import flexmock
 from hamcrest import has_property, contains
-from PyQt4.QtGui import QTableWidgetItem
 
-from test.integration.ui.view_test import ViewTest
+from test.integration.ui.views.view_test import ViewTest
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.album_composition_page_driver import AlbumCompositionPageDriver

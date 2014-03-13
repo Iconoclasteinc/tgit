@@ -4,7 +4,7 @@ from hamcrest import contains
 from PyQt4.QtGui import QMainWindow
 
 from test.drivers.track_selection_dialog_driver import trackSelectionDialog
-from test.integration.ui.view_test import ViewTest
+from test.integration.ui.views.view_test import ViewTest
 from test.cute.probes import ValueMatcherProbe
 from test.util import resources
 from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
