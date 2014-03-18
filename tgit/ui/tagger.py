@@ -21,7 +21,7 @@ from tgit.album import Album
 # todo have shortcuts in tgit.ui.views
 from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
-from tgit.embedded_metadata import EmbeddedMetadata
+from tgit.track_library import TrackLibrary
 from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.ui.album_director import AlbumDirector
 from tgit.ui.album_exporter import AlbumExporter
@@ -55,7 +55,7 @@ class Tagger(AlbumPortfolioListener):
 
     def albumCreated(self, album):
         self._menuBar.enableAlbumMenu()
-        self._director = AlbumDirector(album, EmbeddedMetadata(ID3Tagger()), self._audioPlayer)
+        self._director = AlbumDirector(album, TrackLibrary(ID3Tagger()), self._audioPlayer)
         self._director.addTracksToAlbum()
         self._mainWindow.show(self._director.render())
 

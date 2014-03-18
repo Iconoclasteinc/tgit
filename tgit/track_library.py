@@ -16,13 +16,37 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
+import re
+import shutil
 
 from tgit.track import Track
 
 
-class EmbeddedMetadata(object):
-    def __init__(self, container):
+def sanitize(filename):
+    return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
+
+
+class TrackStorage(object):
+    @staticmethod
+    def filenameFor(track):
+        return sanitize(u"{artist} - {title}.{format}".format(artist=track.leadPerformer,
+                                                            title=track.trackTitle,
+                                                            format='mp3'))
+
+    @staticmethod
+    def add(track):
+        _, ext = os.path.splitext(track.filename)
+        copy = os.path.join(os.path.dirname(track.filename), TrackStorage.filenameFor(track))
+        if copy != track.filename:
+            shutil.copy(track.filename, copy)
+        return copy
+
+
+class TrackLibrary(object):
+    def __init__(self, container, storage=TrackStorage()):
         self._container = container
+        self._storage = storage
 
     def fetch(self, name):
         metadata = self._container.load(name)
@@ -30,5 +54,4 @@ class EmbeddedMetadata(object):
         return track
 
     def store(self, track):
-        metadata = track.metadata
-        self._container.save(track.filename, metadata)
+        self._container.save(self._storage.add(track), track.metadata)

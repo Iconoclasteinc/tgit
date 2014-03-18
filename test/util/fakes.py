@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
+import tempfile
+import shutil
 
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 from test.util import mp3_file as mp3
@@ -16,18 +19,16 @@ def metadataContainer():
 class FakeMetadataContainer(object):
     def __init__(self):
         self.files = []
+        self.dir = tempfile.mkdtemp()
 
     def add(self, **metadata):
-        file = mp3.make(**metadata)
-        self.files.append(file)
-        return file.filename
+        return mp3.make(to=self.dir, **metadata).filename
 
     def load(self, filename):
-        for file_ in self.files:
-            if file_.filename == filename:
-                return tagger.load(filename)
+        if not os.path.exists(filename):
+            raise AssertionError('Cannot find in library: ' + filename)
 
-        raise AssertionError('Not in library: % s' % filename)
+        return tagger.load(filename)
 
     def contains(self, filename, **tags):
         images = []
@@ -38,12 +39,14 @@ class FakeMetadataContainer(object):
             images.append(Image(mime, fs.readContent(image), type_=Image.FRONT_COVER, desc=desc))
             del tags[tagging.FRONT_COVER]
 
-        metadata = self.load(filename)
+        metadata = self.load(os.path.join(self.dir, filename))
         assert_that(metadata, has_entries(tags), 'metadata tags')
         assert_that(metadata.images, contains(*images), 'attached pictures')
 
     def delete(self):
-        [recording.delete() for recording in self.files]
+        # if we remove the tempdir, Qt filesystem watchers complain
+        for f in os.listdir(self.dir):
+            os.remove(os.path.join(self.dir, f))
 
 
 def audioPlayer(*args):
