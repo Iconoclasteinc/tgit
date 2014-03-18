@@ -7,10 +7,44 @@ from tgit.ui.album_editor import AlbumEditor
 from tgit.util import fs
 
 
+class PageStub(object):
+    def __init__(self):
+        self.refreshCount = 0
+
+    def onMetadataChange(self, callback):
+        self.metadataChange = callback
+
+    def onSelectPicture(self, callback):
+        self.selectPicture = callback
+
+    def onRemovePicture(self, callback):
+        self.removePicture = callback
+
+    def updateAlbum(self, album):
+        self.refreshCount +=1
+        self.album = album
+
+
+class SelectorStub(object):
+    def __init__(self):
+        self.selectedPicture = None
+
+    def show(self):
+        self.selectPicture(self.selectedPicture)
+
+    def onSelectPicture(self, callback):
+        self.selectPicture = callback
+
+
 class AlbumEditorTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
-        self.editor = AlbumEditor(self.album)
+        self.page = PageStub()
+        self.selector = SelectorStub()
+        self.editor = AlbumEditor(self.album, self.page, self.selector)
+
+    def testUpdatesPageWhenAdded(self):
+        assert_that(self.page.album, equal_to(self.album), 'page album')
 
     def testUpdatesAlbumMetadataOnEdition(self):
         class Snapshot(object):
@@ -32,7 +66,7 @@ class AlbumEditorTest(unittest.TestCase):
         changes.mixer = 'Engineer'
         changes.primaryStyle = 'Style'
 
-        self.editor.metadataEdited(changes)
+        self.page.metadataChange(changes)
 
         assert_that(self.album.releaseName, equal_to('Title'), 'release name')
         assert_that(self.album.compilation, is_(True), 'compilation')
@@ -50,15 +84,22 @@ class AlbumEditorTest(unittest.TestCase):
         assert_that(self.album.mixer, equal_to('Engineer'), 'mixer')
         assert_that(self.album.primaryStyle, equal_to('Style'), 'primary style')
 
+    def testRefreshesPageOnAlbumChange(self):
+        self.page.refreshCount = 0
+        self.album.releaseName = 'changed'
+        assert_that(self.page.refreshCount, equal_to(1), "refresh count")
+
     def testRemovesAlbumImagesUponRequest(self):
         self.album.addFrontCover('image/jpeg', 'image data')
-        self.editor.removePicture()
+        self.page.removePicture()
         assert_that(self.album.images, equal_to([]), 'images')
 
     def testReplacesAlbumImagesWithSelectedPicture(self):
         self.album.addFrontCover(mime='image/gif', data='old cover')
+
         selectedCover = resources.path('front-cover.jpg')
-        self.editor.pictureSelected(selectedCover)
+        self.selector.selectedPicture = selectedCover
+        self.page.selectPicture()
 
         assert_that(self.album.images, contains(has_properties(mime='image/jpeg',
                                                                data=contentOf(selectedCover),

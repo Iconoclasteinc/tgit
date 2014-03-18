@@ -27,8 +27,6 @@ def mainWindow():
 
 # todo remove what's not longer used
 
-from album_edition_page import albumEditionPage
-from picture_selection_dialog import pictureSelectionDialog
 from track_edition_page import trackEditionPage
 from track_selection_dialog import trackSelectionDialog
 from export_as_dialog import exportAsDialog

@@ -17,19 +17,14 @@ class PictureSelectionDialogTest(ViewTest):
         super(PictureSelectionDialogTest, self).setUp()
         self.window = QMainWindow()
         self.show(self.window)
+        PictureSelectionDialog.native = False
         self.dialog = PictureSelectionDialog()
-        self.dialog.native = False
-        self.dialog.render()
         self.driver = pictureSelectionDialog(self)
 
     def testSignalsWhenPictureSelected(self):
         pictureSelected = ValueMatcherProbe('picture selected', resources.path('front-cover.jpg'))
 
-        class SelectionListener(object):
-            def pictureSelected(self, filename):
-                pictureSelected.received(filename)
-
-        self.dialog.announceTo(SelectionListener())
+        self.dialog.onSelectPicture(pictureSelected.received)
         self.dialog.show()
         self.driver.selectPicture(resources.path('front-cover.jpg'))
 

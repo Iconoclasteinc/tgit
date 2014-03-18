@@ -19,9 +19,8 @@
 
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QWidget, QSizePolicy, QGroupBox, QLabel, QPushButton, QLineEdit,
-                         QPixmap, QImage, QCheckBox, QComboBox)
+                         QPixmap, QImage, QCheckBox, QComboBox, QAbstractButton)
 
-from tgit.announcer import Announcer
 from tgit.genres import GENRES
 from tgit.ui import display, style
 from tgit.ui.widgets.text_area import TextArea
@@ -42,13 +41,7 @@ def addLabelledFields(form, *fields):
         form.addRow(label, field)
 
 
-def albumEditionPage(listener):
-    page = AlbumEditionPage()
-    page.announceTo(listener)
-    return page
-
-
-class AlbumEditionPage(object):
+class AlbumEditionPage(QWidget):
     NAME = 'album-edition-page'
 
     PICTURES_FIELD_SET_NAME = 'pictures'
@@ -81,27 +74,36 @@ class AlbumEditionPage(object):
     PRIMARY_STYLE_FIELD_NAME = 'primary-style'
 
     def __init__(self):
-        self._announce = Announcer()
-
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
-
-    def render(self):
-        self._widget = self._build()
+        QWidget.__init__(self)
+        self._build()
         self._disableMacFocusFrame()
         self._disableTeaserFields()
         self.translate()
-        return self._widget
+
+    def onMetadataChange(self, callback):
+        for edit in (self._leadPerformerLineEdit, self._releaseNameLineEdit, self._guestPerformersLineEdit,
+                self._labelNameLineEdit, self._catalogNumberLineEdit, self._upcLineEdit, self._commentsTextArea,
+                self._recordingTimeLineEdit, self._releaseTimeLineEdit, self._producerLineEdit,
+                self._recordingStudiosLineEdit, self._producerLineEdit, self._mixerLineEdit):
+            edit.editingFinished.connect(lambda: callback(self.albumMetadata))
+
+        self._compilationCheckBox.clicked.connect(lambda: callback(self.albumMetadata))
+        self._primaryStyleCombo.activated.connect(lambda: callback(self.albumMetadata))
+        self._primaryStyleCombo.lineEdit().textEdited.connect(lambda: callback(self.albumMetadata))
+
+    def onSelectPicture(self, callback):
+        self._button(self.SELECT_PICTURE_BUTTON_NAME).clicked.connect(lambda: callback())
+
+    def onRemovePicture(self, callback):
+        self._button(self.REMOVE_PICTURE_BUTTON_NAME).clicked.connect(lambda: callback())
 
     def _build(self):
-        widget = QWidget()
-        widget.setObjectName(self.NAME)
+        self.setObjectName(self.NAME)
         layout = style.horizontalLayout()
         layout.setSpacing(0)
         layout.addWidget(self._makeLeftColumn())
         layout.addWidget(self._makeRightColumn())
-        widget.setLayout(layout)
-        return widget
+        self.setLayout(layout)
 
     def _makeLeftColumn(self):
         column = QWidget()
@@ -161,14 +163,12 @@ class AlbumEditionPage(object):
     def _makeSelectPictureButton(self):
         button = QPushButton()
         button.setObjectName(self.SELECT_PICTURE_BUTTON_NAME)
-        button.clicked.connect(lambda: self._announce.addPicture())
         style.enableButton(button)
         return button
 
     def _makeRemovePictureButton(self):
         button = QPushButton()
         button.setObjectName(self.REMOVE_PICTURE_BUTTON_NAME)
-        button.clicked.connect(lambda: self._announce.removePicture())
         style.enableButton(button)
         return button
 
@@ -189,14 +189,12 @@ class AlbumEditionPage(object):
     def _makeLineEdit(self, name):
         edit = QLineEdit()
         edit.setObjectName(name)
-        edit.editingFinished.connect(self._signalMetadataChange)
         return edit
 
     def _makeCheckBox(self, name):
         checkbox = QCheckBox()
         checkbox.setObjectName(name)
         checkbox.setFocusPolicy(Qt.StrongFocus)
-        checkbox.clicked.connect(self._signalMetadataChange)
         return checkbox
 
     def _makeComboBox(self, name):
@@ -205,8 +203,6 @@ class AlbumEditionPage(object):
         combo.setEditable(True)
         combo.setInsertPolicy(QComboBox.NoInsert)
         combo.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
-        combo.activated.connect(self._signalMetadataChange)
-        combo.lineEdit().textEdited.connect(self._signalMetadataChange)
         return combo
 
     def _makeAlbumFieldSet(self):
@@ -234,7 +230,7 @@ class AlbumEditionPage(object):
         self._commentsTextArea = self._makeTextArea(self.COMMENTS_FIELD_NAME)
 
         form = style.formLayout()
-        addLabelledFields(form, self._labelNameLineEdit,  self._catalogNumberLineEdit, self._upcLineEdit,
+        addLabelledFields(form, self._labelNameLineEdit, self._catalogNumberLineEdit, self._upcLineEdit,
                           self._mediaTypeLineEdit, self._releaseTypeLineEdit, self._commentsTextArea)
 
         fieldSet.setLayout(form)
@@ -244,7 +240,6 @@ class AlbumEditionPage(object):
         text = TextArea()
         text.setObjectName(name)
         text.setTabChangesFocus(True)
-        text.editingFinished.connect(self._signalMetadataChange)
         return text
 
     def _makeRecordingFieldSet(self):
@@ -252,12 +247,12 @@ class AlbumEditionPage(object):
         self._recordingStudiosLineEdit = self._makeLineEdit(self.RECORDING_STUDIOS_FIELD_NAME)
         self._producerLineEdit = self._makeLineEdit(self.PRODUCER_FIELD_NAME)
         self._mixerLineEdit = self._makeLineEdit(self.MIXER_FIELD_NAME)
-        self._primaryStyleLineEdit = self._makeComboBox(self.PRIMARY_STYLE_FIELD_NAME)
-        self._primaryStyleLineEdit.addItems(GENRES)
+        self._primaryStyleCombo = self._makeComboBox(self.PRIMARY_STYLE_FIELD_NAME)
+        self._primaryStyleCombo.addItems(GENRES)
 
         form = style.formLayout()
-        addLabelledFields(form, self._recordingStudiosLineEdit, self._producerLineEdit,
-                          self._mixerLineEdit, self._primaryStyleLineEdit)
+        addLabelledFields(form, self._recordingStudiosLineEdit, self._producerLineEdit, self._mixerLineEdit,
+                          self._primaryStyleCombo)
 
         fieldSet.setLayout(form)
         return fieldSet
@@ -273,7 +268,7 @@ class AlbumEditionPage(object):
         field.setDisabled(True)
         self._labelFor(field).setDisabled(True)
 
-    def show(self, album):
+    def updateAlbum(self, album):
         self._displayAttachedPicture(album.mainCover)
         self._releaseNameLineEdit.setText(album.releaseName)
         # todo we really need typed metadata
@@ -293,13 +288,14 @@ class AlbumEditionPage(object):
         self._recordingStudiosLineEdit.setText(album.recordingStudios)
         self._producerLineEdit.setText(album.producer)
         self._mixerLineEdit.setText(album.mixer)
-        self._primaryStyleLineEdit.setEditText(album.primaryStyle)
+        self._primaryStyleCombo.setEditText(album.primaryStyle)
 
     def _displayAttachedPicture(self, image):
         self._attachedPicture = image
         self._attachedPictureLabel.setPixmap(scaleTo(image, *self.FRONT_COVER_SIZE))
 
-    def _signalMetadataChange(self):
+    @property
+    def albumMetadata(self):
         class Snapshot(object):
             def __str__(self):
                 return str(self.__dict__)
@@ -318,12 +314,12 @@ class AlbumEditionPage(object):
         snapshot.recordingStudios = self._recordingStudiosLineEdit.text()
         snapshot.producer = self._producerLineEdit.text()
         snapshot.mixer = self._mixerLineEdit.text()
-        snapshot.primaryStyle = self._primaryStyleLineEdit.currentText()
+        snapshot.primaryStyle = self._primaryStyleCombo.currentText()
 
-        self._announce.metadataEdited(snapshot)
+        return snapshot
 
     def _disableMacFocusFrame(self):
-        for child in self._widget.findChildren(QWidget):
+        for child in self.findChildren(QWidget):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
     def translate(self):
@@ -373,10 +369,21 @@ class AlbumEditionPage(object):
         self._labelFor(self._recordingStudiosLineEdit).setText(self.tr('Recording Studios:'))
         self._labelFor(self._producerLineEdit).setText(self.tr('Producer:'))
         self._labelFor(self._mixerLineEdit).setText(self.tr('Mixer:'))
-        self._labelFor(self._primaryStyleLineEdit).setText(self.tr('Primary Style:'))
-
-    def tr(self, text):
-        return self._widget.tr(text)
+        self._labelFor(self._primaryStyleCombo).setText(self.tr('Primary Style:'))
 
     def _labelFor(self, widget):
-        return next(label for label in self._widget.findChildren(QLabel) if label.buddy() == widget)
+        return self._child(QLabel, withBuddy(widget))
+
+    def _button(self, name):
+        return self._child(QAbstractButton, named(name))
+
+    def _child(self, ofType, matching):
+        return next(child for child in self.findChildren(ofType) if matching(child))
+
+
+def named(name):
+    return lambda w: w.objectName() == name
+
+
+def withBuddy(buddy):
+    return lambda w: w.buddy() == buddy

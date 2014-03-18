@@ -17,16 +17,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QDir, Qt
+from PyQt4.QtCore import QDir
 from PyQt4.QtGui import QFileDialog
-from tgit.announcer import Announcer
 from tgit.ui.views import mainWindow
-
-
-def pictureSelectionDialog(listener):
-    dialog = PictureSelectionDialog()
-    dialog.announceTo(listener)
-    return dialog
 
 
 class PictureSelectionDialog(object):
@@ -36,20 +29,19 @@ class PictureSelectionDialog(object):
     native = True
 
     def __init__(self):
-        self._announce = Announcer()
+        super(PictureSelectionDialog, self).__init__()
+        self._build()
 
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
-
-    def render(self):
+    def _build(self):
         self._dialog = QFileDialog(mainWindow())
         self._dialog.setObjectName(self.NAME)
         self._dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
         self._dialog.setDirectory(QDir.homePath())
         self._dialog.setFileMode(QFileDialog.ExistingFile)
         self._dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % self._dialog.tr('Image files'))
-        self._dialog.fileSelected.connect(self._announce.pictureSelected)
-        self._dialog.setAttribute(Qt.WA_DeleteOnClose)
+
+    def onSelectPicture(self, callback):
+        self._dialog.fileSelected.connect(callback)
 
     def show(self):
         self._dialog.open()

@@ -21,8 +21,9 @@ from tgit.ui.album_composer import AlbumComposer
 from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui.track_editor import TrackEditor
-from tgit.ui.views import albumScreen, trackEditionPage
-from tgit.ui.views.track_edition_page import TrackEditionPage
+from tgit.ui.views import albumScreen
+from tgit.ui.views.album_edition_page import AlbumEditionPage
+from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
 
 
 class AlbumDirector(AlbumListener):
@@ -37,8 +38,13 @@ class AlbumDirector(AlbumListener):
         composer = AlbumComposer(self._album, self._player)
         composer.announceTo(self)
         self._view.setAlbumCompositionPage(composer.render())
-        editor = AlbumEditor(self._album)
-        self._view.setAlbumEditionPage(editor.render())
+
+        # todo find a more explicit way to wire those together
+        albumEditionPage = AlbumEditionPage()
+        pictureSelector = PictureSelectionDialog()
+        AlbumEditor(self._album, albumEditionPage, pictureSelector)
+
+        self._view.setAlbumEditionPage(albumEditionPage)
         self._album.addAlbumListener(self)
         return widget
 
@@ -49,7 +55,8 @@ class AlbumDirector(AlbumListener):
         mixer.show(folders=folders)
 
     def trackAdded(self, track, position):
-        self._view.addTrackEditionPage(views.trackEditionPage(TrackEditor(self._album, track)), position)
+        page = views.trackEditionPage(TrackEditor(self._album, track))
+        self._view.addTrackEditionPage(page, position)
         if not self._album.empty():
             self._view.allowSaves(True)
 

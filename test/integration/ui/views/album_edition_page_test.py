@@ -21,23 +21,22 @@ def loadImage(name):
 class AlbumEditionPageTest(ViewTest):
     def setUp(self):
         super(AlbumEditionPageTest, self).setUp()
-        self.view = AlbumEditionPage()
-        self.widget = self.view.render()
-        self.show(self.widget)
-        self.driver = self.createDriverFor(self.widget)
+        self.page = AlbumEditionPage()
+        self.driver = self.createDriverFor(self.page)
+        self.show(self.page)
 
     def createDriverFor(self, widget):
         return AlbumEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysPicturePlaceholderForAlbumWithoutCover(self):
         album = build.album()
-        self.view.show(album)
+        self.page.updateAlbum(album)
         self.driver.showsPicturePlaceholder()
 
     def testDisplaysMainAlbumCover(self):
         album = build.album()
         album.addFrontCover('image/jpeg', loadImage('front-cover.jpg'))
-        self.view.show(album)
+        self.page.updateAlbum(album)
         self.driver.showsPicture()
 
     def testDisplaysAlbumMetadata(self):
@@ -56,7 +55,7 @@ class AlbumEditionPageTest(ViewTest):
             comments='Comments\n...',
             primaryStyle='Style')
 
-        self.view.show(album)
+        self.page.updateAlbum(album)
 
         self.driver.showsReleaseName('Album')
         self.driver.showsCompilation(False)
@@ -79,60 +78,44 @@ class AlbumEditionPageTest(ViewTest):
 
     def testIndicatesWhetherAlbumIsACompilation(self):
         album = build.album()
-        self.view.show(album)
+        self.page.updateAlbum(album)
         self.driver.showsCompilation(False)
 
         album.compilation = True
-        self.view.show(album)
+        self.page.updateAlbum(album)
         self.driver.showsCompilation(True)
 
         album.compilation = False
-        self.view.show(album)
+        self.page.updateAlbum(album)
         self.driver.showsCompilation(False)
 
     def testDisablesLeadPerformerEditionWhenAlbumIsACompilation(self):
         album = build.album(compilation=True, leadPerformer='Album Artist')
-        self.view.show(album)
+        self.page.updateAlbum(album)
         self.driver.showsLeadPerformer('Various Artists', disabled=True)
 
     def testSignalsWhenAddPictureButtonClicked(self):
-        self.view.show(build.album())
-
+        self.page.updateAlbum(build.album())
         addPictureSignal = ValueMatcherProbe('add picture')
-
-        class AddPictureListener(object):
-            def addPicture(self):
-                addPictureSignal.received()
-
-        self.view.announceTo(AddPictureListener())
+        self.page.onSelectPicture(addPictureSignal.received)
 
         self.driver.addPicture()
         self.check(addPictureSignal)
 
     def testSignalsWhenRemovePictureButtonClicked(self):
-        self.view.show(build.album())
-
+        self.page.updateAlbum(build.album())
         removePictureSignal = ValueMatcherProbe('remove picture')
 
-        class RemovePictureListener(object):
-            def removePicture(self):
-                removePictureSignal.received()
-
-        self.view.announceTo(RemovePictureListener())
+        self.page.onRemovePicture(removePictureSignal.received)
 
         self.driver.removePicture()
         self.check(removePictureSignal)
 
     def testSignalsWhenAlbumMetadataEdited(self):
-        self.view.show(build.album())
-
+        self.page.updateAlbum(build.album())
         changes = ValueMatcherProbe('album changed')
 
-        class AlbumChangedListener(object):
-            def metadataEdited(self, state):
-                changes.received(state)
-
-        self.view.announceTo(AlbumChangedListener())
+        self.page.onMetadataChange(changes.received)
 
         changes.expect(has_properties(releaseName='Title'))
         self.driver.changeReleaseName('Title')
