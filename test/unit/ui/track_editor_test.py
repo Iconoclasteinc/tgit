@@ -1,44 +1,35 @@
 # -*- coding: utf-8 -*-
 import unittest
-from flexmock import flexmock
 from hamcrest import assert_that, equal_to
 from test.util import builders as build
 from tgit.ui.track_editor import TrackEditor
 
 
 class PageStub(object):
+    def __init__(self):
+        self.refreshCount = 0
+
     def onMetadataChange(self, callback):
-        self.callback = callback
+        self.metadataChange = callback
 
     def updateTrack(self, track, album):
+        self.refreshCount += 1
         self.track = track
         self.album = album
-
-    def clear(self):
-        self.track = None
-        self.album = None
-
-    def triggerChange(self, state):
-        self.callback(state)
 
 
 class TrackEditorTest(unittest.TestCase):
     def setUp(self):
         self.album, self.track = build.album(), build.track()
         self.album.addTrack(self.track)
-        self.editor = TrackEditor(self.album, self.track)
+        self.page = PageStub()
+        self.editor = TrackEditor(self.album, self.track, self.page)
 
-    def testUpdatesPagesWhenAdded(self):
-        page = PageStub()
-        self.editor.add(page)
-
-        assert_that(page.track, equal_to(self.track), 'page track')
-        assert_that(page.album, equal_to(self.album), 'page album')
+    def testUpdatesPageWhenAdded(self):
+        assert_that(self.page.track, equal_to(self.track), 'page track')
+        assert_that(self.page.album, equal_to(self.album), 'page album')
 
     def testUpdatesTrackMetadataOnEdition(self):
-        page = PageStub()
-        self.editor.add(page)
-
         class Snapshot(object):
             pass
 
@@ -55,7 +46,7 @@ class TrackEditorTest(unittest.TestCase):
         state.lyrics = 'Lyrics\nLyrics\n...'
         state.language = 'und'
 
-        page.triggerChange(state)
+        self.page.metadataChange(state)
 
         assert_that(self.track.trackTitle, equal_to('Title'), 'track title')
         assert_that(self.track.leadPerformer, equal_to('Artist'), 'lead performer')
@@ -70,31 +61,23 @@ class TrackEditorTest(unittest.TestCase):
         assert_that(self.track.language, equal_to('und'), 'language')
 
     def testRefreshesPageOnTrackChange(self):
-        page = flexmock(PageStub())
-        self.editor.add(page)
-
-        page.should_receive('updateTrack').with_args(self.track, self.album).at_least().once()
-        self._triggerTrackChange()
+        self.page.refreshCount = 0
+        self.track.trackTitle = 'changed'
+        assert_that(self.page.refreshCount, equal_to(1), "refresh count")
 
     def testRefreshesPageWhenAlbumCompositionChanges(self):
-        page = flexmock(PageStub())
-        self.editor.add(page)
-
-        flexmock(page).should_receive('updateTrack').with_args(self.track, self.album).at_least().times(2)
-
         other = build.track()
         self.album.addTrack(other)
+
+        self.page.refreshCount = 0
         self.album.removeTrack(other)
+        assert_that(self.page.refreshCount, equal_to(1), "refresh count")
 
     def testStopsRefreshingPageAfterTrackRemoval(self):
-        page = flexmock(PageStub())
-        self.editor.add(page)
-
-        flexmock(page).should_receive('updateTrack').with_args(self.track, self.album).never()
-
         self.album.removeTrack(self.track)
-        self._triggerTrackChange()
 
-    def _triggerTrackChange(self):
-        self.track.trackTitle = 'change'
+        self.page.refreshCount = 0
+        self.track.trackTitle = 'changed'
+        assert_that(self.page.refreshCount, equal_to(0), "refresh count")
+
 

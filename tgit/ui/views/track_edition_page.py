@@ -27,12 +27,6 @@ from tgit.ui.widgets.text_area import TextArea
 DURATION_FORMAT = 'mm:ss'
 
 
-def trackEditionPage(editor):
-    page = TrackEditionPage()
-    editor.add(page)
-    return page
-
-
 class TrackEditionPage(QWidget):
     NAME = 'track-edition-page'
 
