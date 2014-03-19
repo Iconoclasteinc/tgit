@@ -248,7 +248,7 @@ class AlbumEditionPage(QWidget):
         self._producerLineEdit = self._makeLineEdit(self.PRODUCER_FIELD_NAME)
         self._mixerLineEdit = self._makeLineEdit(self.MIXER_FIELD_NAME)
         self._primaryStyleCombo = self._makeComboBox(self.PRIMARY_STYLE_FIELD_NAME)
-        self._primaryStyleCombo.addItems(GENRES)
+        self._primaryStyleCombo.addItems(sorted(GENRES))
 
         form = style.formLayout()
         addLabelledFields(form, self._recordingStudiosLineEdit, self._producerLineEdit, self._mixerLineEdit,
