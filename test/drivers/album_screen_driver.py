@@ -119,6 +119,10 @@ class AlbumScreenDriver(WidgetDriver):
         help = LabelDriver.findSingle(self, QLabel, named(AlbumScreen.HELP_LINK_NAME))
         help.hasText(contains_string('href="%s"' % location))
 
+    def linksFeatureRequestTo(self, location):
+        help = LabelDriver.findSingle(self, QLabel, named(AlbumScreen.FEATURE_REQUEST_LINK_NAME))
+        help.hasText(contains_string('href="%s' % location))
+
     def _button(self, matching):
         return ButtonDriver.findSingle(self, QPushButton, matching)
 

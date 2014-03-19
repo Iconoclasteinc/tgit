@@ -139,3 +139,9 @@ class AlbumScreenTest(ViewTest):
         self.driver.hasDisabledSaveButton()
         self.view.allowSaves()
         self.driver.hasEnabledSaveButton()
+
+    def testIncludesHelpLink(self):
+        self.driver.linksHelpTo("http://tagtamusique.com/2013/12/03/tgit_style_guide/")
+
+    def testIncludesFeatureRequestLink(self):
+        self.driver.linksFeatureRequestTo("mailto:iconoclastejr@gmail.com")

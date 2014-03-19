@@ -37,8 +37,10 @@ class AlbumScreen(object):
     NEXT_PAGE_BUTTON_NAME = 'next'
     SAVE_BUTTON_NAME = 'save'
     HELP_LINK_NAME = 'help-link'
+    FEATURE_REQUEST_LINK_NAME = 'feature-request-link'
 
     HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
+    FEATURE_REQUEST_URL = "mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !"
     COMPOSITION_PAGE, ALBUM_PAGE, TRACK_PAGES = range(0, 3)
 
     def __init__(self):
@@ -66,9 +68,11 @@ class AlbumScreen(object):
         self._navigationBar = QWidget()
         self._navigationBar.setObjectName(self.NAVIGATION_BAR_NAME)
         self._helpLink = self._makeHelpLink()
+        self._featureRequestLink = self._makeFeatureRequestLink()
         layout = style.horizontalLayout()
         layout.setContentsMargins(25, 10, 25, 10)
         layout.addStretch()
+        layout.addWidget(self._featureRequestLink)
         layout.addWidget(self._helpLink)
 
         self._navigationBar.setLayout(layout)
@@ -79,6 +83,13 @@ class AlbumScreen(object):
         label.setObjectName(self.HELP_LINK_NAME)
         label.setTextFormat(Qt.RichText)
         label.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        label.setOpenExternalLinks(True)
+        return label
+
+    def _makeFeatureRequestLink(self):
+        label = QLabel()
+        label.setObjectName(self.FEATURE_REQUEST_LINK_NAME)
+        label.setTextFormat(Qt.RichText)
         label.setOpenExternalLinks(True)
         return label
 
@@ -188,6 +199,7 @@ class AlbumScreen(object):
         self._saveButton.setText(self.tr('SAVE'))
         self._nextButton.setText(self.tr('NEXT'))
         self._helpLink.setText('<a style="color: white" href="%s">%s</a>' % (self.HELP_URL, self.tr('Help')))
+        self._featureRequestLink.setText('<a style="color: white" href="%s">%s</a>' % (self.FEATURE_REQUEST_URL, self.tr('Request Feature')))
 
     def tr(self, text):
         return self._widget.tr(text)
