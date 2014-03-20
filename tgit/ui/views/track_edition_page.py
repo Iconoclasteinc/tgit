@@ -18,11 +18,19 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt4.QtCore import Qt
 
-from PyQt4.QtGui import (QLabel, QLineEdit, QTimeEdit, QWidget, QSizePolicy, QGroupBox, QComboBox)
+from PyQt4.QtGui import (QLabel, QLineEdit, QTimeEdit, QWidget, QSizePolicy, QGroupBox, QComboBox, QPixmap, QImage,
+                         QFrame)
 from tgit.languages import LANGUAGES
 
 from tgit.ui import display, style
 from tgit.ui.widgets.text_area import TextArea
+
+
+def scaleImage(image, width, height):
+    if image is None:
+        return QPixmap()
+    scaledImage = QImage.fromData(image.data).scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    return QPixmap.fromImage(scaledImage)
 
 
 def withBuddy(buddy):
@@ -75,6 +83,12 @@ def addLabelledFields(form, *fields):
 class TrackEditionPage(QWidget):
     NAME = 'track-edition-page'
 
+    ALBUM_BANNER_NAME = 'album-banner'
+    ALBUM_COVER_BANNER_NAME = 'album-cover'
+    ALBUM_COVER_BANNER_SIZE = 60, 60
+    ALBUM_TITLE_BANNER_NAME = 'album-title'
+    ALBUM_LEAD_PERFORMER_BANNER_NAME = 'album-lead-performer'
+
     TRACK_TITLE_FIELD_NAME = 'track-title'
     LEAD_PERFORMER_FIELD_NAME = 'lead-performer'
     VERSION_INFO_FIELD_NAME = 'version-info'
@@ -123,11 +137,43 @@ class TrackEditionPage(QWidget):
 
     def _build(self):
         self.setObjectName(TrackEditionPage.NAME)
+        layout = style.verticalLayout()
+        layout.addWidget(self._makeAlbumBanner())
+        layout.addWidget(self._makeMainContent())
+        self.setLayout(layout)
+
+    def _makeAlbumBanner(self):
+        header = QFrame()
+        header.setObjectName(self.ALBUM_BANNER_NAME)
+        layout = style.horizontalLayout()
+        self._albumCoverBannerLabel = makeLabel(self.ALBUM_COVER_BANNER_NAME)
+        self._albumCoverBannerLabel.setFixedSize(*self.ALBUM_COVER_BANNER_SIZE)
+        layout.addWidget(self._albumCoverBannerLabel)
+        layout.addWidget(self._makeAlbumTitle())
+        layout.addStretch()
+        header.setLayout(layout)
+        return header
+
+    def _makeAlbumTitle(self):
+        title = QWidget()
+        layout = style.verticalLayout()
+        self._albumTitleBannerLabel = makeLabel(self.ALBUM_TITLE_BANNER_NAME)
+        self._albumTitleBannerLabel.setProperty('title', 'h2')
+        layout.addWidget(self._albumTitleBannerLabel)
+        self._albumLeadPerformerBannerLabel = makeLabel(self.ALBUM_LEAD_PERFORMER_BANNER_NAME)
+        self._albumLeadPerformerBannerLabel.setProperty('title', 'h3')
+        layout.addWidget(self._albumLeadPerformerBannerLabel)
+        title.setLayout(layout)
+        return title
+
+    def _makeMainContent(self):
+        content = QWidget()
         layout = style.horizontalLayout()
         layout.setSpacing(0)
         layout.addWidget(self._makeLeftColumn())
         layout.addWidget(self._makeRightColumn())
-        self.setLayout(layout)
+        content.setLayout(layout)
+        return content
 
     def _makeLeftColumn(self):
         column = QWidget()
@@ -161,14 +207,12 @@ class TrackEditionPage(QWidget):
         self._trackTitleLineEdit = makeLineEdit(self.TRACK_TITLE_FIELD_NAME)
         self._leadPerformerLineEdit = makeLineEdit(self.LEAD_PERFORMER_FIELD_NAME)
         self._versionInfoLineEdit = makeLineEdit(self.VERSION_INFO_FIELD_NAME)
-        self._durationLabel = makeLabel(self.DURATION_FIELD_NAME)
         self._trackNumberLabel = makeLabel(self.TRACK_NUMBER_FIELD_NAME)
         self._totalTracksLabel = makeLabel(self.TOTAL_TRACKS_FIELD_NAME)
-        self._bitrateLabel = makeLabel(self.BITRATE_FIELD_NAME)
 
         form = style.formLayout()
         addLabelledFields(form, self._trackTitleLineEdit, self._leadPerformerLineEdit, self._versionInfoLineEdit,
-                          self._durationLabel, self._bitrateLabel, self._trackNumberLabel, self._totalTracksLabel)
+                          self._trackNumberLabel, self._totalTracksLabel)
         fieldSet.setLayout(form)
         return fieldSet
 
@@ -203,12 +247,18 @@ class TrackEditionPage(QWidget):
         self._languageComboBox = makeComboBox(self.LANGUAGE_FIELD_NAME)
         self._languageComboBox.addItems(sorted(LANGUAGES))
         self._previewTimeEdit = makeTimeEdit(self.PREVIEW_TIME_FIELD_NAME)
+        self._durationLabel = makeLabel(self.DURATION_FIELD_NAME)
+        self._bitrateLabel = makeLabel(self.BITRATE_FIELD_NAME)
         form = style.formLayout()
-        addLabelledFields(form, self._lyricsTextArea, self._languageComboBox, self._previewTimeEdit)
+        addLabelledFields(form, self._lyricsTextArea, self._languageComboBox, self._previewTimeEdit,
+                          self._durationLabel, self._bitrateLabel)
         fieldSet.setLayout(form)
         return fieldSet
 
     def updateTrack(self, track, album):
+        self._albumCoverBannerLabel.setPixmap(scaleImage(album.mainCover, *self.ALBUM_COVER_BANNER_SIZE))
+        self._albumTitleBannerLabel.setText(album.releaseName)
+        self._albumLeadPerformerBannerLabel.setText(album.compilation and self.tr('Various Artists') or album.leadPerformer)
         self._trackTitleLineEdit.setText(track.trackTitle)
         self._leadPerformerLineEdit.setText(track.leadPerformer)
         self._leadPerformerLineEdit.setEnabled(track.compilation is True)
@@ -266,10 +316,8 @@ class TrackEditionPage(QWidget):
         self._labelFor(self._trackTitleLineEdit).setText(self.tr('Track Title: '))
         self._labelFor(self._leadPerformerLineEdit).setText(self.tr('Lead Performer: '))
         self._labelFor(self._versionInfoLineEdit).setText(self.tr('Version Information: '))
-        self._labelFor(self._durationLabel).setText(self.tr('Duration: '))
         self._labelFor(self._trackNumberLabel).setText(self.tr('Track Number: '))
         self._labelFor(self._totalTracksLabel).setText(self.tr('Total Tracks: '))
-        self._labelFor(self._bitrateLabel).setText(self.tr('Bitrate: '))
 
     def _translateContributorFields(self):
         self._contributorsFieldSet.setTitle(self.tr('CONTRIBUTORS'))
@@ -277,7 +325,6 @@ class TrackEditionPage(QWidget):
         self._labelFor(self._lyricistLineEdit).setText(self.tr('Lyricist: '))
         self._labelFor(self._composerLineEdit).setText(self.tr('Composer: '))
         self._labelFor(self._publisherLineEdit).setText(self.tr('Publisher: '))
-        self._labelFor(self._previewTimeEdit).setText(self.tr('Preview Time: '))
 
     def _translateIdentificationFields(self):
         self._identificationFieldSet.setTitle(self.tr('IDENTIFICATION'))
@@ -291,6 +338,9 @@ class TrackEditionPage(QWidget):
         self._contentFieldSet.setTitle(self.tr('CONTENT'))
         self._labelFor(self._lyricsTextArea).setText(self.tr('Lyrics: '))
         self._labelFor(self._languageComboBox).setText(self.tr('Language: '))
+        self._labelFor(self._previewTimeEdit).setText(self.tr('Preview Time: '))
+        self._labelFor(self._durationLabel).setText(self.tr('Duration: '))
+        self._labelFor(self._bitrateLabel).setText(self.tr('Bitrate: '))
 
     def _labelFor(self, widget):
         return self._child(QLabel, withBuddy(widget))

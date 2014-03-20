@@ -461,6 +461,38 @@ Sheet = """
     QComboBox::down-arrow:on, QComboBox::down-arrow:focus {
         image: url(:/down-arrow-on.png);
     }
+
+    #album-banner {
+        background-color: white;
+        border: 1px solid #DDDDDD;
+        border-bottom: 2px solid rgba(0, 0, 0, 20%);
+        margin: 0px 8px;
+        padding: 15px;
+        max-height: 90px;
+    }
+
+    #album-banner #album-cover {
+        min-width: 60px;
+        max-width: 60px;
+        min-height: 60px;
+        max-height: 60px;
+        background-color: #F9F9F9;
+        margin-right: 15px;
+    }
+
+    #album-banner QLabel[title='h2'] {
+        font-size: 20px;
+        color: #777777;
+        padding: 0;
+        margin: 0;
+    }
+
+    #album-banner QLabel[title='h3'] {
+        font-size: 14px;
+        color: #777777;
+        padding: 0;
+        margin: 0;
+    }
  """
 
 MAC = hasattr(QtGui, "qt_mac_set_native_menubar")

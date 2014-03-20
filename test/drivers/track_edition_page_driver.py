@@ -2,7 +2,7 @@
 
 from PyQt4.QtGui import QLabel, QLineEdit, QPlainTextEdit, QTimeEdit, QWidget, QComboBox
 
-from test.cute.matchers import named, withBuddy, showingOnScreen
+from test.cute.matchers import named, withBuddy, showingOnScreen, withPixmapHeight, withPixmapWidth
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEditDriver,
                                DateTimeEditDriver, ComboBoxDriver)
 
@@ -69,6 +69,23 @@ class TrackEditionPageDriver(WidgetDriver):
 
     def _lineEdit(self, matching):
         return LineEditDriver.findSingle(self, QLineEdit, matching)
+
+    def showsAlbumTitleInBanner(self, title):
+        label = self._label(named(TrackEditionPage.ALBUM_TITLE_BANNER_NAME))
+        label.isShowingOnScreen()
+        label.hasText(title)
+
+    def showsAlbumLeadPerformerInBanner(self, name):
+        label = self._label(named(TrackEditionPage.ALBUM_LEAD_PERFORMER_BANNER_NAME))
+        label.isShowingOnScreen()
+        label.hasText(name)
+
+    def displaysAlbumCover(self):
+        label = self._label(named(TrackEditionPage.ALBUM_COVER_BANNER_NAME))
+        label.isShowingOnScreen()
+        height, width = TrackEditionPage.ALBUM_COVER_BANNER_SIZE
+        label.hasPixmap(withPixmapHeight(height))
+        label.hasPixmap(withPixmapWidth(width))
 
     def showsTrackTitle(self, trackTitle):
         label = self._label(withBuddy(named(TrackEditionPage.TRACK_TITLE_FIELD_NAME)))

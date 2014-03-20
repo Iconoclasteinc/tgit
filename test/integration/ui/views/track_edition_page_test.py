@@ -25,6 +25,19 @@ class TrackEditionPageTest(ViewTest):
     def createDriverFor(self, widget):
         return TrackEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
+    def testDisplaysAlbumBanner(self):
+        album = build.album(releaseName='Album Title', leadPerformer='Artist')
+        track = build.track()
+        album.addTrack(track)
+        self.page.updateTrack(track, album)
+
+        self.driver.showsAlbumTitleInBanner('Album Title')
+        self.driver.showsAlbumLeadPerformerInBanner('Artist')
+
+        album.compilation = True
+        self.page.updateTrack(track, album)
+        self.driver.showsAlbumLeadPerformerInBanner('Various Artists')
+
     def testDisplaysTrackMetadata(self):
         track = build.track(bitrate=192000,
                             compilation=True,
