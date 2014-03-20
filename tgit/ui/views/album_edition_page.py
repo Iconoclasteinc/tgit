@@ -82,9 +82,9 @@ class AlbumEditionPage(QWidget):
 
     def onMetadataChange(self, callback):
         for edit in (self._leadPerformerLineEdit, self._releaseNameLineEdit, self._guestPerformersLineEdit,
-                self._labelNameLineEdit, self._catalogNumberLineEdit, self._upcLineEdit, self._commentsTextArea,
-                self._recordingTimeLineEdit, self._releaseTimeLineEdit, self._producerLineEdit,
-                self._recordingStudiosLineEdit, self._producerLineEdit, self._mixerLineEdit):
+                     self._labelNameLineEdit, self._catalogNumberLineEdit, self._upcLineEdit, self._commentsTextArea,
+                     self._recordingTimeLineEdit, self._releaseTimeLineEdit, self._producerLineEdit,
+                     self._recordingStudiosLineEdit, self._producerLineEdit, self._mixerLineEdit):
             edit.editingFinished.connect(lambda: callback(self.albumMetadata))
 
         self._compilationCheckBox.clicked.connect(lambda: callback(self.albumMetadata))
@@ -258,15 +258,10 @@ class AlbumEditionPage(QWidget):
         return fieldSet
 
     def _disableTeaserFields(self):
-        self._disableField(self._digitalReleaseTimeLineEdit)
-        self._disableField(self._originalReleaseTimeLineEdit)
-        self._disableField(self._areaLineEdit)
-        self._disableField(self._mediaTypeLineEdit)
-        self._disableField(self._releaseTypeLineEdit)
-
-    def _disableField(self, field):
-        field.setDisabled(True)
-        self._labelFor(field).setDisabled(True)
+        for field in (self._digitalReleaseTimeLineEdit, self._originalReleaseTimeLineEdit, self._areaLineEdit,
+                      self._mediaTypeLineEdit, self._releaseTypeLineEdit):
+                field.setDisabled(True)
+                self._labelFor(field).setDisabled(True)
 
     def updateAlbum(self, album):
         self._displayAttachedPicture(album.mainCover)

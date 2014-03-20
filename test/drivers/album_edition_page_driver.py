@@ -267,16 +267,16 @@ class AlbumEditionPageDriver(WidgetDriver):
     def showsPrimaryStyle(self, style):
         label = self._label(withBuddy(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
-        edit.hasCurrentText(style)
+        combo = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
+        combo.hasCurrentText(style)
 
     def changePrimaryStyle(self, style):
-        edit = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
-        edit.changeText(style)
+        combo = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
+        combo.changeText(style)
 
     def selectPrimaryStyle(self, style):
-        edit = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
-        edit.selectOption(style)
+        combo = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
+        combo.selectOption(style)
 
     def showsMediaType(self, type_):
         label = self._label(withBuddy(named(AlbumEditionPage.MEDIA_TYPE_FIELD_NAME)))
