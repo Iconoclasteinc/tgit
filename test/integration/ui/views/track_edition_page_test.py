@@ -119,3 +119,7 @@ class TrackEditionPageTest(ViewTest):
         changes.expect(has_properties(language='eng'))
         self.driver.changeLanguage('eng')
         self.check(changes)
+
+        changes.expect(has_properties(language='fra'))
+        self.driver.selectLanguage('fra')
+        self.check(changes)

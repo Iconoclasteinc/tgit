@@ -293,7 +293,7 @@ Sheet = """
         border-image: url(:/remove-pressed.png);
     }
 
-    #album-edition-page QGroupBox {
+    #album-edition-page QGroupBox, #track-edition-page QGroupBox {
         border: 1px solid #DDDDDD;
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
         background-color: white;
@@ -302,7 +302,7 @@ Sheet = """
         font-size: 10px;
     }
 
-    #album-edition-page QGroupBox::title {
+    #album-edition-page QGroupBox::title, #track-edition-page QGroupBox::title {
         subcontrol-origin: margin;
         subcontrol-position: top left;
         left: 1px;
@@ -370,7 +370,9 @@ Sheet = """
     }
 
     #album-edition-page QLineEdit, #album-edition-page TextArea, #album-edition-page QComboBox,
-    #album-edition-page QComboBox::drop-down, #album-edition-page QComboBox QAbstractItemView {
+    #album-edition-page QComboBox::drop-down, #album-edition-page QComboBox QAbstractItemView,
+    #track-edition-page QLineEdit, #track-edition-page TextArea, #track-edition-page QComboBox,
+    #track-edition-page QComboBox::drop-down, #track-edition-page QComboBox QAbstractItemView {
         background-color: #F9F9F9;
         border: 1px solid #B1B1B1;
         color: #222222;
@@ -379,11 +381,15 @@ Sheet = """
 
     #album-edition-page QLineEdit:focus, #album-edition-page TextArea:focus, #album-edition-page QComboBox:focus,
     #album-edition-page QComboBox:on, #album-edition-page QComboBox::drop-down:focus,
-    #album-edition-page QComboBox::drop-down:on, #album-edition-page QComboBox QAbstractItemView:focus {
+    #album-edition-page QComboBox::drop-down:on, #album-edition-page QComboBox QAbstractItemView:focus,
+    #track-edition-page QLineEdit:focus, #track-edition-page TextArea:focus, #track-edition-page QComboBox:focus,
+    #track-edition-page QComboBox:on, #track-edition-page QComboBox::drop-down:focus,
+    #track-edition-page QComboBox::drop-down:on, #track-edition-page QComboBox QAbstractItemView:focus  {
         border: 1px solid #F79D6C;
     }
 
-    #album-edition-page QLineEdit:disabled, #album-edition-page TextArea:disabled {
+    #album-edition-page QLineEdit:disabled, #album-edition-page TextArea:disabled,
+    #track-edition-page QLineEdit:disabled, #track-edition-page TextArea:disabled {
         background-color: #FCFCFC;
         border-color: #E7E7E7;
     }
@@ -427,16 +433,20 @@ Sheet = """
         max-height: 3.5em;
     }
 
-    #album-edition-page QLabel {
+    #album-edition-page QLabel, #track-edition-page QLabel {
         color: #444444;
         min-width: 175px;
     }
 
-    #album-edition-page QLabel:disabled {
+    #track-edition-page #content QLabel {
+        min-width: 125px;
+    }
+
+    #album-edition-page QLabel:disabled, #track-edition-page QLabel:disabled {
         color: #C2C2C2;
     }
 
-    #album-edition-page QComboBox::drop-down {
+    #album-edition-page QComboBox::drop-down, #track-edition-page QComboBox::drop-down {
         padding: 0;
         margin: 0;
         subcontrol-origin: border;
@@ -457,12 +467,7 @@ MAC = hasattr(QtGui, "qt_mac_set_native_menubar")
 
 if MAC:
     Sheet += """
-        #album-edition-page QComboBox {
-            padding-left: 1px;
-            padding-top: 1px;
-        }
-
-        #album-edition-page QComboBox {
+        #album-edition-page QComboBox, #track-edition-page QComboBox {
             padding-left: 1px;
             padding-top: 1px;
             margin-left: 3px;

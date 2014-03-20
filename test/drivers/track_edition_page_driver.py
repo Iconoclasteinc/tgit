@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel, QLineEdit, QPlainTextEdit, QTimeEdit, QWidget
+from PyQt4.QtGui import QLabel, QLineEdit, QPlainTextEdit, QTimeEdit, QWidget, QComboBox
 
 from test.cute.matchers import named, withBuddy, showingOnScreen
 from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEditDriver,
-                               DateTimeEditDriver)
+                               DateTimeEditDriver, ComboBoxDriver)
 
 import tgit.tags as tags
 from tgit.ui.views.track_edition_page import TrackEditionPage
@@ -207,19 +207,26 @@ class TrackEditionPageDriver(WidgetDriver):
             edit.addLine(lyric)
         edit.clearFocus()
 
-    def showsLanguage(self, text):
+    def showsLanguage(self, lang):
         label = self._label(withBuddy(named(TrackEditionPage.LANGUAGE_FIELD_NAME)))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
-        edit.hasText(text)
+        combo = self._combobox(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
+        combo.hasCurrentText(lang)
 
-    def changeLanguage(self, tags):
-        edit = self._lineEdit(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
-        edit.changeText(tags)
+    def changeLanguage(self, lang):
+        combo = self._combobox(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
+        combo.changeText(lang)
 
-    def _dateTimeEdit(self, matching):
-        return DateTimeEditDriver.findSingle(self, QTimeEdit, matching)
+    def selectLanguage(self, lang):
+        combo = self._combobox(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
+        combo.selectOption(lang)
 
     def showsPreviewTime(self, time):
         edit = self._dateTimeEdit(named(TrackEditionPage.PREVIEW_TIME_FIELD_NAME))
         edit.hasTime(time)
+
+    def _dateTimeEdit(self, matching):
+        return DateTimeEditDriver.findSingle(self, QTimeEdit, matching)
+
+    def _combobox(self, matching):
+        return ComboBoxDriver.findSingle(self, QComboBox, matching)
