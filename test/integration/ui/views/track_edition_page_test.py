@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
-from hamcrest import has_properties
+from hamcrest import has_properties, contains_string
 
 # noinspection PyUnresolvedReferences
 import use_sip_api_v2
@@ -28,15 +28,19 @@ class TrackEditionPageTest(ViewTest):
     def testDisplaysAlbumBanner(self):
         album = build.album(releaseName='Album Title', leadPerformer='Artist')
         track = build.track()
+        album.addTrack(build.track())
         album.addTrack(track)
+        album.addTrack(build.track())
         self.page.updateTrack(track, album)
 
-        self.driver.showsAlbumTitleInBanner('Album Title')
-        self.driver.showsAlbumLeadPerformerInBanner('Artist')
+        self.driver.showsAlbumTitle('Album Title')
+        self.driver.showsAlbumLeadPerformer('Artist')
 
         album.compilation = True
         self.page.updateTrack(track, album)
-        self.driver.showsAlbumLeadPerformerInBanner('Various Artists')
+        self.driver.showsAlbumLeadPerformer('Various Artists')
+
+        self.driver.showsTrackNumber(contains_string('2 of 3'))
 
     def testDisplaysTrackMetadata(self):
         track = build.track(bitrate=192000,
@@ -53,8 +57,7 @@ class TrackEditionPageTest(ViewTest):
                             tags='Tag1 Tag2 Tag3',
                             lyrics='Lyrics\n...\n...',
                             language='eng')
-        album = build.album(tracks=[build.track(), build.track()])
-        album.insertTrack(track, 1)
+        album = build.album(tracks=[track])
 
         self.page.updateTrack(track, album)
 
@@ -63,8 +66,6 @@ class TrackEditionPageTest(ViewTest):
         self.driver.showsVersionInfo('Remix')
         self.driver.showsBitrate('192 kbps')
         self.driver.showsDuration('04:35')
-        self.driver.showsTrackNumber('2')
-        self.driver.showsTotalTracks('3')
         self.driver.showsFeaturedGuest('Featuring')
         self.driver.showsLyricist('Lyricist')
         self.driver.showsComposer('Composer')

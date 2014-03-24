@@ -26,7 +26,7 @@ from tgit.ui import display, style
 from tgit.ui.widgets.text_area import TextArea
 
 
-def scaleTo(image, width, height):
+def scaleImage(image, width, height):
     if image is None:
         return QPixmap()
     scaledImage = QImage.fromData(image.data).scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -41,12 +41,25 @@ def addLabelledFields(form, *fields):
         form.addRow(label, field)
 
 
+def makeLabel(name):
+    label = QLabel()
+    label.setObjectName(name)
+    return label
+
+
+def makeButton(name):
+    button = QPushButton()
+    button.setObjectName(name)
+    style.enableButton(button)
+    return button
+
+
 class AlbumEditionPage(QWidget):
     NAME = 'album-edition-page'
 
     PICTURES_FIELD_SET_NAME = 'pictures'
     FRONT_COVER_FIELD_NAME = 'front-cover'
-    FRONT_COVER_SIZE = (350, 350)
+    FRONT_COVER_SIZE = 350, 350
     SELECT_PICTURE_BUTTON_NAME = 'select-picture'
     REMOVE_PICTURE_BUTTON_NAME = 'remove-picture'
 
@@ -75,6 +88,8 @@ class AlbumEditionPage(QWidget):
 
     def __init__(self):
         QWidget.__init__(self)
+        self._attachedPicture = None
+
         self._build()
         self._disableMacFocusFrame()
         self._disableTeaserFields()
@@ -137,9 +152,10 @@ class AlbumEditionPage(QWidget):
     def _makePicturesFieldSet(self):
         fieldSet = QGroupBox()
         fieldSet.setObjectName(self.PICTURES_FIELD_SET_NAME)
-        self._attachedPictureLabel = self._makeFrontCoverPictureField()
-        self._selectPictureButton = self._makeSelectPictureButton()
-        self._removePictureButton = self._makeRemovePictureButton()
+        self._attachedPictureLabel = makeLabel(self.FRONT_COVER_FIELD_NAME)
+        self._attachedPictureLabel.setFixedSize(*self.FRONT_COVER_SIZE)
+        self._selectPictureButton = makeButton(self.SELECT_PICTURE_BUTTON_NAME)
+        self._removePictureButton = makeButton(self.REMOVE_PICTURE_BUTTON_NAME)
 
         layout = style.verticalLayout()
         layout.addWidget(self._attachedPictureLabel)
@@ -152,25 +168,6 @@ class AlbumEditionPage(QWidget):
 
         fieldSet.setLayout(layout)
         return fieldSet
-
-    def _makeFrontCoverPictureField(self):
-        label = QLabel()
-        label.setObjectName(self.FRONT_COVER_FIELD_NAME)
-        label.setFixedSize(*self.FRONT_COVER_SIZE)
-        self._attachedPicture = None
-        return label
-
-    def _makeSelectPictureButton(self):
-        button = QPushButton()
-        button.setObjectName(self.SELECT_PICTURE_BUTTON_NAME)
-        style.enableButton(button)
-        return button
-
-    def _makeRemovePictureButton(self):
-        button = QPushButton()
-        button.setObjectName(self.REMOVE_PICTURE_BUTTON_NAME)
-        style.enableButton(button)
-        return button
 
     def _makeDatesFieldSet(self):
         fieldSet = QGroupBox()
@@ -287,7 +284,7 @@ class AlbumEditionPage(QWidget):
 
     def _displayAttachedPicture(self, image):
         self._attachedPicture = image
-        self._attachedPictureLabel.setPixmap(scaleTo(image, *self.FRONT_COVER_SIZE))
+        self._attachedPictureLabel.setPixmap(scaleImage(image, *self.FRONT_COVER_SIZE))
 
     @property
     def albumMetadata(self):

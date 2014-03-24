@@ -117,7 +117,7 @@ Sheet = """
     }
 
     QStackedWidget {
-        margin: 15px;
+        margin: 0 15px 15px 15px;
     }
 
     #navigation {
@@ -297,7 +297,7 @@ Sheet = """
         border: 1px solid #DDDDDD;
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
         background-color: white;
-        padding: 17px 14px 10px 0px;
+        padding: 17px 14px 14px 0px;
         margin: 5px 8px;
         font-size: 10px;
     }
@@ -467,31 +467,32 @@ Sheet = """
         border: 1px solid #DDDDDD;
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
         margin: 0px 8px;
-        padding: 15px;
-        max-height: 90px;
+        padding: 14px;
+        max-height: 50px;
     }
 
     #album-banner #album-cover {
-        min-width: 60px;
-        max-width: 60px;
-        min-height: 60px;
-        max-height: 60px;
+        min-width: 50px;
+        max-width: 50px;
+        min-height: 50px;
+        max-height: 50px;
         background-color: #F9F9F9;
         margin-right: 15px;
     }
 
-    #album-banner QLabel[title='h2'] {
-        font-size: 20px;
+    #album-banner QLabel {
         color: #777777;
         padding: 0;
         margin: 0;
+        min-width: 0;
+    }
+
+    #album-banner QLabel[title='h2'] {
+        font-size: 20px;
     }
 
     #album-banner QLabel[title='h3'] {
         font-size: 14px;
-        color: #777777;
-        padding: 0;
-        margin: 0;
     }
  """
 

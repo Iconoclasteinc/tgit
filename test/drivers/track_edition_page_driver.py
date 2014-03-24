@@ -70,12 +70,12 @@ class TrackEditionPageDriver(WidgetDriver):
     def _lineEdit(self, matching):
         return LineEditDriver.findSingle(self, QLineEdit, matching)
 
-    def showsAlbumTitleInBanner(self, title):
+    def showsAlbumTitle(self, title):
         label = self._label(named(TrackEditionPage.ALBUM_TITLE_BANNER_NAME))
         label.isShowingOnScreen()
         label.hasText(title)
 
-    def showsAlbumLeadPerformerInBanner(self, name):
+    def showsAlbumLeadPerformer(self, name):
         label = self._label(named(TrackEditionPage.ALBUM_LEAD_PERFORMER_BANNER_NAME))
         label.isShowingOnScreen()
         label.hasText(name)
@@ -125,16 +125,9 @@ class TrackEditionPageDriver(WidgetDriver):
         value.hasText(text)
 
     def showsTrackNumber(self, number):
-        label = self._label(withBuddy(named(TrackEditionPage.TRACK_NUMBER_FIELD_NAME)))
+        label = self._label(named(TrackEditionPage.TRACK_NUMBER_BANNER_NAME))
         label.isShowingOnScreen()
-        value = self._label(named(TrackEditionPage.TRACK_NUMBER_FIELD_NAME))
-        value.hasText(number)
-
-    def showsTotalTracks(self, count):
-        label = self._label(withBuddy(named(TrackEditionPage.TOTAL_TRACKS_FIELD_NAME)))
-        label.isShowingOnScreen()
-        value = self._label(named(TrackEditionPage.TOTAL_TRACKS_FIELD_NAME))
-        value.hasText(count)
+        label.hasText(number)
 
     def showsDuration(self, text):
         label = self._label(withBuddy(named(TrackEditionPage.DURATION_FIELD_NAME)))

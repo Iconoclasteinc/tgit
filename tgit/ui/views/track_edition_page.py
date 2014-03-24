@@ -88,6 +88,7 @@ class TrackEditionPage(QWidget):
     ALBUM_COVER_BANNER_SIZE = 60, 60
     ALBUM_TITLE_BANNER_NAME = 'album-title'
     ALBUM_LEAD_PERFORMER_BANNER_NAME = 'album-lead-performer'
+    TRACK_NUMBER_BANNER_NAME = 'track-number'
 
     TRACK_TITLE_FIELD_NAME = 'track-title'
     LEAD_PERFORMER_FIELD_NAME = 'lead-performer'
@@ -98,8 +99,6 @@ class TrackEditionPage(QWidget):
 
     FEATURED_GUEST_FIELD_NAME = 'featured-guest'
     DURATION_FIELD_NAME = 'duration'
-    TRACK_NUMBER_FIELD_NAME = 'track-number'
-    TOTAL_TRACKS_FIELD_NAME = 'total-tracks'
     BITRATE_FIELD_NAME = 'bitrate'
     LYRICIST_FIELD_NAME = 'lyricist'
     COMPOSER_FIELD_NAME = 'composer'
@@ -146,25 +145,42 @@ class TrackEditionPage(QWidget):
         header = QFrame()
         header.setObjectName(self.ALBUM_BANNER_NAME)
         layout = style.horizontalLayout()
-        self._albumCoverBannerLabel = makeLabel(self.ALBUM_COVER_BANNER_NAME)
-        self._albumCoverBannerLabel.setFixedSize(*self.ALBUM_COVER_BANNER_SIZE)
-        layout.addWidget(self._albumCoverBannerLabel)
+        layout.addWidget(self._makeAlbumCover())
         layout.addWidget(self._makeAlbumTitle())
         layout.addStretch()
+        layout.addWidget(self._makeTrackNumbering())
         header.setLayout(layout)
         return header
+
+    def _makeAlbumCover(self):
+        self._albumCoverBannerLabel = makeLabel(self.ALBUM_COVER_BANNER_NAME)
+        self._albumCoverBannerLabel.setFixedSize(*self.ALBUM_COVER_BANNER_SIZE)
+        cover = self._albumCoverBannerLabel
+        return cover
 
     def _makeAlbumTitle(self):
         title = QWidget()
         layout = style.verticalLayout()
+        layout.addStretch()
         self._albumTitleBannerLabel = makeLabel(self.ALBUM_TITLE_BANNER_NAME)
         self._albumTitleBannerLabel.setProperty('title', 'h2')
         layout.addWidget(self._albumTitleBannerLabel)
         self._albumLeadPerformerBannerLabel = makeLabel(self.ALBUM_LEAD_PERFORMER_BANNER_NAME)
         self._albumLeadPerformerBannerLabel.setProperty('title', 'h3')
         layout.addWidget(self._albumLeadPerformerBannerLabel)
+        layout.addStretch()
         title.setLayout(layout)
         return title
+
+    def _makeTrackNumbering(self):
+        numbering = QWidget()
+        layout = style.verticalLayout()
+        layout.addStretch()
+        self._trackNumberBannerLabel = makeLabel(self.TRACK_NUMBER_BANNER_NAME)
+        self._trackNumberBannerLabel.setProperty('title', 'h3')
+        layout.addWidget(self._trackNumberBannerLabel)
+        numbering.setLayout(layout)
+        return numbering
 
     def _makeMainContent(self):
         content = QWidget()
@@ -207,12 +223,9 @@ class TrackEditionPage(QWidget):
         self._trackTitleLineEdit = makeLineEdit(self.TRACK_TITLE_FIELD_NAME)
         self._leadPerformerLineEdit = makeLineEdit(self.LEAD_PERFORMER_FIELD_NAME)
         self._versionInfoLineEdit = makeLineEdit(self.VERSION_INFO_FIELD_NAME)
-        self._trackNumberLabel = makeLabel(self.TRACK_NUMBER_FIELD_NAME)
-        self._totalTracksLabel = makeLabel(self.TOTAL_TRACKS_FIELD_NAME)
 
         form = style.formLayout()
-        addLabelledFields(form, self._trackTitleLineEdit, self._leadPerformerLineEdit, self._versionInfoLineEdit,
-                          self._trackNumberLabel, self._totalTracksLabel)
+        addLabelledFields(form, self._trackTitleLineEdit, self._leadPerformerLineEdit, self._versionInfoLineEdit)
         fieldSet.setLayout(form)
         return fieldSet
 
@@ -258,15 +271,16 @@ class TrackEditionPage(QWidget):
     def updateTrack(self, track, album):
         self._albumCoverBannerLabel.setPixmap(scaleImage(album.mainCover, *self.ALBUM_COVER_BANNER_SIZE))
         self._albumTitleBannerLabel.setText(album.releaseName)
-        self._albumLeadPerformerBannerLabel.setText(album.compilation and self.tr('Various Artists') or album.leadPerformer)
+        self._albumLeadPerformerBannerLabel.setText(
+            album.compilation and self.tr('Various Artists') or album.leadPerformer)
+        self._trackNumberBannerLabel.setText(
+            self.tr('Track %d of %d') % (album.positionOf(track) + 1, len(album)))
         self._trackTitleLineEdit.setText(track.trackTitle)
         self._leadPerformerLineEdit.setText(track.leadPerformer)
         self._leadPerformerLineEdit.setEnabled(track.compilation is True)
         self._versionInfoLineEdit.setText(track.versionInfo)
         self._durationLabel.setText(display.asDuration(track.duration))
         self._bitrateLabel.setText('%s kbps' % display.inKbps(track.bitrate))
-        self._trackNumberLabel.setText(str(album.positionOf(track) + 1))
-        self._totalTracksLabel.setText(str(len(album)))
         self._featuredGuestLineEdit.setText(track.featuredGuest)
         self._lyricistLineEdit.setText(track.lyricist)
         self._composerLineEdit.setText(track.composer)
@@ -316,8 +330,6 @@ class TrackEditionPage(QWidget):
         self._labelFor(self._trackTitleLineEdit).setText(self.tr('Track Title: '))
         self._labelFor(self._leadPerformerLineEdit).setText(self.tr('Lead Performer: '))
         self._labelFor(self._versionInfoLineEdit).setText(self.tr('Version Information: '))
-        self._labelFor(self._trackNumberLabel).setText(self.tr('Track Number: '))
-        self._labelFor(self._totalTracksLabel).setText(self.tr('Total Tracks: '))
 
     def _translateContributorFields(self):
         self._contributorsFieldSet.setTitle(self.tr('CONTRIBUTORS'))
