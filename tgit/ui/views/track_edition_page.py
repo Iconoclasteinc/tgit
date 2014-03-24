@@ -86,8 +86,9 @@ class TrackEditionPage(QWidget):
     ALBUM_BANNER_NAME = 'album-banner'
     ALBUM_COVER_BANNER_NAME = 'album-cover'
     ALBUM_COVER_BANNER_SIZE = 60, 60
-    ALBUM_TITLE_BANNER_NAME = 'album-title'
     ALBUM_LEAD_PERFORMER_BANNER_NAME = 'album-lead-performer'
+    ALBUM_TITLE_BANNER_NAME = 'album-title'
+    ALBUM_LABEL_BANNER_NAME = 'album-label'
     TRACK_NUMBER_BANNER_NAME = 'track-number'
 
     TRACK_TITLE_FIELD_NAME = 'track-title'
@@ -148,6 +149,9 @@ class TrackEditionPage(QWidget):
         layout.addWidget(self._makeAlbumCover())
         layout.addWidget(self._makeAlbumTitle())
         layout.addStretch()
+        layout.addWidget(self._makeAlbumLabel())
+        layout.addStretch()
+        layout.addStretch()
         layout.addWidget(self._makeTrackNumbering())
         header.setLayout(layout)
         return header
@@ -161,7 +165,7 @@ class TrackEditionPage(QWidget):
     def _makeAlbumTitle(self):
         title = QWidget()
         layout = style.verticalLayout()
-        layout.addStretch()
+        # layout.addStretch()
         self._albumTitleBannerLabel = makeLabel(self.ALBUM_TITLE_BANNER_NAME)
         self._albumTitleBannerLabel.setProperty('title', 'h2')
         layout.addWidget(self._albumTitleBannerLabel)
@@ -171,6 +175,20 @@ class TrackEditionPage(QWidget):
         layout.addStretch()
         title.setLayout(layout)
         return title
+
+    def _makeAlbumLabel(self):
+        label = QWidget()
+        layout = style.verticalLayout()
+        layout.addStretch()
+        self._albumLabelBannerLabel = makeLabel(self.ALBUM_LABEL_BANNER_NAME)
+        self._albumLabelBannerLabel.setProperty('title', 'h2')
+        layout.addWidget(self._albumLabelBannerLabel)
+        push = QLabel()
+        push.setProperty('title', 'h3')
+        layout.addWidget(push)
+        layout.addStretch()
+        label.setLayout(layout)
+        return label
 
     def _makeTrackNumbering(self):
         numbering = QWidget()
@@ -273,6 +291,7 @@ class TrackEditionPage(QWidget):
         self._albumTitleBannerLabel.setText(album.releaseName)
         self._albumLeadPerformerBannerLabel.setText(
             album.compilation and self.tr('Various Artists') or album.leadPerformer)
+        self._albumLabelBannerLabel.setText(album.labelName)
         self._trackNumberBannerLabel.setText(
             self.tr('Track %d of %d') % (album.positionOf(track) + 1, len(album)))
         self._trackTitleLineEdit.setText(track.trackTitle)

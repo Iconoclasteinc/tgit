@@ -477,6 +477,7 @@ Sheet = """
         min-height: 50px;
         max-height: 50px;
         background-color: #F9F9F9;
+        border: 1px solid #B8B8B8;
         margin-right: 15px;
     }
 
@@ -488,7 +489,7 @@ Sheet = """
     }
 
     #album-banner QLabel[title='h2'] {
-        font-size: 20px;
+        font-size: 22px;
     }
 
     #album-banner QLabel[title='h3'] {

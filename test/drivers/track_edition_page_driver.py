@@ -70,22 +70,32 @@ class TrackEditionPageDriver(WidgetDriver):
     def _lineEdit(self, matching):
         return LineEditDriver.findSingle(self, QLineEdit, matching)
 
-    def showsAlbumTitle(self, title):
-        label = self._label(named(TrackEditionPage.ALBUM_TITLE_BANNER_NAME))
-        label.isShowingOnScreen()
-        label.hasText(title)
-
-    def showsAlbumLeadPerformer(self, name):
-        label = self._label(named(TrackEditionPage.ALBUM_LEAD_PERFORMER_BANNER_NAME))
-        label.isShowingOnScreen()
-        label.hasText(name)
-
     def displaysAlbumCover(self):
         label = self._label(named(TrackEditionPage.ALBUM_COVER_BANNER_NAME))
         label.isShowingOnScreen()
         height, width = TrackEditionPage.ALBUM_COVER_BANNER_SIZE
         label.hasPixmap(withPixmapHeight(height))
         label.hasPixmap(withPixmapWidth(width))
+
+    def showsAlbumLeadPerformer(self, name):
+        label = self._label(named(TrackEditionPage.ALBUM_LEAD_PERFORMER_BANNER_NAME))
+        label.isShowingOnScreen()
+        label.hasText(name)
+
+    def showsAlbumTitle(self, title):
+        label = self._label(named(TrackEditionPage.ALBUM_TITLE_BANNER_NAME))
+        label.isShowingOnScreen()
+        label.hasText(title)
+
+    def showsAlbumLabel(self, name):
+        label = self._label(named(TrackEditionPage.ALBUM_LABEL_BANNER_NAME))
+        label.isShowingOnScreen()
+        label.hasText(name)
+
+    def showsTrackNumber(self, number):
+        label = self._label(named(TrackEditionPage.TRACK_NUMBER_BANNER_NAME))
+        label.isShowingOnScreen()
+        label.hasText(number)
 
     def showsTrackTitle(self, trackTitle):
         label = self._label(withBuddy(named(TrackEditionPage.TRACK_TITLE_FIELD_NAME)))
@@ -117,23 +127,6 @@ class TrackEditionPageDriver(WidgetDriver):
     def changeVersionInfo(self, info):
         edit = LineEditDriver.findSingle(self, QLineEdit, named(TrackEditionPage.VERSION_INFO_FIELD_NAME))
         edit.changeText(info)
-
-    def showsBitrate(self, text):
-        label = self._label(withBuddy(named(TrackEditionPage.BITRATE_FIELD_NAME)))
-        label.isShowingOnScreen()
-        value = self._label(named(TrackEditionPage.BITRATE_FIELD_NAME))
-        value.hasText(text)
-
-    def showsTrackNumber(self, number):
-        label = self._label(named(TrackEditionPage.TRACK_NUMBER_BANNER_NAME))
-        label.isShowingOnScreen()
-        label.hasText(number)
-
-    def showsDuration(self, text):
-        label = self._label(withBuddy(named(TrackEditionPage.DURATION_FIELD_NAME)))
-        label.isShowingOnScreen()
-        value = self._label(named(TrackEditionPage.DURATION_FIELD_NAME))
-        value.hasText(text)
 
     def showsFeaturedGuest(self, name):
         label = self._label(withBuddy(named(TrackEditionPage.FEATURED_GUEST_FIELD_NAME)))
@@ -234,6 +227,18 @@ class TrackEditionPageDriver(WidgetDriver):
     def showsPreviewTime(self, time):
         edit = self._dateTimeEdit(named(TrackEditionPage.PREVIEW_TIME_FIELD_NAME))
         edit.hasTime(time)
+
+    def showsBitrate(self, text):
+        label = self._label(withBuddy(named(TrackEditionPage.BITRATE_FIELD_NAME)))
+        label.isShowingOnScreen()
+        value = self._label(named(TrackEditionPage.BITRATE_FIELD_NAME))
+        value.hasText(text)
+
+    def showsDuration(self, text):
+        label = self._label(withBuddy(named(TrackEditionPage.DURATION_FIELD_NAME)))
+        label.isShowingOnScreen()
+        value = self._label(named(TrackEditionPage.DURATION_FIELD_NAME))
+        value.hasText(text)
 
     def _dateTimeEdit(self, matching):
         return DateTimeEditDriver.findSingle(self, QTimeEdit, matching)
