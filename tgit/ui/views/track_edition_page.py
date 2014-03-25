@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from dateutil import tz, parser as dateparser
+
 from PyQt4.QtCore import Qt
 
 from PyQt4.QtGui import (QLabel, QLineEdit, QTimeEdit, QWidget, QSizePolicy, QGroupBox, QComboBox, QPixmap, QImage,
@@ -109,6 +111,7 @@ class TrackEditionPage(QWidget):
     TAGS_FIELD_NAME = 'tags'
     LANGUAGE_FIELD_NAME = 'language'
     PREVIEW_TIME_FIELD_NAME = 'preview-time'
+    SOFTWARE_NOTICE_FIELD_NAME = 'software-notice'
 
     DURATION_FORMAT = 'mm:ss'
 
@@ -165,7 +168,6 @@ class TrackEditionPage(QWidget):
     def _makeAlbumTitle(self):
         title = QWidget()
         layout = style.verticalLayout()
-        # layout.addStretch()
         self._albumTitleBannerLabel = makeLabel(self.ALBUM_TITLE_BANNER_NAME)
         self._albumTitleBannerLabel.setProperty('title', 'h2')
         layout.addWidget(self._albumTitleBannerLabel)
@@ -224,6 +226,13 @@ class TrackEditionPage(QWidget):
         column.setLayout(layout)
         return column
 
+    def _makeNotice(self):
+        layout = style.horizontalLayout()
+        layout.addStretch()
+        self._softwareNotice = makeLabel(self.SOFTWARE_NOTICE_FIELD_NAME)
+        layout.addWidget(self._softwareNotice)
+        return layout
+
     def _makeRightColumn(self):
         column = QWidget()
         column.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
@@ -232,6 +241,7 @@ class TrackEditionPage(QWidget):
         layout = style.verticalLayout()
         layout.addWidget(self._contentFieldSet)
         layout.addStretch()
+        layout.addLayout(self._makeNotice())
 
         column.setLayout(layout)
         return column
@@ -308,6 +318,19 @@ class TrackEditionPage(QWidget):
         self._tagsLineEdit.setText(track.tags)
         self._lyricsTextArea.setPlainText(track.lyrics)
         self._languageComboBox.setEditText(track.language)
+        date, time = self._parseTaggingTime(track)
+        if date and time:
+            self._softwareNotice.setText(
+                self.tr('Tagged with %s on %s at %s' % (track.tagger, date, time)))
+
+    @staticmethod
+    def _parseTaggingTime(track):
+        try:
+            localTaggingTime = dateparser.parse(track.taggingTime).astimezone(tz.tzlocal())
+        except:
+            return None, None
+
+        return localTaggingTime.strftime('%Y-%m-%d'), localTaggingTime.strftime('%H:%M:%S')
 
     @property
     def trackMetadata(self):

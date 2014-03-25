@@ -72,6 +72,8 @@ ISRC = 'isrc'
 TAGS = 'tags'
 LYRICS = 'lyrics'
 LANGUAGE = 'language'
+TAGGER = 'tagger'
+TAGGING_TIME = 'taggingTime'
 
 TRACK_TAGS = [
     TRACK_TITLE,
@@ -88,6 +90,8 @@ TRACK_TAGS = [
     LANGUAGE,
     BITRATE,
     DURATION,
+    TAGGER,
+    TAGGING_TIME
 ]
 
 

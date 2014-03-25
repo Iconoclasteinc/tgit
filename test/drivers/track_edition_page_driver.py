@@ -40,8 +40,6 @@ class TrackEditionPageDriver(WidgetDriver):
                 self.showsDuration(value)
             elif tag == 'trackNumber':
                 self.showsTrackNumber(value)
-            elif tag == 'totalTracks':
-                self.showsTotalTracks(value)
             else:
                 raise AssertionError("Don't know how to verify <%s>" % tag)
 
@@ -239,6 +237,11 @@ class TrackEditionPageDriver(WidgetDriver):
         label.isShowingOnScreen()
         value = self._label(named(TrackEditionPage.DURATION_FIELD_NAME))
         value.hasText(text)
+
+    def showsSoftwareNotice(self, notice):
+        label = self._label(named(TrackEditionPage.SOFTWARE_NOTICE_FIELD_NAME))
+        label.isShowingOnScreen()
+        label.hasText(notice)
 
     def _dateTimeEdit(self, matching):
         return DateTimeEditDriver.findSingle(self, QTimeEdit, matching)

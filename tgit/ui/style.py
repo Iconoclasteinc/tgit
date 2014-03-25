@@ -495,6 +495,11 @@ Sheet = """
     #album-banner QLabel[title='h3'] {
         font-size: 14px;
     }
+
+    #track-edition-page #software-notice {
+        font-size: 10px;
+        margin-right: 8px;
+    }
  """
 
 MAC = hasattr(QtGui, "qt_mac_set_native_menubar")

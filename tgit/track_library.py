@@ -19,6 +19,10 @@
 import os
 import re
 import shutil
+from datetime import datetime
+from dateutil import tz
+
+from tgit import tags, __version__
 
 from tgit.track import Track
 
@@ -31,8 +35,8 @@ class TrackStorage(object):
     @staticmethod
     def filenameFor(track):
         return sanitize(u"{artist} - {title}.{format}".format(artist=track.leadPerformer,
-                                                            title=track.trackTitle,
-                                                            format='mp3'))
+                                                              title=track.trackTitle,
+                                                              format='mp3'))
 
     @staticmethod
     def add(track):
@@ -43,15 +47,27 @@ class TrackStorage(object):
         return copy
 
 
+class SystemClock(object):
+    @staticmethod
+    def now():
+        return datetime.now(tz.tzlocal())
+
+
 class TrackLibrary(object):
-    def __init__(self, container, storage=TrackStorage()):
+    def __init__(self, container, storage=TrackStorage(), clock=SystemClock()):
         self._container = container
         self._storage = storage
+        self._clock = clock
 
     def fetch(self, name):
         metadata = self._container.load(name)
         track = Track(name, metadata)
+        track.tagger  = 'TGiT v1.0'
+        track.taggingTime = '2014-03-26 13:16:18 EDT-0400'
         return track
 
     def store(self, track):
-        self._container.save(self._storage.add(track), track.metadata)
+        metadata = track.metadata
+        metadata[tags.TAGGER] = 'TGiT v' + __version__
+        metadata[tags.TAGGING_TIME] = self._clock.now().strftime('%Y-%m-%d %H:%M:%S %Z%z')
+        self._container.save(self._storage.add(track), metadata)

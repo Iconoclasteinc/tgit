@@ -19,5 +19,5 @@ setup(
     py_modules=['use_sip_api_v2'],
     packages=['tgit'],
     scripts=['tgit.py'],
-    requires=['mutagen', 'PyQt4']
+    requires=['mutagen', 'python-dateutil', 'PyQt4']
 )

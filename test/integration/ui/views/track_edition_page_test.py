@@ -136,3 +136,11 @@ class TrackEditionPageTest(ViewTest):
         changes.expect(has_properties(language='fra'))
         self.driver.selectLanguage('fra')
         self.check(changes)
+
+    def testDisplaysSoftwareNoticeInLocalTime(self):
+        track = build.track(tagger='TGiT v1.0', taggingTime='2014-03-23 20:33:00 UTC+0000')
+        album = build.album(tracks=[track])
+
+        self.page.updateTrack(track, album)
+
+        self.driver.showsSoftwareNotice('Tagged with TGiT v1.0 on 2014-03-23 at 16:33:00')
