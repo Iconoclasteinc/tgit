@@ -5,6 +5,8 @@ from setuptools import setup
 # noinspection PyUnresolvedReferences
 import use_sip_api_v2
 
+from tgit import __version__
+
 setup(
     name='tgit',
     description='TGit',
@@ -12,7 +14,7 @@ setup(
     url='http://tagtamusique.com',
     download_url='https://bitbucket.org/tagtamusique/tgit',
     author_email='jr@iconoclaste.ca',
-    version='0.9',
+    version=__version__,
     test_suite='test',
     py_modules=['use_sip_api_v2'],
     packages=['tgit'],
