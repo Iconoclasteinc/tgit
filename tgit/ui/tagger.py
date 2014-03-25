@@ -57,6 +57,7 @@ class Tagger(AlbumPortfolioListener):
         self._menuBar.enableAlbumMenu()
         self._director = AlbumDirector(album, TrackLibrary(ID3Tagger()), self._audioPlayer)
         self._director.addTracksToAlbum()
+        self._exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING))
         self._mainWindow.show(self._director.render())
 
     def addFiles(self):
@@ -65,6 +66,5 @@ class Tagger(AlbumPortfolioListener):
     def addFolder(self):
         self._director.addTracksToAlbum(folders=True)
 
-    def export(self, album):
-        exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING))
-        exporter.show()
+    def export(self):
+        self._exporter.show()

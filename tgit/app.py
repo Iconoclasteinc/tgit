@@ -41,8 +41,8 @@ RESOURCES = ':/resources'
 class TGiT(QApplication):
     def __init__(self, player, codec=UTF_8):
         QApplication.__init__(self, [])
-        self._player = player
         QTextCodec.setCodecForTr(QTextCodec.codecForName(codec))
+        self._player = player
 
     def _locale(self, locale):
         self._translators = []
