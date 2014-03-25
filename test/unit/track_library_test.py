@@ -65,16 +65,23 @@ class TrackLibraryTest(unittest.TestCase):
         track = self.library.fetch('summertime.mp3')
         assert_that(track.metadata, equal_to(metadata), 'track metadata')
 
-    def testRecordsTaggingTimeAndSoftwareWhenSavingToContainer(self):
+    def testRecordsTaggerAndTagginTimeWhenSavingToContainer(self):
+        tagger = 'TGiT v' + __version__
+        taggingTime = '2014-03-23 16:44:33 EDT-0400'
+        self.clock.should_receive('now').and_return(datetime(2014, 03, 23, 16, 44, 33, tzinfo=tz.tzlocal()))
+
         metadata = build.metadata(trackTitle='Summertime',
                                   releaseName='My Favorite Things',
                                   images=[('image/jpeg', 'Front Cover', 'data')])
 
-        embed = metadata.copy()
-        embed[tags.TAGGER] = 'TGiT v' + __version__
-        embed[tags.TAGGING_TIME] = '2014-03-23 16:44:33 EDT-0400'
 
+        embed = metadata.copy()
+        embed[tags.TAGGER] = tagger
+        embed[tags.TAGGING_TIME] = taggingTime
         self.container.should_receive('save').with_args('summertime.mp3', embed).once()
 
-        self.clock.should_receive('now').and_return(datetime(2014, 03, 23, 16, 44, 33, tzinfo=tz.tzlocal()))
-        self.library.store(Track('summertime.mp3', metadata))
+        track = Track('summertime.mp3', metadata)
+        self.library.store(track)
+
+        assert_that(track.tagger, equal_to(tagger), 'track tagger')
+        assert_that(track.taggingTime, equal_to(taggingTime), 'track tagging time')

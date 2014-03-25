@@ -61,13 +61,9 @@ class TrackLibrary(object):
 
     def fetch(self, name):
         metadata = self._container.load(name)
-        track = Track(name, metadata)
-        track.tagger  = 'TGiT v1.0'
-        track.taggingTime = '2014-03-26 13:16:18 EDT-0400'
-        return track
+        return Track(name, metadata)
 
     def store(self, track):
-        metadata = track.metadata
-        metadata[tags.TAGGER] = 'TGiT v' + __version__
-        metadata[tags.TAGGING_TIME] = self._clock.now().strftime('%Y-%m-%d %H:%M:%S %Z%z')
-        self._container.save(self._storage.add(track), metadata)
+        track.tagger = 'TGiT v' + __version__
+        track.taggingTime = self._clock.now().strftime('%Y-%m-%d %H:%M:%S %Z%z')
+        self._container.save(self._storage.add(track), track.metadata)
