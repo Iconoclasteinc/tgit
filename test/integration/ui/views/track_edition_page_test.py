@@ -138,11 +138,13 @@ class TrackEditionPageTest(ViewTest):
         self.check(changes)
 
     def testDisplaysSoftwareNoticeInLocalTime(self):
-        track = build.track(tagger='TGiT v1.0', taggingTime='2014-03-23 20:33:00 UTC+0000')
+        track = build.track(tagger='TGiT v1.0', taggingTime='2014-03-23 20:33:00 +0000')
         album = build.album(tracks=[track])
 
         self.page.updateTrack(track, album)
 
+        # This will likely fail when ran on another timezone or even when daylight savings
+        # change, but I don't yet know how to best write the test
         self.driver.showsSoftwareNotice('Tagged with TGiT v1.0 on 2014-03-23 at 16:33:00')
 
     def testOmitsSoftwareNoticeIfTaggerInformationUnavailable(self):

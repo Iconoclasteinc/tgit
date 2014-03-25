@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import tempfile
-import shutil
 
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 from test.util import mp3_file as mp3

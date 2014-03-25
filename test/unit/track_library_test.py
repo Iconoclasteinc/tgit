@@ -67,7 +67,7 @@ class TrackLibraryTest(unittest.TestCase):
 
     def testRecordsTaggerAndTagginTimeWhenSavingToContainer(self):
         tagger = 'TGiT v' + __version__
-        taggingTime = '2014-03-23 16:44:33 EDT-0400'
+        taggingTime = '2014-03-23 16:44:33 -0400'
         self.clock.should_receive('now').and_return(datetime(2014, 03, 23, 16, 44, 33, tzinfo=tz.tzlocal()))
 
         metadata = build.metadata(trackTitle='Summertime',
