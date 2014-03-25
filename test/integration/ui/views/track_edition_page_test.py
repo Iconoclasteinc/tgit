@@ -144,3 +144,17 @@ class TrackEditionPageTest(ViewTest):
         self.page.updateTrack(track, album)
 
         self.driver.showsSoftwareNotice('Tagged with TGiT v1.0 on 2014-03-23 at 16:33:00')
+
+    def testOmitsSoftwareNoticeIfTaggerInformationUnavailable(self):
+        track = build.track(taggingTime='2014-03-23 20:33:00 UTC+0000')
+        album = build.album(tracks=[track])
+
+        self.page.updateTrack(track, album)
+        self.driver.showsSoftwareNotice('')
+
+    def testOmitsSoftwareNoticeIfTaggingDateMalformed(self):
+        track = build.track(tagger='TGiT v1.0', taggingTime='@$%@#$%#@$%#@%#@$')
+        album = build.album(tracks=[track])
+
+        self.page.updateTrack(track, album)
+        self.driver.showsSoftwareNotice('')

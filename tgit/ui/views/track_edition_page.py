@@ -319,7 +319,7 @@ class TrackEditionPage(QWidget):
         self._lyricsTextArea.setPlainText(track.lyrics)
         self._languageComboBox.setEditText(track.language)
         date, time = self._parseTaggingTime(track)
-        if date and time:
+        if track.tagger and date and time:
             self._softwareNotice.setText(
                 self.tr('Tagged with %s on %s at %s' % (track.tagger, date, time)))
 
