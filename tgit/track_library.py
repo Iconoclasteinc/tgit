@@ -65,5 +65,5 @@ class TrackLibrary(object):
 
     def store(self, track):
         track.tagger = 'TGiT v' + __version__
-        track.taggingTime = self._clock.now().strftime('%Y-%m-%d %H:%M:%S %Z%z')
+        track.taggingTime = self._clock.now().strftime('%Y-%m-%d %H:%M:%S %z')
         self._container.save(self._storage.add(track), track.metadata)
