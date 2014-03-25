@@ -105,6 +105,10 @@ class Mp3File(object):
                 self.addTag(id3.TCON(encoding=UTF_8, text=value))
             elif tag == tagging.COMPILATION or tag == 'TCMP':
                 self.addTag(id3.TCMP(encoding=UTF_8, text=value))
+            elif tag == tagging.TAGGER or tag == 'TXXX_TAGGER':
+                self.addTag(id3.TXXX(encoding=UTF_8, desc='Tagger', text=value))
+            elif tag == tagging.TAGGING_TIME or tag == 'TXXX_TAGGING_TIME':
+                self.addTag(id3.TXXX(encoding=UTF_8, desc='Tagging Time', text=value))
             else:
                 raise AssertionError("Knows nothing about '%s'" % tag)
 

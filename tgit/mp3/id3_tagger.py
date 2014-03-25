@@ -191,6 +191,8 @@ class ID3Tagger(object):
                      'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
                      'TXXX:Featured Guest': tagging.FEATURED_GUEST,
                      'TXXX:Tags': tagging.TAGS,
+                     'TXXX:Tagger': tagging.TAGGER,
+                     'TXXX:Tagging Time': tagging.TAGGING_TIME,
                      "COMM::'fra'": tagging.COMMENTS,
                      "USLT::'fra'": tagging.LYRICS,
                      'TCON': tagging.PRIMARY_STYLE

@@ -150,9 +150,11 @@ class ID3TaggerTest(unittest.TestCase):
     def testReadsBitrateFromAudioStreamInformation(self):
         metadata = tagger.load(self.makeMp3())
         assert_that(metadata, has_entry(tags.BITRATE, BITRATE), 'bitrate')
+
     def testReadsDurationFromAudioStreamInformation(self):
         metadata = tagger.load(self.makeMp3())
         assert_that(metadata, has_entry(tags.DURATION, DURATION), 'duration')
+
     def testReadsCoverPicturesFromAPICFrames(self):
         metadata = tagger.load(self.makeMp3(
             APIC_FRONT=('image/jpeg', 'Front', 'front-cover.jpg'),
@@ -162,6 +164,14 @@ class ID3TaggerTest(unittest.TestCase):
             Image('image/jpeg', 'front-cover.jpg', type_=Image.FRONT_COVER, desc='Front'),
             Image('image/jpeg', 'back-cover.jpg', type_=Image.BACK_COVER, desc='Back'),
         ))
+
+    def testReadsTaggerFromCustomFrame(self):
+        metadata = tagger.load(self.makeMp3(TXXX_TAGGER='TGiT v1.0'))
+        assert_that(metadata, has_entry(tags.TAGGER, 'TGiT v1.0'), 'metadata')
+
+    def testReadsTaggingTimeFromCustomFrame(self):
+        metadata = tagger.load(self.makeMp3(TXXX_TAGGING_TIME='2014-03-26 14:18:55 EDT-0400'))
+        assert_that(metadata, has_entry(tags.TAGGING_TIME, '2014-03-26 14:18:55 EDT-0400'), 'metadata')
 
     def testRoundTripsEmptyMetadataToFile(self):
         metadata = Metadata()
@@ -200,6 +210,8 @@ class ID3TaggerTest(unittest.TestCase):
         metadata[tags.TAGS] = u'Tag1 Tag2 Tag3'
         metadata[tags.LYRICS] = u'Lyrics'
         metadata[tags.LANGUAGE] = u'fra'
+        metadata[tags.TAGGER] = u'TGiT v1.0'
+        metadata[tags.TAGGING_TIME] = u'2014-03-26 14:18:55 EDT-0400'
         self.assertCanBeSavedAndReloadedWithSameState(metadata)
 
     def testHandlesUnicodeMetadata(self):
