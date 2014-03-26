@@ -280,7 +280,7 @@
     <message>
         <location filename="track_edition_page.py" line="384"/>
         <source>IDENTIFICATION</source>
-        <translation>INDENTIFICATION</translation>
+        <translation>IDENTIFICATION</translation>
     </message>
     <message>
         <location filename="track_edition_page.py" line="387"/>
