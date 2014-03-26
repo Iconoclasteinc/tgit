@@ -321,7 +321,7 @@ class TrackEditionPage(QWidget):
         date, time = self._parseTaggingTime(track)
         if track.tagger and date and time:
             self._softwareNotice.setText(
-                self.tr('Tagged with %s on %s at %s' % (track.tagger, date, time)))
+                self.tr('Tagged with %s on %s at %s') % (track.tagger, date, time))
 
     @staticmethod
     def _parseTaggingTime(track):
