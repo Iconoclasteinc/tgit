@@ -24,7 +24,7 @@ from tgit.ui import style
 
 class MainWindow(object):
     NAME = 'main-window'
-    SIZE = (1100, 750)
+    SIZE = (1100, 744)
 
     def render(self):
         self._mainWindow = self._build()
