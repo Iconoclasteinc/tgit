@@ -122,6 +122,8 @@ class TrackEditionPage(QWidget):
         self._disableTeaserFields()
         self.translate()
 
+        self._coverImage = None
+
     def onMetadataChange(self, callback):
         for edit in (self._trackTitleLineEdit,
                      self._leadPerformerLineEdit,
@@ -297,7 +299,10 @@ class TrackEditionPage(QWidget):
         return fieldSet
 
     def updateTrack(self, track, album):
-        self._albumCoverBannerLabel.setPixmap(scaleImage(album.mainCover, *self.ALBUM_COVER_BANNER_SIZE))
+        # We need to cache the cover image to avoid recomputing the image each time the screen update
+        if self._coverImage is not album.mainCover:
+            self._coverImage = album.mainCover
+            self._albumCoverBannerLabel.setPixmap(scaleImage(self._coverImage, *self.ALBUM_COVER_BANNER_SIZE))
         self._albumTitleBannerLabel.setText(album.releaseName)
         self._albumLeadPerformerBannerLabel.setText(
             album.compilation and self.tr('Various Artists') or album.leadPerformer)
