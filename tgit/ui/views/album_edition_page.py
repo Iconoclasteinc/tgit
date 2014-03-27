@@ -50,6 +50,7 @@ def makeLabel(name):
 def makeButton(name):
     button = QPushButton()
     button.setObjectName(name)
+    button.setFocusPolicy(Qt.StrongFocus)
     style.enableButton(button)
     return button
 
