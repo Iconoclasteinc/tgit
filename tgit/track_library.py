@@ -34,9 +34,10 @@ def sanitize(filename):
 class TrackStorage(object):
     @staticmethod
     def filenameFor(track):
-        return sanitize(u"{artist} - {title}.{format}".format(artist=track.leadPerformer,
-                                                              title=track.trackTitle,
-                                                              format='mp3'))
+        return sanitize(u"{artist} - {number:02} - {title}.{format}".format(artist=track.leadPerformer,
+                                                                            number=track.number,
+                                                                            title=track.trackTitle,
+                                                                            format='mp3'))
 
     @staticmethod
     def add(track):

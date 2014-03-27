@@ -63,6 +63,11 @@ class Track(object):
         self.update(album.metadata)
         album.addAlbumListener(self)
 
+    @property
+    def number(self):
+        # todo this should be a metadata of the track and not rely on the album
+        return self.album and self.album.positionOf(self) + 1 or None
+
     def update(self, metadata):
         changes = metadata
         if changes[tags.COMPILATION] and tags.LEAD_PERFORMER in changes:

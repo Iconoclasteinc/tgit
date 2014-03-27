@@ -30,17 +30,19 @@ class TrackStorageTest(unittest.TestCase):
 
     def testCopiesTrackFileToSameDirectoryUnderArtistAndTitleName(self):
         track = Track(self.original, build.metadata(leadPerformer='artist', trackTitle='title'))
+        album = build.album(tracks=[build.track(), build.track(), track])
 
         self.library.add(track)
 
-        inLibrary = os.path.join(self.tempdir, 'artist - title.mp3')
+        inLibrary = os.path.join(self.tempdir, 'artist - 03 - title.mp3')
         assert_that(os.path.exists(inLibrary), 'missing file ' + inLibrary)
         assert_that(filecmp.cmp(self.original, inLibrary, equal_to(True)), 'same file ' + inLibrary)
 
-    def testSkipsCopyWhenFileAlreadyInLibrary(self):
+    def testGracefullyHandlesWhenFileAlreadyInLibrary(self):
         track = Track(self.original, build.metadata(leadPerformer='artist', trackTitle='title'))
-        alreadyInLibrary = self.library.add(track)
-        self.library.add(Track(alreadyInLibrary, track.metadata))
+        album = build.album(tracks=[track])
+        self.library.add(track)
+        self.library.add(track)
 
     def testReplacesInvalidCharactersForFileNamesWithUnderscores(self):
         assert_that(sanitize(u'1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')

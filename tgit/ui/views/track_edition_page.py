@@ -313,7 +313,7 @@ class TrackEditionPage(QWidget):
             album.compilation and self.tr('Various Artists') or album.leadPerformer)
         self._albumLabelBannerLabel.setText(album.labelName)
         self._trackNumberBannerLabel.setText(
-            self.tr('Track %d of %d') % (album.positionOf(track) + 1, len(album)))
+            self.tr('Track %d of %d') % (track.number, len(album)))
         self._trackTitleLineEdit.setText(track.trackTitle)
         self._leadPerformerLineEdit.setText(track.leadPerformer)
         self._leadPerformerLineEdit.setEnabled(track.compilation is True)

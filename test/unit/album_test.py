@@ -37,7 +37,7 @@ class AlbumTest(unittest.TestCase):
         assert_that(album.tracks, contains(
             has_property('trackTitle', 'Track 1'),
             has_property('trackTitle', 'Track 2'),
-            has_property('trackTitle', 'Track 3')), 'tracks')
+            has_property('trackTitle', 'Track 3')), 'track titles')
 
     def testSupportsRemovingTracks(self):
         album = build.album(tracks=[
@@ -57,6 +57,7 @@ class AlbumTest(unittest.TestCase):
 
         album.removeTrack(track)
         assert_that(track.album, none(), 'associated album')
+        assert_that(track.number, none(), 'track number')
 
     def testSupportsInsertingTracksAtASpecificPositions(self):
         album = build.album(tracks=[
@@ -72,6 +73,30 @@ class AlbumTest(unittest.TestCase):
             has_property('trackTitle', 'Track 2'),
             has_property('trackTitle', 'Track 1'),
             has_property('trackTitle', 'Track 3')), 'tracks')
+
+    def testNumbersTracks(self):
+        album = Album()
+        album.addTrack(build.track(trackTitle='Track 1'))
+        album.addTrack(build.track(trackTitle='Track 2'))
+        album.addTrack(build.track(trackTitle='Track 3'))
+
+        assert_that(album.tracks, contains(
+            has_property('number', 1),
+            has_property('number', 2),
+            has_property('number', 3)), 'track numbers')
+
+        album.removeTrack(album.tracks[1])
+
+        assert_that(album.tracks, contains(
+            has_property('number', 1),
+            has_property('number', 2)), 'track numbers')
+
+        album.insertTrack(build.track(trackTile='Track 4'), 0)
+
+        assert_that(album.tracks, contains(
+            has_property('number', 1),
+            has_property('number', 2),
+            has_property('number', 3)), 'track numbers')
 
     def testUsesFirstFrontCoverOrFirstImageAsMainCover(self):
         album = build.album()

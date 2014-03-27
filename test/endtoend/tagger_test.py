@@ -84,25 +84,7 @@ class TaggerTest(unittest.TestCase):
             composer='Julien Clerc',
             lyricist='Francoise Hardy')
 
-        self.metadataContainer.contains(u'Julien Clerc - Ma préférence.mp3',
-                                        frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
-                                        releaseName='Best Of',
-                                        leadPerformer='Julien Clerc',
-                                        labelName='EMI Music France',
-                                        releaseTime='2009-04-06',
-                                        trackTitle=u'Ma préférence',
-                                        composer='Julien Clerc',
-                                        lyricist='Jean-Loup Dabadie')
-        self.metadataContainer.contains(u'Julien Clerc - Fais moi une place.mp3',
-                                        frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
-                                        releaseName='Best Of',
-                                        leadPerformer='Julien Clerc',
-                                        labelName='EMI Music France',
-                                        releaseTime='2009-04-06',
-                                        trackTitle=u'Fais moi une place',
-                                        composer='Julien Clerc',
-                                        lyricist='Francoise Hardy')
-        self.metadataContainer.contains(u"Julien Clerc - Ce n'est rien.mp3",
+        self.metadataContainer.contains(u"Julien Clerc - 01 - Ce n'est rien.mp3",
                                         frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
                                         releaseName='Best Of',
                                         leadPerformer='Julien Clerc',
@@ -111,3 +93,21 @@ class TaggerTest(unittest.TestCase):
                                         trackTitle=u"Ce n'est rien",
                                         composer='Julien Clerc',
                                         lyricist=u'Étienne Roda-Gil')
+        self.metadataContainer.contains(u'Julien Clerc - 02 - Ma préférence.mp3',
+                                        frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
+                                        releaseName='Best Of',
+                                        leadPerformer='Julien Clerc',
+                                        labelName='EMI Music France',
+                                        releaseTime='2009-04-06',
+                                        trackTitle=u'Ma préférence',
+                                        composer='Julien Clerc',
+                                        lyricist='Jean-Loup Dabadie')
+        self.metadataContainer.contains(u'Julien Clerc - 03 - Fais moi une place.mp3',
+                                        frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
+                                        releaseName='Best Of',
+                                        leadPerformer='Julien Clerc',
+                                        labelName='EMI Music France',
+                                        releaseTime='2009-04-06',
+                                        trackTitle=u'Fais moi une place',
+                                        composer='Julien Clerc',
+                                        lyricist='Francoise Hardy')
