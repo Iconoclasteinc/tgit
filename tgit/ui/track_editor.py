@@ -22,6 +22,8 @@ from tgit.track import TrackListener
 
 
 class TrackEditor(AlbumListener, TrackListener):
+    # todo when track records its track number (including total tracks in album)
+    # we won't be needing its album
     def __init__(self, album, track, page):
         self._album = album
         self._album.addAlbumListener(self)
@@ -55,10 +57,12 @@ class TrackEditor(AlbumListener, TrackListener):
         self._updatePage()
 
     def trackRemoved(self, track, position):
+        # todo let AlbumDirector decide of that
         if track == self._track:
             self._album.removeAlbumListener(self)
             self._track.removeTrackListener(self)
         else:
+            # but first we need track to know its track number and total tracks
             self._updatePage()
 
     def _updatePage(self):

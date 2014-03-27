@@ -184,6 +184,7 @@ class AlbumEditionPage(QWidget):
         fieldSet.setLayout(form)
         return fieldSet
 
+    # todo eliminate duplication with same methods in track edition page
     def _makeLineEdit(self, name):
         edit = QLineEdit()
         edit.setObjectName(name)
@@ -237,6 +238,9 @@ class AlbumEditionPage(QWidget):
     def _makeTextArea(self, name):
         text = TextArea()
         text.setObjectName(name)
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setVerticalStretch(1)
+        text.setSizePolicy(sizePolicy)
         text.setTabChangesFocus(True)
         return text
 

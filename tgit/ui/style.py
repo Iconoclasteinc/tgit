@@ -429,10 +429,6 @@ Sheet = """
         image: url(:/checkbox-checked-pressed.png);
     }
 
-    #album-edition-page #comments {
-        max-height: 3.5em;
-    }
-
     #album-edition-page QLabel, #track-edition-page QLabel {
         color: #444444;
         min-width: 175px;
@@ -498,9 +494,6 @@ Sheet = """
         font-size: 14px;
         min-width: 300px;
         max-width: 300px;
-    }
-
-    #album-banner #track-number {
     }
 
     #track-edition-page #software-notice {

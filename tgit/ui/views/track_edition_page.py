@@ -54,6 +54,9 @@ def makeLabel(name):
 def makeTextArea(name):
     text = TextArea()
     text.setObjectName(name)
+    sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    sizePolicy.setVerticalStretch(1)
+    text.setSizePolicy(sizePolicy)
     text.setTabChangesFocus(True)
     return text
 
@@ -238,12 +241,10 @@ class TrackEditionPage(QWidget):
 
     def _makeRightColumn(self):
         column = QWidget()
-        column.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         self._contentFieldSet = self._makeContentFieldSet()
 
         layout = style.verticalLayout()
         layout.addWidget(self._contentFieldSet)
-        layout.addStretch()
         layout.addLayout(self._makeNotice())
 
         column.setLayout(layout)
@@ -299,9 +300,12 @@ class TrackEditionPage(QWidget):
         fieldSet.setLayout(form)
         return fieldSet
 
+    def _coverHasChanged(self, album):
+        return self._coverImage is not album.mainCover
+
     def updateTrack(self, track, album):
         # We need to cache the cover image to avoid recomputing the image each time the screen update
-        if self._coverImage is not album.mainCover:
+        if self._coverHasChanged(album):
             self._coverImage = album.mainCover
             self._albumCoverBannerLabel.setPixmap(scaleImage(self._coverImage, *self.ALBUM_COVER_BANNER_SIZE))
         self._albumTitleBannerLabel.setText(album.releaseName)
