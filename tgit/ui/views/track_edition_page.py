@@ -200,6 +200,7 @@ class TrackEditionPage(QWidget):
         layout.addStretch()
         self._trackNumberBannerLabel = makeLabel(self.TRACK_NUMBER_BANNER_NAME)
         self._trackNumberBannerLabel.setProperty('title', 'h3')
+        self._trackNumberBannerLabel.setAlignment(Qt.AlignRight)
         layout.addWidget(self._trackNumberBannerLabel)
         numbering.setLayout(layout)
         return numbering

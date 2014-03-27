@@ -490,10 +490,17 @@ Sheet = """
 
     #album-banner QLabel[title='h2'] {
         font-size: 22px;
+        min-width: 300px;
+        max-width: 300px;
     }
 
     #album-banner QLabel[title='h3'] {
         font-size: 14px;
+        min-width: 300px;
+        max-width: 300px;
+    }
+
+    #album-banner #track-number {
     }
 
     #track-edition-page #software-notice {
