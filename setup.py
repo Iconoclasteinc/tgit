@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-# noinspection PyUnresolvedReferences
+from tgit import __version__
 import use_sip_api_v2
 
 from tgit import __version__
@@ -16,8 +16,7 @@ setup(
     author_email='jr@iconoclaste.ca',
     version=__version__,
     test_suite='test',
-    py_modules=['use_sip_api_v2'],
     packages=['tgit'],
     scripts=['tgit.py'],
-    requires=['mutagen', 'python-dateutil', 'PyQt4']
+    requires=['mutagen', 'python-dateutil', 'six', 'PyQt4']
 )
