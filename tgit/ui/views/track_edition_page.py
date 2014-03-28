@@ -28,6 +28,7 @@ from tgit.ui import display, style
 from tgit.ui.widgets.text_area import TextArea
 
 
+# todo Find a home for the following functions
 def scaleImage(image, width, height):
     if image is None:
         return QPixmap()
@@ -77,6 +78,7 @@ def makeTimeEdit(name):
     return time
 
 
+# todo replace with makeLabelFor(field)
 def addLabelledFields(form, *fields):
     for field in fields:
         label = QLabel()
@@ -87,6 +89,19 @@ def addLabelledFields(form, *fields):
 
 class TrackEditionPage(QWidget):
     NAME = 'track-edition-page'
+
+    # todo Consider removing the constants, they hinder rather than help
+    # I think it would make code easier to read if we just use the literal ids
+
+    # We have so many fields that it becomes confusing to use.
+    # todo I wonder if having a function _(id) -> widget # using widget.findChild(...) would help simplify code.
+    # If performance is a issue, we could maintain a cache of ids -> widgets
+    # I can think of having a findChild function as module class somewhere and include it with:
+    # _ = our_module._
+    # and even
+    # findChild = essentially uses QWidget.findChild and let us add a cache at somepoint if required
+    # _ = functools.partial(our_module.findChild, QWidget)
+    # _edit = functools.partial(our_module.findChild, QLineEdit)
 
     ALBUM_BANNER_NAME = 'album-banner'
     ALBUM_COVER_BANNER_NAME = 'album-cover'
@@ -117,6 +132,8 @@ class TrackEditionPage(QWidget):
     SOFTWARE_NOTICE_FIELD_NAME = 'software-notice'
 
     DURATION_FORMAT = 'mm:ss'
+
+    labelledFields = addLabelledFields
 
     def __init__(self):
         QWidget.__init__(self)
@@ -303,7 +320,8 @@ class TrackEditionPage(QWidget):
     def _coverHasChanged(self, album):
         return self._coverImage is not album.mainCover
 
-    def updateTrack(self, track, album):
+    def display(self, track):
+        album = track.album
         # We need to cache the cover image to avoid recomputing the image each time the screen update
         if self._coverHasChanged(album):
             self._coverImage = album.mainCover
@@ -344,6 +362,7 @@ class TrackEditionPage(QWidget):
 
     @property
     def trackMetadata(self):
+        # todo move Snapshot to top level
         class Snapshot(object):
             def __str__(self):
                 return str(self.__dict__)

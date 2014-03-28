@@ -22,23 +22,29 @@ class TrackEditionPageTest(ViewTest):
     def createDriverFor(self, widget):
         return TrackEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testAlbumSummaryInBanner(self):
+    def testDisplaysAlbumSummaryInBanner(self):
+        album = build.album(releaseName='Album Title', leadPerformer='Artist', labelName='Record Label')
         track = build.track()
-        album = build.album(releaseName='Album Title', leadPerformer='Artist', labelName='Record Label',
-                            tracks=[build.track(), track, build.track()])
-        self.page.updateTrack(track, album)
+        album.addTrack(build.track())
+        album.addTrack(track)
+        album.addTrack(build.track())
+
+        self.page.display(track)
         self.driver.showsAlbumTitle('Album Title')
         self.driver.showsAlbumLeadPerformer('Artist')
         self.driver.showsAlbumLabel('Record Label')
         self.driver.showsTrackNumber(contains_string('2 of 3'))
 
-    def testIndicatesWhenAlbumIsACompilationInAlbumBanner(self):
+    def testIndicatesWhenAlbumPerformedByVariousArtists(self):
+        album = build.album(compilation=True)
         track = build.track()
-        album = build.album(compilation=True, tracks=[track])
-        self.page.updateTrack(track, album)
+        album.addTrack(track)
+
+        self.page.display(track)
         self.driver.showsAlbumLeadPerformer('Various Artists')
 
     def testDisplaysTrackMetadata(self):
+        album = build.album()
         track = build.track(bitrate=192000,
                             compilation=True,
                             duration=timedelta(minutes=4, seconds=35).total_seconds(),
@@ -53,9 +59,9 @@ class TrackEditionPageTest(ViewTest):
                             tags='Tag1 Tag2 Tag3',
                             lyrics='Lyrics\n...\n...',
                             language='eng')
-        album = build.album(tracks=[track])
+        album.addTrack(track)
 
-        self.page.updateTrack(track, album)
+        self.page.display(track)
 
         self.driver.showsTrackTitle('Song')
         self.driver.showsLeadPerformer('Artist')
@@ -78,7 +84,7 @@ class TrackEditionPageTest(ViewTest):
         track = build.track()
         album.addTrack(track)
 
-        self.page.updateTrack(track, album)
+        self.page.display(track)
         self.driver.showsLeadPerformer('Album Artist', disabled=True)
 
     def testSignalsWhenTrackMetadataEdited(self):
@@ -135,25 +141,28 @@ class TrackEditionPageTest(ViewTest):
         self.check(changes)
 
     def testDisplaysSoftwareNoticeInLocalTime(self):
+        album = build.album()
         track = build.track(tagger='TGiT v1.0', taggingTime='2014-03-23 20:33:00 +0000')
-        album = build.album(tracks=[track])
+        album.addTrack(track)
 
-        self.page.updateTrack(track, album)
+        self.page.display(track)
 
         # This will likely fail when ran on another timezone or even when daylight savings
         # change, but I don't yet know how to best write the test
         self.driver.showsSoftwareNotice('Tagged with TGiT v1.0 on 2014-03-23 at 16:33:00')
 
     def testOmitsSoftwareNoticeIfTaggerInformationUnavailable(self):
+        album = build.album()
         track = build.track(taggingTime='2014-03-23 20:33:00 UTC+0000')
-        album = build.album(tracks=[track])
+        album.addTrack(track)
 
-        self.page.updateTrack(track, album)
+        self.page.display(track)
         self.driver.showsSoftwareNotice('')
 
     def testOmitsSoftwareNoticeIfTaggingDateMalformed(self):
+        album = build.album()
         track = build.track(tagger='TGiT v1.0', taggingTime='@$%@#$%#@$%#@%#@$')
-        album = build.album(tracks=[track])
+        album.addTrack(track)
 
-        self.page.updateTrack(track, album)
+        self.page.display(track)
         self.driver.showsSoftwareNotice('')

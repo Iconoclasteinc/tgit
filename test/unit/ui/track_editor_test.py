@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, same_instance
 from test.util import builders as build
 from tgit.ui.track_editor import TrackEditor
 
@@ -10,26 +10,29 @@ class PageStub(object):
         self.refreshCount = 0
 
     def onMetadataChange(self, callback):
-        self.metadataChange = callback
+        self.triggerMetadataChange = callback
 
-    def updateTrack(self, track, album):
+    def display(self, track):
         self.refreshCount += 1
         self.track = track
-        self.album = album
 
 
 class TrackEditorTest(unittest.TestCase):
     def setUp(self):
-        self.album, self.track = build.album(), build.track()
+        # Make sure album metadata is not empty to avoid triggering a change event when
+        # first track is added to album
+        self.album = build.album(releaseName='Title')
+        self.track = build.track()
         self.album.addTrack(self.track)
         self.page = PageStub()
-        self.editor = TrackEditor(self.album, self.track, self.page)
+        self.editor = TrackEditor(self.track, self.page)
 
-    def testUpdatesPageWhenAdded(self):
-        assert_that(self.page.track, equal_to(self.track), 'page track')
-        assert_that(self.page.album, equal_to(self.album), 'page album')
+    def testDisplaysTrackWhenRendered(self):
+        view = self.editor.render()
+        assert_that(view, same_instance(self.page), 'view')
+        assert_that(self.page.track, equal_to(self.track), 'displayed track')
 
-    def testUpdatesTrackMetadataOnEdition(self):
+    def testUpdatesTrackOnEdition(self):
         class Snapshot(object):
             pass
 
@@ -46,7 +49,7 @@ class TrackEditorTest(unittest.TestCase):
         state.lyrics = 'Lyrics\nLyrics\n...'
         state.language = 'und'
 
-        self.page.metadataChange(state)
+        self.page.triggerMetadataChange(state)
 
         assert_that(self.track.trackTitle, equal_to('Title'), 'track title')
         assert_that(self.track.leadPerformer, equal_to('Artist'), 'lead performer')
@@ -61,23 +64,20 @@ class TrackEditorTest(unittest.TestCase):
         assert_that(self.track.language, equal_to('und'), 'language')
 
     def testRefreshesPageOnTrackChange(self):
-        self.page.refreshCount = 0
         self.track.trackTitle = 'changed'
-        assert_that(self.page.refreshCount, equal_to(1), "refresh count")
+        assert_that(self.page.refreshCount, equal_to(1), 'refresh count')
 
-    def testRefreshesPageWhenAlbumCompositionChanges(self):
+    def testRefreshesPageOnAlbumCompositionChange(self):
         other = build.track()
         self.album.addTrack(other)
+        assert_that(self.page.refreshCount, equal_to(1), 'refresh count after addition')
 
-        self.page.refreshCount = 0
         self.album.removeTrack(other)
-        assert_that(self.page.refreshCount, equal_to(1), "refresh count")
+        assert_that(self.page.refreshCount, equal_to(2), 'refresh count after removal')
 
-    def testStopsRefreshingPageAfterTrackRemoval(self):
+    def testStopsRefreshingPageOnceTrackRemovedFromAlbum(self):
         self.album.removeTrack(self.track)
+        assert_that(self.page.refreshCount, equal_to(0), 'refresh count after removal')
 
-        self.page.refreshCount = 0
         self.track.trackTitle = 'changed'
-        assert_that(self.page.refreshCount, equal_to(0), "refresh count")
-
-
+        assert_that(self.page.refreshCount, equal_to(0), 'refresh count after change')

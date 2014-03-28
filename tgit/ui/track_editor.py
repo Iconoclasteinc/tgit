@@ -24,20 +24,24 @@ from tgit.track import TrackListener
 class TrackEditor(AlbumListener, TrackListener):
     # todo when track records its track number (including total tracks in album)
     # we won't be needing its album
-    def __init__(self, album, track, page):
-        self._album = album
-        self._album.addAlbumListener(self)
+    def __init__(self, track, page):
         self._track = track
+        # _album will eventually go away
+        self._album = track.album
+        self._album.addAlbumListener(self)
         self._track.addTrackListener(self)
         self._page = page
 
-        self._attachEvents()
+        self._bindEventHandlers()
 
-    def _attachEvents(self):
-        self._updatePage()
-        self._page.onMetadataChange(self.metadataEdited)
+    def _bindEventHandlers(self):
+        self._page.onMetadataChange(self.updateTrack)
 
-    def metadataEdited(self, state):
+    def render(self):
+        self.refresh()
+        return self._page
+
+    def updateTrack(self, state):
         self._track.trackTitle = state.trackTitle
         self._track.leadPerformer = state.leadPerformer
         self._track.versionInfo = state.versionInfo
@@ -51,10 +55,10 @@ class TrackEditor(AlbumListener, TrackListener):
         self._track.language = state.language
 
     def trackStateChanged(self, track):
-        self._updatePage()
+        self.refresh()
 
     def trackAdded(self, track, position):
-        self._updatePage()
+        self.refresh()
 
     def trackRemoved(self, track, position):
         # todo let AlbumDirector decide of that
@@ -63,7 +67,7 @@ class TrackEditor(AlbumListener, TrackListener):
             self._track.removeTrackListener(self)
         else:
             # but first we need track to know its track number and total tracks
-            self._updatePage()
+            self.refresh()
 
-    def _updatePage(self):
-        self._page.updateTrack(self._track, self._album)
+    def refresh(self):
+        self._page.display(self._track)
