@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 from PyQt4.QtGui import QWidget, QHBoxLayout, QLabel
 
-# noinspection PyUnresolvedReferences
-import use_sip_api_v2
-from test.cute.matchers import named
-
-from test.drivers.album_screen_driver import AlbumScreenDriver
-from tgit.ui.views.album_screen import AlbumScreen
-
 from test.cute.finders import WidgetIdentity
+from test.cute.matchers import named
 from test.cute.probes import ValueMatcherProbe
-from test.integration.ui import ViewTest
+from test.drivers.album_screen_driver import AlbumScreenDriver
+from test.integration.ui.views import ViewTest
 from test.util import resources
 
+from tgit.ui.views.album_screen import AlbumScreen
 from tgit.util import fs
 
 

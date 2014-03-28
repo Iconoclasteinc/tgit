@@ -22,7 +22,7 @@ import shutil
 from datetime import datetime
 from dateutil import tz
 
-from tgit import tags, __version__
+from tgit import __version__
 
 from tgit.track import Track
 

@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 from hamcrest import has_properties
 
-# noinspection PyUnresolvedReferences
-import use_sip_api_v2
-
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers import AlbumEditionPageDriver
-from test.integration.ui import ViewTest
+from test.integration.ui.views import ViewTest
 from test.util import resources, builders as build
 
 from tgit.ui.views.album_edition_page import AlbumEditionPage

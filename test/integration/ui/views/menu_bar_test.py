@@ -2,7 +2,7 @@
 
 from PyQt4.QtGui import QMainWindow
 
-from test.integration.ui.views.view_test import ViewTest
+from test.integration.ui.views import ViewTest
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.menu_bar_driver import MenuBarDriver

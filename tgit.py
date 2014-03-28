@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-# noinspection PyUnresolvedReferences
-import use_sip_api_v2
+import tgit
 
 from PyQt4.QtCore import QSysInfo
 from PyQt4.QtGui import QFont
@@ -12,6 +11,6 @@ if hasattr(QSysInfo, 'MacintoshVersion') and QSysInfo.MacintoshVersion > QSysInf
     QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
 
 
-from tgit import app
+import tgit.app
 
-app.main('fr')
+tgit.app.main('fr')

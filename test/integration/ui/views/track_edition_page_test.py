@@ -3,13 +3,10 @@
 from datetime import timedelta
 from hamcrest import has_properties, contains_string
 
-# noinspection PyUnresolvedReferences
-import use_sip_api_v2
-
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers import TrackEditionPageDriver
-from test.integration.ui import ViewTest
+from test.integration.ui.views import ViewTest
 from test.util import builders as build
 
 from tgit.ui.views.track_edition_page import TrackEditionPage

@@ -7,8 +7,6 @@ import unittest
 from flexmock import flexmock
 from hamcrest import assert_that, equal_to, is_, has_property, contains
 
-# noinspection PyUnresolvedReferences
-import use_sip_api_v2
 from PyQt4.QtCore import Qt, QModelIndex
 
 from test.util import builders as build

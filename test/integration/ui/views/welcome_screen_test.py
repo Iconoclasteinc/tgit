@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # noinspection PyUnresolvedReferences
-import use_sip_api_v2
 
-from test.integration.ui.views.view_test import ViewTest
+from test.integration.ui.views import ViewTest
 from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
 from test.drivers.welcome_screen_driver import WelcomeScreenDriver

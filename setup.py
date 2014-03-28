@@ -3,9 +3,6 @@
 from setuptools import setup
 
 from tgit import __version__
-import use_sip_api_v2
-
-from tgit import __version__
 
 setup(
     name='tgit',

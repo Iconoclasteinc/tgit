@@ -55,9 +55,8 @@ class AlbumDirector(AlbumListener):
         mixer.show(folders=folders)
 
     def trackAdded(self, track, position):
-        page = TrackEditionPage()
-        TrackEditor(self._album, track, page)
-        self._view.addTrackEditionPage(page, position)
+        editor = TrackEditor(track, TrackEditionPage())
+        self._view.addTrackEditionPage(editor.render(), position)
         if not self._album.empty():
             self._view.allowSaves(True)
 
