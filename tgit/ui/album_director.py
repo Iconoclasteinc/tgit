@@ -39,12 +39,8 @@ class AlbumDirector(AlbumListener):
         composer.announceTo(self)
         self._view.setAlbumCompositionPage(composer.render())
 
-        # todo find a more explicit way to wire those together
-        albumEditionPage = AlbumEditionPage()
-        pictureSelector = PictureSelectionDialog()
-        AlbumEditor(self._album, albumEditionPage, pictureSelector)
-
-        self._view.setAlbumEditionPage(albumEditionPage)
+        albumEditor = AlbumEditor(self._album, AlbumEditionPage(), PictureSelectionDialog())
+        self._view.setAlbumEditionPage(albumEditor.render())
         self._album.addAlbumListener(self)
         return widget
 
@@ -57,8 +53,7 @@ class AlbumDirector(AlbumListener):
     def trackAdded(self, track, position):
         editor = TrackEditor(track, TrackEditionPage())
         self._view.addTrackEditionPage(editor.render(), position)
-        if not self._album.empty():
-            self._view.allowSaves(True)
+        self._view.allowSaves(True)
 
     def trackRemoved(self, track, position):
         self._view.removeTrackEditionPage(position)

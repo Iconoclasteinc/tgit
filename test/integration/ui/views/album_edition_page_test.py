@@ -11,6 +11,7 @@ from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.util import fs
 
 
+# todo Our fake image library would load from the tests resources
 def loadImage(name):
     return fs.readContent(resources.path(name))
 
@@ -25,15 +26,15 @@ class AlbumEditionPageTest(ViewTest):
     def createDriverFor(self, widget):
         return AlbumEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testDisplaysPicturePlaceholderForAlbumWithoutCover(self):
+    def testDisplaysPicturePlaceholderInCaseOfAlbumWithoutCover(self):
         album = build.album()
-        self.page.updateAlbum(album)
+        self.page.display(album)
         self.driver.showsPicturePlaceholder()
 
     def testDisplaysMainAlbumCover(self):
         album = build.album()
         album.addFrontCover('image/jpeg', loadImage('front-cover.jpg'))
-        self.page.updateAlbum(album)
+        self.page.display(album)
         self.driver.showsPicture()
 
     def testDisplaysAlbumMetadata(self):
@@ -52,7 +53,7 @@ class AlbumEditionPageTest(ViewTest):
             comments='Comments\n...',
             primaryStyle='Style')
 
-        self.page.updateAlbum(album)
+        self.page.display(album)
 
         self.driver.showsReleaseName('Album')
         self.driver.showsCompilation(False)
@@ -75,24 +76,24 @@ class AlbumEditionPageTest(ViewTest):
 
     def testIndicatesWhetherAlbumIsACompilation(self):
         album = build.album()
-        self.page.updateAlbum(album)
+        self.page.display(album)
         self.driver.showsCompilation(False)
 
         album.compilation = True
-        self.page.updateAlbum(album)
+        self.page.display(album)
         self.driver.showsCompilation(True)
 
         album.compilation = False
-        self.page.updateAlbum(album)
+        self.page.display(album)
         self.driver.showsCompilation(False)
 
     def testDisablesLeadPerformerEditionWhenAlbumIsACompilation(self):
         album = build.album(compilation=True, leadPerformer='Album Artist')
-        self.page.updateAlbum(album)
+        self.page.display(album)
         self.driver.showsLeadPerformer('Various Artists', disabled=True)
 
     def testSignalsWhenAddPictureButtonClicked(self):
-        self.page.updateAlbum(build.album())
+        self.page.display(build.album())
         addPictureSignal = ValueMatcherProbe('add picture')
         self.page.onSelectPicture(addPictureSignal.received)
 
@@ -100,7 +101,7 @@ class AlbumEditionPageTest(ViewTest):
         self.check(addPictureSignal)
 
     def testSignalsWhenRemovePictureButtonClicked(self):
-        self.page.updateAlbum(build.album())
+        self.page.display(build.album())
         removePictureSignal = ValueMatcherProbe('remove picture')
 
         self.page.onRemovePicture(removePictureSignal.received)
@@ -109,7 +110,7 @@ class AlbumEditionPageTest(ViewTest):
         self.check(removePictureSignal)
 
     def testSignalsWhenAlbumMetadataEdited(self):
-        self.page.updateAlbum(build.album())
+        self.page.display(build.album())
         changes = ValueMatcherProbe('album changed')
 
         self.page.onMetadataChange(changes.received)

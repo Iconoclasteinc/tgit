@@ -26,6 +26,7 @@ from tgit.ui import display, style
 from tgit.ui.widgets.text_area import TextArea
 
 
+# todo See TrackEditionPage for moving the following functions to their own module
 def scaleImage(image, width, height):
     if image is None:
         return QPixmap()
@@ -58,6 +59,7 @@ def makeButton(name):
 class AlbumEditionPage(QWidget):
     NAME = 'album-edition-page'
 
+    # todo See TrackEditionPage for comments
     PICTURES_FIELD_SET_NAME = 'pictures'
     FRONT_COVER_FIELD_NAME = 'front-cover'
     FRONT_COVER_SIZE = 350, 350
@@ -265,7 +267,7 @@ class AlbumEditionPage(QWidget):
                 field.setDisabled(True)
                 self._labelFor(field).setDisabled(True)
 
-    def updateAlbum(self, album):
+    def display(self, album):
         self._displayAttachedPicture(album.mainCover)
         self._releaseNameLineEdit.setText(album.releaseName)
         # todo we really need typed metadata

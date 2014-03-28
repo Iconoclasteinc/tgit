@@ -22,25 +22,31 @@ from tgit.util import fs
 
 
 class AlbumEditor(AlbumListener):
-    def __init__(self, album, page, selector):
+    def __init__(self, album, albumView, pictureSelector):
         self._album = album
         self._album.addAlbumListener(self)
-        self._page = page
-        self._pictureSelector = selector
+        self._albumView = albumView
+        self._pictureSelector = pictureSelector
 
-        self._attachEvents()
+        self._bindEventHandlers()
 
-    def _attachEvents(self):
-        self._page.updateAlbum(self._album)
-        self._page.onMetadataChange(self.metadataEdited)
-        self._page.onSelectPicture(self.addPicture)
-        self._page.onRemovePicture(self.removePicture)
+    def _bindEventHandlers(self):
+        self._albumView.onMetadataChange(self.updateAlbum)
+        self._albumView.onSelectPicture(self.addPicture)
+        self._albumView.onRemovePicture(self.removePicture)
         self._pictureSelector.onSelectPicture(self.pictureSelected)
 
-    def albumStateChanged(self, state):
-        self._page.updateAlbum(self._album)
+    def render(self):
+        self.refresh()
+        return self._albumView
 
-    def metadataEdited(self, state):
+    def refresh(self):
+        self._albumView.display(self._album)
+
+    def albumStateChanged(self, album):
+        self.refresh()
+
+    def updateAlbum(self, state):
         self._album.releaseName = state.releaseName
         self._album.compilation = state.compilation
         self._album.leadPerformer = state.leadPerformer
@@ -60,13 +66,22 @@ class AlbumEditor(AlbumListener):
         self._pictureSelector.show()
 
     def pictureSelected(self, filename):
-        self._album.removeImages()
-        mime, data = loadImage(filename)
-        self._album.addFrontCover(mime, data)
+        changeAlbumCover(self._album, filename)
 
     def removePicture(self):
-        self._album.removeImages()
+        removeAlbumCover(self._album)
 
 
+def removeAlbumCover(album):
+    album.removeImages()
+
+
+def changeAlbumCover(album, filename):
+    album.removeImages()
+    mime, data = loadImage(filename)
+    album.addFrontCover(mime, data)
+
+
+# todo I think we need a concept of an ImageLibrary
 def loadImage(filename):
-        return fs.guessMimeType(filename), fs.readContent(filename)
+    return fs.guessMimeType(filename), fs.readContent(filename)
