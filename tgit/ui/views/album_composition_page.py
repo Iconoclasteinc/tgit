@@ -23,19 +23,12 @@ from PyQt4.QtCore import Qt, QModelIndex, QAbstractItemModel, pyqtSignal
 from PyQt4.QtGui import (QWidget, QVBoxLayout, QTableView, QHBoxLayout,
                          QStyledItemDelegate, QHeaderView, QLabel, QToolButton, QFrame, QPalette)
 
-from tgit.announcer import Announcer
 from tgit.ui.views.album_composition_model import Columns, Row
 from tgit.ui import style
 
 
-def albumCompositionPage(listener):
-    page = AlbumCompositionPage()
-    page.announceTo(listener)
-    return page
-
-
 class PlayButtonDelegate(QStyledItemDelegate):
-    play = pyqtSignal(Row)
+    clicked = pyqtSignal(Row)
 
     def __init__(self, view):
         QStyledItemDelegate.__init__(self, view)
@@ -45,7 +38,7 @@ class PlayButtonDelegate(QStyledItemDelegate):
             button = QToolButton()
             button.setObjectName(AlbumCompositionPage.PLAY_BUTTON_NAME)
             button.setCursor(Qt.PointingHandCursor)
-            button.clicked.connect(func.partial(self.play.emit, index.model().trackAt(index.row())))
+            button.clicked.connect(func.partial(self.clicked.emit, index.model().trackAt(index.row())))
             button.setCheckable(True)
             self.parent().setIndexWidget(index, button)
 
@@ -66,7 +59,7 @@ class PlayButtonDelegate(QStyledItemDelegate):
 
 
 class RemoveButtonDelegate(QStyledItemDelegate):
-    remove = pyqtSignal(Row)
+    clicked = pyqtSignal(Row)
 
     def __init__(self, view):
         QStyledItemDelegate.__init__(self, view)
@@ -76,13 +69,13 @@ class RemoveButtonDelegate(QStyledItemDelegate):
             button = QToolButton()
             button.setObjectName(AlbumCompositionPage.REMOVE_BUTTON_NAME)
             button.setCursor(Qt.PointingHandCursor)
-            button.clicked.connect(func.partial(self.remove.emit, index.model().trackAt(index.row())))
+            button.clicked.connect(func.partial(self.clicked.emit, index.model().trackAt(index.row())))
             self.parent().setIndexWidget(index, button)
 
         QStyledItemDelegate.paint(self, painter, option, index)
 
 
-class AlbumCompositionPage(object):
+class AlbumCompositionPage(QWidget):
     NAME = 'album-composition-page'
 
     TRACK_TABLE_NAME = 'track-list'
@@ -91,39 +84,43 @@ class AlbumCompositionPage(object):
     REMOVE_BUTTON_NAME = 'remove-track'
 
     def __init__(self):
-        self._announce = Announcer()
-
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
-
-    def render(self, album):
-        self._widget = self._build(album)
+        QWidget.__init__(self)
+        self._build()
         self.translate()
-        return self._widget
 
-    def _build(self, album):
-        widget = QWidget()
-        widget.setObjectName(self.NAME)
+    def bind(self, **handlers):
+        if 'play' in handlers:
+            self._playButton.clicked.connect(handlers['play'])
+        if 'add' in handlers:
+            self._addButton.clicked.connect(lambda pressed: handlers['add']())
+        if 'remove' in handlers:
+            self._removeButton.clicked.connect(handlers['remove'])
+        if 'trackMoved' in handlers:
+            self._table.verticalHeader().sectionMoved.connect(lambda _, from_, to: handlers['trackMoved'](from_, to))
+
+    def _build(self):
+        self.setObjectName(self.NAME)
         layout = QVBoxLayout()
-        widget.setLayout(layout)
         layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self._makeHeader())
-        layout.addWidget(self._makeTableFrame(self._makeTrackTable(album)))
-        return widget
+        self._table = self._makeTrackTable()
+        self._playButton = self._makePlayButton(self._table)
+        self._removeButton = self._makeRemoveButton(self._table)
+        layout.addWidget(self._makeTableFrame(self._table))
+        self.setLayout(layout)
 
     def _makeHeader(self):
         header = QWidget()
         layout = QHBoxLayout()
-        header.setLayout(layout)
         layout.setContentsMargins(0, 0, 0, 0)
         self._helpLabel = QLabel()
         layout.addWidget(self._helpLabel)
         layout.addStretch()
         self._addButton = QToolButton()
         self._addButton.setObjectName(self.ADD_BUTTON_NAME)
-        self._addButton.clicked.connect(lambda pressed: self._announce.addTracksToAlbum())
         self._addButton.setCursor(Qt.PointingHandCursor)
         layout.addWidget(self._addButton)
+        header.setLayout(layout)
 
         return header
 
@@ -137,43 +134,42 @@ class AlbumCompositionPage(object):
         frame.setPalette(palette)
         layout = QVBoxLayout()
         layout.setContentsMargins(10, 10, 10, 10)
+        layout.addWidget(table)
         frame.setLayout(layout)
 
-        layout.addWidget(table)
         return frame
 
-    def _makeTrackTable(self, album):
+    def _makeTrackTable(self):
         table = QTableView()
         table.setFrameStyle(QFrame.NoFrame)
         table.setObjectName(self.TRACK_TABLE_NAME)
-        table.setModel(album)
-        playDelegate = PlayButtonDelegate(table)
-        playDelegate.play.connect(self._announce.playTrack)
-        table.setItemDelegateForColumn(Columns.index(Columns.play), playDelegate)
-        removeDelegate = RemoveButtonDelegate(table)
-        removeDelegate.remove.connect(self._announce.removeTrack)
-        table.setItemDelegateForColumn(Columns.index(Columns.remove), removeDelegate)
         table.setEditTriggers(QTableView.NoEditTriggers)
         table.setSelectionMode(QTableView.NoSelection)
         table.setAlternatingRowColors(True)
         table.setShowGrid(False)
         table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
-        table.horizontalHeader().setResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
-        table.horizontalHeader().setResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
         table.verticalHeader().setResizeMode(QHeaderView.Fixed)
         table.verticalHeader().setMovable(True)
-        table.verticalHeader().sectionMoved.connect(lambda index, from_, to: self._announce.moveTrack(from_, to))
-        self._resizeColumns(table)
-
+        table.horizontalHeader().setResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
+        table.horizontalHeader().setResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
         return table
 
-    def _resizeColumns(self, table):
+    def _makePlayButton(self, table):
+        button = PlayButtonDelegate(table)
+        table.setItemDelegateForColumn(Columns.index(Columns.play), button)
+        return button
+
+    def _makeRemoveButton(self, table):
+        button = RemoveButtonDelegate(table)
+        table.setItemDelegateForColumn(Columns.index(Columns.remove), button)
+        return button
+
+    def display(self, album):
+        self._table.setModel(album)
         for index, width in enumerate(style.TABLE_COLUMNS_WIDTHS):
-            table.horizontalHeader().resizeSection(index, width)
+            self._table.horizontalHeader().resizeSection(index, width)
+        pass
 
     def translate(self):
         self._addButton.setText(self.tr('ADD'))
         self._helpLabel.setText(self.tr('Organize tracks in album.'))
-
-    def tr(self, text):
-        return self._widget.tr(text)

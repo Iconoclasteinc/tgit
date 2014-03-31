@@ -21,6 +21,7 @@ from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui.track_editor import TrackEditor
 from tgit.ui.views import albumScreen
+from tgit.ui.views.album_composition_page import AlbumCompositionPage
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.views.track_edition_page import TrackEditionPage
@@ -35,12 +36,12 @@ class AlbumDirector(AlbumListener):
 
     def render(self):
         widget = self._view.render()
-        composer = AlbumComposer(self._album, self._player)
-        composer.announceTo(self)
+        composer = AlbumComposer(self._album, self._player, AlbumCompositionPage())
+        composer.onAddTracks(self.addTracksToAlbum)
         self._view.setAlbumCompositionPage(composer.render())
 
-        albumEditor = AlbumEditor(self._album, AlbumEditionPage(), PictureSelectionDialog())
-        self._view.setAlbumEditionPage(albumEditor.render())
+        editor = AlbumEditor(self._album, AlbumEditionPage(), PictureSelectionDialog())
+        self._view.setAlbumEditionPage(editor.render())
         self._album.addAlbumListener(self)
         return widget
 
@@ -48,7 +49,7 @@ class AlbumDirector(AlbumListener):
     # For that we need to do some prep work on the menubar first.
     def addTracksToAlbum(self, folders=False):
         mixer = AlbumMixer(self._album, self._trackLibrary)
-        mixer.show(folders=folders)
+        mixer.show(folders)
 
     def trackAdded(self, track, position):
         editor = TrackEditor(track, TrackEditionPage())

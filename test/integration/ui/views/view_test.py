@@ -2,7 +2,6 @@
 
 import os
 import unittest
-import sip
 
 from PyQt4.QtGui import QApplication
 
@@ -41,5 +40,7 @@ class ViewTest(unittest.TestCase):
             self.driver.close()
             del self.driver
 
-        sip.delete(self.app)
+        del self.gesturePerformer
+        del self.prober
+        self.app.quit()
         del self.app

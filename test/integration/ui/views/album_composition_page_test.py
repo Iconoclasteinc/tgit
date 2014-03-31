@@ -2,7 +2,6 @@
 
 from datetime import timedelta
 
-from flexmock import flexmock
 from hamcrest import has_property, contains
 
 from test.integration.ui.views import ViewTest
@@ -15,9 +14,7 @@ from tgit.ui.views.album_composition_model import AlbumCompositionModel
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
 
 
-# QTableWidgetItem.__repr__ = lambda widget: widget.text()
-
-
+# todo find a home for feature matchers
 def hasTitle(title):
     return has_property('trackTitle', title)
 
@@ -25,12 +22,11 @@ def hasTitle(title):
 class AlbumCompositionPageTest(ViewTest):
     def setUp(self):
         super(AlbumCompositionPageTest, self).setUp()
-        self.player = flexmock(fakes.audioPlayer())
         self.album = Album()
-        self.view = AlbumCompositionPage()
-        self.widget = self.view.render(AlbumCompositionModel(self.album, self.player))
-        self.show(self.widget)
-        self.driver = self.createDriverFor(self.widget)
+        self.page = AlbumCompositionPage()
+        self.driver = self.createDriverFor(self.page)
+        self.show(self.page)
+        self.page.display(AlbumCompositionModel(self.album, fakes.audioPlayer()))
 
     def createDriverFor(self, widget):
         return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
@@ -56,57 +52,40 @@ class AlbumCompositionPageTest(ViewTest):
 
     def testSignalsWhenPlayTrackButtonClicked(self):
         self.album.addTrack(build.track(trackTitle='Track'))
-        playTrackProbe = ValueMatcherProbe('play track request', has_property('trackTitle', 'Track'))
+        playClicked = ValueMatcherProbe('play track', has_property('trackTitle', 'Track'))
 
-        class PlayTrackListener(object):
-            def playTrack(self, track):
-                playTrackProbe.received(track)
-
-        self.view.announceTo(PlayTrackListener())
+        self.page.bind(play=playClicked.received)
 
         self.driver.play('Track')
-        self.driver.check(playTrackProbe)
+        self.driver.check(playClicked)
 
     def testSignalsWhenAddTracksButtonClicked(self):
-        addTracksProbe = ValueMatcherProbe('add tracks request')
+        addClicked = ValueMatcherProbe('add tracks')
 
-        class AddTracksToAlbumListener(object):
-            def addTracksToAlbum(self):
-                addTracksProbe.received()
-
-        self.view.announceTo(AddTracksToAlbumListener())
+        self.page.bind(add=addClicked.received)
 
         self.driver.addTracks()
-        self.driver.check(addTracksProbe)
+        self.driver.check(addClicked)
 
     def testSignalsWhenRemoveTrackButtonClicked(self):
         self.album.addTrack(build.track())
         self.album.addTrack(build.track(trackTitle='Track'))
-        removeTrackProbe = ValueMatcherProbe('remove track request', has_property('trackTitle', 'Track'))
+        removeClicked = ValueMatcherProbe('remove track', has_property('trackTitle', 'Track'))
 
-        class RemoveTrackListener(object):
-            def removeTrack(self, track):
-                removeTrackProbe.received(track)
-
-        self.view.announceTo(RemoveTrackListener())
+        self.page.bind(remove=removeClicked.received)
 
         self.driver.removeTrack('Track')
-        self.driver.check(removeTrackProbe)
+        self.driver.check(removeClicked)
 
-    def testSignalsWhenTrackIsMoved(self):
+    def testSignalsWhenTrackWasMoved(self):
         self.album.addTrack(build.track(trackTitle='Song #1'))
         self.album.addTrack(build.track(trackTitle='Song #2'))
         self.album.addTrack(build.track(trackTitle='Song #3'))
 
         fromPosition, toPosition = 2, 1
+        trackMoved = ValueMatcherProbe('move track', contains(fromPosition, toPosition))
 
-        moveTrackProbe = ValueMatcherProbe('move track request', contains(fromPosition, toPosition))
-
-        class MoveTrackListener(object):
-            def moveTrack(self, from_, to):
-                moveTrackProbe.received((from_, to))
-
-        self.view.announceTo(MoveTrackListener())
+        self.page.bind(trackMoved=lambda from_, to: trackMoved.received([from_, to]))
 
         self.driver.moveTrack('Song #3', toPosition)
-        self.driver.check(moveTrackProbe)
+        self.driver.check(trackMoved)

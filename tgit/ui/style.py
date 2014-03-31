@@ -30,6 +30,7 @@ TABLE_BORDER_COLOR = QColor.fromRgb(0xDDDDDD)
 TABLE_BORDER_STYLE = QFrame.Panel | QFrame.Plain
 
 
+# todo move to its own module along with widget factory functions (see TrackEditionPage and AlbumEditionPage)
 def enableButton(button):
     button.setEnabled(True)
     button.setCursor(Qt.PointingHandCursor)
@@ -60,6 +61,7 @@ def formLayout():
     return layout
 
 
+# todo break stylesheet into multiple components
 Sheet = """
     MainWindow {
         background-color: #F6F6F6;

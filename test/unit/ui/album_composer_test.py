@@ -1,6 +1,7 @@
 import unittest
 
 
+# todo Ouch!
 class AlbumComposerTest(unittest.TestCase):
     def testRemovesTrackFromAlbum(self):
         pass

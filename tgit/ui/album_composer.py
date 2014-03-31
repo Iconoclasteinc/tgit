@@ -16,27 +16,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from tgit.announcer import Announcer
-from tgit.ui.views import albumCompositionPage
 
 from tgit.ui.views.album_composition_model import AlbumCompositionModel
 
 
 class AlbumComposer(object):
-    def __init__(self, album, player):
+    def __init__(self, album, player, page):
         self._album = AlbumCompositionModel(album, player)
         self._player = player
-        self._announce = Announcer()
-        self._page = albumCompositionPage(self)
+        self._page = page
 
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
+        self._bindEventHandlers()
+
+    def _bindEventHandlers(self):
+        self._page.bind(trackMoved=self.moveTrack, play=self.playTrack, remove=self.removeTrack)
 
     def render(self):
-        return self._page.render(self._album)
+        self._page.display(self._album)
+        return self._page
 
-    def addTracksToAlbum(self):
-        self._announce.addTracksToAlbum()
+    def onAddTracks(self, handler):
+        self._page.bind(add=handler)
 
     def moveTrack(self, fromPosition, toPosition):
         self._album.move(fromPosition, toPosition)
