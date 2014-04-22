@@ -27,6 +27,8 @@ from tgit.ui.album_director import AlbumDirector
 from tgit.ui.album_exporter import AlbumExporter
 from tgit.ui.views.main_window import MainWindow
 from tgit.ui.views.menu_bar import MenuBar
+from tgit.ui.views.message_box import MessageBox
+from tgit.ui.views.settings_dialog import SettingsDialog
 from tgit.ui.views.welcome_screen import WelcomeScreen
 
 
@@ -34,7 +36,8 @@ WIN_LATIN1_ENCODING = 'windows-1252'
 
 
 class Tagger(AlbumPortfolioListener):
-    def __init__(self, albumPortfolio, audioPlayer):
+    def __init__(self, albumPortfolio, audioPlayer, preferences):
+        self.preferences = preferences
         self._albumPortfolio = albumPortfolio
         self._albumPortfolio.addPortfolioListener(self)
         self._audioPlayer = audioPlayer
@@ -45,10 +48,17 @@ class Tagger(AlbumPortfolioListener):
         self._welcomeScreen.announceTo(self)
 
     def render(self):
-        window = self._mainWindow.render()
+        self._window = self._mainWindow.render()
+        self.settings = SettingsDialog(self._window)
+        # todo move to a more appropriate place
+        for lang in ('English', 'French'):
+            self.settings.addLanguage(lang)
+        self.settings.bind(ok=self.savePreferences, cancel=self.settings.close)
         self._mainWindow.setMenuBar(self._menuBar.render())
+        self._menuBar.bind(settings=self.editPreferences)
         self._mainWindow.show(self._welcomeScreen.render())
-        return window
+        self.messageBox = MessageBox(self._window)
+        return self._window
 
     def newAlbum(self):
         self._albumPortfolio.addAlbum(Album())
@@ -57,8 +67,8 @@ class Tagger(AlbumPortfolioListener):
         self._menuBar.enableAlbumMenu()
         self._director = AlbumDirector(album, TrackLibrary(ID3Tagger()), self._audioPlayer)
         self._director.addTracksToAlbum()
-        self._exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING))
         self._mainWindow.show(self._director.render())
+        self._exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING))
 
     def addFiles(self):
         self._director.addTracksToAlbum()
@@ -68,3 +78,11 @@ class Tagger(AlbumPortfolioListener):
 
     def export(self):
         self._exporter.show()
+
+    def editPreferences(self):
+        self.settings.display(**self.preferences)
+
+    def savePreferences(self):
+        self.settings.close()
+        self.preferences.add(**self.settings.settings)
+        self.messageBox.displayRestartNotice()

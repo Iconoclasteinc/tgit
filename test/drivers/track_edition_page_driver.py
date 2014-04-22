@@ -62,6 +62,7 @@ class TrackEditionPageDriver(WidgetDriver):
             else:
                 raise AssertionError("Don't know how to edit <%s>" % tag)
 
+    # todo move to a mixin
     def _label(self, matching):
         return LabelDriver.findSingle(self, QLabel, matching)
 

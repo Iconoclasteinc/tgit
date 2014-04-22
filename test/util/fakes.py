@@ -15,6 +15,7 @@ def metadataContainer():
     return FakeMetadataContainer()
 
 
+# todo make that a driver
 class FakeMetadataContainer(object):
     def __init__(self):
         self.files = []

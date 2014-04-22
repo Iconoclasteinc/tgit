@@ -60,3 +60,9 @@ class MenuBarTest(ViewTest):
         self.menuBar.enableAlbumMenu()
         self.driver.export()
         self.driver.check(exportAlbumSignal)
+
+    def testSignalsWhenSettingsMenuItemClicked(self):
+        settingsProbe = ValueMatcherProbe('settings menu event', False)
+        self.menuBar.bind(settings=settingsProbe.received)
+        self.driver.settings()
+        self.driver.check(settingsProbe)

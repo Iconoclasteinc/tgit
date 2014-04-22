@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
+from PyQt4.QtGui import QDialog, QAbstractButton
+from test.cute import matchers as match
+from test.cute.matchers import showingOnScreen, withText
 
-from test.cute.widgets import MainWindowDriver
+from test.cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
 from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.drivers.menu_bar_driver import menuBar
 from test.drivers.album_screen_driver import albumScreen
+from test.drivers.settings_dialog_driver import settingsDialog
 from test.drivers.track_selection_dialog_driver import trackSelectionDialog
 from test.drivers.welcome_screen_driver import welcomeScreen
+
+
+def messageBox(parent):
+    return WidgetDriver.findSingle(parent, QDialog, match.named('message-box'), showingOnScreen())
 
 
 class TaggerDriver(MainWindowDriver):
@@ -18,6 +26,9 @@ class TaggerDriver(MainWindowDriver):
 
     def selectAudioFile(self, filename):
         trackSelectionDialog(self).selectTracks(filename)
+
+    def cancelSelection(self):
+        trackSelectionDialog(self).cancel()
 
     def createAlbum(self):
         welcomeScreen(self).newAlbum()
@@ -65,3 +76,17 @@ class TaggerDriver(MainWindowDriver):
 
     def saveAlbum(self):
         albumScreen(self).save()
+
+    def changeSettings(self, **settings):
+        menuBar(self).settings()
+        settingsDialog(self).changeSettings(settings)
+        self.acknowledge()
+
+    def hasSettings(self, **settings):
+        menuBar(self).settings()
+        settingsDialog(self).showsSettings(settings)
+
+    def acknowledge(self):
+        message = messageBox(self)
+        ok = ButtonDriver.findSingle(message, QAbstractButton, withText('OK'))
+        ok.click()

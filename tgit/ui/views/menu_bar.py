@@ -17,7 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-
 from PyQt4.QtGui import QMenuBar, QMenu, QAction
 
 from tgit.announcer import Announcer
@@ -32,6 +31,10 @@ class MenuBar(object):
     def __init__(self):
         self._announce = Announcer()
 
+    def bind(self, **eventHandlers):
+        if 'settings' in eventHandlers:
+            self.preferences.triggered.connect(eventHandlers['settings'])
+
     def announceTo(self, listener):
         self._announce.addListener(listener)
 
@@ -42,8 +45,18 @@ class MenuBar(object):
 
     def _assemble(self):
         menuBar = QMenuBar()
+        menuBar.addMenu(self._makeSettingsMenu(menuBar))
         menuBar.addMenu(self._makeFileMenu(menuBar))
         return menuBar
+
+    def _makeSettingsMenu(self, menuBar):
+        settings = QMenu(menuBar)
+        # todo i18n
+        settings.setTitle('Settings')
+        self.preferences = QAction(settings)
+        self.preferences.setText('Preferences')
+        settings.addAction(self.preferences)
+        return settings
 
     def _makeFileMenu(self, menuBar):
         self._fileMenu = QMenu(menuBar)

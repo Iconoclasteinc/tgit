@@ -22,10 +22,10 @@ def disableNativeDialogs():
 
 
 class ApplicationRunner(object):
-    def start(self):
+    def start(self, preferences):
         disableNativeDialogs()
         self.app = TGiT(fakes.audioPlayer)
-        self.app.show()
+        self.app.show(preferences)
         self.tagger = TaggerDriver(mainApplicationWindow(named(MainWindow.NAME), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())
@@ -70,3 +70,9 @@ class ApplicationRunner(object):
 
     def changeTrackPosition(self, title, to):
         self.tagger.moveTrack(title, to - 1)
+
+    def changeSettings(self, **settings):
+        self.tagger.changeSettings(**settings)
+
+    def hasSettings(self, **settings):
+        self.tagger.hasSettings(**settings)

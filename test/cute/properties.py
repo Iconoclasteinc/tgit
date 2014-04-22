@@ -3,7 +3,7 @@
 from hamcrest.core.selfdescribing import SelfDescribing
 
 from PyQt4.QtCore import Qt, QObject
-from PyQt4.QtGui import QWidget, QLabel, QLineEdit, QPixmap, QDateTimeEdit, QComboBox
+from PyQt4.QtGui import QLabel, QLineEdit, QPixmap, QDateTimeEdit, QComboBox
 
 
 def name():
@@ -26,7 +26,7 @@ def pixmapWidth():
     return PropertyQuery('pixmap width', QPixmap.width)
 
 
-def buddy():
+def labelBuddy():
     return PropertyQuery('buddy', QLabel.buddy)
 
 
@@ -48,6 +48,10 @@ def listItemText():
 
 def time():
     return PropertyQuery('time', QDateTimeEdit.time)
+
+
+def title():
+    return PropertyQuery('time', lambda w: w.title())
 
 
 def cursorShape():

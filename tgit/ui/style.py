@@ -452,11 +452,12 @@ Sheet = """
         width: 20px;
     }
 
-    QComboBox::down-arrow {
+    #album-edition-page QComboBox::down-arrow, #track-edition-page QComboBox::down-arrow {
         image: url(:/down-arrow.png);
     }
 
-    QComboBox::down-arrow:on, QComboBox::down-arrow:focus {
+    #album-edition-page QComboBox::down-arrow:on, #album-edition-page QComboBox::down-arrow:focus,
+    #track-edition-page QComboBox::down-arrow:on, #track-edition-page QComboBox::down-arrow:focus {
         image: url(:/down-arrow-on.png);
     }
 

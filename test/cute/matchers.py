@@ -14,7 +14,7 @@ def named(name):
 
 
 def withBuddy(buddy):
-    return with_(properties.buddy(), wrap_matcher(buddy))
+    return with_(properties.labelBuddy(), wrap_matcher(buddy))
 
 
 def withPixmapHeight(height):
@@ -31,6 +31,10 @@ def withText(text):
 
 def withListItemText(text):
     return with_(properties.listItemText(), wrap_matcher(text))
+
+
+def withTitle(text):
+    return with_(properties.title(), wrap_matcher(text))
 
 
 def with_(query, matcher):

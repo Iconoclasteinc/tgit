@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from test.drivers.application_settings_driver import ApplicationSettingsDriver
 
 from test.util import resources, fakes
 from test.endtoend.application_runner import ApplicationRunner
@@ -10,13 +11,19 @@ from tgit.util import fs
 
 class TaggerTest(unittest.TestCase):
     def setUp(self):
-        self.application = ApplicationRunner()
         self.metadataContainer = fakes.metadataContainer()
-        self.application.start()
+        self.settings = ApplicationSettingsDriver()
+        self.application = ApplicationRunner()
+        self.application.start(self.settings.preferences)
 
     def tearDown(self):
         self.application.stop()
         self.metadataContainer.delete()
+
+    def restart(self):
+        self.application.stop()
+        self.application = ApplicationRunner()
+        self.application.start(self.settings.preferences)
 
     def testCreatesAndTagsANewAlbum(self):
         maPreference = self.metadataContainer.add(
@@ -111,3 +118,12 @@ class TaggerTest(unittest.TestCase):
                                         trackTitle=u'Fais moi une place',
                                         composer='Julien Clerc',
                                         lyricist='Francoise Hardy')
+
+    def testChangingApplicationSettings(self):
+        self.settings.set('language', 'French')
+        self.restart()
+        self.application.hasSettings(language='French')
+        self.application.changeSettings(language='English')
+        self.settings.hasStored('language', 'English')
+        self.restart()
+        self.application.hasSettings(language='English')

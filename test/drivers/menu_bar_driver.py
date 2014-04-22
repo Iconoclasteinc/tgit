@@ -2,7 +2,7 @@
 
 from PyQt4.QtGui import QMenuBar
 
-from test.cute.matchers import named
+from test.cute.matchers import named, withTitle, withText
 from test.cute.widgets import QMenuBarDriver
 from tgit.ui.views.menu_bar import MenuBar
 
@@ -42,6 +42,11 @@ class MenuBarDriver(QMenuBarDriver):
     def export(self):
         menu = self._openFileMenu()
         exportMenuItem(menu).click()
+
+    def settings(self):
+        menu = self.menu(withTitle('Settings'))
+        menu.open()
+        menu.menuItem(withText('Preferences')).click()
 
     def _openFileMenu(self):
         menu = self._fileMenu()

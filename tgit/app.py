@@ -25,6 +25,7 @@ from PyQt4.QtGui import QApplication
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio.audio_library import AudioFiles
 from tgit.audio.player import PhononPlayer
+from tgit.preferences import Preferences
 from tgit.ui.tagger import Tagger
 from tgit.ui import display
 
@@ -57,12 +58,12 @@ class TGiT(QApplication):
             self.installTranslator(translator)
             self._translators.append(translator)
 
-    def show(self):
-        self._tagger = Tagger(AlbumPortfolio(), self._player(AudioFiles()))
+    def show(self, preferences):
+        self._tagger = Tagger(AlbumPortfolio(), self._player(AudioFiles()), preferences)
         display.centeredOnScreen(self._tagger.render())
 
-    def launch(self):
-        self.show()
+    def launch(self, preferences):
+        self.show(preferences)
         self.run()
 
     def run(self):
@@ -71,5 +72,8 @@ class TGiT(QApplication):
 
 def main(locale):
     app = TGiT(PhononPlayer)
+    app.setOrganizationName('Iconoclaste Musique Inc.')
+    app.setOrganizationDomain('tagtamusique.com')
+    app.setApplicationName('TGiT')
     app.locale = locale
-    app.launch()
+    app.launch(Preferences())
