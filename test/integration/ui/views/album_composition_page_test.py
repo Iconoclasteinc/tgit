@@ -32,8 +32,7 @@ class AlbumCompositionPageTest(ViewTest):
         return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysColumnHeadings(self):
-        self.driver.showsColumnHeaders(u'Titre de la piste', 'Artiste principal',
-                                       "Titre de l'album", u'Débit', u'Durée', '', '')
+        self.driver.showsColumnHeaders('Track Title', 'Lead Performer', 'Album Title', 'Bitrate', 'Duration', '', '')
 
     def testDisplaysTrackDetailsInColumns(self):
         self.album.addTrack(build.track(trackTitle='My Song', bitrate=192000,

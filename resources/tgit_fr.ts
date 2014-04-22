@@ -2,6 +2,34 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fr_CA" sourcelanguage="en_US">
 <context>
+    <name>Column</name>
+    <message>
+        <location filename="album_composition_model.py" line="126"/>
+        <source>Track Title</source>
+        <translation>Titre de la piste</translation>
+    </message>
+    <message>
+        <location filename="album_composition_model.py" line="127"/>
+        <source>Lead Performer</source>
+        <translation>Artiste principal</translation>
+    </message>
+    <message>
+        <location filename="album_composition_model.py" line="128"/>
+        <source>Album Title</source>
+        <translation>Titre de l'album</translation>
+    </message>
+    <message>
+        <location filename="album_composition_model.py" line="129"/>
+        <source>Bitrate</source>
+        <translation>Débit</translation>
+    </message>
+    <message>
+        <location filename="album_composition_model.py" line="130"/>
+        <source>Duration</source>
+        <translation>Durée</translation>
+    </message>
+</context>
+<context>
     <name>QWidget</name>
     <message>
         <location filename="album_composition_page.py" line="175"/>

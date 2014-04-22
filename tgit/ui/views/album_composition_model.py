@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QObject, QAbstractTableModel, QModelIndex, Qt, pyqtSignal
+from PyQt4.QtCore import QObject, QAbstractTableModel, QModelIndex, Qt, pyqtSignal, QCoreApplication
 
 from tgit.album import AlbumListener
 from tgit.track import TrackListener
@@ -29,7 +29,7 @@ class Row(QObject, TrackListener, PlayerListener):
     rowChanged = pyqtSignal(object)
 
     def __init__(self, album, track, playing=False):
-        super(Row, self).__init__()
+        QObject.__init__(self)
         self._album = album
         self._track = track
         self._playing = playing
@@ -96,10 +96,15 @@ class Row(QObject, TrackListener, PlayerListener):
         return self._track == other._track
 
 
-class Column(object):
+class Column(QObject):
     def __init__(self, name, value):
-        self.name = name
+        QObject.__init__(self)
+        self._name = name
         self.value = value
+
+    @property
+    def name(self):
+        return self.tr(self._name)
 
 
 class ColumnEnum(type):
@@ -117,13 +122,11 @@ class Columns:
     __metaclass__ = ColumnEnum
 
     # todo i18n on column names
-    trackTitle = Column(name='Titre de la piste', value=lambda track: track.trackTitle)
-    leadPerformer = Column(name='Artiste principal', value=Row.leadPerformer)
-    releaseName = Column(name="Titre de l'album", value=Row.releaseName)
-    bitrate = Column(name=u'Débit',
-                     value=lambda track: '%s kbps' % display.inKbps(track.bitrate()))
-    duration = Column(name=u'Durée',
-                      value=lambda track: display.asDuration(track.duration()))
+    trackTitle = Column(name='Track Title', value=lambda track: track.trackTitle)
+    leadPerformer = Column(name='Lead Performer', value=Row.leadPerformer)
+    releaseName = Column(name="Album Title", value=Row.releaseName)
+    bitrate = Column(name='Bitrate', value=lambda track: '%s kbps' % display.inKbps(track.bitrate()))
+    duration = Column(name='Duration', value=lambda track: display.asDuration(track.duration()))
     play = Column(name='', value=Row.playing)
     remove = Column(name='', value=lambda track: None)
 
@@ -133,7 +136,6 @@ class Columns:
 class AlbumCompositionModel(QAbstractTableModel, AlbumListener, TrackListener):
     def __init__(self, album, player, parent=None):
         QAbstractTableModel.__init__(self, parent)
-
         self._album = album
         self._album.addAlbumListener(self)
         self._player = player
