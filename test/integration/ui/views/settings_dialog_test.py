@@ -19,24 +19,24 @@ class SettingsDialogTest(ViewTest):
         return SettingsDialogDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysUserPreferences(self):
-        self.dialog.addLanguage('English')
-        self.dialog.addLanguage('French')
-        self.dialog.display(language='French')
+        self.dialog.addLanguage('en', 'English')
+        self.dialog.addLanguage('fr', 'French')
+        self.dialog.display(language='fr')
 
         self.driver.showsLanguage('French')
 
     def testOffersSelectionOfAvailableLanguages(self):
-        self.dialog.addLanguage('English')
-        self.dialog.addLanguage('French')
-        assert_that(self.dialog.settings['language'], equal_to('English'), 'default language')
+        self.dialog.addLanguage('en', 'English')
+        self.dialog.addLanguage('fr', 'French')
+        assert_that(self.dialog.settings['language'], equal_to('en'), 'default language')
 
         self.driver.showsLanguage('English')
         self.driver.changeLanguage('French')
         self.driver.showsLanguage('French')
-        assert_that(self.dialog.settings['language'], equal_to('French'), 'selected language')
+        assert_that(self.dialog.settings['language'], equal_to('fr'), 'selected language')
 
     def testSignalsWhenAccepted(self):
-        self.dialog.addLanguage('English')
+        self.dialog.addLanguage('en', 'English')
 
         accepted = ValueMatcherProbe("click on button 'OK'")
         self.dialog.bind(ok=accepted.received)
@@ -44,7 +44,7 @@ class SettingsDialogTest(ViewTest):
         self.driver.check(accepted)
 
     def testSignalsWhenRejected(self):
-        self.dialog.addLanguage('English')
+        self.dialog.addLanguage('en', 'English')
 
         rejected = ValueMatcherProbe("click on button 'Cancel'")
         self.dialog.bind(cancel=rejected.received)

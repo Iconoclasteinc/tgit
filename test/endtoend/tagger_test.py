@@ -13,6 +13,7 @@ class TaggerTest(unittest.TestCase):
     def setUp(self):
         self.metadataContainer = fakes.metadataContainer()
         self.settings = ApplicationSettingsDriver()
+        self.settings.set('language', 'en')
         self.application = ApplicationRunner()
         self.application.start(self.settings.preferences)
 
@@ -120,10 +121,8 @@ class TaggerTest(unittest.TestCase):
                                         lyricist='Francoise Hardy')
 
     def testChangingApplicationSettings(self):
-        self.settings.set('language', 'French')
+        self.application.hasSettings(language='English')
+        self.application.changeSettings(language='French')
+        self.settings.hasStored('language', 'fr')
         self.restart()
         self.application.hasSettings(language='French')
-        self.application.changeSettings(language='English')
-        self.settings.hasStored('language', 'English')
-        self.restart()
-        self.application.hasSettings(language='English')

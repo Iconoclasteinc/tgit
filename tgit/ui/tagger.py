@@ -51,8 +51,8 @@ class Tagger(AlbumPortfolioListener):
         self._window = self._mainWindow.render()
         self.settings = SettingsDialog(self._window)
         # todo move to a more appropriate place
-        for lang in ('English', 'French'):
-            self.settings.addLanguage(lang)
+        self.settings.addLanguage('en', 'English')
+        self.settings.addLanguage('fr', 'French')
         self.settings.bind(ok=self.savePreferences, cancel=self.settings.close)
         self._mainWindow.setMenuBar(self._menuBar.render())
         self._menuBar.bind(settings=self.editPreferences)

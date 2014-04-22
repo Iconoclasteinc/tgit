@@ -19,7 +19,7 @@
 
 import sys
 
-from PyQt4.QtCore import QTextCodec, QTranslator
+from PyQt4.QtCore import QTextCodec, QTranslator, QLocale
 from PyQt4.QtGui import QApplication
 
 from tgit.album_portfolio import AlbumPortfolio
@@ -33,34 +33,29 @@ from tgit.ui import display
 from tgit.ui import resources
 
 
-TGIT = 'tgit'
-QT = 'qt'
-UTF_8 = 'UTF-8'
-RESOURCES = ':/resources'
-
-
 class TGiT(QApplication):
-    def __init__(self, player, codec=UTF_8):
+    def __init__(self, player):
         QApplication.__init__(self, [])
-        QTextCodec.setCodecForTr(QTextCodec.codecForName(codec))
-        self._player = player
+        self.player = player
+        self.translators = []
 
-    def _locale(self, locale):
-        self._translators = []
-        for resource in (QT, TGIT):
-            self._installTranslations(resource, locale)
+    def setLocale(self, locale):
+        if locale is None:
+            locale = QLocale.system().name()
+        QTextCodec.setCodecForTr(QTextCodec.codecForName('UTF-8'))
+        for resource in ('qt', 'tgit'):
+            self.installTranslations(resource, locale)
 
-    locale = property(fset=_locale)
-
-    def _installTranslations(self, resource, locale):
+    def installTranslations(self, resource, locale):
         translator = QTranslator()
-        if translator.load('%s_%s' % (resource, locale), RESOURCES):
+        if translator.load('%s_%s' % (resource, locale), ':/resources'):
             self.installTranslator(translator)
-            self._translators.append(translator)
+            self.translators.append(translator)
 
     def show(self, preferences):
-        self._tagger = Tagger(AlbumPortfolio(), self._player(AudioFiles()), preferences)
-        display.centeredOnScreen(self._tagger.render())
+        self.setLocale(preferences['language'])
+        self.tagger = Tagger(AlbumPortfolio(), self.player(AudioFiles()), preferences)
+        display.centeredOnScreen(self.tagger.render())
 
     def launch(self, preferences):
         self.show(preferences)
@@ -70,10 +65,9 @@ class TGiT(QApplication):
         return sys.exit(self.exec_())
 
 
-def main(locale):
+def main():
     app = TGiT(PhononPlayer)
     app.setOrganizationName('Iconoclaste Musique Inc.')
     app.setOrganizationDomain('tagtamusique.com')
     app.setApplicationName('TGiT')
-    app.locale = locale
     app.launch(Preferences())

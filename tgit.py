@@ -13,4 +13,4 @@ if hasattr(QSysInfo, 'MacintoshVersion') and QSysInfo.MacintoshVersion > QSysInf
 
 import tgit.app
 
-tgit.app.main('fr')
+tgit.app.main()

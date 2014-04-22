@@ -45,14 +45,14 @@ class SettingsDialog(QDialog):
         if 'cancel' in handlers:
             self.buttons.rejected.connect(handlers['cancel'])
 
-    def addLanguage(self, lang):
-        self.languages.addItem(self.tr(lang))
+    def addLanguage(self, locale, language):
+        self.languages.addItem(self.tr(language), locale)
 
     @property
     def settings(self):
-        return {'language': self.languages.currentText()}
+        return {'language': self.languages.itemData(self.languages.currentIndex())}
 
     def display(self, **settings):
         if 'language' in settings:
-            self.languages.setCurrentIndex(self.languages.findText(settings['language']))
+            self.languages.setCurrentIndex(self.languages.findData(settings['language']))
         self.show()
