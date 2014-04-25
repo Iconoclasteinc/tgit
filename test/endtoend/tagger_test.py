@@ -125,4 +125,4 @@ class TaggerTest(unittest.TestCase):
         self.application.changeSettings(language='French')
         self.settings.hasStored('language', 'fr')
         self.restart()
-        self.application.hasSettings(language='French')
+        self.application.hasSettings(language=u'Français')

@@ -483,4 +483,33 @@
         <translation>TGiT</translation>
     </message>
 </context>
+<context>
+    <name>MessageBox</name>
+    <message>
+        <location filename="message_box.py" line="28"/>
+        <source>You need to restart TGiT for changes to take effect.</source>
+        <translation>Veuillez redémarrer TGiT pour que ces modifications prennent effet.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialog</name>
+    <message>
+        <location filename="settings_dialog.py" line="29"/>
+        <source>Settings</source>
+        <translation>Préférences</translation>
+    </message>
+    <message>
+        <location filename="settings_dialog.py" line="32"/>
+        <source>&amp;Language</source>
+        <translation>Langue</translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation>Anglais</translation>
+    </message>
+    <message>
+        <source>French</source>
+        <translation>Français</translation>
+    </message>
+</context>
 </TS>
