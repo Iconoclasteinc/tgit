@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import csv
-import functools as func
+from PyQt4.QtCore import QObject
 
 
 def toBoolean(value):
@@ -12,17 +12,15 @@ def toPeopleList(people):
     return people and '; '.join(['%s: %s' % (role, name) for role, name in people]) or ''
 
 
-class CsvFormat(object):
-    # todo pass a dictionary responsible for translation rather than hardcoding header names
-    Headers = ["Titre de l'album", 'Compilation', "Nom de l'artiste principal", "Musiciens de l'album",
-               "Nom de la maison de disques", u'Numéro de catalogue', 'UPC/EAN', 'Commentaires',
-               u"Date de mise en marché de l'album", "Date de l'enregistrement",
-               "Studios d'enregistrement", u'Réalisateur', 'Mixeur', "Genre de l'album",
-               'Titre de la piste', 'Infos sur la version', u'Invité spécial', 'Paroles',
-               'Langue des paroles', u'Éditeur', 'Auteur', 'Compositeur', 'ISRC', 'Tags']
+class CsvFormat(QObject):
+    Headers = ['Album Title', 'Compilation', 'Lead Performer', 'Guest Performers', 'Label Name', 'Catalog Number',
+               'UPC/EAN', 'Comments', 'Release Date', 'Recording Date', 'Recording Studios', 'Producer', 'Mixer',
+               'Primary Style', 'Track Title', 'Version Information', 'Featured Guest', 'Lyrics', 'Language',
+               'Publisher', 'Lyricist', 'Composer', 'ISRC', 'Tags']
 
     def __init__(self, encoding):
-        self._encoding = encoding
+        QObject.__init__(self)
+        self.encoding = encoding
 
     def write(self, album, out):
         writer = csv.writer(out)
@@ -31,7 +29,7 @@ class CsvFormat(object):
             self.writeRecord(writer, album, track)
 
     def writeHeader(self, writer):
-        writer.writerow(self._encode(self.Headers))
+        writer.writerow(self.encodeRow(self.Headers))
 
     def writeRecord(self, writer, album, track):
         row = album.releaseName, toBoolean(album.compilation), track.leadPerformer, toPeopleList(album.guestPerformers), \
@@ -40,15 +38,17 @@ class CsvFormat(object):
             album.mixer, album.primaryStyle, track.trackTitle, track.versionInfo, track.featuredGuest, \
             track.lyrics, track.language, track.publisher, track.lyricist, track.composer, \
             track.isrc, track.tags
-        writer.writerow(self._encode(row))
+        writer.writerow(self.encodeRow(row))
 
-    def _encode(self, texts):
-        return map(toExcelNewLines, map(func.partial(encodeAs, self._encoding), texts))
+    def encode(self, text):
+        return text.encode(self.encoding)
+
+    def translate(self, text):
+        return text and self.tr(text) or ''
+
+    def encodeRow(self, texts):
+        return map(toExcelNewLines, map(self.encode, map(self.translate, texts)))
 
 
 def toExcelNewLines(text):
     return text.replace('\n', '\r')
-
-
-def encodeAs(encoding, text):
-    return text and text.encode(encoding) or ''

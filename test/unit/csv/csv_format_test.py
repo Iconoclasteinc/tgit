@@ -20,34 +20,34 @@ class CsvFormatTest(unittest.TestCase):
     def encoded(self, text):
         return text.encode(self.encoding)
 
-    def testIncludesEncodedHeaderRow(self):
+    def testIncludesHeaderRow(self):
         album = build.album()
         self.format.write(album, self.out)
 
         rows = readCsv(self.out)
         headers = rows.next()
-        assert_that(headers, contains("Titre de l'album",
+        assert_that(headers, contains('Album Title',
                                       'Compilation',
-                                      "Nom de l'artiste principal",
-                                      "Musiciens de l'album",
-                                      'Nom de la maison de disques',
-                                      self.encoded(u'Numéro de catalogue'),
+                                      'Lead Performer',
+                                      'Guest Performers',
+                                      'Label Name',
+                                      'Catalog Number',
                                       'UPC/EAN',
-                                      'Commentaires',
-                                      self.encoded(u"Date de mise en marché de l'album"),
-                                      "Date de l'enregistrement",
-                                      "Studios d'enregistrement",
-                                      self.encoded(u'Réalisateur'),
-                                      'Mixeur',
-                                      "Genre de l'album",
-                                      'Titre de la piste',
-                                      'Infos sur la version',
-                                      self.encoded(u'Invité spécial'),
-                                      'Paroles',
-                                      'Langue des paroles',
-                                      'Éditeur',
-                                      'Auteur',
-                                      'Compositeur',
+                                      'Comments',
+                                      'Release Date',
+                                      'Recording Date',
+                                      'Recording Studios',
+                                      'Producer',
+                                      'Mixer',
+                                      'Primary Style',
+                                      'Track Title',
+                                      'Version Information',
+                                      'Featured Guest',
+                                      'Lyrics',
+                                      'Language',
+                                      'Publisher',
+                                      'Lyricist',
+                                      'Composer',
                                       'ISRC',
                                       'Tags'), 'header')
 

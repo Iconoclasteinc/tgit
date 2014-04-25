@@ -29,6 +29,89 @@
         <translation>Durée</translation>
     </message>
 </context>
+    <context>
+        <name>CsvFormat</name>
+        <message>
+            <source>Album Title</source>
+            <translation>Titre de l'album</translation>
+        </message>
+        <message>
+            <source>Lead Performer</source>
+            <translation>Artiste principal</translation>
+        </message>
+        <message>
+            <source>Guest Performers</source>
+            <translation>Musiciens de l'album</translation>
+        </message>
+        <message>
+            <source>Label Name</source>
+            <translation>Nom de la maison de disques</translation>
+        </message>
+        <message>
+            <source>Catalog Number</source>
+            <translation>Numéro de catalogue</translation>
+        </message>
+        <message>
+            <source>Comments</source>
+            <translation>Commentaires</translation>
+        </message>
+        <message>
+            <source>Release Date</source>
+            <translation>Date de mise en marché de l'album</translation>
+        </message>
+        <message>
+            <source>Recording Date</source>
+            <translation>Date de l'enregistrement</translation>
+        </message>
+        <message>
+            <source>Recording Studios</source>
+            <translation>Studio d'enregistrement</translation>
+        </message>
+        <message>
+            <source>Producer</source>
+            <translation>Réalisateur</translation>
+        </message>
+        <message>
+            <source>Mixer</source>
+            <translation>Mixeur</translation>
+        </message>
+        <message>
+            <source>Primary Style</source>
+            <translation>Genre de l'album</translation>
+        </message>
+        <message>
+            <source>Track Title</source>
+            <translation>Titre de la piste</translation>
+        </message>
+        <message>
+            <source>Version Information</source>
+            <translation>Information sur la version</translation>
+        </message>
+        <message>
+            <source>Featured Guest</source>
+            <translation>Invité spécial</translation>
+        </message>
+        <message>
+            <source>Lyrics</source>
+            <translation>Paroles</translation>
+        </message>
+        <message>
+            <source>Language</source>
+            <translation>Langue des paroles</translation>
+        </message>
+        <message>
+            <source>Publisher</source>
+            <translation>Éditeur</translation>
+        </message>
+        <message>
+            <source>Lyricist</source>
+            <translation>Auteur</translation>
+        </message>
+        <message>
+            <source>Composer</source>
+            <translation>Compositeur</translation>
+        </message>
+    </context>
 <context>
     <name>QWidget</name>
     <message>

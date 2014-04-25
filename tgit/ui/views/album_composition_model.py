@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QObject, QAbstractTableModel, QModelIndex, Qt, pyqtSignal, QCoreApplication
+from PyQt4.QtCore import QObject, QAbstractTableModel, QModelIndex, Qt, pyqtSignal
 
 from tgit.album import AlbumListener
 from tgit.track import TrackListener
