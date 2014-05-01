@@ -45,18 +45,8 @@ class MenuBar(object):
 
     def _assemble(self):
         menuBar = QMenuBar()
-        menuBar.addMenu(self._makeSettingsMenu(menuBar))
         menuBar.addMenu(self._makeFileMenu(menuBar))
         return menuBar
-
-    def _makeSettingsMenu(self, menuBar):
-        settings = QMenu(menuBar)
-        # todo i18n
-        settings.setTitle('Settings')
-        self.preferences = QAction(settings)
-        self.preferences.setText('Preferences')
-        settings.addAction(self.preferences)
-        return settings
 
     def _makeFileMenu(self, menuBar):
         self._fileMenu = QMenu(menuBar)
@@ -64,6 +54,8 @@ class MenuBar(object):
         self._addAddFilesMenuItemTo(self._fileMenu)
         self._addAddFolderMenuItemTo(self._fileMenu)
         self._addExportMenuItemTo(self._fileMenu)
+        self.preferences = QAction(self._fileMenu)
+        self._fileMenu.addAction(self.preferences)
         return self._fileMenu
 
     def _addAddFilesMenuItemTo(self, menu):
@@ -97,6 +89,7 @@ class MenuBar(object):
         self._addFilesAction.setText(self.tr('Add Files...'))
         self._addFolderAction.setText(self.tr('Add Folder...'))
         self._exportMenuAction.setText(self.tr('Export...'))
+        self.preferences.setText(self.tr('Settings'))
 
     def tr(self, text):
         return self._widget.tr(text)
