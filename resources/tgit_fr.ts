@@ -113,7 +113,7 @@
         </message>
     </context>
 <context>
-    <name>QWidget</name>
+    <name>AlbumCompositionPage</name>
     <message>
         <location filename="album_composition_page.py" line="175"/>
         <source>ADD</source>
@@ -124,6 +124,9 @@
         <source>Organize tracks in album.</source>
         <translation>Organisez les pistes qui composent l&apos;album.</translation>
     </message>
+</context>
+<context>
+    <name>QWidget</name>
     <message>
         <location filename="album_screen.py" line="198"/>
         <source>PREVIOUS</source>
