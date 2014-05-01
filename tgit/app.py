@@ -19,7 +19,7 @@
 
 import sys
 
-from PyQt4.QtCore import QTextCodec, QTranslator, QLocale
+from PyQt4.QtCore import QTextCodec, QTranslator, QLocale, QSettings
 from PyQt4.QtGui import QApplication
 
 from tgit.album_portfolio import AlbumPortfolio
@@ -67,7 +67,5 @@ class TGiT(QApplication):
 
 def main():
     app = TGiT(PhononPlayer)
-    app.setOrganizationName('Iconoclaste Musique Inc.')
-    app.setOrganizationDomain('tagtamusique.com')
     app.setApplicationName('TGiT')
-    app.launch(Preferences())
+    app.launch(Preferences(QSettings('tagtamusique.com', 'TGiT' )))
