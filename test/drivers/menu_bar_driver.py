@@ -44,12 +44,16 @@ class MenuBarDriver(QMenuBarDriver):
         exportMenuItem(menu).click()
 
     def settings(self):
-        menu = self.menu(withTitle('Settings'))
-        menu.open()
-        menu.menuItem(withText('Preferences')).click()
+        menu = self.openMenu(named('File'))
+        menu.menuItem(named('Settings')).click()
 
     def _openFileMenu(self):
         menu = self._fileMenu()
+        menu.open()
+        return menu
+
+    def openMenu(self, matching):
+        menu = self.menu(matching)
         menu.open()
         return menu
 

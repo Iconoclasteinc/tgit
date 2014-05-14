@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from tgit import use_sip_api_v2
 import unittest
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 

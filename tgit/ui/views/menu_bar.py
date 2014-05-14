@@ -23,7 +23,7 @@ from tgit.announcer import Announcer
 
 
 class MenuBar(object):
-    FILE_MENU_NAME = 'file'
+    FILE_MENU_NAME = 'File'
     ADD_FILES_ACTION_NAME = 'add files'
     ADD_FOLDER_ACTION_NAME = 'add folder'
     EXPORT_ACTION_NAME = 'export'
@@ -55,6 +55,7 @@ class MenuBar(object):
         self._addAddFolderMenuItemTo(self._fileMenu)
         self._addExportMenuItemTo(self._fileMenu)
         self.preferences = QAction(self._fileMenu)
+        self.preferences.setObjectName('Settings')
         self._fileMenu.addAction(self.preferences)
         return self._fileMenu
 

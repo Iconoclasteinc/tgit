@@ -51,7 +51,7 @@ def time():
 
 
 def title():
-    return PropertyQuery('time', lambda w: w.title())
+    return PropertyQuery('title', lambda w: w.title())
 
 
 def cursorShape():
