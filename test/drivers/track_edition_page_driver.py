@@ -1,42 +1,36 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel, QLineEdit, QPlainTextEdit, QTimeEdit, QWidget, QComboBox
+from PyQt4.QtGui import QWidget
 
 from test.cute.matchers import named, withBuddy, showingOnScreen, withPixmapHeight, withPixmapWidth
-from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver, TextEditDriver,
-                               DateTimeEditDriver, ComboBoxDriver)
-
-import tgit.tags as tags
+from test.drivers.__base import BaseDriver
 from tgit.ui.views.track_edition_page import TrackEditionPage
 
 
 def trackEditionPage(parent):
-    return TrackEditionPageDriver.findSingle(parent, QWidget, named(TrackEditionPage.NAME), showingOnScreen())
+    return TrackEditionPageDriver.findSingle(parent, QWidget, named('track-edition-page'), showingOnScreen())
 
 
-class TrackEditionPageDriver(WidgetDriver):
-    def __init__(self, selector, prober, gesturePerformer):
-        super(TrackEditionPageDriver, self).__init__(selector, prober, gesturePerformer)
-
+class TrackEditionPageDriver(BaseDriver):
     def showsMetadata(self, **meta):
         for tag, value in meta.iteritems():
-            if tag == tags.TRACK_TITLE:
+            if tag == 'trackTitle':
                 self.showsTrackTitle(value)
-            elif tag == tags.VERSION_INFO:
+            elif tag == 'versionInfo':
                 self.showsVersionInfo(value)
-            elif tag == tags.FEATURED_GUEST:
+            elif tag == 'featuredGuest':
                 self.showsFeaturedGuest(value)
-            elif tag == tags.LYRICIST:
+            elif tag == 'lyricist':
                 self.showsLyricist(value)
-            elif tag == tags.COMPOSER:
+            elif tag == 'composer':
                 self.showsComposer(value)
-            elif tag == tags.PUBLISHER:
+            elif tag == 'publichser':
                 self.showsPublisher(value)
-            elif tag == tags.ISRC:
+            elif tag == 'isrc':
                 self.showsIsrc(value)
-            elif tag == tags.BITRATE:
+            elif tag == 'bitrate':
                 self.showsBitrate(value)
-            elif tag == tags.DURATION:
+            elif tag == 'duration':
                 self.showsDuration(value)
             elif tag == 'trackNumber':
                 self.showsTrackNumber(value)
@@ -45,207 +39,153 @@ class TrackEditionPageDriver(WidgetDriver):
 
     def changeMetadata(self, **meta):
         for tag, value in meta.iteritems():
-            if tag == tags.TRACK_TITLE:
+            if tag == 'trackTitle':
                 self.changeTrackTitle(value)
-            elif tag == tags.VERSION_INFO:
+            elif tag == 'versionInfo':
                 self.changeVersionInfo(value)
-            elif tag == tags.FEATURED_GUEST:
+            elif tag == 'featuredGuest':
                 self.changeFeaturedGuest(value)
-            elif tag == tags.LYRICIST:
+            elif tag == 'lyricist':
                 self.changeLyricist(value)
-            elif tag == tags.COMPOSER:
+            elif tag == 'composer':
                 self.changeComposer(value)
-            elif tag == tags.PUBLISHER:
+            elif tag == 'publisher':
                 self.changePublisher(value)
-            elif tag == tags.ISRC:
+            elif tag == 'isrc':
                 self.changeIsrc(value)
             else:
                 raise AssertionError("Don't know how to edit <%s>" % tag)
 
-    # todo move to a mixin
-    def _label(self, matching):
-        return LabelDriver.findSingle(self, QLabel, matching)
-
-    def _lineEdit(self, matching):
-        return LineEditDriver.findSingle(self, QLineEdit, matching)
-
     def displaysAlbumCover(self):
-        label = self._label(named(TrackEditionPage.ALBUM_COVER_BANNER_NAME))
+        label = self.label(named('album-cover'))
         label.isShowingOnScreen()
-        height, width = TrackEditionPage.ALBUM_COVER_BANNER_SIZE
+        height, width = TrackEditionPage.ALBUM_COVER_SIZE
         label.hasPixmap(withPixmapHeight(height))
         label.hasPixmap(withPixmapWidth(width))
 
     def showsAlbumLeadPerformer(self, name):
-        label = self._label(named(TrackEditionPage.ALBUM_LEAD_PERFORMER_BANNER_NAME))
+        label = self.label(named('album-lead-performer'))
         label.isShowingOnScreen()
         label.hasText(name)
 
     def showsAlbumTitle(self, title):
-        label = self._label(named(TrackEditionPage.ALBUM_TITLE_BANNER_NAME))
+        label = self.label(named('album-title'))
         label.isShowingOnScreen()
         label.hasText(title)
 
     def showsAlbumLabel(self, name):
-        label = self._label(named(TrackEditionPage.ALBUM_LABEL_BANNER_NAME))
+        label = self.label(named('record-label'))
         label.isShowingOnScreen()
         label.hasText(name)
 
     def showsTrackNumber(self, number):
-        label = self._label(named(TrackEditionPage.TRACK_NUMBER_BANNER_NAME))
+        label = self.label(named('track-number'))
         label.isShowingOnScreen()
         label.hasText(number)
 
     def showsTrackTitle(self, trackTitle):
-        label = self._label(withBuddy(named(TrackEditionPage.TRACK_TITLE_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.TRACK_TITLE_FIELD_NAME))
-        edit.hasText(trackTitle)
+        self.label(withBuddy(named('track-title'))).isShowingOnScreen()
+        self.lineEdit(named('track-title')).hasText(trackTitle)
 
     def changeTrackTitle(self, title):
-        edit = self._lineEdit(named(TrackEditionPage.TRACK_TITLE_FIELD_NAME))
-        edit.changeText(title)
+        self.lineEdit(named('track-title')).changeText(title)
 
     def showsLeadPerformer(self, name, disabled=False):
-        label = self._label(withBuddy(named(TrackEditionPage.LEAD_PERFORMER_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.LEAD_PERFORMER_FIELD_NAME))
+        self.label(withBuddy(named('lead-performer'))).isShowingOnScreen()
+        edit = self.lineEdit(named('lead-performer'))
         edit.hasText(name)
         edit.isDisabled(disabled)
 
     def changeLeadPerformer(self, name):
-        edit = self._lineEdit(named(TrackEditionPage.LEAD_PERFORMER_FIELD_NAME))
-        edit.changeText(name)
+        self.lineEdit(named('lead-performer')).changeText(name)
 
     def showsVersionInfo(self, versionInfo):
-        label = self._label(withBuddy(named(TrackEditionPage.VERSION_INFO_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.VERSION_INFO_FIELD_NAME))
-        edit.hasText(versionInfo)
+        self.label(withBuddy(named('version-info'))).isShowingOnScreen()
+        self.lineEdit(named('version-info')).hasText(versionInfo)
 
     def changeVersionInfo(self, info):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(TrackEditionPage.VERSION_INFO_FIELD_NAME))
-        edit.changeText(info)
+        self.lineEdit(named('version-info')).changeText(info)
 
     def showsFeaturedGuest(self, name):
-        label = self._label(withBuddy(named(TrackEditionPage.FEATURED_GUEST_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.FEATURED_GUEST_FIELD_NAME))
-        edit.hasText(name)
+        self.label(withBuddy(named('featured-guest'))).isShowingOnScreen()
+        self.lineEdit(named('featured-guest')).hasText(name)
 
     def changeFeaturedGuest(self, name):
-        edit = self._lineEdit(named(TrackEditionPage.FEATURED_GUEST_FIELD_NAME))
-        edit.changeText(name)
+        self.lineEdit(named('featured-guest')).changeText(name)
 
     def showsLyricist(self, name):
-        label = self._label(withBuddy(named(TrackEditionPage.LYRICIST_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.LYRICIST_FIELD_NAME))
-        edit.hasText(name)
+        self.label(withBuddy(named('lyricist'))).isShowingOnScreen()
+        self.lineEdit(named('lyricist')).hasText(name)
 
     def changeLyricist(self, name):
-        edit = self._lineEdit(named(TrackEditionPage.LYRICIST_FIELD_NAME))
-        edit.changeText(name)
+        self.lineEdit(named('lyricist')).changeText(name)
 
     def showsComposer(self, name):
-        label = self._label(withBuddy(named(TrackEditionPage.COMPOSER_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.COMPOSER_FIELD_NAME))
-        edit.hasText(name)
+        self.label(withBuddy(named('composer'))).isShowingOnScreen()
+        self.lineEdit(named('composer')).hasText(name)
 
     def changeComposer(self, name):
-        edit = self._lineEdit(named(TrackEditionPage.COMPOSER_FIELD_NAME))
-        edit.changeText(name)
+        self.lineEdit(named('composer')).changeText(name)
 
     def showsPublisher(self, name):
-        label = self._label(withBuddy(named(TrackEditionPage.PUBLISHER_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.PUBLISHER_FIELD_NAME))
-        edit.hasText(name)
+        self.label(withBuddy(named('publisher'))).isShowingOnScreen()
+        self.lineEdit(named('publisher')).hasText(name)
 
     def changePublisher(self, name):
-        edit = self._lineEdit(named(TrackEditionPage.PUBLISHER_FIELD_NAME))
-        edit.changeText(name)
+        self.lineEdit(named('publisher')).changeText(name)
 
     def showsIsrc(self, code):
-        label = self._label(withBuddy(named(TrackEditionPage.ISRC_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.ISRC_FIELD_NAME))
-        edit.hasText(code)
+        self.label(withBuddy(named('isrc'))).isShowingOnScreen()
+        self.lineEdit(named('isrc')).hasText(code)
 
     def changeIsrc(self, code):
-        edit = self._lineEdit(named(TrackEditionPage.ISRC_FIELD_NAME))
-        edit.changeText(code)
+        self.lineEdit(named('isrc')).changeText(code)
 
     def showsIswc(self, code):
-        label = self._label(withBuddy(named(TrackEditionPage.ISWC_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.ISWC_FIELD_NAME))
+        self.label(withBuddy(named('iswc'))).isShowingOnScreen()
+        edit = self.lineEdit(named('iswc'))
         edit.isDisabled()
         edit.hasText(code)
 
     def showsTags(self, tags):
-        label = self._label(withBuddy(named(TrackEditionPage.TAGS_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(TrackEditionPage.TAGS_FIELD_NAME))
-        edit.hasText(tags)
+        self.label(withBuddy(named('tags'))).isShowingOnScreen()
+        self.lineEdit(named('tags')).hasText(tags)
 
     def changeTags(self, tags):
-        edit = self._lineEdit(named(TrackEditionPage.TAGS_FIELD_NAME))
-        edit.changeText(tags)
-
-    def _textEdit(self, matching):
-        return TextEditDriver.findSingle(self, QPlainTextEdit, matching)
+        self.lineEdit(named('tags')).changeText(tags)
 
     def showsLyrics(self, lyrics):
-        label = self._label(withBuddy(named(TrackEditionPage.LYRICS_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._textEdit(named(TrackEditionPage.LYRICS_FIELD_NAME))
-        edit.hasPlainText(lyrics)
+        self.label(withBuddy(named('lyrics'))).isShowingOnScreen()
+        self.textEdit(named('lyrics')).hasPlainText(lyrics)
 
     def addLyrics(self, *lyrics):
-        edit = self._textEdit(named(TrackEditionPage.LYRICS_FIELD_NAME))
+        edit = self.textEdit(named('lyrics'))
         for lyric in lyrics:
             edit.addLine(lyric)
         edit.clearFocus()
 
     def showsLanguage(self, lang):
-        label = self._label(withBuddy(named(TrackEditionPage.LANGUAGE_FIELD_NAME)))
-        label.isShowingOnScreen()
-        combo = self._combobox(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
-        combo.hasCurrentText(lang)
+        self.label(withBuddy(named('languages'))).isShowingOnScreen()
+        self.combobox(named('languages')).hasCurrentText(lang)
 
     def changeLanguage(self, lang):
-        combo = self._combobox(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
-        combo.changeText(lang)
+        self.combobox(named('languages')).changeText(lang)
 
     def selectLanguage(self, lang):
-        combo = self._combobox(named(TrackEditionPage.LANGUAGE_FIELD_NAME))
-        combo.selectOption(lang)
+        self.combobox(named('languages')).selectOption(lang)
 
     def showsPreviewTime(self, time):
-        edit = self._dateTimeEdit(named(TrackEditionPage.PREVIEW_TIME_FIELD_NAME))
-        edit.hasTime(time)
+        self.dateTimeEdit(named('preview-time')).hasTime(time)
 
     def showsBitrate(self, text):
-        label = self._label(withBuddy(named(TrackEditionPage.BITRATE_FIELD_NAME)))
-        label.isShowingOnScreen()
-        value = self._label(named(TrackEditionPage.BITRATE_FIELD_NAME))
-        value.hasText(text)
+        self.label(withBuddy(named('bitrate'))).isShowingOnScreen()
+        self.label(named('bitrate')).hasText(text)
 
     def showsDuration(self, text):
-        label = self._label(withBuddy(named(TrackEditionPage.DURATION_FIELD_NAME)))
-        label.isShowingOnScreen()
-        value = self._label(named(TrackEditionPage.DURATION_FIELD_NAME))
-        value.hasText(text)
+        self.label(withBuddy(named('duration'))).isShowingOnScreen()
+        self.label(named('duration')).hasText(text)
 
     def showsSoftwareNotice(self, notice):
-        label = self._label(named(TrackEditionPage.SOFTWARE_NOTICE_FIELD_NAME))
+        label = self.label(named('software-notice'))
         label.isShowingOnScreen()
         label.hasText(notice)
-
-    def _dateTimeEdit(self, matching):
-        return DateTimeEditDriver.findSingle(self, QTimeEdit, matching)
-
-    def _combobox(self, matching):
-        return ComboBoxDriver.findSingle(self, QComboBox, matching)

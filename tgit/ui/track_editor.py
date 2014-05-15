@@ -25,34 +25,34 @@ class TrackEditor(AlbumListener, TrackListener):
     # todo when track records its track number (including total tracks in album)
     # we won't be needing its album
     def __init__(self, track, page):
-        self._track = track
-        # _album will eventually go away
-        self._album = track.album
-        self._album.addAlbumListener(self)
-        self._track.addTrackListener(self)
-        self._page = page
+        self.track = track
+        self.track.addTrackListener(self)
+        # album will eventually go away
+        self.album = track.album
+        self.album.addAlbumListener(self)
+        self.view = page
 
-        self._bindEventHandlers()
+        self.bindEventHandlers()
 
-    def _bindEventHandlers(self):
-        self._page.onMetadataChange(self.updateTrack)
+    def bindEventHandlers(self):
+        self.view.bind(metadataChanged=self.updateTrack)
 
     def render(self):
         self.refresh()
-        return self._page
+        return self.view
 
     def updateTrack(self, state):
-        self._track.trackTitle = state.trackTitle
-        self._track.leadPerformer = state.leadPerformer
-        self._track.versionInfo = state.versionInfo
-        self._track.featuredGuest = state.featuredGuest
-        self._track.lyricist = state.lyricist
-        self._track.composer = state.composer
-        self._track.publisher = state.publisher
-        self._track.isrc = state.isrc
-        self._track.tags = state.tags
-        self._track.lyrics = state.lyrics
-        self._track.language = state.language
+        self.track.trackTitle = state.trackTitle
+        self.track.leadPerformer = state.leadPerformer
+        self.track.versionInfo = state.versionInfo
+        self.track.featuredGuest = state.featuredGuest
+        self.track.lyricist = state.lyricist
+        self.track.composer = state.composer
+        self.track.publisher = state.publisher
+        self.track.isrc = state.isrc
+        self.track.tags = state.tags
+        self.track.lyrics = state.lyrics
+        self.track.language = state.language
 
     def trackStateChanged(self, track):
         self.refresh()
@@ -62,12 +62,12 @@ class TrackEditor(AlbumListener, TrackListener):
 
     def trackRemoved(self, track, position):
         # todo let AlbumDirector decide of that
-        if track == self._track:
-            self._album.removeAlbumListener(self)
-            self._track.removeTrackListener(self)
+        if track == self.track:
+            self.album.removeAlbumListener(self)
+            self.track.removeTrackListener(self)
         else:
             # but first we need track to know its track number and total tracks
             self.refresh()
 
     def refresh(self):
-        self._page.display(self._track)
+        self.view.display(self.track)

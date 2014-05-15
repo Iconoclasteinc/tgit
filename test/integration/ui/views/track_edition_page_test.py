@@ -89,7 +89,7 @@ class TrackEditionPageTest(ViewTest):
 
     def testSignalsWhenTrackMetadataEdited(self):
         changes = ValueMatcherProbe('track changed')
-        self.page.onMetadataChange(changes.received)
+        self.page.bind(metadataChanged=changes.received)
 
         changes.expect(has_properties(trackTitle='Title'))
         self.driver.changeTrackTitle('Title')

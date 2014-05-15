@@ -16,15 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt4.QtGui import QApplication, QWidget, QHBoxLayout
 
 
-def inKbps(bps):
+def toKbps(bps):
     return bps and int(round(bps, -3) / 1000) or ''
-
-
-def asDuration(seconds):
-    return seconds and '%02d:%02d' % divmod(round(seconds), 60) or ''
 
 
 def toPeopleList(people):
@@ -43,45 +38,3 @@ def fromPeopleList(text):
             pass
 
     return people
-
-
-def centeredOnScreen(widget):
-    show(widget)
-    centerOnScreen(widget)
-    activate(widget)
-
-
-def show(widget):
-    widget.show()
-
-
-def centerOnScreen(widget):
-    desktop = QApplication.desktop()
-    position = widget.frameGeometry()
-    position.moveCenter(desktop.availableGeometry().center())
-    widget.move(position.topLeft())
-
-
-def activate(widget):
-    from PyQt4.QtCore import QSysInfo
-
-    if hasattr(QSysInfo, 'MacintoshVersion') and QSysInfo.MacintoshVersion > QSysInfo.MV_10_8:
-        # On Maverick, menu bar does not appear until the window is manually activated, so force
-        # user to activate by not raising the window
-        pass
-    else:
-        # we can safely raise the window
-        widget.raise_()
-
-    widget.activateWindow()
-
-
-def centeredHorizontally(widget):
-    container = QWidget()
-    layout = QHBoxLayout()
-    layout.setContentsMargins(0, 0, 0, 0)
-    container.setLayout(layout)
-    layout.addStretch()
-    layout.addWidget(widget)
-    layout.addStretch()
-    return container

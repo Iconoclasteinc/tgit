@@ -1,308 +1,236 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QLabel, QLineEdit, QPushButton, QPlainTextEdit, QWidget, QCheckBox, QComboBox
+from PyQt4.QtGui import QWidget
 
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
-from test.cute.widgets import (WidgetDriver, LabelDriver, LineEditDriver,
-                               ButtonDriver, TextEditDriver, ComboBoxDriver)
+from test.drivers.__base import BaseDriver
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
 
-import tgit.tags as tags
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 
 
 def albumEditionPage(parent):
-    return AlbumEditionPageDriver.findSingle(parent, QWidget, named(AlbumEditionPage.NAME))
+    return AlbumEditionPageDriver.findSingle(parent, QWidget, named('album-edition-page'))
 
 
-class AlbumEditionPageDriver(WidgetDriver):
-    def __init__(self, selector, prober, gesturePerformer):
-        super(AlbumEditionPageDriver, self).__init__(selector, prober, gesturePerformer)
-
+class AlbumEditionPageDriver(BaseDriver):
     def showsMetadata(self, **meta):
         for tag, value in meta.iteritems():
-            if tag == tags.RELEASE_NAME:
+            if tag == 'releaseName':
                 self.showsReleaseName(value)
-            elif tag == tags.LEAD_PERFORMER:
+            elif tag == 'leadPerformer':
                 self.showsLeadPerformer(value)
-            elif tag == tags.GUEST_PERFORMERS:
+            elif tag == 'guestPerformers':
                 self.showsGuestPerformers(value)
-            elif tag == tags.LABEL_NAME:
+            elif tag == 'labelName':
                 self.showsLabelName(value)
-            elif tag == tags.CATALOG_NUMBER:
+            elif tag == 'catalogNumber':
                 self.showsCatalogNumber(value)
-            elif tag == tags.UPC:
+            elif tag == 'upc':
                 self.showsUpc(value)
-            elif tag == tags.RECORDING_TIME:
+            elif tag == 'recordingTime':
                 self.showsRecordingTime(value)
-            elif tag == tags.RELEASE_TIME:
+            elif tag == 'releaseTime':
                 self.showsReleaseTime(value)
-            elif tag == tags.ORIGINAL_RELEASE_TIME:
+            elif tag == 'originalReleaseTime':
                 self.showsOriginalReleaseTime(value)
-            elif tag == tags.RECORDING_STUDIOS:
+            elif tag == 'recordingStudios':
                 self.showsRecordingStudios(value)
-            elif tag == tags.PRODUCER:
+            elif tag == 'producer':
                 self.showsProducer(value)
-            elif tag == tags.MIXER:
+            elif tag == 'mixer':
                 self.showsMixer(value)
             else:
                 raise AssertionError("Don't know how to verify '%s'" % tag)
 
     def changeMetadata(self, **meta):
         for tag, value in meta.iteritems():
-            if tag == tags.FRONT_COVER:
+            if tag == 'frontCover':
                 self.selectPicture(value)
-            elif tag == tags.RELEASE_NAME:
+            elif tag == 'releaseName':
                 self.changeReleaseName(value)
-            elif tag == tags.LEAD_PERFORMER:
+            elif tag == 'leadPerformer':
                 self.changeLeadPerformer(value)
-            elif tag == tags.GUEST_PERFORMERS:
+            elif tag == 'guestPerformers':
                 self.changeGuestPerformers(value)
-            elif tag == tags.LABEL_NAME:
+            elif tag == 'labelName':
                 self.changeLabelName(value)
-            elif tag == tags.CATALOG_NUMBER:
+            elif tag == 'catalogNumber':
                 self.changeCatalogNumber(value)
-            elif tag == tags.UPC:
+            elif tag == 'upc':
                 self.changeUpc(value)
-            elif tag == tags.RECORDING_TIME:
+            elif tag == 'recordingTime':
                 self.changeRecordingTime(value)
-            elif tag == tags.RELEASE_TIME:
+            elif tag == 'releaseTime':
                 self.changeReleaseTime(value)
-            elif tag == tags.ORIGINAL_RELEASE_TIME:
+            elif tag == 'originalReleaseTime':
                 self.changeOriginalReleaseTime(value)
-            elif tag == tags.RECORDING_STUDIOS:
+            elif tag == 'recordingStudios':
                 self.changeRecordingStudios(value)
-            elif tag == tags.PRODUCER:
+            elif tag == 'producer':
                 self.changeProducer(value)
-            elif tag == tags.MIXER:
+            elif tag == 'mixer':
                 self.changeMixer(value)
             else:
                 raise AssertionError("Don't know how to edit '%s'" % tag)
 
-    def _displaysPictureWithSize(self, width, height):
-        label = self._label(named(AlbumEditionPage.FRONT_COVER_FIELD_NAME))
+    def displaysPictureWithSize(self, width, height):
+        label = self.label(named('front-cover'))
         label.isShowingOnScreen()
         label.hasPixmap(withPixmapHeight(height))
         label.hasPixmap(withPixmapWidth(width))
 
     def showsPicture(self):
-        self._displaysPictureWithSize(*AlbumEditionPage.FRONT_COVER_SIZE)
+        self.displaysPictureWithSize(*AlbumEditionPage.FRONT_COVER_SIZE)
 
     def showsPicturePlaceholder(self):
-        self._displaysPictureWithSize(0, 0)
+        self.displaysPictureWithSize(0, 0)
 
     def selectPicture(self, filename):
         self.addPicture()
         pictureSelectionDialog(self).selectPicture(filename)
         self.showsPicture()
 
-    def _button(self, matching):
-        return ButtonDriver.findSingle(self, QPushButton, matching)
-
     def addPicture(self):
-        button = self._button(named(AlbumEditionPage.SELECT_PICTURE_BUTTON_NAME))
-        button.click()
+        self.button(named('select-picture')).click()
 
     def removePicture(self):
-        button = self._button(named(AlbumEditionPage.REMOVE_PICTURE_BUTTON_NAME))
-        button.click()
+        self.button(named('remove-picture')).click()
 
     def showsReleaseName(self, name):
-        label = self._label(withBuddy(named(AlbumEditionPage.RELEASE_NAME_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.RELEASE_NAME_FIELD_NAME))
-        edit.hasText(name)
+        self.label(withBuddy(named('release-name'))).isShowingOnScreen()
+        self.lineEdit(named('release-name')).hasText(name)
 
     def changeReleaseName(self, name):
-        edit = self._lineEdit(named(AlbumEditionPage.RELEASE_NAME_FIELD_NAME))
-        edit.changeText(name)
+        self.lineEdit(named('release-name')).changeText(name)
 
     def showsCompilation(self, flag):
-        label = self._label(withBuddy(named(AlbumEditionPage.COMPILATION_FIELD_NAME)))
-        label.isShowingOnScreen()
-        checkbox = self._checkbox(named(AlbumEditionPage.COMPILATION_FIELD_NAME))
-        checkbox.isChecked(flag)
+        self.label(withBuddy(named('compilation'))).isShowingOnScreen()
+        self.checkbox(named('compilation')).isChecked(flag)
 
     def toggleCompilation(self):
-        checkbox = self._checkbox(named(AlbumEditionPage.COMPILATION_FIELD_NAME))
-        checkbox.click()
+        self.checkbox(named('compilation')).click()
 
     def showsLeadPerformer(self, name, disabled=False):
-        label = self._label(withBuddy(named(AlbumEditionPage.LEAD_PERFORMER_FIELD_NAME)))
+        label = self.label(withBuddy(named('lead-performer')))
         label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.LEAD_PERFORMER_FIELD_NAME))
+        edit = self.lineEdit(named('lead-performer'))
         edit.hasText(name)
         edit.isDisabled(disabled)
 
     def changeLeadPerformer(self, name):
-        edit = self._lineEdit(named(AlbumEditionPage.LEAD_PERFORMER_FIELD_NAME))
-        edit.changeText(name)
+        self.lineEdit(named('lead-performer')).changeText(name)
 
     def showsGuestPerformers(self, names):
-        label = self._label(withBuddy(named(AlbumEditionPage.GUEST_PERFORMERS_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.GUEST_PERFORMERS_FIELD_NAME))
-        edit.hasText(names)
+        self.label(withBuddy(named('guest-performers'))).isShowingOnScreen()
+        self.lineEdit(named('guest-performers')).hasText(names)
 
     def changeGuestPerformers(self, names):
-        edit = self._lineEdit(named(AlbumEditionPage.GUEST_PERFORMERS_FIELD_NAME))
-        edit.changeText(names)
+        self.lineEdit(named('guest-performers')).changeText(names)
 
     def showsLabelName(self, name):
-        label = self._label(withBuddy(named(AlbumEditionPage.LABEL_NAME_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.LABEL_NAME_FIELD_NAME))
-        edit.hasText(name)
+        self.label(withBuddy(named('label-name'))).isShowingOnScreen()
+        self.lineEdit(named('label-name')).hasText(name)
 
     def changeLabelName(self, name):
-        edit = self._lineEdit(named(AlbumEditionPage.LABEL_NAME_FIELD_NAME))
-        edit.changeText(name)
+        self.lineEdit(named('label-name')).changeText(name)
 
     def showsArea(self, area):
-        label = self._label(withBuddy(named(AlbumEditionPage.AREA_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.AREA_FIELD_NAME))
+        self.label(withBuddy(named('area'))).isShowingOnScreen()
+        edit = self.lineEdit(named('area'))
         edit.isDisabled()
         edit.hasText(area)
 
     def showsCatalogNumber(self, number):
-        label = self._label(withBuddy(named(AlbumEditionPage.CATALOG_NUMBER_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.CATALOG_NUMBER_FIELD_NAME))
-        edit.hasText(number)
+        self.label(withBuddy(named('catalog-number'))).isShowingOnScreen()
+        self.lineEdit(named('catalog-number')).hasText(number)
 
     def changeCatalogNumber(self, number):
-        edit = self._lineEdit(named(AlbumEditionPage.CATALOG_NUMBER_FIELD_NAME))
-        edit.changeText(number)
+        self.lineEdit(named('catalog-number')).changeText(number)
 
     def showsUpc(self, code):
-        label = self._label(withBuddy(named(AlbumEditionPage.UPC_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.UPC_FIELD_NAME))
-        edit.hasText(code)
+        self.label(withBuddy(named('upc'))).isShowingOnScreen()
+        self.lineEdit(named('upc')).hasText(code)
 
     def changeUpc(self, code):
-        edit = self._lineEdit(named(AlbumEditionPage.UPC_FIELD_NAME))
-        edit.changeText(code)
+        self.lineEdit(named('upc')).changeText(code)
 
     def showsRecordingTime(self, time):
-        label = self._label(withBuddy(named(AlbumEditionPage.RECORDING_TIME_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.RECORDING_TIME_FIELD_NAME))
-        edit.hasText(time)
+        self.label(withBuddy(named('recording-time'))).isShowingOnScreen()
+        self.lineEdit(named('recording-time')).hasText(time)
 
     def changeRecordingTime(self, time):
-        edit = self._lineEdit(named(AlbumEditionPage.RECORDING_TIME_FIELD_NAME))
-        edit.changeText(time)
+        self.lineEdit(named('recording-time')).changeText(time)
 
     def showsReleaseTime(self, time):
-        label = self._label(withBuddy(named(AlbumEditionPage.RELEASE_TIME_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.RELEASE_TIME_FIELD_NAME))
-        edit.hasText(time)
+        self.label(withBuddy(named('release-time'))).isShowingOnScreen()
+        self.lineEdit(named('release-time')).hasText(time)
 
     def changeReleaseTime(self, time):
-        edit = self._lineEdit(named(AlbumEditionPage.RELEASE_TIME_FIELD_NAME))
-        edit.changeText(time)
+        self.lineEdit(named('release-time')).changeText(time)
 
     def showsDigitalReleaseTime(self, time):
-        label = self._label(withBuddy(named(AlbumEditionPage.DIGITAL_RELEASE_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.DIGITAL_RELEASE_FIELD_NAME))
+        self.label(withBuddy(named('digital-release-time'))).isShowingOnScreen()
+        edit = self.lineEdit(named('digital-release-time'))
         edit.isDisabled()
         edit.hasText(time)
 
     def showsOriginalReleaseTime(self, time):
-        label = self._label(withBuddy(named(AlbumEditionPage.ORIGINAL_RELEASE_TIME_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.ORIGINAL_RELEASE_TIME_FIELD_NAME))
-        edit.hasText(time)
+        self.label(withBuddy(named('original-release-time'))).isShowingOnScreen()
+        self.lineEdit(named('original-release-time')).hasText(time)
 
     def changeOriginalReleaseTime(self, time):
-        edit = self._label(named(AlbumEditionPage.ORIGINAL_RELEASE_TIME_FIELD_NAME))
-        edit.changeText(time)
+        self.label(named('original-release-time')).changeText(time)
 
     def showsRecordingStudios(self, studios):
-        label = self._label(withBuddy(named(AlbumEditionPage.RECORDING_STUDIOS_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.RECORDING_STUDIOS_FIELD_NAME))
-        edit.hasText(studios)
+        self.label(withBuddy(named('recording-studios'))).isShowingOnScreen()
+        self.lineEdit(named('recording-studios')).hasText(studios)
 
     def changeRecordingStudios(self, studios):
-        edit = self._lineEdit(named(AlbumEditionPage.RECORDING_STUDIOS_FIELD_NAME))
-        edit.changeText(studios)
+        self.lineEdit(named('recording-studios')).changeText(studios)
 
     def showsProducer(self, producer):
-        label = self._label(withBuddy(named(AlbumEditionPage.PRODUCER_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.PRODUCER_FIELD_NAME))
-        edit.hasText(producer)
+        self.label(withBuddy(named('producer'))).isShowingOnScreen()
+        self.lineEdit(named('producer')).hasText(producer)
 
     def changeProducer(self, producer):
-        edit = LineEditDriver.findSingle(self, QLineEdit, named(AlbumEditionPage.PRODUCER_FIELD_NAME))
-        edit.changeText(producer)
+        self.lineEdit(named('producer')).changeText(producer)
 
     def showsMixer(self, mixer):
-        label = self._label(withBuddy(named(AlbumEditionPage.MIXER_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.MIXER_FIELD_NAME))
-        edit.hasText(mixer)
+        self.label(withBuddy(named('mixer'))).isShowingOnScreen()
+        self.lineEdit(named('mixer')).hasText(mixer)
 
     def changeMixer(self, mixer):
-        edit = self._lineEdit(named(AlbumEditionPage.MIXER_FIELD_NAME))
-        edit.changeText(mixer)
+        self.lineEdit(named('mixer')).changeText(mixer)
 
     def showsComments(self, comments):
-        label = self._label(withBuddy(named(AlbumEditionPage.COMMENTS_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._textEdit(named(AlbumEditionPage.COMMENTS_FIELD_NAME))
-        edit.hasPlainText(comments)
+        self.label(withBuddy(named('comments'))).isShowingOnScreen()
+        self.textEdit(named('comments')).hasPlainText(comments)
 
     def addComments(self, *comments):
-        edit = self._textEdit(named(AlbumEditionPage.COMMENTS_FIELD_NAME))
+        edit = self.textEdit(named('comments'))
         for comment in comments:
             edit.addLine(comment)
         edit.clearFocus()
 
     def showsPrimaryStyle(self, style):
-        label = self._label(withBuddy(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME)))
-        label.isShowingOnScreen()
-        combo = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
-        combo.hasCurrentText(style)
+        self.label(withBuddy(named('primary-style'))).isShowingOnScreen()
+        self.combobox(named('primary-style')).hasCurrentText(style)
 
     def changePrimaryStyle(self, style):
-        combo = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
-        combo.changeText(style)
+        self.combobox(named('primary-style')).changeText(style)
 
     def selectPrimaryStyle(self, style):
-        combo = self._combobox(named(AlbumEditionPage.PRIMARY_STYLE_FIELD_NAME))
-        combo.selectOption(style)
+        self.combobox(named('primary-style')).selectOption(style)
 
     def showsMediaType(self, type_):
-        label = self._label(withBuddy(named(AlbumEditionPage.MEDIA_TYPE_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.MEDIA_TYPE_FIELD_NAME))
+        self.label(withBuddy(named('media-type'))).isShowingOnScreen()
+        edit = self.lineEdit(named('media-type'))
         edit.isDisabled()
         edit.hasText(type_)
 
     def showsReleaseType(self, type_):
-        label = self._label(withBuddy(named(AlbumEditionPage.RELEASE_TYPE_FIELD_NAME)))
-        label.isShowingOnScreen()
-        edit = self._lineEdit(named(AlbumEditionPage.RELEASE_TYPE_FIELD_NAME))
+        self.label(withBuddy(named('release-type'))).isShowingOnScreen()
+        edit = self.lineEdit(named('release-type'))
         edit.isDisabled()
         edit.hasText(type_)
-
-    def _label(self, matching):
-        return LabelDriver.findSingle(self, QLabel, matching)
-
-    def _lineEdit(self, matching):
-        return LineEditDriver.findSingle(self, QLineEdit, matching)
-
-    def _textEdit(self, matching):
-        return TextEditDriver.findSingle(self, QPlainTextEdit, matching)
-
-    def _checkbox(self, matching):
-        return ButtonDriver.findSingle(self, QCheckBox, matching)
-
-    def _combobox(self, matching):
-        return ComboBoxDriver.findSingle(self, QComboBox, matching)

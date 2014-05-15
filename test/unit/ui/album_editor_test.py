@@ -10,15 +10,13 @@ from tgit.util import fs
 class AlbumViewStub(object):
     def __init__(self):
         self.refreshCount = 0
+        self.handlers = {}
 
-    def onMetadataChange(self, callback):
-        self.triggerMetadataChange = callback
+    def __getattr__(self, item):
+        return self.handlers[item]
 
-    def onSelectPicture(self, callback):
-        self.triggerPictureSelection = callback
-
-    def onRemovePicture(self, callback):
-        self.triggerRemovePicture = callback
+    def bind(self, **handlers):
+        self.handlers.update(handlers)
 
     def display(self, album):
         self.album = album
@@ -68,7 +66,7 @@ class AlbumEditorTest(unittest.TestCase):
         changes.mixer = 'Engineer'
         changes.primaryStyle = 'Style'
 
-        self.view.triggerMetadataChange(changes)
+        self.view.metadataChanged(changes)
 
         assert_that(self.album.releaseName, equal_to('Title'), 'release name')
         assert_that(self.album.compilation, is_(True), 'compilation')
@@ -92,7 +90,7 @@ class AlbumEditorTest(unittest.TestCase):
 
     def testClearsAlbumImagesOnRemoveCover(self):
         self.album.addFrontCover('image/jpeg', 'image data')
-        self.view.triggerRemovePicture()
+        self.view.removePicture()
         assert_that(self.album.images, equal_to([]), 'images')
 
     def testChangesAlbumMainCoverOnSelectedPicture(self):
@@ -100,7 +98,7 @@ class AlbumEditorTest(unittest.TestCase):
 
         selectedCover = resources.path('front-cover.jpg')
         self.selector.selectedPicture = selectedCover
-        self.view.triggerPictureSelection()
+        self.view.selectPicture()
 
         assert_that(self.album.images, contains(has_properties(mime='image/jpeg',
                                                                data=contentOf(selectedCover),

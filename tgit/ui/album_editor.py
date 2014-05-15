@@ -22,66 +22,52 @@ from tgit.util import fs
 
 
 class AlbumEditor(AlbumListener):
-    def __init__(self, album, albumView, pictureSelector):
-        self._album = album
-        self._album.addAlbumListener(self)
-        self._albumView = albumView
-        self._pictureSelector = pictureSelector
+    def __init__(self, album, page, pictureSelector):
+        self.album = album
+        self.album.addAlbumListener(self)
+        self.view = page
+        self.pictureSelector = pictureSelector
 
-        self._bindEventHandlers()
+        self.bindEventHandlers()
 
-    def _bindEventHandlers(self):
-        self._albumView.onMetadataChange(self.updateAlbum)
-        self._albumView.onSelectPicture(self.addPicture)
-        self._albumView.onRemovePicture(self.removePicture)
-        self._pictureSelector.onSelectPicture(self.pictureSelected)
+    def bindEventHandlers(self):
+        self.view.bind(metadataChanged=self.updateAlbum, selectPicture=self.selectPicture,
+                       removePicture=self.removeAlbumCover)
+        self.pictureSelector.onSelectPicture(self.changeAlbumCover)
 
     def render(self):
         self.refresh()
-        return self._albumView
+        return self.view
 
     def refresh(self):
-        self._albumView.display(self._album)
+        self.view.display(self.album)
 
     def albumStateChanged(self, album):
         self.refresh()
 
     def updateAlbum(self, state):
-        self._album.releaseName = state.releaseName
-        self._album.compilation = state.compilation
-        self._album.leadPerformer = state.leadPerformer
-        self._album.guestPerformers = state.guestPerformers
-        self._album.labelName = state.labelName
-        self._album.catalogNumber = state.catalogNumber
-        self._album.upc = state.upc
-        self._album.comments = state.comments
-        self._album.releaseTime = state.releaseTime
-        self._album.recordingTime = state.recordingTime
-        self._album.recordingStudios = state.recordingStudios
-        self._album.producer = state.producer
-        self._album.mixer = state.mixer
-        self._album.primaryStyle = state.primaryStyle
+        self.album.releaseName = state.releaseName
+        self.album.compilation = state.compilation
+        self.album.leadPerformer = state.leadPerformer
+        self.album.guestPerformers = state.guestPerformers
+        self.album.labelName = state.labelName
+        self.album.catalogNumber = state.catalogNumber
+        self.album.upc = state.upc
+        self.album.comments = state.comments
+        self.album.releaseTime = state.releaseTime
+        self.album.recordingTime = state.recordingTime
+        self.album.recordingStudios = state.recordingStudios
+        self.album.producer = state.producer
+        self.album.mixer = state.mixer
+        self.album.primaryStyle = state.primaryStyle
 
-    def addPicture(self):
-        self._pictureSelector.show()
+    def selectPicture(self):
+        self.pictureSelector.show()
 
-    def pictureSelected(self, filename):
-        changeAlbumCover(self._album, filename)
+    def changeAlbumCover(self, filename):
+        self.album.removeImages()
+        mime, data = fs.guessMimeType(filename), fs.readContent(filename)
+        self.album.addFrontCover(mime, data)
 
-    def removePicture(self):
-        removeAlbumCover(self._album)
-
-
-def removeAlbumCover(album):
-    album.removeImages()
-
-
-def changeAlbumCover(album, filename):
-    album.removeImages()
-    mime, data = loadImage(filename)
-    album.addFrontCover(mime, data)
-
-
-# todo I think we need a concept of an ImageLibrary
-def loadImage(filename):
-    return fs.guessMimeType(filename), fs.readContent(filename)
+    def removeAlbumCover(self):
+        self.album.removeImages()

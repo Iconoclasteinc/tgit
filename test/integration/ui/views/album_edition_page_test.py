@@ -95,7 +95,7 @@ class AlbumEditionPageTest(ViewTest):
     def testSignalsWhenAddPictureButtonClicked(self):
         self.page.display(build.album())
         addPictureSignal = ValueMatcherProbe('add picture')
-        self.page.onSelectPicture(addPictureSignal.received)
+        self.page.bind(selectPicture=addPictureSignal.received)
 
         self.driver.addPicture()
         self.check(addPictureSignal)
@@ -104,7 +104,7 @@ class AlbumEditionPageTest(ViewTest):
         self.page.display(build.album())
         removePictureSignal = ValueMatcherProbe('remove picture')
 
-        self.page.onRemovePicture(removePictureSignal.received)
+        self.page.bind(removePicture=removePictureSignal.received)
 
         self.driver.removePicture()
         self.check(removePictureSignal)
@@ -113,7 +113,7 @@ class AlbumEditionPageTest(ViewTest):
         self.page.display(build.album())
         changes = ValueMatcherProbe('album changed')
 
-        self.page.onMetadataChange(changes.received)
+        self.page.bind(metadataChanged=changes.received)
 
         changes.expect(has_properties(releaseName='Title'))
         self.driver.changeReleaseName('Title')

@@ -5,15 +5,19 @@ from test.util import builders as build
 from tgit.ui.track_editor import TrackEditor
 
 
-class PageStub(object):
+class TrackViewStub(object):
     def __init__(self):
-        self.refreshCount = 0
+        self.timesDisplayed = 0
+        self.handlers = {}
 
-    def onMetadataChange(self, callback):
-        self.triggerMetadataChange = callback
+    def __getattr__(self, item):
+        return self.handlers[item]
+
+    def bind(self, **handlers):
+        self.handlers.update(handlers)
 
     def display(self, track):
-        self.refreshCount += 1
+        self.timesDisplayed += 1
         self.track = track
 
 
@@ -24,32 +28,32 @@ class TrackEditorTest(unittest.TestCase):
         self.album = build.album(releaseName='Title')
         self.track = build.track()
         self.album.addTrack(self.track)
-        self.page = PageStub()
-        self.editor = TrackEditor(self.track, self.page)
+        self.view = TrackViewStub()
+        self.editor = TrackEditor(self.track, self.view)
 
     def testDisplaysTrackWhenRendered(self):
         view = self.editor.render()
-        assert_that(view, same_instance(self.page), 'view')
-        assert_that(self.page.track, equal_to(self.track), 'displayed track')
+        assert_that(view, same_instance(self.view), 'view')
+        assert_that(self.view.track, equal_to(self.track), 'displayed track')
 
     def testUpdatesTrackOnEdition(self):
         class Snapshot(object):
             pass
 
-        state = Snapshot()
-        state.trackTitle = 'Title'
-        state.leadPerformer = 'Artist'
-        state.versionInfo = 'Version'
-        state.featuredGuest = 'Featuring'
-        state.lyricist = 'Lyricist'
-        state.composer = 'Composer'
-        state.publisher = 'Publisher'
-        state.isrc = 'ZZZ123456789'
-        state.tags = 'Tags'
-        state.lyrics = 'Lyrics\nLyrics\n...'
-        state.language = 'und'
+        changes = Snapshot()
+        changes.trackTitle = 'Title'
+        changes.leadPerformer = 'Artist'
+        changes.versionInfo = 'Version'
+        changes.featuredGuest = 'Featuring'
+        changes.lyricist = 'Lyricist'
+        changes.composer = 'Composer'
+        changes.publisher = 'Publisher'
+        changes.isrc = 'ZZZ123456789'
+        changes.tags = 'Tags'
+        changes.lyrics = 'Lyrics\nLyrics\n...'
+        changes.language = 'und'
 
-        self.page.triggerMetadataChange(state)
+        self.view.metadataChanged(changes)
 
         assert_that(self.track.trackTitle, equal_to('Title'), 'track title')
         assert_that(self.track.leadPerformer, equal_to('Artist'), 'lead performer')
@@ -65,19 +69,19 @@ class TrackEditorTest(unittest.TestCase):
 
     def testRefreshesPageOnTrackChange(self):
         self.track.trackTitle = 'changed'
-        assert_that(self.page.refreshCount, equal_to(1), 'refresh count')
+        assert_that(self.view.timesDisplayed, equal_to(1), 'refresh count')
 
     def testRefreshesPageOnAlbumCompositionChange(self):
         other = build.track()
         self.album.addTrack(other)
-        assert_that(self.page.refreshCount, equal_to(1), 'refresh count after addition')
+        assert_that(self.view.timesDisplayed, equal_to(1), 'refresh count after addition')
 
         self.album.removeTrack(other)
-        assert_that(self.page.refreshCount, equal_to(2), 'refresh count after removal')
+        assert_that(self.view.timesDisplayed, equal_to(2), 'refresh count after removal')
 
     def testStopsRefreshingPageOnceTrackRemovedFromAlbum(self):
         self.album.removeTrack(self.track)
-        assert_that(self.page.refreshCount, equal_to(0), 'refresh count after removal')
+        assert_that(self.view.timesDisplayed, equal_to(0), 'refresh count after removal')
 
         self.track.trackTitle = 'changed'
-        assert_that(self.page.refreshCount, equal_to(0), 'refresh count after change')
+        assert_that(self.view.timesDisplayed, equal_to(0), 'refresh count after change')
