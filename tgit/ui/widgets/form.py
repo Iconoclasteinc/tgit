@@ -49,7 +49,7 @@ def labelFor(field, title):
     return label
 
 
-def label(name):
+def label(name=None):
     label = QLabel()
     label.setObjectName(name)
     return label

@@ -30,25 +30,25 @@ class Row(QObject, TrackListener, PlayerListener):
 
     def __init__(self, album, track, playing=False):
         QObject.__init__(self)
-        self._album = album
-        self._track = track
+        self.album = album
+        self.track = track
         self._playing = playing
 
     @property
     def trackTitle(self):
-        return self._track.trackTitle
+        return self.track.trackTitle
 
     def leadPerformer(self):
-        return self._track.leadPerformer
+        return self.track.leadPerformer
 
     def releaseName(self):
-        return self._album.releaseName
+        return self.album.releaseName
 
     def bitrate(self):
-        return self._track.bitrate
+        return self.track.bitrate
 
     def duration(self):
-        return self._track.duration
+        return self.track.duration
 
     def playing(self):
         # We cannot just rely on the player state cause it is updated
@@ -57,17 +57,17 @@ class Row(QObject, TrackListener, PlayerListener):
 
     def play(self, player):
         self._playing = True
-        player.play(self._track.filename)
+        player.play(self.track.filename)
 
     def stop(self, player):
         self._playing = False
         player.stop()
 
     def remove(self):
-        self._album.removeTrack(self._track)
+        self.album.removeTrack(self.track)
 
     def insert(self, position):
-        self._album.insertTrack(self._track, position)
+        self.album.insertTrack(self.track, position)
 
     def moveTo(self, position):
         self.remove()
@@ -77,7 +77,7 @@ class Row(QObject, TrackListener, PlayerListener):
         self.signalRowChange()
 
     def started(self, filename):
-        if filename == self._track.filename:
+        if filename == self.track.filename:
             self._playing = True
             self.signalRowChange()
 
@@ -85,7 +85,7 @@ class Row(QObject, TrackListener, PlayerListener):
         self.stopped(filename)
 
     def stopped(self, filename):
-        if filename == self._track.filename:
+        if filename == self.track.filename:
             self._playing = False
             self.signalRowChange()
 
@@ -93,7 +93,7 @@ class Row(QObject, TrackListener, PlayerListener):
         self.rowChanged.emit(self)
 
     def __eq__(self, other):
-        return self._track == other._track
+        return self.track == other.track
 
 
 class Column(QObject):
@@ -136,9 +136,9 @@ class Columns:
 class AlbumCompositionModel(QAbstractTableModel, AlbumListener, TrackListener):
     def __init__(self, album, player, parent=None):
         QAbstractTableModel.__init__(self, parent)
-        self._album = album
-        self._album.addAlbumListener(self)
-        self._player = player
+        self.album = album
+        self.album.addAlbumListener(self)
+        self.player = player
         self._tracks = []
 
     @property
@@ -164,7 +164,7 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener, TrackListener):
             return str(section + 1)
 
     def data(self, index, role=Qt.DisplayRole):
-        if not index.isValid() or not (0 <= index.row() < len(self._album)):
+        if not index.isValid() or not (0 <= index.row() < len(self.album)):
             return None
 
         if role != Qt.DisplayRole:
@@ -177,13 +177,13 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener, TrackListener):
 
     def togglePlay(self, track):
         if track.playing():
-            track.stop(self._player)
+            track.stop(self.player)
         else:
-            track.play(self._player)
+            track.play(self.player)
 
     def remove(self, track):
         if track.playing():
-            track.stop(self._player)
+            track.stop(self.player)
         track.remove()
 
     def move(self, fromPosition, toPosition):
@@ -194,9 +194,9 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener, TrackListener):
                               self.index(self.rowCount() - 1, Columns.index(Columns.releaseName)))
 
     def trackAdded(self, track, position):
-        row = Row(self._album, track, self._inPlay(track))
+        row = Row(self.album, track, self.playing(track))
         track.addTrackListener(row)
-        self._player.addPlayerListener(row)
+        self.player.addPlayerListener(row)
         self._tracks.insert(position, row)
         row.rowChanged.connect(self.rowChanged)
         self.insertRows(position, 1, QModelIndex())
@@ -208,7 +208,7 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener, TrackListener):
     def trackRemoved(self, track, position):
         row = self.trackAt(position)
         track.removeTrackListener(row)
-        self._player.removePlayerListener(row)
+        self.player.removePlayerListener(row)
         row.rowChanged.disconnect()
         self._tracks.remove(row)
         self.removeRows(position, 1, QModelIndex())
@@ -221,5 +221,5 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener, TrackListener):
         self.beginRemoveRows(parent, position, position + rows - 1)
         self.endRemoveRows()
 
-    def _inPlay(self, track):
-        return self._player.isPlaying() and self._player.media == track.filename
+    def playing(self, track):
+        return self.player.isPlaying() and self.player.media == track.filename

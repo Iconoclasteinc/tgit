@@ -130,7 +130,7 @@ Sheet = """
         min-height: 64px;
     }
 
-    QToolButton#add-tracks {
+    QPushButton#add-tracks {
         background-color: #EC2327;
         border: 2px solid #EC2327;
         border-radius: 4px;
@@ -140,12 +140,12 @@ Sheet = """
         padding: 10px 10px 7px 10px;
     }
 
-    QToolButton#add-tracks:hover {
+    QPushButton#add-tracks:hover {
         background-color: #D42023;
         border-color: #D42023;
     }
 
-    QToolButton#add-tracks:pressed {
+    QPushButton#add-tracks:pressed {
         border: 2px solid #F6F6F6;
     }
 
