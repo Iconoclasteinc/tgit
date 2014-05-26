@@ -26,12 +26,16 @@ class AlbumViewStub(object):
 class PictureSelectorStub(object):
     def __init__(self):
         self.selectedPicture = None
+        self.handlers = {}
+
+    def __getattr__(self, item):
+        return self.handlers[item]
 
     def show(self):
-        self.triggerSelectPicture(self.selectedPicture)
+        self.pictureSelected(self.selectedPicture)
 
-    def onSelectPicture(self, callback):
-        self.triggerSelectPicture = callback
+    def bind(self, **handlers):
+        self.handlers.update(handlers)
 
 
 class AlbumEditorTest(unittest.TestCase):

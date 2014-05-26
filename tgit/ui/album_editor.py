@@ -33,7 +33,7 @@ class AlbumEditor(AlbumListener):
     def bindEventHandlers(self):
         self.view.bind(metadataChanged=self.updateAlbum, selectPicture=self.selectPicture,
                        removePicture=self.removeAlbumCover)
-        self.pictureSelector.onSelectPicture(self.changeAlbumCover)
+        self.pictureSelector.bind(pictureSelected=self.changeAlbumCover)
 
     def render(self):
         self.refresh()

@@ -21,7 +21,7 @@ class PictureSelectionDialogTest(ViewTest):
     def testSignalsWhenPictureSelected(self):
         pictureSelected = ValueMatcherProbe('picture selected', resources.path('front-cover.jpg'))
 
-        self.dialog.onSelectPicture(pictureSelected.received)
+        self.dialog.bind(pictureSelected=pictureSelected.received)
         self.dialog.show()
         self.driver.selectPicture(resources.path('front-cover.jpg'))
 

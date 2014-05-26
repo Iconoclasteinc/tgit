@@ -23,25 +23,27 @@ from tgit.ui.views import mainWindow
 
 
 class PictureSelectionDialog(object):
-    NAME = 'picture-selection-dialog'
-
     #todo Introduce Preferences
     native = True
 
     def __init__(self):
         super(PictureSelectionDialog, self).__init__()
-        self._build()
+        self.build()
 
-    def _build(self):
-        self._dialog = QFileDialog(mainWindow())
-        self._dialog.setObjectName(self.NAME)
-        self._dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        self._dialog.setDirectory(QDir.homePath())
-        self._dialog.setFileMode(QFileDialog.ExistingFile)
-        self._dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % self._dialog.tr('Image files'))
+    def build(self):
+        self.dialog = QFileDialog(mainWindow())
+        self.dialog.setObjectName('picture-selection-dialog')
+        self.dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
+        self.dialog.setDirectory(QDir.homePath())
+        self.dialog.setFileMode(QFileDialog.ExistingFile)
+        self.dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % self.dialog.tr('Image files'))
 
-    def onSelectPicture(self, callback):
-        self._dialog.fileSelected.connect(callback)
+    def bind(self, **handlers):
+        if 'pictureSelected' in handlers:
+            self.onPictureSelected(handlers['pictureSelected'])
+
+    def onPictureSelected(self, callback):
+        self.dialog.fileSelected.connect(callback)
 
     def show(self):
-        self._dialog.open()
+        self.dialog.open()
