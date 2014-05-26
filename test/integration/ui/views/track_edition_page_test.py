@@ -88,57 +88,57 @@ class TrackEditionPageTest(ViewTest):
         self.driver.showsLeadPerformer('Album Artist', disabled=True)
 
     def testSignalsWhenTrackMetadataEdited(self):
-        changes = ValueMatcherProbe('track changed')
-        self.page.bind(metadataChanged=changes.received)
+        trackChangedSignal = ValueMatcherProbe('track changed')
+        self.page.bind(metadataChanged=trackChangedSignal.received)
 
-        changes.expect(has_properties(trackTitle='Title'))
+        trackChangedSignal.expect(has_properties(trackTitle='Title'))
         self.driver.changeTrackTitle('Title')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(leadPerformer='Artist'))
+        trackChangedSignal.expect(has_properties(leadPerformer='Artist'))
         self.driver.changeLeadPerformer('Artist')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(versionInfo='Remix'))
+        trackChangedSignal.expect(has_properties(versionInfo='Remix'))
         self.driver.changeVersionInfo('Remix')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(featuredGuest='Featuring'))
+        trackChangedSignal.expect(has_properties(featuredGuest='Featuring'))
         self.driver.changeFeaturedGuest('Featuring')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(lyricist='Lyricist'))
+        trackChangedSignal.expect(has_properties(lyricist='Lyricist'))
         self.driver.changeLyricist('Lyricist')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(composer='Composer'))
+        trackChangedSignal.expect(has_properties(composer='Composer'))
         self.driver.changeComposer('Composer')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(publisher='Publisher'))
+        trackChangedSignal.expect(has_properties(publisher='Publisher'))
         self.driver.changePublisher('Publisher')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(isrc='ZZZ123456789'))
+        trackChangedSignal.expect(has_properties(isrc='ZZZ123456789'))
         self.driver.changeIsrc('ZZZ123456789')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(tags='Tag1 Tag2 Tag3'))
+        trackChangedSignal.expect(has_properties(tags='Tag1 Tag2 Tag3'))
         self.driver.changeTags('Tag1 Tag2 Tag3')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(lyrics='Lyrics\n...\n'))
+        trackChangedSignal.expect(has_properties(lyrics='Lyrics\n...\n'))
         self.driver.addLyrics('Lyrics')
         self.driver.addLyrics('...')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(language='eng'))
+        trackChangedSignal.expect(has_properties(language='eng'))
         self.driver.changeLanguage('eng')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
-        changes.expect(has_properties(language='fra'))
+        trackChangedSignal.expect(has_properties(language='fra'))
         self.driver.selectLanguage('fra')
-        self.check(changes)
+        self.check(trackChangedSignal)
 
     def testDisplaysSoftwareNoticeInLocalTime(self):
         album = build.album()

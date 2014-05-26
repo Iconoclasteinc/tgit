@@ -111,73 +111,73 @@ class AlbumEditionPageTest(ViewTest):
 
     def testSignalsWhenAlbumMetadataEdited(self):
         self.page.display(build.album())
-        changes = ValueMatcherProbe('album changed')
+        albumChangedSignal = ValueMatcherProbe('album changed')
 
-        self.page.bind(metadataChanged=changes.received)
+        self.page.bind(metadataChanged=albumChangedSignal.received)
 
-        changes.expect(has_properties(releaseName='Title'))
+        albumChangedSignal.expect(has_properties(releaseName='Title'))
         self.driver.changeReleaseName('Title')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(compilation=True))
+        albumChangedSignal.expect(has_properties(compilation=True))
         self.driver.toggleCompilation()
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(compilation=False))
+        albumChangedSignal.expect(has_properties(compilation=False))
         self.driver.toggleCompilation()
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(leadPerformer='Artist'))
+        albumChangedSignal.expect(has_properties(leadPerformer='Artist'))
         self.driver.changeLeadPerformer('Artist')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(
+        albumChangedSignal.expect(has_properties(
             guestPerformers=[('Guitar', 'Guitarist'), ('Guitar', 'Bassist'),
                              ('Piano', 'Pianist')]))
         self.driver.changeGuestPerformers('Guitar: Guitarist; Guitar: Bassist; Piano: Pianist')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(labelName='Label'))
+        albumChangedSignal.expect(has_properties(labelName='Label'))
         self.driver.changeLabelName('Label')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(catalogNumber='XXX12345678'))
+        albumChangedSignal.expect(has_properties(catalogNumber='XXX12345678'))
         self.driver.changeCatalogNumber('XXX12345678')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(upc='123456789999'))
+        albumChangedSignal.expect(has_properties(upc='123456789999'))
         self.driver.changeUpc('123456789999')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(comments='Comments\n...\n'))
+        albumChangedSignal.expect(has_properties(comments='Comments\n...\n'))
         self.driver.addComments('Comments')
         self.driver.addComments('...')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(releaseTime='2009-01-01'))
+        albumChangedSignal.expect(has_properties(releaseTime='2009-01-01'))
         self.driver.changeReleaseTime('2009-01-01')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(recordingTime='2008-09-15'))
+        albumChangedSignal.expect(has_properties(recordingTime='2008-09-15'))
         self.driver.changeRecordingTime('2008-09-15')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(recordingStudios='Studios'))
+        albumChangedSignal.expect(has_properties(recordingStudios='Studios'))
         self.driver.changeRecordingStudios('Studios')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(producer='Producer'))
+        albumChangedSignal.expect(has_properties(producer='Producer'))
         self.driver.changeProducer('Producer')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(mixer='Mixer'))
+        albumChangedSignal.expect(has_properties(mixer='Mixer'))
         self.driver.changeMixer('Mixer')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(primaryStyle='Jazz'))
+        albumChangedSignal.expect(has_properties(primaryStyle='Jazz'))
         self.driver.selectPrimaryStyle('Jazz')
-        self.check(changes)
+        self.check(albumChangedSignal)
 
-        changes.expect(has_properties(primaryStyle='Custom'))
+        albumChangedSignal.expect(has_properties(primaryStyle='Custom'))
         self.driver.changePrimaryStyle('Custom')
-        self.check(changes)
+        self.check(albumChangedSignal)

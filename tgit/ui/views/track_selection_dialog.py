@@ -17,45 +17,33 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QDir, Qt
+from PyQt4.QtCore import QDir
 from PyQt4.QtGui import QFileDialog
-from tgit.announcer import Announcer
 from tgit.ui.views import mainWindow
 
-
-def trackSelectionDialog(listener):
-    dialog = TrackSelectionDialog()
-    dialog.announceTo(listener)
-    return dialog
-
-
 class TrackSelectionDialog(object):
-    NAME = 'track-selection-dialog'
-
-    ALL_FILES = '*.*'
+    MP3_FILES = '*.mp3'
 
     #todo Introduce Preferences
     native = True
 
     def __init__(self):
-        self._announce = Announcer()
-        self.filter = TrackSelectionDialog.ALL_FILES
+        self.build()
 
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
+    def build(self):
+        self.dialog = QFileDialog(mainWindow())
+        self.dialog.setObjectName('track-selection-dialog')
+        self.dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
+        self.dialog.setNameFilter('%s (%s)' % (self.dialog.tr('Audio files'), self.MP3_FILES))
+        self.dialog.setDirectory(QDir.homePath())
 
-    def render(self):
-        self._dialog = QFileDialog(mainWindow())
-        self._dialog.setObjectName(TrackSelectionDialog.NAME)
-        self._dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        self._dialog.setDirectory(QDir.homePath())
-        self._dialog.setNameFilter('%s (%s)' % (self._dialog.tr('Audio files'), self.filter))
-        self._dialog.filesSelected.connect(self._announce.tracksSelected)
-        self._dialog.setAttribute(Qt.WA_DeleteOnClose)
+    def bind(self, **handlers):
+        if 'tracksSelected' in handlers:
+            self.dialog.filesSelected.connect(handlers['tracksSelected'])
 
     def show(self, folders=False):
         if folders:
-            self._dialog.setFileMode(QFileDialog.Directory)
+            self.dialog.setFileMode(QFileDialog.Directory)
         else:
-            self._dialog.setFileMode(QFileDialog.ExistingFiles)
-        self._dialog.open()
+            self.dialog.setFileMode(QFileDialog.ExistingFiles)
+        self.dialog.open()

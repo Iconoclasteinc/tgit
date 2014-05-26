@@ -27,7 +27,6 @@ class PictureSelectionDialog(object):
     native = True
 
     def __init__(self):
-        super(PictureSelectionDialog, self).__init__()
         self.build()
 
     def build(self):

@@ -13,6 +13,9 @@ class AlbumViewStub(object):
         self.handlers = {}
 
     def __getattr__(self, item):
+        if item not in self.handlers:
+            raise AssertionError('No handler bound to event : ' + item)
+
         return self.handlers[item]
 
     def bind(self, **handlers):

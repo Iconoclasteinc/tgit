@@ -15,39 +15,27 @@ class TrackSelectionDialogTest(ViewTest):
         super(TrackSelectionDialogTest, self).setUp()
         self.mainWindow = QMainWindow()
         self.show(self.mainWindow)
+        TrackSelectionDialog.native = False
         self.dialog = TrackSelectionDialog()
-        self.dialog.native = False
-        self.dialog.filter = '*.mp3'
-        self.dialog.render()
         self.driver = trackSelectionDialog(self)
 
     def testSignalsWhenAudioFilesSelected(self):
         audioFiles = [resources.path('audio', '1.mp3'),
                       resources.path('audio', '2.mp3'),
                       resources.path('audio', '3.mp3')]
-        selection = ValueMatcherProbe('track(s) selection', audioFiles)
-
-        class SelectionListener(object):
-            def tracksSelected(self, files):
-                selection.received(files)
-
-        self.dialog.announceTo(SelectionListener())
+        trackSelectionSignal = ValueMatcherProbe('track(s) selection', audioFiles)
+        self.dialog.bind(tracksSelected=trackSelectionSignal.received)
         self.dialog.show()
         self.driver.selectTracks(*audioFiles)
-        self.check(selection)
+        self.check(trackSelectionSignal)
 
     def testSupportsSelectingDirectoriesInsteadOfFiles(self):
         audioFolder = resources.path('audio')
-        selection = ValueMatcherProbe('track(s) selection', contains(audioFolder))
-
-        class SelectionListener(object):
-            def tracksSelected(self, files):
-                selection.received(files)
-
-        self.dialog.announceTo(SelectionListener())
+        trackSelectionSignal = ValueMatcherProbe('track(s) selection', contains(audioFolder))
+        self.dialog.bind(tracksSelected=trackSelectionSignal.received)
         self.dialog.show(folders=True)
         self.driver.selectTracksInFolder(audioFolder)
-        self.check(selection)
+        self.check(trackSelectionSignal)
 
     def testRejectsNonAudioFiles(self):
         self.dialog.show()

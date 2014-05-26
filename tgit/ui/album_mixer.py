@@ -18,37 +18,39 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtCore import QDir, QFileInfo
-from tgit.ui.views import trackSelectionDialog
 
 
 class AlbumMixer(object):
+    # todo pass as a parameter
     MP3_FILES = '*.mp3'
 
-    def __init__(self, album, trackLibrary):
-        self._album = album
-        self._trackLibrary = trackLibrary
-        self._dialog = trackSelectionDialog(self)
-        self._dialog.filter = AlbumMixer.MP3_FILES
+    def __init__(self, album, trackLibrary, tracksSelector):
+        self.album = album
+        self.trackLibrary = trackLibrary
+        self.selector = tracksSelector
+        self.bindEventHandlers()
 
-    def show(self, folders=False):
-        self._dialog.render()
-        self._dialog.show(folders=folders)
+    def bindEventHandlers(self):
+        self.selector.bind(tracksSelected=self.mixTracks)
 
-    def tracksSelected(self, selection):
-        for filename in self._listFilesIn(selection):
-            self._album.addTrack(self._trackLibrary.fetch(filename))
+    def select(self, folders=False):
+        self.selector.show(folders=folders)
 
-    def _listFilesIn(self, selection):
+    def mixTracks(self, selection):
+        for filename in self.listFilesIn(selection):
+            self.album.addTrack(self.trackLibrary.fetch(filename))
+
+    def listFilesIn(self, selection):
         files = []
         for filename in selection:
             if isDir(filename):
-                files.extend(self._folderContent(QDir(filename)))
+                files.extend(self.folderContent(QDir(filename)))
             else:
                 files.append(filename)
         return files
 
     @staticmethod
-    def _folderContent(folder):
+    def folderContent(folder):
         return [f.canonicalFilePath() for f in QDir(folder).entryInfoList([AlbumMixer.MP3_FILES])]
 
 

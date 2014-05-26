@@ -25,6 +25,7 @@ from tgit.ui.views.album_composition_page import AlbumCompositionPage
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.views.track_edition_page import TrackEditionPage
+from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 
 
 class AlbumDirector(AlbumListener):
@@ -43,13 +44,15 @@ class AlbumDirector(AlbumListener):
         editor = AlbumEditor(self._album, AlbumEditionPage(), PictureSelectionDialog())
         self._view.setAlbumEditionPage(editor.render())
         self._album.addAlbumListener(self)
+
+        self.mixer = AlbumMixer(self._album, self._trackLibrary, TrackSelectionDialog())
+
         return widget
 
     # Eventually, event will bubble up to top level presenter.
     # For that we need to do some prep work on the menubar first.
     def addTracksToAlbum(self, folders=False):
-        mixer = AlbumMixer(self._album, self._trackLibrary)
-        mixer.show(folders)
+        self.mixer.select(folders)
 
     def trackAdded(self, track, position):
         editor = TrackEditor(track, TrackEditionPage())

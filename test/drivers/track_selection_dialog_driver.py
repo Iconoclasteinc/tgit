@@ -5,12 +5,11 @@ from PyQt4.QtGui import QFileDialog
 
 from test.cute.matchers import named, disabled
 from test.cute.widgets import FileDialogDriver, window
-from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 
 
 def trackSelectionDialog(parent):
     return TrackSelectionDialogDriver(
-        window(QFileDialog, named(TrackSelectionDialog.NAME)), parent.prober,parent.gesturePerformer)
+        window(QFileDialog, named('track-selection-dialog')), parent.prober,parent.gesturePerformer)
 
 
 class TrackSelectionDialogDriver(FileDialogDriver):
@@ -23,8 +22,9 @@ class TrackSelectionDialogDriver(FileDialogDriver):
         if not files:
             return
         self.showHiddenFiles()
-        self.navigateToDir(dirname(files[0]))
-        self.selectFiles(*[basename(filename) for filename in files])
+        folder = dirname(files[0])
+        self.navigateToDir(folder)
+        self.selectFiles(*[basename(f) for f in files])
         self.accept()
 
     def rejectsSelectionOf(self, path):
