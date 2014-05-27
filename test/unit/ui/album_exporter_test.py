@@ -21,11 +21,29 @@ class StubExportFormat:
             out.write('\n')
 
 
+class ExportAsSelectorStub(object):
+    def __init__(self):
+        self.selectedDestination = None
+        self.handlers = {}
+
+    def __getattr__(self, item):
+        if item not in self.handlers:
+            raise AssertionError('No handler bound to event : ' + item)
+        return self.handlers[item]
+
+    def show(self):
+        self.exportAs(self.selectedDestination)
+
+    def bind(self, **handlers):
+        self.handlers.update(handlers)
+
+
 class AlbumExporterTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
         self.format = StubExportFormat()
-        self.exporter = AlbumExporter(self.album, self.format)
+        self.exportSelector = ExportAsSelectorStub()
+        self.exporter = AlbumExporter(self.album, self.format, self.exportSelector)
         self.exportFolder = createTempDir()
 
     def tearDown(self):
@@ -33,9 +51,9 @@ class AlbumExporterTest(unittest.TestCase):
 
     def testFormatsAlbumToDestinationFile(self):
         destinationFile = os.path.join(self.exportFolder, 'album.csv')
-
+        self.exportSelector.selectedDestination = destinationFile
         self.format.willWriteLines('track1', 'track2', 'track3')
-        self.exporter.exportTo(destinationFile)
+        self.exporter.select()
 
         assert_that(contentOf(destinationFile), equal_to('track1\ntrack2\ntrack3\n'))
 

@@ -18,9 +18,8 @@ class ExportAsDialogTest(ViewTest):
         super(ExportAsDialogTest, self).setUp()
         self.window = QMainWindow()
         self.show(self.window)
+        ExportAsDialog.native = False
         self.dialog = ExportAsDialog()
-        self.dialog.native = False
-        self.dialog.render()
         self.driver = exportAsDialog(self)
         self.exportDir = createTempDir()
 
@@ -30,17 +29,12 @@ class ExportAsDialogTest(ViewTest):
 
     def testExportsAlbumToDestinationFile(self):
         destination = os.path.join(self.exportDir, 'album.csv')
-        export = ValueMatcherProbe('export as', equal_to(destination))
+        exportAsSignal = ValueMatcherProbe('export as', equal_to(destination))
 
-        class ExportListener(object):
-            def exportTo(self, filename):
-                export.received(filename)
-
-        self.dialog.announceTo(ExportListener())
+        self.dialog.bind(exportAs=exportAsSignal.received)
         self.dialog.show()
         self.driver.exportAs(destination)
-
-        self.check(export)
+        self.check(exportAsSignal)
 
 
 def createTempDir():

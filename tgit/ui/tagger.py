@@ -25,6 +25,7 @@ from tgit.track_library import TrackLibrary
 from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.ui.album_director import AlbumDirector
 from tgit.ui.album_exporter import AlbumExporter
+from tgit.ui.views.export_as_dialog import ExportAsDialog
 from tgit.ui.views.main_window import MainWindow
 from tgit.ui.views.menu_bar import MenuBar
 from tgit.ui.views.message_box import MessageBox
@@ -68,7 +69,7 @@ class Tagger(AlbumPortfolioListener):
         self._director = AlbumDirector(album, TrackLibrary(ID3Tagger()), self._audioPlayer)
         self._mainWindow.show(self._director.render())
         self._director.addTracksToAlbum()
-        self._exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING))
+        self._exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING), ExportAsDialog())
 
     def addFiles(self):
         self._director.addTracksToAlbum()
@@ -77,7 +78,7 @@ class Tagger(AlbumPortfolioListener):
         self._director.addTracksToAlbum(folders=True)
 
     def export(self):
-        self._exporter.show()
+        self._exporter.select()
 
     def editPreferences(self):
         self.settings.display(**self.preferences)

@@ -27,5 +27,4 @@ def mainWindow():
 
 # todo remove what's not longer used
 
-from export_as_dialog import exportAsDialog
 from album_screen import albumScreen

@@ -16,19 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from tgit.ui.views import exportAsDialog
 
 
 class AlbumExporter(object):
-    def __init__(self, album, format_):
-        self._album = album
-        self._format = format_
+    def __init__(self, album, format_, view):
+        self.album = album
+        self.format = format_
+        self.view = view
 
-    def show(self):
-        self._view = exportAsDialog(self)
-        self._view.render()
-        self._view.show()
+        self.bindEventHandlers()
+
+    def bindEventHandlers(self):
+        self.view.bind(exportAs=self.exportTo)
+
+    def select(self):
+        self.view.show()
 
     def exportTo(self, destination):
         with open(destination, 'wb') as out:
-            self._format.write(self._album, out)
+            self.format.write(self.album, out)

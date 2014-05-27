@@ -19,36 +19,27 @@
 from PyQt4.QtCore import QDir
 from PyQt4.QtGui import QFileDialog
 
-from tgit.announcer import Announcer
 from tgit.ui.views import mainWindow
 
 
-def exportAsDialog(listener):
-    dialog = ExportAsDialog()
-    dialog.announceTo(listener)
-    return dialog
-
-
 class ExportAsDialog(object):
-    NAME = 'export-as-dialog'
-
     #todo Introduce Preferences
     native = True
 
     def __init__(self):
-        self._announce = Announcer()
+        self.build()
 
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
+    def build(self):
+        self.dialog = QFileDialog(mainWindow())
+        self.dialog.setObjectName('export-as-dialog')
+        self.dialog.setAcceptMode(QFileDialog.AcceptSave)
+        self.dialog.setDirectory(QDir.homePath())
+        self.dialog.setFileMode(QFileDialog.AnyFile)
+        self.dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
 
-    def render(self):
-        self._dialog = QFileDialog(mainWindow())
-        self._dialog.setObjectName(ExportAsDialog.NAME)
-        self._dialog.setAcceptMode(QFileDialog.AcceptSave)
-        self._dialog.setDirectory(QDir.homePath())
-        self._dialog.setFileMode(QFileDialog.AnyFile)
-        self._dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        self._dialog.fileSelected.connect(self._announce.exportTo)
+    def bind(self, **handlers):
+        if 'exportAs' in handlers:
+            self.dialog.fileSelected.connect(handlers['exportAs'])
 
     def show(self):
-        self._dialog.open()
+        self.dialog.open()
