@@ -38,48 +38,48 @@ WIN_LATIN1_ENCODING = 'windows-1252'
 
 
 class Tagger(AlbumPortfolioListener):
-    def __init__(self, albumPortfolio, audioPlayer, preferences):
+    def __init__(self, albumPortfolio, player, preferences):
         self.preferences = preferences
-        self._albumPortfolio = albumPortfolio
-        self._albumPortfolio.addPortfolioListener(self)
-        self._audioPlayer = audioPlayer
-        self._mainWindow = MainWindow()
-        self._menuBar = MenuBar()
-        self._welcomeScreen = WelcomeScreen()
+        self.albumPortfolio = albumPortfolio
+        self.albumPortfolio.addPortfolioListener(self)
+        self.player = player
+
+        self.menuBar = MenuBar()
+        self.mainWindow = MainWindow()
+        self.welcomeScreen = WelcomeScreen()
+        self.settings = SettingsDialog(self.mainWindow)
+        self.messageBox = MessageBox(self.mainWindow)
 
     def render(self):
-        self._window = self._mainWindow.render()
-        self.settings = SettingsDialog(self._window)
         # todo move to a more appropriate place
         self.settings.addLanguage('en', 'English')
         self.settings.addLanguage('fr', 'French')
         self.settings.bind(ok=self.savePreferences, cancel=self.settings.close)
-        self._mainWindow.setMenuBar(self._menuBar)
-        self._menuBar.bind(settings=self.editPreferences, addFiles=self.addFiles, addFolder=self.addFolder,
-                           exportAlbum=self.export)
-        self._welcomeScreen.bind(newAlbum=self.newAlbum)
-        self._mainWindow.show(self._welcomeScreen)
-        self.messageBox = MessageBox(self._window)
-        return self._window
+        self.menuBar.bind(settings=self.editPreferences, addFiles=self.addFiles, addFolder=self.addFolder,
+                          exportAlbum=self.export)
+        self.mainWindow.setMenuBar(self.menuBar)
+        self.welcomeScreen.bind(newAlbum=self.newAlbum)
+        self.mainWindow.display(self.welcomeScreen)
+        return self.mainWindow
 
     def newAlbum(self):
-        self._albumPortfolio.addAlbum(Album())
+        self.albumPortfolio.addAlbum(Album())
 
     def albumCreated(self, album):
-        self._menuBar.enableAlbumActions()
-        self._director = AlbumDirector(album, TrackLibrary(ID3Tagger()), self._audioPlayer, AlbumScreen())
-        self._mainWindow.show(self._director.render())
-        self._director.addTracksToAlbum()
-        self._exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING), ExportAsDialog())
+        self.menuBar.enableAlbumActions()
+        self.director = AlbumDirector(album, TrackLibrary(ID3Tagger()), self.player, AlbumScreen())
+        self.mainWindow.display(self.director.render())
+        self.director.addTracksToAlbum()
+        self.exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING), ExportAsDialog())
 
     def addFiles(self):
-        self._director.addTracksToAlbum()
+        self.director.addTracksToAlbum()
 
     def addFolder(self):
-        self._director.addTracksToAlbum(folders=True)
+        self.director.addTracksToAlbum(folders=True)
 
     def export(self):
-        self._exporter.select()
+        self.exporter.select()
 
     def editPreferences(self):
         self.settings.display(**self.preferences)
