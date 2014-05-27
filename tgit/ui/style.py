@@ -19,7 +19,7 @@
 from PyQt4 import QtGui
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QHBoxLayout, QVBoxLayout, QFormLayout, QColor, QFrame
+from PyQt4.QtGui import QColor, QFrame
 
 
 # Using stylesheets on the table corrupts the display of the button widgets in the
@@ -28,37 +28,6 @@ TABLE_COLUMNS_WIDTHS = [345, 205, 215, 85, 65, 30, 30]
 TABLE_BACKGROUND_COLOR = Qt.white
 TABLE_BORDER_COLOR = QColor.fromRgb(0xDDDDDD)
 TABLE_BORDER_STYLE = QFrame.Panel | QFrame.Plain
-
-
-# todo move to its own module along with widget factory functions (see TrackEditionPage and AlbumEditionPage)
-def enableButton(button):
-    button.setEnabled(True)
-    button.setCursor(Qt.PointingHandCursor)
-
-
-def disableButton(button):
-    button.setDisabled(True)
-    button.setCursor(Qt.ArrowCursor)
-
-
-def resetMargins(layout):
-    layout.setContentsMargins(0, 0, 0, 0)
-    return layout
-
-
-def horizontalLayout():
-    return resetMargins(QHBoxLayout())
-
-
-def verticalLayout():
-    return resetMargins(QVBoxLayout())
-
-
-def formLayout():
-    layout = resetMargins(QFormLayout())
-    layout.setLabelAlignment(Qt.AlignVCenter)
-    layout.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
-    return layout
 
 
 # todo break stylesheet into multiple components

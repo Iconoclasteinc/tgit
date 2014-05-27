@@ -29,9 +29,8 @@ class AlbumScreenTest(ViewTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
         self.view = AlbumScreen()
-        self.widget = self.view.render()
-        self.show(self.widget)
-        self.driver = self.createDriverFor(self.widget)
+        self.show(self.view)
+        self.driver = self.createDriverFor(self.view)
 
     def createDriverFor(self, widget):
         return AlbumScreenDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
@@ -42,16 +41,11 @@ class AlbumScreenTest(ViewTest):
         self.driver.hasDisabledNextPageButton()
 
     def testSignalsWhenSaveButtonClicked(self):
-        recordAlbumProbe = ValueMatcherProbe('record album request')
-
-        class RecordAlbumListener(object):
-            def recordAlbum(self):
-                recordAlbumProbe.received()
-
-        self.view.announceTo(RecordAlbumListener())
+        recordAlbumSignal = ValueMatcherProbe('record album')
+        self.view.bind(recordAlbum=recordAlbumSignal.received)
         self.view.allowSaves()
         self.driver.save()
-        self.driver.check(recordAlbumProbe)
+        self.driver.check(recordAlbumSignal)
 
     def testAcceptsAppendingNewPages(self):
         self.view.appendPage(aPage('page #0'))

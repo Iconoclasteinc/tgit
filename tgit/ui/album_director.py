@@ -20,7 +20,6 @@ from tgit.ui.album_composer import AlbumComposer
 from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui.track_editor import TrackEditor
-from tgit.ui.views import albumScreen
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
@@ -29,25 +28,29 @@ from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 
 
 class AlbumDirector(AlbumListener):
-    def __init__(self, album, trackLibrary, player):
-        self._album = album
-        self._trackLibrary = trackLibrary
-        self._player = player
-        self._view = albumScreen(self)
+    def __init__(self, album, trackLibrary, player, view):
+        self.album = album
+        self.trackLibrary = trackLibrary
+        self.player = player
+        self.view = view
+
+        self.bindEventHandlers()
+
+    def bindEventHandlers(self):
+        self.view.bind(recordAlbum=self.recordAlbum)
 
     def render(self):
-        widget = self._view.render()
-        composer = AlbumComposer(self._album, self._player, AlbumCompositionPage())
+        composer = AlbumComposer(self.album, self.player, AlbumCompositionPage())
         composer.onAddTracks(self.addTracksToAlbum)
-        self._view.setAlbumCompositionPage(composer.render())
+        self.view.setAlbumCompositionPage(composer.render())
 
-        editor = AlbumEditor(self._album, AlbumEditionPage(), PictureSelectionDialog())
-        self._view.setAlbumEditionPage(editor.render())
-        self._album.addAlbumListener(self)
+        editor = AlbumEditor(self.album, AlbumEditionPage(), PictureSelectionDialog())
+        self.view.setAlbumEditionPage(editor.render())
+        self.album.addAlbumListener(self)
 
-        self.mixer = AlbumMixer(self._album, self._trackLibrary, TrackSelectionDialog())
+        self.mixer = AlbumMixer(self.album, self.trackLibrary, TrackSelectionDialog())
 
-        return widget
+        return self.view
 
     # Eventually, event will bubble up to top level presenter.
     # For that we need to do some prep work on the menubar first.
@@ -56,14 +59,14 @@ class AlbumDirector(AlbumListener):
 
     def trackAdded(self, track, position):
         editor = TrackEditor(track, TrackEditionPage())
-        self._view.addTrackEditionPage(editor.render(), position)
-        self._view.allowSaves(True)
+        self.view.addTrackEditionPage(editor.render(), position)
+        self.view.allowSaves(True)
 
     def trackRemoved(self, track, position):
-        self._view.removeTrackEditionPage(position)
-        if self._album.empty():
-            self._view.allowSaves(False)
+        self.view.removeTrackEditionPage(position)
+        if self.album.empty():
+            self.view.allowSaves(False)
 
     def recordAlbum(self):
-        for track in self._album.tracks:
-            self._trackLibrary.store(track)
+        for track in self.album.tracks:
+            self.trackLibrary.store(track)

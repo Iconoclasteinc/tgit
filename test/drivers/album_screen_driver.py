@@ -3,17 +3,15 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from hamcrest.library.text import contains_string
 
-from test.cute.widgets import WidgetDriver, ButtonDriver, LabelDriver
 from test.cute.matchers import named
+from test.drivers.__base import BaseDriver
 from test.drivers.album_edition_page_driver import albumEditionPage
 from test.drivers.album_composition_page_driver import albumCompositionPage
 from test.drivers.track_edition_page_driver import trackEditionPage
 
-from tgit.ui.views.album_screen import AlbumScreen
-
 
 def albumScreen(parent):
-    return AlbumScreenDriver.findSingle(parent, QWidget, named(AlbumScreen.NAME))
+    return AlbumScreenDriver.findSingle(parent, QWidget, named('album-screen'))
 
 
 def isDisabled(button):
@@ -26,30 +24,21 @@ def isEnabled(button):
     button.hasCursorShape(Qt.PointingHandCursor)
 
 
-class Buttons(object):
-    PREVIOUS = named(AlbumScreen.PREVIOUS_PAGE_BUTTON_NAME)
-    NEXT = named(AlbumScreen.NEXT_PAGE_BUTTON_NAME)
-    SAVE = named(AlbumScreen.SAVE_BUTTON_NAME)
-
-
-class AlbumScreenDriver(WidgetDriver):
-    def __init__(self, selector, prober, gesturePerformer):
-        super(AlbumScreenDriver, self).__init__(selector, prober, gesturePerformer)
-
+class AlbumScreenDriver(BaseDriver):
     def isShowingAlbumCompositionPage(self):
         albumCompositionPage(self).isShowingOnScreen()
-        isDisabled(self._button(Buttons.PREVIOUS))
-        isDisabled(self._button(Buttons.SAVE))
+        isDisabled(self.button(named('previous')))
+        isDisabled(self.button(named('save')))
 
     def isShowingAlbumEditionPage(self):
         albumEditionPage(self).isShowingOnScreen()
-        isEnabled(self._button(Buttons.PREVIOUS))
-        isEnabled(self._button(Buttons.SAVE))
+        isEnabled(self.button(named('previous')))
+        isEnabled(self.button(named('save')))
 
     def isShowingTrackEditionPage(self):
         trackEditionPage(self).isShowingOnScreen()
-        isEnabled(self._button(Buttons.PREVIOUS))
-        isEnabled(self._button(Buttons.SAVE))
+        isEnabled(self.button(named('previous')))
+        isEnabled(self.button(named('save')))
 
     def addFiles(self):
         albumCompositionPage(self).addFiles()
@@ -61,35 +50,35 @@ class AlbumScreenDriver(WidgetDriver):
         albumCompositionPage(self).moveTrack(title, to)
 
     def previousPage(self):
-        button = self._button(Buttons.PREVIOUS)
+        button = self.button(named('previous'))
         button.isEnabled()
         button.click()
 
     def nextPage(self):
-        button = self._button(Buttons.NEXT)
+        button = self.button(named('next'))
         isEnabled(button)
         button.click()
 
     def save(self):
-        self._button(Buttons.SAVE).click()
+        self.button(named('save')).click()
 
     def hasDisabledNextPageButton(self):
-        isDisabled(self._button(Buttons.NEXT))
+        isDisabled(self.button(named('next')))
 
     def hasEnabledNextPageButton(self):
-        isEnabled(self._button(Buttons.NEXT))
+        isEnabled(self.button(named('next')))
 
     def hasDisabledPreviousPageButton(self):
-        isDisabled(self._button(Buttons.PREVIOUS))
+        isDisabled(self.button(named('previous')))
 
     def hasEnabledPreviousPageButton(self):
-        isEnabled(self._button(Buttons.PREVIOUS))
+        isEnabled(self.button(named('previous')))
 
     def hasDisabledSaveButton(self):
-        isDisabled(self._button(Buttons.SAVE))
+        isDisabled(self.button(named('save')))
 
     def hasEnabledSaveButton(self):
-        isEnabled(self._button(Buttons.SAVE))
+        isEnabled(self.button(named('save')))
 
     def navigateToAlbumMetadata(self):
         self.nextPage()
@@ -116,21 +105,10 @@ class AlbumScreenDriver(WidgetDriver):
         trackEditionPage(self).changeMetadata(**tags)
 
     def linksHelpTo(self, location):
-        help = LabelDriver.findSingle(self, QLabel, named(AlbumScreen.HELP_LINK_NAME))
-        help.hasText(contains_string('href="%s"' % location))
+        self.label(named('help-link')).hasText(contains_string('href="%s"' % location))
 
     def linksFeatureRequestTo(self, location):
-        help = LabelDriver.findSingle(self, QLabel, named(AlbumScreen.FEATURE_REQUEST_LINK_NAME))
-        help.hasText(contains_string('href="%s' % location))
-
-    def _button(self, matching):
-        return ButtonDriver.findSingle(self, QPushButton, matching)
-
-    def _page(self, matching):
-        return WidgetDriver.findSingle(self, QWidget, matching)
-
-    def containsPage(self, matching):
-        return self._page(matching).exists()
+        self.label(named('feature-request-link')).hasText(contains_string('href="%s' % location))
 
     def showsPage(self, matching):
-        return self._page(matching).isShowingOnScreen()
+        return self.widget(matching).isShowingOnScreen()

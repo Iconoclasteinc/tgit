@@ -6,11 +6,31 @@ from test.util import builders as build, fakes
 from tgit.ui.album_director import AlbumDirector
 
 
+class AlbumViewStub(object):
+    def __init__(self):
+        self.refreshCount = 0
+        self.handlers = {}
+
+    def __getattr__(self, item):
+        if item not in self.handlers:
+            raise AssertionError('No handler bound to event : ' + item)
+
+        return self.handlers[item]
+
+    def bind(self, **handlers):
+        self.handlers.update(handlers)
+
+    def display(self, album):
+        self.album = album
+        self.refreshCount += 1
+
+
 class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
         self.catalog = flexmock()
-        self.director = AlbumDirector(self.album, self.catalog, fakes.audioPlayer())
+        self.view = AlbumViewStub()
+        self.director = AlbumDirector(self.album, self.catalog, fakes.audioPlayer(), self.view)
 
     def testSavesAllTracksInAlbum(self):
         self.album.addTrack(build.track(trackTitle='first'))
@@ -21,7 +41,7 @@ class AlbumDirectorTest(unittest.TestCase):
         self.catalog.should_receive('store').with_args(hasTitle('second')).once()
         self.catalog.should_receive('store').with_args(hasTitle('third')).once()
 
-        self.director.recordAlbum()
+        self.view.recordAlbum()
 
 
 def hasTitle(title):

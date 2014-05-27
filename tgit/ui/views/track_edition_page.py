@@ -22,7 +22,7 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import (QLabel, QWidget, QGroupBox, QFrame)
 
 from tgit.languages import LANGUAGES
-from tgit.ui import display, style, formatting
+from tgit.ui import display, formatting
 from tgit.ui.widgets import form, image
 
 
@@ -195,7 +195,7 @@ class TrackEditionPage(QWidget):
         fieldSet = QGroupBox()
         fieldSet.setObjectName('content')
         fieldSet.setTitle(self.tr('CONTENT'))
-        layout = style.formLayout()
+        layout = form.layout()
         self.lyrics = form.textArea('lyrics')
         layout.addRow(form.labelFor(self.lyrics, self.tr('Lyrics: ')), self.lyrics)
         self.languages = form.comboBox('languages')

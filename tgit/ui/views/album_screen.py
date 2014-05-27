@@ -18,8 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QWidget, QLabel, QStackedWidget, QPushButton
-from tgit.announcer import Announcer
-from tgit.ui import style
+from tgit.ui.widgets import form
 
 
 def albumScreen(listener):
@@ -28,127 +27,114 @@ def albumScreen(listener):
     return screen
 
 
-class AlbumScreen(object):
-    NAME = 'album-screen'
-
-    NAVIGATION_BAR_NAME = 'navigation'
-    CONTROL_BAR_NAME = 'controls'
-    PREVIOUS_PAGE_BUTTON_NAME = 'previous'
-    NEXT_PAGE_BUTTON_NAME = 'next'
-    SAVE_BUTTON_NAME = 'save'
-    HELP_LINK_NAME = 'help-link'
-    FEATURE_REQUEST_LINK_NAME = 'feature-request-link'
-
+class AlbumScreen(QWidget):
     HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
     FEATURE_REQUEST_URL = "mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !"
+
     COMPOSITION_PAGE, ALBUM_PAGE, TRACK_PAGES = range(0, 3)
 
     def __init__(self):
-        self._announce = Announcer()
+        QWidget.__init__(self)
+        self.setObjectName('album-screen')
+        self.render()
 
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
+    def bind(self, **handlers):
+        if 'recordAlbum' in handlers:
+            self.save.clicked.connect(lambda pressed: handlers['recordAlbum']())
 
     def render(self):
-        self._widget = self._build()
-        self.translate()
-        return self._widget
+        layout = form.column()
+        layout.addWidget(self.makeNavigationBar())
+        layout.addWidget(self.makePages())
+        layout.addWidget(self.makeControls())
+        self.setLayout(layout)
 
-    def _build(self):
-        widget = QWidget()
-        widget.setObjectName(self.NAME)
-        layout = style.verticalLayout()
-        layout.addWidget(self._makeNavigationBar())
-        layout.addWidget(self._makePages())
-        layout.addWidget(self._makeControls())
-        widget.setLayout(layout)
-        return widget
-
-    def _makeNavigationBar(self):
-        self._navigationBar = QWidget()
-        self._navigationBar.setObjectName(self.NAVIGATION_BAR_NAME)
-        self._helpLink = self._makeHelpLink()
-        self._featureRequestLink = self._makeFeatureRequestLink()
-        layout = style.horizontalLayout()
+    def makeNavigationBar(self):
+        navigation = QWidget()
+        navigation.setObjectName('navigation')
+        layout = form.row()
         layout.setContentsMargins(25, 10, 25, 10)
         layout.addStretch()
-        layout.addWidget(self._featureRequestLink)
-        layout.addWidget(self._helpLink)
+        layout.addWidget(self.makeFeatureRequestLink())
+        layout.addWidget(self.makeHelpLink())
+        navigation.setLayout(layout)
+        return navigation
 
-        self._navigationBar.setLayout(layout)
-        return self._navigationBar
-
-    def _makeHelpLink(self):
+    def makeHelpLink(self):
         label = QLabel()
-        label.setObjectName(self.HELP_LINK_NAME)
+        label.setObjectName('help-link')
         label.setTextFormat(Qt.RichText)
         label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         label.setOpenExternalLinks(True)
+        label.setText('<a style="color: white" href="%s">%s</a>' % (self.HELP_URL, self.tr('Help')))
         return label
 
-    def _makeFeatureRequestLink(self):
+    def makeFeatureRequestLink(self):
         label = QLabel()
-        label.setObjectName(self.FEATURE_REQUEST_LINK_NAME)
+        label.setObjectName('feature-request-link')
         label.setTextFormat(Qt.RichText)
         label.setOpenExternalLinks(True)
+        label.setText('<a style="color: white" href="%s">%s</a>' % (self.FEATURE_REQUEST_URL, self.tr('Request Feature')))
         return label
 
-    def _makePages(self):
-        self._pages = QStackedWidget()
-        self._pages.currentChanged.connect(self._updateNavigationControls)
-        return self._pages
+    def makePages(self):
+        self.pages = QStackedWidget()
+        self.pages.currentChanged.connect(self.updateNavigationControls)
+        return self.pages
 
-    def _makeControls(self):
-        self._controls = QWidget()
-        self._controls.setObjectName(self.CONTROL_BAR_NAME)
-        layout = style.horizontalLayout()
-        self._controls.setLayout(layout)
-        self._previousButton = QPushButton()
-        self._previousButton.setObjectName(self.PREVIOUS_PAGE_BUTTON_NAME)
-        self._previousButton.clicked.connect(self.toPreviousPage)
-        style.disableButton(self._previousButton)
-        layout.addWidget(self._previousButton)
+    def makeControls(self):
+        controls = QWidget()
+        controls.setObjectName('controls')
+        layout = form.row()
+        self.previous = QPushButton()
+        self.previous.setObjectName('previous')
+        self.previous.setText(self.tr('PREVIOUS'))
+        self.previous.clicked.connect(self.toPreviousPage)
+        form.disableButton(self.previous)
+        layout.addWidget(self.previous)
         layout.addStretch()
-        self._saveButton = QPushButton()
-        self._saveButton.setObjectName(self.SAVE_BUTTON_NAME)
-        self._saveButton.setFocusPolicy(Qt.StrongFocus)
-        self._saveButton.clicked.connect(lambda pressed: self._announce.recordAlbum())
-        style.disableButton(self._saveButton)
-        layout.addWidget(self._saveButton)
+        self.save = QPushButton()
+        self.save.setObjectName('save')
+        self.save.setText(self.tr('SAVE'))
+        self.save.setFocusPolicy(Qt.StrongFocus)
+        form.disableButton(self.save)
+        layout.addWidget(self.save)
         layout.addStretch()
-        self._nextButton = QPushButton()
-        self._nextButton.setObjectName(self.NEXT_PAGE_BUTTON_NAME)
-        self._nextButton.clicked.connect(self.toNextPage)
-        style.disableButton(self._nextButton)
-        layout.addWidget(self._nextButton)
+        self.next = QPushButton()
+        self.next.setObjectName('next')
+        self.next.setText(self.tr('NEXT'))
+        self.next.clicked.connect(self.toNextPage)
+        form.disableButton(self.next)
+        layout.addWidget(self.next)
 
-        return self._controls
+        controls.setLayout(layout)
+        return controls
 
-    def _updateNavigationControls(self):
-        if self._onLastPage():
-            style.disableButton(self._nextButton)
+    def updateNavigationControls(self):
+        if self.onLastPage():
+            form.disableButton(self.next)
         else:
-            style.enableButton(self._nextButton)
+            form.enableButton(self.next)
 
-        if self._onFirstPage():
-            style.disableButton(self._previousButton)
+        if self.onFirstPage():
+            form.disableButton(self.previous)
         else:
-            style.enableButton(self._previousButton)
+            form.enableButton(self.previous)
 
-    def _onLastPage(self):
-        return self._onPage(self.pageCount - 1)
+    def onLastPage(self):
+        return self.onPage(self.pageCount - 1)
 
-    def _onFirstPage(self):
-        return self._onPage(0)
+    def onFirstPage(self):
+        return self.onPage(0)
 
-    def _onPage(self, number):
+    def onPage(self, number):
         return self.pageNumber == number
 
     def allowSaves(self, allowed=True):
         if allowed:
-            style.enableButton(self._saveButton)
+            form.enableButton(self.save)
         else:
-            style.disableButton(self._saveButton)
+            form.disableButton(self.save)
 
     def setAlbumCompositionPage(self, page):
         self.insertPage(page, self.COMPOSITION_PAGE)
@@ -163,27 +149,27 @@ class AlbumScreen(object):
         self.removePage(self.TRACK_PAGES + position)
 
     def appendPage(self, widget):
-        self._pages.addWidget(widget)
-        self._updateNavigationControls()
+        self.pages.addWidget(widget)
+        self.updateNavigationControls()
 
     def insertPage(self, widget, position):
-        self._pages.insertWidget(position, widget)
-        self._updateNavigationControls()
+        self.pages.insertWidget(position, widget)
+        self.updateNavigationControls()
 
     def removePage(self, number):
-        self._pages.removeWidget(self._pages.widget(number))
-        self._updateNavigationControls()
+        self.pages.removeWidget(self.pages.widget(number))
+        self.updateNavigationControls()
 
     @property
     def pageNumber(self):
-        return self._pages.currentIndex()
+        return self.pages.currentIndex()
 
     @property
     def pageCount(self):
-        return self._pages.count()
+        return self.pages.count()
 
     def toPage(self, number):
-        self._pages.setCurrentIndex(number)
+        self.pages.setCurrentIndex(number)
 
     def toPreviousPage(self):
         self.toPage(self.pageNumber - 1)
@@ -191,15 +177,5 @@ class AlbumScreen(object):
     def toNextPage(self):
         self.toPage(self.pageNumber + 1)
 
-    def _atPage(self, number):
-        return self._pages.currentIndex() == number
-
-    def translate(self):
-        self._previousButton.setText(self.tr('PREVIOUS'))
-        self._saveButton.setText(self.tr('SAVE'))
-        self._nextButton.setText(self.tr('NEXT'))
-        self._helpLink.setText('<a style="color: white" href="%s">%s</a>' % (self.HELP_URL, self.tr('Help')))
-        self._featureRequestLink.setText('<a style="color: white" href="%s">%s</a>' % (self.FEATURE_REQUEST_URL, self.tr('Request Feature')))
-
-    def tr(self, text):
-        return self._widget.tr(text)
+    def atPage(self, number):
+        return self.pages.currentIndex() == number

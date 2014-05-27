@@ -101,3 +101,12 @@ def checkBox(name):
     checkbox.setFocusPolicy(Qt.StrongFocus)
     return checkbox
 
+
+def enableButton(button):
+    button.setEnabled(True)
+    button.setCursor(Qt.PointingHandCursor)
+
+
+def disableButton(button):
+    button.setDisabled(True)
+    button.setCursor(Qt.ArrowCursor)

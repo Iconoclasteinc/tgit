@@ -1,4 +1,5 @@
-from PyQt4.QtGui import QLabel, QLineEdit, QTimeEdit, QComboBox, QPushButton, QCheckBox, QPlainTextEdit, QTableView
+from PyQt4.QtGui import QLabel, QLineEdit, QTimeEdit, QComboBox, QPushButton, QCheckBox, QPlainTextEdit, QTableView, \
+    QWidget
 from test.cute.widgets import LabelDriver, LineEditDriver, DateTimeEditDriver, ComboBoxDriver, ButtonDriver, \
     TextEditDriver, WidgetDriver, TableViewDriver
 
@@ -27,3 +28,6 @@ class BaseDriver(WidgetDriver):
 
     def table(self, matching):
         return TableViewDriver.findSingle(self, QTableView, matching)
+
+    def widget(self, matching):
+        return WidgetDriver.findSingle(self, QWidget, matching)
