@@ -45,7 +45,6 @@ class Tagger(AlbumPortfolioListener):
         self._audioPlayer = audioPlayer
         self._mainWindow = MainWindow()
         self._menuBar = MenuBar()
-        self._menuBar.announceTo(self)
         self._welcomeScreen = WelcomeScreen()
 
     def render(self):
@@ -55,8 +54,9 @@ class Tagger(AlbumPortfolioListener):
         self.settings.addLanguage('en', 'English')
         self.settings.addLanguage('fr', 'French')
         self.settings.bind(ok=self.savePreferences, cancel=self.settings.close)
-        self._mainWindow.setMenuBar(self._menuBar.render())
-        self._menuBar.bind(settings=self.editPreferences)
+        self._mainWindow.setMenuBar(self._menuBar)
+        self._menuBar.bind(settings=self.editPreferences, addFiles=self.addFiles, addFolder=self.addFolder,
+                           exportAlbum=self.export)
         self._welcomeScreen.bind(newAlbum=self.newAlbum)
         self._mainWindow.show(self._welcomeScreen)
         self.messageBox = MessageBox(self._window)
@@ -66,7 +66,7 @@ class Tagger(AlbumPortfolioListener):
         self._albumPortfolio.addAlbum(Album())
 
     def albumCreated(self, album):
-        self._menuBar.enableAlbumMenu()
+        self._menuBar.enableAlbumActions()
         self._director = AlbumDirector(album, TrackLibrary(ID3Tagger()), self._audioPlayer, AlbumScreen())
         self._mainWindow.show(self._director.render())
         self._director.addTracksToAlbum()

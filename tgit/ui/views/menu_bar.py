@@ -19,78 +19,56 @@
 
 from PyQt4.QtGui import QMenuBar, QMenu, QAction
 
-from tgit.announcer import Announcer
 
-
-class MenuBar(object):
-    FILE_MENU_NAME = 'File'
-    ADD_FILES_ACTION_NAME = 'add files'
-    ADD_FOLDER_ACTION_NAME = 'add folder'
-    EXPORT_ACTION_NAME = 'export'
-
+class MenuBar(QMenuBar):
     def __init__(self):
-        self._announce = Announcer()
+        QMenuBar.__init__(self)
+        self.render()
 
     def bind(self, **handlers):
         if 'settings' in handlers:
-            self.preferences.triggered.connect(handlers['settings'])
-
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
+            self.preferences.triggered.connect(lambda checked: handlers['settings']())
+        if 'addFiles' in handlers:
+            self.addFiles.triggered.connect(lambda checked: handlers['addFiles']())
+        if 'addFolder' in handlers:
+            self.addFolder.triggered.connect(lambda checked: handlers['addFolder']())
+        if 'exportAlbum' in handlers:
+            self.export.triggered.connect(lambda checked: handlers['exportAlbum']())
 
     def render(self):
-        self._widget = self._assemble()
-        self.localize()
-        return self._widget
+        self.addMenu(self.makeFileMenu())
+        return self
 
-    def _assemble(self):
-        menuBar = QMenuBar()
-        menuBar.addMenu(self._makeFileMenu(menuBar))
-        return menuBar
+    def makeFileMenu(self):
+        menu = QMenu(self)
+        menu.setObjectName('file-menu')
+        menu.setTitle(self.tr('File'))
 
-    def _makeFileMenu(self, menuBar):
-        self._fileMenu = QMenu(menuBar)
-        self._fileMenu.setObjectName(self.FILE_MENU_NAME)
-        self._addAddFilesMenuItemTo(self._fileMenu)
-        self._addAddFolderMenuItemTo(self._fileMenu)
-        self._addExportMenuItemTo(self._fileMenu)
-        self.preferences = QAction(self._fileMenu)
+        self.addFiles = QAction(menu)
+        self.addFiles.setObjectName('add-files')
+        self.addFiles.setText(self.tr('Add Files...'))
+        self.addFiles.setDisabled(True)
+        menu.addAction(self.addFiles)
+
+        self.addFolder = QAction(menu)
+        self.addFolder.setObjectName('add-folder')
+        self.addFolder.setText(self.tr('Add Folder...'))
+        self.addFolder.setDisabled(True)
+        menu.addAction(self.addFolder)
+
+        self.export = QAction(menu)
+        self.export.setObjectName('export')
+        self.export.setText(self.tr('Export...'))
+        self.export.setDisabled(True)
+        menu.addAction(self.export)
+
+        self.preferences = QAction(menu)
         self.preferences.setObjectName('Settings')
-        self._fileMenu.addAction(self.preferences)
-        return self._fileMenu
-
-    def _addAddFilesMenuItemTo(self, menu):
-        self._addFilesAction = QAction(menu)
-        self._addFilesAction.setObjectName(self.ADD_FILES_ACTION_NAME)
-        self._addFilesAction.triggered.connect(lambda checked: self._announce.addFiles())
-        self._addFilesAction.setDisabled(True)
-        menu.addAction(self._addFilesAction)
-
-    def _addAddFolderMenuItemTo(self, menu):
-        self._addFolderAction = QAction(menu)
-        self._addFolderAction.setObjectName(self.ADD_FOLDER_ACTION_NAME)
-        self._addFolderAction.triggered.connect(lambda checked: self._announce.addFolder())
-        self._addFolderAction.setDisabled(True)
-        menu.addAction(self._addFolderAction)
-
-    def _addExportMenuItemTo(self, menu):
-        self._exportMenuAction = QAction(menu)
-        self._exportMenuAction.setObjectName(self.EXPORT_ACTION_NAME)
-        self._exportMenuAction.triggered.connect(
-            lambda checked: self._announce.export())
-        self._exportMenuAction.setDisabled(True)
-        menu.addAction(self._exportMenuAction)
-
-    def enableAlbumMenu(self):
-        for action in [self._addFilesAction, self._addFolderAction, self._exportMenuAction]:
-            action.setEnabled(True)
-
-    def localize(self):
-        self._fileMenu.setTitle(self.tr('File'))
-        self._addFilesAction.setText(self.tr('Add Files...'))
-        self._addFolderAction.setText(self.tr('Add Folder...'))
-        self._exportMenuAction.setText(self.tr('Export...'))
         self.preferences.setText(self.tr('Settings'))
+        menu.addAction(self.preferences)
 
-    def tr(self, text):
-        return self._widget.tr(text)
+        return menu
+
+    def enableAlbumActions(self):
+        for action in [self.addFiles, self.addFolder, self.export]:
+            action.setEnabled(True)

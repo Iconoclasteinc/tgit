@@ -12,57 +12,41 @@ from tgit.ui.views.menu_bar import MenuBar
 class MenuBarTest(ViewTest):
     def setUp(self):
         super(MenuBarTest, self).setUp()
-        self.menuBar = MenuBar()
-        self.widget = self.menuBar.render()
         self.mainWindow = QMainWindow()
-        self.mainWindow.setMenuBar(self.widget)
+        self.view = MenuBar()
+        self.mainWindow.setMenuBar(self.view)
         self.show(self.mainWindow)
-        self.driver = self.createDriverFor(self.widget)
+        self.driver = self.createDriverFor(self.view)
 
     def createDriverFor(self, widget):
         return MenuBarDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testHasAlbumMenuInitiallyDisabled(self):
-        self.driver.hasDisabledAlbumMenu()
+        self.driver.hasDisabledAlbumActions()
 
     def testSignalsWhenAddFilesMenuItemClicked(self):
-        addFilesSignal = ValueMatcherProbe('add files')
-
-        class AddFilesListener(object):
-            def addFiles(self):
-                addFilesSignal.received()
-
-        self.menuBar.announceTo(AddFilesListener())
-        self.menuBar.enableAlbumMenu()
+        addFilesEvent = ValueMatcherProbe('add files event')
+        self.view.bind(addFiles=addFilesEvent.received)
+        self.view.enableAlbumActions()
         self.driver.addFiles()
-        self.driver.check(addFilesSignal)
+        self.driver.check(addFilesEvent)
 
     def testSignalsWhenAddFolderMenuItemClicked(self):
-        addFilesSignal = ValueMatcherProbe('add folder')
-
-        class AddFolderListener(object):
-            def addFolder(self):
-                addFilesSignal.received()
-
-        self.menuBar.announceTo(AddFolderListener())
-        self.menuBar.enableAlbumMenu()
+        addFolderEvent = ValueMatcherProbe('add folder event')
+        self.view.bind(addFolder=addFolderEvent.received)
+        self.view.enableAlbumActions()
         self.driver.addFolder()
-        self.driver.check(addFilesSignal)
+        self.driver.check(addFolderEvent)
 
     def testSignalsWhenExportMenuItemClicked(self):
-        exportAlbumSignal = ValueMatcherProbe('export album')
-
-        class ExportAlbumListener(object):
-            def export(self):
-                exportAlbumSignal.received()
-
-        self.menuBar.announceTo(ExportAlbumListener())
-        self.menuBar.enableAlbumMenu()
+        exportAlbumEvent = ValueMatcherProbe('export album event')
+        self.view.bind(exportAlbum=exportAlbumEvent.received)
+        self.view.enableAlbumActions()
         self.driver.export()
-        self.driver.check(exportAlbumSignal)
+        self.driver.check(exportAlbumEvent)
 
     def testSignalsWhenSettingsMenuItemClicked(self):
-        settingsProbe = ValueMatcherProbe('settings menu event', False)
-        self.menuBar.bind(settings=settingsProbe.received)
+        changeSettingsEvent = ValueMatcherProbe('change settings event')
+        self.view.bind(settings=changeSettingsEvent.received)
         self.driver.settings()
-        self.driver.check(settingsProbe)
+        self.driver.check(changeSettingsEvent)
