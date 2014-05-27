@@ -47,7 +47,6 @@ class Tagger(AlbumPortfolioListener):
         self._menuBar = MenuBar()
         self._menuBar.announceTo(self)
         self._welcomeScreen = WelcomeScreen()
-        self._welcomeScreen.announceTo(self)
 
     def render(self):
         self._window = self._mainWindow.render()
@@ -58,7 +57,8 @@ class Tagger(AlbumPortfolioListener):
         self.settings.bind(ok=self.savePreferences, cancel=self.settings.close)
         self._mainWindow.setMenuBar(self._menuBar.render())
         self._menuBar.bind(settings=self.editPreferences)
-        self._mainWindow.show(self._welcomeScreen.render())
+        self._welcomeScreen.bind(newAlbum=self.newAlbum)
+        self._mainWindow.show(self._welcomeScreen)
         self.messageBox = MessageBox(self._window)
         return self._window
 

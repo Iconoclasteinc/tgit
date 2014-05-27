@@ -14,20 +14,14 @@ class WelcomeScreenTest(ViewTest):
     def setUp(self):
         super(WelcomeScreenTest, self).setUp()
         self.view = WelcomeScreen()
-        self.widget = self.view.render()
-        self.show(self.widget)
-        self.driver = self.createDriverFor(self.widget)
+        self.show(self.view)
+        self.driver = self.createDriverFor(self.view)
 
     def createDriverFor(self, widget):
         return WelcomeScreenDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testSignalsWhenNewAlbumButtonClicked(self):
-        newAlbumRequest = ValueMatcherProbe('new album')
-
-        class RequestTracker(object):
-            def newAlbum(self):
-                newAlbumRequest.received()
-
-        self.view.announceTo(RequestTracker())
+        newAlbumSignal = ValueMatcherProbe('new album')
+        self.view.bind(newAlbum=newAlbumSignal.received)
         self.driver.newAlbum()
-        self.driver.check(newAlbumRequest)
+        self.driver.check(newAlbumSignal)

@@ -31,9 +31,9 @@ class MenuBar(object):
     def __init__(self):
         self._announce = Announcer()
 
-    def bind(self, **eventHandlers):
-        if 'settings' in eventHandlers:
-            self.preferences.triggered.connect(eventHandlers['settings'])
+    def bind(self, **handlers):
+        if 'settings' in handlers:
+            self.preferences.triggered.connect(handlers['settings'])
 
     def announceTo(self, listener):
         self._announce.addListener(listener)

@@ -1,86 +1,65 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import (QWidget, QPushButton, QFrame, QGridLayout, QVBoxLayout, QHBoxLayout,
-                         QLabel)
+from PyQt4.QtGui import (QWidget, QPushButton, QFrame, QGridLayout, QVBoxLayout, QHBoxLayout, QLabel)
 
-from tgit.announcer import Announcer
 from tgit.ui import display
 
 
-# We have to inherit from QFrame and not QWidget if we want a background without
-# reimplementing paintEvent()
-class WelcomeScreen():
-
-    NAME = "welcome-screen"
-    WELCOME_DIALOG_NAME = 'welcome-dialog'
-    NEW_ALBUM_BUTTON_NAME = 'new-album'
-
-    TITLE_TYPE = 'title'
-    H1 = 'h1'
-
+# We have to inherit from QFrame and not QWidget if we want a background without reimplementing QWidget.paintEvent
+class WelcomeScreen(QFrame):
     def __init__(self):
-        self._announce = Announcer()
-
-    def announceTo(self, listener):
-        self._announce.addListener(listener)
+        QFrame.__init__(self)
+        self.setObjectName('welcome-screen')
+        self.render()
 
     def render(self):
-        self._widget = self._build()
-        self.translate()
-        return self._widget
-
-    def _build(self):
-        frame = QFrame()
-        frame.setObjectName(self.NAME)
         layout = QGridLayout()
-        frame.setLayout(layout)
-        layout.addWidget(self._makeWelcomeDialog(), 0, 0)
-        return frame
+        layout.addWidget(self.makeWelcomeDialog(), 0, 0)
+        self.setLayout(layout)
 
-    def _makeWelcomeDialog(self):
-        welcomeDialog = QWidget()
-        welcomeDialog.setObjectName(self.WELCOME_DIALOG_NAME)
+    def bind(self, **handlers):
+        if 'newAlbum' in handlers:
+            self.newAlbum.clicked.connect(lambda: handlers['newAlbum']())
+
+    # todo use form? (needs rename?)
+    def makeWelcomeDialog(self):
+        welcome = QWidget()
+        welcome.setObjectName('welcome-dialog')
         layout = QVBoxLayout()
-        welcomeDialog.setLayout(layout)
-        self._addTitle(layout)
-        self._addText(layout)
-        self._addButtons(layout)
-        return welcomeDialog
+        layout.addWidget(self.makeTitle())
+        layout.addWidget(self.makeMsg())
+        layout.addWidget(self.makeDescription())
+        layout.addWidget(self.makeButtonBar())
+        welcome.setLayout(layout)
+        return welcome
 
-    def _addTitle(self, layout):
-        self._dialogTitle = QLabel()
-        self._dialogTitle.setProperty(self.TITLE_TYPE, self.H1)
-        layout.addWidget(display.centeredHorizontally(self._dialogTitle))
+    def makeTitle(self):
+        title = QLabel()
+        title.setProperty('title', 'h1')
+        title.setText(self.tr('Welcome to TGiT!'))
+        return display.centeredHorizontally(title)
 
-    def _addText(self, layout):
-        self._msg = QLabel()
-        layout.addWidget(display.centeredHorizontally(self._msg))
-        self._help = QLabel()
-        layout.addWidget(display.centeredHorizontally(self._help))
+    def makeMsg(self):
+        msg = QLabel()
+        msg.setText(self.tr('Your album is empty right now.'))
+        return display.centeredHorizontally(msg)
 
-    def _addButtons(self, layout):
-        layout.addWidget(self._makeButtonBar())
+    def makeDescription(self):
+        help = QLabel()
+        help.setText(self.tr('Click on the button below to add some tracks.'))
+        return display.centeredHorizontally(help)
 
-    def _makeButtonBar(self):
+    def makeButtonBar(self):
         buttons = QWidget()
         layout = QHBoxLayout()
         buttons.setLayout(layout)
         layout.setContentsMargins(0, 40, 0, 30)
         layout.addStretch()
-        self._newAlbumButton = QPushButton()
-        self._newAlbumButton.setObjectName(self.NEW_ALBUM_BUTTON_NAME)
-        self._newAlbumButton.setCursor(Qt.PointingHandCursor)
-        self._newAlbumButton.clicked.connect(lambda: self._announce.newAlbum())
-        layout.addWidget(self._newAlbumButton)
+        self.newAlbum = QPushButton()
+        self.newAlbum.setObjectName('new-album')
+        self.newAlbum.setText(self.tr('ADD FILES...'))
+        self.newAlbum.setCursor(Qt.PointingHandCursor)
+        layout.addWidget(self.newAlbum)
         layout.addStretch()
         return buttons
-
-    def translate(self):
-        self._dialogTitle.setText(self.tr('Welcome to TGiT!'))
-        self._msg.setText(self.tr('Your album is empty right now.'))
-        self._help.setText(self.tr('Click on the button below to add some tracks.'))
-        self._newAlbumButton.setText(self.tr('ADD FILES...'))
-
-    def tr(self, text):
-        return self._widget.tr(text)
