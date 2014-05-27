@@ -30,14 +30,10 @@ class TrackEditionPage(QWidget):
     ALBUM_COVER_SIZE = 60, 60
     DURATION_FORMAT = 'mm:ss'
 
-    def _(self, name):
-        return self.childWidget(QWidget, name)
-
     def __init__(self):
         QWidget.__init__(self)
-        self.build()
-        self.disableMacFocusFrame()
-        self.disableTeaserFields()
+        self.setObjectName('track-edition-page')
+        self.render()
         self.cover = None
 
     def bind(self, **handlers):
@@ -60,12 +56,13 @@ class TrackEditionPage(QWidget):
         self.languages.activated.connect(lambda: handler(self.trackMetadata))
         self.languages.lineEdit().textEdited.connect(lambda: handler(self.trackMetadata))
 
-    def build(self):
-        self.setObjectName('track-edition-page')
+    def render(self):
         layout = form.column()
         layout.addWidget(self.makeAlbumBanner())
         layout.addWidget(self.makeMainContent())
         self.setLayout(layout)
+        self.disableMacFocusFrame()
+        self.disableTeaserFields()
 
     def makeAlbumBanner(self):
         header = QFrame()

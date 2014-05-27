@@ -29,9 +29,8 @@ class AlbumEditionPage(QWidget):
 
     def __init__(self):
         QWidget.__init__(self)
-        self.build()
-        self.disableMacFocusFrame()
-        self.disableTeaserFields()
+        self.setObjectName('album-edition-page')
+        self.render()
 
     def bind(self, **handlers):
         if 'metadataChanged' in handlers:
@@ -57,13 +56,14 @@ class AlbumEditionPage(QWidget):
     def onRemovePicture(self, handler):
         self.removePicture.clicked.connect(lambda: handler())
 
-    def build(self):
-        self.setObjectName('album-edition-page')
+    def render(self):
         layout = form.row()
         layout.setSpacing(0)
         layout.addWidget(self.makeLeftColumn())
         layout.addWidget(self.makeRightColumn())
         self.setLayout(layout)
+        self.disableMacFocusFrame()
+        self.disableTeaserFields()
 
     def makeLeftColumn(self):
         column = QWidget()

@@ -78,7 +78,8 @@ class RemoveButtonDelegate(QStyledItemDelegate):
 class AlbumCompositionPage(QWidget):
     def __init__(self):
         QWidget.__init__(self)
-        self.build()
+        self.setObjectName('album-composition-page')
+        self.render()
 
     def bind(self, **handlers):
         if 'play' in handlers:
@@ -90,8 +91,7 @@ class AlbumCompositionPage(QWidget):
         if 'trackMoved' in handlers:
             self.table.verticalHeader().sectionMoved.connect(lambda _, from_, to: handlers['trackMoved'](from_, to))
 
-    def build(self):
-        self.setObjectName('album-composition-page')
+    def render(self):
         layout = form.column()
         layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self.makeHeader())

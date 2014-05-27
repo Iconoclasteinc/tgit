@@ -22,10 +22,10 @@ from PyQt4.QtGui import QDialog, QComboBox, QGridLayout, QDialogButtonBox, QLabe
 class SettingsDialog(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
-        self.build()
-
-    def build(self):
         self.setObjectName('settings-dialog')
+        self.render()
+
+    def render(self):
         self.setWindowTitle(self.tr('Settings'))
         self.setModal(True)
         layout = QGridLayout()

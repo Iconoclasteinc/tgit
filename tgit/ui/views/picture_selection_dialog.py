@@ -27,9 +27,9 @@ class PictureSelectionDialog(object):
     native = True
 
     def __init__(self):
-        self.build()
+        self.render()
 
-    def build(self):
+    def render(self):
         self.dialog = QFileDialog(mainWindow())
         self.dialog.setObjectName('picture-selection-dialog')
         self.dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)

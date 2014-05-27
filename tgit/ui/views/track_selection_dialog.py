@@ -21,6 +21,7 @@ from PyQt4.QtCore import QDir
 from PyQt4.QtGui import QFileDialog
 from tgit.ui.views import mainWindow
 
+
 class TrackSelectionDialog(object):
     MP3_FILES = '*.mp3'
 
@@ -28,9 +29,9 @@ class TrackSelectionDialog(object):
     native = True
 
     def __init__(self):
-        self.build()
+        self.render()
 
-    def build(self):
+    def render(self):
         self.dialog = QFileDialog(mainWindow())
         self.dialog.setObjectName('track-selection-dialog')
         self.dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)

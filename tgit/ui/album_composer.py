@@ -22,33 +22,33 @@ from tgit.ui.views.album_composition_model import AlbumCompositionModel
 
 class AlbumComposer(object):
     def __init__(self, album, player, page):
-        self._album = AlbumCompositionModel(album, player)
-        self._player = player
-        self._page = page
+        self.album = AlbumCompositionModel(album, player)
+        self.player = player
+        self.page = page
 
-        self._bindEventHandlers()
+        self.bindEventHandlers()
 
-    def _bindEventHandlers(self):
-        self._page.bind(trackMoved=self.moveTrack, play=self.playTrack, remove=self.removeTrack)
+    def bindEventHandlers(self):
+        self.page.bind(trackMoved=self.moveTrack, play=self.playTrack, remove=self.removeTrack)
 
     def render(self):
-        self._page.display(self._album)
-        return self._page
+        self.page.display(self.album)
+        return self.page
 
     def onAddTracks(self, handler):
-        self._page.bind(add=handler)
+        self.page.bind(add=handler)
 
     def moveTrack(self, fromPosition, toPosition):
-        self._album.move(fromPosition, toPosition)
+        self.album.move(fromPosition, toPosition)
 
     def playTrack(self, track):
         if track.playing():
-            track.stop(self._player)
+            track.stop(self.player)
         else:
-            track.play(self._player)
+            track.play(self.player)
 
     def removeTrack(self, track):
         if track.playing():
-            track.stop(self._player)
+            track.stop(self.player)
 
         track.remove()
