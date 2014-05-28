@@ -33,10 +33,6 @@ class AlbumComposer(object):
 
     def render(self):
         self.page.display(self.album)
-        return self.page
-
-    def onAddTracks(self, handler):
-        self.page.bind(add=handler)
 
     def moveTrack(self, fromPosition, toPosition):
         self.album.move(fromPosition, toPosition)

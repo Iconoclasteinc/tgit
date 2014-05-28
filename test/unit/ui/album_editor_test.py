@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from hamcrest import assert_that, equal_to, contains, has_properties, is_, same_instance
+from hamcrest import assert_that, equal_to, contains, has_properties, is_
 from test.util import builders as build, resources
 from tgit.metadata import Image
 from tgit.ui.album_editor import AlbumEditor
@@ -49,8 +49,7 @@ class AlbumEditorTest(unittest.TestCase):
         self.editor = AlbumEditor(self.album, self.view, self.selector)
 
     def testDisplaysAlbumWhenRendered(self):
-        view = self.editor.render()
-        assert_that(view, same_instance(self.view), 'view')
+        self.editor.render()
         assert_that(self.view.album, equal_to(self.album), 'displayed album')
 
     def testUpdatesAlbumMetadataOnEdition(self):

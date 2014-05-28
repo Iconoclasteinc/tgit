@@ -37,7 +37,6 @@ class AlbumEditor(AlbumListener):
 
     def render(self):
         self.refresh()
-        return self.view
 
     def refresh(self):
         self.view.display(self.album)

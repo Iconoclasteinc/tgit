@@ -55,7 +55,7 @@ class TGiT(QApplication):
     def show(self, preferences):
         self.setLocale(preferences['language'])
         self.tagger = Tagger(AlbumPortfolio(), self.player(AudioFiles()), preferences)
-        display.centeredOnScreen(self.tagger.render())
+        self.tagger.show()
 
     def launch(self, preferences):
         self.show(preferences)

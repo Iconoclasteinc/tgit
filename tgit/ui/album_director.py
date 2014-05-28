@@ -16,50 +16,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from tgit.album import AlbumListener
-from tgit.ui.album_composer import AlbumComposer
-from tgit.ui.album_editor import AlbumEditor
-from tgit.ui.album_mixer import AlbumMixer
-from tgit.ui.track_editor import TrackEditor
-from tgit.ui.views.album_composition_page import AlbumCompositionPage
-from tgit.ui.views.album_edition_page import AlbumEditionPage
-from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
-from tgit.ui.views.track_edition_page import TrackEditionPage
-from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 
 
 class AlbumDirector(AlbumListener):
-    def __init__(self, album, trackLibrary, player, view):
+    def __init__(self, album, trackLibrary, player, view, trackView):
         self.album = album
+        self.album.addAlbumListener(self)
         self.trackLibrary = trackLibrary
         self.player = player
         self.view = view
+        self.trackView = trackView
 
         self.bindEventHandlers()
 
     def bindEventHandlers(self):
         self.view.bind(recordAlbum=self.recordAlbum)
 
-    def render(self):
-        composer = AlbumComposer(self.album, self.player, AlbumCompositionPage())
-        composer.onAddTracks(self.addTracksToAlbum)
-        self.view.setAlbumCompositionPage(composer.render())
-
-        editor = AlbumEditor(self.album, AlbumEditionPage(), PictureSelectionDialog())
-        self.view.setAlbumEditionPage(editor.render())
-        self.album.addAlbumListener(self)
-
-        self.mixer = AlbumMixer(self.album, self.trackLibrary, TrackSelectionDialog())
-
-        return self.view
-
-    # Eventually, event will bubble up to top level presenter.
-    # For that we need to do some prep work on the menubar first.
-    def addTracksToAlbum(self, folders=False):
-        self.mixer.select(folders)
-
     def trackAdded(self, track, position):
-        editor = TrackEditor(track, TrackEditionPage())
-        self.view.addTrackEditionPage(editor.render(), position)
+        self.view.addTrackEditionPage(self.trackView(track), position)
         self.view.allowSaves(True)
 
     def trackRemoved(self, track, position):

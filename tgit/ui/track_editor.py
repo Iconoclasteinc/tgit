@@ -39,7 +39,6 @@ class TrackEditor(AlbumListener, TrackListener):
 
     def render(self):
         self.refresh()
-        return self.view
 
     def updateTrack(self, state):
         self.track.trackTitle = state.trackTitle

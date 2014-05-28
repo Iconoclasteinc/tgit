@@ -33,8 +33,8 @@ class AlbumMixer(object):
     def bindEventHandlers(self):
         self.selector.bind(tracksSelected=self.mixTracks)
 
-    def select(self, folders=False):
-        self.selector.show(folders=folders)
+    def select(self, album=False):
+        self.selector.show(folders=album)
 
     def mixTracks(self, selection):
         for filename in self.listFilesIn(selection):

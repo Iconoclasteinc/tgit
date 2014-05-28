@@ -17,20 +17,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from tgit.album import Album
-
 # todo have shortcuts in tgit.ui.views
 from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
 from tgit.track_library import TrackLibrary
 from tgit.mp3.id3_tagger import ID3Tagger
+from tgit.ui import display
+from tgit.ui.album_composer import AlbumComposer
 from tgit.ui.album_director import AlbumDirector
+from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.album_exporter import AlbumExporter
+from tgit.ui.album_mixer import AlbumMixer
+from tgit.ui.track_editor import TrackEditor
+from tgit.ui.views.album_composition_page import AlbumCompositionPage
+from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.ui.views.album_screen import AlbumScreen
 from tgit.ui.views.export_as_dialog import ExportAsDialog
 from tgit.ui.views.main_window import MainWindow
 from tgit.ui.views.menu_bar import MenuBar
 from tgit.ui.views.message_box import MessageBox
+from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.views.settings_dialog import SettingsDialog
+from tgit.ui.views.track_edition_page import TrackEditionPage
+from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.views.welcome_screen import WelcomeScreen
 
 
@@ -44,41 +53,70 @@ class Tagger(AlbumPortfolioListener):
         self.albumPortfolio.addPortfolioListener(self)
         self.player = player
 
-        self.menuBar = MenuBar()
         self.mainWindow = MainWindow()
+        self.menuBar = MenuBar()
+        self.mainWindow.setMenuBar(self.menuBar)
         self.welcomeScreen = WelcomeScreen()
-        self.settings = SettingsDialog(self.mainWindow)
-        self.messageBox = MessageBox(self.mainWindow)
+        self.mainWindow.display(self.welcomeScreen)
 
-    def render(self):
-        # todo move to a more appropriate place
+        self.settings = SettingsDialog(self.mainWindow)
         self.settings.addLanguage('en', 'English')
         self.settings.addLanguage('fr', 'French')
+
+        self.messageBox = MessageBox(self.mainWindow)
+
+        self.bindEventHandlers()
+
+    def bindEventHandlers(self):
         self.settings.bind(ok=self.savePreferences, cancel=self.settings.close)
-        self.menuBar.bind(settings=self.editPreferences, addFiles=self.addFiles, addFolder=self.addFolder,
-                          exportAlbum=self.export)
-        self.mainWindow.setMenuBar(self.menuBar)
+        self.menuBar.bind(settings=self.editPreferences, addFiles=self.mixTracks, addFolder=self.mixAlbum,
+                          exportAlbum=self.exportAlbum)
         self.welcomeScreen.bind(newAlbum=self.newAlbum)
-        self.mainWindow.display(self.welcomeScreen)
-        return self.mainWindow
+
+    def show(self):
+        display.centeredOnScreen(self.mainWindow)
 
     def newAlbum(self):
         self.albumPortfolio.addAlbum(Album())
 
     def albumCreated(self, album):
         self.menuBar.enableAlbumActions()
-        self.director = AlbumDirector(album, TrackLibrary(ID3Tagger()), self.player, AlbumScreen())
-        self.mainWindow.display(self.director.render())
-        self.director.addTracksToAlbum()
+
+        albumCompositionPage = AlbumCompositionPage()
+        albumCompositionPage.bind(add=self.mixTracks)
+        composer = AlbumComposer(album, self.player, albumCompositionPage)
+        composer.render()
+
+        albumEditionPage = AlbumEditionPage()
+        editor = AlbumEditor(album, albumEditionPage, PictureSelectionDialog())
+        editor.render()
+
+        trackLibrary = TrackLibrary(ID3Tagger())
+        albumScreen = AlbumScreen()
+        albumScreen.setAlbumCompositionPage(albumCompositionPage)
+        albumScreen.setAlbumEditionPage(albumEditionPage)
+
+        def makeTrackEditionPage(track):
+            trackEditionPage = TrackEditionPage()
+            trackEditor = TrackEditor(track, trackEditionPage)
+            trackEditor.render()
+            return trackEditionPage
+
+        self.director = AlbumDirector(album, trackLibrary, self.player, albumScreen, makeTrackEditionPage)
+
+        self.mixer = AlbumMixer(album, trackLibrary, TrackSelectionDialog())
         self.exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING), ExportAsDialog())
 
-    def addFiles(self):
-        self.director.addTracksToAlbum()
+        self.mixTracks()
+        self.mainWindow.display(albumScreen)
 
-    def addFolder(self):
-        self.director.addTracksToAlbum(folders=True)
+    def mixTracks(self):
+        self.mixer.select(album=False)
 
-    def export(self):
+    def mixAlbum(self):
+        self.mixer.select(album=True)
+
+    def exportAlbum(self):
         self.exporter.select()
 
     def editPreferences(self):

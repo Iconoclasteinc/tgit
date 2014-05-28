@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from hamcrest import assert_that, equal_to, same_instance
+from hamcrest import assert_that, equal_to
 from test.util import builders as build
 from tgit.ui.track_editor import TrackEditor
 
@@ -35,8 +35,7 @@ class TrackEditorTest(unittest.TestCase):
         self.editor = TrackEditor(self.track, self.view)
 
     def testDisplaysTrackWhenRendered(self):
-        view = self.editor.render()
-        assert_that(view, same_instance(self.view), 'view')
+        self.editor.render()
         assert_that(self.view.track, equal_to(self.track), 'displayed track')
 
     def testUpdatesTrackOnEdition(self):

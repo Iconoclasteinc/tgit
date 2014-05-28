@@ -10,6 +10,7 @@ class AlbumViewStub(object):
     def __init__(self):
         self.refreshCount = 0
         self.handlers = {}
+        self.tracks = []
 
     def __getattr__(self, item):
         if item not in self.handlers:
@@ -20,9 +21,20 @@ class AlbumViewStub(object):
     def bind(self, **handlers):
         self.handlers.update(handlers)
 
+    def addTrackEditionPage(self, page, position):
+        self.tracks.insert(position, page)
+
+    def allowSaves(self, allow):
+        self.saveEnabled = allow
+
     def display(self, album):
         self.album = album
         self.refreshCount += 1
+
+
+class TrackViewStub(object):
+    def __init__(self, track):
+        self.track = track
 
 
 class AlbumDirectorTest(unittest.TestCase):
@@ -30,7 +42,7 @@ class AlbumDirectorTest(unittest.TestCase):
         self.album = build.album()
         self.catalog = flexmock()
         self.view = AlbumViewStub()
-        self.director = AlbumDirector(self.album, self.catalog, fakes.audioPlayer(), self.view)
+        self.director = AlbumDirector(self.album, self.catalog, fakes.audioPlayer(), self.view, TrackViewStub)
 
     def testSavesAllTracksInAlbum(self):
         self.album.addTrack(build.track(trackTitle='first'))

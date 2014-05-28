@@ -46,7 +46,7 @@ class AlbumMixerTest(unittest.TestCase):
     def testAddsSelectedTracksToAlbumInSelectionOrder(self):
         self.tracksSelector.selectedTracks = [audioFile('1.mp3'), audioFile('3.mp3'), audioFile('2.mp3')]
 
-        self.mixer.select(folders=False)
+        self.mixer.select(album=False)
         assert_that(self.album.tracks, contains(
             has_properties(trackTitle='first'),
             has_properties(trackTitle='third'),
@@ -55,7 +55,7 @@ class AlbumMixerTest(unittest.TestCase):
     def testAddsAllTracksInSelectedFolder(self):
         self.tracksSelector.selectedTracks = [audioFolder()]
 
-        self.mixer.select(folders=True)
+        self.mixer.select(album=True)
         assert_that(self.album.tracks, contains(
             has_properties(trackTitle='first'),
             has_properties(trackTitle='second'),
