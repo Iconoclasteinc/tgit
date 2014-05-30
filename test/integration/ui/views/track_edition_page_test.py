@@ -13,9 +13,8 @@ from tgit.ui.views.track_edition_page import TrackEditionPage
 
 
 class TrackEditionPageTest(ViewTest):
-    def setUp(self):
-        super(TrackEditionPageTest, self).setUp()
-        self.page = TrackEditionPage()
+    def render(self, track):
+        self.page = TrackEditionPage(track)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
 
@@ -23,31 +22,27 @@ class TrackEditionPageTest(ViewTest):
         return TrackEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysAlbumSummaryInBanner(self):
-        album = build.album(releaseName='Album Title', leadPerformer='Artist', labelName='Record Label')
         track = build.track()
-        album.addTrack(build.track())
-        album.addTrack(track)
-        album.addTrack(build.track())
+        build.album(releaseName='Album Title', leadPerformer='Artist', labelName='Record Label',
+                    tracks=[build.track(), track, build.track()])
 
-        self.page.display(track)
+        self.render(track)
+
         self.driver.showsAlbumTitle('Album Title')
         self.driver.showsAlbumLeadPerformer('Artist')
         self.driver.showsAlbumLabel('Record Label')
         self.driver.showsTrackNumber(contains_string('2 of 3'))
 
     def testIndicatesWhenAlbumPerformedByVariousArtists(self):
-        album = build.album(compilation=True)
         track = build.track()
-        album.addTrack(track)
-
-        self.page.display(track)
+        build.album(compilation=True, tracks=[track])
+        self.render(track)
         self.driver.showsAlbumLeadPerformer('Various Artists')
 
     def testDisplaysTrackMetadata(self):
-        album = build.album()
         track = build.track(bitrate=192000,
-                            compilation=True,
                             duration=timedelta(minutes=4, seconds=35).total_seconds(),
+                            compilation=True,
                             leadPerformer='Artist',
                             trackTitle='Song',
                             versionInfo='Remix',
@@ -59,9 +54,9 @@ class TrackEditionPageTest(ViewTest):
                             tags='Tag1 Tag2 Tag3',
                             lyrics='Lyrics\n...\n...',
                             language='eng')
-        album.addTrack(track)
+        build.album(tracks=[track])
 
-        self.page.display(track)
+        self.render(track)
 
         self.driver.showsTrackTitle('Song')
         self.driver.showsLeadPerformer('Artist')
@@ -80,14 +75,17 @@ class TrackEditionPageTest(ViewTest):
         self.driver.showsPreviewTime('00:00')
 
     def testDisablesLeadPerformerEditionWhenAlbumIsNotACompilation(self):
-        album = build.album(compilation=False, leadPerformer='Album Artist')
         track = build.track()
-        album.addTrack(track)
-
-        self.page.display(track)
+        build.album(compilation=False, leadPerformer='Album Artist', tracks=[track])
+        self.render(track)
         self.driver.showsLeadPerformer('Album Artist', disabled=True)
 
-    def testSignalsWhenTrackMetadataEdited(self):
+    def testSignalsWhenTrackMetadataChange(self):
+        track = build.track(compilation=True)
+        build.album(tracks=[track])
+
+        self.render(track)
+
         trackChangedSignal = ValueMatcherProbe('track changed')
         self.page.bind(metadataChanged=trackChangedSignal.received)
 
@@ -141,28 +139,25 @@ class TrackEditionPageTest(ViewTest):
         self.check(trackChangedSignal)
 
     def testDisplaysSoftwareNoticeInLocalTime(self):
-        album = build.album()
         track = build.track(tagger='TGiT v1.0', taggingTime='2014-03-23 20:33:00 +0000')
-        album.addTrack(track)
+        build.album(tracks=[track])
 
-        self.page.display(track)
+        self.render(track)
 
         # This will likely fail when ran on another timezone or even when daylight savings
         # change, but I don't yet know how to best write the test
+
+        # edit: use renderAsOf(track, dateFormat)
         self.driver.showsSoftwareNotice('Tagged with TGiT v1.0 on 2014-03-23 at 16:33:00')
 
     def testOmitsSoftwareNoticeIfTaggerInformationUnavailable(self):
-        album = build.album()
         track = build.track(taggingTime='2014-03-23 20:33:00 UTC+0000')
-        album.addTrack(track)
-
-        self.page.display(track)
+        build.album(tracks=[track])
+        self.render(track)
         self.driver.showsSoftwareNotice('')
 
     def testOmitsSoftwareNoticeIfTaggingDateMalformed(self):
-        album = build.album()
-        track = build.track(tagger='TGiT v1.0', taggingTime='@$%@#$%#@$%#@%#@$')
-        album.addTrack(track)
-
-        self.page.display(track)
+        track = build.track(tagger='TGiT v1.0', taggingTime='invalid-time-format')
+        build.album(tracks=[track])
+        self.render(track)
         self.driver.showsSoftwareNotice('')

@@ -88,6 +88,7 @@ class Track(object):
         self._listeners.trackStateChanged(self)
 
 
+# todo also add album related tags
 def addMetadataPropertiesTo(cls):
     for meta in tags.TRACK_TAGS:
         def createProperty(name):

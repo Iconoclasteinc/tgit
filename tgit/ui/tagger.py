@@ -16,8 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+import functools as func
+
 from tgit.album import Album
-# todo have shortcuts in tgit.ui.views
+from tgit import album_director as director
 from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
 from tgit.track_library import TrackLibrary
@@ -28,7 +31,6 @@ from tgit.ui.album_director import AlbumDirector
 from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.album_exporter import AlbumExporter
 from tgit.ui.album_mixer import AlbumMixer
-from tgit.ui.track_editor import TrackEditor
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.ui.views.album_screen import AlbumScreen
@@ -96,11 +98,13 @@ class Tagger(AlbumPortfolioListener):
         albumScreen.setAlbumCompositionPage(albumCompositionPage)
         albumScreen.setAlbumEditionPage(albumEditionPage)
 
+        # todo find a home for creation functions
         def makeTrackEditionPage(track):
-            trackEditionPage = TrackEditionPage()
-            trackEditor = TrackEditor(track, trackEditionPage)
-            trackEditor.render()
-            return trackEditionPage
+            page = TrackEditionPage(track)
+            page.bind(metadataChanged=func.partial(director.updateTrack, track))
+            track.addTrackListener(page)
+            album.addAlbumListener(page)
+            return page
 
         self.director = AlbumDirector(album, trackLibrary, self.player, albumScreen, makeTrackEditionPage)
 
