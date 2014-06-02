@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QDir
+from PyQt4.QtCore import QDir, Qt
 from PyQt4.QtGui import QFileDialog
 from tgit.ui.views import mainWindow
 
@@ -26,23 +26,13 @@ class PictureSelectionDialog(object):
     #todo Introduce Preferences
     native = True
 
-    def __init__(self):
-        self.render()
-
-    def render(self):
-        self.dialog = QFileDialog(mainWindow())
-        self.dialog.setObjectName('picture-selection-dialog')
-        self.dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        self.dialog.setDirectory(QDir.homePath())
-        self.dialog.setFileMode(QFileDialog.ExistingFile)
-        self.dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % self.dialog.tr('Image files'))
-
-    def bind(self, **handlers):
-        if 'pictureSelected' in handlers:
-            self.onPictureSelected(handlers['pictureSelected'])
-
-    def onPictureSelected(self, callback):
-        self.dialog.fileSelected.connect(callback)
-
-    def show(self):
-        self.dialog.open()
+    def select(self, handler):
+        dialog = QFileDialog(mainWindow())
+        dialog.setObjectName('picture-selection-dialog')
+        dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
+        dialog.setDirectory(QDir.homePath())
+        dialog.setFileMode(QFileDialog.ExistingFile)
+        dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % dialog.tr('Image files'))
+        dialog.fileSelected.connect(handler)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.open()

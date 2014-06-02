@@ -21,12 +21,13 @@ class PictureSelectionDialogTest(ViewTest):
     def testSignalsWhenPictureSelected(self):
         pictureSelected = ValueMatcherProbe('picture selected', resources.path('front-cover.jpg'))
 
-        self.dialog.bind(pictureSelected=pictureSelected.received)
-        self.dialog.show()
+        self.dialog.select(pictureSelected.received)
         self.driver.selectPicture(resources.path('front-cover.jpg'))
 
         self.check(pictureSelected)
 
     def testOnlyAcceptsAudioFiles(self):
-        self.dialog.show()
+        def dummyHandler(selection):
+            pass
+        self.dialog.select(dummyHandler)
         self.driver.rejectsSelectionOf(resources.path('base.mp3'))

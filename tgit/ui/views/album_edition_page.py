@@ -16,27 +16,37 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QWidget, QSizePolicy, QGroupBox, QLabel
+from tgit.album import AlbumListener
+from tgit.album_director import Snapshot
 
 from tgit.genres import GENRES
 from tgit.ui import formatting
 from tgit.ui.widgets import form, image
 
 
-class AlbumEditionPage(QWidget):
+class AlbumEditionPage(QWidget, AlbumListener):
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self):
+    def __init__(self, pictureSelector):
         QWidget.__init__(self)
         self.setObjectName('album-edition-page')
-        self.render()
+        layout = form.row()
+        layout.setSpacing(0)
+        layout.addWidget(self.makeLeftColumn())
+        layout.addWidget(self.makeRightColumn())
+        self.setLayout(layout)
+        self.disableMacFocusFrame()
+        self.disableTeaserFields()
+        self.pictureSelector = pictureSelector
 
     def bind(self, **handlers):
         if 'metadataChanged' in handlers:
             self.onMetadataChange(handlers['metadataChanged'])
-        if 'selectPicture' in handlers:
-            self.onSelectPicture(handlers['selectPicture'])
+        if 'pictureSelected' in handlers:
+            self.onPictureSelected(handlers['pictureSelected'])
         if 'removePicture' in handlers:
             self.onRemovePicture(handlers['removePicture'])
 
@@ -45,25 +55,19 @@ class AlbumEditionPage(QWidget):
                      self.labelName, self.catalogNumber, self.upc, self.comments,
                      self.recordingTime, self.releaseTime, self.producer,
                      self.recordingStudios, self.producer, self.mixer):
-            edit.editingFinished.connect(lambda: handler(self.albumMetadata))
-        self.compilation.clicked.connect(lambda: handler(self.albumMetadata))
-        self.primaryStyles.activated.connect(lambda: handler(self.albumMetadata))
-        self.primaryStyles.lineEdit().textEdited.connect(lambda: handler(self.albumMetadata))
+            edit.editingFinished.connect(lambda: handler(self.snapshot))
+        self.compilation.clicked.connect(lambda: handler(self.snapshot))
+        self.primaryStyles.activated.connect(lambda: handler(self.snapshot))
+        self.primaryStyles.lineEdit().textEdited.connect(lambda: handler(self.snapshot))
 
-    def onSelectPicture(self, handler):
-        self.selectPicture.clicked.connect(lambda: handler())
+    def onPictureSelected(self, handler):
+        self.selectPicture.clicked.connect(lambda: self.pictureSelector.select(handler))
 
     def onRemovePicture(self, handler):
         self.removePicture.clicked.connect(lambda: handler())
 
-    def render(self):
-        layout = form.row()
-        layout.setSpacing(0)
-        layout.addWidget(self.makeLeftColumn())
-        layout.addWidget(self.makeRightColumn())
-        self.setLayout(layout)
-        self.disableMacFocusFrame()
-        self.disableTeaserFields()
+    def albumStateChanged(self, album):
+        self.display(album)
 
     def makeLeftColumn(self):
         column = QWidget()
@@ -203,11 +207,7 @@ class AlbumEditionPage(QWidget):
         self.leadPerformer.setDisabled(album.compilation is True)
 
     @property
-    def albumMetadata(self):
-        class Snapshot(object):
-            def __str__(self):
-                return str(self.__dict__)
-
+    def snapshot(self):
         snapshot = Snapshot()
         snapshot.releaseName = self.releaseName.text()
         snapshot.compilation = self.compilation.isChecked()

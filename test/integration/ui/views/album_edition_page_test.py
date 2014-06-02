@@ -6,6 +6,7 @@ from test.cute.probes import ValueMatcherProbe
 from test.drivers import AlbumEditionPageDriver
 from test.integration.ui.views import ViewTest
 from test.util import resources, builders as build
+from tgit.metadata import Image
 
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.util import fs
@@ -16,29 +17,35 @@ def loadImage(name):
     return fs.readContent(resources.path(name))
 
 
+class PictureSelectorStub(object):
+    def __init__(self):
+        self.selected = build.image()
+
+    def select(self, handler):
+        handler(self.selected)
+
+
 class AlbumEditionPageTest(ViewTest):
     def setUp(self):
         super(AlbumEditionPageTest, self).setUp()
-        self.page = AlbumEditionPage()
+        self.pictureSelector = PictureSelectorStub()
+        self.page = AlbumEditionPage(self.pictureSelector)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
 
     def createDriverFor(self, widget):
         return AlbumEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testDisplaysPicturePlaceholderInCaseOfAlbumWithoutCover(self):
-        album = build.album()
-        self.page.display(album)
+    def testDisplaysPicturePlaceholderWhenAlbumHasNoCover(self):
+        self.page.display(build.album())
         self.driver.showsPicturePlaceholder()
 
-    def testDisplaysMainAlbumCover(self):
-        album = build.album()
-        album.addFrontCover('image/jpeg', loadImage('front-cover.jpg'))
-        self.page.display(album)
+    def testDisplaysMainAlbumCoverWhenExisting(self):
+        self.page.display(build.album(images=[build.image('image/jpeg', loadImage('front-cover.jpg'), Image.FRONT_COVER)]))
         self.driver.showsPicture()
 
     def testDisplaysAlbumMetadata(self):
-        album = build.album(
+        self.page.display(build.album(
             releaseName='Album',
             leadPerformer='Artist',
             guestPerformers=[('Guitar', 'Guitarist'), ('Piano', 'Pianist')],
@@ -51,9 +58,7 @@ class AlbumEditionPageTest(ViewTest):
             producer='Artistic Producer',
             mixer='Mixing Engineer',
             comments='Comments\n...',
-            primaryStyle='Style')
-
-        self.page.display(album)
+            primaryStyle='Style'))
 
         self.driver.showsReleaseName('Album')
         self.driver.showsCompilation(False)
@@ -75,30 +80,26 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsReleaseType('')
 
     def testIndicatesWhetherAlbumIsACompilation(self):
-        album = build.album()
-        self.page.display(album)
+        self.page.display(build.album(compilation=False))
         self.driver.showsCompilation(False)
 
-        album.compilation = True
-        self.page.display(album)
+        self.page.display(build.album(compilation=True))
         self.driver.showsCompilation(True)
 
-        album.compilation = False
-        self.page.display(album)
-        self.driver.showsCompilation(False)
-
     def testDisablesLeadPerformerEditionWhenAlbumIsACompilation(self):
-        album = build.album(compilation=True, leadPerformer='Album Artist')
-        self.page.display(album)
+        self.page.display(build.album(compilation=True, leadPerformer='Album Artist'))
         self.driver.showsLeadPerformer('Various Artists', disabled=True)
 
-    def testSignalsWhenAddPictureButtonClicked(self):
+    def testSignalsWhenPictureSelected(self):
+        image = build.image()
+        self.pictureSelector.selected = image
+
         self.page.display(build.album())
-        addPictureSignal = ValueMatcherProbe('add picture')
-        self.page.bind(selectPicture=addPictureSignal.received)
+        pictureSelectedSignal = ValueMatcherProbe('picture selected', image)
+        self.page.bind(pictureSelected=pictureSelectedSignal.received)
 
         self.driver.addPicture()
-        self.check(addPictureSignal)
+        self.check(pictureSelectedSignal)
 
     def testSignalsWhenRemovePictureButtonClicked(self):
         self.page.display(build.album())

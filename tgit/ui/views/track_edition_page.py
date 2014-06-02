@@ -48,8 +48,6 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         # we need this until track knows its position in the album
         self.album = track.album
 
-        self.refresh()
-
     def bind(self, **handlers):
         if 'metadataChanged' in handlers:
             self.onMetadataChange(handlers['metadataChanged'])
@@ -65,17 +63,17 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
                      self.isrc,
                      self.tags,
                      self.lyrics):
-            edit.editingFinished.connect(lambda: handler(self.trackMetadata))
+            edit.editingFinished.connect(lambda: handler(self.snapshot))
 
-        self.languages.activated.connect(lambda: handler(self.trackMetadata))
-        self.languages.lineEdit().textEdited.connect(lambda: handler(self.trackMetadata))
+        self.languages.activated.connect(lambda: handler(self.snapshot))
+        self.languages.lineEdit().textEdited.connect(lambda: handler(self.snapshot))
 
     def trackStateChanged(self, state):
-        self.refresh()
+        self.display(state)
 
     # will eventually go away
     def trackAdded(self, track, position):
-        self.refresh()
+        self.display(self.track)
 
     def trackRemoved(self, track, position):
         # todo let AlbumScreen decide of that
@@ -84,7 +82,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
             self.track.removeTrackListener(self)
         else:
             # but first we need track to know its track number and total tracks
-            self.refresh()
+            self.display(self.track)
 
     def makeAlbumBanner(self):
         header = QFrame()
@@ -239,27 +237,28 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         layout.addWidget(self.softwareNotice)
         return layout
 
-    def refresh(self):
+    def display(self, track):
         self.displayAlbumCover(self.album)
         self.albumTitle.setText(self.album.releaseName)
-        self.albumLeadPerformer.setText(self.album.compilation and self.tr('Various Artists') or self.album.leadPerformer)
+        self.albumLeadPerformer.setText(self.album.compilation and self.tr('Various Artists')
+                                        or self.album.leadPerformer)
         self.recordLabel.setText(self.album.labelName)
-        self.trackNumber.setText(self.tr('Track %d of %d') % (self.track.number, len(self.album)))
-        self.trackTitle.setText(self.track.trackTitle)
-        self.leadPerformer.setText(self.track.leadPerformer)
-        self.leadPerformer.setEnabled(self.track.compilation is True)
-        self.versionInfo.setText(self.track.versionInfo)
-        self.duration.setText(display.asDuration(self.track.duration))
-        self.bitrate.setText('%s kbps' % formatting.toKbps(self.track.bitrate))
-        self.featuredGuest.setText(self.track.featuredGuest)
-        self.lyricist.setText(self.track.lyricist)
-        self.composer.setText(self.track.composer)
-        self.publisher.setText(self.track.publisher)
-        self.isrc.setText(self.track.isrc)
-        self.tags.setText(self.track.tags)
-        self.lyrics.setPlainText(self.track.lyrics)
-        self.languages.setEditText(self.track.language)
-        self.displaySoftwareNotice(self.track)
+        self.trackNumber.setText(self.tr('Track %d of %d') % (track.number, len(self.album)))
+        self.trackTitle.setText(track.trackTitle)
+        self.leadPerformer.setText(track.leadPerformer)
+        self.leadPerformer.setEnabled(track.compilation is True)
+        self.versionInfo.setText(track.versionInfo)
+        self.duration.setText(display.asDuration(track.duration))
+        self.bitrate.setText('%s kbps' % formatting.toKbps(track.bitrate))
+        self.featuredGuest.setText(track.featuredGuest)
+        self.lyricist.setText(track.lyricist)
+        self.composer.setText(track.composer)
+        self.publisher.setText(track.publisher)
+        self.isrc.setText(track.isrc)
+        self.tags.setText(track.tags)
+        self.lyrics.setPlainText(track.lyrics)
+        self.languages.setEditText(track.language)
+        self.displaySoftwareNotice(track)
 
     def displayAlbumCover(self, album):
         # Cache the cover image to avoid recomputing the image each time the screen updates
@@ -282,7 +281,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         return localTaggingTime.strftime('%Y-%m-%d'), localTaggingTime.strftime('%H:%M:%S')
 
     @property
-    def trackMetadata(self):
+    def snapshot(self):
         snapshot = Snapshot()
         snapshot.trackTitle = self.trackTitle.text()
         snapshot.leadPerformer = self.leadPerformer.text()
@@ -295,6 +294,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         snapshot.tags = self.tags.text()
         snapshot.lyrics = self.lyrics.toPlainText()
         snapshot.language = self.languages.currentText()
+
         return snapshot
 
     def disableMacFocusFrame(self):

@@ -17,6 +17,7 @@ class TrackEditionPageTest(ViewTest):
         self.page = TrackEditionPage(track)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
+        self.page.display(track)
 
     def createDriverFor(self, widget):
         return TrackEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)

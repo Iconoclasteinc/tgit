@@ -17,6 +17,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from tgit.util import fs
+
 
 class Snapshot(object):
     def __str__(self):
@@ -35,3 +37,30 @@ def updateTrack(track, state):
     track.tags = state.tags
     track.lyrics = state.lyrics
     track.language = state.language
+
+
+def updateAlbum(album, state):
+    album.releaseName = state.releaseName
+    album.compilation = state.compilation
+    album.leadPerformer = state.leadPerformer
+    album.guestPerformers = state.guestPerformers
+    album.labelName = state.labelName
+    album.catalogNumber = state.catalogNumber
+    album.upc = state.upc
+    album.comments = state.comments
+    album.releaseTime = state.releaseTime
+    album.recordingTime = state.recordingTime
+    album.recordingStudios = state.recordingStudios
+    album.producer = state.producer
+    album.mixer = state.mixer
+    album.primaryStyle = state.primaryStyle
+
+
+def changeAlbumCover(album, filename):
+    album.removeImages()
+    mime, data = fs.guessMimeType(filename), fs.readContent(filename)
+    album.addFrontCover(mime, data)
+
+
+def removeAlbumCover(album):
+    album.removeImages()

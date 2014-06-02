@@ -28,7 +28,6 @@ from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.ui import display
 from tgit.ui.album_composer import AlbumComposer
 from tgit.ui.album_director import AlbumDirector
-from tgit.ui.album_editor import AlbumEditor
 from tgit.ui.album_exporter import AlbumExporter
 from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
@@ -89,14 +88,19 @@ class Tagger(AlbumPortfolioListener):
         composer = AlbumComposer(album, self.player, albumCompositionPage)
         composer.render()
 
-        albumEditionPage = AlbumEditionPage()
-        editor = AlbumEditor(album, albumEditionPage, PictureSelectionDialog())
-        editor.render()
+        def makeAlbumEditionPage(album):
+            page = AlbumEditionPage(PictureSelectionDialog())
+            page.bind(metadataChanged=func.partial(director.updateAlbum, album),
+                      pictureSelected=func.partial(director.changeAlbumCover, album),
+                      removePicture=func.partial(director.removeAlbumCover, album))
+            album.addAlbumListener(page)
+            page.display(album)
+            return page
 
         trackLibrary = TrackLibrary(ID3Tagger())
         albumScreen = AlbumScreen()
         albumScreen.setAlbumCompositionPage(albumCompositionPage)
-        albumScreen.setAlbumEditionPage(albumEditionPage)
+        albumScreen.setAlbumEditionPage(makeAlbumEditionPage(album))
 
         # todo find a home for creation functions
         def makeTrackEditionPage(track):
@@ -104,6 +108,7 @@ class Tagger(AlbumPortfolioListener):
             page.bind(metadataChanged=func.partial(director.updateTrack, track))
             track.addTrackListener(page)
             album.addAlbumListener(page)
+            page.display(track)
             return page
 
         self.director = AlbumDirector(album, trackLibrary, self.player, albumScreen, makeTrackEditionPage)
