@@ -90,3 +90,11 @@ class AlbumDirectorTest(unittest.TestCase):
                                                           data=fs.readContent(coverFile),
                                                           type=Image.FRONT_COVER,
                                                           desc='Front Cover')), 'images')
+
+    def testMovesTrackInAlbum(self):
+        setFireToTheRain = build.track(trackTitle='Set Fire to the Rain')
+        rollingInTheDeep = build.track(trackTitle='Rolling in the Deep')
+        twentyOne = build.album(tracks=[setFireToTheRain, rollingInTheDeep])
+
+        director.moveTrack(twentyOne, rollingInTheDeep, 0)
+        assert_that(twentyOne.tracks, contains(rollingInTheDeep, setFireToTheRain), 'reordered tracks')

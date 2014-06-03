@@ -7,7 +7,7 @@ from datetime import timedelta
 import unittest
 
 from flexmock import flexmock
-from hamcrest import assert_that, equal_to, is_, has_property, contains
+from hamcrest import assert_that, equal_to, is_
 
 from PyQt4.QtCore import Qt, QModelIndex
 
@@ -57,7 +57,7 @@ class RowTest(unittest.TestCase):
         assert_that(row.releaseName(), equal_to('Album'), 'release name')
         assert_that(row.bitrate(), equal_to(192000), 'bitrate')
         assert_that(row.duration(), equal_to(100), 'duration')
-        assert_that(row.playing(), equal_to(False), 'playing')
+        assert_that(row.inPlay, equal_to(False), 'playing')
 
     def testSignalsRowChangedWhenTrackStateChanges(self):
         track = build.track()
@@ -67,33 +67,7 @@ class RowTest(unittest.TestCase):
         listener.should_receive('rowChanged').with_args(row).once()
         row.trackStateChanged(track)
 
-    def testMovesTrackInAlbum(self):
-        album = build.album(tracks=[
-            build.track(trackTitle='Track #1'),
-            build.track(trackTitle='Track #2')])
-        row = Row(album, album.tracks[0])
-        row.moveTo(1)
-
-        assert_that(album.tracks, contains(
-            has_property('trackTitle', 'Track #2'),
-            has_property('trackTitle', 'Track #1')), 'album tracks')
-
-    def testStartsAndStopsPlayingTrack(self):
-        player = flexmock(fakes.audioPlayer())
-
-        album = build.album(tracks=[build.track(filename='track.mp3')])
-        track = album.tracks[0]
-        row = Row(album, track)
-
-        player.should_receive('play').with_args('track.mp3').once()
-        row.play(player)
-        assert_that(row.playing(), is_(True), 'playing once started')
-
-        player.should_receive('stop').once()
-        row.stop(player)
-        assert_that(row.playing(), is_(False), 'playing once stopped')
-
-    def testSignalsRowChangedWhenTrackHasStartedPlaying(self):
+    def testSignalsRowChangedWhenTrackIsLoading(self):
         album = build.album()
         track = build.track(filename='track.mp3')
         other = build.track(filename='other.mp3')
@@ -105,14 +79,14 @@ class RowTest(unittest.TestCase):
         row.rowChanged.connect(lambda row: listener.rowChanged(row))
 
         listener.should_receive('rowChanged').never()
-        row.started('other.mp3')
-        assert_that(row.playing(), is_(False), 'playing when not started')
+        row.loading('other.mp3')
+        assert_that(row.inPlay, is_(False), 'playing when not started')
 
         listener.should_receive('rowChanged').with_args(row).once()
-        row.started('track.mp3')
-        assert_that(row.playing(), is_(True), 'playing once started')
+        row.loading('track.mp3')
+        assert_that(row.inPlay, is_(True), 'playing once started')
 
-    def testSignalsRowChangedWhenTrackHasStoppedPlaying(self):
+    def testSignalsRowChangedWhenTrackHasStopped(self):
         album = build.album()
         track = build.track(filename='track.mp3')
         other = build.track(filename='other.mp3')
@@ -125,11 +99,11 @@ class RowTest(unittest.TestCase):
 
         listener.should_receive('rowChanged').never()
         row.stopped('other.mp3')
-        assert_that(row.playing(), is_(True), 'playing when not stopped')
+        assert_that(row.inPlay, is_(True), 'playing when not stopped')
 
         listener.should_receive('rowChanged').with_args(row).once()
         row.stopped('track.mp3')
-        assert_that(row.playing(), is_(False), 'playing once stopped')
+        assert_that(row.inPlay, is_(False), 'playing once stopped')
 
 
 class ColumnsTest(unittest.TestCase):

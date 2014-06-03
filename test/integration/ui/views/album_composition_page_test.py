@@ -9,8 +9,6 @@ from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.album_composition_page_driver import AlbumCompositionPageDriver
 from test.util import builders as build, fakes
-from tgit.album import Album
-from tgit.ui.views.album_composition_model import AlbumCompositionModel
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
 
 
@@ -22,11 +20,11 @@ def hasTitle(title):
 class AlbumCompositionPageTest(ViewTest):
     def setUp(self):
         super(AlbumCompositionPageTest, self).setUp()
-        self.album = Album()
         self.page = AlbumCompositionPage()
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
-        self.page.display(AlbumCompositionModel(self.album, fakes.audioPlayer()))
+        self.album = build.album()
+        self.page.display(fakes.audioPlayer(), self.album)
 
     def createDriverFor(self, widget):
         return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
@@ -35,56 +33,51 @@ class AlbumCompositionPageTest(ViewTest):
         self.driver.showsColumnHeaders('Track Title', 'Lead Performer', 'Album Title', 'Bitrate', 'Duration', '', '')
 
     def testDisplaysTrackDetailsInColumns(self):
-        self.album.addTrack(build.track(trackTitle='My Song', bitrate=192000,
-                                        duration=timedelta(minutes=3, seconds=43).total_seconds()))
-        self.album.releaseName = 'My Album'
-        self.album.leadPerformer = 'My Artist'
+        self.album.releaseName = 'All the Little Lights'
+        self.album.leadPerformer = 'Passenger'
+        self.album.addTrack(build.track(trackTitle='Let Her Go', bitrate=192000,
+                                        duration=timedelta(minutes=4, seconds=12).total_seconds()))
 
-        self.driver.showsTrack('My Song', 'My Artist', 'My Album', '192 kbps', '03:43')
+        self.driver.showsTrack('Let Her Go', 'Passenger', 'All the Little Lights', '192 kbps', '04:12')
 
     def testDisplaysAllTracksInRows(self):
-        self.album.addTrack(build.track(trackTitle='First'))
-        self.album.addTrack(build.track(trackTitle='Second'))
-
+        self.album.addTrack(build.track(trackTitle='Give Life Back To Music'))
+        self.album.addTrack(build.track(trackTitle='Get Lucky'))
         self.driver.hasTrackCount(2)
-        self.driver.showsTracksInOrder(['First'], ['Second'])
+        self.driver.showsTracksInOrder(['Give Life Back To Music'], ['Get Lucky'])
 
     def testSignalsWhenPlayTrackButtonClicked(self):
-        self.album.addTrack(build.track(trackTitle='Track'))
-        playClicked = ValueMatcherProbe('play track', has_property('trackTitle', 'Track'))
+        self.album.addTrack(build.track(trackTitle='Happy'))
+        playClicked = ValueMatcherProbe('play track', hasTitle('Happy'))
 
         self.page.bind(play=playClicked.received)
-
-        self.driver.play('Track')
+        self.driver.play('Happy')
         self.driver.check(playClicked)
 
     def testSignalsWhenAddTracksButtonClicked(self):
         addClicked = ValueMatcherProbe('add tracks')
-
         self.page.bind(add=addClicked.received)
-
         self.driver.addTracks()
         self.driver.check(addClicked)
 
     def testSignalsWhenRemoveTrackButtonClicked(self):
         self.album.addTrack(build.track())
-        self.album.addTrack(build.track(trackTitle='Track'))
-        removeClicked = ValueMatcherProbe('remove track', has_property('trackTitle', 'Track'))
+        self.album.addTrack(build.track(trackTitle='Set Fire to the Rain'))
+        removeClicked = ValueMatcherProbe('remove track', hasTitle('Set Fire to the Rain'))
 
         self.page.bind(remove=removeClicked.received)
 
-        self.driver.removeTrack('Track')
+        self.driver.removeTrack('Set Fire to the Rain')
         self.driver.check(removeClicked)
 
     def testSignalsWhenTrackWasMoved(self):
-        self.album.addTrack(build.track(trackTitle='Song #1'))
-        self.album.addTrack(build.track(trackTitle='Song #2'))
-        self.album.addTrack(build.track(trackTitle='Song #3'))
+        self.album.addTrack(build.track(trackTitle='Wisemen'))
+        self.album.addTrack(build.track(trackTitle='1973'))
+        self.album.addTrack(build.track(trackTitle='Tears and Rain'))
 
-        fromPosition, toPosition = 2, 1
-        trackMoved = ValueMatcherProbe('move track', contains(fromPosition, toPosition))
+        newPosition = 1
+        trackMoved = ValueMatcherProbe('move track', contains(hasTitle('Tears and Rain'), newPosition))
+        self.page.bind(trackMoved=lambda track, to: trackMoved.received([track, newPosition]))
 
-        self.page.bind(trackMoved=lambda from_, to: trackMoved.received([from_, to]))
-
-        self.driver.moveTrack('Song #3', toPosition)
+        self.driver.moveTrack('Tears and Rain', newPosition)
         self.driver.check(trackMoved)

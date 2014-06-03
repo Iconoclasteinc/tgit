@@ -20,15 +20,15 @@
 import functools as func
 
 from PyQt4.QtCore import Qt, QModelIndex, QAbstractItemModel, pyqtSignal
-from PyQt4.QtGui import QWidget, QTableView, QStyledItemDelegate, QHeaderView, QToolButton, QFrame, QPalette
+from PyQt4.QtGui import QWidget, QTableView, QStyledItemDelegate, QHeaderView, QToolButton, QFrame, QPalette, QColor
+from tgit.track import Track
 
-from tgit.ui.views.album_composition_model import Columns, Row
-from tgit.ui import style
+from tgit.ui.views.album_composition_model import Columns, AlbumCompositionModel
 from tgit.ui.widgets import form
 
 
 class PlayButtonDelegate(QStyledItemDelegate):
-    clicked = pyqtSignal(Row)
+    clicked = pyqtSignal(Track)
 
     def __init__(self, view):
         QStyledItemDelegate.__init__(self, view)
@@ -46,7 +46,7 @@ class PlayButtonDelegate(QStyledItemDelegate):
 
         # This is awful, I need to paint a button and react to mouse events instead of
         #  using a real button
-        class WackyHack(QModelIndex):
+        class UglyHack(QModelIndex):
             def model(self):
                 class FakeModel(QAbstractItemModel):
                     def data(self, index):
@@ -55,11 +55,11 @@ class PlayButtonDelegate(QStyledItemDelegate):
                 return FakeModel()
 
         # We need to call the super implementation to style the column according to the stylesheet
-        QStyledItemDelegate.paint(self, painter, option, WackyHack())
+        QStyledItemDelegate.paint(self, painter, option, UglyHack())
 
 
 class RemoveButtonDelegate(QStyledItemDelegate):
-    clicked = pyqtSignal(Row)
+    clicked = pyqtSignal(Track)
 
     def __init__(self, view):
         QStyledItemDelegate.__init__(self, view)
@@ -75,7 +75,14 @@ class RemoveButtonDelegate(QStyledItemDelegate):
         QStyledItemDelegate.paint(self, painter, option, index)
 
 
+LIGHT_GRAY = QColor.fromRgb(0xDDDDDD)
+
+
 class AlbumCompositionPage(QWidget):
+    # Using stylesheets on the table corrupts the display of the button widgets in the
+    # cells, at least on OSX. So we have to style programmatically
+    COLUMNS_WIDTHS = [345, 205, 215, 85, 65, 30, 30]
+
     def __init__(self):
         QWidget.__init__(self)
         self.setObjectName('album-composition-page')
@@ -89,7 +96,8 @@ class AlbumCompositionPage(QWidget):
         if 'remove' in handlers:
             self.remove.clicked.connect(handlers['remove'])
         if 'trackMoved' in handlers:
-            self.table.verticalHeader().sectionMoved.connect(lambda _, from_, to: handlers['trackMoved'](from_, to))
+            self.table.verticalHeader().sectionMoved.connect(
+                lambda _, from_, to: handlers['trackMoved'](self.table.model().trackAt(from_), to))
 
     def render(self):
         layout = form.column()
@@ -104,9 +112,9 @@ class AlbumCompositionPage(QWidget):
     def makeHeader(self):
         header = QWidget()
         row = form.row()
-        self.help = form.label()
-        self.help.setText(self.tr('Organize tracks in album.'))
-        row.addWidget(self.help)
+        help = form.label()
+        help.setText(self.tr('Organize tracks in album.'))
+        row.addWidget(help)
         row.addStretch()
         self.addButton = form.button('add-tracks')
         self.addButton.setText(self.tr('ADD'))
@@ -117,11 +125,11 @@ class AlbumCompositionPage(QWidget):
 
     def makeTableFrame(self, table):
         frame = QFrame()
-        frame.setFrameStyle(style.TABLE_BORDER_STYLE)
+        frame.setFrameStyle(QFrame.Panel | QFrame.Plain)
         frame.setAutoFillBackground(True)
         palette = frame.palette()
-        palette.setColor(QPalette.Background, style.TABLE_BACKGROUND_COLOR)
-        palette.setColor(QPalette.WindowText, style.TABLE_BORDER_COLOR)
+        palette.setColor(QPalette.Background, Qt.white)
+        palette.setColor(QPalette.WindowText, LIGHT_GRAY)
         frame.setPalette(palette)
         layout = form.column()
         layout.setContentsMargins(10, 10, 10, 10)
@@ -155,7 +163,7 @@ class AlbumCompositionPage(QWidget):
         table.setItemDelegateForColumn(Columns.index(Columns.remove), button)
         return button
 
-    def display(self, album):
-        self.table.setModel(album)
-        for index, width in enumerate(style.TABLE_COLUMNS_WIDTHS):
+    def display(self, player, album):
+        self.table.setModel(AlbumCompositionModel(album, player))
+        for index, width in enumerate(self.COLUMNS_WIDTHS):
             self.table.horizontalHeader().resizeSection(index, width)

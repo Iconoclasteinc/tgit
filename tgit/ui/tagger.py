@@ -26,7 +26,6 @@ from tgit.csv.csv_format import CsvFormat
 from tgit.track_library import TrackLibrary
 from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.ui import display
-from tgit.ui.album_composer import AlbumComposer
 from tgit.ui.album_director import AlbumDirector
 from tgit.ui.album_exporter import AlbumExporter
 from tgit.ui.album_mixer import AlbumMixer
@@ -83,10 +82,14 @@ class Tagger(AlbumPortfolioListener):
     def albumCreated(self, album):
         self.menuBar.enableAlbumActions()
 
-        albumCompositionPage = AlbumCompositionPage()
-        albumCompositionPage.bind(add=self.mixTracks)
-        composer = AlbumComposer(album, self.player, albumCompositionPage)
-        composer.render()
+        def makeAlbumCompositionPage(album):
+            page = AlbumCompositionPage()
+            page.bind(add=self.mixTracks,
+                      trackMoved=func.partial(director.moveTrack, album),
+                      play=func.partial(director.playTrack, self.player, album),
+                      remove=func.partial(director.removeTrack, self.player, album))
+            page.display(self.player, album)
+            return page
 
         def makeAlbumEditionPage(album):
             page = AlbumEditionPage(PictureSelectionDialog())
@@ -97,12 +100,6 @@ class Tagger(AlbumPortfolioListener):
             page.display(album)
             return page
 
-        trackLibrary = TrackLibrary(ID3Tagger())
-        albumScreen = AlbumScreen()
-        albumScreen.setAlbumCompositionPage(albumCompositionPage)
-        albumScreen.setAlbumEditionPage(makeAlbumEditionPage(album))
-
-        # todo find a home for creation functions
         def makeTrackEditionPage(track):
             page = TrackEditionPage(track)
             page.bind(metadataChanged=func.partial(director.updateTrack, track))
@@ -111,6 +108,11 @@ class Tagger(AlbumPortfolioListener):
             page.display(track)
             return page
 
+        albumScreen = AlbumScreen()
+        albumScreen.setAlbumCompositionPage(makeAlbumCompositionPage(album))
+        albumScreen.setAlbumEditionPage(makeAlbumEditionPage(album))
+
+        trackLibrary = TrackLibrary(ID3Tagger())
         self.director = AlbumDirector(album, trackLibrary, self.player, albumScreen, makeTrackEditionPage)
 
         self.mixer = AlbumMixer(album, trackLibrary, TrackSelectionDialog())

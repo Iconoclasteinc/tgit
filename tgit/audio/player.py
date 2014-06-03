@@ -23,7 +23,10 @@ from tgit.announcer import Announcer
 
 
 class PlayerListener(object):
-    def started(self, track):
+    def loading(self, track):
+        pass
+
+    def playing(self, track):
         pass
 
     def stopped(self, track):
@@ -33,6 +36,7 @@ class PlayerListener(object):
         pass
 
 
+# todo take a track instead of a filename?
 class PhononPlayer(object):
     LOADING = Phonon.LoadingState
     STOPPED = Phonon.StoppedState
@@ -46,14 +50,11 @@ class PhononPlayer(object):
         self._announce = Announcer()
         self._media = None
 
-    @property
-    def media(self):
-        return self._media.name
-
-    def isPlaying(self):
-        return self._player.state() == self.PLAYING
+    def isPlaying(self, filename):
+        return self._player.state() == self.PLAYING and self._media.name == filename
 
     def play(self, name):
+        self._announce.loading(name)
         self._loading = self._mediaLibrary.load(name)
         self._player.setCurrentSource(Phonon.MediaSource(self._loading.source()))
         self._player.play()
@@ -69,8 +70,8 @@ class PhononPlayer(object):
 
     def _stateChanged(self, is_, was):
         if is_ == self.PLAYING:
-            self._announce.started(self._loading.name)
             self._media = self._loading
+            self._announce.playing(self._media.name)
         elif was == self.PLAYING:
             # On OSX loading a new media source triggers a transition to the stopped state first
             # whereas on Windows it goes straight to the LOADING state

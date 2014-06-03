@@ -62,8 +62,8 @@ class FakeAudioPlayer(object):
     def media(self):
         return self._filename
 
-    def isPlaying(self):
-        return self._filename is not None
+    def isPlaying(self, filename):
+        return self._filename == filename
 
     def play(self, filename):
         self._filename = filename

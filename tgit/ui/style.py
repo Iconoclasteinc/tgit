@@ -22,14 +22,6 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QColor, QFrame
 
 
-# Using stylesheets on the table corrupts the display of the button widgets in the
-# cells, at least on OSX. So we have to style programmatically
-TABLE_COLUMNS_WIDTHS = [345, 205, 215, 85, 65, 30, 30]
-TABLE_BACKGROUND_COLOR = Qt.white
-TABLE_BORDER_COLOR = QColor.fromRgb(0xDDDDDD)
-TABLE_BORDER_STYLE = QFrame.Panel | QFrame.Plain
-
-
 # todo break stylesheet into multiple components
 Sheet = """
     MainWindow {
