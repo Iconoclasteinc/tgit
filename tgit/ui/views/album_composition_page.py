@@ -85,8 +85,7 @@ class AlbumCompositionPage(QWidget):
 
     def __init__(self):
         QWidget.__init__(self)
-        self.setObjectName('album-composition-page')
-        self.render()
+        self.build()
 
     def bind(self, **handlers):
         if 'play' in handlers:
@@ -99,7 +98,8 @@ class AlbumCompositionPage(QWidget):
             self.table.verticalHeader().sectionMoved.connect(
                 lambda _, from_, to: handlers['trackMoved'](self.table.model().trackAt(from_), to))
 
-    def render(self):
+    def build(self):
+        self.setObjectName('album-composition-page')
         layout = form.column()
         layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self.makeHeader())

@@ -8,7 +8,7 @@ from test.integration.ui.views import ViewTest
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.album_composition_page_driver import AlbumCompositionPageDriver
-from test.util import builders as build, fakes
+from test.util import builders as build, doubles
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
 
 
@@ -24,7 +24,7 @@ class AlbumCompositionPageTest(ViewTest):
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
         self.album = build.album()
-        self.page.display(fakes.audioPlayer(), self.album)
+        self.page.display(doubles.audioPlayer(), self.album)
 
     def createDriverFor(self, widget):
         return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)

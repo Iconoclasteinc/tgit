@@ -83,3 +83,8 @@ def playTrack(player, track):
         player.stop()
     else:
         player.play(track.filename)
+
+
+def recordAlbum(catalog, album):
+    for track in album.tracks:
+        catalog.store(track)

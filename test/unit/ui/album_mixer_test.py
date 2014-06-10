@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 from hamcrest import assert_that, contains, has_properties
-from test.util import builders as build, resources, fakes
+from test.util import builders as build, resources, doubles
 from tgit.ui.album_mixer import AlbumMixer
 
 
@@ -33,15 +33,15 @@ class TrackSelectorStub(object):
 class AlbumMixerTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
-        self.library = fakes.trackLibrary()
+        self.library = doubles.trackLibrary()
         self.tracksSelector = TrackSelectorStub()
         self.mixer = AlbumMixer(self.album, self.library, self.tracksSelector)
         self.populateTrackCatalog()
 
     def populateTrackCatalog(self):
-        self.library.add(build.track(filename=audioFile('1.mp3'), trackTitle='first'))
-        self.library.add(build.track(filename=audioFile('2.mp3'), trackTitle='second'))
-        self.library.add(build.track(filename=audioFile('3.mp3'), trackTitle='third'))
+        self.library.store(build.track(filename=audioFile('1.mp3'), trackTitle='first'))
+        self.library.store(build.track(filename=audioFile('2.mp3'), trackTitle='second'))
+        self.library.store(build.track(filename=audioFile('3.mp3'), trackTitle='third'))
 
     def testAddsSelectedTracksToAlbumInSelectionOrder(self):
         self.tracksSelector.selectedTracks = [audioFile('1.mp3'), audioFile('3.mp3'), audioFile('2.mp3')]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 from hamcrest import assert_that, equal_to, is_, contains, has_properties
-from test.util import builders as build, resources
+from test.util import builders as build, resources, doubles
 
 from tgit import album_director as director
 from tgit.album_director import Snapshot
@@ -98,3 +98,13 @@ class AlbumDirectorTest(unittest.TestCase):
 
         director.moveTrack(twentyOne, rollingInTheDeep, 0)
         assert_that(twentyOne.tracks, contains(rollingInTheDeep, setFireToTheRain), 'reordered tracks')
+
+    def testSavesAllTracksInAlbum(self):
+        setFireToTheRain = build.track(trackTitle='Set Fire to the Rain')
+        rollingInTheDeep = build.track(trackTitle='Rolling in the Deep')
+        twentyOne = build.album(tracks=[setFireToTheRain, rollingInTheDeep])
+
+        catalog = doubles.trackLibrary()
+        director.recordAlbum(catalog, twentyOne)
+
+        catalog.assertContains(setFireToTheRain, rollingInTheDeep)

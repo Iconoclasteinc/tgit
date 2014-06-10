@@ -50,14 +50,8 @@ class TaggerDriver(MainWindowDriver):
         albumScreen(self).moveTrack(title, to)
 
     # todo have a quick navigation button
-    def toAlbum(self):
+    def next(self):
         albumScreen(self).nextPage()
-        albumScreen(self).isShowingAlbumEditionPage()
-
-    # todo have a quick navigation button
-    def toNextTrack(self):
-        albumScreen(self).nextPage()
-        albumScreen(self).isShowingTrackEditionPage()
 
     def showsAlbumContains(self, *tracks):
         albumScreen(self).showsAlbumContains(*tracks)

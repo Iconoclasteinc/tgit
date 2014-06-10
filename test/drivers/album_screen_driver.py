@@ -25,20 +25,14 @@ def isEnabled(button):
 
 
 class AlbumScreenDriver(BaseDriver):
-    def isShowingAlbumCompositionPage(self):
+    def showsAlbumCompositionPage(self):
         albumCompositionPage(self).isShowingOnScreen()
-        isDisabled(self.button(named('previous')))
-        isDisabled(self.button(named('save')))
 
-    def isShowingAlbumEditionPage(self):
+    def showsAlbumEditionPage(self):
         albumEditionPage(self).isShowingOnScreen()
-        isEnabled(self.button(named('previous')))
-        isEnabled(self.button(named('save')))
 
-    def isShowingTrackEditionPage(self):
+    def showsTrackEditionPage(self):
         trackEditionPage(self).isShowingOnScreen()
-        isEnabled(self.button(named('previous')))
-        isEnabled(self.button(named('save')))
 
     def addFiles(self):
         albumCompositionPage(self).addFiles()
@@ -50,44 +44,31 @@ class AlbumScreenDriver(BaseDriver):
         albumCompositionPage(self).moveTrack(title, to)
 
     def previousPage(self):
-        button = self.button(named('previous'))
-        button.isEnabled()
-        button.click()
+        self.button(named('previous')).click()
 
     def nextPage(self):
-        button = self.button(named('next'))
-        isEnabled(button)
-        button.click()
+        self.button(named('next')).click()
 
     def save(self):
         self.button(named('save')).click()
 
-    def hasDisabledNextPageButton(self):
-        isDisabled(self.button(named('next')))
-
-    def hasEnabledNextPageButton(self):
-        isEnabled(self.button(named('next')))
-
-    def hasDisabledPreviousPageButton(self):
+    def hidesPreviousPageButton(self):
         isDisabled(self.button(named('previous')))
 
-    def hasEnabledPreviousPageButton(self):
+    def showsPreviousPageButton(self):
         isEnabled(self.button(named('previous')))
 
-    def hasDisabledSaveButton(self):
+    def hidesNextPageButton(self):
+        isDisabled(self.button(named('next')))
+
+    def showsNextPageButton(self):
+        isEnabled(self.button(named('next')))
+
+    def hidesSaveButton(self):
         isDisabled(self.button(named('save')))
 
-    def hasEnabledSaveButton(self):
+    def showsSaveButton(self):
         isEnabled(self.button(named('save')))
-
-    def navigateToAlbumMetadata(self):
-        self.nextPage()
-        self.isShowingAlbumEditionPage()
-
-    # todo have a quick navigation button
-    def navigateToTrackMetadata(self):
-        self.nextPage()
-        self.isShowingTrackEditionPage()
 
     def showsAlbumContains(self, *tracks):
         albumCompositionPage(self).showsTracksInOrder(*tracks)
@@ -109,6 +90,3 @@ class AlbumScreenDriver(BaseDriver):
 
     def linksFeatureRequestTo(self, location):
         self.label(named('feature-request-link')).hasText(contains_string('href="%s' % location))
-
-    def showsPage(self, matching):
-        return self.widget(matching).isShowingOnScreen()

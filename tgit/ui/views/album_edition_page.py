@@ -32,6 +32,10 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
     def __init__(self, pictureSelector):
         QWidget.__init__(self)
+        self.pictureSelector = pictureSelector
+        self.build()
+
+    def build(self):
         self.setObjectName('album-edition-page')
         layout = form.row()
         layout.setSpacing(0)
@@ -40,7 +44,6 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.setLayout(layout)
         self.disableMacFocusFrame()
         self.disableTeaserFields()
-        self.pictureSelector = pictureSelector
 
     def bind(self, **handlers):
         if 'metadataChanged' in handlers:

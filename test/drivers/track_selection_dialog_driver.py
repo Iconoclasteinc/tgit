@@ -9,7 +9,7 @@ from test.cute.widgets import FileDialogDriver, window
 
 def trackSelectionDialog(parent):
     return TrackSelectionDialogDriver(
-        window(QFileDialog, named('track-selection-dialog')), parent.prober,parent.gesturePerformer)
+        window(QFileDialog, named('track-selection-dialog')), parent.prober, parent.gesturePerformer)
 
 
 class TrackSelectionDialogDriver(FileDialogDriver):

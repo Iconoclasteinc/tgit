@@ -18,31 +18,32 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QWidget, QLabel, QStackedWidget, QPushButton
+from tgit.album import AlbumListener
 from tgit.ui.widgets import form
 
 
-def albumScreen(listener):
-    screen = AlbumScreen()
-    screen.announceTo(listener)
-    return screen
-
-
-class AlbumScreen(QWidget):
+class AlbumScreen(QWidget, AlbumListener):
     HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
     FEATURE_REQUEST_URL = "mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !"
 
-    COMPOSITION_PAGE, ALBUM_PAGE, TRACK_PAGES = range(0, 3)
+    TRACK_PAGES_INDEX = 2
 
-    def __init__(self):
+    def __init__(self, album, compositionView, albumView, trackView):
         QWidget.__init__(self)
-        self.setObjectName('album-screen')
-        self.render()
+        self.album = album
+        self.album.addAlbumListener(self)
+        self.trackView = trackView
+
+        self.build()
+        self.appendPage(compositionView)
+        self.appendPage(albumView)
 
     def bind(self, **handlers):
         if 'recordAlbum' in handlers:
             self.save.clicked.connect(lambda pressed: handlers['recordAlbum']())
 
-    def render(self):
+    def build(self):
+        self.setObjectName('album-screen')
         layout = form.column()
         layout.addWidget(self.makeNavigationBar())
         layout.addWidget(self.makePages())
@@ -79,7 +80,7 @@ class AlbumScreen(QWidget):
 
     def makePages(self):
         self.pages = QStackedWidget()
-        self.pages.currentChanged.connect(self.updateNavigationControls)
+        self.pages.currentChanged.connect(self.updateControls)
         return self.pages
 
     def makeControls(self):
@@ -110,72 +111,68 @@ class AlbumScreen(QWidget):
         controls.setLayout(layout)
         return controls
 
-    def updateNavigationControls(self):
-        if self.onLastPage():
-            form.disableButton(self.next)
-        else:
-            form.enableButton(self.next)
+    def trackAdded(self, track, position):
+        self.addTrackEditionPage(track, position)
 
+    def trackRemoved(self, track, position):
+        self.removeTrackEditionPage(position)
+
+    def updateControls(self):
         if self.onFirstPage():
             form.disableButton(self.previous)
         else:
             form.enableButton(self.previous)
 
+        if self.onLastPage():
+            form.disableButton(self.next)
+        else:
+            form.enableButton(self.next)
+
+        if self.album.empty():
+            form.disableButton(self.save)
+        else:
+            form.enableButton(self.save)
+
     def onLastPage(self):
-        return self.onPage(self.pageCount - 1)
+        return self.onPage(self.totalPages - 1)
 
     def onFirstPage(self):
         return self.onPage(0)
 
     def onPage(self, number):
-        return self.pageNumber == number
+        return self.currentPage == number
 
-    def allowSaves(self, allowed=True):
-        if allowed:
-            form.enableButton(self.save)
-        else:
-            form.disableButton(self.save)
-
-    def setAlbumCompositionPage(self, page):
-        self.insertPage(page, self.COMPOSITION_PAGE)
-
-    def setAlbumEditionPage(self, page):
-        self.insertPage(page, self.ALBUM_PAGE)
-
-    def addTrackEditionPage(self, page, position):
-        self.insertPage(page, self.TRACK_PAGES + position)
+    def addTrackEditionPage(self, track, position):
+        self.insertPage(self.trackView(track), self.TRACK_PAGES_INDEX + position)
 
     def removeTrackEditionPage(self, position):
-        self.removePage(self.TRACK_PAGES + position)
+        self.removePage(self.TRACK_PAGES_INDEX + position)
 
     def appendPage(self, widget):
         self.pages.addWidget(widget)
-        self.updateNavigationControls()
+        self.updateControls()
 
     def insertPage(self, widget, position):
         self.pages.insertWidget(position, widget)
-        self.updateNavigationControls()
+        self.updateControls()
 
     def removePage(self, number):
         self.pages.removeWidget(self.pages.widget(number))
-        self.updateNavigationControls()
+        self.updateControls()
 
     @property
-    def pageNumber(self):
+    def currentPage(self):
         return self.pages.currentIndex()
 
     @property
-    def pageCount(self):
+    def totalPages(self):
         return self.pages.count()
+
+    def toPreviousPage(self):
+        self.toPage(self.currentPage - 1)
+
+    def toNextPage(self):
+        self.toPage(self.currentPage + 1)
 
     def toPage(self, number):
         self.pages.setCurrentIndex(number)
-
-    def toPreviousPage(self):
-        self.toPage(self.pageNumber - 1)
-
-    def toNextPage(self):
-        self.toPage(self.pageNumber + 1)
-
-    def atPage(self, number):
-        return self.pages.currentIndex() == number

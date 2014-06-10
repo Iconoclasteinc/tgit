@@ -17,7 +17,6 @@ class TrackEditionPageTest(ViewTest):
         self.page = TrackEditionPage(track)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
-        self.page.display(track)
 
     def createDriverFor(self, widget):
         return TrackEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
@@ -87,57 +86,57 @@ class TrackEditionPageTest(ViewTest):
 
         self.render(track)
 
-        trackChangedSignal = ValueMatcherProbe('track changed')
-        self.page.bind(metadataChanged=trackChangedSignal.received)
+        metadataChangedSignal = ValueMatcherProbe('metadata changed')
+        self.page.bind(metadataChanged=metadataChangedSignal.received)
 
-        trackChangedSignal.expect(has_properties(trackTitle='Title'))
+        metadataChangedSignal.expect(has_properties(trackTitle='Title'))
         self.driver.changeTrackTitle('Title')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(leadPerformer='Artist'))
+        metadataChangedSignal.expect(has_properties(leadPerformer='Artist'))
         self.driver.changeLeadPerformer('Artist')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(versionInfo='Remix'))
+        metadataChangedSignal.expect(has_properties(versionInfo='Remix'))
         self.driver.changeVersionInfo('Remix')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(featuredGuest='Featuring'))
+        metadataChangedSignal.expect(has_properties(featuredGuest='Featuring'))
         self.driver.changeFeaturedGuest('Featuring')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(lyricist='Lyricist'))
+        metadataChangedSignal.expect(has_properties(lyricist='Lyricist'))
         self.driver.changeLyricist('Lyricist')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(composer='Composer'))
+        metadataChangedSignal.expect(has_properties(composer='Composer'))
         self.driver.changeComposer('Composer')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(publisher='Publisher'))
+        metadataChangedSignal.expect(has_properties(publisher='Publisher'))
         self.driver.changePublisher('Publisher')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(isrc='ZZZ123456789'))
+        metadataChangedSignal.expect(has_properties(isrc='ZZZ123456789'))
         self.driver.changeIsrc('ZZZ123456789')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(tags='Tag1 Tag2 Tag3'))
+        metadataChangedSignal.expect(has_properties(tags='Tag1 Tag2 Tag3'))
         self.driver.changeTags('Tag1 Tag2 Tag3')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(lyrics='Lyrics\n...\n'))
+        metadataChangedSignal.expect(has_properties(lyrics='Lyrics\n...\n'))
         self.driver.addLyrics('Lyrics')
         self.driver.addLyrics('...')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(language='eng'))
+        metadataChangedSignal.expect(has_properties(language='eng'))
         self.driver.changeLanguage('eng')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
-        trackChangedSignal.expect(has_properties(language='fra'))
+        metadataChangedSignal.expect(has_properties(language='fra'))
         self.driver.selectLanguage('fra')
-        self.check(trackChangedSignal)
+        self.check(metadataChangedSignal)
 
     def testDisplaysSoftwareNoticeInLocalTime(self):
         track = build.track(tagger='TGiT v1.0', taggingTime='2014-03-23 20:33:00 +0000')

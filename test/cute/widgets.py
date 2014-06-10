@@ -121,6 +121,10 @@ class MainWindowDriver(WidgetDriver):
 
 
 class ButtonDriver(WidgetDriver):
+    def click(self):
+        self.isEnabled()
+        WidgetDriver.click(self)
+
     def hasText(self, matcher):
         self.has(properties.text(), wrap_matcher(matcher))
 

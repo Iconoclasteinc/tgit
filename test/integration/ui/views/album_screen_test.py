@@ -1,137 +1,95 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import QWidget, QHBoxLayout, QLabel
-
 from test.cute.finders import WidgetIdentity
-from test.cute.matchers import named
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.album_screen_driver import AlbumScreenDriver
 from test.integration.ui.views import ViewTest
-from test.util import resources
+from test.util import  builders as build
+from tgit.ui.views.album_composition_page import AlbumCompositionPage
+from tgit.ui.views.album_edition_page import AlbumEditionPage
 
 from tgit.ui.views.album_screen import AlbumScreen
-from tgit.util import fs
-
-
-def loadImage(name):
-    return fs.readContent(resources.path(name))
-
-
-def aPage(name):
-    page = QWidget()
-    page.setObjectName(name)
-    layout = QHBoxLayout()
-    layout.addWidget(QLabel(name))
-    page.setLayout(layout)
-    return page
+from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
+from tgit.ui.views.track_edition_page import TrackEditionPage
 
 
 class AlbumScreenTest(ViewTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
-        self.view = AlbumScreen()
+
+        self.album = build.album()
+        self.view = AlbumScreen(self.album, AlbumCompositionPage(), AlbumEditionPage(PictureSelectionDialog()),
+                                TrackEditionPage)
         self.show(self.view)
         self.driver = self.createDriverFor(self.view)
 
     def createDriverFor(self, widget):
         return AlbumScreenDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testHasButtonsInitiallyDisabled(self):
-        self.driver.hasDisabledPreviousPageButton()
-        self.driver.hasDisabledSaveButton()
-        self.driver.hasDisabledNextPageButton()
-
-    def testSignalsWhenSaveButtonClicked(self):
-        recordAlbumSignal = ValueMatcherProbe('record album')
-        self.view.bind(recordAlbum=recordAlbumSignal.received)
-        self.view.allowSaves()
-        self.driver.save()
-        self.driver.check(recordAlbumSignal)
-
-    def testAcceptsAppendingNewPages(self):
-        self.view.appendPage(aPage('page #0'))
-        self.view.appendPage(aPage('page #1'))
-        self.view.appendPage(aPage('page #2'))
-
-        self.driver.showsPage(named('page #0'))
-        self.view.toPage(1)
-        self.driver.showsPage(named('page #1'))
-        self.view.toPage(2)
-        self.driver.showsPage(named('page #2'))
-
-    def testSupportsPageRemoval(self):
-        self.view.appendPage(aPage('page #0'))
-        self.view.appendPage(aPage('page #1'))
-        self.view.appendPage(aPage('page #2'))
-        self.view.appendPage(aPage('page #3'))
-        self.view.appendPage(aPage('page #4'))
-
-        self.view.removePage(0)
-        self.driver.showsPage(named('page #1'))
-        self.view.removePage(1)
-        self.view.toPage(2)
-        self.driver.showsPage(named('page #4'))
-        self.view.removePage(2)
-        self.driver.showsPage(named('page #3'))
-
-    def testOffersBackAndForthNavigationBetweenPages(self):
-        self.view.appendPage(aPage('page #0'))
-        self.view.appendPage(aPage('page #1'))
-        self.view.appendPage(aPage('page #2'))
-
-        self.driver.nextPage()
-        self.driver.showsPage(named('page #1'))
-        self.driver.nextPage()
-        self.driver.showsPage(named('page #2'))
-        self.driver.previousPage()
-        self.driver.showsPage(named('page #1'))
-        self.driver.previousPage()
-        self.driver.showsPage(named('page #0'))
-        self.driver.nextPage()
-        self.driver.showsPage(named('page #1'))
-
-    def testDisablesNextPageButtonOnLastPage(self):
-        self.view.appendPage(aPage('page #0'))
-        self.view.appendPage(aPage('page #1'))
-        self.view.toPage(1)
-        self.driver.hasDisabledNextPageButton()
-        self.view.toPage(0)
-        self.driver.hasEnabledNextPageButton()
-        self.view.removePage(1)
-        self.driver.hasDisabledNextPageButton()
-
-    def testDisablesPreviousPageButtonOnFirstPage(self):
-        self.view.appendPage(aPage('page #0'))
-        self.view.appendPage(aPage('page #1'))
-        self.driver.hasDisabledPreviousPageButton()
-        self.view.toPage(1)
-        self.driver.hasEnabledPreviousPageButton()
-        self.view.removePage(0)
-        self.driver.hasDisabledPreviousPageButton()
-
-    def testSupportsInsertingNewPages(self):
-        self.view.appendPage(aPage('page #0'))
-        self.view.appendPage(aPage('page #1'))
-        self.view.appendPage(aPage('page #3'))
-        self.driver.nextPage()
-        self.driver.showsPage(named('page #1'))
-
-        self.view.insertPage(aPage('page #2'), 2)
-        self.driver.nextPage()
-        self.driver.showsPage(named('page #2'))
-
-        self.driver.nextPage()
-        self.driver.showsPage(named('page #3'))
-
-    def testDisablesOrEnablesSaveButtonOnDemand(self):
-        self.view.allowSaves()
-        self.driver.hasEnabledSaveButton()
-        self.view.allowSaves(False)
-        self.driver.hasDisabledSaveButton()
-        self.view.allowSaves()
-        self.driver.hasEnabledSaveButton()
-
-    def testIncludesHelpLink(self):
+    def testIncludesHelpLinkInHeader(self):
         self.driver.linksHelpTo("http://tagtamusique.com/2013/12/03/tgit_style_guide/")
 
-    def testIncludesFeatureRequestLink(self):
+    def testIncludesFeatureRequestLinkInHeader(self):
         self.driver.linksFeatureRequestTo("mailto:iconoclastejr@gmail.com")
+
+    def testInitiallyContainsOnlyAlbumCompositionAndEditionPages(self):
+        self.driver.showsAlbumCompositionPage()
+        self.driver.hidesPreviousPageButton()
+        self.driver.hidesSaveButton()
+        self.driver.nextPage()
+        self.driver.showsAlbumEditionPage()
+        self.driver.hidesNextPageButton()
+        self.driver.hidesSaveButton()
+
+    def testAddsTrackEditionPageForEachNewTrackInAlbum(self):
+        self.album.addTrack(build.track(trackTitle='Bone Machine'))
+        self.album.addTrack(build.track(trackTitle='Where is My Mind?'))
+        self.album.addTrack(build.track(trackTitle='Cactus'))
+        self.driver.nextPage()
+        self.driver.nextPage()
+        self.driver.showsTrackMetadata(trackTitle='Bone Machine')
+        self.driver.nextPage()
+        self.driver.showsTrackMetadata(trackTitle='Where is My Mind?')
+        self.driver.nextPage()
+        self.driver.showsTrackMetadata(trackTitle='Cactus')
+
+    def testRemovesCorrespondingTrackPageWhenTrackRemovedFromAlbum(self):
+        surferRosa = (
+            build.track(trackTitle='Bone Machine'),
+            build.track(trackTitle='Where is My Mind?'),
+            build.track(trackTitle='Cactus')
+        )
+
+        for track in surferRosa:
+            self.album.addTrack(track)
+
+        self.driver.nextPage()
+        self.driver.nextPage()
+        self.driver.showsTrackMetadata(trackTitle='Bone Machine')
+        self.album.removeTrack(surferRosa[0])
+        self.driver.showsTrackMetadata(trackTitle='Where is My Mind?')
+        self.driver.nextPage()
+        self.driver.showsTrackMetadata(trackTitle='Cactus')
+        self.album.removeTrack(surferRosa[2])
+        self.driver.showsTrackMetadata(trackTitle='Where is My Mind?')
+        self.album.removeTrack(surferRosa[1])
+        self.driver.showsAlbumEditionPage()
+        self.driver.hidesSaveButton()
+
+    def testSignalsWhenSaveButtonClicked(self):
+        self.album.addTrack(build.track())
+
+        saveAlbumSignal = ValueMatcherProbe('save album signal')
+        self.view.bind(recordAlbum=saveAlbumSignal.received)
+        self.driver.save()
+        self.driver.check(saveAlbumSignal)
+
+    def testOffersBackAndForthNavigationBetweenPages(self):
+        self.album.addTrack(build.track())
+
+        self.driver.nextPage()
+        self.driver.nextPage()
+        self.driver.hidesNextPageButton()
+        self.driver.previousPage()
+        self.driver.previousPage()
+        self.driver.hidesPreviousPageButton()
+        self.driver.nextPage()

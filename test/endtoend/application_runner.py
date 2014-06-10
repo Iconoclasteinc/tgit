@@ -7,7 +7,7 @@ from test.cute.widgets import mainApplicationWindow
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
-from test.util import fakes
+from test.util import doubles
 from tgit.app import TGiT
 from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
@@ -23,7 +23,7 @@ def disableNativeDialogs():
 class ApplicationRunner(object):
     def start(self, preferences):
         disableNativeDialogs()
-        self.app = TGiT(fakes.audioPlayer)
+        self.app = TGiT(doubles.audioPlayer)
         self.app.show(preferences)
         self.tagger = TaggerDriver(mainApplicationWindow(named('main-window'), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
@@ -47,7 +47,7 @@ class ApplicationRunner(object):
         self.tagger.showsAlbumContains(*tracks)
 
     def showsAlbumMetadata(self, **tags):
-        self.tagger.toAlbum()
+        self.tagger.next()
         self.tagger.showsAlbumMetadata(**tags)
         # todo navigate back to track list
         # so we always no where we're starting from
@@ -57,7 +57,7 @@ class ApplicationRunner(object):
         self.tagger.saveAlbum()
 
     def showsNextTrackMetadata(self, **tags):
-        self.tagger.toNextTrack()
+        self.tagger.next()
         self.tagger.showsTrackMetadata(**tags)
 
     def changeTrackMetadata(self, **tags):

@@ -12,7 +12,7 @@ from hamcrest import assert_that, equal_to, is_
 from PyQt4.QtCore import Qt, QModelIndex
 
 from test.util import builders as build
-from test.util import fakes
+from test.util import doubles
 
 from tgit.ui import display
 from tgit.ui.views.album_composition_model import AlbumCompositionModel, Columns, Row
@@ -127,8 +127,7 @@ class ColumnsTest(unittest.TestCase):
 class AlbumCompositionModelTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
-        self.player = flexmock(fakes.audioPlayer())
-        self.model = flexmock(StubAlbumCompositionModel(self.album, self.player))
+        self.model = flexmock(StubAlbumCompositionModel(self.album, doubles.audioPlayer()))
 
     def testHasEnoughColumns(self):
         assert_that(self.model.columnCount(), equal_to(len(Columns)), 'column count')

@@ -81,15 +81,18 @@ class FakeAudioPlayer(object):
 
 
 def trackLibrary():
-    return FakeTrackLibrary()
+    return MockTrackLibrary()
 
 
-class FakeTrackLibrary(object):
+class MockTrackLibrary(object):
     def __init__(self):
         self.tracks = []
 
-    def add(self, track):
+    def store(self, track):
         self.tracks.append(track)
 
     def fetch(self, name):
         return next((track for track in self.tracks if track.filename == name), None)
+
+    def assertContains(self, *tracks):
+        assert_that(self.tracks, contains(*tracks), 'tracks in catalog')

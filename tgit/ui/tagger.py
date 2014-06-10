@@ -26,7 +26,6 @@ from tgit.csv.csv_format import CsvFormat
 from tgit.track_library import TrackLibrary
 from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.ui import display
-from tgit.ui.album_director import AlbumDirector
 from tgit.ui.album_exporter import AlbumExporter
 from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
@@ -80,7 +79,7 @@ class Tagger(AlbumPortfolioListener):
         self.albumPortfolio.addAlbum(Album())
 
     def albumCreated(self, album):
-        self.menuBar.enableAlbumActions()
+        trackLibrary = TrackLibrary(ID3Tagger())
 
         def makeAlbumCompositionPage(album):
             page = AlbumCompositionPage()
@@ -93,9 +92,11 @@ class Tagger(AlbumPortfolioListener):
 
         def makeAlbumEditionPage(album):
             page = AlbumEditionPage(PictureSelectionDialog())
+            # todo try to replace with signals
             page.bind(metadataChanged=func.partial(director.updateAlbum, album),
                       pictureSelected=func.partial(director.changeAlbumCover, album),
                       removePicture=func.partial(director.removeAlbumCover, album))
+            # let page handle this
             album.addAlbumListener(page)
             page.display(album)
             return page
@@ -105,21 +106,20 @@ class Tagger(AlbumPortfolioListener):
             page.bind(metadataChanged=func.partial(director.updateTrack, track))
             track.addTrackListener(page)
             album.addAlbumListener(page)
-            page.display(track)
             return page
 
-        albumScreen = AlbumScreen()
-        albumScreen.setAlbumCompositionPage(makeAlbumCompositionPage(album))
-        albumScreen.setAlbumEditionPage(makeAlbumEditionPage(album))
-
-        trackLibrary = TrackLibrary(ID3Tagger())
-        self.director = AlbumDirector(album, trackLibrary, self.player, albumScreen, makeTrackEditionPage)
+        def makeAlbumScreen(album):
+            page = AlbumScreen(album, makeAlbumCompositionPage(album), makeAlbumEditionPage(album),
+                               makeTrackEditionPage)
+            page.bind(recordAlbum=func.partial(director.recordAlbum, trackLibrary, album))
+            return page
 
         self.mixer = AlbumMixer(album, trackLibrary, TrackSelectionDialog())
         self.exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING), ExportAsDialog())
 
+        self.menuBar.enableAlbumActions()
         self.mixTracks()
-        self.mainWindow.display(albumScreen)
+        self.mainWindow.display(makeAlbumScreen(album))
 
     def mixTracks(self):
         self.mixer.select(album=False)

@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from tgit import use_sip_api_v2
 import unittest
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 
-from test.util import resources, fakes
+from test.util import resources, doubles
 from test.endtoend.application_runner import ApplicationRunner
 
 from tgit.util import fs
@@ -12,7 +11,7 @@ from tgit.util import fs
 
 class TaggerTest(unittest.TestCase):
     def setUp(self):
-        self.metadataContainer = fakes.metadataContainer()
+        self.metadataContainer = doubles.metadataContainer()
         self.settings = ApplicationSettingsDriver()
         self.settings.set('language', 'en')
         self.application = ApplicationRunner()
