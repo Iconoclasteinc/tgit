@@ -21,25 +21,16 @@ class ExportAsDialogTest(ViewTest):
         ExportAsDialog.native = False
         self.dialog = ExportAsDialog()
         self.driver = exportAsDialog(self)
-        self.exportDir = createTempDir()
+        self.tempDir = tempfile.mkdtemp()
 
     def tearDown(self):
-        deleteDir(self.exportDir)
+        shutil.rmtree(self.tempDir)
         super(ExportAsDialogTest, self).tearDown()
 
-    def testExportsAlbumToDestinationFile(self):
-        destination = os.path.join(self.exportDir, 'album.csv')
+    def testSignalsExportAsDestination(self):
+        destination = os.path.join(self.tempDir, 'album.csv')
         exportAsSignal = ValueMatcherProbe('export as', equal_to(destination))
 
-        self.dialog.bind(exportAs=exportAsSignal.received)
-        self.dialog.show()
+        self.dialog.select(exportAsSignal.received)
         self.driver.exportAs(destination)
         self.check(exportAsSignal)
-
-
-def createTempDir():
-    return tempfile.mkdtemp()
-
-
-def deleteDir(path):
-    shutil.rmtree(path)

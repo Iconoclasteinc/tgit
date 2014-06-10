@@ -88,3 +88,8 @@ def playTrack(player, track):
 def recordAlbum(catalog, album):
     for track in album.tracks:
         catalog.store(track)
+
+
+def exportAlbum(format_, album, destination):
+    with open(destination, 'wb') as out:
+        format_.write(album, out)

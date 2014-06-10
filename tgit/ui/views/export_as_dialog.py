@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt4.QtCore import QDir
+from PyQt4.QtCore import QDir, Qt
 from PyQt4.QtGui import QFileDialog
 
 from tgit.ui.views import mainWindow
@@ -27,19 +27,15 @@ class ExportAsDialog(object):
     native = True
 
     def __init__(self):
-        self.render()
+        self.parent = mainWindow()
 
-    def render(self):
-        self.dialog = QFileDialog(mainWindow())
-        self.dialog.setObjectName('export-as-dialog')
-        self.dialog.setAcceptMode(QFileDialog.AcceptSave)
-        self.dialog.setDirectory(QDir.homePath())
-        self.dialog.setFileMode(QFileDialog.AnyFile)
-        self.dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-
-    def bind(self, **handlers):
-        if 'exportAs' in handlers:
-            self.dialog.fileSelected.connect(handlers['exportAs'])
-
-    def show(self):
-        self.dialog.open()
+    def select(self, handler):
+        dialog = QFileDialog(self.parent)
+        dialog.setObjectName('export-as-dialog')
+        dialog.setAcceptMode(QFileDialog.AcceptSave)
+        dialog.setDirectory(QDir.homePath())
+        dialog.setFileMode(QFileDialog.AnyFile)
+        dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
+        dialog.fileSelected.connect(handler)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.open()

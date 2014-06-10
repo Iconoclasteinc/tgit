@@ -26,8 +26,11 @@ class PictureSelectionDialog(object):
     #todo Introduce Preferences
     native = True
 
+    def __init__(self):
+        self.parent = mainWindow()
+
     def select(self, handler):
-        dialog = QFileDialog(mainWindow())
+        dialog = QFileDialog(self.parent)
         dialog.setObjectName('picture-selection-dialog')
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
         dialog.setDirectory(QDir.homePath())

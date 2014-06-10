@@ -26,7 +26,6 @@ from tgit.csv.csv_format import CsvFormat
 from tgit.track_library import TrackLibrary
 from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.ui import display
-from tgit.ui.album_exporter import AlbumExporter
 from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
 from tgit.ui.views.album_edition_page import AlbumEditionPage
@@ -115,9 +114,11 @@ class Tagger(AlbumPortfolioListener):
             return page
 
         self.mixer = AlbumMixer(album, trackLibrary, TrackSelectionDialog())
-        self.exporter = AlbumExporter(album, CsvFormat(WIN_LATIN1_ENCODING), ExportAsDialog())
 
+        # todo bind menubar directly
+        self.exporter = func.partial(director.exportAlbum, CsvFormat(WIN_LATIN1_ENCODING), album)
         self.menuBar.enableAlbumActions()
+
         self.mixTracks()
         self.mainWindow.display(makeAlbumScreen(album))
 
@@ -127,8 +128,10 @@ class Tagger(AlbumPortfolioListener):
     def mixAlbum(self):
         self.mixer.select(album=True)
 
+    # todo This will move to menubar
     def exportAlbum(self):
-        self.exporter.select()
+        exportAs = ExportAsDialog()
+        exportAs.select(self.exporter)
 
     def editPreferences(self):
         self.settings.display(**self.preferences)

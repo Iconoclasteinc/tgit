@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
+import shutil
+import tempfile
 import unittest
 from hamcrest import assert_that, equal_to, is_, contains, has_properties
 from test.util import builders as build, resources, doubles
@@ -9,7 +12,20 @@ from tgit.metadata import Image
 from tgit.util import fs
 
 
+class FakeExportFormat(object):
+    def write(self, album, out):
+        for track in album.tracks:
+            out.write(track.trackTitle)
+            out.write('\n')
+
+
 class AlbumDirectorTest(unittest.TestCase):
+    def setUp(self):
+        self.tempDir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.tempDir)
+
     def testUpdatesTrackMetadataWithNewState(self):
         changes = Snapshot()
         changes.trackTitle = 'Title'
@@ -108,3 +124,15 @@ class AlbumDirectorTest(unittest.TestCase):
         director.recordAlbum(catalog, twentyOne)
 
         catalog.assertContains(setFireToTheRain, rollingInTheDeep)
+
+    def testFormatsAlbumAndWritesToDestinationFile(self):
+        setFireToTheRain = build.track(trackTitle='Set Fire to the Rain')
+        rollingInTheDeep = build.track(trackTitle='Rolling in the Deep')
+        twentyOne = build.album(tracks=[setFireToTheRain, rollingInTheDeep])
+
+        destinationFile = os.path.join(self.tempDir, 'twentyOne.csv')
+
+        exportAs = FakeExportFormat()
+        director.exportAlbum(exportAs, twentyOne, destinationFile)
+
+        assert_that(fs.readContent(destinationFile), equal_to('Set Fire to the Rain\nRolling in the Deep\n'))
