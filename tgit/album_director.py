@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt4.QtCore import QDir, QFileInfo
 
 from tgit.util import fs
 
@@ -93,3 +94,27 @@ def recordAlbum(catalog, album):
 def exportAlbum(format_, album, destination):
     with open(destination, 'wb') as out:
         format_.write(album, out)
+
+
+def addTracksToAlbum(library, album, selection):
+    for filename in mp3Files(selection):
+        album.addTrack(library.fetch(filename))
+
+
+#todo Consider moving to the library library itself
+def mp3Files(selection):
+    files = []
+    for filename in selection:
+        if isDir(filename):
+            files.extend(mp3FilesIn(QDir(filename)))
+        else:
+            files.append(filename)
+    return files
+
+
+def mp3FilesIn(folder):
+    return [f.canonicalFilePath() for f in QDir(folder).entryInfoList(['*.mp3'])]
+
+
+def isDir(filename):
+    return QFileInfo(filename).isDir()

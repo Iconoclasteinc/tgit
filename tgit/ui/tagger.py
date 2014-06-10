@@ -26,7 +26,6 @@ from tgit.csv.csv_format import CsvFormat
 from tgit.track_library import TrackLibrary
 from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.ui import display
-from tgit.ui.album_mixer import AlbumMixer
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.ui.views.album_screen import AlbumScreen
@@ -67,8 +66,7 @@ class Tagger(AlbumPortfolioListener):
 
     def bindEventHandlers(self):
         self.settings.bind(ok=self.savePreferences, cancel=self.settings.close)
-        self.menuBar.bind(settings=self.editPreferences, addFiles=self.mixTracks, addFolder=self.mixAlbum,
-                          exportAlbum=self.exportAlbum)
+        self.menuBar.bind(settings=self.editPreferences)
         self.welcomeScreen.bind(newAlbum=self.newAlbum)
 
     def show(self):
@@ -113,20 +111,22 @@ class Tagger(AlbumPortfolioListener):
             page.bind(recordAlbum=func.partial(director.recordAlbum, trackLibrary, album))
             return page
 
-        self.mixer = AlbumMixer(album, trackLibrary, TrackSelectionDialog())
 
-        # todo bind menubar directly
+        self.mixer = func.partial(director.addTracksToAlbum, trackLibrary, album)
         self.exporter = func.partial(director.exportAlbum, CsvFormat(WIN_LATIN1_ENCODING), album)
+        self.menuBar.bind(addFiles=self.mixTracks, addFolder=self.mixAlbum, exportAlbum=self.exportAlbum)
         self.menuBar.enableAlbumActions()
 
         self.mixTracks()
         self.mainWindow.display(makeAlbumScreen(album))
 
     def mixTracks(self):
-        self.mixer.select(album=False)
+        selector = TrackSelectionDialog()
+        selector.select(folders=False, handler=self.mixer)
 
     def mixAlbum(self):
-        self.mixer.select(album=True)
+        selector = TrackSelectionDialog()
+        selector.select(folders=True, handler=self.mixer)
 
     # todo This will move to menubar
     def exportAlbum(self):

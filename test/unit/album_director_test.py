@@ -19,6 +19,14 @@ class FakeExportFormat(object):
             out.write('\n')
 
 
+def audioFolder():
+    return resources.path('audio')
+
+
+def audioFile(audio):
+    return resources.path('audio', audio)
+
+
 class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
         self.tempDir = tempfile.mkdtemp()
@@ -128,11 +136,42 @@ class AlbumDirectorTest(unittest.TestCase):
     def testFormatsAlbumAndWritesToDestinationFile(self):
         setFireToTheRain = build.track(trackTitle='Set Fire to the Rain')
         rollingInTheDeep = build.track(trackTitle='Rolling in the Deep')
-        twentyOne = build.album(tracks=[setFireToTheRain, rollingInTheDeep])
+        someoneLikeYou = build.track(trackTitle='Someone Like You')
+        twentyOne = build.album(tracks=[setFireToTheRain, rollingInTheDeep, someoneLikeYou])
 
         destinationFile = os.path.join(self.tempDir, 'twentyOne.csv')
 
         exportAs = FakeExportFormat()
         director.exportAlbum(exportAs, twentyOne, destinationFile)
 
-        assert_that(fs.readContent(destinationFile), equal_to('Set Fire to the Rain\nRolling in the Deep\n'))
+        assert_that(fs.readContent(destinationFile),
+                    equal_to('Set Fire to the Rain\nRolling in the Deep\nSomeone Like You\n'))
+
+    def testAddsSelectedTracksToAlbumInSelectionOrder(self):
+        library = doubles.trackLibrary()
+        library.store(build.track(filename=audioFile('Rolling in the Deep.mp3'), trackTitle='Rolling in the Deep'))
+        library.store(build.track(filename=audioFile('Set Fire to the Rain.mp3'), trackTitle='Set Fire to the Rain'))
+        library.store(build.track(filename=audioFile('Someone Like You.mp3'), trackTitle='Someone Like You'))
+
+        album = build.album()
+        director.addTracksToAlbum(library, album, (audioFile('Rolling in the Deep.mp3'),
+                                                   audioFile('Set Fire to the Rain.mp3'),
+                                                   audioFile('Someone Like You.mp3')))
+        assert_that(album.tracks, contains(
+            has_properties(trackTitle='Rolling in the Deep'),
+            has_properties(trackTitle='Set Fire to the Rain'),
+            has_properties(trackTitle='Someone Like You')))
+
+    def testAddsAllTracksInSelectedFolderInAlphabeticalOrder(self):
+        library = doubles.trackLibrary()
+        library.store(build.track(filename=audioFile('Rolling in the Deep.mp3'), trackTitle='Rolling in the Deep'))
+        library.store(build.track(filename=audioFile('Set Fire to the Rain.mp3'), trackTitle='Set Fire to the Rain'))
+        library.store(build.track(filename=audioFile('Someone Like You.mp3'), trackTitle='Someone Like You'))
+
+        album = build.album()
+
+        director.addTracksToAlbum(library, album, (audioFolder(), ))
+        assert_that(album.tracks, contains(
+            has_properties(trackTitle='Rolling in the Deep'),
+            has_properties(trackTitle='Set Fire to the Rain'),
+            has_properties(trackTitle='Someone Like You')))

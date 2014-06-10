@@ -20,24 +20,24 @@ class TrackSelectionDialogTest(ViewTest):
         self.driver = trackSelectionDialog(self)
 
     def testSignalsWhenAudioFilesSelected(self):
-        audioFiles = [resources.path('audio', '1.mp3'),
-                      resources.path('audio', '2.mp3'),
-                      resources.path('audio', '3.mp3')]
+        audioFiles = [resources.path('audio', 'Rolling in the Deep.mp3'),
+                      resources.path('audio', 'Set Fire to the Rain.mp3'),
+                      resources.path('audio', 'Someone Like You.mp3')]
         trackSelectionSignal = ValueMatcherProbe('track(s) selection', audioFiles)
-        self.dialog.bind(tracksSelected=trackSelectionSignal.received)
-        self.dialog.show()
+        self.dialog.select(folders=False, handler=trackSelectionSignal.received)
         self.driver.selectTracks(*audioFiles)
         self.check(trackSelectionSignal)
 
-    def testSupportsSelectingDirectoriesInsteadOfFiles(self):
+    def testAlternativelySelectsDirectoriesInsteadOfFiles(self):
         audioFolder = resources.path('audio')
         trackSelectionSignal = ValueMatcherProbe('track(s) selection', contains(audioFolder))
-        self.dialog.bind(tracksSelected=trackSelectionSignal.received)
-        self.dialog.show(folders=True)
+        self.dialog.select(folders=True, handler=trackSelectionSignal.received)
         self.driver.selectTracksInFolder(audioFolder)
         self.check(trackSelectionSignal)
 
     def testRejectsNonAudioFiles(self):
-        self.dialog.show()
+        def dummyHandler(selection):
+            pass
+        self.dialog.select(folders=False, handler=dummyHandler)
         unsupportedFile = resources.path('front-cover.jpg')
         self.driver.rejectsSelectionOf(unsupportedFile)

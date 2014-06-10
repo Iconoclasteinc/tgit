@@ -17,34 +17,28 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QDir
+from PyQt4.QtCore import QDir, Qt
 from PyQt4.QtGui import QFileDialog
 from tgit.ui.views import mainWindow
 
 
 class TrackSelectionDialog(object):
-    MP3_FILES = '*.mp3'
-
     #todo Introduce Preferences
     native = True
 
     def __init__(self):
-        self.render()
+        self.parent = mainWindow()
 
-    def render(self):
-        self.dialog = QFileDialog(mainWindow())
-        self.dialog.setObjectName('track-selection-dialog')
-        self.dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        self.dialog.setNameFilter('%s (%s)' % (self.dialog.tr('Audio files'), self.MP3_FILES))
-        self.dialog.setDirectory(QDir.homePath())
-
-    def bind(self, **handlers):
-        if 'tracksSelected' in handlers:
-            self.dialog.filesSelected.connect(handlers['tracksSelected'])
-
-    def show(self, folders=False):
+    def select(self, folders, handler):
+        dialog = QFileDialog(self.parent)
+        dialog.setObjectName('track-selection-dialog')
+        dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
+        dialog.setNameFilter('%s (%s)' % (dialog.tr('Audio files'), '*.mp3'))
+        dialog.setDirectory(QDir.homePath())
+        dialog.filesSelected.connect(handler)
         if folders:
-            self.dialog.setFileMode(QFileDialog.Directory)
+            dialog.setFileMode(QFileDialog.Directory)
         else:
-            self.dialog.setFileMode(QFileDialog.ExistingFiles)
-        self.dialog.open()
+            dialog.setFileMode(QFileDialog.ExistingFiles)
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.open()
