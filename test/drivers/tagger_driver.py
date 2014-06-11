@@ -77,8 +77,9 @@ class TaggerDriver(MainWindowDriver):
         self.acknowledge()
 
     def hasSettings(self, **settings):
-        menuBar(self).settings()
-        settingsDialog(self).showsSettings(settings)
+        dialog = menuBar(self).settings()
+        dialog.showsSettings(settings)
+        dialog.close()
 
     def acknowledge(self):
         message = messageBox(self)

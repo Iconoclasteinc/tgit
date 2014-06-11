@@ -112,7 +112,7 @@ class AlbumScreen(QWidget, AlbumListener):
         return controls
 
     def trackAdded(self, track, position):
-        self.addTrackEditionPage(track, position)
+        self.addTrackEditionPage(self.trackView(track), position)
 
     def trackRemoved(self, track, position):
         self.removeTrackEditionPage(position)
@@ -142,8 +142,8 @@ class AlbumScreen(QWidget, AlbumListener):
     def onPage(self, number):
         return self.currentPage == number
 
-    def addTrackEditionPage(self, track, position):
-        self.insertPage(self.trackView(track), self.TRACK_PAGES_INDEX + position)
+    def addTrackEditionPage(self, page, position):
+        self.insertPage(page, self.TRACK_PAGES_INDEX + position)
 
     def removeTrackEditionPage(self, position):
         self.removePage(self.TRACK_PAGES_INDEX + position)

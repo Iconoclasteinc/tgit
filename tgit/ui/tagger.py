@@ -19,7 +19,6 @@
 
 import functools as func
 
-from tgit.album import Album
 from tgit import album_director as director
 from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
@@ -50,37 +49,62 @@ class Tagger(AlbumPortfolioListener):
         self.albumPortfolio.addPortfolioListener(self)
         self.player = player
 
-        self.mainWindow = MainWindow()
-        self.menuBar = MenuBar()
-        self.mainWindow.setMenuBar(self.menuBar)
-        self.welcomeScreen = WelcomeScreen()
-        self.mainWindow.display(self.welcomeScreen)
+        self.trackSelector = TrackSelectionDialog()
+        self.trackLibrary = TrackLibrary(ID3Tagger())
 
-        self.settings = SettingsDialog(self.mainWindow)
-        self.settings.addLanguage('en', 'English')
-        self.settings.addLanguage('fr', 'French')
+        def makeSettingsDialog(preferences, messageBox, parent):
+            dialog = SettingsDialog(parent)
 
-        self.messageBox = MessageBox(self.mainWindow)
+            def savePreferences():
+                preferences.add(**dialog.settings)
+                dialog.close()
+                messageBox(parent).displayRestartNotice()
 
-        self.bindEventHandlers()
+            dialog.bind(ok=savePreferences, cancel=dialog.close)
+            dialog.addLanguage('en', 'English')
+            dialog.addLanguage('fr', 'French')
+            dialog.display(**preferences)
+            return dialog
 
-    def bindEventHandlers(self):
-        self.settings.bind(ok=self.savePreferences, cancel=self.settings.close)
-        self.menuBar.bind(settings=self.editPreferences)
-        self.welcomeScreen.bind(newAlbum=self.newAlbum)
+        def makeMenuBar(exportFormat, selector, library, settings, parent):
+            menuBar = MenuBar()
+            exportAs = ExportAsDialog()
+
+            def editPreferences():
+                settings(parent)
+
+            menuBar.bind(addFiles=lambda album: selector.select(False, func.partial(director.addTracksToAlbum, library, album)),
+                         addFolder=lambda album: selector.select(True, func.partial(director.addTracksToAlbum, library, album)),
+                         exportAlbum=lambda album: exportAs.select(func.partial(director.exportAlbum, exportFormat, album)),
+                         settings=editPreferences)
+            return menuBar
+
+        def makeWelcomeScreen(portfolio):
+            page = WelcomeScreen()
+            page.bind(newAlbum=func.partial(director.createAlbum, portfolio))
+            return page
+
+        def makeMainWindow(portfolio, menuBar, welcomeScreen):
+            window = MainWindow()
+            menu = menuBar(window)
+            portfolio.addPortfolioListener(menu)
+            window.setMenuBar(menu)
+            window.display(welcomeScreen(portfolio))
+            return window
+
+        self.mainWindow = makeMainWindow(
+            albumPortfolio,
+            func.partial(makeMenuBar, CsvFormat(WIN_LATIN1_ENCODING), self.trackSelector, self.trackLibrary,
+                         func.partial(makeSettingsDialog, self.preferences, MessageBox)),
+            makeWelcomeScreen)
 
     def show(self):
         display.centeredOnScreen(self.mainWindow)
 
-    def newAlbum(self):
-        self.albumPortfolio.addAlbum(Album())
-
     def albumCreated(self, album):
-        trackLibrary = TrackLibrary(ID3Tagger())
-
-        def makeAlbumCompositionPage(album):
+        def makeAlbumCompositionPage(selector, library, album):
             page = AlbumCompositionPage()
-            page.bind(add=self.mixTracks,
+            page.bind(add=func.partial(selector.select, False, func.partial(director.addTracksToAlbum, library, album)),
                       trackMoved=func.partial(director.moveTrack, album),
                       play=func.partial(director.playTrack, self.player, album),
                       remove=func.partial(director.removeTrack, self.player, album))
@@ -105,38 +129,14 @@ class Tagger(AlbumPortfolioListener):
             album.addAlbumListener(page)
             return page
 
-        def makeAlbumScreen(album):
-            page = AlbumScreen(album, makeAlbumCompositionPage(album), makeAlbumEditionPage(album),
+        def makeAlbumScreen(selector, library, album):
+            page = AlbumScreen(album, makeAlbumCompositionPage(selector, library, album), makeAlbumEditionPage(album),
                                makeTrackEditionPage)
-            page.bind(recordAlbum=func.partial(director.recordAlbum, trackLibrary, album))
+            page.bind(recordAlbum=func.partial(director.recordAlbum, library, album))
             return page
 
+        # 1- change center component
+        self.mainWindow.display(makeAlbumScreen(self.trackSelector, self.trackLibrary, album))
 
-        self.mixer = func.partial(director.addTracksToAlbum, trackLibrary, album)
-        self.exporter = func.partial(director.exportAlbum, CsvFormat(WIN_LATIN1_ENCODING), album)
-        self.menuBar.bind(addFiles=self.mixTracks, addFolder=self.mixAlbum, exportAlbum=self.exportAlbum)
-        self.menuBar.enableAlbumActions()
-
-        self.mixTracks()
-        self.mainWindow.display(makeAlbumScreen(album))
-
-    def mixTracks(self):
-        selector = TrackSelectionDialog()
-        selector.select(folders=False, handler=self.mixer)
-
-    def mixAlbum(self):
-        selector = TrackSelectionDialog()
-        selector.select(folders=True, handler=self.mixer)
-
-    # todo This will move to menubar
-    def exportAlbum(self):
-        exportAs = ExportAsDialog()
-        exportAs.select(self.exporter)
-
-    def editPreferences(self):
-        self.settings.display(**self.preferences)
-
-    def savePreferences(self):
-        self.settings.close()
-        self.preferences.add(**self.settings.settings)
-        self.messageBox.displayRestartNotice()
+        # 2- select tracks
+        self.trackSelector.select(folders=False, handler=func.partial(director.addTracksToAlbum, self.trackLibrary, album))

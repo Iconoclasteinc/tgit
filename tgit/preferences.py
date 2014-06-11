@@ -20,7 +20,7 @@ from PyQt4.QtCore import QSettings
 
 
 class Preferences(object):
-    def __init__(self, settings=QSettings()):
+    def __init__(self, settings):
         self.settings = settings
 
     def __getitem__(self, key):

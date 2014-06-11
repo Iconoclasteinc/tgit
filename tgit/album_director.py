@@ -17,6 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt4.QtCore import QDir, QFileInfo
+from tgit.album import Album
 
 from tgit.util import fs
 
@@ -24,6 +25,15 @@ from tgit.util import fs
 class Snapshot(object):
     def __str__(self):
         return str(self.__dict__)
+
+
+def createAlbum(portfolio):
+    portfolio.addAlbum(Album())
+
+
+def addTracksToAlbum(library, album, selection):
+    for filename in mp3Files(selection):
+        album.addTrack(library.fetch(filename))
 
 
 def updateTrack(track, state):
@@ -94,11 +104,6 @@ def recordAlbum(catalog, album):
 def exportAlbum(format_, album, destination):
     with open(destination, 'wb') as out:
         format_.write(album, out)
-
-
-def addTracksToAlbum(library, album, selection):
-    for filename in mp3Files(selection):
-        album.addTrack(library.fetch(filename))
 
 
 #todo Consider moving to the library library itself

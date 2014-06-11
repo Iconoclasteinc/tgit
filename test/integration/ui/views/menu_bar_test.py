@@ -6,6 +6,7 @@ from test.integration.ui.views import ViewTest
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.menu_bar_driver import MenuBarDriver
+from test.util import builders as build
 from tgit.ui.views.menu_bar import MenuBar
 
 
@@ -25,28 +26,31 @@ class MenuBarTest(ViewTest):
         self.driver.hasDisabledAlbumActions()
 
     def testSignalsWhenAddFilesMenuItemClicked(self):
-        addFilesEvent = ValueMatcherProbe('add files event')
+        album = build.album()
+        addFilesEvent = ValueMatcherProbe('add files', album)
         self.view.bind(addFiles=addFilesEvent.received)
-        self.view.enableAlbumActions()
+        self.view.albumCreated(album)
         self.driver.addFiles()
         self.driver.check(addFilesEvent)
 
     def testSignalsWhenAddFolderMenuItemClicked(self):
-        addFolderEvent = ValueMatcherProbe('add folder event')
+        album = build.album()
+        addFolderEvent = ValueMatcherProbe('add folder', album)
         self.view.bind(addFolder=addFolderEvent.received)
-        self.view.enableAlbumActions()
+        self.view.albumCreated(album)
         self.driver.addFolder()
         self.driver.check(addFolderEvent)
 
     def testSignalsWhenExportMenuItemClicked(self):
-        exportAlbumEvent = ValueMatcherProbe('export album event')
+        album = build.album()
+        exportAlbumEvent = ValueMatcherProbe('export', album)
         self.view.bind(exportAlbum=exportAlbumEvent.received)
-        self.view.enableAlbumActions()
+        self.view.albumCreated(album)
         self.driver.export()
         self.driver.check(exportAlbumEvent)
 
     def testSignalsWhenSettingsMenuItemClicked(self):
-        changeSettingsEvent = ValueMatcherProbe('change settings event')
+        changeSettingsEvent = ValueMatcherProbe('change settings')
         self.view.bind(settings=changeSettingsEvent.received)
         self.driver.settings()
         self.driver.check(changeSettingsEvent)

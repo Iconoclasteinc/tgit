@@ -29,11 +29,11 @@ class MenuBar(QMenuBar):
         if 'settings' in handlers:
             self.preferences.triggered.connect(lambda checked: handlers['settings']())
         if 'addFiles' in handlers:
-            self.addFiles.triggered.connect(lambda checked: handlers['addFiles']())
+            self.addFiles.triggered.connect(lambda checked: handlers['addFiles'](self.addFiles.data()))
         if 'addFolder' in handlers:
-            self.addFolder.triggered.connect(lambda checked: handlers['addFolder']())
+            self.addFolder.triggered.connect(lambda checked: handlers['addFolder'](self.addFolder.data()))
         if 'exportAlbum' in handlers:
-            self.export.triggered.connect(lambda checked: handlers['exportAlbum']())
+            self.export.triggered.connect(lambda checked: handlers['exportAlbum'](self.export.data()))
 
     def render(self):
         self.addMenu(self.makeFileMenu())
@@ -69,6 +69,7 @@ class MenuBar(QMenuBar):
 
         return menu
 
-    def enableAlbumActions(self):
+    def albumCreated(self, album):
         for action in [self.addFiles, self.addFolder, self.export]:
             action.setEnabled(True)
+            action.setData(album)

@@ -26,11 +26,8 @@ class TrackSelectionDialog(object):
     #todo Introduce Preferences
     native = True
 
-    def __init__(self):
-        self.parent = mainWindow()
-
     def select(self, folders, handler):
-        dialog = QFileDialog(self.parent)
+        dialog = QFileDialog(mainWindow())
         dialog.setObjectName('track-selection-dialog')
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
         dialog.setNameFilter('%s (%s)' % (dialog.tr('Audio files'), '*.mp3'))

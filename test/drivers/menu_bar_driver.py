@@ -4,6 +4,7 @@ from PyQt4.QtGui import QMenuBar
 
 from test.cute.matchers import named
 from test.cute.widgets import QMenuBarDriver
+from test.drivers.settings_dialog_driver import settingsDialog
 
 
 def menuBar(parent):
@@ -44,7 +45,8 @@ class MenuBarDriver(QMenuBarDriver):
 
     def settings(self):
         menu = self.openMenu(named('file-menu'))
-        menu.menuItem(named('Settings')).click()
+        menu.selectMenuItem(named('Settings'))
+        return settingsDialog(self)
 
     def openMenu(self, matching):
         menu = self.menu(matching)

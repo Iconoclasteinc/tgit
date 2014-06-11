@@ -16,16 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QDialog, QComboBox, QGridLayout, QDialogButtonBox, QLabel
 
 
 class SettingsDialog(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
-        self.setObjectName('settings-dialog')
-        self.render()
+        self.build()
 
-    def render(self):
+    def build(self):
+        self.setObjectName('settings-dialog')
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowTitle(self.tr('Settings'))
         self.setModal(True)
         layout = QGridLayout()

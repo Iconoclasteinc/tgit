@@ -26,11 +26,8 @@ class ExportAsDialog(object):
     #todo Introduce Preferences
     native = True
 
-    def __init__(self):
-        self.parent = mainWindow()
-
     def select(self, handler):
-        dialog = QFileDialog(self.parent)
+        dialog = QFileDialog(mainWindow())
         dialog.setObjectName('export-as-dialog')
         dialog.setAcceptMode(QFileDialog.AcceptSave)
         dialog.setDirectory(QDir.homePath())
