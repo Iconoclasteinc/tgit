@@ -4,7 +4,7 @@ from PyQt4.QtGui import QWidget
 
 from test.cute.matchers import named, withBuddy, showingOnScreen, withPixmapHeight, withPixmapWidth
 from test.drivers.__base import BaseDriver
-from tgit.ui.views.track_edition_page import TrackEditionPage
+from tgit.ui.track_edition_page import TrackEditionPage
 
 
 def trackEditionPage(parent):

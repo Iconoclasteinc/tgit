@@ -16,6 +16,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-# noinspection PyUnresolvedReferences
 
-from version import __version__
+from PyQt4.QtCore import QDir, Qt, QObject, pyqtSignal
+from PyQt4.QtGui import QFileDialog
+
+
+class ExportAsDialog(QObject):
+    exportAs = pyqtSignal(unicode)
+    native = True
+
+    def __init__(self, parent):
+        QObject.__init__(self)
+        self.parent = parent
+
+    def display(self):
+        dialog = QFileDialog(self.parent)
+        dialog.setObjectName('export-as-dialog')
+        dialog.setAcceptMode(QFileDialog.AcceptSave)
+        dialog.setDirectory(QDir.homePath())
+        dialog.setFileMode(QFileDialog.AnyFile)
+        dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
+        dialog.fileSelected.connect(lambda f: self.exportAs.emit(f))
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.open()

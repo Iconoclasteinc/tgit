@@ -2,14 +2,11 @@
 
 import unittest
 
-# noinspection PyUnresolvedReferences
-import tgit.use_sip_api_v2
-from test.drivers.application_settings_driver import ApplicationSettingsDriver
+from tgit.util import fs
 
+from test.drivers.application_settings_driver import ApplicationSettingsDriver
 from test.util import resources, doubles
 from test.endtoend.application_runner import ApplicationRunner
-
-from tgit.util import fs
 
 
 class TaggerTest(unittest.TestCase):

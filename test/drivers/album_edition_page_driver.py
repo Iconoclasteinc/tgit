@@ -5,8 +5,7 @@ from PyQt4.QtGui import QWidget
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from test.drivers.__base import BaseDriver
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
-
-from tgit.ui.views.album_edition_page import AlbumEditionPage
+from tgit.ui.album_edition_page import AlbumEditionPage
 
 
 def albumEditionPage(parent):

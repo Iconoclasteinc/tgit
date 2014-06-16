@@ -6,7 +6,7 @@ from PyQt4.QtGui import QAbstractButton, QWidget
 from test.cute.widgets import ButtonDriver
 from test.cute.matchers import named
 from test.drivers.__base import BaseDriver
-from tgit.ui.views.album_composition_model import Columns
+from tgit.ui.album_composition_model import Columns
 
 
 def albumCompositionPage(parent):

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import tgit
-
 from PyQt4.QtCore import QSysInfo
 from PyQt4.QtGui import QFont
 
@@ -11,6 +9,6 @@ if hasattr(QSysInfo, 'MacintoshVersion') and QSysInfo.MacintoshVersion > QSysInf
     QFont.insertSubstitution(".Lucida Grande UI", "Lucida Grande")
 
 
-import tgit.app
+import tgit.tagger
 
-tgit.app.main()
+tgit.tagger.main()

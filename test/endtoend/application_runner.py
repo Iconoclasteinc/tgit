@@ -8,9 +8,9 @@ from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import doubles
-from tgit.app import TGiT
-from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
-from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
+from tgit.tagger import TGiT
+from tgit.ui.picture_selection_dialog import PictureSelectionDialog
+from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 ONE_SECOND = 1000
 

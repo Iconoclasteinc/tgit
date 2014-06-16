@@ -19,7 +19,7 @@
 
 from tgit.announcer import Announcer
 from tgit import tags
-from metadata import Metadata
+from tgit.metadata import Metadata
 
 
 class TrackListener(object):
@@ -102,5 +102,6 @@ def addMetadataPropertiesTo(cls):
             setattr(cls, name, property(getter, setter))
 
         createProperty(meta)
+
 
 addMetadataPropertiesTo(Track)

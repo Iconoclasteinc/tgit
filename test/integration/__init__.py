@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# noinspection PyUnresolvedReferences
-import tgit.use_sip_api_v2
+from tgit.ui.helpers import sip_api
+
+sip_api.use_v2()

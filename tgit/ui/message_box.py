@@ -16,6 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-# noinspection PyUnresolvedReferences
 
-from version import __version__
+from PyQt4.QtGui import QMessageBox
+
+
+class MessageBox(QMessageBox):
+    def __init__(self, parent=None):
+        QMessageBox.__init__(self, parent)
+        self.setObjectName('message-box')
+
+    def displayRestartNotice(self):
+        self.setText(self.tr("You need to restart TGiT for changes to take effect."))
+        self.open()
