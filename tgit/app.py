@@ -25,8 +25,10 @@ from PyQt4.QtGui import QApplication
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio.audio_library import AudioFiles
 from tgit.audio.player import PhononPlayer
+from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.preferences import Preferences
-from tgit.ui.tagger import Tagger
+from tgit.track_library import TrackLibrary
+from tgit.ui.tagger import createMainWindow
 from tgit.ui import display
 
 # noinspection PyUnresolvedReferences
@@ -54,8 +56,9 @@ class TGiT(QApplication):
 
     def show(self, preferences):
         self.setLocale(preferences['language'])
-        self.tagger = Tagger(AlbumPortfolio(), self.player(AudioFiles()), preferences)
-        self.tagger.show()
+        self.mainWindow = createMainWindow(AlbumPortfolio(), self.player(AudioFiles()), preferences,
+                                           TrackLibrary(ID3Tagger()))
+        display.centeredOnScreen(self.mainWindow)
 
     def launch(self, preferences):
         self.show(preferences)
@@ -68,4 +71,4 @@ class TGiT(QApplication):
 def main():
     app = TGiT(PhononPlayer)
     app.setApplicationName('TGiT')
-    app.launch(Preferences(QSettings('tagtamusique.com', 'TGiT' )))
+    app.launch(Preferences(QSettings('tagtamusique.com', 'TGiT')))

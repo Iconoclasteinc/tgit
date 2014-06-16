@@ -18,13 +18,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import functools as func
+from PyQt4.QtCore import QTimer
 
 from tgit import album_director as director
 from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.csv.csv_format import CsvFormat
-from tgit.track_library import TrackLibrary
-from tgit.mp3.id3_tagger import ID3Tagger
-from tgit.ui import display
 from tgit.ui.views.album_composition_page import AlbumCompositionPage
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.ui.views.album_screen import AlbumScreen
@@ -108,8 +106,9 @@ def TrackSelectionDialogController(library, album, parent, folders):
     dialog.display(folders)
 
 
-def MenuBarController(exportAs, selectTracks, changeSettings):
+def MenuBarController(exportAs, selectTracks, changeSettings, portfolio):
     menuBar = MenuBar()
+    portfolio.addPortfolioListener(menuBar)
     menuBar.bind(
         addFiles=lambda album: selectTracks(album),
         addFolder=lambda album: selectTracks(album, True),
@@ -124,65 +123,48 @@ def WelcomeScreenController(portfolio):
     return page
 
 
-def MainWindowController(menuBar, welcomeScreen, portfolio):
-    window = MainWindow()
-    menu = menuBar()
-    portfolio.addPortfolioListener(menu)
-    window.setMenuBar(menu)
-    window.display(welcomeScreen())
+def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
+    window = MainWindow(menuBar(), welcomeScreen(), albumScreen)
+    portfolio.addPortfolioListener(window)
     return window
 
 
-class Tagger(AlbumPortfolioListener):
-    def __init__(self, albumPortfolio, player, preferences):
-        self.preferences = preferences
-        self.albumPortfolio = albumPortfolio
-        self.albumPortfolio.addPortfolioListener(self)
-        self.player = player
-        self.trackLibrary = TrackLibrary(ID3Tagger())
+def createMainWindow(albumPortfolio, player, preferences, library):
+    def showSettingsDialog():
+        return SettingsDialogController(MessageBox, preferences, window)
 
-        def showSettingsDialog():
-            return SettingsDialogController(MessageBox, preferences, self.mainWindow)
+    def showExportAsDialog(album):
+        return ExportAsDialogController(CsvFormat('windows-1252'), album, window)
 
-        def showExportAsDialog(album):
-            return ExportAsDialogController(CsvFormat('windows-1252'), album, self.mainWindow)
+    def showTrackSelectionDialog(album, folders=False):
+        return TrackSelectionDialogController(library, album, window, folders)
 
-        def createMenuBar():
-            return MenuBarController(showExportAsDialog, self.showTrackSelectionDialog, showSettingsDialog)
+    def createMenuBar():
+        return MenuBarController(showExportAsDialog, showTrackSelectionDialog, showSettingsDialog, albumPortfolio)
 
-        def createWelcomeScreen():
-            return WelcomeScreenController(albumPortfolio)
+    def createWelcomeScreen():
+        return WelcomeScreenController(albumPortfolio)
 
-        def createMainWindow():
-            return MainWindowController(createMenuBar, createWelcomeScreen, albumPortfolio)
+    def createCompositionPage(album):
+        return AlbumCompositionPageController(showTrackSelectionDialog, player, album)
 
-        self.mainWindow = createMainWindow()
+    def createAlbumPage(album):
+        return AlbumEditionPageController(showPictureSelectionDialog, album)
 
-    def show(self):
-        display.centeredOnScreen(self.mainWindow)
+    def showPictureSelectionDialog(album):
+        return PictureSelectionDialogController(window, album)
 
-    def showTrackSelectionDialog(self, album, folders=False):
-        return TrackSelectionDialogController(self.trackLibrary, album, self.mainWindow, folders)
+    def createTrackPage(track):
+        return TrackEditionPageController(track)
 
-    def albumCreated(self, album):
-        def createCompositionPage(album):
-            return AlbumCompositionPageController(self.showTrackSelectionDialog, self.player, album)
+    def createAlbumScreen(album):
+        return AlbumScreenController(createCompositionPage, createAlbumPage, createTrackPage, library, album)
 
-        def createAlbumPage(album):
-            return AlbumEditionPageController(showPictureSelectionDialog, album)
+    window = MainWindowController(createMenuBar, createWelcomeScreen, createAlbumScreen, albumPortfolio)
 
-        def showPictureSelectionDialog(album):
-            return PictureSelectionDialogController(self.mainWindow, album)
+    class SelectAlbumTracks(AlbumPortfolioListener):
+        def albumCreated(self, album):
+            QTimer.singleShot(250, lambda: showTrackSelectionDialog(album))
 
-        def createTrackPage(track):
-            return TrackEditionPageController(track)
-
-        def createAlbumScreen(album):
-            return AlbumScreenController(createCompositionPage, createAlbumPage, createTrackPage, self.trackLibrary,
-                                         album)
-
-        # 1- change center component
-        self.mainWindow.display(createAlbumScreen(album))
-
-        # 2- select tracks
-        self.showTrackSelectionDialog(album)
+    albumPortfolio.addPortfolioListener(SelectAlbumTracks())
+    return window

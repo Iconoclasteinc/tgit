@@ -22,19 +22,21 @@ from PyQt4.QtGui import QMainWindow
 from tgit.ui import style
 
 
-# todo merge with MenuBar?
 class MainWindow(QMainWindow):
     SIZE = (1100, 744)
 
-    def __init__(self):
+    def __init__(self, menuBar, welcomeScreen, albumScreen):
         QMainWindow.__init__(self)
+        self.build()
+        self.setMenuBar(menuBar)
+        self.setCentralWidget(welcomeScreen)
+        self.createAlbum = albumScreen
+
+    def build(self):
         self.setObjectName('main-window')
-        self.render()
-
-    def display(self, view):
-        self.setCentralWidget(view)
-
-    def render(self):
         self.setStyleSheet(style.Sheet)
         self.setWindowTitle(self.tr('TGiT'))
         self.resize(*self.SIZE)
+
+    def albumCreated(self, album):
+        self.setCentralWidget(self.createAlbum(album))

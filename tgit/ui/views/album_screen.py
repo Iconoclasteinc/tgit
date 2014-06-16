@@ -28,15 +28,15 @@ class AlbumScreen(QWidget, AlbumListener):
 
     TRACK_PAGES_INDEX = 2
 
-    def __init__(self, album, compositionView, albumView, trackView):
+    def __init__(self, album, composeAlbum, editAlbum, editTrack):
         QWidget.__init__(self)
         self.album = album
         self.album.addAlbumListener(self)
-        self.trackView = trackView
+        self.editTrack = editTrack
 
         self.build()
-        self.appendPage(compositionView)
-        self.appendPage(albumView)
+        self.appendPage(composeAlbum)
+        self.appendPage(editAlbum)
 
     def bind(self, **handlers):
         if 'recordAlbum' in handlers:
@@ -112,7 +112,7 @@ class AlbumScreen(QWidget, AlbumListener):
         return controls
 
     def trackAdded(self, track, position):
-        self.addTrackEditionPage(self.trackView(track), position)
+        self.addTrackEditionPage(self.editTrack(track), position)
 
     def trackRemoved(self, track, position):
         self.removeTrackEditionPage(position)
