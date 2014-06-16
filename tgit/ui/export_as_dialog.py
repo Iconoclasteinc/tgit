@@ -23,11 +23,11 @@ from PyQt4.QtGui import QFileDialog
 
 class ExportAsDialog(QObject):
     exportAs = pyqtSignal(unicode)
-    native = True
 
-    def __init__(self, parent):
+    def __init__(self, parent, native):
         QObject.__init__(self)
         self.parent = parent
+        self.native = native
 
     def display(self):
         dialog = QFileDialog(self.parent)

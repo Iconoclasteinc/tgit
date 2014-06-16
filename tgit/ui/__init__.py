@@ -19,7 +19,7 @@
 
 import functools as func
 
-from tgit.ui.helpers import sip_api
+from tgit.util import sip_api
 sip_api.use_v2()
 
 from PyQt4.QtCore import QTimer
@@ -40,6 +40,9 @@ from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_screen import WelcomeScreen
+
+# noinspection PyUnresolvedReferences
+from tgit.ui import resources
 
 
 def AlbumCompositionPageController(selectTracks, player, album):
@@ -78,8 +81,8 @@ def AlbumScreenController(compositionPage, albumPage, trackPage, library, album)
     return page
 
 
-def PictureSelectionDialogController(parent, album):
-    dialog = PictureSelectionDialog(parent)
+def PictureSelectionDialogController(parent, album, native):
+    dialog = PictureSelectionDialog(parent, native)
     dialog.pictureSelected.connect(lambda selection: director.changeAlbumCover(album, selection))
     dialog.display()
 
@@ -99,14 +102,14 @@ def SettingsDialogController(messageBox, preferences, parent):
     return dialog
 
 
-def ExportAsDialogController(format_, album, parent):
-    dialog = ExportAsDialog(parent)
+def ExportAsDialogController(format_, album, parent, native):
+    dialog = ExportAsDialog(parent, native)
     dialog.exportAs.connect(lambda destination: director.exportAlbum(format_, album, destination))
     dialog.display()
 
 
-def TrackSelectionDialogController(library, album, parent, folders):
-    dialog = TrackSelectionDialog(parent)
+def TrackSelectionDialogController(library, album, parent, native, folders):
+    dialog = TrackSelectionDialog(parent, native)
     dialog.tracksSelected.connect(lambda selection: director.addTracksToAlbum(library, album, selection))
     dialog.display(folders)
 
@@ -134,15 +137,15 @@ def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
     return window
 
 
-def createMainWindow(albumPortfolio, player, preferences, library):
+def createMainWindow(albumPortfolio, player, preferences, library, native):
     def showSettingsDialog():
         return SettingsDialogController(MessageBox, preferences, window)
 
     def showExportAsDialog(album):
-        return ExportAsDialogController(CsvFormat('windows-1252'), album, window)
+        return ExportAsDialogController(CsvFormat('windows-1252'), album, window, native)
 
     def showTrackSelectionDialog(album, folders=False):
-        return TrackSelectionDialogController(library, album, window, folders)
+        return TrackSelectionDialogController(library, album, window, native, folders)
 
     def createMenuBar():
         return MenuBarController(showExportAsDialog, showTrackSelectionDialog, showSettingsDialog, albumPortfolio)
@@ -157,7 +160,7 @@ def createMainWindow(albumPortfolio, player, preferences, library):
         return AlbumEditionPageController(showPictureSelectionDialog, album)
 
     def showPictureSelectionDialog(album):
-        return PictureSelectionDialogController(window, album)
+        return PictureSelectionDialogController(window, album, native)
 
     def createTrackPage(track):
         return TrackEditionPageController(track)

@@ -16,8 +16,7 @@ class ExportAsDialogTest(ViewTest):
         super(ExportAsDialogTest, self).setUp()
         window = QMainWindow()
         self.show(window)
-        ExportAsDialog.native = False
-        self.dialog = ExportAsDialog(window)
+        self.dialog = ExportAsDialog(window, native=False)
         self.driver = exportAsDialog(self)
         self.tempDir = tempfile.mkdtemp()
 

@@ -28,18 +28,16 @@ from tgit.audio.player import PhononPlayer
 from tgit.mp3.id3_tagger import ID3Tagger
 from tgit.preferences import Preferences
 from tgit.track_library import TrackLibrary
-from tgit.ui import createMainWindow
-
-# noinspection PyUnresolvedReferences
-from tgit.ui import resources
+from tgit import ui
 from tgit.ui.helpers import display
 
 
 class TGiT(QApplication):
-    def __init__(self, player):
+    def __init__(self, player, native=True):
         QApplication.__init__(self, [])
         self.player = player
         self.translators = []
+        self.native = native
 
     def setLocale(self, locale):
         if locale is None:
@@ -56,8 +54,8 @@ class TGiT(QApplication):
 
     def show(self, preferences):
         self.setLocale(preferences['language'])
-        self.mainWindow = createMainWindow(AlbumPortfolio(), self.player(AudioFiles()), preferences,
-                                           TrackLibrary(ID3Tagger()))
+        self.mainWindow = ui.createMainWindow(AlbumPortfolio(), self.player(AudioFiles()), preferences,
+                                              TrackLibrary(ID3Tagger()), self.native)
         display.centeredOnScreen(self.mainWindow)
 
     def launch(self, preferences):

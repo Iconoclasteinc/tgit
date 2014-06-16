@@ -14,8 +14,7 @@ class PictureSelectionDialogTest(ViewTest):
         super(PictureSelectionDialogTest, self).setUp()
         window = QMainWindow()
         self.show(window)
-        PictureSelectionDialog.native = False
-        self.dialog = PictureSelectionDialog(window)
+        self.dialog = PictureSelectionDialog(window, native=False)
         self.driver = pictureSelectionDialog(self)
 
     def testSignalsWhenPictureSelected(self):

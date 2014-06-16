@@ -15,8 +15,7 @@ class TrackSelectionDialogTest(ViewTest):
         super(TrackSelectionDialogTest, self).setUp()
         window = QMainWindow()
         self.show(window)
-        TrackSelectionDialog.native = False
-        self.dialog = TrackSelectionDialog(window)
+        self.dialog = TrackSelectionDialog(window, native=False)
         self.driver = trackSelectionDialog(self)
 
     def testSignalsWhenAudioFilesSelected(self):

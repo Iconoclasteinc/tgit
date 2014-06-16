@@ -9,21 +9,13 @@ from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import doubles
 from tgit.tagger import TGiT
-from tgit.ui.picture_selection_dialog import PictureSelectionDialog
-from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 ONE_SECOND = 1000
 
 
-def disableNativeDialogs():
-    PictureSelectionDialog.native = False
-    TrackSelectionDialog.native = False
-
-
 class ApplicationRunner(object):
     def start(self, preferences):
-        disableNativeDialogs()
-        self.app = TGiT(doubles.audioPlayer)
+        self.app = TGiT(doubles.audioPlayer, native=False)
         self.app.show(preferences)
         self.tagger = TaggerDriver(mainApplicationWindow(named('main-window'), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),

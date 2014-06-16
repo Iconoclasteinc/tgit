@@ -23,11 +23,11 @@ from PyQt4.QtGui import QFileDialog
 
 class TrackSelectionDialog(QObject):
     tracksSelected = pyqtSignal(list)
-    native = True
 
-    def __init__(self, parent):
+    def __init__(self, parent, native):
         QObject.__init__(self)
         self.parent = parent
+        self.native = native
 
     def display(self, folders):
         dialog = QFileDialog(self.parent)
