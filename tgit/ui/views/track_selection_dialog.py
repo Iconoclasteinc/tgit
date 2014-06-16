@@ -17,22 +17,25 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QDir, Qt
+from PyQt4.QtCore import QDir, Qt, pyqtSignal, QObject
 from PyQt4.QtGui import QFileDialog
-from tgit.ui.views import mainWindow
 
 
-class TrackSelectionDialog(object):
-    #todo Introduce Preferences
+class TrackSelectionDialog(QObject):
+    tracksSelected = pyqtSignal(list)
     native = True
 
-    def select(self, folders, handler):
-        dialog = QFileDialog(mainWindow())
+    def __init__(self, parent):
+        QObject.__init__(self)
+        self.parent = parent
+
+    def display(self, folders):
+        dialog = QFileDialog(self.parent)
         dialog.setObjectName('track-selection-dialog')
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
         dialog.setNameFilter('%s (%s)' % (dialog.tr('Audio files'), '*.mp3'))
         dialog.setDirectory(QDir.homePath())
-        dialog.filesSelected.connect(handler)
+        dialog.filesSelected.connect(lambda selection: self.tracksSelected.emit(selection))
         if folders:
             dialog.setFileMode(QFileDialog.Directory)
         else:

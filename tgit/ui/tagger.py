@@ -39,9 +39,9 @@ from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.views.welcome_screen import WelcomeScreen
 
 
-def AlbumCompositionPageController(selector, player, library, album):
+def AlbumCompositionPageController(selectTracks, player, album):
     page = AlbumCompositionPage()
-    page.bind(add=func.partial(selector.select, False, func.partial(director.addTracksToAlbum, library, album)),
+    page.bind(add=lambda: selectTracks(album),
               trackMoved=func.partial(director.moveTrack, album),
               play=func.partial(director.playTrack, player, album),
               remove=func.partial(director.removeTrack, player, album))
@@ -49,13 +49,13 @@ def AlbumCompositionPageController(selector, player, library, album):
     return page
 
 
-def AlbumEditionPageController(album):
-    page = AlbumEditionPage(PictureSelectionDialog())
+def AlbumEditionPageController(selectPicture, album):
+    page = AlbumEditionPage()
     # todo try to replace with signals
     page.bind(metadataChanged=func.partial(director.updateAlbum, album),
-              pictureSelected=func.partial(director.changeAlbumCover, album),
+              selectPicture=lambda: selectPicture(album),
               removePicture=func.partial(director.removeAlbumCover, album))
-    # let page handle this
+    # let page handle this?
     album.addAlbumListener(page)
     page.display(album)
     return page
@@ -75,6 +75,12 @@ def AlbumScreenController(compositionPage, albumPage, trackPage, library, album)
     return page
 
 
+def PictureSelectionDialogController(parent, album):
+    dialog = PictureSelectionDialog(parent)
+    dialog.pictureSelected.connect(lambda selection: director.changeAlbumCover(album, selection))
+    dialog.display()
+
+
 def SettingsDialogController(messageBox, preferences, parent):
     dialog = SettingsDialog(parent)
 
@@ -90,15 +96,25 @@ def SettingsDialogController(messageBox, preferences, parent):
     return dialog
 
 
-def MenuBarController(exportFormat, selector, library, settings, parent):
-    menuBar = MenuBar()
-    exportAs = ExportAsDialog()
+def ExportAsDialogController(format_, album, parent):
+    dialog = ExportAsDialog(parent)
+    dialog.exportAs.connect(lambda destination: director.exportAlbum(format_, album, destination))
+    dialog.display()
 
+
+def TrackSelectionDialogController(library, album, parent, folders):
+    dialog = TrackSelectionDialog(parent)
+    dialog.tracksSelected.connect(lambda selection: director.addTracksToAlbum(library, album, selection))
+    dialog.display(folders)
+
+
+def MenuBarController(exportAs, selectTracks, changeSettings):
+    menuBar = MenuBar()
     menuBar.bind(
-        addFiles=lambda album: selector.select(False, func.partial(director.addTracksToAlbum, library, album)),
-        addFolder=lambda album: selector.select(True, func.partial(director.addTracksToAlbum, library, album)),
-        exportAlbum=lambda album: exportAs.select(func.partial(director.exportAlbum, exportFormat, album)),
-        settings=lambda: settings(parent))
+        addFiles=lambda album: selectTracks(album),
+        addFolder=lambda album: selectTracks(album, True),
+        exportAlbum=lambda album: exportAs(album),
+        settings=lambda: changeSettings())
     return menuBar
 
 
@@ -110,7 +126,7 @@ def WelcomeScreenController(portfolio):
 
 def MainWindowController(menuBar, welcomeScreen, portfolio):
     window = MainWindow()
-    menu = menuBar(window)
+    menu = menuBar()
     portfolio.addPortfolioListener(menu)
     window.setMenuBar(menu)
     window.display(welcomeScreen())
@@ -123,15 +139,16 @@ class Tagger(AlbumPortfolioListener):
         self.albumPortfolio = albumPortfolio
         self.albumPortfolio.addPortfolioListener(self)
         self.player = player
-        self.trackSelector = TrackSelectionDialog()
         self.trackLibrary = TrackLibrary(ID3Tagger())
 
-        def createSettingsDialog(parent):
-            return SettingsDialogController(MessageBox, preferences, parent)
+        def showSettingsDialog():
+            return SettingsDialogController(MessageBox, preferences, self.mainWindow)
 
-        def createMenuBar(parent):
-            return MenuBarController(CsvFormat('windows-1252'), TrackSelectionDialog(), self.trackLibrary,
-                                     createSettingsDialog, parent)
+        def showExportAsDialog(album):
+            return ExportAsDialogController(CsvFormat('windows-1252'), album, self.mainWindow)
+
+        def createMenuBar():
+            return MenuBarController(showExportAsDialog, self.showTrackSelectionDialog, showSettingsDialog)
 
         def createWelcomeScreen():
             return WelcomeScreenController(albumPortfolio)
@@ -144,12 +161,18 @@ class Tagger(AlbumPortfolioListener):
     def show(self):
         display.centeredOnScreen(self.mainWindow)
 
+    def showTrackSelectionDialog(self, album, folders=False):
+        return TrackSelectionDialogController(self.trackLibrary, album, self.mainWindow, folders)
+
     def albumCreated(self, album):
         def createCompositionPage(album):
-            return AlbumCompositionPageController(TrackSelectionDialog(), self.player, self.trackLibrary, album)
+            return AlbumCompositionPageController(self.showTrackSelectionDialog, self.player, album)
 
         def createAlbumPage(album):
-            return AlbumEditionPageController(album)
+            return AlbumEditionPageController(showPictureSelectionDialog, album)
+
+        def showPictureSelectionDialog(album):
+            return PictureSelectionDialogController(self.mainWindow, album)
 
         def createTrackPage(track):
             return TrackEditionPageController(track)
@@ -162,5 +185,4 @@ class Tagger(AlbumPortfolioListener):
         self.mainWindow.display(createAlbumScreen(album))
 
         # 2- select tracks
-        self.trackSelector.select(folders=False,
-                                  handler=func.partial(director.addTracksToAlbum, self.trackLibrary, album))
+        self.showTrackSelectionDialog(album)

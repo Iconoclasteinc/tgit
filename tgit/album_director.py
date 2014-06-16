@@ -106,7 +106,7 @@ def exportAlbum(format_, album, destination):
         format_.write(album, out)
 
 
-#todo Consider moving to the library library itself
+#todo Consider moving to the library itself
 def mp3Files(selection):
     files = []
     for filename in selection:

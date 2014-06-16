@@ -16,10 +16,10 @@ from tgit.ui.views.export_as_dialog import ExportAsDialog
 class ExportAsDialogTest(ViewTest):
     def setUp(self):
         super(ExportAsDialogTest, self).setUp()
-        self.window = QMainWindow()
-        self.show(self.window)
+        window = QMainWindow()
+        self.show(window)
         ExportAsDialog.native = False
-        self.dialog = ExportAsDialog()
+        self.dialog = ExportAsDialog(window)
         self.driver = exportAsDialog(self)
         self.tempDir = tempfile.mkdtemp()
 
@@ -31,6 +31,8 @@ class ExportAsDialogTest(ViewTest):
         destination = os.path.join(self.tempDir, 'album.csv')
         exportAsSignal = ValueMatcherProbe('export as', equal_to(destination))
 
-        self.dialog.select(exportAsSignal.received)
+        self.dialog.exportAs.connect(exportAsSignal.received)
+        self.dialog.display()
+
         self.driver.exportAs(destination)
         self.check(exportAsSignal)

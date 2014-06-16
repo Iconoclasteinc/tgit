@@ -12,22 +12,20 @@ from test.util import resources
 class PictureSelectionDialogTest(ViewTest):
     def setUp(self):
         super(PictureSelectionDialogTest, self).setUp()
-        self.window = QMainWindow()
-        self.show(self.window)
+        window = QMainWindow()
+        self.show(window)
         PictureSelectionDialog.native = False
-        self.dialog = PictureSelectionDialog()
+        self.dialog = PictureSelectionDialog(window)
         self.driver = pictureSelectionDialog(self)
 
     def testSignalsWhenPictureSelected(self):
         pictureSelectedSignal = ValueMatcherProbe('picture selected', resources.path('front-cover.jpg'))
+        self.dialog.pictureSelected.connect(pictureSelectedSignal.received)
 
-        self.dialog.select(pictureSelectedSignal.received)
+        self.dialog.display()
         self.driver.selectPicture(resources.path('front-cover.jpg'))
-
         self.check(pictureSelectedSignal)
 
     def testOnlyAcceptsAudioFiles(self):
-        def dummyHandler(selection):
-            pass
-        self.dialog.select(dummyHandler)
+        self.dialog.display()
         self.driver.rejectsSelectionOf(resources.path('base.mp3'))

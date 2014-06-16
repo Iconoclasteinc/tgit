@@ -17,25 +17,25 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QDir, Qt
+from PyQt4.QtCore import QDir, Qt, pyqtSignal, QObject
 from PyQt4.QtGui import QFileDialog
-from tgit.ui.views import mainWindow
 
 
-class PictureSelectionDialog(object):
-    #todo Introduce Preferences
+class PictureSelectionDialog(QObject):
+    pictureSelected = pyqtSignal(unicode)
     native = True
 
-    def __init__(self):
-        self.parent = mainWindow()
+    def __init__(self, parent):
+        QObject.__init__(self)
+        self.parent = parent
 
-    def select(self, handler):
+    def display(self):
         dialog = QFileDialog(self.parent)
         dialog.setObjectName('picture-selection-dialog')
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
         dialog.setDirectory(QDir.homePath())
         dialog.setFileMode(QFileDialog.ExistingFile)
         dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % dialog.tr('Image files'))
-        dialog.fileSelected.connect(handler)
+        dialog.fileSelected.connect(lambda f: self.pictureSelected.emit(f))
         dialog.setAttribute(Qt.WA_DeleteOnClose)
         dialog.open()

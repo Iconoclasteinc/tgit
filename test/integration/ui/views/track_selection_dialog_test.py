@@ -13,10 +13,10 @@ from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
 class TrackSelectionDialogTest(ViewTest):
     def setUp(self):
         super(TrackSelectionDialogTest, self).setUp()
-        self.mainWindow = QMainWindow()
-        self.show(self.mainWindow)
+        window = QMainWindow()
+        self.show(window)
         TrackSelectionDialog.native = False
-        self.dialog = TrackSelectionDialog()
+        self.dialog = TrackSelectionDialog(window)
         self.driver = trackSelectionDialog(self)
 
     def testSignalsWhenAudioFilesSelected(self):
@@ -24,20 +24,22 @@ class TrackSelectionDialogTest(ViewTest):
                       resources.path('audio', 'Set Fire to the Rain.mp3'),
                       resources.path('audio', 'Someone Like You.mp3')]
         trackSelectionSignal = ValueMatcherProbe('track(s) selection', audioFiles)
-        self.dialog.select(folders=False, handler=trackSelectionSignal.received)
+        self.dialog.tracksSelected.connect(trackSelectionSignal.received)
+
+        self.dialog.display(folders=False)
         self.driver.selectTracks(*audioFiles)
         self.check(trackSelectionSignal)
 
     def testAlternativelySelectsDirectoriesInsteadOfFiles(self):
         audioFolder = resources.path('audio')
         trackSelectionSignal = ValueMatcherProbe('track(s) selection', contains(audioFolder))
-        self.dialog.select(folders=True, handler=trackSelectionSignal.received)
+        self.dialog.tracksSelected.connect(trackSelectionSignal.received)
+
+        self.dialog.display(folders=True)
         self.driver.selectTracksInFolder(audioFolder)
         self.check(trackSelectionSignal)
 
     def testRejectsNonAudioFiles(self):
-        def dummyHandler(selection):
-            pass
-        self.dialog.select(folders=False, handler=dummyHandler)
+        self.dialog.display(folders=False)
         unsupportedFile = resources.path('front-cover.jpg')
         self.driver.rejectsSelectionOf(unsupportedFile)

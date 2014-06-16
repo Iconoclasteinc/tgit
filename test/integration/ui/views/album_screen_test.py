@@ -8,7 +8,6 @@ from tgit.ui.views.album_composition_page import AlbumCompositionPage
 from tgit.ui.views.album_edition_page import AlbumEditionPage
 
 from tgit.ui.views.album_screen import AlbumScreen
-from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.views.track_edition_page import TrackEditionPage
 
 
@@ -17,8 +16,7 @@ class AlbumScreenTest(ViewTest):
         super(AlbumScreenTest, self).setUp()
 
         self.album = build.album()
-        self.view = AlbumScreen(self.album, AlbumCompositionPage(), AlbumEditionPage(PictureSelectionDialog()),
-                                TrackEditionPage)
+        self.view = AlbumScreen(self.album, AlbumCompositionPage(), AlbumEditionPage(), TrackEditionPage)
         self.show(self.view)
         self.driver = self.createDriverFor(self.view)
 

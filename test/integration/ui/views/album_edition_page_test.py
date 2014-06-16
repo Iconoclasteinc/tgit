@@ -12,24 +12,10 @@ from tgit.ui.views.album_edition_page import AlbumEditionPage
 from tgit.util import fs
 
 
-# todo Our fake image library would load from the tests resources
-def loadImage(name):
-    return fs.readContent(resources.path(name))
-
-
-class PictureSelectorStub(object):
-    def __init__(self):
-        self.selected = build.image()
-
-    def select(self, handler):
-        handler(self.selected)
-
-
 class AlbumEditionPageTest(ViewTest):
     def setUp(self):
         super(AlbumEditionPageTest, self).setUp()
-        self.pictureSelector = PictureSelectorStub()
-        self.page = AlbumEditionPage(self.pictureSelector)
+        self.page = AlbumEditionPage()
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
 
@@ -41,7 +27,7 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsPicturePlaceholder()
 
     def testDisplaysMainAlbumCoverWhenExisting(self):
-        self.page.display(build.album(images=[build.image('image/jpeg', loadImage('front-cover.jpg'), Image.FRONT_COVER)]))
+        self.page.display(build.album(images=[build.image('image/jpeg', loadTestImage('front-cover.jpg'), Image.FRONT_COVER)]))
         self.driver.showsPicture()
 
     def testDisplaysAlbumMetadata(self):
@@ -91,22 +77,18 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsLeadPerformer('Various Artists', disabled=True)
 
     def testSignalsWhenPictureSelected(self):
-        image = build.image()
-        self.pictureSelector.selected = image
+        selectPicture = ValueMatcherProbe('select picture')
+        self.page.bind(selectPicture=selectPicture.received)
 
         self.page.display(build.album())
-        pictureSelectedSignal = ValueMatcherProbe('picture selected', image)
-        self.page.bind(pictureSelected=pictureSelectedSignal.received)
-
         self.driver.addPicture()
-        self.check(pictureSelectedSignal)
+        self.check(selectPicture)
 
     def testSignalsWhenRemovePictureButtonClicked(self):
-        self.page.display(build.album())
         removePictureSignal = ValueMatcherProbe('remove picture')
-
         self.page.bind(removePicture=removePictureSignal.received)
 
+        self.page.display(build.album())
         self.driver.removePicture()
         self.check(removePictureSignal)
 
@@ -182,3 +164,7 @@ class AlbumEditionPageTest(ViewTest):
         albumChangedSignal.expect(has_properties(primaryStyle='Custom'))
         self.driver.changePrimaryStyle('Custom')
         self.check(albumChangedSignal)
+
+
+def loadTestImage(name):
+    return fs.readContent(resources.path(name))

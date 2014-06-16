@@ -30,9 +30,8 @@ from tgit.ui.widgets import form, image
 class AlbumEditionPage(QWidget, AlbumListener):
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, pictureSelector):
+    def __init__(self):
         QWidget.__init__(self)
-        self.pictureSelector = pictureSelector
         self.build()
 
     def build(self):
@@ -48,8 +47,8 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def bind(self, **handlers):
         if 'metadataChanged' in handlers:
             self.onMetadataChange(handlers['metadataChanged'])
-        if 'pictureSelected' in handlers:
-            self.onPictureSelected(handlers['pictureSelected'])
+        if 'selectPicture' in handlers:
+            self.onSelectPicture(handlers['selectPicture'])
         if 'removePicture' in handlers:
             self.onRemovePicture(handlers['removePicture'])
 
@@ -63,8 +62,8 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.primaryStyles.activated.connect(lambda: handler(self.snapshot))
         self.primaryStyles.lineEdit().textEdited.connect(lambda: handler(self.snapshot))
 
-    def onPictureSelected(self, handler):
-        self.selectPicture.clicked.connect(lambda: self.pictureSelector.select(handler))
+    def onSelectPicture(self, handler):
+        self.selectPicture.clicked.connect(lambda: handler())
 
     def onRemovePicture(self, handler):
         self.removePicture.clicked.connect(lambda: handler())

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
+# noinspection PyUnresolvedReferences
+import tgit.use_sip_api_v2
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 
 from test.util import resources, doubles
