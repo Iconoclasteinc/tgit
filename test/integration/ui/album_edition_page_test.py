@@ -26,7 +26,8 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsPicturePlaceholder()
 
     def testDisplaysMainAlbumCoverWhenExisting(self):
-        self.page.display(build.album(images=[build.image('image/jpeg', loadTestImage('front-cover.jpg'), Image.FRONT_COVER)]))
+        self.page.display(
+            build.album(images=[build.image('image/jpeg', loadTestImage('front-cover.jpg'), Image.FRONT_COVER)]))
         self.driver.showsPicture()
 
     def testDisplaysAlbumMetadata(self):
@@ -76,16 +77,16 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsLeadPerformer('Various Artists', disabled=True)
 
     def testSignalsWhenPictureSelected(self):
-        selectPicture = ValueMatcherProbe('select picture')
-        self.page.bind(selectPicture=selectPicture.received)
+        selectPictureSignal = ValueMatcherProbe('select picture')
+        self.page.selectPicture.connect(selectPictureSignal.received)
 
         self.page.display(build.album())
         self.driver.addPicture()
-        self.check(selectPicture)
+        self.check(selectPictureSignal)
 
     def testSignalsWhenRemovePictureButtonClicked(self):
         removePictureSignal = ValueMatcherProbe('remove picture')
-        self.page.bind(removePicture=removePictureSignal.received)
+        self.page.removePicture.connect(removePictureSignal.received)
 
         self.page.display(build.album())
         self.driver.removePicture()
@@ -93,76 +94,76 @@ class AlbumEditionPageTest(ViewTest):
 
     def testSignalsWhenAlbumMetadataEdited(self):
         self.page.display(build.album())
-        albumChangedSignal = ValueMatcherProbe('album changed')
+        metadataChangedSignal = ValueMatcherProbe('metadata changed')
 
-        self.page.bind(metadataChanged=albumChangedSignal.received)
+        self.page.metadataChanged.connect(metadataChangedSignal.received)
 
-        albumChangedSignal.expect(has_properties(releaseName='Title'))
+        metadataChangedSignal.expect(has_properties(releaseName='Title'))
         self.driver.changeReleaseName('Title')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(compilation=True))
+        metadataChangedSignal.expect(has_properties(compilation=True))
         self.driver.toggleCompilation()
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(compilation=False))
+        metadataChangedSignal.expect(has_properties(compilation=False))
         self.driver.toggleCompilation()
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(leadPerformer='Artist'))
+        metadataChangedSignal.expect(has_properties(leadPerformer='Artist'))
         self.driver.changeLeadPerformer('Artist')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(
+        metadataChangedSignal.expect(has_properties(
             guestPerformers=[('Guitar', 'Guitarist'), ('Guitar', 'Bassist'),
                              ('Piano', 'Pianist')]))
         self.driver.changeGuestPerformers('Guitar: Guitarist; Guitar: Bassist; Piano: Pianist')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(labelName='Label'))
+        metadataChangedSignal.expect(has_properties(labelName='Label'))
         self.driver.changeLabelName('Label')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(catalogNumber='XXX12345678'))
+        metadataChangedSignal.expect(has_properties(catalogNumber='XXX12345678'))
         self.driver.changeCatalogNumber('XXX12345678')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(upc='123456789999'))
+        metadataChangedSignal.expect(has_properties(upc='123456789999'))
         self.driver.changeUpc('123456789999')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(comments='Comments\n...\n'))
+        metadataChangedSignal.expect(has_properties(comments='Comments\n...\n'))
         self.driver.addComments('Comments')
         self.driver.addComments('...')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(releaseTime='2009-01-01'))
+        metadataChangedSignal.expect(has_properties(releaseTime='2009-01-01'))
         self.driver.changeReleaseTime('2009-01-01')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(recordingTime='2008-09-15'))
+        metadataChangedSignal.expect(has_properties(recordingTime='2008-09-15'))
         self.driver.changeRecordingTime('2008-09-15')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(recordingStudios='Studios'))
+        metadataChangedSignal.expect(has_properties(recordingStudios='Studios'))
         self.driver.changeRecordingStudios('Studios')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(producer='Producer'))
+        metadataChangedSignal.expect(has_properties(producer='Producer'))
         self.driver.changeProducer('Producer')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(mixer='Mixer'))
+        metadataChangedSignal.expect(has_properties(mixer='Mixer'))
         self.driver.changeMixer('Mixer')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(primaryStyle='Jazz'))
+        metadataChangedSignal.expect(has_properties(primaryStyle='Jazz'))
         self.driver.selectPrimaryStyle('Jazz')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
-        albumChangedSignal.expect(has_properties(primaryStyle='Custom'))
+        metadataChangedSignal.expect(has_properties(primaryStyle='Custom'))
         self.driver.changePrimaryStyle('Custom')
-        self.check(albumChangedSignal)
+        self.check(metadataChangedSignal)
 
 
 def loadTestImage(name):

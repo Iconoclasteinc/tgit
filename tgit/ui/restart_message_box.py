@@ -20,11 +20,11 @@
 from PyQt4.QtGui import QMessageBox
 
 
-class MessageBox(QMessageBox):
+class RestartMessageBox(QMessageBox):
     def __init__(self, parent=None):
         QMessageBox.__init__(self, parent)
-        self.setObjectName('message-box')
-
-    def displayRestartNotice(self):
+        self.setObjectName('restart-message')
         self.setText(self.tr("You need to restart TGiT for changes to take effect."))
+
+    def display(self):
         self.open()

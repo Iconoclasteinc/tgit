@@ -14,10 +14,10 @@ class MenuBarTest(ViewTest):
     def setUp(self):
         super(MenuBarTest, self).setUp()
         self.mainWindow = QMainWindow()
-        self.view = MenuBar()
-        self.mainWindow.setMenuBar(self.view)
+        self.menuBar = MenuBar()
+        self.mainWindow.setMenuBar(self.menuBar)
         self.show(self.mainWindow)
-        self.driver = self.createDriverFor(self.view)
+        self.driver = self.createDriverFor(self.menuBar)
 
     def createDriverFor(self, widget):
         return MenuBarDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
@@ -27,30 +27,30 @@ class MenuBarTest(ViewTest):
 
     def testSignalsWhenAddFilesMenuItemClicked(self):
         album = build.album()
-        addFilesEvent = ValueMatcherProbe('add files', album)
-        self.view.bind(addFiles=addFilesEvent.received)
-        self.view.albumCreated(album)
+        addFilesSignal = ValueMatcherProbe('add files', album)
+        self.menuBar.addFiles.connect(addFilesSignal.received)
+        self.menuBar.albumCreated(album)
         self.driver.addFiles()
-        self.driver.check(addFilesEvent)
+        self.driver.check(addFilesSignal)
 
     def testSignalsWhenAddFolderMenuItemClicked(self):
         album = build.album()
-        addFolderEvent = ValueMatcherProbe('add folder', album)
-        self.view.bind(addFolder=addFolderEvent.received)
-        self.view.albumCreated(album)
+        addFolderSignal = ValueMatcherProbe('add folder', album)
+        self.menuBar.addFolder.connect(addFolderSignal.received)
+        self.menuBar.albumCreated(album)
         self.driver.addFolder()
-        self.driver.check(addFolderEvent)
+        self.driver.check(addFolderSignal)
 
     def testSignalsWhenExportMenuItemClicked(self):
         album = build.album()
-        exportAlbumEvent = ValueMatcherProbe('export', album)
-        self.view.bind(exportAlbum=exportAlbumEvent.received)
-        self.view.albumCreated(album)
+        exportAlbumSignal = ValueMatcherProbe('export', album)
+        self.menuBar.export.connect(exportAlbumSignal.received)
+        self.menuBar.albumCreated(album)
         self.driver.export()
-        self.driver.check(exportAlbumEvent)
+        self.driver.check(exportAlbumSignal)
 
     def testSignalsWhenSettingsMenuItemClicked(self):
-        changeSettingsEvent = ValueMatcherProbe('change settings')
-        self.view.bind(settings=changeSettingsEvent.received)
+        changeSettingsSignal = ValueMatcherProbe('change settings')
+        self.menuBar.settings.connect(changeSettingsSignal.received)
         self.driver.settings()
-        self.driver.check(changeSettingsEvent)
+        self.driver.check(changeSettingsSignal)

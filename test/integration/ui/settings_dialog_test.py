@@ -38,15 +38,15 @@ class SettingsDialogTest(ViewTest):
     def testSignalsWhenAccepted(self):
         self.dialog.addLanguage('en', 'English')
 
-        accepted = ValueMatcherProbe("click on button 'OK'")
-        self.dialog.bind(ok=accepted.received)
+        acceptedSignal = ValueMatcherProbe("click on button 'OK'")
+        self.dialog.accepted.connect(acceptedSignal.received)
         self.driver.ok()
-        self.driver.check(accepted)
+        self.driver.check(acceptedSignal)
 
     def testSignalsWhenRejected(self):
         self.dialog.addLanguage('en', 'English')
 
-        rejected = ValueMatcherProbe("click on button 'Cancel'")
-        self.dialog.bind(cancel=rejected.received)
+        rejectedSignal = ValueMatcherProbe("click on button 'Cancel'")
+        self.dialog.rejected.connect(rejectedSignal.received)
         self.driver.cancel()
-        self.driver.check(rejected)
+        self.driver.check(rejectedSignal)

@@ -39,14 +39,10 @@ class SettingsDialog(QDialog):
         layout.addWidget(label, 0, 0)
         layout.addWidget(self.languages, 0, 1)
         self.buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.buttons.accepted.connect(self.accept)
+        self.buttons.rejected.connect(self.reject)
         layout.addWidget(self.buttons, 1, 0, 1, 2)
         self.setLayout(layout)
-
-    def bind(self, **handlers):
-        if 'ok' in handlers:
-            self.buttons.accepted.connect(handlers['ok'])
-        if 'cancel' in handlers:
-            self.buttons.rejected.connect(handlers['cancel'])
 
     def addLanguage(self, locale, language):
         self.languages.addItem(self.tr(language), locale)

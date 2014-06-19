@@ -16,60 +16,71 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt4.QtCore import pyqtSignal
 
 from PyQt4.QtGui import QMenuBar, QMenu, QAction
+from tgit.album import Album
 
 
 class MenuBar(QMenuBar):
+    addFiles = pyqtSignal(Album)
+    addFolder = pyqtSignal(Album)
+    export = pyqtSignal(Album)
+    settings = pyqtSignal()
+
     def __init__(self):
         QMenuBar.__init__(self)
-        self.render()
+        self.albumActions = []
+        self.build()
 
-    def bind(self, **handlers):
-        if 'settings' in handlers:
-            self.preferences.triggered.connect(lambda checked: handlers['settings']())
-        if 'addFiles' in handlers:
-            self.addFiles.triggered.connect(lambda checked: handlers['addFiles'](self.addFiles.data()))
-        if 'addFolder' in handlers:
-            self.addFolder.triggered.connect(lambda checked: handlers['addFolder'](self.addFolder.data()))
-        if 'exportAlbum' in handlers:
-            self.export.triggered.connect(lambda checked: handlers['exportAlbum'](self.export.data()))
+    def albumCreated(self, album):
+        for action in self.albumActions:
+            action.setEnabled(True)
+            action.setData(album)
 
-    def render(self):
+    def build(self):
         self.addMenu(self.makeFileMenu())
-        return self
 
     def makeFileMenu(self):
         menu = QMenu(self)
         menu.setObjectName('file-menu')
         menu.setTitle(self.tr('File'))
-
-        self.addFiles = QAction(menu)
-        self.addFiles.setObjectName('add-files')
-        self.addFiles.setText(self.tr('Add Files...'))
-        self.addFiles.setDisabled(True)
-        menu.addAction(self.addFiles)
-
-        self.addFolder = QAction(menu)
-        self.addFolder.setObjectName('add-folder')
-        self.addFolder.setText(self.tr('Add Folder...'))
-        self.addFolder.setDisabled(True)
-        menu.addAction(self.addFolder)
-
-        self.export = QAction(menu)
-        self.export.setObjectName('export')
-        self.export.setText(self.tr('Export...'))
-        self.export.setDisabled(True)
-        menu.addAction(self.export)
-
-        self.preferences = QAction(menu)
-        self.preferences.setObjectName('Settings')
-        self.preferences.setText(self.tr('Settings'))
-        menu.addAction(self.preferences)
-
+        self.appendAddFilesItem(menu)
+        self.appendAddFolderItem(menu)
+        self.appendExportItem(menu)
+        self.appendPreferencesItem(menu)
         return menu
 
-    def albumCreated(self, album):
-        for action in [self.addFiles, self.addFolder, self.export]:
-            action.setEnabled(True)
-            action.setData(album)
+    def appendAddFilesItem(self, menu):
+        action = QAction(menu)
+        action.setObjectName('add-files')
+        action.setText(self.tr('Add Files...'))
+        action.setDisabled(True)
+        action.triggered.connect(lambda checked: self.addFiles.emit(action.data()))
+        menu.addAction(action)
+        self.albumActions.append(action)
+
+    def appendAddFolderItem(self, menu):
+        action = QAction(menu)
+        action.setObjectName('add-folder')
+        action.setText(self.tr('Add Folder...'))
+        action.setDisabled(True)
+        action.triggered.connect(lambda checked: self.addFolder.emit(action.data()))
+        menu.addAction(action)
+        self.albumActions.append(action)
+
+    def appendExportItem(self, menu):
+        action = QAction(menu)
+        action.setObjectName('export')
+        action.setText(self.tr('Export...'))
+        action.setDisabled(True)
+        action.triggered.connect(lambda checked: self.export.emit(action.data()))
+        menu.addAction(action)
+        self.albumActions.append(action)
+
+    def appendPreferencesItem(self, menu):
+        action = QAction(menu)
+        action.setObjectName('Settings')
+        action.setText(self.tr('Settings'))
+        action.triggered.connect(lambda checked: self.settings.emit())
+        menu.addAction(action)

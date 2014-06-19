@@ -19,7 +19,7 @@
 
 from dateutil import tz, parser as dateparser
 
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, pyqtSignal
 from PyQt4.QtGui import (QLabel, QWidget, QGroupBox, QFrame)
 
 from tgit.album import AlbumListener
@@ -30,18 +30,18 @@ from tgit.ui.helpers import form, image, display, formatting
 
 
 class TrackEditionPage(QWidget, TrackListener, AlbumListener):
+    metadataChanged = pyqtSignal(Snapshot)
+
     ALBUM_COVER_SIZE = 60, 60
     DURATION_FORMAT = 'mm:ss'
 
     def __init__(self, track):
         QWidget.__init__(self)
-        self.track = track
         # we need this until track knows its position in the album
+        self.track = track
         self.album = track.album
         self.cover = None
-
         self.build()
-        self.refresh()
 
     def build(self):
         self.setObjectName('track-edition-page')
@@ -52,41 +52,21 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         self.disableMacFocusFrame()
         self.disableTeaserFields()
 
-    def bind(self, **handlers):
-        if 'metadataChanged' in handlers:
-            self.onMetadataChange(handlers['metadataChanged'])
-
-    def onMetadataChange(self, handler):
-        for edit in (self.trackTitle,
-                     self.leadPerformer,
-                     self.versionInfo,
-                     self.featuredGuest,
-                     self.lyricist,
-                     self.composer,
-                     self.publisher,
-                     self.isrc,
-                     self.tags,
-                     self.lyrics):
-            edit.editingFinished.connect(lambda: handler(self.snapshot))
-
-        self.languages.activated.connect(lambda: handler(self.snapshot))
-        self.languages.lineEdit().textEdited.connect(lambda: handler(self.snapshot))
-
     def trackStateChanged(self, state):
-        self.refresh()
+        self.display(state)
 
     # will eventually go away
+    # but first we need track to know its track number and total tracks
     def trackAdded(self, track, position):
-        self.refresh()
+        self.display(self.track)
 
+    # will eventually go away
+    # but first we need track to know its track number and total tracks
     def trackRemoved(self, track, position):
-        # todo let AlbumScreen decide of that
         if track == self.track:
             self.album.removeAlbumListener(self)
-            self.track.removeTrackListener(self)
         else:
-            # but first we need track to know its track number and total tracks
-            self.refresh()
+            self.display(self.track)
 
     def makeAlbumBanner(self):
         header = QFrame()
@@ -169,10 +149,13 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         fieldSet.setTitle(self.tr('TRACK'))
         layout = form.layout()
         self.trackTitle = form.lineEdit('track-title')
+        self.trackTitle.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.trackTitle, self.tr('Track Title: ')), self.trackTitle)
         self.leadPerformer = form.lineEdit('lead-performer')
+        self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.leadPerformer, self.tr('Lead Performer: ')), self.leadPerformer)
         self.versionInfo = form.lineEdit('version-info')
+        self.versionInfo.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.versionInfo, self.tr('Version Information: ')), self.versionInfo)
         fieldSet.setLayout(layout)
         return fieldSet
@@ -182,12 +165,16 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         fieldSet.setTitle(self.tr('CONTRIBUTORS'))
         layout = form.layout()
         self.featuredGuest = form.lineEdit('featured-guest')
+        self.featuredGuest.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.featuredGuest, self.tr('Featured Guest: ')), self.featuredGuest)
         self.lyricist = form.lineEdit('lyricist')
+        self.lyricist.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.lyricist, self.tr('Lyricist: ')), self.lyricist)
         self.composer = form.lineEdit('composer')
+        self.composer.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.composer, self.tr('Composer: ')), self.composer)
         self.publisher = form.lineEdit('publisher')
+        self.publisher.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.publisher, self.tr('Publisher: ')), self.publisher)
         fieldSet.setLayout(layout)
         return fieldSet
@@ -197,11 +184,14 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         fieldSet.setTitle(self.tr('IDENTIFICATION'))
         layout = form.layout()
         self.isrc = form.lineEdit('isrc')
+        self.isrc.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         self.isrc.setPlaceholderText('ZZZ123456789')
         layout.addRow(form.labelFor(self.isrc, self.tr('ISRC: ')), self.isrc)
         self.iswc = form.lineEdit('iswc')
+        self.iswc.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.iswc, self.tr('ISWC: ')), self.iswc)
         self.tags = form.lineEdit('tags')
+        self.tags.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         self.tags.setPlaceholderText(self.tr('tag1, tag2, tag3 ...'))
         layout.addRow(form.labelFor(self.tags, self.tr('Tags: ')), self.tags)
         fieldSet.setLayout(layout)
@@ -221,9 +211,12 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         fieldSet.setTitle(self.tr('CONTENT'))
         layout = form.layout()
         self.lyrics = form.textArea('lyrics')
+        self.lyrics.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.lyrics, self.tr('Lyrics: ')), self.lyrics)
         self.languages = form.comboBox('languages')
         self.languages.addItems(sorted(LANGUAGES))
+        self.languages.activated.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.languages.lineEdit().textEdited.connect(lambda: self.metadataChanged.emit(self.snapshot))
         layout.addRow(form.labelFor(self.languages, self.tr('Language: ')), self.languages)
         self.previewTime = form.timeEdit('preview-time')
         layout.addRow(form.labelFor(self.previewTime, self.tr('Preview Time: ')), self.previewTime)
@@ -241,28 +234,28 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         layout.addWidget(self.softwareNotice)
         return layout
 
-    def refresh(self):
+    def display(self, track):
         self.displayAlbumCover(self.album)
         self.albumTitle.setText(self.album.releaseName)
         self.albumLeadPerformer.setText(self.album.compilation and self.tr('Various Artists')
                                         or self.album.leadPerformer)
         self.recordLabel.setText(self.album.labelName)
-        self.trackNumber.setText(self.tr('Track %d of %d') % (self.track.number, len(self.album)))
-        self.trackTitle.setText(self.track.trackTitle)
-        self.leadPerformer.setText(self.track.leadPerformer)
-        self.leadPerformer.setEnabled(self.track.compilation is True)
-        self.versionInfo.setText(self.track.versionInfo)
-        self.duration.setText(display.asDuration(self.track.duration))
-        self.bitrate.setText('%s kbps' % formatting.toKbps(self.track.bitrate))
-        self.featuredGuest.setText(self.track.featuredGuest)
-        self.lyricist.setText(self.track.lyricist)
-        self.composer.setText(self.track.composer)
-        self.publisher.setText(self.track.publisher)
-        self.isrc.setText(self.track.isrc)
-        self.tags.setText(self.track.tags)
-        self.lyrics.setPlainText(self.track.lyrics)
-        self.languages.setEditText(self.track.language)
-        self.displaySoftwareNotice(self.track)
+        self.trackNumber.setText(self.tr('Track %d of %d') % (track.number, len(self.album)))
+        self.trackTitle.setText(track.trackTitle)
+        self.leadPerformer.setText(track.leadPerformer)
+        self.leadPerformer.setEnabled(track.compilation is True)
+        self.versionInfo.setText(track.versionInfo)
+        self.duration.setText(display.asDuration(track.duration))
+        self.bitrate.setText('%s kbps' % formatting.toKbps(track.bitrate))
+        self.featuredGuest.setText(track.featuredGuest)
+        self.lyricist.setText(track.lyricist)
+        self.composer.setText(track.composer)
+        self.publisher.setText(track.publisher)
+        self.isrc.setText(track.isrc)
+        self.tags.setText(track.tags)
+        self.lyrics.setPlainText(track.lyrics)
+        self.languages.setEditText(track.language)
+        self.displaySoftwareNotice(track)
 
     def displayAlbumCover(self, album):
         # Cache the cover image to avoid recomputing the image each time the screen updates

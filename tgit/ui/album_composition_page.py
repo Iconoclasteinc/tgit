@@ -79,6 +79,11 @@ LIGHT_GRAY = QColor.fromRgb(0xDDDDDD)
 
 
 class AlbumCompositionPage(QWidget):
+    playTrack = pyqtSignal(Track)
+    removeTrack = pyqtSignal(Track)
+    addTracks = pyqtSignal()
+    trackMoved = pyqtSignal(Track, int)
+
     # Using stylesheets on the table corrupts the display of the button widgets in the
     # cells, at least on OSX. So we have to style programmatically
     COLUMNS_WIDTHS = [345, 205, 215, 85, 65, 30, 30]
@@ -87,25 +92,12 @@ class AlbumCompositionPage(QWidget):
         QWidget.__init__(self)
         self.build()
 
-    def bind(self, **handlers):
-        if 'play' in handlers:
-            self.play.clicked.connect(handlers['play'])
-        if 'add' in handlers:
-            self.addButton.clicked.connect(lambda pressed: handlers['add']())
-        if 'remove' in handlers:
-            self.remove.clicked.connect(handlers['remove'])
-        if 'trackMoved' in handlers:
-            self.table.verticalHeader().sectionMoved.connect(
-                lambda _, from_, to: handlers['trackMoved'](self.table.model().trackAt(from_), to))
-
     def build(self):
         self.setObjectName('album-composition-page')
         layout = form.column()
         layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self.makeHeader())
         self.table = self.makeTrackTable()
-        self.play = self.makePlayButton(self.table)
-        self.remove = self.makeRemoveButton(self.table)
         layout.addWidget(self.makeTableFrame(self.table))
         self.setLayout(layout)
 
@@ -116,9 +108,10 @@ class AlbumCompositionPage(QWidget):
         help.setText(self.tr('Organize tracks in album.'))
         row.addWidget(help)
         row.addStretch()
-        self.addButton = form.button('add-tracks')
-        self.addButton.setText(self.tr('ADD'))
-        row.addWidget(self.addButton)
+        addButton = form.button('add-tracks')
+        addButton.setText(self.tr('ADD'))
+        addButton.clicked.connect(lambda pressed: self.addTracks.emit())
+        row.addWidget(addButton)
         header.setLayout(row)
 
         return header
@@ -149,18 +142,22 @@ class AlbumCompositionPage(QWidget):
         table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
         table.verticalHeader().setResizeMode(QHeaderView.Fixed)
         table.verticalHeader().setMovable(True)
+        table.verticalHeader().sectionMoved.connect(
+            lambda _, from_, to: self.trackMoved.emit(table.model().trackAt(from_), to))
         table.horizontalHeader().setResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
         table.horizontalHeader().setResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
+        table.setItemDelegateForColumn(Columns.index(Columns.play), self.makePlayButton(table))
+        table.setItemDelegateForColumn(Columns.index(Columns.remove), self.makeRemoveButton(table))
         return table
 
     def makePlayButton(self, table):
         button = PlayButtonDelegate(table)
-        table.setItemDelegateForColumn(Columns.index(Columns.play), button)
+        button.clicked.connect(self.playTrack.emit)
         return button
 
     def makeRemoveButton(self, table):
         button = RemoveButtonDelegate(table)
-        table.setItemDelegateForColumn(Columns.index(Columns.remove), button)
+        button.clicked.connect(self.removeTrack.emit)
         return button
 
     def display(self, player, album):

@@ -17,8 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import functools as func
-
 from tgit.util import sip_api
 sip_api.use_v2()
 
@@ -34,7 +32,7 @@ from tgit.ui.album_screen import AlbumScreen
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
 from tgit.ui.menu_bar import MenuBar
-from tgit.ui.message_box import MessageBox
+from tgit.ui.restart_message_box import RestartMessageBox
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
@@ -47,21 +45,19 @@ from tgit.ui import resources
 
 def AlbumCompositionPageController(selectTracks, player, album):
     page = AlbumCompositionPage()
-    page.bind(add=lambda: selectTracks(album),
-              trackMoved=func.partial(director.moveTrack, album),
-              play=func.partial(director.playTrack, player, album),
-              remove=func.partial(director.removeTrack, player, album))
+    page.addTracks.connect(lambda: selectTracks(album))
+    page.trackMoved.connect(lambda track, position: director.moveTrack(album, track, position))
+    page.playTrack.connect(lambda track: director.playTrack(player, track))
+    page.removeTrack.connect(lambda track: director.removeTrack(player, album, track))
     page.display(player, album)
     return page
 
 
 def AlbumEditionPageController(selectPicture, album):
     page = AlbumEditionPage()
-    # todo try to replace with signals
-    page.bind(metadataChanged=func.partial(director.updateAlbum, album),
-              selectPicture=lambda: selectPicture(album),
-              removePicture=func.partial(director.removeAlbumCover, album))
-    # let page handle this?
+    page.metadataChanged.connect(lambda snapshot: director.updateAlbum(album, snapshot))
+    page.selectPicture.connect(lambda: selectPicture(album))
+    page.removePicture.connect(lambda: director.removeAlbumCover(album))
     album.addAlbumListener(page)
     page.display(album)
     return page
@@ -69,15 +65,17 @@ def AlbumEditionPageController(selectPicture, album):
 
 def TrackEditionPageController(track):
     page = TrackEditionPage(track)
-    page.bind(metadataChanged=func.partial(director.updateTrack, track))
+    page.metadataChanged.connect(lambda snapshot: director.updateTrack(track, snapshot))
     track.addTrackListener(page)
     track.album.addAlbumListener(page)
+    page.display(track)
     return page
 
 
 def AlbumScreenController(compositionPage, albumPage, trackPage, library, album):
-    page = AlbumScreen(album, compositionPage(album), albumPage(album), trackPage)
-    page.bind(recordAlbum=func.partial(director.recordAlbum, library, album))
+    page = AlbumScreen(compositionPage(album), albumPage(album), trackPage)
+    album.addAlbumListener(page)
+    page.recordAlbum.connect(lambda: director.recordAlbum(library, album))
     return page
 
 
@@ -87,17 +85,17 @@ def PictureSelectionDialogController(parent, album, native):
     dialog.display()
 
 
-def SettingsDialogController(messageBox, preferences, parent):
+def SettingsDialogController(restartNotice, preferences, parent):
     dialog = SettingsDialog(parent)
 
     def savePreferences():
         preferences.add(**dialog.settings)
         dialog.close()
-        messageBox(parent).displayRestartNotice()
+        restartNotice(parent).display()
 
-    dialog.bind(ok=savePreferences, cancel=dialog.close)
-    dialog.addLanguage('en', 'English')
-    dialog.addLanguage('fr', 'French')
+    dialog.accepted.connect(savePreferences)
+    dialog.addLanguage('en', dialog.tr('English'))
+    dialog.addLanguage('fr', dialog.tr('French'))
     dialog.display(**preferences)
     return dialog
 
@@ -117,17 +115,16 @@ def TrackSelectionDialogController(library, album, parent, native, folders):
 def MenuBarController(exportAs, selectTracks, changeSettings, portfolio):
     menuBar = MenuBar()
     portfolio.addPortfolioListener(menuBar)
-    menuBar.bind(
-        addFiles=lambda album: selectTracks(album),
-        addFolder=lambda album: selectTracks(album, True),
-        exportAlbum=lambda album: exportAs(album),
-        settings=lambda: changeSettings())
+    menuBar.addFiles.connect(lambda album: selectTracks(album))
+    menuBar.addFolder.connect(lambda album: selectTracks(album, True))
+    menuBar.export.connect(lambda album: exportAs(album))
+    menuBar.settings.connect(lambda: changeSettings())
     return menuBar
 
 
 def WelcomeScreenController(portfolio):
     page = WelcomeScreen()
-    page.bind(newAlbum=lambda: director.createAlbum(portfolio))
+    page.newAlbum.connect(lambda: director.createAlbum(portfolio))
     return page
 
 
@@ -139,7 +136,7 @@ def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
 
 def createMainWindow(albumPortfolio, player, preferences, library, native):
     def showSettingsDialog():
-        return SettingsDialogController(MessageBox, preferences, window)
+        return SettingsDialogController(RestartMessageBox, preferences, window)
 
     def showExportAsDialog(album):
         return ExportAsDialogController(CsvFormat('windows-1252'), album, window, native)

@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, pyqtSignal
 from PyQt4.QtGui import QWidget, QLabel, QStackedWidget, QPushButton
 
 from tgit.album import AlbumListener
@@ -25,24 +25,19 @@ from tgit.ui.helpers import form
 
 
 class AlbumScreen(QWidget, AlbumListener):
+    recordAlbum = pyqtSignal()
+
     HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
     FEATURE_REQUEST_URL = "mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !"
 
     TRACK_PAGES_INDEX = 2
 
-    def __init__(self, album, composeAlbum, editAlbum, editTrack):
+    def __init__(self, composeAlbum, editAlbum, editTrack):
         QWidget.__init__(self)
-        self.album = album
-        self.album.addAlbumListener(self)
-        self.editTrack = editTrack
-
         self.build()
         self.appendPage(composeAlbum)
         self.appendPage(editAlbum)
-
-    def bind(self, **handlers):
-        if 'recordAlbum' in handlers:
-            self.save.clicked.connect(lambda pressed: handlers['recordAlbum']())
+        self.editTrack = editTrack
 
     def build(self):
         self.setObjectName('album-screen')
@@ -100,6 +95,7 @@ class AlbumScreen(QWidget, AlbumListener):
         self.save.setObjectName('save')
         self.save.setText(self.tr('SAVE'))
         self.save.setFocusPolicy(Qt.StrongFocus)
+        self.save.clicked.connect(lambda pressed: self.recordAlbum.emit())
         form.disableButton(self.save)
         layout.addWidget(self.save)
         layout.addStretch()
@@ -117,7 +113,11 @@ class AlbumScreen(QWidget, AlbumListener):
         self.addTrackEditionPage(self.editTrack(track), position)
 
     def trackRemoved(self, track, position):
-        self.removeTrackEditionPage(position)
+        page = self.removeTrackEditionPage(position)
+        track.removeTrackListener(page)
+
+    def hasTrackPage(self):
+        return self.totalPages > self.TRACK_PAGES_INDEX
 
     def updateControls(self):
         if self.onFirstPage():
@@ -130,10 +130,10 @@ class AlbumScreen(QWidget, AlbumListener):
         else:
             form.enableButton(self.next)
 
-        if self.album.empty():
-            form.disableButton(self.save)
-        else:
+        if self.hasTrackPage():
             form.enableButton(self.save)
+        else:
+            form.disableButton(self.save)
 
     def onLastPage(self):
         return self.onPage(self.totalPages - 1)
@@ -148,7 +148,7 @@ class AlbumScreen(QWidget, AlbumListener):
         self.insertPage(page, self.TRACK_PAGES_INDEX + position)
 
     def removeTrackEditionPage(self, position):
-        self.removePage(self.TRACK_PAGES_INDEX + position)
+        return self.removePage(self.TRACK_PAGES_INDEX + position)
 
     def appendPage(self, widget):
         self.pages.addWidget(widget)
@@ -159,8 +159,10 @@ class AlbumScreen(QWidget, AlbumListener):
         self.updateControls()
 
     def removePage(self, number):
-        self.pages.removeWidget(self.pages.widget(number))
+        page = self.pages.widget(number)
+        self.pages.removeWidget(page)
         self.updateControls()
+        return page
 
     @property
     def currentPage(self):

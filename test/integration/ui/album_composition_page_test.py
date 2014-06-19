@@ -48,27 +48,27 @@ class AlbumCompositionPageTest(ViewTest):
 
     def testSignalsWhenPlayTrackButtonClicked(self):
         self.album.addTrack(build.track(trackTitle='Happy'))
-        playClicked = ValueMatcherProbe('play track', hasTitle('Happy'))
+        playTrackSignal = ValueMatcherProbe('play track', hasTitle('Happy'))
+        self.page.playTrack.connect(playTrackSignal.received)
 
-        self.page.bind(play=playClicked.received)
         self.driver.play('Happy')
-        self.driver.check(playClicked)
+        self.driver.check(playTrackSignal)
 
     def testSignalsWhenAddTracksButtonClicked(self):
-        addClicked = ValueMatcherProbe('add tracks')
-        self.page.bind(add=addClicked.received)
+        addTracksSignal = ValueMatcherProbe('add tracks')
+        self.page.addTracks.connect(addTracksSignal.received)
+
         self.driver.addTracks()
-        self.driver.check(addClicked)
+        self.driver.check(addTracksSignal)
 
     def testSignalsWhenRemoveTrackButtonClicked(self):
         self.album.addTrack(build.track())
         self.album.addTrack(build.track(trackTitle='Set Fire to the Rain'))
-        removeClicked = ValueMatcherProbe('remove track', hasTitle('Set Fire to the Rain'))
-
-        self.page.bind(remove=removeClicked.received)
+        removeTrackSignal = ValueMatcherProbe('remove track', hasTitle('Set Fire to the Rain'))
+        self.page.removeTrack.connect(removeTrackSignal.received)
 
         self.driver.removeTrack('Set Fire to the Rain')
-        self.driver.check(removeClicked)
+        self.driver.check(removeTrackSignal)
 
     def testSignalsWhenTrackWasMoved(self):
         self.album.addTrack(build.track(trackTitle='Wisemen'))
@@ -76,8 +76,8 @@ class AlbumCompositionPageTest(ViewTest):
         self.album.addTrack(build.track(trackTitle='Tears and Rain'))
 
         newPosition = 1
-        trackMoved = ValueMatcherProbe('move track', contains(hasTitle('Tears and Rain'), newPosition))
-        self.page.bind(trackMoved=lambda track, to: trackMoved.received([track, newPosition]))
+        trackMovedSignal = ValueMatcherProbe('track moved', contains(hasTitle('Tears and Rain'), newPosition))
+        self.page.trackMoved.connect(lambda track, to: trackMovedSignal.received([track, newPosition]))
 
         self.driver.moveTrack('Tears and Rain', newPosition)
-        self.driver.check(trackMoved)
+        self.driver.check(trackMovedSignal)

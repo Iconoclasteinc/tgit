@@ -15,6 +15,7 @@ from tgit.ui.track_edition_page import TrackEditionPage
 class TrackEditionPageTest(ViewTest):
     def render(self, track):
         self.page = TrackEditionPage(track)
+        self.page.display(track)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
 
@@ -87,7 +88,7 @@ class TrackEditionPageTest(ViewTest):
         self.render(track)
 
         metadataChangedSignal = ValueMatcherProbe('metadata changed')
-        self.page.bind(metadataChanged=metadataChangedSignal.received)
+        self.page.metadataChanged.connect(metadataChangedSignal.received)
 
         metadataChangedSignal.expect(has_properties(trackTitle='Title'))
         self.driver.changeTrackTitle('Title')
