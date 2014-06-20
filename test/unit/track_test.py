@@ -1,15 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import (assert_that, match_equality as matching, has_property, all_of, has_entry, contains)
+from hamcrest import (assert_that, match_equality as matching, has_property, all_of, has_entry, contains,
+                      contains_inanyorder)
 from flexmock import flexmock
 
 from test.util import builders as build
-from tgit import tags
-from tgit.track import TrackListener
+from tgit import tag
+from tgit.track import TrackListener, Track
 
 
 class TrackTest(unittest.TestCase):
+    def testDefinesMetadataTags(self):
+        assert_that(tuple(Track.tags()),
+                    contains_inanyorder('trackTitle', 'compilation', 'leadPerformer', 'versionInfo', 'featuredGuest', 'publisher',
+                                        'lyricist', 'composer', 'isrc', 'labels', 'lyrics', 'language', 'tagger',
+                                        'taggingTime', 'bitrate', 'duration'))
+
     def testUpdatesMetadataFromAlbumMetadata(self):
         track = build.track(filename='track.mp3', trackTitle='Track Title')
         album = build.album(releaseName='Album Title',
@@ -18,8 +25,8 @@ class TrackTest(unittest.TestCase):
         track.album = album
 
         assert_that(track.metadata, all_of(
-            has_entry(tags.RELEASE_NAME, 'Album Title'),
-            has_entry(tags.LEAD_PERFORMER, 'Album Artist'),
+            has_entry(tag.RELEASE_NAME, 'Album Title'),
+            has_entry(tag.LEAD_PERFORMER, 'Album Artist'),
             has_property('images', contains(has_property('data', '<image data>')))), 'updated track metadata')
 
     def testIgnoresLeadPerformerChangesWhenAlbumIsACompilation(self):

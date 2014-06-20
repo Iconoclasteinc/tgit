@@ -76,7 +76,7 @@ class CsvFormatTest(unittest.TestCase):
                 lyricist='Lyricist',
                 composer='Composer',
                 isrc='ISRC',
-                tags='Tag1 Tag2 Tag3')])
+                labels='Tag1 Tag2 Tag3')])
 
         self.format.write(album, self.out)
 

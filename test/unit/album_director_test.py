@@ -44,7 +44,7 @@ class AlbumDirectorTest(unittest.TestCase):
         changes.composer = 'Composer'
         changes.publisher = 'Publisher'
         changes.isrc = 'ZZZ123456789'
-        changes.tags = 'Tags'
+        changes.labels = 'Tags'
         changes.lyrics = 'Lyrics\nLyrics\n...'
         changes.language = 'und'
 
@@ -59,7 +59,7 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(track.composer, equal_to('Composer'), 'composer')
         assert_that(track.publisher, equal_to('Publisher'), 'publisher')
         assert_that(track.isrc, equal_to('ZZZ123456789'), 'isrc')
-        assert_that(track.tags, equal_to('Tags'), 'tags')
+        assert_that(track.labels, equal_to('Tags'), 'tags')
         assert_that(track.lyrics, equal_to('Lyrics\nLyrics\n...'), 'lyrics')
         assert_that(track.language, equal_to('und'), 'language')
 

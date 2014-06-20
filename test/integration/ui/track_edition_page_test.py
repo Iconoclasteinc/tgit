@@ -52,7 +52,7 @@ class TrackEditionPageTest(ViewTest):
                             composer='Composer',
                             publisher='Publisher',
                             isrc='Code',
-                            tags='Tag1 Tag2 Tag3',
+                            labels='Tag1 Tag2 Tag3',
                             lyrics='Lyrics\n...\n...',
                             language='eng')
         build.album(tracks=[track])
@@ -122,7 +122,7 @@ class TrackEditionPageTest(ViewTest):
         self.driver.changeIsrc('ZZZ123456789')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(tags='Tag1 Tag2 Tag3'))
+        metadataChangedSignal.expect(has_properties(labels='Tag1 Tag2 Tag3'))
         self.driver.changeTags('Tag1 Tag2 Tag3')
         self.check(metadataChangedSignal)
 

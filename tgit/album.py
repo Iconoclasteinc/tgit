@@ -19,7 +19,7 @@
 
 from tgit.announcer import Announcer
 from tgit.metadata import Image, Metadata
-from tgit import tags
+from tgit import tag
 
 
 class AlbumListener(object):
@@ -99,7 +99,7 @@ class Album(object):
 
     def _inheritMetadataIfInitialTrack(self, track):
         if self._metadata.empty():
-            self._metadata = track.metadata.copy(*tags.ALBUM_TAGS)
+            self._metadata = track.metadata.copy(*tag.ALBUM_TAGS)
             self._signalStateChange()
 
     def insertTrack(self, track, position):
@@ -119,7 +119,7 @@ class Album(object):
 
 
 def addMetadataPropertiesTo(cls):
-    for meta in tags.ALBUM_TAGS:
+    for meta in tag.ALBUM_TAGS:
         def createProperty(name):
             def getter(self):
                 return self._metadata[name]

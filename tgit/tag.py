@@ -17,6 +17,58 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+
+class tag(object):
+    def __init__(self, name=None, **opts):
+        self.name = name
+        for key, value in opts.items():
+            setattr(self, key, value)
+
+    def __get__(self, instance, owner):
+        return instance.metadata[self.name]
+
+    def __set__(self, instance, value):
+        instance.metadata[self.name] = value
+        instance.signalStateChange()
+
+
+class typed(tag):
+    expectedType = type(None)
+
+    def __set__(self, instance, value):
+        if not isinstance(value, self.expectedType):
+            raise TypeError('expected {}, not {}'.format(self.expectedType, type(value)))
+        super(typed, self).__set__(instance, value)
+
+
+class integer(typed):
+    expectedType = int
+
+
+class text(typed):
+    expectedType = (str, unicode)
+
+
+class decimal(typed):
+    expectedType = (int, float)
+
+
+class boolean(typed):
+    expectedType = bool
+
+
+class Taggable(type):
+    def __new__(cls, clsname, bases, methods):
+        # Attach attribute names to the tags
+        for key, value in methods.items():
+            if isinstance(value, tag):
+                value.name = key
+        return type.__new__(cls, clsname, bases, methods)
+
+    def tags(cls):
+        return (value.name for value in cls.__dict__.itervalues() if isinstance(value, tag))
+
+
 # todo move tags to album.py
 
 FRONT_COVER = 'frontCover'
@@ -57,43 +109,3 @@ ALBUM_TAGS = [
     COMMENTS,
     PRIMARY_STYLE
 ]
-
-# todo move tags to track.py
-
-BITRATE = 'bitrate'
-DURATION = 'duration'
-TRACK_TITLE = 'trackTitle'
-VERSION_INFO = 'versionInfo'
-FEATURED_GUEST = 'featuredGuest'
-LYRICIST = 'lyricist'
-COMPOSER = 'composer'
-PUBLISHER = 'publisher'
-ISRC = 'isrc'
-TAGS = 'tags'
-LYRICS = 'lyrics'
-LANGUAGE = 'language'
-TAGGER = 'tagger'
-TAGGING_TIME = 'taggingTime'
-
-TRACK_TAGS = [
-    TRACK_TITLE,
-    COMPILATION,
-    LEAD_PERFORMER,
-    VERSION_INFO,
-    FEATURED_GUEST,
-    PUBLISHER,
-    LYRICIST,
-    COMPOSER,
-    ISRC,
-    TAGS,
-    LYRICS,
-    LANGUAGE,
-    BITRATE,
-    DURATION,
-    TAGGER,
-    TAGGING_TIME
-]
-
-
-
-

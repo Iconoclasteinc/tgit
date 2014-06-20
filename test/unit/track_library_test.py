@@ -14,7 +14,6 @@ from hamcrest import assert_that, equal_to
 from test.util import builders as build
 from test.util import mp3_file
 from tgit import __version__
-from tgit import tags
 from tgit.track_library import TrackLibrary, TrackStorage, sanitize
 from tgit.track import Track
 
@@ -67,7 +66,7 @@ class TrackLibraryTest(unittest.TestCase):
         track = self.library.fetch('summertime.mp3')
         assert_that(track.metadata, equal_to(metadata), 'track metadata')
 
-    def testRecordsTaggerAndTagginTimeWhenSavingToContainer(self):
+    def testRecordsTaggerAndTaggingTimeWhenSavingToContainer(self):
         tagger = 'TGiT v' + __version__
         taggingTime = '2014-03-23 16:44:33 -0400'
         self.clock.should_receive('now').and_return(datetime(2014, 03, 23, 16, 44, 33, tzinfo=tz.tzlocal()))
@@ -78,8 +77,8 @@ class TrackLibraryTest(unittest.TestCase):
 
 
         embed = metadata.copy()
-        embed[tags.TAGGER] = tagger
-        embed[tags.TAGGING_TIME] = taggingTime
+        embed['tagger'] = tagger
+        embed['taggingTime'] = taggingTime
         self.container.should_receive('save').with_args('summertime.mp3', embed).once()
 
         track = Track('summertime.mp3', metadata)

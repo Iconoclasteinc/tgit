@@ -252,7 +252,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         self.composer.setText(track.composer)
         self.publisher.setText(track.publisher)
         self.isrc.setText(track.isrc)
-        self.tags.setText(track.tags)
+        self.tags.setText(track.labels)
         self.lyrics.setPlainText(track.lyrics)
         self.languages.setEditText(track.language)
         self.displaySoftwareNotice(track)
@@ -288,7 +288,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         snapshot.composer = self.composer.text()
         snapshot.publisher = self.publisher.text()
         snapshot.isrc = self.isrc.text()
-        snapshot.tags = self.tags.text()
+        snapshot.labels = self.tags.text()
         snapshot.lyrics = self.lyrics.toPlainText()
         snapshot.language = self.languages.currentText()
 

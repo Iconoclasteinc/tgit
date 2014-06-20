@@ -10,7 +10,7 @@ from test.util import builders as build
 
 from tgit.metadata import Image
 from tgit.album import Album, AlbumListener
-import tgit.tags as tags
+import tgit.tag as tags
 
 
 class AlbumTest(unittest.TestCase):

@@ -2,6 +2,9 @@
 
 import csv
 
+from tgit.util import sip_api
+sip_api.use_v2()
+
 from PyQt4.QtCore import QObject
 
 
@@ -38,7 +41,7 @@ class CsvFormat(QObject):
             album.releaseTime, album.recordingTime, album.recordingStudios, album.producer, \
             album.mixer, album.primaryStyle, track.trackTitle, track.versionInfo, track.featuredGuest, \
             track.lyrics, track.language, track.publisher, track.lyricist, track.composer, \
-            track.isrc, track.tags
+            track.isrc, track.labels
         writer.writerow(self.encodeRow(row))
 
     def encode(self, text):

@@ -21,7 +21,7 @@ from collections import Counter
 
 from mutagen import mp3, id3
 
-from tgit import tags as tagging
+from tgit import tag as tagging
 from tgit.metadata import Metadata, Image
 
 
@@ -179,22 +179,22 @@ class ID3Tagger(object):
                      'TDRC': tagging.RECORDING_TIME,
                      'TDRL': tagging.RELEASE_TIME,
                      'TDOR': tagging.ORIGINAL_RELEASE_TIME,
-                     'TIT2': tagging.TRACK_TITLE,
-                     'TPE4': tagging.VERSION_INFO,
-                     'TEXT': tagging.LYRICIST,
-                     'TCOM': tagging.COMPOSER,
-                     'TPUB': tagging.PUBLISHER,
-                     'TSRC': tagging.ISRC,
-                     'TLAN': tagging.LANGUAGE,
+                     'TIT2': 'trackTitle',
+                     'TPE4': 'versionInfo',
+                     'TEXT': 'lyricist',
+                     'TCOM': 'composer',
+                     'TPUB': 'publisher',
+                     'TSRC': 'isrc',
+                     'TLAN': 'language',
                      'TXXX:Catalog Number': tagging.CATALOG_NUMBER,
                      'TXXX:UPC': tagging.UPC,
                      'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
-                     'TXXX:Featured Guest': tagging.FEATURED_GUEST,
-                     'TXXX:Tags': tagging.TAGS,
-                     'TXXX:Tagger': tagging.TAGGER,
-                     'TXXX:Tagging Time': tagging.TAGGING_TIME,
+                     'TXXX:Featured Guest': 'featuredGuest',
+                     'TXXX:Tags': 'labels',
+                     'TXXX:Tagger': 'tagger',
+                     'TXXX:Tagging Time': 'taggingTime',
                      "COMM::'fra'": tagging.COMMENTS,
-                     "USLT::'fra'": tagging.LYRICS,
+                     "USLT::'fra'": 'lyrics',
                      'TCON': tagging.PRIMARY_STYLE
                      }.items():
         processors.append(UnicodeProcessor(key, tag))
@@ -211,8 +211,8 @@ class ID3Tagger(object):
         for processor in self.processors:
             processor.processFrames(metadata, frames)
 
-        metadata[tagging.DURATION] = audioFile.info.length
-        metadata[tagging.BITRATE] = audioFile.info.bitrate
+        metadata['duration'] = audioFile.info.length
+        metadata['bitrate'] = audioFile.info.bitrate
 
         return metadata
 

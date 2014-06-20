@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit.announcer import Announcer
-from tgit import tags
+from tgit import tag
 from tgit.metadata import Metadata
 
 
@@ -28,6 +28,27 @@ class TrackListener(object):
 
 
 class Track(object):
+    __metaclass__ = tag.Taggable
+
+    trackTitle = tag.text()
+    compilation = tag.boolean()
+    leadPerformer = tag.text()
+    versionInfo = tag.text()
+    featuredGuest = tag.text()
+    publisher = tag.text()
+    lyricist = tag.text()
+    composer = tag.text()
+    isrc = tag.text()
+    labels = tag.text()
+    lyrics = tag.text()
+    language = tag.text()
+    tagger = tag.text()
+    taggingTime = tag.text()
+
+    # todo Introduce Recording
+    bitrate = tag.integer()
+    duration = tag.decimal()
+
     def __init__(self, filename, metadata=None):
         self._filename = filename
         self._metadata = metadata or Metadata()
@@ -46,7 +67,7 @@ class Track(object):
 
     @property
     def metadata(self):
-        return self._metadata.copy()
+        return self._metadata
 
     @property
     def album(self):
@@ -70,10 +91,10 @@ class Track(object):
 
     def update(self, metadata):
         changes = metadata
-        if changes[tags.COMPILATION] and tags.LEAD_PERFORMER in changes:
-            del changes[tags.LEAD_PERFORMER]
+        if changes[tag.COMPILATION] and tag.LEAD_PERFORMER in changes:
+            del changes[tag.LEAD_PERFORMER]
         self._metadata.update(metadata)
-        self._signalStateChange()
+        self.signalStateChange()
 
     def albumStateChanged(self, album):
         self.update(album.metadata)
@@ -84,24 +105,5 @@ class Track(object):
     def trackRemoved(self, track, position):
         pass
 
-    def _signalStateChange(self):
+    def signalStateChange(self):
         self._listeners.trackStateChanged(self)
-
-
-# todo also add album related tags
-def addMetadataPropertiesTo(cls):
-    for meta in tags.TRACK_TAGS:
-        def createProperty(name):
-            def getter(self):
-                return self._metadata[name]
-
-            def setter(self, value):
-                self._metadata[name] = value
-                self._signalStateChange()
-
-            setattr(cls, name, property(getter, setter))
-
-        createProperty(meta)
-
-
-addMetadataPropertiesTo(Track)

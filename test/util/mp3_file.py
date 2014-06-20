@@ -7,7 +7,7 @@ from mutagen.mp3 import MP3
 
 from test.util import resources as testResources
 
-from tgit import tags as tagging
+from tgit import tag as tagging
 from tgit.util import fs
 
 
@@ -57,7 +57,7 @@ class Mp3File(object):
             elif tag == 'backCover' or tag == 'APIC_BACK':
                 mime, desc, data = value
                 self.addTag(id3.APIC(UTF_8, mime, BACK_COVER, desc, data))
-            elif tag == tagging.LEAD_PERFORMER or tag == 'TPE1':
+            elif tag == 'leadPerformer' or tag == 'TPE1':
                 self.addTag(id3.TPE1(encoding=UTF_8, text=value))
             elif tag == tagging.GUEST_PERFORMERS or tag == 'TMCL':
                 self.addTag(id3.TMCL(encoding=UTF_8, people=value))
@@ -80,34 +80,34 @@ class Mp3File(object):
             elif tag == tagging.COMMENTS or tag == 'COMM':
                 text, lang = value
                 self.addTag(id3.COMM(encoding=UTF_8, text=text, desc='', lang=lang))
-            elif tag == tagging.TRACK_TITLE or tag == 'TIT2':
+            elif tag == 'trackTitle' or tag == 'TIT2':
                 self.addTag(id3.TIT2(encoding=UTF_8, text=value))
-            elif tag == tagging.VERSION_INFO or tag == 'TPE4':
+            elif tag == 'versionInfo' or tag == 'TPE4':
                 self.addTag(id3.TPE4(encoding=UTF_8, text=value))
-            elif tag == tagging.FEATURED_GUEST or tag == 'TXXX_FEATURED_GUEST':
+            elif tag == 'featuredGuest' or tag == 'TXXX_FEATURED_GUEST':
                 self.addTag(id3.TXXX(encoding=UTF_8, desc='Featured Guest', text=value))
-            elif tag == tagging.LYRICIST or tag == 'TEXT':
+            elif tag == 'lyricist' or tag == 'TEXT':
                 self.addTag(id3.TEXT(encoding=UTF_8, text=value))
-            elif tag == tagging.COMPOSER or tag == 'TCOM':
+            elif tag == 'composer' or tag == 'TCOM':
                 self.addTag(id3.TCOM(encoding=UTF_8, text=value))
-            elif tag == tagging.PUBLISHER or tag == 'TPUB':
+            elif tag == 'publisher' or tag == 'TPUB':
                 self.addTag(id3.TPUB(encoding=UTF_8, text=value))
-            elif tag == tagging.ISRC or tag == 'TSRC':
+            elif tag == 'isrc' or tag == 'TSRC':
                 self.addTag(id3.TSRC(encoding=UTF_8, text=value))
-            elif tag == tagging.TAGS or tag == 'TXXX_TAGS':
+            elif tag == 'labels' or tag == 'TXXX_TAGS':
                 self.addTag(id3.TXXX(encoding=UTF_8, desc='Tags', text=value))
-            elif tag == tagging.LYRICS or tag == 'USLT':
+            elif tag == 'lyrics' or tag == 'USLT':
                 text, lang = value
                 self.addTag(id3.USLT(encoding=UTF_8, text=text, desc='', lang=lang))
-            elif tag == tagging.LANGUAGE or tag == 'TLAN':
+            elif tag == 'language' or tag == 'TLAN':
                 self.addTag(id3.TLAN(encoding=UTF_8, text=value))
             elif tag == tagging.PRIMARY_STYLE or tag == 'TCON':
                 self.addTag(id3.TCON(encoding=UTF_8, text=value))
-            elif tag == tagging.COMPILATION or tag == 'TCMP':
+            elif tag == 'compilation' or tag == 'TCMP':
                 self.addTag(id3.TCMP(encoding=UTF_8, text=value))
-            elif tag == tagging.TAGGER or tag == 'TXXX_TAGGER':
+            elif tag == 'tagger' or tag == 'TXXX_TAGGER':
                 self.addTag(id3.TXXX(encoding=UTF_8, desc='Tagger', text=value))
-            elif tag == tagging.TAGGING_TIME or tag == 'TXXX_TAGGING_TIME':
+            elif tag == 'taggingTime' or tag == 'TXXX_TAGGING_TIME':
                 self.addTag(id3.TXXX(encoding=UTF_8, desc='Tagging Time', text=value))
             else:
                 raise AssertionError("Knows nothing about '%s'" % tag)

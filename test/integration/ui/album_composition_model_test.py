@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# noinspection PyUnresolvedReferences
+from tgit.util import sip_api
+sip_api.use_v2()
+
 from datetime import timedelta
 import unittest
 

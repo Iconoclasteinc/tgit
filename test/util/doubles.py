@@ -7,7 +7,7 @@ from test.util import mp3_file as mp3
 from tgit.util import fs
 from tgit.metadata import Image
 from tgit.announcer import Announcer
-from tgit import tags as tagging
+from tgit import tag as tagging
 from tgit.mp3 import id3_tagger as tagger
 
 

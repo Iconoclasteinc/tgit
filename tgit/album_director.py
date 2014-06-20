@@ -46,7 +46,7 @@ def updateTrack(track, state):
     track.composer = state.composer
     track.publisher = state.publisher
     track.isrc = state.isrc
-    track.tags = state.tags
+    track.labels = state.labels
     track.lyrics = state.lyrics
     track.language = state.language
 
