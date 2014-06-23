@@ -41,7 +41,7 @@ class typed(tag):
         super(typed, self).__set__(instance, value)
 
 
-class integer(typed):
+class numeric(typed):
     expectedType = int
 
 
@@ -53,8 +53,12 @@ class decimal(typed):
     expectedType = (int, float)
 
 
-class boolean(typed):
+class flag(typed):
     expectedType = bool
+
+
+class pairs(typed):
+    expectedType = (list, tuple)
 
 
 class Taggable(type):
@@ -67,45 +71,3 @@ class Taggable(type):
 
     def tags(cls):
         return (value.name for value in cls.__dict__.itervalues() if isinstance(value, tag))
-
-
-# todo move tags to album.py
-
-FRONT_COVER = 'frontCover'
-
-RELEASE_NAME = 'releaseName'
-LEAD_PERFORMER = 'leadPerformer'
-GUEST_PERFORMERS = 'guestPerformers'
-LABEL_NAME = 'labelName'
-UPC = 'upc'
-CATALOG_NUMBER = 'catalogNumber'
-RELEASE_TIME = 'releaseTime'
-ORIGINAL_RELEASE_TIME = 'originalReleaseTime'
-RECORDING_TIME = 'recordingTime'
-RECORDING_STUDIOS = 'recordingStudios'
-PRODUCER = 'producer'
-MIXER = 'mixer'
-CONTRIBUTORS = 'contributors'
-COMMENTS = 'comments'
-PRIMARY_STYLE = 'primaryStyle'
-COMPILATION = 'compilation'
-
-
-ALBUM_TAGS = [
-    RELEASE_NAME,
-    COMPILATION,
-    LEAD_PERFORMER,
-    GUEST_PERFORMERS,
-    LABEL_NAME,
-    UPC,
-    CATALOG_NUMBER,
-    RECORDING_TIME,
-    RELEASE_TIME,
-    ORIGINAL_RELEASE_TIME,
-    RECORDING_STUDIOS,
-    PRODUCER,
-    MIXER,
-    CONTRIBUTORS,
-    COMMENTS,
-    PRIMARY_STYLE
-]

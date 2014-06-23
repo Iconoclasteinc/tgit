@@ -6,7 +6,6 @@ from hamcrest import (assert_that, match_equality as matching, has_property, all
 from flexmock import flexmock
 
 from test.util import builders as build
-from tgit import tag
 from tgit.track import TrackListener, Track
 
 
@@ -25,8 +24,8 @@ class TrackTest(unittest.TestCase):
         track.album = album
 
         assert_that(track.metadata, all_of(
-            has_entry(tag.RELEASE_NAME, 'Album Title'),
-            has_entry(tag.LEAD_PERFORMER, 'Album Artist'),
+            has_entry('releaseName', 'Album Title'),
+            has_entry('leadPerformer', 'Album Artist'),
             has_property('images', contains(has_property('data', '<image data>')))), 'updated track metadata')
 
     def testIgnoresLeadPerformerChangesWhenAlbumIsACompilation(self):

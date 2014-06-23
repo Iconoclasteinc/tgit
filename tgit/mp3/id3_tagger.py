@@ -21,7 +21,6 @@ from collections import Counter
 
 from mutagen import mp3, id3
 
-from tgit import tag as tagging
 from tgit.metadata import Metadata, Image
 
 
@@ -166,19 +165,19 @@ class ID3Tagger(object):
             3: Image.FRONT_COVER,
             4: Image.BACK_COVER,
         }),
-        PairProcessor('TMCL', tagging.GUEST_PERFORMERS, {}),
-        PairProcessor('TIPL', tagging.CONTRIBUTORS, {
-            'producer': tagging.PRODUCER,
-            'mix': tagging.MIXER
+        PairProcessor('TMCL', 'guestPerformers', {}),
+        PairProcessor('TIPL', 'contributors', {
+            'producer': 'producer',
+            'mix': 'mixer'
         })
     ]
 
-    for key, tag in {'TALB': tagging.RELEASE_NAME,
-                     'TPE1': tagging.LEAD_PERFORMER,
-                     'TOWN': tagging.LABEL_NAME,
-                     'TDRC': tagging.RECORDING_TIME,
-                     'TDRL': tagging.RELEASE_TIME,
-                     'TDOR': tagging.ORIGINAL_RELEASE_TIME,
+    for key, tag in {'TALB': 'releaseName',
+                     'TPE1': 'leadPerformer',
+                     'TOWN': 'labelName',
+                     'TDRC': 'recordingTime',
+                     'TDRL': 'releaseTime',
+                     'TDOR': 'originalReleaseTime',
                      'TIT2': 'trackTitle',
                      'TPE4': 'versionInfo',
                      'TEXT': 'lyricist',
@@ -186,20 +185,20 @@ class ID3Tagger(object):
                      'TPUB': 'publisher',
                      'TSRC': 'isrc',
                      'TLAN': 'language',
-                     'TXXX:Catalog Number': tagging.CATALOG_NUMBER,
-                     'TXXX:UPC': tagging.UPC,
-                     'TXXX:Recording Studios': tagging.RECORDING_STUDIOS,
+                     'TXXX:Catalog Number': 'catalogNumber',
+                     'TXXX:UPC': 'upc',
+                     'TXXX:Recording Studios': 'recordingStudios',
                      'TXXX:Featured Guest': 'featuredGuest',
                      'TXXX:Tags': 'labels',
                      'TXXX:Tagger': 'tagger',
                      'TXXX:Tagging Time': 'taggingTime',
-                     "COMM::'fra'": tagging.COMMENTS,
+                     "COMM::'fra'": 'comments',
                      "USLT::'fra'": 'lyrics',
-                     'TCON': tagging.PRIMARY_STYLE
+                     'TCON': 'primaryStyle'
                      }.items():
         processors.append(UnicodeProcessor(key, tag))
 
-    for key, tag in {'TCMP' : tagging.COMPILATION}.items():
+    for key, tag in {'TCMP' : 'compilation'}.items():
         processors.append(BooleanProcessor(key, tag))
 
     def load(self, filename):

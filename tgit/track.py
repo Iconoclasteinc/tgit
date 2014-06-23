@@ -31,7 +31,7 @@ class Track(object):
     __metaclass__ = tag.Taggable
 
     trackTitle = tag.text()
-    compilation = tag.boolean()
+    compilation = tag.flag()
     leadPerformer = tag.text()
     versionInfo = tag.text()
     featuredGuest = tag.text()
@@ -46,28 +46,20 @@ class Track(object):
     taggingTime = tag.text()
 
     # todo Introduce Recording
-    bitrate = tag.integer()
+    bitrate = tag.numeric()
     duration = tag.decimal()
 
     def __init__(self, filename, metadata=None):
-        self._filename = filename
-        self._metadata = metadata or Metadata()
+        self.filename = filename
+        self.metadata = metadata or Metadata()
         self._album = None
-        self._listeners = Announcer()
+        self.listeners = Announcer()
 
     def addTrackListener(self, listener):
-        self._listeners.addListener(listener)
+        self.listeners.addListener(listener)
 
     def removeTrackListener(self, listener):
-        self._listeners.removeListener(listener)
-
-    @property
-    def filename(self):
-        return self._filename
-
-    @property
-    def metadata(self):
-        return self._metadata
+        self.listeners.removeListener(listener)
 
     @property
     def album(self):
@@ -90,10 +82,10 @@ class Track(object):
         return self.album and self.album.positionOf(self) + 1 or None
 
     def update(self, metadata):
-        changes = metadata
-        if changes[tag.COMPILATION] and tag.LEAD_PERFORMER in changes:
-            del changes[tag.LEAD_PERFORMER]
-        self._metadata.update(metadata)
+        changes = metadata.copy()
+        if changes['compilation'] and 'leadPerformer' in changes:
+            del changes['leadPerformer']
+        self.metadata.update(changes)
         self.signalStateChange()
 
     def albumStateChanged(self, album):
@@ -106,4 +98,4 @@ class Track(object):
         pass
 
     def signalStateChange(self):
-        self._listeners.trackStateChanged(self)
+        self.listeners.trackStateChanged(self)

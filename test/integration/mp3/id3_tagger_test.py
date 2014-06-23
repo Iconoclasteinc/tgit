@@ -6,7 +6,6 @@ from hamcrest import (assert_that, has_entry, has_items, has_key, has_length, co
 
 from test.util import mp3_file as mp3
 
-from tgit import tag
 from tgit.metadata import Metadata, Image
 import tgit.mp3.id3_tagger as tagger
 
@@ -25,77 +24,75 @@ class ID3TaggerTest(unittest.TestCase):
 
     def testReadsAlbumTitleFromTALBFrame(self):
         metadata = tagger.load(self.makeMp3(TALB='Album'))
-        assert_that(metadata, has_entry(tag.RELEASE_NAME, 'Album'), 'metadata')
+        assert_that(metadata, has_entry('releaseName', 'Album'), 'metadata')
 
     def testJoinsAllTextsOfFrames(self):
         metadata = tagger.load(self.makeMp3(TALB=['Album', 'Titles']))
-        assert_that(metadata, has_entry(tag.RELEASE_NAME, 'Album\x00Titles'), 'metadata')
+        assert_that(metadata, has_entry('releaseName', 'Album\x00Titles'), 'metadata')
 
     def testReadsLeadPerformerFromTPE1Frame(self):
         metadata = tagger.load(self.makeMp3(TPE1='Lead Artist'))
-        assert_that(metadata, has_entry(tag.LEAD_PERFORMER, 'Lead Artist'), 'metadata')
+        assert_that(metadata, has_entry('leadPerformer', 'Lead Artist'), 'metadata')
 
     def testReadsGuestPerformersFromTMCLFrame(self):
         metadata = tagger.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Guitar', 'Bassist'],
                                                   ['Piano', 'Pianist']]))
-        assert_that(metadata, has_entry(tag.GUEST_PERFORMERS, contains_inanyorder(
+        assert_that(metadata, has_entry('guestPerformers', contains_inanyorder(
             ('Guitar', 'Guitarist'),
             ('Guitar', 'Bassist'),
             ('Piano', 'Pianist'))), 'metadata')
 
     def testIgnoresTMCLEntriesWithBlankNames(self):
         metadata = tagger.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Piano', '']]))
-        assert_that(metadata, has_entry(tag.GUEST_PERFORMERS,
-                                        contains(('Guitar', 'Guitarist'))), 'metadata')
+        assert_that(metadata, has_entry('guestPerformers', contains(('Guitar', 'Guitarist'))), 'metadata')
 
     def testReadsLabelNameFromTOWNFrame(self):
         metadata = tagger.load(self.makeMp3(TOWN='Label Name'))
-        assert_that(metadata, has_entry(tag.LABEL_NAME, 'Label Name'), 'metadata')
+        assert_that(metadata, has_entry('labelName', 'Label Name'), 'metadata')
 
     def testReadsCatalogNumberFromCustomFrame(self):
         metadata = tagger.load(self.makeMp3(TXXX_CATALOG_NUMBER='123 456-1'))
-        assert_that(metadata, has_entry(tag.CATALOG_NUMBER, '123 456-1'), 'metadata')
+        assert_that(metadata, has_entry('catalogNumber', '123 456-1'), 'metadata')
 
     def testReadsUpcFromCustomFrame(self):
         metadata = tagger.load(self.makeMp3(TXXX_UPC='1234567899999'))
-        assert_that(metadata, has_entry(tag.UPC, '1234567899999'), 'metadata')
+        assert_that(metadata, has_entry('upc', '1234567899999'), 'metadata')
 
     def testReadsRecordingTimeFromTDRCFrame(self):
         metadata = tagger.load(self.makeMp3(TDRC='2012-07-15'))
-        assert_that(metadata, has_entry(tag.RECORDING_TIME, '2012-07-15'), 'metadata')
+        assert_that(metadata, has_entry('recordingTime', '2012-07-15'), 'metadata')
 
     def testReadsReleaseTimeFromTDRLFrame(self):
         metadata = tagger.load(self.makeMp3(TDRL='2013-11-15'))
-        assert_that(metadata, has_entry(tag.RELEASE_TIME, '2013-11-15'), 'metadata')
+        assert_that(metadata, has_entry('releaseTime', '2013-11-15'), 'metadata')
 
     def testReadsOriginalReleaseTimeFromTDORFrame(self):
         metadata = tagger.load(self.makeMp3(TDOR='1999-03-15'))
-        assert_that(metadata, has_entry(tag.ORIGINAL_RELEASE_TIME, '1999-03-15'),
-                    'metadata')
+        assert_that(metadata, has_entry('originalReleaseTime', '1999-03-15'), 'metadata')
 
     def testReadsRecordingStudiosFromCustomFrame(self):
         metadata = tagger.load(self.makeMp3(TXXX_RECORDING_STUDIOS='Studio Name'))
-        assert_that(metadata, has_entry(tag.RECORDING_STUDIOS, 'Studio Name'), 'metadata')
+        assert_that(metadata, has_entry('recordingStudios', 'Studio Name'), 'metadata')
 
     def testReadsArtisticProducerFromTIPLFrame(self):
         metadata = tagger.load(self.makeMp3(TIPL=[['producer', 'Artistic Producer']]))
-        assert_that(metadata, has_entry(tag.PRODUCER, 'Artistic Producer'), 'metadata')
+        assert_that(metadata, has_entry('producer', 'Artistic Producer'), 'metadata')
 
     def testTakesIntoAccountLastOfMultipleRoleDefinitions(self):
         metadata = tagger.load(self.makeMp3(TIPL=[['producer', 'first'], ['producer', 'last']]))
-        assert_that(metadata, has_entry(tag.PRODUCER, 'last'), 'metadata')
+        assert_that(metadata, has_entry('producer', 'last'), 'metadata')
 
     def testIgnoresTPILEntriesWithBlankNames(self):
         metadata = tagger.load(self.makeMp3(TIPL=[['producer', '']]))
-        assert_that(metadata, is_not(has_key(tag.PRODUCER)), 'metadata')
+        assert_that(metadata, is_not(has_key('producer')), 'metadata')
 
     def testReadsMixingEngineerFromTIPLFrame(self):
         metadata = tagger.load(self.makeMp3(TIPL=[['mix', 'Mixing Engineer']]))
-        assert_that(metadata, has_entry(tag.MIXER, 'Mixing Engineer'), 'metadata')
+        assert_that(metadata, has_entry('mixer', 'Mixing Engineer'), 'metadata')
 
     def testReadsCommentsFromFrenchCOMMFrame(self):
         metadata = tagger.load(self.makeMp3(COMM=('Comments', 'fra')))
-        assert_that(metadata, has_entry(tag.COMMENTS, 'Comments'), 'metadata')
+        assert_that(metadata, has_entry('comments', 'Comments'), 'metadata')
 
     def testReadsTrackTitleFromTIT2Frame(self):
         metadata = tagger.load(self.makeMp3(TIT2='Track Title'))
@@ -139,13 +136,13 @@ class ID3TaggerTest(unittest.TestCase):
 
     def testReadsPrimaryStyleFromTCONFrame(self):
         metadata = tagger.load(self.makeMp3(TCON='Jazz'))
-        assert_that(metadata, has_entry(tag.PRIMARY_STYLE, 'Jazz'), 'metadata')
+        assert_that(metadata, has_entry('primaryStyle', 'Jazz'), 'metadata')
 
     def testReadsCompilationFlagFromNonStandardTCMPFlag(self):
         metadata = tagger.load(self.makeMp3(TCMP='0'))
-        assert_that(metadata, has_entry(tag.COMPILATION, False), 'metadata')
+        assert_that(metadata, has_entry('compilation', False), 'metadata')
         metadata = tagger.load(self.makeMp3(TCMP='1'))
-        assert_that(metadata, has_entry(tag.COMPILATION, True), 'metadata')
+        assert_that(metadata, has_entry('compilation', True), 'metadata')
 
     def testReadsBitrateFromAudioStreamInformation(self):
         metadata = tagger.load(self.makeMp3())
@@ -180,26 +177,24 @@ class ID3TaggerTest(unittest.TestCase):
     def testRoundTripsMetadataToFile(self):
         metadata = Metadata()
         metadata.addImage('image/jpeg', 'salers.jpg', Image.FRONT_COVER)
-        metadata[tag.RELEASE_NAME] = u'Album'
-        metadata[tag.COMPILATION] = True
+        metadata['releaseName'] = u'Album'
+        metadata['compilation'] = True
         metadata['leadPerformer'] = u'Lead Performer'
-        metadata[tag.GUEST_PERFORMERS] = [
-            ('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')
-        ]
-        metadata[tag.LABEL_NAME] = u'Label Name'
-        metadata[tag.CATALOG_NUMBER] = u'123 456-1'
-        metadata[tag.UPC] = u'987654321111'
-        metadata[tag.RECORDING_TIME] = u'2012-07-01'
-        metadata[tag.RELEASE_TIME] = u'2013-12-01'
-        metadata[tag.ORIGINAL_RELEASE_TIME] = u'1999-01-01'
-        metadata[tag.RECORDING_STUDIOS] = u'Studio Name'
-        metadata[tag.PRODUCER] = u'Artistic Producer'
-        metadata[tag.MIXER] = u'Mixing Engineer'
-        metadata[tag.CONTRIBUTORS] = [('recording', 'Recording Eng.'),
-                                       ('mastering', 'Mastering Eng.'),
-                                       ('recording', 'Assistant Recording Eng.')]
-        metadata[tag.COMMENTS] = u'Comments'
-        metadata[tag.PRIMARY_STYLE] = u'Jazz'
+        metadata['guestPerformers'] = [('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]
+        metadata['labelName'] = u'Label Name'
+        metadata['catalogNumber'] = u'123 456-1'
+        metadata['upc'] = u'987654321111'
+        metadata['recordingTime'] = u'2012-07-01'
+        metadata['releaseTime'] = u'2013-12-01'
+        metadata['originalReleaseTime'] = u'1999-01-01'
+        metadata['recordingStudios'] = u'Studio Name'
+        metadata['producer'] = u'Artistic Producer'
+        metadata['mixer'] = u'Mixing Engineer'
+        metadata['contributors'] = [('recording', 'Recording Eng.'),
+                                    ('mastering', 'Mastering Eng.'),
+                                    ('recording', 'Assistant Recording Eng.')]
+        metadata['comments'] = u'Comments'
+        metadata['primaryStyle'] = u'Jazz'
         metadata['trackTitle'] = u'Track Title'
         metadata['versionInfo'] = u'Version Info'
         metadata['featuredGuest'] = u'Featured Guest'
@@ -216,7 +211,7 @@ class ID3TaggerTest(unittest.TestCase):
 
     def testHandlesUnicodeMetadata(self):
         metadata = Metadata()
-        metadata[tag.RELEASE_NAME] = u'Titre en Français'
+        metadata['releaseName'] = u'Titre en Français'
         self.assertCanBeSavedAndReloadedWithSameState(metadata)
 
     def testRemovesFrameWhenTagNotInMetadata(self):

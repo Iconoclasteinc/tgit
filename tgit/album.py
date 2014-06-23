@@ -34,27 +34,42 @@ class AlbumListener(object):
 
 
 class Album(object):
-    def __init__(self, metadata=None):
-        self._metadata = metadata or Metadata()
-        self._tracks = []
-        self._listeners = Announcer()
+    __metaclass__ = tag.Taggable
 
-    @property
-    def metadata(self):
-        return self._metadata.copy()
+    releaseName = tag.text()
+    compilation = tag.flag()
+    leadPerformer = tag.text()
+    guestPerformers = tag.pairs()
+    labelName = tag.text()
+    upc = tag.text()
+    catalogNumber = tag.text()
+    recordingTime = tag.text()
+    releaseTime = tag.text()
+    originalReleaseTime = tag.text()
+    recordingStudios = tag.text()
+    producer = tag.text()
+    mixer = tag.text()
+    contributors = tag.pairs()
+    comments = tag.text()
+    primaryStyle = tag.text()
+
+    def __init__(self, metadata=None):
+        self.metadata = metadata or Metadata()
+        self.tracks = []
+        self.listeners = Announcer()
 
     def addAlbumListener(self, listener):
-        self._listeners.addListener(listener)
+        self.listeners.addListener(listener)
 
     def removeAlbumListener(self, listener):
-        self._listeners.removeListener(listener)
+        self.listeners.removeListener(listener)
 
     @property
     def images(self):
-        return self._metadata.images
+        return self.metadata.images
 
     def imagesOfType(self, type_):
-        return self._metadata.imagesOfType(type_)
+        return self.metadata.imagesOfType(type_)
 
     @property
     def mainCover(self):
@@ -71,22 +86,18 @@ class Album(object):
         return self.imagesOfType(Image.FRONT_COVER)
 
     def addImage(self, mime, data, type_=Image.OTHER, desc=''):
-        self._metadata.addImage(mime, data, type_, desc)
-        self._signalStateChange()
+        self.metadata.addImage(mime, data, type_, desc)
+        self.signalStateChange()
 
     def addFrontCover(self, mime, data, desc='Front Cover'):
         self.addImage(mime, data, Image.FRONT_COVER, desc)
 
     def removeImages(self):
-        self._metadata.removeImages()
-        self._signalStateChange()
-
-    @property
-    def tracks(self):
-        return list(self._tracks)
+        self.metadata.removeImages()
+        self.signalStateChange()
 
     def __len__(self):
-        return len(self._tracks)
+        return len(self.tracks)
 
     def empty(self):
         return len(self) == 0
@@ -95,41 +106,24 @@ class Album(object):
         return self.tracks.index(track)
 
     def addTrack(self, track):
-        self.insertTrack(track, len(self._tracks))
+        self.insertTrack(track, len(self.tracks))
 
     def _inheritMetadataIfInitialTrack(self, track):
-        if self._metadata.empty():
-            self._metadata = track.metadata.copy(*tag.ALBUM_TAGS)
-            self._signalStateChange()
+        if self.metadata.empty():
+            self.metadata = track.metadata.copy(*Album.tags())
+            self.signalStateChange()
 
     def insertTrack(self, track, position):
         self._inheritMetadataIfInitialTrack(track)
-        self._tracks.insert(position, track)
+        self.tracks.insert(position, track)
         track.album = self
-        self._listeners.trackAdded(track, position)
+        self.listeners.trackAdded(track, position)
 
     def removeTrack(self, track):
         del track.album
-        position = self._tracks.index(track)
-        self._tracks.remove(track)
-        self._listeners.trackRemoved(track, position)
+        position = self.tracks.index(track)
+        self.tracks.remove(track)
+        self.listeners.trackRemoved(track, position)
 
-    def _signalStateChange(self):
-        self._listeners.albumStateChanged(self)
-
-
-def addMetadataPropertiesTo(cls):
-    for meta in tag.ALBUM_TAGS:
-        def createProperty(name):
-            def getter(self):
-                return self._metadata[name]
-
-            def setter(self, value):
-                self._metadata[name] = value
-                self._signalStateChange()
-
-            setattr(cls, name, property(getter, setter))
-
-        createProperty(meta)
-
-addMetadataPropertiesTo(Album)
+    def signalStateChange(self):
+        self.listeners.albumStateChanged(self)

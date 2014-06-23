@@ -7,7 +7,6 @@ from test.util import mp3_file as mp3
 from tgit.util import fs
 from tgit.metadata import Image
 from tgit.announcer import Announcer
-from tgit import tag as tagging
 from tgit.mp3 import id3_tagger as tagger
 
 
@@ -30,14 +29,13 @@ class FakeMetadataContainer(object):
 
         return tagger.load(filename)
 
-    def contains(self, filename, **tags):
+    def contains(self, filename, frontCover=None, **tags):
         images = []
         # todo use builders and metadata
-        if tagging.FRONT_COVER in tags:
-            image, desc = tags[tagging.FRONT_COVER]
+        if frontCover:
+            image, desc = frontCover
             mime = fs.guessMimeType(image)
             images.append(Image(mime, fs.readContent(image), type_=Image.FRONT_COVER, desc=desc))
-            del tags[tagging.FRONT_COVER]
 
         metadata = self.load(os.path.join(self.dir, filename))
         assert_that(metadata, has_entries(tags), 'metadata tags')

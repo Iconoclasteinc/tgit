@@ -10,7 +10,6 @@ from test.util import builders as build
 
 from tgit.metadata import Image
 from tgit.album import Album, AlbumListener
-import tgit.tag as tags
 
 
 class AlbumTest(unittest.TestCase):
@@ -108,7 +107,7 @@ class AlbumTest(unittest.TestCase):
 
     def testHasInitiallyNoMetadataOrImages(self):
         album = Album()
-        for tag in tags.ALBUM_TAGS:
+        for tag in Album.tags():
             assert_that(getattr(album, tag), none(), tag)
 
         assert_that(album.images, empty(), 'images')
@@ -130,7 +129,7 @@ class AlbumTest(unittest.TestCase):
     def testSignalsStateChangesToListener(self):
         self.assertNotifiesListenerOnPropertyChange('releaseName', 'Album')
         self.assertNotifiesListenerOnPropertyChange('leadPerformer', 'Artist')
-        self.assertNotifiesListenerOnPropertyChange('guestPerformers', 'Band')
+        self.assertNotifiesListenerOnPropertyChange('guestPerformers', [('Musician', 'Instrument')])
         self.assertNotifiesListenerOnPropertyChange('labelName', 'Label')
         self.assertNotifiesListenerOnPropertyChange('recordingTime', 'Recorded')
         self.assertNotifiesListenerOnPropertyChange('releaseTime', 'Released')
