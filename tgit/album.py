@@ -87,14 +87,14 @@ class Album(object):
 
     def addImage(self, mime, data, type_=Image.OTHER, desc=''):
         self.metadata.addImage(mime, data, type_, desc)
-        self.signalStateChange()
+        self.metadataChanged()
 
     def addFrontCover(self, mime, data, desc='Front Cover'):
         self.addImage(mime, data, Image.FRONT_COVER, desc)
 
     def removeImages(self):
         self.metadata.removeImages()
-        self.signalStateChange()
+        self.metadataChanged()
 
     def __len__(self):
         return len(self.tracks)
@@ -111,7 +111,7 @@ class Album(object):
     def _inheritMetadataIfInitialTrack(self, track):
         if self.metadata.empty():
             self.metadata = track.metadata.copy(*Album.tags())
-            self.signalStateChange()
+            self.metadataChanged()
 
     def insertTrack(self, track, position):
         self._inheritMetadataIfInitialTrack(track)
@@ -125,5 +125,5 @@ class Album(object):
         self.tracks.remove(track)
         self.listeners.trackRemoved(track, position)
 
-    def signalStateChange(self):
+    def metadataChanged(self):
         self.listeners.albumStateChanged(self)

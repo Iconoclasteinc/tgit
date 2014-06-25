@@ -86,7 +86,7 @@ class Track(object):
         if changes['compilation'] and 'leadPerformer' in changes:
             del changes['leadPerformer']
         self.metadata.update(changes)
-        self.signalStateChange()
+        self.metadataChanged()
 
     def albumStateChanged(self, album):
         self.update(album.metadata)
@@ -97,5 +97,5 @@ class Track(object):
     def trackRemoved(self, track, position):
         pass
 
-    def signalStateChange(self):
+    def metadataChanged(self):
         self.listeners.trackStateChanged(self)

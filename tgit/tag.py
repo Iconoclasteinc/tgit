@@ -29,7 +29,7 @@ class tag(object):
 
     def __set__(self, instance, value):
         instance.metadata[self.name] = value
-        instance.signalStateChange()
+        instance.metadataChanged()
 
 
 class typed(tag):

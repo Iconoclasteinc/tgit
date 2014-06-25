@@ -20,36 +20,6 @@
 from PyQt4.QtGui import QApplication, QWidget, QHBoxLayout
 
 
-# todo remove
-def inKbps(bps):
-    return bps and int(round(bps, -3) / 1000) or ''
-
-
-# todo remove
-def asDuration(seconds):
-    return seconds and '%02d:%02d' % divmod(round(seconds), 60) or ''
-
-
-# todo remove
-def toPeopleList(people):
-    return people and '; '.join(['%s: %s' % (role, name) for role, name in people]) or ''
-
-
-# todo remove
-def fromPeopleList(text):
-    people = []
-    involvements = text.split(';')
-
-    for involvement in involvements:
-        try:
-            role, name = involvement.split(':')
-            people.append((role.strip(), name.strip()))
-        except ValueError:
-            pass
-
-    return people
-
-
 def centeredOnScreen(widget):
     show(widget)
     centerOnScreen(widget)

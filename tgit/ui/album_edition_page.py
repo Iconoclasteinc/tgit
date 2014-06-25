@@ -192,7 +192,6 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def display(self, album):
         self.mainCover.setPixmap(image.scale(album.mainCover, *self.FRONT_COVER_SIZE))
         self.releaseName.setText(album.releaseName)
-        # todo we really need typed metadata
         self.compilation.setChecked(album.compilation is True)
         self.displayLeadPerformer(album)
         self.guestPerformers.setText(formatting.toPeopleList(album.guestPerformers))

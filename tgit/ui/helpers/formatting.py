@@ -17,9 +17,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from dateutil import tz, parser as dateparser
 
-def toKbps(bps):
+
+def inKbps(bps):
     return bps and int(round(bps, -3) / 1000) or ''
+
+
+def toDuration(seconds):
+    return seconds and '%02d:%02d' % divmod(round(seconds), 60) or ''
 
 
 def toPeopleList(people):
@@ -38,3 +44,8 @@ def fromPeopleList(text):
             pass
 
     return people
+
+
+def asLocalDateTime(instant):
+    localTime = dateparser.parse(instant).astimezone(tz.tzlocal())
+    return localTime.strftime('%Y-%m-%d'), localTime.strftime('%H:%M:%S')

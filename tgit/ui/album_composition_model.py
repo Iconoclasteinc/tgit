@@ -22,12 +22,10 @@ from PyQt4.QtCore import QObject, QAbstractTableModel, QModelIndex, Qt, pyqtSign
 from tgit.album import AlbumListener
 from tgit.track import TrackListener
 from tgit.audio.player import PlayerListener
+from tgit.ui.helpers import display, formatting
 
 
 # We need to keep Row until we get rid of the playing state
-from tgit.ui.helpers import display
-
-
 class Row(QObject, TrackListener, PlayerListener):
     rowChanged = pyqtSignal(object)
 
@@ -105,8 +103,8 @@ class Columns:
     trackTitle = Column(name='Track Title', value=lambda row: row.trackTitle)
     leadPerformer = Column(name='Lead Performer', value=Row.leadPerformer)
     releaseName = Column(name="Album Title", value=Row.releaseName)
-    bitrate = Column(name='Bitrate', value=lambda row: '%s kbps' % display.inKbps(row.bitrate()))
-    duration = Column(name='Duration', value=lambda row: display.asDuration(row.duration()))
+    bitrate = Column(name='Bitrate', value=lambda row: '%s kbps' % formatting.inKbps(row.bitrate()))
+    duration = Column(name='Duration', value=lambda row: formatting.toDuration(row.duration()))
     play = Column(name='', value=lambda row: row.inPlay)
     remove = Column(name='', value=lambda row: None)
 

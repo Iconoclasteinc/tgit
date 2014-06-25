@@ -17,8 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from dateutil import tz, parser as dateparser
-
 from PyQt4.QtCore import Qt, pyqtSignal
 from PyQt4.QtGui import (QLabel, QWidget, QGroupBox, QFrame)
 
@@ -26,7 +24,7 @@ from tgit.album import AlbumListener
 from tgit.album_director import Snapshot
 from tgit.languages import LANGUAGES
 from tgit.track import TrackListener
-from tgit.ui.helpers import form, image, display, formatting
+from tgit.ui.helpers import form, image, formatting
 
 
 class TrackEditionPage(QWidget, TrackListener, AlbumListener):
@@ -245,8 +243,8 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         self.leadPerformer.setText(track.leadPerformer)
         self.leadPerformer.setEnabled(track.compilation is True)
         self.versionInfo.setText(track.versionInfo)
-        self.duration.setText(display.asDuration(track.duration))
-        self.bitrate.setText('%s kbps' % formatting.toKbps(track.bitrate))
+        self.duration.setText(formatting.toDuration(track.duration))
+        self.bitrate.setText('%s kbps' % formatting.inKbps(track.bitrate))
         self.featuredGuest.setText(track.featuredGuest)
         self.lyricist.setText(track.lyricist)
         self.composer.setText(track.composer)
@@ -255,7 +253,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         self.tags.setText(track.labels)
         self.lyrics.setPlainText(track.lyrics)
         self.languages.setEditText(track.language)
-        self.displaySoftwareNotice(track)
+        self.displaySoftwareNotice(track.taggingTime, track.tagger)
 
     def displayAlbumCover(self, album):
         # Cache the cover image to avoid recomputing the image each time the screen updates
@@ -263,19 +261,14 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
             self.cover = album.mainCover
             self.albumCover.setPixmap(image.scale(self.cover, *self.ALBUM_COVER_SIZE))
 
-    def displaySoftwareNotice(self, track):
-        date, time = self.parseTaggingTime(track)
-        if track.tagger and date and time:
-            self.softwareNotice.setText(self.tr('Tagged with %s on %s at %s') % (track.tagger, date, time))
-
-    @staticmethod
-    def parseTaggingTime(track):
+    def displaySoftwareNotice(self, taggingTime, tagger):
         try:
-            localTaggingTime = dateparser.parse(track.taggingTime).astimezone(tz.tzlocal())
+            date, time = formatting.asLocalDateTime(taggingTime)
         except:
-            return None, None
+            date, time = None, None
 
-        return localTaggingTime.strftime('%Y-%m-%d'), localTaggingTime.strftime('%H:%M:%S')
+        if tagger and date and time:
+            self.softwareNotice.setText(self.tr('Tagged with %s on %s at %s') % (tagger, date, time))
 
     @property
     def snapshot(self):

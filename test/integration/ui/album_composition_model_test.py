@@ -10,10 +10,10 @@ from flexmock import flexmock
 from hamcrest import assert_that, equal_to, is_
 from PyQt4.QtCore import Qt, QModelIndex
 
-from tgit.ui.helpers import display
+from tgit.ui.album_composition_model import AlbumCompositionModel, Columns, Row
+from tgit.ui.helpers import display, formatting
 from test.util import builders as build
 from test.util import doubles
-from tgit.ui.album_composition_model import AlbumCompositionModel, Columns, Row
 
 
 QModelIndex.__str__ = lambda self: '(%s, %s)' % (self.row(), self.column())
@@ -255,9 +255,9 @@ class AlbumCompositionModelTest(unittest.TestCase):
         self.assertCellDisplays(row, Columns.trackTitle, track.trackTitle)
         self.assertCellDisplays(row, Columns.leadPerformer, track.leadPerformer)
         if track.bitrate:
-            self.assertCellDisplays(row, Columns.bitrate, '%d kbps' % display.inKbps(track.bitrate))
+            self.assertCellDisplays(row, Columns.bitrate, '%d kbps' % formatting.inKbps(track.bitrate))
         if track.duration:
-            self.assertCellDisplays(row, Columns.duration, display.asDuration(track.duration))
+            self.assertCellDisplays(row, Columns.duration, formatting.toDuration(track.duration))
 
     def assertCellDisplays(self, row, column, value):
         assert_that(self.cellValue(column, row), equal_to(value), 'cell (%d, %d)' % (row, Columns.index(column)))
