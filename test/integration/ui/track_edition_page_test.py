@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 
-from hamcrest import has_properties, contains_string
+from hamcrest import contains_string, has_entries
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
@@ -13,9 +13,9 @@ from tgit.ui.track_edition_page import TrackEditionPage
 
 
 class TrackEditionPageTest(ViewTest):
-    def render(self, track):
-        self.page = TrackEditionPage(track)
-        self.page.display(track)
+    def render(self, album, track):
+        self.page = TrackEditionPage(album, track)
+        self.page.display(album, track)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
 
@@ -24,10 +24,10 @@ class TrackEditionPageTest(ViewTest):
 
     def testDisplaysAlbumSummaryInBanner(self):
         track = build.track()
-        build.album(releaseName='Album Title', leadPerformer='Artist', labelName='Record Label',
-                    tracks=[build.track(), track, build.track()])
+        album = build.album(releaseName='Album Title', leadPerformer='Artist', labelName='Record Label',
+                            tracks=[build.track(), track, build.track()])
 
-        self.render(track)
+        self.render(album, track)
 
         self.driver.showsAlbumTitle('Album Title')
         self.driver.showsAlbumLeadPerformer('Artist')
@@ -36,14 +36,13 @@ class TrackEditionPageTest(ViewTest):
 
     def testIndicatesWhenAlbumPerformedByVariousArtists(self):
         track = build.track()
-        build.album(compilation=True, tracks=[track])
-        self.render(track)
+        album = build.album(compilation=True, tracks=[track])
+        self.render(album, track)
         self.driver.showsAlbumLeadPerformer('Various Artists')
 
     def testDisplaysTrackMetadata(self):
         track = build.track(bitrate=192000,
                             duration=timedelta(minutes=4, seconds=35).total_seconds(),
-                            compilation=True,
                             leadPerformer='Artist',
                             trackTitle='Song',
                             versionInfo='Remix',
@@ -55,9 +54,9 @@ class TrackEditionPageTest(ViewTest):
                             labels='Tag1 Tag2 Tag3',
                             lyrics='Lyrics\n...\n...',
                             language='eng')
-        build.album(tracks=[track])
+        album = build.album(compilation=True, tracks=[track])
 
-        self.render(track)
+        self.render(album, track)
 
         self.driver.showsTrackTitle('Song')
         self.driver.showsLeadPerformer('Artist')
@@ -76,74 +75,74 @@ class TrackEditionPageTest(ViewTest):
         self.driver.showsPreviewTime('00:00')
 
     def testDisablesLeadPerformerEditionWhenAlbumIsNotACompilation(self):
-        track = build.track()
-        build.album(compilation=False, leadPerformer='Album Artist', tracks=[track])
-        self.render(track)
+        track = build.track(leadPerformer='Album Artist')
+        album = build.album(compilation=False, tracks=[track])
+        self.render(album, track)
         self.driver.showsLeadPerformer('Album Artist', disabled=True)
 
     def testSignalsWhenTrackMetadataChange(self):
-        track = build.track(compilation=True)
-        build.album(tracks=[track])
+        track = build.track()
+        album = build.album(compilation=True, tracks=[track])
 
-        self.render(track)
+        self.render(album, track)
 
         metadataChangedSignal = ValueMatcherProbe('metadata changed')
         self.page.metadataChanged.connect(metadataChangedSignal.received)
 
-        metadataChangedSignal.expect(has_properties(trackTitle='Title'))
+        metadataChangedSignal.expect(has_entries(trackTitle='Title'))
         self.driver.changeTrackTitle('Title')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(leadPerformer='Artist'))
+        metadataChangedSignal.expect(has_entries(leadPerformer='Artist'))
         self.driver.changeLeadPerformer('Artist')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(versionInfo='Remix'))
+        metadataChangedSignal.expect(has_entries(versionInfo='Remix'))
         self.driver.changeVersionInfo('Remix')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(featuredGuest='Featuring'))
+        metadataChangedSignal.expect(has_entries(featuredGuest='Featuring'))
         self.driver.changeFeaturedGuest('Featuring')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(lyricist='Lyricist'))
+        metadataChangedSignal.expect(has_entries(lyricist='Lyricist'))
         self.driver.changeLyricist('Lyricist')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(composer='Composer'))
+        metadataChangedSignal.expect(has_entries(composer='Composer'))
         self.driver.changeComposer('Composer')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(publisher='Publisher'))
+        metadataChangedSignal.expect(has_entries(publisher='Publisher'))
         self.driver.changePublisher('Publisher')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(isrc='ZZZ123456789'))
+        metadataChangedSignal.expect(has_entries(isrc='ZZZ123456789'))
         self.driver.changeIsrc('ZZZ123456789')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(labels='Tag1 Tag2 Tag3'))
+        metadataChangedSignal.expect(has_entries(labels='Tag1 Tag2 Tag3'))
         self.driver.changeTags('Tag1 Tag2 Tag3')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(lyrics='Lyrics\n...\n'))
+        metadataChangedSignal.expect(has_entries(lyrics='Lyrics\n...\n'))
         self.driver.addLyrics('Lyrics')
         self.driver.addLyrics('...')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(language='eng'))
+        metadataChangedSignal.expect(has_entries(language='eng'))
         self.driver.changeLanguage('eng')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(language='fra'))
+        metadataChangedSignal.expect(has_entries(language='fra'))
         self.driver.selectLanguage('fra')
         self.check(metadataChangedSignal)
 
     def testDisplaysSoftwareNoticeInLocalTime(self):
         track = build.track(tagger='TGiT v1.0', taggingTime='2014-03-23 20:33:00 +0000')
-        build.album(tracks=[track])
+        album = build.album(tracks=[track])
 
-        self.render(track)
+        self.render(album, track)
 
         # This will likely fail when ran on another timezone or even when daylight savings
         # change, but I don't yet know how to best write the test
@@ -153,12 +152,12 @@ class TrackEditionPageTest(ViewTest):
 
     def testOmitsSoftwareNoticeIfTaggerInformationUnavailable(self):
         track = build.track(taggingTime='2014-03-23 20:33:00 UTC+0000')
-        build.album(tracks=[track])
-        self.render(track)
+        album = build.album(tracks=[track])
+        self.render(album, track)
         self.driver.showsSoftwareNotice('')
 
     def testOmitsSoftwareNoticeIfTaggingDateMalformed(self):
         track = build.track(tagger='TGiT v1.0', taggingTime='invalid-time-format')
-        build.album(tracks=[track])
-        self.render(track)
+        album = build.album(tracks=[track])
+        self.render(album, track)
         self.driver.showsSoftwareNotice('')

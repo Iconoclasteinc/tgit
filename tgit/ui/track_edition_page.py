@@ -21,23 +21,22 @@ from PyQt4.QtCore import Qt, pyqtSignal
 from PyQt4.QtGui import (QLabel, QWidget, QGroupBox, QFrame)
 
 from tgit.album import AlbumListener
-from tgit.album_director import Snapshot
 from tgit.languages import LANGUAGES
 from tgit.track import TrackListener
 from tgit.ui.helpers import form, image, formatting
 
 
 class TrackEditionPage(QWidget, TrackListener, AlbumListener):
-    metadataChanged = pyqtSignal(Snapshot)
+    metadataChanged = pyqtSignal(dict)
 
     ALBUM_COVER_SIZE = 60, 60
     DURATION_FORMAT = 'mm:ss'
 
-    def __init__(self, track):
+    def __init__(self, album, track):
         QWidget.__init__(self)
         # we need this until track knows its position in the album
+        self.album = album
         self.track = track
-        self.album = track.album
         self.cover = None
         self.build()
 
@@ -50,13 +49,16 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         self.disableMacFocusFrame()
         self.disableTeaserFields()
 
-    def trackStateChanged(self, state):
-        self.display(state)
+    def albumStateChanged(self, album):
+        self.display(album=album)
+
+    def trackStateChanged(self, track):
+        self.display(track=track)
 
     # will eventually go away
     # but first we need track to know its track number and total tracks
     def trackAdded(self, track, position):
-        self.display(self.track)
+        self.display(track=self.track)
 
     # will eventually go away
     # but first we need track to know its track number and total tracks
@@ -64,7 +66,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         if track == self.track:
             self.album.removeAlbumListener(self)
         else:
-            self.display(self.track)
+            self.display(track=self.track)
 
     def makeAlbumBanner(self):
         header = QFrame()
@@ -147,13 +149,13 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         fieldSet.setTitle(self.tr('TRACK'))
         layout = form.layout()
         self.trackTitle = form.lineEdit('track-title')
-        self.trackTitle.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.trackTitle.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.trackTitle, self.tr('Track Title: ')), self.trackTitle)
         self.leadPerformer = form.lineEdit('lead-performer')
-        self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.leadPerformer, self.tr('Lead Performer: ')), self.leadPerformer)
         self.versionInfo = form.lineEdit('version-info')
-        self.versionInfo.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.versionInfo.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.versionInfo, self.tr('Version Information: ')), self.versionInfo)
         fieldSet.setLayout(layout)
         return fieldSet
@@ -163,16 +165,16 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         fieldSet.setTitle(self.tr('CONTRIBUTORS'))
         layout = form.layout()
         self.featuredGuest = form.lineEdit('featured-guest')
-        self.featuredGuest.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.featuredGuest.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.featuredGuest, self.tr('Featured Guest: ')), self.featuredGuest)
         self.lyricist = form.lineEdit('lyricist')
-        self.lyricist.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.lyricist.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.lyricist, self.tr('Lyricist: ')), self.lyricist)
         self.composer = form.lineEdit('composer')
-        self.composer.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.composer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.composer, self.tr('Composer: ')), self.composer)
         self.publisher = form.lineEdit('publisher')
-        self.publisher.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.publisher.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.publisher, self.tr('Publisher: ')), self.publisher)
         fieldSet.setLayout(layout)
         return fieldSet
@@ -182,14 +184,14 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         fieldSet.setTitle(self.tr('IDENTIFICATION'))
         layout = form.layout()
         self.isrc = form.lineEdit('isrc')
-        self.isrc.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.isrc.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         self.isrc.setPlaceholderText('ZZZ123456789')
         layout.addRow(form.labelFor(self.isrc, self.tr('ISRC: ')), self.isrc)
         self.iswc = form.lineEdit('iswc')
-        self.iswc.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.iswc.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.iswc, self.tr('ISWC: ')), self.iswc)
         self.tags = form.lineEdit('tags')
-        self.tags.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.tags.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         self.tags.setPlaceholderText(self.tr('tag1, tag2, tag3 ...'))
         layout.addRow(form.labelFor(self.tags, self.tr('Tags: ')), self.tags)
         fieldSet.setLayout(layout)
@@ -209,12 +211,12 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         fieldSet.setTitle(self.tr('CONTENT'))
         layout = form.layout()
         self.lyrics = form.textArea('lyrics')
-        self.lyrics.editingFinished.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.lyrics.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.lyrics, self.tr('Lyrics: ')), self.lyrics)
         self.languages = form.comboBox('languages')
         self.languages.addItems(sorted(LANGUAGES))
-        self.languages.activated.connect(lambda: self.metadataChanged.emit(self.snapshot))
-        self.languages.lineEdit().textEdited.connect(lambda: self.metadataChanged.emit(self.snapshot))
+        self.languages.activated.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.languages.lineEdit().textEdited.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.languages, self.tr('Language: ')), self.languages)
         self.previewTime = form.timeEdit('preview-time')
         layout.addRow(form.labelFor(self.previewTime, self.tr('Preview Time: ')), self.previewTime)
@@ -232,16 +234,23 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         layout.addWidget(self.softwareNotice)
         return layout
 
-    def display(self, track):
-        self.displayAlbumCover(self.album)
-        self.albumTitle.setText(self.album.releaseName)
-        self.albumLeadPerformer.setText(self.album.compilation and self.tr('Various Artists')
-                                        or self.album.leadPerformer)
-        self.recordLabel.setText(self.album.labelName)
+    def display(self, album=None, track=None):
+        if album:
+            self.displayAlbum(album)
+        if track:
+            self.displayTrack(track)
+
+    def displayAlbum(self, album):
+        self.displayAlbumCover(album.mainCover)
+        self.albumTitle.setText(album.releaseName)
+        self.albumLeadPerformer.setText(album.compilation and self.tr('Various Artists') or album.leadPerformer)
+        self.recordLabel.setText(album.labelName)
+        self.leadPerformer.setEnabled(album.compilation is True)
+
+    def displayTrack(self, track):
         self.trackNumber.setText(self.tr('Track %d of %d') % (track.number, len(self.album)))
         self.trackTitle.setText(track.trackTitle)
         self.leadPerformer.setText(track.leadPerformer)
-        self.leadPerformer.setEnabled(track.compilation is True)
         self.versionInfo.setText(track.versionInfo)
         self.duration.setText(formatting.toDuration(track.duration))
         self.bitrate.setText('%s kbps' % formatting.inKbps(track.bitrate))
@@ -255,10 +264,10 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         self.languages.setEditText(track.language)
         self.displaySoftwareNotice(track.taggingTime, track.tagger)
 
-    def displayAlbumCover(self, album):
+    def displayAlbumCover(self, picture):
         # Cache the cover image to avoid recomputing the image each time the screen updates
-        if self.cover is not album.mainCover:
-            self.cover = album.mainCover
+        if self.cover is not picture:
+            self.cover = picture
             self.albumCover.setPixmap(image.scale(self.cover, *self.ALBUM_COVER_SIZE))
 
     def displaySoftwareNotice(self, taggingTime, tagger):
@@ -271,21 +280,18 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
             self.softwareNotice.setText(self.tr('Tagged with %s on %s at %s') % (tagger, date, time))
 
     @property
-    def snapshot(self):
-        snapshot = Snapshot()
-        snapshot.trackTitle = self.trackTitle.text()
-        snapshot.leadPerformer = self.leadPerformer.text()
-        snapshot.versionInfo = self.versionInfo.text()
-        snapshot.featuredGuest = self.featuredGuest.text()
-        snapshot.lyricist = self.lyricist.text()
-        snapshot.composer = self.composer.text()
-        snapshot.publisher = self.publisher.text()
-        snapshot.isrc = self.isrc.text()
-        snapshot.labels = self.tags.text()
-        snapshot.lyrics = self.lyrics.toPlainText()
-        snapshot.language = self.languages.currentText()
-
-        return snapshot
+    def metadata(self):
+        return dict(trackTitle=self.trackTitle.text(),
+                    leadPerformer=self.leadPerformer.text(),
+                    versionInfo=self.versionInfo.text(),
+                    featuredGuest=self.featuredGuest.text(),
+                    lyricist=self.lyricist.text(),
+                    composer=self.composer.text(),
+                    publisher=self.publisher.text(),
+                    isrc=self.isrc.text(),
+                    labels=self.tags.text(),
+                    lyrics=self.lyrics.toPlainText(),
+                    language=self.languages.currentText())
 
     def disableMacFocusFrame(self):
         for child in self.findChildren(QWidget):

@@ -120,7 +120,6 @@ class Album(object):
         self.listeners.trackAdded(track, position)
 
     def removeTrack(self, track):
-        del track.album
         position = self.tracks.index(track)
         self.tracks.remove(track)
         self.listeners.trackRemoved(track, position)

@@ -33,6 +33,7 @@ def sanitize(filename):
 
 class TrackStorage(object):
     @staticmethod
+    # move to album director
     def filenameFor(track):
         return sanitize(u"{artist} - {number:02} - {title}.{format}".format(artist=track.leadPerformer,
                                                                             number=track.number,
@@ -64,7 +65,12 @@ class TrackLibrary(object):
         metadata = self._container.load(name)
         return Track(name, metadata)
 
+    # todo change to store(track, filename)
     def store(self, track):
+        # move to album director
         track.tagger = 'TGiT v' + __version__
         track.taggingTime = self._clock.now().strftime('%Y-%m-%d %H:%M:%S %z')
-        self._container.save(self._storage.add(track), track.metadata)
+
+        metadata = track.metadata
+        metadata.update(track.album.metadata)
+        self._container.save(self._storage.add(track), metadata)

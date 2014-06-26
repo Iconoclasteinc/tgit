@@ -9,7 +9,7 @@ from dateutil import tz
 import unittest
 
 from flexmock import flexmock
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, match_equality, all_of, has_entry, has_property, contains, has_entries
 
 from test.util import builders as build
 from test.util import mp3_file
@@ -58,31 +58,33 @@ class TrackLibraryTest(unittest.TestCase):
         self.library = TrackLibrary(self.container, self.storage, self.clock)
 
     def testLoadsTrackMetadataFromContainer(self):
-        metadata = build.metadata(trackTitle='Summertime',
-                                  releaseName='My Favorite Things',
-                                  images=[('image/jpeg', 'Front Cover', 'data')])
+        metadata = build.metadata(trackTitle='Summertime', releaseName='My Favorite Things')
 
         self.container.should_receive('load').with_args('summertime.mp3').and_return(metadata)
         track = self.library.fetch('summertime.mp3')
         assert_that(track.metadata, equal_to(metadata), 'track metadata')
 
     def testRecordsTaggerAndTaggingTimeWhenSavingToContainer(self):
-        tagger = 'TGiT v' + __version__
-        taggingTime = '2014-03-23 16:44:33 -0400'
         self.clock.should_receive('now').and_return(datetime(2014, 03, 23, 16, 44, 33, tzinfo=tz.tzlocal()))
 
-        metadata = build.metadata(trackTitle='Summertime',
-                                  releaseName='My Favorite Things',
-                                  images=[('image/jpeg', 'Front Cover', 'data')])
+        self.container.should_receive('save').with_args('summertime.mp3', match_equality(
+            all_of(has_entries(tagger='TGiT v' + __version__,
+                               taggingTime='2014-03-23 16:44:33 -0400')))).once()
 
-
-        embed = metadata.copy()
-        embed['tagger'] = tagger
-        embed['taggingTime'] = taggingTime
-        self.container.should_receive('save').with_args('summertime.mp3', embed).once()
-
-        track = Track('summertime.mp3', metadata)
+        track = build.track(filename='summertime.mp3', album=build.album())
         self.library.store(track)
 
-        assert_that(track.tagger, equal_to(tagger), 'track tagger')
-        assert_that(track.taggingTime, equal_to(taggingTime), 'track tagging time')
+    def testMergesTrackAndAlbumMetadata(self):
+        track = build.track(filename='track.mp3', trackTitle='Track Title')
+        album = build.album(releaseName='Album Title',
+                            leadPerformer='Album Artist',
+                            images=[build.image(data='<image data>')])
+        track.album = album
+
+        self.clock.should_receive('now').and_return(datetime(2014, 03, 23, 16, 44, 33, tzinfo=tz.tzlocal()))
+        self.container.should_receive('save').with_args('track.mp3', match_equality(all_of(
+            has_entry('releaseName', 'Album Title'),
+            has_entry('leadPerformer', 'Album Artist'),
+            has_property('images', contains(has_property('data', '<image data>')))))).once()
+
+        self.library.store(track)

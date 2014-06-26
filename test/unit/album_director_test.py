@@ -7,7 +7,6 @@ from hamcrest import assert_that, equal_to, is_, contains, has_properties
 from test.util import builders as build, resources, doubles
 
 from tgit import album_director as director
-from tgit.album_director import Snapshot
 from tgit.metadata import Image
 from tgit.util import fs
 
@@ -34,22 +33,13 @@ class AlbumDirectorTest(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tempDir)
 
-    def testUpdatesTrackMetadataWithNewState(self):
-        changes = Snapshot()
-        changes.trackTitle = 'Title'
-        changes.leadPerformer = 'Artist'
-        changes.versionInfo = 'Version'
-        changes.featuredGuest = 'Featuring'
-        changes.lyricist = 'Lyricist'
-        changes.composer = 'Composer'
-        changes.publisher = 'Publisher'
-        changes.isrc = 'ZZZ123456789'
-        changes.labels = 'Tags'
-        changes.lyrics = 'Lyrics\nLyrics\n...'
-        changes.language = 'und'
-
+    def testUpdatesTrackMetadata(self):
         track = build.track()
-        director.updateTrack(track, changes)
+        director.updateTrack(track,
+                             trackTitle='Title', leadPerformer='Artist', versionInfo='Version',
+                             featuredGuest='Featuring', lyricist='Lyricist', composer='Composer',
+                             publisher='Publisher', isrc='ZZZ123456789', labels='Tags', lyrics='Lyrics\nLyrics\n...',
+                             language='und')
 
         assert_that(track.trackTitle, equal_to('Title'), 'track title')
         assert_that(track.leadPerformer, equal_to('Artist'), 'lead performer')
@@ -63,25 +53,14 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(track.lyrics, equal_to('Lyrics\nLyrics\n...'), 'lyrics')
         assert_that(track.language, equal_to('und'), 'language')
 
-    def testUpdatesAlbumMetadataWithNewState(self):
-        changes = Snapshot()
-        changes.releaseName = 'Title'
-        changes.compilation = True
-        changes.leadPerformer = 'Artist'
-        changes.guestPerformers = [('Guitar', 'Guitarist')]
-        changes.labelName = 'Label'
-        changes.catalogNumber = 'XXX123456789'
-        changes.upc = '123456789999'
-        changes.comments = 'Comments\n...'
-        changes.releaseTime = '2009-01-01'
-        changes.recordingTime = '2008-09-15'
-        changes.recordingStudios = 'Studios'
-        changes.producer = 'Producer'
-        changes.mixer = 'Engineer'
-        changes.primaryStyle = 'Style'
-
+    def testUpdatesAlbumMetadata(self):
         album = build.album()
-        director.updateAlbum(album, changes)
+        director.updateAlbum(album,
+                             releaseName='Title', compilation=True, leadPerformer='Artist',
+                             guestPerformers=[('Guitar', 'Guitarist')], labelName='Label',
+                             catalogNumber='XXX123456789', upc='123456789999', comments='Comments\n...',
+                             releaseTime='2009-01-01', recordingTime='2008-09-15', recordingStudios='Studios',
+                             producer='Producer', mixer='Engineer', primaryStyle='Style')
 
         assert_that(album.releaseName, equal_to('Title'), 'release name')
         assert_that(album.compilation, is_(True), 'compilation')
@@ -97,6 +76,13 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(album.producer, equal_to('Producer'), 'producer')
         assert_that(album.mixer, equal_to('Engineer'), 'mixer')
         assert_that(album.primaryStyle, equal_to('Style'), 'primary style')
+
+    def testUpdatesTracksLeadPerformerWhenAlbumIsNotACompilation(self):
+        album = build.album(tracks=[build.track(), build.track(), build.track()])
+        director.updateAlbum(album, compilation=False, leadPerformer='Album Artist')
+
+        for track in album.tracks:
+            assert_that(track.leadPerformer, equal_to('Album Artist'), 'track artist')
 
     def testClearsAlbumImages(self):
         album = build.album(images=[build.image('image/jpeg', 'image data')])

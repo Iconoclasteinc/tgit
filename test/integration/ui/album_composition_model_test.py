@@ -11,7 +11,7 @@ from hamcrest import assert_that, equal_to, is_
 from PyQt4.QtCore import Qt, QModelIndex
 
 from tgit.ui.album_composition_model import AlbumCompositionModel, Columns, Row
-from tgit.ui.helpers import display, formatting
+from tgit.ui.helpers import formatting
 from test.util import builders as build
 from test.util import doubles
 

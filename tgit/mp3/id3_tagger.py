@@ -152,6 +152,7 @@ class PairProcessor(object):
         return [[role, name] for role, name in metadata[self._tag]]
 
 
+# todo Rename to ID3Container
 class ID3Tagger(object):
     UTF_8 = 3
 

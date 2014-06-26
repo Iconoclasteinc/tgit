@@ -23,11 +23,6 @@ from tgit.album import Album
 from tgit.util import fs
 
 
-class Snapshot(object):
-    def __str__(self):
-        return str(self.__dict__)
-
-
 def createAlbum(portfolio):
     portfolio.addAlbum(Album())
 
@@ -37,35 +32,18 @@ def addTracksToAlbum(library, album, selection):
         album.addTrack(library.fetch(filename))
 
 
-def updateTrack(track, state):
-    track.trackTitle = state.trackTitle
-    track.leadPerformer = state.leadPerformer
-    track.versionInfo = state.versionInfo
-    track.featuredGuest = state.featuredGuest
-    track.lyricist = state.lyricist
-    track.composer = state.composer
-    track.publisher = state.publisher
-    track.isrc = state.isrc
-    track.labels = state.labels
-    track.lyrics = state.lyrics
-    track.language = state.language
+def updateTrack(track, **metadata):
+    for key, value in metadata.iteritems():
+        setattr(track, key, value)
 
 
-def updateAlbum(album, state):
-    album.releaseName = state.releaseName
-    album.compilation = state.compilation
-    album.leadPerformer = state.leadPerformer
-    album.guestPerformers = state.guestPerformers
-    album.labelName = state.labelName
-    album.catalogNumber = state.catalogNumber
-    album.upc = state.upc
-    album.comments = state.comments
-    album.releaseTime = state.releaseTime
-    album.recordingTime = state.recordingTime
-    album.recordingStudios = state.recordingStudios
-    album.producer = state.producer
-    album.mixer = state.mixer
-    album.primaryStyle = state.primaryStyle
+def updateAlbum(album, **metadata):
+    for key, value in metadata.iteritems():
+        setattr(album, key, value)
+
+    if not metadata.get('compilation'):
+        for track in album.tracks:
+            track.leadPerformer = metadata.get('leadPerformer')
 
 
 def changeAlbumCover(album, filename):

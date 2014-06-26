@@ -11,19 +11,19 @@ from tgit.ui.album_screen import AlbumScreen
 from tgit.ui.track_edition_page import TrackEditionPage
 
 
-def createTrackEditionPage(track):
-    page = TrackEditionPage(track)
-    track.addTrackListener(page)
-    page.display(track)
-    return page
-
-
 class AlbumScreenTest(ViewTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
-        self.view = AlbumScreen(AlbumCompositionPage(), AlbumEditionPage(), createTrackEditionPage)
+        self.album = build.album()
+        self.view = AlbumScreen(AlbumCompositionPage(), AlbumEditionPage(), self.createTrackEditionPage)
         self.show(self.view)
         self.driver = self.createDriverFor(self.view)
+
+    def createTrackEditionPage(self, track):
+        page = TrackEditionPage(self.album, track)
+        track.addTrackListener(page)
+        page.display(self.album, track)
+        return page
 
     def createDriverFor(self, widget):
         return AlbumScreenDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
@@ -44,11 +44,10 @@ class AlbumScreenTest(ViewTest):
         self.driver.hidesSaveButton()
 
     def testAddsTrackEditionPageForEachNewTrackInAlbum(self):
-        album = build.album()
-        album.addAlbumListener(self.view)
-        album.addTrack(build.track(trackTitle='Bone Machine'))
-        album.addTrack(build.track(trackTitle='Where is My Mind?'))
-        album.addTrack(build.track(trackTitle='Cactus'))
+        self.album.addAlbumListener(self.view)
+        self.album.addTrack(build.track(trackTitle='Bone Machine'))
+        self.album.addTrack(build.track(trackTitle='Where is My Mind?'))
+        self.album.addTrack(build.track(trackTitle='Cactus'))
         self.driver.nextPage()
         self.driver.nextPage()
         self.driver.showsTrackMetadata(trackTitle='Bone Machine')
@@ -64,30 +63,28 @@ class AlbumScreenTest(ViewTest):
             build.track(trackTitle='Cactus')
         )
 
-        album = build.album()
-        album.addAlbumListener(self.view)
+        self.album.addAlbumListener(self.view)
 
         for track in surferRosa:
-            album.addTrack(track)
+            self.album.addTrack(track)
 
         self.driver.nextPage()
         self.driver.nextPage()
         self.driver.showsTrackMetadata(trackTitle='Bone Machine')
-        album.removeTrack(surferRosa[0])
+        self.album.removeTrack(surferRosa[0])
         self.driver.showsTrackMetadata(trackTitle='Where is My Mind?')
         self.driver.nextPage()
         self.driver.showsTrackMetadata(trackTitle='Cactus')
-        album.removeTrack(surferRosa[2])
+        self.album.removeTrack(surferRosa[2])
         self.driver.showsTrackMetadata(trackTitle='Where is My Mind?')
-        album.removeTrack(surferRosa[1])
+        self.album.removeTrack(surferRosa[1])
         self.driver.showsAlbumEditionPage()
         self.driver.hidesSaveButton()
 
     def testSignalsWhenSaveButtonClicked(self):
-        album = build.album()
-        album.addAlbumListener(self.view)
+        self.album.addAlbumListener(self.view)
 
-        album.addTrack(build.track())
+        self.album.addTrack(build.track())
         saveAlbumSignal = ValueMatcherProbe('save album signal')
         self.view.recordAlbum.connect(saveAlbumSignal.received)
 
@@ -95,9 +92,8 @@ class AlbumScreenTest(ViewTest):
         self.driver.check(saveAlbumSignal)
 
     def testOffersBackAndForthNavigationBetweenPages(self):
-        album = build.album()
-        album.addAlbumListener(self.view)
-        album.addTrack(build.track())
+        self.album.addAlbumListener(self.view)
+        self.album.addTrack(build.track())
 
         self.driver.nextPage()
         self.driver.nextPage()

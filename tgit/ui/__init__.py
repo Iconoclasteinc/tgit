@@ -55,7 +55,7 @@ def AlbumCompositionPageController(selectTracks, player, album):
 
 def AlbumEditionPageController(selectPicture, album):
     page = AlbumEditionPage()
-    page.metadataChanged.connect(lambda snapshot: director.updateAlbum(album, snapshot))
+    page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.selectPicture.connect(lambda: selectPicture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
     album.addAlbumListener(page)
@@ -63,12 +63,12 @@ def AlbumEditionPageController(selectPicture, album):
     return page
 
 
-def TrackEditionPageController(track):
-    page = TrackEditionPage(track)
-    page.metadataChanged.connect(lambda snapshot: director.updateTrack(track, snapshot))
+def TrackEditionPageController(album, track):
+    page = TrackEditionPage(album, track)
+    page.metadataChanged.connect(lambda metadata: director.updateTrack(track, **metadata))
+    album.addAlbumListener(page)
     track.addTrackListener(page)
-    track.album.addAlbumListener(page)
-    page.display(track)
+    page.display(album=album, track=track)
     return page
 
 
@@ -159,10 +159,10 @@ def createMainWindow(albumPortfolio, player, preferences, library, native):
     def showPictureSelectionDialog(album):
         return PictureSelectionDialogController(window, album, native)
 
-    def createTrackPage(track):
-        return TrackEditionPageController(track)
-
     def createAlbumScreen(album):
+        def createTrackPage(track):
+            return TrackEditionPageController(album, track)
+
         return AlbumScreenController(createCompositionPage, createAlbumPage, createTrackPage, library, album)
 
     window = MainWindowController(createMenuBar, createWelcomeScreen, createAlbumScreen, albumPortfolio)

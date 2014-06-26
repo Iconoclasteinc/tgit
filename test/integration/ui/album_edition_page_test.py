@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hamcrest import has_properties
+from hamcrest import has_entries
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
@@ -98,70 +98,70 @@ class AlbumEditionPageTest(ViewTest):
 
         self.page.metadataChanged.connect(metadataChangedSignal.received)
 
-        metadataChangedSignal.expect(has_properties(releaseName='Title'))
+        metadataChangedSignal.expect(has_entries(releaseName='Title'))
         self.driver.changeReleaseName('Title')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(compilation=True))
+        metadataChangedSignal.expect(has_entries(compilation=True))
         self.driver.toggleCompilation()
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(compilation=False))
+        metadataChangedSignal.expect(has_entries(compilation=False))
         self.driver.toggleCompilation()
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(leadPerformer='Artist'))
+        metadataChangedSignal.expect(has_entries(leadPerformer='Artist'))
         self.driver.changeLeadPerformer('Artist')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(
+        metadataChangedSignal.expect(has_entries(
             guestPerformers=[('Guitar', 'Guitarist'), ('Guitar', 'Bassist'),
                              ('Piano', 'Pianist')]))
         self.driver.changeGuestPerformers('Guitar: Guitarist; Guitar: Bassist; Piano: Pianist')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(labelName='Label'))
+        metadataChangedSignal.expect(has_entries(labelName='Label'))
         self.driver.changeLabelName('Label')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(catalogNumber='XXX12345678'))
+        metadataChangedSignal.expect(has_entries(catalogNumber='XXX12345678'))
         self.driver.changeCatalogNumber('XXX12345678')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(upc='123456789999'))
+        metadataChangedSignal.expect(has_entries(upc='123456789999'))
         self.driver.changeUpc('123456789999')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(comments='Comments\n...\n'))
+        metadataChangedSignal.expect(has_entries(comments='Comments\n...\n'))
         self.driver.addComments('Comments')
         self.driver.addComments('...')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(releaseTime='2009-01-01'))
+        metadataChangedSignal.expect(has_entries(releaseTime='2009-01-01'))
         self.driver.changeReleaseTime('2009-01-01')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(recordingTime='2008-09-15'))
+        metadataChangedSignal.expect(has_entries(recordingTime='2008-09-15'))
         self.driver.changeRecordingTime('2008-09-15')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(recordingStudios='Studios'))
+        metadataChangedSignal.expect(has_entries(recordingStudios='Studios'))
         self.driver.changeRecordingStudios('Studios')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(producer='Producer'))
+        metadataChangedSignal.expect(has_entries(producer='Producer'))
         self.driver.changeProducer('Producer')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(mixer='Mixer'))
+        metadataChangedSignal.expect(has_entries(mixer='Mixer'))
         self.driver.changeMixer('Mixer')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(primaryStyle='Jazz'))
+        metadataChangedSignal.expect(has_entries(primaryStyle='Jazz'))
         self.driver.selectPrimaryStyle('Jazz')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_properties(primaryStyle='Custom'))
+        metadataChangedSignal.expect(has_entries(primaryStyle='Custom'))
         self.driver.changePrimaryStyle('Custom')
         self.check(metadataChangedSignal)
 

@@ -38,7 +38,7 @@ class AlbumTest(unittest.TestCase):
             has_property('trackTitle', 'Track 2'),
             has_property('trackTitle', 'Track 3')), 'track titles')
 
-    def testSupportsRemovingTracks(self):
+    def testAllowsRemovingTracks(self):
         album = build.album(tracks=[
             build.track(trackTitle='Track 1'),
             build.track(trackTitle='Track 2'),
@@ -49,14 +49,6 @@ class AlbumTest(unittest.TestCase):
 
         assert_that(album.tracks, has_length(2), 'remaining tracks')
         assert_that(album.tracks, is_not(has_item(has_property('trackTitle', 'Track 2'))), 'tracks')
-
-    def testRemovesAssociationOfTrackToAlbum(self):
-        track = build.track()
-        album = build.album(tracks=[track])
-
-        album.removeTrack(track)
-        assert_that(track.album, none(), 'associated album')
-        assert_that(track.number, none(), 'track number')
 
     def testSupportsInsertingTracksAtASpecificPositions(self):
         album = build.album(tracks=[
@@ -113,10 +105,8 @@ class AlbumTest(unittest.TestCase):
         assert_that(album.images, empty(), 'images')
 
     def testCopiesAlbumMetadataOfInitialFirstTrack(self):
-        originalRelease = build.album(releaseName='First Album',
-                                      images=[build.image('image/jpeg', 'first-cover.jpg')])
-        track = build.track()
-        track.album = originalRelease
+        track = build.track(metadata=build.metadata(releaseName='First Album',
+                                                    images=[build.image('image/jpeg', 'first-cover.jpg')]))
 
         album = build.album()
         album.addTrack(track)
@@ -158,7 +148,7 @@ class AlbumTest(unittest.TestCase):
         album = Album()
         album.addAlbumListener(self.listenerExpectingNotification('releaseName', 'Album'))
 
-        track = build.track(album=build.album(releaseName='Album'))
+        track = build.track(metadata=build.metadata(releaseName='Album'))
         album.addTrack(track)
 
     def testSignalsTrackRemovalToListeners(self):
@@ -181,9 +171,7 @@ class AlbumTest(unittest.TestCase):
 
     def listenerExpectingNotification(self, prop, value):
         listener = flexmock(AlbumListener())
-        listener.should_receive('albumStateChanged') \
-            .with_args(matching(has_property(prop, value))) \
-            .once()
+        listener.should_receive('albumStateChanged').with_args(matching(has_property(prop, value))).once()
         return listener
 
     def assertNotifiesListenerOnImagesChange(self, *images):

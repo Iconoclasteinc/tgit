@@ -18,8 +18,8 @@ def metadata(images=(), **meta):
     return metadata
 
 
-def track(filename='track.mp3', **meta):
-    track = Track(filename)
+def track(filename='track.mp3', metadata=None, **meta):
+    track = Track(filename, metadata)
 
     for tag, value in meta.items():
         setattr(track, tag, value)
