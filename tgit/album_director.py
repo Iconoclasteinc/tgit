@@ -112,11 +112,12 @@ def sanitize(filename):
 def taggedName(track):
     dirname = os.path.dirname(track.filename)
     _, ext = os.path.splitext(track.filename)
-    filename = sanitize(u"{artist} - {number:02} - {title}".format(artist=track.leadPerformer,
-                                                                   number=track.number,
-                                                                   title=track.trackTitle))
+    filename = sanitize(u"{artist} - {number:02} - {title}{ext}".format(artist=track.leadPerformer,
+                                                                         number=track.number,
+                                                                         title=track.trackTitle,
+                                                                         ext=ext))
 
-    return os.path.join(dirname, '{name}.{ext}'.format(name=filename, ext=ext))
+    return os.path.join(dirname, filename)
 
 
 def mp3Files(selection):

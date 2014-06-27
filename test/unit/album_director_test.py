@@ -181,7 +181,7 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(sanitize(u'  filename   '), equal_to('filename'), 'sanitized name')
 
     def testTagsFileToSameDirectoryUnderArtistAndTitleName(self):
-        track = build.track(leadPerformer='artist', trackTitle='title')
+        track = build.track(filename='track.mp3', leadPerformer='artist', trackTitle='title')
         album = build.album(tracks=[build.track(), build.track(), track])
 
-        assert_that(director.taggedName(track), 'artist - 03 - title.mp3')
+        assert_that(director.taggedName(track), equal_to('artist - 03 - title.mp3'), 'name of tagged file')
