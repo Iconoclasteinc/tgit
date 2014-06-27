@@ -17,9 +17,17 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt4.QtCore import QDir, QFileInfo
-from tgit.album import Album
+from datetime import datetime
+import os
+import re
+import shutil
 
+from dateutil import tz
+from PyQt4.QtCore import QDir, QFileInfo
+
+import tgit
+from tgit.album import Album
+from tgit.track import Track
 from tgit.util import fs
 
 
@@ -27,9 +35,9 @@ def createAlbum(portfolio):
     portfolio.addAlbum(Album())
 
 
-def addTracksToAlbum(library, album, selection):
+def addTracksToAlbum(container, album, selection):
     for filename in mp3Files(selection):
-        album.addTrack(library.fetch(filename))
+        album.addTrack(Track(filename, container.load(filename)))
 
 
 def updateTrack(track, **metadata):
@@ -75,9 +83,21 @@ def playTrack(player, track):
         player.play(track.filename)
 
 
-def recordAlbum(catalog, album):
+def recordAlbum(container, album):
     for track in album.tracks:
-        catalog.store(track)
+        recordTrack(container, taggedName(track), track, datetime.now(tz.tzlocal()))
+
+
+def recordTrack(container, destinationFile, track, time):
+    track.tagger = 'TGiT v' + tgit.__version__
+    track.taggingTime = time.strftime('%Y-%m-%d %H:%M:%S %z')
+    metadata = track.metadata
+    metadata.update(track.album.metadata)
+
+    if destinationFile != track.filename:
+        shutil.copy(track.filename, destinationFile)
+
+    container.save(destinationFile, metadata)
 
 
 def exportAlbum(format_, album, destination):
@@ -85,7 +105,20 @@ def exportAlbum(format_, album, destination):
         format_.write(album, out)
 
 
-#todo Consider moving to the library itself
+def sanitize(filename):
+    return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
+
+
+def taggedName(track):
+    dirname = os.path.dirname(track.filename)
+    _, ext = os.path.splitext(track.filename)
+    filename = sanitize(u"{artist} - {number:02} - {title}".format(artist=track.leadPerformer,
+                                                                   number=track.number,
+                                                                   title=track.trackTitle))
+
+    return os.path.join(dirname, '{name}.{ext}'.format(name=filename, ext=ext))
+
+
 def mp3Files(selection):
     files = []
     for filename in selection:

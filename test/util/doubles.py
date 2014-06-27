@@ -7,29 +7,34 @@ from test.util import mp3_file as mp3
 from tgit.util import fs
 from tgit.metadata import Image
 from tgit.announcer import Announcer
-from tgit.mp3 import id3_tagger as tagger
+from tgit.tagging import id3_container as id3
 
 
-def metadataContainer():
-    return FakeMetadataContainer()
+def recordingLibrary():
+    return Mp3Library(tempfile.mkdtemp())
 
 
-# todo make that a driver
-class FakeMetadataContainer(object):
-    def __init__(self):
-        self.files = []
-        self.dir = tempfile.mkdtemp()
+class Mp3Library(object):
+    def __init__(self, root):
+        self.root = root
+        self.recordings = []
 
-    def add(self, **metadata):
-        return mp3.make(to=self.dir, **metadata).filename
+    def create(self, **metadata):
+        recording = mp3.make(to=self.root, **metadata)
+        self.recordings.append(recording.filename)
+        return recording.filename
 
-    def load(self, filename):
-        if not os.path.exists(filename):
-            raise AssertionError('Cannot find in library: ' + filename)
+    def path(self, filename):
+        return os.path.join(self.root, filename)
 
-        return tagger.load(filename)
+    def exists(self, filename):
+        return os.path.exists(self.path(filename))
 
     def contains(self, filename, frontCover=None, **tags):
+        if not self.exists(filename):
+            raise AssertionError('Not in library: ' + filename)
+
+        metadata = id3.load(self.path(filename))
         images = []
         # todo use builders and metadata
         if frontCover:
@@ -37,14 +42,12 @@ class FakeMetadataContainer(object):
             mime = fs.guessMimeType(image)
             images.append(Image(mime, fs.readContent(image), type_=Image.FRONT_COVER, desc=desc))
 
-        metadata = self.load(os.path.join(self.dir, filename))
         assert_that(metadata, has_entries(tags), 'metadata tags')
         assert_that(metadata.images, contains(*images), 'attached pictures')
 
     def delete(self):
-        # if we remove the tempdir, Qt filesystem watchers complain
-        for f in os.listdir(self.dir):
-            os.remove(os.path.join(self.dir, f))
+        for recording in self.recordings:
+            os.remove(recording)
 
 
 def audioPlayer(*args):
@@ -78,19 +81,12 @@ class FakeAudioPlayer(object):
         self._announce.removeListener(listener)
 
 
-def trackLibrary():
-    return MockTrackLibrary()
+def exportFormat():
+    return FakeExportFormat()
 
 
-class MockTrackLibrary(object):
-    def __init__(self):
-        self.tracks = []
-
-    def store(self, track):
-        self.tracks.append(track)
-
-    def fetch(self, name):
-        return next((track for track in self.tracks if track.filename == name), None)
-
-    def assertContains(self, *tracks):
-        assert_that(self.tracks, contains(*tracks), 'tracks in catalog')
+class FakeExportFormat(object):
+    def write(self, album, out):
+        for track in album.tracks:
+            out.write(track.trackTitle)
+            out.write('\n')

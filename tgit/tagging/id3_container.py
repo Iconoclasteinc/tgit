@@ -29,11 +29,11 @@ def invert(mapping):
 
 
 def load(filename):
-    return ID3Tagger().load(filename)
+    return ID3Container().load(filename)
 
 
 def save(filename, metadata, overwrite=False):
-    ID3Tagger(overwrite=overwrite).save(filename=filename, metadata=metadata)
+    ID3Container(overwrite=overwrite).save(filename=filename, metadata=metadata)
 
 
 class TextProcessor(object):
@@ -152,8 +152,7 @@ class PairProcessor(object):
         return [[role, name] for role, name in metadata[self._tag]]
 
 
-# todo Rename to ID3Container
-class ID3Tagger(object):
+class ID3Container(object):
     UTF_8 = 3
 
     def __init__(self, encoding=UTF_8, overwrite=False):

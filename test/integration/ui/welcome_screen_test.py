@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# noinspection PyUnresolvedReferences
-
 from test.integration.ui import ViewTest
 from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity

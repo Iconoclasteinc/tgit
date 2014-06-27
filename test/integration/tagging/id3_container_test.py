@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import (assert_that, has_entry, has_items, has_key, has_length, contains,
-                      is_not, contains_inanyorder)
+from hamcrest import assert_that, has_entry, has_items, has_key, has_length, contains, is_not, contains_inanyorder
 
 from test.util import mp3_file as mp3
 
 from tgit.metadata import Metadata, Image
-import tgit.mp3.id3_tagger as tagger
+import tgit.tagging.id3_container as container
 
 BITRATE = mp3.Base.bitrate
 DURATION = mp3.Base.duration
 
 
-# todo introduce dedicated focused tests for the processors?
-class ID3TaggerTest(unittest.TestCase):
+class ID3ContainerTest(unittest.TestCase):
     def tearDown(self):
         self.mp3.delete()
 
@@ -23,19 +21,19 @@ class ID3TaggerTest(unittest.TestCase):
         return self.mp3.filename
 
     def testReadsAlbumTitleFromTALBFrame(self):
-        metadata = tagger.load(self.makeMp3(TALB='Album'))
+        metadata = container.load(self.makeMp3(TALB='Album'))
         assert_that(metadata, has_entry('releaseName', 'Album'), 'metadata')
 
     def testJoinsAllTextsOfFrames(self):
-        metadata = tagger.load(self.makeMp3(TALB=['Album', 'Titles']))
+        metadata = container.load(self.makeMp3(TALB=['Album', 'Titles']))
         assert_that(metadata, has_entry('releaseName', 'Album\x00Titles'), 'metadata')
 
     def testReadsLeadPerformerFromTPE1Frame(self):
-        metadata = tagger.load(self.makeMp3(TPE1='Lead Artist'))
+        metadata = container.load(self.makeMp3(TPE1='Lead Artist'))
         assert_that(metadata, has_entry('leadPerformer', 'Lead Artist'), 'metadata')
 
     def testReadsGuestPerformersFromTMCLFrame(self):
-        metadata = tagger.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Guitar', 'Bassist'],
+        metadata = container.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Guitar', 'Bassist'],
                                                   ['Piano', 'Pianist']]))
         assert_that(metadata, has_entry('guestPerformers', contains_inanyorder(
             ('Guitar', 'Guitarist'),
@@ -43,117 +41,117 @@ class ID3TaggerTest(unittest.TestCase):
             ('Piano', 'Pianist'))), 'metadata')
 
     def testIgnoresTMCLEntriesWithBlankNames(self):
-        metadata = tagger.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Piano', '']]))
+        metadata = container.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Piano', '']]))
         assert_that(metadata, has_entry('guestPerformers', contains(('Guitar', 'Guitarist'))), 'metadata')
 
     def testReadsLabelNameFromTOWNFrame(self):
-        metadata = tagger.load(self.makeMp3(TOWN='Label Name'))
+        metadata = container.load(self.makeMp3(TOWN='Label Name'))
         assert_that(metadata, has_entry('labelName', 'Label Name'), 'metadata')
 
     def testReadsCatalogNumberFromCustomFrame(self):
-        metadata = tagger.load(self.makeMp3(TXXX_CATALOG_NUMBER='123 456-1'))
+        metadata = container.load(self.makeMp3(TXXX_CATALOG_NUMBER='123 456-1'))
         assert_that(metadata, has_entry('catalogNumber', '123 456-1'), 'metadata')
 
     def testReadsUpcFromCustomFrame(self):
-        metadata = tagger.load(self.makeMp3(TXXX_UPC='1234567899999'))
+        metadata = container.load(self.makeMp3(TXXX_UPC='1234567899999'))
         assert_that(metadata, has_entry('upc', '1234567899999'), 'metadata')
 
     def testReadsRecordingTimeFromTDRCFrame(self):
-        metadata = tagger.load(self.makeMp3(TDRC='2012-07-15'))
+        metadata = container.load(self.makeMp3(TDRC='2012-07-15'))
         assert_that(metadata, has_entry('recordingTime', '2012-07-15'), 'metadata')
 
     def testReadsReleaseTimeFromTDRLFrame(self):
-        metadata = tagger.load(self.makeMp3(TDRL='2013-11-15'))
+        metadata = container.load(self.makeMp3(TDRL='2013-11-15'))
         assert_that(metadata, has_entry('releaseTime', '2013-11-15'), 'metadata')
 
     def testReadsOriginalReleaseTimeFromTDORFrame(self):
-        metadata = tagger.load(self.makeMp3(TDOR='1999-03-15'))
+        metadata = container.load(self.makeMp3(TDOR='1999-03-15'))
         assert_that(metadata, has_entry('originalReleaseTime', '1999-03-15'), 'metadata')
 
     def testReadsRecordingStudiosFromCustomFrame(self):
-        metadata = tagger.load(self.makeMp3(TXXX_RECORDING_STUDIOS='Studio Name'))
+        metadata = container.load(self.makeMp3(TXXX_RECORDING_STUDIOS='Studio Name'))
         assert_that(metadata, has_entry('recordingStudios', 'Studio Name'), 'metadata')
 
     def testReadsArtisticProducerFromTIPLFrame(self):
-        metadata = tagger.load(self.makeMp3(TIPL=[['producer', 'Artistic Producer']]))
+        metadata = container.load(self.makeMp3(TIPL=[['producer', 'Artistic Producer']]))
         assert_that(metadata, has_entry('producer', 'Artistic Producer'), 'metadata')
 
     def testTakesIntoAccountLastOfMultipleRoleDefinitions(self):
-        metadata = tagger.load(self.makeMp3(TIPL=[['producer', 'first'], ['producer', 'last']]))
+        metadata = container.load(self.makeMp3(TIPL=[['producer', 'first'], ['producer', 'last']]))
         assert_that(metadata, has_entry('producer', 'last'), 'metadata')
 
     def testIgnoresTPILEntriesWithBlankNames(self):
-        metadata = tagger.load(self.makeMp3(TIPL=[['producer', '']]))
+        metadata = container.load(self.makeMp3(TIPL=[['producer', '']]))
         assert_that(metadata, is_not(has_key('producer')), 'metadata')
 
     def testReadsMixingEngineerFromTIPLFrame(self):
-        metadata = tagger.load(self.makeMp3(TIPL=[['mix', 'Mixing Engineer']]))
+        metadata = container.load(self.makeMp3(TIPL=[['mix', 'Mixing Engineer']]))
         assert_that(metadata, has_entry('mixer', 'Mixing Engineer'), 'metadata')
 
     def testReadsCommentsFromFrenchCOMMFrame(self):
-        metadata = tagger.load(self.makeMp3(COMM=('Comments', 'fra')))
+        metadata = container.load(self.makeMp3(COMM=('Comments', 'fra')))
         assert_that(metadata, has_entry('comments', 'Comments'), 'metadata')
 
     def testReadsTrackTitleFromTIT2Frame(self):
-        metadata = tagger.load(self.makeMp3(TIT2='Track Title'))
+        metadata = container.load(self.makeMp3(TIT2='Track Title'))
         assert_that(metadata, has_entry('trackTitle', 'Track Title'), 'metadata')
 
     def testReadsVersionInfoFromTPE4Frame(self):
-        metadata = tagger.load(self.makeMp3(TPE4='Version Info'))
+        metadata = container.load(self.makeMp3(TPE4='Version Info'))
         assert_that(metadata, has_entry('versionInfo', 'Version Info'), 'metadata')
 
     def testReadsFeaturedGuestFromCustomFrame(self):
-        metadata = tagger.load(self.makeMp3(TXXX_FEATURED_GUEST='Featured Guest'))
+        metadata = container.load(self.makeMp3(TXXX_FEATURED_GUEST='Featured Guest'))
         assert_that(metadata, has_entry('featuredGuest', 'Featured Guest'), 'metadata')
 
     def testReadsLyricistFromTEXTFrame(self):
-        metadata = tagger.load(self.makeMp3(TEXT='Lyricist'))
+        metadata = container.load(self.makeMp3(TEXT='Lyricist'))
         assert_that(metadata, has_entry('lyricist', 'Lyricist'), 'metadata')
 
     def testReadsComposerFromTCOMFrame(self):
-        metadata = tagger.load(self.makeMp3(TCOM='Composer'))
+        metadata = container.load(self.makeMp3(TCOM='Composer'))
         assert_that(metadata, has_entry('composer', 'Composer'), 'metadata')
 
     def testReadsPublisherFromTPUBFrame(self):
-        metadata = tagger.load(self.makeMp3(TPUB='Publisher'))
+        metadata = container.load(self.makeMp3(TPUB='Publisher'))
         assert_that(metadata, has_entry('publisher', 'Publisher'), 'metadata')
 
     def testReadsIsrcFromTSRCFrame(self):
-        metadata = tagger.load(self.makeMp3(TSRC='AABB12345678'))
+        metadata = container.load(self.makeMp3(TSRC='AABB12345678'))
         assert_that(metadata, has_entry('isrc', 'AABB12345678'), 'metadata')
 
     def testReadsTagsFromCustomFrame(self):
-        metadata = tagger.load(self.makeMp3(TXXX_TAGS='Tag1 Tag2 Tag3'))
+        metadata = container.load(self.makeMp3(TXXX_TAGS='Tag1 Tag2 Tag3'))
         assert_that(metadata, has_entry('labels', 'Tag1 Tag2 Tag3'), 'metadata')
 
     def testReadsLyricsFromUSLTFrenchFrame(self):
-        metadata = tagger.load(self.makeMp3(USLT=('Lyrics', 'fra')))
+        metadata = container.load(self.makeMp3(USLT=('Lyrics', 'fra')))
         assert_that(metadata, has_entry('lyrics', 'Lyrics'), 'metadata')
 
     def testReadsLanguageFromTLANFrame(self):
-        metadata = tagger.load(self.makeMp3(TLAN='fra'))
+        metadata = container.load(self.makeMp3(TLAN='fra'))
         assert_that(metadata, has_entry('language', 'fra'), 'metadata')
 
     def testReadsPrimaryStyleFromTCONFrame(self):
-        metadata = tagger.load(self.makeMp3(TCON='Jazz'))
+        metadata = container.load(self.makeMp3(TCON='Jazz'))
         assert_that(metadata, has_entry('primaryStyle', 'Jazz'), 'metadata')
 
     def testReadsCompilationFlagFromNonStandardTCMPFlag(self):
-        metadata = tagger.load(self.makeMp3(TCMP='0'))
+        metadata = container.load(self.makeMp3(TCMP='0'))
         assert_that(metadata, has_entry('compilation', False), 'metadata')
-        metadata = tagger.load(self.makeMp3(TCMP='1'))
+        metadata = container.load(self.makeMp3(TCMP='1'))
         assert_that(metadata, has_entry('compilation', True), 'metadata')
 
     def testReadsBitrateFromAudioStreamInformation(self):
-        metadata = tagger.load(self.makeMp3())
+        metadata = container.load(self.makeMp3())
         assert_that(metadata, has_entry('bitrate', BITRATE), 'bitrate')
 
     def testReadsDurationFromAudioStreamInformation(self):
-        metadata = tagger.load(self.makeMp3())
+        metadata = container.load(self.makeMp3())
         assert_that(metadata, has_entry('duration', DURATION), 'duration')
 
     def testReadsCoverPicturesFromAPICFrames(self):
-        metadata = tagger.load(self.makeMp3(
+        metadata = container.load(self.makeMp3(
             APIC_FRONT=('image/jpeg', 'Front', 'front-cover.jpg'),
             APIC_BACK=('image/jpeg', 'Back', 'back-cover.jpg')))
 
@@ -163,11 +161,11 @@ class ID3TaggerTest(unittest.TestCase):
         ))
 
     def testReadsTaggerFromCustomFrame(self):
-        metadata = tagger.load(self.makeMp3(TXXX_TAGGER='TGiT v1.0'))
+        metadata = container.load(self.makeMp3(TXXX_TAGGER='TGiT v1.0'))
         assert_that(metadata, has_entry('tagger', 'TGiT v1.0'), 'metadata')
 
     def testReadsTaggingTimeFromCustomFrame(self):
-        metadata = tagger.load(self.makeMp3(TXXX_TAGGING_TIME='2014-03-26 14:18:55 EDT-0400'))
+        metadata = container.load(self.makeMp3(TXXX_TAGGING_TIME='2014-03-26 14:18:55 EDT-0400'))
         assert_that(metadata, has_entry('taggingTime', '2014-03-26 14:18:55 EDT-0400'), 'metadata')
 
     def testRoundTripsEmptyMetadataToFile(self):
@@ -220,48 +218,44 @@ class ID3TaggerTest(unittest.TestCase):
                                 TIPL=[['mix', 'Mixing Engineer']],
                                 USLT=('', 'fra'))
 
-        tagger.save(filename, Metadata())
+        container.save(filename, Metadata())
         self.assertContainsMetadata(filename, Metadata())
 
     def testCanSaveSeveralPicturesSharingTheSameDescription(self):
         filename = self.makeMp3()
-        metadata = tagger.load(filename)
+        metadata = container.load(filename)
         metadata.addImage('image/jpeg', 'salers.jpg', desc='Front Cover')
         metadata.addImage('image/jpeg', 'ragber.jpg', desc='Front Cover')
-        tagger.save(filename, metadata)
+        container.save(filename, metadata)
 
-        assert_that(load(filename).images, contains_inanyorder(
+        assert_that(container.load(filename).images, contains_inanyorder(
             Image('image/jpeg', 'salers.jpg', type_=Image.OTHER, desc='Front Cover'),
             Image('image/jpeg', 'ragber.jpg', type_=Image.OTHER, desc='Front Cover (2)'),
         ))
 
     def testRemovesExistingAttachedPicturesOnSave(self):
         filename = self.makeMp3(APIC_FRONT=('image/jpeg', '', 'front-cover.jpg'))
-        metadata = tagger.load(filename)
+        metadata = container.load(filename)
         metadata.removeImages()
 
-        tagger.save(filename, metadata)
-        assert_that(load(filename).images, has_length(0), 'removed images')
+        container.save(filename, metadata)
+        assert_that(container.load(filename).images, has_length(0), 'removed images')
 
         metadata.addImage(mime='image/jpeg', data='salers.jpg', desc='Front')
-        tagger.save(filename, metadata)
+        container.save(filename, metadata)
 
-        assert_that(load(filename).images, has_length(1), 'updated images')
+        assert_that(container.load(filename).images, has_length(1), 'updated images')
 
     def assertCanBeSavedAndReloadedWithSameState(self, metadata):
         filename = self.makeMp3()
-        tagger.save(filename, metadata.copy())
+        container.save(filename, metadata.copy())
         self.assertContainsMetadata(filename, metadata)
 
     def assertContainsMetadata(self, filename, expected):
         expectedLength = len(expected) + len(('bitrate', 'duration'))
-        metadata = load(filename)
+        metadata = container.load(filename)
         assert_that(metadata.items(), has_items(*expected.items()),
                     'metadata items')
         assert_that(metadata, has_length(expectedLength), 'metadata count')
         assert_that(metadata.images, has_items(*expected.images),
                     'metadata images')
-
-
-def load(filename):
-    return tagger.load(filename)

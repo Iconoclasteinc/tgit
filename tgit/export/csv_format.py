@@ -2,9 +2,6 @@
 
 import csv
 
-from tgit.util import sip_api
-sip_api.use_v2()
-
 from PyQt4.QtCore import QObject
 
 

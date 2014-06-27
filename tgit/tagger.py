@@ -25,9 +25,8 @@ from PyQt4.QtGui import QApplication
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio.audio_library import AudioFiles
 from tgit.audio.player import PhononPlayer
-from tgit.mp3.id3_tagger import ID3Tagger
+from tgit.tagging.id3_container import ID3Container
 from tgit.preferences import Preferences
-from tgit.track_library import TrackLibrary
 from tgit import ui
 from tgit.ui.helpers import display
 
@@ -54,8 +53,8 @@ class TGiT(QApplication):
 
     def show(self, preferences):
         self.setLocale(preferences['language'])
-        self.mainWindow = ui.createMainWindow(AlbumPortfolio(), self.player(AudioFiles()), preferences,
-                                              TrackLibrary(ID3Tagger()), self.native)
+        self.mainWindow = \
+            ui.createMainWindow(AlbumPortfolio(), self.player(AudioFiles()), preferences, ID3Container(), self.native)
         display.centeredOnScreen(self.mainWindow)
 
     def launch(self, preferences):
