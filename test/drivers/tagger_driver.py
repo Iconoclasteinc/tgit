@@ -12,8 +12,8 @@ from test.drivers.track_selection_dialog_driver import trackSelectionDialog
 from test.drivers.welcome_screen_driver import welcomeScreen
 
 
-def messageBox(parent):
-    return WidgetDriver.findSingle(parent, QDialog, match.named('message-box'), showingOnScreen())
+def restartMessage(parent):
+    return WidgetDriver.findSingle(parent, QDialog, match.named('restart-message'), showingOnScreen())
 
 
 class TaggerDriver(MainWindowDriver):
@@ -50,14 +50,8 @@ class TaggerDriver(MainWindowDriver):
         albumScreen(self).moveTrack(title, to)
 
     # todo have a quick navigation button
-    def toAlbum(self):
+    def next(self):
         albumScreen(self).nextPage()
-        albumScreen(self).isShowingAlbumEditionPage()
-
-    # todo have a quick navigation button
-    def toNextTrack(self):
-        albumScreen(self).nextPage()
-        albumScreen(self).isShowingTrackEditionPage()
 
     def showsAlbumContains(self, *tracks):
         albumScreen(self).showsAlbumContains(*tracks)
@@ -83,10 +77,11 @@ class TaggerDriver(MainWindowDriver):
         self.acknowledge()
 
     def hasSettings(self, **settings):
-        menuBar(self).settings()
-        settingsDialog(self).showsSettings(settings)
+        dialog = menuBar(self).settings()
+        dialog.showsSettings(settings)
+        dialog.close()
 
     def acknowledge(self):
-        message = messageBox(self)
+        message = restartMessage(self)
         ok = ButtonDriver.findSingle(message, QAbstractButton, withText('OK'))
         ok.click()

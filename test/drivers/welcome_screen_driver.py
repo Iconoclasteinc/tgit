@@ -1,21 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QPushButton, QWidget
+from PyQt4.QtGui import QWidget
 
 from test.cute.matchers import named
-from test.cute.widgets import WidgetDriver, ButtonDriver
-from tgit.ui.views.welcome_screen import WelcomeScreen
+from test.drivers.__base import BaseDriver
 
 
 def welcomeScreen(parent):
-    return WelcomeScreenDriver.findSingle(parent, QWidget, named(WelcomeScreen.NAME))
+    return WelcomeScreenDriver.findSingle(parent, QWidget, named('welcome-screen'))
 
 
-class WelcomeScreenDriver(WidgetDriver):
-    def __init__(self, selector, prober, gesturePerformer):
-        super(WelcomeScreenDriver, self).__init__(selector, prober, gesturePerformer)
-
+class WelcomeScreenDriver(BaseDriver):
     def newAlbum(self):
-        button = ButtonDriver.findSingle(self, QPushButton,
-                                         named(WelcomeScreen.NEW_ALBUM_BUTTON_NAME))
-        button.click()
+        self.button(named('new-album')).click()

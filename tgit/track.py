@@ -18,8 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit.announcer import Announcer
-from tgit import tags
-from metadata import Metadata
+from tgit import tag
+from tgit.metadata import Metadata
 
 
 class TrackListener(object):
@@ -28,78 +28,42 @@ class TrackListener(object):
 
 
 class Track(object):
+    __metaclass__ = tag.Taggable
+
+    trackTitle = tag.text()
+    leadPerformer = tag.text()
+    versionInfo = tag.text()
+    featuredGuest = tag.text()
+    publisher = tag.text()
+    lyricist = tag.text()
+    composer = tag.text()
+    isrc = tag.text()
+    labels = tag.text()
+    lyrics = tag.text()
+    language = tag.text()
+    tagger = tag.text()
+    taggingTime = tag.text()
+
+    # todo Introduce Recording
+    bitrate = tag.numeric()
+    duration = tag.decimal()
+
     def __init__(self, filename, metadata=None):
-        self._filename = filename
-        self._metadata = metadata or Metadata()
-        self._album = None
-        self._listeners = Announcer()
+        self.filename = filename
+        self.metadata = metadata or Metadata()
+        self.album = None
+        self.listeners = Announcer()
 
     def addTrackListener(self, listener):
-        self._listeners.addListener(listener)
+        self.listeners.addListener(listener)
 
     def removeTrackListener(self, listener):
-        self._listeners.removeListener(listener)
-
-    @property
-    def filename(self):
-        return self._filename
-
-    @property
-    def metadata(self):
-        return self._metadata.copy()
-
-    @property
-    def album(self):
-        return self._album
-
-    @album.deleter
-    def album(self):
-        self._album.removeAlbumListener(self)
-        self._album = None
-
-    @album.setter
-    def album(self, album):
-        self._album = album
-        self.update(album.metadata)
-        album.addAlbumListener(self)
+        self.listeners.removeListener(listener)
 
     @property
     def number(self):
         # todo this should be a metadata of the track and not rely on the album
         return self.album and self.album.positionOf(self) + 1 or None
 
-    def update(self, metadata):
-        changes = metadata
-        if changes[tags.COMPILATION] and tags.LEAD_PERFORMER in changes:
-            del changes[tags.LEAD_PERFORMER]
-        self._metadata.update(metadata)
-        self._signalStateChange()
-
-    def albumStateChanged(self, album):
-        self.update(album.metadata)
-
-    def trackAdded(self, track, position):
-        pass
-
-    def trackRemoved(self, track, position):
-        pass
-
-    def _signalStateChange(self):
-        self._listeners.trackStateChanged(self)
-
-
-def addMetadataPropertiesTo(cls):
-    for meta in tags.TRACK_TAGS:
-        def createProperty(name):
-            def getter(self):
-                return self._metadata[name]
-
-            def setter(self, value):
-                self._metadata[name] = value
-                self._signalStateChange()
-
-            setattr(cls, name, property(getter, setter))
-
-        createProperty(meta)
-
-addMetadataPropertiesTo(Track)
+    def metadataChanged(self):
+        self.listeners.trackStateChanged(self)

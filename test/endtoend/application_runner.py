@@ -7,26 +7,17 @@ from test.cute.widgets import mainApplicationWindow
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
-from test.util import fakes
-from tgit.app import TGiT
-from tgit.ui.views.main_window import MainWindow
-from tgit.ui.views.picture_selection_dialog import PictureSelectionDialog
-from tgit.ui.views.track_selection_dialog import TrackSelectionDialog
+from test.util import doubles
+from tgit.tagger import TGiT
 
 ONE_SECOND = 1000
 
 
-def disableNativeDialogs():
-    PictureSelectionDialog.native = False
-    TrackSelectionDialog.native = False
-
-
 class ApplicationRunner(object):
     def start(self, preferences):
-        disableNativeDialogs()
-        self.app = TGiT(fakes.audioPlayer)
+        self.app = TGiT(doubles.audioPlayer, native=False)
         self.app.show(preferences)
-        self.tagger = TaggerDriver(mainApplicationWindow(named(MainWindow.NAME), showingOnScreen()),
+        self.tagger = TaggerDriver(mainApplicationWindow(named('main-window'), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
                                    Robot())
 
@@ -48,7 +39,7 @@ class ApplicationRunner(object):
         self.tagger.showsAlbumContains(*tracks)
 
     def showsAlbumMetadata(self, **tags):
-        self.tagger.toAlbum()
+        self.tagger.next()
         self.tagger.showsAlbumMetadata(**tags)
         # todo navigate back to track list
         # so we always no where we're starting from
@@ -58,7 +49,7 @@ class ApplicationRunner(object):
         self.tagger.saveAlbum()
 
     def showsNextTrackMetadata(self, **tags):
-        self.tagger.toNextTrack()
+        self.tagger.next()
         self.tagger.showsTrackMetadata(**tags)
 
     def changeTrackMetadata(self, **tags):

@@ -2,9 +2,9 @@
 
 from PyQt4.QtGui import QMenuBar
 
-from test.cute.matchers import named, withTitle, withText
+from test.cute.matchers import named
 from test.cute.widgets import QMenuBarDriver
-from tgit.ui.views.menu_bar import MenuBar
+from test.drivers.settings_dialog_driver import settingsDialog
 
 
 def menuBar(parent):
@@ -12,46 +12,43 @@ def menuBar(parent):
 
 
 def addFilesMenuItem(menu):
-    return menu.menuItem(named(MenuBar.ADD_FILES_ACTION_NAME))
+    return menu.menuItem(named('add-files'))
 
 
 def addFolderMenuItem(menu):
-    return menu.menuItem(named(MenuBar.ADD_FOLDER_ACTION_NAME))
+    return menu.menuItem(named('add-folder'))
 
 
 def exportMenuItem(menu):
-    return menu.menuItem(named(MenuBar.EXPORT_ACTION_NAME))
+    return menu.menuItem(named('export'))
 
 
 class MenuBarDriver(QMenuBarDriver):
-    def hasDisabledAlbumMenu(self):
-        menu = self._openFileMenu()
+    def hasDisabledAlbumActions(self):
+        menu = self.openMenu(named('file-menu'))
         addFilesMenuItem(menu).isDisabled()
         addFolderMenuItem(menu).isDisabled()
         exportMenuItem(menu).isDisabled()
         menu.close()
 
     def addFiles(self):
-        menu = self._openFileMenu()
+        menu = self.openMenu(named('file-menu'))
         addFilesMenuItem(menu).click()
 
     def addFolder(self):
-        menu = self._openFileMenu()
+        menu = self.openMenu(named('file-menu'))
         addFolderMenuItem(menu).click()
 
     def export(self):
-        menu = self._openFileMenu()
+        menu = self.openMenu(named('file-menu'))
         exportMenuItem(menu).click()
 
     def settings(self):
-        menu = self.menu(withTitle('Settings'))
-        menu.open()
-        menu.menuItem(withText('Preferences')).click()
+        menu = self.openMenu(named('file-menu'))
+        menu.selectMenuItem(named('Settings'))
+        return settingsDialog(self)
 
-    def _openFileMenu(self):
-        menu = self._fileMenu()
+    def openMenu(self, matching):
+        menu = self.menu(matching)
         menu.open()
         return menu
-
-    def _fileMenu(self):
-        return self.menu(named(MenuBar.FILE_MENU_NAME))

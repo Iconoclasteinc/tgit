@@ -19,4 +19,3 @@
 # noinspection PyUnresolvedReferences
 
 from version import __version__
-import use_sip_api_v2

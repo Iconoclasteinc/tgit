@@ -1,11 +1,10 @@
 from PyQt4.QtGui import QComboBox, QAbstractButton, QDialog, QLabel
-from test.cute import matchers as match
-from test.cute.matchers import named, withText, showingOnScreen, withBuddy
-from test.cute.widgets import WidgetDriver, ComboBoxDriver, ButtonDriver, LabelDriver
+from test.cute.matchers import named, withText, withBuddy
+from test.cute.widgets import WidgetDriver, ComboBoxDriver, ButtonDriver, LabelDriver, window
 
 
 def settingsDialog(parent):
-    return SettingsDialogDriver.findSingle(parent, QDialog, match.named('settings-dialog'), showingOnScreen())
+    return SettingsDialogDriver(window(QDialog, named('settings-dialog')), parent.prober, parent.gesturePerformer)
 
 
 class SettingsDialogDriver(WidgetDriver):
