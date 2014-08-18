@@ -2,7 +2,7 @@
 
 import os
 
-__all__ = ['path']
+__all__ = ['path', 'normalizePath']
 
 PROJECT_DIR = os.path.join(os.path.dirname(__file__), '../..')
 TEST_DIR = os.path.abspath(os.path.join(PROJECT_DIR, 'test'))
@@ -13,9 +13,13 @@ def root():
     return TEST_RESOURCES_DIR
 
 
-def path(path, *more):
-    filename = os.path.join(root(), path)
-    for path in more:
-        filename = os.path.join(filename, path)
+def path(filepath, *more):
+    filename = os.path.join(root(), filepath)
+    for filepath in more:
+        filename = os.path.join(filename, filepath)
 
-    return os.path.abspath(filename)
+    return normalizePath(os.path.abspath(filename))
+
+
+def normalizePath(filepath):
+    return filepath.replace("\\", "/")

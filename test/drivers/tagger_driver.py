@@ -22,7 +22,10 @@ class TaggerDriver(MainWindowDriver):
 
     def addTrack(self, path):
         menuBar(self).addFiles()
-        self.selectAudioFile(path)
+        self.enterAudioFile(path)
+
+    def enterAudioFile(self, filename):
+        trackSelectionDialog(self).enterTrack(filename)
 
     def selectAudioFile(self, filename):
         trackSelectionDialog(self).selectTracks(filename)

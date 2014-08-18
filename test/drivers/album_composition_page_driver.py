@@ -32,28 +32,10 @@ class AlbumCompositionPageDriver(BaseDriver):
     def hasTrackCount(self, count):
         self.trackTable().hasRowCount(equal_to(count))
 
-    def isPlaying(self, title):
-        row = self.showsTrack(title)
-        self.playButtonAt(row).isChecked()
-
-    def isNotPlaying(self, title):
-        row = self.showsTrack(title)
-        self.playButtonAt(row).isUnchecked()
-
-    def playOrStop(self, title):
+    def play(self, title):
         row = self.showsTrack(title)
         self.playButtonAt(row).isShowingOnScreen()
         self.clickPlayButtonAt(row)
-
-    def play(self, title):
-        self.isNotPlaying(title)
-        self.playOrStop(title)
-        self.isPlaying(title)
-
-    def stopTrack(self, title):
-        self.isPlaying(title)
-        self.playOrStop(title)
-        self.isNotPlaying(title)
 
     def addTracks(self):
         self.button(named('add-tracks')).click()
