@@ -19,7 +19,7 @@ class ExportAsDialogTest(ViewTest):
         self.show(window)
         self.dialog = ExportAsDialog(window, native=False)
         self.driver = exportAsDialog(self)
-        self.tempDir = tempfile.mkdtemp()
+        self.tempDir = resources.makeTempDir()
 
     def tearDown(self):
         shutil.rmtree(self.tempDir)

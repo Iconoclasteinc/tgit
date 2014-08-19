@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
+from ctypes import *
 
 import os
+import sys
+import tempfile
 
-__all__ = ['path', 'normalizePath']
+__all__ = ['path', 'normalizePath', 'makeTempDir']
 
 PROJECT_DIR = os.path.join(os.path.dirname(__file__), '../..')
 TEST_DIR = os.path.abspath(os.path.join(PROJECT_DIR, 'test'))
 TEST_RESOURCES_DIR = os.path.join(TEST_DIR, 'resources')
+MAXIMUM_WINDOWS_DIR_PATH_LENGTH = 260
 
 
 def root():
@@ -23,3 +27,14 @@ def path(filepath, *more):
 
 def normalizePath(filepath):
     return filepath.replace("\\", "/")
+
+
+def makeTempDir():
+    dirpath = tempfile.mkdtemp()
+
+    if sys.platform.startswith("win"):
+        longname = create_unicode_buffer(MAXIMUM_WINDOWS_DIR_PATH_LENGTH)
+        windll.kernel32.GetLongPathNameW(unicode(dirpath), longname, MAXIMUM_WINDOWS_DIR_PATH_LENGTH)
+        dirpath = longname.value
+
+    return dirpath
