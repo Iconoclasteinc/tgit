@@ -31,12 +31,9 @@ class ApplicationRunner(object):
         sip.delete(self.app)
         del self.app
 
-    def newAlbum(self, path):
+    def newAlbum(self, *paths):
         self.tagger.createAlbum()
-        self.tagger.enterAudioFile(path)
-
-    def addTrack(self, path):
-        self.tagger.addTrack(path)
+        self.tagger.selectAudioFiles(*paths)
 
     def showsAlbumContent(self, *tracks):
         self.tagger.showsAlbumContains(*tracks)
