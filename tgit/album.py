@@ -39,6 +39,7 @@ class Album(object):
     releaseName = tag.text()
     compilation = tag.flag()
     leadPerformer = tag.text()
+    isni = tag.numeric()
     guestPerformers = tag.pairs()
     labelName = tag.text()
     upc = tag.text()

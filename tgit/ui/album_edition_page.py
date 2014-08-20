@@ -207,7 +207,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.releaseName.setText(album.releaseName)
         self.compilation.setChecked(album.compilation is True)
         self.displayLeadPerformer(album)
-        self.isni.setText(album.isni)
+        self.isni.setText(str(album.isni))
         self.guestPerformers.setText(formatting.toPeopleList(album.guestPerformers))
         self.labelName.setText(album.labelName)
         self.catalogNumber.setText(album.catalogNumber)

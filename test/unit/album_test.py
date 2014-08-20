@@ -119,6 +119,7 @@ class AlbumTest(unittest.TestCase):
     def testSignalsStateChangesToListener(self):
         self.assertNotifiesListenerOnPropertyChange('releaseName', 'Album')
         self.assertNotifiesListenerOnPropertyChange('leadPerformer', 'Artist')
+        self.assertNotifiesListenerOnPropertyChange('isni', 123456789)
         self.assertNotifiesListenerOnPropertyChange('guestPerformers', [('Musician', 'Instrument')])
         self.assertNotifiesListenerOnPropertyChange('labelName', 'Label')
         self.assertNotifiesListenerOnPropertyChange('recordingTime', 'Recorded')
