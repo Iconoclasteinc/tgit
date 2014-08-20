@@ -75,7 +75,7 @@ def identities_matching(keywords):
             return reduce(lambda match, name: match or keyword.lower() in name.lower(), names, False)
 
         def hit(terms, names):
-            reduce(lambda match, term: match and matches(term, names), terms, True)
+            return reduce(lambda match, term: match and matches(term, names), terms, True)
 
         if hit(keywords, all_names):
             matching_identities[isni] = full_names
