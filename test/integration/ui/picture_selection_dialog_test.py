@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import unittest
 
 from PyQt4.QtGui import QMainWindow
+import sys
 
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
@@ -25,6 +27,7 @@ class PictureSelectionDialogTest(ViewTest):
         self.driver.selectPicture(resources.path('front-cover.jpg'))
         self.check(pictureSelectedSignal)
 
-    def testOnlyAcceptsAudioFiles(self):
+    @unittest.skipIf(sys.platform.startswith("win"), "not supported on Windows")
+    def testOnlyAcceptsPictureFiles(self):
         self.dialog.display()
         self.driver.rejectsSelectionOf(resources.path('base.mp3'))

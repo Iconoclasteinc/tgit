@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
+import unittest
+from tgit.util import sip_api
+sip_api.use_v2()
+
+from test.cute.matchers import named
+from test.cute.widgets import window
 
 from hamcrest import contains
-from PyQt4.QtGui import QMainWindow
+from PyQt4.QtGui import QMainWindow, QFileDialog
+import sys
 
-from test.drivers.track_selection_dialog_driver import trackSelectionDialog
+from test.drivers.track_selection_dialog_driver import trackSelectionDialog, TrackSelectionDialogDriver
 from test.integration.ui import ViewTest
 from test.cute.probes import ValueMatcherProbe
 from test.util import resources
@@ -16,7 +23,11 @@ class TrackSelectionDialogTest(ViewTest):
         window = QMainWindow()
         self.show(window)
         self.dialog = TrackSelectionDialog(window, native=False)
-        self.driver = trackSelectionDialog(self)
+        self.driver = self.trackSelectionDriver()
+
+    def trackSelectionDriver(self):
+        return TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')), self.prober,
+                                          self.gesturePerformer)
 
     def testSignalsWhenAudioFilesSelected(self):
         audioFiles = [resources.path('audio', 'Rolling in the Deep.mp3'),
@@ -38,6 +49,7 @@ class TrackSelectionDialogTest(ViewTest):
         self.driver.selectTracksInFolder(audioFolder)
         self.check(trackSelectionSignal)
 
+    @unittest.skipIf(sys.platform.startswith("win"), "not supported on Windows")
     def testRejectsNonAudioFiles(self):
         self.dialog.display(folders=False)
         unsupportedFile = resources.path('front-cover.jpg')

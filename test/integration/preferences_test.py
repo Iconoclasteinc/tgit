@@ -20,10 +20,13 @@ def createStorageFile():
 class PreferencesTest(unittest.TestCase):
     def setUp(self):
         self.storage = createStorageFile()
-        self.preferences = Preferences(QSettings(self.storage, QSettings.IniFormat))
+        self.settings = QSettings(self.storage, QSettings.IniFormat)
+        self.preferences = Preferences(self.settings)
 
     def tearDown(self):
-        os.remove(self.storage)
+        self.settings.clear()
+        # TODO: Can't delete the file under windows. Must find a way to do so.
+        #os.remove(self.storage)
 
     def testStoresMultiplePreferences(self):
         self.preferences['language'] = 'French'

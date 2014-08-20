@@ -20,12 +20,11 @@ class TaggerDriver(MainWindowDriver):
     def __init__(self, selector, prober, gesturePerformer):
         super(TaggerDriver, self).__init__(selector, prober, gesturePerformer)
 
-    def addTrack(self, path):
-        menuBar(self).addFiles()
-        self.selectAudioFile(path)
+    def enterAudioFile(self, filename):
+        trackSelectionDialog(self).enterTrack(filename)
 
-    def selectAudioFile(self, filename):
-        trackSelectionDialog(self).selectTracks(filename)
+    def selectAudioFiles(self, *paths):
+        trackSelectionDialog(self).selectTracks(*paths)
 
     def cancelSelection(self):
         trackSelectionDialog(self).cancel()

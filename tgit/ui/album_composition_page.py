@@ -44,8 +44,7 @@ class PlayButtonDelegate(QStyledItemDelegate):
 
         self.parent().indexWidget(index).setChecked(index.model().data(index))
 
-        # This is awful, I need to paint a button and react to mouse events instead of
-        #  using a real button
+        # This is awful, we need to remove the widgets from the table
         class UglyHack(QModelIndex):
             def model(self):
                 class FakeModel(QAbstractItemModel):

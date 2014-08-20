@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-import tempfile
 
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
-from test.util import mp3_file as mp3
+from test.util import mp3_file as mp3, resources
 from tgit.util import fs
 from tgit.metadata import Image
 from tgit.announcer import Announcer
@@ -11,7 +10,7 @@ from tgit.tagging import id3_container as id3
 
 
 def recordingLibrary():
-    return Mp3Library(tempfile.mkdtemp())
+    return Mp3Library(resources.makeTempDir())
 
 
 class Mp3Library(object):

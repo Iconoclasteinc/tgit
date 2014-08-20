@@ -23,7 +23,7 @@ from tgit.util import fs
 
 class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
-        self.tempdir = tempfile.mkdtemp()
+        self.tempdir = resources.makeTempDir()
         self.library = doubles.recordingLibrary()
 
     def tearDown(self):

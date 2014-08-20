@@ -115,6 +115,9 @@ class WidgetDriver(object):
     def clearFocus(self):
         self.manipulate('clear focus', lambda widget: widget.clearFocus())
 
+    def pause(self, ms):
+        self.perform(gestures.pause(ms))
+
 
 class MainWindowDriver(WidgetDriver):
     pass
@@ -191,8 +194,11 @@ class TextEditDriver(AbstractEditDriver):
 
 
 class ComboBoxDriver(AbstractEditDriver):
+    CHOICES_DISPLAY_DELAY = 250
+
     def selectOption(self, matching):
         popup = self._popup()
+        self.pause(self.CHOICES_DISPLAY_DELAY)
         popup.selectItem(match.withListItemText(matching))
 
     def _popup(self):

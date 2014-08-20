@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import sip
+from test.cute.events import MainEventLoop
+from tgit.util import sip_api
+sip_api.use_v2()
 
 from test.cute.matchers import named, showingOnScreen
 from test.cute.widgets import mainApplicationWindow
@@ -28,12 +31,9 @@ class ApplicationRunner(object):
         sip.delete(self.app)
         del self.app
 
-    def newAlbum(self, path):
+    def newAlbum(self, *paths):
         self.tagger.createAlbum()
-        self.tagger.selectAudioFile(path)
-
-    def addTrack(self, path):
-        self.tagger.addTrack(path)
+        self.tagger.selectAudioFiles(*paths)
 
     def showsAlbumContent(self, *tracks):
         self.tagger.showsAlbumContains(*tracks)
@@ -41,6 +41,7 @@ class ApplicationRunner(object):
     def showsAlbumMetadata(self, **tags):
         self.tagger.next()
         self.tagger.showsAlbumMetadata(**tags)
+        MainEventLoop.processEventsFor(500)
         # todo navigate back to track list
         # so we always no where we're starting from
 
