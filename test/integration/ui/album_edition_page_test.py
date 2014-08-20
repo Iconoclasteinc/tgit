@@ -34,6 +34,7 @@ class AlbumEditionPageTest(ViewTest):
         self.page.display(build.album(
             releaseName='Album',
             leadPerformer='Artist',
+            isni='123456789',
             guestPerformers=[('Guitar', 'Guitarist'), ('Piano', 'Pianist')],
             labelName='Label',
             catalogNumber='XXX123456789',
@@ -49,6 +50,7 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsReleaseName('Album')
         self.driver.showsCompilation(False)
         self.driver.showsLeadPerformer('Artist')
+        self.driver.showsISNI('123456789', True)
         self.driver.showsArea('')
         self.driver.showsGuestPerformers('Guitar: Guitarist; Piano: Pianist')
         self.driver.showsLabelName('Label')
@@ -91,6 +93,14 @@ class AlbumEditionPageTest(ViewTest):
         self.page.display(build.album())
         self.driver.removePicture()
         self.check(removePictureSignal)
+
+    def testSignalsWhenFetchISNIButtonClicked(self):
+        fetchISNISignal = ValueMatcherProbe('fetch ISNI')
+        self.page.fetchISNI.connect(fetchISNISignal.received)
+
+        self.page.display(build.album())
+        self.driver.fetchISNI()
+        self.check(fetchISNISignal)
 
     def testSignalsWhenAlbumMetadataEdited(self):
         self.page.display(build.album())

@@ -96,6 +96,9 @@ class AlbumEditionPageDriver(BaseDriver):
     def removePicture(self):
         self.button(named('remove-picture')).click()
 
+    def fetchISNI(self):
+        self.button(named('find-isni')).click()
+
     def showsReleaseName(self, name):
         self.label(withBuddy(named('release-name'))).isShowingOnScreen()
         self.lineEdit(named('release-name')).hasText(name)
@@ -114,6 +117,14 @@ class AlbumEditionPageDriver(BaseDriver):
         label = self.label(withBuddy(named('lead-performer')))
         label.isShowingOnScreen()
         edit = self.lineEdit(named('lead-performer'))
+        edit.hasText(name)
+        edit.isDisabled(disabled)
+
+    def showsISNI(self, name, disabled=False):
+        label = self.label(withBuddy(named('isni')))
+        label.isShowingOnScreen()
+        label.isDisabled(disabled)
+        edit = self.lineEdit(named('isni'))
         edit.hasText(name)
         edit.isDisabled(disabled)
 
