@@ -7,7 +7,6 @@ sip_api.use_v2()
 from datetime import datetime
 import os
 import shutil
-import tempfile
 import unittest
 from dateutil import tz
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder
@@ -25,6 +24,7 @@ class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
         self.tempdir = resources.makeTempDir()
         self.library = doubles.recordingLibrary()
+        self.nameRegistry = doubles.nameRegistry()
 
     def tearDown(self):
         self.library.delete()
@@ -53,7 +53,7 @@ class AlbumDirectorTest(unittest.TestCase):
     def testUpdatesAlbumMetadata(self):
         album = build.album()
         director.updateAlbum(album,
-                             releaseName='Title', compilation=True, leadPerformer='Artist',
+                             releaseName='Title', compilation=True, leadPerformer='Artist', isni='0000123456789',
                              guestPerformers=[('Guitar', 'Guitarist')], labelName='Label',
                              catalogNumber='XXX123456789', upc='123456789999', comments='Comments\n...',
                              releaseTime='2009-01-01', recordingTime='2008-09-15', recordingStudios='Studios',
@@ -62,6 +62,7 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(album.releaseName, equal_to('Title'), 'release name')
         assert_that(album.compilation, is_(True), 'compilation')
         assert_that(album.leadPerformer, equal_to('Artist'), 'lead performer')
+        assert_that(album.isni, equal_to('0000123456789'), 'isni')
         assert_that(album.guestPerformers, equal_to([('Guitar', 'Guitarist')]), 'guest performers')
         assert_that(album.labelName, equal_to('Label'), 'label name')
         assert_that(album.catalogNumber, equal_to('XXX123456789'), 'catalog number')
@@ -185,3 +186,15 @@ class AlbumDirectorTest(unittest.TestCase):
         album = build.album(tracks=[build.track(), build.track(), track])
 
         assert_that(director.taggedName(track), equal_to('artist - 03 - title.mp3'), 'name of tagged file')
+
+    def testUpdatesIsniMetadataToFirstIsniFoundInRegistry(self):
+        self.nameRegistry.registry.append(('0000123456789', 'Julien', 'Clerc'))
+
+        album = build.album(leadPerformer='Julien Clerc')
+        director.findISNI(self.nameRegistry, album.leadPerformer, album)
+        assert_that(album.isni, equal_to('0000123456789'), 'isni')
+
+    def testDoesNotUpdateIsniMetadataWhenIsniIsNotFoundInRegistry(self):
+        album = build.album(leadPerformer='Julien Clerc')
+        director.findISNI(self.nameRegistry, album.leadPerformer, album)
+        assert_that(album.isni, equal_to(None), 'isni')

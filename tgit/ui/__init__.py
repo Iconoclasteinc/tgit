@@ -53,11 +53,12 @@ def AlbumCompositionPageController(selectTracks, player, album):
     return page
 
 
-def AlbumEditionPageController(selectPicture, album):
+def AlbumEditionPageController(selectPicture, album, nameRegistry):
     page = AlbumEditionPage()
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.selectPicture.connect(lambda: selectPicture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
+    page.fetchISNI.connect(lambda: director.findISNI(nameRegistry, album.leadPerformer, album))
     album.addAlbumListener(page)
     page.display(album)
     return page
@@ -134,7 +135,7 @@ def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
     return window
 
 
-def createMainWindow(albumPortfolio, player, preferences, library, native):
+def createMainWindow(albumPortfolio, player, preferences, library, nameRegistry, native):
     def showSettingsDialog():
         return SettingsDialogController(RestartMessageBox, preferences, window)
 
@@ -154,7 +155,7 @@ def createMainWindow(albumPortfolio, player, preferences, library, native):
         return AlbumCompositionPageController(showTrackSelectionDialog, player, album)
 
     def createAlbumPage(album):
-        return AlbumEditionPageController(showPictureSelectionDialog, album)
+        return AlbumEditionPageController(showPictureSelectionDialog, album, nameRegistry)
 
     def showPictureSelectionDialog(album):
         return PictureSelectionDialogController(window, album, native)

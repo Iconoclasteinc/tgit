@@ -2,6 +2,7 @@
 
 import sip
 from test.cute.events import MainEventLoop
+from tgit.sources.isni import NameRegistry
 from tgit.util import sip_api
 sip_api.use_v2()
 
@@ -18,7 +19,7 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self, preferences):
-        self.app = TGiT(doubles.audioPlayer, native=False)
+        self.app = TGiT(doubles.audioPlayer, NameRegistry('localhost', 5000), native=False)
         self.app.show(preferences)
         self.tagger = TaggerDriver(mainApplicationWindow(named('main-window'), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),

@@ -29,6 +29,7 @@ import tgit
 from tgit.album import Album
 from tgit.track import Track
 from tgit.util import fs
+from tgit.sources.isni import NameRegistry
 
 
 def createAlbum(portfolio):
@@ -136,3 +137,9 @@ def mp3FilesIn(folder):
 
 def isDir(filename):
     return QFileInfo(filename).isDir()
+
+
+def findISNI(registry, leadPerformer, album):
+    identities = registry.searchByKeywords(*leadPerformer.split(' '))
+    if len(identities) > 0:
+        album.isni = identities[0][0]
