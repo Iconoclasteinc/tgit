@@ -34,7 +34,7 @@ class AlbumEditionPageTest(ViewTest):
         self.page.display(build.album(
             releaseName='Album',
             leadPerformer='Artist',
-            isni=123456789,
+            isni='123456789',
             guestPerformers=[('Guitar', 'Guitarist'), ('Piano', 'Pianist')],
             labelName='Label',
             catalogNumber='XXX123456789',
