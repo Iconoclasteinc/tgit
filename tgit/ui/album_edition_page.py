@@ -207,7 +207,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.releaseName.setText(album.releaseName)
         self.compilation.setChecked(album.compilation is True)
         self.displayLeadPerformer(album)
-        self.isni.setText(str(album.isni))
+        self.isni.setText(album.isni)
         self.guestPerformers.setText(formatting.toPeopleList(album.guestPerformers))
         self.labelName.setText(album.labelName)
         self.catalogNumber.setText(album.catalogNumber)
@@ -230,6 +230,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         return dict(releaseName=self.releaseName.text(),
                     compilation=self.compilation.isChecked(),
                     leadPerformer=self.leadPerformer.text(),
+                    isni=self.isni.text(),
                     guestPerformers=formatting.fromPeopleList(self.guestPerformers.text()),
                     labelName=self.labelName.text(),
                     catalogNumber=self.catalogNumber.text(),

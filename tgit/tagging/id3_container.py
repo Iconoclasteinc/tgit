@@ -192,13 +192,14 @@ class ID3Container(object):
                      'TXXX:Tags': 'labels',
                      'TXXX:Tagger': 'tagger',
                      'TXXX:Tagging Time': 'taggingTime',
+                     'TXXX:ISNI': 'isni',
                      "COMM::'fra'": 'comments',
                      "USLT::'fra'": 'lyrics',
                      'TCON': 'primaryStyle'
                      }.items():
         processors.append(UnicodeProcessor(key, tag))
 
-    for key, tag in {'TCMP' : 'compilation'}.items():
+    for key, tag in {'TCMP': 'compilation'}.items():
         processors.append(BooleanProcessor(key, tag))
 
     def load(self, filename):

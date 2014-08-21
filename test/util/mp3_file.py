@@ -95,6 +95,8 @@ class Mp3File(object):
                 self.addTag(id3.TSRC(encoding=UTF_8, text=value))
             elif tag == 'labels' or tag == 'TXXX_TAGS':
                 self.addTag(id3.TXXX(encoding=UTF_8, desc='Tags', text=value))
+            elif tag == 'isni' or tag == 'TXXX_ISNI':
+                self.addTag(id3.TXXX(encoding=UTF_8, desc='ISNI', text=value))
             elif tag == 'lyrics' or tag == 'USLT':
                 text, lang = value
                 self.addTag(id3.USLT(encoding=UTF_8, text=text, desc='', lang=lang))

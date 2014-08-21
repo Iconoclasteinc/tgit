@@ -34,7 +34,7 @@ class ID3ContainerTest(unittest.TestCase):
 
     def testReadsGuestPerformersFromTMCLFrame(self):
         metadata = container.load(self.makeMp3(TMCL=[['Guitar', 'Guitarist'], ['Guitar', 'Bassist'],
-                                                  ['Piano', 'Pianist']]))
+                                                    ['Piano', 'Pianist']]))
         assert_that(metadata, has_entry('guestPerformers', contains_inanyorder(
             ('Guitar', 'Guitarist'),
             ('Guitar', 'Bassist'),
@@ -124,6 +124,10 @@ class ID3ContainerTest(unittest.TestCase):
         metadata = container.load(self.makeMp3(TXXX_TAGS='Tag1 Tag2 Tag3'))
         assert_that(metadata, has_entry('labels', 'Tag1 Tag2 Tag3'), 'metadata')
 
+    def testReadsISNIFromCustomFrame(self):
+        metadata = container.load(self.makeMp3(TXXX_ISNI='00000123456789'))
+        assert_that(metadata, has_entry('isni', '00000123456789'), 'metadata')
+
     def testReadsLyricsFromUSLTFrenchFrame(self):
         metadata = container.load(self.makeMp3(USLT=('Lyrics', 'fra')))
         assert_that(metadata, has_entry('lyrics', 'Lyrics'), 'metadata')
@@ -178,6 +182,7 @@ class ID3ContainerTest(unittest.TestCase):
         metadata['releaseName'] = u'Album'
         metadata['compilation'] = True
         metadata['leadPerformer'] = u'Lead Performer'
+        metadata['isni'] = u'0000123456789'
         metadata['guestPerformers'] = [('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]
         metadata['labelName'] = u'Label Name'
         metadata['catalogNumber'] = u'123 456-1'
@@ -254,8 +259,6 @@ class ID3ContainerTest(unittest.TestCase):
     def assertContainsMetadata(self, filename, expected):
         expectedLength = len(expected) + len(('bitrate', 'duration'))
         metadata = container.load(filename)
-        assert_that(metadata.items(), has_items(*expected.items()),
-                    'metadata items')
+        assert_that(metadata.items(), has_items(*expected.items()), 'metadata items')
         assert_that(metadata, has_length(expectedLength), 'metadata count')
-        assert_that(metadata.images, has_items(*expected.images),
-                    'metadata images')
+        assert_that(metadata.images, has_items(*expected.images), 'metadata images')
