@@ -83,7 +83,7 @@ def identities_matching(keywords):
     return matching_identities
 
 
-@app.route("/sru")
+@app.route("/sru/DB=1.2")
 def lookup():
     search_query = request.args['query']
     if not search_query and search_query.startswith('pica.nw='):

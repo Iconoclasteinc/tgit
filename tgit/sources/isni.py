@@ -35,7 +35,7 @@ class NameRegistry(object):
                    'operation': 'searchRetrieve',
                    'recordSchema': 'isni-b',
                    'maximumRecords': '10'}
-        response = requests.get("{uri}/sru".format(uri=self.uri()), params=payload)
+        response = requests.get("{uri}/sru/DB=1.2".format(uri=self.uri()), params=payload)
         results = etree.fromstring(response.content)
         records = results.xpath('//responseRecord')
 

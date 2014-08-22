@@ -140,6 +140,12 @@ def isDir(filename):
 
 
 def findISNI(registry, leadPerformer, album):
-    identities = registry.searchByKeywords(*leadPerformer.split(' '))
+    lastSpaceIndex = leadPerformer.rfind(' ')
+    lastName = leadPerformer[lastSpaceIndex+1:]
+    firstName = leadPerformer[:lastSpaceIndex]
+
+    identities = registry.searchByKeywords(*[lastName, firstName])
     if len(identities) > 0:
         album.isni = identities[0][0]
+    else:
+        album.isni = ''

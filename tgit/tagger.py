@@ -68,7 +68,7 @@ class TGiT(QApplication):
 
 
 def main():
-    app = TGiT(PhononPlayer, NameRegistry('localhost'))
-    #app = TGiT(PhononPlayer, NameRegistry('isni.oclc.nl'))
+    #app = TGiT(PhononPlayer, NameRegistry('localhost', 5000))
+    app = TGiT(PhononPlayer, NameRegistry('isni.oclc.nl'))
     app.setApplicationName('TGiT')
     app.launch(Preferences(QSettings('tagtamusique.com', 'TGiT')))
