@@ -78,6 +78,22 @@ class AlbumEditionPageTest(ViewTest):
         self.page.display(build.album(compilation=True, leadPerformer='Album Artist'))
         self.driver.showsLeadPerformer('Various Artists', disabled=True)
 
+    def testDisablesFindISNIButtonWhenAlbumIsACompilation(self):
+        self.page.display(build.album(compilation=True, leadPerformer='Album Artist'))
+        self.driver.showsFindISNIButton(True)
+
+    def testDisablesFindISNIButtonWhenLeadPerformerIsEmpty(self):
+        self.page.display(build.album(leadPerformer=''))
+        self.driver.showsFindISNIButton(True)
+
+    def testDisablesFindISNIButtonWhenLeadPerformerIsOnlyWhiteSpaces(self):
+        self.page.display(build.album(leadPerformer='     '))
+        self.driver.showsFindISNIButton(True)
+
+    def testEnablesFindISNIButtonWhenLeadPerformerIsNotEmpty(self):
+        self.page.display(build.album(leadPerformer='performer'))
+        self.driver.showsFindISNIButton(False)
+
     def testSignalsWhenPictureSelected(self):
         selectPictureSignal = ValueMatcherProbe('select picture')
         self.page.selectPicture.connect(selectPictureSignal.received)
@@ -98,7 +114,7 @@ class AlbumEditionPageTest(ViewTest):
         fetchISNISignal = ValueMatcherProbe('fetch ISNI')
         self.page.fetchISNI.connect(fetchISNISignal.received)
 
-        self.page.display(build.album())
+        self.page.display(build.album(leadPerformer='performer'))
         self.driver.fetchISNI()
         self.check(fetchISNISignal)
 

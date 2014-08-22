@@ -128,6 +128,10 @@ class AlbumEditionPageDriver(BaseDriver):
         edit.hasText(name)
         edit.isDisabled(disabled)
 
+    def showsFindISNIButton(self, disabled=False):
+        button = self.button(named('find-isni'))
+        button.isDisabled(disabled)
+
     def changeLeadPerformer(self, name):
         self.lineEdit(named('lead-performer')).changeText(name)
 
