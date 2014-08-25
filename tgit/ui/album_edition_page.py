@@ -119,25 +119,26 @@ class AlbumEditionPage(QWidget, AlbumListener):
         albums = QGroupBox()
         albums.setTitle(self.tr('ALBUM'))
         layout = form.layout()
+        self.findISNI = form.button('find-isni')
+        self.findISNI.setText(self.tr('FIND ISNI'))
+        self.findISNI.setDisabled(True)
+        self.findISNI.clicked.connect(lambda pressed: self.fetchISNI.emit())
         self.releaseName = form.lineEdit('release-name')
         self.releaseName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         layout.addRow(form.labelFor(self.releaseName, self.tr('Release Name:')), self.releaseName)
         self.compilation = form.checkBox('compilation')
         self.compilation.clicked.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.compilation.stateChanged.connect(lambda: self.updateISNIButtonEnableStateOnCompilationStateChange())
         layout.addRow(form.labelFor(self.compilation, self.tr('Compilation:')), self.compilation)
-        fetchISNI = form.button('find-isni')
-        fetchISNI.setText(self.tr('FIND ISNI'))
-        fetchISNI.setDisabled(True)
-        fetchISNI.clicked.connect(lambda pressed: self.fetchISNI.emit())
         self.leadPerformer = form.lineEdit('lead-performer')
         self.leadPerformer.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
         self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         self.leadPerformer.textChanged.connect(lambda value:
-                                               self.updateISNIButtonEnableStateOnLeadPerformerEdition(fetchISNI, value))
+                                               self.updateISNIButtonEnableStateOnLeadPerformerEdition(value))
         leadPerformerRow = form.row()
         leadPerformerRow.addWidget(form.labelFor(self.leadPerformer, self.tr('Lead Performer:')))
         leadPerformerRow.addWidget(self.leadPerformer)
-        leadPerformerRow.addWidget(fetchISNI)
+        leadPerformerRow.addWidget(self.findISNI)
         layout.addRow(leadPerformerRow)
         self.isni = form.lineEdit('isni')
         self.isni.setDisabled(True)
@@ -208,8 +209,8 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def display(self, album):
         self.mainCover.setPixmap(image.scale(album.mainCover, *self.FRONT_COVER_SIZE))
         self.releaseName.setText(album.releaseName)
-        self.compilation.setChecked(album.compilation is True)
         self.displayLeadPerformer(album)
+        self.compilation.setChecked(album.compilation is True)
         self.isni.setText(album.isni)
         self.guestPerformers.setText(formatting.toPeopleList(album.guestPerformers))
         self.labelName.setText(album.labelName)
@@ -258,8 +259,14 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def childWidget(self, ofType, matching):
         return next(child for child in self.findChildren(ofType) if matching(child))
 
-    def updateISNIButtonEnableStateOnLeadPerformerEdition(self, fetchISNIButton, value):
+    def updateISNIButtonEnableStateOnLeadPerformerEdition(self, value):
         if self.compilation.isChecked():
-            fetchISNIButton.setDisabled(True)
+            return
+
+        self.findISNI.setDisabled(value.strip() == '')
+
+    def updateISNIButtonEnableStateOnCompilationStateChange(self):
+        if self.compilation.isChecked():
+            self.findISNI.setDisabled(True)
         else:
-            fetchISNIButton.setDisabled(value.strip() == '')
+            self.findISNI.setDisabled(False)

@@ -78,6 +78,15 @@ class AlbumEditionPageTest(ViewTest):
         self.page.display(build.album(compilation=True, leadPerformer='Album Artist'))
         self.driver.showsLeadPerformer('Various Artists', disabled=True)
 
+    def testEnablesFindISNIButtonWhenAlbumIsNotACompilation(self):
+        album = build.album(compilation=True, leadPerformer='Album Artist')
+        self.page.display(album)
+        self.driver.showsFindISNIButton(True)
+
+        album.compilation = False
+        self.page.display(album)
+        self.driver.showsFindISNIButton(False)
+
     def testDisablesFindISNIButtonWhenAlbumIsACompilation(self):
         self.page.display(build.album(compilation=True, leadPerformer='Album Artist'))
         self.driver.showsFindISNIButton(True)
