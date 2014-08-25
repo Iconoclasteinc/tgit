@@ -100,11 +100,4 @@ class FakeNameRegistry(object):
         self.registry = []
 
     def searchByKeywords(self, *keywords):
-        firstName = keywords[1]
-        lastName = keywords[0]
-        entries = []
-        for entry in self.registry:
-            if entry[1] == lastName and entry[2] == firstName:
-                entries.append(entry)
-
-        return entries
+        return [entry for entry in self.registry if entry[1:] == keywords]

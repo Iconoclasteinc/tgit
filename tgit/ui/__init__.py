@@ -58,7 +58,7 @@ def AlbumEditionPageController(selectPicture, album, nameRegistry):
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.selectPicture.connect(lambda: selectPicture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
-    page.fetchISNI.connect(lambda: director.findISNI(nameRegistry, album.leadPerformer, album))
+    page.lookupISNI.connect(lambda: director.lookupISNI(nameRegistry, album))
     album.addAlbumListener(page)
     page.refresh()
     return page

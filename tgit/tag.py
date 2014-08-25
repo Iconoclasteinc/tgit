@@ -46,7 +46,7 @@ class numeric(typed):
 
 
 class text(typed):
-    expectedType = (str, unicode)
+    expectedType = (str, unicode, type(None))
 
 
 class decimal(typed):

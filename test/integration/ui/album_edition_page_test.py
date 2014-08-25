@@ -80,30 +80,30 @@ class AlbumEditionPageTest(ViewTest):
         self.render(build.album(compilation=True, leadPerformer='Album Artist'))
         self.driver.showsLeadPerformer('Various Artists', disabled=True)
 
-    def testEnablesFindISNIButtonWhenAlbumIsNotACompilation(self):
+    def testTogglesLookupISNIButtonWhenAlbumIsNoLongerACompilation(self):
         album = build.album(compilation=True, leadPerformer='Album Artist')
         self.render(album)
-        self.driver.showsFindISNIButton(True)
+        self.driver.enablesISNILookup(False)
 
         album.compilation = False
         self.page.refresh()
-        self.driver.showsFindISNIButton(False)
+        self.driver.enablesISNILookup()
 
-    def testDisablesFindISNIButtonWhenAlbumIsACompilation(self):
+    def testDisablesLookupISNIButtonWhenAlbumIsACompilation(self):
         self.render(build.album(compilation=True, leadPerformer='Album Artist'))
-        self.driver.showsFindISNIButton(True)
+        self.driver.enablesISNILookup(False)
 
-    def testDisablesFindISNIButtonWhenLeadPerformerIsEmpty(self):
+    def testDisablesLookupISNIButtonWhenLeadPerformerIsEmpty(self):
         self.render(build.album(leadPerformer=''))
-        self.driver.showsFindISNIButton(True)
+        self.driver.enablesISNILookup(False)
 
-    def testDisablesFindISNIButtonWhenLeadPerformerIsOnlyWhiteSpaces(self):
+    def testDisablesLookupISNIButtonWhenLeadPerformerIsBlank(self):
         self.render(build.album(leadPerformer='     '))
-        self.driver.showsFindISNIButton(True)
+        self.driver.enablesISNILookup(False)
 
-    def testEnablesFindISNIButtonWhenLeadPerformerIsNotEmpty(self):
+    def testEnablesLookupISNIButtonWhenLeadPerformerIsNotEmpty(self):
         self.render(build.album(leadPerformer='performer'))
-        self.driver.showsFindISNIButton(False)
+        self.driver.enablesISNILookup()
 
     def testSignalsWhenPictureSelected(self):
         self.render(build.album())
@@ -123,14 +123,14 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.removePicture()
         self.check(removePictureSignal)
 
-    def testSignalsWhenFetchISNIButtonClicked(self):
+    def testSignalsWhenLookupISNIButtonClicked(self):
         self.render(build.album(leadPerformer='performer'))
 
-        fetchISNISignal = ValueMatcherProbe('fetch ISNI')
-        self.page.fetchISNI.connect(fetchISNISignal.received)
+        lookupISNISignal = ValueMatcherProbe('lookup ISNI')
+        self.page.lookupISNI.connect(lookupISNISignal.received)
 
-        self.driver.fetchISNI()
-        self.check(fetchISNISignal)
+        self.driver.lookupISNI()
+        self.check(lookupISNISignal)
 
     def testSignalsWhenAlbumMetadataEdited(self):
         self.render(build.album())

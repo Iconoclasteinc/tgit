@@ -139,13 +139,14 @@ def isDir(filename):
     return QFileInfo(filename).isDir()
 
 
-def findISNI(registry, leadPerformer, album):
+def lookupISNI(registry, album):
+    leadPerformer = album.leadPerformer
     lastSpaceIndex = leadPerformer.rfind(' ')
     lastName = leadPerformer[lastSpaceIndex+1:]
     firstName = leadPerformer[:lastSpaceIndex]
 
-    identities = registry.searchByKeywords(*[lastName, firstName])
+    identities = registry.searchByKeywords(lastName, firstName)
     if len(identities) > 0:
         album.isni = identities[0][0]
     else:
-        album.isni = ''
+        album.isni = None

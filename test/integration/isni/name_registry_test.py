@@ -9,13 +9,13 @@ import test.util.isni_database as server
 class ISNITest(unittest.TestCase):
     def testFindsIndentity(self):
         server.start()
-        server.database["00000001"] = [("Vincent", "Tence"), ("Vince", u"Tencé"), ("Vincent", u"Tencé")]
+        server.database["00000001"] = [(u"Joel", u"Miller"), (u"Joel E.", u"Miller"), (u"Joel", u"miller")]
         self.registry = NameRegistry(host='localhost', port=5000)
-        identities = self.registry.searchByKeywords(u"vincent", u"tencé")
+        identities = self.registry.searchByKeywords(u"joel", u"miller")
         server.database.clear()
         server.stop()
 
-        assert_that(identities, contains(contains('00000001', 'Vincent', u'Tencé')))
+        assert_that(identities, contains(contains('00000001', u'Joel', u'Miller')))
 
     def testFindsIndentityUsingRealIsniDatabase(self):
         registry = NameRegistry(host='isni.oclc.nl')

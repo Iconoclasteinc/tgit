@@ -9,7 +9,7 @@ import os
 import shutil
 import unittest
 from dateutil import tz
-from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder
+from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none
 from test.util import builders as build, resources, doubles, mp3_file
 
 from tgit import album_director as director, __version__
@@ -191,10 +191,10 @@ class AlbumDirectorTest(unittest.TestCase):
         self.nameRegistry.registry.append(('0000123456789', 'Clerc', 'Julien'))
 
         album = build.album(leadPerformer='Julien Clerc')
-        director.findISNI(self.nameRegistry, album.leadPerformer, album)
+        director.lookupISNI(self.nameRegistry, album)
         assert_that(album.isni, equal_to('0000123456789'), 'isni')
 
     def testUpdatesIsniMetadataToNoneWhenIsniIsNotFoundInRegistry(self):
         album = build.album(leadPerformer='Julien Clerc', isni='0000123456789')
-        director.findISNI(self.nameRegistry, album.leadPerformer, album)
-        assert_that(album.isni, equal_to(''), 'isni')
+        director.lookupISNI(self.nameRegistry, album)
+        assert_that(album.isni, none(), 'isni')

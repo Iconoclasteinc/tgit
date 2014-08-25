@@ -44,10 +44,11 @@ def row():
     return row
 
 
-def labelFor(field, title):
+def labelFor(field, title, disabled=False):
     label = QLabel(title)
     label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
     label.setBuddy(field)
+    label.setDisabled(disabled)
     return label
 
 
@@ -57,9 +58,10 @@ def label(name=None):
     return label
 
 
-def lineEdit(name):
+def lineEdit(name, disabled=False):
     edit = QLineEdit()
     edit.setObjectName(name)
+    edit.setDisabled(disabled)
     return edit
 
 
@@ -89,11 +91,13 @@ def timeEdit(name):
     return time
 
 
-def button(name):
+def button(name, text, disabled=False):
     button = QPushButton()
     button.setObjectName(name)
     button.setFocusPolicy(Qt.StrongFocus)
     button.setCursor(Qt.PointingHandCursor)
+    button.setDisabled(disabled)
+    button.setText(text)
     return button
 
 
