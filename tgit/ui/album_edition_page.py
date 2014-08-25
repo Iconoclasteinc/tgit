@@ -33,8 +33,9 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self):
+    def __init__(self, album):
         QWidget.__init__(self)
+        self.album = album
         self.build()
 
     def build(self):
@@ -48,7 +49,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.disableTeaserFields()
 
     def albumStateChanged(self, album):
-        self.display(album)
+        self.refresh()
 
     def makeLeftColumn(self):
         column = QWidget()
@@ -128,13 +129,15 @@ class AlbumEditionPage(QWidget, AlbumListener):
         layout.addRow(form.labelFor(self.releaseName, self.tr('Release Name:')), self.releaseName)
         self.compilation = form.checkBox('compilation')
         self.compilation.clicked.connect(lambda: self.metadataChanged.emit(self.metadata))
-        self.compilation.stateChanged.connect(lambda: self.updateISNIButtonEnableStateOnCompilationStateChange())
+        self.compilation.stateChanged.connect(lambda newState:
+                                              self.enableOrDisableISNIButton(newState is Qt.Checked,
+                                                                               self.album.leadPerformer))
         layout.addRow(form.labelFor(self.compilation, self.tr('Compilation:')), self.compilation)
         self.leadPerformer = form.lineEdit('lead-performer')
         self.leadPerformer.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
         self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
         self.leadPerformer.textChanged.connect(lambda value:
-                                               self.updateISNIButtonEnableStateOnLeadPerformerEdition(value))
+                                               self.enableOrDisableISNIButton(self.album.compilation, value))
         leadPerformerRow = form.row()
         leadPerformerRow.addWidget(form.labelFor(self.leadPerformer, self.tr('Lead Performer:')))
         leadPerformerRow.addWidget(self.leadPerformer)
@@ -206,23 +209,23 @@ class AlbumEditionPage(QWidget, AlbumListener):
             field.setDisabled(True)
             self.labelFor(field).setDisabled(True)
 
-    def display(self, album):
-        self.mainCover.setPixmap(image.scale(album.mainCover, *self.FRONT_COVER_SIZE))
-        self.releaseName.setText(album.releaseName)
-        self.displayLeadPerformer(album)
-        self.compilation.setChecked(album.compilation is True)
-        self.isni.setText(album.isni)
-        self.guestPerformers.setText(formatting.toPeopleList(album.guestPerformers))
-        self.labelName.setText(album.labelName)
-        self.catalogNumber.setText(album.catalogNumber)
-        self.upc.setText(album.upc)
-        self.comments.setPlainText(album.comments)
-        self.releaseTime.setText(album.releaseTime)
-        self.recordingTime.setText(album.recordingTime)
-        self.recordingStudios.setText(album.recordingStudios)
-        self.producer.setText(album.producer)
-        self.mixer.setText(album.mixer)
-        self.primaryStyles.setEditText(album.primaryStyle)
+    def refresh(self):
+        self.mainCover.setPixmap(image.scale(self.album.mainCover, *self.FRONT_COVER_SIZE))
+        self.releaseName.setText(self.album.releaseName)
+        self.compilation.setChecked(self.album.compilation is True)
+        self.displayLeadPerformer(self.album)
+        self.isni.setText(self.album.isni)
+        self.guestPerformers.setText(formatting.toPeopleList(self.album.guestPerformers))
+        self.labelName.setText(self.album.labelName)
+        self.catalogNumber.setText(self.album.catalogNumber)
+        self.upc.setText(self.album.upc)
+        self.comments.setPlainText(self.album.comments)
+        self.releaseTime.setText(self.album.releaseTime)
+        self.recordingTime.setText(self.album.recordingTime)
+        self.recordingStudios.setText(self.album.recordingStudios)
+        self.producer.setText(self.album.producer)
+        self.mixer.setText(self.album.mixer)
+        self.primaryStyles.setEditText(self.album.primaryStyle)
 
     def displayLeadPerformer(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
@@ -259,14 +262,9 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def childWidget(self, ofType, matching):
         return next(child for child in self.findChildren(ofType) if matching(child))
 
-    def updateISNIButtonEnableStateOnLeadPerformerEdition(self, value):
-        if self.compilation.isChecked():
-            return
+    def enableOrDisableISNIButton(self, compilation, leadPerformer):
+        self.findISNI.setDisabled(compilation or isBlank(leadPerformer))
 
-        self.findISNI.setDisabled(value.strip() == '')
 
-    def updateISNIButtonEnableStateOnCompilationStateChange(self):
-        if self.compilation.isChecked():
-            self.findISNI.setDisabled(True)
-        else:
-            self.findISNI.setDisabled(False)
+def isBlank(text):
+    return not text or text.strip() == ''

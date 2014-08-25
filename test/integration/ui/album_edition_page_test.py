@@ -12,9 +12,9 @@ from tgit.util import fs
 
 
 class AlbumEditionPageTest(ViewTest):
-    def setUp(self):
-        super(AlbumEditionPageTest, self).setUp()
-        self.page = AlbumEditionPage()
+    def render(self, album):
+        self.page = AlbumEditionPage(album)
+        self.page.refresh()
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
 
@@ -22,16 +22,16 @@ class AlbumEditionPageTest(ViewTest):
         return AlbumEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
     def testDisplaysPicturePlaceholderWhenAlbumHasNoCover(self):
-        self.page.display(build.album())
+        self.render(build.album())
         self.driver.showsPicturePlaceholder()
 
     def testDisplaysMainAlbumCoverWhenExisting(self):
-        self.page.display(
+        self.render(
             build.album(images=[build.image('image/jpeg', loadTestImage('front-cover.jpg'), Image.FRONT_COVER)]))
         self.driver.showsPicture()
 
     def testDisplaysAlbumMetadata(self):
-        self.page.display(build.album(
+        self.render(build.album(
             releaseName='Album',
             leadPerformer='Artist',
             isni='123456789',
@@ -68,69 +68,74 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.showsReleaseType('')
 
     def testIndicatesWhetherAlbumIsACompilation(self):
-        self.page.display(build.album(compilation=False))
+        album = build.album(compilation=False)
+        self.render(album)
         self.driver.showsCompilation(False)
 
-        self.page.display(build.album(compilation=True))
+        album.compilation = True
+        self.page.refresh()
         self.driver.showsCompilation(True)
 
     def testDisablesLeadPerformerEditionWhenAlbumIsACompilation(self):
-        self.page.display(build.album(compilation=True, leadPerformer='Album Artist'))
+        self.render(build.album(compilation=True, leadPerformer='Album Artist'))
         self.driver.showsLeadPerformer('Various Artists', disabled=True)
 
     def testEnablesFindISNIButtonWhenAlbumIsNotACompilation(self):
         album = build.album(compilation=True, leadPerformer='Album Artist')
-        self.page.display(album)
+        self.render(album)
         self.driver.showsFindISNIButton(True)
 
         album.compilation = False
-        self.page.display(album)
+        self.page.refresh()
         self.driver.showsFindISNIButton(False)
 
     def testDisablesFindISNIButtonWhenAlbumIsACompilation(self):
-        self.page.display(build.album(compilation=True, leadPerformer='Album Artist'))
+        self.render(build.album(compilation=True, leadPerformer='Album Artist'))
         self.driver.showsFindISNIButton(True)
 
     def testDisablesFindISNIButtonWhenLeadPerformerIsEmpty(self):
-        self.page.display(build.album(leadPerformer=''))
+        self.render(build.album(leadPerformer=''))
         self.driver.showsFindISNIButton(True)
 
     def testDisablesFindISNIButtonWhenLeadPerformerIsOnlyWhiteSpaces(self):
-        self.page.display(build.album(leadPerformer='     '))
+        self.render(build.album(leadPerformer='     '))
         self.driver.showsFindISNIButton(True)
 
     def testEnablesFindISNIButtonWhenLeadPerformerIsNotEmpty(self):
-        self.page.display(build.album(leadPerformer='performer'))
+        self.render(build.album(leadPerformer='performer'))
         self.driver.showsFindISNIButton(False)
 
     def testSignalsWhenPictureSelected(self):
+        self.render(build.album())
+
         selectPictureSignal = ValueMatcherProbe('select picture')
         self.page.selectPicture.connect(selectPictureSignal.received)
 
-        self.page.display(build.album())
         self.driver.addPicture()
         self.check(selectPictureSignal)
 
     def testSignalsWhenRemovePictureButtonClicked(self):
+        self.render(build.album())
+
         removePictureSignal = ValueMatcherProbe('remove picture')
         self.page.removePicture.connect(removePictureSignal.received)
 
-        self.page.display(build.album())
         self.driver.removePicture()
         self.check(removePictureSignal)
 
     def testSignalsWhenFetchISNIButtonClicked(self):
+        self.render(build.album(leadPerformer='performer'))
+
         fetchISNISignal = ValueMatcherProbe('fetch ISNI')
         self.page.fetchISNI.connect(fetchISNISignal.received)
 
-        self.page.display(build.album(leadPerformer='performer'))
         self.driver.fetchISNI()
         self.check(fetchISNISignal)
 
     def testSignalsWhenAlbumMetadataEdited(self):
-        self.page.display(build.album())
-        metadataChangedSignal = ValueMatcherProbe('metadata changed')
+        self.render(build.album())
 
+        metadataChangedSignal = ValueMatcherProbe('metadata changed')
         self.page.metadataChanged.connect(metadataChangedSignal.received)
 
         metadataChangedSignal.expect(has_entries(releaseName='Title'))

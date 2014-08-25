@@ -54,13 +54,13 @@ def AlbumCompositionPageController(selectTracks, player, album):
 
 
 def AlbumEditionPageController(selectPicture, album, nameRegistry):
-    page = AlbumEditionPage()
+    page = AlbumEditionPage(album)
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.selectPicture.connect(lambda: selectPicture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
     page.fetchISNI.connect(lambda: director.findISNI(nameRegistry, album.leadPerformer, album))
     album.addAlbumListener(page)
-    page.display(album)
+    page.refresh()
     return page
 
 

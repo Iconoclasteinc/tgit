@@ -15,7 +15,7 @@ class AlbumScreenTest(ViewTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
         self.album = build.album()
-        self.view = AlbumScreen(AlbumCompositionPage(), AlbumEditionPage(), self.createTrackEditionPage)
+        self.view = AlbumScreen(AlbumCompositionPage(), AlbumEditionPage(self.album), self.createTrackEditionPage)
         self.show(self.view)
         self.driver = self.createDriverFor(self.view)
 
