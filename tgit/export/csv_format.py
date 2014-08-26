@@ -14,7 +14,8 @@ def toPeopleList(people):
 
 
 class CsvFormat(QObject):
-    Headers = ['Album Title', 'Compilation', 'Lead Performer', 'Guest Performers', 'Label Name', 'Catalog Number',
+    Headers = ['Album Title', 'Compilation', 'Lead Performer', 'Lead Performer ISNI', 'Guest Performers', 'Label Name',
+               'Catalog Number',
                'UPC/EAN', 'Comments', 'Release Date', 'Recording Date', 'Recording Studios', 'Producer', 'Mixer',
                'Primary Style', 'Track Title', 'Version Information', 'Featured Guest', 'Lyrics', 'Language',
                'Publisher', 'Lyricist', 'Composer', 'ISRC', 'Tags']
@@ -33,12 +34,12 @@ class CsvFormat(QObject):
         writer.writerow(self.encodeRow(self.Headers))
 
     def writeRecord(self, writer, album, track):
-        row = album.releaseName, toBoolean(album.compilation), track.leadPerformer, toPeopleList(album.guestPerformers), \
-            album.labelName, album.catalogNumber, album.upc, album.comments, \
-            album.releaseTime, album.recordingTime, album.recordingStudios, album.producer, \
-            album.mixer, album.primaryStyle, track.trackTitle, track.versionInfo, track.featuredGuest, \
-            track.lyrics, track.language, track.publisher, track.lyricist, track.composer, \
-            track.isrc, track.labels
+        row = album.releaseName, toBoolean(album.compilation), track.leadPerformer, album.isni, \
+              toPeopleList(album.guestPerformers), album.labelName, album.catalogNumber, album.upc, album.comments, \
+              album.releaseTime, album.recordingTime, album.recordingStudios, album.producer, \
+              album.mixer, album.primaryStyle, track.trackTitle, track.versionInfo, track.featuredGuest, \
+              track.lyrics, track.language, track.publisher, track.lyricist, track.composer, \
+              track.isrc, track.labels
         writer.writerow(self.encodeRow(row))
 
     def encode(self, text):

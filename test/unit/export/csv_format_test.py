@@ -32,6 +32,7 @@ class CsvFormatTest(unittest.TestCase):
         assert_that(headers, contains('Album Title',
                                       'Compilation',
                                       'Lead Performer',
+                                      'Lead Performer ISNI',
                                       'Guest Performers',
                                       'Label Name',
                                       'Catalog Number',
@@ -57,6 +58,7 @@ class CsvFormatTest(unittest.TestCase):
     def testWritesTrackMetadataInColumns(self):
         album = build.album(
             releaseName='Release Name',
+            isni='0000123456789',
             guestPerformers=[('Instrument1', 'Performer1'), ('Instrument2', 'Performer2')],
             labelName='Label Name',
             catalogNumber='Catalog Number',
@@ -89,6 +91,7 @@ class CsvFormatTest(unittest.TestCase):
         assert_that(data, contains('Release Name',
                                   'False',
                                   'Lead Performer',
+                                  '0000123456789',
                                   'Instrument1: Performer1; Instrument2: Performer2',
                                   'Label Name',
                                   'Catalog Number',
