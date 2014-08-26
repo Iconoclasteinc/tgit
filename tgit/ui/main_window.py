@@ -306,6 +306,7 @@ StyleSheet = """
         padding: 10px 10px 7px 34px;
     }
 
+    #album-edition-page QPushButton#lookup-isni,
     #album-edition-page QPushButton#remove-picture {
         background-color: #F25C0A;
         border: 2px solid #F25C0A;
@@ -317,6 +318,19 @@ StyleSheet = """
         margin-left: 10px;
     }
 
+    #album-edition-page QPushButton#lookup-isni {
+        font-size: 10px;
+        padding: 3px 10px 3px 10px;
+        margin-left: 2px;
+    }
+
+    #album-edition-page QPushButton#lookup-isni:disabled {
+        border-color: #ED8D58;
+        background-color: #ED8D58;
+    }
+
+    #album-edition-page QPushButton#lookup-isni:hover,
+    #album-edition-page QPushButton#lookup-isni:focus,
     #album-edition-page QPushButton#select-picture:hover,
     #album-edition-page QPushButton#select-picture:focus,
     #album-edition-page QPushButton#remove-picture:hover,
@@ -325,6 +339,7 @@ StyleSheet = """
         border-color: #D95109;
     }
 
+    #album-edition-page QPushButton#lookup-isni:pressed,
     #album-edition-page QPushButton#select-picture:pressed,
     #album-edition-page QPushButton#remove-picture:pressed {
         border: 2px solid white;
