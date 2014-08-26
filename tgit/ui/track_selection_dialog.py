@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
 
 from PyQt4.QtCore import QDir, Qt, pyqtSignal, QObject
 from PyQt4.QtGui import QFileDialog
@@ -35,7 +36,8 @@ class TrackSelectionDialog(QObject):
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
         dialog.setNameFilter('%s (%s)' % (dialog.tr('Audio files'), '*.mp3'))
         dialog.setDirectory(QDir.homePath())
-        dialog.filesSelected.connect(lambda selection: self.tracksSelected.emit(selection))
+        dialog.filesSelected.connect(
+            lambda selection: self.tracksSelected.emit([os.path.abspath(entry) for entry in selection]))
         if folders:
             dialog.setFileMode(QFileDialog.Directory)
         else:

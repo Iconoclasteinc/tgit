@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
 
 from PyQt4.QtCore import QDir, Qt, pyqtSignal, QObject
 from PyQt4.QtGui import QFileDialog
@@ -36,6 +37,6 @@ class PictureSelectionDialog(QObject):
         dialog.setDirectory(QDir.homePath())
         dialog.setFileMode(QFileDialog.ExistingFile)
         dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % dialog.tr('Image files'))
-        dialog.fileSelected.connect(lambda f: self.pictureSelected.emit(f))
+        dialog.fileSelected.connect(lambda path: self.pictureSelected.emit(os.path.abspath(path)))
         dialog.setAttribute(Qt.WA_DeleteOnClose)
         dialog.open()

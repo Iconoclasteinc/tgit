@@ -26,7 +26,7 @@ class ExportAsDialogTest(ViewTest):
         super(ExportAsDialogTest, self).tearDown()
 
     def testSignalsExportAsDestination(self):
-        destination = resources.normalizePath(os.path.join(self.tempDir, 'album.csv'))
+        destination = os.path.join(self.tempDir, 'album.csv')
         exportAsSignal = ValueMatcherProbe('export as', equal_to(destination))
 
         self.dialog.exportAs.connect(exportAsSignal.received)

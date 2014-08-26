@@ -5,7 +5,7 @@ import os
 import sys
 import tempfile
 
-__all__ = ['path', 'normalizePath', 'makeTempDir']
+__all__ = ['path', 'makeTempDir']
 
 PROJECT_DIR = os.path.join(os.path.dirname(__file__), '../..')
 TEST_DIR = os.path.abspath(os.path.join(PROJECT_DIR, 'test'))
@@ -22,11 +22,7 @@ def path(filepath, *more):
     for filepath in more:
         filename = os.path.join(filename, filepath)
 
-    return normalizePath(os.path.abspath(filename))
-
-
-def normalizePath(filepath):
-    return filepath.replace("\\", "/")
+    return os.path.abspath(filename)
 
 
 def makeTempDir():
