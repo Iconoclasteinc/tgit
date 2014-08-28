@@ -187,14 +187,22 @@ class AlbumDirectorTest(unittest.TestCase):
 
         assert_that(director.taggedName(track), equal_to('artist - 03 - title.mp3'), 'name of tagged file')
 
-    def testUpdatesIsniMetadataToFirstIsniFoundInRegistry(self):
+    def testUpdatesIsniMetadataToFirstISNIFoundInRegistry(self):
         self.nameRegistry.registry.append(('0000123456789', 'Clerc', 'Julien'))
 
         album = build.album(leadPerformer='Julien Clerc')
         director.lookupISNI(self.nameRegistry, album)
         assert_that(album.isni, equal_to('0000123456789'), 'isni')
 
-    def testUpdatesIsniMetadataToNoneWhenIsniIsNotFoundInRegistry(self):
+    def testUpdatesIsniMetadataToNoneWhenISNIIsNotFoundInRegistry(self):
+        album = build.album(leadPerformer='Julien Clerc', isni='0000123456789')
+        director.lookupISNI(self.nameRegistry, album)
+        assert_that(album.isni, none(), 'isni')
+
+    def testUpdatesIsniMetadataToNoneWhenMoreThanOneISNIFoundInRegistry(self):
+        self.nameRegistry.registry.append(('0000123456789', 'Clerc', 'Julien'))
+        self.nameRegistry.registry.append(('0000123456789', 'Clerc', 'Julien'))
+
         album = build.album(leadPerformer='Julien Clerc', isni='0000123456789')
         director.lookupISNI(self.nameRegistry, album)
         assert_that(album.isni, none(), 'isni')
