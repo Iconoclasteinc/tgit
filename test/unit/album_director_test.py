@@ -23,7 +23,7 @@ from tgit.util import fs
 class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
         self.tempdir = resources.makeTempDir()
-        self.library = doubles.recordingLibrary()
+        self.library = doubles.recordingLibrary(self.tempdir)
         self.nameRegistry = doubles.nameRegistry()
 
     def tearDown(self):
@@ -110,7 +110,7 @@ class AlbumDirectorTest(unittest.TestCase):
     # todo remove duplication with doubles.recordingLibrary()
     # will need to standardize behavior of images
     def testTagsCopyOfOriginalRecordingWithCompleteMetadata(self):
-        original = mp3_file.make(to=self.tempdir)
+        original = mp3_file.mp3File(to=self.tempdir).make()
         track = build.track(filename=original.filename,
                             trackTitle='Track Title',
                             album=build.album(releaseName='Album Title',
@@ -129,7 +129,7 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(metadata.images, contains(Image(mime='image/jpeg', data='<image data>')), 'attached pictures')
 
     def testGracefullyHandlesWhenTaggingOriginalRecording(self):
-        original = mp3_file.make(to=self.tempdir)
+        original = mp3_file.mp3File(to=self.tempdir).make()
         track = build.track(filename=original.filename)
         album = build.album(tracks=[track])
 

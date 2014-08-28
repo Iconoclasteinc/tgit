@@ -13,20 +13,19 @@ from tgit.preferences import Preferences
 
 
 def createStorageFile():
-    fd, path = tempfile.mkstemp(suffix='.ini')
-    return path
+    return tempfile.mkstemp(suffix='.ini')
 
 
 class PreferencesTest(unittest.TestCase):
     def setUp(self):
-        self.storage = createStorageFile()
+        self.fd, self.storage = createStorageFile()
         self.settings = QSettings(self.storage, QSettings.IniFormat)
         self.preferences = Preferences(self.settings)
 
     def tearDown(self):
         self.settings.clear()
-        # TODO: Can't delete the file under windows. Must find a way to do so.
-        #os.remove(self.storage)
+        os.close(self.fd)
+        os.remove(self.storage)
 
     def testStoresMultiplePreferences(self):
         self.preferences['language'] = 'French'

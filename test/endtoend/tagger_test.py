@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import shutil
 
 import unittest
 
@@ -15,7 +16,8 @@ from test.endtoend.application_runner import ApplicationRunner
 
 class TaggerTest(unittest.TestCase):
     def setUp(self):
-        self.library = doubles.recordingLibrary()
+        self.tempDir = resources.makeTempDir()
+        self.library = doubles.recordingLibrary(self.tempDir)
         self.settings = ApplicationSettingsDriver()
         self.settings.set('language', 'en')
         self.application = ApplicationRunner()
@@ -23,7 +25,9 @@ class TaggerTest(unittest.TestCase):
 
     def tearDown(self):
         self.application.stop()
+        self.settings.destroy()
         self.library.delete()
+        shutil.rmtree(self.tempDir)
 
     def restart(self):
         self.application.stop()

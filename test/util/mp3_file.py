@@ -20,8 +20,8 @@ FRONT_COVER = 3
 BACK_COVER = 4
 
 
-def make(from_=Base.filename, to=None, **tags):
-    return Mp3File(fs.makeTempCopy(from_, to)).withTags(**tags).make()
+def mp3File(from_=Base.filename, to=None):
+    return Mp3File(fs.makeTempCopy(from_, to))
 
 
 class Mp3File(object):
@@ -118,5 +118,5 @@ class Mp3File(object):
 
     def make(self):
         self._mp3.save()
-        return self._mp3
+        return self
 

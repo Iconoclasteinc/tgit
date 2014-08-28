@@ -8,16 +8,16 @@ from tgit.preferences import Preferences
 
 
 def createStorageFile():
-    fd, path = tempfile.mkstemp(suffix='.ini')
-    return path
+    return tempfile.mkstemp(suffix='.ini')
 
 
 class ApplicationSettingsDriver(object):
     def __init__(self):
-        self.storage = createStorageFile()
+        self.fd, self.storage = createStorageFile()
         self.preferences = Preferences(QSettings(self.storage, QSettings.IniFormat))
 
     def destroy(self):
+        os.close(self.fd)
         os.remove(self.storage)
 
     def set(self, name, value):

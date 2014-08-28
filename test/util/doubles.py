@@ -9,17 +9,19 @@ from tgit.announcer import Announcer
 from tgit.tagging import id3_container as id3
 
 
-def recordingLibrary():
-    return Mp3Library(resources.makeTempDir())
+def recordingLibrary(tmpDir):
+    return Mp3Library(tmpDir)
 
 
 class Mp3Library(object):
     def __init__(self, root):
         self.root = root
         self.recordings = []
+        self.mp3Files = []
 
     def create(self, **metadata):
-        recording = mp3.make(to=self.root, **metadata)
+        recording = mp3.mp3File(to=self.root).withTags(**metadata).make()
+        self.mp3Files.append(recording)
         self.recordings.append(recording.filename)
         return recording.filename
 
@@ -45,8 +47,8 @@ class Mp3Library(object):
         assert_that(metadata.images, contains(*images), 'attached pictures')
 
     def delete(self):
-        for recording in self.recordings:
-            os.remove(recording)
+        for mp3File in self.mp3Files:
+            mp3File.delete()
 
 
 def audioPlayer(*args):
