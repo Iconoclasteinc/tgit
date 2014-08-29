@@ -4,7 +4,6 @@ import unittest
 from hamcrest import assert_that, has_entry, has_items, has_key, has_length, contains, is_not, contains_inanyorder
 
 from test.util import mp3_file as mp3
-from test.util.mp3_file import mp3File
 
 from tgit.metadata import Metadata, Image
 import tgit.tagging.id3_container as container
@@ -24,7 +23,7 @@ class ID3ContainerTest(unittest.TestCase):
         if self.mp3:
             self.mp3.delete()
 
-        self.mp3 = mp3File().withTags(**tags).make()
+        self.mp3 = mp3.make(**tags)
         return self.mp3.filename
 
     def testReadsAlbumTitleFromTALBFrame(self):
