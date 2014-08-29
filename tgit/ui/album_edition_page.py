@@ -36,6 +36,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def __init__(self, album):
         QWidget.__init__(self)
         self.album = album
+        self.picture = None
         self.build()
 
     def build(self):
@@ -98,18 +99,18 @@ class AlbumEditionPage(QWidget, AlbumListener):
         layout = form.layout()
         self.releaseTime = form.lineEdit('release-time')
         self.releaseTime.setPlaceholderText(self.tr('YYYY-MM-DD'))
-        self.releaseTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.releaseTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('releaseTime')))
         layout.addRow(form.labelFor(self.releaseTime, self.tr('Release Time:')), self.releaseTime)
         self.digitalReleaseTime = form.lineEdit('digital-release-time')
-        self.digitalReleaseTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.digitalReleaseTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('digitalReleaseTime')))
         layout.addRow(form.labelFor(self.digitalReleaseTime, self.tr('Digital Release Time:')), self.digitalReleaseTime)
         self.originalReleaseTime = form.lineEdit('original-release-time')
-        self.originalReleaseTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.originalReleaseTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('originalReleaseTime')))
         layout.addRow(form.labelFor(self.originalReleaseTime, self.tr('Original Release Time:')),
                       self.originalReleaseTime)
         self.recordingTime = form.lineEdit('recording-time')
         self.recordingTime.setPlaceholderText(self.tr('YYYY-MM-DD'))
-        self.recordingTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.recordingTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('recordingTime')))
         layout.addRow(form.labelFor(self.recordingTime, self.tr('Recording Time:')), self.recordingTime)
         dates.setLayout(layout)
         return dates
@@ -119,12 +120,12 @@ class AlbumEditionPage(QWidget, AlbumListener):
         albums.setTitle(self.tr('ALBUM'))
         layout = form.layout()
         self.releaseName = form.lineEdit('release-name')
-        self.releaseName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.releaseName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('releaseName')))
         layout.addRow(form.labelFor(self.releaseName, self.tr('Release Name:')), self.releaseName)
         lookupISNI = form.button('lookup-isni', self.tr('LOOKUP ISNI'), disabled=True)
         lookupISNI.clicked.connect(lambda pressed: self.lookupISNI.emit())
         self.compilation = form.checkBox('compilation')
-        self.compilation.clicked.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.compilation.clicked.connect(lambda: self.metadataChanged.emit(self.metadata('compilation')))
         self.compilation.stateChanged.connect(lambda newState:
                                               self.enableOrDisableISNIButton(lookupISNI,
                                                                              newState is Qt.Checked,
@@ -132,7 +133,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         layout.addRow(form.labelFor(self.compilation, self.tr('Compilation:')), self.compilation)
         self.leadPerformer = form.lineEdit('lead-performer')
         self.leadPerformer.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
-        self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('leadPerformer')))
         self.leadPerformer.textChanged.connect(lambda value:
                                                self.enableOrDisableISNIButton(lookupISNI, self.album.compilation,
                                                                               value))
@@ -148,7 +149,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         layout.addRow(form.labelFor(self.area, self.tr('Area:')), self.area)
         self.guestPerformers = form.lineEdit('guest-performers')
         self.guestPerformers.setPlaceholderText(self.tr('Instrument1: Performer1; Instrument2: Performer2; ...'))
-        self.guestPerformers.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.guestPerformers.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('guestPerformers')))
         layout.addRow(form.labelFor(self.guestPerformers, self.tr('Guest Performers:')), self.guestPerformers)
         albums.setLayout(layout)
         return albums
@@ -158,23 +159,23 @@ class AlbumEditionPage(QWidget, AlbumListener):
         record.setTitle(self.tr('RECORD'))
         layout = form.layout()
         self.labelName = form.lineEdit('label-name')
-        self.labelName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.labelName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('labelName')))
         layout.addRow(form.labelFor(self.labelName, self.tr('Label Name:')), self.labelName)
         self.catalogNumber = form.lineEdit('catalog-number')
-        self.catalogNumber.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.catalogNumber.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('catalogNumber')))
         layout.addRow(form.labelFor(self.catalogNumber, self.tr('Catalog Number:')), self.catalogNumber)
         self.upc = form.lineEdit('upc')
-        self.upc.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.upc.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('upc')))
         self.upc.setPlaceholderText('1234567899999')
         layout.addRow(form.labelFor(self.upc, self.tr('UPC/EAN:')), self.upc)
         self.mediaType = form.lineEdit('media-type')
-        self.mediaType.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.mediaType.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('mediaType')))
         layout.addRow(form.labelFor(self.mediaType, self.tr('Media Type:')), self.mediaType)
         self.releaseType = form.lineEdit('release-type')
-        self.releaseType.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.releaseType.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('releaseType')))
         layout.addRow(form.labelFor(self.releaseType, self.tr('Release Type:')), self.releaseType)
         self.comments = form.textArea('comments')
-        self.comments.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.comments.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('comments')))
         layout.addRow(form.labelFor(self.comments, self.tr('Comments:')), self.comments)
         record.setLayout(layout)
         return record
@@ -184,19 +185,19 @@ class AlbumEditionPage(QWidget, AlbumListener):
         recording.setTitle(self.tr('RECORDING'))
         layout = form.layout()
         self.recordingStudios = form.lineEdit('recording-studios')
-        self.recordingStudios.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.recordingStudios.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('recordingStudios')))
         layout.addRow(form.labelFor(self.recordingStudios, self.tr('Recording Studios:')), self.recordingStudios)
         self.producer = form.lineEdit('producer')
-        self.producer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.producer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('producer')))
         layout.addRow(form.labelFor(self.producer, self.tr('Producer:')), self.producer)
         self.mixer = form.lineEdit('mixer')
-        self.mixer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
+        self.mixer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('mixer')))
         layout.addRow(form.labelFor(self.mixer, self.tr('Mixer:')), self.mixer)
-        self.primaryStyles = form.comboBox('primary-style')
-        self.primaryStyles.addItems(sorted(GENRES))
-        self.primaryStyles.activated.connect(lambda: self.metadataChanged.emit(self.metadata))
-        self.primaryStyles.lineEdit().textEdited.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.primaryStyles, self.tr('Primary Style:')), self.primaryStyles)
+        self.primaryStyle = form.comboBox('primary-style')
+        self.primaryStyle.addItems(sorted(GENRES))
+        self.primaryStyle.activated.connect(lambda: self.metadataChanged.emit(self.metadata('primaryStyle')))
+        self.primaryStyle.lineEdit().textEdited.connect(lambda: self.metadataChanged.emit(self.metadata('primaryStyle')))
+        layout.addRow(form.labelFor(self.primaryStyle, self.tr('Primary Style:')), self.primaryStyle)
         recording.setLayout(layout)
         return recording
 
@@ -206,7 +207,9 @@ class AlbumEditionPage(QWidget, AlbumListener):
             self.labelFor(field).setDisabled(True)
 
     def refresh(self):
-        self.mainCover.setPixmap(image.scale(self.album.mainCover, *self.FRONT_COVER_SIZE))
+        if self.album.mainCover is not self.picture or self.album.mainCover is None:
+            self.mainCover.setPixmap(image.scale(self.album.mainCover, *self.FRONT_COVER_SIZE))
+            self.picture = self.album.mainCover
         self.releaseName.setText(self.album.releaseName)
         self.compilation.setChecked(self.album.compilation is True)
         self.displayLeadPerformer(self.album)
@@ -221,30 +224,34 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.recordingStudios.setText(self.album.recordingStudios)
         self.producer.setText(self.album.producer)
         self.mixer.setText(self.album.mixer)
-        self.primaryStyles.setEditText(self.album.primaryStyle)
+        self.primaryStyle.setEditText(self.album.primaryStyle)
 
     def displayLeadPerformer(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
         self.leadPerformer.setText(album.compilation and self.tr('Various Artists') or album.leadPerformer)
         self.leadPerformer.setDisabled(album.compilation is True)
 
-    @property
-    def metadata(self):
-        return dict(releaseName=self.releaseName.text(),
-                    compilation=self.compilation.isChecked(),
-                    leadPerformer=self.leadPerformer.text(),
-                    isni=self.isni.text(),
-                    guestPerformers=formatting.fromPeopleList(self.guestPerformers.text()),
-                    labelName=self.labelName.text(),
-                    catalogNumber=self.catalogNumber.text(),
-                    upc=self.upc.text(),
-                    comments=self.comments.toPlainText(),
-                    recordingTime=self.recordingTime.text(),
-                    releaseTime=self.releaseTime.text(),
-                    recordingStudios=self.recordingStudios.text(),
-                    producer=self.producer.text(),
-                    mixer=self.mixer.text(),
-                    primaryStyle=self.primaryStyles.currentText())
+    def metadata(self, *keys):
+        allValues = dict(releaseName=self.releaseName.text(),
+                         compilation=self.compilation.isChecked(),
+                         leadPerformer=self.leadPerformer.text(),
+                         isni=self.isni.text(),
+                         guestPerformers=formatting.fromPeopleList(self.guestPerformers.text()),
+                         labelName=self.labelName.text(),
+                         catalogNumber=self.catalogNumber.text(),
+                         upc=self.upc.text(),
+                         comments=self.comments.toPlainText(),
+                         recordingTime=self.recordingTime.text(),
+                         releaseTime=self.releaseTime.text(),
+                         recordingStudios=self.recordingStudios.text(),
+                         producer=self.producer.text(),
+                         mixer=self.mixer.text(),
+                         primaryStyle=self.primaryStyle.currentText())
+
+        if len(keys) == 0:
+            return allValues
+
+        return {k: allValues.get(k, None) for k in keys}
 
     def disableMacFocusFrame(self):
         for child in self.findChildren(QWidget):

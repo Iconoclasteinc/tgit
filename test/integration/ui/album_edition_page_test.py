@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from hamcrest import has_entries
+import timeit
+from hamcrest import has_entries, assert_that, less_than
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
@@ -114,6 +115,12 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.addPicture()
         self.check(selectPictureSignal)
 
+    def testEfficientlyDisplaysImageCoverWhenItDoesNotChange(self):
+        self.render(build.album(images=[build.image('image/jpeg', loadTestImage('big-image.jpg'), Image.FRONT_COVER)]))
+
+        time = timeit.timeit(lambda: self.page.refresh(), number=50)
+        assert_that(time, less_than(1), 'time to execute render 50 times')
+
     def testSignalsWhenRemovePictureButtonClicked(self):
         self.render(build.album())
 
@@ -155,8 +162,7 @@ class AlbumEditionPageTest(ViewTest):
         self.check(metadataChangedSignal)
 
         metadataChangedSignal.expect(has_entries(
-            guestPerformers=[('Guitar', 'Guitarist'), ('Guitar', 'Bassist'),
-                             ('Piano', 'Pianist')]))
+            guestPerformers=[('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]))
         self.driver.changeGuestPerformers('Guitar: Guitarist; Guitar: Bassist; Piano: Pianist')
         self.check(metadataChangedSignal)
 
