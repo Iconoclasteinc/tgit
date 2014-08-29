@@ -156,7 +156,7 @@ class AlbumDirectorTest(unittest.TestCase):
         self.library.create(trackTitle='Someone Like You')
 
         album = build.album()
-        director.addTracksToAlbum(ID3Container(), album, self.library.recordings)
+        director.addTracksToAlbum(ID3Container(), album, [recording.filename for recording in self.library.recordings])
         assert_that(album.tracks, contains(
             has_properties(trackTitle='Rolling in the Deep'),
             has_properties(trackTitle='Set Fire to the Rain'),

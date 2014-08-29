@@ -17,12 +17,10 @@ class Mp3Library(object):
     def __init__(self, root):
         self.root = root
         self.recordings = []
-        self.mp3Files = []
 
     def create(self, **metadata):
         recording = mp3.mp3File(to=self.root).withTags(**metadata).make()
-        self.mp3Files.append(recording)
-        self.recordings.append(recording.filename)
+        self.recordings.append(recording)
         return recording.filename
 
     def path(self, filename):
@@ -47,8 +45,8 @@ class Mp3Library(object):
         assert_that(metadata.images, contains(*images), 'attached pictures')
 
     def delete(self):
-        for mp3File in self.mp3Files:
-            mp3File.delete()
+        for recording in self.recordings:
+            recording.delete()
 
 
 def audioPlayer(*args):
