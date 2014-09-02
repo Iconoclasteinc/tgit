@@ -22,3 +22,24 @@ class ISNITest(unittest.TestCase):
         identities = registry.searchByKeywords(u"miller", u"joel e.")
 
         assert_that(identities, contains(contains('0000000067123073', u'Joel E.', u'Miller')))
+
+    @unittest.skip('Exploration test')
+    def testFindsTheBeatlesIdentityUsingRealIsniDatabase(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        identities = registry.searchByKeywords(u"Beatles", u"The")
+
+        assert_that(identities, contains(contains('0000000121707484')))
+
+    @unittest.skip('Exploration test')
+    def testFindsTheBeatlesIdentityUsingRealIsniDatabaseWithPrefixSentFirst(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        identities = registry.searchByKeywords(u"The", u"Beatles")
+
+        assert_that(identities, contains(contains('0000000121707484')))
+
+    @unittest.skip('Exploration test')
+    def testFindsMetallicaIdentityUsingRealIsniDatabase(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        identities = registry.searchByKeywords(u"Metallica")
+
+        assert_that(identities, contains(contains('0000000122939631')))
