@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 
 from tgit.util import sip_api
 sip_api.use_v2()
@@ -53,15 +54,27 @@ def AlbumCompositionPageController(selectTracks, player, album):
     return page
 
 
-def AlbumEditionPageController(selectPicture, album, nameRegistry):
+def AlbumEditionPageController(selectPicture, lookupISNI, album, nameRegistry):
     page = AlbumEditionPage(album)
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.selectPicture.connect(lambda: selectPicture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
-    page.lookupISNI.connect(lambda: director.lookupISNI(nameRegistry, album))
+    page.lookupISNI.connect(lambda: lookupISNI(album, nameRegistry))
     album.addAlbumListener(page)
     page.refresh()
     return page
+
+
+def ISNILookupDialogController(parent, album, nameRegistry):
+    dialog = ISNILookupDialog(parent)
+
+    def lookupISNI():
+        dialog.setIdentities(director.lookupISNI(nameRegistry, album))
+
+    dialog.lookupISNI.connect(lookupISNI)
+    dialog.accepted.connect(lambda: director.selectISNI(dialog.selectedIdentity, album))
+    dialog.exec_()
+    return dialog
 
 
 def TrackEditionPageController(album, track):
@@ -155,10 +168,13 @@ def createMainWindow(albumPortfolio, player, preferences, library, nameRegistry,
         return AlbumCompositionPageController(showTrackSelectionDialog, player, album)
 
     def createAlbumPage(album):
-        return AlbumEditionPageController(showPictureSelectionDialog, album, nameRegistry)
+        return AlbumEditionPageController(showPictureSelectionDialog, showISNILookupDialog, album, nameRegistry)
 
     def showPictureSelectionDialog(album):
         return PictureSelectionDialogController(window, album, native)
+
+    def showISNILookupDialog(album, nameRegistry):
+        return ISNILookupDialogController(window, album, nameRegistry)
 
     def createAlbumScreen(album):
         def createTrackPage(track):

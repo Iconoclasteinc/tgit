@@ -145,8 +145,12 @@ def lookupISNI(registry, album):
     lastName = leadPerformer[lastSpaceIndex+1:]
     firstName = leadPerformer[:lastSpaceIndex]
 
-    identities = registry.searchByKeywords(lastName, firstName)
-    if len(identities) == 1:
-        album.isni = identities[0][0]
-    else:
-        album.isni = None
+    return registry.searchByKeywords(lastName, firstName)
+    # if len(identities) == 1:
+    #     album.isni = identities[0][0]
+    # else:
+    #     album.isni = None
+
+def selectISNI(identity, album):
+    album.isni = identity[0]
+    album.leadPerformer = identity[1] + ' ' + identity[2]
