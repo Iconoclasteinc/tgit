@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import unittest
-from hamcrest import assert_that, contains
+from hamcrest import assert_that, contains, has_item
 
 from tgit.sources.isni import NameRegistry
 import test.util.isni_database as server
 
 
 class ISNITest(unittest.TestCase):
+    @unittest.skip('Exploration test')
     def testFindsIndentity(self):
         server.start()
         server.database["00000001"] = [(u"Joel", u"Miller"), (u"Joel E.", u"Miller"), (u"Joel", u"miller")]
@@ -17,11 +18,31 @@ class ISNITest(unittest.TestCase):
 
         assert_that(identities, contains(contains('00000001', u'Joel', u'Miller')))
 
-    def testFindsIndentityUsingRealIsniDatabase(self):
+    def testFindsRebeccaAnnMaloyIndentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"miller", u"joel e.")
+        identities = registry.searchByKeywords(u"maloy", u"rebecca")
 
-        assert_that(identities, contains(contains('0000000067123073', u'Joel E.', u'Miller')))
+        assert_that(identities, has_item(('0000000115677274', u'Rebecca Ann Maloy')))
+
+    def testFindsRebeccaAnnMaloyIndentityUsingPartOfHerName(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        identities = registry.searchByKeywords(u"malo", u"reb", u"a")
+
+        assert_that(identities, has_item(('0000000115677274', u'Rebecca Ann Maloy')))
+
+    @unittest.skip('Exploration test')
+    def testFindsMetallicaIdentity(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        identities = registry.searchByKeywords(u"Metallica")
+
+        assert_that(identities, contains(contains('0000000122939631')))
+
+    @unittest.skip('Exploration test')
+    def testFindsMetallicaIdentityWithPartialNameUsingRealIsniDatabase(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        identities = registry.searchByKeywords(u"Metal")
+
+        assert_that(identities, contains(contains('0000000122939631')))
 
     @unittest.skip('Exploration test')
     def testFindsTheBeatlesIdentityUsingRealIsniDatabase(self):
@@ -41,5 +62,19 @@ class ISNITest(unittest.TestCase):
     def testFindsMetallicaIdentityUsingRealIsniDatabase(self):
         registry = NameRegistry(host='isni.oclc.nl')
         identities = registry.searchByKeywords(u"Metallica")
+
+        assert_that(identities, contains(contains('0000000122939631')))
+
+    @unittest.skip('Exploration test')
+    def testFindsHarryPotterIdentityWithPartialNameUsingRealIsniDatabase(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        identities = registry.searchByKeywords(u"Potter", u"Harry")
+
+        assert_that(identities, contains(contains('0000000122939631')))
+
+    @unittest.skip('Exploration test')
+    def testFindsJoelIdentityUsingRealIsniDatabase(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        identities = registry.searchByKeywords(u"Joel")
 
         assert_that(identities, contains(contains('0000000122939631')))

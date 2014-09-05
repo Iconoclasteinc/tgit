@@ -9,7 +9,8 @@ import os
 import shutil
 import unittest
 from dateutil import tz
-from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none
+from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
+    has_item, empty
 from test.util import builders as build, resources, doubles, mp3_file
 
 from tgit import album_director as director, __version__
@@ -24,7 +25,6 @@ class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
         self.tempdir = resources.makeTempDir()
         self.library = doubles.recordingLibrary(self.tempdir)
-        self.nameRegistry = doubles.nameRegistry()
 
     def tearDown(self):
         self.library.delete()
@@ -187,22 +187,38 @@ class AlbumDirectorTest(unittest.TestCase):
 
         assert_that(director.taggedName(track), equal_to('artist - 03 - title.mp3'), 'name of tagged file')
 
-    def testUpdatesIsniMetadataToFirstISNIFoundInRegistry(self):
-        self.nameRegistry.registry.append(('0000123456789', 'Clerc', 'Julien'))
+    def testReturnsListOfIdentitiesWhenISNIFoundInRegistry(self):
+        class NameRegistry:
+            def searchByKeywords(self, *keywords):
+                if keywords[0] == 'Maloy' and keywords[1] == 'Rebecca' and keywords[2] == 'Ann':
+                    return [('0000000115677274', 'Rebecca Ann Maloy')]
+                return []
 
-        album = build.album(leadPerformer='Julien Clerc')
-        director.lookupISNI(self.nameRegistry, album)
-        assert_that(album.isni, equal_to('0000123456789'), 'isni')
+        album = build.album(leadPerformer='Rebecca Ann Maloy')
+        identities = director.lookupISNI(NameRegistry(), album)
+        assert_that(identities, has_item(('0000000115677274', 'Rebecca Ann Maloy')), 'isni')
 
-    def testUpdatesIsniMetadataToNoneWhenISNIIsNotFoundInRegistry(self):
-        album = build.album(leadPerformer='Julien Clerc', isni='0000123456789')
-        director.lookupISNI(self.nameRegistry, album)
-        assert_that(album.isni, none(), 'isni')
+    def testReturnsEmptyListWhenISNIIsNotFoundInRegistry(self):
+        class NameRegistry:
+            def searchByKeywords(self, *keywords):
+                return []
 
-    def testUpdatesIsniMetadataToNoneWhenMoreThanOneISNIFoundInRegistry(self):
-        self.nameRegistry.registry.append(('0000123456789', 'Clerc', 'Julien'))
-        self.nameRegistry.registry.append(('0000123456789', 'Clerc', 'Julien'))
+        album = build.album(leadPerformer='Rebecca Ann Maloy')
+        identities = director.lookupISNI(NameRegistry(), album)
+        assert_that(identities, empty(), 'isni')
 
-        album = build.album(leadPerformer='Julien Clerc', isni='0000123456789')
-        director.lookupISNI(self.nameRegistry, album)
-        assert_that(album.isni, none(), 'isni')
+    def testUpdatesISNIFromSelectedIdentity(self):
+        identity = '0000000115677274', '_', '_'
+        album = build.album()
+
+        director.selectISNI(identity, album)
+        assert_that(album.isni, equal_to(identity[0]), 'isni')
+
+    def testUpdatesLeadPerformerFromSelectedIdentity(self):
+        identity = '_', 'McCartney', 'Paul'
+        album = build.album()
+
+        director.selectISNI(identity, album)
+        assert_that(album.leadPerformer,
+                    equal_to('{firstName} {lastName}'.format(firstName=identity[1], lastName=identity[2])),
+                    'lead performer')

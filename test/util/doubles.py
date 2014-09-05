@@ -89,15 +89,3 @@ class FakeExportFormat(object):
         for track in album.tracks:
             out.write(track.trackTitle)
             out.write('\n')
-
-
-def nameRegistry():
-    return FakeNameRegistry()
-
-
-class FakeNameRegistry(object):
-    def __init__(self):
-        self.registry = []
-
-    def searchByKeywords(self, *keywords):
-        return [entry for entry in self.registry if entry[1:] == keywords]

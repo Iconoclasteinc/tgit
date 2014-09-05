@@ -114,9 +114,9 @@ def taggedName(track):
     dirname = os.path.dirname(track.filename)
     _, ext = os.path.splitext(track.filename)
     filename = sanitize(u"{artist} - {number:02} - {title}{ext}".format(artist=track.leadPerformer,
-                                                                         number=track.number,
-                                                                         title=track.trackTitle,
-                                                                         ext=ext))
+                                                                        number=track.number,
+                                                                        title=track.trackTitle,
+                                                                        ext=ext))
 
     return os.path.join(dirname, filename)
 
@@ -142,14 +142,12 @@ def isDir(filename):
 def lookupISNI(registry, album):
     leadPerformer = album.leadPerformer
     lastSpaceIndex = leadPerformer.rfind(' ')
-    lastName = leadPerformer[lastSpaceIndex+1:]
-    firstName = leadPerformer[:lastSpaceIndex]
+    lastName = leadPerformer[lastSpaceIndex + 1:]
+    restOfName = leadPerformer[:lastSpaceIndex]
+    firstName = restOfName.split(' ')
 
-    return registry.searchByKeywords(lastName, firstName)
-    # if len(identities) == 1:
-    #     album.isni = identities[0][0]
-    # else:
-    #     album.isni = None
+    return registry.searchByKeywords(lastName, *firstName)
+
 
 def selectISNI(identity, album):
     album.isni = identity[0]

@@ -23,19 +23,37 @@ from lxml import etree
 
 
 class NameRegistry(object):
-    def __init__(self, host, port=80):
+    def __init__(self, host, port=None, secure=False, username=None, password=None):
         self.host = host
         self.port = port
+        self.username = username
+        self.password = password
+        self.secure = secure
 
     def uri(self):
-        return "http://{host}:{port}".format(host=self.host, port=self.port)
+        uri = "{schema}://{host}".format(schema='https' if self.secure else 'http', host=self.host)
+        if self.port is not None:
+            uri = "{uri}:{port}".format(uri=uri, port=self.port)
+
+        uri += "/sru"
+
+        if self.username is not None:
+            uri = "{uri}/username={username}/password={password}/DB=1.3".format(uri=uri, username=self.username,
+                                                                                password=self.password)
+        else:
+            uri += "/DB=1.2"
+
+        return uri
 
     def searchByKeywords(self, *keywords):
-        payload = {'query': u'pica.nw="{term}"'.format(term='+'.join(keywords)),
-                   'operation': 'searchRetrieve',
-                   'recordSchema': 'isni-b',
-                   'maximumRecords': '10'}
-        response = requests.get("{uri}/sru/DB=1.2".format(uri=self.uri()), params=payload)
+        formattedKeywords = ['{keyword}*,'.format(keyword=keywords[0])]
+        for index in range(1, len(keywords)):
+            formattedKeywords.append('{keyword}*'.format(keyword=keywords[index]))
+
+        payload = '?query=pica.nw%3D"{term}"&operation=searchRetrieve&recordSchema=isni-e&maximumRecords=100'.format(
+            term='+'.join(formattedKeywords))
+
+        response = requests.get(self.uri() + payload, verify=False)
         content = response.content
         results = etree.fromstring(content)
         records = results.xpath('//responseRecord')
@@ -54,8 +72,17 @@ class NameRegistry(object):
             id = assigned.find("isniUnformatted").text
             surnames = [s.text for s in assigned.xpath('.//personalName/surname')]
             forenames = [f.text for f in assigned.xpath('.//personalName/forename')]
-            return id, self.mostCommonOf(forenames), self.mostCommonOf(surnames)
+            return id, self.longestOf(forenames), self.longestOf(surnames)
 
     @staticmethod
     def mostCommonOf(terms):
         return Counter(terms).most_common(1)[0][0]
+
+    @staticmethod
+    def longestOf(terms):
+        longest = ''
+        for term in terms:
+            if len(term) > len(longest):
+                longest = term
+
+        return longest
