@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from hamcrest import assert_that, contains, has_item
+from hamcrest import assert_that, contains, has_item, equal_to, greater_than
 
 from tgit.sources.isni import NameRegistry
 import test.util.isni_database as server
@@ -20,15 +20,27 @@ class ISNITest(unittest.TestCase):
 
     def testFindsRebeccaAnnMaloyIndentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"maloy", u"rebecca")
+        _, identities = registry.searchByKeywords(u"maloy", u"rebecca", u"ann")
 
-        assert_that(identities, has_item(('0000000115677274', u'Rebecca Ann Maloy')))
+        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy'))))
+
+    def testFindsOnlyOneRecordWhenSearchingForRebeccaAnnMaloyIndentity(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        numberOfResults, _ = registry.searchByKeywords(u"maloy", u"rebecca", u"ann")
+
+        assert_that(numberOfResults, equal_to('1'))
 
     def testFindsRebeccaAnnMaloyIndentityUsingPartOfHerName(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"malo", u"reb", u"a")
+        _, identities = registry.searchByKeywords(u"malo", u"reb", u"a")
 
-        assert_that(identities, has_item(('0000000115677274', u'Rebecca Ann Maloy')))
+        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy'))))
+
+    def testFindsMoreThanTwentyMatchesWhenSearchingForJoMiller(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        numberOfRecords, _ = registry.searchByKeywords(u"Miller", u"Jo")
+
+        assert_that(int(numberOfRecords), greater_than(20))
 
     @unittest.skip('Exploration test')
     def testFindsMetallicaIdentity(self):
@@ -38,43 +50,15 @@ class ISNITest(unittest.TestCase):
         assert_that(identities, contains(contains('0000000122939631')))
 
     @unittest.skip('Exploration test')
-    def testFindsMetallicaIdentityWithPartialNameUsingRealIsniDatabase(self):
-        registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"Metal")
-
-        assert_that(identities, contains(contains('0000000122939631')))
-
-    @unittest.skip('Exploration test')
-    def testFindsTheBeatlesIdentityUsingRealIsniDatabase(self):
+    def testFindsTheBeatlesIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
         identities = registry.searchByKeywords(u"Beatles", u"The")
 
         assert_that(identities, contains(contains('0000000121707484')))
 
     @unittest.skip('Exploration test')
-    def testFindsTheBeatlesIdentityUsingRealIsniDatabaseWithPrefixSentFirst(self):
+    def testFindsTheBeatlesIdentityWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
         identities = registry.searchByKeywords(u"The", u"Beatles")
 
         assert_that(identities, contains(contains('0000000121707484')))
-
-    @unittest.skip('Exploration test')
-    def testFindsMetallicaIdentityUsingRealIsniDatabase(self):
-        registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"Metallica")
-
-        assert_that(identities, contains(contains('0000000122939631')))
-
-    @unittest.skip('Exploration test')
-    def testFindsHarryPotterIdentityWithPartialNameUsingRealIsniDatabase(self):
-        registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"Potter", u"Harry")
-
-        assert_that(identities, contains(contains('0000000122939631')))
-
-    @unittest.skip('Exploration test')
-    def testFindsJoelIdentityUsingRealIsniDatabase(self):
-        registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"Joel")
-
-        assert_that(identities, contains(contains('0000000122939631')))

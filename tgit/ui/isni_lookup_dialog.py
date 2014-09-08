@@ -18,64 +18,115 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt4 import QtGui
 
-from PyQt4.QtCore import Qt, pyqtSignal
+from PyQt4.QtCore import Qt, pyqtSignal, QFile, QSize, QEventLoop
 from PyQt4.QtGui import QDialog, QGridLayout, QDialogButtonBox, QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QLabel, \
-    QRadioButton
+    QRadioButton, QScrollArea, QGroupBox, QFrame, QMovie, QPushButton, QApplication
+import time
 
 
 class ISNILookupDialog(QDialog):
     lookupISNI = pyqtSignal()
 
-    def __init__(self, parent):
+    def __init__(self, parent, queue):
         QDialog.__init__(self, parent)
+        self.queue = queue
         self.results = None
+        self.okButton = None
+        self.cancelButton = None
         self.buttons = None
+        self.warning = None
+        self.noResultLabel = None
+        self.loadingMovie = None
+        self.loading = None
         self.build()
 
     def build(self):
         self.setObjectName('isni-lookup-dialog')
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setModal(True)
-        resultLayout = QVBoxLayout()
-        self.results = QWidget()
-        self.results.setLayout(resultLayout)
-        self.buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.setWindowTitle(self.tr('ISNI lookup results'))
+
+        self.loadingMovie = QMovie('resources/images/loader_gray_512.gif')
+        self.loadingMovie.setScaledSize(QSize(100, 100))
+        self.loading = QLabel()
+        self.loading.setMovie(self.loadingMovie)
+        self.loadingMovie.start()
+
+        self.noResultLabel = QLabel()
+        self.noResultLabel.setText(self.tr('Your search yielded no result.'))
+        self.noResultLabel.setVisible(False)
+
+        self.results = QFrame()
+        self.results.setVisible(False)
+        self.results.setFrameStyle(QFrame.StyledPanel)
+        self.results.setLayout(QVBoxLayout())
+
+        self.okButton = QPushButton(self.tr('&Ok'))
+        self.okButton.setDefault(True)
+        self.okButton.setDisabled(True)
+
+        self.cancelButton = QPushButton(self.tr('&Cancel'))
+
+        self.buttons = QDialogButtonBox(Qt.Horizontal)
+        self.buttons.setVisible(False)
+        self.buttons.addButton(self.okButton, QDialogButtonBox.AcceptRole)
+        self.buttons.addButton(self.cancelButton, QDialogButtonBox.RejectRole)
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
-        layout = QGridLayout()
-        layout.addWidget(self.results, 0, 0, 1, 2)
-        layout.addWidget(self.buttons, 1, 0, 1, 2)
+
+        self.warning = QLabel()
+        self.warning.setVisible(False)
+        self.warning.setStyleSheet('color: #F25C0A;')
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.loading)
+        layout.addWidget(self.warning)
+        layout.addWidget(self.results)
+        layout.addWidget(self.buttons)
+
         self.setLayout(layout)
 
+    def pollIdentityQueue(self):
+        while self.queue.empty():
+            QApplication.processEvents(QEventLoop.AllEvents, 50)
+
+        identities = self.queue.get(True)
+        self.setIdentities(identities)
+
     def setIdentities(self, identities):
+        numberOfResults, matches = identities
+
         layout = self.results.layout()
         self.clearLayout(layout)
-        for identity in identities:
-            layout.addLayout(self.buildRow(identity))
+        for identity in matches:
+            layout.addWidget(self.buildRow(identity))
+
+        self.loadingMovie.stop()
+        self.loading.setVisible(False)
+        self.buttons.setVisible(True)
+
+        if len(matches) > 0:
+            self.results.setVisible(True)
+        else:
+            self.noResultLabel.setVisible(True)
+
+        if int(numberOfResults) > layout.count():
+            self.warning.setText(self.tr('Your query returned {numberOfResults} results. If you do not find a match within this list, please refine your search').format(numberOfResults=numberOfResults))
+            self.warning.setVisible(True)
 
     def buildRow(self, identity):
         def selectISNI():
+            self.okButton.setEnabled(True)
             self.selectedIdentity = identity
 
-        isni = QLabel()
-        isni.setText(identity[0])
-
-        lastname = QLabel()
-        lastname.setText(identity[1])
-
-        firstname = QLabel()
-        firstname.setText(identity[2])
+        isni, name = identity
+        firstName, lastName = name
 
         radio = QRadioButton()
+        radio.setText('{first} {last}'.format(first=firstName, last=lastName))
         radio.clicked.connect(selectISNI)
 
-        layout = QHBoxLayout()
-        layout.addWidget(radio)
-        layout.addWidget(isni)
-        layout.addWidget(firstname)
-        layout.addWidget(lastname)
-
-        return layout
+        return radio
 
     def clearLayout(self, layout):
         for i in reversed(range(layout.count())):
@@ -87,7 +138,3 @@ class ISNILookupDialog(QDialog):
                 self.clearLayout(item.layout())
 
             layout.removeItem(item)
-
-    def exec_(self):
-        self.lookupISNI.emit()
-        return QDialog.exec_(self)

@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from collections import Counter
+from collections import Counter, namedtuple
 import requests
 from lxml import etree
 
@@ -46,16 +46,16 @@ class NameRegistry(object):
         return uri
 
     def searchByKeywords(self, *keywords):
-        formattedKeywords = ['{keyword}*,'.format(keyword=keywords[0])]
-        for index in range(1, len(keywords)):
-            formattedKeywords.append('{keyword}*'.format(keyword=keywords[index]))
+        formattedKeywords = [keyword + '*' for keyword in keywords]
+        formattedKeywords[0] += ','
 
-        payload = '?query=pica.nw%3D"{term}"&operation=searchRetrieve&recordSchema=isni-e&maximumRecords=100'.format(
-            term='+'.join(formattedKeywords))
+        payload = '?query=pica.nw%3D"{term}"' \
+                  '&operation=searchRetrieve' \
+                  '&recordSchema=isni-e' \
+                  '&maximumRecords=20'.format(term='+'.join(formattedKeywords))
 
         response = requests.get(self.uri() + payload, verify=False)
-        content = response.content
-        results = etree.fromstring(content)
+        results = etree.fromstring(response.content)
         records = results.xpath('//responseRecord')
 
         matches = []
@@ -64,7 +64,10 @@ class NameRegistry(object):
             if identity:
                 matches.append(identity)
 
-        return matches
+        numberOfRecords = results.xpath('//srw:numberOfRecords/text()',
+                                        namespaces={'srw': 'http://www.loc.gov/zing/srw/'})[0]
+
+        return numberOfRecords, matches
 
     def parseIdentity(self, record):
         assigned = record.find('ISNIAssigned')
@@ -72,11 +75,7 @@ class NameRegistry(object):
             id = assigned.find("isniUnformatted").text
             surnames = [s.text for s in assigned.xpath('.//personalName/surname')]
             forenames = [f.text for f in assigned.xpath('.//personalName/forename')]
-            return id, self.longestOf(forenames), self.longestOf(surnames)
-
-    @staticmethod
-    def mostCommonOf(terms):
-        return Counter(terms).most_common(1)[0][0]
+            return id, (self.longestOf(forenames), self.longestOf(surnames))
 
     @staticmethod
     def longestOf(terms):

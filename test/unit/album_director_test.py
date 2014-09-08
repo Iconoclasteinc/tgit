@@ -191,34 +191,32 @@ class AlbumDirectorTest(unittest.TestCase):
         class NameRegistry:
             def searchByKeywords(self, *keywords):
                 if keywords[0] == 'Maloy' and keywords[1] == 'Rebecca' and keywords[2] == 'Ann':
-                    return [('0000000115677274', 'Rebecca Ann Maloy')]
-                return []
+                    return '1', [('0000000115677274', 'Rebecca Ann Maloy')]
+                return '0', []
 
-        album = build.album(leadPerformer='Rebecca Ann Maloy')
-        identities = director.lookupISNI(NameRegistry(), album)
+        _, identities = director.lookupISNI(NameRegistry(), 'Rebecca Ann Maloy')
         assert_that(identities, has_item(('0000000115677274', 'Rebecca Ann Maloy')), 'isni')
 
     def testReturnsEmptyListWhenISNIIsNotFoundInRegistry(self):
         class NameRegistry:
             def searchByKeywords(self, *keywords):
-                return []
+                return '0', []
 
-        album = build.album(leadPerformer='Rebecca Ann Maloy')
-        identities = director.lookupISNI(NameRegistry(), album)
+        _, identities = director.lookupISNI(NameRegistry(), 'Rebecca Ann Maloy')
         assert_that(identities, empty(), 'isni')
 
     def testUpdatesISNIFromSelectedIdentity(self):
-        identity = '0000000115677274', '_', '_'
+        identity = '0000000115677274', ('_', '_')
         album = build.album()
 
         director.selectISNI(identity, album)
         assert_that(album.isni, equal_to(identity[0]), 'isni')
 
     def testUpdatesLeadPerformerFromSelectedIdentity(self):
-        identity = '_', 'McCartney', 'Paul'
+        identity = '_', ('McCartney', 'Paul')
         album = build.album()
 
         director.selectISNI(identity, album)
         assert_that(album.leadPerformer,
-                    equal_to('{firstName} {lastName}'.format(firstName=identity[1], lastName=identity[2])),
+                    equal_to('{firstName} {lastName}'.format(firstName=identity[1][1], lastName=identity[1][0])),
                     'lead performer')
