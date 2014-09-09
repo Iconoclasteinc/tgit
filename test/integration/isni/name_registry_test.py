@@ -23,7 +23,7 @@ class ISNITest(unittest.TestCase):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"maloy", u"rebecca", u"ann")
 
-        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy'))))
+        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', ''))))
 
     def testFindsOnlyOneRecordWhenSearchingForRebeccaAnnMaloyIndentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
@@ -35,7 +35,13 @@ class ISNITest(unittest.TestCase):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"malo", u"reb", u"a")
 
-        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy'))))
+        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', ''))))
+
+    def testFindsJoelMillerIndentityWithDates(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        _, identities = registry.searchByKeywords(u"miller", u"Joel")
+
+        assert_that(identities, has_item(('0000000073759369', (u'Joel', u'Miller', u'1969-'))))
 
     def testFindsMoreThanTwentyMatchesWhenSearchingForJoMiller(self):
         registry = NameRegistry(host='isni.oclc.nl')

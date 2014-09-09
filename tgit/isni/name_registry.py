@@ -76,7 +76,8 @@ class NameRegistry(object):
 
     def searchByKeywords(self, *keywords):
         response = requests.get(self.uri() + self.payload(keywords), verify=False)
-        results = etree.fromstring(response.content)
+        response_content = response.content
+        results = etree.fromstring(response_content)
         matches = self.extractRecords(results)
         numberOfRecords = self.extractNumberOfRecords(results)
         return numberOfRecords, matches
@@ -87,5 +88,9 @@ class NameRegistry(object):
             isni = assigned.find("isniUnformatted").text
             surnames = [s.text for s in assigned.xpath('.//personalName/surname')]
             forenames = [f.text for f in assigned.xpath('.//personalName/forename')]
-            return isni, (max(forenames, key=len), max(surnames, key=len))
+            dates = [date.text for date in assigned.xpath('.//personalName/dates')]
+            date = ''
+            if len(dates) > 0:
+                date = max(dates, key=len)
+            return isni, (max(forenames, key=len), max(surnames, key=len), date)
         return None

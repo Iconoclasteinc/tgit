@@ -105,7 +105,7 @@ class ISNILookupDialog(QDialog):
         self.loading.setVisible(False)
         self.buttons.setVisible(True)
 
-        if len(matches) > 0:
+        if layout.count() > 0:
             self.results.setVisible(True)
         else:
             self.noResultLabel.setVisible(True)
@@ -119,11 +119,17 @@ class ISNILookupDialog(QDialog):
             self.okButton.setEnabled(True)
             self.selectedIdentity = identity
 
-        isni, name = identity
-        firstName, lastName = name
+        isni, personalInformations = identity
+        firstName, lastName, date = personalInformations
+
+        label = [firstName, ' ', lastName]
+        if date != '':
+            label.append(' (')
+            label.append(date)
+            label.append(')')
 
         radio = QRadioButton()
-        radio.setText('{first} {last}'.format(first=firstName, last=lastName))
+        radio.setText(''.join(label))
         radio.clicked.connect(selectISNI)
 
         return radio
