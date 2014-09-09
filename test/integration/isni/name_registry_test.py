@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import unittest
+
 from hamcrest import assert_that, contains, has_item, equal_to, greater_than
 
-from tgit.sources.isni import NameRegistry
+from tgit.isni.name_registry import NameRegistry
 import test.util.isni_database as server
 
 

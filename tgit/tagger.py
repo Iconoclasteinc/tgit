@@ -25,7 +25,7 @@ from PyQt4.QtGui import QApplication
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio.audio_library import AudioFiles
 from tgit.audio.player import PhononPlayer
-from tgit.sources.isni import NameRegistry
+from tgit.isni.name_registry import NameRegistry
 from tgit.tagging.id3_container import ID3Container
 from tgit.preferences import Preferences
 from tgit import ui

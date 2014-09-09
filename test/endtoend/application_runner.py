@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import sip
+
 from test.cute.events import MainEventLoop
-from tgit.sources.isni import NameRegistry
+from tgit.isni.name_registry import NameRegistry
 from tgit.util import sip_api
+
 sip_api.use_v2()
 
 from test.cute.matchers import named, showingOnScreen

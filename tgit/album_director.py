@@ -29,7 +29,6 @@ import tgit
 from tgit.album import Album
 from tgit.track import Track
 from tgit.util import fs
-from tgit.sources.isni import NameRegistry
 
 
 def createAlbum(portfolio):
