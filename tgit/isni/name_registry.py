@@ -22,6 +22,10 @@ from lxml import etree
 
 
 class NameRegistry(object):
+    namespaces = {
+        'srw': 'http://www.loc.gov/zing/srw/'
+    }
+
     def __init__(self, host, port=None, secure=False, username=None, password=None):
         self.host = host
         self.port = port
@@ -30,57 +34,58 @@ class NameRegistry(object):
         self.secure = secure
 
     def uri(self):
-        uri = "{schema}://{host}".format(schema='https' if self.secure else 'http', host=self.host)
+        fragments = ['https' if self.secure else 'http', '://', self.host]
         if self.port is not None:
-            uri = "{uri}:{port}".format(uri=uri, port=self.port)
+            fragments.append(':')
+            fragments.append(self.port)
 
-        uri += "/sru"
+        fragments.append('/sru')
 
         if self.username is not None:
-            uri = "{uri}/username={username}/password={password}/DB=1.3".format(uri=uri, username=self.username,
-                                                                                password=self.password)
+            fragments.append('/username=')
+            fragments.append(self.username)
+            fragments.append('/password=')
+            fragments.append(self.password)
+            fragments.append('/DB=1.3')
         else:
-            uri += "/DB=1.2"
+            fragments.append('/DB=1.2')
 
-        return uri
+        return ''.join(fragments)
 
-    def searchByKeywords(self, *keywords):
+    def formatKeywords(self, keywords):
         formattedKeywords = [keyword + '*' for keyword in keywords]
         formattedKeywords[0] += ','
+        return formattedKeywords
 
-        payload = '?query=pica.nw%3D"{term}"' \
-                  '&operation=searchRetrieve' \
-                  '&recordSchema=isni-e' \
-                  '&maximumRecords=20'.format(term='+'.join(formattedKeywords))
+    def payload(self, keywords):
+        searchTerms = '+'.join(self.formatKeywords(keywords))
+        return '?query=pica.nw%%3D"%(searchTerms)s"' \
+               '&operation=searchRetrieve' \
+               '&recordSchema=isni-e' \
+               '&maximumRecords=20' % locals()
 
-        response = requests.get(self.uri() + payload, verify=False)
-        results = etree.fromstring(response.content)
-        records = results.xpath('//responseRecord')
-
-        matches = []
-        for record in records:
+    def extractRecords(self, results):
+        for record in results.xpath('//responseRecord'):
             identity = self.parseIdentity(record)
-            if identity:
-                matches.append(identity)
+            if identity is None:
+                continue
+            yield identity
 
-        numberOfRecords = results.xpath('//srw:numberOfRecords/text()',
-                                        namespaces={'srw': 'http://www.loc.gov/zing/srw/'})[0]
+    def extractNumberOfRecords(self, results):
+        return results.xpath('//srw:numberOfRecords/text()', namespaces=self.namespaces)[0]
 
+    def searchByKeywords(self, *keywords):
+        response = requests.get(self.uri() + self.payload(keywords), verify=False)
+        results = etree.fromstring(response.content)
+        matches = self.extractRecords(results)
+        numberOfRecords = self.extractNumberOfRecords(results)
         return numberOfRecords, matches
 
     def parseIdentity(self, record):
         assigned = record.find('ISNIAssigned')
         if assigned is not None:
-            id = assigned.find("isniUnformatted").text
+            isni = assigned.find("isniUnformatted").text
             surnames = [s.text for s in assigned.xpath('.//personalName/surname')]
             forenames = [f.text for f in assigned.xpath('.//personalName/forename')]
-            return id, (self.longestOf(forenames), self.longestOf(surnames))
-
-    @staticmethod
-    def longestOf(terms):
-        longest = ''
-        for term in terms:
-            if len(term) > len(longest):
-                longest = term
-
-        return longest
+            return isni, (max(forenames, key=len), max(surnames, key=len))
+        return None
