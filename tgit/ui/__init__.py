@@ -81,7 +81,7 @@ def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, album, na
 
 
 def ISNILookupDialogController(parent, album, queue):
-    dialog = ISNILookupDialog(parent, queue)
+    dialog = ISNILookupDialog(parent, album.leadPerformer, queue)
     dialog.accepted.connect(lambda: director.selectISNI(dialog.selectedIdentity, album))
     dialog.open()
     return dialog

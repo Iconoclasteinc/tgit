@@ -254,7 +254,9 @@ StyleSheet = """
         border-image: url(:/remove-pressed.png);
     }
 
-    #album-edition-page QGroupBox, #track-edition-page QGroupBox {
+    #album-edition-page QGroupBox,
+    #track-edition-page QGroupBox,
+    #isni-lookup-dialog QGroupBox {
         border: 1px solid #DDDDDD;
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
         background-color: white;
@@ -263,7 +265,9 @@ StyleSheet = """
         font-size: 10px;
     }
 
-    #album-edition-page QGroupBox::title, #track-edition-page QGroupBox::title {
+    #album-edition-page QGroupBox::title,
+    #track-edition-page QGroupBox::title,
+    #isni-lookup-dialog QGroupBox::title {
         subcontrol-origin: margin;
         subcontrol-position: top left;
         left: 1px;
@@ -478,6 +482,11 @@ StyleSheet = """
     #track-edition-page #software-notice {
         font-size: 10px;
         margin-right: 8px;
+    }
+
+    #isni-lookup-dialog #results-exceeds-shown,
+    #isni-lookup-dialog #no-result-message {
+        color: #F25C0A;
     }
  """
 

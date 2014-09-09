@@ -23,7 +23,8 @@ class ISNITest(unittest.TestCase):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"maloy", u"rebecca", u"ann")
 
-        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', ''))))
+        title = u'Music and meaning in old Hispanic lenten chants : Psalmi, threni and the Easter Vigil Canticles'
+        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', '', title))))
 
     def testFindsOnlyOneRecordWhenSearchingForRebeccaAnnMaloyIndentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
@@ -35,13 +36,15 @@ class ISNITest(unittest.TestCase):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"malo", u"reb", u"a")
 
-        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', ''))))
+        title = u'Music and meaning in old Hispanic lenten chants : Psalmi, threni and the Easter Vigil Canticles'
+        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', '', title))))
 
     def testFindsJoelMillerIndentityWithDates(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"miller", u"Joel")
+        _, identities = registry.searchByKeywords(u"miller", u"joel")
 
-        assert_that(identities, has_item(('0000000073759369', (u'Joel', u'Miller', u'1969-'))))
+        title = u'--and then everything started to look different--'
+        assert_that(identities, has_item(('0000000073759369', (u'Joel', u'Miller', u'1969-', title))))
 
     def testFindsMoreThanTwentyMatchesWhenSearchingForJoMiller(self):
         registry = NameRegistry(host='isni.oclc.nl')

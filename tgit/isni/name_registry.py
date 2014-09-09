@@ -65,32 +65,42 @@ class NameRegistry(object):
                '&maximumRecords=20' % locals()
 
     def extractRecords(self, results):
+        matched = []
         for record in results.xpath('//responseRecord'):
             identity = self.parseIdentity(record)
             if identity is None:
                 continue
-            yield identity
+            matched.append(identity)
+        return matched
 
     def extractNumberOfRecords(self, results):
         return results.xpath('//srw:numberOfRecords/text()', namespaces=self.namespaces)[0]
 
     def searchByKeywords(self, *keywords):
         response = requests.get(self.uri() + self.payload(keywords), verify=False)
-        response_content = response.content
-        results = etree.fromstring(response_content)
+        results = etree.fromstring(response.content)
         matches = self.extractRecords(results)
         numberOfRecords = self.extractNumberOfRecords(results)
         return numberOfRecords, matches
+
+    def removeLineStartCharacter(self, title):
+        indexOfLineStartCharacter = title.rfind('@')
+        return ''.join([title[:indexOfLineStartCharacter], title[indexOfLineStartCharacter + 1:]])
+
+    def getLongestIn(self, record, xpath):
+        expressions = [s.text for s in record.xpath(xpath)]
+        if len(expressions) > 0:
+            return max(expressions, key=len)
+        return ''
 
     def parseIdentity(self, record):
         assigned = record.find('ISNIAssigned')
         if assigned is not None:
             isni = assigned.find("isniUnformatted").text
-            surnames = [s.text for s in assigned.xpath('.//personalName/surname')]
-            forenames = [f.text for f in assigned.xpath('.//personalName/forename')]
-            dates = [date.text for date in assigned.xpath('.//personalName/dates')]
-            date = ''
-            if len(dates) > 0:
-                date = max(dates, key=len)
-            return isni, (max(forenames, key=len), max(surnames, key=len), date)
+            surname = self.getLongestIn(assigned, './/personalName/surname')
+            forename = self.getLongestIn(assigned, './/personalName/forename')
+            date = self.getLongestIn(assigned, './/personalName/dates')
+            title = self.getLongestIn(assigned, './/creativeActivity/titleOfWork/title')
+
+            return isni, (forename, surname, date, self.removeLineStartCharacter(title))
         return None

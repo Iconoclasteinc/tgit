@@ -149,7 +149,7 @@ def lookupISNI(registry, leadPerformer):
 
 def selectISNI(identity, album):
     album.isni, personalInformations = identity
-    firstName, lastName, _ = personalInformations
+    firstName, lastName, _, _ = personalInformations
     album.leadPerformer = '%(firstName)s %(lastName)s' % locals()
 
 

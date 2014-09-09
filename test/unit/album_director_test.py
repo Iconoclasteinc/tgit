@@ -206,7 +206,7 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(identities, empty(), 'isni')
 
     def testUpdatesISNIFromSelectedIdentity(self):
-        identity = '0000000115677274', ('_', '_', '_')
+        identity = '0000000115677274', ('_', '_', '_', '_')
         album = build.album()
 
         director.selectISNI(identity, album)
@@ -215,7 +215,7 @@ class AlbumDirectorTest(unittest.TestCase):
     def testUpdatesLeadPerformerFromSelectedIdentity(self):
         firstName = 'Paul'
         lastName = 'McCartney'
-        identity = '_', (firstName, lastName, '_')
+        identity = '_', (firstName, lastName, '_', '_')
         album = build.album()
 
         director.selectISNI(identity, album)

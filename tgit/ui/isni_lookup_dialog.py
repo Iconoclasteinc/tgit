@@ -27,7 +27,7 @@ import time
 class ISNILookupDialog(QDialog):
     lookupISNI = pyqtSignal()
 
-    def __init__(self, parent, queue):
+    def __init__(self, parent, queryExpression, queue):
         QDialog.__init__(self, parent)
         self.queue = queue
         self.results = None
@@ -38,36 +38,41 @@ class ISNILookupDialog(QDialog):
         self.noResultLabel = None
         self.loadingMovie = None
         self.loading = None
+        self.queryExpression = queryExpression
         self.build()
 
     def build(self):
         self.setObjectName('isni-lookup-dialog')
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setModal(True)
-        self.setWindowTitle(self.tr('ISNI lookup results'))
+        self.setWindowTitle(self.tr('ISNI lookup for ') + self.queryExpression)
 
         self.loadingMovie = QMovie('resources/images/loader_gray_512.gif')
-        self.loadingMovie.setScaledSize(QSize(100, 100))
+        self.loadingMovie.setScaledSize(QSize(75, 75))
         self.loading = QLabel()
         self.loading.setMovie(self.loadingMovie)
         self.loadingMovie.start()
 
         self.noResultLabel = QLabel()
-        self.noResultLabel.setText(self.tr('Your search yielded no result.'))
+        self.noResultLabel.setObjectName('no-result-message')
+        self.noResultLabel.setText(self.tr('Your query yielded no result.'))
         self.noResultLabel.setVisible(False)
 
-        self.results = QFrame()
+        self.results = QGroupBox(self.tr('ISNI lookup for ') + self.queryExpression)
+        self.results.setObjectName('lookup-results')
         self.results.setVisible(False)
-        self.results.setFrameStyle(QFrame.StyledPanel)
         self.results.setLayout(QVBoxLayout())
 
-        self.okButton = QPushButton(self.tr('&Ok'))
+        self.okButton = QPushButton(self.tr('&OK'))
+        self.okButton.setObjectName('ok-button')
         self.okButton.setDefault(True)
         self.okButton.setDisabled(True)
 
         self.cancelButton = QPushButton(self.tr('&Cancel'))
+        self.cancelButton.setObjectName('cancel-button')
 
         self.buttons = QDialogButtonBox(Qt.Horizontal)
+        self.buttons.setObjectName('action-buttons')
         self.buttons.setVisible(False)
         self.buttons.addButton(self.okButton, QDialogButtonBox.AcceptRole)
         self.buttons.addButton(self.cancelButton, QDialogButtonBox.RejectRole)
@@ -75,12 +80,11 @@ class ISNILookupDialog(QDialog):
         self.buttons.rejected.connect(self.reject)
 
         self.warning = QLabel()
+        self.warning.setObjectName('results-exceeds-shown')
         self.warning.setVisible(False)
-        self.warning.setStyleSheet('color: #F25C0A;')
 
         layout = QVBoxLayout()
         layout.addWidget(self.loading)
-        layout.addWidget(self.warning)
         layout.addWidget(self.results)
         layout.addWidget(self.buttons)
 
@@ -98,21 +102,25 @@ class ISNILookupDialog(QDialog):
 
         layout = self.results.layout()
         self.clearLayout(layout)
+
+        if int(numberOfResults) > layout.count():
+            layout.addWidget(self.warning)
+            self.warning.setText(self.tr('Your query returned {numberOfResults} results. Only the first 20 results are '
+                                         'shown.\nIf you do not find a match within this list, please refine your '
+                                         'search').format(numberOfResults=numberOfResults))
+            self.warning.setVisible(True)
+
+        if layout.count() == 0:
+            layout.addWidget(self.noResultLabel)
+            self.noResultLabel.setVisible(True)
+
         for identity in matches:
             layout.addWidget(self.buildRow(identity))
 
         self.loadingMovie.stop()
         self.loading.setVisible(False)
         self.buttons.setVisible(True)
-
-        if layout.count() > 0:
-            self.results.setVisible(True)
-        else:
-            self.noResultLabel.setVisible(True)
-
-        if int(numberOfResults) > layout.count():
-            self.warning.setText(self.tr('Your query returned {numberOfResults} results. If you do not find a match within this list, please refine your search').format(numberOfResults=numberOfResults))
-            self.warning.setVisible(True)
+        self.results.setVisible(True)
 
     def buildRow(self, identity):
         def selectISNI():
@@ -120,13 +128,20 @@ class ISNILookupDialog(QDialog):
             self.selectedIdentity = identity
 
         isni, personalInformations = identity
-        firstName, lastName, date = personalInformations
+        firstName, lastName, date, title = personalInformations
 
         label = [firstName, ' ', lastName]
         if date != '':
             label.append(' (')
             label.append(date)
             label.append(')')
+
+        label.append(' - ')
+        if len(title) > 75:
+            label.append(title[:75])
+            label.append('...')
+        else:
+            label.append(title)
 
         radio = QRadioButton()
         radio.setText(''.join(label))
