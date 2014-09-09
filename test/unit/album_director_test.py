@@ -206,17 +206,22 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(identities, empty(), 'isni')
 
     def testUpdatesISNIFromSelectedIdentity(self):
-        identity = '0000000115677274', ('_', '_')
+        identity = '0000000115677274', ('_', '_', '_')
         album = build.album()
 
         director.selectISNI(identity, album)
         assert_that(album.isni, equal_to(identity[0]), 'isni')
 
     def testUpdatesLeadPerformerFromSelectedIdentity(self):
-        identity = '_', ('McCartney', 'Paul')
+        firstName = 'Paul'
+        lastName = 'McCartney'
+        identity = '_', (firstName, lastName, '_')
         album = build.album()
 
         director.selectISNI(identity, album)
-        assert_that(album.leadPerformer,
-                    equal_to('{firstName} {lastName}'.format(firstName=identity[1][1], lastName=identity[1][0])),
-                    'lead performer')
+        assert_that(album.leadPerformer, equal_to('%(firstName)s %(lastName)s' % locals()), 'lead performer')
+
+    def testClearsLeadPerformerISNIFromAlbum(self):
+        album = build.album(isni='0000123456789')
+        director.clearISNI(album)
+        assert_that(album.isni, none(), 'isni')

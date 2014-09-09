@@ -307,6 +307,7 @@ StyleSheet = """
     }
 
     #album-edition-page QPushButton#lookup-isni,
+    #album-edition-page QPushButton#clear-isni,
     #album-edition-page QPushButton#remove-picture {
         background-color: #F25C0A;
         border: 2px solid #F25C0A;
@@ -318,6 +319,7 @@ StyleSheet = """
         margin-left: 10px;
     }
 
+    #album-edition-page QPushButton#clear-isni,
     #album-edition-page QPushButton#lookup-isni {
         font-size: 10px;
         padding: 3px 10px 3px 10px;

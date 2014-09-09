@@ -139,6 +139,15 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.lookupISNI()
         self.check(lookupISNISignal)
 
+    def testSignalsWhenClearISNIButtonClicked(self):
+        self.render(build.album(isni='0000123456789'))
+
+        clearISNISignal = ValueMatcherProbe('clear ISNI')
+        self.page.clearISNI.connect(clearISNISignal.received)
+
+        self.driver.clearISNI()
+        self.check(clearISNISignal)
+
     def testSignalsWhenAlbumMetadataEdited(self):
         self.render(build.album())
 

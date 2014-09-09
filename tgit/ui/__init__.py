@@ -74,6 +74,7 @@ def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, album, na
     page.selectPicture.connect(lambda: selectPicture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
     page.lookupISNI.connect(lookupISNI)
+    page.clearISNI.connect(lambda: director.clearISNI(album))
     album.addAlbumListener(page)
     page.refresh()
     return page

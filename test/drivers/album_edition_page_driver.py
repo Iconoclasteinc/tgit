@@ -99,6 +99,9 @@ class AlbumEditionPageDriver(BaseDriver):
     def lookupISNI(self):
         self.button(named('lookup-isni')).click()
 
+    def clearISNI(self):
+        self.button(named('clear-isni')).click()
+
     def showsReleaseName(self, name):
         self.label(withBuddy(named('release-name'))).isShowingOnScreen()
         self.lineEdit(named('release-name')).hasText(name)
