@@ -18,9 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt4 import QtGui
 
-from PyQt4.QtCore import Qt, pyqtSignal, QFile, QSize, QEventLoop
+from PyQt4.QtCore import Qt, pyqtSignal, QFile, QSize, QEventLoop, QMargins
 from PyQt4.QtGui import QDialog, QGridLayout, QDialogButtonBox, QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QLabel, \
-    QRadioButton, QScrollArea, QGroupBox, QFrame, QMovie, QPushButton, QApplication
+    QRadioButton, QScrollArea, QGroupBox, QFrame, QMovie, QPushButton, QApplication, QLayout, QSizePolicy
 import time
 
 
@@ -30,69 +30,66 @@ class ISNILookupDialog(QDialog):
     def __init__(self, parent, queryExpression, queue):
         QDialog.__init__(self, parent)
         self.queue = queue
-        self.results = None
         self.okButton = None
         self.cancelButton = None
-        self.buttons = None
-        self.warning = None
-        self.noResultLabel = None
-        self.loadingMovie = None
-        self.loading = None
+        self.results = None
         self.queryExpression = queryExpression
+        self.parent = parent
         self.build()
+
+    def title(self):
+        return (self.tr('ISNI lookup for ') + self.queryExpression).upper()
+
+    def center(self):
+        QApplication.processEvents(QEventLoop.AllEvents)
+        point = self.parent.mapToGlobal(self.parent.rect().center())
+        self.move(point.x() - self.width() / 2, point.y() - self.height() / 2)
+
+    def buildSpinner(self):
+        loadingMovie = QMovie('resources/images/loader_gray_512.gif')
+        loadingMovie.setScaledSize(QSize(75, 75))
+        loadingMovie.start()
+        loadingLabel = QLabel()
+        loadingLabel.setMovie(loadingMovie)
+        loadingLabel.setAlignment(Qt.AlignCenter)
+        return loadingLabel
 
     def build(self):
         self.setObjectName('isni-lookup-dialog')
+        self.setWindowFlags(Qt.Dialog | Qt.CustomizeWindowHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setModal(True)
-        self.setWindowTitle(self.tr('ISNI lookup for ') + self.queryExpression)
 
-        self.loadingMovie = QMovie('resources/images/loader_gray_512.gif')
-        self.loadingMovie.setScaledSize(QSize(75, 75))
-        self.loading = QLabel()
-        self.loading.setMovie(self.loadingMovie)
-        self.loadingMovie.start()
-
-        self.noResultLabel = QLabel()
-        self.noResultLabel.setObjectName('no-result-message')
-        self.noResultLabel.setText(self.tr('Your query yielded no result.'))
-        self.noResultLabel.setVisible(False)
-
-        self.results = QGroupBox(self.tr('ISNI lookup for ') + self.queryExpression)
+        self.results = QGroupBox(self.title())
         self.results.setObjectName('lookup-results')
-        self.results.setVisible(False)
         self.results.setLayout(QVBoxLayout())
+        self.results.layout().addWidget(self.buildSpinner())
 
         self.okButton = QPushButton(self.tr('&OK'))
         self.okButton.setObjectName('ok-button')
         self.okButton.setDefault(True)
         self.okButton.setDisabled(True)
-
         self.cancelButton = QPushButton(self.tr('&Cancel'))
         self.cancelButton.setObjectName('cancel-button')
-
-        self.buttons = QDialogButtonBox(Qt.Horizontal)
-        self.buttons.setObjectName('action-buttons')
-        self.buttons.setVisible(False)
-        self.buttons.addButton(self.okButton, QDialogButtonBox.AcceptRole)
-        self.buttons.addButton(self.cancelButton, QDialogButtonBox.RejectRole)
-        self.buttons.accepted.connect(self.accept)
-        self.buttons.rejected.connect(self.reject)
-
-        self.warning = QLabel()
-        self.warning.setObjectName('results-exceeds-shown')
-        self.warning.setVisible(False)
+        self.cancelButton.setDisabled(True)
+        buttons = QDialogButtonBox(Qt.Horizontal)
+        buttons.setObjectName('action-buttons')
+        buttons.addButton(self.okButton, QDialogButtonBox.AcceptRole)
+        buttons.addButton(self.cancelButton, QDialogButtonBox.RejectRole)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        buttons.setContentsMargins(QMargins(0, 0, 7, 0))
 
         layout = QVBoxLayout()
-        layout.addWidget(self.loading)
         layout.addWidget(self.results)
-        layout.addWidget(self.buttons)
+        layout.addWidget(buttons)
+        layout.setSizeConstraint(QLayout.SetFixedSize)
 
         self.setLayout(layout)
 
     def pollIdentityQueue(self):
         while self.queue.empty():
-            QApplication.processEvents(QEventLoop.AllEvents, 50)
+            QApplication.processEvents(QEventLoop.AllEvents, 100)
 
         identities = self.queue.get(True)
         self.setIdentities(identities)
@@ -101,33 +98,44 @@ class ISNILookupDialog(QDialog):
         numberOfResults, matches = identities
 
         layout = self.results.layout()
-        self.clearLayout(layout)
+        layout.takeAt(0).widget().close()
+        if len(matches) < int(numberOfResults):
+            layout.addWidget(self.buildWarning())
 
-        if int(numberOfResults) > layout.count():
-            layout.addWidget(self.warning)
-            self.warning.setText(self.tr('Your query returned {numberOfResults} results. Only the first 20 results are '
-                                         'shown.\nIf you do not find a match within this list, please refine your '
-                                         'search').format(numberOfResults=numberOfResults))
-            self.warning.setVisible(True)
-
-        if layout.count() == 0:
-            layout.addWidget(self.noResultLabel)
-            self.noResultLabel.setVisible(True)
+        if len(matches) == 0:
+            layout.addWidget(self.buildNoResultMessage())
 
         for identity in matches:
             layout.addWidget(self.buildRow(identity))
 
-        self.loadingMovie.stop()
-        self.loading.setVisible(False)
-        self.buttons.setVisible(True)
-        self.results.setVisible(True)
+        self.cancelButton.setEnabled(True)
+        self.center()
+
+    def buildWarning(self):
+        warning = QLabel()
+        warning.setObjectName('results-exceeds-shown')
+        warning.setText(self.tr('If you do not find a match within this list, please refine your search'
+                                ' (only the first 20 results are shown)'))
+        return warning
+
+    def buildNoResultMessage(self):
+        noResultLabel = QLabel()
+        noResultLabel.setObjectName('no-result-message')
+        noResultLabel.setText(self.tr('Your query yielded no result'))
+        return noResultLabel
 
     def buildRow(self, identity):
         def selectISNI():
             self.okButton.setEnabled(True)
             self.selectedIdentity = identity
 
-        isni, personalInformations = identity
+        radio = QRadioButton()
+        radio.clicked.connect(selectISNI)
+        radio.setText(self.buildIdentityCaption(identity))
+        return radio
+
+    def buildIdentityCaption(self, identity):
+        _, personalInformations = identity
         firstName, lastName, date, title = personalInformations
 
         label = [firstName, ' ', lastName]
@@ -135,27 +143,9 @@ class ISNILookupDialog(QDialog):
             label.append(' (')
             label.append(date)
             label.append(')')
-
         label.append(' - ')
-        if len(title) > 75:
-            label.append(title[:75])
-            label.append('...')
-        else:
-            label.append(title)
-
-        radio = QRadioButton()
-        radio.setText(''.join(label))
-        radio.clicked.connect(selectISNI)
-
-        return radio
-
-    def clearLayout(self, layout):
-        for i in reversed(range(layout.count())):
-            item = layout.itemAt(i)
-
-            if isinstance(item, QtGui.QWidgetItem):
-                item.widget().close()
-            elif isinstance(item, QtGui.QLayoutItem):
-                self.clearLayout(item.layout())
-
-            layout.removeItem(item)
+        label.append(title)
+        text = ''.join(label)
+        if len(text) > 100:
+            text = text[:100] + '...'
+        return text
