@@ -17,18 +17,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from Queue import Queue
-from threading import Thread
-import thread
-import threading
-from tgit.album import Album
-from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 
+from PyQt4.QtGui import QApplication
+
+from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
+from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.util import sip_api
 from tgit.util import async_task_runner as taskRunner
 
+
 sip_api.use_v2()
 
-from PyQt4.QtCore import QTimer, QObject, pyqtSignal, QThread
+from PyQt4.QtCore import QTimer, QEventLoop
 
 from tgit import album_director as director
 from tgit.album_portfolio import AlbumPortfolioListener
@@ -61,12 +61,22 @@ def AlbumCompositionPageController(selectTracks, player, album):
     return page
 
 
-def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, album, nameRegistry):
+def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityIndicatorDialogFactory, album,
+                               nameRegistry):
+    def pollQueue():
+        while queue.empty():
+            QApplication.processEvents(QEventLoop.AllEvents, 100)
+        return queue.get(True)
+
     def lookupISNI():
-        dialog = lookupISNIDialogFactory(album, queue)
+        activityDialog = activityIndicatorDialogFactory()
+        activityDialog.show()
+        taskRunner\
+            .runAsync(lambda: director.lookupISNI(nameRegistry, album.leadPerformer)).andPutResultInto(queue).run()
+
+        dialog = lookupISNIDialogFactory(album, pollQueue())
         dialog.show()
-        taskRunner.runAsync(lambda: director.lookupISNI(nameRegistry, album.leadPerformer)).andPutResultInto(queue).run()
-        dialog.pollIdentityQueue()
+        activityDialog.close()
 
     queue = Queue()
     page = AlbumEditionPage(album)
@@ -80,9 +90,15 @@ def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, album, na
     return page
 
 
-def ISNILookupDialogController(parent, album, queue):
-    dialog = ISNILookupDialog(parent, album.leadPerformer, queue)
+def ISNILookupDialogController(parent, album, identities):
+    dialog = ISNILookupDialog(parent, identities)
     dialog.accepted.connect(lambda: director.selectISNI(dialog.selectedIdentity, album))
+    dialog.open()
+    return dialog
+
+
+def ActivityIndicatorDialogController(parent):
+    dialog = ActivityIndicatorDialog(parent)
     dialog.open()
     return dialog
 
@@ -178,13 +194,17 @@ def createMainWindow(albumPortfolio, player, preferences, library, nameRegistry,
         return AlbumCompositionPageController(showTrackSelectionDialog, player, album)
 
     def createAlbumPage(album):
-        return AlbumEditionPageController(showPictureSelectionDialog, showISNILookupDialog, album, nameRegistry)
+        return AlbumEditionPageController(showPictureSelectionDialog, showISNILookupDialog, showActivityIndicatorDialog,
+                                          album, nameRegistry)
 
     def showPictureSelectionDialog(album):
         return PictureSelectionDialogController(window, album, native)
 
-    def showISNILookupDialog(album, queue):
-        return ISNILookupDialogController(window, album, queue)
+    def showISNILookupDialog(album, identities):
+        return ISNILookupDialogController(window, album, identities)
+
+    def showActivityIndicatorDialog():
+        return ActivityIndicatorDialogController(window)
 
     def createAlbumScreen(album):
         def createTrackPage(track):

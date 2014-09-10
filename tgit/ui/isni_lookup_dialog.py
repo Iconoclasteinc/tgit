@@ -25,91 +25,56 @@ import time
 
 
 class ISNILookupDialog(QDialog):
-    lookupISNI = pyqtSignal()
-
-    def __init__(self, parent, queryExpression, queue):
+    def __init__(self, parent, identities):
         QDialog.__init__(self, parent)
-        self.queue = queue
-        self.okButton = None
-        self.cancelButton = None
-        self.results = None
-        self.queryExpression = queryExpression
+        numberOfResults, matches = identities
         self.parent = parent
-        self.build()
+        self.okButton = None
+        self.selectedIdentity = None
+        self.build(int(numberOfResults), matches)
 
-    def title(self):
-        return (self.tr('ISNI lookup for ') + self.queryExpression).upper()
-
-    def center(self):
-        QApplication.processEvents(QEventLoop.AllEvents)
-        point = self.parent.mapToGlobal(self.parent.rect().center())
-        self.move(point.x() - self.width() / 2, point.y() - self.height() / 2)
-
-    def buildSpinner(self):
-        loadingMovie = QMovie('resources/images/loader_gray_512.gif')
-        loadingMovie.setScaledSize(QSize(75, 75))
-        loadingMovie.start()
-        loadingLabel = QLabel()
-        loadingLabel.setMovie(loadingMovie)
-        loadingLabel.setAlignment(Qt.AlignCenter)
-        return loadingLabel
-
-    def build(self):
+    def build(self, numberOfResults, matches):
         self.setObjectName('isni-lookup-dialog')
-        self.setWindowFlags(Qt.Dialog | Qt.CustomizeWindowHint)
+        self.setWindowFlags(Qt.Dialog)
         self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Please select from the list of identities')
         self.setModal(True)
 
-        self.results = QGroupBox(self.title())
-        self.results.setObjectName('lookup-results')
-        self.results.setLayout(QVBoxLayout())
-        self.results.layout().addWidget(self.buildSpinner())
+        layout = QVBoxLayout()
+        layout.addWidget(self.buildResults(matches, numberOfResults))
+        layout.addWidget(self.buildButtons())
+        layout.setSizeConstraint(QLayout.SetFixedSize)
+        self.setLayout(layout)
 
+    def buildResults(self, matches, numberOfResults):
+        resultsLayout = QVBoxLayout()
+        results = QGroupBox()
+        results.setObjectName('lookup-results')
+        results.setLayout(resultsLayout)
+        if len(matches) < int(numberOfResults):
+            resultsLayout.addWidget(self.buildWarning())
+        if len(matches) == 0:
+            resultsLayout.addWidget(self.buildNoResultMessage())
+        for identity in matches:
+            resultsLayout.addWidget(self.buildRow(identity))
+        return results
+
+    def buildButtons(self):
         self.okButton = QPushButton(self.tr('&OK'))
         self.okButton.setObjectName('ok-button')
         self.okButton.setDefault(True)
         self.okButton.setDisabled(True)
-        self.cancelButton = QPushButton(self.tr('&Cancel'))
-        self.cancelButton.setObjectName('cancel-button')
-        self.cancelButton.setDisabled(True)
+        cancelButton = QPushButton(self.tr('&Cancel'))
+        cancelButton.setObjectName('cancel-button')
+        cancelButton.setEnabled(True)
         buttons = QDialogButtonBox(Qt.Horizontal)
         buttons.setObjectName('action-buttons')
         buttons.addButton(self.okButton, QDialogButtonBox.AcceptRole)
-        buttons.addButton(self.cancelButton, QDialogButtonBox.RejectRole)
+        buttons.addButton(cancelButton, QDialogButtonBox.RejectRole)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         buttons.setContentsMargins(QMargins(0, 0, 7, 0))
-
-        layout = QVBoxLayout()
-        layout.addWidget(self.results)
-        layout.addWidget(buttons)
-        layout.setSizeConstraint(QLayout.SetFixedSize)
-
-        self.setLayout(layout)
-
-    def pollIdentityQueue(self):
-        while self.queue.empty():
-            QApplication.processEvents(QEventLoop.AllEvents, 100)
-
-        identities = self.queue.get(True)
-        self.setIdentities(identities)
-
-    def setIdentities(self, identities):
-        numberOfResults, matches = identities
-
-        layout = self.results.layout()
-        layout.takeAt(0).widget().close()
-        if len(matches) < int(numberOfResults):
-            layout.addWidget(self.buildWarning())
-
-        if len(matches) == 0:
-            layout.addWidget(self.buildNoResultMessage())
-
-        for identity in matches:
-            layout.addWidget(self.buildRow(identity))
-
-        self.cancelButton.setEnabled(True)
-        self.center()
+        return buttons
 
     def buildWarning(self):
         warning = QLabel()
