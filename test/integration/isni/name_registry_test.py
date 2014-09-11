@@ -2,6 +2,7 @@
 import unittest
 
 from hamcrest import assert_that, contains, has_item, equal_to, greater_than
+import requests
 
 from tgit.isni.name_registry import NameRegistry
 import test.util.isni_database as server
@@ -72,3 +73,12 @@ class ISNITest(unittest.TestCase):
         identities = registry.searchByKeywords(u"The", u"Beatles")
 
         assert_that(identities, contains(contains('0000000121707484')))
+
+    @unittest.skip('Exploration test')
+    def testCommunicateWithTheISNIAtomPubAPI(self):
+        url = 'https://isni-m-acc.oclc.nl:2600/ATOM/isni'
+        payload = '<?xml version="1.0" ?><entry xmlns="http://www.w3.org/2005/Atom"><Request></Request></entry>'
+        headers = {'content-type': 'application/atom+xml'}
+        response = requests.post(url, data=payload, headers=headers, verify=False)
+        content = response.text
+        assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
