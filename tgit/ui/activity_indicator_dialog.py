@@ -38,7 +38,7 @@ class ActivityIndicatorDialog(QDialog):
         self.setLayout(layout)
 
     def buildSpinner(self):
-        movie = QMovie('resources/images/loader_gray_512.gif')
+        movie = QMovie(':/activity-indicator.gif')
         movie.setScaledSize(QSize(75, 75))
         movie.start()
         label = QLabel()

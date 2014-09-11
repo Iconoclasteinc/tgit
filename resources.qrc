@@ -1,6 +1,6 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
- <qresource>
+<qresource>
      <file>resources/qt_fr.qm</file>
      <file>resources/tgit_fr.qm</file>
      <file alias='play.png'>resources/images/play.png</file>
@@ -16,6 +16,7 @@
      <file alias='previous.png'>resources/images/previous.png</file>
      <file alias='next.png'>resources/images/next.png</file>
      <file alias='logo.png'>resources/images/logo.png</file>
+     <file alias='activity-indicator.gif'>resources/images/loader_gray_512.gif</file>
      <file alias='add-picture.png'>resources/images/add-picture.png</file>
      <file alias='down-arrow.png'>resources/images/down-arrow.png</file>
      <file alias='down-arrow-on.png'>resources/images/down-arrow-on.png</file>
@@ -25,5 +26,5 @@
      <file alias='checkbox-checked.png'>resources/images/checkbox-checked.png</file>
      <file alias='checkbox-checked-hover.png'>resources/images/checkbox-checked-hover.png</file>
      <file alias='checkbox-checked-pressed.png'>resources/images/checkbox-checked-pressed.png</file>
- </qresource>
- </RCC>
+</qresource>
+</RCC>

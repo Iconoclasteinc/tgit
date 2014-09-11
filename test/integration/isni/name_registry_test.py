@@ -23,7 +23,7 @@ class ISNITest(unittest.TestCase):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"maloy", u"rebecca", u"ann")
 
-        title = u'Music and meaning in old Hispanic lenten chants : Psalmi, threni and the Easter Vigil Canticles'
+        title = u'Scolica enchiriadis and the non-diatonic plainsong tradition. -'
         assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', '', title))))
 
     def testFindsOnlyOneRecordWhenSearchingForRebeccaAnnMaloyIndentity(self):
@@ -36,7 +36,7 @@ class ISNITest(unittest.TestCase):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"malo", u"reb", u"a")
 
-        title = u'Music and meaning in old Hispanic lenten chants : Psalmi, threni and the Easter Vigil Canticles'
+        title = u'Scolica enchiriadis and the non-diatonic plainsong tradition. -'
         assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', '', title))))
 
     def testFindsJoelMillerIndentityWithDates(self):

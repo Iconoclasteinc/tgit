@@ -1,8 +1,10 @@
-SOURCES = tgit/ui/album_composition_page.py \
+SOURCES = tgit/ui/activity_indicator_dialog.py \
+          tgit/ui/album_composition_page.py \
           tgit/ui/album_composition_model.py \
           tgit/ui/album_edition_page.py \
           tgit/ui/album_screen.py \
           tgit/ui/export_as_dialog.py \
+          tgit/ui/isni_lookup_dialog.py \
           tgit/ui/main_window.py \
           tgit/ui/menu_bar.py \
           tgit/ui/picture_selection_dialog.py \
