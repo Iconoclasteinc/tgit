@@ -74,9 +74,10 @@ def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityI
         taskRunner\
             .runAsync(lambda: director.lookupISNI(nameRegistry, album.leadPerformer)).andPutResultInto(queue).run()
 
-        dialog = lookupISNIDialogFactory(album, pollQueue())
-        dialog.show()
+        identities = pollQueue()
         activityDialog.close()
+        dialog = lookupISNIDialogFactory(album, identities)
+        dialog.show()
 
     queue = Queue()
     page = AlbumEditionPage(album)
