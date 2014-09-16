@@ -326,7 +326,7 @@ StyleSheet = """
     #album-edition-page QPushButton#clear-isni,
     #album-edition-page QPushButton#lookup-isni {
         font-size: 10px;
-        padding: 3px 10px 3px 10px;
+        padding: 3px 10px;
         margin-left: 2px;
     }
 
@@ -335,6 +335,8 @@ StyleSheet = """
         background-color: #ED8D58;
     }
 
+    #album-edition-page QPushButton#clear-isni:hover,
+    #album-edition-page QPushButton#clear-isni:focus,
     #album-edition-page QPushButton#lookup-isni:hover,
     #album-edition-page QPushButton#lookup-isni:focus,
     #album-edition-page QPushButton#select-picture:hover,
@@ -345,6 +347,7 @@ StyleSheet = """
         border-color: #D95109;
     }
 
+    #album-edition-page QPushButton#clear-isni:pressed,
     #album-edition-page QPushButton#lookup-isni:pressed,
     #album-edition-page QPushButton#select-picture:pressed,
     #album-edition-page QPushButton#remove-picture:pressed {
