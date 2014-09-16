@@ -85,7 +85,7 @@ class AlbumCompositionPage(QWidget):
 
     # Using stylesheets on the table corrupts the display of the button widgets in the
     # cells, at least on OSX. So we have to style programmatically
-    COLUMNS_WIDTHS = [345, 205, 215, 85, 65, 30, 30]
+    COLUMNS_WIDTHS = [346, 225, 225, 85, 65, 30, 30]
 
     def __init__(self):
         QWidget.__init__(self)
@@ -144,8 +144,44 @@ class AlbumCompositionPage(QWidget):
             lambda _, from_, to: self.trackMoved.emit(table.model().trackAt(from_), to))
         table.horizontalHeader().setResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
         table.horizontalHeader().setResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
+        table.horizontalHeader().setResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
         table.setItemDelegateForColumn(Columns.index(Columns.play), self.makePlayButton(table))
         table.setItemDelegateForColumn(Columns.index(Columns.remove), self.makeRemoveButton(table))
+        table.setStyleSheet("""
+            QHeaderView {
+                background-color: white;
+            }
+
+            QHeaderView::section {
+                background-color: transparent;
+            }
+
+            QHeaderView::section:horizontal {
+                text-align: left;
+                font-weight: bold;
+                font-size: 13px;
+                padding: 21px 0 18px 5px;
+                border-top: 1px solid #F7C3B7;
+                border-bottom: 1px solid #F7C3B7;
+                border-right: 1px solid  #F2F2F2;
+                min-height: 15px;
+            }
+
+            QHeaderView::section:vertical {
+                padding: 4px 7px;
+                border-bottom: 1px solid #F7C3B7;
+                border-right: 1px solid #F7C3B7;
+                border-left: none;
+                border-top: none;
+            }
+
+            QTableCornerButton::section:vertical {
+                background-color: white;
+                border-top: 1px solid #F7C3B7;
+                border-bottom: 1px solid #F7C3B7;
+                border-right: 1px solid  #F2F2F2;
+            }
+        """)
         return table
 
     def makePlayButton(self, table):
