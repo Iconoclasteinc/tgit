@@ -6,7 +6,7 @@
 #define MyAppPublisher "Iconoclaste Musique, Inc."
 #define MyAppURL "http://www.tagtamusique.com/"
 #define MyAppExeName "tgit.exe"
-#define SourcePath "C:\Dev\Hg"
+#define SourcePath "C:\Projects"
 #define QtPath "C:\Python27\Lib\site-packages\PyQt4"
 
 [Setup]
@@ -39,9 +39,9 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 Source: "{#SourcePath}\tgit\dist\tgit\tgit.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourcePath}\tgit\dist\tgit\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#QtPath}\QtCore4.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtPath}\QtGui4.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#QtPath}\QtOpenGL4.dll"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "{#QtPath}\QtCore4.dll"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "{#QtPath}\QtGui4.dll"; DestDir: "{app}"; Flags: ignoreversion
+; Source: "{#QtPath}\QtOpenGL4.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

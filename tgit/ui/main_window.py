@@ -177,39 +177,6 @@ StyleSheet = """
         color: transparent;
     }
 
-    QTableView QHeaderView {
-        background-color: white;
-    }
-
-    QTableView QTableCornerButton::section:vertical {
-        background-color: white;
-        border-top: 1px solid #F7C3B7;
-        border-bottom: 1px solid #F7C3B7;
-        border-right: 1px solid  #F2F2F2;
-    }
-
-    QTableView QHeaderView::section {
-        background: transparent;
-        border: 0;
-    }
-
-    QTableView QHeaderView::section:horizontal {
-        text-align: left;
-        font-weight: bold;
-        font-size: 13px;
-        padding: 21px 0 18px 5px;
-        border-top: 1px solid #F7C3B7;
-        border-bottom: 1px solid #F7C3B7;
-        border-right: 1px solid  #F2F2F2;
-        min-height: 15px;
-    }
-
-    QTableView QHeaderView::section:vertical {
-        padding: 4px 7px 0px;
-        border-bottom: 1px solid #F7C3B7;
-        border-right: 1px solid #F7C3B7;
-    }
-
     QTableView::item {
         border-bottom: 1px solid #F7C3B7;
     }
@@ -326,7 +293,7 @@ StyleSheet = """
     #album-edition-page QPushButton#clear-isni,
     #album-edition-page QPushButton#lookup-isni {
         font-size: 10px;
-        padding: 3px 10px 3px 10px;
+        padding: 3px 10px;
         margin-left: 2px;
     }
 
@@ -335,6 +302,8 @@ StyleSheet = """
         background-color: #ED8D58;
     }
 
+    #album-edition-page QPushButton#clear-isni:hover,
+    #album-edition-page QPushButton#clear-isni:focus,
     #album-edition-page QPushButton#lookup-isni:hover,
     #album-edition-page QPushButton#lookup-isni:focus,
     #album-edition-page QPushButton#select-picture:hover,
@@ -345,6 +314,7 @@ StyleSheet = """
         border-color: #D95109;
     }
 
+    #album-edition-page QPushButton#clear-isni:pressed,
     #album-edition-page QPushButton#lookup-isni:pressed,
     #album-edition-page QPushButton#select-picture:pressed,
     #album-edition-page QPushButton#remove-picture:pressed {
