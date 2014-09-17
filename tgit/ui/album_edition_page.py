@@ -120,43 +120,46 @@ class AlbumEditionPage(QWidget, AlbumListener):
         albums = QGroupBox()
         albums.setTitle(self.tr('ALBUM'))
         layout = form.layout()
+
         self.releaseName = form.lineEdit('release-name')
         self.releaseName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('releaseName')))
         layout.addRow(form.labelFor(self.releaseName, self.tr('Release Name:')), self.releaseName)
+
         lookupISNI = form.button('lookup-isni', self.tr('LOOKUP ISNI'), disabled=True)
         lookupISNI.clicked.connect(lambda pressed: self.lookupISNI.emit())
+        lookupISNI.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+
         self.compilation = form.checkBox('compilation')
         self.compilation.clicked.connect(lambda: self.metadataChanged.emit(self.metadata('compilation')))
-        self.compilation.stateChanged.connect(lambda newState:
-                                              self.enableOrDisableISNIButton(lookupISNI,
-                                                                             newState is Qt.Checked,
-                                                                             self.album.leadPerformer))
+        self.compilation.stateChanged.connect(lambda newState: self.enableOrDisableISNIButton(lookupISNI, newState is Qt.Checked, self.album.leadPerformer))
         layout.addRow(form.labelFor(self.compilation, self.tr('Compilation:')), self.compilation)
+
         self.leadPerformer = form.lineEdit('lead-performer')
         self.leadPerformer.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
         self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('leadPerformer')))
-        self.leadPerformer.textChanged.connect(lambda value:
-                                               self.enableOrDisableISNIButton(lookupISNI, self.album.compilation,
-                                                                              value))
+        self.leadPerformer.textChanged.connect(lambda value: self.enableOrDisableISNIButton(lookupISNI, self.album.compilation, value))
         leadPerformerRow = form.row()
-        leadPerformerRow.addWidget(form.labelFor(self.leadPerformer, self.tr('Lead Performer:')))
         leadPerformerRow.addWidget(self.leadPerformer)
         leadPerformerRow.addWidget(lookupISNI)
-        layout.addRow(leadPerformerRow)
+        layout.addRow(form.labelFor(self.leadPerformer, self.tr('Lead Performer:')), leadPerformerRow)
+
         clearISNI = form.button('clear-isni', self.tr('CLEAR ISNI'))
         clearISNI.clicked.connect(lambda: self.clearISNI.emit())
+        clearISNI.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         self.isni = form.lineEdit('isni', disabled=True)
         ISNIRow = form.row()
-        ISNIRow.addWidget(form.labelFor(self.isni, self.tr('ISNI:'), disabled=True))
         ISNIRow.addWidget(self.isni)
         ISNIRow.addWidget(clearISNI)
-        layout.addRow(ISNIRow)
+        layout.addRow(form.labelFor(self.isni, self.tr('ISNI:'), disabled=True), ISNIRow)
+
         self.area = form.lineEdit('area')
         layout.addRow(form.labelFor(self.area, self.tr('Area:')), self.area)
+
         self.guestPerformers = form.lineEdit('guest-performers')
         self.guestPerformers.setPlaceholderText(self.tr('Instrument1: Performer1; Instrument2: Performer2; ...'))
         self.guestPerformers.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('guestPerformers')))
         layout.addRow(form.labelFor(self.guestPerformers, self.tr('Guest Performers:')), self.guestPerformers)
+
         albums.setLayout(layout)
         return albums
 
