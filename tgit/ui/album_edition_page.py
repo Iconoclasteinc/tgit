@@ -30,6 +30,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
     removePicture = pyqtSignal()
     lookupISNI = pyqtSignal()
     clearISNI = pyqtSignal()
+    assignISNI = pyqtSignal()
     metadataChanged = pyqtSignal(dict)
 
     FRONT_COVER_SIZE = 350, 350
@@ -129,18 +130,23 @@ class AlbumEditionPage(QWidget, AlbumListener):
         lookupISNI.clicked.connect(lambda pressed: self.lookupISNI.emit())
         lookupISNI.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
+        assignISNI = form.button('assign-isni', self.tr('ASSIGN ISNI'), disabled=True)
+        assignISNI.clicked.connect(lambda: self.assignISNI.emit())
+        assignISNI.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+
         self.compilation = form.checkBox('compilation')
         self.compilation.clicked.connect(lambda: self.metadataChanged.emit(self.metadata('compilation')))
-        self.compilation.stateChanged.connect(lambda newState: self.enableOrDisableISNIButton(lookupISNI, newState is Qt.Checked, self.album.leadPerformer))
+        self.compilation.stateChanged.connect(lambda newState: self.enableOrDisableISNIButton(newState is Qt.Checked, self.album.leadPerformer, lookupISNI, assignISNI))
         layout.addRow(form.labelFor(self.compilation, self.tr('Compilation:')), self.compilation)
 
         self.leadPerformer = form.lineEdit('lead-performer')
         self.leadPerformer.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
         self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('leadPerformer')))
-        self.leadPerformer.textChanged.connect(lambda value: self.enableOrDisableISNIButton(lookupISNI, self.album.compilation, value))
+        self.leadPerformer.textChanged.connect(lambda value: self.enableOrDisableISNIButton(self.album.compilation, value, lookupISNI, assignISNI))
         leadPerformerRow = form.row()
         leadPerformerRow.addWidget(self.leadPerformer)
         leadPerformerRow.addWidget(lookupISNI)
+        leadPerformerRow.addWidget(assignISNI)
         layout.addRow(form.labelFor(self.leadPerformer, self.tr('Lead Performer:')), leadPerformerRow)
 
         clearISNI = form.button('clear-isni', self.tr('CLEAR ISNI'))
@@ -275,8 +281,10 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def childWidget(self, ofType, matching):
         return next(child for child in self.findChildren(ofType) if matching(child))
 
-    def enableOrDisableISNIButton(self, lookupISNI, compilation, leadPerformer):
-        lookupISNI.setDisabled(compilation or isBlank(leadPerformer))
+    def enableOrDisableISNIButton(self, compilation, leadPerformer, *buttons):
+        isDisabled = compilation or isBlank(leadPerformer)
+        for button in buttons:
+            button.setDisabled(isDisabled)
 
 
 def isBlank(text):

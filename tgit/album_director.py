@@ -155,3 +155,11 @@ def selectISNI(identity, album):
 
 def clearISNI(album):
     album.isni = None
+
+
+def assignISNI(registry, album):
+    lastSpaceIndex = album.leadPerformer.rfind(' ')
+    surname = album.leadPerformer[lastSpaceIndex + 1:]
+    forename = album.leadPerformer[:lastSpaceIndex]
+
+    return registry.assign(forename, surname, album.releaseName)
