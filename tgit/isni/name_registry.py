@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+from datetime import datetime
 import requests
 from lxml import etree
 
@@ -26,12 +26,70 @@ class NameRegistry(object):
         'srw': 'http://www.loc.gov/zing/srw/'
     }
 
-    def __init__(self, host, port=None, secure=False, username=None, password=None):
+    def __init__(self, host=None, assignHost=None, port=None, secure=False, username=None, password=None):
         self.host = host
         self.port = port
         self.username = username
         self.password = password
         self.secure = secure
+        self.assignHost = assignHost
+
+    def searchByKeywords(self, *keywords):
+        response = requests.get(self.uri() + self.payload(keywords), verify=False)
+        results = etree.fromstring(response.content)
+        matches = self.extractRecords(results)
+        numberOfRecords = self.extractNumberOfRecords(results)
+        return numberOfRecords, matches
+
+    def assign(self, forename, surname, *titleOfWorks):
+        creationClass = 'prf'
+        referenceUri = 'http://tagtamusique.com/'
+        date = datetime.utcnow()
+        titles = ''.join("<title>%s</title>" % title for title in titleOfWorks)
+        payload = '''
+            <Request>
+                <requestID>
+                    <dateTimeOfRequest>%(date)s</dateTimeOfRequest>
+                    <requestorTransactionId></requestorTransactionId>
+                </requestID>
+                <identityInformation>
+                    <requestorIdentifierOfIdentity>
+                        <referenceURI>%(referenceUri)s</referenceURI>
+                        <identifier>0123456789</identifier>
+                    </requestorIdentifierOfIdentity>
+                    <identity>
+                        <personOrFiction>
+                            <personalName>
+                                <nameUse>public and private</nameUse>
+                                <surname>%(surname)s</surname>
+                                <forename>%(forename)s</forename>
+                            </personalName>
+                            <resource>
+                                <creationClass>
+                                    <domain>literature </domain>
+                                    <formOfPublication>book </formOfPublication>
+                                    <pietjePuk>fi<p>lm</p></pietjePuk>
+                                </creationClass>
+                                <creationRole>%(creationClass)s</creationRole>
+                                <titleOfWork>
+                                    %(titles)s
+                                </titleOfWork>
+                            </resource>
+                        </personOrFiction>
+                    </identity>
+                </identityInformation>
+            </Request>
+        ''' % locals()
+        headers = {'content-type': 'application/atom+xml'}
+        response = requests.post(self.assignUri(), data=payload, headers=headers, verify=False)
+        content = response.content
+        results = etree.fromstring(content)
+
+        assigned = results.find('ISNIAssigned')
+        if assigned is not None:
+            isni = assigned.find("isniUnformatted").text
+            return isni
+        return None
 
     def uri(self):
         fragments = ['https' if self.secure else 'http', '://', self.host]
@@ -51,6 +109,9 @@ class NameRegistry(object):
             fragments.append('/DB=1.2')
 
         return ''.join(fragments)
+
+    def assignUri(self):
+        return 'https://%s/ATOM/isni' % self.assignHost
 
     def formatKeywords(self, keywords):
         formattedKeywords = [keyword + '*' for keyword in keywords]
@@ -75,13 +136,6 @@ class NameRegistry(object):
 
     def extractNumberOfRecords(self, results):
         return results.xpath('//srw:numberOfRecords/text()', namespaces=self.namespaces)[0]
-
-    def searchByKeywords(self, *keywords):
-        response = requests.get(self.uri() + self.payload(keywords), verify=False)
-        results = etree.fromstring(response.content)
-        matches = self.extractRecords(results)
-        numberOfRecords = self.extractNumberOfRecords(results)
-        return numberOfRecords, matches
 
     def removeLineStartCharacter(self, title):
         indexOfLineStartCharacter = title.rfind('@')

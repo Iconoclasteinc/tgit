@@ -56,7 +56,8 @@ class TGiT(QApplication):
     def show(self, preferences):
         self.setLocale(preferences['language'])
         self.mainWindow = \
-            ui.createMainWindow(AlbumPortfolio(), self.player(AudioFiles()), preferences, ID3Container(), self.nameRegistry, self.native)
+            ui.createMainWindow(AlbumPortfolio(), self.player(AudioFiles()), preferences, ID3Container(),
+                                self.nameRegistry, self.native)
         display.centeredOnScreen(self.mainWindow)
 
     def launch(self, preferences):
@@ -69,6 +70,7 @@ class TGiT(QApplication):
 
 def main():
     #app = TGiT(PhononPlayer, NameRegistry('localhost', 5000))
-    app = TGiT(PhononPlayer, NameRegistry('isni-m.oclc.nl', secure=True, username='ICON', password='crmeoS4d'))
+    app = TGiT(PhononPlayer, NameRegistry(host='isni-m.oclc.nl', assignHost='isni-m-acc.oclc.nl', secure=True,
+                                          username='ICON', password='crmeoS4d'))
     app.setApplicationName('TGiT')
     app.launch(Preferences(QSettings('tagtamusique.com', 'TGiT')))

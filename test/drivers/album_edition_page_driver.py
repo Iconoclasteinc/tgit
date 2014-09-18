@@ -102,6 +102,9 @@ class AlbumEditionPageDriver(BaseDriver):
     def clearISNI(self):
         self.button(named('clear-isni')).click()
 
+    def assignISNI(self):
+        self.button(named('assign-isni')).click()
+
     def showsReleaseName(self, name):
         self.label(withBuddy(named('release-name'))).isShowingOnScreen()
         self.lineEdit(named('release-name')).hasText(name)
@@ -133,6 +136,10 @@ class AlbumEditionPageDriver(BaseDriver):
 
     def enablesISNILookup(self, enabled=True):
         button = self.button(named('lookup-isni'))
+        button.isEnabled(enabled)
+
+    def enablesISNIAssign(self, enabled=True):
+        button = self.button(named('assign-isni'))
         button.isEnabled(enabled)
 
     def changeLeadPerformer(self, name):
