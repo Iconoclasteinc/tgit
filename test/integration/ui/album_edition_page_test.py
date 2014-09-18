@@ -102,9 +102,13 @@ class AlbumEditionPageTest(ViewTest):
         self.render(build.album(leadPerformer='     '))
         self.driver.enablesISNILookup(False)
 
-    def testEnablesLookupISNIButtonWhenLeadPerformerIsNotEmpty(self):
+    def testEnablesAssignISNIButtonWhenLeadPerformerIsNotEmpty(self):
         self.render(build.album(leadPerformer='performer'))
-        self.driver.enablesISNILookup()
+        self.driver.enablesISNIAssign()
+
+    def testDisablesAssignISNIButtonWhenLeadPerformerIsNotEmpty(self):
+        self.render(build.album())
+        self.driver.enablesISNIAssign(False)
 
     def testSignalsWhenPictureSelected(self):
         self.render(build.album())
@@ -147,6 +151,15 @@ class AlbumEditionPageTest(ViewTest):
 
         self.driver.clearISNI()
         self.check(clearISNISignal)
+
+    def testSignalsWhenAssignISNIButtonClicked(self):
+        self.render(build.album(leadPerformer='performer'))
+
+        assignISNISignal = ValueMatcherProbe('assign ISNI')
+        self.page.assignISNI.connect(assignISNISignal.received)
+
+        self.driver.assignISNI()
+        self.check(assignISNISignal)
 
     def testSignalsWhenAlbumMetadataEdited(self):
         self.render(build.album())
