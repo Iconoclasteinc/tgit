@@ -79,12 +79,20 @@ def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityI
         dialog = lookupISNIDialogFactory(album, identities)
         dialog.show()
 
+    def assignISNI():
+        activityDialog = activityIndicatorDialogFactory()
+        activityDialog.show()
+        taskRunner.runAsync(lambda: director.assignISNI(nameRegistry, album)).andPutResultInto(queue).run()
+        album.isni = pollQueue()
+        activityDialog.close()
+
     queue = Queue()
     page = AlbumEditionPage(album)
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.selectPicture.connect(lambda: selectPicture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
     page.lookupISNI.connect(lookupISNI)
+    page.assignISNI.connect(assignISNI)
     page.clearISNI.connect(lambda: director.clearISNI(album))
     album.addAlbumListener(page)
     page.refresh()
