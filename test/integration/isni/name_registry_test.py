@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from lxml import etree
 import unittest
 
-from hamcrest import assert_that, contains, has_item, equal_to, greater_than
+from hamcrest import assert_that, contains, has_item, equal_to, greater_than, not_none
 import requests
 
 from tgit.isni.name_registry import NameRegistry
@@ -74,7 +75,7 @@ class ISNITest(unittest.TestCase):
 
         assert_that(identities, contains(contains('0000000121707484')))
 
-    def testCommunicateWithTheISNIAtomPubAPIUsingAFullRequest(self):
+    def testAssignWithTheISNIAtomPubAPIUsingAMinimalRequest(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
             <Request>
@@ -87,43 +88,13 @@ class ISNITest(unittest.TestCase):
                         <referenceURI>http://www.sos.nl</referenceURI>
                         <identifier>13365</identifier>
                     </requestorIdentifierOfIdentity>
-                    <otherIdentifierOfIdentity>
-                        <identifier>I-002043149-4</identifier>
-                        <type>IPI</type>
-                    </otherIdentifierOfIdentity>
                     <identity>
                         <personOrFiction>
                             <personalName>
                                 <nameUse>public and private</nameUse>
                                 <surname>BAERTHEL</surname>
                                 <forename>JAN</forename>
-                                <numeration>0</numeration>
-                                <nameTitle>Sir</nameTitle>
-                                <languageOfName>dut</languageOfName>
-                                <script>Egyp</script>
                             </personalName>
-                            <deathDate>2011-04-29</deathDate>
-                            <instrumentAndVoice>sa</instrumentAndVoice>
-                            <personalNameVariant>
-                                <nameUse>public</nameUse>
-                                <surname>Leiden</surname>
-                                <forename>Jantje, van</forename>
-                                <numeration>XIIV</numeration>
-                                <nameTitle>Hee</nameTitle>
-                            </personalNameVariant>
-                            <birthDate>1973-02-05</birthDate>
-                            <gender>male</gender>
-                            <instrumentAndVoice>tb</instrumentAndVoice>
-                            <nationality>gw</nationality>
-                            <nationality>nz</nationality>
-                            <nationality>ne</nationality>
-                            <contributedTo>
-                                <titleOfCollectiveWorkOrWorkPerformed>Dit is de titel van een @collectief werk</titleOfCollectiveWorkOrWorkPerformed>
-                                <identifier>
-                                    <identifierType>ISSN</identifierType>
-                                    <identifierValue>0165-4683</identifierValue>
-                                </identifier>
-                            </contributedTo>
                             <resource>
                                 <creationClass>
                                     <domain>literature </domain>
@@ -131,107 +102,146 @@ class ISNITest(unittest.TestCase):
                                     <pietjePuk>fi<p>lm</p></pietjePuk>
                                 </creationClass>
                                 <creationRole>aut</creationRole>
-                                <fieldOfCreation>
-                                    <fieldType>dewey</fieldType>
-                                    <fieldOfCreationValue>aap</fieldOfCreationValue>
-                                </fieldOfCreation>
-                                <fieldOfCreation>
-                                    <fieldType>dewey</fieldType>
-                                    <fieldOfCreationValue>noot</fieldOfCreationValue>
-                                </fieldOfCreation>
-                                <fieldOfCreation>
-                                    <fieldType>dewey</fieldType>
-                                    <fieldOfCreationValue>mies</fieldOfCreationValue>
-                                </fieldOfCreation>
-                                <fieldOfCreation>
-                                    <fieldOfCreationValue>Org</fieldOfCreationValue>
-                                </fieldOfCreation>
                                 <titleOfWork>
                                     <title>Industrielles Bauen: Leitfaden f??MU-Gesch?sf??r</title>
-                                    <imprint>
-                                        <publisher>vdf Hochschulverlag AG, ETH Z??h</publisher>
-                                        <date>2002</date>
-                                    </imprint>
-                                    <identifier>
-                                        <identifierValue>9789062334889</identifierValue>
-                                        <identifierType>ISBN</identifierType>
-                                    </identifier>
-                                </titleOfWork>
-                            </resource>
-                            <resource>
-                                <creationClass />
-                                <creationRole>aut</creationRole>
-                                <titleOfWork>
-                                    <title>Immobilienwirtschaft akutell Beitr? zur Immobilienwirtschaftlichen Forschung 2008</title>
-                                    <imprint>
-                                        <publisher>vdf Hochschulverlag, Z??h</publisher>
-                                        <date>2008</date>
-                                    </imprint>
-                                    <identifier>
-                                        <identifierValue>1079537</identifierValue>
-                                        <identifierType>OCN</identifierType>
-                                    </identifier>
-                                </titleOfWork>
-                            </resource>
-                            <resource>
-                                <creationClass />
-                                <creationRole>aut</creationRole>
-                                <titleOfWork>
-                                    <title>Institutional Investment Realestate Magazin</title>
-                                    <imprint>
-                                        <publisher>Indtitutional Investment Publishing</publisher>
-                                        <date>2008</date>
-                                    </imprint>
-                                    <identifier>
-                                        <identifierValue>907</identifierValue>
-                                        <identifierType>ISWC</identifierType>
-                                    </identifier>
                                 </titleOfWork>
                             </resource>
                         </personOrFiction>
                     </identity>
-                    <dataConfidence>false</dataConfidence>
-                    <languageOfIdentity>dut</languageOfIdentity>
-                    <countriesAssociated>
-                        <countryCode>US</countryCode>
-                        <regionOrState>OH</regionOrState>
-                        <city>Detroit</city>
-                    </countriesAssociated>
-                    <externalInformation>
-                        <source>bron</source>
-                        <information>Sleutel onder de steen naast de achterdeur</information>
-                        <URI>http://www.pipo.uk</URI>
-                    </externalInformation>
-                    <note>Dit is een notitie</note>
                 </identityInformation>
-                <isNot>
+            </Request>
+        '''
+        headers = {'content-type': 'application/atom+xml'}
+        response = requests.post(url, data=payload, headers=headers, verify=False)
+        assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
+
+        results = etree.fromstring(response.content)
+        assert_that(results.find('ISNIAssigned'), not_none(), 'response code')
+
+    @unittest.skip('Exploration test')
+    def testAssignWithTheISNIAtomPubAPIUsingAnInvalidRequest(self):
+        url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
+        payload = '''
+            <Request>
+                <requestID>
+                    <dateTimeOfRequest>2011-05-20T09:09:35.5063705+02:00</dateTimeOfRequest>
+                    <requestorTransactionId>5340</requestorTransactionId>
+                </requestID>
+                <identityInformation>
+                    <requestorIdentifierOfIdentity>
+                        <referenceURI>http://www.sos.nl</referenceURI>
+                        <identifier>13365</identifier>
+                    </requestorIdentifierOfIdentity>
+                    <identity>
+                        <personOrFiction>
+                            <resource>
+                                <creationClass>
+                                    <domain>literature </domain>
+                                    <formOfPublication>book </formOfPublication>
+                                    <pietjePuk>fi<p>lm</p></pietjePuk>
+                                </creationClass>
+                                <creationRole>aut</creationRole>
+                                <titleOfWork>
+                                    <title>Industrielles Bauen: Leitfaden f??MU-Gesch?sf??r</title>
+                                </titleOfWork>
+                            </resource>
+                        </personOrFiction>
+                    </identity>
+                </identityInformation>
+            </Request>
+        '''
+        headers = {'content-type': 'application/atom+xml'}
+        response = requests.post(url, data=payload, headers=headers, verify=False)
+        content = response.content
+        assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
+
+        results = etree.fromstring(content)
+        noIsni = results.find('noISNI')
+        assert_that(noIsni, not_none(), 'no ISNI tag')
+
+        sparse = noIsni.find('reason')
+        assert_that(sparse.text, equal_to('invalidFormat'), 'invalid response')
+
+    @unittest.skip('Exploration test')
+    def testAssignOrganisationWithTheISNIAtomPubAPIUsingASparseRequest(self):
+        url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
+        payload = '''
+        <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <requestID>
+                <dateTimeOfRequest>2001-12-17T09:30:47Z</dateTimeOfRequest>
+                <requestorTransactionId>text</requestorTransactionId>
+            </requestID>
+            <identityInformation>
+                <requestorIdentifierOfIdentity>
+                    <referenceURI>www.ragaddress.com</referenceURI>
+                    <identifier>234234234</identifier>
+                </requestorIdentifierOfIdentity>
+                <identity>
+                    <organisation>
+                        <organisationType>Musical group or band</organisationType>
+                        <organisationName>
+                            <mainName>We are the best</mainName>
+                        </organisationName>
+                    </organisation>
+                </identity>
+            </identityInformation>
+        </Request>
+        '''
+        headers = {'content-type': 'application/atom+xml'}
+        response = requests.post(url, data=payload, headers=headers, verify=False)
+        content = response.content
+        assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
+
+        results = etree.fromstring(content)
+        noIsni = results.find('noISNI')
+        assert_that(noIsni, not_none(), 'no ISNI tag')
+
+        sparse = noIsni.find('reason')
+        assert_that(sparse.text, equal_to('sparse'), 'sparse response')
+
+    @unittest.skip('Exploration test')
+    def testAssignPersonWithTheISNIAtomPubAPIUsingASparseRequest(self):
+        url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
+        payload = '''
+            <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <requestID>
+                    <dateTimeOfRequest>2001-12-17T09:30:47Z</dateTimeOfRequest>
+                    <requestorTransactionId>My ID</requestorTransactionId>
+                </requestID>
+                <identityInformation>
+                    <requestorIdentifierOfIdentity>
+                        <referenceURI>www.rag.address.com</referenceURI>
+                        <identifier>1515161634</identifier>
+                    </requestorIdentifierOfIdentity>
+                    <otherIdentifierOfIdentity>
+                        <identifier>99667784</identifier>
+                        <type>IPD</type>
+                    </otherIdentifierOfIdentity>
+                    <identity>
+                        <personOrFiction>
+                            <personalName>
+                                <nameUse>public and private</nameUse>
+                                <surname>Nieuwname</surname>
+                                <forename>Pamela Williams</forename>
+                            </personalName>
+                            <personalNameVariant>
+                                <nameUse>private</nameUse>
+                                <surname>Williams</surname>
+                                <forename>Pamela Jane</forename>
+                            </personalNameVariant>
+                        </personOrFiction>
+                    </identity>
+                </identityInformation>
+                <isRelated identityType="personOrFiction">
+                    <relationType>co-author</relationType>
                     <noISNI>
-                        <PPN>123397340</PPN>
+                        <PPN>082588929</PPN>
                         <personalName>
-                            <script>Egyp</script>
-                            <nameUse>fictional</nameUse>
-                            <languageOfName>dut</languageOfName>
-                            <forename>Hugo, de</forename>
-                            <surname>Groot</surname>
-                            <numeration>II</numeration>
-                            <nameTitle>Hr</nameTitle>
+                            <nameUse>public</nameUse>
+                            <surname>Williams</surname>
+                            <forename>Selma R.</forename>
                         </personalName>
                     </noISNI>
-                </isNot>
-                <isRelated identityType="organisation">
-                    <relationType>isMemberOf</relationType>
-                    <noISNI>
-                        <PPN>123750458</PPN>
-                        <organisationName>
-                            <mainName>OCLC</mainName>
-                            <subdivisionName>PADO</subdivisionName>
-                            <subdivisionName>Pica</subdivisionName>
-                            <subdivisionName>FLIP</subdivisionName>
-                        </organisationName>
-                    </noISNI>
-                    <relationQualification>hot</relationQualification>
-                    <startDateOfRelationship>1998-08-15</startDateOfRelationship>
-                    <endDateOfRelationship>2003-02-14</endDateOfRelationship>
                 </isRelated>
             </Request>
         '''
@@ -239,39 +249,54 @@ class ISNITest(unittest.TestCase):
         response = requests.post(url, data=payload, headers=headers, verify=False)
         assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
 
-    def testCommunicateWithTheISNIAtomPubAPIUsingAMinimalRequest(self):
+        content = response.content
+        results = etree.fromstring(content)
+        noIsni = results.find('noISNI')
+        assert_that(noIsni, not_none(), 'no ISNI tag')
+
+        sparse = noIsni.find('reason')
+        assert_that(sparse.text, equal_to('sparse'), 'sparse response')
+
+    @unittest.skip('Exploration test')
+    def testAssignPersonWithTheISNIAtomPubAPIUsingAPossibleMatchesRequestReturningScoreOf06(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
-            <Request>
+            <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <requestID>
-                    <dateTimeOfRequest>2011-05-20T09:09:35.5063705+02:00</dateTimeOfRequest>
-                    <requestorTransactionId>5340</requestorTransactionId>
+                    <dateTimeOfRequest>2012-11-09T09:30:47Z</dateTimeOfRequest>
+                    <requestorTransactionId>multiple match1</requestorTransactionId>
                 </requestID>
                 <identityInformation>
                     <requestorIdentifierOfIdentity>
-                        <referenceURI>http://www.sos.nl</referenceURI>
-                        <identifier>13365</identifier>
+                        <referenceURI>myURL</referenceURI>
+                        <identifier>11112222332323</identifier>
                     </requestorIdentifierOfIdentity>
                     <identity>
                         <personOrFiction>
                             <personalName>
                                 <nameUse>public and private</nameUse>
-                                <surname>BAERTHEL</surname>
-                                <forename>JAN</forename>
+                                <surname>Adler</surname>
+                                <forename>Larry</forename>
                             </personalName>
+                            <birthDate>1914</birthDate>
+                            <deathDate>2001</deathDate>
                             <resource>
-                                <creationClass>
-                                    <domain>literature </domain>
-                                    <formOfPublication>book </formOfPublication>
-                                    <pietjePuk>fi<p>lm</p></pietjePuk>
-                                </creationClass>
-                                <creationRole>aut</creationRole>
+                                <creationClass>jm</creationClass>
+                                <creationRole>prf</creationRole>
                                 <titleOfWork>
-                                    <title>Industrielles Bauen: Leitfaden f??MU-Gesch?sf??r</title>
+                                    <title>St. Louis blues</title>
+                                </titleOfWork>
+                            </resource>
+                            <resource>
+                                <creationClass>jm</creationClass>
+                                <creationRole>prf</creationRole>
+                                <titleOfWork>
+                                    <title>Beguine</title>
                                 </titleOfWork>
                             </resource>
                         </personOrFiction>
                     </identity>
+                    <note>should return possible match with PPNs 37444949X, 36586272X and 083863184</note>
                 </identityInformation>
             </Request>
         '''
@@ -279,42 +304,62 @@ class ISNITest(unittest.TestCase):
         response = requests.post(url, data=payload, headers=headers, verify=False)
         assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
 
-    def testCommunicateWithTheISNIAtomPubAPIUsingAnInvalidRequest(self):
+        content = response.content
+        results = etree.fromstring(content)
+        noIsni = results.find('noISNI')
+        assert_that(noIsni, not_none(), 'no ISNI tag')
+
+        sparse = noIsni.find('reason')
+        assert_that(sparse.text, equal_to('possibleMatch'), 'possible matches response')
+
+    @unittest.skip('Exploration test')
+    def testAssignPersonWithTheISNIAtomPubAPIUsingAPossibleMatchesRequestReturningScoreOf085(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
-            <Request>
+            <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <requestID>
-                    <dateTimeOfRequest>2011-05-20T09:09:35.5063705+02:00</dateTimeOfRequest>
-                    <requestorTransactionId>5340</requestorTransactionId>
+                    <dateTimeOfRequest>2012-11-09T09:30:47Z</dateTimeOfRequest>
+                    <requestorTransactionId>multiple match1</requestorTransactionId>
                 </requestID>
                 <identityInformation>
                     <requestorIdentifierOfIdentity>
-                        <referenceURI>http://www.sos.nl</referenceURI>
-                        <identifier>13365</identifier>
+                        <referenceURI>myURL</referenceURI>
+                        <identifier>11112222332558</identifier>
                     </requestorIdentifierOfIdentity>
                     <identity>
                         <personOrFiction>
+                            <personalName>
+                                <nameUse>public and private</nameUse>
+                                <surname>Adams</surname>
+                                <forename>John</forename>
+                            </personalName>
+                            <birthDate>1947</birthDate>
                             <resource>
-                                <creationClass>
-                                    <domain>literature </domain>
-                                    <formOfPublication>book </formOfPublication>
-                                    <pietjePuk>fi<p>lm</p></pietjePuk>
-                                </creationClass>
+                                <creationClass>txt</creationClass>
                                 <creationRole>aut</creationRole>
                                 <titleOfWork>
-                                    <title>Industrielles Bauen: Leitfaden f??MU-Gesch?sf??r</title>
+                                    <title>Common tones in simple time</title>
                                 </titleOfWork>
                             </resource>
                         </personOrFiction>
                     </identity>
+                    <note>trying to get low score matches with 121312917, 025525212, 038373734, 036219002, 114367671, 107884143</note>
                 </identityInformation>
             </Request>
         '''
         headers = {'content-type': 'application/atom+xml'}
         response = requests.post(url, data=payload, headers=headers, verify=False)
-        assert_that(response.status_code, equal_to(requests.codes.not_acceptable), 'response code')
+        assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
 
-    def testAssignAnISNIUsingAValidMinimalRequest(self):
+        content = response.content
+        results = etree.fromstring(content)
+        noIsni = results.find('noISNI')
+        assert_that(noIsni, not_none(), 'no ISNI tag')
+
+        sparse = noIsni.find('reason')
+        assert_that(sparse.text, equal_to('possibleMatch'), 'possible matches response')
+
+    def testAssignAnISNIUsingFullNameAndTitleOfWorks(self):
         registry = NameRegistry(assignHost='isni-m-acc.oclc.nl')
         isni = registry.assign(u"Jan", u"Baerthel", u"Industrielles Bauen: Leitfaden", u"Industrielles Bauen")
 
