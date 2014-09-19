@@ -127,3 +127,7 @@ class Album(object):
 
     def metadataChanged(self):
         self.listeners.albumStateChanged(self)
+
+    def addGuestPerformer(self, performer):
+        self.guestPerformers.append(performer)
+        self.metadataChanged()

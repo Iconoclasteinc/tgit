@@ -22,6 +22,7 @@ from PyQt4.QtGui import QApplication
 
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
+from tgit.ui.performer_dialog import PerformerDialog
 from tgit.util import sip_api
 from tgit.util import async_task_runner as taskRunner
 
@@ -61,8 +62,8 @@ def AlbumCompositionPageController(selectTracks, player, album):
     return page
 
 
-def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityIndicatorDialogFactory, album,
-                               nameRegistry):
+def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityIndicatorDialogFactory,
+                               performerDialogFactory, album, nameRegistry):
     def pollQueue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -86,6 +87,10 @@ def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityI
         album.isni = pollQueue()
         activityDialog.close()
 
+    def addPerformer():
+        dialog = performerDialogFactory(album)
+        return dialog.exec_()
+
     queue = Queue()
     page = AlbumEditionPage(album)
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
@@ -94,9 +99,17 @@ def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityI
     page.lookupISNI.connect(lookupISNI)
     page.assignISNI.connect(assignISNI)
     page.clearISNI.connect(lambda: director.clearISNI(album))
+    page.addPerformer.connect(addPerformer)
     album.addAlbumListener(page)
     page.refresh()
     return page
+
+
+def PerformerDialogController(parent, album):
+    dialog = PerformerDialog(parent)
+    dialog.accepted.connect(lambda: album.addGuestPerformer(dialog.getPerformer()))
+    dialog.open()
+    return dialog
 
 
 def ISNILookupDialogController(parent, album, identities):
@@ -204,13 +217,16 @@ def createMainWindow(albumPortfolio, player, preferences, library, nameRegistry,
 
     def createAlbumPage(album):
         return AlbumEditionPageController(showPictureSelectionDialog, showISNILookupDialog, showActivityIndicatorDialog,
-                                          album, nameRegistry)
+                                          showPerformerDialog, album, nameRegistry)
 
     def showPictureSelectionDialog(album):
         return PictureSelectionDialogController(window, album, native)
 
     def showISNILookupDialog(album, identities):
         return ISNILookupDialogController(window, album, identities)
+
+    def showPerformerDialog(album):
+        return PerformerDialogController(window, album)
 
     def showActivityIndicatorDialog():
         return ActivityIndicatorDialogController(window)
