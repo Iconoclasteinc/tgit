@@ -7,6 +7,7 @@ SOURCES = tgit/ui/activity_indicator_dialog.py \
           tgit/ui/isni_lookup_dialog.py \
           tgit/ui/main_window.py \
           tgit/ui/menu_bar.py \
+          tgit/ui/performer_dialog.py \
           tgit/ui/picture_selection_dialog.py \
           tgit/ui/resources.py \
           tgit/ui/restart_message_box.py \
