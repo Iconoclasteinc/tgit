@@ -105,6 +105,9 @@ class AlbumEditionPageDriver(BaseDriver):
     def assignISNI(self):
         self.button(named('assign-isni')).click()
 
+    def addPerformer(self):
+        self.button(named('add-performer')).click()
+
     def showsReleaseName(self, name):
         self.label(withBuddy(named('release-name'))).isShowingOnScreen()
         self.lineEdit(named('release-name')).hasText(name)

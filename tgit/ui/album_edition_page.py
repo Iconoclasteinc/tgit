@@ -31,6 +31,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
     lookupISNI = pyqtSignal()
     clearISNI = pyqtSignal()
     assignISNI = pyqtSignal()
+    addPerformer = pyqtSignal()
     metadataChanged = pyqtSignal(dict)
 
     FRONT_COVER_SIZE = 350, 350
@@ -161,10 +162,16 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.area = form.lineEdit('area')
         layout.addRow(form.labelFor(self.area, self.tr('Area:')), self.area)
 
+        addPerformer = form.button('add-performer', self.tr('+'))
+        addPerformer.clicked.connect(lambda: self.addPerformer.emit())
+        addPerformer.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         self.guestPerformers = form.lineEdit('guest-performers')
         self.guestPerformers.setPlaceholderText(self.tr('Instrument1: Performer1; Instrument2: Performer2; ...'))
         self.guestPerformers.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('guestPerformers')))
-        layout.addRow(form.labelFor(self.guestPerformers, self.tr('Guest Performers:')), self.guestPerformers)
+        performersRow = form.row()
+        performersRow.addWidget(self.guestPerformers)
+        performersRow.addWidget(addPerformer)
+        layout.addRow(form.labelFor(self.guestPerformers, self.tr('Guest Performers:')), performersRow)
 
         albums.setLayout(layout)
         return albums

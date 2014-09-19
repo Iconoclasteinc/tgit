@@ -280,6 +280,7 @@ StyleSheet = """
     #album-edition-page QPushButton#lookup-isni,
     #album-edition-page QPushButton#assign-isni,
     #album-edition-page QPushButton#clear-isni,
+    #album-edition-page QPushButton#add-performer,
     #album-edition-page QPushButton#remove-picture {
         background-color: #F25C0A;
         border: 2px solid #F25C0A;
@@ -293,6 +294,7 @@ StyleSheet = """
 
     #album-edition-page QPushButton#clear-isni,
     #album-edition-page QPushButton#assign-isni,
+    #album-edition-page QPushButton#add-performer,
     #album-edition-page QPushButton#lookup-isni {
         font-size: 10px;
         padding: 3px 10px;
@@ -305,6 +307,8 @@ StyleSheet = """
         background-color: #ED8D58;
     }
 
+    #album-edition-page QPushButton#add-performer:hover,
+    #album-edition-page QPushButton#add-performer:focus,
     #album-edition-page QPushButton#assign-isni:hover,
     #album-edition-page QPushButton#assign-isni:focus,
     #album-edition-page QPushButton#clear-isni:hover,
@@ -319,6 +323,7 @@ StyleSheet = """
         border-color: #D95109;
     }
 
+    #album-edition-page QPushButton#add-performer:pressed,
     #album-edition-page QPushButton#clear-isni:pressed,
     #album-edition-page QPushButton#assign-isni:pressed,
     #album-edition-page QPushButton#lookup-isni:pressed,

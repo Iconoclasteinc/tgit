@@ -119,6 +119,15 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.addPicture()
         self.check(selectPictureSignal)
 
+    def testSignalsWhenAddingAPerformer(self):
+        self.render(build.album())
+
+        addPerformerSignal = ValueMatcherProbe('add performer')
+        self.page.addPerformer.connect(addPerformerSignal.received)
+
+        self.driver.addPerformer()
+        self.check(addPerformerSignal)
+
     def testEfficientlyDisplaysImageCoverWhenItDoesNotChange(self):
         self.render(build.album(images=[build.image('image/jpeg', loadTestImage('big-image.jpg'), Image.FRONT_COVER)]))
 

@@ -165,6 +165,22 @@ class AlbumTest(unittest.TestCase):
         album.removeTrack(second)
         album.removeTrack(first)
 
+    def testAddsGuestPerformer(self):
+        album = build.album(guestPerformers=[])
+        performer = ('Guitar', 'Jimmy Page')
+        album.addGuestPerformer(performer)
+
+        assert_that(album.guestPerformers[0], equal_to(performer), 'guest performers')
+
+    def testSignalsGuestPerformerAdditionToListeners(self):
+        album = build.album(guestPerformers=[])
+        listener = flexmock(AlbumListener())
+        album.addAlbumListener(listener)
+
+        listener.should_receive('albumStateChanged').once()
+
+        album.addGuestPerformer(('Guitar', 'Jimmy Page'))
+
     def assertNotifiesListenerOnPropertyChange(self, prop, value):
         album = Album()
         album.addAlbumListener(self.listenerExpectingNotification(prop, value))
