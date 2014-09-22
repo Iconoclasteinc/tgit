@@ -223,6 +223,7 @@ StyleSheet = """
 
     #album-edition-page QGroupBox,
     #track-edition-page QGroupBox,
+    #performer-dialog QGroupBox,
     #isni-lookup-dialog QGroupBox {
         border: 1px solid #DDDDDD;
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
@@ -298,7 +299,7 @@ StyleSheet = """
     #album-edition-page QPushButton#lookup-isni {
         font-size: 10px;
         padding: 3px 10px;
-        margin-left: 2px;
+        margin-left: 5px;
     }
 
     #album-edition-page QPushButton#assign-isni:disabled,
@@ -480,6 +481,10 @@ if MAC:
             padding-top: 1px;
             margin-left: 3px;
             margin-right: 2px;
+        }
+
+        #album-edition-page QPushButton#lookup-isni {
+            margin-right: 5px;
         }
     """
 

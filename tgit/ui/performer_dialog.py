@@ -19,12 +19,14 @@
 
 from PyQt4.QtCore import Qt, QMargins
 from PyQt4.QtGui import QDialog, QFormLayout, QLayout, QPushButton, QDialogButtonBox, QLineEdit, QLabel
+from PyQt4.QtGui import QVBoxLayout, QGroupBox
 
 
 class PerformerDialog(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setObjectName('performer-dialog')
+        self.setWindowFlags(Qt.Dialog)
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowTitle(self.tr('Please enter the name of the performer'))
         self.setModal(True)
@@ -40,10 +42,17 @@ class PerformerDialog(QDialog):
         instrumentLabel = QLabel()
         instrumentLabel.setText(self.tr('Instrument:'))
 
-        layout = QFormLayout()
-        layout.addRow(performerLabel, self.performer)
-        layout.addRow(instrumentLabel, self.instrument)
-        layout.addRow(self.buildButtons())
+        formLayout = QFormLayout()
+        formLayout.addRow(performerLabel, self.performer)
+        formLayout.addRow(instrumentLabel, self.instrument)
+
+        formBox = QGroupBox()
+        formBox.setObjectName('form-box')
+        formBox.setLayout(formLayout)
+
+        layout = QVBoxLayout()
+        layout.addWidget(formBox)
+        layout.addWidget(self.buildButtons())
         layout.setSizeConstraint(QLayout.SetFixedSize)
 
         self.setLayout(layout)
