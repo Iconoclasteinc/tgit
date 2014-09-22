@@ -89,7 +89,7 @@ def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityI
 
     def addPerformer():
         dialog = performerDialogFactory(album)
-        return dialog.exec_()
+        dialog.show()
 
     queue = Queue()
     page = AlbumEditionPage(album)
