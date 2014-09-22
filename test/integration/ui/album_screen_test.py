@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+from tgit.util import sip_api
+sip_api.use_v2()
+
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.album_screen_driver import AlbumScreenDriver
 from test.integration.ui import ViewTest
-from test.util import  builders as build
+from test.util import builders as build
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
 

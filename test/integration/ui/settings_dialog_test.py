@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from hamcrest import assert_that, equal_to
+from tgit.util import sip_api
+sip_api.use_v2()
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe

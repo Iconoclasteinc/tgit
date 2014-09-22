@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import timeit
 from hamcrest import has_entries, assert_that, less_than
+from tgit.util import sip_api
+sip_api.use_v2()
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe

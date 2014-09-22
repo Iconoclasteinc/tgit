@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
+from tgit.util import sip_api
+sip_api.use_v2()
 
 from hamcrest import contains_string, has_entries
 

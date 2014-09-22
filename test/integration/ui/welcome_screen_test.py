@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from tgit.util import sip_api
+sip_api.use_v2()
+
 from test.integration.ui import ViewTest
 from test.cute.probes import ValueMatcherProbe
 from test.cute.finders import WidgetIdentity
