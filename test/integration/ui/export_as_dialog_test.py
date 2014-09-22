@@ -1,6 +1,9 @@
 import os
 import shutil
 
+from tgit.util import sip_api
+sip_api.use_v2()
+
 from hamcrest import equal_to
 from PyQt4.QtGui import QMainWindow
 
@@ -9,10 +12,6 @@ from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.integration.ui import ViewTest
 from test.util import resources
 from tgit.ui.export_as_dialog import ExportAsDialog
-from tgit.util import sip_api
-
-
-sip_api.use_v2()
 
 
 class ExportAsDialogTest(ViewTest):

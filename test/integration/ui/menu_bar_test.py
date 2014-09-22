@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from tgit.util import sip_api
+sip_api.use_v2()
+
 from PyQt4.QtGui import QMainWindow
 
 from test.integration.ui import ViewTest

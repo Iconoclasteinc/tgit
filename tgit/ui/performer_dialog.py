@@ -22,19 +22,20 @@ from PyQt4.QtGui import QDialog, QFormLayout, QLayout, QPushButton, QDialogButto
 
 
 class PerformerDialog(QDialog):
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         QDialog.__init__(self, parent)
-        self.parent = parent
-        self.setObjectName('activity-indicator-dialog')
+        self.setObjectName('performer-dialog')
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowTitle(self.tr('Please enter the name of the performer'))
         self.setModal(True)
 
         self.performer = QLineEdit()
+        self.performer.setObjectName('performer')
         self.performer.textChanged.connect(lambda value: self.enableOrDisableOkButton())
         performerLabel = QLabel()
         performerLabel.setText(self.tr('Performer:'))
         self.instrument = QLineEdit()
+        self.instrument.setObjectName('instrument')
         self.instrument.textChanged.connect(lambda value: self.enableOrDisableOkButton())
         instrumentLabel = QLabel()
         instrumentLabel.setText(self.tr('Instrument:'))
