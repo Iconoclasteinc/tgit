@@ -5,20 +5,18 @@ from test.cute.widgets import window
 from test.drivers.__base import BaseDriver
 
 
-def performerDialog(parent):
-    return PerformerDialogDriver(window(QDialog, named('performer-dialog'), showingOnScreen()), parent.prober,
-                                 parent.gesturePerformer)
-
-
 class PerformerDialogDriver(BaseDriver):
+    def addPerformerRow(self):
+        self.button(withText('ADD A PERFORMER')).click()
+
     def showsOkButton(self, disabled=False):
         self.button(withText('&OK')).isDisabled(disabled)
 
-    def changePerformerName(self, name):
-        self.lineEdit(named('performer')).replaceAllText(name)
+    def changePerformerName(self, name, index):
+        self.lineEdit(named('performer-%(index)i' % locals())).replaceAllText(name)
 
-    def changeInstrument(self, instrument):
-        self.lineEdit(named('instrument')).replaceAllText(instrument)
+    def changeInstrument(self, instrument, index):
+        self.lineEdit(named('instrument-%(index)i' % locals())).replaceAllText(instrument)
 
     def ok(self):
         self.button(withText('&OK')).click()

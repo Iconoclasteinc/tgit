@@ -278,6 +278,7 @@ StyleSheet = """
         padding: 10px 10px 7px 34px;
     }
 
+    #performer-dialog QPushButton#add-performer,
     #album-edition-page QPushButton#lookup-isni,
     #album-edition-page QPushButton#assign-isni,
     #album-edition-page QPushButton#clear-isni,
@@ -293,6 +294,7 @@ StyleSheet = """
         margin-left: 10px;
     }
 
+    #performer-dialog QPushButton#add-performer,
     #album-edition-page QPushButton#clear-isni,
     #album-edition-page QPushButton#assign-isni,
     #album-edition-page QPushButton#add-performer,
@@ -302,12 +304,18 @@ StyleSheet = """
         margin-left: 5px;
     }
 
+    #performer-dialog QPushButton#add-performer {
+        margin: 0;
+    }
+
     #album-edition-page QPushButton#assign-isni:disabled,
     #album-edition-page QPushButton#lookup-isni:disabled {
         border-color: #ED8D58;
         background-color: #ED8D58;
     }
 
+    #performer-dialog QPushButton#add-performer:hover,
+    #performer-dialog QPushButton#add-performer:focus,
     #album-edition-page QPushButton#add-performer:hover,
     #album-edition-page QPushButton#add-performer:focus,
     #album-edition-page QPushButton#assign-isni:hover,
@@ -324,6 +332,7 @@ StyleSheet = """
         border-color: #D95109;
     }
 
+    #performer-dialog QPushButton#add-performer:pressed,
     #album-edition-page QPushButton#add-performer:pressed,
     #album-edition-page QPushButton#clear-isni:pressed,
     #album-edition-page QPushButton#assign-isni:pressed,

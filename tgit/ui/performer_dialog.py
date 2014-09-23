@@ -18,12 +18,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt4.QtCore import Qt, QMargins
-from PyQt4.QtGui import QDialog, QFormLayout, QLayout, QPushButton, QDialogButtonBox, QLineEdit, QLabel
+from PyQt4.QtGui import QDialog, QFormLayout, QLayout, QPushButton, QDialogButtonBox, QLineEdit, QLabel, QHBoxLayout
 from PyQt4.QtGui import QVBoxLayout, QGroupBox
 
 
 class PerformerDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, performers=None):
         QDialog.__init__(self, parent)
         self.setObjectName('performer-dialog')
         self.setWindowFlags(Qt.Dialog)
@@ -31,20 +31,11 @@ class PerformerDialog(QDialog):
         self.setWindowTitle(self.tr('Please enter the name of the performer'))
         self.setModal(True)
 
-        self.performer = QLineEdit()
-        self.performer.setObjectName('performer')
-        self.performer.textChanged.connect(lambda value: self.enableOrDisableOkButton())
-        performerLabel = QLabel()
-        performerLabel.setText(self.tr('Performer:'))
-        self.instrument = QLineEdit()
-        self.instrument.setObjectName('instrument')
-        self.instrument.textChanged.connect(lambda value: self.enableOrDisableOkButton())
-        instrumentLabel = QLabel()
-        instrumentLabel.setText(self.tr('Instrument:'))
-
-        formLayout = QFormLayout()
-        formLayout.addRow(performerLabel, self.performer)
-        formLayout.addRow(instrumentLabel, self.instrument)
+        self.rowsLayout = self.buildPerformerRows(performers)
+        formLayout = QVBoxLayout()
+        formLayout.addLayout(self.buildHeader())
+        formLayout.addLayout(self.rowsLayout)
+        formLayout.addWidget(self.buildAddRowButton())
 
         formBox = QGroupBox()
         formBox.setObjectName('form-box')
@@ -57,11 +48,49 @@ class PerformerDialog(QDialog):
 
         self.setLayout(layout)
 
+    def buildHeader(self):
+        performerLabel = QLabel()
+        performerLabel.setText(self.tr('Performer:'))
+
+        instrumentLabel = QLabel()
+        instrumentLabel.setText(self.tr('Instrument:'))
+
+        layout = QHBoxLayout()
+        layout.addWidget(performerLabel)
+        layout.addWidget(instrumentLabel)
+        return layout
+
+    def buildAddRowButton(self):
+        addRowButton = QPushButton()
+        addRowButton.setObjectName('add-performer')
+        addRowButton.setText(self.tr('ADD A PERFORMER'))
+        addRowButton.clicked.connect(lambda: self.rowsLayout.addLayout(self.buildPerformerRow(index=self.rowsLayout.count())))
+        return addRowButton
+
+    def buildPerformerRows(self, performers):
+        layout = QVBoxLayout()
+        if performers is not None:
+            for index, performer in enumerate(performers):
+                layout.addLayout(self.buildPerformerRow(performer, index))
+        else:
+            layout.addLayout(self.buildPerformerRow(index=0))
+
+        return layout
+
+    def buildPerformerRow(self, performer=None, index=None):
+        instrument = name = None
+        if performer is not None:
+            instrument, name = performer
+
+        layout = QHBoxLayout()
+        layout.addWidget(self.buildLineEdit('instrument-%(index)i' % locals(), instrument))
+        layout.addWidget(self.buildLineEdit('performer-%(index)i' % locals(), name))
+        return layout
+
     def buildButtons(self):
         self.okButton = QPushButton(self.tr('&OK'))
         self.okButton.setObjectName('ok-button')
         self.okButton.setDefault(True)
-        self.okButton.setDisabled(True)
         cancelButton = QPushButton(self.tr('&Cancel'))
         cancelButton.setObjectName('cancel-button')
         cancelButton.setEnabled(True)
@@ -74,11 +103,26 @@ class PerformerDialog(QDialog):
         buttons.setContentsMargins(QMargins(0, 0, 7, 0))
         return buttons
 
-    def getPerformer(self):
-        return self.instrument.text(), self.performer.text()
+    def buildLineEdit(self, name, text=None):
+        edit = QLineEdit()
+        edit.setObjectName(name)
+        edit.setText(text)
+        return edit
 
-    def enableOrDisableOkButton(self):
-        self.okButton.setEnabled(self.formIsFilled())
+    def getPerformers(self):
+        performers = []
+        index = 0
+        while index < self.rowsLayout.count():
+            performer = self.getPerformerFrom(self.rowsLayout.itemAt(index).layout())
+            if performer is not None:
+                performers.append(performer)
+            index += 1
+        return performers
 
-    def formIsFilled(self):
-        return self.instrument.text().strip() != '' and self.performer.text().strip() != ''
+    def getPerformerFrom(self, rowLayout):
+        instrument = rowLayout.itemAt(0).widget().text()
+        name = rowLayout.itemAt(1).widget().text()
+
+        if instrument.strip() != '' and name.strip() != '':
+            return instrument, name
+        return None
