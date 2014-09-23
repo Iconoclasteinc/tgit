@@ -106,8 +106,11 @@ def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityI
 
 
 def PerformerDialogController(parent, album):
-    dialog = PerformerDialog(parent)
-    dialog.accepted.connect(lambda: album.addGuestPerformer(dialog.getPerformer()))
+    def assignGuestPerformers():
+        album.guestPerformers = dialog.getPerformers()
+
+    dialog = PerformerDialog(parent, album.guestPerformers)
+    dialog.accepted.connect(assignGuestPerformers)
     dialog.open()
     return dialog
 
