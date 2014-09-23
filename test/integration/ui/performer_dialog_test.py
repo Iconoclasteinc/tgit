@@ -21,7 +21,6 @@ class PerformerDialogTest(ViewTest):
     def createDriverFor(self, widget):
         return PerformerDialogDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    @unittest.skip('Fails but don''t understand why')
     def testEnablesOkButtonOnlyWhenFormIsNotFullyFilled(self):
         self.driver.showsOkButton(disabled=True)
         self.driver.changePerformerName('Jimmy Page')
@@ -29,14 +28,12 @@ class PerformerDialogTest(ViewTest):
         self.driver.changeInstrument('Guitar')
         self.driver.showsOkButton()
 
-    @unittest.skip('Fails but don''t understand why')
     def testGetsPerformerWhenFormIsFullyFilled(self):
         self.driver.changePerformerName('Jimmy Page')
         self.driver.changeInstrument('Guitar')
         performer = self.dialog.getPerformer()
         assert_that(performer, equal_to(('Guitar', 'Jimmy Page')), 'performer')
 
-    @unittest.skip('Fails but don''t understand why')
     def testSignalsWhenAccepted(self):
         acceptedSignal = ValueMatcherProbe("click on button 'OK'")
         self.dialog.accepted.connect(acceptedSignal.received)

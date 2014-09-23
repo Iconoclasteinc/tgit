@@ -15,10 +15,10 @@ class PerformerDialogDriver(BaseDriver):
         self.button(withText('&OK')).isDisabled(disabled)
 
     def changePerformerName(self, name):
-        self.lineEdit(named('performer')).changeText(name)
+        self.lineEdit(named('performer')).replaceAllText(name)
 
     def changeInstrument(self, instrument):
-        self.lineEdit(named('instrument')).changeText(instrument)
+        self.lineEdit(named('instrument')).replaceAllText(instrument)
 
     def ok(self):
         self.button(withText('&OK')).click()
