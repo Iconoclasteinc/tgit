@@ -21,7 +21,7 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import Qt, QMargins
 from PyQt4.QtGui import QDialog, QFormLayout, QLayout, QPushButton, QDialogButtonBox, QLineEdit, QLabel, QHBoxLayout, \
     QApplication, QSpacerItem
-from PyQt4.QtGui import QVBoxLayout, QGroupBox
+from PyQt4.QtGui import QVBoxLayout, QGroupBox, QSizePolicy
 
 
 class PerformerDialog(QDialog):
@@ -99,6 +99,7 @@ class PerformerDialog(QDialog):
         button.setObjectName(name)
         button.setText('-')
         button.clicked.connect(lambda: self.removeRowContaining(button.objectName()))
+        button.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         return button
 
     def buildButtons(self):
