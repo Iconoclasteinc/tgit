@@ -21,7 +21,7 @@ class PerformerDialogTest(ViewTest):
     def createDriverFor(self, widget):
         return PerformerDialogDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
 
-    def testGetsPerformers(self):
+    def testAddsPerformers(self):
         self.createDialog()
         self.driver.changeInstrument('Guitar', index=0)
         self.driver.changePerformerName('Jimmy Page', index=0)
@@ -30,6 +30,12 @@ class PerformerDialogTest(ViewTest):
         self.driver.changePerformerName('Robert Plant', index=1)
         performers = self.dialog.getPerformers()
         assert_that(performers, equal_to([('Guitar', 'Jimmy Page'), ('Vocals', 'Robert Plant')]), 'performers')
+
+    def testRemovesPerformers(self):
+        self.createDialog([('Guitar', 'Jimmy Page'), ('Vocals', 'Robert Plant')])
+        self.driver.removePerformer(1)
+        performers = self.dialog.getPerformers()
+        assert_that(performers, equal_to([('Guitar', 'Jimmy Page')]), 'performers')
 
     def testShowsPerformers(self):
         performers = [('Guitar', 'Jimmy Page'), ('Vocals', 'Robert Plant')]

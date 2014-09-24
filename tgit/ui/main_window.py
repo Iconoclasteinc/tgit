@@ -278,6 +278,7 @@ StyleSheet = """
         padding: 10px 10px 7px 34px;
     }
 
+    #performer-dialog QGroupBox QPushButton,
     #performer-dialog QPushButton#add-performer,
     #album-edition-page QPushButton#lookup-isni,
     #album-edition-page QPushButton#assign-isni,
@@ -294,6 +295,7 @@ StyleSheet = """
         margin-left: 10px;
     }
 
+    #performer-dialog QGroupBox QPushButton,
     #performer-dialog QPushButton#add-performer,
     #album-edition-page QPushButton#clear-isni,
     #album-edition-page QPushButton#assign-isni,
@@ -314,6 +316,8 @@ StyleSheet = """
         background-color: #ED8D58;
     }
 
+    #performer-dialog QGroupBox QPushButton:hover,
+    #performer-dialog QGroupBox QPushButton:focus,
     #performer-dialog QPushButton#add-performer:hover,
     #performer-dialog QPushButton#add-performer:focus,
     #album-edition-page QPushButton#add-performer:hover,
@@ -332,6 +336,7 @@ StyleSheet = """
         border-color: #D95109;
     }
 
+    #performer-dialog QGroupBox QPushButton:pressed,
     #performer-dialog QPushButton#add-performer:pressed,
     #album-edition-page QPushButton#add-performer:pressed,
     #album-edition-page QPushButton#clear-isni:pressed,

@@ -16,9 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt4 import QtGui
 
 from PyQt4.QtCore import Qt, QMargins
-from PyQt4.QtGui import QDialog, QFormLayout, QLayout, QPushButton, QDialogButtonBox, QLineEdit, QLabel, QHBoxLayout
+from PyQt4.QtGui import QDialog, QFormLayout, QLayout, QPushButton, QDialogButtonBox, QLineEdit, QLabel, QHBoxLayout, \
+    QApplication, QSpacerItem
 from PyQt4.QtGui import QVBoxLayout, QGroupBox
 
 
@@ -31,7 +33,7 @@ class PerformerDialog(QDialog):
         self.setWindowTitle(self.tr('Please enter the name of the performer'))
         self.setModal(True)
 
-        self.rowsLayout = self.buildPerformerRows(performers)
+        self.rowsLayout = self.buildPerformerRows(performers or [])
         formLayout = QVBoxLayout()
         formLayout.addLayout(self.buildHeader())
         formLayout.addLayout(self.rowsLayout)
@@ -56,8 +58,9 @@ class PerformerDialog(QDialog):
         instrumentLabel.setText(self.tr('Instrument:'))
 
         layout = QHBoxLayout()
-        layout.addWidget(performerLabel)
         layout.addWidget(instrumentLabel)
+        layout.addWidget(performerLabel)
+        layout.addItem(QSpacerItem(35, 0))
         return layout
 
     def buildAddRowButton(self):
@@ -69,7 +72,7 @@ class PerformerDialog(QDialog):
 
     def buildPerformerRows(self, performers):
         layout = QVBoxLayout()
-        if performers is not None:
+        if performers:
             for index, performer in enumerate(performers):
                 layout.addLayout(self.buildPerformerRow(performer, index))
         else:
@@ -85,7 +88,18 @@ class PerformerDialog(QDialog):
         layout = QHBoxLayout()
         layout.addWidget(self.buildLineEdit('instrument-%(index)i' % locals(), instrument))
         layout.addWidget(self.buildLineEdit('performer-%(index)i' % locals(), name))
+        if index == 0:
+            layout.addItem(QSpacerItem(39, 0))
+        else:
+            layout.addWidget(self.buildRemoveLineButton('remove-performer-%(index)i' % locals()))
         return layout
+
+    def buildRemoveLineButton(self, name):
+        button = QPushButton()
+        button.setObjectName(name)
+        button.setText('-')
+        button.clicked.connect(lambda: self.removeRowContaining(button.objectName()))
+        return button
 
     def buildButtons(self):
         self.okButton = QPushButton(self.tr('&OK'))
@@ -111,12 +125,10 @@ class PerformerDialog(QDialog):
 
     def getPerformers(self):
         performers = []
-        index = 0
-        while index < self.rowsLayout.count():
-            performer = self.getPerformerFrom(self.rowsLayout.itemAt(index).layout())
+        for i in range(self.rowsLayout.count()):
+            performer = self.getPerformerFrom(self.rowsLayout.itemAt(i).layout())
             if performer is not None:
                 performers.append(performer)
-            index += 1
         return performers
 
     def getPerformerFrom(self, rowLayout):
@@ -126,3 +138,27 @@ class PerformerDialog(QDialog):
         if instrument.strip() != '' and name.strip() != '':
             return instrument, name
         return None
+
+    def removeRowContaining(self, buttonName):
+        row = self.findRowContaining(buttonName)
+        if row:
+            self.removeRow(row)
+
+    def findRowContaining(self, buttonName):
+        for i in range(self.rowsLayout.count()):
+            rowLayout = self.findWidgetInRow(self.rowsLayout.itemAt(i).layout(), buttonName)
+            if rowLayout:
+                return rowLayout
+        return None
+
+    def findWidgetInRow(self, layout, buttonName):
+        for j in range(layout.count()):
+            item = layout.itemAt(j)
+            if isinstance(item, QtGui.QWidgetItem) and item.widget().objectName() == buttonName:
+                return layout
+        return None
+
+    def removeRow(self, layout):
+        for k in reversed(range(layout.count())):
+            layout.itemAt(k).widget().close()
+        self.rowsLayout.removeItem(layout)
