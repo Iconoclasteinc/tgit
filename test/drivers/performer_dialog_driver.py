@@ -9,6 +9,9 @@ class PerformerDialogDriver(BaseDriver):
     def addPerformerRow(self):
         self.button(withText('ADD A PERFORMER')).click()
 
+    def removePerformer(self, index):
+        self.button(named('remove-performer-%(index)i' % locals())).click()
+
     def showsOkButton(self, disabled=False):
         self.button(withText('&OK')).isDisabled(disabled)
 
