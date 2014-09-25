@@ -107,7 +107,7 @@ class PerformerDialog(QDialog):
         layout.addWidget(self.buildLineEdit('performer-%(index)i' % locals(), name))
 
         if index == 0:
-            layout.addItem(QSpacerItem(39, 0))
+            layout.addItem(QSpacerItem(self.getSpacerWidth(), 0))
         else:
             layout.addWidget(self.buildRemoveLineButton('remove-performer-%(index)i' % locals()))
 
@@ -180,3 +180,11 @@ class PerformerDialog(QDialog):
             layout.itemAt(k).widget().close()
         row.close()
         self.performersTable.layout().removeWidget(row)
+
+    def getSpacerWidth(self):
+        spacerSize = 34
+        MAC = hasattr(QtGui, "qt_mac_set_native_menubar")
+        if MAC:
+            spacerSize = 39
+
+        return spacerSize
