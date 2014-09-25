@@ -22,7 +22,7 @@ class PerformerDialogDriver(BaseDriver):
         self.lineEdit(named('instrument-%(index)i' % locals())).replaceAllText(instrument)
 
     def ok(self):
-        self.button(withText('&OK')).click()
+        self.button(withText('OK')).click()
 
     def cancel(self):
-        self.button(withText('&Cancel')).click()
+        self.button(withText('Cancel')).click()
