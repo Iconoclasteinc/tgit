@@ -278,12 +278,8 @@ StyleSheet = """
         padding: 10px 10px 7px 34px;
     }
 
-    #performer-dialog QGroupBox QPushButton,
-    #performer-dialog QPushButton#add-performer,
-    #album-edition-page QPushButton#lookup-isni,
-    #album-edition-page QPushButton#assign-isni,
-    #album-edition-page QPushButton#clear-isni,
-    #album-edition-page QPushButton#add-performer,
+    #performer-dialog #form-box QPushButton,
+    #album-edition-page #album-box QPushButton,
     #album-edition-page QPushButton#remove-picture {
         background-color: #F25C0A;
         border: 2px solid #F25C0A;
@@ -295,39 +291,22 @@ StyleSheet = """
         margin-left: 10px;
     }
 
-    #performer-dialog QGroupBox QPushButton,
-    #performer-dialog QPushButton#add-performer,
-    #album-edition-page QPushButton#clear-isni,
-    #album-edition-page QPushButton#assign-isni,
-    #album-edition-page QPushButton#add-performer,
-    #album-edition-page QPushButton#lookup-isni {
+    #performer-dialog #form-box QPushButton,
+    #album-edition-page #album-box QPushButton {
         font-size: 10px;
         padding: 3px 10px;
-        margin-left: 5px;
-    }
-
-    #performer-dialog QPushButton#add-performer {
         margin: 0;
     }
 
-    #album-edition-page QPushButton#assign-isni:disabled,
-    #album-edition-page QPushButton#lookup-isni:disabled {
+    #album-edition-page #album-box QPushButton:disabled {
         border-color: #ED8D58;
         background-color: #ED8D58;
     }
 
-    #performer-dialog QGroupBox QPushButton:hover,
-    #performer-dialog QGroupBox QPushButton:focus,
-    #performer-dialog QPushButton#add-performer:hover,
-    #performer-dialog QPushButton#add-performer:focus,
-    #album-edition-page QPushButton#add-performer:hover,
-    #album-edition-page QPushButton#add-performer:focus,
-    #album-edition-page QPushButton#assign-isni:hover,
-    #album-edition-page QPushButton#assign-isni:focus,
-    #album-edition-page QPushButton#clear-isni:hover,
-    #album-edition-page QPushButton#clear-isni:focus,
-    #album-edition-page QPushButton#lookup-isni:hover,
-    #album-edition-page QPushButton#lookup-isni:focus,
+    #performer-dialog #form-box QPushButton:hover,
+    #performer-dialog #form-box QPushButton:focus,
+    #album-edition-page #album-box QPushButton:hover,
+    #album-edition-page #album-box QPushButton:focus,
     #album-edition-page QPushButton#select-picture:hover,
     #album-edition-page QPushButton#select-picture:focus,
     #album-edition-page QPushButton#remove-picture:hover,
@@ -336,12 +315,8 @@ StyleSheet = """
         border-color: #D95109;
     }
 
-    #performer-dialog QGroupBox QPushButton:pressed,
-    #performer-dialog QPushButton#add-performer:pressed,
-    #album-edition-page QPushButton#add-performer:pressed,
-    #album-edition-page QPushButton#clear-isni:pressed,
-    #album-edition-page QPushButton#assign-isni:pressed,
-    #album-edition-page QPushButton#lookup-isni:pressed,
+    #performer-dialog #form-box QPushButton:pressed,
+    #album-edition-page #album-box QPushButton:pressed,
     #album-edition-page QPushButton#select-picture:pressed,
     #album-edition-page QPushButton#remove-picture:pressed {
         border: 2px solid white;
