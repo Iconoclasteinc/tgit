@@ -41,7 +41,7 @@ class PerformerDialogTest(ViewTest):
         performers = [('Guitar', 'Jimmy Page'), ('Vocals', 'Robert Plant')]
         self.createDialog(performers=performers)
 
-        rowsLayout = self.dialog.rowsLayout
+        rowsLayout = self.dialog.performersTable.layout()
         assert_that(rowsLayout.count(), equal_to(2), 'performer row count')
 
         self.checkPerformerForRow(0, 'Guitar', 'Jimmy Page')
@@ -62,6 +62,6 @@ class PerformerDialogTest(ViewTest):
         self.driver.check(rejectedSignal)
 
     def checkPerformerForRow(self, rowIndex, instrument, name):
-        row = self.dialog.rowsLayout.itemAt(rowIndex).layout()
+        row = self.dialog.performersTable.layout().itemAt(rowIndex).widget().layout()
         assert_that(row.itemAt(0).widget().text(), equal_to(instrument))
         assert_that(row.itemAt(1).widget().text(), equal_to(name))

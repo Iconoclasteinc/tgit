@@ -20,7 +20,7 @@ from PyQt4 import QtGui
 
 from PyQt4.QtCore import Qt, QMargins
 from PyQt4.QtGui import QDialog, QFormLayout, QLayout, QPushButton, QDialogButtonBox, QLineEdit, QLabel, QHBoxLayout, \
-    QApplication, QSpacerItem
+    QApplication, QSpacerItem, QWidget
 from PyQt4.QtGui import QVBoxLayout, QGroupBox, QSizePolicy
 
 
@@ -33,18 +33,20 @@ class PerformerDialog(QDialog):
         self.setWindowTitle(self.tr('Please enter the name of the performer'))
         self.setModal(True)
 
-        self.rowsLayout = self.buildPerformerRows(performers or [])
-        formLayout = QVBoxLayout()
-        formLayout.addLayout(self.buildHeader())
-        formLayout.addLayout(self.rowsLayout)
-        formLayout.addWidget(self.buildAddRowButton())
+        self.uniqueIdentifier = 0
+        self.performersTable = self.buildPerformerTable(performers or [])
 
-        formBox = QGroupBox()
-        formBox.setObjectName('form-box')
-        formBox.setLayout(formLayout)
+        boxLayout = QVBoxLayout()
+        boxLayout.addWidget(self.buildHeader())
+        boxLayout.addWidget(self.performersTable)
+        boxLayout.addWidget(self.buildAddRowButton())
+
+        box = QGroupBox()
+        box.setObjectName('form-box')
+        box.setLayout(boxLayout)
 
         layout = QVBoxLayout()
-        layout.addWidget(formBox)
+        layout.addWidget(box)
         layout.addWidget(self.buildButtons())
         layout.setSizeConstraint(QLayout.SetFixedSize)
 
@@ -58,64 +60,76 @@ class PerformerDialog(QDialog):
         instrumentLabel.setText(self.tr('Instrument:'))
 
         layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(instrumentLabel)
         layout.addWidget(performerLabel)
         layout.addItem(QSpacerItem(35, 0))
-        return layout
+
+        widget = QWidget()
+        widget.setObjectName('performers-table-header')
+        widget.setLayout(layout)
+        return widget
 
     def buildAddRowButton(self):
-        addRowButton = QPushButton()
-        addRowButton.setObjectName('add-performer')
-        addRowButton.setText(self.tr('ADD A PERFORMER'))
-        addRowButton.clicked.connect(lambda: self.rowsLayout.addLayout(self.buildPerformerRow(index=self.rowsLayout.count())))
-        return addRowButton
+        button = QPushButton()
+        button.setObjectName('add-performer')
+        button.setText(self.tr('ADD A PERFORMER'))
+        button.clicked.connect(
+            lambda: self.performersTable.layout().addWidget(self.buildPerformerRow()))
+        return button
 
-    def buildPerformerRows(self, performers):
+    def buildPerformerTable(self, performers):
         layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+
         if performers:
             for index, performer in enumerate(performers):
-                layout.addLayout(self.buildPerformerRow(performer, index))
+                layout.addWidget(self.buildPerformerRow(performer))
         else:
-            layout.addLayout(self.buildPerformerRow(index=0))
+            layout.addWidget(self.buildPerformerRow())
 
-        return layout
+        widget = QWidget()
+        widget.setObjectName('performers-table')
+        widget.setLayout(layout)
+        return widget
 
-    def buildPerformerRow(self, performer=None, index=None):
+    def buildPerformerRow(self, performer=None):
+        index = self.uniqueIdentifier
+        self.uniqueIdentifier += 1
+
         instrument = name = None
         if performer is not None:
             instrument, name = performer
 
         layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.buildLineEdit('instrument-%(index)i' % locals(), instrument))
         layout.addWidget(self.buildLineEdit('performer-%(index)i' % locals(), name))
+
         if index == 0:
             layout.addItem(QSpacerItem(39, 0))
         else:
             layout.addWidget(self.buildRemoveLineButton('remove-performer-%(index)i' % locals()))
-        return layout
+
+        widget = QWidget()
+        widget.setObjectName('performers-row-%(index)i' % locals())
+        widget.setLayout(layout)
+        return widget
 
     def buildRemoveLineButton(self, name):
         button = QPushButton()
         button.setObjectName(name)
         button.setText('-')
         button.clicked.connect(lambda: self.removeRowContaining(button.objectName()))
-        button.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        button.setAttribute(Qt.WA_LayoutUsesWidgetRect)
         return button
 
     def buildButtons(self):
-        self.okButton = QPushButton(self.tr('&OK'))
-        self.okButton.setObjectName('ok-button')
-        self.okButton.setDefault(True)
-        cancelButton = QPushButton(self.tr('&Cancel'))
-        cancelButton.setObjectName('cancel-button')
-        cancelButton.setEnabled(True)
-        buttons = QDialogButtonBox(Qt.Horizontal)
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttons.setObjectName('action-buttons')
-        buttons.addButton(self.okButton, QDialogButtonBox.AcceptRole)
-        buttons.addButton(cancelButton, QDialogButtonBox.RejectRole)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
-        buttons.setContentsMargins(QMargins(0, 0, 7, 0))
+        buttons.setContentsMargins(0, 0, 7, 0)
         return buttons
 
     def buildLineEdit(self, name, text=None):
@@ -126,8 +140,8 @@ class PerformerDialog(QDialog):
 
     def getPerformers(self):
         performers = []
-        for i in range(self.rowsLayout.count()):
-            performer = self.getPerformerFrom(self.rowsLayout.itemAt(i).layout())
+        for i in range(self.performersTable.layout().count()):
+            performer = self.getPerformerFrom(self.performersTable.layout().itemAt(i).widget().layout())
             if performer is not None:
                 performers.append(performer)
         return performers
@@ -146,20 +160,23 @@ class PerformerDialog(QDialog):
             self.removeRow(row)
 
     def findRowContaining(self, buttonName):
-        for i in range(self.rowsLayout.count()):
-            rowLayout = self.findWidgetInRow(self.rowsLayout.itemAt(i).layout(), buttonName)
+        for i in range(self.performersTable.layout().count()):
+            rowLayout = self.findWidgetInRow(self.performersTable.layout().itemAt(i).widget(), buttonName)
             if rowLayout:
                 return rowLayout
         return None
 
-    def findWidgetInRow(self, layout, buttonName):
+    def findWidgetInRow(self, row, buttonName):
+        layout = row.layout()
         for j in range(layout.count()):
             item = layout.itemAt(j)
             if isinstance(item, QtGui.QWidgetItem) and item.widget().objectName() == buttonName:
-                return layout
+                return row
         return None
 
-    def removeRow(self, layout):
+    def removeRow(self, row):
+        layout = row.layout()
         for k in reversed(range(layout.count())):
             layout.itemAt(k).widget().close()
-        self.rowsLayout.removeItem(layout)
+        row.close()
+        self.performersTable.layout().removeWidget(row)

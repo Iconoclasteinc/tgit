@@ -120,6 +120,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
     def makeAlbumFields(self):
         albums = QGroupBox()
+        albums.setObjectName('album-box')
         albums.setTitle(self.tr('ALBUM'))
         layout = form.layout()
 
@@ -129,10 +130,12 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
         lookupISNI = form.button('lookup-isni', self.tr('LOOKUP ISNI'), disabled=True)
         lookupISNI.clicked.connect(lambda pressed: self.lookupISNI.emit())
+        lookupISNI.setAttribute(Qt.WA_LayoutUsesWidgetRect)
         lookupISNI.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
         assignISNI = form.button('assign-isni', self.tr('ASSIGN ISNI'), disabled=True)
         assignISNI.clicked.connect(lambda: self.assignISNI.emit())
+        assignISNI.setAttribute(Qt.WA_LayoutUsesWidgetRect)
         assignISNI.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
         self.compilation = form.checkBox('compilation')
@@ -152,6 +155,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
         clearISNI = form.button('clear-isni', self.tr('CLEAR ISNI'))
         clearISNI.clicked.connect(lambda: self.clearISNI.emit())
+        clearISNI.setAttribute(Qt.WA_LayoutUsesWidgetRect)
         clearISNI.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         self.isni = form.lineEdit('isni', disabled=True)
         ISNIRow = form.row()
@@ -164,6 +168,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
         addPerformer = form.button('add-performer', self.tr('+'))
         addPerformer.clicked.connect(lambda: self.addPerformer.emit())
+        addPerformer.setAttribute(Qt.WA_LayoutUsesWidgetRect)
         addPerformer.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         self.guestPerformers = form.lineEdit('guest-performers')
         self.guestPerformers.setPlaceholderText(self.tr('Instrument1: Performer1; Instrument2: Performer2; ...'))
