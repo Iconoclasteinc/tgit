@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import timeit
+import unittest
 from hamcrest import has_entries, assert_that, less_than
 from tgit.util import sip_api
 sip_api.use_v2()
@@ -104,6 +105,7 @@ class AlbumEditionPageTest(ViewTest):
         self.render(build.album(leadPerformer='     '))
         self.driver.enablesISNILookup(False)
 
+    @unittest.skip('Feature disabled for the moment as per client\'s request')
     def testEnablesAssignISNIButtonWhenLeadPerformerIsNotEmpty(self):
         self.render(build.album(leadPerformer='performer'))
         self.driver.enablesISNIAssign()
@@ -163,6 +165,7 @@ class AlbumEditionPageTest(ViewTest):
         self.driver.clearISNI()
         self.check(clearISNISignal)
 
+    @unittest.skip('Feature disabled for the moment as per client\'s request')
     def testSignalsWhenAssignISNIButtonClicked(self):
         self.render(build.album(leadPerformer='performer'))
 

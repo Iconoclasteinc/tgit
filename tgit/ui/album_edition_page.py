@@ -135,18 +135,19 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
         assignISNI = form.button('assign-isni', self.tr('ASSIGN ISNI'), disabled=True)
         assignISNI.clicked.connect(lambda: self.assignISNI.emit())
+        assignISNI.setToolTip(self.tr('This feature will be available soon'))
         assignISNI.setAttribute(Qt.WA_LayoutUsesWidgetRect)
         assignISNI.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
         self.compilation = form.checkBox('compilation')
         self.compilation.clicked.connect(lambda: self.metadataChanged.emit(self.metadata('compilation')))
-        self.compilation.stateChanged.connect(lambda newState: self.enableOrDisableISNIButton(newState is Qt.Checked, self.album.leadPerformer, lookupISNI, assignISNI))
+        self.compilation.stateChanged.connect(lambda newState: self.enableOrDisableISNIButton(newState is Qt.Checked, self.album.leadPerformer, lookupISNI))
         layout.addRow(form.labelFor(self.compilation, self.tr('Compilation:')), self.compilation)
 
         self.leadPerformer = form.lineEdit('lead-performer')
         self.leadPerformer.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
         self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('leadPerformer')))
-        self.leadPerformer.textChanged.connect(lambda value: self.enableOrDisableISNIButton(self.album.compilation, value, lookupISNI, assignISNI))
+        self.leadPerformer.textChanged.connect(lambda value: self.enableOrDisableISNIButton(self.album.compilation, value, lookupISNI))
         leadPerformerRow = form.row()
         leadPerformerRow.addWidget(self.leadPerformer)
         leadPerformerRow.addWidget(lookupISNI)
