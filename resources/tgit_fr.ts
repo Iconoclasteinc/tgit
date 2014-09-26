@@ -404,7 +404,7 @@
     <message>
         <location filename="tgit/ui/performer_dialog.py" line="57"/>
         <source>Performer:</source>
-        <translation>Artiste :</translation>
+        <translation>Musicien :</translation>
     </message>
     <message>
         <location filename="tgit/ui/performer_dialog.py" line="60"/>
