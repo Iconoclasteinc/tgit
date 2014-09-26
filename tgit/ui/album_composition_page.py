@@ -85,7 +85,7 @@ class AlbumCompositionPage(QWidget):
 
     # Using stylesheets on the table corrupts the display of the button widgets in the
     # cells, at least on OSX. So we have to style programmatically
-    COLUMNS_WIDTHS = [346, 225, 225, 85, 65, 30, 30]
+    COLUMNS_WIDTHS = [345, 225, 225, 85, 65, 30, 30]
 
     def __init__(self):
         QWidget.__init__(self)
