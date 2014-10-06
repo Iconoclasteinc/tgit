@@ -279,7 +279,14 @@ class AlbumEditionPage(QWidget, AlbumListener):
         if len(keys) == 0:
             return allValues
 
-        return {k: allValues.get(k, None) for k in keys}
+        keysToRetrieve = [k for k in keys]
+        if 'compilation' not in keysToRetrieve:
+            keysToRetrieve.append('compilation')
+
+        if 'leadPerformer' not in keysToRetrieve:
+            keysToRetrieve.append('leadPerformer')
+
+        return {k: allValues.get(k, None) for k in keysToRetrieve}
 
     def disableMacFocusFrame(self):
         for child in self.findChildren(QWidget):

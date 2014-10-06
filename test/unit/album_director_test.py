@@ -216,10 +216,12 @@ class AlbumDirectorTest(unittest.TestCase):
         firstName = 'Paul'
         lastName = 'McCartney'
         identity = '_', (firstName, lastName, '_', '_')
-        album = build.album()
+        track = build.track(leadPerformer='artist')
+        album = build.album(tracks=[track], compilation=False)
 
         director.selectISNI(identity, album)
         assert_that(album.leadPerformer, equal_to('%(firstName)s %(lastName)s' % locals()), 'lead performer')
+        assert_that(track.leadPerformer, equal_to('%(firstName)s %(lastName)s' % locals()), 'lead performer')
 
     def testClearsLeadPerformerISNIFromAlbum(self):
         album = build.album(isni='0000123456789')

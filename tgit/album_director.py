@@ -148,13 +148,16 @@ def lookupISNI(registry, leadPerformer):
 
 
 def selectISNI(identity, album):
-    album.isni, personalInformations = identity
+    isni, personalInformations = identity
     firstName, lastName, _, _ = personalInformations
-    album.leadPerformer = '%(firstName)s %(lastName)s' % locals()
+    leadPerformer = '%(firstName)s %(lastName)s' % locals()
+    metadata = dict(leadPerformer=leadPerformer, isni=isni, compilation=album.compilation)
+    updateAlbum(album, **metadata)
 
 
 def clearISNI(album):
-    album.isni = None
+    metadata = dict(isni=None)
+    updateAlbum(album, **metadata)
 
 
 def assignISNI(registry, album):
