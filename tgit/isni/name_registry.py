@@ -151,10 +151,33 @@ class NameRegistry(object):
         assigned = record.find('ISNIAssigned')
         if assigned is not None:
             isni = assigned.find("isniUnformatted").text
-            surname = self.getLongestIn(assigned, './/personalName/surname')
-            forename = self.getLongestIn(assigned, './/personalName/forename')
-            date = self.getLongestIn(assigned, './/personalName/dates')
-            title = self.getLongestIn(assigned, './/creativeActivity/titleOfWork/title')
+            if self.isPerson(assigned):
+                surname = self.getLongestIn(assigned, './/personalName/surname')
+                forename = self.getLongestIn(assigned, './/personalName/forename')
+                date = self.getLongestIn(assigned, './/personalName/dates')
+                title = self.getLongestIn(assigned, './/creativeActivity/titleOfWork/title')
+                return isni, ('%(forename)s %(surname)s' % locals(), date, self.removeLineStartCharacter(title))
 
-            return isni, (forename, surname, date, self.removeLineStartCharacter(title))
+            if self.isOrganisation(assigned):
+                name = self.getOrganisationName(assigned)
+                title = self.getLongestIn(assigned, './/creativeActivity/titleOfWork/title')
+                return isni, (name, '', self.removeLineStartCharacter(title))
+
         return None
+
+    def isPerson(self, record):
+        return len(record.xpath('.//personalName')) > 0
+
+    def isOrganisation(self, record):
+        return len(record.xpath('.//organisation')) > 0
+
+    def getOrganisationName(self, record):
+        organisationNames = record.xpath('.//organisation/organisationName/mainName')
+        if len(organisationNames) == 0:
+            return ''
+
+        return max([self.normalizeOrganisationName(name.text) for name in organisationNames], key=len)
+
+    def normalizeOrganisationName(self, name):
+        index = name.find('(')
+        return name if index == -1 else name[:index].strip()
