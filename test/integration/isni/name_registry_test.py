@@ -75,6 +75,36 @@ class ISNITest(unittest.TestCase):
         title = 'The fool on the hill from The Beatles\' T.V. film Magical mystery tour'
         assert_that(identities, has_item(('0000000121707484', (u'The Beatles', u'', title))))
 
+    def testFindsLedZeppelinIdentity(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        _, identities = registry.searchByKeywords(u"Led", u"Zeppelin")
+
+        title = 'Heavy mental music from and inspired by the movie School of rock.'
+        assert_that(identities, has_item(('0000000123483226', (u'Led Zeppelin', u'', title))))
+
+    @unittest.skip('ISNI lookup API does currently work with any order while the web interface does')
+    def testFindsLedZeppelinIdentityWithPrefixSentFirst(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        _, identities = registry.searchByKeywords(u"Zeppelin", u"Led")
+
+        title = 'Heavy mental music from and inspired by the movie School of rock.'
+        assert_that(identities, has_item(('0000000123483226', (u'Led Zeppelin', u'', title))))
+
+    def testFindsRageAgainstTheMachineIdentity(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        _, identities = registry.searchByKeywords(u"Rage", u"Against", u"The", u"Machine")
+
+        title = u'Rage against the machine a support 19.6.94 zimní stadion Slavie Praha'
+        assert_that(identities, has_item(('0000000122905407', (u'Rage against the machine', u'', title))))
+
+    @unittest.skip('ISNI lookup API does currently work with any order while the web interface does')
+    def testFindsRageAgainstTheMachineWithPrefixSentFirst(self):
+        registry = NameRegistry(host='isni.oclc.nl')
+        _, identities = registry.searchByKeywords(u"Machine", u"Rage", u"Against", u"The")
+
+        title = u'Rage against the machine a support 19.6.94 zimní stadion Slavie Praha'
+        assert_that(identities, has_item(('0000000122905407', (u'Rage against the machine', u'', title))))
+
     @unittest.skip('ISNI Response changes too often for test to be valid')
     def testAssignWithTheISNIAtomPubAPIUsingAMinimalRequest(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
