@@ -26,7 +26,7 @@ class ISNITest(unittest.TestCase):
         _, identities = registry.searchByKeywords(u"maloy", u"rebecca", u"ann")
 
         title = u'Scolica enchiriadis and the non-diatonic plainsong tradition. -'
-        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', '', title))))
+        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann Maloy', '', title))))
 
     def testFindsOnlyOneRecordWhenSearchingForRebeccaAnnMaloyIndentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
@@ -39,14 +39,14 @@ class ISNITest(unittest.TestCase):
         _, identities = registry.searchByKeywords(u"malo", u"reb", u"a")
 
         title = u'Scolica enchiriadis and the non-diatonic plainsong tradition. -'
-        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann', u'Maloy', '', title))))
+        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann Maloy', '', title))))
 
     def testFindsJoelMillerIndentityWithDates(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"miller", u"joel")
 
         title = u'--and then everything started to look different--'
-        assert_that(identities, has_item(('0000000073759369', (u'Joel', u'Miller', u'1969-', title))))
+        assert_that(identities, has_item(('0000000073759369', (u'Joel Miller', u'1969-', title))))
 
     def testFindsMoreThanTwentyMatchesWhenSearchingForJoMiller(self):
         registry = NameRegistry(host='isni.oclc.nl')
@@ -54,12 +54,12 @@ class ISNITest(unittest.TestCase):
 
         assert_that(int(numberOfRecords), greater_than(20))
 
-    @unittest.skip('Exploration test')
     def testFindsMetallicaIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"Metallica")
+        _, identities = registry.searchByKeywords(u"Metallica")
 
-        assert_that(identities, contains(contains('0000000122939631')))
+        title = u'Aural Amphetamine Metallica and the dawn of the trash'
+        assert_that(identities, has_item(('0000000122939631', (u'Metallica', u'', title))))
 
     @unittest.skip('Exploration test')
     def testFindsTheBeatlesIdentity(self):
@@ -75,6 +75,7 @@ class ISNITest(unittest.TestCase):
 
         assert_that(identities, contains(contains('0000000121707484')))
 
+    @unittest.skip('ISNI Response changes too often for test to be valid')
     def testAssignWithTheISNIAtomPubAPIUsingAMinimalRequest(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
@@ -359,6 +360,7 @@ class ISNITest(unittest.TestCase):
         sparse = noIsni.find('reason')
         assert_that(sparse.text, equal_to('possibleMatch'), 'possible matches response')
 
+    @unittest.skip('ISNI Response changes too often for test to be valid')
     def testAssignAnISNIUsingFullNameAndTitleOfWorks(self):
         registry = NameRegistry(assignHost='isni-m-acc.oclc.nl')
         isni = registry.assign(u"Jan", u"Baerthel", u"Industrielles Bauen: Leitfaden", u"Industrielles Bauen")

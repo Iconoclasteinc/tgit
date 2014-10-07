@@ -101,9 +101,9 @@ class ISNILookupDialog(QDialog):
 
     def buildIdentityCaption(self, identity):
         _, personalInformations = identity
-        firstName, lastName, date, title = personalInformations
+        name, date, title = personalInformations
 
-        label = [firstName, ' ', lastName]
+        label = [name]
         if date != '':
             label.append(' (')
             label.append(date)
