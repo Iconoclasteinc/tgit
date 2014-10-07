@@ -61,19 +61,19 @@ class ISNITest(unittest.TestCase):
         title = u'Aural Amphetamine Metallica and the dawn of the trash'
         assert_that(identities, has_item(('0000000122939631', (u'Metallica', u'', title))))
 
-    @unittest.skip('Exploration test')
     def testFindsTheBeatlesIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"Beatles", u"The")
+        _, identities = registry.searchByKeywords(u"Beatles", u"The")
 
-        assert_that(identities, contains(contains('0000000121707484')))
+        title = 'The fool on the hill from The Beatles\' T.V. film Magical mystery tour'
+        assert_that(identities, has_item(('0000000121707484', (u'The Beatles', u'', title))))
 
-    @unittest.skip('Exploration test')
     def testFindsTheBeatlesIdentityWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        identities = registry.searchByKeywords(u"The", u"Beatles")
+        _, identities = registry.searchByKeywords(u"The", u"Beatles")
 
-        assert_that(identities, contains(contains('0000000121707484')))
+        title = 'The fool on the hill from The Beatles\' T.V. film Magical mystery tour'
+        assert_that(identities, has_item(('0000000121707484', (u'The Beatles', u'', title))))
 
     @unittest.skip('ISNI Response changes too often for test to be valid')
     def testAssignWithTheISNIAtomPubAPIUsingAMinimalRequest(self):
