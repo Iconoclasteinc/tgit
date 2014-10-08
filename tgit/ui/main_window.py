@@ -456,7 +456,8 @@ StyleSheet = """
     }
 
     #isni-lookup-dialog #results-exceeds-shown,
-    #isni-lookup-dialog #no-result-message {
+    #isni-lookup-dialog #no-result-message,
+    #isni-lookup-dialog #connection-error-message {
         color: #F25C0A;
     }
  """

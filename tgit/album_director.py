@@ -24,6 +24,7 @@ import shutil
 
 from dateutil import tz
 from PyQt4.QtCore import QDir, QFileInfo
+import requests
 
 import tgit
 from tgit.album import Album
@@ -149,10 +150,13 @@ def lookupISNI(registry, leadPerformer):
     # If we're searching for a band name and there is no hit the first time, we search a second
     # time using all the words in the native order.
     # TODO: remove the second search when ISNI corrects the lookup API and lets the name search work with any order
-    response = registry.searchByKeywords(lastName, *firstName)
-    if int(response[0]) > 0:
-        return response
-    return registry.searchByKeywords(*leadPerformer.split(' '))
+    try:
+        response = registry.searchByKeywords(lastName, *firstName)
+        if int(response[0]) > 0:
+            return response
+        return registry.searchByKeywords(*leadPerformer.split(' '))
+    except requests.exceptions.ConnectionError as e:
+        return e
 
 
 def selectISNI(identity, album):
