@@ -22,12 +22,19 @@ from PyQt4.QtCore import Qt, pyqtSignal, QFile, QSize, QEventLoop, QMargins
 from PyQt4.QtGui import QDialog, QGridLayout, QDialogButtonBox, QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QLabel, \
     QRadioButton, QScrollArea, QGroupBox, QFrame, QMovie, QPushButton, QApplication, QLayout, QSizePolicy
 import time
+import requests
 
 
 class ISNILookupDialog(QDialog):
     def __init__(self, parent, identities):
         QDialog.__init__(self, parent)
-        numberOfResults, matches = identities
+        self.connectionError = type(identities) is requests.exceptions.ConnectionError
+        numberOfResults = '0'
+        matches = []
+
+        if not self.connectionError:
+            numberOfResults, matches = identities
+
         self.parent = parent
         self.okButton = None
         self.selectedIdentity = None
@@ -37,7 +44,7 @@ class ISNILookupDialog(QDialog):
         self.setObjectName('isni-lookup-dialog')
         self.setWindowFlags(Qt.Dialog)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Please select from the list of identities')
+        self.setWindowTitle(self.tr('Please select from the list of identities'))
         self.setModal(True)
 
         layout = QVBoxLayout()
@@ -51,6 +58,11 @@ class ISNILookupDialog(QDialog):
         results = QGroupBox()
         results.setObjectName('lookup-results')
         results.setLayout(resultsLayout)
+
+        if self.connectionError:
+            resultsLayout.addWidget(self.buildConnectionErrorMessage())
+            return results
+
         if len(matches) < int(numberOfResults):
             resultsLayout.addWidget(self.buildWarning())
         if len(matches) == 0:
@@ -88,6 +100,12 @@ class ISNILookupDialog(QDialog):
         noResultLabel.setObjectName('no-result-message')
         noResultLabel.setText(self.tr('Your query yielded no result'))
         return noResultLabel
+
+    def buildConnectionErrorMessage(self):
+        label = QLabel()
+        label.setObjectName('connection-error-message')
+        label.setText(self.tr('Could not connect to the ISNI database. Please retry later.'))
+        return label
 
     def buildRow(self, identity):
         def selectISNI():

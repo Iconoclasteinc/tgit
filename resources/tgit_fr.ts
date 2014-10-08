@@ -338,30 +338,40 @@
 <context>
     <name>ISNILookupDialog</name>
     <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" line="63"/>
+        <location filename="tgit/ui/isni_lookup_dialog.py" line="75"/>
         <source>&amp;OK</source>
         <translation>&amp;OK</translation>
     </message>
     <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" line="67"/>
+        <location filename="tgit/ui/isni_lookup_dialog.py" line="79"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Annuler</translation>
     </message>
     <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" line="82"/>
+        <location filename="tgit/ui/isni_lookup_dialog.py" line="94"/>
         <source>If you do not find a match within this list, please refine your search (only the first 20 results are shown)</source>
         <translation>Si vous ne trouvez pas de correspondance dans la liste suivante, veuillez rafiner votre recherche (seulement les 20 premiers résultats sont affichés)</translation>
     </message>
     <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" line="89"/>
+        <location filename="tgit/ui/isni_lookup_dialog.py" line="101"/>
         <source>Your query yielded no result</source>
         <translation>Votre recherche n&apos;a retourné aucun résultat</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" line="47"/>
+        <source>Please select from the list of identities</source>
+        <translation>Sélectionnez une identité à partir de la liste suivante</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" line="107"/>
+        <source>Could not connect to the ISNI database. Please retry later.</source>
+        <translation>Impossible de se connecter à la base de données ISNI.  Svp ré-essayez plus tard.</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="tgit/ui/main_window.py" line="501"/>
+        <location filename="tgit/ui/main_window.py" line="502"/>
         <source>TGiT</source>
         <translation>TGiT</translation>
     </message>
