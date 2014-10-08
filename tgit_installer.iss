@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "TGiT"
-#define MyAppVersion "1.2.1"
+#define MyAppVersion "1.2.2"
 #define MyAppPublisher "Iconoclaste Musique, Inc."
 #define MyAppURL "http://www.tagtamusique.com/"
 #define MyAppExeName "tgit.exe"
