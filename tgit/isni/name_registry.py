@@ -120,7 +120,7 @@ class NameRegistry(object):
 
     def payload(self, keywords):
         searchTerms = '+'.join(self.formatKeywords(keywords))
-        return '?query=pica.nw%%3D"%(searchTerms)s"+pica.st%%3DA' \
+        return '?query=pica.nw%%3D%(searchTerms)s+pica.st%%3DA' \
                '&operation=searchRetrieve' \
                '&recordSchema=isni-e' \
                '&maximumRecords=20' % locals()
