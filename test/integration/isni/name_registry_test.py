@@ -82,7 +82,6 @@ class ISNITest(unittest.TestCase):
         title = 'Heavy mental music from and inspired by the movie School of rock.'
         assert_that(identities, has_item(('0000000123483226', (u'Led Zeppelin', u'', title))))
 
-    @unittest.skip('ISNI lookup API does currently work with any order while the web interface does')
     def testFindsLedZeppelinIdentityWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"Zeppelin", u"Led")
@@ -97,7 +96,6 @@ class ISNITest(unittest.TestCase):
         title = u'Rage against the machine a support 19.6.94 zimní stadion Slavie Praha'
         assert_that(identities, has_item(('0000000122905407', (u'Rage against the machine', u'', title))))
 
-    @unittest.skip('ISNI lookup API does currently work with any order while the web interface does')
     def testFindsRageAgainstTheMachineWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"Machine", u"Rage", u"Against", u"The")

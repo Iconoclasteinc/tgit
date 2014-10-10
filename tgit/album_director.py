@@ -145,16 +145,8 @@ def lookupISNI(registry, leadPerformer):
     restOfName = leadPerformer[:lastSpaceIndex]
     firstName = restOfName.split(' ')
 
-    # Unfortunately, word order has an impact when looking up a name against the ISNI database.
-    # We can't rely on the same process for band names as for artist names. Sometimes it works, sometimes it doesn't.
-    # If we're searching for a band name and there is no hit the first time, we search a second
-    # time using all the words in the native order.
-    # TODO: remove the second search when ISNI corrects the lookup API and lets the name search work with any order
     try:
-        response = registry.searchByKeywords(lastName, *firstName)
-        if int(response[0]) > 0:
-            return response
-        return registry.searchByKeywords(*leadPerformer.split(' '))
+        return registry.searchByKeywords(lastName, *firstName)
     except requests.exceptions.ConnectionError as e:
         return e
 
