@@ -37,8 +37,6 @@ def save(filename, metadata, overwrite=False):
 
 
 class TextProcessor(object):
-    UNQUOTE = slice(1, -1)
-
     def __init__(self, key, tag, frameToTag, tagToFrame):
         self._key = key
         self._tag = tag
@@ -59,7 +57,7 @@ class TextProcessor(object):
 
     def _decompose(self, key):
         parts = (key + '::').split(':')
-        return parts[0], parts[1], parts[2][self.UNQUOTE]
+        return parts[0], parts[1], parts[2]
 
 
 class UnicodeProcessor(TextProcessor):
@@ -193,8 +191,8 @@ class ID3Container(object):
                      'TXXX:Tagger': 'tagger',
                      'TXXX:Tagging Time': 'taggingTime',
                      'TXXX:ISNI': 'isni',
-                     "COMM::'fra'": 'comments',
-                     "USLT::'fra'": 'lyrics',
+                     "COMM::fra": 'comments',
+                     "USLT::fra": 'lyrics',
                      'TCON': 'primaryStyle'
                      }.items():
         processors.append(UnicodeProcessor(key, tag))
