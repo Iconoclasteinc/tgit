@@ -95,7 +95,7 @@ class NameRegistry(object):
         fragments = ['https' if self.secure else 'http', '://', self.host]
         if self.port is not None:
             fragments.append(':')
-            fragments.append(self.port)
+            fragments.append(str(self.port))
 
         fragments.append('/sru')
 
@@ -129,9 +129,8 @@ class NameRegistry(object):
         matched = []
         for record in results.xpath('//responseRecord'):
             identity = self.parseIdentity(record)
-            if identity is None:
-                continue
-            matched.append(identity)
+            if identity is not None:
+                matched.append(identity)
         return matched
 
     def extractNumberOfRecords(self, results):

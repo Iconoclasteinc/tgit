@@ -2,11 +2,15 @@
 from lxml import etree
 import unittest
 
-from hamcrest import assert_that, contains, has_item, equal_to, greater_than, not_none
+from hamcrest import assert_that, contains, has_item, equal_to, greater_than, not_none, anything
 import requests
 
 from tgit.isni.name_registry import NameRegistry
 import test.util.isni_database as server
+
+
+def has_identity(isni=anything(), name=anything()):
+    return has_item(contains(isni, contains(name, anything(), anything())))
 
 
 class ISNITest(unittest.TestCase):
@@ -19,14 +23,13 @@ class ISNITest(unittest.TestCase):
         server.database.clear()
         server.stop()
 
-        assert_that(identities, contains(contains('00000001', u'Joel', u'Miller')))
+        assert_that(identities, has_identity('00000001', u'Joel Miller'))
 
-    def testFindsRebeccaAnnMaloyIndentity(self):
+    def testFindsRebeccaAnnMaloyIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"maloy", u"rebecca", u"ann")
 
-        title = u'Scolica enchiriadis and the non-diatonic plainsong tradition. -'
-        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann Maloy', '', title))))
+        assert_that(identities, has_identity('0000000115677274', u'Rebecca Ann Maloy'))
 
     def testFindsOnlyOneRecordWhenSearchingForRebeccaAnnMaloyIndentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
@@ -38,15 +41,13 @@ class ISNITest(unittest.TestCase):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"malo", u"reb", u"a")
 
-        title = u'Scolica enchiriadis and the non-diatonic plainsong tradition. -'
-        assert_that(identities, has_item(('0000000115677274', (u'Rebecca Ann Maloy', '', title))))
+        assert_that(identities, has_identity('0000000115677274', u'Rebecca Ann Maloy'))
 
     def testFindsJoelMillerIndentityWithDates(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"miller", u"joel")
 
-        title = u'--and then everything started to look different--'
-        assert_that(identities, has_item(('0000000073759369', (u'Joel Miller', u'1969-', title))))
+        assert_that(identities, has_identity('0000000073759369', u'Joel Miller'))
 
     def testFindsMoreThanTwentyMatchesWhenSearchingForJoMiller(self):
         registry = NameRegistry(host='isni.oclc.nl')
@@ -58,50 +59,44 @@ class ISNITest(unittest.TestCase):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"Metallica")
 
-        title = u'Aural Amphetamine Metallica and the dawn of the trash'
-        assert_that(identities, has_item(('0000000122939631', (u'Metallica', u'', title))))
+        assert_that(identities, has_identity('0000000122939631', u'Metallica'))
 
     def testFindsTheBeatlesIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"Beatles", u"The")
 
-        title = 'The fool on the hill from The Beatles\' T.V. film Magical mystery tour'
-        assert_that(identities, has_item(('0000000121707484', (u'The Beatles', u'', title))))
+        assert_that(identities, has_identity('0000000121707484', u'The Beatles'))
 
     def testFindsTheBeatlesIdentityWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"The", u"Beatles")
 
         title = 'The fool on the hill from The Beatles\' T.V. film Magical mystery tour'
-        assert_that(identities, has_item(('0000000121707484', (u'The Beatles', u'', title))))
+        assert_that(identities, has_identity('0000000121707484', u'The Beatles'))
 
     def testFindsLedZeppelinIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"Led", u"Zeppelin")
 
-        title = 'Heavy mental music from and inspired by the movie School of rock.'
-        assert_that(identities, has_item(('0000000123483226', (u'Led Zeppelin', u'', title))))
+        assert_that(identities, has_identity('0000000123483226', u'Led Zeppelin'))
 
     def testFindsLedZeppelinIdentityWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"Zeppelin", u"Led")
 
-        title = 'Heavy mental music from and inspired by the movie School of rock.'
-        assert_that(identities, has_item(('0000000123483226', (u'Led Zeppelin', u'', title))))
+        assert_that(identities, has_identity('0000000123483226', u'Led Zeppelin'))
 
     def testFindsRageAgainstTheMachineIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"Rage", u"Against", u"The", u"Machine")
 
-        title = u'Rage against the machine a support 19.6.94 zimní stadion Slavie Praha'
-        assert_that(identities, has_item(('0000000122905407', (u'Rage against the machine', u'', title))))
+        assert_that(identities, has_identity('0000000122905407', u'Rage against the machine'))
 
     def testFindsRageAgainstTheMachineWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
         _, identities = registry.searchByKeywords(u"Machine", u"Rage", u"Against", u"The")
 
-        title = u'Rage against the machine a support 19.6.94 zimní stadion Slavie Praha'
-        assert_that(identities, has_item(('0000000122905407', (u'Rage against the machine', u'', title))))
+        assert_that(identities, has_identity('0000000122905407', u'Rage against the machine'))
 
     @unittest.skip('ISNI Response changes too often for test to be valid')
     def testAssignWithTheISNIAtomPubAPIUsingAMinimalRequest(self):
