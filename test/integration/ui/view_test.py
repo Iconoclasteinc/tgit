@@ -28,6 +28,7 @@ class ViewTest(unittest.TestCase):
         widget.setStyleSheet(StyleSheet)
         widget.setFixedSize(*MainWindow.SIZE)
         display.centeredOnScreen(widget)
+        widget.raise_()
 
     def check(self, probe):
         self.prober.check(probe)

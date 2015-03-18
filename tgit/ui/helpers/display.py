@@ -41,7 +41,7 @@ def activate(widget):
     from PyQt4.QtCore import QSysInfo
 
     if hasattr(QSysInfo, 'MacintoshVersion') and QSysInfo.MacintoshVersion > QSysInfo.MV_10_8:
-        # On Maverick, menu bar does not appear until the window is manually activated, so force
+        # Since Maverick, menu bar does not appear until the window is manually activated, so force
         # user to activate by not raising the window
         pass
     else:
