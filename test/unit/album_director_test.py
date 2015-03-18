@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from tgit.util import sip_api
-
-sip_api.use_v2()
-
 from datetime import datetime
 import os
 import shutil
 import unittest
 from dateutil import tz
+
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
-    has_item, empty, ends_with
+    has_item, empty
+
 from test.util import builders as build, resources, doubles, mp3_file
 
 from tgit import album_director as director, __version__

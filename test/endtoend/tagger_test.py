@@ -5,10 +5,6 @@ import unittest
 
 from tgit.util import fs
 
-from tgit.util import sip_api
-
-sip_api.use_v2()
-
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 from test.util import resources, doubles
 from test.endtoend.application_runner import ApplicationRunner

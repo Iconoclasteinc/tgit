@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from tgit.util import sip_api
-sip_api.use_v2()
-
 from PyQt4.QtGui import QMainWindow
 
 from test.integration.ui import ViewTest
@@ -10,6 +7,7 @@ from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.menu_bar_driver import MenuBarDriver
 from test.util import builders as build
+
 from tgit.ui.menu_bar import MenuBar
 
 

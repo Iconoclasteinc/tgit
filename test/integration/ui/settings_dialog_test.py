@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from hamcrest import assert_that, equal_to
-from tgit.util import sip_api
-sip_api.use_v2()
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers.settings_dialog_driver import SettingsDialogDriver
 from test.integration.ui import ViewTest
+
 from tgit.ui.settings_dialog import SettingsDialog
 
 

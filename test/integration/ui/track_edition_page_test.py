@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
-from tgit.util import sip_api
-sip_api.use_v2()
 
 from hamcrest import contains_string, has_entries
 
@@ -11,6 +9,7 @@ from test.cute.probes import ValueMatcherProbe
 from test.drivers import TrackEditionPageDriver
 from test.integration.ui import ViewTest
 from test.util import builders as build
+
 from tgit.ui.track_edition_page import TrackEditionPage
 
 

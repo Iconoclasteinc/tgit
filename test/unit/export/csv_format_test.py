@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from tgit.util import sip_api
-sip_api.use_v2()
-
-import csv
 from StringIO import StringIO
+import csv
 import unittest
+
 from hamcrest import assert_that, contains, has_item
 from hamcrest.core.core.isequal import equal_to
 

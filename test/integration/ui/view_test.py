@@ -2,14 +2,13 @@
 
 import os
 import unittest
-from tgit.util import sip_api
-sip_api.use_v2()
 
 from PyQt4.QtGui import QApplication
 
 from test.cute.events import MainEventLoop
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
+
 from tgit.ui.helpers import display
 from tgit.ui.main_window import MainWindow, StyleSheet
 

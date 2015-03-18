@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
+import sys
 import unittest
-from tgit.util import sip_api
-sip_api.use_v2()
+
+from hamcrest import contains
+
+from PyQt4.QtGui import QMainWindow, QFileDialog
 
 from test.cute.matchers import named
 from test.cute.widgets import window
-
-from hamcrest import contains
-from PyQt4.QtGui import QMainWindow, QFileDialog
-import sys
-
-from test.drivers.track_selection_dialog_driver import trackSelectionDialog, TrackSelectionDialogDriver
+from test.drivers.track_selection_dialog_driver import TrackSelectionDialogDriver
 from test.integration.ui import ViewTest
 from test.cute.probes import ValueMatcherProbe
 from test.util import resources
+
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 

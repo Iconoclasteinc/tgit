@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
+
 import timeit
 import unittest
 from hamcrest import has_entries, assert_that, less_than
-from tgit.util import sip_api
-sip_api.use_v2()
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
 from test.drivers import AlbumEditionPageDriver
 from test.integration.ui import ViewTest
 from test.util import resources, builders as build
+
 from tgit.metadata import Image
 from tgit.ui.album_edition_page import AlbumEditionPage
 from tgit.util import fs

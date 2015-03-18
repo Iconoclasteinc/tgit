@@ -5,12 +5,12 @@ import unittest
 
 from flexmock import flexmock
 from hamcrest import assert_that, equal_to, is_
-from tgit.util import sip_api
-sip_api.use_v2()
+
 from PyQt4.QtCore import Qt, QModelIndex
 
 from tgit.ui.album_composition_model import AlbumCompositionModel, Columns, Row
 from tgit.ui.helpers import formatting
+
 from test.util import builders as build
 from test.util import doubles
 

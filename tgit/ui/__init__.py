@@ -16,25 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 from Queue import Queue
 
-from PyQt4.QtGui import QApplication
-
-from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
-from tgit.ui.isni_lookup_dialog import ISNILookupDialog
-from tgit.ui.performer_dialog import PerformerDialog
-from tgit.util import sip_api
-from tgit.util import async_task_runner as taskRunner
-
-
-sip_api.use_v2()
-
 from PyQt4.QtCore import QTimer, QEventLoop
+from PyQt4.QtGui import QApplication
 
 from tgit import album_director as director
 from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.export.csv_format import CsvFormat
-
+from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
+from tgit.ui.isni_lookup_dialog import ISNILookupDialog
+from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
 from tgit.ui.album_screen import AlbumScreen
@@ -47,9 +40,9 @@ from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_screen import WelcomeScreen
-
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
+from tgit.util import async_task_runner as taskRunner
 
 
 def AlbumCompositionPageController(selectTracks, player, album):

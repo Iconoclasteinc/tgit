@@ -5,8 +5,6 @@ import tempfile
 import unittest
 from hamcrest import equal_to, assert_that, is_, has_entries
 
-from tgit.util import sip_api
-sip_api.use_v2()
 from PyQt4.QtCore import QSettings
 
 from tgit.preferences import Preferences

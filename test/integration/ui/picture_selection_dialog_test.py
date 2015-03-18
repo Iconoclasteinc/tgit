@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
+
+import sys
 import unittest
-from tgit.util import sip_api
-sip_api.use_v2()
 
 from PyQt4.QtGui import QMainWindow
-import sys
 
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
