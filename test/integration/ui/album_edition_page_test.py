@@ -2,20 +2,20 @@
 
 import timeit
 import unittest
+
 from hamcrest import has_entries, assert_that, less_than
 
-from test.cute4.finders import WidgetIdentity
-from test.cute4.probes import ValueMatcherProbe
-from test.drivers4 import AlbumEditionPageDriver
-from test.integration4.ui import ViewTest
-from test.util4 import resources, builders as build
+from test.cute.finders import WidgetIdentity
+from test.cute.probes import ValueMatcherProbe
+from test.drivers.album_edition_page_driver import AlbumEditionPageDriver
+from test.integration.ui import WidgetTest
+from test.util import resources, builders as build
+from tgit.metadata import Image
+from tgit.ui.album_edition_page import AlbumEditionPage
+from tgit.util import fs
 
-from tgit4.metadata import Image
-from tgit4.ui.album_edition_page import AlbumEditionPage
-from tgit4.util import fs
 
-
-class AlbumEditionPageTest(ViewTest):
+class AlbumEditionPageTest(WidgetTest):
     def render(self, album):
         self.page = AlbumEditionPage(album)
         self.page.refresh()
