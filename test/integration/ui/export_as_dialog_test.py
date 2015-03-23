@@ -1,23 +1,24 @@
+# -*- coding: utf-8 -*-
+
 import os
 import shutil
 
 from hamcrest import equal_to
-from PyQt4.QtGui import QMainWindow
+from PyQt5.QtWidgets import QMainWindow
 
-from test.cute4.probes import ValueMatcherProbe
-from test.drivers4.export_as_dialog_driver import exportAsDialog
-from test.integration4.ui import ViewTest
-from test.util4 import resources
+from test.cute.probes import ValueMatcherProbe
+from test.drivers.export_as_dialog_driver import exportAsDialog
+from test.integration.ui import WidgetTest
+from test.util import resources
+from tgit.ui.export_as_dialog import ExportAsDialog
 
-from tgit4.ui.export_as_dialog import ExportAsDialog
 
-
-class ExportAsDialogTest(ViewTest):
+class ExportAsDialogTest(WidgetTest):
     def setUp(self):
         super(ExportAsDialogTest, self).setUp()
         window = QMainWindow()
         self.show(window)
-        self.dialog = ExportAsDialog(window, native=False)
+        self.dialog = ExportAsDialog(window, native=False, transient=False)
         self.driver = exportAsDialog(self)
         self.tempDir = resources.makeTempDir()
 
