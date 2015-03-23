@@ -7,3 +7,5 @@ mutagen
 nose
 python-dateutil
 six
+flask
+PyQt5
