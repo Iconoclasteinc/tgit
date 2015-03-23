@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
+
 import os
 import tempfile
-
 import unittest
+
 from hamcrest import equal_to, assert_that, is_, has_entries
+from PyQt5.QtCore import QSettings
 
-from PyQt4.QtCore import QSettings
-
-from tgit4.preferences import Preferences
+from tgit.preferences import Preferences
 
 
 def createStorageFile():

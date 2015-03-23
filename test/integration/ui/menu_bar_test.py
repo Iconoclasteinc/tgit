@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QMainWindow
+from PyQt5.QtWidgets import QMainWindow
 
-from test.integration4.ui import ViewTest
-from test.cute4.finders import WidgetIdentity
-from test.cute4.probes import ValueMatcherProbe
-from test.drivers4.menu_bar_driver import MenuBarDriver
-from test.util4 import builders as build
+from test.cute.finders import WidgetIdentity
+from test.cute.probes import ValueMatcherProbe
+from test.drivers.menu_bar_driver import MenuBarDriver
+from test.integration.ui import WidgetTest
+from test.util import builders as build
+from tgit.ui.menu_bar import MenuBar
 
-from tgit4.ui.menu_bar import MenuBar
 
-
-class MenuBarTest(ViewTest):
+class MenuBarTest(WidgetTest):
     def setUp(self):
         super(MenuBarTest, self).setUp()
         self.mainWindow = QMainWindow()
