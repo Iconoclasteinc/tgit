@@ -6,13 +6,12 @@ import unittest
 from flexmock import flexmock
 from hamcrest import assert_that, equal_to, is_
 
-from PyQt4.QtCore import Qt, QModelIndex
+from PyQt5.QtCore import Qt, QModelIndex
 
-from tgit4.ui.album_composition_model import AlbumCompositionModel, Columns, Row
-from tgit4.ui.helpers import formatting
+from tgit.ui.album_composition_model import AlbumCompositionModel, Columns, Row
+from tgit.ui.helpers import formatting
 
-from test.util4 import builders as build
-from test.util4 import doubles
+from test.util import builders as build, doubles
 
 
 QModelIndex.__str__ = lambda self: '(%s, %s)' % (self.row(), self.column())
