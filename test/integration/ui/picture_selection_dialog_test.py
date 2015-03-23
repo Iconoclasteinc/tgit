@@ -3,21 +3,21 @@
 import sys
 import unittest
 
-from PyQt4.QtGui import QMainWindow
+from PyQt5.QtWidgets import QMainWindow
 
-from test.drivers4.picture_selection_dialog_driver import pictureSelectionDialog
-from tgit4.ui.picture_selection_dialog import PictureSelectionDialog
-from test.cute4.probes import ValueMatcherProbe
-from test.integration4.ui import ViewTest
-from test.util4 import resources
+from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
+from tgit.ui.picture_selection_dialog import PictureSelectionDialog
+from test.cute.probes import ValueMatcherProbe
+from test.integration.ui import WidgetTest
+from test.util import resources
 
 
-class PictureSelectionDialogTest(ViewTest):
+class PictureSelectionDialogTest(WidgetTest):
     def setUp(self):
         super(PictureSelectionDialogTest, self).setUp()
         window = QMainWindow()
         self.show(window)
-        self.dialog = PictureSelectionDialog(window, native=False)
+        self.dialog = PictureSelectionDialog(window, native=False, transient=False)
         self.driver = pictureSelectionDialog(self)
 
     def testSignalsWhenPictureSelected(self):
