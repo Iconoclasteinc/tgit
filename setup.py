@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-from tgit import __version__
+from tgit4 import __version__
 
 setup(
     name='tgit',

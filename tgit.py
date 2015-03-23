@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-import tgit.tagger
+import tgit4.tagger
 
-tgit.tagger.main()
+tgit4.tagger.main()
