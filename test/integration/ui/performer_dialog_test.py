@@ -2,18 +2,18 @@
 
 from hamcrest import assert_that, equal_to
 
-from test.cute4.finders import WidgetIdentity
-from test.cute4.probes import ValueMatcherProbe
-from test.drivers4.performer_dialog_driver import PerformerDialogDriver
-from test.integration4.ui import ViewTest
+from test.cute.finders import WidgetIdentity
+from test.cute.probes import ValueMatcherProbe
+from test.drivers.performer_dialog_driver import PerformerDialogDriver
+from test.integration.ui import WidgetTest
+from tgit.ui.performer_dialog import PerformerDialog
 
-from tgit4.ui.performer_dialog import PerformerDialog
 
-
-class PerformerDialogTest(ViewTest):
+class PerformerDialogTest(WidgetTest):
     def createDialog(self, performers=None):
-        self.dialog = PerformerDialog(performers=performers)
+        self.dialog = PerformerDialog(performers=performers, transient=False)
         self.show(self.dialog)
+        self.pause(200)
         self.driver = self.createDriverFor(self.dialog)
 
     def createDriverFor(self, widget):
