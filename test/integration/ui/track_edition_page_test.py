@@ -4,16 +4,15 @@ from datetime import timedelta
 
 from hamcrest import contains_string, has_entries
 
-from test.cute4.finders import WidgetIdentity
-from test.cute4.probes import ValueMatcherProbe
-from test.drivers4 import TrackEditionPageDriver
-from test.integration4.ui import ViewTest
-from test.util4 import builders as build
+from test.cute.finders import WidgetIdentity
+from test.cute.probes import ValueMatcherProbe
+from test.drivers.track_edition_page_driver import TrackEditionPageDriver
+from test.integration.ui import WidgetTest
+from test.util import builders as build
+from tgit.ui.track_edition_page import TrackEditionPage
 
-from tgit4.ui.track_edition_page import TrackEditionPage
 
-
-class TrackEditionPageTest(ViewTest):
+class TrackEditionPageTest(WidgetTest):
     def render(self, album, track):
         self.page = TrackEditionPage(album, track)
         self.page.display(album, track)
