@@ -3,25 +3,23 @@ import sys
 import unittest
 
 from hamcrest import contains
+from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
-from PyQt4.QtGui import QMainWindow, QFileDialog
-
-from test.cute4.matchers import named
-from test.cute4.widgets import window
-from test.drivers4.track_selection_dialog_driver import TrackSelectionDialogDriver
-from test.integration4.ui import ViewTest
-from test.cute4.probes import ValueMatcherProbe
-from test.util4 import resources
-
-from tgit4.ui.track_selection_dialog import TrackSelectionDialog
+from test.cute.matchers import named
+from test.cute.widgets import window
+from test.drivers.track_selection_dialog_driver import TrackSelectionDialogDriver
+from test.integration.ui import WidgetTest
+from test.cute.probes import ValueMatcherProbe
+from test.util import resources
+from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 
-class TrackSelectionDialogTest(ViewTest):
+class TrackSelectionDialogTest(WidgetTest):
     def setUp(self):
         super(TrackSelectionDialogTest, self).setUp()
         window = QMainWindow()
         self.show(window)
-        self.dialog = TrackSelectionDialog(window, native=False)
+        self.dialog = TrackSelectionDialog(window, native=False, transient=False)
         self.driver = self.trackSelectionDriver()
 
     def trackSelectionDriver(self):
