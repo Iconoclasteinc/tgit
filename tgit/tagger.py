@@ -23,8 +23,7 @@ from PyQt5.QtCore import QTranslator, QLocale, QSettings
 from PyQt5.QtWidgets import QApplication
 
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.audio.audio_library import AudioFiles
-from tgit.audio.player import FakeAudioPlayer
+from tgit.audio.player import MediaPlayer
 from tgit.isni.name_registry import NameRegistry
 from tgit.tagging.id3_container import ID3Container
 from tgit.preferences import Preferences
@@ -67,8 +66,8 @@ class TGiT(QApplication):
 
 
 def main():
-    # app = TGiT(PhononPlayer, NameRegistry('localhost', 5000))
-    app = TGiT(FakeAudioPlayer, NameRegistry(host='isni-m.oclc.nl', assignHost='isni-m-acc.oclc.nl', secure=True,
-                                             username='ICON', password='crmeoS4d'))
+    # app = TGiT(MediaPlayer, NameRegistry('localhost', 5000))
+    app = TGiT(MediaPlayer, NameRegistry(host='isni-m.oclc.nl', assignHost='isni-m-acc.oclc.nl', secure=True,
+                                         username='ICON', password='crmeoS4d'))
     app.setApplicationName('TGiT')
     app.launch(Preferences(QSettings('tagtamusique.com', 'TGiT')))
