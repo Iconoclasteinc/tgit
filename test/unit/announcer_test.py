@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
 from flexmock import flexmock
 
-from tgit4.announcer import Announcer
+from tgit.announcer import Announcer
 
 
 class Listener(object):

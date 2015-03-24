@@ -17,4 +17,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from version import __version__
+from tgit.announcer import Announcer
+
+
+class AlbumPortfolioListener(object):
+    def albumCreated(self, album):
+        pass
+
+
+class AlbumPortfolio(object):
+    def __init__(self):
+        self._albums = []
+        self._portfolioListeners = Announcer()
+
+    def addPortfolioListener(self, listener):
+        self._portfolioListeners.addListener(listener)
+
+    def addAlbum(self, album):
+        self._albums.append(album)
+        self._portfolioListeners.albumCreated(album)

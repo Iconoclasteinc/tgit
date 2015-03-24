@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
 from flexmock import flexmock
-from test.util4 import builders as build
-from tgit4.album_portfolio import AlbumPortfolio
+
+from test.util import builders as build
+from tgit.album_portfolio import AlbumPortfolio
 
 
 class AlbumPortfolioTest(unittest.TestCase):

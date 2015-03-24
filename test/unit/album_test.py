@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
 from hamcrest import (assert_that, equal_to, is_, contains, has_property, none,
                       has_length, has_item, is_not, match_equality as matching)
 from hamcrest.library.collection.is_empty import empty
 from flexmock import flexmock
 
-from test.util4 import builders as build
-
-from tgit4.metadata import Image
-from tgit4.album import Album, AlbumListener
+from test.util import builders as build
+from tgit.metadata import Image
+from tgit.album import Album, AlbumListener
 
 
 class AlbumTest(unittest.TestCase):

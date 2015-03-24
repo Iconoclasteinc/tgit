@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
 from hamcrest import (assert_that, equal_to, has_entries, contains, has_property, all_of,
                       contains_inanyorder, is_not, has_key, has_length, is_in, is_, none)
 from hamcrest.library.collection.is_empty import empty
 
-from tgit4.metadata import Metadata, Image
+from tgit.metadata import Metadata, Image
 
 
 class MetadataTest(unittest.TestCase):

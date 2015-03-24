@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from hamcrest import (assert_that, match_equality as matching, has_property, contains_inanyorder)
+
+from hamcrest import assert_that, match_equality as matching, has_property, contains_inanyorder
+
 from flexmock import flexmock
 
-from test.util4 import builders as build
-from tgit4.track import TrackListener, Track
+from test.util import builders as build
+from tgit.track import TrackListener, Track
 
 
 class TrackTest(unittest.TestCase):

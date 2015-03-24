@@ -4,19 +4,18 @@ from datetime import datetime
 import os
 import shutil
 import unittest
-from dateutil import tz
 
+from dateutil import tz
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
     has_item, empty
 
-from test.util4 import builders as build, resources, doubles, mp3_file
-
-from tgit4 import album_director as director, __version__
-from tgit4.album_director import sanitize
-from tgit4.metadata import Image
-from tgit4.tagging import id3_container
-from tgit4.tagging.id3_container import ID3Container
-from tgit4.util import fs
+from test.util import builders as build, resources, doubles, mp3_file
+from tgit import album_director as director, __version__
+from tgit.album_director import sanitize
+from tgit.metadata import Image
+from tgit.tagging import id3_container
+from tgit.tagging.id3_container import ID3Container
+from tgit.util import fs
 
 
 class AlbumDirectorTest(unittest.TestCase):
