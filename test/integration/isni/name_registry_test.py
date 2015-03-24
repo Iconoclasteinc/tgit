@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from lxml import etree
 import unittest
+
+from lxml import etree
 
 from hamcrest import assert_that, contains, has_item, equal_to, greater_than, not_none, anything
 import requests
 
-from tgit4.isni.name_registry import NameRegistry
-import test.util4.isni_database as server
+from tgit.isni.name_registry import NameRegistry
+import test.util.isni_database as server
 
 
 def has_identity(isni=anything(), name=anything()):

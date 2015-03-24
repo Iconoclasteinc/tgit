@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+
 from hamcrest import assert_that, has_entry, has_items, has_key, has_length, contains, is_not, contains_inanyorder
 
-from test.util4 import mp3_file as mp3
+from test.util import mp3_file as mp3
+from tgit.metadata import Metadata, Image
+import tgit.tagging.id3_container as container
 
-from tgit4.metadata import Metadata, Image
-import tgit4.tagging.id3_container as container
 
 BITRATE = mp3.Base.bitrate
 DURATION = mp3.Base.duration
