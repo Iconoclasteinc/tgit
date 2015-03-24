@@ -15,5 +15,5 @@ setup(
     test_suite='test',
     packages=['tgit'],
     scripts=['tgit.py'],
-    requires=['mutagen', 'python-dateutil', 'six', 'PyQt4']
+    requires=['mutagen', 'python-dateutil', 'six', 'PyQt5']
 )

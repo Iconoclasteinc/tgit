@@ -2,8 +2,7 @@
 a = Analysis(['tgit.py'],
              pathex=[],
              hiddenimports=[],
-             hookspath=None,
-             runtime_hooks=['use_sip_api_v2.py'])
+             hookspath=None)
 pyz = PYZ(a.pure)
 
 if is_win:
