@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from test.cute4.finders import WidgetIdentity
-from test.cute4.probes import ValueMatcherProbe
-from test.drivers4.album_screen_driver import AlbumScreenDriver
-from test.integration4.ui import ViewTest
-from test.util4 import builders as build
+from test.cute.finders import WidgetIdentity
+from test.cute.probes import ValueMatcherProbe
+from test.drivers.album_screen_driver import AlbumScreenDriver
+from test.integration.ui import WidgetTest
+from test.util import builders as build
 
-from tgit4.ui.album_composition_page import AlbumCompositionPage
-from tgit4.ui.album_edition_page import AlbumEditionPage
+from tgit.ui.album_composition_page import AlbumCompositionPage
+from tgit.ui.album_edition_page import AlbumEditionPage
 
-from tgit4.ui.album_screen import AlbumScreen
-from tgit4.ui.track_edition_page import TrackEditionPage
+from tgit.ui.album_screen import AlbumScreen
+from tgit.ui.track_edition_page import TrackEditionPage
 
 
-class AlbumScreenTest(ViewTest):
+class AlbumScreenTest(WidgetTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
         self.album = build.album()
