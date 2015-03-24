@@ -18,6 +18,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtCore import QUrl
 
+# noinspection PyUnresolvedReferences
+# We want QtNetwork to be included in the binary package, so until we figure out how to do that
+# declaratively in PyInstaller, let's import the module explicitely
+import PyQt5.QtNetwork
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 
 from tgit.announcer import Announcer

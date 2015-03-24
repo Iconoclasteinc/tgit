@@ -19,12 +19,11 @@ exe = EXE(pyz,
           upx=True,
           console=False)
 
-excluded = [('QNetwork', None, None),
-            ('QtSql', None, None),
+excluded = [('QtSql', None, None),
             ('QtSvg', None, None),
             ('QtTest', None, None),
             ('QtWebKit', None, None)]
-#            ('QtXml', None, None)]
+#           ('QtXml', None, None)]
 
 coll = COLLECT(exe,
                a.binaries - excluded,
