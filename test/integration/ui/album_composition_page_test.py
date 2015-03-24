@@ -4,12 +4,12 @@ from datetime import timedelta
 
 from hamcrest import has_property, contains
 
-from test.integration4.ui import ViewTest
-from test.cute4.finders import WidgetIdentity
-from test.cute4.probes import ValueMatcherProbe
-from test.drivers4.album_composition_page_driver import AlbumCompositionPageDriver
-from test.util4 import builders as build, doubles
-from tgit4.ui.album_composition_page import AlbumCompositionPage
+from test.integration.ui import WidgetTest
+from test.cute.finders import WidgetIdentity
+from test.cute.probes import ValueMatcherProbe
+from test.drivers.album_composition_page_driver import AlbumCompositionPageDriver
+from test.util import builders as build, doubles
+from tgit.ui.album_composition_page import AlbumCompositionPage
 
 
 # todo find a home for feature matchers
@@ -17,7 +17,7 @@ def hasTitle(title):
     return has_property('trackTitle', title)
 
 
-class AlbumCompositionPageTest(ViewTest):
+class AlbumCompositionPageTest(WidgetTest):
     def setUp(self):
         super(AlbumCompositionPageTest, self).setUp()
         self.page = AlbumCompositionPage()
