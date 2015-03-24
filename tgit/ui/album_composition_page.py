@@ -139,13 +139,10 @@ class AlbumCompositionPage(QWidget):
         table.setAlternatingRowColors(True)
         table.setShowGrid(False)
         table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
-        # table.verticalHeader().setSectionResizeMode(1, QHeaderView.Fixed)
+        table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         table.verticalHeader().setSectionsMovable(True)
         table.verticalHeader().sectionMoved.connect(
             lambda _, from_, to: self.trackMoved.emit(table.model().trackAt(from_), to))
-        # table.horizontalHeader().setSectionResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
-        # table.horizontalHeader().setSectionResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
-        # table.horizontalHeader().setSectionResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
         table.setItemDelegateForColumn(Columns.index(Columns.play), self.makePlayButton(table))
         table.setItemDelegateForColumn(Columns.index(Columns.remove), self.makeRemoveButton(table))
         table.setStyleSheet("""
@@ -195,7 +192,12 @@ class AlbumCompositionPage(QWidget):
         button.clicked.connect(self.removeTrack.emit)
         return button
 
-    def display(self, player, album):
-        self.table.setModel(AlbumCompositionModel(album, player))
+    def resizeColumns(self):
         for index, width in enumerate(self.COLUMNS_WIDTHS):
             self.table.horizontalHeader().resizeSection(index, width)
+        self.table.horizontalHeader().setSectionResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
+        self.table.horizontalHeader().setSectionResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
+
+    def display(self, player, album):
+        self.table.setModel(AlbumCompositionModel(album, player))
+        self.resizeColumns()
