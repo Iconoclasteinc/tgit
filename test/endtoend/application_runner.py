@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import sip
-
-from test.cute4.events import MainEventLoop
-from tgit4.isni.name_registry import NameRegistry
-
-from test.cute4.matchers import named, showingOnScreen
-from test.cute4.widgets import mainApplicationWindow
-from test.cute4.prober import EventProcessingProber
-from test.cute4.robot import Robot
-from test.drivers4.tagger_driver import TaggerDriver
-from test.util4 import doubles
-from tgit4.tagger import TGiT
+from test.cute.events import MainEventLoop
+from tgit.isni.name_registry import NameRegistry
+from test.cute.matchers import named, showingOnScreen
+from test.cute.widgets import mainApplicationWindow
+from test.cute.prober import EventProcessingProber
+from test.cute.robot import Robot
+from test.drivers.tagger_driver import TaggerDriver
+from test.util import doubles
+from tgit.tagger import TGiT
 
 ONE_SECOND = 1000
 
@@ -27,8 +24,6 @@ class ApplicationRunner(object):
     def stop(self):
         self.tagger.close()
         del self.tagger
-        # force deletion of C++ objects in the background, for extra safety
-        sip.delete(self.app)
         del self.app
 
     def newAlbum(self, *paths):

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-import shutil
 
+import shutil
 import unittest
 
-from tgit4.util import fs
-
-from test.drivers4.application_settings_driver import ApplicationSettingsDriver
-from test.util4 import resources, doubles
-from test.endtoend4.application_runner import ApplicationRunner
+from tgit.util import fs
+from test.drivers.application_settings_driver import ApplicationSettingsDriver
+from test.util import resources, doubles
+from test.endtoend.application_runner import ApplicationRunner
 
 
 class TaggerTest(unittest.TestCase):

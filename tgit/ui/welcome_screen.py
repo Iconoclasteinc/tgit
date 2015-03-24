@@ -20,7 +20,16 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QPushButton, QFrame, QGridLayout, QVBoxLayout, QHBoxLayout, QLabel
 
-from tgit.ui import centerHorizontally
+
+def centerHorizontally(widget):
+    container = QWidget()
+    layout = QHBoxLayout()
+    layout.setContentsMargins(0, 0, 0, 0)
+    container.setLayout(layout)
+    layout.addStretch()
+    layout.addWidget(widget)
+    layout.addStretch()
+    return container
 
 
 # We have to inherit from QFrame and not QWidget if we want a background without reimplementing QWidget.paintEvent
