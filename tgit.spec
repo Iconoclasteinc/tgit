@@ -1,7 +1,7 @@
 # -*- mode: python -*-
 a = Analysis(['tgit.py'],
              pathex=[],
-             hiddenimports=[],
+             hiddenimports=["PyQt5.QtNetwork", "PyQt5.QtPrintSupport"],
              hookspath=None)
 pyz = PYZ(a.pure)
 
@@ -9,6 +9,15 @@ if is_win:
   ext = '.exe'
 else:
   ext = ''
+
+if is_darwin:
+    plugins = [
+        ("qt5_plugins/mediaservice/libqtmedia_audioengine.dylib", "/usr/local/Cellar/qt5/5.4.0/plugins/mediaservice/libqtmedia_audioengine.dylib", "BINARY"),
+        ("qt5_plugins/mediaservice/libqavfmediaplayer.dylib", "/usr/local/Cellar/qt5/5.4.0/plugins/mediaservice/libqavfmediaplayer.dylib", "BINARY"),
+        ("qt5_plugins/mediaservice/libqavfcamera.dylib", "/usr/local/Cellar/qt5/5.4.0/plugins/mediaservice/libqavfcamera.dylib", "BINARY"),
+    ]
+else:
+    plugins = []
 
 exe = EXE(pyz,
           a.scripts,
@@ -26,7 +35,7 @@ excluded = [('QtSql', None, None),
 #           ('QtXml', None, None)]
 
 coll = COLLECT(exe,
-               a.binaries - excluded,
+               a.binaries + plugins - excluded,
                a.zipfiles,
                a.datas,
                strip=None,
