@@ -1,8 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
 
-from tgit4 import __version__
+import sys
+
+from cx_Freeze import setup, Executable
+
+from tgit import __version__
+
+
+base = None
+if sys.platform == 'win32':
+    base = 'Win32GUI'
+
+options = {
+    'build_exe': {
+        'includes': ["lxml._elementpath", "lxml", "PyQt5.QtNetwork"],
+        "include_files": [(r"/usr/local/Cellar/qt5/5.4.0/plugins/mediaservice", "mediaservice")]
+    }
+}
+
+executables = [
+    Executable('tgit.py', base=base)
+]
 
 setup(
     name='tgit',
@@ -15,5 +34,6 @@ setup(
     test_suite='test',
     packages=['tgit'],
     scripts=['tgit.py'],
-    requires=['mutagen', 'python-dateutil', 'six', 'PyQt5']
+    options=options,
+    executables=executables
 )
