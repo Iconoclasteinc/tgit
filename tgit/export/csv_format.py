@@ -66,7 +66,7 @@ class CsvFormat(QObject):
         return text and self.tr(text) or ''
 
     def encodeRow(self, texts):
-        return map(toExcelNewLines, map(self.encode, map(self.translate, texts)))
+        return list(map(toExcelNewLines, list(map(self.encode, list(map(self.translate, texts))))))
 
 
 def toExcelNewLines(text):

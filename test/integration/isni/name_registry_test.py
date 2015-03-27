@@ -18,86 +18,86 @@ class ISNITest(unittest.TestCase):
     @unittest.skip('Exploration test')
     def testFindsIndentity(self):
         server.start()
-        server.database["00000001"] = [(u"Joel", u"Miller"), (u"Joel E.", u"Miller"), (u"Joel", u"miller")]
+        server.database["00000001"] = [("Joel", "Miller"), ("Joel E.", "Miller"), ("Joel", "miller")]
         self.registry = NameRegistry(host='localhost', port=5000)
-        identities = self.registry.searchByKeywords(u"joel", u"miller")
+        identities = self.registry.searchByKeywords("joel", "miller")
         server.database.clear()
         server.stop()
 
-        assert_that(identities, has_identity('00000001', u'Joel Miller'))
+        assert_that(identities, has_identity('00000001', 'Joel Miller'))
 
     def testFindsRebeccaAnnMaloyIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"maloy", u"rebecca", u"ann")
+        _, identities = registry.searchByKeywords("maloy", "rebecca", "ann")
 
-        assert_that(identities, has_identity('0000000115677274', u'Rebecca Ann Maloy'))
+        assert_that(identities, has_identity('0000000115677274', 'Rebecca Ann Maloy'))
 
     def testFindsOnlyOneRecordWhenSearchingForRebeccaAnnMaloyIndentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        numberOfResults, _ = registry.searchByKeywords(u"maloy", u"rebecca", u"ann")
+        numberOfResults, _ = registry.searchByKeywords("maloy", "rebecca", "ann")
 
         assert_that(numberOfResults, equal_to('1'))
 
     def testFindsRebeccaAnnMaloyIndentityUsingPartOfHerName(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"malo", u"reb", u"a")
+        _, identities = registry.searchByKeywords("malo", "reb", "a")
 
-        assert_that(identities, has_identity('0000000115677274', u'Rebecca Ann Maloy'))
+        assert_that(identities, has_identity('0000000115677274', 'Rebecca Ann Maloy'))
 
     def testFindsJoelMillerIndentityWithDates(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"miller", u"joel")
+        _, identities = registry.searchByKeywords("miller", "joel")
 
-        assert_that(identities, has_identity('0000000073759369', u'Joel Miller'))
+        assert_that(identities, has_identity('0000000073759369', 'Joel Miller'))
 
     def testFindsMoreThanTwentyMatchesWhenSearchingForJoMiller(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        numberOfRecords, _ = registry.searchByKeywords(u"Miller", u"Jo")
+        numberOfRecords, _ = registry.searchByKeywords("Miller", "Jo")
 
         assert_that(int(numberOfRecords), greater_than(20))
 
     def testFindsMetallicaIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"Metallica")
+        _, identities = registry.searchByKeywords("Metallica")
 
-        assert_that(identities, has_identity('0000000122939631', u'Metallica'))
+        assert_that(identities, has_identity('0000000122939631', 'Metallica'))
 
     def testFindsTheBeatlesIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"Beatles", u"The")
+        _, identities = registry.searchByKeywords("Beatles", "The")
 
-        assert_that(identities, has_identity('0000000121707484', u'The Beatles'))
+        assert_that(identities, has_identity('0000000121707484', 'The Beatles'))
 
     def testFindsTheBeatlesIdentityWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"The", u"Beatles")
+        _, identities = registry.searchByKeywords("The", "Beatles")
 
         title = 'The fool on the hill from The Beatles\' T.V. film Magical mystery tour'
-        assert_that(identities, has_identity('0000000121707484', u'The Beatles'))
+        assert_that(identities, has_identity('0000000121707484', 'The Beatles'))
 
     def testFindsLedZeppelinIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"Led", u"Zeppelin")
+        _, identities = registry.searchByKeywords("Led", "Zeppelin")
 
-        assert_that(identities, has_identity('0000000123483226', u'Led Zeppelin'))
+        assert_that(identities, has_identity('0000000123483226', 'Led Zeppelin'))
 
     def testFindsLedZeppelinIdentityWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"Zeppelin", u"Led")
+        _, identities = registry.searchByKeywords("Zeppelin", "Led")
 
-        assert_that(identities, has_identity('0000000123483226', u'Led Zeppelin'))
+        assert_that(identities, has_identity('0000000123483226', 'Led Zeppelin'))
 
     def testFindsRageAgainstTheMachineIdentity(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"Rage", u"Against", u"The", u"Machine")
+        _, identities = registry.searchByKeywords("Rage", "Against", "The", "Machine")
 
-        assert_that(identities, has_identity('0000000122905407', u'Rage against the machine'))
+        assert_that(identities, has_identity('0000000122905407', 'Rage against the machine'))
 
     def testFindsRageAgainstTheMachineWithPrefixSentFirst(self):
         registry = NameRegistry(host='isni.oclc.nl')
-        _, identities = registry.searchByKeywords(u"Machine", u"Rage", u"Against", u"The")
+        _, identities = registry.searchByKeywords("Machine", "Rage", "Against", "The")
 
-        assert_that(identities, has_identity('0000000122905407', u'Rage against the machine'))
+        assert_that(identities, has_identity('0000000122905407', 'Rage against the machine'))
 
     @unittest.skip('ISNI Response changes too often for test to be valid')
     def testAssignWithTheISNIAtomPubAPIUsingAMinimalRequest(self):
@@ -387,6 +387,6 @@ class ISNITest(unittest.TestCase):
     @unittest.skip('ISNI Response changes too often for test to be valid')
     def testAssignAnISNIUsingFullNameAndTitleOfWorks(self):
         registry = NameRegistry(assignHost='isni-m-acc.oclc.nl')
-        isni = registry.assign(u"Jan", u"Baerthel", u"Industrielles Bauen: Leitfaden", u"Industrielles Bauen")
+        isni = registry.assign("Jan", "Baerthel", "Industrielles Bauen: Leitfaden", "Industrielles Bauen")
 
         assert_that(isni, equal_to('0000000124568061'))

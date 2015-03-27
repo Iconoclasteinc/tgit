@@ -34,7 +34,7 @@ class AnnouncerTest(unittest.TestCase):
         self.announcer.eventOccurred(self.event)
 
     def _listenersAreSubscribed(self):
-        for i in xrange(self.listenerCount):
+        for i in range(self.listenerCount):
             self._subscribeListener()
 
     def _subscribeListener(self):

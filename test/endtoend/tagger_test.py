@@ -31,7 +31,7 @@ class TaggerTest(unittest.TestCase):
 
     def testCreatesAndTagsANewAlbum(self):
         tracks = [
-            self.library.create(trackTitle=u'Ma préférence',
+            self.library.create(trackTitle='Ma préférence',
                                 releaseName='Jaloux',
                                 frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('jaloux.jpg'))),
                                 leadPerformer='Julien Clerc',
@@ -47,59 +47,59 @@ class TaggerTest(unittest.TestCase):
                                 releaseName='Niagara',
                                 frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('niagara.jpg'))),
                                 releaseTime='1971',
-                                lyricist=u'Étienne Roda-Gil')
+                                lyricist='Étienne Roda-Gil')
         ]
 
         self.application.newAlbum(*tracks)
-        self.application.showsAlbumContent([u'Ma préférence'],
-                                           [u'Fais moi une place'],
-                                           [u"Ce n'est rien"])
+        self.application.showsAlbumContent(['Ma préférence'],
+                                           ['Fais moi une place'],
+                                           ["Ce n'est rien"])
 
         self.application.showsAlbumMetadata(releaseName='Jaloux', leadPerformer='Julien Clerc', labelName='EMI',
                                             releaseTime='1978')
         self.application.changeAlbumMetadata(releaseName='Best Of', frontCover=resources.path('best-of.jpg'),
                                              labelName='EMI Music France', releaseTime='2009-04-06')
 
-        self.application.showsNextTrackMetadata(trackTitle=u'Ma préférence')
+        self.application.showsNextTrackMetadata(trackTitle='Ma préférence')
         self.application.changeTrackMetadata(composer='Julien Clerc', lyricist='Jean-Loup Dabadie')
 
-        self.application.showsNextTrackMetadata(trackTitle=u'Fais moi une place')
+        self.application.showsNextTrackMetadata(trackTitle='Fais moi une place')
         self.application.changeTrackMetadata(composer='Julien Clerc', lyricist='Francoise Hardy')
 
-        self.application.showsNextTrackMetadata(trackTitle=u"Ce n'est rien")
+        self.application.showsNextTrackMetadata(trackTitle="Ce n'est rien")
         self.application.changeTrackMetadata(composer='Julien Clerc')
 
-        self.library.contains(u'Julien Clerc - 01 - Ma préférence.mp3',
+        self.library.contains('Julien Clerc - 01 - Ma préférence.mp3',
                               frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
                               releaseName='Best Of',
                               leadPerformer='Julien Clerc',
                               labelName='EMI Music France',
                               releaseTime='2009-04-06',
-                              trackTitle=u'Ma préférence',
+                              trackTitle='Ma préférence',
                               composer='Julien Clerc',
                               lyricist='Jean-Loup Dabadie')
-        self.library.contains(u'Julien Clerc - 02 - Fais moi une place.mp3',
+        self.library.contains('Julien Clerc - 02 - Fais moi une place.mp3',
                               frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
                               releaseName='Best Of',
                               leadPerformer='Julien Clerc',
                               labelName='EMI Music France',
                               releaseTime='2009-04-06',
-                              trackTitle=u'Fais moi une place',
+                              trackTitle='Fais moi une place',
                               composer='Julien Clerc',
                               lyricist='Francoise Hardy')
-        self.library.contains(u"Julien Clerc - 03 - Ce n'est rien.mp3",
+        self.library.contains("Julien Clerc - 03 - Ce n'est rien.mp3",
                               frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
                               releaseName='Best Of',
                               leadPerformer='Julien Clerc',
                               labelName='EMI Music France',
                               releaseTime='2009-04-06',
-                              trackTitle=u"Ce n'est rien",
+                              trackTitle="Ce n'est rien",
                               composer='Julien Clerc',
-                              lyricist=u'Étienne Roda-Gil')
+                              lyricist='Étienne Roda-Gil')
 
     def testChangingApplicationSettings(self):
         self.application.hasSettings(language='English')
         self.application.changeSettings(language='French')
         self.settings.hasStored('language', 'fr')
         self.restart()
-        self.application.hasSettings(language=u'Français')
+        self.application.hasSettings(language='Français')

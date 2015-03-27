@@ -163,12 +163,12 @@ class ID3ContainerTest(unittest.TestCase):
 
     def testReadsCoverPicturesFromAPICFrames(self):
         metadata = container.load(self.makeMp3(
-            APIC_FRONT=('image/jpeg', 'Front', 'front-cover.jpg'),
-            APIC_BACK=('image/jpeg', 'Back', 'back-cover.jpg')))
+            APIC_FRONT=('image/jpeg', 'Front', b'front-cover.jpg'),
+            APIC_BACK=('image/jpeg', 'Back', b'back-cover.jpg')))
 
         assert_that(metadata.images, contains_inanyorder(
-            Image('image/jpeg', 'front-cover.jpg', type_=Image.FRONT_COVER, desc='Front'),
-            Image('image/jpeg', 'back-cover.jpg', type_=Image.BACK_COVER, desc='Back'),
+            Image('image/jpeg', b'front-cover.jpg', type_=Image.FRONT_COVER, desc='Front'),
+            Image('image/jpeg', b'back-cover.jpg', type_=Image.BACK_COVER, desc='Back'),
         ))
 
     def testReadsTaggerFromCustomFrame(self):
@@ -185,43 +185,43 @@ class ID3ContainerTest(unittest.TestCase):
 
     def testRoundTripsMetadataToFile(self):
         metadata = Metadata()
-        metadata.addImage('image/jpeg', 'salers.jpg', Image.FRONT_COVER)
-        metadata['releaseName'] = u'Album'
+        metadata.addImage('image/jpeg', b'salers.jpg', Image.FRONT_COVER)
+        metadata['releaseName'] = 'Album'
         metadata['compilation'] = True
-        metadata['leadPerformer'] = u'Lead Performer'
-        metadata['isni'] = u'0000123456789'
+        metadata['leadPerformer'] = 'Lead Performer'
+        metadata['isni'] = '0000123456789'
         metadata['guestPerformers'] = [('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]
-        metadata['labelName'] = u'Label Name'
-        metadata['catalogNumber'] = u'123 456-1'
-        metadata['upc'] = u'987654321111'
-        metadata['recordingTime'] = u'2012-07-01'
-        metadata['releaseTime'] = u'2013-12-01'
-        metadata['originalReleaseTime'] = u'1999-01-01'
-        metadata['recordingStudios'] = u'Studio Name'
-        metadata['producer'] = u'Artistic Producer'
-        metadata['mixer'] = u'Mixing Engineer'
+        metadata['labelName'] = 'Label Name'
+        metadata['catalogNumber'] = '123 456-1'
+        metadata['upc'] = '987654321111'
+        metadata['recordingTime'] = '2012-07-01'
+        metadata['releaseTime'] = '2013-12-01'
+        metadata['originalReleaseTime'] = '1999-01-01'
+        metadata['recordingStudios'] = 'Studio Name'
+        metadata['producer'] = 'Artistic Producer'
+        metadata['mixer'] = 'Mixing Engineer'
         metadata['contributors'] = [('recording', 'Recording Eng.'),
                                     ('mastering', 'Mastering Eng.'),
                                     ('recording', 'Assistant Recording Eng.')]
-        metadata['comments'] = u'Comments'
-        metadata['primaryStyle'] = u'Jazz'
-        metadata['trackTitle'] = u'Track Title'
-        metadata['versionInfo'] = u'Version Info'
-        metadata['featuredGuest'] = u'Featured Guest'
-        metadata['lyricist'] = u'Lyricist'
-        metadata['composer'] = u'Composer'
-        metadata['publisher'] = u'Publisher'
-        metadata['isrc'] = u'ZZXX87654321'
-        metadata['labels'] = u'Tag1 Tag2 Tag3'
-        metadata['lyrics'] = u'Lyrics'
-        metadata['language'] = u'fra'
-        metadata['tagger'] = u'TGiT v1.0'
-        metadata['taggingTime'] = u'2014-03-26 14:18:55 EDT-0400'
+        metadata['comments'] = 'Comments'
+        metadata['primaryStyle'] = 'Jazz'
+        metadata['trackTitle'] = 'Track Title'
+        metadata['versionInfo'] = 'Version Info'
+        metadata['featuredGuest'] = 'Featured Guest'
+        metadata['lyricist'] = 'Lyricist'
+        metadata['composer'] = 'Composer'
+        metadata['publisher'] = 'Publisher'
+        metadata['isrc'] = 'ZZXX87654321'
+        metadata['labels'] = 'Tag1 Tag2 Tag3'
+        metadata['lyrics'] = 'Lyrics'
+        metadata['language'] = 'fra'
+        metadata['tagger'] = 'TGiT v1.0'
+        metadata['taggingTime'] = '2014-03-26 14:18:55 EDT-0400'
         self.assertCanBeSavedAndReloadedWithSameState(metadata)
 
     def testHandlesUnicodeMetadata(self):
         metadata = Metadata()
-        metadata['releaseName'] = u'Titre en Français'
+        metadata['releaseName'] = 'Titre en Français'
         self.assertCanBeSavedAndReloadedWithSameState(metadata)
 
     def testRemovesFrameWhenTagNotInMetadata(self):
@@ -236,24 +236,24 @@ class ID3ContainerTest(unittest.TestCase):
     def testCanSaveSeveralPicturesSharingTheSameDescription(self):
         filename = self.makeMp3()
         metadata = container.load(filename)
-        metadata.addImage('image/jpeg', 'salers.jpg', desc='Front Cover')
-        metadata.addImage('image/jpeg', 'ragber.jpg', desc='Front Cover')
+        metadata.addImage('image/jpeg', b'salers.jpg', desc='Front Cover')
+        metadata.addImage('image/jpeg', b'ragber.jpg', desc='Front Cover')
         container.save(filename, metadata)
 
         assert_that(container.load(filename).images, contains_inanyorder(
-            Image('image/jpeg', 'salers.jpg', type_=Image.OTHER, desc='Front Cover'),
-            Image('image/jpeg', 'ragber.jpg', type_=Image.OTHER, desc='Front Cover (2)'),
+            Image('image/jpeg', b'salers.jpg', type_=Image.OTHER, desc='Front Cover'),
+            Image('image/jpeg', b'ragber.jpg', type_=Image.OTHER, desc='Front Cover (2)'),
         ))
 
     def testRemovesExistingAttachedPicturesOnSave(self):
-        filename = self.makeMp3(APIC_FRONT=('image/jpeg', '', 'front-cover.jpg'))
+        filename = self.makeMp3(APIC_FRONT=('image/jpeg', '', b'front-cover.jpg'))
         metadata = container.load(filename)
         metadata.removeImages()
 
         container.save(filename, metadata)
         assert_that(container.load(filename).images, has_length(0), 'removed images')
 
-        metadata.addImage(mime='image/jpeg', data='salers.jpg', desc='Front')
+        metadata.addImage(mime='image/jpeg', data=b'salers.jpg', desc='Front')
         container.save(filename, metadata)
 
         assert_that(container.load(filename).images, has_length(1), 'updated images')
@@ -266,6 +266,6 @@ class ID3ContainerTest(unittest.TestCase):
     def assertContainsMetadata(self, filename, expected):
         expectedLength = len(expected) + len(('bitrate', 'duration'))
         metadata = container.load(filename)
-        assert_that(metadata.items(), has_items(*expected.items()), 'metadata items')
+        assert_that(list(metadata.items()), has_items(*list(expected.items())), 'metadata items')
         assert_that(metadata, has_length(expectedLength), 'metadata count')
         assert_that(metadata.images, has_items(*expected.images), 'metadata images')

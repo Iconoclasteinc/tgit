@@ -31,7 +31,7 @@ def makeTempDir():
         from ctypes import create_unicode_buffer, windll
 
         longname = create_unicode_buffer(MAXIMUM_WINDOWS_DIR_PATH_LENGTH)
-        windll.kernel32.GetLongPathNameW(unicode(dirpath), longname, MAXIMUM_WINDOWS_DIR_PATH_LENGTH)
+        windll.kernel32.GetLongPathNameW(str(dirpath), longname, MAXIMUM_WINDOWS_DIR_PATH_LENGTH)
         dirpath = longname.value
 
     return dirpath

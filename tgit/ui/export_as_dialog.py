@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import QFileDialog
 
 
 class ExportAsDialog(QObject):
-    exportAs = pyqtSignal(unicode)
+    exportAs = pyqtSignal(str)
 
     def __init__(self, parent, native, transient=True):
         QObject.__init__(self)

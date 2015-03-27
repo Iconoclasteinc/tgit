@@ -13,7 +13,7 @@ def trackEditionPage(parent):
 
 class TrackEditionPageDriver(BaseDriver):
     def showsMetadata(self, **meta):
-        for tag, value in meta.iteritems():
+        for tag, value in meta.items():
             if tag == 'trackTitle':
                 self.showsTrackTitle(value)
             elif tag == 'versionInfo':
@@ -38,7 +38,7 @@ class TrackEditionPageDriver(BaseDriver):
                 raise AssertionError("Don't know how to verify <%s>" % tag)
 
     def changeMetadata(self, **meta):
-        for tag, value in meta.iteritems():
+        for tag, value in meta.items():
             if tag == 'trackTitle':
                 self.changeTrackTitle(value)
             elif tag == 'versionInfo':

@@ -14,7 +14,7 @@ def albumEditionPage(parent):
 
 class AlbumEditionPageDriver(BaseDriver):
     def showsMetadata(self, **meta):
-        for tag, value in meta.iteritems():
+        for tag, value in meta.items():
             if tag == 'releaseName':
                 self.showsReleaseName(value)
             elif tag == 'leadPerformer':
@@ -43,7 +43,7 @@ class AlbumEditionPageDriver(BaseDriver):
                 raise AssertionError("Don't know how to verify '%s'" % tag)
 
     def changeMetadata(self, **meta):
-        for tag, value in meta.iteritems():
+        for tag, value in meta.items():
             if tag == 'frontCover':
                 self.selectPicture(value)
             elif tag == 'releaseName':

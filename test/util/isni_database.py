@@ -4,6 +4,7 @@ from flask import Flask, request
 from threading import Thread
 import requests
 import logging
+from functools import reduce
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -14,7 +15,7 @@ database = {}
 
 
 def format_name(forename, surname):
-    return u"""\
+    return """\
             <personalName>
               <forename>{forename}</forename>
               <surname>{surname}</surname>
@@ -23,7 +24,7 @@ def format_name(forename, surname):
 
 
 def format_record(number, isni, names):
-    return u"""\
+    return """\
     <srw:record>
     <srw:recordSchema>isni-b</srw:recordSchema>
     <srw:recordPacking>xml</srw:recordPacking>
@@ -49,7 +50,7 @@ def format_record(number, isni, names):
 
 
 def format_results(identities):
-    return u"""\
+    return """\
 <srw:searchRetrieveResponse \
 xmlns:srw="http://www.loc.gov/zing/srw/" \
 xmlns:dc="http://purl.org/dc/elements/1.1/" \
@@ -68,7 +69,7 @@ xmlns:xcql="http://www.loc.gov/zing/cql/xcql/">
 
 def identities_matching(keywords):
     matching_identities = {}
-    for isni, full_names in database.iteritems():
+    for isni, full_names in database.items():
         all_names = [name for full_name in full_names for name in full_name]
 
         def matches(keyword, names):

@@ -25,7 +25,7 @@ from tgit.metadata import Metadata, Image
 
 
 def invert(mapping):
-    return dict(zip(mapping.values(), mapping.keys()))
+    return dict(list(zip(list(mapping.values()), list(mapping.keys()))))
 
 
 def load(filename):
@@ -62,7 +62,7 @@ class TextProcessor(object):
 
 class UnicodeProcessor(TextProcessor):
     def __init__(self, key, tag):
-        super(UnicodeProcessor, self).__init__(key, tag, unicode, unicode)
+        super(UnicodeProcessor, self).__init__(key, tag, str, str)
 
 
 class BooleanProcessor(TextProcessor):

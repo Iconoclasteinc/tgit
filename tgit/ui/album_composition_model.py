@@ -97,9 +97,7 @@ class ColumnEnum(type):
         return cls.__values__[item]
 
 
-class Columns:
-    __metaclass__ = ColumnEnum
-
+class Columns(metaclass=ColumnEnum):
     trackTitle = Column(name='Track Title', value=lambda row: row.trackTitle)
     leadPerformer = Column(name='Lead Performer', value=Row.leadPerformer)
     releaseName = Column(name="Album Title", value=Row.releaseName)

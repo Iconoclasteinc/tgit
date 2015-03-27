@@ -112,8 +112,8 @@ class AlbumDirectorTest(unittest.TestCase):
                             trackTitle='Track Title',
                             album=build.album(releaseName='Album Title',
                                               leadPerformer='Album Artist',
-                                              images=[build.image(mime='image/jpeg', data='<image data>')]))
-        now = datetime(2014, 03, 23, 16, 44, 33, tzinfo=tz.tzutc())
+                                              images=[build.image(mime='image/jpeg', data=b'<image data>')]))
+        now = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
 
         tagged = os.path.join(self.tempdir, 'tagged.mp3')
         director.recordTrack(ID3Container(), tagged, track, now)
@@ -123,7 +123,7 @@ class AlbumDirectorTest(unittest.TestCase):
                                           taggingTime='2014-03-23 16:44:33 +0000',
                                           releaseName='Album Title',
                                           leadPerformer='Album Artist'), 'metadata tags')
-        assert_that(metadata.images, contains(Image(mime='image/jpeg', data='<image data>')), 'attached pictures')
+        assert_that(metadata.images, contains(Image(mime='image/jpeg', data=b'<image data>')), 'attached pictures')
 
     def testGracefullyHandlesWhenTaggingOriginalRecording(self):
         original = mp3_file.make(to=self.tempdir)
@@ -173,10 +173,10 @@ class AlbumDirectorTest(unittest.TestCase):
             has_properties(trackTitle='Someone Like You')))
 
     def testReplacesInvalidCharactersForFileNamesWithUnderscores(self):
-        assert_that(sanitize(u'1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')
+        assert_that(sanitize('1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')
 
     def testStripsLeadingAndTrailingWhitespaceFromFileNames(self):
-        assert_that(sanitize(u'  filename   '), equal_to('filename'), 'sanitized name')
+        assert_that(sanitize('  filename   '), equal_to('filename'), 'sanitized name')
 
     def testTagsFileToSameDirectoryUnderArtistAndTitleName(self):
         track = build.track(filename='track.mp3', leadPerformer='artist', trackTitle='title')

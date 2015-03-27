@@ -42,12 +42,12 @@ def addTracksToAlbum(container, album, selection):
 
 
 def updateTrack(track, **metadata):
-    for key, value in metadata.iteritems():
+    for key, value in metadata.items():
         setattr(track, key, value)
 
 
 def updateAlbum(album, **metadata):
-    for key, value in metadata.iteritems():
+    for key, value in metadata.items():
         setattr(album, key, value)
 
     if not metadata.get('compilation'):
@@ -113,7 +113,7 @@ def sanitize(filename):
 def taggedName(track):
     dirname = os.path.dirname(track.filename)
     _, ext = os.path.splitext(track.filename)
-    filename = sanitize(u"{artist} - {number:02} - {title}{ext}".format(artist=track.leadPerformer,
+    filename = sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.leadPerformer,
                                                                         number=track.number,
                                                                         title=track.trackTitle,
                                                                         ext=ext))

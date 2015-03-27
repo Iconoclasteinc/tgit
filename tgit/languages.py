@@ -18,8 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 LANGUAGES = [
-    u"eng",
-    u"fra",
-    u"misc",
-    u"und"
+    "eng",
+    "fra",
+    "misc",
+    "und"
 ]

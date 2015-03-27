@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from StringIO import StringIO
+from io import StringIO
 import csv
 import unittest
 
@@ -83,8 +83,8 @@ class CsvFormatTest(unittest.TestCase):
         self.format.write(album, self.out)
 
         rows = readCsv(self.out)
-        _ = rows.next()
-        data = rows.next()
+        _ = next(rows)
+        data = next(rows)
         assert_that(data, contains('Release Name',
                                   'False',
                                   'Lead Performer',
@@ -124,10 +124,10 @@ class CsvFormatTest(unittest.TestCase):
         self.format.write(album, self.out)
 
         rows = readCsv(self.out)
-        _ = rows.next()
-        assert_that(rows.next(), has_item('Song 1'), 'first row')
-        assert_that(rows.next(), has_item('Song 2'), 'second row')
-        assert_that(rows.next(), has_item('Song 3'), 'third row')
+        _ = next(rows)
+        assert_that(next(rows), has_item('Song 1'), 'first row')
+        assert_that(next(rows), has_item('Song 2'), 'second row')
+        assert_that(next(rows), has_item('Song 3'), 'third row')
 
     def testMakeLineBreaksExcelFriendlyByConvertingLineFeedsToCarriageReturns(self):
         album = build.album(comments='Comments\nspanning\nseveral lines', tracks=[build.track()])
@@ -140,12 +140,12 @@ class CsvFormatTest(unittest.TestCase):
                     'row with line feeds')
 
     def testEncodesNonAsciiRecordContents(self):
-        album = build.album(comments=u'en français dans le texte', tracks=[build.track()])
+        album = build.album(comments='en français dans le texte', tracks=[build.track()])
         self.format.write(album, self.out)
 
         csv = readCsv(self.out)
         _ = csv.next()
-        assert_that(csv.next(), has_item(self.encoded(u'en français dans le texte')))
+        assert_that(csv.next(), has_item(self.encoded('en français dans le texte')))
 
 
 def readCsv(out):

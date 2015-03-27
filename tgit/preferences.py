@@ -29,7 +29,7 @@ class Preferences(object):
         self.settings.setValue(key, value)
 
     def add(self, **settings):
-        for key, value in settings.iteritems():
+        for key, value in settings.items():
             self[key] = value
 
     def keys(self):

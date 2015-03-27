@@ -488,7 +488,7 @@ class TableViewDriver(WidgetDriver):
                 self._matcher = matcher
 
             def _headers(self, table):
-                return [headerText(table, column) for column in xrange(columnCount(table))]
+                return [headerText(table, column) for column in range(columnCount(table))]
 
             def _matches(self, table):
                 return self._matcher.matches(self._headers(table))
@@ -510,10 +510,10 @@ class TableViewDriver(WidgetDriver):
                 self._matcher = matcher
 
             def _cellsOf(self, table, row):
-                return [cellText(table, row, column) for column in xrange(columnCount(table))]
+                return [cellText(table, row, column) for column in range(columnCount(table))]
 
             def _matches(self, table):
-                for row in xrange(rowCount(table)):
+                for row in range(rowCount(table)):
                     if self._matcher.matches(self._cellsOf(table, row)):
                         self.inRow = visualRow(table, row)
                         return True
@@ -538,7 +538,7 @@ class TableViewDriver(WidgetDriver):
                 self._matcher = matcher
 
             def _cellsIn(self, table, row):
-                return [cellText(table, row, column) for column in xrange(columnCount(table))]
+                return [cellText(table, row, column) for column in range(columnCount(table))]
 
             def _rowsIn(self, table):
                 rows = []
@@ -686,7 +686,7 @@ class TableWidgetDriver(TableViewDriver):
 
             def _headerItems(self, table):
                 return [table.horizontalHeaderItem(columnLocation(table, column))
-                        for column in xrange(table.columnCount())]
+                        for column in range(table.columnCount())]
 
             def _matches(self, table):
                 return self._matcher.matches(self._headerItems(table))
@@ -708,10 +708,10 @@ class TableWidgetDriver(TableViewDriver):
                 self._matcher = matcher
 
             def _cellItems(self, table, row):
-                return [table.item(row, column) for column in xrange(table.columnCount())]
+                return [table.item(row, column) for column in range(table.columnCount())]
 
             def _matches(self, table):
-                for row in xrange(table.rowCount()):
+                for row in range(table.rowCount()):
                     if self._matcher.matches(self._cellItems(table, row)):
                         self.inRow = table.visualRow(row)
                         return True
@@ -736,11 +736,11 @@ class TableWidgetDriver(TableViewDriver):
                 self._matcher = matcher
 
             def _cellItems(self, table, row):
-                return [table.item(row, column) for column in xrange(table.columnCount())]
+                return [table.item(row, column) for column in range(table.columnCount())]
 
             def _rowsItems(self, table):
                 rows = []
-                for row in xrange(table.rowCount()):
+                for row in range(table.rowCount()):
                     rows.append(self._cellItems(table, row))
                 return rows
 

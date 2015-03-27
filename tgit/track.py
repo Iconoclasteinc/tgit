@@ -27,9 +27,7 @@ class TrackListener(object):
         pass
 
 
-class Track(object):
-    __metaclass__ = tag.Taggable
-
+class Track(object, metaclass=tag.Taggable):
     trackTitle = tag.text()
     leadPerformer = tag.text()
     versionInfo = tag.text()

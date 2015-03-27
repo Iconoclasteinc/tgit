@@ -46,7 +46,7 @@ class numeric(typed):
 
 
 class text(typed):
-    expectedType = (str, unicode, type(None))
+    expectedType = (str, str, type(None))
 
 
 class decimal(typed):
@@ -70,4 +70,4 @@ class Taggable(type):
         return type.__new__(cls, clsname, bases, methods)
 
     def tags(cls):
-        return (value.name for value in cls.__dict__.itervalues() if isinstance(value, tag))
+        return (value.name for value in cls.__dict__.values() if isinstance(value, tag))

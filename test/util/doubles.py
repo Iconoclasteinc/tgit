@@ -88,5 +88,5 @@ def exportFormat():
 class FakeExportFormat(object):
     def write(self, album, out):
         for track in album.tracks:
-            out.write(track.trackTitle)
-            out.write('\n')
+            out.write(bytes(track.trackTitle, 'UTF-8'))
+            out.write(b'\n')

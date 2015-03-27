@@ -112,7 +112,7 @@ class WidgetScreenBoundsProbe(Probe):
             description.append_text(' which had no dimensions')
 
     def isSatisfied(self):
-        return (self._bounds is not None and self._bounds.width > 0 and
+        return (self._bounds is not None and self._bounds.width() > 0 and
                 self._bounds.height() > 0) or False
 
     def test(self):
