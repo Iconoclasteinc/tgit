@@ -14,7 +14,7 @@ if sys.platform == 'win32':
 
 options = {
     'build_exe': {
-        'includes': ["lxml._elementpath", "lxml", "PyQt5.QtNetwork"],
+        'includes': ["lxml._elementpath", "lxml", "PyQt5.QtNetwork", "PyQt5.QtPrintSupport", "PyQt5.QtMultimediaWidgets", "PyQt5.QtOpenGL", "PyQt5.QtSvg"],
         "include_files": [(r"/usr/local/Cellar/qt5/5.4.0/plugins/mediaservice", "mediaservice")]
     }
 }
