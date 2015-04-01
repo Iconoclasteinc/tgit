@@ -1,7 +1,6 @@
 lxml
 requests
 PyHamcrest
-PyInstaller
 flexmock
 mutagen
 nose
@@ -9,3 +8,4 @@ python-dateutil
 six
 flask
 PyQt5
+cx_Freeze
