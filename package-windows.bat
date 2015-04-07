@@ -14,5 +14,5 @@ lrelease.exe resources\tgit_fr.ts -qm resources\tgit_fr.qm
 pyrcc5.exe -o tgit\ui\resources.py resources.qrc
 python.exe setup.py build
 %CC% tgit_installer.iss
-%SIGN% sign /v /f %CERTDIR%\Iconoclaste.pfx build\*.exe
+REM %SIGN% sign /v /f %CERTDIR%\Iconoclaste.pfx build\*.exe
 CALL %DEACTIVATEVIRTUALENV%
