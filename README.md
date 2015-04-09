@@ -1,0 +1,2 @@
+# tgit
+Le projet TGiT consiste à créer un environnement logiciel d’indexation et de stockage des métadonnées musicales, qui permettra progressivement l’atteinte de standards ouverts mondiaux, en se fondant sur la participation des artistes et des acteurs du milieu. Le projet TGiT est innovateur à la fois sur les plans conceptuel et technologique. L’usage des métadonnées musicales est aujourd’hui un enjeu de diversité culturelle, le projet TGiT cherche à contribuer à sa résolution.
