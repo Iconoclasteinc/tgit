@@ -25,8 +25,8 @@ UninstallDisplayIcon={app}\{#MyAppExeName}
 UninstallDisplayName={#MyAppName}
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"; LicenseFile: "license.txt"
-Name: "french"; MessagesFile: "compiler:Languages\French.isl"; LicenseFile: "license-fr.txt"
+Name: "english"; MessagesFile: "compiler:Default.isl"; LicenseFile: "LICENSE"
+Name: "french"; MessagesFile: "compiler:Languages\French.isl"; LicenseFile: "LICENSE"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
