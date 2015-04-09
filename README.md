@@ -1,3 +1,4 @@
+# TGiT
 Il n’est pas rare que nous comparions la culture de l’ère numérique à l’air que nous respirons, à l’eau qui coule de nos robinets. Si nous privons la musique numérique des informations qui la décrivent, l’auditeur ne sait pas ce qu’il écoute et les créateurs ne sont pas payés pour leur travail.
 
 Le logiciel TGiT permet d’effectuer les tâches suivantes :
