@@ -36,16 +36,16 @@ includes = [
     'PyQt5.QtSvg'
 ]
 
+translation_file = os.path.join(app_source_path, 'resources/tgit_fr.ts')
+compiled_translation_file = os.path.join(app_source_path, 'resources/tgit_fr.qm')
+resources_file = os.path.join(app_source_path, 'resources/resources.qrc')
+compiled_resources_file = os.path.join(app_source_path, 'tgit/ui/resources.py')
+
 if windows:
     include_files.append((os.path.join(app_pyqt_path, 'libEGL.dll'), 'libEGL.dll'))
 
-    translation_file = os.path.join(app_source_path, 'resources/tgit_fr.ts')
-    compiled_translation_file = os.path.join(app_source_path, 'resources/tgit_fr.qm')
-    resources_file = os.path.join(app_source_path, 'resources/resources.qrc')
-    compiled_resources_file = os.path.join(app_source_path, 'tgit/ui/resources.py')
-
-    os.system('lrelease.exe %(translation_file)s -qm %(compiled_translation_file)s' % locals())
-    os.system('pyrcc5.exe -o %(compiled_resources_file)s %(resources_file)s' % locals())
+os.system('lrelease %(translation_file)s -qm %(compiled_translation_file)s' % locals())
+os.system('pyrcc5 -o %(compiled_resources_file)s %(resources_file)s' % locals())
 
 setup(
     name=app_name,
@@ -73,8 +73,8 @@ setup(
                             appendScriptToLibrary=True)]
 )
 
-if windows:
-    try:
+try:
+    if windows:
         with open('tgit.template.iss', 'r') as src, open('tgit.iss', 'w') as dst:
             lines = src.readlines()
             data = []
@@ -91,5 +91,10 @@ if windows:
             dst.writelines(data)
         os.environ['PATH'] += ';C:\Program Files (x86)\Inno Setup 5'
         os.system('iscc.exe %s' % os.path.join(app_source_path, 'tgit.iss'))
-    except Exception as e:
-        print(e)
+
+    if osx:
+        os.system('hdiutil')
+hdiutil create dist/tgit.dmg -srcfolder dist/TGiT.app/ -volname TGiT -ov -format UDBZ
+
+except Exception as e:
+    print(e)
