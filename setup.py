@@ -5,11 +5,11 @@ import sys
 import os
 
 import PyQt5
+from PyQt5.QtCore import QCoreApplication
 from cx_Freeze import setup, Executable
 from tgit.version import __version__
 
 windows = sys.platform == 'win32'
-osx = sys.platform == 'darwin'
 
 app_script = 'tgit.py'
 app_package = 'tgit'
@@ -23,10 +23,19 @@ app_exe = 'TGiT.exe' if windows else 'TGiT'
 app_icon = 'resources/tgit.ico' if windows else 'resources/tgit.icns'
 app_source_path = os.getcwd()
 app_build_dir = os.path.join(app_source_path, r'build\exe.win-amd64-3.4') if windows else None
-app_pyqt_path = os.path.dirname(PyQt5.__file__)
 app_base = 'Win32GUI' if windows else None
 
-include_files = [(os.path.join(app_pyqt_path, r'plugins/mediaservice'), 'mediaservice')]
+if windows:
+    app_qt_path = os.path.dirname(PyQt5.__file__)
+    app_qt_plugin_path = os.path.join(app_qt_path, 'plugins')
+else:
+    app_qt_plugin_path = next(path for path in QCoreApplication.libraryPaths() if path.endswith('plugins'))
+    app_qt_path = os.path.dirname(app_qt_plugin_path)
+
+include_files = [(os.path.join(app_qt_plugin_path, 'mediaservice'), 'mediaservice')]
+if windows:
+    include_files.append((os.path.join(app_qt_path, 'libEGL.dll'), 'libEGL.dll'))
+
 includes = [
     'lxml._elementpath',
     'lxml', 'PyQt5.QtNetwork',
@@ -38,13 +47,10 @@ includes = [
 
 translation_file = os.path.join(app_source_path, 'resources/tgit_fr.ts')
 compiled_translation_file = os.path.join(app_source_path, 'resources/tgit_fr.qm')
+os.system('lrelease %(translation_file)s -qm %(compiled_translation_file)s' % locals())
+
 resources_file = os.path.join(app_source_path, 'resources/resources.qrc')
 compiled_resources_file = os.path.join(app_source_path, 'tgit/ui/resources.py')
-
-if windows:
-    include_files.append((os.path.join(app_pyqt_path, 'libEGL.dll'), 'libEGL.dll'))
-
-os.system('lrelease %(translation_file)s -qm %(compiled_translation_file)s' % locals())
 os.system('pyrcc5 -o %(compiled_resources_file)s %(resources_file)s' % locals())
 
 setup(
@@ -63,6 +69,16 @@ setup(
             'includes': includes,
             'include_files': include_files,
             'excludes': ['Tkinter']
+        },
+        'bdist_mac': {
+            'iconfile': app_icon,
+            'qt_menu_nib': '',
+            'bundle_name': app_exe,
+            'custom_info_plist': '',
+        },
+        'bdist_dmg': {
+            'volume_label': app_name,
+            'applications-shortcut': True
         }
     },
     executables=[Executable(app_script,
@@ -73,28 +89,20 @@ setup(
                             appendScriptToLibrary=True)]
 )
 
-try:
-    if windows:
-        with open('tgit.template.iss', 'r') as src, open('tgit.iss', 'w') as dst:
-            lines = src.readlines()
-            data = []
-            for l in lines:
-                l = l.replace('@APP_NAME@', app_name)
-                l = l.replace('@APP_VERSION@', app_version)
-                l = l.replace('@APP_PUBLISHER@', app_publisher)
-                l = l.replace('@APP_URL@', app_url)
-                l = l.replace('@APP_EXE_NAME@', app_exe)
-                l = l.replace('@APP_SOURCE_PATH@', app_source_path)
-                l = l.replace('@APP_ICON@', app_icon)
-                l = l.replace('@APP_BUILD_DIR@', app_build_dir)
-                data.append(l)
-            dst.writelines(data)
-        os.environ['PATH'] += ';C:\Program Files (x86)\Inno Setup 5'
-        os.system('iscc.exe %s' % os.path.join(app_source_path, 'tgit.iss'))
-
-    if osx:
-        os.system('hdiutil')
-hdiutil create dist/tgit.dmg -srcfolder dist/TGiT.app/ -volname TGiT -ov -format UDBZ
-
-except Exception as e:
-    print(e)
+if windows:
+    with open('tgit.template.iss', 'r') as src, open('tgit.iss', 'w') as dst:
+        lines = src.readlines()
+        data = []
+        for l in lines:
+            l = l.replace('@APP_NAME@', app_name)
+            l = l.replace('@APP_VERSION@', app_version)
+            l = l.replace('@APP_PUBLISHER@', app_publisher)
+            l = l.replace('@APP_URL@', app_url)
+            l = l.replace('@APP_EXE_NAME@', app_exe)
+            l = l.replace('@APP_SOURCE_PATH@', app_source_path)
+            l = l.replace('@APP_ICON@', app_icon)
+            l = l.replace('@APP_BUILD_DIR@', app_build_dir)
+            data.append(l)
+        dst.writelines(data)
+    os.environ['PATH'] += ';C:\Program Files (x86)\Inno Setup 5'
+    os.system('iscc.exe %s' % os.path.join(app_source_path, 'tgit.iss'))
