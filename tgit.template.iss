@@ -1,9 +1,11 @@
-#define MyAppName "TGiT"
-#define MyAppVersion "1.2.3"
-#define MyAppPublisher "Iconoclaste Musique, Inc."
-#define MyAppURL "http://www.tagyourmusic.com/"
-#define MyAppExeName "tgit.exe"
-#define SourcePath "C:\Users\Jonathan\Documents\Code\tgit"
+#define MyAppName "@APP_NAME@"
+#define MyAppVersion "@APP_VERSION@"
+#define MyAppPublisher "@APP_PUBLISHER@"
+#define MyAppURL "@APP_URL@"
+#define MyAppExeName "@APP_EXE_NAME@"
+#define SourcePath "@APP_SOURCE_PATH@"
+#define Icon "@APP_ICON@"
+#define BuildDir "@APP_BUILD_DIR@"
 
 [Setup]
 AppId={{B880DBE7-A29E-4869-A0F9-DE07ED1348B3}
@@ -20,7 +22,7 @@ OutputDir=build
 OutputBaseFilename="{#MyAppName}-{#MyAppVersion}"
 Compression=lzma
 SolidCompression=yes
-SetupIconFile={#SourcePath}\tgit.ico
+SetupIconFile={#Icon}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 UninstallDisplayName={#MyAppName}
 
@@ -33,7 +35,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "{#SourcePath}\build\exe.win-amd64-3.4\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#BuildDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

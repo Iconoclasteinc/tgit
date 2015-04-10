@@ -1,0 +1,30 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource>
+     <file>qt_fr.qm</file>
+     <file>tgit_fr.qm</file>
+     <file alias='play.png'>images/play.png</file>
+     <file alias='play-hover.png'>images/play-hover.png</file>
+     <file alias='play-pressed.png'>images/play-pressed.png</file>
+     <file alias='stop.png'>images/stop.png</file>
+     <file alias='stop-hover.png'>images/stop-hover.png</file>
+     <file alias='stop-pressed.png'>images/stop-pressed.png</file>
+     <file alias='remove.png'>images/remove.png</file>
+     <file alias='remove-hover.png'>images/remove-hover.png</file>
+     <file alias='remove-pressed.png'>images/remove-pressed.png</file>
+     <file alias='nothing.png'>images/nothing.png</file>
+     <file alias='previous.png'>images/previous.png</file>
+     <file alias='next.png'>images/next.png</file>
+     <file alias='logo.png'>images/logo.png</file>
+     <file alias='activity-indicator.gif'>images/loader_gray_512.gif</file>
+     <file alias='add-picture.png'>images/add-picture.png</file>
+     <file alias='down-arrow.png'>images/down-arrow.png</file>
+     <file alias='down-arrow-on.png'>images/down-arrow-on.png</file>
+     <file alias='checkbox.png'>images/checkbox.png</file>
+     <file alias='checkbox-hover.png'>images/checkbox-hover.png</file>
+     <file alias='checkbox-pressed.png'>images/checkbox-pressed.png</file>
+     <file alias='checkbox-checked.png'>images/checkbox-checked.png</file>
+     <file alias='checkbox-checked-hover.png'>images/checkbox-checked-hover.png</file>
+     <file alias='checkbox-checked-pressed.png'>images/checkbox-checked-pressed.png</file>
+</qresource>
+</RCC>
