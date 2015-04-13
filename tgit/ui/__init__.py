@@ -40,7 +40,7 @@ from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
-from tgit.ui.welcome_screen import WelcomeScreen
+from tgit.ui.welcome_screen import welcome_screen as WelcomeScreen
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
 from tgit.util import async_task_runner as taskRunner
@@ -212,12 +212,6 @@ def MenuBarController(exportAs, selectTracks, changeSettings, portfolio):
     return menuBar
 
 
-def WelcomeScreenController(portfolio):
-    page = WelcomeScreen()
-    page.newAlbum.connect(lambda: director.createAlbum(portfolio))
-    return page
-
-
 def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
     window = MainWindow(menuBar(), welcomeScreen(), albumScreen)
     portfolio.addPortfolioListener(window)
@@ -237,8 +231,8 @@ def createMainWindow(albumPortfolio, player, preferences, library, nameRegistry,
     def createMenuBar():
         return MenuBarController(showExportAsDialog, showTrackSelectionDialog, showSettingsDialog, albumPortfolio)
 
-    def createWelcomeScreen():
-        return WelcomeScreenController(albumPortfolio)
+    def create_welcome_screen():
+        return WelcomeScreen(albumPortfolio)
 
     def createCompositionPage(album):
         return AlbumCompositionPageController(showTrackSelectionDialog, player, album)
@@ -265,7 +259,7 @@ def createMainWindow(albumPortfolio, player, preferences, library, nameRegistry,
 
         return AlbumScreenController(createCompositionPage, createAlbumPage, createTrackPage, library, album)
 
-    window = MainWindowController(createMenuBar, createWelcomeScreen, createAlbumScreen, albumPortfolio)
+    window = MainWindowController(createMenuBar, create_welcome_screen, createAlbumScreen, albumPortfolio)
 
     class SelectAlbumTracks(AlbumPortfolioListener):
         def albumCreated(self, album):

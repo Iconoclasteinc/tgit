@@ -7,9 +7,9 @@ from test.drivers import BaseDriver
 
 
 def welcomeScreen(parent):
-    return WelcomeScreenDriver.findSingle(parent, QWidget, named('welcome-screen'))
+    return WelcomeScreenDriver.findSingle(parent, QWidget, named('welcome_screen'))
 
 
 class WelcomeScreenDriver(BaseDriver):
     def newAlbum(self):
-        self.button(named('new-album')).click()
+        self.button(named('new_album')).click()
