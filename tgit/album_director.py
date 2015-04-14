@@ -57,7 +57,7 @@ def updateAlbum(album, **metadata):
 
 def changeAlbumCover(album, filename):
     album.removeImages()
-    mime, data = fs.guessMimeType(filename), fs.readContent(filename)
+    mime, data = fs.guessMimeType(filename), fs.binary_content_of(filename)
     album.addFrontCover(mime, data)
 
 
@@ -101,9 +101,9 @@ def recordTrack(container, destinationFile, track, time):
     container.save(destinationFile, metadata)
 
 
-def exportAlbum(format_, album, destination):
-    with open(destination, 'wb') as out:
-        format_.write(album, out)
+def export_album(export_format, album, destination, charset):
+    with open(destination, 'w', encoding=charset) as out:
+        export_format.write(album, out)
 
 
 def sanitize(filename):

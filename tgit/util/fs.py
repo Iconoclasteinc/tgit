@@ -23,7 +23,7 @@ import tempfile
 import mimetypes
 
 
-def readContent(filename):
+def binary_content_of(filename):
     return open(filename, 'rb').read()
 
 

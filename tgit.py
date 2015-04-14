@@ -17,7 +17,9 @@ def main():
 
     app = TGiT(MediaPlayer, name_registry)
     app.setApplicationName('TGiT')
-    app.launch(Preferences(QSettings('tagtamusique.com', 'TGiT')))
+    app.setOrganizationName('Iconoclaste Inc.')
+    app.setOrganizationDomain('tagyourmusic.com')
+    app.launch(Preferences(QSettings()))
 
 
 if __name__ == "__main__":

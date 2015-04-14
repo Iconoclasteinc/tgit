@@ -40,7 +40,7 @@ class Mp3Library(object):
         if frontCover:
             image, desc = frontCover
             mime = fs.guessMimeType(image)
-            images.append(Image(mime, fs.readContent(image), type_=Image.FRONT_COVER, desc=desc))
+            images.append(Image(mime, fs.binary_content_of(image), type_=Image.FRONT_COVER, desc=desc))
 
         assert_that(metadata, has_entries(tags), 'metadata tags')
         assert_that(metadata.images, contains(*images), 'attached pictures')
@@ -81,12 +81,12 @@ class FakeAudioPlayer(object):
         self._announce.removeListener(listener)
 
 
-def exportFormat():
+def export_format():
     return FakeExportFormat()
 
 
 class FakeExportFormat(object):
     def write(self, album, out):
         for track in album.tracks:
-            out.write(bytes(track.trackTitle, 'UTF-8'))
-            out.write(b'\n')
+            out.write(track.trackTitle or "")
+            out.write('\n')

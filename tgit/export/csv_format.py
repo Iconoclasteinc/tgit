@@ -37,9 +37,8 @@ class CsvFormat(QObject):
                'Primary Style', 'Track Title', 'Version Information', 'Featured Guest', 'Lyrics', 'Language',
                'Publisher', 'Lyricist', 'Composer', 'ISRC', 'Tags']
 
-    def __init__(self, encoding):
+    def __init__(self):
         QObject.__init__(self)
-        self.encoding = encoding
 
     def write(self, album, out):
         writer = csv.writer(out)
@@ -66,7 +65,7 @@ class CsvFormat(QObject):
         return text and self.tr(text) or ''
 
     def encodeRow(self, texts):
-        return list(map(toExcelNewLines, list(map(self.encode, list(map(self.translate, texts))))))
+        return list(map(toExcelNewLines, list(map(self.translate, texts))))
 
 
 def toExcelNewLines(text):

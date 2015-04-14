@@ -78,8 +78,10 @@ class TaggerDriver(MainWindowDriver):
 
     def hasSettings(self, **settings):
         dialog = menuBar(self).settings()
-        dialog.showsSettings(settings)
-        dialog.close()
+        try:
+            dialog.showsSettings(settings)
+        finally:
+            dialog.close()
 
     def acknowledge(self):
         message = restartMessage(self)
