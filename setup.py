@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from distutils.cmd import Command
 
 import sys
 import os
@@ -42,15 +43,66 @@ includes = [
     'PyQt5.QtNetwork',
 ]
 
-translation_file = os.path.join(app_source_path, 'resources/tgit_fr.ts')
-compiled_translation_file = os.path.join(app_source_path, 'resources/tgit_fr.qm')
-os.system('lrelease %(translation_file)s -qm %(compiled_translation_file)s' % locals())
 
-resources_file = os.path.join(app_source_path, 'resources/resources.qrc')
-compiled_resources_file = os.path.join(app_source_path, 'tgit/ui/resources.py')
-os.system('pyrcc5 -o %(compiled_resources_file)s %(resources_file)s' % locals())
+class translate(Command):
+    description = "translate and compile qt resource files"
+    # List of option tuples: long name, short name (None if no short name), and help string.
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        qt_binaries_path = qt_path if windows else os.path.join(qt_path, 'bin')
+        translation_file = os.path.join(app_source_path, 'resources/tgit_fr.ts')
+        compiled_translation_file = os.path.join(app_source_path, 'resources/tgit_fr.qm')
+        os.system('%(qt_binaries_path)s/lrelease %(translation_file)s -qm %(compiled_translation_file)s' % locals())
+
+        resources_file = os.path.join(app_source_path, 'resources/resources.qrc')
+        compiled_resources_file = os.path.join(app_source_path, 'tgit/ui/resources.py')
+        os.system('pyrcc5 -o %(compiled_resources_file)s %(resources_file)s' % locals())
+
+
+class bdist_innosetup(Command):
+    description = "create an InnoSetup installer (.exe) binary distribution"
+    # List of option tuples: long name, short name (None if no short name), and help string.
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        with open('tgit.template.iss', 'r') as src, open('tgit.iss', 'w') as dst:
+            lines = src.readlines()
+            data = []
+            for l in lines:
+                l = l.replace('@APP_NAME@', app_name)
+                l = l.replace('@APP_VERSION@', app_version)
+                l = l.replace('@APP_PUBLISHER@', app_publisher)
+                l = l.replace('@APP_URL@', app_url)
+                l = l.replace('@APP_EXE_NAME@', app_exe)
+                l = l.replace('@APP_SOURCE_PATH@', app_source_path)
+                l = l.replace('@APP_ICON@', app_icon)
+                l = l.replace('@APP_BUILD_DIR@', app_build_dir)
+                data.append(l)
+            dst.writelines(data)
+        os.environ['PATH'] += ';C:\Program Files (x86)\Inno Setup 5'
+        os.system('iscc.exe %s' % os.path.join(app_source_path, 'tgit.iss'))
+
+
+commands = {"translate": translate}
+if windows:
+    commands["bdist_inno"] = bdist_innosetup
+
 
 setup(
+    cmdclass=commands,
     name=app_name,
     description=app_name,
     author=app_publisher,
@@ -85,20 +137,4 @@ setup(
                             appendScriptToLibrary=True)]
 )
 
-if windows:
-    with open('tgit.template.iss', 'r') as src, open('tgit.iss', 'w') as dst:
-        lines = src.readlines()
-        data = []
-        for l in lines:
-            l = l.replace('@APP_NAME@', app_name)
-            l = l.replace('@APP_VERSION@', app_version)
-            l = l.replace('@APP_PUBLISHER@', app_publisher)
-            l = l.replace('@APP_URL@', app_url)
-            l = l.replace('@APP_EXE_NAME@', app_exe)
-            l = l.replace('@APP_SOURCE_PATH@', app_source_path)
-            l = l.replace('@APP_ICON@', app_icon)
-            l = l.replace('@APP_BUILD_DIR@', app_build_dir)
-            data.append(l)
-        dst.writelines(data)
-    os.environ['PATH'] += ';C:\Program Files (x86)\Inno Setup 5'
-    os.system('iscc.exe %s' % os.path.join(app_source_path, 'tgit.iss'))
+
