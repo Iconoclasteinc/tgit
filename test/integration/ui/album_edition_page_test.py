@@ -249,4 +249,4 @@ class AlbumEditionPageTest(WidgetTest):
 
 
 def loadTestImage(name):
-    return fs.readContent(resources.path(name))
+    return fs.binary_content_of(resources.path(name))

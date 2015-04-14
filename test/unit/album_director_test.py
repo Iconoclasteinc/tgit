@@ -6,6 +6,7 @@ import shutil
 import unittest
 
 from dateutil import tz
+
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
     has_item, empty
 
@@ -92,7 +93,7 @@ class AlbumDirectorTest(unittest.TestCase):
         director.changeAlbumCover(album, coverFile)
 
         assert_that(album.images, contains(has_properties(mime='image/jpeg',
-                                                          data=fs.readContent(coverFile),
+                                                          data=fs.binary_content_of(coverFile),
                                                           type=Image.FRONT_COVER,
                                                           desc='Front Cover')), 'images')
 
@@ -132,20 +133,16 @@ class AlbumDirectorTest(unittest.TestCase):
 
         director.recordTrack(ID3Container(), original.filename, track, datetime.now())
 
-    def testFormatsAlbumAndWritesToDestinationFile(self):
-        album = build.album(tracks=[
-            build.track(trackTitle='Set Fire to the Rain'),
-            build.track(trackTitle='Rolling in the Deep'),
-            build.track(trackTitle='Someone Like You')])
+    def test_encodes_exported_file_in_specified_charset(self):
+        album = build.album(tracks=[build.track(trackTitle="Les Comédiens")])
+        destination_file = os.path.join(self.tempdir, 'french.csv')
 
-        destinationFile = os.path.join(self.tempdir, 'twentyOne.csv')
+        director.export_album(doubles.export_format(), album, destination_file, 'windows-1252')
 
-        exportAs = doubles.exportFormat()
-        director.exportAlbum(exportAs, album, destinationFile)
+        def text_content_of(file):
+            return open(file, 'r', encoding='windows-1252').read()
 
-        assert_that(fs.readContent(destinationFile), equal_to('Set Fire to the Rain\n'
-                                                              'Rolling in the Deep\n'
-                                                              'Someone Like You\n'))
+        assert_that(text_content_of(destination_file), equal_to('Les Comédiens\n'))
 
     def testAddsSelectedTracksToAlbumInSelectionOrder(self):
         self.library.create(trackTitle='Rolling in the Deep')

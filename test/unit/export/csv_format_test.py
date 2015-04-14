@@ -13,19 +13,15 @@ from tgit.export.csv_format import CsvFormat, toBoolean
 
 class CsvFormatTest(unittest.TestCase):
     def setUp(self):
-        self.encoding = 'utf-8'
-        self.format = CsvFormat(self.encoding)
+        self.format = CsvFormat()
         self.out = StringIO()
-
-    def encoded(self, text):
-        return text.encode(self.encoding)
 
     def testIncludesHeaderRow(self):
         album = build.album()
         self.format.write(album, self.out)
 
         rows = readCsv(self.out)
-        headers = rows.next()
+        headers = next(rows)
         assert_that(headers, contains('Album Title',
                                       'Compilation',
                                       'Lead Performer',
@@ -135,17 +131,8 @@ class CsvFormatTest(unittest.TestCase):
         self.format.write(album, self.out)
 
         csv = readCsv(self.out)
-        _ = csv.next()
-        assert_that(csv.next(), has_item('Comments\rspanning\rseveral lines'),
-                    'row with line feeds')
-
-    def testEncodesNonAsciiRecordContents(self):
-        album = build.album(comments='en français dans le texte', tracks=[build.track()])
-        self.format.write(album, self.out)
-
-        csv = readCsv(self.out)
-        _ = csv.next()
-        assert_that(csv.next(), has_item(self.encoded('en français dans le texte')))
+        _ = next(csv)
+        assert_that(next(csv), has_item('Comments\rspanning\rseveral lines'), 'row with line feeds')
 
 
 def readCsv(out):

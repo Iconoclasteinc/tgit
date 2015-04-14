@@ -33,19 +33,19 @@ class TaggerTest(unittest.TestCase):
         tracks = [
             self.library.create(trackTitle='Ma préférence',
                                 releaseName='Jaloux',
-                                frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('jaloux.jpg'))),
+                                frontCover=('image/jpeg', 'Cover', fs.binary_content_of(resources.path('jaloux.jpg'))),
                                 leadPerformer='Julien Clerc',
                                 labelName='EMI',
                                 releaseTime='1978'),
             self.library.create(trackTitle='Fais moi une place',
                                 releaseName='Fais moi une place',
-                                frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('une-place.jpg'))),
+                                frontCover=('image/jpeg', 'Cover', fs.binary_content_of(resources.path('une-place.jpg'))),
                                 labelName='Virgin',
                                 releaseTime='1990',
                                 upc='3268440307258'),
             self.library.create(trackTitle="Ce n'est rien",
                                 releaseName='Niagara',
-                                frontCover=('image/jpeg', 'Cover', fs.readContent(resources.path('niagara.jpg'))),
+                                frontCover=('image/jpeg', 'Cover', fs.binary_content_of(resources.path('niagara.jpg'))),
                                 releaseTime='1971',
                                 lyricist='Étienne Roda-Gil')
         ]
