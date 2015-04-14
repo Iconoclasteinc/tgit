@@ -95,7 +95,7 @@ class bdist_innosetup(Command):
         os.environ['PATH'] += ';C:\Program Files (x86)\Inno Setup 5'
         os.system('iscc.exe %s' % os.path.join(app_source_path, 'tgit.iss'))
 
-		
+
 class bdist_wix(Command):
     description = "create a MSI (.msi) binary distribution"
     # List of option tuples: long name, short name (None if no short name), and help string.
@@ -111,7 +111,7 @@ class bdist_wix(Command):
         app_msi_dir = os.path.join(app_source_path, r'build\msi')
         if not os.path.exists(app_msi_dir):
             os.makedirs(app_msi_dir)
-			
+
         with open('tgit.template.wxs', 'r') as src, open(os.path.join(app_msi_dir, r'tgit.wxs'), 'w') as dst:
             lines = src.readlines()
             data = []
@@ -123,9 +123,9 @@ class bdist_wix(Command):
                 data.append(l)
             dst.writelines(data)
         os.environ['PATH'] += ';C:\\Program Files (x86)\\WiX Toolset v3.9\\bin'
-        os.system('heat.exe dir %(app_build_dir)s -gg -sfrag -cg TgitComponent -dr INSTALLFOLDER -sreg -srd -out %(app_msi_dir)s\\tgit-dir.wxs' % {"app_build_dir": app_build_dir, "app_msi_dir": app_msi_dir})
-        os.system('candle.exe %(app_msi_dir)s\\*.wxs -out %(app_msi_dir)s\\ ' % {"app_msi_dir": app_msi_dir})
-        os.system('light.exe -b %(app_build_dir)s -ext WixUIExtension -cultures:en-us %(app_msi_dir)s\\*.wixobj -o build\\%(app_name)s-%(app_version)s.msi' % {"app_build_dir": app_build_dir, "app_msi_dir": app_msi_dir, "app_name":app_name, "app_version":app_version})
+        os.system('heat.exe dir %(app_build_dir)s -gg -sfrag -cg TgitComponent -nologo -dr INSTALLFOLDER -sreg -srd -out %(app_msi_dir)s\\tgit-dir.wxs' % {"app_build_dir": app_build_dir, "app_msi_dir": app_msi_dir})
+        os.system('candle.exe %(app_msi_dir)s\\*.wxs -nologo -out %(app_msi_dir)s\\ ' % {"app_msi_dir": app_msi_dir})
+        os.system('light.exe -b %(app_build_dir)s -nologo -ext WixUIExtension -cultures:en-us %(app_msi_dir)s\\*.wixobj -o build\\%(app_name)s-%(app_version)s.msi' % {"app_build_dir": app_build_dir, "app_msi_dir": app_msi_dir, "app_name": app_name, "app_version": app_version})
 
 
 commands = {"translate": translate}
