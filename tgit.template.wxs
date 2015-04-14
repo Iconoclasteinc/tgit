@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?define ProductName="@APP_NAME@" ?>
+<?define ProductVersion="@APP_VERSION@" ?>
+<?define Manufacturer="@APP_PUBLISHER@" ?>
+<?define Icon="@APP_ICON@" ?>
+
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="{B880DBE7-A29E-4869-A0F9-DE07ED1348B3}" Name="$(var.ProductName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="{9D3E4EB2-EFC4-4DD0-B38C-8D3A4EFF6388}">
+        <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+		<Media Id="1" Cabinet="tgit.cab" EmbedCab="yes" />
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<Icon Id="tgit.ico" SourceFile="$(var.Icon)"/>
+		<Property Id="ARPPRODUCTICON" Value="tgit.ico" />
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="DesktopFolder" Name="Desktop" />
+			<Directory Id="ProgramFilesFolder">
+                <Directory Id="INSTALLFOLDER" Name="Tgit" />
+            </Directory>
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
+			</Directory>
+		</Directory>
+
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="ApplicationShortcutDesktop" Guid="{ACCAE316-4E3C-4A35-B8D1-B2C5352AF3EC}">
+				<Shortcut Id="ApplicationDesktopShortcut"
+						  Name="$(var.ProductName)"
+						  Target="[INSTALLFOLDER]$(var.ProductName).exe"
+						  WorkingDirectory="INSTALLFOLDER"/>
+				<RemoveFolder Id="DesktopFolder" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software/$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+			</Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id="ApplicationProgramsFolder">
+			<Component Id="ApplicationShortcut" Guid="{83F223F2-5EC3-4676-9945-7D94CE5BE50C}">
+				<Shortcut Id="ApplicationStartMenuShortcut" 
+						  Name="$(var.ProductName)"
+						  Target="[INSTALLFOLDER]$(var.ProductName).exe"
+						  WorkingDirectory="INSTALLFOLDER"/>
+				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software/$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+			</Component>
+		</DirectoryRef>
+
+        <Feature Id="TgitFeature" Title="Tgit" Level="1">
+            <ComponentGroupRef Id="TgitComponent" />
+			<ComponentRef Id="ApplicationShortcut" />
+			<ComponentRef Id="ApplicationShortcutDesktop" />
+        </Feature>
+
+		<WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+		<UIRef Id="WixUI_InstallDir" />
+    </Product>
+</Wix>

@@ -95,10 +95,43 @@ class bdist_innosetup(Command):
         os.environ['PATH'] += ';C:\Program Files (x86)\Inno Setup 5'
         os.system('iscc.exe %s' % os.path.join(app_source_path, 'tgit.iss'))
 
+		
+class bdist_wix(Command):
+    description = "create a MSI (.msi) binary distribution"
+    # List of option tuples: long name, short name (None if no short name), and help string.
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        app_msi_dir = os.path.join(app_source_path, r'build\msi')
+        if not os.path.exists(app_msi_dir):
+            os.makedirs(app_msi_dir)
+			
+        with open('tgit.template.wxs', 'r') as src, open(os.path.join(app_msi_dir, r'tgit.wxs'), 'w') as dst:
+            lines = src.readlines()
+            data = []
+            for l in lines:
+                l = l.replace('@APP_NAME@', app_name)
+                l = l.replace('@APP_VERSION@', app_version)
+                l = l.replace('@APP_PUBLISHER@', app_publisher)
+                l = l.replace('@APP_ICON@', app_icon)
+                data.append(l)
+            dst.writelines(data)
+        os.environ['PATH'] += ';C:\\Program Files (x86)\\WiX Toolset v3.9\\bin'
+        os.system('heat.exe dir %(app_build_dir)s -gg -sfrag -cg TgitComponent -dr INSTALLFOLDER -sreg -srd -out %(app_msi_dir)s\\tgit-dir.wxs' % {"app_build_dir": app_build_dir, "app_msi_dir": app_msi_dir})
+        os.system('candle.exe %(app_msi_dir)s\\*.wxs -out %(app_msi_dir)s\\ ' % {"app_msi_dir": app_msi_dir})
+        os.system('light.exe -b %(app_build_dir)s -ext WixUIExtension -cultures:en-us %(app_msi_dir)s\\*.wixobj -o build\\%(app_name)s-%(app_version)s.msi' % {"app_build_dir": app_build_dir, "app_msi_dir": app_msi_dir, "app_name":app_name, "app_version":app_version})
+
 
 commands = {"translate": translate}
 if windows:
     commands["bdist_inno"] = bdist_innosetup
+    commands["bdist_wix"] = bdist_wix
 
 
 setup(
