@@ -19,22 +19,23 @@ app_publisher = 'Iconoclaste Musique, Inc.'
 app_publisher_email = 'jr@iconoclaste.ca'
 app_url = 'http://www.tagyourmusic.com/'
 app_download_url = 'https://bitbucket.org/iconoclaste/tgit/downloads'
-app_exe = 'TGiT.exe' if windows else 'TGiT'
+app_exe = 'TGiT.exe' if windows else 'tgit'
 app_icon = 'resources/tgit.ico' if windows else 'resources/tgit.icns'
+app_plist = 'resources/Info.plist'
 app_source_path = os.getcwd()
 app_build_dir = os.path.join(app_source_path, r'build\exe.win-amd64-3.4') if windows else None
 app_base = 'Win32GUI' if windows else None
 
 if windows:
-    app_qt_path = os.path.dirname(PyQt5.__file__)
-    app_qt_plugin_path = os.path.join(app_qt_path, 'plugins')
+    qt_path = os.path.dirname(PyQt5.__file__)
+    qt_plugins_path = os.path.join(qt_path, 'plugins')
 else:
-    app_qt_plugin_path = next(path for path in QCoreApplication.libraryPaths() if path.endswith('plugins'))
-    app_qt_path = os.path.dirname(app_qt_plugin_path)
+    qt_plugins_path = next(path for path in QCoreApplication.libraryPaths() if path.endswith('plugins'))
+    qt_path = os.path.dirname(qt_plugins_path)
 
-include_files = [(os.path.join(app_qt_plugin_path, 'mediaservice'), 'mediaservice')]
+include_files = [(os.path.join(qt_plugins_path, 'mediaservice'), 'mediaservice')]
 if windows:
-    include_files.append((os.path.join(app_qt_path, 'libEGL.dll'), 'libEGL.dll'))
+    include_files.append((os.path.join(qt_path, 'libEGL.dll'), 'libEGL.dll'))
 
 includes = [
     'lxml._elementpath',
@@ -68,17 +69,16 @@ setup(
             'include_msvcr': True,
             'includes': includes,
             'include_files': include_files,
-            'excludes': ['Tkinter']
         },
         'bdist_mac': {
             'iconfile': app_icon,
-            'qt_menu_nib': '',
+            'qt_menu_nib': os.path.join(qt_path, 'qt_menu.nib'),
             'bundle_name': app_exe,
-            'custom_info_plist': '',
+            'custom_info_plist': app_plist,
         },
         'bdist_dmg': {
             'volume_label': app_name,
-            'applications-shortcut': True
+            'applications_shortcut': True
         }
     },
     executables=[Executable(app_script,
