@@ -10,7 +10,8 @@ from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_e
     has_item, empty
 
 from test.util import builders as build, resources, doubles, mp3_file
-from tgit import album_director as director, __version__
+from tgit import album_director as director
+from tgit.version import __version__
 from tgit.album_director import sanitize
 from tgit.metadata import Image
 from tgit.tagging import id3_container
