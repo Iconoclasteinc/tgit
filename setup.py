@@ -39,11 +39,7 @@ if windows:
 
 includes = [
     'lxml._elementpath',
-    'lxml', 'PyQt5.QtNetwork',
-    'PyQt5.QtPrintSupport',
-    'PyQt5.QtMultimediaWidgets',
-    'PyQt5.QtOpenGL',
-    'PyQt5.QtSvg'
+    'PyQt5.QtNetwork',
 ]
 
 translation_file = os.path.join(app_source_path, 'resources/tgit_fr.ts')
