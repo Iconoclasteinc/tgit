@@ -45,7 +45,7 @@ class TGiT(QApplication):
 
     def installTranslations(self, resource, locale):
         translator = QTranslator()
-        if translator.load('%s_%s' % (resource, locale), ':/resources'):
+        if translator.load('%s_%s' % (resource, locale), ':/'):
             self.installTranslator(translator)
             self.translators.append(translator)
 
