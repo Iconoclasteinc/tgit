@@ -14,6 +14,7 @@ def trackSelectionDialog(parent):
 
 class TrackSelectionDialogDriver(FileDialogDriver):
     def selectTracksInFolder(self, folder):
+        self.view_as_list()
         self.showHiddenFiles()
         self.navigateToDir(folder)
         self.accept()
@@ -26,6 +27,7 @@ class TrackSelectionDialogDriver(FileDialogDriver):
     def selectTracks(self, *files):
         if not files:
             return
+        self.view_as_list()
         self.showHiddenFiles()
         folder = dirname(files[0])
         self.navigateToDir(folder)

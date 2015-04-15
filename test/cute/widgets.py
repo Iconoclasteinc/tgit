@@ -221,7 +221,8 @@ class DateTimeEditDriver(WidgetDriver):
 
 
 class FileDialogDriver(WidgetDriver):
-    DISPLAY_DELAY = 250
+    DISPLAY_DELAY = 500
+    INITIAL_SETUP_DELAY = 1000
 
     def showHiddenFiles(self):
         class ShowHiddenFiles(object):
@@ -230,7 +231,15 @@ class FileDialogDriver(WidgetDriver):
 
         self.manipulate('show hidden files', ShowHiddenFiles())
 
+    def view_as_list(self):
+        class SetListViewMode(object):
+            def __call__(self, dialog):
+                dialog.setViewMode(QFileDialog.List)
+
+        self.manipulate('set the view mode to list', SetListViewMode())
+
     def navigateToDir(self, path):
+        self.pause(self.INITIAL_SETUP_DELAY)
         for folderName in self._navigationPathTo(path):
             if folderName == '':
                 pass
@@ -262,7 +271,7 @@ class FileDialogDriver(WidgetDriver):
         self.selectFiles(name)
 
     def selectFiles(self, *names):
-        self.perform(gestures.pause(self.DISPLAY_DELAY))
+        self.pause(self.DISPLAY_DELAY)
         self._listView().selectItems(*[match.withListItemText(name) for name in names])
 
     def upOneFolder(self):

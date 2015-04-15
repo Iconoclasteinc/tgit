@@ -15,6 +15,7 @@ def pictureSelectionDialog(parent):
 
 class PictureSelectionDialogDriver(FileDialogDriver):
     def selectPicture(self, filename):
+        self.view_as_list()
         self.navigateToDir(os.path.dirname(filename))
         self.selectFile(os.path.basename(filename))
         self.accept()
