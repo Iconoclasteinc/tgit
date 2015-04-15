@@ -7,6 +7,7 @@ from tgit.util import fs
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 from test.util import resources, doubles
 from test.endtoend.application_runner import ApplicationRunner
+import cProfile
 
 
 class TaggerTest(unittest.TestCase):
@@ -50,24 +51,19 @@ class TaggerTest(unittest.TestCase):
                                 lyricist='Étienne Roda-Gil')
         ]
 
-        self.application.newAlbum(*tracks)
-        self.application.showsAlbumContent(['Ma préférence'],
-                                           ['Fais moi une place'],
-                                           ["Ce n'est rien"])
+        def run_tests(application):
+            application.newAlbum(*tracks)
+            application.showsAlbumContent(['Ma préférence'], ['Fais moi une place'], ["Ce n'est rien"])
+            application.showsAlbumMetadata(releaseName='Jaloux', leadPerformer='Julien Clerc', labelName='EMI', releaseTime='1978')
+            application.changeAlbumMetadata(releaseName='Best Of', frontCover=resources.path('best-of.jpg'), labelName='EMI Music France', releaseTime='2009-04-06')
+            application.showsNextTrackMetadata(trackTitle='Ma préférence')
+            application.changeTrackMetadata(composer='Julien Clerc', lyricist='Jean-Loup Dabadie')
+            application.showsNextTrackMetadata(trackTitle='Fais moi une place')
+            application.changeTrackMetadata(composer='Julien Clerc', lyricist='Francoise Hardy')
+            application.showsNextTrackMetadata(trackTitle="Ce n'est rien")
+            application.changeTrackMetadata(composer='Julien Clerc')
 
-        self.application.showsAlbumMetadata(releaseName='Jaloux', leadPerformer='Julien Clerc', labelName='EMI',
-                                            releaseTime='1978')
-        self.application.changeAlbumMetadata(releaseName='Best Of', frontCover=resources.path('best-of.jpg'),
-                                             labelName='EMI Music France', releaseTime='2009-04-06')
-
-        self.application.showsNextTrackMetadata(trackTitle='Ma préférence')
-        self.application.changeTrackMetadata(composer='Julien Clerc', lyricist='Jean-Loup Dabadie')
-
-        self.application.showsNextTrackMetadata(trackTitle='Fais moi une place')
-        self.application.changeTrackMetadata(composer='Julien Clerc', lyricist='Francoise Hardy')
-
-        self.application.showsNextTrackMetadata(trackTitle="Ce n'est rien")
-        self.application.changeTrackMetadata(composer='Julien Clerc')
+        cProfile.runctx('run_tests(self.application)', None, locals())
 
         self.library.contains('Julien Clerc - 01 - Ma préférence.mp3',
                               frontCover=(resources.path('best-of.jpg'), 'Front Cover'),
