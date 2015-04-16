@@ -8,7 +8,7 @@ import os
 import PyQt5
 from PyQt5.QtCore import QCoreApplication
 from cx_Freeze import setup, Executable
-from tgit.version import __version__
+from tgit import __version__
 
 windows = sys.platform == 'win32'
 

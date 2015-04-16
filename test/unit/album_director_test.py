@@ -11,8 +11,8 @@ from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_e
     has_item, empty
 
 from test.util import builders as build, resources, doubles, mp3_file
+import tgit
 from tgit import album_director as director
-from tgit.version import __version__
 from tgit.album_director import sanitize
 from tgit.metadata import Image
 from tgit.tagging import id3_container
@@ -121,7 +121,7 @@ class AlbumDirectorTest(unittest.TestCase):
         director.recordTrack(ID3Container(), tagged, track, now)
 
         metadata = id3_container.load(tagged)
-        assert_that(metadata, has_entries(tagger='TGiT v' + __version__,
+        assert_that(metadata, has_entries(tagger='TGiT v' + tgit.__version__,
                                           taggingTime='2014-03-23 16:44:33 +0000',
                                           releaseName='Album Title',
                                           leadPerformer='Album Artist'), 'metadata tags')
