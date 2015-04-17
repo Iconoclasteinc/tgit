@@ -6,12 +6,16 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, 
 from hamcrest import all_of, equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
+import sys
 
 from test.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
                               WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe)
 from test.cute.finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder,
                                NthWidgetFinder, WidgetSelector)
 from test.cute import properties, gestures, keyboard_shortcuts as shortcuts, matchers as match
+
+
+windows = sys.platform == 'win32'
 
 
 def allTopLevelWidgets():
@@ -221,8 +225,8 @@ class DateTimeEditDriver(WidgetDriver):
 
 
 class FileDialogDriver(WidgetDriver):
-    DISPLAY_DELAY = 500
-    INITIAL_SETUP_DELAY = 1000
+    DISPLAY_DELAY = 500 if windows else 250
+    INITIAL_SETUP_DELAY = 1000 if windows else 0
 
     def showHiddenFiles(self):
         class ShowHiddenFiles(object):
