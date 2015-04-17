@@ -44,7 +44,7 @@ def test_tagging_a_new_album_with_several_tracks(app, library):
                     lyricist="Étienne Roda-Gil")
     ]
 
-    app.newAlbum(*tracks)
+    app.new_album(*tracks)
     app.shows_album_content(["Ma préférence"],
                             ["Fais moi une place"],
                             ["Ce n'est rien"])

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from test.cute.events import MainEventLoop
 from tgit.isni.name_registry import NameRegistry
 from test.cute.matchers import named, showingOnScreen
 from test.cute.widgets import mainApplicationWindow
@@ -26,7 +25,7 @@ class ApplicationRunner(object):
         del self.tagger
         del self.app
 
-    def newAlbum(self, *paths):
+    def new_album(self, *paths):
         self.tagger.createAlbum()
         self.tagger.selectAudioFiles(*paths)
 
@@ -36,7 +35,6 @@ class ApplicationRunner(object):
     def shows_album_metadata(self, **tags):
         self.tagger.next()
         self.tagger.showsAlbumMetadata(**tags)
-        MainEventLoop.processEventsFor(500)
         # todo navigate back to track list
         # so we always no where we're starting from
 
@@ -55,8 +53,8 @@ class ApplicationRunner(object):
     def removeTrack(self, title):
         self.tagger.removeTrack(title)
 
-    def changeTrackPosition(self, title, to):
-        self.tagger.moveTrack(title, to - 1)
+    def change_track_position(self, title, to_position):
+        self.tagger.moveTrack(title, to_position - 1)
 
     def change_settings(self, **settings):
         self.tagger.change_settings(**settings)
