@@ -146,9 +146,9 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(text_content_of(destination_file), equal_to('Les Comédiens\n'))
 
     def testAddsSelectedTracksToAlbumInSelectionOrder(self):
-        self.library.create(trackTitle='Rolling in the Deep')
-        self.library.create(trackTitle='Set Fire to the Rain')
-        self.library.create(trackTitle='Someone Like You')
+        self.library.add(trackTitle='Rolling in the Deep')
+        self.library.add(trackTitle='Set Fire to the Rain')
+        self.library.add(trackTitle='Someone Like You')
 
         album = build.album()
         director.addTracksToAlbum(ID3Container(), album, [recording.filename for recording in self.library.recordings])
@@ -158,9 +158,9 @@ class AlbumDirectorTest(unittest.TestCase):
             has_properties(trackTitle='Someone Like You')))
 
     def testAddsAllTracksInSelectedFolder(self):
-        self.library.create(trackTitle='Rolling in the Deep')
-        self.library.create(trackTitle='Set Fire to the Rain')
-        self.library.create(trackTitle='Someone Like You')
+        self.library.add(trackTitle='Rolling in the Deep')
+        self.library.add(trackTitle='Set Fire to the Rain')
+        self.library.add(trackTitle='Someone Like You')
 
         album = build.album()
 

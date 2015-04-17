@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 
-from PyQt5.QtCore import QSettings
-
 from tgit.audio.player import MediaPlayer
 from tgit.tagger import TGiT
 from tgit.isni.name_registry import NameRegistry
-from tgit.preferences import Preferences
 
 
 def main():
@@ -19,7 +16,7 @@ def main():
     app.setApplicationName('TGiT')
     app.setOrganizationName('Iconoclaste Inc.')
     app.setOrganizationDomain('tagyourmusic.com')
-    app.launch(Preferences(QSettings()))
+    app.launch()
 
 
 if __name__ == "__main__":

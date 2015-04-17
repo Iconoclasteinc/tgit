@@ -21,6 +21,7 @@ import sys
 
 from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtWidgets import QApplication
+from tgit.preferences import Preferences
 
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.tagging.id3_container import ID3Container
@@ -54,7 +55,7 @@ class TGiT(QApplication):
         self.mainWindow = ui.createMainWindow(AlbumPortfolio(), self.player(), preferences, ID3Container(), self.name_registry, self.native)
         ui.showCenteredOnScreen(self.mainWindow)
 
-    def launch(self, preferences):
+    def launch(self, preferences=Preferences()):
         self.show(preferences)
         self.run()
 

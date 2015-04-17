@@ -9,21 +9,22 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from tgit.preferences import Preferences
 
 
-def createStorageFile():
+def create_settings_file():
     return tempfile.mkstemp(suffix='.ini')
 
 
 class ApplicationSettingsDriver(object):
-    def __init__(self):
-        self.fd, self.storage = createStorageFile()
-        self.preferences = Preferences(QSettings(self.storage, QSettings.IniFormat))
+    def __init__(self, lang='en'):
+        self._settings_file_descriptor, self._settings_file_path = create_settings_file()
+        self.preferences = Preferences(QSettings(self._settings_file_path, QSettings.IniFormat))
+        self["language"] = lang
 
     def destroy(self):
-        os.close(self.fd)
-        os.remove(self.storage)
+        os.close(self._settings_file_descriptor)
+        os.remove(self._settings_file_path)
 
-    def set(self, name, value):
-        self.preferences[name] = value
+    def __setitem__(self, key, value):
+        self.preferences[key] = value
 
-    def hasStored(self, name, value):
+    def has_stored(self, name, value):
         assert_that(self.preferences[name], wrap_matcher(value), name)

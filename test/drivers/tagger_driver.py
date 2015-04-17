@@ -71,7 +71,7 @@ class TaggerDriver(MainWindowDriver):
     def saveAlbum(self):
         albumScreen(self).save()
 
-    def changeSettings(self, **settings):
+    def change_settings(self, **settings):
         menuBar(self).settings()
         settingsDialog(self).changeSettings(settings)
         self.acknowledge()

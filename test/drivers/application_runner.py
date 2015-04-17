@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from test.cute.events import MainEventLoop
 from tgit.isni.name_registry import NameRegistry
 from test.cute.matchers import named, showingOnScreen
@@ -8,13 +7,14 @@ from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import doubles
+from tgit.preferences import Preferences
 from tgit.tagger import TGiT
 
 ONE_SECOND = 1000
 
 
 class ApplicationRunner(object):
-    def start(self, preferences):
+    def start(self, preferences=Preferences()):
         self.app = TGiT(doubles.audioPlayer, NameRegistry('localhost', 5000), native=False)
         self.app.show(preferences)
         self.tagger = TaggerDriver(mainApplicationWindow(named('main-window'), showingOnScreen()),
@@ -30,25 +30,25 @@ class ApplicationRunner(object):
         self.tagger.createAlbum()
         self.tagger.selectAudioFiles(*paths)
 
-    def showsAlbumContent(self, *tracks):
+    def shows_album_content(self, *tracks):
         self.tagger.showsAlbumContains(*tracks)
 
-    def showsAlbumMetadata(self, **tags):
+    def shows_album_metadata(self, **tags):
         self.tagger.next()
         self.tagger.showsAlbumMetadata(**tags)
         MainEventLoop.processEventsFor(500)
         # todo navigate back to track list
         # so we always no where we're starting from
 
-    def changeAlbumMetadata(self, **tags):
+    def change_album_metadata(self, **tags):
         self.tagger.editAlbumMetadata(**tags)
         self.tagger.saveAlbum()
 
-    def showsNextTrackMetadata(self, **tags):
+    def shows_next_track_metadata(self, **tags):
         self.tagger.next()
         self.tagger.showsTrackMetadata(**tags)
 
-    def changeTrackMetadata(self, **tags):
+    def change_track_metadata(self, **tags):
         self.tagger.editTrackMetadata(**tags)
         self.tagger.saveAlbum()
 
@@ -58,8 +58,8 @@ class ApplicationRunner(object):
     def changeTrackPosition(self, title, to):
         self.tagger.moveTrack(title, to - 1)
 
-    def changeSettings(self, **settings):
-        self.tagger.changeSettings(**settings)
+    def change_settings(self, **settings):
+        self.tagger.change_settings(**settings)
 
-    def hasSettings(self, **settings):
+    def has_settings(self, **settings):
         self.tagger.hasSettings(**settings)

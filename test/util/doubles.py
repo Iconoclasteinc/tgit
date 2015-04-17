@@ -19,7 +19,7 @@ class Mp3Library(object):
         self.root = root
         self.recordings = []
 
-    def create(self, **metadata):
+    def add(self, **metadata):
         recording = mp3.make(to=self.root, **metadata)
         self.recordings.append(recording)
         return recording.filename
