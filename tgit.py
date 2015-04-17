@@ -7,7 +7,7 @@ from tgit.isni.name_registry import NameRegistry
 
 def main():
     name_registry = NameRegistry(host='isni-m.oclc.nl',
-                                 assignHost='isni-m-acc.oclc.nl',
+                                 assign_host='isni-m-acc.oclc.nl',
                                  secure=True,
                                  username='ICON',
                                  password='crmeoS4d')
