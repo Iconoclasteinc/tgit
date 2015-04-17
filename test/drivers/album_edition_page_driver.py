@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget
-
 from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from test.drivers import BaseDriver
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
@@ -9,7 +7,7 @@ from tgit.ui.album_edition_page import AlbumEditionPage
 
 
 def albumEditionPage(parent):
-    return AlbumEditionPageDriver.findSingle(parent, QWidget, named('album-edition-page'))
+    return AlbumEditionPageDriver.findSingle(parent, AlbumEditionPage, named('album-edition-page'))
 
 
 class AlbumEditionPageDriver(BaseDriver):

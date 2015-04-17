@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget
-
 from test.cute.matchers import named
 from test.drivers import BaseDriver
+from tgit.ui.welcome_screen import WelcomeScreen
 
 
 def welcomeScreen(parent):
-    return WelcomeScreenDriver.findSingle(parent, QWidget, named('welcome-screen'))
+    return WelcomeScreenDriver.findSingle(parent, WelcomeScreen, named('welcome-screen'))
 
 
 class WelcomeScreenDriver(BaseDriver):

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget
 from hamcrest.library.text import contains_string
 
 from test.cute.matchers import named
@@ -8,10 +7,11 @@ from test.drivers import BaseDriver
 from test.drivers.album_edition_page_driver import albumEditionPage
 from test.drivers.album_composition_page_driver import albumCompositionPage
 from test.drivers.track_edition_page_driver import trackEditionPage
+from tgit.ui.album_screen import AlbumScreen
 
 
 def albumScreen(parent):
-    return AlbumScreenDriver.findSingle(parent, QWidget, named('album-screen'))
+    return AlbumScreenDriver.findSingle(parent, AlbumScreen, named('album-screen'))
 
 
 def isDisabled(button):

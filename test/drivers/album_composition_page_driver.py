@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from hamcrest import contains, has_items, equal_to
-from PyQt5.QtWidgets import QAbstractButton, QWidget
+from PyQt5.QtWidgets import QAbstractButton
 
 from test.cute.widgets import ButtonDriver
 from test.cute.matchers import named
 from test.drivers import BaseDriver
 from tgit.ui.album_composition_model import Columns
+from tgit.ui.album_composition_page import AlbumCompositionPage
 
 
 def albumCompositionPage(parent):
-    return AlbumCompositionPageDriver.findSingle(parent, QWidget, named('album-composition-page'))
+    return AlbumCompositionPageDriver.findSingle(parent, AlbumCompositionPage, named('album-composition-page'))
 
 
 class AlbumCompositionPageDriver(BaseDriver):

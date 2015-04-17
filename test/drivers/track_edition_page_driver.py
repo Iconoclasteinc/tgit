@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QWidget
-
 from test.cute.matchers import named, withBuddy, showingOnScreen, withPixmapHeight, withPixmapWidth
 from test.drivers import BaseDriver
 from tgit.ui.track_edition_page import TrackEditionPage
 
 
 def trackEditionPage(parent):
-    return TrackEditionPageDriver.findSingle(parent, QWidget, named('track-edition-page'), showingOnScreen())
+    return TrackEditionPageDriver.findSingle(parent, TrackEditionPage, named('track-edition-page'), showingOnScreen())
 
 
 class TrackEditionPageDriver(BaseDriver):
