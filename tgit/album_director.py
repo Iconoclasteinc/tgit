@@ -146,7 +146,7 @@ def lookupISNI(registry, leadPerformer):
     firstName = restOfName.split(' ')
 
     try:
-        return registry.searchByKeywords(lastName, *firstName)
+        return registry.search_by_keywords(lastName, *firstName)
     except requests.exceptions.ConnectionError as e:
         return e
 
