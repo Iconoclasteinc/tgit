@@ -31,9 +31,9 @@ def guessMimeType(filename):
     return mimetypes.guess_type(filename)[0]
 
 
-def makeTempCopy(filename, dir=None):
+def make_temp_copy(filename, dirname=None):
     _, ext = os.path.splitext(filename)
-    copy, path = tempfile.mkstemp(suffix=ext, dir=dir)
+    copy, path = tempfile.mkstemp(suffix=ext, dir=dirname)
     shutil.copy(filename, path)
     os.close(copy)
     return path

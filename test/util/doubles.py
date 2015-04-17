@@ -3,29 +3,34 @@ import os
 
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 
-from test.util import mp3_file as mp3
+from test.util import mp3_file as mp3, flac_file as flac
 from tgit.util import fs
 from tgit.metadata import Image
 from tgit.announcer import Announcer
 from tgit.tagging import id3_container as id3
 
 
-def recordingLibrary(tmpDir):
-    return Mp3Library(tmpDir)
+def recording_library(tmpdir):
+    return RecordingLibrary(tmpdir)
 
 
-class Mp3Library(object):
+class RecordingLibrary(object):
     def __init__(self, root):
-        self.root = root
-        self.recordings = []
+        self._root = root
+        self._files = []
 
-    def add(self, **metadata):
-        recording = mp3.make(to=self.root, **metadata)
-        self.recordings.append(recording)
+    def _add(self, recording):
+        self._files.append(recording)
         return recording.filename
 
+    def add_mp3(self, **metadata):
+        return self._add(mp3.make(to=self._root, **metadata))
+
+    def add_flac(self, **metadata):
+        return self._add(flac.make(to=self._root, **metadata))
+
     def path(self, filename):
-        return os.path.join(self.root, filename)
+        return os.path.join(self._root, filename)
 
     def exists(self, filename):
         return os.path.exists(self.path(filename))
@@ -46,7 +51,7 @@ class Mp3Library(object):
         assert_that(metadata.images, contains(*images), 'attached pictures')
 
     def delete(self):
-        for recording in self.recordings:
+        for recording in self._files:
             recording.delete()
 
 

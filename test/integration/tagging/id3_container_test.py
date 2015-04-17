@@ -9,8 +9,8 @@ from tgit.metadata import Metadata, Image
 import tgit.tagging.id3_container as container
 
 
-BITRATE = mp3.Base.bitrate
-DURATION = mp3.Base.duration
+BITRATE = mp3.base.bitrate
+DURATION = mp3.base.duration
 
 
 class ID3ContainerTest(unittest.TestCase):

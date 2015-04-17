@@ -47,7 +47,7 @@ class Mp3Audio(object):
     def _copy(self, filename):
         # On Windows, we have 2 issues with Phonon:
         # 1- It locks the file so we have to make a copy to allow tagging
-        copy = fs.makeTempCopy(filename)
+        copy = fs.make_temp_copy(filename)
         # 2- It fails to play files with our tags so we have to clear the frames
         id3.delete(filename=copy)
         return copy

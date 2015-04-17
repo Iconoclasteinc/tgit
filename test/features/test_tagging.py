@@ -9,7 +9,7 @@ from test.drivers.application_runner import ApplicationRunner
 
 @pytest.fixture
 def library(request, tmpdir):
-    recordings = doubles.recordingLibrary(tmpdir.dirname)
+    recordings = doubles.recording_library(tmpdir.dirname)
     request.addfinalizer(recordings.delete)
     return recordings
 
@@ -23,34 +23,30 @@ def app(request):
 
 
 def test_tagging_a_new_album_with_several_tracks(app, library):
-    tracks = [
-        library.add(trackTitle="Ma préférence",
-                    releaseName="Jaloux",
-                    frontCover=("image/jpeg", "Cover", fs.binary_content_of(resources.path("jaloux.jpg"))),
-                    leadPerformer="Julien Clerc",
-                    labelName="EMI",
-                    releaseTime="1978"),
-        library.add(trackTitle="Fais moi une place",
-                    releaseName="Fais moi une place",
-                    frontCover=("image/jpeg", "Cover", fs.binary_content_of(resources.path("une-place.jpg"))),
-                    labelName="Virgin",
-                    releaseTime="1990",
-
-                    upc="3268440307258"),
-        library.add(trackTitle="Ce n'est rien",
-                    releaseName="Niagara",
-                    frontCover=("image/jpeg", "Cover", fs.binary_content_of(resources.path("niagara.jpg"))),
-                    releaseTime="1971",
-                    lyricist="Étienne Roda-Gil")
-    ]
+    tracks = (library.add_mp3(trackTitle="Ma préférence",
+                              releaseName="Jaloux",
+                              frontCover=("image/jpeg", "Cover", fs.binary_content_of(resources.path("jaloux.jpg"))),
+                              leadPerformer="Julien Clerc",
+                              labelName="EMI",
+                              releaseTime="1978"),
+              library.add_mp3(trackTitle="Fais moi une place",
+                              releaseName="Fais moi une place",
+                              frontCover=("image/jpeg", "Cover", fs.binary_content_of(resources.path("une-place.jpg"))),
+                              labelName="Virgin",
+                              releaseTime="1990",
+                              upc="3268440307258"),
+              library.add_mp3(trackTitle="Ce n'est rien",
+                              releaseName="Niagara",
+                              frontCover=("image/jpeg", "Cover", fs.binary_content_of(resources.path("niagara.jpg"))),
+                              releaseTime="1971",
+                              lyricist="Étienne Roda-Gil"))
 
     app.new_album(*tracks)
     app.shows_album_content(["Ma préférence"],
                             ["Fais moi une place"],
                             ["Ce n'est rien"])
 
-    app.shows_album_metadata(releaseName="Jaloux", leadPerformer="Julien Clerc", labelName="EMI",
-                             releaseTime="1978")
+    app.shows_album_metadata(releaseName="Jaloux", leadPerformer="Julien Clerc", labelName="EMI", releaseTime="1978")
     app.change_album_metadata(releaseName="Best Of", frontCover=resources.path("best-of.jpg"),
                               labelName="EMI Music France", releaseTime="2009-04-06")
 
@@ -90,3 +86,15 @@ def test_tagging_a_new_album_with_several_tracks(app, library):
                      trackTitle="Ce n'est rien",
                      composer="Julien Clerc",
                      lyricist="Étienne Roda-Gil")
+
+
+@pytest.mark.wip
+def test_tagging_a_flac_album(app, library):
+    track = library.add_flac(lead_performer="???")
+
+    app.new_album(track)
+    app.shows_album_metadata(lead_performer="???")
+    app.change_album_metadata(lead_performer="John Roney")
+
+    library.contains("John Roney - 01 - .flac",
+                     lead_performer="John Roney")
