@@ -398,11 +398,6 @@
         <source>Export...</source>
         <translation>Exporter...</translation>
     </message>
-    <message>
-        <location filename="tgit/ui/menu_bar.py" line="85"/>
-        <source>Settings</source>
-        <translation>Préférences</translation>
-    </message>
 </context>
 <context>
     <name>PerformerDialog</name>
