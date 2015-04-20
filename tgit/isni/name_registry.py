@@ -45,28 +45,28 @@ class NameRegistry(object):
         number_of_records = extract_number_of_records(results)
         return number_of_records, matches
 
-    def assign(self, forename, surname, *title_of_works):
+    def assign(self, forename, surname, title_of_works):
         creation_class = "prf"
         reference_uri = "http://tagtamusique.com/"
         date = datetime.utcnow()
-        titles = "".join("<title>%s</title>" % title for title in title_of_works)
+        titles = "".join("<title>{0}</title>".format(title) for title in title_of_works)
         payload = """
             <Request>
                 <requestID>
-                    <dateTimeOfRequest>%(date)s</dateTimeOfRequest>
+                    <dateTimeOfRequest>{0}</dateTimeOfRequest>
                     <requestorTransactionId></requestorTransactionId>
                 </requestID>
                 <identityInformation>
                     <requestorIdentifierOfIdentity>
-                        <referenceURI>%(reference_uri)s</referenceURI>
+                        <referenceURI>{1}</referenceURI>
                         <identifier>0123456789</identifier>
                     </requestorIdentifierOfIdentity>
                     <identity>
                         <personOrFiction>
                             <personalName>
                                 <nameUse>public and private</nameUse>
-                                <surname>%(surname)s</surname>
-                                <forename>%(forename)s</forename>
+                                <surname>{2}</surname>
+                                <forename>{3}</forename>
                             </personalName>
                             <resource>
                                 <creationClass>
@@ -74,22 +74,20 @@ class NameRegistry(object):
                                     <formOfPublication>book </formOfPublication>
                                     <pietjePuk>fi<p>lm</p></pietjePuk>
                                 </creationClass>
-                                <creationRole>%(creation_class)s</creationRole>
+                                <creationRole>{4}</creationRole>
                                 <titleOfWork>
-                                    %(titles)s
+                                    {5}
                                 </titleOfWork>
                             </resource>
                         </personOrFiction>
                     </identity>
                 </identityInformation>
             </Request>
-        """ % locals()
+        """.format(date, reference_uri, surname, forename, creation_class, titles)
         headers = {"content-type": "application/atom+xml"}
         response = requests.post(self.assig_uri(), data=payload, headers=headers, verify=False)
-        content = response.content
-        results = etree.fromstring(content)
 
-        assigned = results.find("ISNIAssigned")
+        assigned = etree.fromstring(response.content).find("ISNIAssigned")
         if assigned is not None:
             isni = assigned.find("isniUnformatted").text
             return isni
@@ -111,11 +109,16 @@ class NameRegistry(object):
             fragments.append("/DB=1.3")
         else:
             fragments.append("/DB=1.2")
-
         return "".join(fragments)
 
     def assig_uri(self):
-        return "https://%s/ATOM/isni" % self.assign_host
+        fragments = ["https" if self.secure else "http", "://", self.host]
+        if self.port is not None:
+            fragments.append(":")
+            fragments.append(str(self.port))
+
+        fragments.append("/ATOM/isni")
+        return "".join(fragments)
 
 
 def extract_number_of_records(results):
@@ -140,7 +143,7 @@ def parse_identity_from(record):
             forename = get_longest_in(assigned, ".//personalName/forename")
             date = get_longest_in(assigned, ".//personalName/dates")
             title = get_longest_in(assigned, ".//creativeActivity/titleOfWork/title")
-            return isni, ("%(forename)s %(surname)s" % locals(), date, remove_line_start_character(title))
+            return isni, ("{0} {1}".format(forename, surname), date, remove_line_start_character(title))
 
         if is_organisation(assigned):
             name = get_organisation_name_from(assigned)
@@ -156,10 +159,10 @@ def get_organisation_name_from(record):
 
 
 def create_payload_from(keywords):
-    return "?query=pica.nw%%3D%s+pica.st%%3DA" \
+    return "?query=pica.nw%%3D{0}+pica.st%%3DA" \
            "&operation=searchRetrieve" \
            "&recordSchema=isni-e" \
-           "&maximumRecords=20" % "+".join(format_keywords(keywords))
+           "&maximumRecords=20".format("+".join(format_keywords(keywords)))
 
 
 def format_keywords(keywords):

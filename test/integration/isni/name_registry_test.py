@@ -31,15 +31,16 @@ def has_identity(isni=anything(), name=anything(), birth_date=anything(), title=
 class IsniTest(unittest.TestCase):
     def setUp(self):
         server.port = 5000
-        server.start()
-        self.registry = NameRegistry(host="localhost", port=server.port)
+        self.server_thread = server.start()
+        self.registry = NameRegistry(host="localhost", assign_host="localhost", port=server.port)
 
     def tearDown(self):
         server.persons.clear()
         server.organisations.clear()
-        server.stop()
+        server.assignations = None
+        server.stop(self.server_thread)
 
-    def testFindsPerson(self):
+    def test_finds_person(self):
         server.persons["00000001"] = [{"names": [
             ("Joel", "Miller", "1969-"), ("Joel E.", "Miller", ""), ("joel", "miller", "")], "titles": ["Honeycombs"]}]
 
@@ -47,7 +48,7 @@ class IsniTest(unittest.TestCase):
         assert_that(identities[0], equal_to("1"))
         assert_that(identities[1], has_identity("00000001", "Joel E. Miller", "1969-", "Honeycombs"))
 
-    def testFindsOrganisation(self):
+    def test_finds_organisation(self):
         server.organisations["0000000121707484"] = [{"names": [
             "The Beatles", "Beatles, The"], "titles": [
             "The fool on the hill from The Beatles' T.V. film Magical mystery tour"]}]
@@ -58,3 +59,8 @@ class IsniTest(unittest.TestCase):
         assert_that(identities[1],
                     has_identity("0000000121707484", "Beatles, The",
                                  title="The fool on the hill from The Beatles' T.V. film Magical mystery tour"))
+
+    def test_assigns_isni_to_person(self):
+        server.assignation_generator = (isni for isni in ["0000000121707484"])
+        isni = self.registry.assign("Joel", "Miller", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
+        assert_that(isni, equal_to("0000000121707484"))

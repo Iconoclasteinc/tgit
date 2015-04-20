@@ -16,15 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from lxml import etree
 
 from threading import Thread
 import logging
 
 from flask import Flask, request
+from lxml.etree import ParseError
 import requests
 
 
-__all__ = ["port", "persons", "organisations", "start", "stop"]
+__all__ = ["port", "persons", "organisations", "assignation_results", "start", "stop"]
 
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
@@ -32,6 +34,7 @@ app = Flask(__name__)
 port = 5000
 persons = {}
 organisations = {}
+assignation_generator = None
 
 
 @app.route("/sru/DB=1.2")
@@ -54,6 +57,24 @@ def lookup():
     return format_results({})
 
 
+@app.route("/ATOM/isni", methods=["POST"])
+def assign():
+    try:
+        etree.fromstring(request.data)
+    except ParseError:
+        return invalid_format_response()
+
+    next_action = next(assignation_generator)
+    if next_action == "sparse":
+        return sparse_response()
+    elif next_action == "invalidData":
+        return invalid_data_response()
+    elif isinstance(next_action, list):
+        return possible_matches_response(next_action)
+    else:
+        return isni_assigned_response(next_action)
+
+
 @app.route("/shutdown")
 def shutdown():
     handler = request.environ.get("werkzeug.server.shutdown")
@@ -68,12 +89,116 @@ def run():
 
 
 def start():
+    server_thread = Thread(target=run)
     server_thread.start()
+    return server_thread
 
 
-def stop():
+def stop(server_thread):
     requests.get("http://localhost:{port}/shutdown".format(port=port))
     server_thread.join()
+
+
+def sparse_response():
+    return """
+        <responseRecord>
+            <requestID>111222333444</requestID>
+            <dateTimeOfResponse>2012-03-13T14:31:22</dateTimeOfResponse>
+            <requestorIdentifierOfIdentity>13356523</requestorIdentifierOfIdentity>
+            <noISNI>
+                <reason>sparse</reason>
+                <information>needs at least one of title, date, instrument, contributedTo</information>
+            </noISNI>
+        </responseRecord>
+    """
+
+
+def invalid_format_response():
+    return """
+        <responseRecord>
+            <requestID>111222333888</requestID>
+            <dateTimeOfResponse>2012-03-13T14:31:22</dateTimeOfResponse>
+            <requestorIdentifierOfIdentity>13356559</requestorIdentifierOfIdentity>
+            <noISNI>
+                <reason>invalidFormat</reason>
+                <information>XML parsing error</information>
+            </noISNI>
+        </responseRecord>
+    """
+
+
+def invalid_data_response():
+    return """
+        <responseRecord>
+            <requestID>111222333999</requestID>
+            <dateTimeOfResponse>2012-03-13T14:31:22</dateTimeOfResponse>
+            <requestorIdentifierOfIdentity>13356423</requestorIdentifierOfIdentity>
+            <noISNI>
+                <reason>invalidData</reason>
+                <information>invalid code creationRole eee</information>
+            </noISNI>
+        </responseRecord>
+    """
+
+
+def possible_matches_response(ppns):
+    return """
+        <responseRecord>
+            <requestID>111222333666</requestID>
+            <dateTimeOfResponse>2012-03-13T14:31:22</dateTimeOfResponse>
+            <requestorIdentifierOfIdentity>13356999</requestorIdentifierOfIdentity>
+            <noISNI>
+                <reason>possibleMatch</reason>
+                <possibleMatch>
+                    <PPN>://isni-m.oclc.nl/DB=1.3/PPN?PPN={0}</PPN>
+                    <evaluationScore>0.92</evaluationScore>
+                    <source>VIAF</source>
+                </possibleMatch>
+                <possibleMatch>
+                    <PPN>http://isni-m.oclc.nl/DB=1.3/PPN?PPN={1}</PPN>
+                    <evaluationScore>0.95</evaluationScore>
+                    <source>PROQ</source>
+                </possibleMatch>
+            </noISNI>
+        </responseRecord>
+    """.format(*ppns)
+
+
+def isni_assigned_response(isni):
+    return """
+        <responseRecord>
+            <requestID>5340</requestID>
+            <dateTimeOfResponse>2014-05-20T09:09:36.43063705+02:00</dateTimeOfResponse>
+            <requestorIdentifierOfIdentity>13365</requestorIdentifierOfIdentity>
+            <ISNIAssigned>
+                <isniFormatted>ISNI 0000 0001 3333 4444 555X</isniFormatted>
+                <isniUnformatted>{0}</isniUnformatted>
+                <isniURI>http://www.isni.org/{0}</isniURI>
+                <dataConfidence>60</dataConfidence>
+                <ISNIMetadata>
+                    <identity>
+                        <personOrFiction>
+                        </personOrFiction>
+                    </identity>
+                    <sources>
+                        <codeOfSource>VIAF</codeOfSource>
+                        <sourceIdentifier>123234345</sourceIdentifier>
+                        <reference>
+                            <URI>http://viaf.org/123234345</URI>
+                        </reference>
+                    </sources>
+                </ISNIMetadata>
+                <matches>
+                    <matchData>
+                        <matchDataType>ISBN</matchDataType>
+                        <matchDataString>9789062334889</matchDataString>
+                    </matchData>
+                    <matchConfidence>.99</matchConfidence>
+                    <dateTimeOfMatch>2014-05-20T09:09:36.430630000+02:00</dateTimeOfMatch>
+                </matches>
+            </ISNIAssigned>
+        </responseRecord>
+    """.format(isni)
 
 
 def format_person_name(forename, surname, dates):
@@ -195,6 +320,3 @@ def hit(terms, name_fragments):
                 break
 
     return len(terms_found) == len(terms)
-
-
-server_thread = Thread(target=run)
