@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from datetime import datetime
 import os
 import shutil
@@ -8,14 +7,50 @@ import unittest
 from dateutil import tz
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
     has_item, empty
+import pytest
 
 from test.util import builders as build, resources, doubles, mp3_file
 import tgit
 from tgit import album_director as director
 from tgit.album_director import sanitize
 from tgit.metadata import Image
-from tgit.tagging import id3_container
+from tgit.tagging import embedded_metadata
 from tgit.util import fs
+
+
+@pytest.fixture
+def recordings(request, tmpdir):
+    library = doubles.recording_library(tmpdir.strpath)
+    request.addfinalizer(library.delete)
+    return library
+
+
+def test_adds_selected_tracks_to_album_in_selection_order(recordings):
+    recordings.add_mp3(trackTitle='Rolling in the Deep')
+    recordings.add_mp3(trackTitle='Set Fire to the Rain')
+    recordings.add_mp3(trackTitle='Someone Like You')
+
+    album = build.album()
+    director.add_tracks_to_album(album, [recording.filename for recording in recordings.entries])
+
+    assert_that(album.tracks, contains(
+        has_properties(trackTitle='Rolling in the Deep'),
+        has_properties(trackTitle='Set Fire to the Rain'),
+        has_properties(trackTitle='Someone Like You')))
+
+
+def test_adds_all_tracks_in_selected_folder_to_album(recordings):
+    recordings.add_mp3(trackTitle='Rolling in the Deep')
+    recordings.add_mp3(trackTitle='Set Fire to the Rain')
+    recordings.add_mp3(trackTitle='Someone Like You')
+
+    album = build.album()
+    director.add_tracks_to_album(album, (recordings.root,))
+
+    assert_that(album.tracks, contains_inanyorder(
+        has_properties(trackTitle='Rolling in the Deep'),
+        has_properties(trackTitle='Set Fire to the Rain'),
+        has_properties(trackTitle='Someone Like You')))
 
 
 class AlbumDirectorTest(unittest.TestCase):
@@ -118,7 +153,7 @@ class AlbumDirectorTest(unittest.TestCase):
         tagged = os.path.join(self.tempdir, 'tagged.mp3')
         director.recordTrack(tagged, track, now)
 
-        metadata = id3_container.load(tagged)
+        metadata = embedded_metadata.load(tagged)
         assert_that(metadata, has_entries(tagger='TGiT v' + tgit.__version__,
                                           taggingTime='2014-03-23 16:44:33 +0000',
                                           releaseName='Album Title',
@@ -143,31 +178,6 @@ class AlbumDirectorTest(unittest.TestCase):
 
         assert_that(text_content_of(destination_file), equal_to('Les Comédiens\n'))
 
-    def testAddsSelectedTracksToAlbumInSelectionOrder(self):
-        self.library.add_mp3(trackTitle='Rolling in the Deep')
-        self.library.add_mp3(trackTitle='Set Fire to the Rain')
-        self.library.add_mp3(trackTitle='Someone Like You')
-
-        album = build.album()
-        director.addTracksToAlbum(album, [recording.filename for recording in self.library.entries])
-        assert_that(album.tracks, contains(
-            has_properties(trackTitle='Rolling in the Deep'),
-            has_properties(trackTitle='Set Fire to the Rain'),
-            has_properties(trackTitle='Someone Like You')))
-
-    def testAddsAllTracksInSelectedFolder(self):
-        self.library.add_mp3(trackTitle='Rolling in the Deep')
-        self.library.add_mp3(trackTitle='Set Fire to the Rain')
-        self.library.add_mp3(trackTitle='Someone Like You')
-
-        album = build.album()
-
-        director.addTracksToAlbum(album, (self.library.root,))
-        assert_that(album.tracks, contains_inanyorder(
-            has_properties(trackTitle='Rolling in the Deep'),
-            has_properties(trackTitle='Set Fire to the Rain'),
-            has_properties(trackTitle='Someone Like You')))
-
     def testReplacesInvalidCharactersForFileNamesWithUnderscores(self):
         assert_that(sanitize('1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')
 
@@ -182,7 +192,7 @@ class AlbumDirectorTest(unittest.TestCase):
 
     def testReturnsListOfIdentitiesWhenISNIFoundInRegistry(self):
         class NameRegistry:
-            def searchByKeywords(self, *keywords):
+            def search_by_keywords(self, *keywords):
                 if keywords[0] == 'Maloy' and keywords[1] == 'Rebecca' and keywords[2] == 'Ann':
                     return '1', [('0000000115677274', 'Rebecca Ann Maloy')]
                 return '0', []
@@ -192,7 +202,7 @@ class AlbumDirectorTest(unittest.TestCase):
 
     def testReturnsEmptyListWhenISNIIsNotFoundInRegistry(self):
         class NameRegistry:
-            def searchByKeywords(self, *keywords):
+            def search_by_keywords(self, *keywords):
                 return '0', []
 
         _, identities = director.lookupISNI(NameRegistry(), 'Rebecca Ann Maloy')

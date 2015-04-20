@@ -9,7 +9,7 @@ from test.drivers.application_runner import ApplicationRunner
 
 @pytest.fixture
 def library(request, tmpdir):
-    recordings = doubles.recording_library(tmpdir.dirname)
+    recordings = doubles.recording_library(tmpdir.strpath)
     request.addfinalizer(recordings.delete)
     return recordings
 
@@ -88,8 +88,8 @@ def test_tagging_a_new_album_with_several_tracks(app, library):
                      lyricist="Étienne Roda-Gil")
 
 
-@pytest.mark.wip
-def test_tagging_a_flac_album(app, library):
+# @pytest.mark.wip
+def test_tagging_a_flac_track(app, library):
     track = library.add_flac(lead_performer="???")
 
     app.new_album(track)

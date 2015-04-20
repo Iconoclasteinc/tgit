@@ -17,8 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import unittest
+
 from hamcrest import assert_that, anything, has_item, contains, equal_to, greater_than
-from isni.name_registry import NameRegistry
+
+from tgit.isni.name_registry import NameRegistry
 
 
 def has_identity(isni=anything(), name=anything(), birth_date=anything(), title=anything()):

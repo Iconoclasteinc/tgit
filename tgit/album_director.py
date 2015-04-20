@@ -28,6 +28,7 @@ import requests
 
 import tgit
 from tgit.album import Album
+from tgit.tagging import embedded_metadata
 from tgit.tagging.id3_container import ID3Container
 from tgit.track import Track
 from tgit.util import fs
@@ -37,9 +38,9 @@ def createAlbum(portfolio):
     portfolio.addAlbum(Album())
 
 
-def addTracksToAlbum(album, selection, container=ID3Container()):
+def add_tracks_to_album(album, selection):
     for filename in mp3Files(selection):
-        album.addTrack(Track(filename, container.load(filename)))
+        album.addTrack(Track(filename, embedded_metadata.load(filename)))
 
 
 def updateTrack(track, **metadata):
