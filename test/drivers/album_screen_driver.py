@@ -4,13 +4,13 @@ from hamcrest.library.text import contains_string
 
 from test.cute.matchers import named
 from test.drivers import BaseDriver
-from test.drivers.album_edition_page_driver import albumEditionPage
+from test.drivers.album_edition_page_driver import album_edition_page
 from test.drivers.album_composition_page_driver import albumCompositionPage
 from test.drivers.track_edition_page_driver import trackEditionPage
 from tgit.ui.album_screen import AlbumScreen
 
 
-def albumScreen(parent):
+def album_screen(parent):
     return AlbumScreenDriver.findSingle(parent, AlbumScreen, named('album-screen'))
 
 
@@ -29,7 +29,7 @@ class AlbumScreenDriver(BaseDriver):
         albumCompositionPage(self).isShowingOnScreen()
 
     def showsAlbumEditionPage(self):
-        albumEditionPage(self).isShowingOnScreen()
+        album_edition_page(self).isShowingOnScreen()
 
     def showsTrackEditionPage(self):
         trackEditionPage(self).isShowingOnScreen()
@@ -73,11 +73,11 @@ class AlbumScreenDriver(BaseDriver):
     def showsAlbumContains(self, *tracks):
         albumCompositionPage(self).showsTracksInOrder(*tracks)
 
-    def showsAlbumMetadata(self, **tags):
-        albumEditionPage(self).showsMetadata(**tags)
+    def shows_album_metadata(self, **tags):
+        album_edition_page(self).shows_metadata(**tags)
 
-    def editAlbumMetadata(self, **tags):
-        albumEditionPage(self).changeMetadata(**tags)
+    def edit_album_metadata(self, **tags):
+        album_edition_page(self).change_metadata(**tags)
 
     def showsTrackMetadata(self, **tags):
         trackEditionPage(self).showsMetadata(**tags)

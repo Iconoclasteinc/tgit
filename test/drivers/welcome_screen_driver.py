@@ -5,10 +5,10 @@ from test.drivers import BaseDriver
 from tgit.ui.welcome_screen import WelcomeScreen
 
 
-def welcomeScreen(parent):
+def welcome_screen(parent):
     return WelcomeScreenDriver.findSingle(parent, WelcomeScreen, named('welcome-screen'))
 
 
 class WelcomeScreenDriver(BaseDriver):
-    def newAlbum(self):
+    def new_album(self):
         self.button(named('new-album')).click()

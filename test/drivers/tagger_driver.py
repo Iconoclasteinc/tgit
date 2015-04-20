@@ -7,10 +7,10 @@ from test.cute.matchers import showingOnScreen, withText
 from test.cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
 from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.drivers.menu_bar_driver import menuBar
-from test.drivers.album_screen_driver import albumScreen
+from test.drivers.album_screen_driver import album_screen
 from test.drivers.settings_dialog_driver import settingsDialog
 from test.drivers.track_selection_dialog_driver import track_selection_dialog
-from test.drivers.welcome_screen_driver import welcomeScreen
+from test.drivers.welcome_screen_driver import welcome_screen
 
 
 def restartMessage(parent):
@@ -30,46 +30,46 @@ class TaggerDriver(MainWindowDriver):
     def cancelSelection(self):
         track_selection_dialog(self).cancel()
 
-    def createAlbum(self):
-        welcomeScreen(self).newAlbum()
-        self.showsAlbumScreen()
+    def create_album(self):
+        welcome_screen(self).new_album()
+        self.shows_album_screen()
 
     def showsWelcomeScreen(self):
-        welcomeScreen(self).isShowingOnScreen()
+        welcome_screen(self).isShowingOnScreen()
 
-    def showsAlbumScreen(self):
-        albumScreen(self).isShowingOnScreen()
+    def shows_album_screen(self):
+        album_screen(self).isShowingOnScreen()
 
     def showsExportAsDialog(self):
         exportAsDialog(self).isShowingOnScreen()
 
     def removeTrack(self, title):
-        albumScreen(self).removeTrack(title)
+        album_screen(self).removeTrack(title)
 
     def moveTrack(self, title, to):
-        albumScreen(self).moveTrack(title, to)
+        album_screen(self).moveTrack(title, to)
 
     # todo have a quick navigation button
     def next(self):
-        albumScreen(self).nextPage()
+        album_screen(self).nextPage()
 
     def showsAlbumContains(self, *tracks):
-        albumScreen(self).showsAlbumContains(*tracks)
+        album_screen(self).showsAlbumContains(*tracks)
 
-    def showsAlbumMetadata(self, **tags):
-        albumScreen(self).showsAlbumMetadata(**tags)
+    def shows_album_metadata(self, **tags):
+        album_screen(self).shows_album_metadata(**tags)
 
-    def editAlbumMetadata(self, **tags):
-        albumScreen(self).editAlbumMetadata(**tags)
+    def edit_album_metadata(self, **tags):
+        album_screen(self).edit_album_metadata(**tags)
 
     def showsTrackMetadata(self, **tags):
-        albumScreen(self).showsTrackMetadata(**tags)
+        album_screen(self).showsTrackMetadata(**tags)
 
     def editTrackMetadata(self, **tags):
-        albumScreen(self).editTrackMetadata(**tags)
+        album_screen(self).editTrackMetadata(**tags)
 
-    def saveAlbum(self):
-        albumScreen(self).save()
+    def save_album(self):
+        album_screen(self).save()
 
     def change_settings(self, **settings):
         menuBar(self).settings()

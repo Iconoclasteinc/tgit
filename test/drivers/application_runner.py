@@ -26,7 +26,7 @@ class ApplicationRunner(object):
         del self.app
 
     def new_album(self, of_type='mp3', *paths):
-        self.tagger.createAlbum()
+        self.tagger.create_album()
         self.tagger.select_audio_files(of_type, *paths)
 
     def shows_album_content(self, *tracks):
@@ -34,13 +34,13 @@ class ApplicationRunner(object):
 
     def shows_album_metadata(self, **tags):
         self.tagger.next()
-        self.tagger.showsAlbumMetadata(**tags)
+        self.tagger.shows_album_metadata(**tags)
         # todo navigate back to track list
         # so we always no where we're starting from
 
     def change_album_metadata(self, **tags):
-        self.tagger.editAlbumMetadata(**tags)
-        self.tagger.saveAlbum()
+        self.tagger.edit_album_metadata(**tags)
+        self.tagger.save_album()
 
     def shows_next_track_metadata(self, **tags):
         self.tagger.next()
@@ -48,7 +48,7 @@ class ApplicationRunner(object):
 
     def change_track_metadata(self, **tags):
         self.tagger.editTrackMetadata(**tags)
-        self.tagger.saveAlbum()
+        self.tagger.save_album()
 
     def removeTrack(self, title):
         self.tagger.removeTrack(title)

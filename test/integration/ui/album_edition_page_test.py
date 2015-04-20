@@ -53,7 +53,7 @@ class AlbumEditionPageTest(WidgetTest):
 
         self.driver.showsReleaseName('Album')
         self.driver.showsCompilation(False)
-        self.driver.showsLeadPerformer('Artist')
+        self.driver.shows_lead_performer('Artist')
         self.driver.showsISNI('123456789', True)
         self.driver.showsArea('')
         self.driver.showsGuestPerformers('Guitar: Guitarist; Piano: Pianist')
@@ -82,7 +82,7 @@ class AlbumEditionPageTest(WidgetTest):
 
     def testDisablesLeadPerformerEditionWhenAlbumIsACompilation(self):
         self.render(build.album(compilation=True, leadPerformer='Album Artist'))
-        self.driver.showsLeadPerformer('Various Artists', disabled=True)
+        self.driver.shows_lead_performer('Various Artists', disabled=True)
 
     def testTogglesLookupISNIButtonWhenAlbumIsNoLongerACompilation(self):
         album = build.album(compilation=True, leadPerformer='Album Artist')

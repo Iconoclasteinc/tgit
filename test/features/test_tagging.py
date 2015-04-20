@@ -7,19 +7,19 @@ from test.util import resources, doubles
 from test.drivers.application_runner import ApplicationRunner
 
 
-@pytest.fixture
-def library(request, tmpdir):
+@pytest.yield_fixture
+def library(tmpdir):
     recordings = doubles.recording_library(tmpdir.strpath)
-    request.addfinalizer(recordings.delete)
-    return recordings
+    yield recordings
+    recordings.delete()
 
 
-@pytest.fixture
-def app(request):
+@pytest.yield_fixture
+def app():
     runner = ApplicationRunner()
-    request.addfinalizer(runner.stop)
     runner.start()
-    return runner
+    yield runner
+    runner.stop()
 
 
 def test_tagging_a_new_album_with_several_tracks(app, library):

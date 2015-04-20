@@ -21,5 +21,5 @@ class WelcomeScreenTest(WidgetTest):
     def testSignalsWhenNewAlbumButtonClicked(self):
         newAlbumSignal = ValueMatcherProbe('new album')
         self.screen.newAlbum.connect(newAlbumSignal.received)
-        self.driver.newAlbum()
+        self.driver.new_album()
         self.driver.check(newAlbumSignal)

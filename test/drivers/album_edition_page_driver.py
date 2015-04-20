@@ -6,17 +6,17 @@ from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
 from tgit.ui.album_edition_page import AlbumEditionPage
 
 
-def albumEditionPage(parent):
+def album_edition_page(parent):
     return AlbumEditionPageDriver.findSingle(parent, AlbumEditionPage, named('album-edition-page'))
 
 
 class AlbumEditionPageDriver(BaseDriver):
-    def showsMetadata(self, **meta):
+    def shows_metadata(self, **meta):
         for tag, value in meta.items():
             if tag == 'releaseName':
                 self.showsReleaseName(value)
-            elif tag == 'leadPerformer':
-                self.showsLeadPerformer(value)
+            elif tag == 'leadPerformer' or tag == 'lead_performer':
+                self.shows_lead_performer(value)
             elif tag == 'guestPerformers':
                 self.showsGuestPerformers(value)
             elif tag == 'labelName':
@@ -40,7 +40,7 @@ class AlbumEditionPageDriver(BaseDriver):
             else:
                 raise AssertionError("Don't know how to verify '%s'" % tag)
 
-    def changeMetadata(self, **meta):
+    def change_metadata(self, **meta):
         for tag, value in meta.items():
             if tag == 'frontCover':
                 self.selectPicture(value)
@@ -120,7 +120,7 @@ class AlbumEditionPageDriver(BaseDriver):
     def toggleCompilation(self):
         self.checkbox(named('compilation')).click()
 
-    def showsLeadPerformer(self, name, disabled=False):
+    def shows_lead_performer(self, name, disabled=False):
         label = self.label(withBuddy(named('lead-performer')))
         label.isShowingOnScreen()
         edit = self.lineEdit(named('lead-performer'))
