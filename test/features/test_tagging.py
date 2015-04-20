@@ -41,7 +41,7 @@ def test_tagging_a_new_album_with_several_tracks(app, library):
                               releaseTime="1971",
                               lyricist="Étienne Roda-Gil"))
 
-    app.new_album(*tracks)
+    app.new_album('mp3', *tracks)
     app.shows_album_content(["Ma préférence"],
                             ["Fais moi une place"],
                             ["Ce n'est rien"])
@@ -88,11 +88,11 @@ def test_tagging_a_new_album_with_several_tracks(app, library):
                      lyricist="Étienne Roda-Gil")
 
 
-# @pytest.mark.wip
+@pytest.mark.wip
 def test_tagging_a_flac_track(app, library):
     track = library.add_flac(lead_performer="???")
 
-    app.new_album(track)
+    app.new_album('flac', track)
     app.shows_album_metadata(lead_performer="???")
     app.change_album_metadata(lead_performer="John Roney")
 

@@ -52,7 +52,7 @@ class TGiT(QApplication):
     def show(self, preferences):
         self.setLocale(preferences['language'])
         self.mainWindow = ui.createMainWindow(AlbumPortfolio(), self.player(), preferences, self.name_registry,
-            self.native)
+                                              self.native)
         ui.showCenteredOnScreen(self.mainWindow)
 
     def launch(self, preferences=Preferences()):

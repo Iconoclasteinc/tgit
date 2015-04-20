@@ -21,12 +21,12 @@ class SettingsDialogDriver(WidgetDriver):
             self.changeLanguage(settings['language'])
 
     def showsLanguage(self, language):
-        self._combo(named('language')).hasCurrentText(language)
+        self._combo(named('language')).has_current_text(language)
 
     def changeLanguage(self, language):
         label = self._label(withBuddy(named('language')))
         label.isShowingOnScreen()
-        self._combo(named('language')).selectOption(language)
+        self._combo(named('language')).select_option(language)
         self.ok()
 
     def ok(self):

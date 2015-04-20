@@ -2,7 +2,7 @@
 
 from PyQt5.QtCore import QDir, QPoint, Qt, QTime
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
-                             QToolButton, QFileDialog, QMenu, QAction)
+                             QToolButton, QFileDialog, QMenu, QAction, QComboBox)
 from hamcrest import all_of, equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
@@ -199,7 +199,7 @@ class TextEditDriver(AbstractEditDriver):
 class ComboBoxDriver(AbstractEditDriver):
     CHOICES_DISPLAY_DELAY = 250
 
-    def selectOption(self, matching):
+    def select_option(self, matching):
         popup = self._popup()
         self.pause(self.CHOICES_DISPLAY_DELAY)
         popup.selectItem(match.withListItemText(matching))
@@ -208,7 +208,7 @@ class ComboBoxDriver(AbstractEditDriver):
         self.manipulate('pop up', lambda w: w.showPopup())
         return ListViewDriver.findSingle(self, QListView)
 
-    def hasCurrentText(self, matching):
+    def has_current_text(self, matching):
         self.has(properties.currentText(), wrap_matcher(matching))
 
 
@@ -270,6 +270,10 @@ class FileDialogDriver(WidgetDriver):
 
     def _doubleClickOnFolder(self):
         self.perform(gestures.mouseDoubleClick())
+
+    def select_files_of_type(self, matching):
+        driver = ComboBoxDriver.findSingle(self, QComboBox, match.named("fileTypeCombo"))
+        driver.select_option(matching)
 
     def selectFile(self, name):
         self.selectFiles(name)

@@ -164,13 +164,13 @@ class TrackEditionPageDriver(BaseDriver):
 
     def showsLanguage(self, lang):
         self.label(withBuddy(named('languages'))).isShowingOnScreen()
-        self.combobox(named('languages')).hasCurrentText(lang)
+        self.combobox(named('languages')).has_current_text(lang)
 
     def changeLanguage(self, lang):
         self.combobox(named('languages')).changeText(lang)
 
     def selectLanguage(self, lang):
-        self.combobox(named('languages')).selectOption(lang)
+        self.combobox(named('languages')).select_option(lang)
 
     def showsPreviewTime(self, time):
         self.dateTimeEdit(named('preview-time')).hasTime(time)

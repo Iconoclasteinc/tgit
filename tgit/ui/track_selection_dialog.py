@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QFileDialog
 
 
 class TrackSelectionDialog(QObject):
-    tracksSelected = pyqtSignal(list)
+    tracks_selected = pyqtSignal(list)
 
     def __init__(self, parent, native, transient=True):
         QObject.__init__(self)
@@ -31,14 +31,15 @@ class TrackSelectionDialog(QObject):
         self.native = native
         self.transient = transient
 
-    def display(self, folders):
+    def display(self, folders=False):
         dialog = QFileDialog(self.parent)
         dialog.setObjectName('track-selection-dialog')
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        dialog.setNameFilter('%s (%s)' % (dialog.tr('Audio files'), '*.mp3'))
+        dialog.setNameFilters(
+            ['%s (%s)' % (dialog.tr('Mp3 files'), '*.mp3'), '%s (%s)' % (dialog.tr('Flac files'), '*.flac')])
         dialog.setDirectory(QDir.homePath())
         dialog.filesSelected.connect(
-            lambda selection: self.tracksSelected.emit([os.path.abspath(entry) for entry in selection]))
+            lambda selection: self.tracks_selected.emit([os.path.abspath(entry) for entry in selection]))
         if folders:
             dialog.setFileMode(QFileDialog.Directory)
         else:

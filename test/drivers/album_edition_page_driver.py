@@ -240,13 +240,13 @@ class AlbumEditionPageDriver(BaseDriver):
 
     def showsPrimaryStyle(self, style):
         self.label(withBuddy(named('primary-style'))).isShowingOnScreen()
-        self.combobox(named('primary-style')).hasCurrentText(style)
+        self.combobox(named('primary-style')).has_current_text(style)
 
     def changePrimaryStyle(self, style):
         self.combobox(named('primary-style')).changeText(style)
 
     def selectPrimaryStyle(self, style):
-        self.combobox(named('primary-style')).selectOption(style)
+        self.combobox(named('primary-style')).select_option(style)
 
     def showsMediaType(self, type_):
         self.label(withBuddy(named('media-type'))).isShowingOnScreen()

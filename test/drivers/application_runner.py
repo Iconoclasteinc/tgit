@@ -25,9 +25,9 @@ class ApplicationRunner(object):
         del self.tagger
         del self.app
 
-    def new_album(self, *paths):
+    def new_album(self, of_type='mp3', *paths):
         self.tagger.createAlbum()
-        self.tagger.selectAudioFiles(*paths)
+        self.tagger.select_audio_files(of_type, *paths)
 
     def shows_album_content(self, *tracks):
         self.tagger.showsAlbumContains(*tracks)

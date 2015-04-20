@@ -9,7 +9,7 @@ from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.drivers.menu_bar_driver import menuBar
 from test.drivers.album_screen_driver import albumScreen
 from test.drivers.settings_dialog_driver import settingsDialog
-from test.drivers.track_selection_dialog_driver import trackSelectionDialog
+from test.drivers.track_selection_dialog_driver import track_selection_dialog
 from test.drivers.welcome_screen_driver import welcomeScreen
 
 
@@ -22,13 +22,13 @@ class TaggerDriver(MainWindowDriver):
         super(TaggerDriver, self).__init__(selector, prober, gesturePerformer)
 
     def enterAudioFile(self, filename):
-        trackSelectionDialog(self).enterTrack(filename)
+        track_selection_dialog(self).enter_track(filename)
 
-    def selectAudioFiles(self, *paths):
-        trackSelectionDialog(self).selectTracks(*paths)
+    def select_audio_files(self, of_type, *paths):
+        track_selection_dialog(self).select_tracks(of_type, *paths)
 
     def cancelSelection(self):
-        trackSelectionDialog(self).cancel()
+        track_selection_dialog(self).cancel()
 
     def createAlbum(self):
         welcomeScreen(self).newAlbum()

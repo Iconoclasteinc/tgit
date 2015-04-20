@@ -198,7 +198,7 @@ def ExportAsDialogController(format_, album, parent, native):
 
 def TrackSelectionDialogController(album, parent, native, folders):
     dialog = TrackSelectionDialog(parent, native)
-    dialog.tracksSelected.connect(lambda selection: director.add_tracks_to_album(album, selection))
+    dialog.tracks_selected.connect(lambda selection: director.add_tracks_to_album(album, selection))
     dialog.display(folders)
 
 
