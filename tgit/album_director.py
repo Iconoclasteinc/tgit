@@ -28,6 +28,7 @@ import requests
 
 import tgit
 from tgit.album import Album
+from tgit.tagging.id3_container import ID3Container
 from tgit.track import Track
 from tgit.util import fs
 
@@ -36,7 +37,7 @@ def createAlbum(portfolio):
     portfolio.addAlbum(Album())
 
 
-def addTracksToAlbum(container, album, selection):
+def addTracksToAlbum(album, selection, container=ID3Container()):
     for filename in mp3Files(selection):
         album.addTrack(Track(filename, container.load(filename)))
 
@@ -84,12 +85,12 @@ def playTrack(player, track):
         player.play(track.filename)
 
 
-def recordAlbum(container, album):
+def recordAlbum(album):
     for track in album.tracks:
-        recordTrack(container, taggedName(track), track, datetime.now(tz.tzlocal()))
+        recordTrack(taggedName(track), track, datetime.now(tz.tzlocal()))
 
 
-def recordTrack(container, destinationFile, track, time):
+def recordTrack(destinationFile, track, time, container=ID3Container()):
     track.tagger = 'TGiT v' + tgit.__version__
     track.taggingTime = time.strftime('%Y-%m-%d %H:%M:%S %z')
     metadata = track.metadata
@@ -114,9 +115,9 @@ def taggedName(track):
     dirname = os.path.dirname(track.filename)
     _, ext = os.path.splitext(track.filename)
     filename = sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.leadPerformer,
-                                                                        number=track.number,
-                                                                        title=track.trackTitle,
-                                                                        ext=ext))
+                                                                       number=track.number,
+                                                                       title=track.trackTitle,
+                                                                       ext=ext))
 
     return os.path.join(dirname, filename)
 

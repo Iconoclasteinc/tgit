@@ -6,7 +6,6 @@ import shutil
 import unittest
 
 from dateutil import tz
-
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
     has_item, empty
 
@@ -16,7 +15,6 @@ from tgit import album_director as director
 from tgit.album_director import sanitize
 from tgit.metadata import Image
 from tgit.tagging import id3_container
-from tgit.tagging.id3_container import ID3Container
 from tgit.util import fs
 
 
@@ -118,7 +116,7 @@ class AlbumDirectorTest(unittest.TestCase):
         now = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
 
         tagged = os.path.join(self.tempdir, 'tagged.mp3')
-        director.recordTrack(ID3Container(), tagged, track, now)
+        director.recordTrack(tagged, track, now)
 
         metadata = id3_container.load(tagged)
         assert_that(metadata, has_entries(tagger='TGiT v' + tgit.__version__,
@@ -132,7 +130,7 @@ class AlbumDirectorTest(unittest.TestCase):
         track = build.track(filename=original.filename)
         album = build.album(tracks=[track])
 
-        director.recordTrack(ID3Container(), original.filename, track, datetime.now())
+        director.recordTrack(original.filename, track, datetime.now())
 
     def test_encodes_exported_file_in_specified_charset(self):
         album = build.album(tracks=[build.track(trackTitle="Les Comédiens")])
@@ -151,7 +149,7 @@ class AlbumDirectorTest(unittest.TestCase):
         self.library.add_mp3(trackTitle='Someone Like You')
 
         album = build.album()
-        director.addTracksToAlbum(ID3Container(), album, [recording.filename for recording in self.library.recordings])
+        director.addTracksToAlbum(album, [recording.filename for recording in self.library.entries])
         assert_that(album.tracks, contains(
             has_properties(trackTitle='Rolling in the Deep'),
             has_properties(trackTitle='Set Fire to the Rain'),
@@ -164,7 +162,7 @@ class AlbumDirectorTest(unittest.TestCase):
 
         album = build.album()
 
-        director.addTracksToAlbum(ID3Container(), album, (self.library.root, ))
+        director.addTracksToAlbum(album, (self.library.root,))
         assert_that(album.tracks, contains_inanyorder(
             has_properties(trackTitle='Rolling in the Deep'),
             has_properties(trackTitle='Set Fire to the Rain'),

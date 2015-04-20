@@ -162,10 +162,10 @@ def TrackEditionPageController(album, track):
     return page
 
 
-def AlbumScreenController(compositionPage, albumPage, trackPage, library, album):
+def AlbumScreenController(compositionPage, albumPage, trackPage, album):
     page = AlbumScreen(compositionPage(album), albumPage(album), trackPage)
     album.addAlbumListener(page)
-    page.recordAlbum.connect(lambda: director.recordAlbum(library, album))
+    page.recordAlbum.connect(lambda: director.recordAlbum(album))
     return page
 
 
@@ -196,9 +196,9 @@ def ExportAsDialogController(format_, album, parent, native):
     dialog.display()
 
 
-def TrackSelectionDialogController(library, album, parent, native, folders):
+def TrackSelectionDialogController(album, parent, native, folders):
     dialog = TrackSelectionDialog(parent, native)
-    dialog.tracksSelected.connect(lambda selection: director.addTracksToAlbum(library, album, selection))
+    dialog.tracksSelected.connect(lambda selection: director.addTracksToAlbum(album, selection))
     dialog.display(folders)
 
 
@@ -224,7 +224,7 @@ def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
     return window
 
 
-def createMainWindow(albumPortfolio, player, preferences, library, nameRegistry, native):
+def createMainWindow(albumPortfolio, player, preferences, nameRegistry, native):
     def showSettingsDialog():
         return SettingsDialogController(RestartMessageBox, preferences, window)
 
@@ -232,7 +232,7 @@ def createMainWindow(albumPortfolio, player, preferences, library, nameRegistry,
         return ExportAsDialogController(CsvFormat(), album, window, native)
 
     def showTrackSelectionDialog(album, folders=False):
-        return TrackSelectionDialogController(library, album, window, native, folders)
+        return TrackSelectionDialogController(album, window, native, folders)
 
     def createMenuBar():
         return MenuBarController(showExportAsDialog, showTrackSelectionDialog, showSettingsDialog, albumPortfolio)
@@ -263,7 +263,7 @@ def createMainWindow(albumPortfolio, player, preferences, library, nameRegistry,
         def createTrackPage(track):
             return TrackEditionPageController(album, track)
 
-        return AlbumScreenController(createCompositionPage, createAlbumPage, createTrackPage, library, album)
+        return AlbumScreenController(createCompositionPage, createAlbumPage, createTrackPage, album)
 
     window = MainWindowController(createMenuBar, createWelcomeScreen, createAlbumScreen, albumPortfolio)
 
