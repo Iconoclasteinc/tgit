@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import unittest
 
-from hamcrest import assert_that, contains, has_item, anything, equal_to, has_items
+from hamcrest import assert_that, contains, has_item, anything, equal_to
 
 from tgit.isni.name_registry import NameRegistry
 import test.util.isni_database as server
@@ -35,13 +35,26 @@ class IsniTest(unittest.TestCase):
         self.registry = NameRegistry(host="localhost", port=server.port)
 
     def tearDown(self):
-        server.identities.clear()
+        server.persons.clear()
+        server.organisations.clear()
         server.stop()
 
-    def testFindsIndentity(self):
-        server.identities["00000001"] = [{"names": [
+    def testFindsPerson(self):
+        server.persons["00000001"] = [{"names": [
             ("Joel", "Miller", "1969-"), ("Joel E.", "Miller", ""), ("joel", "miller", "")], "titles": ["Honeycombs"]}]
 
         identities = self.registry.search_by_keywords("joel", "miller")
         assert_that(identities[0], equal_to("1"))
         assert_that(identities[1], has_identity("00000001", "Joel E. Miller", "1969-", "Honeycombs"))
+
+    def testFindsOrganisation(self):
+        server.organisations["0000000121707484"] = [{"names": [
+            "The Beatles", "Beatles, The"], "titles": [
+            "The fool on the hill from The Beatles' T.V. film Magical mystery tour"]}]
+
+        identities = self.registry.search_by_keywords("The", "Beatles")
+
+        assert_that(identities[0], equal_to("1"))
+        assert_that(identities[1],
+                    has_identity("0000000121707484", "Beatles, The",
+                                 title="The fool on the hill from The Beatles' T.V. film Magical mystery tour"))
