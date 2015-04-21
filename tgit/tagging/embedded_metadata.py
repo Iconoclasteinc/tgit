@@ -28,9 +28,30 @@ containers = {
 }
 
 
-def load(filename):
-    for key, value in containers.items():
-        if filename.endswith(key):
-            return value.load(filename)
+class EmptyContainer(object):
+    @staticmethod
+    def load(filename):
+        return Metadata()
 
-    return Metadata()
+
+    @staticmethod
+    def save(filename, metadata):
+        pass
+
+_empty_container = EmptyContainer()
+
+
+def _select_container(filename):
+    for file_type, container in containers.items():
+        if filename.endswith(file_type):
+            return container
+
+    return _empty_container
+
+
+def load_metadata(filename):
+    return _select_container(filename).load(filename)
+
+
+def save_metadata(filename, metadata):
+    return _select_container(filename).save(filename, metadata)

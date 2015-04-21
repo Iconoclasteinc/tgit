@@ -5,24 +5,34 @@ import shutil
 import unittest
 
 from dateutil import tz
+
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
     has_item, empty
 import pytest
 
 from test.util import builders as build, resources, doubles, mp3_file
 import tgit
-from tgit import album_director as director
-from tgit.album_director import sanitize
+from tgit import album_director as director, tagging
 from tgit.metadata import Image
-from tgit.tagging import embedded_metadata
 from tgit.util import fs
 
+
+now = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
 
 @pytest.fixture
 def recordings(request, tmpdir):
     library = doubles.recording_library(tmpdir.strpath)
     request.addfinalizer(library.delete)
     return library
+
+
+@pytest.yield_fixture
+def mp3(tmpdir):
+    def maker(**tags):
+        return mp3_file.make(to=tmpdir.strpath, **tags).filename
+
+    yield maker
+    shutil.rmtree(tmpdir.strpath)
 
 
 def test_adds_selected_tracks_to_album_in_selection_order(recordings):
@@ -51,6 +61,39 @@ def test_adds_all_tracks_in_selected_folder_to_album(recordings):
         has_properties(trackTitle='Rolling in the Deep'),
         has_properties(trackTitle='Set Fire to the Rain'),
         has_properties(trackTitle='Someone Like You')))
+
+
+def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
+    album = build.album(releaseName='Album Title',
+                        leadPerformer='Album Artist',
+                        images=[build.image(mime='image/jpeg', data=b'<image data>')])
+    track = build.track(filename=mp3(),
+                        trackTitle='Track Title',
+                        album=album)
+
+    destination_file = os.path.join(os.path.dirname(track.filename), 'tagged.mp3')
+    director.record_track(destination_file, track, now)
+
+    metadata = tagging.load_metadata(destination_file)
+    assert_that(metadata, has_entries(releaseName='Album Title', leadPerformer='Album Artist'), 'metadata tags')
+    assert_that(metadata.images, contains(Image(mime='image/jpeg', data=b'<image data>')), 'attached pictures')
+
+
+def test_adds_version_information_to_tags(mp3):
+    track = build.track(filename=mp3(), album=build.album())
+
+    tagged_file = mp3()
+    director.record_track(tagged_file, track, now)
+
+    metadata = tagging.load_metadata(tagged_file)
+    assert_that(metadata, has_entries(tagger='TGiT v' + tgit.__version__, taggingTime='2014-03-23 16:44:33 +0000'))
+
+
+def test_gracefully_handles_when_tagging_original_recording(mp3):
+    original_file = mp3()
+    track = build.track(filename=original_file, album=build.album())
+
+    director.record_track(original_file, track, datetime.now())
 
 
 class AlbumDirectorTest(unittest.TestCase):
@@ -139,34 +182,6 @@ class AlbumDirectorTest(unittest.TestCase):
         director.moveTrack(twentyOne, rollingInTheDeep, 0)
         assert_that(twentyOne.tracks, contains(rollingInTheDeep, setFireToTheRain), 'reordered tracks')
 
-    # todo remove duplication with doubles.recordingLibrary()
-    # will need to standardize behavior of images
-    def testTagsCopyOfOriginalRecordingWithCompleteMetadata(self):
-        original = mp3_file.make(to=self.tempdir)
-        track = build.track(filename=original.filename,
-                            trackTitle='Track Title',
-                            album=build.album(releaseName='Album Title',
-                                              leadPerformer='Album Artist',
-                                              images=[build.image(mime='image/jpeg', data=b'<image data>')]))
-        now = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
-
-        tagged = os.path.join(self.tempdir, 'tagged.mp3')
-        director.recordTrack(tagged, track, now)
-
-        metadata = embedded_metadata.load(tagged)
-        assert_that(metadata, has_entries(tagger='TGiT v' + tgit.__version__,
-                                          taggingTime='2014-03-23 16:44:33 +0000',
-                                          releaseName='Album Title',
-                                          leadPerformer='Album Artist'), 'metadata tags')
-        assert_that(metadata.images, contains(Image(mime='image/jpeg', data=b'<image data>')), 'attached pictures')
-
-    def testGracefullyHandlesWhenTaggingOriginalRecording(self):
-        original = mp3_file.make(to=self.tempdir)
-        track = build.track(filename=original.filename)
-        album = build.album(tracks=[track])
-
-        director.recordTrack(original.filename, track, datetime.now())
-
     def test_encodes_exported_file_in_specified_charset(self):
         album = build.album(tracks=[build.track(trackTitle="Les Comédiens")])
         destination_file = os.path.join(self.tempdir, 'french.csv')
@@ -179,10 +194,10 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(text_content_of(destination_file), equal_to('Les Comédiens\n'))
 
     def testReplacesInvalidCharactersForFileNamesWithUnderscores(self):
-        assert_that(sanitize('1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')
+        assert_that(director.sanitize('1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')
 
     def testStripsLeadingAndTrailingWhitespaceFromFileNames(self):
-        assert_that(sanitize('  filename   '), equal_to('filename'), 'sanitized name')
+        assert_that(director.sanitize('  filename   '), equal_to('filename'), 'sanitized name')
 
     def testTagsFileToSameDirectoryUnderArtistAndTitleName(self):
         track = build.track(filename='track.mp3', leadPerformer='artist', trackTitle='title')

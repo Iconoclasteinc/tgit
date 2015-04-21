@@ -88,7 +88,6 @@ def test_tagging_a_new_album_with_several_tracks(app, library):
                      lyricist="Étienne Roda-Gil")
 
 
-@pytest.mark.wip
 def test_tagging_a_flac_track(app, library):
     track = library.add_flac(lead_performer="???")
 
@@ -96,5 +95,5 @@ def test_tagging_a_flac_track(app, library):
     app.shows_album_metadata(lead_performer="???")
     app.change_album_metadata(lead_performer="John Roney")
 
-    library.contains("John Roney - 01 - .flac",
-                     lead_performer="John Roney")
+    library.contains("John Roney - 01 - None.flac",
+                     leadPerformer="John Roney")

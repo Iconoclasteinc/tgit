@@ -4,9 +4,9 @@ import os
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 
 from test.util import mp3_file as mp3, flac_file as flac
+from tgit import tagging
 from tgit.announcer import Announcer
 from tgit.metadata import Image
-from tgit.tagging import embedded_metadata
 from tgit.util import fs
 
 
@@ -39,7 +39,7 @@ class RecordingLibrary(object):
         if not self.exists(filename):
             raise AssertionError('Not in library: ' + filename)
 
-        metadata = embedded_metadata.load(self.path(filename))
+        metadata = tagging.load_metadata(self.path(filename))
         images = []
         # todo use builders and metadata
         if frontCover:

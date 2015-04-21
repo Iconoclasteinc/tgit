@@ -27,9 +27,8 @@ from PyQt5.QtCore import QDir, QFileInfo
 import requests
 
 import tgit
+from tgit import tagging
 from tgit.album import Album
-from tgit.tagging import embedded_metadata
-from tgit.tagging.id3_container import ID3Container
 from tgit.track import Track
 from tgit.util import fs
 
@@ -40,7 +39,7 @@ def createAlbum(portfolio):
 
 def add_tracks_to_album(album, selection):
     for filename in mp3Files(selection):
-        album.addTrack(Track(filename, embedded_metadata.load(filename)))
+        album.addTrack(Track(filename, tagging.load_metadata(filename)))
 
 
 def updateTrack(track, **metadata):
@@ -88,19 +87,19 @@ def playTrack(player, track):
 
 def recordAlbum(album):
     for track in album.tracks:
-        recordTrack(taggedName(track), track, datetime.now(tz.tzlocal()))
+        record_track(taggedName(track), track, datetime.now(tz.tzlocal()))
 
 
-def recordTrack(destinationFile, track, time, container=ID3Container()):
+def record_track(destination_file, track, time):
     track.tagger = 'TGiT v' + tgit.__version__
     track.taggingTime = time.strftime('%Y-%m-%d %H:%M:%S %z')
     metadata = track.metadata
     metadata.update(track.album.metadata)
 
-    if destinationFile != track.filename:
-        shutil.copy(track.filename, destinationFile)
+    if destination_file != track.filename:
+        shutil.copy(track.filename, destination_file)
 
-    container.save(destinationFile, metadata)
+    tagging.save_metadata(destination_file, metadata)
 
 
 def export_album(export_format, album, destination, charset):
