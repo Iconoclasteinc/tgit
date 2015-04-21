@@ -23,7 +23,6 @@ import re
 import shutil
 
 from dateutil import tz
-from PyQt5.QtCore import QDir, QFileInfo
 import requests
 
 import tgit
@@ -38,7 +37,7 @@ def createAlbum(portfolio):
 
 
 def add_tracks_to_album(album, selection):
-    for filename in mp3Files(selection):
+    for filename in list_audio_files_from(selection):
         album.addTrack(Track(filename, tagging.load_metadata(filename)))
 
 
@@ -122,22 +121,18 @@ def taggedName(track):
     return os.path.join(dirname, filename)
 
 
-def mp3Files(selection):
+def list_audio_files_from(selection):
     files = []
-    for filename in selection:
-        if isDir(filename):
-            files.extend(mp3FilesIn(QDir(filename)))
+    for filepath in selection:
+        if os.path.isdir(filepath):
+            files.extend(audio_files_in(filepath))
         else:
-            files.append(filename)
+            files.append(filepath)
     return files
 
 
-def mp3FilesIn(folder):
-    return [f.canonicalFilePath() for f in QDir(folder).entryInfoList(['*.mp3'])]
-
-
-def isDir(filename):
-    return QFileInfo(filename).isDir()
+def audio_files_in(folder):
+    return [os.path.join(folder, f) for f in os.listdir(folder) if f.endswith('.mp3') or f.endswith('flac')]
 
 
 def lookupISNI(registry, leadPerformer):

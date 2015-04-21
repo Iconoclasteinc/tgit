@@ -49,10 +49,10 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
         has_properties(trackTitle='Someone Like You')))
 
 
-def test_adds_all_tracks_in_selected_folder_to_album(recordings):
+def test_finds_and_adds_to_album_all_supported_audio_files_in_selected_folder(recordings):
     recordings.add_mp3(trackTitle='Rolling in the Deep')
     recordings.add_mp3(trackTitle='Set Fire to the Rain')
-    recordings.add_mp3(trackTitle='Someone Like You')
+    recordings.add_flac(lead_performer='Adele')
 
     album = build.album()
     director.add_tracks_to_album(album, (recordings.root,))
@@ -60,7 +60,7 @@ def test_adds_all_tracks_in_selected_folder_to_album(recordings):
     assert_that(album.tracks, contains_inanyorder(
         has_properties(trackTitle='Rolling in the Deep'),
         has_properties(trackTitle='Set Fire to the Rain'),
-        has_properties(trackTitle='Someone Like You')))
+        has_properties(leadPerformer='Adele')))
 
 
 def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
