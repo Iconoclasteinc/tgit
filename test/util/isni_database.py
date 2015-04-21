@@ -134,7 +134,7 @@ def invalid_data_response():
             <dateTimeOfResponse>2012-03-13T14:31:22</dateTimeOfResponse>
             <requestorIdentifierOfIdentity>13356423</requestorIdentifierOfIdentity>
             <noISNI>
-                <reason>invalidData</reason>
+                <reason>invalid data</reason>
                 <information>invalid code creationRole eee</information>
             </noISNI>
         </responseRecord>

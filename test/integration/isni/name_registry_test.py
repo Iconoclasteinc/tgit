@@ -74,7 +74,7 @@ class IsniTest(unittest.TestCase):
         assert_that(message, equal_to("needs at least one of title, date, instrument, contributedTo"))
 
     def test_notifies_that_request_was_invalid_when_assigning_a_person(self):
-        server.assignation_generator = (isni for isni in ["invalidData"])
+        server.assignation_generator = (isni for isni in ["invalid data"])
         code, message = self.registry.assign("Joel", "Miller", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
         assert_that(code, equal_to(NameRegistry.Codes.INVALID_DATA))
         assert_that(message, equal_to("invalid code creationRole eee"))

@@ -73,7 +73,7 @@ class NameRegistry(object):
             if reason == "sparse":
                 return self.Codes.SPARSE, get_information_field_value(no_isni)
 
-            if reason == "invalidData":
+            if reason == "invalid data":
                 return self.Codes.INVALID_DATA, get_information_field_value(no_isni)
 
             if reason == "invalidFormat":

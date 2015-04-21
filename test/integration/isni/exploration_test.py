@@ -24,7 +24,7 @@ import requests
 
 @unittest.skip('Exploration test')
 class IsniExplorationTest(unittest.TestCase):
-    def testAssignWithTheISNIAtomPubAPIUsingAMinimalRequest(self):
+    def test_assign_with_the_isni_atom_pub_api_using_a_minimal_request(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
             <Request>
@@ -67,7 +67,47 @@ class IsniExplorationTest(unittest.TestCase):
         results = etree.fromstring(response.content)
         assert_that(results.find('ISNIAssigned'), not_none(), 'response code')
 
-    def testAssignWithTheISNIAtomPubAPIUsingAnInvalidRequest(self):
+    def test_assign_with_the_isni_atom_pub_api_using_a_malformed_request(self):
+        url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
+        payload = '''
+            <Request>
+                <requestID>
+                    <dateTimeOfRequest>2011-05-20T09:09:35.5063705+02:00</dateTimeOfRequest>
+                    <requestorTransactionId>5340</requestorTransactionId>
+                </requestID>
+                <identityInformation>
+                    <requestorIdentifierOfIdentity>
+                        <referenceURI>http://www.sos.nl</referenceURI>
+                        <identifier>13365</identifier>
+                    </requestorIdentifierOfIdentity>
+                    <identity>
+                        <personOrFiction>
+                            <resource>
+                                <creationClass>
+                                    <domain>literature </domain>
+                                    <formOfPublication>book </formOfPublication>
+                                    <pietjePuk>fi<p>lm</p></pietjePuk>
+                                </creationClass>
+                                <creationRole>aut</creationRole>
+                                <titleOfWork>
+                                    <title>Industrielles Bauen: Leitfaden f??MU-Gesch?sf??r</title>
+                                </titleOfWork>
+                            </resource>
+                    </identity>
+                </identityInformation>
+        '''
+        headers = {'content-type': 'application/atom+xml'}
+        response = requests.post(url, data=payload, headers=headers, verify=False)
+        assert_that(response.status_code, equal_to(requests.codes.not_acceptable), 'response code')
+
+        results = etree.fromstring(response.content)
+        no_isni = results.find('noISNI')
+        assert_that(no_isni, not_none(), 'no ISNI tag')
+
+        reason = no_isni.find('reason')
+        assert_that(reason.text, equal_to('invalid data'), 'invalid response')
+
+    def test_assign_with_the_isni_atom_pub_api_using_an_invalid_request(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
             <Request>
@@ -100,17 +140,16 @@ class IsniExplorationTest(unittest.TestCase):
         '''
         headers = {'content-type': 'application/atom+xml'}
         response = requests.post(url, data=payload, headers=headers, verify=False)
-        content = response.content
-        assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
+        assert_that(response.status_code, equal_to(requests.codes.not_acceptable), 'response code')
 
-        results = etree.fromstring(content)
+        results = etree.fromstring(response.content)
         no_isni = results.find('noISNI')
         assert_that(no_isni, not_none(), 'no ISNI tag')
 
-        sparse = no_isni.find('reason')
-        assert_that(sparse.text, equal_to('invalidFormat'), 'invalid response')
+        reason = no_isni.find('reason')
+        assert_that(reason.text, equal_to('invalid data'), 'invalid response')
 
-    def testAssignOrganisationWithTheISNIAtomPubAPIUsingASparseRequest(self):
+    def test_assign_organisation_with_the_isni_atom_pub_api_using_a_sparse_request(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
         <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
@@ -137,17 +176,16 @@ class IsniExplorationTest(unittest.TestCase):
         '''
         headers = {'content-type': 'application/atom+xml'}
         response = requests.post(url, data=payload, headers=headers, verify=False)
-        content = response.content
-        assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
+        assert_that(response.status_code, equal_to(requests.codes.not_acceptable), 'response code')
 
-        results = etree.fromstring(content)
+        results = etree.fromstring(response.content)
         no_isni = results.find('noISNI')
         assert_that(no_isni, not_none(), 'no ISNI tag')
 
         sparse = no_isni.find('reason')
         assert_that(sparse.text, equal_to('sparse'), 'sparse response')
 
-    def testAssignPersonWithTheISNIAtomPubAPIUsingASparseRequest(self):
+    def test_assign_person_with_the_isni_atom_pub_api_using_a_sparse_request(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
             <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
@@ -197,15 +235,14 @@ class IsniExplorationTest(unittest.TestCase):
         response = requests.post(url, data=payload, headers=headers, verify=False)
         assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
 
-        content = response.content
-        results = etree.fromstring(content)
+        results = etree.fromstring(response.content)
         no_isni = results.find('noISNI')
         assert_that(no_isni, not_none(), 'no ISNI tag')
 
-        sparse = no_isni.find('reason')
-        assert_that(sparse.text, equal_to('sparse'), 'sparse response')
+        reason = no_isni.find('reason')
+        assert_that(reason.text, equal_to('sparse'), 'sparse response')
 
-    def testAssignPersonWithTheISNIAtomPubAPIUsingAPossibleMatchesRequestReturningScoreOf06(self):
+    def test_assign_person_with_the_isni_atom_pub_api_using_a_possible_matches_request_returning_score_of_06(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
             <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
@@ -252,15 +289,14 @@ class IsniExplorationTest(unittest.TestCase):
         response = requests.post(url, data=payload, headers=headers, verify=False)
         assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
 
-        content = response.content
-        results = etree.fromstring(content)
+        results = etree.fromstring(response.content)
         no_isni = results.find('noISNI')
         assert_that(no_isni, not_none(), 'no ISNI tag')
 
         sparse = no_isni.find('reason')
         assert_that(sparse.text, equal_to('possibleMatch'), 'possible matches response')
 
-    def testAssignPersonWithTheISNIAtomPubAPIUsingAPossibleMatchesRequestReturningScoreOf085(self):
+    def test_assign_person_with_the_isni_atom_pub_api_using_a_possible_matches_request_returning_score_of_085(self):
         url = 'https://isni-m-acc.oclc.nl/ATOM/isni'
         payload = '''
             <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
@@ -301,8 +337,7 @@ class IsniExplorationTest(unittest.TestCase):
         response = requests.post(url, data=payload, headers=headers, verify=False)
         assert_that(response.status_code, equal_to(requests.codes.ok), 'response code')
 
-        content = response.content
-        results = etree.fromstring(content)
+        results = etree.fromstring(response.content)
         no_isni = results.find('noISNI')
         assert_that(no_isni, not_none(), 'no ISNI tag')
 
