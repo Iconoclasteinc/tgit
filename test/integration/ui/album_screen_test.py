@@ -52,11 +52,11 @@ class AlbumScreenTest(WidgetTest):
         self.album.addTrack(build.track(trackTitle='Cactus'))
         self.driver.nextPage()
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Bone Machine')
+        self.driver.shows_track_metadata(track_title='Bone Machine')
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Where is My Mind?')
+        self.driver.shows_track_metadata(track_title='Where is My Mind?')
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Cactus')
+        self.driver.shows_track_metadata(track_title='Cactus')
 
     def testRemovesCorrespondingTrackPageWhenTrackRemovedFromAlbum(self):
         surferRosa = (
@@ -72,13 +72,13 @@ class AlbumScreenTest(WidgetTest):
 
         self.driver.nextPage()
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Bone Machine')
+        self.driver.shows_track_metadata(track_title='Bone Machine')
         self.album.removeTrack(surferRosa[0])
-        self.driver.showsTrackMetadata(trackTitle='Where is My Mind?')
+        self.driver.shows_track_metadata(track_title='Where is My Mind?')
         self.driver.nextPage()
-        self.driver.showsTrackMetadata(trackTitle='Cactus')
+        self.driver.shows_track_metadata(track_title='Cactus')
         self.album.removeTrack(surferRosa[2])
-        self.driver.showsTrackMetadata(trackTitle='Where is My Mind?')
+        self.driver.shows_track_metadata(track_title='Where is My Mind?')
         self.album.removeTrack(surferRosa[1])
         self.driver.showsAlbumEditionPage()
         self.driver.hidesSaveButton()

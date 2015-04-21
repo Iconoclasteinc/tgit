@@ -62,11 +62,11 @@ class TaggerDriver(MainWindowDriver):
     def edit_album_metadata(self, **tags):
         album_screen(self).edit_album_metadata(**tags)
 
-    def showsTrackMetadata(self, **tags):
-        album_screen(self).showsTrackMetadata(**tags)
+    def shows_track_metadata(self, **tags):
+        album_screen(self).shows_track_metadata(**tags)
 
     def editTrackMetadata(self, **tags):
-        album_screen(self).editTrackMetadata(**tags)
+        album_screen(self).edit_track_metadata(**tags)
 
     def save_album(self):
         album_screen(self).save()

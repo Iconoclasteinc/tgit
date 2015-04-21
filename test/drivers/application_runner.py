@@ -44,7 +44,7 @@ class ApplicationRunner(object):
 
     def shows_next_track_metadata(self, **tags):
         self.tagger.next()
-        self.tagger.showsTrackMetadata(**tags)
+        self.tagger.shows_track_metadata(**tags)
 
     def change_track_metadata(self, **tags):
         self.tagger.editTrackMetadata(**tags)

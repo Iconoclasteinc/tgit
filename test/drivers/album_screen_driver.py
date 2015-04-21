@@ -6,7 +6,7 @@ from test.cute.matchers import named
 from test.drivers import BaseDriver
 from test.drivers.album_edition_page_driver import album_edition_page
 from test.drivers.album_composition_page_driver import albumCompositionPage
-from test.drivers.track_edition_page_driver import trackEditionPage
+from test.drivers.track_edition_page_driver import track_edition_page
 from tgit.ui.album_screen import AlbumScreen
 
 
@@ -32,7 +32,7 @@ class AlbumScreenDriver(BaseDriver):
         album_edition_page(self).isShowingOnScreen()
 
     def showsTrackEditionPage(self):
-        trackEditionPage(self).isShowingOnScreen()
+        track_edition_page(self).isShowingOnScreen()
 
     def addFiles(self):
         albumCompositionPage(self).addFiles()
@@ -79,11 +79,11 @@ class AlbumScreenDriver(BaseDriver):
     def edit_album_metadata(self, **tags):
         album_edition_page(self).change_metadata(**tags)
 
-    def showsTrackMetadata(self, **tags):
-        trackEditionPage(self).showsMetadata(**tags)
+    def shows_track_metadata(self, **tags):
+        track_edition_page(self).shows_metadata(**tags)
 
-    def editTrackMetadata(self, **tags):
-        trackEditionPage(self).changeMetadata(**tags)
+    def edit_track_metadata(self, **tags):
+        track_edition_page(self).change_metadata(**tags)
 
     def linksHelpTo(self, location):
         self.label(named('help-link')).hasText(contains_string('href="%s"' % location))

@@ -5,14 +5,14 @@ from test.drivers import BaseDriver
 from tgit.ui.track_edition_page import TrackEditionPage
 
 
-def trackEditionPage(parent):
+def track_edition_page(parent):
     return TrackEditionPageDriver.findSingle(parent, TrackEditionPage, named('track-edition-page'), showingOnScreen())
 
 
 class TrackEditionPageDriver(BaseDriver):
-    def showsMetadata(self, **meta):
+    def shows_metadata(self, **meta):
         for tag, value in meta.items():
-            if tag == 'trackTitle':
+            if tag == 'trackTitle' or tag == "track_title":
                 self.showsTrackTitle(value)
             elif tag == 'versionInfo':
                 self.showsVersionInfo(value)
@@ -35,9 +35,9 @@ class TrackEditionPageDriver(BaseDriver):
             else:
                 raise AssertionError("Don't know how to verify <%s>" % tag)
 
-    def changeMetadata(self, **meta):
+    def change_metadata(self, **meta):
         for tag, value in meta.items():
-            if tag == 'trackTitle':
+            if tag == 'trackTitle' or tag == 'track_title':
                 self.changeTrackTitle(value)
             elif tag == 'versionInfo':
                 self.changeVersionInfo(value)
