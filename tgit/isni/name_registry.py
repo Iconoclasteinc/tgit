@@ -151,7 +151,7 @@ def get_organisation_name_from(record):
 
 
 def create_payload_from(keywords):
-    return "?query=pica.nw%%3D{0}+pica.st%%3DA" \
+    return "?query=pica.nw%3D{0}+pica.st%3DA" \
            "&operation=searchRetrieve" \
            "&recordSchema=isni-e" \
            "&maximumRecords=20".format("+".join(format_keywords(keywords)))

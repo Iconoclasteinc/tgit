@@ -19,6 +19,7 @@
 import unittest
 
 from hamcrest import assert_that, anything, has_item, contains, equal_to, greater_than
+import pytest
 
 from tgit.isni.name_registry import NameRegistry
 
@@ -27,6 +28,7 @@ def has_identity(isni=anything(), name=anything(), birth_date=anything(), title=
     return has_item(contains(isni, contains(name, birth_date, title)))
 
 
+@pytest.mark.live
 class IsniLiveTest(unittest.TestCase):
     def testFindsRebeccaAnnMaloyIdentity(self):
         registry = NameRegistry(host="isni.oclc.nl")
