@@ -1,9 +1,9 @@
+pytest
 lxml
 requests
 PyHamcrest
 flexmock
 mutagen
-nose
 python-dateutil
 six
 flask

@@ -19,6 +19,7 @@
 import unittest
 
 from hamcrest import assert_that, contains, has_item, anything, equal_to
+import pytest
 
 from tgit.isni.name_registry import NameRegistry
 import test.util.isni_database as server
@@ -62,5 +63,32 @@ class IsniTest(unittest.TestCase):
 
     def test_assigns_isni_to_person(self):
         server.assignation_generator = (isni for isni in ["0000000121707484"])
-        isni = self.registry.assign("Joel", "Miller", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
+        code, isni = self.registry.assign("Joel", "Miller", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
+        assert_that(code, equal_to(NameRegistry.Codes.SUCCESS))
         assert_that(isni, equal_to("0000000121707484"))
+
+    def test_notifies_that_request_was_incomplete_when_assigning_a_person(self):
+        server.assignation_generator = (isni for isni in ["sparse"])
+        code, message = self.registry.assign("Joel", "Miller", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
+        assert_that(code, equal_to(NameRegistry.Codes.SPARSE))
+        assert_that(message, equal_to("needs at least one of title, date, instrument, contributedTo"))
+
+    def test_notifies_that_request_was_invalid_when_assigning_a_person(self):
+        server.assignation_generator = (isni for isni in ["invalidData"])
+        code, message = self.registry.assign("Joel", "Miller", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
+        assert_that(code, equal_to(NameRegistry.Codes.INVALID_DATA))
+        assert_that(message, equal_to("invalid code creationRole eee"))
+
+    def test_notifies_that_request_was_malformed_when_assigning_a_person(self):
+        server.assignation_generator = (isni for isni in [""])
+        code, message = self.registry.assign("<Joel>", "<Miller>", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
+        assert_that(code, equal_to(NameRegistry.Codes.INVALID_FORMAT))
+        assert_that(message, equal_to("XML parsing error"))
+
+    @pytest.mark.wip
+    def test_assigns_isni_to_person_from_a_possible_match(self):
+        pass
+
+    @pytest.mark.wip
+    def test_assigns_isni_to_person_after_having_turned_down_all_possible_matches(self):
+        pass

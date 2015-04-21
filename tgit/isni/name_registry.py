@@ -30,6 +30,12 @@ NAMESPACES = {
 
 
 class NameRegistry(object):
+    class Codes(object):
+        INVALID_FORMAT = "INVALID_FORMAT"
+        INVALID_DATA = "INVALID_DATA"
+        SPARSE = "SPARSE"
+        SUCCESS = "SUCCESS"
+
     def __init__(self, host=None, assign_host=None, port=None, secure=False, username=None, password=None):
         self.host = host
         self.port = port
@@ -46,51 +52,33 @@ class NameRegistry(object):
         return number_of_records, matches
 
     def assign(self, forename, surname, title_of_works):
-        creation_class = "prf"
-        reference_uri = "http://tagtamusique.com/"
-        date = datetime.utcnow()
+        response = self.request_assignation(forename, surname, title_of_works)
+        return self.handle_assignation_response(etree.fromstring(response.content))
+
+    def request_assignation(self, forename, surname, title_of_works):
         titles = "".join("<title>{0}</title>".format(title) for title in title_of_works)
-        payload = """
-            <Request>
-                <requestID>
-                    <dateTimeOfRequest>{0}</dateTimeOfRequest>
-                    <requestorTransactionId></requestorTransactionId>
-                </requestID>
-                <identityInformation>
-                    <requestorIdentifierOfIdentity>
-                        <referenceURI>{1}</referenceURI>
-                        <identifier>0123456789</identifier>
-                    </requestorIdentifierOfIdentity>
-                    <identity>
-                        <personOrFiction>
-                            <personalName>
-                                <nameUse>public and private</nameUse>
-                                <surname>{2}</surname>
-                                <forename>{3}</forename>
-                            </personalName>
-                            <resource>
-                                <creationClass>
-                                    <domain>literature </domain>
-                                    <formOfPublication>book </formOfPublication>
-                                    <pietjePuk>fi<p>lm</p></pietjePuk>
-                                </creationClass>
-                                <creationRole>{4}</creationRole>
-                                <titleOfWork>
-                                    {5}
-                                </titleOfWork>
-                            </resource>
-                        </personOrFiction>
-                    </identity>
-                </identityInformation>
-            </Request>
-        """.format(date, reference_uri, surname, forename, creation_class, titles)
+        payload = create_assignation_payload(forename, surname, titles)
         headers = {"content-type": "application/atom+xml"}
         response = requests.post(self.assig_uri(), data=payload, headers=headers, verify=False)
+        return response
 
-        assigned = etree.fromstring(response.content).find("ISNIAssigned")
+    def handle_assignation_response(self, response):
+        assigned = response.find("ISNIAssigned")
         if assigned is not None:
-            isni = assigned.find("isniUnformatted").text
-            return isni
+            return self.Codes.SUCCESS, assigned.find("isniUnformatted").text
+
+        no_isni = response.find("noISNI")
+        if no_isni is not None:
+            reason = no_isni.xpath("//reason/text()")[0]
+            if reason == "sparse":
+                return self.Codes.SPARSE, get_information_field_value(no_isni)
+
+            if reason == "invalidData":
+                return self.Codes.INVALID_DATA, get_information_field_value(no_isni)
+
+            if reason == "invalidFormat":
+                return self.Codes.INVALID_FORMAT, get_information_field_value(no_isni)
+
         return None
 
     def uri(self):
@@ -119,6 +107,10 @@ class NameRegistry(object):
 
         fragments.append("/ATOM/isni")
         return "".join(fragments)
+
+
+def get_information_field_value(no_isni):
+    return no_isni.xpath("//information/text()")[0]
 
 
 def extract_number_of_records(results):
@@ -163,6 +155,43 @@ def create_payload_from(keywords):
            "&operation=searchRetrieve" \
            "&recordSchema=isni-e" \
            "&maximumRecords=20".format("+".join(format_keywords(keywords)))
+
+
+def create_assignation_payload(forename, surname, titles):
+    return """
+        <Request>
+            <requestID>
+                <dateTimeOfRequest>{0}</dateTimeOfRequest>
+                <requestorTransactionId></requestorTransactionId>
+            </requestID>
+            <identityInformation>
+                <requestorIdentifierOfIdentity>
+                    <referenceURI>{1}</referenceURI>
+                    <identifier>0123456789</identifier>
+                </requestorIdentifierOfIdentity>
+                <identity>
+                    <personOrFiction>
+                        <personalName>
+                            <nameUse>public and private</nameUse>
+                            <surname>{2}</surname>
+                            <forename>{3}</forename>
+                        </personalName>
+                        <resource>
+                            <creationClass>
+                                <domain>literature </domain>
+                                <formOfPublication>book </formOfPublication>
+                                <pietjePuk>fi<p>lm</p></pietjePuk>
+                            </creationClass>
+                            <creationRole>{4}</creationRole>
+                            <titleOfWork>
+                                {5}
+                            </titleOfWork>
+                        </resource>
+                    </personOrFiction>
+                </identity>
+            </identityInformation>
+        </Request>
+    """.format(datetime.utcnow(), "http://tagtamusique.com/", surname, forename, "prf", titles)
 
 
 def format_keywords(keywords):
