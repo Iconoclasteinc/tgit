@@ -47,7 +47,7 @@ class Mp3Audio(object):
 
     def _write_tags(self, tags):
         for tag, value in tags.items():
-            if tag == 'releaseName' or tag == 'TALB':
+            if tag == 'releaseName' or tag == 'release_name' or tag == 'TALB':
                 self._add_tag(id3.TALB(encoding=UTF_8, text=value))
             elif tag == 'frontCover' or tag == 'APIC_FRONT':
                 mime, desc, data = value

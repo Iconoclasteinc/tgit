@@ -74,10 +74,10 @@ class Metadata(object):
         return not self.__eq__(other)
 
     def keys(self):
-        return list(self._tags.keys())
+        return self._tags.keys()
 
     def items(self):
-        return list(self._tags.items())
+        return self._tags.items()
 
     def empty(self):
         return len(self) == 0 and len(self.images) == 0
@@ -106,7 +106,7 @@ class Metadata(object):
 
     def copy(self, *keys):
         if not keys:
-            keys = list(self.keys())
+            keys = self.keys()
 
         copy = Metadata()
         for key in (key for key in keys if key in self):

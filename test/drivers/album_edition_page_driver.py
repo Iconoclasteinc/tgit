@@ -46,7 +46,7 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.selectPicture(value)
             elif tag == 'releaseName':
                 self.changeReleaseName(value)
-            elif tag == 'leadPerformer':
+            elif tag == 'leadPerformer' or tag == 'lead_performer':
                 self.changeLeadPerformer(value)
             elif tag == 'guestPerformers':
                 self.changeGuestPerformers(value)

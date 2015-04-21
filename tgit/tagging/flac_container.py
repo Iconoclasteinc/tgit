@@ -16,21 +16,35 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import mutagen.flac
 
 from tgit.metadata import Metadata
-from tgit.tagging.flac_container import FlacContainer
-from tgit.tagging.id3_container import ID3Container
 
 
-containers = {
-    '.mp3': ID3Container(),
-    '.flac': FlacContainer()
-}
+class FlacContainer(object):
+    @staticmethod
+    def load(filename):
+        flac_file = mutagen.flac.FLAC(filename)
+
+        metadata = Metadata()
+
+        if 'ARTIST' in flac_file:
+            metadata['leadPerformer'] = flac_file['ARTIST'][-1]
+
+        return metadata
+
+    @staticmethod
+    def save(filename, metadata):
+        flac_file = FlacContainer._load_file(filename)
+
+        flac_file.tags.append(('ARTIST', metadata['leadPerformer']))
+
+        flac_file.save(filename)
 
 
-def load(filename):
-    for key, value in containers.items():
-        if filename.endswith(key):
-            return value.load(filename)
-
-    return Metadata()
+    @staticmethod
+    def _load_file(filename):
+        try:
+            return mutagen.flac.FLAC(filename)
+        except mutagen.flac.FLACNoHeaderError:
+            return mutagen.flac.FLAC()
