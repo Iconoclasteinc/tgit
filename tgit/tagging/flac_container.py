@@ -27,6 +27,8 @@ class FlacContainer(object):
         flac_file = mutagen.flac.FLAC(filename)
 
         metadata = Metadata()
+        metadata['duration'] = flac_file.info.length
+        metadata['bitrate'] = flac_file.info.sample_rate * flac_file.info.bits_per_sample
 
         if 'ARTIST' in flac_file:
             metadata['leadPerformer'] = flac_file['ARTIST'][-1]
