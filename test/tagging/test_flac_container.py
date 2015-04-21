@@ -46,9 +46,10 @@ def test_round_trips_metadata_to_file(flac):
     assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
 
-# test that we handle metadata without value gracefully on load
-# test that metadata value overrides existing comment fields
-# test that an empty metadata value does not produce a comment field
+def test_removes_comment_field_when_tag_not_in_metadata(flac):
+    filename = flac(lead_performer='Joel Miller')
+    container.save(filename, Metadata())
+    assert_contains_metadata(filename, Metadata())
 
 
 def assert_can_be_saved_and_reloaded_with_same_state(flac, metadata):

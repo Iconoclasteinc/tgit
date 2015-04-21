@@ -38,8 +38,15 @@ class FlacContainer(object):
     @staticmethod
     def save(filename, metadata):
         flac_file = FlacContainer._load_file(filename)
+        tags = flac_file.tags
 
-        flac_file.tags.append(('ARTIST', metadata['leadPerformer']))
+        for field in tags:
+            if field[0] == 'ARTIST':
+                tags.remove(field)
+
+        text = metadata['leadPerformer']
+        if text:
+            tags.append(('ARTIST', text))
 
         flac_file.save(filename)
 
