@@ -28,14 +28,6 @@ def invert(mapping):
     return dict(list(zip(list(mapping.values()), list(mapping.keys()))))
 
 
-def load(filename):
-    return ID3Container().load(filename)
-
-
-def save(filename, metadata, overwrite=False):
-    ID3Container(overwrite=overwrite).save(filename=filename, metadata=metadata)
-
-
 class TextProcessor(object):
     def __init__(self, key, tag, frameToTag, tagToFrame):
         self._key = key
