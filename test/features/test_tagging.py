@@ -89,11 +89,16 @@ def test_tagging_a_new_album_with_several_tracks(app, library):
 
 
 def test_tagging_a_flac_track(app, library):
-    track = library.add_flac(lead_performer="???")
+    track = library.add_flac(lead_performer="???", track_title="???")
 
     app.new_album('flac', track)
+
     app.shows_album_metadata(lead_performer="???")
     app.change_album_metadata(lead_performer="John Roney")
 
-    library.contains("John Roney - 01 - None.flac",
-                     leadPerformer="John Roney")
+    app.shows_next_track_metadata(track_title="???")
+    app.change_track_metadata(track_title="Squareboy")
+
+    library.contains("John Roney - 01 - Squareboy.flac",
+                     leadPerformer="John Roney",
+                     trackTitle="Squareboy")

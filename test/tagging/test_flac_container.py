@@ -25,29 +25,35 @@ def flac(tmpdir):
 
 
 def test_reads_lead_performer_from_vorbis_comments(flac):
-    metadata = container.load(flac(lead_performer='Lead Artist'))
-    assert_that(metadata, has_entry('leadPerformer', 'Lead Artist'), 'metadata')
+    metadata = container.load(flac(lead_performer="Joel Miller"))
+    assert_that(metadata, has_entry('leadPerformer', "Joel Miller"), "metadata")
 
 
 def test_reads_bitrate_from_audio_stream_information(flac):
     metadata = container.load(flac())
-    assert_that(metadata, has_entry('bitrate', BITRATE), 'bitrate')
+    assert_that(metadata, has_entry('bitrate', BITRATE), "bitrate")
 
 
 def test_reads_duration_from_audio_stream_information(flac):
     metadata = container.load(flac())
-    assert_that(metadata, has_entry('duration', DURATION), 'duration')
+    assert_that(metadata, has_entry('duration', DURATION), "duration")
+
+
+def test_reads_track_title_from_vorbis_comments(flac):
+    metadata = container.load(flac(track_title="Salsa Coltrane"))
+    assert_that(metadata, has_entry('trackTitle', "Salsa Coltrane"), "metadata")
 
 
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
-    metadata['leadPerformer'] = 'Lead Performer'
+    metadata['leadPerformer'] = "Joel Miller"
+    metadata['trackTitle'] = "Salsa Coltrane"
 
     assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
 
 def test_removes_comment_field_when_tag_not_in_metadata(flac):
-    filename = flac(lead_performer='Joel Miller')
+    filename = flac(lead_performer="Joel Miller")
     container.save(filename, Metadata())
     assert_contains_metadata(filename, Metadata())
 
@@ -61,5 +67,5 @@ def assert_can_be_saved_and_reloaded_with_same_state(flac, metadata):
 def assert_contains_metadata(filename, expected):
     expected_length = len(expected) + len(('bitrate', 'duration'))
     metadata = container.load(filename)
-    assert_that(list(metadata.items()), has_items(*list(expected.items())), 'metadata items')
-    assert_that(metadata, has_length(expected_length), 'metadata count')
+    assert_that(list(metadata.items()), has_items(*list(expected.items())), "metadata items")
+    assert_that(metadata, has_length(expected_length), "metadata count")

@@ -28,7 +28,7 @@ containers = {
 }
 
 
-class EmptyContainer(object):
+class EmptyContainer():
     @staticmethod
     def load(filename):
         return Metadata()

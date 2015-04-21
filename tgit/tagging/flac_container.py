@@ -21,32 +21,50 @@ import mutagen.flac
 from tgit.metadata import Metadata
 
 
-class FlacContainer(object):
-    @staticmethod
-    def load(filename):
+class TextField():
+    def __init__(self, field_name, tag_name):
+        self._field_name = field_name
+        self._tag_name = tag_name
+
+    def read(self, fields, metadata):
+        if self._field_name in fields:
+            metadata[self._tag_name] = fields[self._field_name][-1]
+
+    def write(self, metadata, fields):
+        for field in fields:
+            if field[0] == self._field_name:
+                fields.remove(field)
+        text = metadata[self._tag_name]
+        if text:
+            fields.append((self._field_name, text))
+
+
+class FlacContainer():
+    fields = []
+
+    for field_name, tag_name in {
+        'ARTIST': 'leadPerformer',
+        'TITLE': 'trackTitle',
+    }.items():
+        fields.append(TextField(field_name, tag_name))
+
+    def load(self, filename):
         flac_file = mutagen.flac.FLAC(filename)
 
         metadata = Metadata()
         metadata['duration'] = flac_file.info.length
         metadata['bitrate'] = flac_file.info.sample_rate * flac_file.info.bits_per_sample
 
-        if 'ARTIST' in flac_file:
-            metadata['leadPerformer'] = flac_file['ARTIST'][-1]
+        for field in self.fields:
+            field.read(flac_file, metadata)
 
         return metadata
 
-    @staticmethod
-    def save(filename, metadata):
-        flac_file = FlacContainer._load_file(filename)
-        tags = flac_file.tags
+    def save(self, filename, metadata):
+        flac_file = self._load_file(filename)
 
-        for field in tags:
-            if field[0] == 'ARTIST':
-                tags.remove(field)
-
-        text = metadata['leadPerformer']
-        if text:
-            tags.append(('ARTIST', text))
+        for field in self.fields:
+            field.write(metadata, flac_file.tags)
 
         flac_file.save(filename)
 
