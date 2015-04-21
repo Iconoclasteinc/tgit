@@ -47,28 +47,31 @@ class MediaPlayer(object):
     PAUSED = QMediaPlayer.PausedState
 
     _player = None
-    _media_about_to_play = None
-    _media_currently_playing = None
-    _actual_file_to_play = None
-    _actual_file_currently_playing = None
+    _current_media = None
+    _actual_file = None
 
     def __init__(self):
         self._announce = Announcer()
 
     def is_playing(self, filename):
-        return self._player is not None and self._player.state() == self.PLAYING and self._media_currently_playing == filename
+        return self._player is not None and self._player.state() == self.PLAYING and self._current_media == filename
 
     def play(self, filename):
+        self.stop()
+
         self._player = QMediaPlayer()
         self._player.stateChanged.connect(self._state_changed)
-        self._media_about_to_play = filename
-        self._announce.loading(self._media_about_to_play)
-        self._actual_file_to_play = fs.make_temp_copy(filename)
-        self._player.setMedia(QMediaContent(QUrl.fromLocalFile(self._actual_file_to_play)))
+        self._player.mediaStatusChanged.connect(self._media_changed)
+        self._current_media = filename
+        self._actual_file = fs.make_temp_copy(filename)
+        self._player.setMedia(QMediaContent(QUrl.fromLocalFile(self._actual_file)))
         self._player.play()
 
     def stop(self):
-        self._player.stop()
+        if self._player is not None:
+            self._player.stop()
+            self._player = None
+            os.unlink(self._actual_file)
 
     def add_player_listener(self, listener):
         self._announce.addListener(listener)
@@ -76,14 +79,16 @@ class MediaPlayer(object):
     def remove_player_listener(self, listener):
         self._announce.removeListener(listener)
 
+    def _media_changed(self, state):
+        if state == QMediaPlayer.LoadingMedia:
+            self._announce.loading(self._current_media)
+        if state == QMediaPlayer.EndOfMedia:
+            self.stop()
+
     def _state_changed(self, state):
         if state == self.PLAYING:
-            self._actual_file_currently_playing = self._actual_file_to_play
-            self._media_currently_playing = self._media_about_to_play
-            self._announce.playing(self._media_currently_playing)
+            self._announce.playing(self._current_media)
         elif state == self.STOPPED:
-            self._announce.stopped(self._media_currently_playing)
-            self._player = None
-            os.unlink(self._actual_file_currently_playing)
+            self._announce.stopped(self._current_media)
         elif state == self.PAUSED:
-            self._announce.paused(self._media_currently_playing)
+            self._announce.paused(self._current_media)
