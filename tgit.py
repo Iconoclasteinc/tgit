@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from tgit.audio.player import MediaPlayer
+from tgit.audio import MediaPlayer
 from tgit.tagger import TGiT
 from tgit.isni.name_registry import NameRegistry
 

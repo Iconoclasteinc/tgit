@@ -20,8 +20,8 @@
 from PyQt5.QtCore import QObject, QAbstractTableModel, QModelIndex, Qt, pyqtSignal
 
 from tgit.album import AlbumListener
+from tgit.audio import PlayerListener
 from tgit.track import TrackListener
-from tgit.audio.player import PlayerListener
 from tgit.ui.helpers import formatting
 
 
@@ -156,10 +156,10 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
                               self.index(self.rowCount() - 1, Columns.index(Columns.releaseName)))
 
     def trackAdded(self, track, position):
-        row = Row(self.album, track, self.player.isPlaying(track.filename))
+        row = Row(self.album, track, self.player.is_playing(track.filename))
         track.addTrackListener(row)
         self.album.addAlbumListener(row)
-        self.player.addPlayerListener(row)
+        self.player.add_player_listener(row)
         self.rows.insert(position, row)
         row.rowChanged.connect(self.rowChanged)
         self.insertRows(position, 1, QModelIndex())
@@ -172,7 +172,7 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
         row = self.rows[position]
         track.removeTrackListener(row)
         self.album.removeAlbumListener(row)
-        self.player.removePlayerListener(row)
+        self.player.remove_player_listener(row)
         row.rowChanged.disconnect()
         self.rows.remove(row)
         self.removeRows(position, 1, QModelIndex())

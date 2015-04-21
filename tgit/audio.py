@@ -16,11 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
+
 from PyQt5.QtCore import QUrl
 
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 
 from tgit.announcer import Announcer
+from tgit.util import fs
 
 
 class PlayerListener(object):
@@ -43,36 +46,44 @@ class MediaPlayer(object):
     PLAYING = QMediaPlayer.PlayingState
     PAUSED = QMediaPlayer.PausedState
 
+    _player = None
+    _media_about_to_play = None
+    _media_currently_playing = None
+    _actual_file_to_play = None
+    _actual_file_currently_playing = None
+
     def __init__(self):
-        self._player = QMediaPlayer()
-        self._player.stateChanged.connect(self._stateChanged)
         self._announce = Announcer()
-        self._media = None
-        self._loading = None
 
-    def isPlaying(self, filename):
-        return self._player.state() == self.PLAYING and self._media == filename
+    def is_playing(self, filename):
+        return self._player is not None and self._player.state() == self.PLAYING and self._media_currently_playing == filename
 
-    def play(self, name):
-        self._announce.loading(name)
-        self._loading = name
-        self._player.setMedia(QMediaContent(QUrl.fromLocalFile(name)))
+    def play(self, filename):
+        self._player = QMediaPlayer()
+        self._player.stateChanged.connect(self._state_changed)
+        self._media_about_to_play = filename
+        self._announce.loading(self._media_about_to_play)
+        self._actual_file_to_play = fs.make_temp_copy(filename)
+        self._player.setMedia(QMediaContent(QUrl.fromLocalFile(self._actual_file_to_play)))
         self._player.play()
 
     def stop(self):
         self._player.stop()
 
-    def addPlayerListener(self, listener):
+    def add_player_listener(self, listener):
         self._announce.addListener(listener)
 
-    def removePlayerListener(self, listener):
+    def remove_player_listener(self, listener):
         self._announce.removeListener(listener)
 
-    def _stateChanged(self, state):
+    def _state_changed(self, state):
         if state == self.PLAYING:
-            self._media = self._loading
-            self._announce.playing(self._media)
+            self._actual_file_currently_playing = self._actual_file_to_play
+            self._media_currently_playing = self._media_about_to_play
+            self._announce.playing(self._media_currently_playing)
         elif state == self.STOPPED:
-            self._announce.stopped(self._media)
+            self._announce.stopped(self._media_currently_playing)
+            self._player = None
+            os.unlink(self._actual_file_currently_playing)
         elif state == self.PAUSED:
-            self._announce.paused(self._media)
+            self._announce.paused(self._media_currently_playing)

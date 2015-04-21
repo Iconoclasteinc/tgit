@@ -68,7 +68,7 @@ class FakeAudioPlayer(object):
     def media(self):
         return self._filename
 
-    def isPlaying(self, filename):
+    def is_playing(self, filename):
         return self._filename == filename
 
     def play(self, filename):
@@ -79,10 +79,10 @@ class FakeAudioPlayer(object):
         self._announce.stopped(self._filename)
         self._filename = None
 
-    def addPlayerListener(self, listener):
+    def add_player_listener(self, listener):
         self._announce.addListener(listener)
 
-    def removePlayerListener(self, listener):
+    def remove_player_listener(self, listener):
         self._announce.removeListener(listener)
 
 

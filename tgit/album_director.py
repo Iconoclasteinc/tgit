@@ -73,14 +73,14 @@ def moveTrack(album, track, position):
 
 
 def removeTrack(player, album, track):
-    if player.isPlaying(track.filename):
+    if player.is_playing(track.filename):
         player.stop()
 
     album.removeTrack(track)
 
 
 def playTrack(player, track):
-    if player.isPlaying(track.filename):
+    if player.is_playing(track.filename):
         player.stop()
     else:
         player.play(track.filename)
