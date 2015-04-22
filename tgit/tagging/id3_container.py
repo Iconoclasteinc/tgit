@@ -162,7 +162,7 @@ class ID3Container(object):
         })
     ]
 
-    for key, tag in {'TALB': 'releaseName',
+    for key, tag in {'TALB': 'release_name',
                      'TPE1': 'lead_performer',
                      'TOWN': 'labelName',
                      'TDRC': 'recordingTime',

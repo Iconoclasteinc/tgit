@@ -44,7 +44,7 @@ class RowTest(unittest.TestCase):
                             lead_performer='Artist',
                             bitrate=192000,
                             duration=100)
-        album = build.album(releaseName='Album')
+        album = build.album(release_name='Album')
 
         row = Row(album, track)
 
@@ -108,7 +108,7 @@ class ColumnsTest(unittest.TestCase):
                             lead_performer='Artist',
                             bitrate=192000,
                             duration=timedelta(minutes=4, seconds=37).total_seconds())
-        album = build.album(releaseName='Album')
+        album = build.album(release_name='Album')
 
         row = Row(album, track, True)
         assert_that(Columns.trackTitle.value(row), equal_to('Song'), 'track title')
@@ -165,7 +165,7 @@ class AlbumCompositionModelTest(unittest.TestCase):
         self.assertRowMatchesTrack(0, track)
 
     def testDisplaysTrackDetailsInColumns(self):
-        self.album.releaseName = 'Album'
+        self.album.release_name = 'Album'
         track = build.track(track_title='Song',
                             lead_performer='Artist',
                             duration=timedelta(minutes=3, seconds=56).total_seconds(),
@@ -219,7 +219,7 @@ class AlbumCompositionModelTest(unittest.TestCase):
         modelListener.should_receive('dataChanged').with_args(self.model.index(2, 0),
                                                               self.model.index(2, 6)).once()
 
-        self.album.releaseName = 'Album'
+        self.album.release_name = 'Album'
         self.album.leadPerfomer = 'Artist'
 
         for row in range(self.model.rowCount()):
@@ -247,7 +247,7 @@ class AlbumCompositionModelTest(unittest.TestCase):
         track.track_title = 'Track'
 
     def assertRowMatchesAlbum(self, row, album):
-        self.assertCellDisplays(row, Columns.releaseName, album.releaseName)
+        self.assertCellDisplays(row, Columns.releaseName, album.release_name)
 
     def assertRowMatchesTrack(self, row, track):
         self.assertCellDisplays(row, Columns.trackTitle, track.track_title)

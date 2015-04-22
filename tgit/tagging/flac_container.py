@@ -43,7 +43,7 @@ class FlacContainer():
     fields = []
 
     for field_name, tag_name in {
-        'ALBUM': 'releaseName',
+        'ALBUM': 'release_name',
         'ARTIST': 'lead_performer',
         'TITLE': 'track_title',
     }.items():

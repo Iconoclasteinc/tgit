@@ -105,19 +105,19 @@ class AlbumTest(unittest.TestCase):
         assert_that(album.images, empty(), 'images')
 
     def testCopiesAlbumMetadataOfInitialFirstTrack(self):
-        track = build.track(metadata=build.metadata(releaseName='First Album',
+        track = build.track(metadata=build.metadata(release_name='First Album',
                                                     images=[build.image('image/jpeg', 'first-cover.jpg')]))
 
         album = build.album()
         album.addTrack(track)
         album.removeTrack(track)
-        album.addTrack(build.track(releaseName='Second Album'))
+        album.addTrack(build.track(release_name='Second Album'))
 
-        assert_that(album.releaseName, equal_to('First Album'), 'metadata')
+        assert_that(album.release_name, equal_to('First Album'), 'metadata')
         assert_that(album.images, contains(has_property('data', 'first-cover.jpg')), 'images')
 
     def testSignalsStateChangesToListener(self):
-        self.assertNotifiesListenerOnPropertyChange('releaseName', 'Album')
+        self.assertNotifiesListenerOnPropertyChange('release_name', 'Album')
         self.assertNotifiesListenerOnPropertyChange('lead_performer', 'Artist')
         self.assertNotifiesListenerOnPropertyChange('isni', '123456789')
         self.assertNotifiesListenerOnPropertyChange('guestPerformers', [('Musician', 'Instrument')])
@@ -147,9 +147,9 @@ class AlbumTest(unittest.TestCase):
 
     def testSignalsStateChangeWhenFirstTrackInserted(self):
         album = Album()
-        album.addAlbumListener(self.listenerExpectingNotification('releaseName', 'Album'))
+        album.addAlbumListener(self.listenerExpectingNotification('release_name', 'Album'))
 
-        track = build.track(metadata=build.metadata(releaseName='Album'))
+        track = build.track(metadata=build.metadata(release_name='Album'))
         album.addTrack(track)
 
     def testSignalsTrackRemovalToListeners(self):

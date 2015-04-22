@@ -44,7 +44,7 @@ class Row(QObject, AlbumListener, TrackListener, PlayerListener):
         return self.track.lead_performer
 
     def releaseName(self):
-        return self.album.releaseName
+        return self.album.release_name
 
     def bitrate(self):
         return self.track.bitrate

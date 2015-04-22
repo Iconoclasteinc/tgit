@@ -33,7 +33,7 @@ class AlbumCompositionPageTest(WidgetTest):
         self.driver.showsColumnHeaders('Track Title', 'Lead Performer', 'Album Title', 'Bitrate', 'Duration', '', '')
 
     def testDisplaysTrackDetailsInColumns(self):
-        self.album.releaseName = 'All the Little Lights'
+        self.album.release_name = 'All the Little Lights'
         self.album.addTrack(build.track(track_title='Let Her Go',
                                         lead_performer='Passenger',
                                         bitrate=192000,

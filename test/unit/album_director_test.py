@@ -64,7 +64,7 @@ def test_finds_and_adds_to_album_all_supported_audio_files_in_selected_folder(re
 
 
 def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
-    album = build.album(releaseName='Album Title',
+    album = build.album(release_name='Album Title',
                         lead_performer='Album Artist',
                         images=[build.image(mime='image/jpeg', data=b'<image data>')])
     track = build.track(filename=mp3(),
@@ -75,7 +75,7 @@ def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
     director.record_track(destination_file, track, now)
 
     metadata = tagging.load_metadata(destination_file)
-    assert_that(metadata, has_entries(releaseName='Album Title', lead_performer='Album Artist'), 'metadata tags')
+    assert_that(metadata, has_entries(release_name='Album Title', lead_performer='Album Artist'), 'metadata tags')
     assert_that(metadata.images, contains(Image(mime='image/jpeg', data=b'<image data>')), 'attached pictures')
 
 
@@ -128,13 +128,13 @@ class AlbumDirectorTest(unittest.TestCase):
     def testUpdatesAlbumMetadata(self):
         album = build.album()
         director.updateAlbum(album,
-                             releaseName='Title', compilation=True, lead_performer='Artist', isni='0000123456789',
+                             release_name='Title', compilation=True, lead_performer='Artist', isni='0000123456789',
                              guestPerformers=[('Guitar', 'Guitarist')], labelName='Label',
                              catalogNumber='XXX123456789', upc='123456789999', comments='Comments\n...',
                              releaseTime='2009-01-01', recordingTime='2008-09-15', recordingStudios='Studios',
                              producer='Producer', mixer='Engineer', primaryStyle='Style')
 
-        assert_that(album.releaseName, equal_to('Title'), 'release name')
+        assert_that(album.release_name, equal_to('Title'), 'release name')
         assert_that(album.compilation, is_(True), 'compilation')
         assert_that(album.lead_performer, equal_to('Artist'), 'lead performer')
         assert_that(album.isni, equal_to('0000123456789'), 'isni')
@@ -252,5 +252,5 @@ class AlbumDirectorTest(unittest.TestCase):
                     return '0000123456789'
                 return None
 
-        album = build.album(lead_performer='Paul McCartney', releaseName='Memory Almost Full')
+        album = build.album(lead_performer='Paul McCartney', release_name='Memory Almost Full')
         assert_that(director.assignISNI(NameRegistry(), album), equal_to('0000123456789'), 'isni assigned')

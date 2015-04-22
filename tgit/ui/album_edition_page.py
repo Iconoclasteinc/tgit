@@ -127,7 +127,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         layout = form.layout()
 
         self.releaseName = form.lineEdit('release-name')
-        self.releaseName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('releaseName')))
+        self.releaseName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('release_name')))
         layout.addRow(form.labelFor(self.releaseName, self.tr('Release Name:')), self.releaseName)
 
         lookupISNI = form.button('lookup-isni', self.tr('LOOKUP ISNI'), disabled=True)
@@ -246,7 +246,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         if self.album.mainCover is not self.picture or self.album.mainCover is None:
             self.mainCover.setPixmap(image.scale(self.album.mainCover, *self.FRONT_COVER_SIZE))
             self.picture = self.album.mainCover
-        self.releaseName.setText(self.album.releaseName)
+        self.releaseName.setText(self.album.release_name)
         self.compilation.setChecked(self.album.compilation is True)
         self.displayLeadPerformer(self.album)
         self.isni.setText(self.album.isni)
@@ -268,7 +268,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.leadPerformer.setDisabled(album.compilation is True)
 
     def metadata(self, *keys):
-        allValues = dict(releaseName=self.releaseName.text(),
+        allValues = dict(release_name=self.releaseName.text(),
                          compilation=self.compilation.isChecked(),
                          lead_performer=self.leadPerformer.text(),
                          isni=self.isni.text(),

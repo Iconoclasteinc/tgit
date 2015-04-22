@@ -164,4 +164,4 @@ def assignISNI(registry, album):
     surname = album.lead_performer[lastSpaceIndex + 1:]
     forename = album.lead_performer[:lastSpaceIndex]
 
-    return registry.assign(forename, surname, album.releaseName)
+    return registry.assign(forename, surname, album.release_name)

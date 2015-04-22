@@ -36,7 +36,7 @@ class AlbumEditionPageTest(WidgetTest):
 
     def testDisplaysAlbumMetadata(self):
         self.render(build.album(
-            releaseName='Album',
+            release_name='Album',
             lead_performer='Artist',
             isni='123456789',
             guestPerformers=[('Guitar', 'Guitarist'), ('Piano', 'Pianist')],
@@ -181,7 +181,7 @@ class AlbumEditionPageTest(WidgetTest):
         metadataChangedSignal = ValueMatcherProbe('metadata changed')
         self.page.metadataChanged.connect(metadataChangedSignal.received)
 
-        metadataChangedSignal.expect(has_entries(releaseName='Title'))
+        metadataChangedSignal.expect(has_entries(release_name='Title'))
         self.driver.changeReleaseName('Title')
         self.check(metadataChangedSignal)
 

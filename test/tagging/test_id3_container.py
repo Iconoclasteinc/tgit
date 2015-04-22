@@ -27,12 +27,12 @@ def mp3(tmpdir):
 
 def test_reads_album_title_from_t_a_l_b_frame(mp3):
     metadata = container.load(mp3(TALB='Album'))
-    assert_that(metadata, has_entry('releaseName', 'Album'), 'metadata')
+    assert_that(metadata, has_entry('release_name', 'Album'), 'metadata')
 
 
 def test_joins_all_texts_of_frames(mp3):
     metadata = container.load(mp3(TALB=['Album', 'Titles']))
-    assert_that(metadata, has_entry('releaseName', 'Album\x00Titles'), 'metadata')
+    assert_that(metadata, has_entry('release_name', 'Album\x00Titles'), 'metadata')
 
 
 def test_reads_lead_performer_from_tpe1_frame(mp3):
@@ -219,7 +219,7 @@ def test_round_trips_empty_metadata_to_file(mp3):
 def test_round_trips_metadata_to_file(mp3):
     metadata = Metadata()
     metadata.addImage('image/jpeg', b'salers.jpg', Image.FRONT_COVER)
-    metadata['releaseName'] = 'Album'
+    metadata['release_name'] = 'Album'
     metadata['compilation'] = True
     metadata['lead_performer'] = 'Lead Performer'
     metadata['isni'] = '0000123456789'
@@ -256,7 +256,7 @@ def test_round_trips_metadata_to_file(mp3):
 
 def test_handles_unicode_metadata(mp3):
     metadata = Metadata()
-    metadata['releaseName'] = 'Titre en Français'
+    metadata['release_name'] = 'Titre en Français'
     assert_can_be_saved_and_reloaded_with_same_state(mp3, metadata)
 
 
