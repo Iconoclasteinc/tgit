@@ -47,6 +47,7 @@ class FlacContainer():
         'ARTIST': 'lead_performer',
         'GENRE': 'primary_style',
         'TITLE': 'track_title',
+        'ISRC': 'isrc'
     }.items():
         fields.append(TextField(field_name, tag_name))
 
