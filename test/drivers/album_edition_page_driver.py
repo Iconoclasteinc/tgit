@@ -37,6 +37,8 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.showsProducer(value)
             elif tag == 'mixer':
                 self.showsMixer(value)
+            elif tag == 'primary_style':
+                self.shows_primary_style(value)
             else:
                 raise AssertionError("Don't know how to verify '%s'" % tag)
 
@@ -68,6 +70,8 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.changeProducer(value)
             elif tag == 'mixer':
                 self.changeMixer(value)
+            elif tag == 'primary_style':
+                self.select_primary_style(value)
             else:
                 raise AssertionError("Don't know how to edit '%s'" % tag)
 
@@ -238,14 +242,14 @@ class AlbumEditionPageDriver(BaseDriver):
             edit.addLine(comment)
         edit.clearFocus()
 
-    def showsPrimaryStyle(self, style):
+    def shows_primary_style(self, style):
         self.label(withBuddy(named('primary-style'))).isShowingOnScreen()
         self.combobox(named('primary-style')).has_current_text(style)
 
     def changePrimaryStyle(self, style):
         self.combobox(named('primary-style')).changeText(style)
 
-    def selectPrimaryStyle(self, style):
+    def select_primary_style(self, style):
         self.combobox(named('primary-style')).select_option(style)
 
     def showsMediaType(self, type_):

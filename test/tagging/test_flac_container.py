@@ -45,14 +45,20 @@ def test_reads_track_title_from_vorbis_comments(flac):
 
 
 def test_reads_release_name_from_vorbis_comments(flac):
-    metadata = container.load(flac(release_name="St-Henri"))
-    assert_that(metadata, has_entry('release_name', "St-Henri"), "metadata")
+    metadata = container.load(flac(release_name="Honeycomb"))
+    assert_that(metadata, has_entry('release_name', "Honeycomb"), "metadata")
+
+
+def test_reads_primary_style_from_vorbis_comments(flac):
+    metadata = container.load(flac(primary_style="Modern Jazz"))
+    assert_that(metadata, has_entry('primary_style', "Modern Jazz"), "metadata")
 
 
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata['release_name'] = "St-Henri"
     metadata['lead_performer'] = "Joel Miller"
+    metadata['primary_style'] = "Modern Jazz"
     metadata['track_title'] = "Salsa Coltrane"
 
     assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)

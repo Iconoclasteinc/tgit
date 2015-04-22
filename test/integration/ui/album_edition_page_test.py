@@ -67,7 +67,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.showsProducer('Artistic Producer')
         self.driver.showsMixer('Mixing Engineer')
         self.driver.showsComments('Comments\n...')
-        self.driver.showsPrimaryStyle('Style')
+        self.driver.shows_primary_style('Style')
         self.driver.showsMediaType('')
         self.driver.showsReleaseType('')
 
@@ -240,7 +240,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.check(metadataChangedSignal)
 
         metadataChangedSignal.expect(has_entries(primary_style='Jazz'))
-        self.driver.selectPrimaryStyle('Jazz')
+        self.driver.select_primary_style('Jazz')
         self.check(metadataChangedSignal)
 
         metadataChangedSignal.expect(has_entries(primary_style='Custom'))

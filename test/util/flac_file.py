@@ -46,6 +46,8 @@ class FlacAudio(object):
                 self._add_tag("ALBUM", value)
             elif tag == 'track_title':
                 self._add_tag("TITLE", value)
+            elif tag == 'primary_style':
+                self._add_tag("GENRE", value)
             else:
                 raise AssertionError("Unsupported tag '%s'" % tag)
 
