@@ -89,13 +89,14 @@ def test_tagging_a_new_album_with_several_tracks(app, library):
 
 
 def test_tagging_a_flac_track(app, library):
-    track = library.add_flac(release_name="???", lead_performer="???", primary_style="???",
+    track = library.add_flac(release_name="???", lead_performer="???", primary_style="???", recording_time="???",
                              track_title="???", isrc="???")
 
     app.new_album('flac', track)
 
-    app.shows_album_metadata(release_name="???", lead_performer="???", primary_style="???")
-    app.change_album_metadata(release_name="St-Henri", lead_performer="John Roney", primary_style="Jazz")
+    app.shows_album_metadata(release_name="???", lead_performer="???", primary_style="???", recording_time="???")
+    app.change_album_metadata(release_name="St-Henri", lead_performer="John Roney", primary_style="Jazz",
+                              recording_time="2011-07-25")
 
     app.shows_next_track_metadata(track_title="???", isrc="???")
     app.change_track_metadata(track_title="Squareboy", isrc="CABL31201254")
@@ -104,5 +105,6 @@ def test_tagging_a_flac_track(app, library):
                      release_name="St-Henri",
                      lead_performer="John Roney",
                      primary_style="Jazz",
+                     recording_time="2011-07-25",
                      track_title="Squareboy",
                      isrc="CABL31201254")

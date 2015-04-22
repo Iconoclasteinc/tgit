@@ -25,8 +25,8 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.showsCatalogNumber(value)
             elif tag == 'upc':
                 self.showsUpc(value)
-            elif tag == 'recordingTime':
-                self.showsRecordingTime(value)
+            elif tag == 'recording_time':
+                self.shows_recording_time(value)
             elif tag == 'releaseTime':
                 self.showsReleaseTime(value)
             elif tag == 'originalReleaseTime':
@@ -58,8 +58,8 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.changeCatalogNumber(value)
             elif tag == 'upc':
                 self.changeUpc(value)
-            elif tag == 'recordingTime':
-                self.changeRecordingTime(value)
+            elif tag == 'recording_time':
+                self.change_recording_time(value)
             elif tag == 'releaseTime':
                 self.changeReleaseTime(value)
             elif tag == 'originalReleaseTime':
@@ -184,11 +184,11 @@ class AlbumEditionPageDriver(BaseDriver):
     def changeUpc(self, code):
         self.lineEdit(named('upc')).changeText(code)
 
-    def showsRecordingTime(self, time):
+    def shows_recording_time(self, time):
         self.label(withBuddy(named('recording-time'))).isShowingOnScreen()
         self.lineEdit(named('recording-time')).hasText(time)
 
-    def changeRecordingTime(self, time):
+    def change_recording_time(self, time):
         self.lineEdit(named('recording-time')).changeText(time)
 
     def showsReleaseTime(self, time):

@@ -65,7 +65,7 @@ class Mp3Audio(object):
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='Catalog Number', text=value))
             elif tag == 'upc' or tag == 'TXXX_UPC':
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='UPC', text=value))
-            elif tag == 'recordingTime' or tag == 'TDRC':
+            elif tag == 'recording_time' or tag == 'TDRC':
                 self._add_tag(id3.TDRC(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
             elif tag == 'releaseTime' or tag == 'TDRL':
                 self._add_tag(id3.TDRL(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))

@@ -59,11 +59,17 @@ def test_reads_track_i_s_r_c_from_vorbis_comments(flac):
     assert_that(metadata, has_entry('isrc', "CABL31201254"), "metadata")
 
 
+def test_reads_recording_time_from_vorbis_comments(flac):
+    metadata = container.load(flac(recording_time="2011-11-02"))
+    assert_that(metadata, has_entry('recording_time', "2011-11-02"), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata['release_name'] = "St-Henri"
     metadata['lead_performer'] = "Joel Miller"
     metadata['primary_style'] = "Modern Jazz"
+    metadata['recording_time'] = "2007-11-02"
     metadata['track_title'] = "Salsa Coltrane"
     metadata['isrc'] = "CABL31201254"
 

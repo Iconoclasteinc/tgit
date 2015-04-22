@@ -122,7 +122,7 @@ class AlbumTest(unittest.TestCase):
         self.assertNotifiesListenerOnPropertyChange('isni', '123456789')
         self.assertNotifiesListenerOnPropertyChange('guestPerformers', [('Musician', 'Instrument')])
         self.assertNotifiesListenerOnPropertyChange('labelName', 'Label')
-        self.assertNotifiesListenerOnPropertyChange('recordingTime', 'Recorded')
+        self.assertNotifiesListenerOnPropertyChange('recording_time', 'Recorded')
         self.assertNotifiesListenerOnPropertyChange('releaseTime', 'Released')
         self.assertNotifiesListenerOnPropertyChange('originalReleaseTime', 'Original Release')
         self.assertNotifiesListenerOnPropertyChange('upc', 'Barcode')

@@ -165,7 +165,7 @@ class ID3Container(object):
     for key, tag in {'TALB': 'release_name',
                      'TPE1': 'lead_performer',
                      'TOWN': 'labelName',
-                     'TDRC': 'recordingTime',
+                     'TDRC': 'recording_time',
                      'TDRL': 'releaseTime',
                      'TDOR': 'originalReleaseTime',
                      'TIT2': 'track_title',

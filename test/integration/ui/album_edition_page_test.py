@@ -43,7 +43,7 @@ class AlbumEditionPageTest(WidgetTest):
             labelName='Label',
             catalogNumber='XXX123456789',
             upc='123456789999',
-            recordingTime='2008-09-15',
+            recording_time='2008-09-15',
             releaseTime='2009-01-01',
             recordingStudios='Studio A, Studio B',
             producer='Artistic Producer',
@@ -60,7 +60,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.showsLabelName('Label')
         self.driver.showsCatalogNumber('XXX123456789')
         self.driver.showsUpc('123456789999')
-        self.driver.showsRecordingTime('2008-09-15')
+        self.driver.shows_recording_time('2008-09-15')
         self.driver.showsReleaseTime('2009-01-01')
         self.driver.showsDigitalReleaseTime('')
         self.driver.showsRecordingStudios('Studio A, Studio B')
@@ -223,8 +223,8 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.changeReleaseTime('2009-01-01')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_entries(recordingTime='2008-09-15'))
-        self.driver.changeRecordingTime('2008-09-15')
+        metadataChangedSignal.expect(has_entries(recording_time='2008-09-15'))
+        self.driver.change_recording_time('2008-09-15')
         self.check(metadataChangedSignal)
 
         metadataChangedSignal.expect(has_entries(recordingStudios='Studios'))

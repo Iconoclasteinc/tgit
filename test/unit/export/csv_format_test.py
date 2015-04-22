@@ -58,7 +58,7 @@ class CsvFormatTest(unittest.TestCase):
             upc='Barcode',
             comments='Comments\n...\n...',
             releaseTime='2014',
-            recordingTime='2013',
+            recording_time='2013',
             recordingStudios='Studios',
             producer='Artistic Producer',
             mixer='Mixing Engineer',

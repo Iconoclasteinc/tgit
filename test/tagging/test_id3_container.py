@@ -71,7 +71,7 @@ def test_reads_upc_from_custom_frame(mp3):
 
 def test_reads_recording_time_from_t_d_r_c_frame(mp3):
     metadata = container.load(mp3(TDRC='2012-07-15'))
-    assert_that(metadata, has_entry('recordingTime', '2012-07-15'), 'metadata')
+    assert_that(metadata, has_entry('recording_time', '2012-07-15'), 'metadata')
 
 
 def test_reads_release_time_from_t_d_r_l_frame(mp3):
@@ -227,7 +227,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata['labelName'] = 'Label Name'
     metadata['catalogNumber'] = '123 456-1'
     metadata['upc'] = '987654321111'
-    metadata['recordingTime'] = '2012-07-01'
+    metadata['recording_time'] = '2012-07-01'
     metadata['releaseTime'] = '2013-12-01'
     metadata['originalReleaseTime'] = '1999-01-01'
     metadata['recordingStudios'] = 'Studio Name'

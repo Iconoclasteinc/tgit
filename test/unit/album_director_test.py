@@ -131,7 +131,7 @@ class AlbumDirectorTest(unittest.TestCase):
                              release_name='Title', compilation=True, lead_performer='Artist', isni='0000123456789',
                              guestPerformers=[('Guitar', 'Guitarist')], labelName='Label',
                              catalogNumber='XXX123456789', upc='123456789999', comments='Comments\n...',
-                             releaseTime='2009-01-01', recordingTime='2008-09-15', recordingStudios='Studios',
+                             releaseTime='2009-01-01', recording_time='2008-09-15', recordingStudios='Studios',
                              producer='Producer', mixer='Engineer', primary_style='Style')
 
         assert_that(album.release_name, equal_to('Title'), 'release name')
@@ -144,7 +144,7 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(album.upc, equal_to('123456789999'), 'upc')
         assert_that(album.comments, equal_to('Comments\n...'), 'comments')
         assert_that(album.releaseTime, equal_to('2009-01-01'), 'release time')
-        assert_that(album.recordingTime, equal_to('2008-09-15'), 'recording time')
+        assert_that(album.recording_time, equal_to('2008-09-15'), 'recording time')
         assert_that(album.recordingStudios, equal_to('Studios'), 'recording studios')
         assert_that(album.producer, equal_to('Producer'), 'producer')
         assert_that(album.mixer, equal_to('Engineer'), 'mixer')

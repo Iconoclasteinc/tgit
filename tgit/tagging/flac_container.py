@@ -46,6 +46,7 @@ class FlacContainer():
         'ALBUM': 'release_name',
         'ARTIST': 'lead_performer',
         'GENRE': 'primary_style',
+        'DATE': 'recording_time',
         'TITLE': 'track_title',
         'ISRC': 'isrc'
     }.items():

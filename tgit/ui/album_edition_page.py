@@ -115,7 +115,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
                       self.originalReleaseTime)
         self.recordingTime = form.lineEdit('recording-time')
         self.recordingTime.setPlaceholderText(self.tr('YYYY-MM-DD'))
-        self.recordingTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('recordingTime')))
+        self.recordingTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('recording_time')))
         layout.addRow(form.labelFor(self.recordingTime, self.tr('Recording Time:')), self.recordingTime)
         dates.setLayout(layout)
         return dates
@@ -256,7 +256,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.upc.setText(self.album.upc)
         self.comments.setPlainText(self.album.comments)
         self.releaseTime.setText(self.album.releaseTime)
-        self.recordingTime.setText(self.album.recordingTime)
+        self.recordingTime.setText(self.album.recording_time)
         self.recordingStudios.setText(self.album.recordingStudios)
         self.producer.setText(self.album.producer)
         self.mixer.setText(self.album.mixer)
@@ -277,7 +277,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
                          catalogNumber=self.catalogNumber.text(),
                          upc=self.upc.text(),
                          comments=self.comments.toPlainText(),
-                         recordingTime=self.recordingTime.text(),
+                         recording_time=self.recordingTime.text(),
                          releaseTime=self.releaseTime.text(),
                          recordingStudios=self.recordingStudios.text(),
                          producer=self.producer.text(),
