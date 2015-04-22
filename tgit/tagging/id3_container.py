@@ -185,7 +185,7 @@ class ID3Container(object):
                      'TXXX:ISNI': 'isni',
                      "COMM::fra": 'comments',
                      "USLT::fra": 'lyrics',
-                     'TCON': 'primaryStyle'
+                     'TCON': 'primary_style'
     }.items():
         processors.append(UnicodeProcessor(key, tag))
 

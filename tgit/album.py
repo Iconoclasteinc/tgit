@@ -50,7 +50,7 @@ class Album(object, metaclass=tag.Taggable):
     mixer = tag.text()
     contributors = tag.pairs()
     comments = tag.text()
-    primaryStyle = tag.text()
+    primary_style = tag.text()
 
     def __init__(self, metadata=None):
         self.metadata = metadata or Metadata()

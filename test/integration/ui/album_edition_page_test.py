@@ -49,7 +49,7 @@ class AlbumEditionPageTest(WidgetTest):
             producer='Artistic Producer',
             mixer='Mixing Engineer',
             comments='Comments\n...',
-            primaryStyle='Style'))
+            primary_style='Style'))
 
         self.driver.showsReleaseName('Album')
         self.driver.showsCompilation(False)
@@ -239,11 +239,11 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.changeMixer('Mixer')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_entries(primaryStyle='Jazz'))
+        metadataChangedSignal.expect(has_entries(primary_style='Jazz'))
         self.driver.selectPrimaryStyle('Jazz')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_entries(primaryStyle='Custom'))
+        metadataChangedSignal.expect(has_entries(primary_style='Custom'))
         self.driver.changePrimaryStyle('Custom')
         self.check(metadataChangedSignal)
 

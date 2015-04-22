@@ -132,7 +132,7 @@ class AlbumDirectorTest(unittest.TestCase):
                              guestPerformers=[('Guitar', 'Guitarist')], labelName='Label',
                              catalogNumber='XXX123456789', upc='123456789999', comments='Comments\n...',
                              releaseTime='2009-01-01', recordingTime='2008-09-15', recordingStudios='Studios',
-                             producer='Producer', mixer='Engineer', primaryStyle='Style')
+                             producer='Producer', mixer='Engineer', primary_style='Style')
 
         assert_that(album.release_name, equal_to('Title'), 'release name')
         assert_that(album.compilation, is_(True), 'compilation')
@@ -148,7 +148,7 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(album.recordingStudios, equal_to('Studios'), 'recording studios')
         assert_that(album.producer, equal_to('Producer'), 'producer')
         assert_that(album.mixer, equal_to('Engineer'), 'mixer')
-        assert_that(album.primaryStyle, equal_to('Style'), 'primary style')
+        assert_that(album.primary_style, equal_to('Style'), 'primary style')
 
     def testUpdatesTracksLeadPerformerWhenAlbumIsNotACompilation(self):
         album = build.album(tracks=[build.track(), build.track(), build.track()])

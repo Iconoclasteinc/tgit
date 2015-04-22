@@ -171,7 +171,7 @@ def test_reads_language_from_t_l_a_n_frame(mp3):
 
 def test_reads_primary_style_from_t_c_o_n_frame(mp3):
     metadata = container.load(mp3(TCON='Jazz'))
-    assert_that(metadata, has_entry('primaryStyle', 'Jazz'), 'metadata')
+    assert_that(metadata, has_entry('primary_style', 'Jazz'), 'metadata')
 
 
 def test_reads_compilation_flag_from_non_standard_t_c_m_p_frame(mp3):
@@ -237,7 +237,7 @@ def test_round_trips_metadata_to_file(mp3):
                                 ('mastering', 'Mastering Eng.'),
                                 ('recording', 'Assistant Recording Eng.')]
     metadata['comments'] = 'Comments'
-    metadata['primaryStyle'] = 'Jazz'
+    metadata['primary_style'] = 'Jazz'
     metadata['track_title'] = 'Track Title'
     metadata['versionInfo'] = 'Version Info'
     metadata['featuredGuest'] = 'Featured Guest'

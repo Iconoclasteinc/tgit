@@ -62,7 +62,7 @@ class CsvFormatTest(unittest.TestCase):
             recordingStudios='Studios',
             producer='Artistic Producer',
             mixer='Mixing Engineer',
-            primaryStyle='Genre',
+            primary_style='Genre',
             tracks=[build.track(
                 track_title='Track Title',
                 lead_performer='Lead Performer',

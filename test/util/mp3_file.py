@@ -101,7 +101,7 @@ class Mp3Audio(object):
                 self._add_tag(id3.USLT(encoding=UTF_8, text=text, desc='', lang=lang))
             elif tag == 'language' or tag == 'TLAN':
                 self._add_tag(id3.TLAN(encoding=UTF_8, text=value))
-            elif tag == 'primaryStyle' or tag == 'TCON':
+            elif tag == 'primary_style' or tag == 'TCON':
                 self._add_tag(id3.TCON(encoding=UTF_8, text=value))
             elif tag == 'compilation' or tag == 'TCMP':
                 self._add_tag(id3.TCMP(encoding=UTF_8, text=value))

@@ -230,9 +230,9 @@ class AlbumEditionPage(QWidget, AlbumListener):
         layout.addRow(form.labelFor(self.mixer, self.tr('Mixer:')), self.mixer)
         self.primaryStyle = form.comboBox('primary-style')
         self.primaryStyle.addItems(sorted(GENRES))
-        self.primaryStyle.activated.connect(lambda: self.metadataChanged.emit(self.metadata('primaryStyle')))
+        self.primaryStyle.activated.connect(lambda: self.metadataChanged.emit(self.metadata('primary_style')))
         self.primaryStyle.lineEdit().textEdited.connect(
-            lambda: self.metadataChanged.emit(self.metadata('primaryStyle')))
+            lambda: self.metadataChanged.emit(self.metadata('primary_style')))
         layout.addRow(form.labelFor(self.primaryStyle, self.tr('Primary Style:')), self.primaryStyle)
         recording.setLayout(layout)
         return recording
@@ -260,7 +260,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.recordingStudios.setText(self.album.recordingStudios)
         self.producer.setText(self.album.producer)
         self.mixer.setText(self.album.mixer)
-        self.primaryStyle.setEditText(self.album.primaryStyle)
+        self.primaryStyle.setEditText(self.album.primary_style)
 
     def displayLeadPerformer(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
@@ -282,7 +282,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
                          recordingStudios=self.recordingStudios.text(),
                          producer=self.producer.text(),
                          mixer=self.mixer.text(),
-                         primaryStyle=self.primaryStyle.currentText())
+                         primary_style=self.primaryStyle.currentText())
 
         if len(keys) == 0:
             return allValues
