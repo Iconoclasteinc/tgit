@@ -42,6 +42,8 @@ class FlacAudio(object):
         for tag, value in tags.items():
             if tag == 'lead_performer':
                 self._add_tag("ARTIST", value)
+            elif tag == 'release_name':
+                self._add_tag("ALBUM", value)
             elif tag == 'track_title':
                 self._add_tag("TITLE", value)
             else:

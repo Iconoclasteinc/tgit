@@ -44,8 +44,14 @@ def test_reads_track_title_from_vorbis_comments(flac):
     assert_that(metadata, has_entry('track_title', "Salsa Coltrane"), "metadata")
 
 
+def test_reads_release_name_from_vorbis_comments(flac):
+    metadata = container.load(flac(release_name="St-Henri"))
+    assert_that(metadata, has_entry('releaseName', "St-Henri"), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
+    metadata['releaseName'] = "St-Henri"
     metadata['lead_performer'] = "Joel Miller"
     metadata['track_title'] = "Salsa Coltrane"
 
