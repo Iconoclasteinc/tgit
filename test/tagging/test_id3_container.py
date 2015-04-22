@@ -37,7 +37,7 @@ def test_joins_all_texts_of_frames(mp3):
 
 def test_reads_lead_performer_from_tpe1_frame(mp3):
     metadata = container.load(mp3(TPE1='Lead Artist'))
-    assert_that(metadata, has_entry('leadPerformer', 'Lead Artist'), 'metadata')
+    assert_that(metadata, has_entry('lead_performer', 'Lead Artist'), 'metadata')
 
 
 def test_reads_guest_performers_from_t_m_c_l_frame(mp3):
@@ -116,7 +116,7 @@ def test_reads_comments_from_french_c_o_m_m_frame(mp3):
 
 def test_reads_track_title_from_t_i_t_2_frame(mp3):
     metadata = container.load(mp3(TIT2='Track Title'))
-    assert_that(metadata, has_entry('trackTitle', 'Track Title'), 'metadata')
+    assert_that(metadata, has_entry('track_title', 'Track Title'), 'metadata')
 
 
 def test_reads_version_info_from_t_p_e_4_frame(mp3):
@@ -221,7 +221,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata.addImage('image/jpeg', b'salers.jpg', Image.FRONT_COVER)
     metadata['releaseName'] = 'Album'
     metadata['compilation'] = True
-    metadata['leadPerformer'] = 'Lead Performer'
+    metadata['lead_performer'] = 'Lead Performer'
     metadata['isni'] = '0000123456789'
     metadata['guestPerformers'] = [('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]
     metadata['labelName'] = 'Label Name'
@@ -238,7 +238,7 @@ def test_round_trips_metadata_to_file(mp3):
                                 ('recording', 'Assistant Recording Eng.')]
     metadata['comments'] = 'Comments'
     metadata['primaryStyle'] = 'Jazz'
-    metadata['trackTitle'] = 'Track Title'
+    metadata['track_title'] = 'Track Title'
     metadata['versionInfo'] = 'Version Info'
     metadata['featuredGuest'] = 'Featured Guest'
     metadata['lyricist'] = 'Lyricist'

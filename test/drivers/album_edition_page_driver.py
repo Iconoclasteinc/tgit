@@ -15,7 +15,7 @@ class AlbumEditionPageDriver(BaseDriver):
         for tag, value in meta.items():
             if tag == 'releaseName':
                 self.showsReleaseName(value)
-            elif tag == 'leadPerformer' or tag == 'lead_performer':
+            elif tag == 'lead_performer':
                 self.shows_lead_performer(value)
             elif tag == 'guestPerformers':
                 self.showsGuestPerformers(value)
@@ -46,7 +46,7 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.selectPicture(value)
             elif tag == 'releaseName':
                 self.changeReleaseName(value)
-            elif tag == 'leadPerformer' or tag == 'lead_performer':
+            elif tag == 'lead_performer':
                 self.changeLeadPerformer(value)
             elif tag == 'guestPerformers':
                 self.changeGuestPerformers(value)

@@ -29,47 +29,47 @@ class AlbumTest(unittest.TestCase):
 
     def testHoldsAListOfTracksInOrder(self):
         album = Album()
-        album.addTrack(build.track(trackTitle='Track 1'))
-        album.addTrack(build.track(trackTitle='Track 2'))
-        album.addTrack(build.track(trackTitle='Track 3'))
+        album.addTrack(build.track(track_title='Track 1'))
+        album.addTrack(build.track(track_title='Track 2'))
+        album.addTrack(build.track(track_title='Track 3'))
 
         assert_that(album.tracks, contains(
-            has_property('trackTitle', 'Track 1'),
-            has_property('trackTitle', 'Track 2'),
-            has_property('trackTitle', 'Track 3')), 'track titles')
+            has_property('track_title', 'Track 1'),
+            has_property('track_title', 'Track 2'),
+            has_property('track_title', 'Track 3')), 'track titles')
 
     def testAllowsRemovingTracks(self):
         album = build.album(tracks=[
-            build.track(trackTitle='Track 1'),
-            build.track(trackTitle='Track 2'),
-            build.track(trackTitle='Track 3')])
+            build.track(track_title='Track 1'),
+            build.track(track_title='Track 2'),
+            build.track(track_title='Track 3')])
 
         removed = album.tracks[1]
         album.removeTrack(removed)
 
         assert_that(album.tracks, has_length(2), 'remaining tracks')
-        assert_that(album.tracks, is_not(has_item(has_property('trackTitle', 'Track 2'))), 'tracks')
+        assert_that(album.tracks, is_not(has_item(has_property('track_title', 'Track 2'))), 'tracks')
 
     def testSupportsInsertingTracksAtASpecificPositions(self):
         album = build.album(tracks=[
-            build.track(trackTitle='Track 1'),
-            build.track(trackTitle='Track 2'),
-            build.track(trackTitle='Track 3')])
+            build.track(track_title='Track 1'),
+            build.track(track_title='Track 2'),
+            build.track(track_title='Track 3')])
 
         first = album.tracks[0]
         album.removeTrack(first)
         album.insertTrack(first, 1)
 
         assert_that(album.tracks, contains(
-            has_property('trackTitle', 'Track 2'),
-            has_property('trackTitle', 'Track 1'),
-            has_property('trackTitle', 'Track 3')), 'tracks')
+            has_property('track_title', 'Track 2'),
+            has_property('track_title', 'Track 1'),
+            has_property('track_title', 'Track 3')), 'tracks')
 
     def testNumbersTracks(self):
         album = Album()
-        album.addTrack(build.track(trackTitle='Track 1'))
-        album.addTrack(build.track(trackTitle='Track 2'))
-        album.addTrack(build.track(trackTitle='Track 3'))
+        album.addTrack(build.track(track_title='Track 1'))
+        album.addTrack(build.track(track_title='Track 2'))
+        album.addTrack(build.track(track_title='Track 3'))
 
         assert_that(album.tracks, contains(
             has_property('number', 1),
@@ -118,7 +118,7 @@ class AlbumTest(unittest.TestCase):
 
     def testSignalsStateChangesToListener(self):
         self.assertNotifiesListenerOnPropertyChange('releaseName', 'Album')
-        self.assertNotifiesListenerOnPropertyChange('leadPerformer', 'Artist')
+        self.assertNotifiesListenerOnPropertyChange('lead_performer', 'Artist')
         self.assertNotifiesListenerOnPropertyChange('isni', '123456789')
         self.assertNotifiesListenerOnPropertyChange('guestPerformers', [('Musician', 'Instrument')])
         self.assertNotifiesListenerOnPropertyChange('labelName', 'Label')

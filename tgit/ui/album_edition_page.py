@@ -144,13 +144,13 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.compilation = form.checkBox('compilation')
         self.compilation.clicked.connect(lambda: self.metadataChanged.emit(self.metadata('compilation')))
         self.compilation.stateChanged.connect(
-            lambda newState: self.enableOrDisableISNIButton(newState is Qt.Checked, self.album.leadPerformer,
+            lambda newState: self.enableOrDisableISNIButton(newState is Qt.Checked, self.album.lead_performer,
                                                             lookupISNI))
         layout.addRow(form.labelFor(self.compilation, self.tr('Compilation:')), self.compilation)
 
         self.leadPerformer = form.lineEdit('lead-performer')
         self.leadPerformer.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
-        self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('leadPerformer')))
+        self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('lead_performer')))
         self.leadPerformer.textChanged.connect(
             lambda value: self.enableOrDisableISNIButton(self.album.compilation, value, lookupISNI))
         leadPerformerRow = form.row()
@@ -264,13 +264,13 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
     def displayLeadPerformer(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
-        self.leadPerformer.setText(album.compilation and self.tr('Various Artists') or album.leadPerformer)
+        self.leadPerformer.setText(album.compilation and self.tr('Various Artists') or album.lead_performer)
         self.leadPerformer.setDisabled(album.compilation is True)
 
     def metadata(self, *keys):
         allValues = dict(releaseName=self.releaseName.text(),
                          compilation=self.compilation.isChecked(),
-                         leadPerformer=self.leadPerformer.text(),
+                         lead_performer=self.leadPerformer.text(),
                          isni=self.isni.text(),
                          guestPerformers=formatting.fromPeopleList(self.guestPerformers.text()),
                          labelName=self.labelName.text(),
@@ -291,8 +291,8 @@ class AlbumEditionPage(QWidget, AlbumListener):
         if 'compilation' not in keysToRetrieve:
             keysToRetrieve.append('compilation')
 
-        if 'leadPerformer' not in keysToRetrieve:
-            keysToRetrieve.append('leadPerformer')
+        if 'lead_performer' not in keysToRetrieve:
+            keysToRetrieve.append('lead_performer')
 
         return {k: allValues.get(k, None) for k in keysToRetrieve}
 

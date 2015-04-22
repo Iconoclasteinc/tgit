@@ -28,8 +28,8 @@ class TrackListener(object):
 
 
 class Track(object, metaclass=tag.Taggable):
-    trackTitle = tag.text()
-    leadPerformer = tag.text()
+    track_title = tag.text()
+    lead_performer = tag.text()
     versionInfo = tag.text()
     featuredGuest = tag.text()
     publisher = tag.text()

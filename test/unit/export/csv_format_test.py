@@ -64,8 +64,8 @@ class CsvFormatTest(unittest.TestCase):
             mixer='Mixing Engineer',
             primaryStyle='Genre',
             tracks=[build.track(
-                trackTitle='Track Title',
-                leadPerformer='Lead Performer',
+                track_title='Track Title',
+                lead_performer='Lead Performer',
                 versionInfo='Version Info',
                 featuredGuest='Featuring',
                 lyrics='Lyrics\n...\...\n...',
@@ -113,9 +113,9 @@ class CsvFormatTest(unittest.TestCase):
         assert_that(toBoolean(True), equal_to('True'), 'boolean(True)')
 
     def testWritesOneRecordPerTrackInAlbum(self):
-        album = build.album(tracks=[build.track(trackTitle='Song 1'),
-                                    build.track(trackTitle='Song 2'),
-                                    build.track(trackTitle='Song 3')])
+        album = build.album(tracks=[build.track(track_title='Song 1'),
+                                    build.track(track_title='Song 2'),
+                                    build.track(track_title='Song 3')])
 
         self.format.write(album, self.out)
 

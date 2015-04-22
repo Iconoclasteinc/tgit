@@ -243,14 +243,14 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
     def displayAlbum(self, album):
         self.displayAlbumCover(album.mainCover)
         self.albumTitle.setText(album.releaseName)
-        self.albumLeadPerformer.setText(album.compilation and self.tr('Various Artists') or album.leadPerformer)
+        self.albumLeadPerformer.setText(album.compilation and self.tr('Various Artists') or album.lead_performer)
         self.recordLabel.setText(album.labelName)
         self.leadPerformer.setEnabled(album.compilation is True)
 
     def displayTrack(self, track):
         self.trackNumber.setText(self.tr('Track %d of %d') % (track.number, len(self.album)))
-        self.trackTitle.setText(track.trackTitle)
-        self.leadPerformer.setText(track.leadPerformer)
+        self.trackTitle.setText(track.track_title)
+        self.leadPerformer.setText(track.lead_performer)
         self.versionInfo.setText(track.versionInfo)
         self.duration.setText(formatting.toDuration(track.duration))
         self.bitrate.setText('%s kbps' % formatting.inKbps(track.bitrate))
@@ -281,8 +281,8 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
 
     @property
     def metadata(self):
-        return dict(trackTitle=self.trackTitle.text(),
-                    leadPerformer=self.leadPerformer.text(),
+        return dict(track_title=self.trackTitle.text(),
+                    lead_performer=self.leadPerformer.text(),
                     versionInfo=self.versionInfo.text(),
                     featuredGuest=self.featuredGuest.text(),
                     lyricist=self.lyricist.text(),

@@ -26,7 +26,7 @@ def flac(tmpdir):
 
 def test_reads_lead_performer_from_vorbis_comments(flac):
     metadata = container.load(flac(lead_performer="Joel Miller"))
-    assert_that(metadata, has_entry('leadPerformer', "Joel Miller"), "metadata")
+    assert_that(metadata, has_entry('lead_performer', "Joel Miller"), "metadata")
 
 
 def test_reads_bitrate_from_audio_stream_information(flac):
@@ -41,13 +41,13 @@ def test_reads_duration_from_audio_stream_information(flac):
 
 def test_reads_track_title_from_vorbis_comments(flac):
     metadata = container.load(flac(track_title="Salsa Coltrane"))
-    assert_that(metadata, has_entry('trackTitle', "Salsa Coltrane"), "metadata")
+    assert_that(metadata, has_entry('track_title', "Salsa Coltrane"), "metadata")
 
 
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
-    metadata['leadPerformer'] = "Joel Miller"
-    metadata['trackTitle'] = "Salsa Coltrane"
+    metadata['lead_performer'] = "Joel Miller"
+    metadata['track_title'] = "Salsa Coltrane"
 
     assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

@@ -13,12 +13,12 @@ from tgit.track import TrackListener, Track
 class TrackTest(unittest.TestCase):
     def testDefinesMetadataTags(self):
         assert_that(tuple(Track.tags()),
-                    contains_inanyorder('trackTitle', 'leadPerformer', 'versionInfo', 'featuredGuest', 'publisher',
+                    contains_inanyorder('track_title', 'lead_performer', 'versionInfo', 'featuredGuest', 'publisher',
                                         'lyricist', 'composer', 'isrc', 'labels', 'lyrics', 'language', 'tagger',
                                         'taggingTime', 'bitrate', 'duration'))
 
     def testAnnouncesStateChangesToListeners(self):
-        self.assertNotifiesListenerOnPropertyChange('trackTitle', 'Title')
+        self.assertNotifiesListenerOnPropertyChange('track_title', 'Title')
         self.assertNotifiesListenerOnPropertyChange('versionInfo', 'Remix')
         self.assertNotifiesListenerOnPropertyChange('featuredGuest', 'Featuring')
         self.assertNotifiesListenerOnPropertyChange('isrc', 'Code')

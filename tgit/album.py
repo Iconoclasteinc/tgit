@@ -36,7 +36,7 @@ class AlbumListener(object):
 class Album(object, metaclass=tag.Taggable):
     releaseName = tag.text()
     compilation = tag.flag()
-    leadPerformer = tag.text()
+    lead_performer = tag.text()
     isni = tag.text()
     guestPerformers = tag.pairs()
     labelName = tag.text()

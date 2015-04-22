@@ -40,8 +40,8 @@ class StubAlbumCompositionModel(AlbumCompositionModel):
 
 class RowTest(unittest.TestCase):
     def testHoldsTrackDetails(self):
-        track = build.track(trackTitle='Song',
-                            leadPerformer='Artist',
+        track = build.track(track_title='Song',
+                            lead_performer='Artist',
                             bitrate=192000,
                             duration=100)
         album = build.album(releaseName='Album')
@@ -104,8 +104,8 @@ class RowTest(unittest.TestCase):
 
 class ColumnsTest(unittest.TestCase):
     def testFormatsRowForDisplay(self):
-        track = build.track(trackTitle='Song',
-                            leadPerformer='Artist',
+        track = build.track(track_title='Song',
+                            lead_performer='Artist',
                             bitrate=192000,
                             duration=timedelta(minutes=4, seconds=37).total_seconds())
         album = build.album(releaseName='Album')
@@ -160,14 +160,14 @@ class AlbumCompositionModelTest(unittest.TestCase):
             .once().when(lambda: not self.model.inserting).once()
         self.model.should_call('endInsertRows').once().when(lambda: self.model.inserting)
 
-        track = build.track(trackTitle='Song')
+        track = build.track(track_title='Song')
         self.album.addTrack(track)
         self.assertRowMatchesTrack(0, track)
 
     def testDisplaysTrackDetailsInColumns(self):
         self.album.releaseName = 'Album'
-        track = build.track(trackTitle='Song',
-                            leadPerformer='Artist',
+        track = build.track(track_title='Song',
+                            lead_performer='Artist',
                             duration=timedelta(minutes=3, seconds=56).total_seconds(),
                             bitrate=192000)
         self.album.addTrack(track)
@@ -175,9 +175,9 @@ class AlbumCompositionModelTest(unittest.TestCase):
         self.assertRowMatchesAlbum(0, self.album)
 
     def testDisplaysTracksInAdditionOrder(self):
-        track1 = build.track(trackTitle='Track #1')
-        track2 = build.track(trackTitle='Track #2')
-        track3 = build.track(trackTitle='Track #3')
+        track1 = build.track(track_title='Track #1')
+        track2 = build.track(track_title='Track #2')
+        track3 = build.track(track_title='Track #3')
 
         self.album.addTrack(track1)
         self.album.addTrack(track2)
@@ -187,7 +187,7 @@ class AlbumCompositionModelTest(unittest.TestCase):
         self.assertRowMatchesTrack(2, track3)
 
     def testSignalsWhenTrackStateHasChangedAndUpdatesCorrectRow(self):
-        self.album.addTrack(build.track(trackTitle='Track #1'))
+        self.album.addTrack(build.track(track_title='Track #1'))
         track = build.track()
         self.album.addTrack(track)
 
@@ -196,7 +196,7 @@ class AlbumCompositionModelTest(unittest.TestCase):
         modelListener.should_receive('dataChanged').with_args(self.model.index(1, 0),
                                                               self.model.index(1, 6)).once()
 
-        track.trackTitle = 'Track #2'
+        track.track_title = 'Track #2'
         self.assertRowMatchesTrack(1, track)
 
     def testSignalsWhenAlbumStateHasChangedAndUpdatesAllRows(self):
@@ -244,14 +244,14 @@ class AlbumCompositionModelTest(unittest.TestCase):
         modelListener = flexmock()
         self.model.dataChanged.connect(lambda start, end: modelListener.dataChanged(start, end))
         modelListener.should_receive('dataChanged').never()
-        track.trackTitle = 'Track'
+        track.track_title = 'Track'
 
     def assertRowMatchesAlbum(self, row, album):
         self.assertCellDisplays(row, Columns.releaseName, album.releaseName)
 
     def assertRowMatchesTrack(self, row, track):
-        self.assertCellDisplays(row, Columns.trackTitle, track.trackTitle)
-        self.assertCellDisplays(row, Columns.leadPerformer, track.leadPerformer)
+        self.assertCellDisplays(row, Columns.trackTitle, track.track_title)
+        self.assertCellDisplays(row, Columns.leadPerformer, track.lead_performer)
         if track.bitrate:
             self.assertCellDisplays(row, Columns.bitrate, '%d kbps' % formatting.inKbps(track.bitrate))
         if track.duration:

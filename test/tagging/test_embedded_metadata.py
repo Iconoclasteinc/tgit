@@ -29,20 +29,20 @@ def flac(tmpdir):
 
 def test_handles_mp3_files_using_mp3_container(mp3):
     audio = mp3()
-    metadata = Metadata(leadPerformer="Joel Miller")
+    metadata = Metadata(lead_performer="Joel Miller")
     embedded_metadata.save_metadata(audio, metadata)
 
     metadata = embedded_metadata.load_metadata(audio)
-    assert_that(metadata, has_entry('leadPerformer', "Joel Miller"), 'embedded metadata')
+    assert_that(metadata, has_entry('lead_performer', "Joel Miller"), 'embedded metadata')
 
 
 def test_handles_flac_files_using_flac_container(flac):
     audio = flac()
-    metadata = Metadata(leadPerformer="Joel Miller")
+    metadata = Metadata(lead_performer="Joel Miller")
     embedded_metadata.save_metadata(audio, metadata)
 
     metadata = embedded_metadata.load_metadata(audio)
-    assert_that(metadata, has_entry('leadPerformer', "Joel Miller"), 'embedded metadata')
+    assert_that(metadata, has_entry('lead_performer', "Joel Miller"), 'embedded metadata')
 
 
 def test_yields_empty_metadata_in_case_of_unsupported_format():

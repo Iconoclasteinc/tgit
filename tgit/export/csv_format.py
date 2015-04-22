@@ -50,10 +50,10 @@ class CsvFormat(QObject):
         writer.writerow(self.encodeRow(self.Headers))
 
     def writeRecord(self, writer, album, track):
-        row = album.releaseName, toBoolean(album.compilation), track.leadPerformer, album.isni, \
+        row = album.releaseName, toBoolean(album.compilation), track.lead_performer, album.isni, \
               toPeopleList(album.guestPerformers), album.labelName, album.catalogNumber, album.upc, album.comments, \
               album.releaseTime, album.recordingTime, album.recordingStudios, album.producer, \
-              album.mixer, album.primaryStyle, track.trackTitle, track.versionInfo, track.featuredGuest, \
+              album.mixer, album.primaryStyle, track.track_title, track.versionInfo, track.featuredGuest, \
               track.lyrics, track.language, track.publisher, track.lyricist, track.composer, \
               track.isrc, track.labels
         writer.writerow(self.encodeRow(row))

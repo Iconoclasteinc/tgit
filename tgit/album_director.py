@@ -52,7 +52,7 @@ def updateAlbum(album, **metadata):
 
     if not metadata.get('compilation'):
         for track in album.tracks:
-            track.leadPerformer = metadata.get('leadPerformer')
+            track.lead_performer = metadata.get('lead_performer')
 
 
 def changeAlbumCover(album, filename):
@@ -113,9 +113,9 @@ def sanitize(filename):
 def taggedName(track):
     dirname = os.path.dirname(track.filename)
     _, ext = os.path.splitext(track.filename)
-    filename = sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.leadPerformer,
+    filename = sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
                                                                        number=track.number,
-                                                                       title=track.trackTitle,
+                                                                       title=track.track_title,
                                                                        ext=ext))
 
     return os.path.join(dirname, filename)
@@ -150,7 +150,7 @@ def lookupISNI(registry, leadPerformer):
 def selectISNI(identity, album):
     isni, personalInformations = identity
     leadPerformer, _, _ = personalInformations
-    metadata = dict(leadPerformer=leadPerformer, isni=isni, compilation=album.compilation)
+    metadata = dict(lead_performer=leadPerformer, isni=isni, compilation=album.compilation)
     updateAlbum(album, **metadata)
 
 
@@ -160,8 +160,8 @@ def clearISNI(album):
 
 
 def assignISNI(registry, album):
-    lastSpaceIndex = album.leadPerformer.rfind(' ')
-    surname = album.leadPerformer[lastSpaceIndex + 1:]
-    forename = album.leadPerformer[:lastSpaceIndex]
+    lastSpaceIndex = album.lead_performer.rfind(' ')
+    surname = album.lead_performer[lastSpaceIndex + 1:]
+    forename = album.lead_performer[:lastSpaceIndex]
 
     return registry.assign(forename, surname, album.releaseName)

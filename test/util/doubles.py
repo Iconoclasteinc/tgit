@@ -93,5 +93,5 @@ def export_format():
 class FakeExportFormat(object):
     def write(self, album, out):
         for track in album.tracks:
-            out.write(track.trackTitle or "")
+            out.write(track.track_title or "")
             out.write('\n')

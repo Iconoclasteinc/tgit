@@ -24,7 +24,7 @@ class TrackEditionPageTest(WidgetTest):
 
     def testDisplaysAlbumSummaryInBanner(self):
         track = build.track()
-        album = build.album(releaseName='Album Title', leadPerformer='Artist', labelName='Record Label',
+        album = build.album(releaseName='Album Title', lead_performer='Artist', labelName='Record Label',
                             tracks=[build.track(), track, build.track()])
 
         self.render(album, track)
@@ -43,8 +43,8 @@ class TrackEditionPageTest(WidgetTest):
     def testDisplaysTrackMetadata(self):
         track = build.track(bitrate=192000,
                             duration=timedelta(minutes=4, seconds=35).total_seconds(),
-                            leadPerformer='Artist',
-                            trackTitle='Song',
+                            lead_performer='Artist',
+                            track_title='Song',
                             versionInfo='Remix',
                             featuredGuest='Featuring',
                             lyricist='Lyricist',
@@ -75,7 +75,7 @@ class TrackEditionPageTest(WidgetTest):
         self.driver.showsPreviewTime('00:00')
 
     def testDisablesLeadPerformerEditionWhenAlbumIsNotACompilation(self):
-        track = build.track(leadPerformer='Album Artist')
+        track = build.track(lead_performer='Album Artist')
         album = build.album(compilation=False, tracks=[track])
         self.render(album, track)
         self.driver.showsLeadPerformer('Album Artist', disabled=True)
@@ -89,11 +89,11 @@ class TrackEditionPageTest(WidgetTest):
         metadataChangedSignal = ValueMatcherProbe('metadata changed')
         self.page.metadataChanged.connect(metadataChangedSignal.received)
 
-        metadataChangedSignal.expect(has_entries(trackTitle='Title'))
+        metadataChangedSignal.expect(has_entries(track_title='Title'))
         self.driver.changeTrackTitle('Title')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_entries(leadPerformer='Artist'))
+        metadataChangedSignal.expect(has_entries(lead_performer='Artist'))
         self.driver.changeLeadPerformer('Artist')
         self.check(metadataChangedSignal)
 

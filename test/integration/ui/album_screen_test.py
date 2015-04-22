@@ -47,9 +47,9 @@ class AlbumScreenTest(WidgetTest):
 
     def testAddsTrackEditionPageForEachNewTrackInAlbum(self):
         self.album.addAlbumListener(self.view)
-        self.album.addTrack(build.track(trackTitle='Bone Machine'))
-        self.album.addTrack(build.track(trackTitle='Where is My Mind?'))
-        self.album.addTrack(build.track(trackTitle='Cactus'))
+        self.album.addTrack(build.track(track_title='Bone Machine'))
+        self.album.addTrack(build.track(track_title='Where is My Mind?'))
+        self.album.addTrack(build.track(track_title='Cactus'))
         self.driver.nextPage()
         self.driver.nextPage()
         self.driver.shows_track_metadata(track_title='Bone Machine')
@@ -60,9 +60,9 @@ class AlbumScreenTest(WidgetTest):
 
     def testRemovesCorrespondingTrackPageWhenTrackRemovedFromAlbum(self):
         surferRosa = (
-            build.track(trackTitle='Bone Machine'),
-            build.track(trackTitle='Where is My Mind?'),
-            build.track(trackTitle='Cactus')
+            build.track(track_title='Bone Machine'),
+            build.track(track_title='Where is My Mind?'),
+            build.track(track_title='Cactus')
         )
 
         self.album.addAlbumListener(self.view)

@@ -37,7 +37,7 @@ class AlbumEditionPageTest(WidgetTest):
     def testDisplaysAlbumMetadata(self):
         self.render(build.album(
             releaseName='Album',
-            leadPerformer='Artist',
+            lead_performer='Artist',
             isni='123456789',
             guestPerformers=[('Guitar', 'Guitarist'), ('Piano', 'Pianist')],
             labelName='Label',
@@ -81,11 +81,11 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.showsCompilation(True)
 
     def testDisablesLeadPerformerEditionWhenAlbumIsACompilation(self):
-        self.render(build.album(compilation=True, leadPerformer='Album Artist'))
+        self.render(build.album(compilation=True, lead_performer='Album Artist'))
         self.driver.shows_lead_performer('Various Artists', disabled=True)
 
     def testTogglesLookupISNIButtonWhenAlbumIsNoLongerACompilation(self):
-        album = build.album(compilation=True, leadPerformer='Album Artist')
+        album = build.album(compilation=True, lead_performer='Album Artist')
         self.render(album)
         self.driver.enablesISNILookup(False)
 
@@ -94,20 +94,20 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.enablesISNILookup()
 
     def testDisablesLookupISNIButtonWhenAlbumIsACompilation(self):
-        self.render(build.album(compilation=True, leadPerformer='Album Artist'))
+        self.render(build.album(compilation=True, lead_performer='Album Artist'))
         self.driver.enablesISNILookup(False)
 
     def testDisablesLookupISNIButtonWhenLeadPerformerIsEmpty(self):
-        self.render(build.album(leadPerformer=''))
+        self.render(build.album(lead_performer=''))
         self.driver.enablesISNILookup(False)
 
     def testDisablesLookupISNIButtonWhenLeadPerformerIsBlank(self):
-        self.render(build.album(leadPerformer='     '))
+        self.render(build.album(lead_performer='     '))
         self.driver.enablesISNILookup(False)
 
     @unittest.skip('Feature disabled for the moment as per client\'s request')
     def testEnablesAssignISNIButtonWhenLeadPerformerIsNotEmpty(self):
-        self.render(build.album(leadPerformer='performer'))
+        self.render(build.album(lead_performer='performer'))
         self.driver.enablesISNIAssign()
 
     def testDisablesAssignISNIButtonWhenLeadPerformerIsNotEmpty(self):
@@ -148,7 +148,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.check(removePictureSignal)
 
     def testSignalsWhenLookupISNIButtonClicked(self):
-        self.render(build.album(leadPerformer='performer'))
+        self.render(build.album(lead_performer='performer'))
 
         lookupISNISignal = ValueMatcherProbe('lookup ISNI')
         self.page.lookupISNI.connect(lookupISNISignal.received)
@@ -167,7 +167,7 @@ class AlbumEditionPageTest(WidgetTest):
 
     @unittest.skip('Feature disabled for the moment as per client\'s request')
     def testSignalsWhenAssignISNIButtonClicked(self):
-        self.render(build.album(leadPerformer='performer'))
+        self.render(build.album(lead_performer='performer'))
 
         assignISNISignal = ValueMatcherProbe('assign ISNI')
         self.page.assignISNI.connect(assignISNISignal.received)
@@ -193,7 +193,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.toggleCompilation()
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_entries(leadPerformer='Artist'))
+        metadataChangedSignal.expect(has_entries(lead_performer='Artist'))
         self.driver.changeLeadPerformer('Artist')
         self.check(metadataChangedSignal)
 

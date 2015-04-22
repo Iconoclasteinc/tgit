@@ -38,10 +38,10 @@ class Row(QObject, AlbumListener, TrackListener, PlayerListener):
 
     @property
     def trackTitle(self):
-        return self.track.trackTitle
+        return self.track.track_title
 
     def leadPerformer(self):
-        return self.track.leadPerformer
+        return self.track.lead_performer
 
     def releaseName(self):
         return self.album.releaseName

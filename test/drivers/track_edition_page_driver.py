@@ -12,7 +12,7 @@ def track_edition_page(parent):
 class TrackEditionPageDriver(BaseDriver):
     def shows_metadata(self, **meta):
         for tag, value in meta.items():
-            if tag == 'trackTitle' or tag == "track_title":
+            if tag == "track_title":
                 self.showsTrackTitle(value)
             elif tag == 'versionInfo':
                 self.showsVersionInfo(value)
@@ -37,7 +37,7 @@ class TrackEditionPageDriver(BaseDriver):
 
     def change_metadata(self, **meta):
         for tag, value in meta.items():
-            if tag == 'trackTitle' or tag == 'track_title':
+            if tag == 'track_title':
                 self.changeTrackTitle(value)
             elif tag == 'versionInfo':
                 self.changeVersionInfo(value)

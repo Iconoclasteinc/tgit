@@ -14,7 +14,7 @@ from tgit.ui.album_composition_page import AlbumCompositionPage
 
 # todo find a home for feature matchers
 def hasTitle(title):
-    return has_property('trackTitle', title)
+    return has_property('track_title', title)
 
 
 class AlbumCompositionPageTest(WidgetTest):
@@ -34,21 +34,21 @@ class AlbumCompositionPageTest(WidgetTest):
 
     def testDisplaysTrackDetailsInColumns(self):
         self.album.releaseName = 'All the Little Lights'
-        self.album.addTrack(build.track(trackTitle='Let Her Go',
-                                        leadPerformer='Passenger',
+        self.album.addTrack(build.track(track_title='Let Her Go',
+                                        lead_performer='Passenger',
                                         bitrate=192000,
                                         duration=timedelta(minutes=4, seconds=12).total_seconds()))
 
         self.driver.showsTrack('Let Her Go', 'Passenger', 'All the Little Lights', '192 kbps', '04:12')
 
     def testDisplaysAllTracksInRows(self):
-        self.album.addTrack(build.track(trackTitle='Give Life Back To Music'))
-        self.album.addTrack(build.track(trackTitle='Get Lucky'))
+        self.album.addTrack(build.track(track_title='Give Life Back To Music'))
+        self.album.addTrack(build.track(track_title='Get Lucky'))
         self.driver.hasTrackCount(2)
         self.driver.showsTracksInOrder(['Give Life Back To Music'], ['Get Lucky'])
 
     def testSignalsWhenPlayTrackButtonClicked(self):
-        self.album.addTrack(build.track(trackTitle='Happy'))
+        self.album.addTrack(build.track(track_title='Happy'))
         playTrackSignal = ValueMatcherProbe('play track', hasTitle('Happy'))
         self.page.playTrack.connect(playTrackSignal.received)
 
@@ -64,7 +64,7 @@ class AlbumCompositionPageTest(WidgetTest):
 
     def testSignalsWhenRemoveTrackButtonClicked(self):
         self.album.addTrack(build.track())
-        self.album.addTrack(build.track(trackTitle='Set Fire to the Rain'))
+        self.album.addTrack(build.track(track_title='Set Fire to the Rain'))
         removeTrackSignal = ValueMatcherProbe('remove track', hasTitle('Set Fire to the Rain'))
         self.page.removeTrack.connect(removeTrackSignal.received)
 
@@ -72,9 +72,9 @@ class AlbumCompositionPageTest(WidgetTest):
         self.driver.check(removeTrackSignal)
 
     def testSignalsWhenTrackWasMoved(self):
-        self.album.addTrack(build.track(trackTitle='Wisemen'))
-        self.album.addTrack(build.track(trackTitle='1973'))
-        self.album.addTrack(build.track(trackTitle='Tears and Rain'))
+        self.album.addTrack(build.track(track_title='Wisemen'))
+        self.album.addTrack(build.track(track_title='1973'))
+        self.album.addTrack(build.track(track_title='Tears and Rain'))
 
         newPosition = 1
         trackMovedSignal = ValueMatcherProbe('track moved', contains(hasTitle('Tears and Rain'), newPosition))

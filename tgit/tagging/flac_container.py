@@ -43,8 +43,8 @@ class FlacContainer():
     fields = []
 
     for field_name, tag_name in {
-        'ARTIST': 'leadPerformer',
-        'TITLE': 'trackTitle',
+        'ARTIST': 'lead_performer',
+        'TITLE': 'track_title',
     }.items():
         fields.append(TextField(field_name, tag_name))
 

@@ -55,7 +55,7 @@ class Mp3Audio(object):
             elif tag == 'backCover' or tag == 'APIC_BACK':
                 mime, desc, data = value
                 self._add_tag(id3.APIC(UTF_8, mime, BACK_COVER, desc, data))
-            elif tag == 'leadPerformer' or tag == 'TPE1':
+            elif tag == 'lead_performer' or tag == 'TPE1':
                 self._add_tag(id3.TPE1(encoding=UTF_8, text=value))
             elif tag == 'guestPerformers' or tag == 'TMCL':
                 self._add_tag(id3.TMCL(encoding=UTF_8, people=value))
@@ -78,7 +78,7 @@ class Mp3Audio(object):
             elif tag == 'comments' or tag == 'COMM':
                 text, lang = value
                 self._add_tag(id3.COMM(encoding=UTF_8, text=text, desc='', lang=lang))
-            elif tag == 'trackTitle' or tag == 'TIT2':
+            elif tag == 'track_title' or tag == 'TIT2':
                 self._add_tag(id3.TIT2(encoding=UTF_8, text=value))
             elif tag == 'versionInfo' or tag == 'TPE4':
                 self._add_tag(id3.TPE4(encoding=UTF_8, text=value))

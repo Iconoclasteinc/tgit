@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import binascii
 
 
 class Image(object):
@@ -30,9 +31,8 @@ class Image(object):
         self.desc = desc
 
     def __repr__(self):
-        data = repr((self.data[:25] + '..') if len(self.data) > 25 else self.data)
-        return 'Image(mime=%s, type_=%s, desc=%s, data=%s)' % (self.mime, self.type, self.desc,
-                                                               data)
+        data = binascii.hexlify(self.data[:25] + b'..' if len(self.data) > 25 else self.data)
+        return 'Image(mime=%s, type_=%s, desc=%s, data=%s)' % (self.mime, self.type, self.desc, data)
 
     def __eq__(self, other):
         if type(other) is type(self):
