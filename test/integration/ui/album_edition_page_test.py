@@ -152,7 +152,7 @@ class AlbumEditionPageTest(WidgetTest):
         lookup_isni_signal = ValueMatcherProbe('lookup ISNI')
         self.page.lookupISNI.connect(lookup_isni_signal.received)
 
-        self.driver.lookup_isni()
+        self.driver.lookup_isni_of_lead_performer()
         self.check(lookup_isni_signal)
 
     def test_signals_when_clear_isni_button_clicked(self):

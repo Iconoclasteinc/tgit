@@ -46,19 +46,19 @@ def isni(request):
 
 
 @pytest.yield_fixture()
-def isni_actions():
-    yield isni_database.assignation_actions
-    isni_database.assignation_actions.clear()
+def isni_people():
+    yield isni_database.persons
+    isni_database.persons.clear()
 
 
-def test_assigning_an_isni_to_the_lead_performer(app, library, isni_actions):
+def test_finding_the_isni_of_the_lead_performer(app, library, isni_people):
     tracks = [library.add_mp3(track_title="Salsa Coltrane", releaseName="Honeycomb", lead_performer="Joel Miller")]
-    isni_actions.append("0000000121707484")
+    isni_people["0000000121707484"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
 
     app.new_album("mp3", *tracks)
     app.shows_album_content(["Salsa Coltrane"])
     app.shows_album_metadata(releaseName="Honeycomb", lead_performer="Joel Miller")
-    app.assign_isni_to_lead_performer()
+    app.finds_isni_of_lead_performer()
 
     library.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
                      releaseName="Honeycomb",

@@ -25,7 +25,7 @@ import requests
 
 class ISNILookupDialog(QDialog):
     def __init__(self, parent, identities):
-        QDialog.__init__(self, parent)
+        super().__init__(parent)
         self.connectionError = type(identities) is requests.exceptions.ConnectionError
         numberOfResults = '0'
         matches = []

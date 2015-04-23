@@ -6,6 +6,7 @@ from test.cute import matchers as match
 from test.cute.matchers import showingOnScreen, withText
 from test.cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
 from test.drivers.export_as_dialog_driver import exportAsDialog
+from test.drivers.isni_lookup_dialog_driver import isni_lookup_dialog
 from test.drivers.menu_bar_driver import menuBar
 from test.drivers.album_screen_driver import album_screen
 from test.drivers.settings_dialog_driver import settingsDialog
@@ -90,3 +91,7 @@ class TaggerDriver(MainWindowDriver):
 
     def assign_isni_to_lead_performer(self):
         album_screen(self).assign_isni_to_lead_performer()
+
+    def finds_isni_of_lead_performer(self):
+        album_screen(self).lookup_isni_of_lead_performer()
+        isni_lookup_dialog(self).selects_first_identity()
