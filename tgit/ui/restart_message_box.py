@@ -18,13 +18,22 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtWidgets import QMessageBox, QStyle
+from isni.name_registry import NameRegistry
 
 
-def invalid_identification_data_message_box(parent, details=None):
+def isni_assignation_failed_message_box(parent, code, details):
+    prefix = ""
+    if code == NameRegistry.Codes.INVALID_DATA:
+        prefix = "Invalid data:"
+    elif code == NameRegistry.Codes.INVALID_FORMAT:
+        prefix = "Invalid format:"
+    elif code == NameRegistry.Codes.SPARSE:
+        prefix = "Sparse data:"
+
     message_box = QMessageBox(parent)
     message_box.setObjectName("message_box")
     message_box.setText(message_box.tr("Could not assign an ISNI"))
-    message_box.setDetailedText("Invalid Data: " + details)
+    message_box.setDetailedText("{0} {1}".format(prefix, details))
     message_box.setModal(True)
 
     style = message_box.style()

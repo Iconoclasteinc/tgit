@@ -96,4 +96,4 @@ class TaggerDriver(MainWindowDriver):
         album_screen(self).assign_isni_to_lead_performer()
         message_box(self).is_showing_on_screen()
         message_box(self).is_showing_message("Could not assign an ISNI")
-        message_box(self).is_showing_details("Invalid Data: invalid code creationRole eee")
+        message_box(self).is_showing_details("Invalid data: invalid code creationRole eee")

@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtWidgets import QMessageBox
-from hamcrest import anything
+
 from test.cute.matchers import named, withText
 from test.drivers import BaseDriver
 

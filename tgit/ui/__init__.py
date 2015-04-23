@@ -37,7 +37,7 @@ from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
 from tgit.ui.menu_bar import MenuBar
 from tgit.ui.restart_message_box import RestartMessageBox
-from tgit.ui.restart_message_box import invalid_identification_data_message_box
+from tgit.ui.restart_message_box import isni_assignation_failed_message_box
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
@@ -90,7 +90,7 @@ def AlbumCompositionPageController(selectTracks, player, album):
 
 
 def AlbumEditionPageController(select_picture, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
-                               performer_dialog_factory, show_invalid_data_error, album, name_registry):
+                               performer_dialog_factory, show_assignation_failed, album, name_registry):
     def poll_queue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -112,10 +112,10 @@ def AlbumEditionPageController(select_picture, lookup_isni_dialog_factory, activ
         activity_dialog.show()
         taskRunner.runAsync(lambda: director.assign_isni(name_registry, album)).andPutResultInto(queue).run()
         code, payload = poll_queue()
-        if code == NameRegistry.Codes.INVALID_DATA:
-            show_invalid_data_error(payload)
-        else:
+        if code == NameRegistry.Codes.SUCCESS:
             album.isni = payload
+        else:
+            show_assignation_failed(code, payload)
         activity_dialog.close()
 
     def add_performer():
@@ -251,7 +251,8 @@ def createMainWindow(albumPortfolio, player, preferences, nameRegistry, native):
 
     def createAlbumPage(album):
         return AlbumEditionPageController(showPictureSelectionDialog, showISNILookupDialog, showActivityIndicatorDialog,
-                                          showPerformerDialog, show_invalid_isni_data_message_box, album, nameRegistry)
+                                          showPerformerDialog, show_isni_assignation_failed_message_box, album,
+                                          nameRegistry)
 
     def showPictureSelectionDialog(album):
         return PictureSelectionDialogController(window, album, native)
@@ -265,8 +266,8 @@ def createMainWindow(albumPortfolio, player, preferences, nameRegistry, native):
     def showActivityIndicatorDialog():
         return ActivityIndicatorDialogController(window)
 
-    def show_invalid_isni_data_message_box(details):
-        invalid_identification_data_message_box(window, details=details).open()
+    def show_isni_assignation_failed_message_box(code, details):
+        isni_assignation_failed_message_box(window, code, details).open()
 
     def createAlbumScreen(album):
         def createTrackPage(track):
