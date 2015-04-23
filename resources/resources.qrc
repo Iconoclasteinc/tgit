@@ -6,6 +6,7 @@
      <file alias='play.png'>images/play.png</file>
      <file alias='play-hover.png'>images/play-hover.png</file>
      <file alias='play-pressed.png'>images/play-pressed.png</file>
+     <file alias='play-disabled.png'>images/play-disabled.png</file>
      <file alias='stop.png'>images/stop.png</file>
      <file alias='stop-hover.png'>images/stop-hover.png</file>
      <file alias='stop-pressed.png'>images/stop-pressed.png</file>

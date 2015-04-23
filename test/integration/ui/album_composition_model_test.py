@@ -4,13 +4,11 @@ from datetime import timedelta
 import unittest
 
 from flexmock import flexmock
-from hamcrest import assert_that, equal_to, is_
-
+from hamcrest import assert_that, equal_to, is_, contains
 from PyQt5.QtCore import Qt, QModelIndex
 
 from tgit.ui.album_composition_model import AlbumCompositionModel, Columns, Row
 from tgit.ui.helpers import formatting
-
 from test.util import builders as build, doubles
 
 
@@ -101,6 +99,21 @@ class RowTest(unittest.TestCase):
         row.stopped('track.mp3')
         assert_that(row.inPlay, is_(False), 'playing once stopped')
 
+    def test_indicates_that_mp3_playback_is_enabled(self):
+        album = build.album()
+        track = build.track(filename='track.mp3', album=album)
+        row = Row(album, track)
+
+        assert_that(row.playback_supported, is_(True), 'mp3 playback supported')
+
+
+    def test_indicates_that_flac_playback_is_disabled(self):
+        album = build.album()
+        track = build.track(filename='track.flac', album=album)
+        row = Row(album, track)
+
+        assert_that(row.playback_supported, is_(False), 'flac playback supported')
+
 
 class ColumnsTest(unittest.TestCase):
     def testFormatsRowForDisplay(self):
@@ -110,20 +123,32 @@ class ColumnsTest(unittest.TestCase):
                             duration=timedelta(minutes=4, seconds=37).total_seconds())
         album = build.album(release_name='Album')
 
-        row = Row(album, track, True)
+        row = Row(album, track)
         assert_that(Columns.trackTitle.value(row), equal_to('Song'), 'track title')
         assert_that(Columns.leadPerformer.value(row), equal_to('Artist'), 'lead performer')
         assert_that(Columns.releaseName.value(row), equal_to('Album'), 'release name')
         assert_that(Columns.bitrate.value(row), equal_to('192 kbps'), 'bitrate')
         assert_that(Columns.duration.value(row), equal_to('04:37'), 'duration')
-        assert_that(Columns.play.value(row), equal_to(True), 'playing')
-        assert_that(Columns.remove.value(row), is_(None), 'remove')
+
+    def test_indicates_when_track_is_playing(self):
+        album = build.album()
+        track = build.track(album=album)
+
+        row = Row(album, track, True)
+        assert_that(Columns.play.value(row), contains(True, True), 'playing')
+
+    def test_indicates_when_track_cannot_play(self):
+        album = build.album()
+        track = build.track(filename='track.flac', album=album)
+
+        row = Row(album, track)
+        assert_that(Columns.play.value(row), contains(False, False), 'playable')
 
 
 class AlbumCompositionModelTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
-        self.model = flexmock(StubAlbumCompositionModel(self.album, doubles.audioPlayer()))
+        self.model = flexmock(StubAlbumCompositionModel(self.album, doubles.null_audio_player()))
 
     def testHasEnoughColumns(self):
         assert_that(self.model.columnCount(), equal_to(len(Columns)), 'column count')

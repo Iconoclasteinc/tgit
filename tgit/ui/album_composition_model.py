@@ -52,6 +52,10 @@ class Row(QObject, AlbumListener, TrackListener, PlayerListener):
     def duration(self):
         return self.track.duration
 
+    @property
+    def playback_supported(self):
+        return self.track.filename.endswith('.mp3')
+
     def trackStateChanged(self, track):
         self.signalRowChange()
 
@@ -103,7 +107,7 @@ class Columns(metaclass=ColumnEnum):
     releaseName = Column(name="Album Title", value=Row.releaseName)
     bitrate = Column(name='Bitrate', value=lambda row: '%s kbps' % formatting.inKbps(row.bitrate()))
     duration = Column(name='Duration', value=lambda row: formatting.toDuration(row.duration()))
-    play = Column(name='', value=lambda row: row.inPlay)
+    play = Column(name='', value=lambda row: (row.inPlay, row.playback_supported))
     remove = Column(name='', value=lambda row: None)
 
     __values__ = trackTitle, leadPerformer, releaseName, bitrate, duration, play, remove

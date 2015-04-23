@@ -197,6 +197,10 @@ StyleSheet = """
         border-image: url(:/play-pressed.png);
     }
 
+    QToolButton#play-track:disabled {
+        border-image: url(:/play-disabled.png);
+    }
+
     QToolButton#play-track:checked {
         border-image: url(:/stop.png);
     }

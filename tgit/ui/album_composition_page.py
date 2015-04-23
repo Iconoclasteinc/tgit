@@ -35,15 +35,21 @@ class PlayButtonDelegate(QStyledItemDelegate):
         QStyledItemDelegate.__init__(self, view)
 
     def paint(self, painter, option, index):
-        if not self.parent().indexWidget(index):
-            button = QToolButton()
-            button.setObjectName('play-track')
-            button.setCursor(Qt.PointingHandCursor)
-            button.clicked.connect(func.partial(self.clicked.emit, index.model().trackAt(index.row())))
-            button.setCheckable(True)
-            self.parent().setIndexWidget(index, button)
+        play_button = self.parent().indexWidget(index)
+        if not play_button:
+            play_button = QToolButton()
+            play_button.setObjectName('play-track')
+            play_button.setCursor(Qt.PointingHandCursor)
+            play_button.clicked.connect(func.partial(self.clicked.emit, index.model().trackAt(index.row())))
+            play_button.setCheckable(True)
+            _, playable = index.model().data(index)
+            play_button.setEnabled(playable)
+            if not playable:
+                play_button.setToolTip(self.tr('Flac playback is not supported on your platform'))
+            self.parent().setIndexWidget(index, play_button)
 
-        self.parent().indexWidget(index).setChecked(index.model().data(index))
+        playing, _ = index.model().data(index)
+        play_button.setChecked(playing)
 
         # This is awful, we need to remove the widgets from the table
         class UglyHack(QModelIndex):

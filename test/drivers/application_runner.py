@@ -14,7 +14,7 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self, preferences=Preferences()):
-        self.app = TGiT(doubles.audioPlayer, NameRegistry('localhost', port=5000), native=False)
+        self.app = TGiT(doubles.null_audio_player, NameRegistry('localhost', port=5000), native=False)
         self.app.show(preferences)
         self.tagger = TaggerDriver(mainApplicationWindow(named('main-window'), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),

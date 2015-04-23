@@ -24,7 +24,7 @@ class AlbumCompositionPageTest(WidgetTest):
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
         self.album = build.album()
-        self.page.display(doubles.audioPlayer(), self.album)
+        self.page.display(doubles.null_audio_player(), self.album)
 
     def createDriverFor(self, widget):
         return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
@@ -39,7 +39,7 @@ class AlbumCompositionPageTest(WidgetTest):
                                         bitrate=192000,
                                         duration=timedelta(minutes=4, seconds=12).total_seconds()))
 
-        self.driver.showsTrack('Let Her Go', 'Passenger', 'All the Little Lights', '192 kbps', '04:12')
+        self.driver.shows_track('Let Her Go', 'Passenger', 'All the Little Lights', '192 kbps', '04:12')
 
     def testDisplaysAllTracksInRows(self):
         self.album.addTrack(build.track(track_title='Give Life Back To Music'))
@@ -82,3 +82,10 @@ class AlbumCompositionPageTest(WidgetTest):
 
         self.driver.moveTrack('Tears and Rain', newPosition)
         self.driver.check(trackMovedSignal)
+
+    def test_disables_playback_for_unsupported_audio_tracks(self):
+        self.album.addTrack(build.track(filename="track.mp3", track_title="mp3 file"))
+        self.album.addTrack(build.track(filename="track.flac", track_title="flac file"))
+
+        self.driver.enables_playback_of("mp3 file")
+        self.driver.disables_playback_of("flac file")

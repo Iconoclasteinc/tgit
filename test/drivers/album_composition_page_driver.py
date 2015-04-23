@@ -22,7 +22,7 @@ class AlbumCompositionPageDriver(BaseDriver):
         headers = [title for title in titles]
         self.trackTable().hasHeaders(contains(*headers))
 
-    def showsTrack(self, *columns):
+    def shows_track(self, *columns):
         cells = [column for column in columns]
         return self.trackTable().hasRow(has_items(*cells))
 
@@ -34,20 +34,20 @@ class AlbumCompositionPageDriver(BaseDriver):
         self.trackTable().hasRowCount(equal_to(count))
 
     def play(self, title):
-        row = self.showsTrack(title)
-        self.playButtonAt(row).isShowingOnScreen()
+        row = self.shows_track(title)
+        self._play_button_at(row).isShowingOnScreen()
         self.clickPlayButtonAt(row)
 
     def addTracks(self):
         self.button(named('add-tracks')).click()
 
     def removeTrack(self, title):
-        row = self.showsTrack(title)
+        row = self.shows_track(title)
         self.removeButtonAt(row).isShowingOnScreen()
         self.clickRemoveButtonAt(row)
 
     def moveTrack(self, title, to):
-        from_ = self.showsTrack(title)
+        from_ = self.shows_track(title)
         self.trackTable().moveRow(from_, to)
 
     def removeButtonAt(self, row):
@@ -59,7 +59,7 @@ class AlbumCompositionPageDriver(BaseDriver):
     def clickRemoveButtonAt(self, row):
         self.trackTable().clickOnCell(row, Columns.index(Columns.remove))
 
-    def playButtonAt(self, index):
+    def _play_button_at(self, index):
         return ButtonDriver.findSingle(self.playWidget(index), QAbstractButton, named('play-track'))
 
     def playWidget(self, index):
@@ -70,3 +70,11 @@ class AlbumCompositionPageDriver(BaseDriver):
 
     def trackTable(self):
         return self.table(named('track-list'))
+
+    def enables_playback_of(self, track_title):
+        row = self.shows_track(track_title)
+        self._play_button_at(row).isEnabled()
+
+    def disables_playback_of(self, track_title):
+        row = self.shows_track(track_title)
+        self._play_button_at(row).isDisabled()

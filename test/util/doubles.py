@@ -55,7 +55,7 @@ class RecordingLibrary(object):
             recording.delete()
 
 
-def audioPlayer(*args):
+def null_audio_player(*args):
     return FakeAudioPlayer()
 
 
