@@ -26,57 +26,56 @@ from lxml.etree import ParseError
 import requests
 
 
-__all__ = ["port", "persons", "organisations", "assignation_results", "start", "stop"]
+logging.getLogger("werkzeug").setLevel(logging.ERROR)
 
-log = logging.getLogger("werkzeug")
-log.setLevel(logging.ERROR)
-app = Flask(__name__)
+_app = Flask(__name__)
 port = 5000
 persons = {}
 organisations = {}
-assignation_generator = None
+assignation_actions = []
+assignation_generator = (isni for isni in assignation_actions)
 
 
-@app.route("/sru/DB=1.2")
-def lookup():
+@_app.route("/sru/DB=1.2")
+def _lookup():
     search_query = request.args["query"]
     if not search_query and search_query.startswith("pica.nw="):
-        return format_results([])
+        return _format_results([])
 
     search_term = search_query[0:search_query.rfind(" ")].split("=")[1]
     keywords = search_term.split(", ")
 
-    matches = identity_matching(keywords, persons)
+    matches = _identity_matching(keywords, persons)
     if len(matches) > 0:
-        return format_results(matches)
+        return _format_results(matches)
 
-    matches = identity_matching(keywords, organisations)
+    matches = _identity_matching(keywords, organisations)
     if len(matches) > 0:
-        return format_results(matches, True)
+        return _format_results(matches, True)
 
-    return format_results({})
+    return _format_results({})
 
 
-@app.route("/ATOM/isni", methods=["POST"])
-def assign():
+@_app.route("/ATOM/isni", methods=["POST"])
+def _assign():
     try:
         etree.fromstring(request.data)
     except ParseError:
-        return invalid_format_response()
+        return _invalid_format_response()
 
     next_action = next(assignation_generator)
     if next_action == "sparse":
-        return sparse_response()
-    elif next_action == "invalidData":
-        return invalid_data_response()
+        return _sparse_response()
+    elif next_action == "invalid data":
+        return _invalid_data_response()
     elif isinstance(next_action, list):
-        return possible_matches_response(next_action)
+        return _possible_matches_response(next_action)
     else:
-        return isni_assigned_response(next_action)
+        return _isni_assigned_response(next_action)
 
 
-@app.route("/shutdown")
-def shutdown():
+@_app.route("/shutdown")
+def _shutdown():
     handler = request.environ.get("werkzeug.server.shutdown")
     if handler is None:
         raise RuntimeError("Not running with the Werkzeug Server")
@@ -84,12 +83,8 @@ def shutdown():
     return "Server shutting down..."
 
 
-def run():
-    app.run(port=port)
-
-
 def start():
-    server_thread = Thread(target=run)
+    server_thread = Thread(target=lambda: _app.run(port=port))
     server_thread.start()
     return server_thread
 
@@ -99,7 +94,7 @@ def stop(server_thread):
     server_thread.join()
 
 
-def sparse_response():
+def _sparse_response():
     return """
         <responseRecord>
             <requestID>111222333444</requestID>
@@ -113,7 +108,7 @@ def sparse_response():
     """
 
 
-def invalid_format_response():
+def _invalid_format_response():
     return """
         <responseRecord>
             <requestID>111222333888</requestID>
@@ -127,7 +122,7 @@ def invalid_format_response():
     """
 
 
-def invalid_data_response():
+def _invalid_data_response():
     return """
         <responseRecord>
             <requestID>111222333999</requestID>
@@ -141,7 +136,7 @@ def invalid_data_response():
     """
 
 
-def possible_matches_response(ppns):
+def _possible_matches_response(ppns):
     return """
         <responseRecord>
             <requestID>111222333666</requestID>
@@ -164,7 +159,7 @@ def possible_matches_response(ppns):
     """.format(*ppns)
 
 
-def isni_assigned_response(isni):
+def _isni_assigned_response(isni):
     return """
         <responseRecord>
             <requestID>5340</requestID>
@@ -201,7 +196,7 @@ def isni_assigned_response(isni):
     """.format(isni)
 
 
-def format_person_name(forename, surname, dates):
+def _format_person_name(forename, surname, dates):
     return """
         <personalName>
             <forename>{0}</forename>
@@ -211,7 +206,7 @@ def format_person_name(forename, surname, dates):
     """.format(forename, surname, dates)
 
 
-def format_organisation_name(name):
+def _format_organisation_name(name):
     return """
         <organisationName>
             <mainName>{0}</mainName>
@@ -219,7 +214,7 @@ def format_organisation_name(name):
     """.format(name)
 
 
-def format_title(title):
+def _format_title(title):
     return """
         <titleOfWork>
             <title>{0}</title>
@@ -227,23 +222,23 @@ def format_title(title):
     """.format(title)
 
 
-def format_identity(identity, is_organisation):
+def _format_identity(identity, is_organisation):
     ident = ["<organisation>" if is_organisation else "<personOrFiction>"]
     if is_organisation:
-        ident.extend([format_organisation_name(name) for name in identity["names"]])
+        ident.extend([_format_organisation_name(name) for name in identity["names"]])
     else:
-        ident.extend([format_person_name(forename, surname, dates) for forename, surname, dates in identity["names"]])
+        ident.extend([_format_person_name(forename, surname, dates) for forename, surname, dates in identity["names"]])
 
     ident.append("<creativeActivity>")
-    ident.append("\n".join([format_title(title) for title in identity["titles"]]))
+    ident.append("\n".join([_format_title(title) for title in identity["titles"]]))
     ident.append("</creativeActivity>")
     ident.append("</organisation>" if is_organisation else "</personOrFiction>")
 
     return "".join(ident)
 
 
-def format_record(number, isni, identity, is_organisation):
-    formatted_identity = format_identity(identity, is_organisation)
+def _format_record(number, isni, identity, is_organisation):
+    formatted_identity = _format_identity(identity, is_organisation)
     return """
         <srw:record>
             <srw:recordSchema>isni-b</srw:recordSchema>
@@ -267,10 +262,10 @@ def format_record(number, isni, identity, is_organisation):
     """.format(isni, formatted_identity, number)
 
 
-def format_results(identities_to_format, is_organisation=False):
+def _format_results(identities_to_format, is_organisation=False):
     count = len(identities_to_format)
     records = "\n".join(
-        [format_record(index + 1, isni, identities_to_format[isni], is_organisation) for index, isni in
+        [_format_record(index + 1, isni, identities_to_format[isni], is_organisation) for index, isni in
          enumerate(identities_to_format)])
 
     return """
@@ -288,7 +283,7 @@ def format_results(identities_to_format, is_organisation=False):
     """.format(count, records)
 
 
-def identity_matching(keywords, identities):
+def _identity_matching(keywords, identities):
     matching_identities = {}
     for isni, current_identities in identities.items():
         for current_identity in current_identities:
@@ -300,13 +295,13 @@ def identity_matching(keywords, identities):
                 else:
                     name_fragments.extend(names.split(" "))
 
-                if hit(keywords, name_fragments):
+                if _hit(keywords, name_fragments):
                     matching_identities[isni] = current_identity
 
     return matching_identities
 
 
-def hit(terms, name_fragments):
+def _hit(terms, name_fragments):
     terms_found = []
     for term in terms:
         for name in name_fragments:

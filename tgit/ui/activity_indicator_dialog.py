@@ -24,21 +24,19 @@ from PyQt5.QtWidgets import QDialog, QLabel, QHBoxLayout, QLayout
 
 class ActivityIndicatorDialog(QDialog):
     def __init__(self, parent):
-        QDialog.__init__(self, parent)
-        self.parent = parent
+        super().__init__(parent)
         self.setObjectName('activity-indicator-dialog')
         self.setWindowFlags(Qt.Dialog | Qt.CustomizeWindowHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Please select from the list of identities')
         self.setModal(True)
 
         layout = QHBoxLayout()
-        layout.addWidget(self.buildSpinner())
+        layout.addWidget(self.build_spinner())
         layout.setSizeConstraint(QLayout.SetFixedSize)
 
         self.setLayout(layout)
 
-    def buildSpinner(self):
+    def build_spinner(self):
         movie = QMovie(':/activity-indicator.gif')
         movie.setScaledSize(QSize(75, 75))
         movie.start()

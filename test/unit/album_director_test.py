@@ -247,10 +247,10 @@ class AlbumDirectorTest(unittest.TestCase):
 
     def testAssignsISNIToLeadPerformerUsingTheAlbumTitle(self):
         class NameRegistry:
-            def assign(self, forename, surname, *titleOfWorks):
+            def assign(self, forename, surname, titleOfWorks):
                 if forename == 'Paul' and surname == 'McCartney' and titleOfWorks[0] == 'Memory Almost Full':
                     return '0000123456789'
                 return None
 
         album = build.album(lead_performer='Paul McCartney', release_name='Memory Almost Full')
-        assert_that(director.assignISNI(NameRegistry(), album), equal_to('0000123456789'), 'isni assigned')
+        assert_that(director.assign_isni(NameRegistry(), album), equal_to('0000123456789'), 'isni assigned')

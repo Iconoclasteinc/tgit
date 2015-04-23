@@ -105,8 +105,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.render(build.album(lead_performer='     '))
         self.driver.enablesISNILookup(False)
 
-    @unittest.skip('Feature disabled for the moment as per client\'s request')
-    def testEnablesAssignISNIButtonWhenLeadPerformerIsNotEmpty(self):
+    def test_enables_assign_isni_button_when_lead_performer_is_not_empty(self):
         self.render(build.album(lead_performer='performer'))
         self.driver.enablesISNIAssign()
 
@@ -147,33 +146,32 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.removePicture()
         self.check(removePictureSignal)
 
-    def testSignalsWhenLookupISNIButtonClicked(self):
+    def test_signals_when_lookup_isni_button_clicked(self):
         self.render(build.album(lead_performer='performer'))
 
-        lookupISNISignal = ValueMatcherProbe('lookup ISNI')
-        self.page.lookupISNI.connect(lookupISNISignal.received)
+        lookup_isni_signal = ValueMatcherProbe('lookup ISNI')
+        self.page.lookupISNI.connect(lookup_isni_signal.received)
 
-        self.driver.lookupISNI()
-        self.check(lookupISNISignal)
+        self.driver.lookup_isni()
+        self.check(lookup_isni_signal)
 
-    def testSignalsWhenClearISNIButtonClicked(self):
+    def test_signals_when_clear_isni_button_clicked(self):
         self.render(build.album(isni='0000123456789'))
 
-        clearISNISignal = ValueMatcherProbe('clear ISNI')
-        self.page.clearISNI.connect(clearISNISignal.received)
+        clear_isni_signal = ValueMatcherProbe('clear ISNI')
+        self.page.clearISNI.connect(clear_isni_signal.received)
 
-        self.driver.clearISNI()
-        self.check(clearISNISignal)
+        self.driver.clear_isni()
+        self.check(clear_isni_signal)
 
-    @unittest.skip('Feature disabled for the moment as per client\'s request')
-    def testSignalsWhenAssignISNIButtonClicked(self):
+    def test_signals_when_assign_isni_button_clicked(self):
         self.render(build.album(lead_performer='performer'))
 
-        assignISNISignal = ValueMatcherProbe('assign ISNI')
-        self.page.assignISNI.connect(assignISNISignal.received)
+        assign_isni_signal = ValueMatcherProbe('assign ISNI')
+        self.page.assignISNI.connect(assign_isni_signal.received)
 
-        self.driver.assignISNI()
-        self.check(assignISNISignal)
+        self.driver.assign_isni_to_lead_performer()
+        self.check(assign_isni_signal)
 
     def testSignalsWhenAlbumMetadataEdited(self):
         self.render(build.album())
