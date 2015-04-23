@@ -94,13 +94,13 @@ class AlbumEditionPageDriver(BaseDriver):
     def removePicture(self):
         self.button(named('remove-picture')).click()
 
-    def lookupISNI(self):
+    def lookup_isni(self):
         self.button(named('lookup-isni')).click()
 
-    def clearISNI(self):
+    def clear_isni(self):
         self.button(named('clear-isni')).click()
 
-    def assignISNI(self):
+    def assign_isni_to_lead_performer(self):
         self.button(named('assign-isni')).click()
 
     def addPerformer(self):

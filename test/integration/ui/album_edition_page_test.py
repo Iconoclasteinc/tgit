@@ -172,7 +172,7 @@ class AlbumEditionPageTest(WidgetTest):
         assignISNISignal = ValueMatcherProbe('assign ISNI')
         self.page.assignISNI.connect(assignISNISignal.received)
 
-        self.driver.assignISNI()
+        self.driver.assign_isni_to_lead_performer()
         self.check(assignISNISignal)
 
     def testSignalsWhenAlbumMetadataEdited(self):

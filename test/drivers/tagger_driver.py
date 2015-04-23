@@ -87,3 +87,6 @@ class TaggerDriver(MainWindowDriver):
         message = restartMessage(self)
         ok = ButtonDriver.findSingle(message, QAbstractButton, withText('OK'))
         ok.click()
+
+    def assign_isni_to_lead_performer(self):
+        album_screen(self).assign_isni_to_lead_performer()

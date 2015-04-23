@@ -25,7 +25,7 @@ class TrackSelectionDialogDriver(FileDialogDriver):
         self.enterManually(filename)
         self.accept()
 
-    def select_tracks(self, of_type='mp3', *files):
+    def select_tracks(self, of_type="mp3", *files):
         if not files:
             return
         self.view_as_list()

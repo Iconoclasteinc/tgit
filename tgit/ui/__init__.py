@@ -87,44 +87,45 @@ def AlbumCompositionPageController(selectTracks, player, album):
     return page
 
 
-def AlbumEditionPageController(selectPicture, lookupISNIDialogFactory, activityIndicatorDialogFactory,
-                               performerDialogFactory, album, nameRegistry):
-    def pollQueue():
+def AlbumEditionPageController(select_picture, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
+                               performer_dialog_factory, album, name_registry):
+    def poll_queue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
         return queue.get(True)
 
-    def lookupISNI():
-        activityDialog = activityIndicatorDialogFactory()
-        activityDialog.show()
-        taskRunner \
-            .runAsync(lambda: director.lookupISNI(nameRegistry, album.lead_performer)).andPutResultInto(queue).run()
+    def lookup_isni():
+        activity_dialog = activity_indicator_dialog_factory()
+        activity_dialog.show()
+        taskRunner.runAsync(lambda: director.lookupISNI(name_registry, album.lead_performer)).andPutResultInto(
+            queue).run()
 
-        identities = pollQueue()
-        activityDialog.close()
-        dialog = lookupISNIDialogFactory(album, identities)
+        identities = poll_queue()
+        activity_dialog.close()
+        dialog = lookup_isni_dialog_factory(album, identities)
         dialog.show()
 
-    def assignISNI():
-        activityDialog = activityIndicatorDialogFactory()
-        activityDialog.show()
-        taskRunner.runAsync(lambda: director.assignISNI(nameRegistry, album)).andPutResultInto(queue).run()
-        album.isni = pollQueue()
-        activityDialog.close()
+    def assign_isni():
+        activity_dialog = activity_indicator_dialog_factory()
+        activity_dialog.show()
+        taskRunner.runAsync(lambda: director.assign_isni(name_registry, album)).andPutResultInto(queue).run()
+        code, payload = poll_queue()
+        album.isni = payload
+        activity_dialog.close()
 
-    def addPerformer():
-        dialog = performerDialogFactory(album)
+    def add_performer():
+        dialog = performer_dialog_factory(album)
         dialog.show()
 
     queue = Queue()
     page = AlbumEditionPage(album)
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
-    page.selectPicture.connect(lambda: selectPicture(album))
+    page.selectPicture.connect(lambda: select_picture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
-    page.lookupISNI.connect(lookupISNI)
-    page.assignISNI.connect(assignISNI)
+    page.lookupISNI.connect(lookup_isni)
+    page.assignISNI.connect(assign_isni)
     page.clearISNI.connect(lambda: director.clearISNI(album))
-    page.addPerformer.connect(addPerformer)
+    page.addPerformer.connect(add_performer)
     album.addAlbumListener(page)
     page.refresh()
     return page

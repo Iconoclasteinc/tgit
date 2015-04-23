@@ -253,4 +253,4 @@ class AlbumDirectorTest(unittest.TestCase):
                 return None
 
         album = build.album(lead_performer='Paul McCartney', releaseName='Memory Almost Full')
-        assert_that(director.assignISNI(NameRegistry(), album), equal_to('0000123456789'), 'isni assigned')
+        assert_that(director.assign_isni(NameRegistry(), album), equal_to('0000123456789'), 'isni assigned')

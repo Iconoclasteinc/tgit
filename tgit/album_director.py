@@ -159,9 +159,9 @@ def clearISNI(album):
     updateAlbum(album, **metadata)
 
 
-def assignISNI(registry, album):
+def assign_isni(registry, album):
     lastSpaceIndex = album.lead_performer.rfind(' ')
     surname = album.lead_performer[lastSpaceIndex + 1:]
     forename = album.lead_performer[:lastSpaceIndex]
 
-    return registry.assign(forename, surname, album.releaseName)
+    return registry.assign(forename, surname, [album.releaseName])

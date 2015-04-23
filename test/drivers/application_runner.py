@@ -14,7 +14,7 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self, preferences=Preferences()):
-        self.app = TGiT(doubles.audioPlayer, NameRegistry('localhost', 5000), native=False)
+        self.app = TGiT(doubles.audioPlayer, NameRegistry('localhost', port=5000), native=False)
         self.app.show(preferences)
         self.tagger = TaggerDriver(mainApplicationWindow(named('main-window'), showingOnScreen()),
                                    EventProcessingProber(timeoutInMs=ONE_SECOND),
@@ -61,3 +61,7 @@ class ApplicationRunner(object):
 
     def has_settings(self, **settings):
         self.tagger.hasSettings(**settings)
+
+    def assign_isni_to_lead_performer(self):
+        self.tagger.assign_isni_to_lead_performer()
+        self.tagger.save_album()

@@ -90,3 +90,6 @@ class AlbumScreenDriver(BaseDriver):
 
     def linksFeatureRequestTo(self, location):
         self.label(named('feature-request-link')).hasText(contains_string('href="%s' % location))
+
+    def assign_isni_to_lead_performer(self):
+        album_edition_page(self).assign_isni_to_lead_performer()
