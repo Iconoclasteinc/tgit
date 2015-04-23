@@ -30,7 +30,7 @@ class TrackEditionPageTest(WidgetTest):
         self.render(album, track)
 
         self.driver.showsAlbumTitle('Album Title')
-        self.driver.showsAlbumLeadPerformer('Artist')
+        self.driver.shows_album_lead_performer('Artist')
         self.driver.showsAlbumLabel('Record Label')
         self.driver.showsTrackNumber(contains_string('2 of 3'))
 
@@ -38,7 +38,7 @@ class TrackEditionPageTest(WidgetTest):
         track = build.track()
         album = build.album(compilation=True, tracks=[track])
         self.render(album, track)
-        self.driver.showsAlbumLeadPerformer('Various Artists')
+        self.driver.shows_album_lead_performer('Various Artists')
 
     def testDisplaysTrackMetadata(self):
         track = build.track(bitrate=192000,
@@ -59,7 +59,7 @@ class TrackEditionPageTest(WidgetTest):
         self.render(album, track)
 
         self.driver.showsTrackTitle('Song')
-        self.driver.showsLeadPerformer('Artist')
+        self.driver.shows_lead_performer('Artist')
         self.driver.showsVersionInfo('Remix')
         self.driver.showsBitrate('192 kbps')
         self.driver.showsDuration('04:35')
@@ -78,7 +78,7 @@ class TrackEditionPageTest(WidgetTest):
         track = build.track(lead_performer='Album Artist')
         album = build.album(compilation=False, tracks=[track])
         self.render(album, track)
-        self.driver.showsLeadPerformer('Album Artist', disabled=True)
+        self.driver.shows_lead_performer('Album Artist', disabled=True)
 
     def testSignalsWhenTrackMetadataChange(self):
         track = build.track()
@@ -94,7 +94,7 @@ class TrackEditionPageTest(WidgetTest):
         self.check(metadataChangedSignal)
 
         metadataChangedSignal.expect(has_entries(lead_performer='Artist'))
-        self.driver.changeLeadPerformer('Artist')
+        self.driver.change_lead_performer('Artist')
         self.check(metadataChangedSignal)
 
         metadataChangedSignal.expect(has_entries(versionInfo='Remix'))

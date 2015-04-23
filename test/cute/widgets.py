@@ -73,11 +73,11 @@ class WidgetDriver(object):
     def isHidden(self):
         self.is_(match.hidden())
 
-    def isEnabled(self, enabled=True):
+    def is_enabled(self, enabled=True):
         self.is_(enabled and match.enabled() or match.disabled())
 
-    def isDisabled(self, disabled=True):
-        self.isEnabled(not disabled)
+    def is_disabled(self, disabled=True):
+        self.is_enabled(not disabled)
 
     def is_(self, criteria):
         self.check(WidgetAssertionProbe(self.selector, criteria))
@@ -128,16 +128,16 @@ class MainWindowDriver(WidgetDriver):
 
 class ButtonDriver(WidgetDriver):
     def click(self):
-        self.isEnabled()
+        self.is_enabled()
         WidgetDriver.click(self)
 
     def hasText(self, matcher):
         self.has(properties.text(), wrap_matcher(matcher))
 
-    def isUnchecked(self, unchecked=True):
-        self.isChecked(not unchecked)
+    def is_unchecked(self, unchecked=True):
+        self.is_checked(not unchecked)
 
-    def isChecked(self, checked=True):
+    def is_checked(self, checked=True):
         self.isShowingOnScreen()
         self.is_(checked and match.checked() or match.unchecked())
 
@@ -154,7 +154,7 @@ class AbstractEditDriver(WidgetDriver):
     EDITION_DELAY = 20
 
     def changeText(self, text):
-        self.isEnabled()
+        self.is_enabled()
         self.replaceAllText(text)
         self.enter()
 
@@ -493,7 +493,7 @@ class MenuItemDriver(WidgetDriver):
         return center.coordinates
 
     def click(self):
-        self.isEnabled()
+        self.is_enabled()
         self.perform(gestures.mouseMove(self._centerOfItem()), gestures.mouseClick())
 
 

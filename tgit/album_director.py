@@ -90,15 +90,27 @@ def recordAlbum(album):
 
 
 def record_track(destination_file, track, time):
-    track.tagger = 'TGiT v' + tgit.__version__
-    track.taggingTime = time.strftime('%Y-%m-%d %H:%M:%S %z')
-    metadata = track.metadata
-    metadata.update(track.album.metadata)
+    def album_metadata(album):
+        metadata = album.metadata.copy()
+        if album.compilation:
+            del metadata['lead_performer']
+        return metadata
 
-    if destination_file != track.filename:
-        shutil.copy(track.filename, destination_file)
+    def update_track_metadata():
+        track.tagger = 'TGiT v' + tgit.__version__
+        track.taggingTime = time.strftime('%Y-%m-%d %H:%M:%S %z')
+        track.metadata.update(album_metadata(track.album))
 
-    tagging.save_metadata(destination_file, metadata)
+    def copy_track_file():
+        if destination_file != track.filename:
+            shutil.copy(track.filename, destination_file)
+
+    def save_track_metadata():
+        tagging.save_metadata(destination_file, track.metadata)
+
+    update_track_metadata()
+    copy_track_file()
+    save_track_metadata()
 
 
 def export_album(export_format, album, destination, charset):

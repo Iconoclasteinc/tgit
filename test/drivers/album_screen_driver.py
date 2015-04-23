@@ -15,12 +15,12 @@ def album_screen(parent):
 
 
 def isDisabled(button):
-    button.isDisabled()
+    button.is_disabled()
     button.hasCursorShape(Qt.ArrowCursor)
 
 
 def isEnabled(button):
-    button.isEnabled()
+    button.is_enabled()
     button.hasCursorShape(Qt.PointingHandCursor)
 
 

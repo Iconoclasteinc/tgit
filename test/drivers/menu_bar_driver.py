@@ -26,9 +26,9 @@ def exportMenuItem(menu):
 class MenuBarDriver(QMenuBarDriver):
     def hasDisabledAlbumActions(self):
         menu = self.openMenu(named('file-menu'))
-        addFilesMenuItem(menu).isDisabled()
-        addFolderMenuItem(menu).isDisabled()
-        exportMenuItem(menu).isDisabled()
+        addFilesMenuItem(menu).is_disabled()
+        addFolderMenuItem(menu).is_disabled()
+        exportMenuItem(menu).is_disabled()
         menu.close()
 
     def addFiles(self):

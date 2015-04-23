@@ -52,7 +52,7 @@ class AlbumEditionPageTest(WidgetTest):
             primary_style='Style'))
 
         self.driver.showsReleaseName('Album')
-        self.driver.showsCompilation(False)
+        self.driver.shows_compilation(False)
         self.driver.shows_lead_performer('Artist')
         self.driver.showsISNI('123456789', True)
         self.driver.showsArea('')
@@ -74,11 +74,11 @@ class AlbumEditionPageTest(WidgetTest):
     def testIndicatesWhetherAlbumIsACompilation(self):
         album = build.album(compilation=False)
         self.render(album)
-        self.driver.showsCompilation(False)
+        self.driver.shows_compilation(False)
 
         album.compilation = True
         self.page.refresh()
-        self.driver.showsCompilation(True)
+        self.driver.shows_compilation(True)
 
     def testDisablesLeadPerformerEditionWhenAlbumIsACompilation(self):
         self.render(build.album(compilation=True, lead_performer='Album Artist'))
@@ -184,11 +184,11 @@ class AlbumEditionPageTest(WidgetTest):
         self.check(metadataChangedSignal)
 
         metadataChangedSignal.expect(has_entries(compilation=True))
-        self.driver.toggleCompilation()
+        self.driver.toggle_compilation()
         self.check(metadataChangedSignal)
 
         metadataChangedSignal.expect(has_entries(compilation=False))
-        self.driver.toggleCompilation()
+        self.driver.toggle_compilation()
         self.check(metadataChangedSignal)
 
         metadataChangedSignal.expect(has_entries(lead_performer='Artist'))

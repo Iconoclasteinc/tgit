@@ -73,8 +73,8 @@ class AlbumCompositionPageDriver(BaseDriver):
 
     def enables_playback_of(self, track_title):
         row = self.shows_track(track_title)
-        self._play_button_at(row).isEnabled()
+        self._play_button_at(row).is_enabled()
 
     def disables_playback_of(self, track_title):
         row = self.shows_track(track_title)
-        self._play_button_at(row).isDisabled()
+        self._play_button_at(row).is_disabled()

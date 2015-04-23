@@ -17,6 +17,8 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.showsReleaseName(value)
             elif tag == 'lead_performer':
                 self.shows_lead_performer(value)
+            elif tag == 'compilation':
+                self.shows_compilation(value)
             elif tag == 'guestPerformers':
                 self.showsGuestPerformers(value)
             elif tag == 'label_name':
@@ -48,6 +50,8 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.select_picture(value)
             elif tag == 'release_name':
                 self.changeReleaseName(value)
+            elif tag == 'toggle_compilation' and value:
+                self.toggle_compilation()
             elif tag == 'lead_performer':
                 self.changeLeadPerformer(value)
             elif tag == 'guestPerformers':
@@ -117,35 +121,37 @@ class AlbumEditionPageDriver(BaseDriver):
     def changeReleaseName(self, name):
         self.lineEdit(named('release-name')).changeText(name)
 
-    def showsCompilation(self, flag):
+    def shows_compilation(self, value):
         self.label(withBuddy(named('compilation'))).isShowingOnScreen()
-        self.checkbox(named('compilation')).isChecked(flag)
+        compilation_checkbox = self.checkbox(named('compilation'))
+        compilation_checkbox.is_checked(value)
 
-    def toggleCompilation(self):
-        self.checkbox(named('compilation')).click()
+    def toggle_compilation(self):
+        compilation_checkbox = self.checkbox(named('compilation'))
+        compilation_checkbox.click()
 
     def shows_lead_performer(self, name, disabled=False):
         label = self.label(withBuddy(named('lead-performer')))
         label.isShowingOnScreen()
         edit = self.lineEdit(named('lead-performer'))
         edit.hasText(name)
-        edit.isDisabled(disabled)
+        edit.is_disabled(disabled)
 
     def showsISNI(self, name, disabled=False):
         label = self.label(withBuddy(named('isni')))
         label.isShowingOnScreen()
-        label.isDisabled(disabled)
+        label.is_disabled(disabled)
         edit = self.lineEdit(named('isni'))
         edit.hasText(name)
-        edit.isDisabled(disabled)
+        edit.is_disabled(disabled)
 
     def enablesISNILookup(self, enabled=True):
         button = self.button(named('lookup-isni'))
-        button.isEnabled(enabled)
+        button.is_enabled(enabled)
 
     def enablesISNIAssign(self, enabled=True):
         button = self.button(named('assign-isni'))
-        button.isEnabled(enabled)
+        button.is_enabled(enabled)
 
     def changeLeadPerformer(self, name):
         self.lineEdit(named('lead-performer')).changeText(name)
@@ -167,7 +173,7 @@ class AlbumEditionPageDriver(BaseDriver):
     def showsArea(self, area):
         self.label(withBuddy(named('area'))).isShowingOnScreen()
         edit = self.lineEdit(named('area'))
-        edit.isDisabled()
+        edit.is_disabled()
         edit.hasText(area)
 
     def showsCatalogNumber(self, number):
@@ -201,7 +207,7 @@ class AlbumEditionPageDriver(BaseDriver):
     def showsDigitalReleaseTime(self, time):
         self.label(withBuddy(named('digital-release-time'))).isShowingOnScreen()
         edit = self.lineEdit(named('digital-release-time'))
-        edit.isDisabled()
+        edit.is_disabled()
         edit.hasText(time)
 
     def showsOriginalReleaseTime(self, time):
@@ -255,11 +261,11 @@ class AlbumEditionPageDriver(BaseDriver):
     def showsMediaType(self, type_):
         self.label(withBuddy(named('media-type'))).isShowingOnScreen()
         edit = self.lineEdit(named('media-type'))
-        edit.isDisabled()
+        edit.is_disabled()
         edit.hasText(type_)
 
     def showsReleaseType(self, type_):
         self.label(withBuddy(named('release-type'))).isShowingOnScreen()
         edit = self.lineEdit(named('release-type'))
-        edit.isDisabled()
+        edit.is_disabled()
         edit.hasText(type_)

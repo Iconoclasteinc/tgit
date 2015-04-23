@@ -14,6 +14,8 @@ class TrackEditionPageDriver(BaseDriver):
         for tag, value in meta.items():
             if tag == "track_title":
                 self.showsTrackTitle(value)
+            elif tag == 'lead_performer':
+                self.shows_lead_performer(value)
             elif tag == 'versionInfo':
                 self.showsVersionInfo(value)
             elif tag == 'featuredGuest':
@@ -39,6 +41,8 @@ class TrackEditionPageDriver(BaseDriver):
         for tag, value in meta.items():
             if tag == 'track_title':
                 self.changeTrackTitle(value)
+            elif tag == 'lead_performer':
+                self.change_lead_performer(value)
             elif tag == 'versionInfo':
                 self.changeVersionInfo(value)
             elif tag == 'featuredGuest':
@@ -61,7 +65,7 @@ class TrackEditionPageDriver(BaseDriver):
         label.hasPixmap(withPixmapHeight(height))
         label.hasPixmap(withPixmapWidth(width))
 
-    def showsAlbumLeadPerformer(self, name):
+    def shows_album_lead_performer(self, name):
         label = self.label(named('album-lead-performer'))
         label.isShowingOnScreen()
         label.hasText(name)
@@ -88,13 +92,13 @@ class TrackEditionPageDriver(BaseDriver):
     def changeTrackTitle(self, title):
         self.lineEdit(named('track-title')).changeText(title)
 
-    def showsLeadPerformer(self, name, disabled=False):
+    def shows_lead_performer(self, name, disabled=False):
         self.label(withBuddy(named('lead-performer'))).isShowingOnScreen()
         edit = self.lineEdit(named('lead-performer'))
         edit.hasText(name)
-        edit.isDisabled(disabled)
+        edit.is_disabled(disabled)
 
-    def changeLeadPerformer(self, name):
+    def change_lead_performer(self, name):
         self.lineEdit(named('lead-performer')).changeText(name)
 
     def showsVersionInfo(self, versionInfo):
@@ -142,7 +146,7 @@ class TrackEditionPageDriver(BaseDriver):
     def showsIswc(self, code):
         self.label(withBuddy(named('iswc'))).isShowingOnScreen()
         edit = self.lineEdit(named('iswc'))
-        edit.isDisabled()
+        edit.is_disabled()
         edit.hasText(code)
 
     def showsTags(self, tags):

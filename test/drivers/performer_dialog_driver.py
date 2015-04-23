@@ -12,7 +12,7 @@ class PerformerDialogDriver(BaseDriver):
         self.button(named('remove-performer-%(index)i' % locals())).click()
 
     def showsOkButton(self, disabled=False):
-        self.button(withText('&OK')).isDisabled(disabled)
+        self.button(withText('&OK')).is_disabled(disabled)
 
     def changePerformerName(self, name, index):
         self.lineEdit(named('performer-%(index)i' % locals())).replaceAllText(name)

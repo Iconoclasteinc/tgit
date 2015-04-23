@@ -79,6 +79,17 @@ def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
     assert_that(metadata.images, contains(Image(mime='image/jpeg', data=b'<image data>')), 'attached pictures')
 
 
+def test_does_not_update_track_with_album_lead_performer_when_album_is_a_compilation(mp3):
+    album = build.album(lead_performer='Various Artists', compilation=True)
+    track = build.track(filename=mp3(), lead_performer='Track Artist', album=album)
+
+    tagged_file = mp3()
+    director.record_track(tagged_file, track, now)
+
+    metadata = tagging.load_metadata(tagged_file)
+    assert_that(metadata, has_entries(lead_performer='Track Artist'), 'metadata tags')
+
+
 def test_adds_version_information_to_tags(mp3):
     track = build.track(filename=mp3(), album=build.album())
 
