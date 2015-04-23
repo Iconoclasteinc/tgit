@@ -192,7 +192,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         record.setTitle(self.tr('RECORD'))
         layout = form.layout()
         self.labelName = form.lineEdit('label-name')
-        self.labelName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('labelName')))
+        self.labelName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('label_name')))
         layout.addRow(form.labelFor(self.labelName, self.tr('Label Name:')), self.labelName)
         self.catalogNumber = form.lineEdit('catalog-number')
         self.catalogNumber.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('catalogNumber')))
@@ -250,7 +250,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.displayLeadPerformer(self.album)
         self.isni.setText(self.album.isni)
         self.guestPerformers.setText(formatting.toPeopleList(self.album.guestPerformers))
-        self.labelName.setText(self.album.labelName)
+        self.labelName.setText(self.album.label_name)
         self.catalogNumber.setText(self.album.catalogNumber)
         self.upc.setText(self.album.upc)
         self.comments.setPlainText(self.album.comments)
@@ -272,7 +272,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
                          lead_performer=self.leadPerformer.text(),
                          isni=self.isni.text(),
                          guestPerformers=formatting.fromPeopleList(self.guestPerformers.text()),
-                         labelName=self.labelName.text(),
+                         label_name=self.labelName.text(),
                          catalogNumber=self.catalogNumber.text(),
                          upc=self.upc.text(),
                          comments=self.comments.toPlainText(),

@@ -56,7 +56,7 @@ def test_ignores_t_m_c_l_entries_with_blank_names(mp3):
 
 def test_reads_label_name_from_t_o_w_n_frame(mp3):
     metadata = container.load(mp3(TOWN='Label Name'))
-    assert_that(metadata, has_entry('labelName', 'Label Name'), 'metadata')
+    assert_that(metadata, has_entry('label_name', 'Label Name'), 'metadata')
 
 
 def test_reads_catalog_number_from_custom_frame(mp3):
@@ -224,7 +224,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata['lead_performer'] = 'Lead Performer'
     metadata['isni'] = '0000123456789'
     metadata['guestPerformers'] = [('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]
-    metadata['labelName'] = 'Label Name'
+    metadata['label_name'] = 'Label Name'
     metadata['catalogNumber'] = '123 456-1'
     metadata['upc'] = '987654321111'
     metadata['recording_time'] = '2012-07-01'

@@ -51,7 +51,7 @@ class CsvFormat(QObject):
 
     def writeRecord(self, writer, album, track):
         row = album.release_name, toBoolean(album.compilation), track.lead_performer, album.isni, \
-              toPeopleList(album.guestPerformers), album.labelName, album.catalogNumber, album.upc, album.comments, \
+              toPeopleList(album.guestPerformers), album.label_name, album.catalogNumber, album.upc, album.comments, \
               album.releaseTime, album.recording_time, album.recordingStudios, album.producer, \
               album.mixer, album.primary_style, track.track_title, track.versionInfo, track.featuredGuest, \
               track.lyrics, track.language, track.publisher, track.lyricist, track.composer, \

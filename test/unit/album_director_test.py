@@ -129,7 +129,7 @@ class AlbumDirectorTest(unittest.TestCase):
         album = build.album()
         director.updateAlbum(album,
                              release_name='Title', compilation=True, lead_performer='Artist', isni='0000123456789',
-                             guestPerformers=[('Guitar', 'Guitarist')], labelName='Label',
+                             guestPerformers=[('Guitar', 'Guitarist')], label_name='Label',
                              catalogNumber='XXX123456789', upc='123456789999', comments='Comments\n...',
                              releaseTime='2009-01-01', recording_time='2008-09-15', recordingStudios='Studios',
                              producer='Producer', mixer='Engineer', primary_style='Style')
@@ -139,7 +139,7 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(album.lead_performer, equal_to('Artist'), 'lead performer')
         assert_that(album.isni, equal_to('0000123456789'), 'isni')
         assert_that(album.guestPerformers, equal_to([('Guitar', 'Guitarist')]), 'guest performers')
-        assert_that(album.labelName, equal_to('Label'), 'label name')
+        assert_that(album.label_name, equal_to('Label'), 'label name')
         assert_that(album.catalogNumber, equal_to('XXX123456789'), 'catalog number')
         assert_that(album.upc, equal_to('123456789999'), 'upc')
         assert_that(album.comments, equal_to('Comments\n...'), 'comments')

@@ -24,7 +24,7 @@ class TrackEditionPageTest(WidgetTest):
 
     def testDisplaysAlbumSummaryInBanner(self):
         track = build.track()
-        album = build.album(release_name='Album Title', lead_performer='Artist', labelName='Record Label',
+        album = build.album(release_name='Album Title', lead_performer='Artist', label_name='Record Label',
                             tracks=[build.track(), track, build.track()])
 
         self.render(album, track)

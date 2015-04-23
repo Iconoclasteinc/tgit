@@ -40,7 +40,7 @@ class AlbumEditionPageTest(WidgetTest):
             lead_performer='Artist',
             isni='123456789',
             guestPerformers=[('Guitar', 'Guitarist'), ('Piano', 'Pianist')],
-            labelName='Label',
+            label_name='Label',
             catalogNumber='XXX123456789',
             upc='123456789999',
             recording_time='2008-09-15',
@@ -200,7 +200,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.changeGuestPerformers('Guitar: Guitarist; Guitar: Bassist; Piano: Pianist')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_entries(labelName='Label'))
+        metadataChangedSignal.expect(has_entries(label_name='Label'))
         self.driver.changeLabelName('Label')
         self.check(metadataChangedSignal)
 

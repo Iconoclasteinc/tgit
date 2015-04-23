@@ -24,8 +24,8 @@ def flac(tmpdir):
     shutil.rmtree(tmpdir.strpath)
 
 
-def test_reads_lead_performer_from_vorbis_comments(flac):
-    metadata = container.load(flac(lead_performer="Joel Miller"))
+def test_reads_lead_performer_from_artists_field(flac):
+    metadata = container.load(flac(ARTIST="Joel Miller"))
     assert_that(metadata, has_entry('lead_performer', "Joel Miller"), "metadata")
 
 
@@ -39,35 +39,41 @@ def test_reads_duration_from_audio_stream_information(flac):
     assert_that(metadata, has_entry('duration', DURATION), "duration")
 
 
-def test_reads_track_title_from_vorbis_comments(flac):
-    metadata = container.load(flac(track_title="Salsa Coltrane"))
+def test_reads_track_title_from_title_field(flac):
+    metadata = container.load(flac(TITLE="Salsa Coltrane"))
     assert_that(metadata, has_entry('track_title', "Salsa Coltrane"), "metadata")
 
 
-def test_reads_release_name_from_vorbis_comments(flac):
-    metadata = container.load(flac(release_name="Honeycomb"))
+def test_reads_release_name_from_album_field(flac):
+    metadata = container.load(flac(ALBUM="Honeycomb"))
     assert_that(metadata, has_entry('release_name', "Honeycomb"), "metadata")
 
 
-def test_reads_primary_style_from_vorbis_comments(flac):
-    metadata = container.load(flac(primary_style="Modern Jazz"))
+def test_reads_primary_style_from_genre_field(flac):
+    metadata = container.load(flac(GENRE="Modern Jazz"))
     assert_that(metadata, has_entry('primary_style', "Modern Jazz"), "metadata")
 
 
-def test_reads_track_i_s_r_c_from_vorbis_comments(flac):
-    metadata = container.load(flac(isrc="CABL31201254"))
+def test_reads_track_i_s_r_c_from_i_s_r_c_field(flac):
+    metadata = container.load(flac(ISRC="CABL31201254"))
     assert_that(metadata, has_entry('isrc', "CABL31201254"), "metadata")
 
 
-def test_reads_recording_time_from_vorbis_comments(flac):
-    metadata = container.load(flac(recording_time="2011-11-02"))
+def test_reads_recording_time_from_date_field(flac):
+    metadata = container.load(flac(DATE="2011-11-02"))
     assert_that(metadata, has_entry('recording_time', "2011-11-02"), "metadata")
+
+
+def test_reads_label_name_from_organization_field(flac):
+    metadata = container.load(flac(ORGANIZATION="Effendi Records Inc."))
+    assert_that(metadata, has_entry('label_name', "Effendi Records Inc."), "metadata")
 
 
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata['release_name'] = "St-Henri"
     metadata['lead_performer'] = "Joel Miller"
+    metadata['label_name'] = "Effendi Records Inc."
     metadata['primary_style'] = "Modern Jazz"
     metadata['recording_time'] = "2007-11-02"
     metadata['track_title'] = "Salsa Coltrane"
@@ -77,7 +83,7 @@ def test_round_trips_metadata_to_file(flac):
 
 
 def test_removes_comment_field_when_tag_not_in_metadata(flac):
-    filename = flac(lead_performer="Joel Miller")
+    filename = flac(ARTIST="Joel Miller")
     container.save(filename, Metadata())
     assert_contains_metadata(filename, Metadata())
 

@@ -45,6 +45,7 @@ class FlacContainer():
     for field_name, tag_name in {
         'ALBUM': 'release_name',
         'ARTIST': 'lead_performer',
+        'ORGANIZATION': 'label_name',
         'GENRE': 'primary_style',
         'DATE': 'recording_time',
         'TITLE': 'track_title',

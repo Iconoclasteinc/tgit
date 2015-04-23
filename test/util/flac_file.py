@@ -40,17 +40,19 @@ class FlacAudio(object):
 
     def _write_tags(self, tags):
         for tag, value in tags.items():
-            if tag == 'lead_performer':
+            if tag == 'lead_performer' or tag == 'ARTIST':
                 self._add_tag("ARTIST", value)
-            elif tag == 'release_name':
+            elif tag == 'release_name' or tag == 'ALBUM':
                 self._add_tag("ALBUM", value)
-            elif tag == 'primary_style':
+            elif tag == 'label_name' or tag == 'ORGANIZATION':
+                self._add_tag("ORGANIZATION", value)
+            elif tag == 'primary_style' or tag == 'GENRE':
                 self._add_tag("GENRE", value)
-            elif tag == 'recording_time':
+            elif tag == 'recording_time' or tag == 'DATE':
                 self._add_tag("DATE", value)
-            elif tag == 'track_title':
+            elif tag == 'track_title' or tag == 'TITLE':
                 self._add_tag("TITLE", value)
-            elif tag == 'isrc':
+            elif tag == 'isrc' or tag == 'ISRC':
                 self._add_tag("ISRC", value)
             else:
                 raise AssertionError("Unsupported tag '%s'" % tag)

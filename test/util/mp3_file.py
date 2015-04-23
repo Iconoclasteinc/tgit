@@ -59,7 +59,7 @@ class Mp3Audio(object):
                 self._add_tag(id3.TPE1(encoding=UTF_8, text=value))
             elif tag == 'guestPerformers' or tag == 'TMCL':
                 self._add_tag(id3.TMCL(encoding=UTF_8, people=value))
-            elif tag == 'labelName' or tag == 'TOWN':
+            elif tag == 'label_name' or tag == 'TOWN':
                 self._add_tag(id3.TOWN(encoding=UTF_8, text=value))
             elif tag == 'catalogNumber' or tag == 'TXXX_CATALOG_NUMBER':
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='Catalog Number', text=value))

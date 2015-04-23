@@ -53,7 +53,7 @@ class CsvFormatTest(unittest.TestCase):
             release_name='Release Name',
             isni='0000123456789',
             guestPerformers=[('Instrument1', 'Performer1'), ('Instrument2', 'Performer2')],
-            labelName='Label Name',
+            label_name='Label Name',
             catalogNumber='Catalog Number',
             upc='Barcode',
             comments='Comments\n...\n...',

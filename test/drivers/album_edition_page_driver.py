@@ -19,7 +19,7 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.shows_lead_performer(value)
             elif tag == 'guestPerformers':
                 self.showsGuestPerformers(value)
-            elif tag == 'labelName':
+            elif tag == 'label_name':
                 self.showsLabelName(value)
             elif tag == 'catalogNumber':
                 self.showsCatalogNumber(value)
@@ -52,7 +52,7 @@ class AlbumEditionPageDriver(BaseDriver):
                 self.changeLeadPerformer(value)
             elif tag == 'guestPerformers':
                 self.changeGuestPerformers(value)
-            elif tag == 'labelName':
+            elif tag == 'label_name':
                 self.changeLabelName(value)
             elif tag == 'catalogNumber':
                 self.changeCatalogNumber(value)
