@@ -42,19 +42,12 @@ def app():
 @pytest.fixture(autouse=True)
 def isni(request):
     database_thread = isni_database.start()
-    isni_database.set_assignation_sequence = (current_isni for current_isni in ["0000000121707484"])
     request.addfinalizer(lambda: isni_database.stop(database_thread))
 
 
-@pytest.yield_fixture()
-def isni_actions():
-    yield isni_database.assignation_actions
-    isni_database.assignation_actions.clear()
-
-
-def test_assigning_an_isni_to_the_lead_performer(app, library, isni_actions):
+def test_assigning_an_isni_to_the_lead_performer(app, library):
     tracks = [library.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
-    isni_actions.append("0000000121707484")
+    isni_database.assignation_generator = iter(["0000000121707484"])
 
     app.new_album(*tracks)
     app.shows_album_content(["Salsa Coltrane"])
@@ -68,9 +61,9 @@ def test_assigning_an_isni_to_the_lead_performer(app, library, isni_actions):
                      track_title="Salsa Coltrane")
 
 
-def test_fails_to_assign_isni_to_lead_performer_because_of_invalid_data(app, library, isni_actions):
+def test_fails_to_assign_isni_to_lead_performer_because_of_invalid_data(app, library):
     tracks = [library.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
-    isni_actions.append("invalid data")
+    isni_database.assignation_generator = iter(["invalid data"])
 
     app.new_album(*tracks)
     app.shows_album_content(["Salsa Coltrane"])

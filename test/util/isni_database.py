@@ -32,8 +32,7 @@ _app = Flask(__name__)
 port = 5000
 persons = {}
 organisations = {}
-assignation_actions = []
-assignation_generator = (isni for isni in assignation_actions)
+assignation_generator = None
 
 
 @_app.route("/sru/DB=1.2")
