@@ -53,16 +53,16 @@ def isni_actions():
 
 
 def test_assigning_an_isni_to_the_lead_performer(app, library, isni_actions):
-    tracks = [library.add_mp3(trackTitle="Salsa Coltrane", releaseName="Honeycomb", leadPerformer="Joel Miller")]
+    tracks = [library.add_mp3(track_title="Salsa Coltrane", releaseName="Honeycomb", lead_performer="Joel Miller")]
     isni_actions.append("0000000121707484")
 
     app.new_album("mp3", *tracks)
     app.shows_album_content(["Salsa Coltrane"])
-    app.shows_album_metadata(releaseName="Honeycomb", leadPerformer="Joel Miller")
+    app.shows_album_metadata(releaseName="Honeycomb", lead_performer="Joel Miller")
     app.assign_isni_to_lead_performer()
 
     library.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
                      releaseName="Honeycomb",
                      isni="0000000121707484",
-                     leadPerformer="Joel Miller",
-                     trackTitle="Salsa Coltrane")
+                     lead_performer="Joel Miller",
+                     track_title="Salsa Coltrane")
