@@ -24,8 +24,8 @@ class TaggerDriver(MainWindowDriver):
     def enterAudioFile(self, filename):
         track_selection_dialog(self).enter_track(filename)
 
-    def select_audio_files(self, of_type, *paths):
-        track_selection_dialog(self).select_tracks(of_type, *paths)
+    def select_audio_files(self, *paths, of_type):
+        track_selection_dialog(self).select_tracks(*paths, of_type=of_type)
 
     def cancelSelection(self):
         track_selection_dialog(self).cancel()

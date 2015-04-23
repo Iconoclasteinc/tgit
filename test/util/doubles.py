@@ -35,15 +35,15 @@ class RecordingLibrary(object):
     def exists(self, filename):
         return os.path.exists(self.path(filename))
 
-    def contains(self, filename, frontCover=None, **tags):
+    def contains(self, filename, front_cover=None, **tags):
         if not self.exists(filename):
             raise AssertionError('Not in library: ' + filename)
 
         metadata = tagging.load_metadata(self.path(filename))
         images = []
         # todo use builders and metadata
-        if frontCover:
-            image, desc = frontCover
+        if front_cover:
+            image, desc = front_cover
             mime = fs.guessMimeType(image)
             images.append(Image(mime, fs.binary_content_of(image), type_=Image.FRONT_COVER, desc=desc))
 

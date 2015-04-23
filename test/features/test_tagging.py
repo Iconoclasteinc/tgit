@@ -2,7 +2,6 @@
 
 import pytest
 
-from tgit.util import fs
 from test.util import resources, doubles
 from test.drivers.application_runner import ApplicationRunner
 
@@ -22,89 +21,62 @@ def app():
     runner.stop()
 
 
-def test_tagging_a_new_album_with_several_tracks(app, library):
-    tracks = (library.add_mp3(track_title="Ma préférence",
-                              release_name="Jaloux",
-                              frontCover=("image/jpeg", "Cover", fs.binary_content_of(resources.path("jaloux.jpg"))),
-                              lead_performer="Julien Clerc",
-                              labelName="EMI",
-                              releaseTime="1978"),
-              library.add_mp3(track_title="Fais moi une place",
-                              release_name="Fais moi une place",
-                              frontCover=("image/jpeg", "Cover", fs.binary_content_of(resources.path("une-place.jpg"))),
-                              labelName="Virgin",
-                              releaseTime="1990",
-                              upc="3268440307258"),
-              library.add_mp3(track_title="Ce n'est rien",
-                              release_name="Niagara",
-                              frontCover=("image/jpeg", "Cover", fs.binary_content_of(resources.path("niagara.jpg"))),
-                              releaseTime="1971",
-                              lyricist="Étienne Roda-Gil"))
+def test_tagging_an_mp3_track(app, library):
+    track = library.add_mp3(release_name="???", lead_performer="???", track_title="???")
 
-    app.new_album('mp3', *tracks)
-    app.shows_album_content(["Ma préférence"],
-                            ["Fais moi une place"],
-                            ["Ce n'est rien"])
+    app.new_album(track, of_type='mp3')
 
-    app.shows_album_metadata(release_name="Jaloux", lead_performer="Julien Clerc", labelName="EMI", releaseTime="1978")
-    app.change_album_metadata(release_name="Best Of", frontCover=resources.path("best-of.jpg"),
-                              labelName="EMI Music France", releaseTime="2009-04-06")
+    app.shows_album_metadata(release_name="???", lead_performer="???")
+    app.change_album_metadata(front_cover=resources.path("honeycomb.jpg"),
+                              release_name="Honeycomb", lead_performer="Joel Miller")
 
-    app.shows_next_track_metadata(track_title="Ma préférence")
-    app.change_track_metadata(composer="Julien Clerc", lyricist="Jean-Loup Dabadie")
+    app.shows_next_track_metadata(track_title="???")
+    app.change_track_metadata(track_title="Rashers")
 
-    app.shows_next_track_metadata(track_title="Fais moi une place")
-    app.change_track_metadata(composer="Julien Clerc", lyricist="Francoise Hardy")
-
-    app.shows_next_track_metadata(track_title="Ce n'est rien")
-    app.change_track_metadata(composer="Julien Clerc")
-
-    library.contains("Julien Clerc - 01 - Ma préférence.mp3",
-                     frontCover=(resources.path("best-of.jpg"), "Front Cover"),
-                     release_name="Best Of",
-                     lead_performer="Julien Clerc",
-                     labelName="EMI Music France",
-                     releaseTime="2009-04-06",
-                     track_title="Ma préférence",
-                     composer="Julien Clerc",
-                     lyricist="Jean-Loup Dabadie")
-    library.contains("Julien Clerc - 02 - Fais moi une place.mp3",
-                     frontCover=(resources.path("best-of.jpg"), "Front Cover"),
-                     release_name="Best Of",
-                     lead_performer="Julien Clerc",
-                     labelName="EMI Music France",
-                     releaseTime="2009-04-06",
-                     track_title="Fais moi une place",
-                     composer="Julien Clerc",
-                     lyricist="Francoise Hardy")
-    library.contains("Julien Clerc - 03 - Ce n'est rien.mp3",
-                     frontCover=(resources.path("best-of.jpg"), "Front Cover"),
-                     release_name="Best Of",
-                     lead_performer="Julien Clerc",
-                     labelName="EMI Music France",
-                     releaseTime="2009-04-06",
-                     track_title="Ce n'est rien",
-                     composer="Julien Clerc",
-                     lyricist="Étienne Roda-Gil")
+    library.contains("Joel Miller - 01 - Rashers.mp3",
+                     front_cover=(resources.path("honeycomb.jpg"), "Front Cover"),
+                     release_name="Honeycomb",
+                     lead_performer="Joel Miller",
+                     track_title="Rashers")
 
 
 def test_tagging_a_flac_track(app, library):
-    track = library.add_flac(release_name="???", lead_performer="???", primary_style="???", recording_time="???",
-                             track_title="???", isrc="???")
+    track = library.add_flac(release_name="???", lead_performer="???", track_title="???")
 
-    app.new_album('flac', track)
+    app.new_album(track, of_type='flac')
 
-    app.shows_album_metadata(release_name="???", lead_performer="???", primary_style="???", recording_time="???")
-    app.change_album_metadata(release_name="St-Henri", lead_performer="John Roney", primary_style="Jazz",
-                              recording_time="2011-07-25")
+    app.shows_album_metadata(release_name="???", lead_performer="???")
+    app.change_album_metadata(release_name="St-Henri", lead_performer="John Roney")
 
-    app.shows_next_track_metadata(track_title="???", isrc="???")
-    app.change_track_metadata(track_title="Squareboy", isrc="CABL31201254")
+    app.shows_next_track_metadata(track_title="???")
+    app.change_track_metadata(track_title="Squareboy")
 
     library.contains("John Roney - 01 - Squareboy.flac",
                      release_name="St-Henri",
                      lead_performer="John Roney",
-                     primary_style="Jazz",
-                     recording_time="2011-07-25",
-                     track_title="Squareboy",
-                     isrc="CABL31201254")
+                     track_title="Squareboy")
+
+
+def test_tagging_an_album_with_several_tracks(app, library):
+    tracks = (library.add_mp3(track_title="1 - ???", lead_performer="???"),
+              library.add_mp3(track_title="2 - ???", lead_performer="???"),
+              library.add_mp3(track_title="3 - ???", lead_performer="???"))
+
+    app.new_album(*tracks)
+    app.shows_album_content(["1 - ???"], ["2 - ???"], ["3 - ???"])
+
+    app.shows_album_metadata(lead_performer="???")
+    app.change_album_metadata(lead_performer="Joel Miller")
+
+    app.shows_next_track_metadata(track_title="1 - ???")
+    app.change_track_metadata(track_title="Chevere!")
+
+    app.shows_next_track_metadata(track_title="2 - ???")
+    app.change_track_metadata(track_title="Zumbar")
+
+    app.shows_next_track_metadata(track_title="3 - ???")
+    app.change_track_metadata(track_title="Salsa Coltrane")
+
+    library.contains("Joel Miller - 01 - Chevere!.mp3", lead_performer="Joel Miller", track_title="Chevere!")
+    library.contains("Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller", track_title="Zumbar")
+    library.contains("Joel Miller - 03 - Salsa Coltrane.mp3", lead_performer="Joel Miller", track_title="Salsa Coltrane")

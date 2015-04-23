@@ -13,7 +13,7 @@ def album_edition_page(parent):
 class AlbumEditionPageDriver(BaseDriver):
     def shows_metadata(self, **meta):
         for tag, value in meta.items():
-            if tag == 'releaseName' or tag == 'release_name':
+            if tag == 'release_name':
                 self.showsReleaseName(value)
             elif tag == 'lead_performer':
                 self.shows_lead_performer(value)
@@ -44,9 +44,9 @@ class AlbumEditionPageDriver(BaseDriver):
 
     def change_metadata(self, **meta):
         for tag, value in meta.items():
-            if tag == 'frontCover':
-                self.selectPicture(value)
-            elif tag == 'releaseName' or tag == 'release_name':
+            if tag == 'front_cover':
+                self.select_picture(value)
+            elif tag == 'release_name':
                 self.changeReleaseName(value)
             elif tag == 'lead_performer':
                 self.changeLeadPerformer(value)
@@ -87,7 +87,7 @@ class AlbumEditionPageDriver(BaseDriver):
     def showsPicturePlaceholder(self):
         self.displaysPictureWithSize(0, 0)
 
-    def selectPicture(self, filename):
+    def select_picture(self, filename):
         self.addPicture()
         pictureSelectionDialog(self).selectPicture(filename)
         self.showsPicture()

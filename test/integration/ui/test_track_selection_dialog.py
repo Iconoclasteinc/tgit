@@ -42,7 +42,7 @@ def test_signals_when_audio_files_selected(app, driver, dialog):
     dialog.tracks_selected.connect(track_selection_signal.received)
 
     dialog.display()
-    driver.select_tracks('mp3', *audio_files)
+    driver.select_tracks(*audio_files)
     driver.check(track_selection_signal)
 
 
@@ -63,7 +63,7 @@ def test_allows_selection_of_flac_files(app, driver, dialog):
     dialog.tracks_selected.connect(track_selection_signal.received)
 
     dialog.display()
-    driver.select_tracks('flac', *flac_files)
+    driver.select_tracks(*flac_files, of_type='flac')
     driver.check(track_selection_signal)
 
 
