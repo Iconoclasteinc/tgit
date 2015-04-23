@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QLabel, QLineEdit, QTimeEdit, QComboBox, QPushButton, QCheckBox, QPlainTextEdit, \
-    QTableView, QWidget
+    QTableView, QWidget, QTextEdit
 
 from test.cute.widgets import LabelDriver, LineEditDriver, DateTimeEditDriver, ComboBoxDriver, ButtonDriver, \
     TextEditDriver, WidgetDriver, TableViewDriver
@@ -16,6 +16,9 @@ class BaseDriver(WidgetDriver):
 
     def textEdit(self, matching):
         return TextEditDriver.findSingle(self, QPlainTextEdit, matching)
+
+    def rich_text_edit(self, *matching):
+        return TextEditDriver.findSingle(self, QTextEdit, *matching)
 
     def dateTimeEdit(self, matching):
         return DateTimeEditDriver.findSingle(self, QTimeEdit, matching)

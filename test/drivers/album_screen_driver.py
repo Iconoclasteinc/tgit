@@ -26,13 +26,13 @@ def isEnabled(button):
 
 class AlbumScreenDriver(BaseDriver):
     def showsAlbumCompositionPage(self):
-        albumCompositionPage(self).isShowingOnScreen()
+        albumCompositionPage(self).is_showing_on_screen()
 
     def showsAlbumEditionPage(self):
-        album_edition_page(self).isShowingOnScreen()
+        album_edition_page(self).is_showing_on_screen()
 
     def showsTrackEditionPage(self):
-        track_edition_page(self).isShowingOnScreen()
+        track_edition_page(self).is_showing_on_screen()
 
     def addFiles(self):
         albumCompositionPage(self).addFiles()

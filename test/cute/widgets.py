@@ -67,7 +67,7 @@ class WidgetDriver(object):
     def exists(self):
         self.is_(match.existing())
 
-    def isShowingOnScreen(self):
+    def is_showing_on_screen(self):
         self.is_(match.showingOnScreen())
 
     def isHidden(self):
@@ -100,7 +100,7 @@ class WidgetDriver(object):
         return self.leftClickOnWidget()
 
     def leftClickOnWidget(self):
-        self.isShowingOnScreen()
+        self.is_showing_on_screen()
         self.perform(gestures.clickAt(self.widgetCenter()))
 
     def enter(self):
@@ -138,7 +138,7 @@ class ButtonDriver(WidgetDriver):
         self.is_checked(not unchecked)
 
     def is_checked(self, checked=True):
-        self.isShowingOnScreen()
+        self.is_showing_on_screen()
         self.is_(checked and match.checked() or match.unchecked())
 
 

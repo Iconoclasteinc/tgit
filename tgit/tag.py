@@ -37,7 +37,7 @@ class typed(tag):
 
     def __set__(self, instance, value):
         if not isinstance(value, self.expectedType):
-            raise TypeError('expected {}, not {}'.format(self.expectedType, type(value)))
+            raise TypeError('expected {0}, not {1}'.format(self.expectedType, type(value)))
         super(typed, self).__set__(instance, value)
 
 

@@ -17,7 +17,22 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QStyle
+
+
+def invalid_identification_data_message_box(parent, details=None):
+    message_box = QMessageBox(parent)
+    message_box.setObjectName("message_box")
+    message_box.setText(message_box.tr("Could not assign an ISNI"))
+    message_box.setDetailedText("Invalid Data: " + details)
+    message_box.setModal(True)
+
+    style = message_box.style()
+    icon_size = style.pixelMetric(QStyle.PM_MessageBoxIconSize, widget=message_box)
+    icon = style.standardIcon(QStyle.SP_MessageBoxWarning, widget=message_box)
+    message_box.setIconPixmap(icon.pixmap(icon_size, icon_size))
+
+    return message_box
 
 
 class RestartMessageBox(QMessageBox):

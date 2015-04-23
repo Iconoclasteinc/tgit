@@ -6,6 +6,7 @@ from test.cute import matchers as match
 from test.cute.matchers import showingOnScreen, withText
 from test.cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
 from test.drivers.export_as_dialog_driver import exportAsDialog
+from test.drivers.isni_error_message_box_driver import message_box
 from test.drivers.menu_bar_driver import menuBar
 from test.drivers.album_screen_driver import album_screen
 from test.drivers.settings_dialog_driver import settingsDialog
@@ -14,7 +15,7 @@ from test.drivers.welcome_screen_driver import welcome_screen
 
 
 def restartMessage(parent):
-    return WidgetDriver.findSingle(parent, QDialog, match.named('restart-message'), showingOnScreen())
+    return WidgetDriver.findSingle(parent, QDialog, match.named("restart-message"), showingOnScreen())
 
 
 class TaggerDriver(MainWindowDriver):
@@ -35,13 +36,13 @@ class TaggerDriver(MainWindowDriver):
         self.shows_album_screen()
 
     def showsWelcomeScreen(self):
-        welcome_screen(self).isShowingOnScreen()
+        welcome_screen(self).is_showing_on_screen()
 
     def shows_album_screen(self):
-        album_screen(self).isShowingOnScreen()
+        album_screen(self).is_showing_on_screen()
 
     def showsExportAsDialog(self):
-        exportAsDialog(self).isShowingOnScreen()
+        exportAsDialog(self).is_showing_on_screen()
 
     def removeTrack(self, title):
         album_screen(self).removeTrack(title)
@@ -85,8 +86,14 @@ class TaggerDriver(MainWindowDriver):
 
     def acknowledge(self):
         message = restartMessage(self)
-        ok = ButtonDriver.findSingle(message, QAbstractButton, withText('OK'))
+        ok = ButtonDriver.findSingle(message, QAbstractButton, withText("OK"))
         ok.click()
 
     def assign_isni_to_lead_performer(self):
         album_screen(self).assign_isni_to_lead_performer()
+
+    def tries_to_assign_isni_to_lead_performer_with_invalid_data(self):
+        album_screen(self).assign_isni_to_lead_performer()
+        message_box(self).is_showing_on_screen()
+        message_box(self).is_showing_message("Could not assign an ISNI")
+        message_box(self).is_showing_details("Invalid Data: invalid code creationRole eee")

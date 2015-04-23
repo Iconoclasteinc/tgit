@@ -25,7 +25,7 @@ class SettingsDialogDriver(WidgetDriver):
 
     def changeLanguage(self, language):
         label = self._label(withBuddy(named('language')))
-        label.isShowingOnScreen()
+        label.is_showing_on_screen()
         self._combo(named('language')).select_option(language)
         self.ok()
 

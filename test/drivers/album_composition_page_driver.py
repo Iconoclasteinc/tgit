@@ -35,7 +35,7 @@ class AlbumCompositionPageDriver(BaseDriver):
 
     def play(self, title):
         row = self.shows_track(title)
-        self._play_button_at(row).isShowingOnScreen()
+        self._play_button_at(row).is_showing_on_screen()
         self.clickPlayButtonAt(row)
 
     def addTracks(self):
@@ -43,7 +43,7 @@ class AlbumCompositionPageDriver(BaseDriver):
 
     def removeTrack(self, title):
         row = self.shows_track(title)
-        self.removeButtonAt(row).isShowingOnScreen()
+        self.removeButtonAt(row).is_showing_on_screen()
         self.clickRemoveButtonAt(row)
 
     def moveTrack(self, title, to):
