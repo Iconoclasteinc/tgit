@@ -21,25 +21,37 @@ from PyQt5.QtWidgets import QMessageBox, QStyle
 from isni.name_registry import NameRegistry
 
 
-def isni_assignation_failed_message_box(parent, code, details):
-    prefix = ""
+def _get_details_prefix_from(code):
     if code == NameRegistry.Codes.INVALID_DATA:
-        prefix = "Invalid data:"
+        return "Invalid data:"
     elif code == NameRegistry.Codes.INVALID_FORMAT:
-        prefix = "Invalid format:"
+        return "Invalid format:"
     elif code == NameRegistry.Codes.SPARSE:
-        prefix = "Sparse data:"
+        return "Sparse data:"
+    return ""
 
+
+def _create_message_box(parent, message, details=None):
     message_box = QMessageBox(parent)
     message_box.setObjectName("message_box")
-    message_box.setText(message_box.tr("Could not assign an ISNI"))
-    message_box.setDetailedText("{0} {1}".format(prefix, details))
+    message_box.setText(message_box.tr(message))
+    if details is not None:
+        message_box.setDetailedText(details)
     message_box.setModal(True)
+    return message_box
 
+
+def _append_warning_icon_to(message_box):
     style = message_box.style()
     icon_size = style.pixelMetric(QStyle.PM_MessageBoxIconSize, widget=message_box)
     icon = style.standardIcon(QStyle.SP_MessageBoxWarning, widget=message_box)
     message_box.setIconPixmap(icon.pixmap(icon_size, icon_size))
+
+
+def isni_assignation_failed_message_box(parent, code, details):
+    prefix = _get_details_prefix_from(code)
+    message_box = _create_message_box(parent, "Could not assign an ISNI", "{0} {1}".format(prefix, details))
+    _append_warning_icon_to(message_box)
 
     return message_box
 

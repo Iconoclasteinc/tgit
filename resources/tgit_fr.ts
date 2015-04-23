@@ -425,9 +425,14 @@
 <context>
     <name>RestartMessageBox</name>
     <message>
-        <location filename="tgit/ui/restart_message_box.py" line="27"/>
+        <location filename="tgit/ui/restart_message_box.py" line="63"/>
         <source>You need to restart TGiT for changes to take effect.</source>
         <translation>Veuillez redémarrer TGiT pour que ces modifications prennent effet.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/restart_message_box.py" line="37"/>
+        <source>Could not assign an ISNI.</source>
+        <translation>Impossible d'assigner un ISNI.</translation>
     </message>
 </context>
 <context>
