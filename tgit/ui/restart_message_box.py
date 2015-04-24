@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtWidgets import QMessageBox, QStyle
-from isni.name_registry import NameRegistry
+from tgit.isni.name_registry import NameRegistry
 
 
 def _get_details_prefix_from(code):

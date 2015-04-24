@@ -16,9 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+from PyQt5.QtCore import QSettings
 import pytest
 
+from tgit.preferences import Preferences
 from test.util import doubles
 from test.drivers.application_runner import ApplicationRunner
 from test.util import isni_database
@@ -34,7 +35,7 @@ def library(tmpdir):
 @pytest.yield_fixture
 def app():
     runner = ApplicationRunner()
-    runner.start()
+    runner.start(Preferences(QSettings()))
     yield runner
     runner.stop()
 

@@ -20,10 +20,9 @@
 from queue import Queue
 
 from PyQt5.QtWidgets import QApplication
-
 from PyQt5.QtCore import QTimer, QEventLoop
-from isni.name_registry import NameRegistry
 
+from tgit.isni.name_registry import NameRegistry
 from tgit import album_director as director
 from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.export.csv_format import CsvFormat

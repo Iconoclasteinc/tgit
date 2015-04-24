@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-
+from PyQt5.QtCore import QSettings
 import pytest
 
+from tgit.preferences import Preferences
 from test.util import resources, doubles
 from test.drivers.application_runner import ApplicationRunner
 
@@ -16,7 +17,7 @@ def recordings(tmpdir):
 @pytest.yield_fixture
 def app():
     runner = ApplicationRunner()
-    runner.start()
+    runner.start(Preferences(QSettings()))
     yield runner
     runner.stop()
 
@@ -34,10 +35,10 @@ def test_tagging_an_mp3_track(app, recordings):
     app.change_track_metadata(track_title="Rashers")
 
     recordings.contains("Joel Miller - 01 - Rashers.mp3",
-                     front_cover=(resources.path("honeycomb.jpg"), "Front Cover"),
-                     release_name="Honeycomb",
-                     lead_performer="Joel Miller",
-                     track_title="Rashers")
+                        front_cover=(resources.path("honeycomb.jpg"), "Front Cover"),
+                        release_name="Honeycomb",
+                        lead_performer="Joel Miller",
+                        track_title="Rashers")
 
 
 def test_tagging_a_flac_track(app, recordings):
@@ -52,9 +53,9 @@ def test_tagging_a_flac_track(app, recordings):
     app.change_track_metadata(track_title="Squareboy")
 
     recordings.contains("John Roney - 01 - Squareboy.flac",
-                     release_name="St-Henri",
-                     lead_performer="John Roney",
-                     track_title="Squareboy")
+                        release_name="St-Henri",
+                        lead_performer="John Roney",
+                        track_title="Squareboy")
 
 
 def test_tagging_an_album_with_several_tracks(app, recordings):
@@ -79,7 +80,8 @@ def test_tagging_an_album_with_several_tracks(app, recordings):
 
     recordings.contains("Joel Miller - 01 - Chevere!.mp3", lead_performer="Joel Miller", track_title="Chevere!")
     recordings.contains("Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller", track_title="Zumbar")
-    recordings.contains("Joel Miller - 03 - Salsa Coltrane.mp3", lead_performer="Joel Miller", track_title="Salsa Coltrane")
+    recordings.contains("Joel Miller - 03 - Salsa Coltrane.mp3", lead_performer="Joel Miller",
+                        track_title="Salsa Coltrane")
 
 
 def test_tagging_a_compilation(app, recordings):

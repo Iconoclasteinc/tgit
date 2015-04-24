@@ -20,13 +20,13 @@
 from PyQt5.QtWidgets import QMainWindow
 import pytest
 
-from isni.name_registry import NameRegistry
+from tgit.isni.name_registry import NameRegistry
 from test.cute.finders import WidgetIdentity
 from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.isni_error_message_box_driver import MessageBoxDriver
 from test.integration.ui import show_widget
-from ui import isni_assignation_failed_message_box
+from tgit.ui import isni_assignation_failed_message_box
 
 
 @pytest.fixture()

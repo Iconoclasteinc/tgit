@@ -22,40 +22,39 @@ import sys
 from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtWidgets import QApplication
 
-from tgit.preferences import Preferences
 from tgit.album_portfolio import AlbumPortfolio
 from tgit import ui
 
 
 class TGiT(QApplication):
     def __init__(self, player, name_registry, native=True):
-        QApplication.__init__(self, [])
+        super().__init__([])
         self.player = player
         self.name_registry = name_registry
         self.translators = []
         self.native = native
         self.mainWindow = None
 
-    def setLocale(self, locale):
+    def set_locale(self, locale):
         if locale is None:
             locale = QLocale.system().name()
 
-        for resource in ('qt', 'tgit'):
-            self.installTranslations(resource, locale)
+        for resource in ("qt", "tgit"):
+            self.install_translations(resource, locale)
 
-    def installTranslations(self, resource, locale):
+    def install_translations(self, resource, locale):
         translator = QTranslator()
-        if translator.load('%s_%s' % (resource, locale), ':/'):
+        if translator.load("{0}_{1}".format(resource, locale), ":/"):
             self.installTranslator(translator)
             self.translators.append(translator)
 
     def show(self, preferences):
-        self.setLocale(preferences['language'])
+        self.set_locale(preferences["language"])
         self.mainWindow = ui.createMainWindow(AlbumPortfolio(), self.player(), preferences, self.name_registry,
                                               self.native)
         ui.showCenteredOnScreen(self.mainWindow)
 
-    def launch(self, preferences=Preferences()):
+    def launch(self, preferences):
         self.show(preferences)
         self.run()
 
