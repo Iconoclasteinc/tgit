@@ -16,16 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+from PyQt5.QtCore import QSettings
 import pytest
 
+from tgit.preferences import Preferences
 from test.util import doubles
 from test.drivers.application_runner import ApplicationRunner
 from test.util import isni_database
 
 
 @pytest.yield_fixture
-def library(tmpdir):
+def recordings(tmpdir):
     recordings = doubles.recording_library(tmpdir.strpath)
     yield recordings
     recordings.delete()
@@ -34,7 +35,7 @@ def library(tmpdir):
 @pytest.yield_fixture
 def app():
     runner = ApplicationRunner()
-    runner.start()
+    runner.start(Preferences(QSettings()))
     yield runner
     runner.stop()
 
@@ -45,18 +46,18 @@ def isni(request):
     request.addfinalizer(lambda: isni_database.stop(database_thread))
 
 
-def test_finding_the_isni_of_the_lead_performer(app, library):
-    tracks = [library.add_mp3(track_title="Salsa Coltrane", releaseName="Honeycomb", lead_performer="Joel Miller")]
+def test_finding_the_isni_of_the_lead_performer(app, recordings):
+    tracks = [recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
     isni_database.persons.clear()
     isni_database.persons["0000000121707484"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
 
-    app.new_album("mp3", *tracks)
+    app.new_album(*tracks)
     app.shows_album_content(["Salsa Coltrane"])
-    app.shows_album_metadata(releaseName="Honeycomb", lead_performer="Joel Miller")
+    app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.finds_isni_of_lead_performer()
 
-    library.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
-                     releaseName="Honeycomb",
-                     isni="0000000121707484",
-                     lead_performer="Joel Miller",
-                     track_title="Salsa Coltrane")
+    recordings.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
+                        release_name="Honeycomb",
+                        isni="0000000121707484",
+                        lead_performer="Joel Miller",
+                        track_title="Salsa Coltrane")

@@ -21,7 +21,7 @@ from test.cute.matchers import named
 from test.cute.widgets import window
 
 from test.drivers import BaseDriver
-from ui import ISNILookupDialog
+from tgit.ui import ISNILookupDialog
 
 
 def isni_lookup_dialog(parent):
