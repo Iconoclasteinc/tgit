@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtWidgets import QLabel, QLineEdit, QTimeEdit, QComboBox, QPushButton, QCheckBox, QPlainTextEdit, \
-    QTableView, QWidget, QTextEdit
+    QTableView, QWidget, QTextEdit, QRadioButton
 
 from test.cute.widgets import LabelDriver, LineEditDriver, DateTimeEditDriver, ComboBoxDriver, ButtonDriver, \
     TextEditDriver, WidgetDriver, TableViewDriver
@@ -31,6 +31,9 @@ class BaseDriver(WidgetDriver):
 
     def checkbox(self, matching):
         return ButtonDriver.findSingle(self, QCheckBox, matching)
+
+    def radio(self, matching):
+        return ButtonDriver.findSingle(self, QRadioButton, matching)
 
     def table(self, matching):
         return TableViewDriver.findSingle(self, QTableView, matching)

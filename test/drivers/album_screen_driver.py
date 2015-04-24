@@ -93,3 +93,6 @@ class AlbumScreenDriver(BaseDriver):
 
     def assign_isni_to_lead_performer(self):
         album_edition_page(self).assign_isni_to_lead_performer()
+
+    def lookup_isni_of_lead_performer(self):
+        album_edition_page(self).lookup_isni_of_lead_performer()

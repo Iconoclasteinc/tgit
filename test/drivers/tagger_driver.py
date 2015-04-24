@@ -7,6 +7,7 @@ from test.cute.matchers import showingOnScreen, withText
 from test.cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
 from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.drivers.isni_error_message_box_driver import message_box
+from test.drivers.isni_lookup_dialog_driver import isni_lookup_dialog
 from test.drivers.menu_bar_driver import menuBar
 from test.drivers.album_screen_driver import album_screen
 from test.drivers.settings_dialog_driver import settingsDialog
@@ -97,3 +98,8 @@ class TaggerDriver(MainWindowDriver):
         message_box(self).is_showing_on_screen()
         message_box(self).is_showing_message("Could not assign an ISNI")
         message_box(self).is_showing_details("Invalid data: invalid code creationRole eee")
+
+    def finds_isni_of_lead_performer(self):
+        album_screen(self).lookup_isni_of_lead_performer()
+        isni_lookup_dialog(self).selects_first_identity()
+        isni_lookup_dialog(self).confirm()

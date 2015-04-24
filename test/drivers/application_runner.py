@@ -67,3 +67,7 @@ class ApplicationRunner(object):
 
     def tries_to_assign_isni_to_lead_performer_with_invalid_data(self):
         self.tagger.tries_to_assign_isni_to_lead_performer_with_invalid_data()
+
+    def finds_isni_of_lead_performer(self):
+        self.tagger.finds_isni_of_lead_performer()
+        self.tagger.save_album()
