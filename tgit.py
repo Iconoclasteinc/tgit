@@ -18,7 +18,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+import sys
+
 from tgit.tagger import tgit
 
 if __name__ == "__main__":
-    tgit()
+    use_local_isni_backend = False
+
+    if len(sys.argv) > 1 and sys.argv[1] == "--with-local-isni-backend":
+        use_local_isni_backend = True
+
+    tgit(use_local_isni_backend)
