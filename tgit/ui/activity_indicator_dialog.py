@@ -19,28 +19,36 @@
 
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QMovie
-from PyQt5.QtWidgets import QDialog, QLabel, QHBoxLayout, QLayout
+from PyQt5.QtWidgets import QDialog, QLabel, QHBoxLayout, QLayout, QFrame
 
 
 class ActivityIndicatorDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
-        self.setObjectName('activity-indicator-dialog')
-        self.setWindowFlags(Qt.Dialog | Qt.CustomizeWindowHint)
+        self.setObjectName("activity-indicator-dialog")
+        self.setWindowFlags(Qt.Dialog | Qt.CustomizeWindowHint | Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setModal(True)
 
         layout = QHBoxLayout()
-        layout.addWidget(self.build_spinner())
+        layout.addWidget(build_spinner())
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSizeConstraint(QLayout.SetFixedSize)
 
         self.setLayout(layout)
 
-    def build_spinner(self):
-        movie = QMovie(':/activity-indicator.gif')
-        movie.setScaledSize(QSize(75, 75))
-        movie.start()
-        label = QLabel()
-        label.setMovie(movie)
-        label.setAlignment(Qt.AlignCenter)
-        return label
+
+def build_spinner():
+    movie = QMovie(':/activity-indicator.gif')
+    movie.setScaledSize(QSize(75, 75))
+    movie.start()
+    label = QLabel()
+    label.setMovie(movie)
+    label.setAlignment(Qt.AlignCenter)
+
+    layout = QHBoxLayout()
+    layout.addWidget(label)
+    frame = QFrame()
+    frame.setObjectName("activity-indicator-dialog-frame")
+    frame.setLayout(layout)
+    return frame

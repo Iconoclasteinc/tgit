@@ -28,6 +28,10 @@ StyleSheet = """
         padding: 0;
     }
 
+    #activity-indicator-dialog-frame {
+        border: 1px solid #DDDDDD;
+    }
+
     #welcome-screen {
         background-color: rgba(0, 0, 0, 70%);
     }
