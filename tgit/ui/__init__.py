@@ -112,11 +112,11 @@ def AlbumEditionPageController(select_picture, lookup_isni_dialog_factory, activ
         activity_dialog.show()
         taskRunner.runAsync(lambda: director.assign_isni(name_registry, album)).andPutResultInto(queue).run()
         code, payload = poll_queue()
+        activity_dialog.close()
         if code == NameRegistry.Codes.SUCCESS:
             album.isni = payload
         else:
             show_assignation_failed(code, payload)
-        activity_dialog.close()
 
     def add_performer():
         dialog = performer_dialog_factory(album)

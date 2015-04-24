@@ -29,33 +29,8 @@ from tgit.album_portfolio import AlbumPortfolio
 from tgit import ui
 
 
-def _start_local_isni_backend():
-    import atexit
-    from test.util import isni_database
-
-    class RandomIsniResponses(object):
-        def __init__(self):
-            self.actions = ["0000000080183206", "0000000121707484", "sparse", "invalid data"]
-
-        def __next__(self):
-            return self.actions[random.randint(0, len(self.actions) - 1)]
-
-    isni_database.persons["0000000080183206"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
-    isni_database.organisations["0000000121707484"] = [{"names": [
-        "The Beatles", "Beatles, The"], "titles": [
-        "The fool on the hill from The Beatles' T.V. film Magical mystery tour"]}]
-    isni_database.assignation_generator = RandomIsniResponses()
-    server_thread = isni_database.start()
-
-    def shutdown_isni_database():
-        isni_database.stop(server_thread)
-
-    atexit.register(shutdown_isni_database)
-
-
 def tgit(use_local_isni_backend=False):
     if use_local_isni_backend:
-        _start_local_isni_backend()
         name_registry = NameRegistry(host="localhost", assign_host="localhost", port=5000)
     else:
         name_registry = NameRegistry(host="isni-m.oclc.nl", assign_host="isni-m-acc.oclc.nl", secure=True,
@@ -102,4 +77,4 @@ class TGiT(QApplication):
         self.run()
 
     def run(self):
-        return sys.exit(self.exec_())
+        sys.exit(self.exec_())
