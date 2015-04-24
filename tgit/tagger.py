@@ -19,11 +19,25 @@
 
 import sys
 
-from PyQt5.QtCore import QTranslator, QLocale
+from PyQt5.QtCore import QTranslator, QLocale, QSettings
 from PyQt5.QtWidgets import QApplication
+from tgit.preferences import Preferences
+from tgit.audio import MediaPlayer
+from tgit.isni.name_registry import NameRegistry
 
 from tgit.album_portfolio import AlbumPortfolio
 from tgit import ui
+
+
+def tgit():
+    name_registry = NameRegistry(host="isni-m.oclc.nl", assign_host="isni-m-acc.oclc.nl", secure=True, username="ICON",
+                                 password="crmeoS4d")
+
+    app = TGiT(MediaPlayer, name_registry)
+    app.setApplicationName("TGiT")
+    app.setOrganizationName("Iconoclaste Inc.")
+    app.setOrganizationDomain("tagyourmusic.com")
+    app.launch(Preferences(QSettings()))
 
 
 class TGiT(QApplication):
