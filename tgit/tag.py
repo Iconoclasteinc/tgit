@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 
-class tag(object):
+class tag():
     def __init__(self, name=None, **opts):
         self.name = name
         for key, value in opts.items():
@@ -54,7 +54,7 @@ class decimal(typed):
 
 
 class flag(typed):
-    expectedType = bool
+    expectedType = (bool, type(None))
 
 
 class pairs(typed):

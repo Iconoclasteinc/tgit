@@ -270,6 +270,12 @@ def test_removes_frame_when_tag_not_in_metadata(mp3):
     assert_contains_metadata(filename, Metadata())
 
 
+def test_takes_none_as_absence_of_tag(mp3):
+    filename = mp3()
+    container.save(filename, Metadata(compilation=None))
+    assert_contains_metadata(filename, Metadata())
+
+
 def test_can_save_several_pictures_sharing_the_same_description(mp3):
     filename = mp3()
     metadata = container.load(filename)

@@ -33,7 +33,7 @@ class AlbumListener(object):
         pass
 
 
-class Album(object, metaclass=tag.Taggable):
+class Album(metaclass=tag.Taggable):
     release_name = tag.text()
     compilation = tag.flag()
     lead_performer = tag.text()

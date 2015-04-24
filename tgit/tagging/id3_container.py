@@ -63,8 +63,8 @@ class BooleanProcessor(TextProcessor):
         return text == '1'
 
     @staticmethod
-    def toText(boolean):
-        return boolean and '1' or '0'
+    def toText(value):
+        return value and '1' or '0'
 
     def __init__(self, key, tag):
         super(BooleanProcessor, self).__init__(key, tag, self.toBoolean, self.toText)
