@@ -2,7 +2,7 @@
 from PyQt5.QtCore import Qt
 from hamcrest.library.text import contains_string
 
-from test.cute.matchers import named
+from cute.matchers import named
 from test.drivers import BaseDriver
 from test.drivers.album_edition_page_driver import album_edition_page
 from test.drivers.album_composition_page_driver import albumCompositionPage

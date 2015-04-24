@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from test.cute.probes import ValueMatcherProbe
-from test.cute.finders import WidgetIdentity
+from cute.probes import ValueMatcherProbe
+from cute.finders import WidgetIdentity
 from test.drivers.welcome_screen_driver import WelcomeScreenDriver
 from test.integration.ui import WidgetTest
 

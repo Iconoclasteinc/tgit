@@ -5,7 +5,7 @@ from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
-from test.cute import properties
+from . import properties
 
 
 def named(name):

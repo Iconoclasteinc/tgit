@@ -5,7 +5,7 @@ from PyQt5.QtGui import QCursor
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
-from test.cute.events import MainEventLoop
+from .events import MainEventLoop
 
 
 def widgetAt(x, y):

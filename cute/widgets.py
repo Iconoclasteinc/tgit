@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
+import sys
+
 from PyQt5.QtCore import QDir, QPoint, Qt, QTime
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QAction, QComboBox)
 from hamcrest import all_of, equal_to
+
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-import sys
 
-from test.cute.probes import (WidgetManipulatorProbe, WidgetAssertionProbe,
-                              WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe)
-from test.cute.finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder,
-                               NthWidgetFinder, WidgetSelector)
-from test.cute import properties, gestures, keyboard_shortcuts as shortcuts, matchers as match
+from . import gestures, properties, keyboard_shortcuts as shortcuts, matchers as match
+from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
+                     WidgetScreenBoundsProbe)
+from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector)
 
 
 windows = sys.platform == 'win32'

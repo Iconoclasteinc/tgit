@@ -3,8 +3,8 @@
 from hamcrest import contains, has_items, equal_to
 from PyQt5.QtWidgets import QAbstractButton
 
-from test.cute.widgets import ButtonDriver
-from test.cute.matchers import named
+from cute.widgets import ButtonDriver
+from cute.matchers import named
 from test.drivers import BaseDriver
 from tgit.ui.album_composition_model import Columns
 from tgit.ui.album_composition_page import AlbumCompositionPage

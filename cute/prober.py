@@ -5,7 +5,7 @@ import time
 from hamcrest.core.selfdescribing import SelfDescribing
 from hamcrest.core.string_description import StringDescription
 
-from test.cute.events import MainEventLoop
+from .events import MainEventLoop
 
 DEFAULT_POLL_DELAY = 25
 DEFAULT_POLL_TIMEOUT = 1000

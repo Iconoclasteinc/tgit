@@ -3,7 +3,7 @@
 from PyQt5.QtWidgets import QLabel, QLineEdit, QTimeEdit, QComboBox, QPushButton, QCheckBox, QPlainTextEdit, \
     QTableView, QWidget, QTextEdit, QRadioButton
 
-from test.cute.widgets import LabelDriver, LineEditDriver, DateTimeEditDriver, ComboBoxDriver, ButtonDriver, \
+from cute.widgets import LabelDriver, LineEditDriver, DateTimeEditDriver, ComboBoxDriver, ButtonDriver, \
     TextEditDriver, WidgetDriver, TableViewDriver
 
 

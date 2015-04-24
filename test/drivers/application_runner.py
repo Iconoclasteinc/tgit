@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from tgit.isni.name_registry import NameRegistry
-from test.cute.matchers import named, showingOnScreen
-from test.cute.widgets import mainApplicationWindow
-from test.cute.prober import EventProcessingProber
-from test.cute.robot import Robot
+from cute.matchers import named, showingOnScreen
+from cute.widgets import mainApplicationWindow
+from cute.prober import EventProcessingProber
+from cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import doubles
 from tgit.tagger import TGiT

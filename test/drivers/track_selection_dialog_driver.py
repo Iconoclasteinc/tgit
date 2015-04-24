@@ -2,10 +2,10 @@
 import os
 
 from PyQt5.QtWidgets import QFileDialog
-from hamcrest import starts_with, contains_string
+from hamcrest import contains_string
 
-from test.cute.matchers import named, disabled, showingOnScreen
-from test.cute.widgets import FileDialogDriver, window
+from cute.matchers import named, disabled, showingOnScreen
+from cute.widgets import FileDialogDriver, window
 
 
 def track_selection_dialog(parent):

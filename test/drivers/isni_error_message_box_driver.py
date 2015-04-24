@@ -19,7 +19,7 @@
 
 from PyQt5.QtWidgets import QMessageBox
 
-from test.cute.matchers import named, withText
+from cute.matchers import named, withText
 from test.drivers import BaseDriver
 
 

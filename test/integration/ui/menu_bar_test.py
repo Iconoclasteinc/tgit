@@ -2,8 +2,8 @@
 
 from PyQt5.QtWidgets import QMainWindow
 
-from test.cute.finders import WidgetIdentity
-from test.cute.probes import ValueMatcherProbe
+from cute.finders import WidgetIdentity
+from cute.probes import ValueMatcherProbe
 from test.drivers.menu_bar_driver import MenuBarDriver
 from test.integration.ui import WidgetTest
 from test.util import builders as build

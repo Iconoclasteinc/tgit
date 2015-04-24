@@ -2,9 +2,9 @@
 
 from PyQt5.QtWidgets import QDialog, QAbstractButton
 
-from test.cute import matchers as match
-from test.cute.matchers import showingOnScreen, withText
-from test.cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
+from cute import matchers as match
+from cute.matchers import showingOnScreen, withText
+from cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
 from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.drivers.isni_error_message_box_driver import message_box
 from test.drivers.isni_lookup_dialog_driver import isni_lookup_dialog

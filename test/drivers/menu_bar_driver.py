@@ -2,8 +2,8 @@
 
 from PyQt5.QtWidgets import QMenuBar
 
-from test.cute.matchers import named
-from test.cute.widgets import QMenuBarDriver
+from cute.matchers import named
+from cute.widgets import QMenuBarDriver
 from test.drivers.settings_dialog_driver import settingsDialog
 
 

@@ -17,8 +17,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from test.cute.matchers import named
-from test.cute.widgets import window
+from cute.matchers import named
+from cute.widgets import window
 
 from test.drivers import BaseDriver
 from tgit.ui import ISNILookupDialog
@@ -26,7 +26,7 @@ from tgit.ui import ISNILookupDialog
 
 def isni_lookup_dialog(parent):
     return IsniLookupDialogDriver(window(ISNILookupDialog, named("isni-lookup-dialog")), parent.prober,
-                                  parent.gesturePerformer)
+                                  parent.gesture_performer)
 
 
 class IsniLookupDialogDriver(BaseDriver):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from test.cute.robot import Robot
+from .robot import Robot
 
 ONE_SECOND_IN_MS = 60000
 AVERAGE_WORD_LENGTH = 5  # precisely 5.1 in english

@@ -4,8 +4,8 @@ import os
 
 from PyQt5.QtWidgets import QFileDialog
 
-from test.cute.matchers import named, disabled
-from test.cute.widgets import FileDialogDriver, window
+from cute.matchers import named, disabled
+from cute.widgets import FileDialogDriver, window
 
 
 def pictureSelectionDialog(parent):

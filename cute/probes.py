@@ -4,7 +4,7 @@ from PyQt5.QtCore import QPoint, QRect
 from hamcrest import described_as, none
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
-from test.cute.prober import Probe
+from .prober import Probe
 
 
 class WidgetAssertionProbe(Probe):

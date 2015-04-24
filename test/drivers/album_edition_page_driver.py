@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from test.cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
+from cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
 from test.drivers import BaseDriver
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
 from tgit.ui.album_edition_page import AlbumEditionPage

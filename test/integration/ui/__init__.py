@@ -5,9 +5,9 @@ import unittest
 
 from PyQt5.QtWidgets import QApplication
 
-from test.cute.events import MainEventLoop
-from test.cute.prober import EventProcessingProber
-from test.cute.robot import Robot
+from cute.events import MainEventLoop
+from cute.prober import EventProcessingProber
+from cute.robot import Robot
 from tgit import ui
 from tgit.ui.main_window import MainWindow, StyleSheet
 

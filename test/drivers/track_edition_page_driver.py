@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from test.cute.matchers import named, withBuddy, showingOnScreen, withPixmapHeight, withPixmapWidth
+from cute.matchers import named, withBuddy, showingOnScreen, withPixmapHeight, withPixmapWidth
 from test.drivers import BaseDriver
 from tgit.ui.track_edition_page import TrackEditionPage
 

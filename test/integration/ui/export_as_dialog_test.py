@@ -6,7 +6,7 @@ import shutil
 from hamcrest import equal_to
 from PyQt5.QtWidgets import QMainWindow
 
-from test.cute.probes import ValueMatcherProbe
+from cute.probes import ValueMatcherProbe
 from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.integration.ui import WidgetTest
 from test.util import resources

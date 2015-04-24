@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from test.cute.matchers import named, withText
+from cute.matchers import named, withText
 from test.drivers import BaseDriver
 
 

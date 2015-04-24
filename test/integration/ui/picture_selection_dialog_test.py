@@ -5,11 +5,11 @@ import unittest
 
 from PyQt5.QtWidgets import QMainWindow
 
+from cute.probes import ValueMatcherProbe
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
-from tgit.ui.picture_selection_dialog import PictureSelectionDialog
-from test.cute.probes import ValueMatcherProbe
 from test.integration.ui import WidgetTest
 from test.util import resources
+from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 
 
 class PictureSelectionDialogTest(WidgetTest):

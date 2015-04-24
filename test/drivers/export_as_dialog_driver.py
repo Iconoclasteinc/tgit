@@ -2,8 +2,8 @@
 
 from PyQt5.QtWidgets import QFileDialog
 
-from test.cute.matchers import named
-from test.cute.widgets import FileDialogDriver, window
+from cute.matchers import named
+from cute.widgets import FileDialogDriver, window
 
 
 def exportAsDialog(parent):

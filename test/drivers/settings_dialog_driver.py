@@ -2,8 +2,8 @@
 
 from PyQt5.QtWidgets import QComboBox, QAbstractButton, QDialog, QLabel
 
-from test.cute.matchers import named, withText, withBuddy, showingOnScreen
-from test.cute.widgets import WidgetDriver, ComboBoxDriver, ButtonDriver, LabelDriver, window
+from cute.matchers import named, withText, withBuddy, showingOnScreen
+from cute.widgets import WidgetDriver, ComboBoxDriver, ButtonDriver, LabelDriver, window
 
 
 def settingsDialog(parent):
