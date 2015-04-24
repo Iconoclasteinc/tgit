@@ -95,3 +95,4 @@ class TaggerDriver(MainWindowDriver):
     def finds_isni_of_lead_performer(self):
         album_screen(self).lookup_isni_of_lead_performer()
         isni_lookup_dialog(self).selects_first_identity()
+        isni_lookup_dialog(self).confirm()

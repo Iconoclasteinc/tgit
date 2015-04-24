@@ -16,16 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 from test.cute.matchers import named
+from test.cute.widgets import window
 
 from test.drivers import BaseDriver
 from ui import ISNILookupDialog
 
 
 def isni_lookup_dialog(parent):
-    return IsniLookupDialogDriver.findSingle(parent, ISNILookupDialog, named('isni-lookup-dialog'))
+    return IsniLookupDialogDriver(window(ISNILookupDialog, named("isni-lookup-dialog")), parent.prober,
+                                  parent.gesturePerformer)
 
 
 class IsniLookupDialogDriver(BaseDriver):
     def selects_first_identity(self):
-        pass
+        self.radio(named("identity_radio_0")).click()
+
+    def confirm(self):
+        self.button(named("ok-button")).click()
