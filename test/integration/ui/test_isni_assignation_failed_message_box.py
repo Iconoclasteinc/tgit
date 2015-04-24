@@ -29,11 +29,12 @@ from test.integration.ui import show_widget
 from tgit.ui import isni_assignation_failed_message_box
 
 
-@pytest.fixture()
+@pytest.yield_fixture()
 def window():
     main_window = QMainWindow()
     show_widget(main_window)
-    return main_window
+    yield main_window
+    main_window.close()
 
 
 def test_shows_message_for_invalid_data_failure(app, window):
@@ -43,6 +44,7 @@ def test_shows_message_for_invalid_data_failure(app, window):
 
     driver.is_showing_message("Could not assign an ISNI")
     driver.is_showing_details("Invalid data: Message")
+    driver.acknowledge()
 
 
 def test_shows_message_for_invalid_format_failure(app, window):
@@ -52,6 +54,7 @@ def test_shows_message_for_invalid_format_failure(app, window):
 
     driver.is_showing_message("Could not assign an ISNI")
     driver.is_showing_details("Invalid format: Message")
+    driver.acknowledge()
 
 
 def test_shows_message_for_sparse_failure(app, window):
@@ -61,3 +64,4 @@ def test_shows_message_for_sparse_failure(app, window):
 
     driver.is_showing_message("Could not assign an ISNI")
     driver.is_showing_details("Sparse data: Message")
+    driver.acknowledge()

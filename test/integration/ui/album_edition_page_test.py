@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import timeit
-import unittest
 
 from hamcrest import has_entries, assert_that, less_than
+import pytest
 
 from test.cute.finders import WidgetIdentity
 from test.cute.probes import ValueMatcherProbe
@@ -105,6 +105,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.render(build.album(lead_performer='     '))
         self.driver.enablesISNILookup(False)
 
+    @pytest.mark.xfail(reason="ISNI assignation is disabled")
     def test_enables_assign_isni_button_when_lead_performer_is_not_empty(self):
         self.render(build.album(lead_performer='performer'))
         self.driver.enablesISNIAssign()
@@ -164,6 +165,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.clear_isni()
         self.check(clear_isni_signal)
 
+    @pytest.mark.xfail(reason="ISNI assignation is disabled")
     def test_signals_when_assign_isni_button_clicked(self):
         self.render(build.album(lead_performer='performer'))
 

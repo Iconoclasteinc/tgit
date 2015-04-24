@@ -6,7 +6,6 @@ from test.cute.prober import EventProcessingProber
 from test.cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
 from test.util import doubles
-from tgit.preferences import Preferences
 from tgit.tagger import TGiT
 
 ONE_SECOND = 1000

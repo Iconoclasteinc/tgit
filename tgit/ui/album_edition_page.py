@@ -151,7 +151,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.leadPerformer.setPlaceholderText(self.tr('Artist, Band or Various Artists'))
         self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata('lead_performer')))
         self.leadPerformer.textChanged.connect(
-            lambda value: self.enableOrDisableISNIButton(self.album.compilation, value, lookup_isni, assign_isni))
+            lambda value: self.enableOrDisableISNIButton(self.album.compilation, value, lookup_isni))
         leadPerformerRow = form.row()
         leadPerformerRow.addWidget(self.leadPerformer)
         leadPerformerRow.addWidget(lookup_isni)
