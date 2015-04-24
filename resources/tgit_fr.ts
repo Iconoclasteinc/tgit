@@ -608,9 +608,22 @@
         <translation>Fichiers images</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_selection_dialog.py" line="38"/>
-        <source>Audio files</source>
-        <translation>Fichiers audio</translation>
+        <location filename="tgit/ui/track_selection_dialog.py"/>
+        <source>FLAC files</source>
+        <translation>Fichiers FLAC</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_selection_dialog.py"/>
+        <source>MP3 files</source>
+        <translation>Fichiers MP3</translation>
+    </message>
+</context>
+<context>
+    <name>PlayButtonDelegate</name>
+    <message>
+        <location filename="tgit/ui/album_composition_page"/>
+        <source>FLAC playback is not supported on your platform</source>
+        <translation>La lecture de fichier FLAC n'est pas supportée sur votre machine</translation>
     </message>
 </context>
 </TS>

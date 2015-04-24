@@ -45,7 +45,7 @@ class PlayButtonDelegate(QStyledItemDelegate):
             _, playable = index.model().data(index)
             play_button.setEnabled(playable)
             if not playable:
-                play_button.setToolTip(self.tr('Flac playback is not supported on your platform'))
+                play_button.setToolTip(self.tr('FLAC playback is not supported on your platform'))
             self.parent().setIndexWidget(index, play_button)
 
         playing, _ = index.model().data(index)

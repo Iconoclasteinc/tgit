@@ -36,7 +36,7 @@ class TrackSelectionDialog(QObject):
         dialog.setObjectName('track-selection-dialog')
         dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
         dialog.setNameFilters(
-            ['%s (%s)' % (dialog.tr('Mp3 files'), '*.mp3'), '%s (%s)' % (dialog.tr('Flac files'), '*.flac')])
+            ['%s (%s)' % (dialog.tr('MP3 files'), '*.mp3'), '%s (%s)' % (dialog.tr('FLAC files'), '*.flac')])
         dialog.setDirectory(QDir.homePath())
         dialog.filesSelected.connect(
             lambda selection: self.tracks_selected.emit([os.path.abspath(entry) for entry in selection]))
