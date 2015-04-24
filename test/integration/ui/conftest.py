@@ -4,7 +4,7 @@ import pytest
 
 
 @pytest.yield_fixture()
-def app():
-    qt = QApplication([])
-    yield qt
-    qt.quit()
+def qt():
+    app = QApplication([])
+    yield app
+    app.quit()

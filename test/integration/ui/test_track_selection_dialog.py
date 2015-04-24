@@ -18,21 +18,21 @@ from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 
 @pytest.fixture()
-def dialog():
+def dialog(qt):
     main_window = QMainWindow()
     show_widget(main_window)
     return TrackSelectionDialog(main_window, native=False, transient=False)
 
 
 @pytest.yield_fixture()
-def driver():
+def driver(dialog):
     driver = TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')),
                                         EventProcessingProber(), Robot())
     yield driver
     driver.close()
 
 
-def test_signals_when_audio_files_selected(app, driver, dialog):
+def test_signals_when_audio_files_selected(driver, dialog):
     audio_files = [resources.path('audio', 'Rolling in the Deep.mp3'),
                    resources.path('audio', 'Set Fire to the Rain.mp3'),
                    resources.path('audio', 'Someone Like You.mp3')]
@@ -46,7 +46,7 @@ def test_signals_when_audio_files_selected(app, driver, dialog):
     driver.check(track_selection_signal)
 
 
-def test_alternatively_selects_directories_instead_of_files(app, driver, dialog):
+def test_alternatively_selects_directories_instead_of_files(driver, dialog):
     audio_folder = resources.path('audio')
     track_selection_signal = ValueMatcherProbe('track(s) selection', contains(audio_folder))
     dialog.tracks_selected.connect(track_selection_signal.received)
@@ -56,7 +56,7 @@ def test_alternatively_selects_directories_instead_of_files(app, driver, dialog)
     driver.check(track_selection_signal)
 
 
-def test_allows_selection_of_flac_files(app, driver, dialog):
+def test_allows_selection_of_flac_files(driver, dialog):
     flac_files = [resources.path('audio', 'Zumbar.flac')]
     track_selection_signal = ValueMatcherProbe('track(s) selection', flac_files)
 
@@ -68,7 +68,7 @@ def test_allows_selection_of_flac_files(app, driver, dialog):
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="not supported on Windows")
-def test_rejects_non_audio_files(app, driver, dialog):
+def test_rejects_non_audio_files(driver, dialog):
     unsupported_file = resources.path('front-cover.jpg')
 
     dialog.display(folders=False)
