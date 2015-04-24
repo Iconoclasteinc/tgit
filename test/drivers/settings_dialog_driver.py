@@ -2,13 +2,13 @@
 
 from PyQt5.QtWidgets import QComboBox, QAbstractButton, QDialog, QLabel
 
-from cute.matchers import named, withText, withBuddy, showingOnScreen
+from cute.matchers import named, with_text, with_buddy, showing_on_screen
 from cute.widgets import WidgetDriver, ComboBoxDriver, ButtonDriver, LabelDriver, window
 
 
 def settingsDialog(parent):
-    return SettingsDialogDriver(window(QDialog, named('settings-dialog'), showingOnScreen()), parent.prober,
-                                parent.gesturePerformer)
+    return SettingsDialogDriver(window(QDialog, named('settings-dialog'), showing_on_screen()), parent.prober,
+                                parent.gesture_performer)
 
 
 class SettingsDialogDriver(WidgetDriver):
@@ -24,22 +24,22 @@ class SettingsDialogDriver(WidgetDriver):
         self._combo(named('language')).has_current_text(language)
 
     def changeLanguage(self, language):
-        label = self._label(withBuddy(named('language')))
+        label = self._label(with_buddy(named('language')))
         label.is_showing_on_screen()
         self._combo(named('language')).select_option(language)
         self.ok()
 
     def ok(self):
-        self._button(withText('OK')).click()
+        self._button(with_text('OK')).click()
 
     def cancel(self):
-        self._button(withText('Cancel')).click()
+        self._button(with_text('Cancel')).click()
 
     def _combo(self, matching):
-        return ComboBoxDriver.findSingle(self, QComboBox, matching)
+        return ComboBoxDriver.find_single(self, QComboBox, matching)
 
     def _button(self, matching):
-        return ButtonDriver.findSingle(self, QAbstractButton, matching)
+        return ButtonDriver.find_single(self, QAbstractButton, matching)
 
     def _label(self, matching):
-        return LabelDriver.findSingle(self, QLabel, matching)
+        return LabelDriver.find_single(self, QLabel, matching)

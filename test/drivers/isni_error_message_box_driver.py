@@ -19,20 +19,20 @@
 
 from PyQt5.QtWidgets import QMessageBox
 
-from cute.matchers import named, withText
+from cute.matchers import named, with_text
 from test.drivers import BaseDriver
 
 
 def message_box(parent):
-    return MessageBoxDriver.findSingle(parent, QMessageBox, named("message_box"))
+    return MessageBoxDriver.find_single(parent, QMessageBox, named("message_box"))
 
 
 class MessageBoxDriver(BaseDriver):
     def is_showing_message(self, message):
-        self.label(named("qt_msgbox_label")).hasText(message)
+        self.label(named("qt_msgbox_label")).has_text(message)
 
     def is_showing_details(self, message):
-        self.rich_text_edit().hasPlainText(message)
+        self.rich_text_edit().has_plain_text(message)
 
     def acknowledge(self):
-        self.button(withText("OK")).click()
+        self.button(with_text("OK")).click()

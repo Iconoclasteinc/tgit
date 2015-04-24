@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from cute.matchers import named, withBuddy, showingOnScreen, withPixmapHeight, withPixmapWidth
+from cute.matchers import named, with_buddy, showing_on_screen, with_pixmap_height, with_pixmap_width
 from test.drivers import BaseDriver
 from tgit.ui.track_edition_page import TrackEditionPage
 
 
 def track_edition_page(parent):
-    return TrackEditionPageDriver.findSingle(parent, TrackEditionPage, named('track-edition-page'), showingOnScreen())
+    return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named('track-edition-page'), showing_on_screen())
 
 
 class TrackEditionPageDriver(BaseDriver):
@@ -62,132 +62,132 @@ class TrackEditionPageDriver(BaseDriver):
         label = self.label(named('album-cover'))
         label.is_showing_on_screen()
         height, width = TrackEditionPage.ALBUM_COVER_SIZE
-        label.hasPixmap(withPixmapHeight(height))
-        label.hasPixmap(withPixmapWidth(width))
+        label.has_pixmap(with_pixmap_height(height))
+        label.has_pixmap(with_pixmap_width(width))
 
     def shows_album_lead_performer(self, name):
         label = self.label(named('album-lead-performer'))
         label.is_showing_on_screen()
-        label.hasText(name)
+        label.has_text(name)
 
     def showsAlbumTitle(self, title):
         label = self.label(named('album-title'))
         label.is_showing_on_screen()
-        label.hasText(title)
+        label.has_text(title)
 
     def showsAlbumLabel(self, name):
         label = self.label(named('record-label'))
         label.is_showing_on_screen()
-        label.hasText(name)
+        label.has_text(name)
 
     def showsTrackNumber(self, number):
         label = self.label(named('track-number'))
         label.is_showing_on_screen()
-        label.hasText(number)
+        label.has_text(number)
 
     def showsTrackTitle(self, trackTitle):
-        self.label(withBuddy(named('track-title'))).is_showing_on_screen()
-        self.lineEdit(named('track-title')).hasText(trackTitle)
+        self.label(with_buddy(named('track-title'))).is_showing_on_screen()
+        self.lineEdit(named('track-title')).has_text(trackTitle)
 
     def changeTrackTitle(self, title):
-        self.lineEdit(named('track-title')).changeText(title)
+        self.lineEdit(named('track-title')).change_text(title)
 
     def shows_lead_performer(self, name, disabled=False):
-        self.label(withBuddy(named('lead-performer'))).is_showing_on_screen()
+        self.label(with_buddy(named('lead-performer'))).is_showing_on_screen()
         edit = self.lineEdit(named('lead-performer'))
-        edit.hasText(name)
+        edit.has_text(name)
         edit.is_disabled(disabled)
 
     def change_lead_performer(self, name):
-        self.lineEdit(named('lead-performer')).changeText(name)
+        self.lineEdit(named('lead-performer')).change_text(name)
 
     def showsVersionInfo(self, versionInfo):
-        self.label(withBuddy(named('version-info'))).is_showing_on_screen()
-        self.lineEdit(named('version-info')).hasText(versionInfo)
+        self.label(with_buddy(named('version-info'))).is_showing_on_screen()
+        self.lineEdit(named('version-info')).has_text(versionInfo)
 
     def changeVersionInfo(self, info):
-        self.lineEdit(named('version-info')).changeText(info)
+        self.lineEdit(named('version-info')).change_text(info)
 
     def showsFeaturedGuest(self, name):
-        self.label(withBuddy(named('featured-guest'))).is_showing_on_screen()
-        self.lineEdit(named('featured-guest')).hasText(name)
+        self.label(with_buddy(named('featured-guest'))).is_showing_on_screen()
+        self.lineEdit(named('featured-guest')).has_text(name)
 
     def changeFeaturedGuest(self, name):
-        self.lineEdit(named('featured-guest')).changeText(name)
+        self.lineEdit(named('featured-guest')).change_text(name)
 
     def showsLyricist(self, name):
-        self.label(withBuddy(named('lyricist'))).is_showing_on_screen()
-        self.lineEdit(named('lyricist')).hasText(name)
+        self.label(with_buddy(named('lyricist'))).is_showing_on_screen()
+        self.lineEdit(named('lyricist')).has_text(name)
 
     def changeLyricist(self, name):
-        self.lineEdit(named('lyricist')).changeText(name)
+        self.lineEdit(named('lyricist')).change_text(name)
 
     def showsComposer(self, name):
-        self.label(withBuddy(named('composer'))).is_showing_on_screen()
-        self.lineEdit(named('composer')).hasText(name)
+        self.label(with_buddy(named('composer'))).is_showing_on_screen()
+        self.lineEdit(named('composer')).has_text(name)
 
     def changeComposer(self, name):
-        self.lineEdit(named('composer')).changeText(name)
+        self.lineEdit(named('composer')).change_text(name)
 
     def showsPublisher(self, name):
-        self.label(withBuddy(named('publisher'))).is_showing_on_screen()
-        self.lineEdit(named('publisher')).hasText(name)
+        self.label(with_buddy(named('publisher'))).is_showing_on_screen()
+        self.lineEdit(named('publisher')).has_text(name)
 
     def changePublisher(self, name):
-        self.lineEdit(named('publisher')).changeText(name)
+        self.lineEdit(named('publisher')).change_text(name)
 
     def showsIsrc(self, code):
-        self.label(withBuddy(named('isrc'))).is_showing_on_screen()
-        self.lineEdit(named('isrc')).hasText(code)
+        self.label(with_buddy(named('isrc'))).is_showing_on_screen()
+        self.lineEdit(named('isrc')).has_text(code)
 
     def changeIsrc(self, code):
-        self.lineEdit(named('isrc')).changeText(code)
+        self.lineEdit(named('isrc')).change_text(code)
 
     def showsIswc(self, code):
-        self.label(withBuddy(named('iswc'))).is_showing_on_screen()
+        self.label(with_buddy(named('iswc'))).is_showing_on_screen()
         edit = self.lineEdit(named('iswc'))
         edit.is_disabled()
-        edit.hasText(code)
+        edit.has_text(code)
 
     def showsTags(self, tags):
-        self.label(withBuddy(named('tags'))).is_showing_on_screen()
-        self.lineEdit(named('tags')).hasText(tags)
+        self.label(with_buddy(named('tags'))).is_showing_on_screen()
+        self.lineEdit(named('tags')).has_text(tags)
 
     def changeTags(self, tags):
-        self.lineEdit(named('tags')).changeText(tags)
+        self.lineEdit(named('tags')).change_text(tags)
 
     def showsLyrics(self, lyrics):
-        self.label(withBuddy(named('lyrics'))).is_showing_on_screen()
-        self.textEdit(named('lyrics')).hasPlainText(lyrics)
+        self.label(with_buddy(named('lyrics'))).is_showing_on_screen()
+        self.textEdit(named('lyrics')).has_plain_text(lyrics)
 
     def addLyrics(self, *lyrics):
         edit = self.textEdit(named('lyrics'))
         for lyric in lyrics:
-            edit.addLine(lyric)
-        edit.clearFocus()
+            edit.add_line(lyric)
+        edit.clear_focus()
 
     def showsLanguage(self, lang):
-        self.label(withBuddy(named('languages'))).is_showing_on_screen()
+        self.label(with_buddy(named('languages'))).is_showing_on_screen()
         self.combobox(named('languages')).has_current_text(lang)
 
     def changeLanguage(self, lang):
-        self.combobox(named('languages')).changeText(lang)
+        self.combobox(named('languages')).change_text(lang)
 
     def selectLanguage(self, lang):
         self.combobox(named('languages')).select_option(lang)
 
     def showsPreviewTime(self, time):
-        self.dateTimeEdit(named('preview-time')).hasTime(time)
+        self.dateTimeEdit(named('preview-time')).has_time(time)
 
     def showsBitrate(self, text):
-        self.label(withBuddy(named('bitrate'))).is_showing_on_screen()
-        self.label(named('bitrate')).hasText(text)
+        self.label(with_buddy(named('bitrate'))).is_showing_on_screen()
+        self.label(named('bitrate')).has_text(text)
 
     def showsDuration(self, text):
-        self.label(withBuddy(named('duration'))).is_showing_on_screen()
-        self.label(named('duration')).hasText(text)
+        self.label(with_buddy(named('duration'))).is_showing_on_screen()
+        self.label(named('duration')).has_text(text)
 
     def showsSoftwareNotice(self, notice):
         label = self.label(named('software-notice'))
         label.is_showing_on_screen()
-        label.hasText(notice)
+        label.has_text(notice)

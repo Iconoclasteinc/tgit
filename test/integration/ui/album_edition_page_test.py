@@ -23,7 +23,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.show(self.page)
 
     def createDriverFor(self, widget):
-        return AlbumEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return AlbumEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testDisplaysPicturePlaceholderWhenAlbumHasNoCover(self):
         self.render(build.album())

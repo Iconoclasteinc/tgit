@@ -12,27 +12,27 @@ def named(name):
     return with_(properties.name(), wrap_matcher(name))
 
 
-def withBuddy(buddy):
-    return with_(properties.labelBuddy(), wrap_matcher(buddy))
+def with_buddy(buddy):
+    return with_(properties.label_buddy(), wrap_matcher(buddy))
 
 
-def withPixmapHeight(height):
-    return with_(properties.pixmapHeight(), wrap_matcher(height))
+def with_pixmap_height(height):
+    return with_(properties.pixmap_height(), wrap_matcher(height))
 
 
-def withPixmapWidth(width):
-    return with_(properties.pixmapWidth(), wrap_matcher(width))
+def with_pixmap_width(width):
+    return with_(properties.pixmap_width(), wrap_matcher(width))
 
 
-def withText(text):
+def with_text(text):
     return with_(properties.text(), wrap_matcher(text))
 
 
-def withListItemText(text):
-    return with_(properties.listItemText(), wrap_matcher(text))
+def with_list_item_text(text):
+    return with_(properties.list_item_text(), wrap_matcher(text))
 
 
-def withTitle(text):
+def with_title(text):
     return with_(properties.title(), wrap_matcher(text))
 
 
@@ -44,7 +44,7 @@ def existing():
     return anything()
 
 
-def showingOnScreen():
+def showing_on_screen():
     return StateMatcher(QWidget.isVisible, 'showing on screen', 'hidden')
 
 
@@ -72,38 +72,38 @@ class QueryResultMatcher(BaseMatcher):
     def __init__(self, query, matcher):
         super(BaseMatcher, self).__init__()
         self._query = query
-        self._resultMatcher = matcher
+        self._result_matcher = matcher
 
     def _matches(self, item):
-        return item and self._resultMatcher.matches(self._query(item))
+        return item and self._result_matcher.matches(self._query(item))
 
     def describe_to(self, description):
         description.append_text('with ') \
             .append_description_of(self._query) \
             .append_text(" ") \
-            .append_description_of(self._resultMatcher)
+            .append_description_of(self._result_matcher)
 
     def describe_mismatch(self, item, mismatch_description):
         if item is None:
             mismatch_description.append_text('was ').append_description_of(item)
         else:
             mismatch_description.append_description_of(self._query).append_text(" ")
-            self._resultMatcher.describe_mismatch(self._query(item), mismatch_description)
+            self._result_matcher.describe_mismatch(self._query(item), mismatch_description)
 
 
 class StateMatcher(BaseMatcher):
-    def __init__(self, state, description, oppositeDescription):
+    def __init__(self, state, description, opposite_description):
         super(StateMatcher, self).__init__()
         self._state = state
-        self._stateDescription = description
-        self._oppositeStateDescription = oppositeDescription
+        self._state_description = description
+        self._opposite_state_description = opposite_description
 
     def _matches(self, item):
         return self._state(item)
 
     def describe_to(self, description):
-        description.append(self._stateDescription)
+        description.append(self._state_description)
 
     def describe_mismatch(self, item, mismatch_description):
         mismatch_description.append_text('was ') \
-            .append_text(self._oppositeStateDescription)
+            .append_text(self._opposite_state_description)

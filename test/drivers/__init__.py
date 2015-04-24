@@ -9,34 +9,34 @@ from cute.widgets import LabelDriver, LineEditDriver, DateTimeEditDriver, ComboB
 
 class BaseDriver(WidgetDriver):
     def label(self, matching):
-        return LabelDriver.findSingle(self, QLabel, matching)
+        return LabelDriver.find_single(self, QLabel, matching)
 
     def lineEdit(self, matching):
-        return LineEditDriver.findSingle(self, QLineEdit, matching)
+        return LineEditDriver.find_single(self, QLineEdit, matching)
 
     def textEdit(self, matching):
-        return TextEditDriver.findSingle(self, QPlainTextEdit, matching)
+        return TextEditDriver.find_single(self, QPlainTextEdit, matching)
 
     def rich_text_edit(self, *matching):
-        return TextEditDriver.findSingle(self, QTextEdit, *matching)
+        return TextEditDriver.find_single(self, QTextEdit, *matching)
 
     def dateTimeEdit(self, matching):
-        return DateTimeEditDriver.findSingle(self, QTimeEdit, matching)
+        return DateTimeEditDriver.find_single(self, QTimeEdit, matching)
 
     def combobox(self, matching):
-        return ComboBoxDriver.findSingle(self, QComboBox, matching)
+        return ComboBoxDriver.find_single(self, QComboBox, matching)
 
     def button(self, matching):
-        return ButtonDriver.findSingle(self, QPushButton, matching)
+        return ButtonDriver.find_single(self, QPushButton, matching)
 
     def checkbox(self, matching):
-        return ButtonDriver.findSingle(self, QCheckBox, matching)
+        return ButtonDriver.find_single(self, QCheckBox, matching)
 
     def radio(self, matching):
-        return ButtonDriver.findSingle(self, QRadioButton, matching)
+        return ButtonDriver.find_single(self, QRadioButton, matching)
 
     def table(self, matching):
-        return TableViewDriver.findSingle(self, QTableView, matching)
+        return TableViewDriver.find_single(self, QTableView, matching)
 
     def widget(self, matching):
-        return WidgetDriver.findSingle(self, QWidget, matching)
+        return WidgetDriver.find_single(self, QWidget, matching)

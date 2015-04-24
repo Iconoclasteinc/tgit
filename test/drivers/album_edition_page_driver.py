@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from cute.matchers import named, withBuddy, withPixmapHeight, withPixmapWidth
+from cute.matchers import named, with_buddy, with_pixmap_height, with_pixmap_width
 from test.drivers import BaseDriver
 from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
 from tgit.ui.album_edition_page import AlbumEditionPage
 
 
 def album_edition_page(parent):
-    return AlbumEditionPageDriver.findSingle(parent, AlbumEditionPage, named('album-edition-page'))
+    return AlbumEditionPageDriver.find_single(parent, AlbumEditionPage, named('album-edition-page'))
 
 
 class AlbumEditionPageDriver(BaseDriver):
@@ -82,8 +82,8 @@ class AlbumEditionPageDriver(BaseDriver):
     def displaysPictureWithSize(self, width, height):
         label = self.label(named('front-cover'))
         label.is_showing_on_screen()
-        label.hasPixmap(withPixmapHeight(height))
-        label.hasPixmap(withPixmapWidth(width))
+        label.has_pixmap(with_pixmap_height(height))
+        label.has_pixmap(with_pixmap_width(width))
 
     def showsPicture(self):
         self.displaysPictureWithSize(*AlbumEditionPage.FRONT_COVER_SIZE)
@@ -115,14 +115,14 @@ class AlbumEditionPageDriver(BaseDriver):
         self.button(named('add-performer')).click()
 
     def showsReleaseName(self, name):
-        self.label(withBuddy(named('release-name'))).is_showing_on_screen()
-        self.lineEdit(named('release-name')).hasText(name)
+        self.label(with_buddy(named('release-name'))).is_showing_on_screen()
+        self.lineEdit(named('release-name')).has_text(name)
 
     def changeReleaseName(self, name):
-        self.lineEdit(named('release-name')).changeText(name)
+        self.lineEdit(named('release-name')).change_text(name)
 
     def shows_compilation(self, value):
-        self.label(withBuddy(named('compilation'))).is_showing_on_screen()
+        self.label(with_buddy(named('compilation'))).is_showing_on_screen()
         compilation_checkbox = self.checkbox(named('compilation'))
         compilation_checkbox.is_checked(value)
 
@@ -131,18 +131,18 @@ class AlbumEditionPageDriver(BaseDriver):
         compilation_checkbox.click()
 
     def shows_lead_performer(self, name, disabled=False):
-        label = self.label(withBuddy(named('lead-performer')))
+        label = self.label(with_buddy(named('lead-performer')))
         label.is_showing_on_screen()
         edit = self.lineEdit(named('lead-performer'))
-        edit.hasText(name)
+        edit.has_text(name)
         edit.is_disabled(disabled)
 
     def showsISNI(self, name, disabled=False):
-        label = self.label(withBuddy(named('isni')))
+        label = self.label(with_buddy(named('isni')))
         label.is_showing_on_screen()
         label.is_disabled(disabled)
         edit = self.lineEdit(named('isni'))
-        edit.hasText(name)
+        edit.has_text(name)
         edit.is_disabled(disabled)
 
     def enablesISNILookup(self, enabled=True):
@@ -154,118 +154,118 @@ class AlbumEditionPageDriver(BaseDriver):
         button.is_enabled(enabled)
 
     def changeLeadPerformer(self, name):
-        self.lineEdit(named('lead-performer')).changeText(name)
+        self.lineEdit(named('lead-performer')).change_text(name)
 
     def showsGuestPerformers(self, names):
-        self.label(withBuddy(named('guest-performers'))).is_showing_on_screen()
-        self.lineEdit(named('guest-performers')).hasText(names)
+        self.label(with_buddy(named('guest-performers'))).is_showing_on_screen()
+        self.lineEdit(named('guest-performers')).has_text(names)
 
     def changeGuestPerformers(self, names):
-        self.lineEdit(named('guest-performers')).changeText(names)
+        self.lineEdit(named('guest-performers')).change_text(names)
 
     def showsLabelName(self, name):
-        self.label(withBuddy(named('label-name'))).is_showing_on_screen()
-        self.lineEdit(named('label-name')).hasText(name)
+        self.label(with_buddy(named('label-name'))).is_showing_on_screen()
+        self.lineEdit(named('label-name')).has_text(name)
 
     def changeLabelName(self, name):
-        self.lineEdit(named('label-name')).changeText(name)
+        self.lineEdit(named('label-name')).change_text(name)
 
     def showsArea(self, area):
-        self.label(withBuddy(named('area'))).is_showing_on_screen()
+        self.label(with_buddy(named('area'))).is_showing_on_screen()
         edit = self.lineEdit(named('area'))
         edit.is_disabled()
-        edit.hasText(area)
+        edit.has_text(area)
 
     def showsCatalogNumber(self, number):
-        self.label(withBuddy(named('catalog-number'))).is_showing_on_screen()
-        self.lineEdit(named('catalog-number')).hasText(number)
+        self.label(with_buddy(named('catalog-number'))).is_showing_on_screen()
+        self.lineEdit(named('catalog-number')).has_text(number)
 
     def changeCatalogNumber(self, number):
-        self.lineEdit(named('catalog-number')).changeText(number)
+        self.lineEdit(named('catalog-number')).change_text(number)
 
     def showsUpc(self, code):
-        self.label(withBuddy(named('upc'))).is_showing_on_screen()
-        self.lineEdit(named('upc')).hasText(code)
+        self.label(with_buddy(named('upc'))).is_showing_on_screen()
+        self.lineEdit(named('upc')).has_text(code)
 
     def changeUpc(self, code):
-        self.lineEdit(named('upc')).changeText(code)
+        self.lineEdit(named('upc')).change_text(code)
 
     def shows_recording_time(self, time):
-        self.label(withBuddy(named('recording-time'))).is_showing_on_screen()
-        self.lineEdit(named('recording-time')).hasText(time)
+        self.label(with_buddy(named('recording-time'))).is_showing_on_screen()
+        self.lineEdit(named('recording-time')).has_text(time)
 
     def change_recording_time(self, time):
-        self.lineEdit(named('recording-time')).changeText(time)
+        self.lineEdit(named('recording-time')).change_text(time)
 
     def showsReleaseTime(self, time):
-        self.label(withBuddy(named('release-time'))).is_showing_on_screen()
-        self.lineEdit(named('release-time')).hasText(time)
+        self.label(with_buddy(named('release-time'))).is_showing_on_screen()
+        self.lineEdit(named('release-time')).has_text(time)
 
     def changeReleaseTime(self, time):
-        self.lineEdit(named('release-time')).changeText(time)
+        self.lineEdit(named('release-time')).change_text(time)
 
     def showsDigitalReleaseTime(self, time):
-        self.label(withBuddy(named('digital-release-time'))).is_showing_on_screen()
+        self.label(with_buddy(named('digital-release-time'))).is_showing_on_screen()
         edit = self.lineEdit(named('digital-release-time'))
         edit.is_disabled()
-        edit.hasText(time)
+        edit.has_text(time)
 
     def showsOriginalReleaseTime(self, time):
-        self.label(withBuddy(named('original-release-time'))).is_showing_on_screen()
-        self.lineEdit(named('original-release-time')).hasText(time)
+        self.label(with_buddy(named('original-release-time'))).is_showing_on_screen()
+        self.lineEdit(named('original-release-time')).has_text(time)
 
     def changeOriginalReleaseTime(self, time):
-        self.label(named('original-release-time')).changeText(time)
+        self.label(named('original-release-time')).change_text(time)
 
     def showsRecordingStudios(self, studios):
-        self.label(withBuddy(named('recording-studios'))).is_showing_on_screen()
-        self.lineEdit(named('recording-studios')).hasText(studios)
+        self.label(with_buddy(named('recording-studios'))).is_showing_on_screen()
+        self.lineEdit(named('recording-studios')).has_text(studios)
 
     def changeRecordingStudios(self, studios):
-        self.lineEdit(named('recording-studios')).changeText(studios)
+        self.lineEdit(named('recording-studios')).change_text(studios)
 
     def showsProducer(self, producer):
-        self.label(withBuddy(named('producer'))).is_showing_on_screen()
-        self.lineEdit(named('producer')).hasText(producer)
+        self.label(with_buddy(named('producer'))).is_showing_on_screen()
+        self.lineEdit(named('producer')).has_text(producer)
 
     def changeProducer(self, producer):
-        self.lineEdit(named('producer')).changeText(producer)
+        self.lineEdit(named('producer')).change_text(producer)
 
     def showsMixer(self, mixer):
-        self.label(withBuddy(named('mixer'))).is_showing_on_screen()
-        self.lineEdit(named('mixer')).hasText(mixer)
+        self.label(with_buddy(named('mixer'))).is_showing_on_screen()
+        self.lineEdit(named('mixer')).has_text(mixer)
 
     def changeMixer(self, mixer):
-        self.lineEdit(named('mixer')).changeText(mixer)
+        self.lineEdit(named('mixer')).change_text(mixer)
 
     def showsComments(self, comments):
-        self.label(withBuddy(named('comments'))).is_showing_on_screen()
-        self.textEdit(named('comments')).hasPlainText(comments)
+        self.label(with_buddy(named('comments'))).is_showing_on_screen()
+        self.textEdit(named('comments')).has_plain_text(comments)
 
     def addComments(self, *comments):
         edit = self.textEdit(named('comments'))
         for comment in comments:
-            edit.addLine(comment)
-        edit.clearFocus()
+            edit.add_line(comment)
+        edit.clear_focus()
 
     def shows_primary_style(self, style):
-        self.label(withBuddy(named('primary-style'))).is_showing_on_screen()
+        self.label(with_buddy(named('primary-style'))).is_showing_on_screen()
         self.combobox(named('primary-style')).has_current_text(style)
 
     def changePrimaryStyle(self, style):
-        self.combobox(named('primary-style')).changeText(style)
+        self.combobox(named('primary-style')).change_text(style)
 
     def select_primary_style(self, style):
         self.combobox(named('primary-style')).select_option(style)
 
     def showsMediaType(self, type_):
-        self.label(withBuddy(named('media-type'))).is_showing_on_screen()
+        self.label(with_buddy(named('media-type'))).is_showing_on_screen()
         edit = self.lineEdit(named('media-type'))
         edit.is_disabled()
-        edit.hasText(type_)
+        edit.has_text(type_)
 
     def showsReleaseType(self, type_):
-        self.label(withBuddy(named('release-type'))).is_showing_on_screen()
+        self.label(with_buddy(named('release-type'))).is_showing_on_screen()
         edit = self.lineEdit(named('release-type'))
         edit.is_disabled()
-        edit.hasText(type_)
+        edit.has_text(type_)

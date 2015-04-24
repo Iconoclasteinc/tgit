@@ -6,9 +6,9 @@ from PyQt5.QtTest import QTest
 
 class MainEventLoop(object):
     @staticmethod
-    def processPendingEvents():
+    def process_pending_events():
         QCoreApplication.processEvents(QEventLoop.AllEvents)
 
     @staticmethod
-    def processEventsFor(ms):
+    def process_events_for(ms):
         QTest.qWait(ms)

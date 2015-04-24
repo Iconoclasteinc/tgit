@@ -27,7 +27,7 @@ class AlbumCompositionPageTest(WidgetTest):
         self.page.display(doubles.null_audio_player(), self.album)
 
     def createDriverFor(self, widget):
-        return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testDisplaysColumnHeadings(self):
         self.driver.showsColumnHeaders('Track Title', 'Lead Performer', 'Album Title', 'Bitrate', 'Duration', '', '')

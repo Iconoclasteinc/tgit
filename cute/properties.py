@@ -14,35 +14,35 @@ def text():
     return PropertyQuery('text', lambda w: w.text())
 
 
-def labelPixmap():
+def label_pixmap():
     return PropertyQuery('pixmap', QLabel.pixmap)
 
 
-def pixmapHeight():
+def pixmap_height():
     return PropertyQuery('pixmap height', QPixmap.height)
 
 
-def pixmapWidth():
+def pixmap_width():
     return PropertyQuery('pixmap width', QPixmap.width)
 
 
-def labelBuddy():
+def label_buddy():
     return PropertyQuery('buddy', QLabel.buddy)
 
 
-def inputText():
+def input_text():
     return PropertyQuery('display text', QLineEdit.displayText)
 
 
-def plainText():
+def plain_text():
     return PropertyQuery('plain text', lambda w: w.toPlainText())
 
 
-def currentText():
+def current_text():
     return PropertyQuery('current text', QComboBox.currentText)
 
 
-def listItemText():
+def list_item_text():
     return PropertyQuery('text', lambda item: item.data(Qt.DisplayRole))
 
 
@@ -54,7 +54,7 @@ def title():
     return PropertyQuery('title', lambda w: w.title())
 
 
-def cursorShape():
+def cursor_shape():
     return PropertyQuery('cursor shape', lambda w: w.cursor().shape())
 
 
@@ -66,11 +66,11 @@ class Query(SelfDescribing):
 class PropertyQuery(Query):
     def __init__(self, name, query):
         super(PropertyQuery, self).__init__()
-        self._propertyName = name
+        self._property_name = name
         self._query = query
 
     def __call__(self, arg):
         return self._query(arg)
 
     def describe_to(self, description):
-        description.append_text(self._propertyName)
+        description.append_text(self._property_name)

@@ -17,7 +17,7 @@ class PerformerDialogTest(WidgetTest):
         self.driver = self.createDriverFor(self.dialog)
 
     def createDriverFor(self, widget):
-        return PerformerDialogDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return PerformerDialogDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testAddsPerformers(self):
         self.createDialog()

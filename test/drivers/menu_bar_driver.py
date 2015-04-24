@@ -8,19 +8,19 @@ from test.drivers.settings_dialog_driver import settingsDialog
 
 
 def menuBar(parent):
-    return MenuBarDriver.findSingle(parent, QMenuBar)
+    return MenuBarDriver.find_single(parent, QMenuBar)
 
 
 def addFilesMenuItem(menu):
-    return menu.menuItem(named('add-files'))
+    return menu.menu_item(named('add-files'))
 
 
 def addFolderMenuItem(menu):
-    return menu.menuItem(named('add-folder'))
+    return menu.menu_item(named('add-folder'))
 
 
 def exportMenuItem(menu):
-    return menu.menuItem(named('export'))
+    return menu.menu_item(named('export'))
 
 
 class MenuBarDriver(QMenuBarDriver):
@@ -45,7 +45,7 @@ class MenuBarDriver(QMenuBarDriver):
 
     def settings(self):
         menu = self.openMenu(named('file-menu'))
-        menu.selectMenuItem(named('Settings'))
+        menu.select_menu_item(named('Settings'))
         return settingsDialog(self)
 
     def openMenu(self, matching):

@@ -6,7 +6,7 @@ from tgit.ui.welcome_screen import WelcomeScreen
 
 
 def welcome_screen(parent):
-    return WelcomeScreenDriver.findSingle(parent, WelcomeScreen, named('welcome-screen'))
+    return WelcomeScreenDriver.find_single(parent, WelcomeScreen, named('welcome-screen'))
 
 
 class WelcomeScreenDriver(BaseDriver):

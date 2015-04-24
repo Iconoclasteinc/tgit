@@ -24,8 +24,8 @@ END_OF_TEST_PAUSE = int(os.environ.get('END_OF_TEST_PAUSE', 0))
 class WidgetTest(unittest.TestCase):
     def setUp(self):
         self.app = QApplication([])
-        self.prober = EventProcessingProber(timeoutInMs=1000)
-        self.gesturePerformer = Robot()
+        self.prober = EventProcessingProber(timeout_in_ms=1000)
+        self.gesture_performer = Robot()
         self.driver = None
 
     def show(self, widget):
@@ -37,7 +37,7 @@ class WidgetTest(unittest.TestCase):
         self.prober.check(probe)
 
     def pause(self, ms):
-        MainEventLoop.processEventsFor(ms)
+        MainEventLoop.process_events_for(ms)
 
     def tearDown(self):
         self.pause(END_OF_TEST_PAUSE)
@@ -45,7 +45,7 @@ class WidgetTest(unittest.TestCase):
             self.driver.close()
             del self.driver
 
-        del self.gesturePerformer
+        del self.gesture_performer
         del self.prober
         self.app.quit()
         del self.app

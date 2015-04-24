@@ -3,7 +3,7 @@
 from PyQt5.QtWidgets import QDialog, QAbstractButton
 
 from cute import matchers as match
-from cute.matchers import showingOnScreen, withText
+from cute.matchers import showing_on_screen, with_text
 from cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
 from test.drivers.export_as_dialog_driver import exportAsDialog
 from test.drivers.isni_error_message_box_driver import message_box
@@ -16,12 +16,12 @@ from test.drivers.welcome_screen_driver import welcome_screen
 
 
 def restartMessage(parent):
-    return WidgetDriver.findSingle(parent, QDialog, match.named("restart-message"), showingOnScreen())
+    return WidgetDriver.find_single(parent, QDialog, match.named("restart-message"), showing_on_screen())
 
 
 class TaggerDriver(MainWindowDriver):
-    def __init__(self, selector, prober, gesturePerformer):
-        super(TaggerDriver, self).__init__(selector, prober, gesturePerformer)
+    def __init__(self, selector, prober, gesture_performer):
+        super(TaggerDriver, self).__init__(selector, prober, gesture_performer)
 
     def enterAudioFile(self, filename):
         track_selection_dialog(self).enter_track(filename)
@@ -87,7 +87,7 @@ class TaggerDriver(MainWindowDriver):
 
     def acknowledge(self):
         message = restartMessage(self)
-        ok = ButtonDriver.findSingle(message, QAbstractButton, withText("OK"))
+        ok = ButtonDriver.find_single(message, QAbstractButton, with_text("OK"))
         ok.click()
 
     def assign_isni_to_lead_performer(self):

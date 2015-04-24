@@ -20,7 +20,7 @@ class TrackEditionPageTest(WidgetTest):
         self.show(self.page)
 
     def createDriverFor(self, widget):
-        return TrackEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return TrackEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testDisplaysAlbumSummaryInBanner(self):
         track = build.track()

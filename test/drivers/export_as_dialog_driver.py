@@ -7,11 +7,11 @@ from cute.widgets import FileDialogDriver, window
 
 
 def exportAsDialog(parent):
-    return ExportAsDialogDriver(window(QFileDialog, named('export-as-dialog')), parent.prober, parent.gesturePerformer)
+    return ExportAsDialogDriver(window(QFileDialog, named('export-as-dialog')), parent.prober, parent.gesture_performer)
 
 
 class ExportAsDialogDriver(FileDialogDriver):
     def exportAs(self, filename):
-        self.enterManually(filename)
-        self.acceptButtonHasText('&Save')
+        self.enter_manually(filename)
+        self.accept_button_has_text('&Save')
         self.accept()

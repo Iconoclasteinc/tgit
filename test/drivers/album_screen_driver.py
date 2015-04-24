@@ -11,17 +11,17 @@ from tgit.ui.album_screen import AlbumScreen
 
 
 def album_screen(parent):
-    return AlbumScreenDriver.findSingle(parent, AlbumScreen, named('album-screen'))
+    return AlbumScreenDriver.find_single(parent, AlbumScreen, named('album-screen'))
 
 
 def isDisabled(button):
     button.is_disabled()
-    button.hasCursorShape(Qt.ArrowCursor)
+    button.has_cursor_shape(Qt.ArrowCursor)
 
 
 def isEnabled(button):
     button.is_enabled()
-    button.hasCursorShape(Qt.PointingHandCursor)
+    button.has_cursor_shape(Qt.PointingHandCursor)
 
 
 class AlbumScreenDriver(BaseDriver):
@@ -86,10 +86,10 @@ class AlbumScreenDriver(BaseDriver):
         track_edition_page(self).change_metadata(**tags)
 
     def linksHelpTo(self, location):
-        self.label(named('help-link')).hasText(contains_string('href="%s"' % location))
+        self.label(named('help-link')).has_text(contains_string('href="%s"' % location))
 
     def linksFeatureRequestTo(self, location):
-        self.label(named('feature-request-link')).hasText(contains_string('href="%s' % location))
+        self.label(named('feature-request-link')).has_text(contains_string('href="%s' % location))
 
     def assign_isni_to_lead_performer(self):
         album_edition_page(self).assign_isni_to_lead_performer()

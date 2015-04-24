@@ -20,7 +20,7 @@ class MenuBarTest(WidgetTest):
         self.driver = self.createDriverFor(self.menuBar)
 
     def createDriverFor(self, widget):
-        return MenuBarDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return MenuBarDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testHasAlbumMenuInitiallyDisabled(self):
         self.driver.hasDisabledAlbumActions()

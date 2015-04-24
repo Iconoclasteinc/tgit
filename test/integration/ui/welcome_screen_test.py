@@ -16,7 +16,7 @@ class WelcomeScreenTest(WidgetTest):
         self.driver = self.createDriverFor(self.screen)
 
     def createDriverFor(self, widget):
-        return WelcomeScreenDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return WelcomeScreenDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testSignalsWhenNewAlbumButtonClicked(self):
         newAlbumSignal = ValueMatcherProbe('new album')

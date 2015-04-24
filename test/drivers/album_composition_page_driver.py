@@ -11,27 +11,27 @@ from tgit.ui.album_composition_page import AlbumCompositionPage
 
 
 def albumCompositionPage(parent):
-    return AlbumCompositionPageDriver.findSingle(parent, AlbumCompositionPage, named('album-composition-page'))
+    return AlbumCompositionPageDriver.find_single(parent, AlbumCompositionPage, named('album-composition-page'))
 
 
 class AlbumCompositionPageDriver(BaseDriver):
-    def __init__(self, selector, prober, gesturePerformer):
-        super(AlbumCompositionPageDriver, self).__init__(selector, prober, gesturePerformer)
+    def __init__(self, selector, prober, gesture_performer):
+        super(AlbumCompositionPageDriver, self).__init__(selector, prober, gesture_performer)
 
     def showsColumnHeaders(self, *titles):
         headers = [title for title in titles]
-        self.trackTable().hasHeaders(contains(*headers))
+        self.trackTable().has_headers(contains(*headers))
 
     def shows_track(self, *columns):
         cells = [column for column in columns]
-        return self.trackTable().hasRow(has_items(*cells))
+        return self.trackTable().has_row(has_items(*cells))
 
     def showsTracksInOrder(self, *tracks):
         rows = [has_items(*[column for column in track]) for track in tracks]
-        return self.trackTable().containsRows(contains(*rows))
+        return self.trackTable().contains_rows(contains(*rows))
 
     def hasTrackCount(self, count):
-        self.trackTable().hasRowCount(equal_to(count))
+        self.trackTable().has_row_count(equal_to(count))
 
     def play(self, title):
         row = self.shows_track(title)
@@ -48,25 +48,25 @@ class AlbumCompositionPageDriver(BaseDriver):
 
     def moveTrack(self, title, to):
         from_ = self.shows_track(title)
-        self.trackTable().moveRow(from_, to)
+        self.trackTable().move_row(from_, to)
 
     def removeButtonAt(self, row):
-        return ButtonDriver.findSingle(self.removeWidget(row), QAbstractButton, named('remove-track'))
+        return ButtonDriver.find_single(self.removeWidget(row), QAbstractButton, named('remove-track'))
 
     def removeWidget(self, index):
-        return self.trackTable().widgetInCell(index, Columns.index(Columns.remove))
+        return self.trackTable().widget_in_cell(index, Columns.index(Columns.remove))
 
     def clickRemoveButtonAt(self, row):
-        self.trackTable().clickOnCell(row, Columns.index(Columns.remove))
+        self.trackTable().click_on_cell(row, Columns.index(Columns.remove))
 
     def _play_button_at(self, index):
-        return ButtonDriver.findSingle(self.playWidget(index), QAbstractButton, named('play-track'))
+        return ButtonDriver.find_single(self.playWidget(index), QAbstractButton, named('play-track'))
 
     def playWidget(self, index):
-        return self.trackTable().widgetInCell(index, Columns.index(Columns.play))
+        return self.trackTable().widget_in_cell(index, Columns.index(Columns.play))
 
     def clickPlayButtonAt(self, row):
-        self.trackTable().clickOnCell(row, Columns.index(Columns.play))
+        self.trackTable().click_on_cell(row, Columns.index(Columns.play))
 
     def trackTable(self):
         return self.table(named('track-list'))

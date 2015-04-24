@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from tgit.isni.name_registry import NameRegistry
-from cute.matchers import named, showingOnScreen
-from cute.widgets import mainApplicationWindow
+from cute.matchers import named, showing_on_screen
+from cute.widgets import main_application_window
 from cute.prober import EventProcessingProber
 from cute.robot import Robot
 from test.drivers.tagger_driver import TaggerDriver
@@ -16,8 +16,8 @@ class ApplicationRunner(object):
         self.app = TGiT(doubles.null_audio_player, NameRegistry('localhost', port=5000), use_local_isni_backend=True,
                         native=False)
         self.app.show(preferences)
-        self.tagger = TaggerDriver(mainApplicationWindow(named('main-window'), showingOnScreen()),
-                                   EventProcessingProber(timeoutInMs=ONE_SECOND),
+        self.tagger = TaggerDriver(main_application_window(named('main-window'), showing_on_screen()),
+                                   EventProcessingProber(timeout_in_ms=ONE_SECOND),
                                    Robot())
 
     def stop(self):

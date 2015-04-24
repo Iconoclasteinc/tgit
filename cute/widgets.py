@@ -19,59 +19,47 @@ from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidget
 windows = sys.platform == 'win32'
 
 
-def allTopLevelWidgets():
+def all_top_level_widgets():
     return TopLevelWidgetsFinder(QApplication.instance())
 
 
-def onlyWidget(ofType, matching):
-    return SingleWidgetFinder(RecursiveWidgetFinder(ofType, matching, allTopLevelWidgets()))
+def only_widget(of_type, matching):
+    return SingleWidgetFinder(RecursiveWidgetFinder(of_type, matching, all_top_level_widgets()))
 
 
-def mainApplicationWindow(*matchers):
-    return onlyWidget(QMainWindow, all_of(*matchers))
+def main_application_window(*matchers):
+    return only_widget(QMainWindow, all_of(*matchers))
 
 
-def window(ofType, *matchers):
-    return onlyWidget(ofType, all_of(*matchers))
+def window(of_type, *matchers):
+    return only_widget(of_type, all_of(*matchers))
 
 
 class WidgetDriver(object):
-    def __init__(self, selector, prober, gesturePerformer):
-        self._selector = selector
-        self._prober = prober
-        self._gesturePerformer = gesturePerformer
-
-    @property
-    def selector(self):
-        return self._selector
-
-    @property
-    def prober(self):
-        return self._prober
-
-    @property
-    def gesturePerformer(self):
-        return self._gesturePerformer
+    def __init__(self, selector, prober, gesture_performer):
+        self.selector = selector
+        self.prober = prober
+        self.gesture_performer = gesture_performer
 
     @classmethod
-    def findSingle(cls, parent, widgetType, *matchers):
+    def find_single(cls, parent, widget_type, *matchers):
         return cls(SingleWidgetFinder(
-            RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector)),
-                   parent.prober, parent.gesturePerformer)
+            RecursiveWidgetFinder(widget_type, all_of(*matchers), parent.selector)), parent.prober,
+            parent.gesture_performer)
 
     @classmethod
-    def findNth(cls, parent, widgetType, index, *matchers):
+    def find_nth(cls, parent, widget_type, index, *matchers):
         return cls(NthWidgetFinder(
-            RecursiveWidgetFinder(widgetType, all_of(*matchers), parent.selector), index),
-                   parent.prober, parent.gesturePerformer)
+            RecursiveWidgetFinder(widget_type, all_of(*matchers), parent.selector), index),
+            parent.prober, parent.gesture_performer)
 
     def exists(self):
         self.is_(match.existing())
 
     def is_showing_on_screen(self):
-        self.is_(match.showingOnScreen())
+        self.is_(match.showing_on_screen())
 
-    def isHidden(self):
+    def is_hidden(self):
         self.is_(match.hidden())
 
     def is_enabled(self, enabled=True):
@@ -83,8 +71,8 @@ class WidgetDriver(object):
     def is_(self, criteria):
         self.check(WidgetAssertionProbe(self.selector, criteria))
 
-    def hasCursorShape(self, shape):
-        self.has(properties.cursorShape(), wrap_matcher(shape))
+    def has_cursor_shape(self, shape):
+        self.has(properties.cursor_shape(), wrap_matcher(shape))
 
     def has(self, query, criteria):
         self.check(WidgetPropertyAssertionProbe(self.selector, query, criteria))
@@ -92,23 +80,23 @@ class WidgetDriver(object):
     def manipulate(self, description, manipulation):
         self.check(WidgetManipulatorProbe(self.selector, manipulation, description))
 
-    def widgetCenter(self):
+    def widget_center(self):
         probe = WidgetScreenBoundsProbe(self.selector)
         self.check(probe)
         return probe.bounds.center()
 
     def click(self):
-        return self.leftClickOnWidget()
+        return self.left_click_on_widget()
 
-    def leftClickOnWidget(self):
+    def left_click_on_widget(self):
         self.is_showing_on_screen()
-        self.perform(gestures.clickAt(self.widgetCenter()))
+        self.perform(gestures.click_at(self.widget_center()))
 
     def enter(self):
-        self.perform(shortcuts.Enter)
+        self.perform(shortcuts.ENTER)
 
     def perform(self, *gestures):
-        self.gesturePerformer.perform(*gestures)
+        self.gesture_performer.perform(*gestures)
 
     def check(self, probe):
         self.prober.check(probe)
@@ -116,7 +104,7 @@ class WidgetDriver(object):
     def close(self):
         self.manipulate('close', lambda widget: widget.close())
 
-    def clearFocus(self):
+    def clear_focus(self):
         self.manipulate('clear focus', lambda widget: widget.clearFocus())
 
     def pause(self, ms):
@@ -132,7 +120,7 @@ class ButtonDriver(WidgetDriver):
         self.is_enabled()
         WidgetDriver.click(self)
 
-    def hasText(self, matcher):
+    def has_text(self, matcher):
         self.has(properties.text(), wrap_matcher(matcher))
 
     def is_unchecked(self, unchecked=True):
@@ -144,57 +132,57 @@ class ButtonDriver(WidgetDriver):
 
 
 class LabelDriver(WidgetDriver):
-    def hasText(self, matcher):
+    def has_text(self, matcher):
         self.has(properties.text(), wrap_matcher(matcher))
 
-    def hasPixmap(self, matcher):
-        self.has(properties.labelPixmap(), matcher)
+    def has_pixmap(self, matcher):
+        self.has(properties.label_pixmap(), matcher)
 
 
 class AbstractEditDriver(WidgetDriver):
     EDITION_DELAY = 20
 
-    def changeText(self, text):
+    def change_text(self, text):
         self.is_enabled()
-        self.replaceAllText(text)
+        self.replace_all_text(text)
         self.enter()
 
-    def replaceAllText(self, text):
-        self.focusWithMouse()
-        self.clearAllText()
+    def replace_all_text(self, text):
+        self.focus_with_mouse()
+        self.clear_all_text()
         self.type(text)
 
-    def focusWithMouse(self):
-        self.leftClickOnWidget()
+    def focus_with_mouse(self):
+        self.left_click_on_widget()
 
-    def clearAllText(self):
-        self.selectAllText()
+    def clear_all_text(self):
+        self.select_all_text()
         self.perform(gestures.pause(self.EDITION_DELAY))
-        self.deleteSelectedText()
+        self.delete_selected_text()
 
-    def selectAllText(self):
-        self.perform(shortcuts.SelectAll)
+    def select_all_text(self):
+        self.perform(shortcuts.SELECT_ALL)
 
-    def deleteSelectedText(self):
-        self.perform(shortcuts.DeletePrevious)
+    def delete_selected_text(self):
+        self.perform(shortcuts.DELETE_PREVIOUS)
 
     def type(self, text):
-        self.perform(gestures.typeText(text))
+        self.perform(gestures.type_text(text))
 
 
 class LineEditDriver(AbstractEditDriver):
-    def hasText(self, text):
-        self.has(properties.inputText(), equal_to(text))
+    def has_text(self, text):
+        self.has(properties.input_text(), equal_to(text))
 
 
 class TextEditDriver(AbstractEditDriver):
-    def hasPlainText(self, text):
-        self.has(properties.plainText(), equal_to(text))
+    def has_plain_text(self, text):
+        self.has(properties.plain_text(), equal_to(text))
 
-    def addLine(self, text):
-        self.focusWithMouse()
+    def add_line(self, text):
+        self.focus_with_mouse()
         self.type(text)
-        self.perform(shortcuts.Enter)
+        self.perform(shortcuts.ENTER)
 
 
 class ComboBoxDriver(AbstractEditDriver):
@@ -203,126 +191,124 @@ class ComboBoxDriver(AbstractEditDriver):
     def select_option(self, matching):
         popup = self._popup()
         self.pause(self.CHOICES_DISPLAY_DELAY)
-        popup.selectItem(match.withListItemText(matching))
+        popup.select_item(match.with_list_item_text(matching))
 
     def _popup(self):
         self.manipulate('pop up', lambda w: w.showPopup())
-        return ListViewDriver.findSingle(self, QListView)
+        return ListViewDriver.find_single(self, QListView)
 
     def has_current_text(self, matching):
-        self.has(properties.currentText(), wrap_matcher(matching))
+        self.has(properties.current_text(), wrap_matcher(matching))
 
 
 class DateTimeEditDriver(WidgetDriver):
-    def hasTime(self, time):
+    def has_time(self, time):
         class QueryDisplayFormat(object):
             def __call__(self, dateTimeEdit):
                 self.result = dateTimeEdit.displayFormat()
 
-        queryDisplayFormat = QueryDisplayFormat()
-        self.manipulate('query display format', queryDisplayFormat)
+        query_display_format = QueryDisplayFormat()
+        self.manipulate('query display format', query_display_format)
 
-        self.has(properties.time(), equal_to(QTime.fromString(time, queryDisplayFormat.result)))
+        self.has(properties.time(), equal_to(QTime.fromString(time, query_display_format.result)))
 
 
 class FileDialogDriver(WidgetDriver):
     DISPLAY_DELAY = 500 if windows else 250
     INITIAL_SETUP_DELAY = 1000 if windows else 0
 
-    def showHiddenFiles(self):
-        class ShowHiddenFiles(object):
-            def __call__(self, dialog):
-                dialog.setFilter(dialog.filter() | QDir.Hidden)
+    def show_hidden_files(self):
+        def show_dialog_hidden_files(dialog):
+            dialog.setFilter(dialog.filter() | QDir.Hidden)
 
-        self.manipulate('show hidden files', ShowHiddenFiles())
+        self.manipulate('show hidden files', show_dialog_hidden_files)
 
     def view_as_list(self):
-        class SetListViewMode(object):
-            def __call__(self, dialog):
-                dialog.setViewMode(QFileDialog.List)
+        def set_list_view_mode(dialog):
+            dialog.setViewMode(QFileDialog.List)
 
-        self.manipulate('set the view mode to list', SetListViewMode())
+        self.manipulate('set the view mode to list', set_list_view_mode)
 
-    def navigateToDir(self, path):
+    def navigate_to_dir(self, path):
         self.pause(self.INITIAL_SETUP_DELAY)
-        for folderName in self._navigationPathTo(path):
-            if folderName == '':
+        for folder_name in self._navigation_path_to(path):
+            if folder_name == '':
                 pass
-            elif folderName == '..':
-                self.upOneFolder()
+            elif folder_name == '..':
+                self.up_one_folder()
             else:
-                self.intoFolder(folderName)
+                self.into_folder(folder_name)
 
-    def _navigationPathTo(self, path):
-        return self._currentDir().relativeFilePath(path).split('/')
+    def _navigation_path_to(self, path):
+        return self._current_dir().relativeFilePath(path).split('/')
 
-    def _currentDir(self):
+    def _current_dir(self):
         class FindOutCurrentFolder(object):
             def __call__(self, dialog):
                 self.name = dialog.directory()
 
-        currentFolder = FindOutCurrentFolder()
-        self.manipulate('find out current folder', currentFolder)
-        return currentFolder.name
+        current_folder = FindOutCurrentFolder()
+        self.manipulate('find out current folder', current_folder)
+        return current_folder.name
 
-    def intoFolder(self, name):
-        self.selectFile(name)
-        self._doubleClickOnFolder()
+    def into_folder(self, name):
+        self.select_file(name)
+        self._double_click_on_folder()
 
-    def _doubleClickOnFolder(self):
-        self.perform(gestures.mouseDoubleClick())
+    def _double_click_on_folder(self):
+        self.perform(gestures.mouse_double_click())
 
     def select_files_of_type(self, matching):
-        driver = ComboBoxDriver.findSingle(self, QComboBox, match.named("fileTypeCombo"))
+        driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
         driver.select_option(matching)
 
-    def selectFile(self, name):
-        self.selectFiles(name)
+    def select_file(self, name):
+        self.select_files(name)
 
-    def selectFiles(self, *names):
+    def select_files(self, *names):
         self.pause(self.DISPLAY_DELAY)
-        self._listView().selectItems(*[match.withListItemText(name) for name in names])
+        self._list_view().select_items(*[match.with_list_item_text(name) for name in names])
 
-    def upOneFolder(self):
-        self._toolButtonNamed('toParentButton').click()
+    def up_one_folder(self):
+        self._tool_button_named('toParentButton').click()
 
-    def _toolButtonNamed(self, name):
-        return ButtonDriver.findSingle(self, QToolButton, match.named(name))
+    def _tool_button_named(self, name):
+        return ButtonDriver.find_single(self, QToolButton, match.named(name))
 
-    def enterManually(self, filename):
-        self._filenameEdit().replaceAllText(filename)
+    def enter_manually(self, filename):
+        self._filename_edit().replace_all_text(filename)
 
     def accept(self):
-        self.acceptButton().click()
+        self._accept_button().click()
 
-    def acceptButtonIs(self, criteria):
-        return self._dialogButton(QFileDialog.Accept).is_(criteria)
+    def accept_button_is(self, criteria):
+        return self._dialog_button(QFileDialog.Accept).is_(criteria)
 
-    def acceptButtonHasText(self, text):
-        return self.acceptButton().hasText(text)
+    def accept_button_has_text(self, text):
+        return self._accept_button().has_text(text)
 
     def reject(self):
-        return self.rejectButton().click()
+        return self.reject_button().click()
 
-    def rejectButtonIs(self, criteria):
-        return self.rejectButton().is_(criteria)
+    def reject_button_is(self, criteria):
+        return self.reject_button().is_(criteria)
 
-    def rejectButtonHasText(self, text):
-        return self.rejectButton().hasText(text)
+    def reject_button_has_text(self, text):
+        return self.reject_button().has_text(text)
 
-    def _listView(self):
-        return ListViewDriver.findSingle(self, QListView, match.named('listView'))
+    def _list_view(self):
+        return ListViewDriver.find_single(self, QListView, match.named('listView'))
 
-    def _filenameEdit(self):
-        return LineEditDriver.findSingle(self, QLineEdit, match.named('fileNameEdit'))
+    def _filename_edit(self):
+        return LineEditDriver.find_single(self, QLineEdit, match.named('fileNameEdit'))
 
-    def acceptButton(self):
-        return self._dialogButton(QFileDialog.Accept)
+    def _accept_button(self):
+        return self._dialog_button(QFileDialog.Accept)
 
-    def rejectButton(self):
-        return self._dialogButton(QFileDialog.Reject)
+    def reject_button(self):
+        return self._dialog_button(QFileDialog.Reject)
 
-    def _dialogButton(self, label):
+    def _dialog_button(self, label):
         class QueryButtonText(object):
             def __init__(self, label):
                 super(QueryButtonText, self).__init__()
@@ -331,91 +317,91 @@ class FileDialogDriver(WidgetDriver):
             def __call__(self, dialog):
                 self.text = dialog.labelText(self._label)
 
-        buttonText = QueryButtonText(label)
-        self.manipulate('query button text', buttonText)
-        return ButtonDriver.findSingle(self, QPushButton, match.withText(buttonText.text))
+        button_text = QueryButtonText(label)
+        self.manipulate('query button text', button_text)
+        return ButtonDriver.find_single(self, QPushButton, match.with_text(button_text.text))
 
 
 class ListViewDriver(WidgetDriver):
-    def selectItem(self, matching):
-        self.selectItems(matching)
+    def select_item(self, matching):
+        self.select_items(matching)
 
-    def selectItems(self, *matchers):
-        self._selectItems([self._indexOfFirstItem(matching) for matching in matchers])
+    def select_items(self, *matchers):
+        self._select_items([self._index_of_first_item(matching) for matching in matchers])
 
-    def _selectItems(self, indexes):
-        self._selectItem(indexes.pop(0))
+    def _select_items(self, indexes):
+        self._select_item(indexes.pop(0))
         for index in indexes:
-            self._multiSelectItem(index)
+            self._multi_select_item(index)
 
-    def _multiSelectItem(self, index):
-        self._scrollItemToVisible(index)
-        self.perform(gestures.withModifiers(Qt.ControlModifier, gestures.clickAt(self._centerOfItem(index))))
+    def _multi_select_item(self, index):
+        self._scroll_item_to_visible(index)
+        self.perform(gestures.with_modifiers(Qt.ControlModifier, gestures.click_at(self._center_of_item(index))))
 
-    def _selectItem(self, index):
-        self._scrollItemToVisible(index)
-        self.perform(gestures.clickAt(self._centerOfItem(index)))
+    def _select_item(self, index):
+        self._scroll_item_to_visible(index)
+        self.perform(gestures.click_at(self._center_of_item(index)))
 
-    def _scrollItemToVisible(self, index):
+    def _scroll_item_to_visible(self, index):
         self.manipulate('scroll item to visible', lambda listView: listView.scrollTo(index))
 
-    def _centerOfItem(self, index):
+    def _center_of_item(self, index):
         class CalculateCenterOfItem(object):
-            def __call__(self, listView):
-                itemVisibleArea = listView.visualRect(index)
-                self.pos = listView.mapToGlobal(itemVisibleArea.center())
+            def __call__(self, list_view):
+                item_visible_area = list_view.visualRect(index)
+                self.pos = list_view.mapToGlobal(item_visible_area.center())
 
-        centerOfItem = CalculateCenterOfItem()
-        self.manipulate('calculate center of item', centerOfItem)
-        return centerOfItem.pos
+        center_of_item = CalculateCenterOfItem()
+        self.manipulate('calculate center of item', center_of_item)
+        return center_of_item.pos
 
-    def _indexOfFirstItem(self, matching):
+    def _index_of_first_item(self, matching):
         class ContainingItem(BaseMatcher):
             def __init__(self, matcher):
                 super(ContainingItem, self).__init__()
-                self._itemMatcher = matcher
-                self.foundAtIndex = None
+                self._item_matcher = matcher
+                self.at_index = None
 
-            def _matches(self, listView):
-                model = listView.model()
-                root = listView.rootIndex()
-                itemCount = model.rowCount(root)
-                for i in range(itemCount):
+            def _matches(self, list_view):
+                model = list_view.model()
+                root = list_view.rootIndex()
+                item_count = model.rowCount(root)
+                for i in range(item_count):
                     index = model.index(i, 0, root)
-                    if self._itemMatcher.matches(index):
-                        self.atIndex = index
+                    if self._item_matcher.matches(index):
+                        self.at_index = index
                         return True
 
                 return False
 
             def describe_to(self, description):
                 description.append_text('containing an item ')
-                self._itemMatcher.describe_to(description)
+                self._item_matcher.describe_to(description)
 
             def describe_mismatch(self, item, mismatch_description):
                 mismatch_description.append_text('contained no item ')
-                self._itemMatcher.describe_to(mismatch_description)
+                self._item_matcher.describe_to(mismatch_description)
 
-        containingItem = ContainingItem(matching)
-        self.is_(containingItem)
-        return containingItem.atIndex
+        containing_item = ContainingItem(matching)
+        self.is_(containing_item)
+        return containing_item.at_index
 
 
 class QMenuBarDriver(WidgetDriver):
     def menu(self, matching):
         # We have to make sure the menu actually exists on the menu bar
         # Checking that the menu is a child of the menu bar is not sufficient
-        self.hasMenu(matching)
-        return MenuDriver.findSingle(self, QMenu, matching)
+        self.has_menu(matching)
+        return MenuDriver.find_single(self, QMenu, matching)
 
-    def hasMenu(self, matching):
+    def has_menu(self, matching):
         class ContainingMenu(BaseMatcher):
             def __init__(self, matcher):
                 super(ContainingMenu, self).__init__()
                 self._matcher = matcher
 
-            def _matches(self, menuBar):
-                for menu in [action.menu() for action in menuBar.actions()]:
+            def _matches(self, menu_bar):
+                for menu in [action.menu() for action in menu_bar.actions()]:
                     if self._matcher.matches(menu):
                         return True
                 return False
@@ -436,25 +422,25 @@ class MenuDriver(WidgetDriver):
         # QMenuBar on Mac OS X is a wrapper for using the system-wide menu bar
         # so we cannot just click on it, we have to pop it up manually
         def popup(menu):
-            menuBar = menu.parent()
-            menuTitleVisibleArea = menuBar.actionGeometry(menu.menuAction())
+            menu_bar = menu.parent()
+            menu_title_visible_area = menu_bar.actionGeometry(menu.menuAction())
             # We try to pop up the menu at a position that makes sense on all platforms
             # i.e. just below the menu title
-            menu.popup(menuBar.mapToGlobal(menuTitleVisibleArea.bottomLeft()))
+            menu.popup(menu_bar.mapToGlobal(menu_title_visible_area.bottomLeft()))
 
         self.manipulate('open', popup)
 
-    def menuItem(self, matching):
+    def menu_item(self, matching):
         # We have to make sure the item menu actually exists in the menu
         # Checking that the item is a child of the menu is not sufficient
-        self.hasMenuItem(matching)
-        return MenuItemDriver.findSingle(self, QAction, matching)
+        self.has_menu_item(matching)
+        return MenuItemDriver.find_single(self, QAction, matching)
 
-    def selectMenuItem(self, matching):
-        menuItem = self.menuItem(matching)
-        menuItem.click()
+    def select_menu_item(self, matching):
+        menu_item = self.menu_item(matching)
+        menu_item.click()
 
-    def hasMenuItem(self, matching):
+    def has_menu_item(self, matching):
         class ContainingMenuItem(BaseMatcher):
             def __init__(self, matcher):
                 super(ContainingMenuItem, self).__init__()
@@ -476,18 +462,18 @@ class MenuDriver(WidgetDriver):
                 mismatch_description.append_text('contained no item ')
                 self._matcher.describe_to(mismatch_description)
 
-        containingMenuItem = ContainingMenuItem(matching)
-        self.is_(containingMenuItem)
-        return containingMenuItem.action
+        containing_menu_item = ContainingMenuItem(matching)
+        self.is_(containing_menu_item)
+        return containing_menu_item.action
 
 
 class MenuItemDriver(WidgetDriver):
-    def _centerOfItem(self):
+    def _center_of_item(self):
         class CalculateCenterOfItem(object):
             def __call__(self, item):
                 menu = item.parent()
-                itemVisibleArea = menu.actionGeometry(item)
-                self.coordinates = menu.mapToGlobal(itemVisibleArea.center())
+                item_visible_area = menu.actionGeometry(item)
+                self.coordinates = menu.mapToGlobal(item_visible_area.center())
 
         center = CalculateCenterOfItem()
         self.manipulate('calculate center of item', center)
@@ -495,18 +481,19 @@ class MenuItemDriver(WidgetDriver):
 
     def click(self):
         self.is_enabled()
-        self.perform(gestures.mouseMove(self._centerOfItem()), gestures.mouseClick())
+        self.perform(gestures.mouse_move(self._center_of_item()), gestures.mouse_click())
 
 
 class TableViewDriver(WidgetDriver):
-    def hasHeaders(self, matching):
+    def has_headers(self, matching):
         class WithHeaders(BaseMatcher):
             def __init__(self, matcher):
                 super(WithHeaders, self).__init__()
                 self._matcher = matcher
 
-            def _headers(self, table):
-                return [headerText(table, column) for column in range(columnCount(table))]
+            @staticmethod
+            def _headers(table):
+                return [header_text(table, column) for column in range(column_count(table))]
 
             def _matches(self, table):
                 return self._matcher.matches(self._headers(table))
@@ -521,19 +508,20 @@ class TableViewDriver(WidgetDriver):
 
         self.is_(WithHeaders(matching))
 
-    def hasRow(self, matching):
+    def has_row(self, matching):
         class RowInTable(BaseMatcher):
             def __init__(self, matcher):
                 super(RowInTable, self).__init__()
                 self._matcher = matcher
 
-            def _cellsOf(self, table, row):
-                return [cellText(table, row, column) for column in range(columnCount(table))]
+            @staticmethod
+            def _cells_of(table, row):
+                return [cell_text(table, row, column) for column in range(column_count(table))]
 
             def _matches(self, table):
-                for row in range(rowCount(table)):
-                    if self._matcher.matches(self._cellsOf(table, row)):
-                        self.inRow = visualRow(table, row)
+                for row in range(row_count(table)):
+                    if self._matcher.matches(self._cells_of(table, row)):
+                        self.in_row = visual_row(table, row)
                         return True
                 return False
 
@@ -545,27 +533,29 @@ class TableViewDriver(WidgetDriver):
                 mismatch_description.append_text('contained no row ')
                 self._matcher.describe_to(mismatch_description)
 
-        rowInTable = RowInTable(matching)
-        self.is_(rowInTable)
-        return rowInTable.inRow
+        row_in_table = RowInTable(matching)
+        self.is_(row_in_table)
+        return row_in_table.in_row
 
-    def containsRows(self, matching):
+    def contains_rows(self, matching):
         class WithRows(BaseMatcher):
             def __init__(self, matcher):
                 super(WithRows, self).__init__()
                 self._matcher = matcher
 
-            def _cellsIn(self, table, row):
-                return [cellText(table, row, column) for column in range(columnCount(table))]
+            @staticmethod
+            def _cells_in(table, row):
+                return [cell_text(table, row, column) for column in range(column_count(table))]
 
-            def _rowsIn(self, table):
+            @staticmethod
+            def _rows_in(table):
                 rows = []
-                for row in range(rowCount(table)):
-                    rows.append(self._cellsIn(table, row))
+                for row in range(row_count(table)):
+                    rows.append(WithRows._cells_in(table, row))
                 return rows
 
             def _matches(self, table):
-                return self._matcher.matches(self._rowsIn(table))
+                return self._matcher.matches(self._rows_in(table))
 
             def describe_to(self, description):
                 description.append_text('with rows ')
@@ -573,101 +563,99 @@ class TableViewDriver(WidgetDriver):
 
             def describe_mismatch(self, table, mismatch_description):
                 mismatch_description.append_text('rows ')
-                self._matcher.describe_mismatch(self._rowsIn(table),
-                                                mismatch_description)
+                self._matcher.describe_mismatch(self._rows_in(table), mismatch_description)
 
         self.is_(WithRows(matching))
 
-    def scrollCellToVisible(self, row, column):
+    def scroll_cell_to_visible(self, row, column):
         class ScrollCellToVisible(object):
             def __init__(self, row, column):
                 self._row = row
                 self._column = column
 
             def __call__(self, table):
-                row, column = cellLocation(table, self._row, self._column)
+                row, column = cell_location(table, self._row, self._column)
                 table.scrollTo(table.indexAt(QPoint(table.columnViewportPosition(column),
                                                     table.rowViewportPosition(row))))
 
-        scrollCellToVisible = ScrollCellToVisible(row, column)
-        self.manipulate('scroll cell (%s, %s) into view' % (row, column), scrollCellToVisible)
+        scroll_cell_to_visible = ScrollCellToVisible(row, column)
+        self.manipulate('scroll cell (%s, %s) into view' % (row, column), scroll_cell_to_visible)
 
-    def _clickAtCellCenter(self, row, column):
+    def _click_at_cell_center(self, row, column):
         class CalculateCellPosition(object):
             def __init__(self, row, column):
                 self._row = row
                 self._column = column
 
-            def centerOfCell(self, table):
-                row, column = cellLocation(table, self._row, self._column)
-                rowOffset = table.horizontalHeader().height() + table.rowViewportPosition(row)
-                columnOffset = table.verticalHeader().width() + table.columnViewportPosition(column)
-                return QPoint(columnOffset + table.columnWidth(column) / 2,
-                              rowOffset + table.rowHeight(row) / 2)
+            def center_of_cell(self, table):
+                row, column = cell_location(table, self._row, self._column)
+                row_offset = table.horizontalHeader().height() + table.rowViewportPosition(row)
+                column_offset = table.verticalHeader().width() + table.columnViewportPosition(column)
+                return QPoint(column_offset + table.columnWidth(column) / 2,
+                              row_offset + table.rowHeight(row) / 2)
 
             def __call__(self, table):
-                self.center = table.mapToGlobal(self.centerOfCell(table))
+                self.center = table.mapToGlobal(self.center_of_cell(table))
 
-        cellPosition = CalculateCellPosition(row, column)
-        self.manipulate('calculate cell (%s, %s) center position' % (row, column), cellPosition)
-        self.perform(gestures.clickAt(cellPosition.center))
+        cell_position = CalculateCellPosition(row, column)
+        self.manipulate('calculate cell (%s, %s) center position' % (row, column), cell_position)
+        self.perform(gestures.click_at(cell_position.center))
 
-    def clickOnCell(self, row, column):
-        self.scrollCellToVisible(row, column)
-        self._clickAtCellCenter(row, column)
+    def click_on_cell(self, row, column):
+        self.scroll_cell_to_visible(row, column)
+        self._click_at_cell_center(row, column)
 
-    def widgetInCell(self, row, column):
+    def widget_in_cell(self, row, column):
         class WidgetAt(WidgetSelector):
-            def __init__(self, tableSelector, row, column):
+            def __init__(self, table_selector, row, column):
                 super(WidgetAt, self).__init__()
-                self._tableSelector = tableSelector
+                self._table_selector = table_selector
                 self._row = row
                 self._column = column
 
-            def describeTo(self, description):
+            def describe_to(self, description):
                 description.append_text('in cell (%s, %s) widget' % (self._row, self._column))
                 description.append_text('\n    in ')
-                description.append_description_of(self._tableSelector)
+                description.append_description_of(self._table_selector)
 
-            def describeFailureTo(self, description):
-                self._tableSelector.describeFailureTo(description)
-                if self._tableSelector.isSatisfied():
-                    if self.isSatisfied():
+            def describe_failure_to(self, description):
+                self._table_selector.describe_failure_to(description)
+                if self._table_selector.is_satisfied():
+                    if self.is_satisfied():
                         description.append_text('\n    cell (%s, %s)' % (self._row, self._column))
                     else:
                         description.append_text('\n    had no widget in cell (%s, %s)'
                                                 % (self._row, self._column))
 
             def widgets(self):
-                if self.isSatisfied():
-                    return self._widgetInCell,
+                if self.is_satisfied():
+                    return self._widget_in_cell,
                 else:
                     return ()
 
-            def isSatisfied(self):
-                return self._widgetInCell is not None
+            def is_satisfied(self):
+                return self._widget_in_cell is not None
 
             def test(self):
-                self._tableSelector.test()
+                self._table_selector.test()
 
-                if not self._tableSelector.isSatisfied():
-                    self._widgetInCell = None
+                if not self._table_selector.is_satisfied():
+                    self._widget_in_cell = None
                     return
 
-                table = self._tableSelector.widget()
-                self._widgetInCell = widgetAt(table, self._row, self._column)
+                table = self._table_selector.widget()
+                self._widget_in_cell = widget_at(table, self._row, self._column)
 
-        return WidgetDriver(WidgetAt(self.selector, row, column), self.prober,
-                            self.gesturePerformer)
+        return WidgetDriver(WidgetAt(self.selector, row, column), self.prober, self.gesture_performer)
 
-    def hasRowCount(self, matching):
+    def has_row_count(self, matching):
         class WithRowCount(BaseMatcher):
             def __init__(self, matcher):
                 super(WithRowCount, self).__init__()
                 self._matcher = matcher
 
             def _matches(self, table):
-                return self._matcher.matches(rowCount(table))
+                return self._matcher.matches(row_count(table))
 
             def describe_to(self, description):
                 description.append_text('with row count ')
@@ -675,39 +663,40 @@ class TableViewDriver(WidgetDriver):
 
             def describe_mismatch(self, table, mismatch_description):
                 mismatch_description.append_text('row count ')
-                self._matcher.describe_mismatch(rowCount(table), mismatch_description)
+                self._matcher.describe_mismatch(row_count(table), mismatch_description)
 
         self.is_(WithRowCount(matching))
 
-    def moveRow(self, oldPosition, newPosition):
+    def move_row(self, old_position, new_position):
         class MoveRow(object):
-            def __init__(self, oldPosition, newPosition):
-                self._oldPosition = oldPosition
-                self._newPosition = newPosition
+            def __init__(self, old_position, new_position):
+                self._oldPosition = old_position
+                self._newPosition = new_position
 
             def __call__(self, table):
-                table.verticalHeader().moveSection(rowLocation(table, oldPosition),
-                                                   rowLocation(table, newPosition))
+                table.verticalHeader().moveSection(row_location(table, old_position),
+                                                   row_location(table, new_position))
 
         # We'd like to use gestures but drag and drop is not supported by our Robot
         # so we have to use a manipulation
-        self.manipulate('move row %s to position %s' % (oldPosition, newPosition),
-                        MoveRow(oldPosition, newPosition))
+        self.manipulate('move row %s to position %s' % (old_position, new_position),
+                        MoveRow(old_position, new_position))
 
 
 class TableWidgetDriver(TableViewDriver):
-    def hasHeaderItems(self, matching):
+    def has_header_items(self, matching):
         class WithHeaders(BaseMatcher):
             def __init__(self, matcher):
                 super(WithHeaders, self).__init__()
                 self._matcher = matcher
 
-            def _headerItems(self, table):
-                return [table.horizontalHeaderItem(columnLocation(table, column))
+            @staticmethod
+            def _header_items(table):
+                return [table.horizontalHeaderItem(column_location(table, column))
                         for column in range(table.columnCount())]
 
             def _matches(self, table):
-                return self._matcher.matches(self._headerItems(table))
+                return self._matcher.matches(self._header_items(table))
 
             def describe_to(self, description):
                 description.append_text('with header items ')
@@ -715,7 +704,7 @@ class TableWidgetDriver(TableViewDriver):
 
             def describe_mismatch(self, table, mismatch_description):
                 mismatch_description.append_text('header items ')
-                self._matcher.describe_mismatch(self._headerItems(table), mismatch_description)
+                self._matcher.describe_mismatch(self._header_items(table), mismatch_description)
 
         self.is_(WithHeaders(matching))
 
@@ -725,13 +714,14 @@ class TableWidgetDriver(TableViewDriver):
                 super(RowInTable, self).__init__()
                 self._matcher = matcher
 
-            def _cellItems(self, table, row):
+            @staticmethod
+            def _cell_items(table, row):
                 return [table.item(row, column) for column in range(table.columnCount())]
 
             def _matches(self, table):
                 for row in range(table.rowCount()):
-                    if self._matcher.matches(self._cellItems(table, row)):
-                        self.inRow = table.visualRow(row)
+                    if self._matcher.matches(self._cell_items(table, row)):
+                        self.in_row = table.visualRow(row)
                         return True
                 return False
 
@@ -743,23 +733,25 @@ class TableWidgetDriver(TableViewDriver):
                 mismatch_description.append_text('contained no items ')
                 self._matcher.describe_to(mismatch_description)
 
-        rowInTable = RowInTable(matching)
-        self.is_(rowInTable)
-        return rowInTable.inRow
+        row_in_table = RowInTable(matching)
+        self.is_(row_in_table)
+        return row_in_table.in_row
 
-    def containsRowItems(self, matching):
+    def contains_row_items(self, matching):
         class WithRows(BaseMatcher):
             def __init__(self, matcher):
                 super(WithRows, self).__init__()
                 self._matcher = matcher
 
-            def _cellItems(self, table, row):
+            @staticmethod
+            def _cellItems(table, row):
                 return [table.item(row, column) for column in range(table.columnCount())]
 
-            def _rowsItems(self, table):
+            @staticmethod
+            def _rowsItems(table):
                 rows = []
                 for row in range(table.rowCount()):
-                    rows.append(self._cellItems(table, row))
+                    rows.append(WithRows._cellItems(table, row))
                 return rows
 
             def _matches(self, table):
@@ -776,37 +768,37 @@ class TableWidgetDriver(TableViewDriver):
         self.is_(WithRows(matching))
 
 
-def columnLocation(table, column):
+def column_location(table, column):
     return table.horizontalHeader().logicalIndex(column)
 
 
-def rowLocation(table, row):
+def row_location(table, row):
     return table.verticalHeader().logicalIndex(row)
 
 
-def cellLocation(table, row, column):
-    return rowLocation(table, row), columnLocation(table, column)
+def cell_location(table, row, column):
+    return row_location(table, row), column_location(table, column)
 
 
-def cellText(table, row, column):
+def cell_text(table, row, column):
     return table.model().data(table.model().index(row, column), Qt.DisplayRole)
 
 
-def headerText(table, column):
+def header_text(table, column):
     return table.model().headerData(column, Qt.Horizontal, Qt.DisplayRole)
 
 
-def columnCount(table):
+def column_count(table):
     return table.model().columnCount()
 
 
-def rowCount(table):
+def row_count(table):
     return table.model().rowCount()
 
 
-def widgetAt(table, row, column):
+def widget_at(table, row, column):
     return table.indexWidget(table.model().index(row, column))
 
 
-def visualRow(table, row):
+def visual_row(table, row):
     return table.verticalHeader().visualIndex(row)

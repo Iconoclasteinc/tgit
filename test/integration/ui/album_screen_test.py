@@ -28,7 +28,7 @@ class AlbumScreenTest(WidgetTest):
         return page
 
     def createDriverFor(self, widget):
-        return AlbumScreenDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return AlbumScreenDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testIncludesHelpLinkInHeader(self):
         self.driver.linksHelpTo("http://tagtamusique.com/2013/12/03/tgit_style_guide/")

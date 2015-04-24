@@ -20,7 +20,7 @@ class SettingsDialogTest(WidgetTest):
         self.pause(200)
 
     def createDriverFor(self, widget):
-        return SettingsDialogDriver(WidgetIdentity(widget), self.prober, self.gesturePerformer)
+        return SettingsDialogDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testDisplaysUserPreferences(self):
         self.dialog.addLanguage('en', 'English')
