@@ -61,7 +61,7 @@ def centerOnScreen(widget):
 def activate(widget):
     from PyQt5.QtCore import QSysInfo
 
-    if hasattr(QSysInfo, 'MacintoshVersion') and QSysInfo.MacintoshVersion > QSysInfo.MV_10_8:
+    if hasattr(QSysInfo, "MacintoshVersion") and QSysInfo.MacintoshVersion > QSysInfo.MV_10_8:
         # Since Maverick, menu bar does not appear until the window is manually activated, so force
         # user to activate by not raising the window
         pass
@@ -89,7 +89,8 @@ def AlbumCompositionPageController(selectTracks, player, album):
 
 
 def AlbumEditionPageController(select_picture, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
-                               performer_dialog_factory, show_assignation_failed, album, name_registry):
+                               performer_dialog_factory, show_assignation_failed, album, name_registry,
+                               use_local_isni_backend):
     def poll_queue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -122,7 +123,7 @@ def AlbumEditionPageController(select_picture, lookup_isni_dialog_factory, activ
         dialog.show()
 
     queue = Queue()
-    page = AlbumEditionPage(album)
+    page = AlbumEditionPage(album, use_local_isni_backend)
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.selectPicture.connect(lambda: select_picture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
@@ -189,15 +190,15 @@ def SettingsDialogController(restartNotice, preferences, parent):
         restartNotice(parent).display()
 
     dialog.accepted.connect(savePreferences)
-    dialog.addLanguage('en', dialog.tr('English'))
-    dialog.addLanguage('fr', dialog.tr('French'))
+    dialog.addLanguage("en", dialog.tr("English"))
+    dialog.addLanguage("fr", dialog.tr("French"))
     dialog.display(**preferences)
     return dialog
 
 
 def ExportAsDialogController(format_, album, parent, native):
     dialog = ExportAsDialog(parent, native)
-    dialog.exportAs.connect(lambda destination: director.export_album(format_, album, destination, 'windows-1252'))
+    dialog.exportAs.connect(lambda destination: director.export_album(format_, album, destination, "windows-1252"))
     dialog.display()
 
 
@@ -229,56 +230,58 @@ def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
     return window
 
 
-def createMainWindow(albumPortfolio, player, preferences, nameRegistry, native):
-    def showSettingsDialog():
+def create_main_window(album_portfolio, player, preferences, name_registry, use_local_isni_backend, native):
+    def show_settings_dialog():
         return SettingsDialogController(RestartMessageBox, preferences, window)
 
-    def showExportAsDialog(album):
+    def show_export_as_dialog(album):
         return ExportAsDialogController(CsvFormat(), album, window, native)
 
-    def showTrackSelectionDialog(album, folders=False):
+    def show_track_selection_dialog(album, folders=False):
         return TrackSelectionDialogController(album, window, native, folders)
 
-    def createMenuBar():
-        return MenuBarController(showExportAsDialog, showTrackSelectionDialog, showSettingsDialog, albumPortfolio)
+    def create_menu_bar():
+        return MenuBarController(show_export_as_dialog, show_track_selection_dialog, show_settings_dialog,
+                                 album_portfolio)
 
-    def createWelcomeScreen():
-        return WelcomeScreenController(albumPortfolio)
+    def create_welcome_screen():
+        return WelcomeScreenController(album_portfolio)
 
-    def createCompositionPage(album):
-        return AlbumCompositionPageController(showTrackSelectionDialog, player, album)
+    def create_composition_page(album):
+        return AlbumCompositionPageController(show_track_selection_dialog, player, album)
 
-    def createAlbumPage(album):
-        return AlbumEditionPageController(showPictureSelectionDialog, showISNILookupDialog, showActivityIndicatorDialog,
-                                          showPerformerDialog, show_isni_assignation_failed_message_box, album,
-                                          nameRegistry)
+    def create_album_page(album):
+        return AlbumEditionPageController(show_picture_selection_dialog, show_isni_lookup_dialog,
+                                          show_activity_indicator_dialog, show_performer_dialog,
+                                          show_isni_assignation_failed_message_box, album, name_registry,
+                                          use_local_isni_backend)
 
-    def showPictureSelectionDialog(album):
+    def show_picture_selection_dialog(album):
         return PictureSelectionDialogController(window, album, native)
 
-    def showISNILookupDialog(album, identities):
+    def show_isni_lookup_dialog(album, identities):
         return ISNILookupDialogController(window, album, identities)
 
-    def showPerformerDialog(album):
+    def show_performer_dialog(album):
         return PerformerDialogController(window, album)
 
-    def showActivityIndicatorDialog():
+    def show_activity_indicator_dialog():
         return ActivityIndicatorDialogController(window)
 
     def show_isni_assignation_failed_message_box(code, details):
         isni_assignation_failed_message_box(window, code, details).open()
 
-    def createAlbumScreen(album):
-        def createTrackPage(track):
+    def create_album_screen(album):
+        def create_track_page(track):
             return TrackEditionPageController(album, track)
 
-        return AlbumScreenController(createCompositionPage, createAlbumPage, createTrackPage, album)
+        return AlbumScreenController(create_composition_page, create_album_page, create_track_page, album)
 
-    window = MainWindowController(createMenuBar, createWelcomeScreen, createAlbumScreen, albumPortfolio)
+    window = MainWindowController(create_menu_bar, create_welcome_screen, create_album_screen, album_portfolio)
 
     class SelectAlbumTracks(AlbumPortfolioListener):
         def albumCreated(self, album):
-            QTimer.singleShot(250, lambda: showTrackSelectionDialog(album))
+            QTimer.singleShot(250, lambda: show_track_selection_dialog(album))
 
-    albumPortfolio.addPortfolioListener(SelectAlbumTracks())
+    album_portfolio.addPortfolioListener(SelectAlbumTracks())
     return window
