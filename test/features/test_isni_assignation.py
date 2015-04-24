@@ -46,7 +46,6 @@ def isni(request):
     request.addfinalizer(lambda: isni_database.stop(database_thread))
 
 
-@pytest.mark.xfail(reason="ISNI assignation is disabled")
 def test_assigning_an_isni_to_the_lead_performer(app, library):
     tracks = [library.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
     isni_database.assignation_generator = iter(["0000000121707484"])
@@ -63,7 +62,6 @@ def test_assigning_an_isni_to_the_lead_performer(app, library):
                      track_title="Salsa Coltrane")
 
 
-@pytest.mark.xfail(reason="ISNI assignation is disabled")
 def test_fails_to_assign_isni_to_lead_performer(app, library):
     tracks = [library.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
     isni_database.assignation_generator = iter(["invalid data"])

@@ -17,7 +17,7 @@ from tgit.util import fs
 
 class AlbumEditionPageTest(WidgetTest):
     def render(self, album):
-        self.page = AlbumEditionPage(album)
+        self.page = AlbumEditionPage(album, use_local_isni_backend=True)
         self.page.refresh()
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
@@ -105,7 +105,6 @@ class AlbumEditionPageTest(WidgetTest):
         self.render(build.album(lead_performer='     '))
         self.driver.enablesISNILookup(False)
 
-    @pytest.mark.xfail(reason="ISNI assignation is disabled")
     def test_enables_assign_isni_button_when_lead_performer_is_not_empty(self):
         self.render(build.album(lead_performer='performer'))
         self.driver.enablesISNIAssign()
@@ -165,7 +164,6 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.clear_isni()
         self.check(clear_isni_signal)
 
-    @pytest.mark.xfail(reason="ISNI assignation is disabled")
     def test_signals_when_assign_isni_button_clicked(self):
         self.render(build.album(lead_performer='performer'))
 
