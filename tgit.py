@@ -20,9 +20,13 @@
 
 import sys
 
+import requests.packages.urllib3
+
 from tgit.tagger import tgit
 
 if __name__ == "__main__":
+    requests.packages.urllib3.disable_warnings()
+
     use_local_isni_backend = False
 
     if len(sys.argv) > 1 and sys.argv[1] == "--with-local-isni-backend":
