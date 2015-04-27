@@ -75,8 +75,8 @@ class TrackEditionPageTest(WidgetTest):
         self.driver.showsPreviewTime('00:00')
 
     def testDisablesLeadPerformerEditionWhenAlbumIsNotACompilation(self):
-        track = build.track(lead_performer='Album Artist')
-        album = build.album(compilation=False, tracks=[track])
+        track = build.track()
+        album = build.album(lead_performer='Album Artist', compilation=False, tracks=[track])
         self.render(album, track)
         self.driver.shows_lead_performer('Album Artist', disabled=True)
 

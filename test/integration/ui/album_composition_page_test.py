@@ -34,8 +34,8 @@ class AlbumCompositionPageTest(WidgetTest):
 
     def testDisplaysTrackDetailsInColumns(self):
         self.album.release_name = 'All the Little Lights'
+        self.album.lead_performer = 'Passenger'
         self.album.addTrack(build.track(track_title='Let Her Go',
-                                        lead_performer='Passenger',
                                         bitrate=192000,
                                         duration=timedelta(minutes=4, seconds=12).total_seconds()))
 

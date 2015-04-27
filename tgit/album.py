@@ -114,8 +114,10 @@ class Album(metaclass=tag.Taggable):
 
     def insertTrack(self, track, position):
         self._inheritMetadataIfInitialTrack(track)
-        self.tracks.insert(position, track)
+        if not self.compilation:
+            track.lead_performer = self.lead_performer
         track.album = self
+        self.tracks.insert(position, track)
         self.listeners.trackAdded(track, position)
 
     def removeTrack(self, track):

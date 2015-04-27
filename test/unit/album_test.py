@@ -12,6 +12,24 @@ from tgit.metadata import Image
 from tgit.album import Album, AlbumListener
 
 
+def test_contained_tracks_have_lead_performer_of_album_when_album_is_not_a_compilation():
+    track = build.track(lead_performer='???')
+    album = build.album(lead_performer='Joel Miller')
+
+    album.addTrack(track)
+
+    assert_that(track.lead_performer, equal_to('Joel Miller'), 'track lead performer')
+
+
+def test_contained_tracks_have_various_lead_performers_when_album_is_a_compilation():
+    track = build.track(lead_performer='Joel Miller')
+    compilation = build.album(lead_performer='Various Artists', compilation=True)
+
+    compilation.addTrack(track)
+
+    assert_that(track.lead_performer, equal_to('Joel Miller'), 'track lead performer')
+
+
 class AlbumTest(unittest.TestCase):
     def testIsInitiallyEmpty(self):
         assert_that(build.album().empty(), is_(True), 'emptiness')
