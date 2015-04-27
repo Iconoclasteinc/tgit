@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named, with_text
-from test.drivers import BaseDriver
+from test.drivers import ScreenDriver
 
 
-class PerformerDialogDriver(BaseDriver):
+class PerformerDialogDriver(ScreenDriver):
     def addPerformerRow(self):
         self.button(with_text('ADD A PERFORMER')).click()
 

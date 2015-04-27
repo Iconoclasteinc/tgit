@@ -6,7 +6,7 @@ from hamcrest import contains_string, has_entries
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
-from test.drivers.track_edition_page_driver import TrackEditionPageDriver
+from test.drivers import TrackEditionPageDriver
 from test.integration.ui import WidgetTest
 from test.util import builders as build
 from tgit.ui.track_edition_page import TrackEditionPage

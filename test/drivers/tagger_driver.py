@@ -5,18 +5,14 @@ from PyQt5.QtWidgets import QDialog, QAbstractButton
 from cute import matchers as match
 from cute.matchers import showing_on_screen, with_text
 from cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
-from test.drivers.export_as_dialog_driver import exportAsDialog
+from test.drivers.export_as_dialog_driver import export_as_dialog
 from test.drivers.isni_error_message_box_driver import message_box
 from test.drivers.isni_lookup_dialog_driver import isni_lookup_dialog
-from test.drivers.menu_bar_driver import menuBar
+from test.drivers.menu_bar_driver import menu_bar
 from test.drivers.album_screen_driver import album_screen
-from test.drivers.settings_dialog_driver import settingsDialog
+from test.drivers.settings_dialog_driver import settings_dialog
 from test.drivers.track_selection_dialog_driver import track_selection_dialog
 from test.drivers.welcome_screen_driver import welcome_screen
-
-
-def restartMessage(parent):
-    return WidgetDriver.find_single(parent, QDialog, match.named("restart-message"), showing_on_screen())
 
 
 class TaggerDriver(MainWindowDriver):
@@ -43,7 +39,7 @@ class TaggerDriver(MainWindowDriver):
         album_screen(self).is_showing_on_screen()
 
     def showsExportAsDialog(self):
-        exportAsDialog(self).is_showing_on_screen()
+        export_as_dialog(self).is_showing_on_screen()
 
     def removeTrack(self, title):
         album_screen(self).removeTrack(title)
@@ -74,20 +70,19 @@ class TaggerDriver(MainWindowDriver):
         album_screen(self).save()
 
     def change_settings(self, **settings):
-        menuBar(self).settings()
-        settingsDialog(self).changeSettings(settings)
+        menu_bar(self).settings()
+        settings_dialog(self).changeSettings(settings)
         self.acknowledge()
 
     def hasSettings(self, **settings):
-        dialog = menuBar(self).settings()
+        dialog = menu_bar(self).settings()
         try:
             dialog.showsSettings(settings)
         finally:
             dialog.close()
 
     def acknowledge(self):
-        message = restartMessage(self)
-        ok = ButtonDriver.find_single(message, QAbstractButton, with_text("OK"))
+        ok = ButtonDriver.find_single(self.restart_message(), QAbstractButton, with_text("OK"))
         ok.click()
 
     def assign_isni_to_lead_performer(self):
@@ -107,3 +102,6 @@ class TaggerDriver(MainWindowDriver):
         album_screen(self).lookup_isni_of_lead_performer()
         isni_lookup_dialog(self).selects_first_identity()
         isni_lookup_dialog(self).confirm()
+
+    def restart_message(self):
+        return WidgetDriver.find_single(self, QDialog, match.named("restart-message"), showing_on_screen())

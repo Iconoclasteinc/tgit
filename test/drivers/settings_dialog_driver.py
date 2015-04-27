@@ -6,7 +6,7 @@ from cute.matchers import named, with_text, with_buddy, showing_on_screen
 from cute.widgets import WidgetDriver, ComboBoxDriver, ButtonDriver, LabelDriver, window
 
 
-def settingsDialog(parent):
+def settings_dialog(parent):
     return SettingsDialogDriver(window(QDialog, named('settings-dialog'), showing_on_screen()), parent.prober,
                                 parent.gesture_performer)
 

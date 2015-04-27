@@ -7,7 +7,7 @@ from hamcrest import equal_to
 from PyQt5.QtWidgets import QMainWindow
 
 from cute.probes import ValueMatcherProbe
-from test.drivers.export_as_dialog_driver import exportAsDialog
+from test.drivers import export_as_dialog
 from test.integration.ui import WidgetTest
 from test.util import resources
 from tgit.ui.export_as_dialog import ExportAsDialog
@@ -19,7 +19,7 @@ class ExportAsDialogTest(WidgetTest):
         window = QMainWindow()
         self.show(window)
         self.dialog = ExportAsDialog(window, native=False, transient=False)
-        self.driver = exportAsDialog(self)
+        self.driver = export_as_dialog(self)
         self.tempDir = resources.makeTempDir()
 
     def tearDown(self):

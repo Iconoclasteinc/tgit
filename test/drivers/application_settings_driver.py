@@ -9,15 +9,15 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 from tgit.preferences import Preferences
 
 
-def create_settings_file():
-    return tempfile.mkstemp(suffix='.ini')
-
-
-class ApplicationSettingsDriver(object):
+class ApplicationSettingsDriver():
     def __init__(self, lang='en'):
-        self._settings_file_descriptor, self._settings_file_path = create_settings_file()
+        self._settings_file_descriptor, self._settings_file_path = self._create_settings_file()
         self.preferences = Preferences(QSettings(self._settings_file_path, QSettings.IniFormat))
         self["language"] = lang
+
+    @staticmethod
+    def _create_settings_file():
+        return tempfile.mkstemp(suffix='.ini')
 
     def destroy(self):
         os.close(self._settings_file_descriptor)

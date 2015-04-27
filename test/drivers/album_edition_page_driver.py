@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named, with_buddy, with_pixmap_height, with_pixmap_width
-from test.drivers import BaseDriver
-from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
+from test.drivers import ScreenDriver
+from test.drivers import picture_selection_dialog
 from tgit.ui.album_edition_page import AlbumEditionPage
 
 
@@ -10,7 +10,7 @@ def album_edition_page(parent):
     return AlbumEditionPageDriver.find_single(parent, AlbumEditionPage, named('album-edition-page'))
 
 
-class AlbumEditionPageDriver(BaseDriver):
+class AlbumEditionPageDriver(ScreenDriver):
     def shows_metadata(self, **meta):
         for tag, value in meta.items():
             if tag == 'release_name':
@@ -93,7 +93,7 @@ class AlbumEditionPageDriver(BaseDriver):
 
     def select_picture(self, filename):
         self.addPicture()
-        pictureSelectionDialog(self).selectPicture(filename)
+        picture_selection_dialog(self).selectPicture(filename)
         self.showsPicture()
 
     def addPicture(self):

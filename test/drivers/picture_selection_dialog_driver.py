@@ -8,7 +8,7 @@ from cute.matchers import named, disabled
 from cute.widgets import FileDialogDriver, window
 
 
-def pictureSelectionDialog(parent):
+def picture_selection_dialog(parent):
     return PictureSelectionDialogDriver(
         window(QFileDialog, named('picture-selection-dialog')), parent.prober, parent.gesture_performer)
 

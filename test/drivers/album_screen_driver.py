@@ -3,9 +3,9 @@ from PyQt5.QtCore import Qt
 from hamcrest.library.text import contains_string
 
 from cute.matchers import named
-from test.drivers import BaseDriver
+from test.drivers import ScreenDriver
 from test.drivers.album_edition_page_driver import album_edition_page
-from test.drivers.album_composition_page_driver import albumCompositionPage
+from test.drivers.album_composition_page_driver import album_composition_page
 from test.drivers.track_edition_page_driver import track_edition_page
 from tgit.ui.album_screen import AlbumScreen
 
@@ -14,19 +14,9 @@ def album_screen(parent):
     return AlbumScreenDriver.find_single(parent, AlbumScreen, named('album-screen'))
 
 
-def isDisabled(button):
-    button.is_disabled()
-    button.has_cursor_shape(Qt.ArrowCursor)
-
-
-def isEnabled(button):
-    button.is_enabled()
-    button.has_cursor_shape(Qt.PointingHandCursor)
-
-
-class AlbumScreenDriver(BaseDriver):
+class AlbumScreenDriver(ScreenDriver):
     def showsAlbumCompositionPage(self):
-        albumCompositionPage(self).is_showing_on_screen()
+        album_composition_page(self).is_showing_on_screen()
 
     def showsAlbumEditionPage(self):
         album_edition_page(self).is_showing_on_screen()
@@ -35,13 +25,13 @@ class AlbumScreenDriver(BaseDriver):
         track_edition_page(self).is_showing_on_screen()
 
     def addFiles(self):
-        albumCompositionPage(self).addFiles()
+        album_composition_page(self).addFiles()
 
     def removeTrack(self, title):
-        albumCompositionPage(self).removeTrack(title)
+        album_composition_page(self).removeTrack(title)
 
     def moveTrack(self, title, to):
-        albumCompositionPage(self).moveTrack(title, to)
+        album_composition_page(self).moveTrack(title, to)
 
     def previousPage(self):
         self.button(named('previous')).click()
@@ -53,25 +43,25 @@ class AlbumScreenDriver(BaseDriver):
         self.button(named('save')).click()
 
     def hidesPreviousPageButton(self):
-        isDisabled(self.button(named('previous')))
+        self._is_disabled(self.button(named('previous')))
 
     def showsPreviousPageButton(self):
-        isEnabled(self.button(named('previous')))
+        self._is_enabled(self.button(named('previous')))
 
     def hidesNextPageButton(self):
-        isDisabled(self.button(named('next')))
+        self._is_disabled(self.button(named('next')))
 
     def showsNextPageButton(self):
-        isEnabled(self.button(named('next')))
+        self._is_enabled(self.button(named('next')))
 
     def hidesSaveButton(self):
-        isDisabled(self.button(named('save')))
+        self._is_disabled(self.button(named('save')))
 
     def showsSaveButton(self):
-        isEnabled(self.button(named('save')))
+        self._is_enabled(self.button(named('save')))
 
     def showsAlbumContains(self, *tracks):
-        albumCompositionPage(self).showsTracksInOrder(*tracks)
+        album_composition_page(self).showsTracksInOrder(*tracks)
 
     def shows_album_metadata(self, **tags):
         album_edition_page(self).shows_metadata(**tags)
@@ -96,3 +86,13 @@ class AlbumScreenDriver(BaseDriver):
 
     def lookup_isni_of_lead_performer(self):
         album_edition_page(self).lookup_isni_of_lead_performer()
+
+    @staticmethod
+    def _is_disabled(button):
+        button.is_disabled()
+        button.has_cursor_shape(Qt.ArrowCursor)
+
+    @staticmethod
+    def _is_enabled(button):
+        button.is_enabled()
+        button.has_cursor_shape(Qt.PointingHandCursor)

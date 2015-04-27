@@ -3,11 +3,10 @@
 import timeit
 
 from hamcrest import has_entries, assert_that, less_than
-import pytest
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
-from test.drivers.album_edition_page_driver import AlbumEditionPageDriver
+from test.drivers import AlbumEditionPageDriver
 from test.integration.ui import WidgetTest
 from test.util import resources, builders as build
 from tgit.metadata import Image

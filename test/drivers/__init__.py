@@ -1,42 +1,16 @@
 # -*- coding: utf-8 -*-
+from ._screen_driver import ScreenDriver
 
-from PyQt5.QtWidgets import QLabel, QLineEdit, QTimeEdit, QComboBox, QPushButton, QCheckBox, QPlainTextEdit, \
-    QTableView, QWidget, QTextEdit, QRadioButton
+from .export_as_dialog_driver import export_as_dialog
+from .picture_selection_dialog_driver import picture_selection_dialog, PictureSelectionDialogDriver
+from .track_selection_dialog_driver import track_selection_dialog, TrackSelectionDialogDriver
 
-from cute.widgets import LabelDriver, LineEditDriver, DateTimeEditDriver, ComboBoxDriver, ButtonDriver, \
-    TextEditDriver, WidgetDriver, TableViewDriver
-
-
-class BaseDriver(WidgetDriver):
-    def label(self, matching):
-        return LabelDriver.find_single(self, QLabel, matching)
-
-    def lineEdit(self, matching):
-        return LineEditDriver.find_single(self, QLineEdit, matching)
-
-    def textEdit(self, matching):
-        return TextEditDriver.find_single(self, QPlainTextEdit, matching)
-
-    def rich_text_edit(self, *matching):
-        return TextEditDriver.find_single(self, QTextEdit, *matching)
-
-    def dateTimeEdit(self, matching):
-        return DateTimeEditDriver.find_single(self, QTimeEdit, matching)
-
-    def combobox(self, matching):
-        return ComboBoxDriver.find_single(self, QComboBox, matching)
-
-    def button(self, matching):
-        return ButtonDriver.find_single(self, QPushButton, matching)
-
-    def checkbox(self, matching):
-        return ButtonDriver.find_single(self, QCheckBox, matching)
-
-    def radio(self, matching):
-        return ButtonDriver.find_single(self, QRadioButton, matching)
-
-    def table(self, matching):
-        return TableViewDriver.find_single(self, QTableView, matching)
-
-    def widget(self, matching):
-        return WidgetDriver.find_single(self, QWidget, matching)
+from .album_composition_page_driver import album_composition_page, AlbumCompositionPageDriver
+from .album_edition_page_driver import album_edition_page, AlbumEditionPageDriver
+from .album_screen_driver import album_screen, AlbumScreenDriver
+from .isni_error_message_box_driver import MessageBoxDriver
+from .menu_bar_driver import menu_bar, MenuBarDriver
+from .performer_dialog_driver import PerformerDialogDriver
+from .settings_dialog_driver import settings_dialog, SettingsDialogDriver
+from .track_edition_page_driver import track_edition_page, TrackEditionPageDriver
+from .welcome_screen_driver import welcome_screen, WelcomeScreenDriver

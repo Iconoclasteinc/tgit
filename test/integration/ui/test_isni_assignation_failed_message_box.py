@@ -23,7 +23,7 @@ import pytest
 from cute.finders import WidgetIdentity
 from cute.prober import EventProcessingProber
 from cute.robot import Robot
-from test.drivers.isni_error_message_box_driver import MessageBoxDriver
+from test.drivers import MessageBoxDriver
 from test.integration.ui import show_widget
 from tgit.isni.name_registry import NameRegistry
 from tgit.ui import isni_assignation_failed_message_box

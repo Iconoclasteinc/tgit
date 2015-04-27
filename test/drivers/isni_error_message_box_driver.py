@@ -20,14 +20,14 @@
 from PyQt5.QtWidgets import QMessageBox
 
 from cute.matchers import named, with_text
-from test.drivers import BaseDriver
+from test.drivers import ScreenDriver
 
 
 def message_box(parent):
     return MessageBoxDriver.find_single(parent, QMessageBox, named("message_box"))
 
 
-class MessageBoxDriver(BaseDriver):
+class MessageBoxDriver(ScreenDriver):
     def is_showing_message(self, message):
         self.label(named("qt_msgbox_label")).has_text(message)
 

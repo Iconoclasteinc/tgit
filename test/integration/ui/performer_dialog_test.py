@@ -4,7 +4,7 @@ from hamcrest import assert_that, equal_to
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
-from test.drivers.performer_dialog_driver import PerformerDialogDriver
+from test.drivers import PerformerDialogDriver
 from test.integration.ui import WidgetTest
 from tgit.ui.performer_dialog import PerformerDialog
 

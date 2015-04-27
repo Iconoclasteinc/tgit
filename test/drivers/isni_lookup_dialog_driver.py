@@ -20,7 +20,7 @@
 from cute.matchers import named
 from cute.widgets import window
 
-from test.drivers import BaseDriver
+from test.drivers import ScreenDriver
 from tgit.ui import ISNILookupDialog
 
 
@@ -29,7 +29,7 @@ def isni_lookup_dialog(parent):
                                   parent.gesture_performer)
 
 
-class IsniLookupDialogDriver(BaseDriver):
+class IsniLookupDialogDriver(ScreenDriver):
     def selects_first_identity(self):
         self.radio(named("identity_radio_0")).click()
 

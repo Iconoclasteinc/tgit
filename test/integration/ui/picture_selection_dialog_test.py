@@ -6,7 +6,7 @@ import unittest
 from PyQt5.QtWidgets import QMainWindow
 
 from cute.probes import ValueMatcherProbe
-from test.drivers.picture_selection_dialog_driver import pictureSelectionDialog
+from test.drivers import picture_selection_dialog
 from test.integration.ui import WidgetTest
 from test.util import resources
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
@@ -18,7 +18,7 @@ class PictureSelectionDialogTest(WidgetTest):
         window = QMainWindow()
         self.show(window)
         self.dialog = PictureSelectionDialog(window, native=False, transient=False)
-        self.driver = pictureSelectionDialog(self)
+        self.driver = picture_selection_dialog(self)
 
     def testSignalsWhenPictureSelected(self):
         pictureSelectedSignal = ValueMatcherProbe('picture selected', resources.path('front-cover.jpg'))

@@ -5,16 +5,16 @@ from PyQt5.QtWidgets import QAbstractButton
 
 from cute.widgets import ButtonDriver
 from cute.matchers import named
-from test.drivers import BaseDriver
+from test.drivers import ScreenDriver
 from tgit.ui.album_composition_model import Columns
 from tgit.ui.album_composition_page import AlbumCompositionPage
 
 
-def albumCompositionPage(parent):
+def album_composition_page(parent):
     return AlbumCompositionPageDriver.find_single(parent, AlbumCompositionPage, named('album-composition-page'))
 
 
-class AlbumCompositionPageDriver(BaseDriver):
+class AlbumCompositionPageDriver(ScreenDriver):
     def __init__(self, selector, prober, gesture_performer):
         super(AlbumCompositionPageDriver, self).__init__(selector, prober, gesture_performer)
 

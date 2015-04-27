@@ -2,7 +2,7 @@
 
 from cute.probes import ValueMatcherProbe
 from cute.finders import WidgetIdentity
-from test.drivers.welcome_screen_driver import WelcomeScreenDriver
+from test.drivers import WelcomeScreenDriver
 from test.integration.ui import WidgetTest
 
 from tgit.ui.welcome_screen import WelcomeScreen

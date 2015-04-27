@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named, with_buddy, showing_on_screen, with_pixmap_height, with_pixmap_width
-from test.drivers import BaseDriver
+from test.drivers import ScreenDriver
 from tgit.ui.track_edition_page import TrackEditionPage
 
 
@@ -9,7 +9,7 @@ def track_edition_page(parent):
     return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named('track-edition-page'), showing_on_screen())
 
 
-class TrackEditionPageDriver(BaseDriver):
+class TrackEditionPageDriver(ScreenDriver):
     def shows_metadata(self, **meta):
         for tag, value in meta.items():
             if tag == "track_title":
