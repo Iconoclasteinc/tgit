@@ -434,8 +434,8 @@
     <name>QMessageBox</name>
     <message>
         <location filename="tgit/ui/restart_message_box.py" line="53"/>
-        <source>Could not assign an ISNI.</source>
-        <translation>Impossible d'assigner un ISNI.</translation>
+        <source>Could not assign an ISNI</source>
+        <translation>Impossible d'assigner un ISNI</translation>
     </message>
 </context>
 <context>
