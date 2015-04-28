@@ -24,17 +24,16 @@ from PyQt5.QtWidgets import QDialog, QLayout, QPushButton, QDialogButtonBox, QLi
 
 
 class PerformerDialog(QDialog):
-    def __init__(self, parent=None, performers=None, transient=True):
+    def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setObjectName('performer-dialog')
         self.setWindowFlags(Qt.Dialog)
-        if transient:
-            self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowTitle(self.tr('Please enter the name of the performer'))
         self.setModal(True)
 
         self.uniqueIdentifier = 0
-        self.performersTable = self.buildPerformerTable(performers or [])
+        self.performersTable = self.buildPerformerTable()
 
         boxLayout = QVBoxLayout()
         boxLayout.addWidget(self.buildHeader())
@@ -78,18 +77,19 @@ class PerformerDialog(QDialog):
             lambda: self.performersTable.layout().addWidget(self.buildPerformerRow()))
         return button
 
-    def buildPerformerTable(self, performers):
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-
+    def display(self, performers):
+        layout = self.performersTable.layout()
         if performers:
             for index, performer in enumerate(performers):
                 layout.addWidget(self.buildPerformerRow(performer))
         else:
             layout.addWidget(self.buildPerformerRow())
 
+    def buildPerformerTable(self):
         widget = QWidget()
         widget.setObjectName('performers-table')
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
         widget.setLayout(layout)
         return widget
 
