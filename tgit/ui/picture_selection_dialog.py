@@ -23,13 +23,12 @@ from PyQt5.QtWidgets import QFileDialog
 
 
 class PictureSelectionDialog(QObject):
-    pictureSelected = pyqtSignal(str)
+    picture_selected = pyqtSignal(str)
 
-    def __init__(self, parent, native, transient=True):
+    def __init__(self, parent, native):
         QObject.__init__(self)
         self.parent = parent
         self.native = native
-        self.transient = transient
 
     def display(self):
         dialog = QFileDialog(self.parent)
@@ -38,7 +37,6 @@ class PictureSelectionDialog(QObject):
         dialog.setDirectory(QDir.homePath())
         dialog.setFileMode(QFileDialog.ExistingFile)
         dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % dialog.tr('Image files'))
-        dialog.fileSelected.connect(lambda path: self.pictureSelected.emit(os.path.abspath(path)))
-        if self.transient:
-            dialog.setAttribute(Qt.WA_DeleteOnClose)
+        dialog.fileSelected.connect(lambda path: self.picture_selected.emit(os.path.abspath(path)))
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
         dialog.open()

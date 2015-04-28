@@ -14,13 +14,13 @@ def picture_selection_dialog(parent):
 
 
 class PictureSelectionDialogDriver(FileDialogDriver):
-    def selectPicture(self, filename):
+    def select_picture(self, filename):
         self.view_as_list()
         self.navigate_to_dir(os.path.dirname(filename))
         self.select_file(os.path.basename(filename))
         self.accept()
 
-    def rejectsSelectionOf(self, filename):
+    def rejects_selection_of(self, filename):
         self.navigate_to_dir(os.path.dirname(filename))
         self.select_file(os.path.basename(filename))
         self.accept_button_is(disabled())

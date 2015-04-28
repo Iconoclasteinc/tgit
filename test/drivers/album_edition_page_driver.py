@@ -93,7 +93,7 @@ class AlbumEditionPageDriver(ScreenDriver):
 
     def select_picture(self, filename):
         self.addPicture()
-        picture_selection_dialog(self).selectPicture(filename)
+        picture_selection_dialog(self).select_picture(filename)
         self.showsPicture()
 
     def addPicture(self):

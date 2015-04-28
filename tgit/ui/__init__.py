@@ -177,7 +177,7 @@ def AlbumScreenController(compositionPage, albumPage, trackPage, album):
 
 def PictureSelectionDialogController(parent, album, native):
     dialog = PictureSelectionDialog(parent, native)
-    dialog.pictureSelected.connect(lambda selection: director.changeAlbumCover(album, selection))
+    dialog.picture_selected.connect(lambda selection: director.changeAlbumCover(album, selection))
     dialog.display()
 
 

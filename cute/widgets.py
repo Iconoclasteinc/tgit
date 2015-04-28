@@ -282,7 +282,7 @@ class FileDialogDriver(WidgetDriver):
         self._accept_button().click()
 
     def accept_button_is(self, criteria):
-        return self._dialog_button(QFileDialog.Accept).is_(criteria)
+        return self._accept_button().is_(criteria)
 
     def accept_button_has_text(self, text):
         return self._accept_button().has_text(text)
