@@ -20,15 +20,15 @@ from tgit.ui.track_selection_dialog import TrackSelectionDialog
 def dialog(qt):
     main_window = QMainWindow()
     show_widget(main_window)
-    return TrackSelectionDialog(main_window, native=False, transient=False)
+    return TrackSelectionDialog(main_window, native=False)
 
 
 @pytest.yield_fixture()
 def driver(dialog):
-    driver = TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')),
+    dialog_driver = TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')),
                                         EventProcessingProber(), Robot())
-    yield driver
-    driver.close()
+    yield dialog_driver
+    dialog_driver.close()
 
 
 def test_signals_when_audio_files_selected(driver, dialog):

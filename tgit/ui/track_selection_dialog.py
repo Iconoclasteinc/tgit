@@ -25,11 +25,10 @@ from PyQt5.QtWidgets import QFileDialog
 class TrackSelectionDialog(QObject):
     tracks_selected = pyqtSignal(list)
 
-    def __init__(self, parent, native, transient=True):
+    def __init__(self, parent, native):
         QObject.__init__(self)
         self.parent = parent
         self.native = native
-        self.transient = transient
 
     def display(self, folders=False):
         dialog = QFileDialog(self.parent)
@@ -44,6 +43,6 @@ class TrackSelectionDialog(QObject):
             dialog.setFileMode(QFileDialog.Directory)
         else:
             dialog.setFileMode(QFileDialog.ExistingFiles)
-        if self.transient:
-            dialog.setAttribute(Qt.WA_DeleteOnClose)
+
+        dialog.setAttribute(Qt.WA_DeleteOnClose)
         dialog.open()
