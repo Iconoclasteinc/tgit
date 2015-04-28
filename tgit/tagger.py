@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import random
 import sys
 
 from PyQt5.QtCore import QTranslator, QLocale, QSettings
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
 from tgit.preferences import Preferences
@@ -40,6 +40,7 @@ def tgit(use_local_isni_backend=False):
     app.setApplicationName("TGiT")
     app.setOrganizationName("Iconoclaste Inc.")
     app.setOrganizationDomain("tagyourmusic.com")
+    app.setWindowIcon(QIcon(":/tgit.ico"))
     app.launch(Preferences(QSettings()))
 
 
