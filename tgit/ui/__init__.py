@@ -190,8 +190,8 @@ def SettingsDialogController(restartNotice, preferences, parent):
         restartNotice(parent).display()
 
     dialog.accepted.connect(savePreferences)
-    dialog.addLanguage("en", dialog.tr("English"))
-    dialog.addLanguage("fr", dialog.tr("French"))
+    dialog.add_language("en", dialog.tr("English"))
+    dialog.add_language("fr", dialog.tr("French"))
     dialog.display(**preferences)
     return dialog
 

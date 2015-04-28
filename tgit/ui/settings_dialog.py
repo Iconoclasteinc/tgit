@@ -22,14 +22,13 @@ from PyQt5.QtWidgets import QDialog, QComboBox, QGridLayout, QDialogButtonBox, Q
 
 
 class SettingsDialog(QDialog):
-    def __init__(self, parent=None, transient=True):
-        QDialog.__init__(self, parent)
-        self.build(transient)
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._build()
 
-    def build(self, transient):
+    def _build(self):
         self.setObjectName('settings-dialog')
-        if transient:
-            self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowTitle(self.tr('Settings'))
         self.setModal(True)
         layout = QGridLayout()
@@ -45,7 +44,7 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.buttons, 1, 0, 1, 2)
         self.setLayout(layout)
 
-    def addLanguage(self, locale, language):
+    def add_language(self, locale, language):
         self.languages.addItem(self.tr(language), locale)
 
     @property
