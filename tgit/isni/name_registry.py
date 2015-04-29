@@ -100,7 +100,7 @@ class NameRegistry(object):
         return "".join(fragments)
 
     def assig_uri(self):
-        fragments = ["https" if self.secure else "http", "://", self.host]
+        fragments = ["https" if self.secure else "http", "://", self.assign_host]
         if self.port is not None:
             fragments.append(":")
             fragments.append(str(self.port))
