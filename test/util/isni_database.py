@@ -31,8 +31,8 @@ _app = Flask(__name__)
 port = 5000
 persons = {}
 organisations = {}
-assignation_generator = None
-
+assignation_generator = iter([])
+assignation_actions = {}
 
 @_app.route("/sru/DB=1.2")
 def _lookup():
@@ -57,19 +57,25 @@ def _lookup():
 @_app.route("/ATOM/isni", methods=["POST"])
 def _assign():
     try:
-        etree.fromstring(request.data)
+        request_xml = etree.fromstring(request.data)
+        surname = request_xml.xpath(".//personOrFiction/personalName/surname")[0].text
+        forename = request_xml.xpath(".//personOrFiction/personalName/forename")[0].text
+
+        if assignation_actions:
+            next_action = assignation_actions["{0} {1}".format(forename, surname)]
+        else:
+            next_action = next(assignation_generator)
+
+        if next_action == "sparse":
+            return _sparse_response()
+        elif next_action == "invalid data":
+            return _invalid_data_response()
+        elif isinstance(next_action, list):
+            return _possible_matches_response(next_action)
+        else:
+            return _isni_assigned_response(next_action)
     except ParseError:
         return _invalid_format_response()
-
-    next_action = next(assignation_generator)
-    if next_action == "sparse":
-        return _sparse_response()
-    elif next_action == "invalid data":
-        return _invalid_data_response()
-    elif isinstance(next_action, list):
-        return _possible_matches_response(next_action)
-    else:
-        return _isni_assigned_response(next_action)
 
 
 @_app.route("/shutdown")

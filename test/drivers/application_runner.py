@@ -13,10 +13,10 @@ ONE_SECOND = 1000
 
 class ApplicationRunner(object):
     def start(self, preferences):
-        self.app = TGiT(doubles.null_audio_player, NameRegistry('localhost', port=5000), use_local_isni_backend=True,
-                        native=False)
+        self.app = TGiT(doubles.null_audio_player, NameRegistry(host="localhost", assign_host="localhost", port=5000),
+                        use_local_isni_backend=True, native=False)
         self.app.show(preferences)
-        self.tagger = TaggerDriver(main_application_window(named('main-window'), showing_on_screen()),
+        self.tagger = TaggerDriver(main_application_window(named("main-window"), showing_on_screen()),
                                    EventProcessingProber(timeout_in_ms=ONE_SECOND),
                                    Robot())
 

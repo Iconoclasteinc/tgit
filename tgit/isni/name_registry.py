@@ -59,7 +59,7 @@ class NameRegistry(object):
         titles = "".join("<title>{0}</title>".format(title) for title in title_of_works)
         payload = create_assignation_payload(forename, surname, titles)
         headers = {"content-type": "application/atom+xml"}
-        response = requests.post(self.assig_uri(), data=payload, headers=headers, verify=False)
+        response = requests.post(self.assign_uri(), data=payload, headers=headers, verify=False)
         return response
 
     def handle_assignation_response(self, response):
@@ -99,7 +99,7 @@ class NameRegistry(object):
             fragments.append("/DB=1.2")
         return "".join(fragments)
 
-    def assig_uri(self):
+    def assign_uri(self):
         fragments = ["https" if self.secure else "http", "://", self.assign_host]
         if self.port is not None:
             fragments.append(":")
@@ -178,8 +178,8 @@ def create_assignation_payload(forename, surname, titles):
                         </personalName>
                         <resource>
                             <creationClass>
-                                <domain>literature </domain>
-                                <formOfPublication>book </formOfPublication>
+                                <domain>literature</domain>
+                                <formOfPublication>book</formOfPublication>
                                 <pietjePuk>fi<p>lm</p></pietjePuk>
                             </creationClass>
                             <creationRole>{4}</creationRole>
