@@ -10,6 +10,7 @@ from test.integration.ui import show_widget
 
 from tgit.ui.welcome_screen import WelcomeScreen
 
+
 @pytest.fixture()
 def welcome_screen(qt):
     screen = WelcomeScreen()
@@ -25,8 +26,8 @@ def driver(welcome_screen):
 
 
 def test_signals_when_new_album_button_clicked(welcome_screen, driver):
-    new_album_signal = ValueMatcherProbe('new album')
-    welcome_screen.newAlbum.connect(new_album_signal.received)
+    new_album_signal = ValueMatcherProbe("new album")
+    welcome_screen.create_new_album.connect(new_album_signal.received)
 
     driver.new_album()
     driver.check(new_album_signal)

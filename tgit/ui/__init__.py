@@ -240,7 +240,7 @@ def create_main_window(album_portfolio, player, preferences, name_registry, use_
                                  album_portfolio)
 
     def create_welcome_screen():
-        return WelcomeScreenController(album_portfolio)
+        return WelcomeScreen(album_portfolio)
 
     def create_composition_page(album):
         return AlbumCompositionPageController(show_track_selection_dialog, player, album)
