@@ -32,11 +32,11 @@ StyleSheet = """
         border: 1px solid #DDDDDD;
     }
 
-    #welcome-screen {
+    #welcome_screen {
         background-color: rgba(0, 0, 0, 70%);
     }
 
-    #welcome-screen #welcome-dialog {
+    #welcome_screen #welcome-dialog {
         padding: 20px;
         min-width: 500px;
         max-width: 500px;
@@ -45,12 +45,12 @@ StyleSheet = """
         background: white url(':/logo.png') no-repeat top left;
     }
 
-    #welcome-screen #welcome-dialog #logo {
+    #welcome_screen #welcome-dialog #logo {
         min-width: 58;
         min-height: 105;
     }
 
-    #welcome-screen #welcome-dialog QPushButton {
+    #welcome_screen #welcome-dialog QPushButton {
         background-color: #EC2327;
         border: 2px solid #EC2327;
         border-radius: 4px;
@@ -60,23 +60,23 @@ StyleSheet = """
         padding: 14px 14px 11px 14px;
     }
 
-    #welcome-screen #welcome-dialog QPushButton:hover {
+    #welcome_screen #welcome-dialog QPushButton:hover {
         background-color: #D42023;
         border-color: #D42023;
     }
 
-    #welcome-screen #welcome-dialog QPushButton:pressed {
+    #welcome_screen #welcome-dialog QPushButton:pressed {
         border: 2px solid white;
     }
 
-    #welcome-screen #welcome-dialog QLabel[title='h1'] {
+    #welcome_screen #welcome-dialog QLabel[title='h1'] {
         font-size: 28px;
         font-weight: bold;
         margin-top: 35px;
         margin-bottom: 50px;
     }
 
-    #welcome-screen #welcome-dialog QLabel {
+    #welcome_screen #welcome-dialog QLabel {
         color: #2D2D25;
         font-size: 16px;
     }

@@ -41,7 +41,7 @@ from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
-from tgit.ui.welcome_screen import WelcomeScreen
+from tgit.ui.welcome_screen import welcome_screen as WelcomeScreen
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
 from tgit.util import async_task_runner as taskRunner
@@ -217,12 +217,6 @@ def MenuBarController(exportAs, selectTracks, changeSettings, portfolio):
     menuBar.export.connect(lambda album: exportAs(album))
     menuBar.settings.connect(lambda: changeSettings())
     return menuBar
-
-
-def WelcomeScreenController(portfolio):
-    page = WelcomeScreen()
-    page.newAlbum.connect(lambda: director.createAlbum(portfolio))
-    return page
 
 
 def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
