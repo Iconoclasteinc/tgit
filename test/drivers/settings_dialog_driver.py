@@ -19,16 +19,17 @@ class SettingsDialogDriver(ScreenDriver):
 
     def changeSettings(self, settings):
         if 'language' in settings:
-            self.change_language(settings['language'])
+            self.select_language(settings['language'])
+
+        self.ok()
 
     def shows_language(self, language):
         self.combobox(named('language')).has_current_text(language)
 
-    def change_language(self, language):
+    def select_language(self, language):
         label = self.label(with_buddy(named('language')))
         label.is_showing_on_screen()
         self.combobox(named('language')).select_option(language)
-        self.ok()
 
     def ok(self):
         self.button(with_text('OK')).click()

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from PyQt5.QtWidgets import QMainWindow
 
 from hamcrest import assert_that, equal_to
 import pytest
@@ -11,18 +12,23 @@ from test.drivers import SettingsDialogDriver
 from test.integration.ui import show_widget
 from tgit.ui.settings_dialog import SettingsDialog
 
+ACTIVATION_DELAY = 25
 
-@pytest.fixture()
+
+@pytest.yield_fixture()
 def settings_dialog(qt):
-    dialog = SettingsDialog()
-    show_widget(dialog)
-    return dialog
+    main_window = QMainWindow()
+    dialog = SettingsDialog(main_window)
+    show_widget(main_window)
+    dialog.show()
+    yield dialog
+    main_window.close()
 
 
 @pytest.yield_fixture()
 def driver(settings_dialog):
     driver = SettingsDialogDriver(WidgetIdentity(settings_dialog), EventProcessingProber(), Robot())
-    driver.pause(200)
+    driver.pause(ACTIVATION_DELAY)
     yield driver
     driver.close()
 
@@ -41,7 +47,7 @@ def test_offers_selection_of_available_languages(settings_dialog, driver):
     assert_that(settings_dialog.settings['language'], equal_to('en'), 'default language')
 
     driver.shows_language('English')
-    driver.change_language('French')
+    driver.select_language('French')
     driver.shows_language('French')
     assert_that(settings_dialog.settings['language'], equal_to('fr'), 'selected language')
 

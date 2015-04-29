@@ -8,9 +8,11 @@ from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
 from cute.robot import Robot
 from test.drivers import PerformerDialogDriver
-from test.integration.ui import WidgetTest, show_widget
-from tgit.ui import main_window
+from test.integration.ui import show_widget
 from tgit.ui.performer_dialog import PerformerDialog
+
+
+DISPLAY_DELAY = 200
 
 
 @pytest.fixture()
@@ -23,7 +25,7 @@ def performer_dialog(qt):
 @pytest.yield_fixture()
 def driver(performer_dialog):
     driver = PerformerDialogDriver(WidgetIdentity(performer_dialog), EventProcessingProber(), Robot())
-    driver.pause(200)
+    driver.pause(DISPLAY_DELAY)
     yield driver
     driver.close()
 

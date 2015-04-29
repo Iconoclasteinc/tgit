@@ -16,11 +16,12 @@ from test.util import resources
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 
-@pytest.fixture()
+@pytest.yield_fixture()
 def dialog(qt):
     main_window = QMainWindow()
     show_widget(main_window)
-    return TrackSelectionDialog(main_window, native=False)
+    yield TrackSelectionDialog(main_window, native=False)
+    main_window.close()
 
 
 @pytest.yield_fixture()

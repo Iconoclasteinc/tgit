@@ -16,11 +16,12 @@ from test.util import resources
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 
 
-@pytest.fixture()
+@pytest.yield_fixture()
 def picture_dialog(qt):
     main_window = QMainWindow()
     show_widget(main_window)
-    return PictureSelectionDialog(main_window, native=False)
+    yield PictureSelectionDialog(main_window, native=False)
+    main_window.close()
 
 
 @pytest.yield_fixture()
