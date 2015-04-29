@@ -27,7 +27,7 @@ def dialog(qt):
 @pytest.yield_fixture()
 def driver(dialog):
     dialog_driver = TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')),
-                                        EventProcessingProber(), Robot())
+                                               EventProcessingProber(), Robot())
     yield dialog_driver
     dialog_driver.close()
 

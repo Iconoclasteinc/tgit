@@ -18,31 +18,33 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
 
-from PyQt5.QtCore import QDir, Qt, pyqtSignal, QObject
+from PyQt5.QtCore import QDir, Qt, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
 
 
-class TrackSelectionDialog(QObject):
+class TrackSelectionDialog(QFileDialog):
     tracks_selected = pyqtSignal(list)
 
     def __init__(self, parent, native):
-        QObject.__init__(self)
-        self.parent = parent
-        self.native = native
+        super().__init__(parent)
+        self._build(native)
+
+    def _build(self, native):
+        self.setObjectName('track-selection-dialog')
+        self.setOption(QFileDialog.DontUseNativeDialog, not native)
+        self.setNameFilters(
+            ['%s (%s)' % (self.tr('MP3 files'), '*.mp3'), '%s (%s)' % (self.tr('FLAC files'), '*.flac')])
+        self.setDirectory(QDir.homePath())
+        self.filesSelected.connect(self._signal_tracks_selected)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
+    def _signal_tracks_selected(self, selection):
+        return self.tracks_selected.emit([os.path.abspath(entry) for entry in selection])
 
     def display(self, folders=False):
-        dialog = QFileDialog(self.parent)
-        dialog.setObjectName('track-selection-dialog')
-        dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        dialog.setNameFilters(
-            ['%s (%s)' % (dialog.tr('MP3 files'), '*.mp3'), '%s (%s)' % (dialog.tr('FLAC files'), '*.flac')])
-        dialog.setDirectory(QDir.homePath())
-        dialog.filesSelected.connect(
-            lambda selection: self.tracks_selected.emit([os.path.abspath(entry) for entry in selection]))
         if folders:
-            dialog.setFileMode(QFileDialog.Directory)
+            self.setFileMode(QFileDialog.Directory)
         else:
-            dialog.setFileMode(QFileDialog.ExistingFiles)
+            self.setFileMode(QFileDialog.ExistingFiles)
 
-        dialog.setAttribute(Qt.WA_DeleteOnClose)
-        dialog.open()
+        self.open()

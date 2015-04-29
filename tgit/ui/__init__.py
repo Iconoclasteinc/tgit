@@ -199,7 +199,7 @@ def SettingsDialogController(restartNotice, preferences, parent):
 
 def ExportAsDialogController(format_, album, parent, native):
     dialog = ExportAsDialog(parent, native)
-    dialog.exportAs.connect(lambda destination: director.export_album(format_, album, destination, "windows-1252"))
+    dialog.export_as.connect(lambda destination: director.export_album(format_, album, destination, "windows-1252"))
     dialog.display()
 
 

@@ -23,23 +23,24 @@ from PyQt5.QtCore import QDir, Qt, QObject, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
 
 
-class ExportAsDialog(QObject):
-    exportAs = pyqtSignal(str)
+class ExportAsDialog(QFileDialog):
+    export_as = pyqtSignal(str)
 
-    def __init__(self, parent, native, transient=True):
-        QObject.__init__(self)
-        self.parent = parent
-        self.native = native
-        self.transient = transient
+    def __init__(self, parent, native):
+        super().__init__(parent)
+        self._build(native)
+
+    def _build(self, native):
+        self.setObjectName('export-as-dialog')
+        self.setAcceptMode(QFileDialog.AcceptSave)
+        self.setDirectory(QDir.homePath())
+        self.setFileMode(QFileDialog.AnyFile)
+        self.setOption(QFileDialog.DontUseNativeDialog, not native)
+        self.fileSelected.connect(self._signal_export_as)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
+    def _signal_export_as(self, path):
+        self.export_as.emit(os.path.abspath(path))
 
     def display(self):
-        dialog = QFileDialog(self.parent)
-        dialog.setObjectName('export-as-dialog')
-        dialog.setAcceptMode(QFileDialog.AcceptSave)
-        dialog.setDirectory(QDir.homePath())
-        dialog.setFileMode(QFileDialog.AnyFile)
-        dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        dialog.fileSelected.connect(lambda path: self.exportAs.emit(os.path.abspath(path)))
-        if self.transient:
-            dialog.setAttribute(Qt.WA_DeleteOnClose)
-        dialog.open()
+        self.open()

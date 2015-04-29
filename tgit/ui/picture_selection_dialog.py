@@ -18,25 +18,28 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
 
-from PyQt5.QtCore import QDir, Qt, pyqtSignal, QObject
+from PyQt5.QtCore import QDir, Qt, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
 
 
-class PictureSelectionDialog(QObject):
+class PictureSelectionDialog(QFileDialog):
     picture_selected = pyqtSignal(str)
 
     def __init__(self, parent, native):
-        QObject.__init__(self)
-        self.parent = parent
-        self.native = native
+        super().__init__(parent)
+        self._build(native)
+
+    def _build(self, native):
+        self.setObjectName('picture-selection-dialog')
+        self.setOption(QFileDialog.DontUseNativeDialog, not native)
+        self.setDirectory(QDir.homePath())
+        self.setFileMode(QFileDialog.ExistingFile)
+        self.setNameFilter('%s (*.png *.jpeg *.jpg)' % self.tr('Image files'))
+        self.fileSelected.connect(self._signal_picture_selected)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
+    def _signal_picture_selected(self, path):
+        self.picture_selected.emit(os.path.abspath(path))
 
     def display(self):
-        dialog = QFileDialog(self.parent)
-        dialog.setObjectName('picture-selection-dialog')
-        dialog.setOption(QFileDialog.DontUseNativeDialog, not self.native)
-        dialog.setDirectory(QDir.homePath())
-        dialog.setFileMode(QFileDialog.ExistingFile)
-        dialog.setNameFilter('%s (*.png *.jpeg *.jpg)' % dialog.tr('Image files'))
-        dialog.fileSelected.connect(lambda path: self.picture_selected.emit(os.path.abspath(path)))
-        dialog.setAttribute(Qt.WA_DeleteOnClose)
-        dialog.open()
+        self.open()
