@@ -212,8 +212,8 @@ def TrackSelectionDialogController(album, parent, native, folders):
 def MenuBarController(exportAs, selectTracks, changeSettings, portfolio):
     menuBar = MenuBar()
     portfolio.addPortfolioListener(menuBar)
-    menuBar.addFiles.connect(lambda album: selectTracks(album))
-    menuBar.addFolder.connect(lambda album: selectTracks(album, True))
+    menuBar.add_files.connect(lambda album: selectTracks(album))
+    menuBar.add_folder.connect(lambda album: selectTracks(album, True))
     menuBar.export.connect(lambda album: exportAs(album))
     menuBar.settings.connect(lambda: changeSettings())
     return menuBar

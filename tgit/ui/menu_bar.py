@@ -24,13 +24,13 @@ from tgit.album import Album
 
 
 class MenuBar(QMenuBar):
-    addFiles = pyqtSignal(Album)
-    addFolder = pyqtSignal(Album)
+    add_files = pyqtSignal(Album)
+    add_folder = pyqtSignal(Album)
     export = pyqtSignal(Album)
     settings = pyqtSignal()
 
-    def __init__(self):
-        QMenuBar.__init__(self)
+    def __init__(self, parent=None):
+        QMenuBar.__init__(self, parent)
         self.albumActions = []
         self.build()
 
@@ -57,7 +57,7 @@ class MenuBar(QMenuBar):
         action.setObjectName('add-files')
         action.setText(self.tr('Add Files...'))
         action.setDisabled(True)
-        action.triggered.connect(lambda checked: self.addFiles.emit(action.data()))
+        action.triggered.connect(lambda checked: self.add_files.emit(action.data()))
         menu.addAction(action)
         self.albumActions.append(action)
 
@@ -66,7 +66,7 @@ class MenuBar(QMenuBar):
         action.setObjectName('add-folder')
         action.setText(self.tr('Add Folder...'))
         action.setDisabled(True)
-        action.triggered.connect(lambda checked: self.addFolder.emit(action.data()))
+        action.triggered.connect(lambda checked: self.add_folder.emit(action.data()))
         menu.addAction(action)
         self.albumActions.append(action)
 

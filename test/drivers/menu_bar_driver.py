@@ -24,18 +24,18 @@ def exportMenuItem(menu):
 
 
 class MenuBarDriver(QMenuBarDriver):
-    def hasDisabledAlbumActions(self):
+    def has_disabled_album_actions(self):
         menu = self.openMenu(named('file-menu'))
         menu.menu_item(named('add-files')).is_disabled()
         menu.menu_item(named('add-folder')).is_disabled()
         menu.menu_item(named('export')).is_disabled()
         menu.close()
 
-    def addFiles(self):
+    def add_files(self):
         menu = self.openMenu(named('file-menu'))
         menu.menu_item(named('add-files')).click()
 
-    def addFolder(self):
+    def add_folder(self):
         menu = self.openMenu(named('file-menu'))
         menu.menu_item(named('add-folder')).click()
 
