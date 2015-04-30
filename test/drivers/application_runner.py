@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from test.drivers import track_selection_dialog
+from test.util.resources import path
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
@@ -23,11 +25,14 @@ class ApplicationRunner(object):
     def stop(self):
         self.tagger.close()
         del self.tagger
+        self.app.quit()
         del self.app
 
-    def new_album(self, *paths, of_type='mp3'):
-        self.tagger.create_album()
-        self.tagger.select_audio_files(*paths, of_type=of_type)
+    def import_album(self, *paths, of_type='mp3'):
+        authoritative_track, other_tracks = paths[0], paths[1:]
+        self.tagger.import_album(authoritative_track, of_type=of_type)
+        if other_tracks:
+            self.tagger.add_tracks_to_album(*other_tracks, of_type=of_type)
 
     def shows_album_content(self, *tracks):
         self.tagger.showsAlbumContains(*tracks)

@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QDialog, QAbstractButton
 from cute import matchers as match
 from cute.matchers import showing_on_screen, with_text
 from cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
+from test.drivers import import_album_from_track_dialog
 from test.drivers.export_as_dialog_driver import export_as_dialog
 from test.drivers.isni_error_message_box_driver import message_box
 from test.drivers.isni_lookup_dialog_driver import isni_lookup_dialog
@@ -19,24 +20,13 @@ class TaggerDriver(MainWindowDriver):
     def __init__(self, selector, prober, gesture_performer):
         super(TaggerDriver, self).__init__(selector, prober, gesture_performer)
 
-    def enterAudioFile(self, filename):
-        track_selection_dialog(self).enter_track(filename)
-
-    def select_audio_files(self, *paths, of_type):
-        track_selection_dialog(self).select_tracks(*paths, of_type=of_type)
-
-    def cancelSelection(self):
-        track_selection_dialog(self).cancel()
-
-    def create_album(self):
-        welcome_screen(self).new_album()
-        self.shows_album_screen()
-
-    def showsWelcomeScreen(self):
-        welcome_screen(self).is_showing_on_screen()
-
-    def shows_album_screen(self):
+    def import_album(self, path, of_type):
+        welcome_screen(self).import_album()
+        import_album_from_track_dialog(self).select_track(path, of_type=of_type)
         album_screen(self).is_showing_on_screen()
+
+    def add_tracks_to_album(self, *paths, of_type):
+        album_screen(self).add_tracks_to_album(*paths, of_type=of_type)
 
     def showsExportAsDialog(self):
         export_as_dialog(self).is_showing_on_screen()
@@ -46,8 +36,8 @@ class TaggerDriver(MainWindowDriver):
 
     def moveTrack(self, title, to):
         album_screen(self).moveTrack(title, to)
-
     # todo have a quick navigation button
+
     def next(self):
         album_screen(self).nextPage()
 

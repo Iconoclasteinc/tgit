@@ -258,7 +258,7 @@ class FileDialogDriver(WidgetDriver):
     def _double_click_on_folder(self):
         self.perform(gestures.mouse_double_click())
 
-    def select_files_of_type(self, matching):
+    def filter_files_of_type(self, matching):
         driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
         driver.select_option(matching)
 

@@ -26,8 +26,8 @@ def driver(welcome_screen):
 
 
 def test_signals_when_new_album_button_clicked(welcome_screen, driver):
-    new_album_signal = ValueMatcherProbe("new album")
-    welcome_screen.create_new_album.connect(new_album_signal.received)
+    import_album_signal = ValueMatcherProbe("new album")
+    welcome_screen.import_album.connect(import_album_signal.received)
 
-    driver.new_album()
-    driver.check(new_album_signal)
+    driver.import_album()
+    driver.check(import_album_signal)

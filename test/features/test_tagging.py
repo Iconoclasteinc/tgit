@@ -25,7 +25,7 @@ def app():
 def test_tagging_an_mp3_track(app, recordings):
     track = recordings.add_mp3(release_name="???", lead_performer="???", track_title="???")
 
-    app.new_album(track, of_type='mp3')
+    app.import_album(track, of_type='mp3')
 
     app.shows_album_metadata(release_name="???", lead_performer="???")
     app.change_album_metadata(front_cover=resources.path("honeycomb.jpg"),
@@ -41,29 +41,12 @@ def test_tagging_an_mp3_track(app, recordings):
                         track_title="Rashers")
 
 
-def test_tagging_a_flac_track(app, recordings):
-    track = recordings.add_flac(release_name="???", lead_performer="???", track_title="???")
-
-    app.new_album(track, of_type='flac')
-
-    app.shows_album_metadata(release_name="???", lead_performer="???")
-    app.change_album_metadata(release_name="St-Henri", lead_performer="John Roney")
-
-    app.shows_next_track_metadata(track_title="???")
-    app.change_track_metadata(track_title="Squareboy")
-
-    recordings.contains("John Roney - 01 - Squareboy.flac",
-                        release_name="St-Henri",
-                        lead_performer="John Roney",
-                        track_title="Squareboy")
-
-
 def test_tagging_an_album_with_several_tracks(app, recordings):
     tracks = (recordings.add_mp3(track_title="1 - ???", lead_performer="???"),
               recordings.add_mp3(track_title="2 - ???", lead_performer="???"),
               recordings.add_mp3(track_title="3 - ???", lead_performer="???"))
 
-    app.new_album(*tracks)
+    app.import_album(*tracks)
     app.shows_album_content(["1 - ???"], ["2 - ???"], ["3 - ???"])
 
     app.shows_album_metadata(lead_performer="???")
@@ -84,12 +67,29 @@ def test_tagging_an_album_with_several_tracks(app, recordings):
                         track_title="Salsa Coltrane")
 
 
+def test_tagging_a_flac_track(app, recordings):
+    track = recordings.add_flac(release_name="???", lead_performer="???", track_title="???")
+
+    app.import_album(track, of_type='flac')
+
+    app.shows_album_metadata(release_name="???", lead_performer="???")
+    app.change_album_metadata(release_name="St-Henri", lead_performer="John Roney")
+
+    app.shows_next_track_metadata(track_title="???")
+    app.change_track_metadata(track_title="Squareboy")
+
+    recordings.contains("John Roney - 01 - Squareboy.flac",
+                        release_name="St-Henri",
+                        lead_performer="John Roney",
+                        track_title="Squareboy")
+
+
 def test_tagging_a_compilation(app, recordings):
     tracks = (recordings.add_mp3(track_title="Big Ideas", lead_performer="???"),
               recordings.add_mp3(track_title="Partways", lead_performer="???"),
               recordings.add_mp3(track_title="Horse Power", lead_performer="???"))
 
-    app.new_album(*tracks)
+    app.import_album(*tracks)
 
     app.shows_album_metadata(compilation=False)
     app.change_album_metadata(toggle_compilation=True)

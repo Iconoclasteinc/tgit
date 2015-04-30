@@ -4,14 +4,13 @@ import os
 from PyQt5.QtWidgets import QFileDialog
 from hamcrest import contains_string
 
-from cute.matchers import named, disabled, showing_on_screen
+from cute.matchers import named, disabled
 from cute.widgets import FileDialogDriver, window
 
 
 def track_selection_dialog(parent):
     return TrackSelectionDialogDriver(
-        window(QFileDialog, named('track-selection-dialog'), showing_on_screen()), parent.prober,
-        parent.gesture_performer)
+        window(QFileDialog, named('track-selection-dialog')), parent.prober, parent.gesture_performer)
 
 
 class TrackSelectionDialogDriver(FileDialogDriver):
@@ -26,14 +25,17 @@ class TrackSelectionDialogDriver(FileDialogDriver):
         self.enter_manually(filename)
         self.accept()
 
+    def select_track(self, path, of_type='mp3'):
+        self.select_tracks(path, of_type=of_type)
+
     def select_tracks(self, *files, of_type='mp3'):
         if not files:
-            return
+            self.reject()
+
         self.view_as_list()
-        self.select_files_of_type(contains_string('*.{}'.format(of_type)))
+        self.filter_files_of_type(contains_string('*.{}'.format(of_type)))
         self.show_hidden_files()
-        folder = os.path.dirname(files[0])
-        self.navigate_to_dir(folder)
+        self.navigate_to_dir(os.path.dirname(files[0]))
         self.select_files(*[os.path.basename(f) for f in files])
         self.accept()
 

@@ -59,7 +59,7 @@ class AlbumCompositionPageTest(WidgetTest):
         addTracksSignal = ValueMatcherProbe('add tracks')
         self.page.addTracks.connect(addTracksSignal.received)
 
-        self.driver.addTracks()
+        self.driver.add_tracks()
         self.driver.check(addTracksSignal)
 
     def testSignalsWhenRemoveTrackButtonClicked(self):

@@ -10,5 +10,5 @@ def welcome_screen(parent):
 
 
 class WelcomeScreenDriver(ScreenDriver):
-    def new_album(self):
+    def import_album(self):
         self.button(named('new_album')).click()

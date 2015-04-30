@@ -28,11 +28,14 @@ class AlbumPortfolioListener(object):
 class AlbumPortfolio(object):
     def __init__(self):
         self._albums = []
-        self._portfolioListeners = Announcer()
+        self._portfolio_listeners = Announcer()
 
-    def addPortfolioListener(self, listener):
-        self._portfolioListeners.addListener(listener)
+    def add_portfolio_listener(self, listener):
+        self._portfolio_listeners.addListener(listener)
 
-    def addAlbum(self, album):
+    def add_album(self, album):
         self._albums.append(album)
-        self._portfolioListeners.albumCreated(album)
+        self._portfolio_listeners.albumCreated(album)
+
+    def __getitem__(self, index):
+        return self._albums[index]

@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from hamcrest.library.text import contains_string
 
 from cute.matchers import named
-from test.drivers import ScreenDriver
+from test.drivers import ScreenDriver, track_selection_dialog
 from test.drivers.album_edition_page_driver import album_edition_page
 from test.drivers.album_composition_page_driver import album_composition_page
 from test.drivers.track_edition_page_driver import track_edition_page
@@ -24,8 +24,9 @@ class AlbumScreenDriver(ScreenDriver):
     def showsTrackEditionPage(self):
         track_edition_page(self).is_showing_on_screen()
 
-    def addFiles(self):
-        album_composition_page(self).addFiles()
+    def add_tracks_to_album(self, *paths, of_type):
+        album_composition_page(self).add_tracks()
+        track_selection_dialog(self).select_tracks(*paths, of_type=of_type)
 
     def removeTrack(self, title):
         album_composition_page(self).removeTrack(title)

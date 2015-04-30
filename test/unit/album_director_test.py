@@ -7,17 +7,18 @@ import unittest
 from dateutil import tz
 
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
-    has_item, empty
+    has_item, empty, has_property
 import pytest
 
 from test.util import builders as build, resources, doubles, mp3_file
 import tgit
 from tgit import album_director as director, tagging
+from tgit.album_portfolio import AlbumPortfolio
 from tgit.metadata import Image
 from tgit.util import fs
 
 
-now = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
+NOW = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
 
 @pytest.fixture
 def recordings(request, tmpdir):
@@ -41,7 +42,7 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
     recordings.add_mp3(track_title='Someone Like You')
 
     album = build.album()
-    director.add_tracks_to_album(album, [recording.filename for recording in recordings.entries])
+    director.add_tracks_to_album(album, *[recording.filename for recording in recordings.entries])
 
     assert_that(album.tracks, contains(
         has_properties(track_title='Rolling in the Deep'),
@@ -49,18 +50,33 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
         has_properties(track_title='Someone Like You')))
 
 
+def test_imports_album_from_track(recordings):
+    track_file = recordings.add_mp3(track_title="Smash Smash",
+                                    release_name="Honeycomb", lead_performer="Joel Miller",
+                                    front_cover=('image/jpeg', 'front cover', b'front.jpeg'))
+
+    portfolio = AlbumPortfolio()
+    director.import_album(portfolio, track_file)
+    album = portfolio[0]
+
+    assert_that(album.release_name, equal_to("Honeycomb"), "imported release name")
+    assert_that(album.images, contains(has_property("data", b"front.jpeg")), "imported images")
+
+    assert_that(album.tracks, contains(has_properties(track_title="Smash Smash")))
+
+
 def test_finds_and_adds_to_album_all_supported_audio_files_in_selected_folder(recordings):
     recordings.add_mp3(track_title='Rolling in the Deep')
     recordings.add_mp3(track_title='Set Fire to the Rain')
-    recordings.add_flac(lead_performer='Adele')
+    recordings.add_flac(track_title='Someone Like Me')
 
     album = build.album()
-    director.add_tracks_to_album(album, (recordings.root,))
+    director.add_tracks_to_album(album, recordings.root)
 
     assert_that(album.tracks, contains_inanyorder(
         has_properties(track_title='Rolling in the Deep'),
         has_properties(track_title='Set Fire to the Rain'),
-        has_properties(lead_performer='Adele')))
+        has_properties(track_title='Someone Like Me')))
 
 
 def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
@@ -72,7 +88,7 @@ def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
                         album=album)
 
     destination_file = os.path.join(os.path.dirname(track.filename), 'tagged.mp3')
-    director.record_track(destination_file, track, now)
+    director.record_track(destination_file, track, NOW)
 
     metadata = tagging.load_metadata(destination_file)
     assert_that(metadata, has_entries(release_name='Album Title', lead_performer='Album Artist'), 'metadata tags')
@@ -84,7 +100,7 @@ def test_does_not_update_track_with_album_lead_performer_when_album_is_a_compila
     track = build.track(filename=mp3(), lead_performer='Track Artist', album=album)
 
     tagged_file = mp3()
-    director.record_track(tagged_file, track, now)
+    director.record_track(tagged_file, track, NOW)
 
     metadata = tagging.load_metadata(tagged_file)
     assert_that(metadata, has_entries(lead_performer='Track Artist'), 'metadata tags')
@@ -94,7 +110,7 @@ def test_adds_version_information_to_tags(mp3):
     track = build.track(filename=mp3(), album=build.album())
 
     tagged_file = mp3()
-    director.record_track(tagged_file, track, now)
+    director.record_track(tagged_file, track, NOW)
 
     metadata = tagging.load_metadata(tagged_file)
     assert_that(metadata, has_entries(tagger='TGiT v' + tgit.__version__, taggingTime='2014-03-23 16:44:33 +0000'))
@@ -211,8 +227,8 @@ class AlbumDirectorTest(unittest.TestCase):
         assert_that(director.sanitize('  filename   '), equal_to('filename'), 'sanitized name')
 
     def testTagsFileToSameDirectoryUnderArtistAndTitleName(self):
-        track = build.track(filename='track.mp3', lead_performer='artist', track_title='title')
-        album = build.album(tracks=[build.track(), build.track(), track])
+        track = build.track(filename='track.mp3', track_title='title')
+        album = build.album(lead_performer='artist', tracks=[build.track(), build.track(), track])
 
         assert_that(director.taggedName(track), equal_to('artist - 03 - title.mp3'), 'name of tagged file')
 

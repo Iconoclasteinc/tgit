@@ -107,16 +107,11 @@ class Album(metaclass=tag.Taggable):
     def addTrack(self, track):
         self.insertTrack(track, len(self.tracks))
 
-    def _inheritMetadataIfInitialTrack(self, track):
-        if self.metadata.empty():
-            self.metadata = track.metadata.copy(*Album.tags())
-            self.metadataChanged()
-
     def insertTrack(self, track, position):
-        self._inheritMetadataIfInitialTrack(track)
+        track.album = self
+        # todo move to Track
         if not self.compilation:
             track.lead_performer = self.lead_performer
-        track.album = self
         self.tracks.insert(position, track)
         self.listeners.trackAdded(track, position)
 

@@ -16,7 +16,7 @@ class AlbumPortfolioTest(unittest.TestCase):
         album = build.album()
         listeners = [flexmock(), flexmock(), flexmock()]
         for listener in listeners:
-            self.portfolio.addPortfolioListener(listener)
+            self.portfolio.add_portfolio_listener(listener)
             listener.should_receive('albumCreated').with_args(album).once()
 
-        self.portfolio.addAlbum(album)
+        self.portfolio.add_album(album)

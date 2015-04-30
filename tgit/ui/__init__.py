@@ -20,13 +20,13 @@
 from queue import Queue
 
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QTimer, QEventLoop
+from PyQt5.QtCore import QEventLoop
 
 from tgit.isni.name_registry import NameRegistry
 from tgit import album_director as director
-from tgit.album_portfolio import AlbumPortfolioListener
 from tgit.export.csv_format import CsvFormat
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
+from tgit.ui.import_album_from_track_dialog import ImportAlbumFromTrackDialog
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.album_composition_page import AlbumCompositionPage
@@ -205,13 +205,19 @@ def ExportAsDialogController(format_, album, parent, native):
 
 def TrackSelectionDialogController(album, parent, native, folders):
     dialog = TrackSelectionDialog(parent, native)
-    dialog.tracks_selected.connect(lambda selection: director.add_tracks_to_album(album, selection))
+    dialog.tracks_selected.connect(lambda selection: director.add_tracks_to_album(album, *selection))
     dialog.display(folders)
+
+
+def ImportAlbumFromTrackController(portfolio, parent, native):
+    dialog = ImportAlbumFromTrackDialog(parent, native)
+    dialog.track_selected.connect(lambda track_file: director.import_album(portfolio, track_file))
+    dialog.display()
 
 
 def MenuBarController(exportAs, selectTracks, changeSettings, portfolio):
     menuBar = MenuBar()
-    portfolio.addPortfolioListener(menuBar)
+    portfolio.add_portfolio_listener(menuBar)
     menuBar.add_files.connect(lambda album: selectTracks(album))
     menuBar.add_folder.connect(lambda album: selectTracks(album, True))
     menuBar.export.connect(lambda album: exportAs(album))
@@ -221,7 +227,7 @@ def MenuBarController(exportAs, selectTracks, changeSettings, portfolio):
 
 def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
     window = MainWindow(menuBar(), welcomeScreen(), albumScreen)
-    portfolio.addPortfolioListener(window)
+    portfolio.add_portfolio_listener(window)
     return window
 
 
@@ -239,8 +245,11 @@ def create_main_window(album_portfolio, player, preferences, name_registry, use_
         return MenuBarController(show_export_as_dialog, show_track_selection_dialog, show_settings_dialog,
                                  album_portfolio)
 
+    def show_import_dialog(portfolio):
+        return ImportAlbumFromTrackController(portfolio, window, native)
+
     def create_welcome_screen():
-        return WelcomeScreen(album_portfolio)
+        return WelcomeScreen(album_portfolio, show_import_dialog)
 
     def create_composition_page(album):
         return AlbumCompositionPageController(show_track_selection_dialog, player, album)
@@ -274,9 +283,4 @@ def create_main_window(album_portfolio, player, preferences, name_registry, use_
 
     window = MainWindowController(create_menu_bar, create_welcome_screen, create_album_screen, album_portfolio)
 
-    class SelectAlbumTracks(AlbumPortfolioListener):
-        def albumCreated(self, album):
-            QTimer.singleShot(250, lambda: show_track_selection_dialog(album))
-
-    album_portfolio.addPortfolioListener(SelectAlbumTracks())
     return window

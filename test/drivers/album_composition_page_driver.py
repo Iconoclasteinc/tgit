@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QAbstractButton
 
 from cute.widgets import ButtonDriver
 from cute.matchers import named
-from test.drivers import ScreenDriver
+from test.drivers import ScreenDriver, track_selection_dialog
 from tgit.ui.album_composition_model import Columns
 from tgit.ui.album_composition_page import AlbumCompositionPage
 
@@ -38,7 +38,7 @@ class AlbumCompositionPageDriver(ScreenDriver):
         self._play_button_at(row).is_showing_on_screen()
         self.clickPlayButtonAt(row)
 
-    def addTracks(self):
+    def add_tracks(self):
         self.button(named('add-tracks')).click()
 
     def removeTrack(self, title):

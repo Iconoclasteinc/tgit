@@ -49,7 +49,7 @@ class Mp3Audio(object):
         for tag, value in tags.items():
             if tag == 'releaseName' or tag == 'release_name' or tag == 'TALB':
                 self._add_tag(id3.TALB(encoding=UTF_8, text=value))
-            elif tag == 'frontCover' or tag == 'APIC_FRONT':
+            elif tag == 'front_cover' or tag == 'APIC_FRONT':
                 mime, desc, data = value
                 self._add_tag(id3.APIC(UTF_8, mime, FRONT_COVER, desc, data))
             elif tag == 'backCover' or tag == 'APIC_BACK':

@@ -22,20 +22,18 @@ from PyQt5 import QtWidgets, uic
 
 from PyQt5.QtCore import pyqtSignal
 
-from tgit import album_director as director
 
-
-def welcome_screen(portfolio):
+def welcome_screen(portfolio, import_album):
     page = WelcomeScreen()
-    page.create_new_album.connect(lambda: director.createAlbum(portfolio))
+    page.import_album.connect(lambda: import_album(portfolio))
     return page
 
 
 # We have to inherit from QFrame and not QWidget if we want a background without reimplementing QWidget.paintEvent
 class WelcomeScreen(QtWidgets.QFrame):
-    create_new_album = pyqtSignal()
+    import_album = pyqtSignal()
 
     def __init__(self):
         super().__init__()
         uic.loadUi(os.path.join(os.path.dirname(__file__), 'welcome_screen.ui'), self)
-        self.new_album.clicked.connect(lambda: self.create_new_album.emit())
+        self.new_album.clicked.connect(lambda: self.import_album.emit())
