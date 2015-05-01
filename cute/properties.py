@@ -7,55 +7,63 @@ from hamcrest.core.selfdescribing import SelfDescribing
 
 
 def name():
-    return PropertyQuery('name', QObject.objectName)
+    return PropertyQuery("name", QObject.objectName)
 
 
 def text():
-    return PropertyQuery('text', lambda w: w.text())
+    return PropertyQuery("text", lambda w: w.text())
 
 
 def label_pixmap():
-    return PropertyQuery('pixmap', QLabel.pixmap)
+    return PropertyQuery("pixmap", QLabel.pixmap)
 
 
 def pixmap_height():
-    return PropertyQuery('pixmap height', QPixmap.height)
+    return PropertyQuery("pixmap height", QPixmap.height)
 
 
 def pixmap_width():
-    return PropertyQuery('pixmap width', QPixmap.width)
+    return PropertyQuery("pixmap width", QPixmap.width)
 
 
 def label_buddy():
-    return PropertyQuery('buddy', QLabel.buddy)
+    return PropertyQuery("buddy", QLabel.buddy)
 
 
 def input_text():
-    return PropertyQuery('display text', QLineEdit.displayText)
+    return PropertyQuery("display text", QLineEdit.displayText)
 
 
 def plain_text():
-    return PropertyQuery('plain text', lambda w: w.toPlainText())
+    return PropertyQuery("plain text", lambda w: w.toPlainText())
 
 
 def current_text():
-    return PropertyQuery('current text', QComboBox.currentText)
+    return PropertyQuery("current text", QComboBox.currentText)
 
 
 def list_item_text():
-    return PropertyQuery('text', lambda item: item.data(Qt.DisplayRole))
+    return PropertyQuery("text", lambda item: item.data(Qt.DisplayRole))
 
 
 def time():
-    return PropertyQuery('time', QDateTimeEdit.time)
+    return PropertyQuery("time", QDateTimeEdit.time)
 
 
 def title():
-    return PropertyQuery('title', lambda w: w.title())
+    return PropertyQuery("title", lambda w: w.title())
 
 
 def cursor_shape():
-    return PropertyQuery('cursor shape', lambda w: w.cursor().shape())
+    return PropertyQuery("cursor shape", lambda w: w.cursor().shape())
+
+
+def count():
+    return PropertyQuery("options count", lambda w: w.count())
+
+
+def has_option_text(index):
+    return PropertyQuery("option {0}".format(index), lambda combo_box: combo_box.itemText(index))
 
 
 class Query(SelfDescribing):
@@ -65,7 +73,7 @@ class Query(SelfDescribing):
 
 class PropertyQuery(Query):
     def __init__(self, name, query):
-        super(PropertyQuery, self).__init__()
+        super().__init__()
         self._property_name = name
         self._query = query
 

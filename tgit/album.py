@@ -34,6 +34,10 @@ class AlbumListener(object):
 
 
 class Album(metaclass=tag.Taggable):
+    class Type:
+        MP3 = "mp3"
+        FLAC = "flac"
+
     release_name = tag.text()
     compilation = tag.flag()
     lead_performer = tag.text()
@@ -52,10 +56,11 @@ class Album(metaclass=tag.Taggable):
     comments = tag.text()
     primary_style = tag.text()
 
-    def __init__(self, metadata=None):
+    def __init__(self, metadata=None, of_type=Type.FLAC):
         self.metadata = metadata or Metadata()
         self.tracks = []
         self.listeners = Announcer()
+        self.type = of_type
 
     def addAlbumListener(self, listener):
         self.listeners.addListener(listener)

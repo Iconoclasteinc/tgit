@@ -194,7 +194,7 @@ class ComboBoxDriver(AbstractEditDriver):
         popup.select_item(match.with_list_item_text(matching))
 
     def _popup(self):
-        self.manipulate('pop up', lambda w: w.showPopup())
+        self.manipulate("pop up", lambda w: w.showPopup())
         return ListViewDriver.find_single(self, QListView)
 
     def has_current_text(self, matching):
@@ -297,10 +297,10 @@ class FileDialogDriver(WidgetDriver):
         return self.reject_button().has_text(text)
 
     def _list_view(self):
-        return ListViewDriver.find_single(self, QListView, match.named('listView'))
+        return ListViewDriver.find_single(self, QListView, match.named("listView"))
 
     def _filename_edit(self):
-        return LineEditDriver.find_single(self, QLineEdit, match.named('fileNameEdit'))
+        return LineEditDriver.find_single(self, QLineEdit, match.named("fileNameEdit"))
 
     def _accept_button(self):
         return self._dialog_button(QFileDialog.Accept)
@@ -320,6 +320,23 @@ class FileDialogDriver(WidgetDriver):
         button_text = QueryButtonText(label)
         self.manipulate('query button text', button_text)
         return ButtonDriver.find_single(self, QPushButton, match.with_text(button_text.text))
+
+    def has_selected_file_type(self, matching):
+        driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
+        driver.has_current_text(matching)
+
+    def _has_file_type_options_count(self, matching):
+        driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
+        driver.has(properties.count(), wrap_matcher(matching))
+
+    def has_file_type_options(self, *options):
+        for index, option in enumerate(options):
+            self._has_file_type_option(option, index=index)
+        self._has_file_type_options_count(len(options))
+
+    def _has_file_type_option(self, option, *, index):
+        driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
+        driver.has(properties.has_option_text(index), wrap_matcher(option))
 
 
 class ListViewDriver(WidgetDriver):

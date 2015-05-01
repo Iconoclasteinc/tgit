@@ -32,16 +32,15 @@ from tgit.track import Track
 from tgit.util import fs
 
 
-def new_album(portfolio):
-    album = Album()
-    portfolio.add_album(album)
-    return album
+def create_album(portfolio, of_type=Album.Type.FLAC):
+    portfolio.add_album(Album(of_type=of_type))
 
 
 def import_album(portfolio, track_file):
+    _, extension = os.path.splitext(track_file)
     all_metadata = tagging.load_metadata(track_file)
     album_metadata = all_metadata.copy(*Album.tags())
-    album = Album(album_metadata)
+    album = Album(album_metadata, of_type=extension[1:])
     portfolio.add_album(album)
 
     add_tracks_to_album(album, track_file)

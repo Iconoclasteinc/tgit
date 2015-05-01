@@ -25,8 +25,12 @@ class TaggerDriver(MainWindowDriver):
         import_album_from_track_dialog(self).select_track(path, of_type=of_type)
         album_screen(self).is_showing_on_screen()
 
-    def add_tracks_to_album(self, *paths, of_type):
-        album_screen(self).add_tracks_to_album(*paths, of_type=of_type)
+    def create_album(self, of_type):
+        welcome_screen(self).new_album(of_type)
+        album_screen(self).is_showing_on_screen()
+
+    def add_tracks_to_album(self, *paths):
+        album_screen(self).add_tracks_to_album(*paths)
 
     def showsExportAsDialog(self):
         export_as_dialog(self).is_showing_on_screen()

@@ -20,6 +20,7 @@ import os
 
 from PyQt5.QtCore import QDir, Qt, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
+from tgit.album import Album
 
 
 class TrackSelectionDialog(QFileDialog):
@@ -30,10 +31,8 @@ class TrackSelectionDialog(QFileDialog):
         self._build(native)
 
     def _build(self, native):
-        self.setObjectName('track-selection-dialog')
+        self.setObjectName("track-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
-        self.setNameFilters(
-            ['%s (%s)' % (self.tr('MP3 files'), '*.mp3'), '%s (%s)' % (self.tr('FLAC files'), '*.flac')])
         self.setDirectory(QDir.homePath())
         self.filesSelected.connect(self._signal_tracks_selected)
         self.setAttribute(Qt.WA_DeleteOnClose)
@@ -41,7 +40,16 @@ class TrackSelectionDialog(QFileDialog):
     def _signal_tracks_selected(self, selection):
         return self.tracks_selected.emit([os.path.abspath(entry) for entry in selection])
 
-    def display(self, folders=False):
+    def display(self, album, folders=False):
+        name_filters = []
+        if album.type == Album.Type.MP3:
+            name_filters.append("{0} {1}".format(self.tr("MP3 files"), "*.mp3"))
+
+        if album.type == Album.Type.FLAC:
+            name_filters.append("{0} {1}".format(self.tr("FLAC files"), "*.flac"))
+
+        self.setNameFilters(name_filters)
+
         if folders:
             self.setFileMode(QFileDialog.Directory)
         else:

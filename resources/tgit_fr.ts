@@ -580,24 +580,14 @@
 <context>
     <name>WelcomeScreen</name>
     <message>
-        <location filename="tgit/ui/welcome_screen.py" line="64"/>
+        <location filename="tgit/ui/welcome_screen.py"/>
         <source>Welcome to TGiT!</source>
         <translation>Bienvenue dans TGiT !</translation>
     </message>
     <message>
-        <location filename="tgit/ui/welcome_screen.py" line="69"/>
-        <source>Your album is empty right now.</source>
-        <translation>Votre album ne contient aucune piste.</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/welcome_screen.py" line="74"/>
-        <source>Click on the button below to add some tracks.</source>
-        <translation>Cliquer sur le bouton ci-bas pour en ajouter.</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/welcome_screen.py" line="90"/>
-        <source>ADD FILES...</source>
-        <translation>AJOUTER DES PISTES...</translation>
+        <location filename="tgit/ui/welcome_screen.py" />
+        <source>Choose the type of album you wish to create:</source>
+        <translation>Choisissez le type d'album que vous souhaitez créer :</translation>
     </message>
 </context>
 <context>

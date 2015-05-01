@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from test.drivers import track_selection_dialog
-from test.util.resources import path
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
@@ -10,7 +8,7 @@ from test.drivers.tagger_driver import TaggerDriver
 from test.util import doubles
 from tgit.tagger import TGiT
 
-ONE_SECOND = 1000
+ONE_SECOND_IN_MILLISECONDS = 1000
 
 
 class ApplicationRunner(object):
@@ -19,8 +17,7 @@ class ApplicationRunner(object):
                         use_local_isni_backend=True, native=False)
         self.app.show(preferences)
         self.tagger = TaggerDriver(main_application_window(named("main-window"), showing_on_screen()),
-                                   EventProcessingProber(timeout_in_ms=ONE_SECOND),
-                                   Robot())
+                                   EventProcessingProber(timeout_in_ms=ONE_SECOND_IN_MILLISECONDS), Robot())
 
     def stop(self):
         self.tagger.close()
@@ -28,11 +25,14 @@ class ApplicationRunner(object):
         self.app.quit()
         del self.app
 
-    def import_album(self, *paths, of_type='mp3'):
-        authoritative_track, other_tracks = paths[0], paths[1:]
-        self.tagger.import_album(authoritative_track, of_type=of_type)
-        if other_tracks:
-            self.tagger.add_tracks_to_album(*other_tracks, of_type=of_type)
+    def new_album(self, of_type="mp3"):
+        self.tagger.create_album(of_type)
+
+    def add_tracks_to_album(self, *tracks):
+        self.tagger.add_tracks_to_album(*tracks)
+
+    def import_album(self, track, of_type='mp3'):
+        self.tagger.import_album(track, of_type=of_type)
 
     def shows_album_content(self, *tracks):
         self.tagger.showsAlbumContains(*tracks)

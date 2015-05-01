@@ -24,9 +24,9 @@ class AlbumScreenDriver(ScreenDriver):
     def showsTrackEditionPage(self):
         track_edition_page(self).is_showing_on_screen()
 
-    def add_tracks_to_album(self, *paths, of_type):
+    def add_tracks_to_album(self, *paths):
         album_composition_page(self).add_tracks()
-        track_selection_dialog(self).select_tracks(*paths, of_type=of_type)
+        track_selection_dialog(self).select_tracks(*paths)
 
     def removeTrack(self, title):
         album_composition_page(self).removeTrack(title)

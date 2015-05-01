@@ -18,86 +18,99 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#welcome_screen {
-    background-color: rgba(0, 0, 0, 70%);
+    background-color: #484848
 }
 
 #welcome_dialog {
-    padding: 20px;
-    min-width: 500px;
-    max-width: 500px;
-    min-height: 300px;
-    max-height: 300px;
-    background: white url(':/logo.png') no-repeat top left;
+	padding: 20px;
+	min-width: 500px;
+	max-width: 500px;
+	min-height: 300px;
+	max-height: 300px;
+	background: white url(':/logo.png') no-repeat top left;
 }
 
-#welcome_dialog QPushButton {
-   background-color: #EC2327;
-   border: 2px solid #EC2327;
-   border-radius: 4px;
-   font-size: 16px;
-   font-weight: bold;
-   color: white;
-   padding: 14px 14px 11px 14px;
-   margin: 25px;
+QPushButton {
+	background-color: #EC2327;
+	border: 2px solid #EC2327;
+	border-radius: 4px;
+	font-size: 16px;
+	font-weight: bold;
+	color: white;
+	padding: 14px 14px 11px 14px;
 }
 
-#welcome_dialog QPushButton:hover {
-    background-color: #D42023;
-    border-color: #D42023;
+QPushButton:hover {
+	background-color: #D42023;
+	border-color: #D42023;
 }
 
-#welcome_dialog QPushButton:pressed {
-    border: 2px solid white;
+QPushButton:pressed {
+	border: 2px solid transparent;
 }
 
-#welcome_dialog QLabel {
-    color: #2D2D25;
-    font-size: 16px;
+QLabel {
+	color: #2D2D25;
+	font-size: 16px;
 }
 
-#welcome_dialog QLabel[title='h1'] {
-    font-size: 28px;
-    font-weight: bold;
-    margin-top: 35px;
-    margin-bottom: 50px;
-}</string>
+</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_5">
    <item>
     <widget class="QWidget" name="welcome_dialog" native="true">
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
      <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
       <item>
-       <widget class="QWidget" name="widget" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <widget class="QLabel" name="title">
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	font-size: 28px;
+	font-weight: bold;
+	margin-top: 25px;
+	margin-bottom: 40px;
+}</string>
+        </property>
+        <property name="text">
+         <string>Welcome to TGiT!</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="title" stdset="0">
+         <string>h1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="message">
+        <property name="text">
+         <string>Choose the type of album you wish to create:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="new_buttons_container" native="true">
+        <layout class="QHBoxLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
          <property name="topMargin">
-          <number>0</number>
+          <number>20</number>
          </property>
          <property name="rightMargin">
           <number>0</number>
          </property>
          <property name="bottomMargin">
-          <number>0</number>
+          <number>15</number>
          </property>
          <item>
-          <spacer name="horizontalSpacer_3">
+          <spacer name="spacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -110,20 +123,58 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="title">
+          <widget class="QPushButton" name="new_mp3_album_button">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="text">
-            <string>Welcome to TGiT!</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="title" stdset="0">
-            <string>h1</string>
+            <string>MP3</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_4">
+          <spacer name="spacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="new_flac_album_button">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>FLAC</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="spacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -139,127 +190,32 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget_2" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <spacer name="horizontalSpacer_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="message">
-           <property name="text">
-            <string>Your album is empty right now.</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Or import metadata from an existing file:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="widget_3" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <spacer name="horizontalSpacer_7">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QLabel" name="description">
-           <property name="text">
-            <string>Click on the button below to add some tracks.</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_8">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="button_container" native="true">
+       <widget class="QWidget" name="import_button_container" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
          <property name="topMargin">
-          <number>40</number>
+          <number>20</number>
          </property>
          <property name="rightMargin">
           <number>0</number>
          </property>
          <property name="bottomMargin">
-          <number>30</number>
+          <number>15</number>
          </property>
          <item>
           <spacer name="horizontalSpacer">
@@ -275,12 +231,12 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="new_album">
+          <widget class="QPushButton" name="import_album_button">
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
            <property name="text">
-            <string>ADD FILES...</string>
+            <string>SELECT...</string>
            </property>
           </widget>
          </item>

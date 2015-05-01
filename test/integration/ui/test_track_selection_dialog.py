@@ -13,6 +13,7 @@ from cute.probes import ValueMatcherProbe
 from test.drivers import TrackSelectionDialogDriver
 from test.integration.ui import show_widget
 from test.util import resources
+from tgit.album import Album
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 
@@ -33,37 +34,37 @@ def driver(dialog):
 
 
 def test_signals_when_audio_files_selected(driver, dialog):
-    audio_files = [resources.path('audio', 'Rolling in the Deep.mp3'),
-                   resources.path('audio', 'Set Fire to the Rain.mp3'),
-                   resources.path('audio', 'Someone Like You.mp3')]
+    audio_files = [resources.path("audio", "Rolling in the Deep.mp3"),
+                   resources.path("audio", "Set Fire to the Rain.mp3"),
+                   resources.path("audio", "Someone Like You.mp3")]
 
-    track_selection_signal = ValueMatcherProbe('track(s) selection', audio_files)
+    track_selection_signal = ValueMatcherProbe("track(s) selection", audio_files)
 
     dialog.tracks_selected.connect(track_selection_signal.received)
 
-    dialog.display()
+    dialog.display(Album(of_type=Album.Type.MP3))
     driver.select_tracks(*audio_files)
     driver.check(track_selection_signal)
 
 
 def test_alternatively_selects_directories_instead_of_files(driver, dialog):
-    audio_folder = resources.path('audio')
-    track_selection_signal = ValueMatcherProbe('track(s) selection', contains(audio_folder))
+    audio_folder = resources.path("audio")
+    track_selection_signal = ValueMatcherProbe("track(s) selection", contains(audio_folder))
     dialog.tracks_selected.connect(track_selection_signal.received)
 
-    dialog.display(folders=True)
+    dialog.display(Album(), folders=True)
     driver.select_tracks_in_folder(audio_folder)
     driver.check(track_selection_signal)
 
 
 def test_allows_selection_of_flac_files(driver, dialog):
-    flac_files = [resources.path('audio', 'Zumbar.flac')]
-    track_selection_signal = ValueMatcherProbe('track(s) selection', flac_files)
+    flac_files = [resources.path("audio", "Zumbar.flac")]
+    track_selection_signal = ValueMatcherProbe("track(s) selection", flac_files)
 
     dialog.tracks_selected.connect(track_selection_signal.received)
 
-    dialog.display()
-    driver.select_tracks(*flac_files, of_type='flac')
+    dialog.display(Album(of_type=Album.Type.FLAC))
+    driver.select_tracks(*flac_files)
     driver.check(track_selection_signal)
 
 

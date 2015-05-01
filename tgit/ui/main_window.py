@@ -32,55 +32,6 @@ StyleSheet = """
         border: 1px solid #DDDDDD;
     }
 
-    #welcome_screen {
-        background-color: rgba(0, 0, 0, 70%);
-    }
-
-    #welcome_screen #welcome-dialog {
-        padding: 20px;
-        min-width: 500px;
-        max-width: 500px;
-        min-height: 300px;
-        max-height: 300px;
-        background: white url(':/logo.png') no-repeat top left;
-    }
-
-    #welcome_screen #welcome-dialog #logo {
-        min-width: 58;
-        min-height: 105;
-    }
-
-    #welcome_screen #welcome-dialog QPushButton {
-        background-color: #EC2327;
-        border: 2px solid #EC2327;
-        border-radius: 4px;
-        font-size: 16px;
-        font-weight: bold;
-        color: white;
-        padding: 14px 14px 11px 14px;
-    }
-
-    #welcome_screen #welcome-dialog QPushButton:hover {
-        background-color: #D42023;
-        border-color: #D42023;
-    }
-
-    #welcome_screen #welcome-dialog QPushButton:pressed {
-        border: 2px solid white;
-    }
-
-    #welcome_screen #welcome-dialog QLabel[title='h1'] {
-        font-size: 28px;
-        font-weight: bold;
-        margin-top: 35px;
-        margin-bottom: 50px;
-    }
-
-    #welcome_screen #welcome-dialog QLabel {
-        color: #2D2D25;
-        font-size: 16px;
-    }
-
     QStackedWidget {
         margin: 0 15px 15px 15px;
     }
@@ -109,7 +60,7 @@ StyleSheet = """
     }
 
     QPushButton#add-tracks:pressed {
-        border: 2px solid #F6F6F6;
+        border: 2px solid transparent;
     }
 
     #navigation, #controls {
@@ -229,10 +180,7 @@ StyleSheet = """
         border-image: url(:/remove-pressed.png);
     }
 
-    #album-edition-page QGroupBox,
-    #track-edition-page QGroupBox,
-    #performer-dialog QGroupBox,
-    #isni-lookup-dialog QGroupBox {
+    QGroupBox {
         border: 1px solid #DDDDDD;
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
         background-color: white;
@@ -241,9 +189,7 @@ StyleSheet = """
         font-size: 10px;
     }
 
-    #album-edition-page QGroupBox::title,
-    #track-edition-page QGroupBox::title,
-    #isni-lookup-dialog QGroupBox::title {
+    QGroupBox::title {
         subcontrol-origin: margin;
         subcontrol-position: top left;
         left: 1px;
@@ -505,9 +451,9 @@ class MainWindow(QMainWindow):
         self.createAlbum = albumScreen
 
     def build(self):
-        self.setObjectName('main-window')
+        self.setObjectName("main-window")
         self.setStyleSheet(StyleSheet)
-        self.setWindowTitle(self.tr('TGiT'))
+        self.setWindowTitle(self.tr("TGiT"))
         self.resize(*self.SIZE)
 
     def albumCreated(self, album):

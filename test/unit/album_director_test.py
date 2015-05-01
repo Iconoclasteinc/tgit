@@ -61,7 +61,7 @@ def test_imports_album_from_track(recordings):
 
     assert_that(album.release_name, equal_to("Honeycomb"), "imported release name")
     assert_that(album.images, contains(has_property("data", b"front.jpeg")), "imported images")
-
+    assert_that(album.type, equal_to("mp3"))
     assert_that(album.tracks, contains(has_properties(track_title="Smash Smash")))
 
 
