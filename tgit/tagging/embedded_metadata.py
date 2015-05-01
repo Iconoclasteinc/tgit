@@ -16,16 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from collections import defaultdict
+import os
 
 from tgit.metadata import Metadata
 from tgit.tagging.flac_container import FlacContainer
 from tgit.tagging.id3_container import ID3Container
-
-
-containers = {
-    '.mp3': ID3Container(),
-    '.flac': FlacContainer()
-}
 
 
 class EmptyContainer():
@@ -38,20 +34,20 @@ class EmptyContainer():
     def save(filename, metadata):
         pass
 
-_empty_container = EmptyContainer()
+
+_containers = defaultdict(EmptyContainer, mp3=ID3Container(), flac=FlacContainer())
+
+DROP_LEADING_DOT = slice(1, None)
 
 
-def _select_container(filename):
-    for file_type, container in containers.items():
-        if filename.endswith(file_type):
-            return container
-
-    return _empty_container
+def _container_for(filename):
+    _, ext = os.path.splitext(filename)
+    return _containers[ext[DROP_LEADING_DOT]]
 
 
 def load_metadata(filename):
-    return _select_container(filename).load(filename)
+    return _container_for(filename).load(filename)
 
 
 def save_metadata(filename, metadata):
-    return _select_container(filename).save(filename, metadata)
+    return _container_for(filename).save(filename, metadata)

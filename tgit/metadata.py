@@ -49,6 +49,10 @@ class Metadata(object):
         self._images = []
         self._tags = dict(**metadata)
 
+    @classmethod
+    def from_dict(cls, metadata):
+        return cls(**metadata)
+
     def __getitem__(self, key):
         return self._tags.get(key, None)
 
@@ -108,10 +112,7 @@ class Metadata(object):
         if not keys:
             keys = self.keys()
 
-        copy = Metadata()
-        for key in (key for key in keys if key in self):
-            copy[key] = self[key]
-
+        copy = Metadata.from_dict({key:self[key] for key in keys if key in self})
         copy.addImages(*self.images)
         return copy
 

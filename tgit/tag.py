@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 
+# Descriptor class for tags
 class tag():
     def __init__(self, name=None, **opts):
         self.name = name
