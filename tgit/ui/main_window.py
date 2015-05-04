@@ -33,7 +33,7 @@ StyleSheet = """
     }
 
     QStackedWidget {
-        margin: 0 15px 15px 15px;
+        margin: 0 15px 0 15px;
     }
 
     #navigation {
@@ -41,7 +41,7 @@ StyleSheet = """
     }
 
     #controls {
-        min-height: 64px;
+        min-height: 60px;
     }
 
     QPushButton#add-tracks {
@@ -441,7 +441,7 @@ if MAC:
 
 
 class MainWindow(QMainWindow):
-    SIZE = (1100, 744)
+    SIZE = (1100, 745)
 
     def __init__(self, menuBar, welcomeScreen, albumScreen):
         QMainWindow.__init__(self)

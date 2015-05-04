@@ -215,7 +215,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         layout.addRow(form.labelFor(self.mediaType, self.tr("Media Type:")), self.mediaType)
         self.releaseType = form.lineEdit("release-type")
         self.releaseType.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("releaseType")))
-        layout.addRow(form.labelFor(self.releaseType, self.tr("Release Type:")), self.releaseType)
+        # layout.addRow(form.labelFor(self.releaseType, self.tr("Release Type:")), self.releaseType)
         self.comments = form.textArea("comments")
         self.comments.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("comments")))
         layout.addRow(form.labelFor(self.comments, self.tr("Comments:")), self.comments)
@@ -246,7 +246,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         return recording
 
     def _disable_teaser_fields(self):
-        for field in (self.digitalReleaseTime, self.originalReleaseTime, self.area, self.mediaType, self.releaseType):
+        for field in (self.digitalReleaseTime, self.originalReleaseTime, self.area, self.mediaType):#, self.releaseType):
             field.setDisabled(True)
             self._label_for(field).setDisabled(True)
 

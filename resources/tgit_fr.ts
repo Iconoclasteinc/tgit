@@ -139,7 +139,7 @@
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="88"/>
         <source>SELECT PICTURE...</source>
-        <translation>CHOISIR UNE ILLUSTRATION...</translation>
+        <translation>CHOISIR L'ILLUSTRATION...</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="91"/>

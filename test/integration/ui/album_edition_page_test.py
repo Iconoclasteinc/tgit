@@ -68,7 +68,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.showsComments('Comments\n...')
         self.driver.shows_primary_style('Style')
         self.driver.showsMediaType('')
-        self.driver.showsReleaseType('')
+        # self.driver.showsReleaseType('')
 
     def testIndicatesWhetherAlbumIsACompilation(self):
         album = build.album(compilation=False)
