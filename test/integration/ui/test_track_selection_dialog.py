@@ -72,5 +72,5 @@ def test_allows_selection_of_flac_files(driver, dialog):
 def test_rejects_non_audio_files(driver, dialog):
     unsupported_file = resources.path('front-cover.jpg')
 
-    dialog.display(folders=False)
+    dialog.display(Album(), folders=False)
     driver.rejects_selection_of(unsupported_file)

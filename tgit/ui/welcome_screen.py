@@ -41,6 +41,13 @@ class WelcomeScreen(QtWidgets.QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
         uic.loadUi(os.path.join(os.path.dirname(__file__), "welcome_screen.ui"), self)
+
+        self.title.setText(self.tr(self.title.text()))
+        self.new_release_label.setText(self.tr(self.new_release_label.text()))
+        self.import_from_track_label.setText(self.tr(self.import_from_track_label.text()))
+        self.footnote.setText(self.tr(self.footnote.text()))
+        self.import_album_button.setText(self.tr(self.import_album_button.text()))
+
         self.import_album_button.clicked.connect(lambda: self.import_album.emit())
         self.new_mp3_album_button.clicked.connect(lambda: self.create_new_album.emit(Album.Type.MP3))
         self.new_flac_album_button.clicked.connect(lambda: self.create_new_album.emit(Album.Type.FLAC))

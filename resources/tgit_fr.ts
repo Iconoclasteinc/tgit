@@ -580,14 +580,34 @@
 <context>
     <name>WelcomeScreen</name>
     <message>
-        <location filename="tgit/ui/welcome_screen.py"/>
+        <location filename="../tgit/ui/welcome_screen.py"/>
         <source>Welcome to TGiT!</source>
         <translation>Bienvenue dans TGiT !</translation>
     </message>
     <message>
-        <location filename="tgit/ui/welcome_screen.py" />
-        <source>Choose the type of album you wish to create:</source>
-        <translation>Choisissez le type d'album que vous souhaitez créer :</translation>
+        <location filename="../tgit/ui/welcome_screen.py" />
+        <source>Create a new release*:</source>
+        <translation>Créer un nouvel album (release*) :</translation>
+    </message>
+    <message>
+        <location filename="../tgit/ui/welcome_screen.py" />
+        <source>or</source>
+        <translation>ou</translation>
+    </message>
+    <message>
+        <location filename="../tgit/ui/welcome_screen.py" />
+        <source>Start from a reference track:</source>
+        <translation>Démarrer depuis une piste de référence :</translation>
+    </message>
+    <message>
+        <location filename="../tgit/ui/welcome_screen.py" />
+        <source>CHOOSE...</source>
+        <translation>CHOISIR...</translation>
+    </message>
+    <message>
+        <location filename="../tgit/ui/welcome_screen.py" />
+        <source>*as per MusicBrainz terminology</source>
+        <translation>*terminologie MusicBrainz</translation>
     </message>
 </context>
 <context>
