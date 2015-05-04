@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from mutagen.flac import FLAC
+from mutagen.flac import FLAC, Picture
 
 from test.util import resources
 from tgit.util import fs
@@ -54,11 +54,22 @@ class FlacAudio(object):
                 self._add_tag("TITLE", value)
             elif tag == 'isrc' or tag == 'ISRC':
                 self._add_tag("ISRC", value)
+            elif tag == 'PICTURES':
+                for mime, type_, desc, data in value:
+                    self._add_picture(mime, type_, desc, data)
             else:
                 raise AssertionError("Unsupported tag '%s'" % tag)
 
     def _add_tag(self, key, value):
         self._flac.tags.append((key, value))
+
+    def _add_picture(self, mime, type_, desc, data):
+        picture = Picture()
+        picture.data = data
+        picture.mime = mime
+        picture.type = type_
+        picture.desc = desc
+        self._flac.add_picture(picture)
 
     def _save(self):
         self._flac.save()

@@ -49,12 +49,14 @@ def test_tagging_a_flac_track(app, recordings):
     app.add_tracks_to_album(track)
 
     app.shows_album_metadata(release_name="", lead_performer="")
-    app.change_album_metadata(release_name="St-Henri", lead_performer="John Roney")
+    app.change_album_metadata(release_name="St-Henri", front_cover=resources.path("st-henri.jpg"),
+                              lead_performer="John Roney")
 
     app.shows_next_track_metadata(track_title="???")
     app.change_track_metadata(track_title="Squareboy")
 
     recordings.contains("John Roney - 01 - Squareboy.flac",
+                        front_cover=(resources.path("st-henri.jpg"), "Front Cover"),
                         release_name="St-Henri",
                         lead_performer="John Roney",
                         track_title="Squareboy")

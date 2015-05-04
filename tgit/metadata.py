@@ -32,7 +32,8 @@ class Image(object):
 
     def __repr__(self):
         data = binascii.hexlify(self.data[:25] + b'..' if len(self.data) > 25 else self.data)
-        return 'Image(mime=%s, type_=%s, desc=%s, data=%s)' % (self.mime, self.type, self.desc, data)
+        return 'Image(mime=%s, type_=%s, desc=%s, data=%s) (%s bytes)' \
+               % (self.mime, self.type, self.desc, data, len(self.data))
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -45,13 +46,13 @@ class Image(object):
 
 
 class Metadata(object):
-    def __init__(self, **metadata):
-        self._images = []
-        self._tags = dict(**metadata)
-
     @classmethod
     def from_dict(cls, metadata):
         return cls(**metadata)
+
+    def __init__(self, **metadata):
+        self._images = []
+        self._tags = dict(**metadata)
 
     def __getitem__(self, key):
         return self._tags.get(key, None)

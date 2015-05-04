@@ -16,31 +16,78 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from collections import Counter
+
 import mutagen.flac
 
-from tgit.metadata import Metadata
+from tgit.metadata import Metadata, Image
+from tgit.tagging._pictures import PictureType
 
 
-class TextField():
+LAST = -1
+
+
+def invert(mapping):
+    return dict(list(zip(list(mapping.values()), list(mapping.keys()))))
+
+
+class TextField:
     def __init__(self, field_name, tag_name):
         self._field_name = field_name
         self._tag_name = tag_name
 
-    def read(self, fields, metadata):
-        if self._field_name in fields:
-            metadata[self._tag_name] = fields[self._field_name][-1]
+    def read(self, flac, metadata):
+        if self._field_name in flac:
+            metadata[self._tag_name] = flac[self._field_name][LAST]
 
-    def write(self, metadata, fields):
-        for field in fields:
-            if field[0] == self._field_name:
-                fields.remove(field)
+    def write(self, metadata, flac):
+        if self._field_name in flac:
+            del flac[self._field_name]
+
         text = metadata[self._tag_name]
         if text:
-            fields.append((self._field_name, text))
+            flac[self._field_name] = text
 
 
-class FlacContainer():
-    fields = []
+class PictureField:
+    def __init__(self, field_name, image_types):
+        self._picture_types = invert(image_types)
+        self._image_types = image_types
+        self._picture_types = invert(image_types)
+        self._field_name = field_name
+
+    def read(self, flac, metadata):
+        for picture in flac.pictures:
+            metadata.addImage(picture.mime, picture.data, self._image_types.get(picture.type, Image.OTHER), picture.desc)
+
+    def _pictures_in(self, metadata):
+        image_count = Counter()
+
+        for image in metadata.images:
+            picture = mutagen.flac.Picture()
+            picture.data = image.data
+            picture.type = self._picture_types[image.type]
+            picture.mime = image.mime
+            image_count[image.desc] += 1
+            if image_count[image.desc] > 1:
+                picture.desc = image.desc + ' ({0})'.format(image_count[image.desc])
+            else:
+                picture.desc = image.desc
+
+            yield picture
+
+    def write(self, metadata, flac):
+        flac.clear_pictures()
+        for picture in self._pictures_in(metadata):
+            flac.add_picture(picture)
+
+
+class FlacContainer:
+    fields = [PictureField('PICTURES', {
+        PictureType.OTHER: Image.OTHER,
+        PictureType.FRONT_COVER: Image.FRONT_COVER,
+        PictureType.BACK_COVER: Image.BACK_COVER,
+    })]
 
     for field_name, tag_name in {
         'ALBUM': 'release_name',
@@ -69,7 +116,7 @@ class FlacContainer():
         flac_file = self._load_file(filename)
 
         for field in self.fields:
-            field.write(metadata, flac_file.tags)
+            field.write(metadata, flac_file)
 
         flac_file.save(filename)
 

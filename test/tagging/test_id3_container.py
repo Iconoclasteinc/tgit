@@ -2,7 +2,8 @@
 
 import shutil
 
-from hamcrest import assert_that, has_entry, has_items, has_key, has_length, contains, is_not, contains_inanyorder
+from hamcrest import assert_that, has_entry, has_key, has_length, contains, is_not, contains_inanyorder, \
+    equal_to
 import pytest
 
 from test.util import mp3_file
@@ -276,11 +277,12 @@ def test_takes_none_as_absence_of_tag(mp3):
     assert_contains_metadata(filename, Metadata())
 
 
-def test_can_save_several_pictures_sharing_the_same_description(mp3):
+def test_stores_several_pictures_sharing_the_same_description(mp3):
     filename = mp3()
-    metadata = container.load(filename)
+    metadata = Metadata()
     metadata.addImage('image/jpeg', b'salers.jpg', desc='Front Cover')
     metadata.addImage('image/jpeg', b'ragber.jpg', desc='Front Cover')
+
     container.save(filename, metadata)
 
     assert_that(container.load(filename).images, contains_inanyorder(
@@ -289,10 +291,9 @@ def test_can_save_several_pictures_sharing_the_same_description(mp3):
     ))
 
 
-def test_removes_existing_attached_pictures_on_save(mp3):
+def test_overwrites_existing_attached_pictures(mp3):
     filename = mp3(APIC_FRONT=('image/jpeg', '', b'front-cover.jpg'))
-    metadata = container.load(filename)
-    metadata.removeImages()
+    metadata = Metadata()
 
     container.save(filename, metadata)
     assert_that(container.load(filename).images, has_length(0), 'removed images')
@@ -309,9 +310,10 @@ def assert_can_be_saved_and_reloaded_with_same_state(mp3, metadata):
     assert_contains_metadata(filename, metadata)
 
 
-def assert_contains_metadata(filename, expected):
-    expected_length = len(expected) + len(('bitrate', 'duration'))
-    metadata = container.load(filename)
-    assert_that(list(metadata.items()), has_items(*list(expected.items())), 'metadata items')
-    assert_that(metadata, has_length(expected_length), 'metadata count')
-    assert_that(metadata.images, has_items(*expected.images), 'metadata images')
+def assert_contains_metadata(filename, metadata):
+    expected_metadata = metadata.copy()
+    expected_metadata['bitrate'] = BITRATE
+    expected_metadata['duration'] = DURATION
+
+    actual_metadata = container.load(filename)
+    assert_that(actual_metadata, equal_to(expected_metadata), 'actual metadata')

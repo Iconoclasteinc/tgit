@@ -22,6 +22,7 @@ from collections import Counter
 from mutagen import mp3, id3
 
 from tgit.metadata import Metadata, Image
+from tgit.tagging._pictures import PictureType
 
 
 def invert(mapping):
@@ -71,35 +72,38 @@ class BooleanProcessor(TextProcessor):
 
 
 class ImageProcessor(object):
-    def __init__(self, key, pictureTypes):
+    def __init__(self, key, image_types):
         self._key = key
-        self._pictureTypes = pictureTypes
+        self._picture_types = invert(image_types)
+        self._image_types = image_types
 
     def processFrames(self, metadata, frames):
         for key in self._pictureFrames(frames):
             picture = frames[key]
-            imageType = self._pictureTypes.get(picture.type, Image.OTHER)
+            imageType = self._image_types.get(picture.type, Image.OTHER)
             metadata.addImage(picture.mime, picture.data, imageType, picture.desc)
 
     def _pictureFrames(self, frames):
         return [key for key in frames if key.startswith(self._key)]
 
+    def _pictures_in(self, metadata, encoding):
+        image_count = Counter()
+        for image in metadata.images:
+            image_count[image.desc] += 1
+            if image_count[image.desc] > 1:
+                description = image.desc + ' ({0})'.format(image_count[image.desc])
+            else:
+                description = image.desc
+
+            yield getattr(id3, self._key)(encoding=encoding, mime=image.mime,
+                                          type=self._picture_types[image.type],
+                                          desc=description, data=image.data)
+
     def processMetadata(self, frames, encoding, metadata):
         frames.delall(self._key)
-        count = Counter()
-        for image in metadata.images:
-            count[image.desc] += 1
-            frames.add(self._makePictureFrame(count, encoding, image))
 
-    def _makePictureFrame(self, count, encoding, image):
-        description = image.desc
-        if count[image.desc] > 1:
-            description += ' ({})'.format(count[image.desc])
-
-        imagesTypes = invert(self._pictureTypes)
-        return getattr(id3, self._key)(encoding=encoding, mime=image.mime,
-                                       type=imagesTypes[image.type],
-                                       desc=description, data=image.data)
+        for picture in self._pictures_in(metadata, encoding):
+            frames.add(picture)
 
 
 class PairProcessor(object):
@@ -151,9 +155,9 @@ class ID3Container(object):
 
     processors = [
         ImageProcessor('APIC', {
-            0: Image.OTHER,
-            3: Image.FRONT_COVER,
-            4: Image.BACK_COVER,
+            PictureType.OTHER: Image.OTHER,
+            PictureType.FRONT_COVER: Image.FRONT_COVER,
+            PictureType.BACK_COVER: Image.BACK_COVER,
         }),
         PairProcessor('TMCL', 'guestPerformers', {}),
         PairProcessor('TIPL', 'contributors', {

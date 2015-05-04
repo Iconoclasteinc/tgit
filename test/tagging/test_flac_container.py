@@ -2,12 +2,13 @@
 
 import shutil
 
-from hamcrest import assert_that, has_entry, has_items, has_length
+from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, equal_to
 import pytest
 
 from test.util import flac_file
+from tgit.tagging._pictures import PictureType
 from tgit.tagging.flac_container import FlacContainer
-from tgit.metadata import Metadata
+from tgit.metadata import Metadata, Image
 
 DURATION = flac_file.base.duration
 BITRATE = flac_file.base.bitrate
@@ -69,8 +70,20 @@ def test_reads_label_name_from_organization_field(flac):
     assert_that(metadata, has_entry('label_name', "Effendi Records Inc."), "metadata")
 
 
+def test_reads_attached_pictures_from_picture_field(flac):
+    metadata = container.load(flac(PICTURES=(
+        ('image/jpeg', PictureType.FRONT_COVER, 'Front', b'front-cover.jpg'),
+        ('image/jpeg', PictureType.BACK_COVER, 'Back', b'back-cover.jpg'))))
+
+    assert_that(metadata.images, contains_inanyorder(
+        Image('image/jpeg', b'front-cover.jpg', type_=Image.FRONT_COVER, desc='Front'),
+        Image('image/jpeg', b'back-cover.jpg', type_=Image.BACK_COVER, desc='Back'),
+    ))
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
+    metadata.addImage('image/jpeg', b'honeycomb.jpg', Image.FRONT_COVER)
     metadata['release_name'] = "St-Henri"
     metadata['lead_performer'] = "Joel Miller"
     metadata['label_name'] = "Effendi Records Inc."
@@ -88,14 +101,46 @@ def test_removes_comment_field_when_tag_not_in_metadata(flac):
     assert_contains_metadata(filename, Metadata())
 
 
+def test_stores_several_pictures(flac):
+    filename = flac()
+    metadata = Metadata()
+    metadata.addImage('image/jpeg', b'front-1.jpg', desc='Front Cover')
+    metadata.addImage('image/jpeg', b'front-2.jpg', desc='Front Cover')
+
+    container.save(filename, metadata)
+
+    assert_that(container.load(filename).images, contains_inanyorder(
+        Image('image/jpeg', b'front-1.jpg', type_=Image.OTHER, desc='Front Cover'),
+        Image('image/jpeg', b'front-2.jpg', type_=Image.OTHER, desc='Front Cover (2)'),
+    ))
+
+
+def test_overwrites_existing_attached_pictures(flac):
+    filename = flac(PICTURES=(
+        ('image/jpeg', PictureType.FRONT_COVER, 'Front', b'front.jpg'),
+        ('image/jpeg', PictureType.BACK_COVER, 'Back', b'back.jpg')))
+
+    metadata = Metadata()
+
+    container.save(filename, metadata)
+    assert_that(container.load(filename).images, has_length(0), 'removed images')
+
+    metadata.addImage(mime='image/jpeg', data=b'front.jpg', desc='Front')
+    container.save(filename, metadata)
+
+    assert_that(container.load(filename).images, has_length(1), 'updated images')
+
+
 def assert_can_be_saved_and_reloaded_with_same_state(flac, metadata):
     filename = flac()
     container.save(filename, metadata.copy())
     assert_contains_metadata(filename, metadata)
 
 
-def assert_contains_metadata(filename, expected):
-    expected_length = len(expected) + len(('bitrate', 'duration'))
-    metadata = container.load(filename)
-    assert_that(list(metadata.items()), has_items(*list(expected.items())), "metadata items")
-    assert_that(metadata, has_length(expected_length), "metadata count")
+def assert_contains_metadata(filename, metadata):
+    expected_metadata = metadata.copy()
+    expected_metadata['bitrate'] = BITRATE
+    expected_metadata['duration'] = DURATION
+
+    actual_metadata = container.load(filename)
+    assert_that(actual_metadata, equal_to(expected_metadata), 'actual metadata')
