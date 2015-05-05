@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_CA" sourcelanguage="en_US">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_CA" sourcelanguage="en_US">
 <context>
     <name>Column</name>
     <message>
@@ -15,7 +16,7 @@
     <message>
         <location filename="album_composition_model.py" line="128"/>
         <source>Album Title</source>
-        <translation>Titre de l'album</translation>
+        <translation>Titre de l&apos;album</translation>
     </message>
     <message>
         <location filename="album_composition_model.py" line="129"/>
@@ -28,89 +29,89 @@
         <translation>Durée</translation>
     </message>
 </context>
-    <context>
-        <name>CsvFormat</name>
-        <message>
-            <source>Album Title</source>
-            <translation>Titre de l'album</translation>
-        </message>
-        <message>
-            <source>Lead Performer</source>
-            <translation>Artiste principal</translation>
-        </message>
-        <message>
-            <source>Guest Performers</source>
-            <translation>Musiciens de l'album</translation>
-        </message>
-        <message>
-            <source>Label Name</source>
-            <translation>Nom de la maison de disques</translation>
-        </message>
-        <message>
-            <source>Catalog Number</source>
-            <translation>Numéro de catalogue</translation>
-        </message>
-        <message>
-            <source>Comments</source>
-            <translation>Commentaires</translation>
-        </message>
-        <message>
-            <source>Release Date</source>
-            <translation>Date de mise en marché de l'album</translation>
-        </message>
-        <message>
-            <source>Recording Date</source>
-            <translation>Date de l'enregistrement</translation>
-        </message>
-        <message>
-            <source>Recording Studios</source>
-            <translation>Studio d'enregistrement</translation>
-        </message>
-        <message>
-            <source>Producer</source>
-            <translation>Réalisateur</translation>
-        </message>
-        <message>
-            <source>Mixer</source>
-            <translation>Mixeur</translation>
-        </message>
-        <message>
-            <source>Primary Style</source>
-            <translation>Genre de l'album</translation>
-        </message>
-        <message>
-            <source>Track Title</source>
-            <translation>Titre de la piste</translation>
-        </message>
-        <message>
-            <source>Version Information</source>
-            <translation>Information sur la version</translation>
-        </message>
-        <message>
-            <source>Featured Guest</source>
-            <translation>Invité spécial</translation>
-        </message>
-        <message>
-            <source>Lyrics</source>
-            <translation>Paroles</translation>
-        </message>
-        <message>
-            <source>Language</source>
-            <translation>Langue des paroles</translation>
-        </message>
-        <message>
-            <source>Publisher</source>
-            <translation>Éditeur</translation>
-        </message>
-        <message>
-            <source>Lyricist</source>
-            <translation>Auteur</translation>
-        </message>
-        <message>
-            <source>Composer</source>
-            <translation>Compositeur</translation>
-        </message>
-    </context>
+<context>
+    <name>CsvFormat</name>
+    <message>
+        <source>Album Title</source>
+        <translation>Titre de l&apos;album</translation>
+    </message>
+    <message>
+        <source>Lead Performer</source>
+        <translation>Artiste principal</translation>
+    </message>
+    <message>
+        <source>Guest Performers</source>
+        <translation>Musiciens de l&apos;album</translation>
+    </message>
+    <message>
+        <source>Label Name</source>
+        <translation>Nom de la maison de disques</translation>
+    </message>
+    <message>
+        <source>Catalog Number</source>
+        <translation>Numéro de catalogue</translation>
+    </message>
+    <message>
+        <source>Comments</source>
+        <translation>Commentaires</translation>
+    </message>
+    <message>
+        <source>Release Date</source>
+        <translation>Date de mise en marché de l&apos;album</translation>
+    </message>
+    <message>
+        <source>Recording Date</source>
+        <translation>Date de l&apos;enregistrement</translation>
+    </message>
+    <message>
+        <source>Recording Studios</source>
+        <translation>Studio d&apos;enregistrement</translation>
+    </message>
+    <message>
+        <source>Producer</source>
+        <translation>Réalisateur</translation>
+    </message>
+    <message>
+        <source>Mixer</source>
+        <translation>Mixeur</translation>
+    </message>
+    <message>
+        <source>Primary Style</source>
+        <translation>Genre de l&apos;album</translation>
+    </message>
+    <message>
+        <source>Track Title</source>
+        <translation>Titre de la piste</translation>
+    </message>
+    <message>
+        <source>Version Information</source>
+        <translation>Information sur la version</translation>
+    </message>
+    <message>
+        <source>Featured Guest</source>
+        <translation>Invité spécial</translation>
+    </message>
+    <message>
+        <source>Lyrics</source>
+        <translation>Paroles</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation>Langue des paroles</translation>
+    </message>
+    <message>
+        <source>Publisher</source>
+        <translation>Éditeur</translation>
+    </message>
+    <message>
+        <source>Lyricist</source>
+        <translation>Auteur</translation>
+    </message>
+    <message>
+        <source>Composer</source>
+        <translation>Compositeur</translation>
+    </message>
+</context>
 <context>
     <name>AlbumCompositionPage</name>
     <message>
@@ -435,7 +436,7 @@
     <message>
         <location filename="tgit/ui/restart_message_box.py" line="53"/>
         <source>Could not assign an ISNI</source>
-        <translation>Impossible d'assigner un ISNI</translation>
+        <translation>Impossible d&apos;assigner un ISNI</translation>
     </message>
 </context>
 <context>
@@ -448,7 +449,7 @@
     <message>
         <location filename="tgit/ui/settings_dialog.py" line="36"/>
         <source>&amp;Language</source>
-        <translation>Langue</translation>
+        <translation>&amp;Langue</translation>
     </message>
     <message>
         <source>English</source>
@@ -578,34 +579,34 @@
     </message>
 </context>
 <context>
-    <name>WelcomeScreen</name>
+    <name>welcome_screen</name>
     <message>
         <location filename="../tgit/ui/welcome_screen.py"/>
         <source>Welcome to TGiT!</source>
         <translation>Bienvenue dans TGiT !</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py" />
+        <location filename="../tgit/ui/welcome_screen.py"/>
         <source>Create a new release*:</source>
         <translation>Créer un nouvel album (release*) :</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py" />
+        <location filename="../tgit/ui/welcome_screen.py"/>
         <source>or</source>
         <translation>ou</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py" />
+        <location filename="../tgit/ui/welcome_screen.py"/>
         <source>Start from a reference track:</source>
-        <translation>Démarrer depuis une piste de référence :</translation>
+        <translation>Démarrer à partir d'une piste :</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py" />
+        <location filename="../tgit/ui/welcome_screen.py"/>
         <source>CHOOSE...</source>
         <translation>CHOISIR...</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py" />
+        <location filename="../tgit/ui/welcome_screen.py"/>
         <source>*as per MusicBrainz terminology</source>
         <translation>*terminologie MusicBrainz</translation>
     </message>
@@ -633,7 +634,7 @@
     <message>
         <location filename="tgit/ui/album_composition_page"/>
         <source>FLAC playback is not supported on your platform</source>
-        <translation>La lecture de fichier FLAC n'est pas supportée sur votre machine</translation>
+        <translation>La lecture de fichier FLAC n&apos;est pas supportée sur votre machine</translation>
     </message>
 </context>
 </TS>
