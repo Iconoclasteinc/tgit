@@ -28,5 +28,6 @@
      <file alias="checkbox-checked.png">images/checkbox-checked.png</file>
      <file alias="checkbox-checked-hover.png">images/checkbox-checked-hover.png</file>
      <file alias="checkbox-checked-pressed.png">images/checkbox-checked-pressed.png</file>
+     <file>ui/welcome_screen.ui</file>
 </qresource>
 </RCC>
