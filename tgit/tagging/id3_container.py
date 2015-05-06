@@ -29,6 +29,11 @@ def invert(mapping):
     return dict(list(zip(list(mapping.values()), list(mapping.keys()))))
 
 
+def _decompose(key):
+    parts = (key + '::').split(':')
+    return parts[0], parts[1], parts[2]
+
+
 class TextProcessor(object):
     def __init__(self, key, tag, frameToTag, tagToFrame):
         self._key = key
@@ -42,15 +47,11 @@ class TextProcessor(object):
             metadata[self._tag] = self._toTag(frame)
 
     def processMetadata(self, frames, encoding, metadata):
-        frame, desc, lang = self._decompose(self._key)
+        frame, desc, lang = _decompose(self._key)
         text = metadata[self._tag]
         frames.delall(self._key)
         if text:
             frames.add(getattr(id3, frame)(encoding=encoding, desc=desc, lang=lang, text=self._toFrame(text)))
-
-    def _decompose(self, key):
-        parts = (key + '::').split(':')
-        return parts[0], parts[1], parts[2]
 
 
 class UnicodeProcessor(TextProcessor):
@@ -141,19 +142,58 @@ class PairProcessor(object):
                 if tag in metadata]
 
     def _otherMetadataRoles(self, metadata):
-        if not self._tag in metadata:
+        if self._tag not in metadata:
             return []
         return [[role, name] for role, name in metadata[self._tag]]
 
 
-class ID3Container(object):
+class TaggerAndVersionProcessor:
+    def __init__(self, frame_key, tagger_tag, version_tag):
+        self._frame_key = frame_key
+        self._tagger_tag = tagger_tag
+        self._version_tag = version_tag
+
+    def processFrames(self, metadata, frames):
+        if self._frame_key in frames:
+            import re
+
+            tagger_and_version = str(frames[self._frame_key])
+            match = re.match(r'(?P<tagger>[a-zA-Z_][a-zA-Z_0-9]+)\s+v(?P<version>[0-9\.]+)', tagger_and_version)
+
+            metadata[self._tagger_tag] = match.group('tagger')
+            metadata[self._version_tag] = match.group('version')
+
+    def processMetadata(self, frames, encoding, metadata):
+        frames.delall(self._frame_key)
+
+
+class UpgradeProcessor:
+    def __init__(self, old_key, new_key):
+        self._old_key = old_key
+        self._new_key = new_key
+
+    def processFrames(self, metadata, frames):
+        if self._old_key in frames:
+            old = frames.pop(self._old_key)
+            frame, desc, lang = _decompose(self._new_key)
+            frames.add(getattr(id3, frame)(encoding=old.encoding, desc=desc, lang=lang, text=old.text))
+
+    def processMetadata(self, frames, encoding, metadata):
+        frames.delall(self._old_key)
+
+
+class ID3Container:
     UTF_8 = 3
 
-    def __init__(self, encoding=UTF_8, overwrite=False):
-        self._encoding = encoding
-        self._overwrite = overwrite
+    _upgraders = [
+        UpgradeProcessor('TXXX:UPC', 'TXXX:BARCODE')
+    ]
 
-    processors = [
+    _transformers = [
+        TaggerAndVersionProcessor('TXXX:Tagger', 'tagger', 'tagger_version')
+    ]
+
+    _processors = [
         ImageProcessor('APIC', {
             PictureType.OTHER: Image.OTHER,
             PictureType.FRONT_COVER: Image.FRONT_COVER,
@@ -165,6 +205,9 @@ class ID3Container(object):
             'mix': 'mixer'
         })
     ]
+
+    for key, tag in {'TCMP': 'compilation'}.items():
+        _processors.append(BooleanProcessor(key, tag))
 
     for key, tag in {'TALB': 'release_name',
                      'TPE1': 'lead_performer',
@@ -180,21 +223,25 @@ class ID3Container(object):
                      'TSRC': 'isrc',
                      'TLAN': 'language',
                      'TXXX:Catalog Number': 'catalogNumber',
-                     'TXXX:UPC': 'upc',
+                     'TXXX:BARCODE': 'upc',
                      'TXXX:Recording Studios': 'recordingStudios',
                      'TXXX:Featured Guest': 'featuredGuest',
                      'TXXX:Tags': 'labels',
-                     'TXXX:Tagger': 'tagger',
+                     'TXXX:TAGGER': 'tagger',
+                     'TXXX:TAGGER_VERSION': 'tagger_version',
                      'TXXX:Tagging Time': 'taggingTime',
                      'TXXX:ISNI': 'isni',
                      "COMM::fra": 'comments',
                      "USLT::fra": 'lyrics',
                      'TCON': 'primary_style'
     }.items():
-        processors.append(UnicodeProcessor(key, tag))
+        _processors.append(UnicodeProcessor(key, tag))
 
-    for key, tag in {'TCMP': 'compilation'}.items():
-        processors.append(BooleanProcessor(key, tag))
+    _all_processors = _upgraders + _transformers + _processors
+
+    def __init__(self, encoding=UTF_8, overwrite=False):
+        self._encoding = encoding
+        self._overwrite = overwrite
 
     def load(self, filename):
         audioFile = mp3.MP3(filename)
@@ -202,11 +249,11 @@ class ID3Container(object):
         frames = audioFile.tags or {}
 
         metadata = Metadata()
-        for processor in self.processors:
-            processor.processFrames(metadata, frames)
-
         metadata['duration'] = audioFile.info.length
         metadata['bitrate'] = audioFile.info.bitrate
+
+        for processor in self._all_processors:
+            processor.processFrames(metadata, frames)
 
         return metadata
 
@@ -215,7 +262,7 @@ class ID3Container(object):
         if self._overwrite:
             frames.clear()
 
-        for processor in self.processors:
+        for processor in self._all_processors:
             processor.processMetadata(frames, self._encoding, metadata)
 
         frames.save(filename)

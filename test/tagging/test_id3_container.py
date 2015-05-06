@@ -3,7 +3,8 @@
 import shutil
 
 from hamcrest import assert_that, has_entry, has_key, has_length, contains, is_not, contains_inanyorder, \
-    equal_to
+    equal_to, has_entries, not_, all_of
+from mutagen.mp3 import MP3
 import pytest
 
 from test.util import mp3_file
@@ -65,8 +66,8 @@ def test_reads_catalog_number_from_custom_frame(mp3):
     assert_that(metadata, has_entry('catalogNumber', '123 456-1'), 'metadata')
 
 
-def test_reads_upc_from_custom_frame(mp3):
-    metadata = container.load(mp3(TXXX_UPC='1234567899999'))
+def test_reads_upc_from_custom_barcode_frame(mp3):
+    metadata = container.load(mp3(TXXX_BARCODE='1234567899999'))
     assert_that(metadata, has_entry('upc', '1234567899999'), 'metadata')
 
 
@@ -203,9 +204,14 @@ def test_reads_cover_pictures_from_a_p_i_c_frames(mp3):
     ))
 
 
-def test_reads_tagger_from_custom_frame(mp3):
-    metadata = container.load(mp3(TXXX_TAGGER='TGiT v1.0'))
-    assert_that(metadata, has_entry('tagger', 'TGiT v1.0'), 'metadata')
+def test_reads_tagger_name_from_custom_frame(mp3):
+    metadata = container.load(mp3(TXXX_TAGGER='TGiT'))
+    assert_that(metadata, has_entry('tagger', 'TGiT'), 'metadata')
+
+
+def test_reads_tagger_version_from_custom_frame(mp3):
+    metadata = container.load(mp3(TXXX_TAGGER_VERSION='1.0'))
+    assert_that(metadata, has_entry('tagger_version', '1.0'), 'metadata')
 
 
 def test_reads_tagging_time_from_custom_frame(mp3):
@@ -249,7 +255,8 @@ def test_round_trips_metadata_to_file(mp3):
     metadata['labels'] = 'Tag1 Tag2 Tag3'
     metadata['lyrics'] = 'Lyrics'
     metadata['language'] = 'fra'
-    metadata['tagger'] = 'TGiT v1.0'
+    metadata['tagger'] = 'TGiT'
+    metadata['tagger_version'] = '1.0'
     metadata['taggingTime'] = '2014-03-26 14:18:55 EDT-0400'
 
     assert_can_be_saved_and_reloaded_with_same_state(mp3, metadata)
@@ -302,6 +309,27 @@ def test_overwrites_existing_attached_pictures(mp3):
     container.save(filename, metadata)
 
     assert_that(container.load(filename).images, has_length(1), 'updated images')
+
+
+def test_transforms_deprecated_tagger_frame_into_tagger_and_version(mp3):
+    metadata = container.load(mp3(TXXX_TAGGER_AND_VERSION='TGiT v1.1'))
+    assert_that(metadata, has_entries(tagger='TGiT', tagger_version='1.1'), 'metadata')
+
+
+def test_upgrades_deprecated_frames_to_their_new_form(mp3):
+    metadata = container.load(mp3(TXXX_UPC='987654321111'))
+
+    assert_that(metadata, has_entry('upc', '987654321111'), 'metadata')
+
+
+def test_removes_deprecated_frames_on_save(mp3):
+    filename = mp3(TXXX_TAGGER_AND_VERSION='TGiT v1.1',
+                   TXXX_UPC='987654321111')
+    container.save(filename, Metadata())
+
+    tags = MP3(filename)
+    assert_that(tags, all_of(not_(has_key('TXXX:tagger')),
+                             not_(has_key('TXXX:UPC'))), 'tags in file')
 
 
 def assert_can_be_saved_and_reloaded_with_same_state(mp3, metadata):

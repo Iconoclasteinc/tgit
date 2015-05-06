@@ -64,7 +64,10 @@ class Mp3Audio(object):
             elif tag == 'catalogNumber' or tag == 'TXXX_CATALOG_NUMBER':
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='Catalog Number', text=value))
             elif tag == 'upc' or tag == 'TXXX_UPC':
+                """ Deprecated and replaced with BARCODE"""
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='UPC', text=value))
+            elif tag == 'barcode' or tag == 'TXXX_BARCODE':
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc='BARCODE', text=value))
             elif tag == 'recording_time' or tag == 'TDRC':
                 self._add_tag(id3.TDRC(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
             elif tag == 'releaseTime' or tag == 'TDRL':
@@ -106,7 +109,12 @@ class Mp3Audio(object):
             elif tag == 'compilation' or tag == 'TCMP':
                 self._add_tag(id3.TCMP(encoding=UTF_8, text=value))
             elif tag == 'tagger' or tag == 'TXXX_TAGGER':
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc='TAGGER', text=value))
+            elif tag == 'TXXX_TAGGER_AND_VERSION':
+                """ Deprecated and replaced with separate TAGGER and VERSION tags"""
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='Tagger', text=value))
+            elif tag == 'tagger_version' or tag == 'TXXX_TAGGER_VERSION':
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc='TAGGER_VERSION', text=value))
             elif tag == 'taggingTime' or tag == 'TXXX_TAGGING_TIME':
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='Tagging Time', text=value))
             else:
