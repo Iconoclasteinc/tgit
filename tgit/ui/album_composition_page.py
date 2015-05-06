@@ -111,7 +111,7 @@ class AlbumCompositionPage(QWidget):
         header = QWidget()
         row = form.row()
         help = form.label()
-        help.setText(self.tr('Organize tracks in album.'))
+        help.setText(self.tr("Organize the release's tracks."))
         row.addWidget(help)
         row.addStretch()
         addButton = form.button('add-tracks', self.tr('ADD'))

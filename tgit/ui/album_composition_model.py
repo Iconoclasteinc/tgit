@@ -104,7 +104,7 @@ class ColumnEnum(type):
 class Columns(metaclass=ColumnEnum):
     trackTitle = Column(name='Track Title', value=lambda row: row.trackTitle)
     leadPerformer = Column(name='Lead Performer', value=Row.leadPerformer)
-    releaseName = Column(name="Album Title", value=Row.releaseName)
+    releaseName = Column(name="Release Name", value=Row.releaseName)
     bitrate = Column(name='Bitrate', value=lambda row: '%s kbps' % formatting.inKbps(row.bitrate()))
     duration = Column(name='Duration', value=lambda row: formatting.toDuration(row.duration()))
     play = Column(name='', value=lambda row: (row.inPlay, row.playback_supported))

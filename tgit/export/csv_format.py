@@ -31,7 +31,7 @@ def toPeopleList(people):
 
 
 class CsvFormat(QObject):
-    Headers = ['Album Title', 'Compilation', 'Lead Performer', 'Lead Performer ISNI', 'Guest Performers', 'Label Name',
+    Headers = ['Release Name', 'Compilation', 'Lead Performer', 'Lead Performer ISNI', 'Guest Performers', 'Label Name',
                'Catalog Number',
                'UPC/EAN', 'Comments', 'Release Date', 'Recording Date', 'Recording Studios', 'Producer', 'Mixer',
                'Primary Style', 'Track Title', 'Version Information', 'Featured Guest', 'Lyrics', 'Language',

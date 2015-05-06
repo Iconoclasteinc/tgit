@@ -22,7 +22,7 @@ class CsvFormatTest(unittest.TestCase):
 
         rows = readCsv(self.out)
         headers = next(rows)
-        assert_that(headers, contains('Album Title',
+        assert_that(headers, contains('Release Name',
                                       'Compilation',
                                       'Lead Performer',
                                       'Lead Performer ISNI',
