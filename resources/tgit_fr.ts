@@ -15,7 +15,7 @@
     </message>
     <message>
         <location filename="album_composition_model.py" line="128"/>
-        <source>Album Title</source>
+        <source>Release Name</source>
         <translation>Titre de l&apos;album</translation>
     </message>
     <message>
@@ -121,7 +121,7 @@
     </message>
     <message>
         <location filename="tgit/ui/album_composition_page.py" line="109"/>
-        <source>Organize tracks in album.</source>
+        <source>Organize the release's tracks.</source>
         <translation>Organisez les pistes qui composent l&apos;album.</translation>
     </message>
 </context>
