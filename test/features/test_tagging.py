@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import QSettings
 import pytest
+import tgit
 
 from tgit.preferences import Preferences
 from test.util import resources, doubles
@@ -39,7 +40,8 @@ def test_tagging_an_mp3_track(app, recordings):
                         front_cover=(resources.path("honeycomb.jpg"), "Front Cover"),
                         release_name="Honeycomb",
                         lead_performer="Joel Miller",
-                        track_title="Rashers")
+                        track_title="Rashers",
+                        tagger_version=tgit.__version__)
 
 
 def test_tagging_a_flac_track(app, recordings):

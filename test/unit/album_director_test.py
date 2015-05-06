@@ -113,7 +113,8 @@ def test_adds_version_information_to_tags(mp3):
     director.record_track(tagged_file, track, NOW)
 
     metadata = tagging.load_metadata(tagged_file)
-    assert_that(metadata, has_entries(tagger='TGiT v' + tgit.__version__, taggingTime='2014-03-23 16:44:33 +0000'))
+    assert_that(metadata, has_entries(tagger='TGiT', tagger_version=tgit.__version__,
+                                      tagging_time="2014-03-23 16:44:33 +0000"))
 
 
 def test_gracefully_handles_when_tagging_original_recording(mp3):

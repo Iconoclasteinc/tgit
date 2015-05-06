@@ -107,8 +107,9 @@ def record_track(destination_file, track, time):
         return metadata
 
     def update_track_metadata():
-        track.tagger = 'TGiT v' + tgit.__version__
-        track.taggingTime = time.strftime('%Y-%m-%d %H:%M:%S %z')
+        track.tagger = 'TGiT'
+        track.tagger_version = tgit.__version__
+        track.tagging_time = time.strftime('%Y-%m-%d %H:%M:%S %z')
         track.metadata.update(album_metadata(track.album))
 
     def copy_track_file():

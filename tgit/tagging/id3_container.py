@@ -229,7 +229,7 @@ class ID3Container:
                      'TXXX:Tags': 'labels',
                      'TXXX:TAGGER': 'tagger',
                      'TXXX:TAGGER_VERSION': 'tagger_version',
-                     'TXXX:Tagging Time': 'taggingTime',
+                     'TXXX:Tagging Time': 'tagging_time',
                      'TXXX:ISNI': 'isni',
                      "COMM::fra": 'comments',
                      "USLT::fra": 'lyrics',

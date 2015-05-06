@@ -139,7 +139,7 @@ class TrackEditionPageTest(WidgetTest):
         self.check(metadataChangedSignal)
 
     def testDisplaysSoftwareNoticeInLocalTime(self):
-        track = build.track(tagger='TGiT v1.0', taggingTime='2014-03-23 20:33:00 +0000')
+        track = build.track(tagger='TGiT', tagger_version='1.0', tagging_time='2014-03-23 20:33:00 +0000')
         album = build.album(tracks=[track])
 
         self.render(album, track)
@@ -148,16 +148,16 @@ class TrackEditionPageTest(WidgetTest):
         # change, but I don't yet know how to best write the test
 
         # edit: use renderAsOf(track, dateFormat)
-        self.driver.showsSoftwareNotice('Tagged with TGiT v1.0 on 2014-03-23 at 16:33:00')
+        self.driver.showsSoftwareNotice("Tagged with TGiT v1.0 on 2014-03-23 at 16:33:00")
 
-    def testOmitsSoftwareNoticeIfTaggerInformationUnavailable(self):
-        track = build.track(taggingTime='2014-03-23 20:33:00 UTC+0000')
+    def testOmitsTaggerInformationFromSoftwareNoticeIfUnavailable(self):
+        track = build.track(tagging_time='2014-03-23 20:33:00 UTC+0000')
         album = build.album(tracks=[track])
         self.render(album, track)
-        self.driver.showsSoftwareNotice('')
+        self.driver.showsSoftwareNotice("Tagged on 2014-03-23 at 16:33:00")
 
     def testOmitsSoftwareNoticeIfTaggingDateMalformed(self):
-        track = build.track(tagger='TGiT v1.0', taggingTime='invalid-time-format')
+        track = build.track(tagger="TGiT", tagger_version="1.0", tagging_time="invalid-time-format")
         album = build.album(tracks=[track])
         self.render(album, track)
-        self.driver.showsSoftwareNotice('')
+        self.driver.showsSoftwareNotice('Tagged with TGiT v1.0')

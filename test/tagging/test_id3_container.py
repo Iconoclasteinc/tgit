@@ -216,7 +216,7 @@ def test_reads_tagger_version_from_custom_frame(mp3):
 
 def test_reads_tagging_time_from_custom_frame(mp3):
     metadata = container.load(mp3(TXXX_TAGGING_TIME='2014-03-26 14:18:55 EDT-0400'))
-    assert_that(metadata, has_entry('taggingTime', '2014-03-26 14:18:55 EDT-0400'), 'metadata')
+    assert_that(metadata, has_entry('tagging_time', '2014-03-26 14:18:55 EDT-0400'), 'metadata')
 
 
 def test_round_trips_empty_metadata_to_file(mp3):
@@ -257,7 +257,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata['language'] = 'fra'
     metadata['tagger'] = 'TGiT'
     metadata['tagger_version'] = '1.0'
-    metadata['taggingTime'] = '2014-03-26 14:18:55 EDT-0400'
+    metadata['tagging_time'] = '2014-03-26 14:18:55 EDT-0400'
 
     assert_can_be_saved_and_reloaded_with_same_state(mp3, metadata)
 

@@ -40,7 +40,8 @@ class Track(object, metaclass=tag.Taggable):
     lyrics = tag.text()
     language = tag.text()
     tagger = tag.text()
-    taggingTime = tag.text()
+    tagger_version = tag.text()
+    tagging_time = tag.text()
 
     # todo Introduce Recording
     bitrate = tag.numeric()

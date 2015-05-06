@@ -262,7 +262,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         self.tags.setText(track.labels)
         self.lyrics.setPlainText(track.lyrics)
         self.languages.setEditText(track.language)
-        self.displaySoftwareNotice(track.taggingTime, track.tagger)
+        self.softwareNotice.setText(self._compose_software_notice(track))
 
     def displayAlbumCover(self, picture):
         # Cache the cover image to avoid recomputing the image each time the screen updates
@@ -270,14 +270,20 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
             self.cover = picture
             self.albumCover.setPixmap(image.scale(self.cover, *self.ALBUM_COVER_SIZE))
 
-    def displaySoftwareNotice(self, taggingTime, tagger):
+    @staticmethod
+    def _compose_software_notice(track):
         try:
-            date, time = formatting.asLocalDateTime(taggingTime)
-        except:
+            date, time = formatting.asLocalDateTime(track.tagging_time)
+        except Exception:
             date, time = None, None
 
-        if tagger and date and time:
-            self.softwareNotice.setText(self.tr('Tagged with %s on %s at %s') % (tagger, date, time))
+        notice = "Tagged"
+        if track.tagger and track.tagger_version:
+            notice += " with {0} v{1}".format(track.tagger, track.tagger_version)
+        if date and time:
+            notice += " on {0} at {1}".format(date, time)
+
+        return notice
 
     @property
     def metadata(self):
