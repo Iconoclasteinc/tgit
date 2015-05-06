@@ -47,7 +47,7 @@ def import_album(portfolio, track_file):
 
 
 def add_tracks_to_album(album, *selection):
-    for filename in list_audio_files_from(selection):
+    for filename in list_audio_files_from(selection, of_type=".{}".format(album.type)):
         album.addTrack(Track(filename, tagging.load_metadata(filename)))
 
 
@@ -144,18 +144,18 @@ def taggedName(track):
     return os.path.join(dirname, filename)
 
 
-def list_audio_files_from(selection):
+def list_audio_files_from(selection, of_type):
     files = []
     for filepath in selection:
         if os.path.isdir(filepath):
-            files.extend(audio_files_in(filepath))
+            files.extend(audio_files_in(filepath, of_type))
         else:
             files.append(filepath)
     return files
 
 
-def audio_files_in(folder):
-    return [os.path.join(folder, f) for f in os.listdir(folder) if f.endswith('.mp3') or f.endswith('flac')]
+def audio_files_in(folder, of_type):
+    return [os.path.join(folder, f) for f in os.listdir(folder) if f.endswith(of_type)]
 
 
 def lookupISNI(registry, leadPerformer):

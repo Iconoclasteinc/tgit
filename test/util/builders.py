@@ -27,8 +27,8 @@ def track(filename='track.mp3', metadata=None, **meta):
     return track
 
 
-def album(images=(), tracks=(), **meta):
-    album = Album()
+def album(of_type=Album.Type.FLAC, images=(), tracks=(), **meta):
+    album = Album(of_type=of_type)
 
     for tag, value in meta.items():
         setattr(album, tag, value)

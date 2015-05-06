@@ -65,18 +65,17 @@ def test_imports_album_from_track(recordings):
     assert_that(album.tracks, contains(has_properties(track_title="Smash Smash")))
 
 
-def test_finds_and_adds_to_album_all_supported_audio_files_in_selected_folder(recordings):
+def test_adds_to_album_all_album_compatible_audio_files_found_in_selected_folder(recordings):
     recordings.add_mp3(track_title='Rolling in the Deep')
-    recordings.add_mp3(track_title='Set Fire to the Rain')
     recordings.add_flac(track_title='Someone Like Me')
+    recordings.add_mp3(track_title='Set Fire to the Rain')
 
-    album = build.album()
+    album = build.album(of_type="mp3")
     director.add_tracks_to_album(album, recordings.root)
 
     assert_that(album.tracks, contains_inanyorder(
         has_properties(track_title='Rolling in the Deep'),
-        has_properties(track_title='Set Fire to the Rain'),
-        has_properties(track_title='Someone Like Me')))
+        has_properties(track_title='Set Fire to the Rain')))
 
 
 def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
