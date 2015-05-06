@@ -96,7 +96,10 @@ class FlacContainer:
         'GENRE': 'primary_style',
         'DATE': 'recording_time',
         'TITLE': 'track_title',
-        'ISRC': 'isrc'
+        'ISRC': 'isrc',
+        'TAGGER': 'tagger',
+        'TAGGER_VERSION': 'tagger_version',
+        'TAGGING_TIME': 'tagging_time',
     }.items():
         fields.append(TextField(field_name, tag_name))
 

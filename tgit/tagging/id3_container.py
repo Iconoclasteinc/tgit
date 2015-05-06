@@ -148,23 +148,25 @@ class PairProcessor(object):
 
 
 class TaggerAndVersionProcessor:
-    def __init__(self, frame_key, tagger_tag, version_tag):
-        self._frame_key = frame_key
-        self._tagger_tag = tagger_tag
-        self._version_tag = version_tag
+    def __init__(self, old_frame_key, tagger_frame, version_frame):
+        self._old_frame_key = old_frame_key
+        self._tagger_frame = tagger_frame
+        self._version_frame = version_frame
 
     def processFrames(self, metadata, frames):
-        if self._frame_key in frames:
+        if self._old_frame_key in frames:
+            old = frames.pop(self._old_frame_key)
             import re
+            match = re.match(r'(?P<tagger>[a-zA-Z_][a-zA-Z_0-9]+)\s+v(?P<version>[0-9\.]+)', str(old))
 
-            tagger_and_version = str(frames[self._frame_key])
-            match = re.match(r'(?P<tagger>[a-zA-Z_][a-zA-Z_0-9]+)\s+v(?P<version>[0-9\.]+)', tagger_and_version)
+            frame, desc, lang = _decompose(self._tagger_frame)
+            frames.add(getattr(id3, frame)(encoding=old.encoding, desc=desc, lang=lang, text=match.group('tagger')))
 
-            metadata[self._tagger_tag] = match.group('tagger')
-            metadata[self._version_tag] = match.group('version')
+            frame, desc, lang = _decompose(self._version_frame)
+            frames.add(getattr(id3, frame)(encoding=old.encoding, desc=desc, lang=lang, text=match.group('version')))
 
     def processMetadata(self, frames, encoding, metadata):
-        frames.delall(self._frame_key)
+        frames.delall(self._old_frame_key)
 
 
 class UpgradeProcessor:
@@ -186,11 +188,9 @@ class ID3Container:
     UTF_8 = 3
 
     _upgraders = [
-        UpgradeProcessor('TXXX:UPC', 'TXXX:BARCODE')
-    ]
-
-    _transformers = [
-        TaggerAndVersionProcessor('TXXX:Tagger', 'tagger', 'tagger_version')
+        TaggerAndVersionProcessor('TXXX:Tagger', 'TXXX:TAGGER', 'TXXX:TAGGER_VERSION'),
+        UpgradeProcessor('TXXX:UPC', 'TXXX:BARCODE'),
+        UpgradeProcessor('TXXX:Tagging Time', 'TXXX:TAGGING_TIME')
     ]
 
     _processors = [
@@ -229,7 +229,7 @@ class ID3Container:
                      'TXXX:Tags': 'labels',
                      'TXXX:TAGGER': 'tagger',
                      'TXXX:TAGGER_VERSION': 'tagger_version',
-                     'TXXX:Tagging Time': 'tagging_time',
+                     'TXXX:TAGGING_TIME': 'tagging_time',
                      'TXXX:ISNI': 'isni',
                      "COMM::fra": 'comments',
                      "USLT::fra": 'lyrics',
@@ -237,7 +237,7 @@ class ID3Container:
     }.items():
         _processors.append(UnicodeProcessor(key, tag))
 
-    _all_processors = _upgraders + _transformers + _processors
+    _all_processors = _upgraders + _processors
 
     def __init__(self, encoding=UTF_8, overwrite=False):
         self._encoding = encoding

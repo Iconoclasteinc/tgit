@@ -312,24 +312,27 @@ def test_overwrites_existing_attached_pictures(mp3):
 
 
 def test_transforms_deprecated_tagger_frame_into_tagger_and_version(mp3):
-    metadata = container.load(mp3(TXXX_TAGGER_AND_VERSION='TGiT v1.1'))
+    metadata = container.load(mp3(TXXX_Tagger='TGiT v1.1'))
     assert_that(metadata, has_entries(tagger='TGiT', tagger_version='1.1'), 'metadata')
 
 
 def test_upgrades_deprecated_frames_to_their_new_form(mp3):
-    metadata = container.load(mp3(TXXX_UPC='987654321111'))
+    metadata = container.load(mp3(TXXX_UPC='987654321111', TXXX_Tagging_Time='2014-03-26 14:18:55 EDT-0400'))
 
-    assert_that(metadata, has_entry('upc', '987654321111'), 'metadata')
+    assert_that(metadata, has_entries(upc='987654321111', tagging_time='2014-03-26 14:18:55 EDT-0400'), 'metadata')
 
 
 def test_removes_deprecated_frames_on_save(mp3):
-    filename = mp3(TXXX_TAGGER_AND_VERSION='TGiT v1.1',
-                   TXXX_UPC='987654321111')
+    filename = mp3(TXXX_Tagger="TGiT v1.1",
+                   TXXX_Tagging_Time="2014-03-26 14:18:55 EDT-0400",
+                   TXXX_UPC="987654321111")
     container.save(filename, Metadata())
 
     tags = MP3(filename)
-    assert_that(tags, all_of(not_(has_key('TXXX:tagger')),
-                             not_(has_key('TXXX:UPC'))), 'tags in file')
+    assert_that(tags, all_of(not_(has_key('TXXX:Tagger')),
+                             not_(has_key('TXXX:Tagging Time')),
+                             not_(has_key('TXXX:UPC'))
+                             ), 'tags in file')
 
 
 def assert_can_be_saved_and_reloaded_with_same_state(mp3, metadata):
@@ -344,4 +347,4 @@ def assert_contains_metadata(filename, metadata):
     expected_metadata['duration'] = DURATION
 
     actual_metadata = container.load(filename)
-    assert_that(actual_metadata, equal_to(expected_metadata), 'actual metadata')
+    assert_that(actual_metadata, has_entries(**expected_metadata), 'metadata in file')

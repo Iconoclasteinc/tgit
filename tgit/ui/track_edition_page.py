@@ -277,11 +277,14 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         except Exception:
             date, time = None, None
 
-        notice = "Tagged"
+        notice = ""
         if track.tagger and track.tagger_version:
             notice += " with {0} v{1}".format(track.tagger, track.tagger_version)
         if date and time:
             notice += " on {0} at {1}".format(date, time)
+
+        if notice != "":
+            notice = "Tagged" + notice
 
         return notice
 

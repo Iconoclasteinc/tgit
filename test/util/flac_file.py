@@ -54,6 +54,12 @@ class FlacAudio(object):
                 self._add_tag("TITLE", value)
             elif tag == 'isrc' or tag == 'ISRC':
                 self._add_tag("ISRC", value)
+            elif tag == 'TAGGER':
+                self._add_tag("TAGGER", value)
+            elif tag == 'TAGGER_VERSION':
+                self._add_tag("TAGGER_VERSION", value)
+            elif tag == 'TAGGING_TIME':
+                self._add_tag("TAGGING_TIME", value)
             elif tag == 'PICTURES':
                 for mime, type_, desc, data in value:
                     self._add_picture(mime, type_, desc, data)

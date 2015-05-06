@@ -150,6 +150,12 @@ class TrackEditionPageTest(WidgetTest):
         # edit: use renderAsOf(track, dateFormat)
         self.driver.showsSoftwareNotice("Tagged with TGiT v1.0 on 2014-03-23 at 16:33:00")
 
+    def testOmitsSoftwareNoticeIfUnavailable(self):
+        track = build.track()
+        album = build.album(tracks=[track])
+        self.render(album, track)
+        self.driver.showsSoftwareNotice("")
+
     def testOmitsTaggerInformationFromSoftwareNoticeIfUnavailable(self):
         track = build.track(tagging_time='2014-03-23 20:33:00 UTC+0000')
         album = build.album(tracks=[track])

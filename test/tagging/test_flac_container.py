@@ -2,7 +2,7 @@
 
 import shutil
 
-from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, equal_to
+from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, has_entries
 import pytest
 
 from test.util import flac_file
@@ -81,6 +81,21 @@ def test_reads_attached_pictures_from_picture_field(flac):
     ))
 
 
+def test_reads_tagger_name_from_tagger_field(flac):
+    metadata = container.load(flac(TAGGER='TGiT'))
+    assert_that(metadata, has_entry('tagger', 'TGiT'), 'metadata')
+
+
+def test_reads_tagger_version_from_tagger_version_field(flac):
+    metadata = container.load(flac(TAGGER_VERSION='1.0'))
+    assert_that(metadata, has_entry('tagger_version', '1.0'), 'metadata')
+
+
+def test_reads_tagging_time_from_tagging_time_field(flac):
+    metadata = container.load(flac(TAGGING_TIME='2014-03-26 14:18:55 EDT-0400'))
+    assert_that(metadata, has_entry('tagging_time', '2014-03-26 14:18:55 EDT-0400'), 'metadata')
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage('image/jpeg', b'honeycomb.jpg', Image.FRONT_COVER)
@@ -91,6 +106,9 @@ def test_round_trips_metadata_to_file(flac):
     metadata['recording_time'] = "2007-11-02"
     metadata['track_title'] = "Salsa Coltrane"
     metadata['isrc'] = "CABL31201254"
+    metadata['tagger'] = "TGiT"
+    metadata['tagger_version'] = "1.0"
+    metadata['tagging_time'] = "2014-03-26 14:18:55 EDT-0400"
 
     assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
@@ -143,4 +161,4 @@ def assert_contains_metadata(filename, metadata):
     expected_metadata['duration'] = DURATION
 
     actual_metadata = container.load(filename)
-    assert_that(actual_metadata, equal_to(expected_metadata), 'actual metadata')
+    assert_that(actual_metadata, has_entries(**expected_metadata), 'metadata in file')

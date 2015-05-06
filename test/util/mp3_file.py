@@ -110,13 +110,16 @@ class Mp3Audio(object):
                 self._add_tag(id3.TCMP(encoding=UTF_8, text=value))
             elif tag == 'tagger' or tag == 'TXXX_TAGGER':
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='TAGGER', text=value))
-            elif tag == 'TXXX_TAGGER_AND_VERSION':
+            elif tag == 'TXXX_Tagger':
                 """ Deprecated and replaced with separate TAGGER and VERSION tags"""
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='Tagger', text=value))
             elif tag == 'tagger_version' or tag == 'TXXX_TAGGER_VERSION':
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='TAGGER_VERSION', text=value))
-            elif tag == 'taggingTime' or tag == 'TXXX_TAGGING_TIME':
+            elif tag == 'TXXX_Tagging_Time':
+                """ Deprecated and replaced with TAGGING_TIME"""
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='Tagging Time', text=value))
+            elif tag == 'tagging_time' or tag == 'TXXX_TAGGING_TIME':
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc='TAGGING_TIME', text=value))
             else:
                 raise AssertionError("Knows nothing about '%s'" % tag)
 

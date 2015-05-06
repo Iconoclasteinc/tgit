@@ -61,7 +61,8 @@ def test_tagging_a_flac_track(app, recordings):
                         front_cover=(resources.path("st-henri.jpg"), "Front Cover"),
                         release_name="St-Henri",
                         lead_performer="John Roney",
-                        track_title="Squareboy")
+                        track_title="Squareboy",
+                        tagger_version=tgit.__version__)
 
 
 def test_importing_an_album_from_an_existing_track(app, recordings):
