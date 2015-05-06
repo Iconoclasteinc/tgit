@@ -30,7 +30,7 @@ class AlbumCompositionPageTest(WidgetTest):
         return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testDisplaysColumnHeadings(self):
-        self.driver.showsColumnHeaders('Track Title', 'Lead Performer', 'Album Title', 'Bitrate', 'Duration', '', '')
+        self.driver.showsColumnHeaders('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration', '', '')
 
     def testDisplaysTrackDetailsInColumns(self):
         self.album.release_name = 'All the Little Lights'
