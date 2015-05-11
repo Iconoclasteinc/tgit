@@ -41,6 +41,7 @@ def test_tagging_an_mp3_track(app, recordings):
                         release_name="Honeycomb",
                         lead_performer="Joel Miller",
                         track_title="Rashers",
+                        track_number="1",
                         tagger_version=tgit.__version__)
 
 
@@ -62,6 +63,7 @@ def test_tagging_a_flac_track(app, recordings):
                         release_name="St-Henri",
                         lead_performer="John Roney",
                         track_title="Squareboy",
+                        track_number="1",
                         tagger_version=tgit.__version__)
 
 
@@ -77,30 +79,24 @@ def test_importing_an_album_from_an_existing_track(app, recordings):
 def test_tagging_an_album_with_several_tracks(app, recordings):
     app.new_album(of_type="mp3")
 
-    tracks = (recordings.add_mp3(track_title="1 - ???", lead_performer="???"),
-              recordings.add_mp3(track_title="2 - ???", lead_performer="???"),
-              recordings.add_mp3(track_title="3 - ???", lead_performer="???"))
+    tracks = (recordings.add_mp3(track_title="Chevere!", lead_performer="???"),
+              recordings.add_mp3(track_title="Zumbar", lead_performer="???"),
+              recordings.add_mp3(track_title="Salsa Coltrane", lead_performer="???"))
 
     app.add_tracks_to_album(*tracks)
 
-    app.shows_album_content(["1 - ???"], ["2 - ???"], ["3 - ???"])
+    app.shows_album_content(["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
     app.shows_album_metadata()
 
     app.change_album_metadata(lead_performer="Joel Miller")
 
-    app.shows_next_track_metadata(track_title="1 - ???")
-    app.change_track_metadata(track_title="Chevere!")
+    app.shows_next_track_metadata(track_title="Chevere!")
+    app.shows_next_track_metadata(track_title="Zumbar")
+    app.shows_next_track_metadata(track_title="Salsa Coltrane")
 
-    app.shows_next_track_metadata(track_title="2 - ???")
-    app.change_track_metadata(track_title="Zumbar")
-
-    app.shows_next_track_metadata(track_title="3 - ???")
-    app.change_track_metadata(track_title="Salsa Coltrane")
-
-    recordings.contains("Joel Miller - 01 - Chevere!.mp3", lead_performer="Joel Miller", track_title="Chevere!")
-    recordings.contains("Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller", track_title="Zumbar")
-    recordings.contains("Joel Miller - 03 - Salsa Coltrane.mp3", lead_performer="Joel Miller",
-                        track_title="Salsa Coltrane")
+    recordings.contains("Joel Miller - 01 - Chevere!.mp3", lead_performer="Joel Miller", track_number="1")
+    recordings.contains("Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller", track_number="2")
+    recordings.contains("Joel Miller - 03 - Salsa Coltrane.mp3", lead_performer="Joel Miller", track_number="3")
 
 
 def test_tagging_a_compilation(app, recordings):

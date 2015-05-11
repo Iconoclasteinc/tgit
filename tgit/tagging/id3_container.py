@@ -233,7 +233,8 @@ class ID3Container:
                      'TXXX:ISNI': 'isni',
                      "COMM::fra": 'comments',
                      "USLT::fra": 'lyrics',
-                     'TCON': 'primary_style'
+                     'TCON': 'primary_style',
+                     'TRCK': 'track_number',
     }.items():
         _processors.append(UnicodeProcessor(key, tag))
 

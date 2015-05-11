@@ -44,9 +44,9 @@ class TextField:
         if self._field_name in flac:
             del flac[self._field_name]
 
-        text = metadata[self._tag_name]
-        if text:
-            flac[self._field_name] = text
+        value = metadata[self._tag_name]
+        if value:
+            flac[self._field_name] = str(value)
 
 
 class PictureField:
@@ -100,6 +100,7 @@ class FlacContainer:
         'TAGGER': 'tagger',
         'TAGGER_VERSION': 'tagger_version',
         'TAGGING_TIME': 'tagging_time',
+        'TRACKNUMBER': 'track_number',
     }.items():
         fields.append(TextField(field_name, tag_name))
 

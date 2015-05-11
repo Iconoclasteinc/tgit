@@ -120,6 +120,8 @@ class Mp3Audio(object):
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='Tagging Time', text=value))
             elif tag == 'tagging_time' or tag == 'TXXX_TAGGING_TIME':
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='TAGGING_TIME', text=value))
+            elif tag == 'TRCK':
+                self._add_tag(id3.TRCK(encoding=UTF_8, text=value))
             else:
                 raise AssertionError("Knows nothing about '%s'" % tag)
 
