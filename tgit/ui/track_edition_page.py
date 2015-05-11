@@ -31,12 +31,10 @@ class TrackEditionPage(QWidget, AlbumListener):
     ALBUM_COVER_SIZE = 60, 60
     DURATION_FORMAT = 'mm:ss'
 
-    def __init__(self, album, track):
+    cover = None
+
+    def __init__(self):
         QWidget.__init__(self)
-        # we need this until track knows its position in the album
-        self.album = album
-        self.track = track
-        self.cover = None
         self.build()
 
     def build(self):
@@ -50,19 +48,6 @@ class TrackEditionPage(QWidget, AlbumListener):
 
     def albumStateChanged(self, album):
         self.display(album=album)
-
-    # will eventually go away
-    # but first we need track to know its track number and total tracks
-    def trackAdded(self, track, position):
-        self.display(track=self.track)
-
-    # will eventually go away
-    # but first we need track to know its track number and total tracks
-    def trackRemoved(self, track, position):
-        if track == self.track:
-            self.album.removeAlbumListener(self)
-        else:
-            self.display(track=self.track)
 
     def makeAlbumBanner(self):
         header = QFrame()
@@ -244,7 +229,7 @@ class TrackEditionPage(QWidget, AlbumListener):
         self.leadPerformer.setEnabled(album.compilation is True)
 
     def display_track(self, track):
-        self.trackNumber.setText(self.tr('Track %s of %d') % (track.track_number, len(self.album)))
+        self.trackNumber.setText(self.tr('Track %s of %d') % (track.track_number, track.total_tracks))
         self.trackTitle.setText(track.track_title)
         self.leadPerformer.setText(track.lead_performer)
         self.versionInfo.setText(track.versionInfo)

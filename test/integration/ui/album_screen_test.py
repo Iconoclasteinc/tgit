@@ -22,7 +22,7 @@ class AlbumScreenTest(WidgetTest):
         self.driver = self.createDriverFor(self.view)
 
     def createTrackEditionPage(self, track):
-        page = TrackEditionPage(self.album, track)
+        page = TrackEditionPage()
         page.display(self.album, track)
         return page
 

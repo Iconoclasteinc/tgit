@@ -14,7 +14,7 @@ from tgit.ui.track_edition_page import TrackEditionPage
 
 class TrackEditionPageTest(WidgetTest):
     def render(self, album, track):
-        self.page = TrackEditionPage(album, track)
+        self.page = TrackEditionPage()
         self.page.display(album, track)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)

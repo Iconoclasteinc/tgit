@@ -162,10 +162,18 @@ def ActivityIndicatorDialogController(parent):
 
 
 def TrackEditionPageController(album, track):
-    page = TrackEditionPage(album, track)
+    page = TrackEditionPage()
     page.metadataChanged.connect(lambda metadata: director.updateTrack(track, **metadata))
-    album.addAlbumListener(page)
+
+    class Subscription(AlbumListener):
+        def trackRemoved(self, removed, position):
+            if removed == track:
+                removed.metadata_changed.unsubscribe(page.display_track)
+                album.removeAlbumListener(page)
+
     track.metadata_changed.subscribe(page.display_track)
+    album.addAlbumListener(page)
+    album.addAlbumListener(Subscription())
     page.display(album=album, track=track)
     return page
 
