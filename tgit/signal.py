@@ -62,6 +62,13 @@ class Signal:
         if subscriber not in self._subscribers:
             self._subscribers.append(subscriber)
 
-    def unsubscribe(self, subscriber):
+    def _remove(self, subscriber):
         if subscriber in self._subscribers:
             self._subscribers.remove(subscriber)
+
+    def unsubscribe(self, *subscribers):
+        if len(subscribers) == 0:
+            subscribers = tuple(self._subscribers)
+
+        for subscriber in subscribers:
+            self._remove(subscriber)

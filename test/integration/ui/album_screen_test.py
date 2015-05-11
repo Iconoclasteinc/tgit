@@ -23,7 +23,6 @@ class AlbumScreenTest(WidgetTest):
 
     def createTrackEditionPage(self, track):
         page = TrackEditionPage(self.album, track)
-        track.addTrackListener(page)
         page.display(self.album, track)
         return page
 

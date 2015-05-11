@@ -22,11 +22,10 @@ from PyQt5.QtWidgets import QLabel, QWidget, QGroupBox, QFrame
 
 from tgit.album import AlbumListener
 from tgit.languages import LANGUAGES
-from tgit.track import TrackListener
 from tgit.ui.helpers import form, image, formatting
 
 
-class TrackEditionPage(QWidget, TrackListener, AlbumListener):
+class TrackEditionPage(QWidget, AlbumListener):
     metadataChanged = pyqtSignal(dict)
 
     ALBUM_COVER_SIZE = 60, 60
@@ -51,9 +50,6 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
 
     def albumStateChanged(self, album):
         self.display(album=album)
-
-    def trackStateChanged(self, track):
-        self.display(track=track)
 
     # will eventually go away
     # but first we need track to know its track number and total tracks
@@ -238,7 +234,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         if album:
             self.displayAlbum(album)
         if track:
-            self.displayTrack(track)
+            self.display_track(track)
 
     def displayAlbum(self, album):
         self.displayAlbumCover(album.mainCover)
@@ -247,7 +243,7 @@ class TrackEditionPage(QWidget, TrackListener, AlbumListener):
         self.recordLabel.setText(album.label_name)
         self.leadPerformer.setEnabled(album.compilation is True)
 
-    def displayTrack(self, track):
+    def display_track(self, track):
         self.trackNumber.setText(self.tr('Track %s of %d') % (track.track_number, len(self.album)))
         self.trackTitle.setText(track.track_title)
         self.leadPerformer.setText(track.lead_performer)

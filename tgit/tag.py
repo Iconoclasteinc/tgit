@@ -17,9 +17,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from tgit.signal import Observable
+
 
 # Descriptor class for tags
-class tag():
+class tag:
     def __init__(self, name=None, **opts):
         self.name = name
         for key, value in opts.items():
@@ -62,13 +64,13 @@ class pairs(typed):
     expectedType = (list, tuple)
 
 
-class Taggable(type):
-    def __new__(cls, clsname, bases, methods):
+class Taggable(Observable):
+    def __new__(mcs, clsname, bases, methods):
         # Attach attribute names to the tags
         for key, value in methods.items():
-            if isinstance(value, tag):
+            if isinstance(value, tag) and not value.name:
                 value.name = key
-        return type.__new__(cls, clsname, bases, methods)
+        return super().__new__(mcs, clsname, bases, methods)
 
     def tags(cls):
         return (value.name for value in cls.__dict__.values() if isinstance(value, tag))

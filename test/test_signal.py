@@ -16,10 +16,10 @@ class Subscriber(object):
 SUBSCRIBERS_COUNT = 5
 
 
-def register_subscribers_to(signal):
+def register_subscribers_to(signal_):
     subscribers = []
     for i in range(SUBSCRIBERS_COUNT):
-        subscribers.append(register_new_subscriber(signal))
+        subscribers.append(register_new_subscriber(signal_))
 
     return subscribers
 
@@ -72,3 +72,13 @@ def test_registers_same_subscriber_only_once(signal):
 def test_will_not_emit_events_of_incompatible_type(signal):
     with pytest.raises(TypeError):
         signal.emit(1)
+
+
+def test_can_unsubscribe_all_listeners_at_once(signal):
+    subscribers = register_subscribers_to(signal)
+    signal.unsubscribe()
+
+    signal.emit('event')
+
+    for index, subscriber in enumerate(subscribers):
+        assert_that(subscriber.events, empty(), 'events received by subscriber #{}'.format(index))

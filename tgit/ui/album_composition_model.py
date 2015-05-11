@@ -21,12 +21,11 @@ from PyQt5.QtCore import QObject, QAbstractTableModel, QModelIndex, Qt, pyqtSign
 
 from tgit.album import AlbumListener
 from tgit.audio import PlayerListener
-from tgit.track import TrackListener
 from tgit.ui.helpers import formatting
 
 
 # We need to keep Row until we get rid of the playing state
-class Row(QObject, AlbumListener, TrackListener, PlayerListener):
+class Row(QObject, AlbumListener, PlayerListener):
     rowChanged = pyqtSignal(object)
 
     # todo remove album from params
@@ -56,7 +55,7 @@ class Row(QObject, AlbumListener, TrackListener, PlayerListener):
     def playback_supported(self):
         return self.track.filename.endswith('.mp3')
 
-    def trackStateChanged(self, track):
+    def track_state_changed(self, track):
         self.signalRowChange()
 
     def albumStateChanged(self, album):
@@ -161,7 +160,7 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
 
     def trackAdded(self, track, position):
         row = Row(self.album, track, self.player.is_playing(track.filename))
-        track.addTrackListener(row)
+        track.metadata_changed.subscribe(row.track_state_changed)
         self.album.addAlbumListener(row)
         self.player.add_player_listener(row)
         self.rows.insert(position, row)
@@ -174,7 +173,7 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
 
     def trackRemoved(self, track, position):
         row = self.rows[position]
-        track.removeTrackListener(row)
+        track.metadata_changed.unsubscribe(row.track_state_changed)
         self.album.removeAlbumListener(row)
         self.player.remove_player_listener(row)
         row.rowChanged.disconnect()

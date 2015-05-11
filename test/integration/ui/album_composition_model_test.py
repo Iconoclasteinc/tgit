@@ -59,7 +59,7 @@ class RowTest(unittest.TestCase):
         listener = flexmock()
         row.rowChanged.connect(lambda row: listener.rowChanged(row))
         listener.should_receive('rowChanged').with_args(row).once()
-        row.trackStateChanged(track)
+        row.track_state_changed(track)
 
     def testSignalsRowChangedWhenTrackIsLoading(self):
         album = build.album()

@@ -22,6 +22,10 @@ class MetadataTest(unittest.TestCase):
         del metadata['artist']
         assert_that('title', is_not(is_in(metadata)), 'member')
 
+    def test_accesses_entries_as_attributes(self):
+        metadata = Metadata(artist='James Blunt')
+        assert_that(metadata.artist, equal_to('James Blunt'), 'accessed item')
+
     def testMissingTagIsConsideredNone(self):
         metadata = Metadata()
         assert_that(metadata['missing'], none(), 'missing value')

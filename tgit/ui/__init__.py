@@ -21,6 +21,7 @@ from queue import Queue
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QEventLoop
+from tgit.album import AlbumListener
 
 from tgit.isni.name_registry import NameRegistry
 from tgit import album_director as director
@@ -164,7 +165,7 @@ def TrackEditionPageController(album, track):
     page = TrackEditionPage(album, track)
     page.metadataChanged.connect(lambda metadata: director.updateTrack(track, **metadata))
     album.addAlbumListener(page)
-    track.addTrackListener(page)
+    track.metadata_changed.subscribe(page.display_track)
     page.display(album=album, track=track)
     return page
 

@@ -1,34 +1,32 @@
 # -*- coding: utf-8 -*-
 
-import unittest
+from hamcrest import contains_inanyorder, contains, has_entry
+from hamcrest import assert_that
 
-from hamcrest import assert_that, match_equality as matching, has_property, contains_inanyorder
-
-from flexmock import flexmock
-
+from test.test_signal import Subscriber
 from test.util import builders as build
-from tgit.track import TrackListener, Track
+from tgit.track import Track
 
 
-class TrackTest(unittest.TestCase):
-    def testDefinesMetadataTags(self):
-        assert_that(tuple(Track.tags()),
-                    contains_inanyorder('track_title', 'lead_performer', 'versionInfo', 'featuredGuest', 'publisher',
-                                        'lyricist', 'composer', 'isrc', 'labels', 'lyrics', 'language', 'tagger',
-                                        'tagger_version', 'tagging_time', 'bitrate', 'duration', 'track_number'))
+def test_defines_metadata_tags():
+    assert_that(tuple(Track.tags()), contains_inanyorder(
+        'track_title', 'lead_performer', 'versionInfo', 'featuredGuest', 'publisher',
+        'lyricist', 'composer', 'isrc', 'labels', 'lyrics', 'language', 'tagger',
+        'tagger_version', 'tagging_time', 'bitrate', 'duration', 'track_number'))
 
-    def testAnnouncesStateChangesToListeners(self):
-        self.assertNotifiesListenerOnPropertyChange('track_title', 'Title')
-        self.assertNotifiesListenerOnPropertyChange('versionInfo', 'Remix')
-        self.assertNotifiesListenerOnPropertyChange('featuredGuest', 'Featuring')
-        self.assertNotifiesListenerOnPropertyChange('isrc', 'Code')
 
-    def assertNotifiesListenerOnPropertyChange(self, prop, value):
-        track = build.track()
-        track.addTrackListener(self.listenerExpectingNotification(prop, value))
-        setattr(track, prop, value)
+def test_announces_metadata_changes_to_listeners():
+    assert_notifies_of_metadata_change('track_title', 'Title')
+    assert_notifies_of_metadata_change('versionInfo', 'Remix')
+    assert_notifies_of_metadata_change('featuredGuest', 'Featuring')
+    assert_notifies_of_metadata_change('isrc', 'Code')
 
-    def listenerExpectingNotification(self, prop, value):
-        listener = flexmock(TrackListener())
-        listener.should_receive('trackStateChanged').with_args(matching(has_property(prop, value))).once()
-        return listener
+
+def assert_notifies_of_metadata_change(prop, value):
+    track = build.track()
+    subscriber = Subscriber()
+    track.metadata_changed.subscribe(subscriber)
+
+    setattr(track, prop, value)
+
+    assert_that(subscriber.events, contains(has_entry(prop, value)), "track changed events emitted")

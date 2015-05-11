@@ -17,17 +17,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.announcer import Announcer
 from tgit import tag
 from tgit.metadata import Metadata
-
-
-class TrackListener(object):
-    def trackStateChanged(self, track):
-        pass
+from tgit.signal import signal
 
 
 class Track(object, metaclass=tag.Taggable):
+    metadata_changed = signal(Metadata)
+
     track_title = tag.text()
     lead_performer = tag.text()
     versionInfo = tag.text()
@@ -52,13 +49,6 @@ class Track(object, metaclass=tag.Taggable):
         self.filename = filename
         self.metadata = metadata or Metadata()
         self.album = None
-        self.listeners = Announcer()
-
-    def addTrackListener(self, listener):
-        self.listeners.addListener(listener)
-
-    def removeTrackListener(self, listener):
-        self.listeners.removeListener(listener)
 
     def metadataChanged(self):
-        self.listeners.trackStateChanged(self)
+        self.metadata_changed.emit(self.metadata)

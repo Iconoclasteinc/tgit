@@ -54,6 +54,12 @@ class Metadata(object):
         self._images = []
         self._tags = dict(**metadata)
 
+    def __getattribute__(self, name):
+        try:
+            return super().__getattribute__(name)
+        except AttributeError:
+            return self[name]
+
     def __getitem__(self, key):
         return self._tags.get(key, None)
 

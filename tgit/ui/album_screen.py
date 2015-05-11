@@ -115,7 +115,7 @@ class AlbumScreen(QWidget, AlbumListener):
 
     def trackRemoved(self, track, position):
         page = self.removeTrackEditionPage(position)
-        track.removeTrackListener(page)
+        track.metadata_changed.unsubscribe(page.display_track)
 
     def hasTrackPage(self):
         return self.totalPages > self.TRACK_PAGES_INDEX
