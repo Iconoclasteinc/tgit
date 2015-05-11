@@ -72,6 +72,27 @@ class BooleanProcessor(TextProcessor):
         super(BooleanProcessor, self).__init__(key, tag, self.toBoolean, self.toText)
 
 
+class MultiValueNumericProcessor(object):
+    def __init__(self, key, *tags):
+        self._key = key
+        self._tags = tags
+
+    def processFrames(self, metadata, frames):
+        if self._key in frames:
+            values = frames[self._key][0].split("/")
+
+            for index, value in enumerate(values):
+                if index < len(self._tags):
+                    metadata[self._tags[index]] = int(value)
+
+    def processMetadata(self, frames, encoding, metadata):
+        frame, desc, lang = _decompose(self._key)
+        frames.delall(self._key)
+        value = "/".join(str(metadata[tag]) for tag in self._tags if metadata[tag])
+        if value:
+            frames.add(getattr(id3, frame)(encoding=encoding, desc=desc, lang=lang, text=value))
+
+
 class ImageProcessor(object):
     def __init__(self, key, image_types):
         self._key = key
@@ -203,7 +224,8 @@ class ID3Container:
         PairProcessor('TIPL', 'contributors', {
             'producer': 'producer',
             'mix': 'mixer'
-        })
+        }),
+        MultiValueNumericProcessor('TRCK', 'track_number', 'total_tracks')
     ]
 
     for key, tag in {'TCMP': 'compilation'}.items():
@@ -233,8 +255,7 @@ class ID3Container:
                      'TXXX:ISNI': 'isni',
                      "COMM::fra": 'comments',
                      "USLT::fra": 'lyrics',
-                     'TCON': 'primary_style',
-                     'TRCK': 'track_number',
+                     'TCON': 'primary_style'
     }.items():
         _processors.append(UnicodeProcessor(key, tag))
 

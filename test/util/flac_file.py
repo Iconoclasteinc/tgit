@@ -62,6 +62,8 @@ class FlacAudio(object):
                 self._add_tag("TAGGING_TIME", value)
             elif tag == 'TRACKNUMBER':
                 self._add_tag("TRACKNUMBER", value)
+            elif tag == 'TRACKTOTAL':
+                self._add_tag("TRACKTOTAL", value)
             elif tag == 'PICTURES':
                 for mime, type_, desc, data in value:
                     self._add_picture(mime, type_, desc, data)

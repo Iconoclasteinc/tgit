@@ -31,14 +31,16 @@ def invert(mapping):
     return dict(list(zip(list(mapping.values()), list(mapping.keys()))))
 
 
-class TextField:
-    def __init__(self, field_name, tag_name):
+class ValueField:
+    def __init__(self, field_name, tag_name, field_to_tag, tag_to_field):
         self._field_name = field_name
         self._tag_name = tag_name
+        self._to_tag = field_to_tag
+        self._to_field = tag_to_field
 
     def read(self, flac, metadata):
         if self._field_name in flac:
-            metadata[self._tag_name] = flac[self._field_name][LAST]
+            metadata[self._tag_name] = self._to_tag(flac[self._field_name][LAST])
 
     def write(self, metadata, flac):
         if self._field_name in flac:
@@ -46,7 +48,17 @@ class TextField:
 
         value = metadata[self._tag_name]
         if value:
-            flac[self._field_name] = str(value)
+            flac[self._field_name] = self._to_field(value)
+
+
+class TextField(ValueField):
+    def __init__(self, field_name, tag_name):
+        super().__init__(field_name, tag_name, str, str)
+
+
+class NumericField(ValueField):
+    def __init__(self, field_name, tag_name):
+        super().__init__(field_name, tag_name, int, str)
 
 
 class PictureField:
@@ -100,9 +112,14 @@ class FlacContainer:
         'TAGGER': 'tagger',
         'TAGGER_VERSION': 'tagger_version',
         'TAGGING_TIME': 'tagging_time',
-        'TRACKNUMBER': 'track_number',
     }.items():
         fields.append(TextField(field_name, tag_name))
+
+    for field_name, tag_name in {
+        'TRACKNUMBER': 'track_number',
+        'TRACKTOTAL': 'total_tracks',
+    }.items():
+        fields.append(NumericField(field_name, tag_name))
 
     def load(self, filename):
         flac_file = mutagen.flac.FLAC(filename)

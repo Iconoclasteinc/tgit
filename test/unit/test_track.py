@@ -12,7 +12,7 @@ def test_defines_metadata_tags():
     assert_that(tuple(Track.tags()), contains_inanyorder(
         'track_title', 'lead_performer', 'versionInfo', 'featuredGuest', 'publisher',
         'lyricist', 'composer', 'isrc', 'labels', 'lyrics', 'language', 'tagger',
-        'tagger_version', 'tagging_time', 'bitrate', 'duration', 'track_number'))
+        'tagger_version', 'tagging_time', 'bitrate', 'duration', 'track_number', 'total_tracks'))
 
 
 def test_announces_metadata_changes_to_listeners():
@@ -20,6 +20,8 @@ def test_announces_metadata_changes_to_listeners():
     assert_notifies_of_metadata_change('versionInfo', 'Remix')
     assert_notifies_of_metadata_change('featuredGuest', 'Featuring')
     assert_notifies_of_metadata_change('isrc', 'Code')
+    assert_notifies_of_metadata_change('track_number', 1)
+    assert_notifies_of_metadata_change('total_tracks', 3)
 
 
 def assert_notifies_of_metadata_change(prop, value):
@@ -29,4 +31,4 @@ def assert_notifies_of_metadata_change(prop, value):
 
     setattr(track, prop, value)
 
-    assert_that(subscriber.events, contains(has_entry(prop, value)), "track changed events emitted")
+    assert_that(subscriber.events, contains(has_entry(prop, value)), "track changed events")

@@ -36,7 +36,7 @@ def track_numbers(album):
 
 def test_numbers_tracks():
     album = Album()
-    tracks = [build.track(), build.track(), build.track(), build.track()]
+    tracks = [build.track(), build.track(), build.track()]
     for track in tracks:
         album.addTrack(track)
 
@@ -44,18 +44,23 @@ def test_numbers_tracks():
     assert_that(tracks[1].track_number, equal_to(2), 'track #2 number')
     assert_that(tracks[2].track_number, equal_to(3), 'track #3 number')
 
+    for track in album.tracks:
+        assert_that(track.total_tracks, equal_to(3), "track #{} total tracks".format(track.track_number))
+
 
 def test_renumbers_tracks_when_removed():
     album = Album()
-    tracks = [build.track(), build.track(), build.track(), build.track()]
+    tracks = [build.track(), build.track(), build.track()]
     for track in tracks:
         album.addTrack(track)
 
     album.removeTrack(tracks[0])
 
-    assert_that(tracks[0].track_number, none(), 'removed track number')
     assert_that(tracks[1].track_number, equal_to(1), 'track #1 number')
     assert_that(tracks[2].track_number, equal_to(2), 'track #2 number')
+
+    for track in album.tracks:
+        assert_that(track.total_tracks, equal_to(2), "track #{} total tracks left".format(track.track_number))
 
 
 class AlbumTest(unittest.TestCase):

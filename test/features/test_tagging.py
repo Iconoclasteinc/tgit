@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import QSettings
 import pytest
-import tgit
 
+import tgit
 from tgit.preferences import Preferences
 from test.util import resources, doubles
 from test.drivers.application_runner import ApplicationRunner
@@ -41,7 +41,7 @@ def test_tagging_an_mp3_track(app, recordings):
                         release_name="Honeycomb",
                         lead_performer="Joel Miller",
                         track_title="Rashers",
-                        track_number="1",
+                        track_number=1,
                         tagger_version=tgit.__version__)
 
 
@@ -63,7 +63,7 @@ def test_tagging_a_flac_track(app, recordings):
                         release_name="St-Henri",
                         lead_performer="John Roney",
                         track_title="Squareboy",
-                        track_number="1",
+                        track_number=1,
                         tagger_version=tgit.__version__)
 
 
@@ -94,9 +94,10 @@ def test_tagging_an_album_with_several_tracks(app, recordings):
     app.shows_next_track_metadata(track_title="Zumbar")
     app.shows_next_track_metadata(track_title="Salsa Coltrane")
 
-    recordings.contains("Joel Miller - 01 - Chevere!.mp3", lead_performer="Joel Miller", track_number="1")
-    recordings.contains("Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller", track_number="2")
-    recordings.contains("Joel Miller - 03 - Salsa Coltrane.mp3", lead_performer="Joel Miller", track_number="3")
+    recordings.contains("Joel Miller - 01 - Chevere!.mp3", lead_performer="Joel Miller", track_number=1, total_tracks=3)
+    recordings.contains("Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller", track_number=2, total_tracks=3)
+    recordings.contains("Joel Miller - 03 - Salsa Coltrane.mp3", lead_performer="Joel Miller", track_number=3,
+                        total_tracks=3)
 
 
 def test_tagging_a_compilation(app, recordings):

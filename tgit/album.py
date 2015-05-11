@@ -121,7 +121,6 @@ class Album(metaclass=tag.Taggable):
     def removeTrack(self, track):
         position = self.tracks.index(track)
         self.tracks.remove(track)
-        track.track_number = None
         self._number_tracks()
         self.listeners.trackRemoved(track, position)
 
@@ -131,3 +130,4 @@ class Album(metaclass=tag.Taggable):
     def _number_tracks(self):
         for index, track in enumerate(self.tracks):
             track.track_number = index + 1
+            track.total_tracks = len(self.tracks)

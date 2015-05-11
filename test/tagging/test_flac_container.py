@@ -96,9 +96,14 @@ def test_reads_tagging_time_from_tagging_time_field(flac):
     assert_that(metadata, has_entry('tagging_time', '2014-03-26 14:18:55 EDT-0400'), 'metadata')
 
 
-def test_reads_track_number_track_number_field(flac):
+def test_reads_track_number_from_track_number_field(flac):
     metadata = container.load(flac(TRACKNUMBER="3"))
-    assert_that(metadata, has_entry('track_number', "3"), 'metadata')
+    assert_that(metadata, has_entry('track_number', 3), 'metadata')
+
+
+def test_reads_total_tracks_from_track_total_field(flac):
+    metadata = container.load(flac(TRACKTOTAL="5"))
+    assert_that(metadata, has_entry('total_tracks', 5), 'metadata')
 
 
 def test_round_trips_metadata_to_file(flac):
@@ -114,7 +119,8 @@ def test_round_trips_metadata_to_file(flac):
     metadata['tagger'] = "TGiT"
     metadata['tagger_version'] = "1.0"
     metadata['tagging_time'] = "2014-03-26 14:18:55 EDT-0400"
-    metadata['track_number'] = "3"
+    metadata['track_number'] = 3
+    metadata['total_tracks'] = 5
 
     assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
