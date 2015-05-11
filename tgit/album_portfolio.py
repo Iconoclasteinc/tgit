@@ -16,8 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from tgit.album import Album
 
-from tgit.announcer import Announcer
+from tgit.signal import signal, Observable
 
 
 class AlbumPortfolioListener(object):
@@ -25,17 +26,15 @@ class AlbumPortfolioListener(object):
         pass
 
 
-class AlbumPortfolio(object):
+class AlbumPortfolio(metaclass=Observable):
+    album_created = signal(Album)
+
     def __init__(self):
         self._albums = []
-        self._portfolio_listeners = Announcer()
-
-    def add_portfolio_listener(self, listener):
-        self._portfolio_listeners.addListener(listener)
 
     def add_album(self, album):
         self._albums.append(album)
-        self._portfolio_listeners.albumCreated(album)
+        self.album_created.emit(album)
 
     def __getitem__(self, index):
         return self._albums[index]

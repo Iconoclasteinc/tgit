@@ -217,7 +217,7 @@ def ImportAlbumFromTrackController(portfolio, parent, native):
 
 def MenuBarController(exportAs, selectTracks, changeSettings, portfolio):
     menuBar = MenuBar()
-    portfolio.add_portfolio_listener(menuBar)
+    portfolio.album_created.subscribe(menuBar.albumCreated)
     menuBar.add_files.connect(lambda album: selectTracks(album))
     menuBar.add_folder.connect(lambda album: selectTracks(album, True))
     menuBar.export.connect(lambda album: exportAs(album))
@@ -227,7 +227,7 @@ def MenuBarController(exportAs, selectTracks, changeSettings, portfolio):
 
 def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
     window = MainWindow(menuBar(), welcomeScreen(), albumScreen)
-    portfolio.add_portfolio_listener(window)
+    portfolio.album_created.subscribe(window.albumCreated)
     return window
 
 
