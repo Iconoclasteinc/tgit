@@ -42,6 +42,7 @@ class Track(object, metaclass=tag.Taggable):
     tagger = tag.text()
     tagger_version = tag.text()
     tagging_time = tag.text()
+    track_number = tag.numeric()
 
     # todo Introduce Recording
     bitrate = tag.numeric()
@@ -58,11 +59,6 @@ class Track(object, metaclass=tag.Taggable):
 
     def removeTrackListener(self, listener):
         self.listeners.removeListener(listener)
-
-    @property
-    def number(self):
-        # todo this should be a metadata of the track and not rely on the album
-        return self.album and self.album.positionOf(self) + 1 or None
 
     def metadataChanged(self):
         self.listeners.trackStateChanged(self)

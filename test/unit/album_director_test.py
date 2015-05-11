@@ -123,6 +123,15 @@ def test_gracefully_handles_when_tagging_original_recording(mp3):
     director.record_track(original_file, track, datetime.now())
 
 
+def test_tags_file_to_same_directory_under_artist_and_title_name():
+    album = build.album(lead_performer='artist')
+    track = build.track(filename='track.mp3', track_title='title')
+    for t in (build.track(), build.track(), track):
+        album.addTrack(t)
+
+    assert_that(director.tagged_name(track), equal_to('artist - 03 - title.mp3'), 'name of tagged file')
+
+
 class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
         self.tempdir = resources.makeTempDir()
@@ -225,12 +234,6 @@ class AlbumDirectorTest(unittest.TestCase):
 
     def testStripsLeadingAndTrailingWhitespaceFromFileNames(self):
         assert_that(director.sanitize('  filename   '), equal_to('filename'), 'sanitized name')
-
-    def testTagsFileToSameDirectoryUnderArtistAndTitleName(self):
-        track = build.track(filename='track.mp3', track_title='title')
-        album = build.album(lead_performer='artist', tracks=[build.track(), build.track(), track])
-
-        assert_that(director.taggedName(track), equal_to('artist - 03 - title.mp3'), 'name of tagged file')
 
     def testReturnsListOfIdentitiesWhenISNIFoundInRegistry(self):
         class NameRegistry:

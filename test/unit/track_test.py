@@ -15,7 +15,7 @@ class TrackTest(unittest.TestCase):
         assert_that(tuple(Track.tags()),
                     contains_inanyorder('track_title', 'lead_performer', 'versionInfo', 'featuredGuest', 'publisher',
                                         'lyricist', 'composer', 'isrc', 'labels', 'lyrics', 'language', 'tagger',
-                                        'tagger_version', 'tagging_time', 'bitrate', 'duration'))
+                                        'tagger_version', 'tagging_time', 'bitrate', 'duration', 'track_number'))
 
     def testAnnouncesStateChangesToListeners(self):
         self.assertNotifiesListenerOnPropertyChange('track_title', 'Title')

@@ -106,9 +106,6 @@ class Album(metaclass=tag.Taggable):
     def empty(self):
         return len(self) == 0
 
-    def positionOf(self, track):
-        return self.tracks.index(track)
-
     def addTrack(self, track):
         self.insertTrack(track, len(self.tracks))
 
@@ -118,12 +115,19 @@ class Album(metaclass=tag.Taggable):
         if not self.compilation:
             track.lead_performer = self.lead_performer
         self.tracks.insert(position, track)
+        self._number_tracks()
         self.listeners.trackAdded(track, position)
 
     def removeTrack(self, track):
         position = self.tracks.index(track)
         self.tracks.remove(track)
+        track.track_number = None
+        self._number_tracks()
         self.listeners.trackRemoved(track, position)
 
     def metadataChanged(self):
         self.listeners.albumStateChanged(self)
+
+    def _number_tracks(self):
+        for index, track in enumerate(self.tracks):
+            track.track_number = index + 1

@@ -43,7 +43,7 @@ class typed(tag):
 
 
 class numeric(typed):
-    expectedType = int
+    expectedType = (int, type(None))
 
 
 class text(typed):
@@ -51,7 +51,7 @@ class text(typed):
 
 
 class decimal(typed):
-    expectedType = (int, float)
+    expectedType = (int, float, type(None))
 
 
 class flag(typed):

@@ -30,6 +30,34 @@ def test_contained_tracks_have_various_lead_performers_when_album_is_a_compilati
     assert_that(track.lead_performer, equal_to('Joel Miller'), 'track lead performer')
 
 
+def track_numbers(album):
+    return [album.track_number(track) for track in album.tracks]
+
+
+def test_numbers_tracks():
+    album = Album()
+    tracks = [build.track(), build.track(), build.track(), build.track()]
+    for track in tracks:
+        album.addTrack(track)
+
+    assert_that(tracks[0].track_number, equal_to(1), 'track #1 number')
+    assert_that(tracks[1].track_number, equal_to(2), 'track #2 number')
+    assert_that(tracks[2].track_number, equal_to(3), 'track #3 number')
+
+
+def test_renumbers_tracks_when_removed():
+    album = Album()
+    tracks = [build.track(), build.track(), build.track(), build.track()]
+    for track in tracks:
+        album.addTrack(track)
+
+    album.removeTrack(tracks[0])
+
+    assert_that(tracks[0].track_number, none(), 'removed track number')
+    assert_that(tracks[1].track_number, equal_to(1), 'track #1 number')
+    assert_that(tracks[2].track_number, equal_to(2), 'track #2 number')
+
+
 class AlbumTest(unittest.TestCase):
     def testIsInitiallyEmpty(self):
         assert_that(build.album().empty(), is_(True), 'emptiness')
@@ -82,30 +110,6 @@ class AlbumTest(unittest.TestCase):
             has_property('track_title', 'Track 2'),
             has_property('track_title', 'Track 1'),
             has_property('track_title', 'Track 3')), 'tracks')
-
-    def testNumbersTracks(self):
-        album = Album()
-        album.addTrack(build.track(track_title='Track 1'))
-        album.addTrack(build.track(track_title='Track 2'))
-        album.addTrack(build.track(track_title='Track 3'))
-
-        assert_that(album.tracks, contains(
-            has_property('number', 1),
-            has_property('number', 2),
-            has_property('number', 3)), 'track numbers')
-
-        album.removeTrack(album.tracks[1])
-
-        assert_that(album.tracks, contains(
-            has_property('number', 1),
-            has_property('number', 2)), 'track numbers')
-
-        album.insertTrack(build.track(trackTile='Track 4'), 0)
-
-        assert_that(album.tracks, contains(
-            has_property('number', 1),
-            has_property('number', 2),
-            has_property('number', 3)), 'track numbers')
 
     def testUsesFirstFrontCoverOrFirstImageAsMainCover(self):
         album = build.album()

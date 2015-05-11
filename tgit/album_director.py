@@ -96,7 +96,7 @@ def playTrack(player, track):
 
 def recordAlbum(album):
     for track in album.tracks:
-        record_track(taggedName(track), track, datetime.now(tz.tzlocal()))
+        record_track(tagged_name(track), track, datetime.now(tz.tzlocal()))
 
 
 def record_track(destination_file, track, time):
@@ -133,11 +133,11 @@ def sanitize(filename):
     return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
 
 
-def taggedName(track):
+def tagged_name(track):
     dirname = os.path.dirname(track.filename)
     _, ext = os.path.splitext(track.filename)
     filename = sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
-                                                                       number=track.number,
+                                                                       number=track.track_number,
                                                                        title=track.track_title,
                                                                        ext=ext))
 
