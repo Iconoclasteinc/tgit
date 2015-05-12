@@ -35,7 +35,7 @@ def driver(picture_dialog):
 def test_signals_when_picture_selected(picture_dialog, driver):
     picture_selected_signal = ValueMatcherProbe('picture selected', resources.path('front-cover.jpg'))
     picture_dialog.picture_selected.connect(picture_selected_signal.received)
-    picture_dialog.display()
+    picture_dialog.open()
 
     driver.select_picture(resources.path('front-cover.jpg'))
     driver.check(picture_selected_signal)
@@ -43,6 +43,6 @@ def test_signals_when_picture_selected(picture_dialog, driver):
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="not supported on Windows")
 def test_only_accepts_picture_files(picture_dialog, driver):
-    picture_dialog.display()
+    picture_dialog.open()
 
     driver.rejects_selection_of(resources.path('base.mp3'))

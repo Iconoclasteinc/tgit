@@ -89,7 +89,7 @@ def AlbumCompositionPageController(selectTracks, player, album):
     return page
 
 
-def AlbumEditionPageController(select_picture, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
+def AlbumEditionPageController(dialogs, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
                                performer_dialog_factory, show_assignation_failed, album, name_registry,
                                use_local_isni_backend):
     def poll_queue():
@@ -126,7 +126,7 @@ def AlbumEditionPageController(select_picture, lookup_isni_dialog_factory, activ
     queue = Queue()
     page = AlbumEditionPage(album, use_local_isni_backend)
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
-    page.selectPicture.connect(lambda: select_picture(album))
+    page.selectPicture.connect(lambda: dialogs.select_picture(album))
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
     page.lookupISNI.connect(lookup_isni)
     page.assignISNI.connect(assign_isni)
@@ -185,10 +185,10 @@ def AlbumScreenController(compositionPage, albumPage, trackPage, album):
     return page
 
 
-def PictureSelectionDialogController(parent, album, native):
-    dialog = PictureSelectionDialog(parent, native)
+def make_picture_selection_dialog(parent_window, native, album):
+    dialog = PictureSelectionDialog(parent_window, native)
     dialog.picture_selected.connect(lambda selection: director.changeAlbumCover(album, selection))
-    dialog.display()
+    return dialog
 
 
 def SettingsDialogController(restartNotice, preferences, parent):
@@ -240,6 +240,23 @@ def MainWindowController(menuBar, welcomeScreen, albumScreen, portfolio):
     return window
 
 
+class Dialogs:
+    _pictures = None
+
+    def __init__(self, parent_window, native):
+        self._parent = parent_window
+        self._native = native
+
+    def _picture_selection_dialog(self, album):
+        if not self._pictures:
+            self._pictures = make_picture_selection_dialog(self._parent, self._native, album)
+
+        return self._pictures
+
+    def select_picture(self, album):
+        self._picture_selection_dialog(album).open()
+
+
 def create_main_window(album_portfolio, player, preferences, name_registry, use_local_isni_backend, native):
     def show_settings_dialog():
         return SettingsDialogController(RestartMessageBox, preferences, window)
@@ -264,13 +281,10 @@ def create_main_window(album_portfolio, player, preferences, name_registry, use_
         return AlbumCompositionPageController(show_track_selection_dialog, player, album)
 
     def create_album_page(album):
-        return AlbumEditionPageController(show_picture_selection_dialog, show_isni_lookup_dialog,
+        return AlbumEditionPageController(dialogs, show_isni_lookup_dialog,
                                           show_activity_indicator_dialog, show_performer_dialog,
                                           show_isni_assignation_failed_message_box, album, name_registry,
                                           use_local_isni_backend)
-
-    def show_picture_selection_dialog(album):
-        return PictureSelectionDialogController(window, album, native)
 
     def show_isni_lookup_dialog(album, identities):
         return ISNILookupDialogController(window, album, identities)
@@ -291,5 +305,6 @@ def create_main_window(album_portfolio, player, preferences, name_registry, use_
         return AlbumScreenController(create_composition_page, create_album_page, create_track_page, album)
 
     window = MainWindowController(create_menu_bar, create_welcome_screen, create_album_screen, album_portfolio)
+    dialogs = Dialogs(window, native)
 
     return window

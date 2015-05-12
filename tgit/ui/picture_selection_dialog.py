@@ -16,9 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
 
-from PyQt5.QtCore import QDir, Qt, pyqtSignal
+from PyQt5.QtCore import QDir, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
 
 
@@ -27,19 +26,9 @@ class PictureSelectionDialog(QFileDialog):
 
     def __init__(self, parent, native):
         super().__init__(parent)
-        self._build(native)
-
-    def _build(self, native):
         self.setObjectName('picture-selection-dialog')
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
         self.setDirectory(QDir.homePath())
         self.setFileMode(QFileDialog.ExistingFile)
         self.setNameFilter('%s (*.png *.jpeg *.jpg)' % self.tr('Image files'))
-        self.fileSelected.connect(self._signal_picture_selected)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-
-    def _signal_picture_selected(self, path):
-        self.picture_selected.emit(os.path.abspath(path))
-
-    def display(self):
-        self.open()
+        self.fileSelected.connect(self.picture_selected.emit)
