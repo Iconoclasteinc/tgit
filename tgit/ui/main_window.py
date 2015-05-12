@@ -443,18 +443,15 @@ if MAC:
 class MainWindow(QMainWindow):
     SIZE = (1100, 745)
 
-    def __init__(self, menuBar, welcomeScreen, albumScreen):
+    def __init__(self):
         QMainWindow.__init__(self)
-        self.build()
-        self.setMenuBar(menuBar)
-        self.setCentralWidget(welcomeScreen)
-        self.createAlbum = albumScreen
-
-    def build(self):
         self.setObjectName("main-window")
         self.setStyleSheet(StyleSheet)
         self.setWindowTitle(self.tr("TGiT"))
         self.resize(*self.SIZE)
 
-    def albumCreated(self, album):
-        self.setCentralWidget(self.createAlbum(album))
+    def set_menu_bar(self, menu_bar):
+        self.setMenuBar(menu_bar)
+
+    def show_screen(self, screen):
+        self.setCentralWidget(screen)
