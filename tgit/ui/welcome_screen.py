@@ -26,10 +26,10 @@ from tgit import album_director as director
 from tgit.album import Album
 
 
-def welcome_screen(portfolio, import_album):
+def welcome_screen(dialogs, album_portfolio):
     page = WelcomeScreen()
-    page.create_new_album.connect(lambda of_type: director.create_album(portfolio, of_type))
-    page.import_album.connect(lambda: import_album(portfolio))
+    page.create_new_album.connect(lambda album_type: director.create_album(album_portfolio, album_type))
+    page.import_album.connect(lambda: dialogs.import_album(album_portfolio).open())
     return page
 
 

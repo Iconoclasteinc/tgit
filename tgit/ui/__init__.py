@@ -218,10 +218,10 @@ def make_track_selection_dialog(parent, native, album):
     return dialog
 
 
-def ImportAlbumFromTrackController(portfolio, parent, native):
+def make_import_album_dialog(parent, native, album_portfolio):
     dialog = ImportAlbumFromTrackDialog(parent, native)
-    dialog.track_selected.connect(lambda track_file: director.import_album(portfolio, track_file))
-    dialog.display()
+    dialog.track_selected.connect(lambda track_file: director.import_album(album_portfolio, track_file))
+    return dialog
 
 
 def MenuBarController(dialogs, exportAs, changeSettings, portfolio):
@@ -237,22 +237,29 @@ def MenuBarController(dialogs, exportAs, changeSettings, portfolio):
 class Dialogs:
     _pictures = None
     _tracks = None
+    _import = None
 
-    def __init__(self, parent_window, native):
-        self._parent = parent_window
+    def __init__(self, native):
+        self.parent = None
         self._native = native
 
     def _picture_selection_dialog(self, album):
         if not self._pictures:
-            self._pictures = make_picture_selection_dialog(self._parent, self._native, album)
+            self._pictures = make_picture_selection_dialog(self.parent, self._native, album)
 
         return self._pictures
 
     def _track_selection_dialog(self, album):
         if not self._tracks:
-            self._tracks = make_track_selection_dialog(self._parent, self._native, album)
+            self._tracks = make_track_selection_dialog(self.parent, self._native, album)
 
         return self._tracks
+
+    def _import_selection_dialog(self, album_portfolio):
+        if not self._import:
+            self._import = make_import_album_dialog(self.parent, self._native, album_portfolio)
+
+        return self._import
 
     def select_picture(self, album):
         return self._picture_selection_dialog(album)
@@ -269,6 +276,17 @@ class Dialogs:
         dialog.filter_tracks(album.type)
         return dialog
 
+    def import_album(self, album_portfolio):
+        return self._import_selection_dialog(album_portfolio)
+
+
+def make_main_window(create_menu_bar, create_welcome_screen, create_album_screen, album_portfolio):
+    window = MainWindow()
+    window.set_menu_bar(create_menu_bar())
+    window.show_screen(create_welcome_screen())
+    album_portfolio.album_created.subscribe(lambda album: window.show_screen(create_album_screen(album)))
+    return window
+
 
 def create_main_window(album_portfolio, player, preferences, name_registry, use_local_isni_backend, native):
     def show_settings_dialog():
@@ -280,11 +298,8 @@ def create_main_window(album_portfolio, player, preferences, name_registry, use_
     def create_menu_bar():
         return MenuBarController(dialogs, show_export_as_dialog, show_settings_dialog, album_portfolio)
 
-    def show_import_dialog(portfolio):
-        return ImportAlbumFromTrackController(portfolio, window, native)
-
     def create_welcome_screen():
-        return WelcomeScreen(album_portfolio, show_import_dialog)
+        return WelcomeScreen(dialogs, album_portfolio)
 
     def create_composition_page(album):
         return AlbumCompositionPageController(dialogs, player, album)
@@ -313,10 +328,8 @@ def create_main_window(album_portfolio, player, preferences, name_registry, use_
 
         return AlbumScreenController(create_composition_page, create_album_page, create_track_page, album)
 
-    window = MainWindow()
-    dialogs = Dialogs(window, native)
-    window.set_menu_bar(create_menu_bar())
-    window.show_screen(create_welcome_screen())
-    album_portfolio.album_created.subscribe(lambda album: window.show_screen(create_album_screen(album)))
+    dialogs = Dialogs(native)
+    window = make_main_window(create_menu_bar, create_welcome_screen, create_album_screen, album_portfolio)
+    dialogs.parent = window
 
     return window

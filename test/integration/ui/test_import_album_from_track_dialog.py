@@ -36,8 +36,8 @@ def test_signals_when_track_file_selected(driver, import_album_dialog):
     track_selection_signal = ValueMatcherProbe('track selection', track_file)
 
     import_album_dialog.track_selected.connect(track_selection_signal.received)
+    import_album_dialog.open()
 
-    import_album_dialog.display()
     driver.select_track(track_file)
     driver.check(track_selection_signal)
 
@@ -47,8 +47,8 @@ def test_allows_selection_of_flac_files(driver, import_album_dialog):
     track_selection_signal = ValueMatcherProbe('track(s) selection', flac_file)
 
     import_album_dialog.track_selected.connect(track_selection_signal.received)
+    import_album_dialog.open()
 
-    import_album_dialog.display()
     driver.select_track(flac_file, of_type='flac')
     driver.check(track_selection_signal)
 
@@ -57,5 +57,6 @@ def test_allows_selection_of_flac_files(driver, import_album_dialog):
 def test_rejects_non_audio_files(driver, import_album_dialog):
     unsupported_file = resources.path('front-cover.jpg')
 
-    import_album_dialog.display()
+    import_album_dialog.open()
+
     driver.rejects_selection_of(unsupported_file)

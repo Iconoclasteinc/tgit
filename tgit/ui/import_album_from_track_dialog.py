@@ -16,9 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
 
-from PyQt5.QtCore import QDir, Qt, pyqtSignal
+from PyQt5.QtCore import QDir, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
 
 
@@ -27,20 +26,10 @@ class ImportAlbumFromTrackDialog(QFileDialog):
 
     def __init__(self, parent, native):
         super().__init__(parent)
-        self._build(native)
-
-    def _build(self, native):
         self.setObjectName('import_album_from_track_dialog')
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
         self.setFileMode(QFileDialog.ExistingFile)
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setNameFilters(
             ['%s (%s)' % (self.tr('MP3 files'), '*.mp3'), '%s (%s)' % (self.tr('FLAC files'), '*.flac')])
         self.setDirectory(QDir.homePath())
-        self.fileSelected.connect(self._signal_track_selected)
-
-    def _signal_track_selected(self, selection):
-        return self.track_selected.emit(os.path.abspath(selection))
-
-    def display(self):
-        self.open()
+        self.fileSelected.connect(self.track_selected.emit)
