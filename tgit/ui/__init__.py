@@ -165,15 +165,15 @@ def TrackEditionPageController(album, track):
     page = TrackEditionPage()
     page.metadataChanged.connect(lambda metadata: director.updateTrack(track, **metadata))
 
-    class Subscription(AlbumListener):
+    class CancelSubscription(AlbumListener):
         def trackRemoved(self, removed, position):
             if removed == track:
-                removed.metadata_changed.unsubscribe(page.display_track)
+                subscription.cancel()
                 album.removeAlbumListener(page)
 
-    track.metadata_changed.subscribe(page.display_track)
+    subscription = track.metadata_changed.subscribe(page.display_track)
     album.addAlbumListener(page)
-    album.addAlbumListener(Subscription())
+    album.addAlbumListener(CancelSubscription())
     page.display(album=album, track=track)
     return page
 

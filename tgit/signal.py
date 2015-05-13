@@ -32,6 +32,15 @@ class signal:
         return instance.__dict__[self.name]
 
 
+class Subscription:
+    def __init__(self, observable, subscriber):
+        self._observable = observable
+        self._subscriber = subscriber
+
+    def cancel(self):
+        self._observable.unsubscribe(self._subscriber)
+
+
 class Observable(type):
     def __new__(mcs, clsname, bases, methods):
         # Attach names to the signals
@@ -59,12 +68,16 @@ class Signal:
         if not callable(subscriber):
             raise TypeError("Subscriber does not seem callable: " + type(subscriber).__name__)
 
-        if subscriber not in self._subscribers:
+        if not self.is_subscribed(subscriber):
             self._subscribers.append(subscriber)
+            return Subscription(self, subscriber)
 
     def _remove(self, subscriber):
-        if subscriber in self._subscribers:
+        if self.is_subscribed(subscriber):
             self._subscribers.remove(subscriber)
+
+    def is_subscribed(self, subscriber):
+        return subscriber in self._subscribers
 
     def unsubscribe(self, *subscribers):
         if len(subscribers) == 0:

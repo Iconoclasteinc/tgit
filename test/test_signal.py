@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import assert_that, contains, empty
+from hamcrest import assert_that, contains, empty, is_
 import pytest
 from tgit.signal import Signal
 
@@ -27,6 +27,7 @@ def register_subscribers_to(signal_):
 def register_new_subscriber(signal_):
     subscriber = Subscriber()
     signal_.subscribe(subscriber)
+    assert_that(signal_.is_subscribed(subscriber), is_(True), 'subscription active')
     return subscriber
 
 
@@ -52,6 +53,7 @@ def test_stops_emitting_to_unsubscribed_listeners(signal):
 
     subscribers = register_subscribers_to(signal)
     signal.unsubscribe(ex_subscriber)
+    assert_that(signal.is_subscribed(ex_subscriber), is_(False), 'subscription still active')
 
     signal.emit('event')
 
@@ -67,6 +69,14 @@ def test_registers_same_subscriber_only_once(signal):
     signal.emit('event')
 
     assert_that(subscriber.events, contains('event'), 'events received only once')
+
+
+def test_cancelling_a_subscription_unregisters_the_subscriber(signal):
+    subscriber = Subscriber()
+    subscription = signal.subscribe(subscriber)
+    subscription.cancel()
+
+    assert_that(signal.is_subscribed(subscriber), is_(False), 'subscription still active')
 
 
 def test_will_not_emit_events_of_incompatible_type(signal):
