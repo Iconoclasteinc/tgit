@@ -88,6 +88,14 @@
         <translation>Information sur la version</translation>
     </message>
     <message>
+        <source>Track Number</source>
+        <translation>Numéro de piste</translation>
+    </message>
+    <message>
+        <source>Total Tracks</source>
+        <translation>Nombre total de pistes</translation>
+    </message>
+    <message>
         <source>Featured Guest</source>
         <translation>Invité spécial</translation>
     </message>

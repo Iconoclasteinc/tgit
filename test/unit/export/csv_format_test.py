@@ -5,6 +5,7 @@ import csv
 import unittest
 
 from hamcrest import assert_that, contains, has_item
+
 from hamcrest.core.core.isequal import equal_to
 
 from test.util import builders as build
@@ -39,6 +40,8 @@ class CsvFormatTest(unittest.TestCase):
                                       'Primary Style',
                                       'Track Title',
                                       'Version Information',
+                                      'Track Number',
+                                      'Total Tracks',
                                       'Featured Guest',
                                       'Lyrics',
                                       'Language',
@@ -63,18 +66,23 @@ class CsvFormatTest(unittest.TestCase):
             recordingStudios='Studios',
             producer='Artistic Producer',
             mixer='Mixing Engineer',
-            primary_style='Genre',
-            tracks=[build.track(
-                track_title='Track Title',
-                versionInfo='Version Info',
-                featuredGuest='Featuring',
-                lyrics='Lyrics\n...\...\n...',
-                language='eng',
-                publisher='Publisher',
-                lyricist='Lyricist',
-                composer='Composer',
-                isrc='ISRC',
-                labels='Tag1 Tag2 Tag3')])
+            primary_style='Genre')
+
+        track = build.track(
+            track_title='Track Title',
+            versionInfo='Version Info',
+            featuredGuest='Featuring',
+            lyrics='Lyrics\n...\...\n...',
+            language='eng',
+            publisher='Publisher',
+            lyricist='Lyricist',
+            composer='Composer',
+            isrc='ISRC',
+            labels='Tag1 Tag2 Tag3')
+
+        album.addTrack(track)
+        track.track_number = 3
+        track.total_tracks = 9
 
         self.format.write(album, self.out)
 
@@ -82,30 +90,32 @@ class CsvFormatTest(unittest.TestCase):
         _ = next(rows)
         data = next(rows)
         assert_that(data, contains('Release Name',
-                                  'False',
-                                  'Lead Performer',
-                                  '0000123456789',
-                                  'Instrument1: Performer1; Instrument2: Performer2',
-                                  'Label Name',
-                                  'Catalog Number',
-                                  'Barcode',
-                                  'Comments\r...\r...',
-                                  '2014',
-                                  '2013',
-                                  'Studios',
-                                  'Artistic Producer',
-                                  'Mixing Engineer',
-                                  'Genre',
-                                  'Track Title',
-                                  'Version Info',
-                                  'Featuring',
-                                  'Lyrics\r...\...\r...',
-                                  'eng',
-                                  'Publisher',
-                                  'Lyricist',
-                                  'Composer',
-                                  'ISRC',
-                                  'Tag1 Tag2 Tag3'), 'row')
+                                   'False',
+                                   'Lead Performer',
+                                   '0000123456789',
+                                   'Instrument1: Performer1; Instrument2: Performer2',
+                                   'Label Name',
+                                   'Catalog Number',
+                                   'Barcode',
+                                   'Comments\r...\r...',
+                                   '2014',
+                                   '2013',
+                                   'Studios',
+                                   'Artistic Producer',
+                                   'Mixing Engineer',
+                                   'Genre',
+                                   'Track Title',
+                                   'Version Info',
+                                   '3',
+                                   '9',
+                                   'Featuring',
+                                   'Lyrics\r...\...\r...',
+                                   'eng',
+                                   'Publisher',
+                                   'Lyricist',
+                                   'Composer',
+                                   'ISRC',
+                                   'Tag1 Tag2 Tag3'), 'row')
 
     def testConvertsBooleansToText(self):
         assert_that(toBoolean(None), equal_to('False'), 'boolean(None)')

@@ -25,6 +25,8 @@ from tgit.signal import signal
 class Track(object, metaclass=tag.Taggable):
     metadata_changed = signal(Metadata)
 
+    album = None
+
     track_title = tag.text()
     lead_performer = tag.text()
     versionInfo = tag.text()
@@ -49,7 +51,6 @@ class Track(object, metaclass=tag.Taggable):
     def __init__(self, filename, metadata=None):
         self.filename = filename
         self.metadata = metadata or Metadata()
-        self.album = None
 
     def metadataChanged(self):
         self.metadata_changed.emit(self.metadata)
