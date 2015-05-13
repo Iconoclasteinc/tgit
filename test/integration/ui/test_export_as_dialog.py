@@ -25,9 +25,9 @@ def export_dialog(qt):
 
 @pytest.yield_fixture()
 def driver(export_dialog):
-    driver = ExportAsDialogDriver(window(QFileDialog, named('export-as-dialog')), EventProcessingProber(), Robot())
-    yield driver
-    driver.close()
+    dialog_driver = ExportAsDialogDriver(window(QFileDialog, named('export-as-dialog')), EventProcessingProber(), Robot())
+    yield dialog_driver
+    dialog_driver.close()
 
 
 def test_signals_export_as_destination(tmpdir, export_dialog, driver):
@@ -35,7 +35,7 @@ def test_signals_export_as_destination(tmpdir, export_dialog, driver):
     export_as_signal = ValueMatcherProbe('export as', equal_to(destination))
 
     export_dialog.export_as.connect(export_as_signal.received)
-    export_dialog.display()
+    export_dialog.open()
 
     driver.export_as(destination)
     driver.check(export_as_signal)

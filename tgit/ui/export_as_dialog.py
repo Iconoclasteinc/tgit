@@ -28,19 +28,9 @@ class ExportAsDialog(QFileDialog):
 
     def __init__(self, parent, native):
         super().__init__(parent)
-        self._build(native)
-
-    def _build(self, native):
         self.setObjectName('export-as-dialog')
         self.setAcceptMode(QFileDialog.AcceptSave)
         self.setDirectory(QDir.homePath())
         self.setFileMode(QFileDialog.AnyFile)
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
-        self.fileSelected.connect(self._signal_export_as)
-        self.setAttribute(Qt.WA_DeleteOnClose)
-
-    def _signal_export_as(self, path):
-        self.export_as.emit(os.path.abspath(path))
-
-    def display(self):
-        self.open()
+        self.fileSelected.connect(self.export_as)

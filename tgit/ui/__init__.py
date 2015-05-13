@@ -206,10 +206,10 @@ def SettingsDialogController(restartNotice, preferences, parent):
     return dialog
 
 
-def ExportAsDialogController(format_, album, parent, native):
-    dialog = ExportAsDialog(parent, native)
+def make_export_as_dialog(parent_window, native, format_, album):
+    dialog = ExportAsDialog(parent_window, native)
     dialog.export_as.connect(lambda destination: director.export_album(format_, album, destination, "windows-1252"))
-    dialog.display()
+    return dialog
 
 
 def make_track_selection_dialog(parent, native, album):
@@ -224,12 +224,12 @@ def make_import_album_dialog(parent, native, album_portfolio):
     return dialog
 
 
-def MenuBarController(dialogs, exportAs, changeSettings, portfolio):
+def MenuBarController(dialogs, changeSettings, portfolio):
     menuBar = MenuBar()
     portfolio.album_created.subscribe(menuBar.albumCreated)
     menuBar.add_files.connect(lambda album: dialogs.select_tracks(album).open())
     menuBar.add_folder.connect(lambda album: dialogs.select_tracks_in_folder(album).open())
-    menuBar.export.connect(lambda album: exportAs(album))
+    menuBar.export.connect(lambda album: dialogs.export_album(album).open())
     menuBar.settings.connect(lambda: changeSettings())
     return menuBar
 
@@ -238,6 +238,7 @@ class Dialogs:
     _pictures = None
     _tracks = None
     _import = None
+    _export = None
 
     def __init__(self, native):
         self.parent = None
@@ -261,6 +262,12 @@ class Dialogs:
 
         return self._import
 
+    def _export_album_dialog(self, album):
+        if not self._export:
+            self._export = make_export_as_dialog(self.parent, self._native, CsvFormat(), album)
+
+        return self._export
+
     def select_picture(self, album):
         return self._picture_selection_dialog(album)
 
@@ -279,6 +286,9 @@ class Dialogs:
     def import_album(self, album_portfolio):
         return self._import_selection_dialog(album_portfolio)
 
+    def export_album(self, album):
+        return self._export_album_dialog(album)
+
 
 def make_main_window(create_menu_bar, create_welcome_screen, create_album_screen, album_portfolio):
     window = MainWindow()
@@ -292,11 +302,8 @@ def create_main_window(album_portfolio, player, preferences, name_registry, use_
     def show_settings_dialog():
         return SettingsDialogController(RestartMessageBox, preferences, window)
 
-    def show_export_as_dialog(album):
-        return ExportAsDialogController(CsvFormat(), album, window, native)
-
     def create_menu_bar():
-        return MenuBarController(dialogs, show_export_as_dialog, show_settings_dialog, album_portfolio)
+        return MenuBarController(dialogs, show_settings_dialog, album_portfolio)
 
     def create_welcome_screen():
         return WelcomeScreen(dialogs, album_portfolio)
