@@ -21,6 +21,7 @@ from PyQt5 import QtGui, uic
 from PyQt5.QtCore import QFile, QIODevice, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
 from tgit.album import Album
+from tgit.ui.helpers import ui_file
 
 
 StyleSheet = """
@@ -453,10 +454,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        file = QFile(":/ui/main_window.ui")
-        file.open(QIODevice.ReadOnly)
-        uic.loadUi(file, self)
-        file.close()
+        ui_file.load(":/ui/main_window.ui", self)
 
         self.setStyleSheet(StyleSheet)
         self.add_files_action.triggered.connect(lambda checked: self.add_files.emit(self.add_files_action.data()))

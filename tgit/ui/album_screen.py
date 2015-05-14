@@ -31,7 +31,6 @@ class AlbumScreen(QWidget, AlbumListener):
 
     def __init__(self, compose_album, edit_album, edit_track):
         super().__init__()
-
         ui_file.load(":/ui/album_screen.ui", self)
 
         self.pages.currentChanged.connect(self._update_controls)

@@ -22,6 +22,7 @@ from PyQt5.QtCore import pyqtSignal, QFile, QIODevice
 
 from tgit import album_director as director
 from tgit.album import Album
+from tgit.ui.helpers import ui_file
 
 
 def welcome_screen(dialogs, album_portfolio):
@@ -38,10 +39,7 @@ class WelcomeScreen(QtWidgets.QFrame):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        file = QFile(":/ui/welcome_screen.ui")
-        file.open(QIODevice.ReadOnly)
-        uic.loadUi(file, self)
-        file.close()
+        ui_file.load(":/ui/welcome_screen.ui", self)
 
         self.import_album_button.clicked.connect(lambda: self.import_album.emit())
         self.new_mp3_album_button.clicked.connect(lambda: self.create_new_album.emit(Album.Type.MP3))
