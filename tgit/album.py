@@ -22,7 +22,7 @@ from tgit.metadata import Image, Metadata
 from tgit import tag
 
 
-class AlbumListener(object):
+class AlbumListener:
     def albumStateChanged(self, album):
         pass
 

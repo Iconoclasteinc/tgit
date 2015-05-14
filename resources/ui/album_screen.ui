@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>album_screen</class>
+ <widget class="QWidget" name="album_screen">
+  <property name="styleSheet">
+   <string notr="true">QStackedWidget {
+	margin: 0 15px 15px 15px;
+}
+
+#navigation {
+    min-height: 48px;
+}
+
+#controls {
+    min-height: 64px;
+}
+
+#controls, #navigation {
+    background-color: #595959;
+}
+
+#previous {
+	padding: 4px 2px 2px 12px;
+    color: white;
+	background-color: transparent;
+    border-image: url(:/previous.png) 1 1 1 12;
+	border-top: 1px transparent;
+    border-right: 12px transparent;
+	border-bottom: 1px transparent;
+    border-left: 12px transparent;
+	margin-left: 14px;
+    text-align: left;
+}
+
+#previous:disabled {
+    border-image: url(:/nothing.png) 1 1 1 1;
+    background-color: transparent;
+    color: transparent;
+}
+
+#save {
+    border: 2px solid #F25C0A;
+    border-radius: 5px;
+    background-color: #F25C0A;
+    font-size: 15px;
+    min-width: 150px;
+    min-height: 15px;
+    font-weight: bold;
+    color: white;
+    padding: 13px 13px 10px 13px;
+}
+
+#save:disabled {
+    background-color: transparent;
+    border: none;
+    color: transparent;
+}
+
+#save:focus, #save:hover {
+    background-color: #D95109;
+    border-color: #D95109;
+}
+
+#save:pressed {
+    border: 2px solid #595959;
+}
+
+#next {
+    padding: 4px 12px 2px 2px;
+    color: #F25C0A;
+    background-color: transparent;
+    border-image: url(:/next.png) 1 12 1 1;
+    border-top: 1px transparent;
+    border-right: 12px transparent;
+    border-bottom: 1px transparent;
+    border-left: 12px transparent;
+    margin-right: 14px;
+    text-align: right;
+}
+
+#next:disabled {
+    border-image: url(:/nothing.png) 1 1 1 1;
+    background-color: transparent;
+    color: transparent;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="navigation" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="leftMargin">
+       <number>25</number>
+      </property>
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>25</number>
+      </property>
+      <property name="bottomMargin">
+       <number>10</number>
+      </property>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="feature_request_link">
+        <property name="text">
+         <string>&lt;a style=&quot;color: white&quot; href=&quot;mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !&quot;&gt;Request Feature&lt;/a&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="help_link">
+        <property name="text">
+         <string>&lt;a style=&quot;color: white&quot; href=&quot;http://tagyourmusic.com/#style-guide&quot;&gt;Help&lt;/a&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="pages">
+     <property name="currentIndex">
+      <number>-1</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="controls" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="previous">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>PREVIOUS</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="save">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>SAVE</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="next">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>NEXT</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -17,166 +17,86 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QLabel, QStackedWidget, QPushButton
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
-from tgit.ui.helpers import form
+from tgit.ui.helpers import ui_file
 
 
 class AlbumScreen(QWidget, AlbumListener):
-    recordAlbum = pyqtSignal()
-
-    HELP_URL = 'http://tagtamusique.com/2013/12/03/tgit_style_guide/'
-    FEATURE_REQUEST_URL = "mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !"
+    record_album = pyqtSignal()
 
     TRACK_PAGES_INDEX = 2
 
-    def __init__(self, composeAlbum, editAlbum, editTrack):
-        QWidget.__init__(self)
-        self.build()
-        self.appendPage(composeAlbum)
-        self.appendPage(editAlbum)
-        self.editTrack = editTrack
+    def __init__(self, compose_album, edit_album, edit_track):
+        super().__init__()
 
-    def build(self):
-        self.setObjectName('album-screen')
-        layout = form.column()
-        layout.addWidget(self.makeNavigationBar())
-        layout.addWidget(self.makePages())
-        layout.addWidget(self.makeControls())
-        self.setLayout(layout)
+        ui_file.load(":/ui/album_screen.ui", self)
 
-    def makeNavigationBar(self):
-        navigation = QWidget()
-        navigation.setObjectName('navigation')
-        layout = form.row()
-        layout.setContentsMargins(25, 10, 25, 10)
-        layout.addStretch()
-        layout.addWidget(self.makeFeatureRequestLink())
-        layout.addWidget(self.makeHelpLink())
-        navigation.setLayout(layout)
-        return navigation
+        self.pages.currentChanged.connect(self._update_controls)
+        self.previous.clicked.connect(self._to_previous_page)
+        self.save.clicked.connect(self.record_album.emit)
+        self.next.clicked.connect(self._to_next_page)
 
-    def makeHelpLink(self):
-        label = QLabel()
-        label.setObjectName('help-link')
-        label.setTextFormat(Qt.RichText)
-        label.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        label.setOpenExternalLinks(True)
-        label.setText('<a style="color: white" href="%s">%s</a>' % (self.HELP_URL, self.tr('Help')))
-        return label
+        self.pages.addWidget(compose_album)
+        self.pages.addWidget(edit_album)
+        self._update_controls()
 
-    def makeFeatureRequestLink(self):
-        label = QLabel()
-        label.setObjectName('feature-request-link')
-        label.setTextFormat(Qt.RichText)
-        label.setOpenExternalLinks(True)
-        label.setText(
-            '<a style="color: white" href="%s">%s</a>' % (self.FEATURE_REQUEST_URL, self.tr('Request Feature')))
-        return label
-
-    def makePages(self):
-        self.pages = QStackedWidget()
-        self.pages.currentChanged.connect(self.updateControls)
-        return self.pages
-
-    def makeControls(self):
-        controls = QWidget()
-        controls.setObjectName('controls')
-        layout = form.row()
-        self.previous = QPushButton()
-        self.previous.setObjectName('previous')
-        self.previous.setText(self.tr('PREVIOUS'))
-        self.previous.clicked.connect(self.toPreviousPage)
-        form.disableButton(self.previous)
-        layout.addWidget(self.previous)
-        layout.addStretch()
-        self.save = QPushButton()
-        self.save.setObjectName('save')
-        self.save.setText(self.tr('SAVE'))
-        self.save.setFocusPolicy(Qt.StrongFocus)
-        self.save.clicked.connect(lambda pressed: self.recordAlbum.emit())
-        form.disableButton(self.save)
-        layout.addWidget(self.save)
-        layout.addStretch()
-        self.next = QPushButton()
-        self.next.setObjectName('next')
-        self.next.setText(self.tr('NEXT'))
-        self.next.clicked.connect(self.toNextPage)
-        form.disableButton(self.next)
-        layout.addWidget(self.next)
-
-        controls.setLayout(layout)
-        return controls
+        self.editTrack = edit_track
 
     def trackAdded(self, track, position):
-        self.addTrackEditionPage(self.editTrack(track), position)
+        self._add_track_edition_page(self.editTrack(track), position)
 
     def trackRemoved(self, track, position):
-        self.removeTrackEditionPage(position)
+        self._remove_track_edition_page(position)
 
-    def hasTrackPage(self):
-        return self.totalPages > self.TRACK_PAGES_INDEX
+    def _has_track_page(self):
+        return self.total_pages > self.TRACK_PAGES_INDEX
 
-    def updateControls(self):
-        if self.onFirstPage():
-            form.disableButton(self.previous)
-        else:
-            form.enableButton(self.previous)
+    def _update_controls(self):
+        self.previous.setDisabled(self._on_first_page())
+        self.next.setDisabled(self._on_last_page())
+        self.save.setEnabled(self._has_track_page())
 
-        if self.onLastPage():
-            form.disableButton(self.next)
-        else:
-            form.enableButton(self.next)
+    def _on_last_page(self):
+        return self._on_page(self.total_pages - 1)
 
-        if self.hasTrackPage():
-            form.enableButton(self.save)
-        else:
-            form.disableButton(self.save)
+    def _on_first_page(self):
+        return self._on_page(0)
 
-    def onLastPage(self):
-        return self.onPage(self.totalPages - 1)
+    def _on_page(self, number):
+        return self.current_page == number
 
-    def onFirstPage(self):
-        return self.onPage(0)
+    def _add_track_edition_page(self, page, position):
+        self._insert_page(page, self.TRACK_PAGES_INDEX + position)
 
-    def onPage(self, number):
-        return self.currentPage == number
+    def _remove_track_edition_page(self, position):
+        return self._remove_page(self.TRACK_PAGES_INDEX + position)
 
-    def addTrackEditionPage(self, page, position):
-        self.insertPage(page, self.TRACK_PAGES_INDEX + position)
-
-    def removeTrackEditionPage(self, position):
-        return self.removePage(self.TRACK_PAGES_INDEX + position)
-
-    def appendPage(self, widget):
-        self.pages.addWidget(widget)
-        self.updateControls()
-
-    def insertPage(self, widget, position):
+    def _insert_page(self, widget, position):
         self.pages.insertWidget(position, widget)
-        self.updateControls()
+        self._update_controls()
 
-    def removePage(self, number):
+    def _remove_page(self, number):
         page = self.pages.widget(number)
         self.pages.removeWidget(page)
-        self.updateControls()
+        self._update_controls()
         return page
 
     @property
-    def currentPage(self):
+    def current_page(self):
         return self.pages.currentIndex()
 
     @property
-    def totalPages(self):
+    def total_pages(self):
         return self.pages.count()
 
-    def toPreviousPage(self):
-        self.toPage(self.currentPage - 1)
+    def _to_previous_page(self):
+        self._to_page(self.current_page - 1)
 
-    def toNextPage(self):
-        self.toPage(self.currentPage + 1)
+    def _to_next_page(self):
+        self._to_page(self.current_page + 1)
 
-    def toPage(self, number):
+    def _to_page(self, number):
         self.pages.setCurrentIndex(number)

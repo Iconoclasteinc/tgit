@@ -30,7 +30,7 @@ class AlbumScreenTest(WidgetTest):
         return AlbumScreenDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testIncludesHelpLinkInHeader(self):
-        self.driver.linksHelpTo("http://tagtamusique.com/2013/12/03/tgit_style_guide/")
+        self.driver.linksHelpTo("http://tagyourmusic.com/#style-guide")
 
     def testIncludesFeatureRequestLinkInHeader(self):
         self.driver.linksFeatureRequestTo("mailto:iconoclastejr@gmail.com")
@@ -46,39 +46,39 @@ class AlbumScreenTest(WidgetTest):
 
     def testAddsTrackEditionPageForEachNewTrackInAlbum(self):
         self.album.addAlbumListener(self.view)
-        self.album.addTrack(build.track(track_title='Bone Machine'))
-        self.album.addTrack(build.track(track_title='Where is My Mind?'))
-        self.album.addTrack(build.track(track_title='Cactus'))
+        self.album.addTrack(build.track(track_title="Bone Machine"))
+        self.album.addTrack(build.track(track_title="Where is My Mind?"))
+        self.album.addTrack(build.track(track_title="Cactus"))
         self.driver.nextPage()
         self.driver.nextPage()
-        self.driver.shows_track_metadata(track_title='Bone Machine')
+        self.driver.shows_track_metadata(track_title="Bone Machine")
         self.driver.nextPage()
-        self.driver.shows_track_metadata(track_title='Where is My Mind?')
+        self.driver.shows_track_metadata(track_title="Where is My Mind?")
         self.driver.nextPage()
-        self.driver.shows_track_metadata(track_title='Cactus')
+        self.driver.shows_track_metadata(track_title="Cactus")
 
     def testRemovesCorrespondingTrackPageWhenTrackRemovedFromAlbum(self):
-        surferRosa = (
-            build.track(track_title='Bone Machine'),
-            build.track(track_title='Where is My Mind?'),
-            build.track(track_title='Cactus')
+        surfer_rosa = (
+            build.track(track_title="Bone Machine"),
+            build.track(track_title="Where is My Mind?"),
+            build.track(track_title="Cactus")
         )
 
         self.album.addAlbumListener(self.view)
 
-        for track in surferRosa:
+        for track in surfer_rosa:
             self.album.addTrack(track)
 
         self.driver.nextPage()
         self.driver.nextPage()
-        self.driver.shows_track_metadata(track_title='Bone Machine')
-        self.album.removeTrack(surferRosa[0])
-        self.driver.shows_track_metadata(track_title='Where is My Mind?')
+        self.driver.shows_track_metadata(track_title="Bone Machine")
+        self.album.removeTrack(surfer_rosa[0])
+        self.driver.shows_track_metadata(track_title="Where is My Mind?")
         self.driver.nextPage()
-        self.driver.shows_track_metadata(track_title='Cactus')
-        self.album.removeTrack(surferRosa[2])
-        self.driver.shows_track_metadata(track_title='Where is My Mind?')
-        self.album.removeTrack(surferRosa[1])
+        self.driver.shows_track_metadata(track_title="Cactus")
+        self.album.removeTrack(surfer_rosa[2])
+        self.driver.shows_track_metadata(track_title="Where is My Mind?")
+        self.album.removeTrack(surfer_rosa[1])
         self.driver.showsAlbumEditionPage()
         self.driver.hidesSaveButton()
 
@@ -86,11 +86,11 @@ class AlbumScreenTest(WidgetTest):
         self.album.addAlbumListener(self.view)
 
         self.album.addTrack(build.track())
-        saveAlbumSignal = ValueMatcherProbe('save album signal')
-        self.view.recordAlbum.connect(saveAlbumSignal.received)
+        save_album_signal = ValueMatcherProbe("save album signal")
+        self.view.record_album.connect(save_album_signal.received)
 
         self.driver.save()
-        self.driver.check(saveAlbumSignal)
+        self.driver.check(save_album_signal)
 
     def testOffersBackAndForthNavigationBetweenPages(self):
         self.album.addAlbumListener(self.view)

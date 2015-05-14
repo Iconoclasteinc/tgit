@@ -181,7 +181,7 @@ def TrackEditionPageController(album, track):
 def AlbumScreenController(compositionPage, albumPage, trackPage, album):
     page = AlbumScreen(compositionPage(album), albumPage(album), trackPage)
     album.addAlbumListener(page)
-    page.recordAlbum.connect(lambda: director.recordAlbum(album))
+    page.record_album.connect(lambda: director.recordAlbum(album))
     return page
 
 

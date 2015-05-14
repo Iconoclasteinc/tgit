@@ -11,7 +11,7 @@ from tgit.ui.album_screen import AlbumScreen
 
 
 def album_screen(parent):
-    return AlbumScreenDriver.find_single(parent, AlbumScreen, named('album-screen'))
+    return AlbumScreenDriver.find_single(parent, AlbumScreen, named("album_screen"))
 
 
 class AlbumScreenDriver(ScreenDriver):
@@ -35,31 +35,31 @@ class AlbumScreenDriver(ScreenDriver):
         album_composition_page(self).moveTrack(title, to)
 
     def previousPage(self):
-        self.button(named('previous')).click()
+        self.button(named("previous")).click()
 
     def nextPage(self):
-        self.button(named('next')).click()
+        self.button(named("next")).click()
 
     def save(self):
-        self.button(named('save')).click()
+        self.button(named("save")).click()
 
     def hidesPreviousPageButton(self):
-        self._is_disabled(self.button(named('previous')))
+        self._is_disabled(self.button(named("previous")))
 
     def showsPreviousPageButton(self):
-        self._is_enabled(self.button(named('previous')))
+        self._is_enabled(self.button(named("previous")))
 
     def hidesNextPageButton(self):
-        self._is_disabled(self.button(named('next')))
+        self._is_disabled(self.button(named("next")))
 
     def showsNextPageButton(self):
-        self._is_enabled(self.button(named('next')))
+        self._is_enabled(self.button(named("next")))
 
     def hidesSaveButton(self):
-        self._is_disabled(self.button(named('save')))
+        self._is_disabled(self.button(named("save")))
 
     def showsSaveButton(self):
-        self._is_enabled(self.button(named('save')))
+        self._is_enabled(self.button(named("save")))
 
     def showsAlbumContains(self, *tracks):
         album_composition_page(self).showsTracksInOrder(*tracks)
@@ -77,10 +77,10 @@ class AlbumScreenDriver(ScreenDriver):
         track_edition_page(self).change_metadata(**tags)
 
     def linksHelpTo(self, location):
-        self.label(named('help-link')).has_text(contains_string('href="%s"' % location))
+        self.label(named("help_link")).has_text(contains_string("href=\"{0}\"".format(location)))
 
     def linksFeatureRequestTo(self, location):
-        self.label(named('feature-request-link')).has_text(contains_string('href="%s' % location))
+        self.label(named("feature_request_link")).has_text(contains_string("href=\"{0}".format(location)))
 
     def assign_isni_to_lead_performer(self):
         album_edition_page(self).assign_isni_to_lead_performer()
