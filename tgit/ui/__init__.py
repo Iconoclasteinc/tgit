@@ -32,7 +32,6 @@ from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
-from tgit.ui.album_screen import AlbumScreen
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
 from tgit.ui.restart_message_box import RestartMessageBox
@@ -43,9 +42,10 @@ from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_screen import welcome_screen as WelcomeScreen
 from tgit.ui.main_window import main_window as MainWindow
+from tgit.ui.album_screen import album_screen as AlbumScreen
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
-from tgit.util import async_task_runner as taskRunner
+from tgit.util import async_task_runner as task_runner
 
 
 def show(widget):
@@ -100,7 +100,7 @@ def AlbumEditionPageController(dialogs, lookup_isni_dialog_factory, activity_ind
     def lookup_isni():
         activity_dialog = activity_indicator_dialog_factory()
         activity_dialog.show()
-        taskRunner.runAsync(lambda: director.lookupISNI(name_registry, album.lead_performer)).andPutResultInto(
+        task_runner.runAsync(lambda: director.lookupISNI(name_registry, album.lead_performer)).andPutResultInto(
             queue).run()
 
         identities = poll_queue()
@@ -111,7 +111,7 @@ def AlbumEditionPageController(dialogs, lookup_isni_dialog_factory, activity_ind
     def assign_isni():
         activity_dialog = activity_indicator_dialog_factory()
         activity_dialog.show()
-        taskRunner.runAsync(lambda: director.assign_isni(name_registry, album)).andPutResultInto(queue).run()
+        task_runner.runAsync(lambda: director.assign_isni(name_registry, album)).andPutResultInto(queue).run()
         code, payload = poll_queue()
         activity_dialog.close()
         if code == NameRegistry.Codes.SUCCESS:
@@ -138,11 +138,11 @@ def AlbumEditionPageController(dialogs, lookup_isni_dialog_factory, activity_ind
 
 
 def PerformerDialogController(parent, album):
-    def assignGuestPerformers():
+    def assign_guest_performers():
         album.guestPerformers = dialog.getPerformers()
 
     dialog = PerformerDialog(parent)
-    dialog.accepted.connect(assignGuestPerformers)
+    dialog.accepted.connect(assign_guest_performers)
     dialog.display(album.guestPerformers)
     dialog.open()
     return dialog
@@ -178,13 +178,6 @@ def TrackEditionPageController(album, track):
     return page
 
 
-def AlbumScreenController(compositionPage, albumPage, trackPage, album):
-    page = AlbumScreen(compositionPage(album), albumPage(album), trackPage)
-    album.addAlbumListener(page)
-    page.record_album.connect(lambda: director.recordAlbum(album))
-    return page
-
-
 def make_picture_selection_dialog(parent_window, native, album):
     dialog = PictureSelectionDialog(parent_window, native)
     dialog.picture_selected.connect(lambda selection: director.changeAlbumCover(album, selection))
@@ -194,12 +187,12 @@ def make_picture_selection_dialog(parent_window, native, album):
 def SettingsDialogController(restartNotice, preferences, parent):
     dialog = SettingsDialog(parent)
 
-    def savePreferences():
+    def save_preferences():
         preferences.add(**dialog.settings)
         dialog.close()
         restartNotice(parent).display()
 
-    dialog.accepted.connect(savePreferences)
+    dialog.accepted.connect(save_preferences)
     dialog.add_language("en", dialog.tr("English"))
     dialog.add_language("fr", dialog.tr("French"))
     dialog.display(**preferences)
@@ -312,7 +305,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         def create_track_page(track):
             return TrackEditionPageController(album, track)
 
-        return AlbumScreenController(create_composition_page, create_album_page, create_track_page, album)
+        return AlbumScreen(create_composition_page, create_album_page, create_track_page, album)
 
     dialogs = Dialogs(native)
     window = MainWindow(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio)

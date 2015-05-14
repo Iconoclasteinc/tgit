@@ -17,9 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5 import QtGui, uic
-from PyQt5.QtCore import QFile, QIODevice, pyqtSignal
+from PyQt5 import QtGui
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
+
 from tgit.album import Album
 from tgit.ui.helpers import ui_file
 
