@@ -35,7 +35,6 @@ from tgit.ui.album_edition_page import AlbumEditionPage
 from tgit.ui.album_screen import AlbumScreen
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
-from tgit.ui.menu_bar import MenuBar
 from tgit.ui.restart_message_box import RestartMessageBox
 from tgit.ui.restart_message_box import isni_assignation_failed_message_box
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
@@ -43,6 +42,7 @@ from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_screen import welcome_screen as WelcomeScreen
+from tgit.ui.main_window import main_window as MainWindow
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
 from tgit.util import async_task_runner as taskRunner
@@ -224,16 +224,6 @@ def make_import_album_dialog(parent, native, album_portfolio):
     return dialog
 
 
-def MenuBarController(dialogs, changeSettings, portfolio):
-    menuBar = MenuBar()
-    portfolio.album_created.subscribe(menuBar.albumCreated)
-    menuBar.add_files.connect(lambda album: dialogs.select_tracks(album).open())
-    menuBar.add_folder.connect(lambda album: dialogs.select_tracks_in_folder(album).open())
-    menuBar.export.connect(lambda album: dialogs.export_album(album).open())
-    menuBar.settings.connect(lambda: changeSettings())
-    return menuBar
-
-
 class Dialogs:
     _pictures = None
     _tracks = None
@@ -290,23 +280,12 @@ class Dialogs:
         return self._export_album_dialog(album)
 
 
-def make_main_window(create_menu_bar, create_welcome_screen, create_album_screen, album_portfolio):
-    window = MainWindow()
-    window.set_menu_bar(create_menu_bar())
-    window.show_screen(create_welcome_screen())
-    album_portfolio.album_created.subscribe(lambda album: window.show_screen(create_album_screen(album)))
-    return window
-
-
-def create_main_window(album_portfolio, player, preferences, name_registry, use_local_isni_backend, native):
+def create_main_window(portfolio, player, preferences, name_registry, use_local_isni_backend, native):
     def show_settings_dialog():
         return SettingsDialogController(RestartMessageBox, preferences, window)
 
-    def create_menu_bar():
-        return MenuBarController(dialogs, show_settings_dialog, album_portfolio)
-
     def create_welcome_screen():
-        return WelcomeScreen(dialogs, album_portfolio)
+        return WelcomeScreen(dialogs, portfolio)
 
     def create_composition_page(album):
         return AlbumCompositionPageController(dialogs, player, album)
@@ -336,7 +315,7 @@ def create_main_window(album_portfolio, player, preferences, name_registry, use_
         return AlbumScreenController(create_composition_page, create_album_page, create_track_page, album)
 
     dialogs = Dialogs(native)
-    window = make_main_window(create_menu_bar, create_welcome_screen, create_album_screen, album_portfolio)
+    window = MainWindow(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio)
     dialogs.parent = window
 
     return window

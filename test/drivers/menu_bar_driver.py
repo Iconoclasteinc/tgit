@@ -11,44 +11,32 @@ def menu_bar(parent):
     return MenuBarDriver.find_single(parent, QMenuBar)
 
 
-def addFilesMenuItem(menu):
-    return
-
-
-def addFolderMenuItem(menu):
-    return
-
-
-def exportMenuItem(menu):
-    return
-
-
 class MenuBarDriver(QMenuBarDriver):
     def has_disabled_album_actions(self):
-        menu = self.openMenu(named('file-menu'))
-        menu.menu_item(named('add-files')).is_disabled()
-        menu.menu_item(named('add-folder')).is_disabled()
-        menu.menu_item(named('export')).is_disabled()
+        menu = self.open_menu(named("file_menu"))
+        menu.menu_item(named("add_files_action")).is_disabled()
+        menu.menu_item(named("add_folder_action")).is_disabled()
+        menu.menu_item(named("export_action")).is_disabled()
         menu.close()
 
     def add_files(self):
-        menu = self.openMenu(named('file-menu'))
-        menu.menu_item(named('add-files')).click()
+        menu = self.open_menu(named("file_menu"))
+        menu.menu_item(named("add_files_action")).click()
 
     def add_folder(self):
-        menu = self.openMenu(named('file-menu'))
-        menu.menu_item(named('add-folder')).click()
+        menu = self.open_menu(named("file_menu"))
+        menu.menu_item(named("add_folder_action")).click()
 
     def export(self):
-        menu = self.openMenu(named('file-menu'))
-        menu.menu_item(named('export')).click()
+        menu = self.open_menu(named("file_menu"))
+        menu.menu_item(named("export_action")).click()
 
     def settings(self):
-        menu = self.openMenu(named('file-menu'))
-        menu.select_menu_item(named('Settings'))
+        menu = self.open_menu(named("file_menu"))
+        menu.select_menu_item(named("settings_action"))
         return settings_dialog(self)
 
-    def openMenu(self, matching):
+    def open_menu(self, matching):
         menu = self.menu(matching)
         menu.open()
         return menu

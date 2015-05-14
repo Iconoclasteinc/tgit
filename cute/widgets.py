@@ -11,9 +11,12 @@ from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from . import gestures, properties, keyboard_shortcuts as shortcuts, matchers as match
+from cute.prober import EventProcessingProber
+from cute.robot import Robot
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                      WidgetScreenBoundsProbe)
-from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector)
+from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector,
+                      WidgetIdentity)
 
 
 windows = sys.platform == 'win32'
@@ -450,8 +453,8 @@ class MenuDriver(WidgetDriver):
     def menu_item(self, matching):
         # We have to make sure the item menu actually exists in the menu
         # Checking that the item is a child of the menu is not sufficient
-        self.has_menu_item(matching)
-        return MenuItemDriver.find_single(self, QAction, matching)
+        action = self.has_menu_item(matching)
+        return MenuItemDriver(WidgetIdentity(action), EventProcessingProber(), Robot())
 
     def select_menu_item(self, matching):
         menu_item = self.menu_item(matching)
@@ -488,12 +491,12 @@ class MenuItemDriver(WidgetDriver):
     def _center_of_item(self):
         class CalculateCenterOfItem(object):
             def __call__(self, item):
-                menu = item.parent()
+                menu = item.associatedWidgets()[0]
                 item_visible_area = menu.actionGeometry(item)
                 self.coordinates = menu.mapToGlobal(item_visible_area.center())
 
         center = CalculateCenterOfItem()
-        self.manipulate('calculate center of item', center)
+        self.manipulate("calculate center of item", center)
         return center.coordinates
 
     def click(self):

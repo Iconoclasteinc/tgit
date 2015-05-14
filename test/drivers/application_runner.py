@@ -16,7 +16,7 @@ class ApplicationRunner(object):
         self.app = TGiT(doubles.null_audio_player, NameRegistry(host="localhost", assign_host="localhost", port=5000),
                         use_local_isni_backend=True, native=False)
         self.app.show(preferences)
-        self.tagger = TaggerDriver(main_application_window(named("main-window"), showing_on_screen()),
+        self.tagger = TaggerDriver(main_application_window(named("main_window"), showing_on_screen()),
                                    EventProcessingProber(timeout_in_ms=ONE_SECOND_IN_MILLISECONDS), Robot())
 
     def stop(self):
@@ -31,7 +31,7 @@ class ApplicationRunner(object):
     def add_tracks_to_album(self, *tracks):
         self.tagger.add_tracks_to_album(*tracks)
 
-    def import_album(self, track, of_type='mp3'):
+    def import_album(self, track, of_type="mp3"):
         self.tagger.import_album(track, of_type=of_type)
 
     def shows_album_content(self, *tracks):

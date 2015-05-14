@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>main_window</class>
+ <widget class="QMainWindow" name="main_window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>804</width>
+    <height>421</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>TGiT</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../resources.qrc">
+    <normaloff>:/tgit.ico</normaloff>:/tgit.ico</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">main_window {
+    background-color: #F6F6F6;
+    margin: 0;
+    padding: 0;
+}</string>
+  </property>
+  <widget class="QMenuBar" name="menu_bar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>804</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="file_menu">
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>1100</width>
+      <height>745</height>
+     </size>
+    </property>
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="add_files_action"/>
+    <addaction name="add_folder_action"/>
+    <addaction name="export_action"/>
+    <addaction name="settings_action"/>
+   </widget>
+   <addaction name="file_menu"/>
+  </widget>
+  <action name="settings_action">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="add_files_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Add Files...</string>
+   </property>
+  </action>
+  <action name="add_folder_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Add Folder...</string>
+   </property>
+  </action>
+  <action name="export_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Export...</string>
+   </property>
+  </action>
+  <action name="actionFiles">
+   <property name="text">
+    <string>Add Files...</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -11,10 +11,12 @@ from cute.robot import Robot
 from tgit import ui
 from tgit.ui.main_window import MainWindow, StyleSheet
 
+SIZE = (1100, 745)
+
 
 def show_widget(widget):
     widget.setStyleSheet(StyleSheet)
-    widget.setFixedSize(*MainWindow.SIZE)
+    widget.setFixedSize(*SIZE)
     ui.showCenteredOnScreen(widget)
 
 
@@ -30,7 +32,7 @@ class WidgetTest(unittest.TestCase):
 
     def show(self, widget):
         widget.setStyleSheet(StyleSheet)
-        widget.setFixedSize(*MainWindow.SIZE)
+        widget.setFixedSize(*SIZE)
         ui.showCenteredOnScreen(widget)
 
     def check(self, probe):

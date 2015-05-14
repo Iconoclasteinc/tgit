@@ -378,15 +378,12 @@
     </message>
 </context>
 <context>
-    <name>MainWindow</name>
+    <name>main_window</name>
     <message>
         <location filename="tgit/ui/main_window.py" line="502"/>
         <source>TGiT</source>
         <translation>TGiT</translation>
     </message>
-</context>
-<context>
-    <name>MenuBar</name>
     <message>
         <location filename="tgit/ui/menu_bar.py" line="48"/>
         <source>File</source>

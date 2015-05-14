@@ -17,8 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5 import QtGui
+from PyQt5 import QtGui, uic
+from PyQt5.QtCore import QFile, QIODevice, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
+from tgit.album import Album
 
 
 StyleSheet = """
@@ -416,9 +418,7 @@ StyleSheet = """
     }
  """
 
-MAC = hasattr(QtGui, "qt_mac_set_native_menubar")
-
-if MAC:
+if hasattr(QtGui, "qt_mac_set_native_menubar"):
     StyleSheet += """
         #album-edition-page QComboBox, #track-edition-page QComboBox {
             padding-left: 1px;
@@ -432,26 +432,47 @@ if MAC:
         }
     """
 
-    #album-edition-page QComboBox QAbstractItemView QScrollBar {
-    #     padding: 0;
-    #     margin: 0;
-    #     background: transparent;
-    #     width: 20px;
-    # }
+
+def main_window(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio):
+    window = MainWindow()
+    window.add_files.connect(lambda album: dialogs.select_tracks(album).open())
+    window.add_folder.connect(lambda album: dialogs.select_tracks_in_folder(album).open())
+    window.export.connect(lambda album: dialogs.export_album(album).open())
+    window.settings.connect(lambda: show_settings_dialog())
+    window.show_screen(create_welcome_screen())
+    portfolio.album_created.subscribe(lambda album: window.enable_menu_actions(album))
+    portfolio.album_created.subscribe(lambda album: window.show_screen(create_album_screen(album)))
+    return window
 
 
 class MainWindow(QMainWindow):
-    SIZE = (1100, 745)
+    add_files = pyqtSignal(Album)
+    add_folder = pyqtSignal(Album)
+    export = pyqtSignal(Album)
+    settings = pyqtSignal()
 
     def __init__(self):
-        QMainWindow.__init__(self)
-        self.setObjectName("main-window")
-        self.setStyleSheet(StyleSheet)
-        self.setWindowTitle(self.tr("TGiT"))
-        self.resize(*self.SIZE)
+        super().__init__()
+        file = QFile(":/ui/main_window.ui")
+        file.open(QIODevice.ReadOnly)
+        uic.loadUi(file, self)
+        file.close()
 
-    def set_menu_bar(self, menu_bar):
-        self.setMenuBar(menu_bar)
+        self.setStyleSheet(StyleSheet)
+        self.add_files_action.triggered.connect(lambda checked: self.add_files.emit(self.add_files_action.data()))
+        self.add_folder_action.triggered.connect(lambda checked: self.add_folder.emit(self.add_folder_action.data()))
+        self.export_action.triggered.connect(lambda checked: self.export.emit(self.export_action.data()))
+        self.settings_action.triggered.connect(lambda checked: self.settings.emit())
+
+    def enable_menu_actions(self, album):
+        _enable_action(self.add_files_action, album)
+        _enable_action(self.add_folder_action, album)
+        _enable_action(self.export_action, album)
 
     def show_screen(self, screen):
         self.setCentralWidget(screen)
+
+
+def _enable_action(action, album):
+    action.setEnabled(True)
+    action.setData(album)
