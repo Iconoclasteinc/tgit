@@ -88,7 +88,7 @@ class TaggerDriver(MainWindowDriver):
 
         try:
             message_box(self).is_showing_message("Could not assign an ISNI")
-            message_box(self).is_showing_details("Invalid data: invalid code creationRole eee")
+            message_box(self).is_showing_details("invalid code creationRole eee")
         finally:
             message_box(self).acknowledge()
 

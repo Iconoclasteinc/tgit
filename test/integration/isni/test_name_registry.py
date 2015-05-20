@@ -75,21 +75,21 @@ def test_assigns_isni_to_person(server, registry):
 def test_notifies_that_request_was_incomplete_when_assigning_a_person(server, registry):
     server.assignation_generator = (isni for isni in ["sparse"])
     code, message = registry.assign("Joel", "Miller", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
-    assert_that(code, equal_to(NameRegistry.Codes.SPARSE))
+    assert_that(code, equal_to(NameRegistry.Codes.ERROR))
     assert_that(message, equal_to("needs at least one of title, date, instrument, contributedTo"))
 
 
 def test_notifies_that_request_was_invalid_when_assigning_a_person(server, registry):
     server.assignation_generator = (isni for isni in ["invalid data"])
     code, message = registry.assign("Joel", "Miller", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
-    assert_that(code, equal_to(NameRegistry.Codes.INVALID_DATA))
+    assert_that(code, equal_to(NameRegistry.Codes.ERROR))
     assert_that(message, equal_to("invalid code creationRole eee"))
 
 
 def test_notifies_that_request_was_malformed_when_assigning_a_person(server, registry):
     server.assignation_generator = (isni for isni in [""])
     code, message = registry.assign("<Joel>", "<Miller>", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
-    assert_that(code, equal_to(NameRegistry.Codes.INVALID_FORMAT))
+    assert_that(code, equal_to(NameRegistry.Codes.ERROR))
     assert_that(message, equal_to("XML parsing error"))
 
 

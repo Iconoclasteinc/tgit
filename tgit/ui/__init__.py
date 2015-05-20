@@ -117,7 +117,7 @@ def AlbumEditionPageController(dialogs, lookup_isni_dialog_factory, activity_ind
         if code == NameRegistry.Codes.SUCCESS:
             album.isni = payload
         else:
-            show_assignation_failed(code, payload)
+            show_assignation_failed(payload)
 
     def add_performer():
         dialog = performer_dialog_factory(album)
@@ -298,8 +298,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
     def show_activity_indicator_dialog():
         return ActivityIndicatorDialogController(window)
 
-    def show_isni_assignation_failed_message_box(code, details):
-        isni_assignation_failed_message_box(window, code, details).open()
+    def show_isni_assignation_failed_message_box(details):
+        isni_assignation_failed_message_box(window, details).open()
 
     def create_album_screen(album):
         def create_track_page(track):

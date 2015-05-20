@@ -31,9 +31,7 @@ NAMESPACES = {
 
 class NameRegistry(object):
     class Codes(object):
-        INVALID_FORMAT = "INVALID_FORMAT"
-        INVALID_DATA = "INVALID_DATA"
-        SPARSE = "SPARSE"
+        ERROR = "ERROR"
         SUCCESS = "SUCCESS"
 
     def __init__(self, host=None, assign_host=None, port=None, secure=False, username=None, password=None):
@@ -69,15 +67,7 @@ class NameRegistry(object):
 
         no_isni = response.find("noISNI")
         if no_isni is not None:
-            reason = no_isni.xpath("//reason/text()")[0]
-            if reason == "sparse":
-                return self.Codes.SPARSE, get_information_field_value(no_isni)
-
-            if reason == "invalid data":
-                return self.Codes.INVALID_DATA, get_information_field_value(no_isni)
-
-            if reason == "invalidFormat":
-                return self.Codes.INVALID_FORMAT, get_information_field_value(no_isni)
+            return self.Codes.ERROR, get_information_field_value(no_isni)
 
         return None
 

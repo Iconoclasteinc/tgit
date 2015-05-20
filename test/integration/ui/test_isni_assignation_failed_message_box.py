@@ -25,7 +25,6 @@ from cute.prober import EventProcessingProber
 from cute.robot import Robot
 from test.drivers import MessageBoxDriver
 from test.integration.ui import show_widget
-from tgit.isni.name_registry import NameRegistry
 from tgit.ui import isni_assignation_failed_message_box
 
 
@@ -37,31 +36,11 @@ def window(qt):
     main_window.close()
 
 
-def test_shows_message_for_invalid_data_failure(window):
-    dialog = isni_assignation_failed_message_box(window, NameRegistry.Codes.INVALID_DATA, "Message")
+def test_shows_assignation_failed_message_with_details(window):
+    dialog = isni_assignation_failed_message_box(window, "Details")
     driver = MessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
     dialog.open()
 
     driver.is_showing_message("Could not assign an ISNI")
-    driver.is_showing_details("Invalid data: Message")
-    driver.acknowledge()
-
-
-def test_shows_message_for_invalid_format_failure(window):
-    dialog = isni_assignation_failed_message_box(window, NameRegistry.Codes.INVALID_FORMAT, "Message")
-    driver = MessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
-    dialog.open()
-
-    driver.is_showing_message("Could not assign an ISNI")
-    driver.is_showing_details("Invalid format: Message")
-    driver.acknowledge()
-
-
-def test_shows_message_for_sparse_failure(window):
-    dialog = isni_assignation_failed_message_box(window, NameRegistry.Codes.SPARSE, "Message")
-    driver = MessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
-    dialog.open()
-
-    driver.is_showing_message("Could not assign an ISNI")
-    driver.is_showing_details("Sparse data: Message")
+    driver.is_showing_details("Details")
     driver.acknowledge()
