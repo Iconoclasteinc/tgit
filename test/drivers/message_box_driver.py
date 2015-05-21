@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtWidgets import QMessageBox
+from hamcrest import contains_string
 
 from cute.matchers import named, with_text
 from test.drivers import ScreenDriver
@@ -36,3 +37,6 @@ class MessageBoxDriver(ScreenDriver):
 
     def acknowledge(self):
         self.button(with_text("OK")).click()
+
+    def confirm(self):
+        self.button(with_text(contains_string("Yes"))).click()

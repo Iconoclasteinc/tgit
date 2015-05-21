@@ -36,6 +36,10 @@ class MenuBarDriver(QMenuBarDriver):
         menu.select_menu_item(named("settings_action"))
         return settings_dialog(self)
 
+    def close_album(self):
+        menu = self.open_menu(named("file_menu"))
+        menu.menu_item(named("close_album_action")).click()
+
     def open_menu(self, matching):
         menu = self.menu(matching)
         menu.open()

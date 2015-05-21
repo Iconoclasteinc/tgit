@@ -6,19 +6,17 @@ from cute import matchers as match
 from cute.matchers import showing_on_screen, with_text
 from cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
 from test.drivers import import_album_from_track_dialog
-from test.drivers.export_as_dialog_driver import export_as_dialog
-from test.drivers.isni_error_message_box_driver import message_box
+from test.drivers.message_box_driver import message_box
 from test.drivers.isni_lookup_dialog_driver import isni_lookup_dialog
 from test.drivers.menu_bar_driver import menu_bar
 from test.drivers.album_screen_driver import album_screen
 from test.drivers.settings_dialog_driver import settings_dialog
-from test.drivers.track_selection_dialog_driver import track_selection_dialog
 from test.drivers.welcome_screen_driver import welcome_screen
 
 
 class TaggerDriver(MainWindowDriver):
     def __init__(self, selector, prober, gesture_performer):
-        super(TaggerDriver, self).__init__(selector, prober, gesture_performer)
+        super().__init__(selector, prober, gesture_performer)
 
     def import_album(self, path, of_type):
         welcome_screen(self).import_album()
@@ -32,21 +30,15 @@ class TaggerDriver(MainWindowDriver):
     def add_tracks_to_album(self, *paths):
         album_screen(self).add_tracks_to_album(*paths)
 
-    def showsExportAsDialog(self):
-        export_as_dialog(self).is_showing_on_screen()
-
-    def removeTrack(self, title):
-        album_screen(self).removeTrack(title)
-
-    def moveTrack(self, title, to):
-        album_screen(self).moveTrack(title, to)
+    def move_track(self, title, to):
+        album_screen(self).move_track(title, to)
     # todo have a quick navigation button
 
     def next(self):
         album_screen(self).nextPage()
 
-    def showsAlbumContains(self, *tracks):
-        album_screen(self).showsAlbumContains(*tracks)
+    def shows_album_contains(self, *tracks):
+        album_screen(self).shows_album_contains(*tracks)
 
     def shows_album_metadata(self, **tags):
         album_screen(self).shows_album_metadata(**tags)
@@ -68,7 +60,7 @@ class TaggerDriver(MainWindowDriver):
         settings_dialog(self).changeSettings(settings)
         self.acknowledge()
 
-    def hasSettings(self, **settings):
+    def has_settings(self, **settings):
         dialog = menu_bar(self).settings()
         try:
             dialog.showsSettings(settings)
@@ -99,3 +91,11 @@ class TaggerDriver(MainWindowDriver):
 
     def restart_message(self):
         return WidgetDriver.find_single(self, QDialog, match.named("restart-message"), showing_on_screen())
+
+    def closes_album(self):
+        menu_bar(self).close_album()
+        try:
+            message_box(self).is_showing_on_screen()
+        finally:
+            message_box(self).confirm()
+        welcome_screen(self).is_showing_on_screen()

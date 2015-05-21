@@ -11,7 +11,10 @@ from tgit.tagger import TGiT
 ONE_SECOND_IN_MILLISECONDS = 1000
 
 
-class ApplicationRunner(object):
+class ApplicationRunner:
+    app = None
+    tagger = None
+
     def start(self, preferences):
         self.app = TGiT(doubles.null_audio_player, NameRegistry(host="localhost", assign_host="localhost", port=5000),
                         use_local_isni_backend=True, native=False)
@@ -35,7 +38,7 @@ class ApplicationRunner(object):
         self.tagger.import_album(track, of_type=of_type)
 
     def shows_album_content(self, *tracks):
-        self.tagger.showsAlbumContains(*tracks)
+        self.tagger.shows_album_contains(*tracks)
 
     def shows_album_metadata(self, **tags):
         self.tagger.next()
@@ -55,17 +58,14 @@ class ApplicationRunner(object):
         self.tagger.editTrackMetadata(**tags)
         self.tagger.save_album()
 
-    def removeTrack(self, title):
-        self.tagger.removeTrack(title)
-
     def change_track_position(self, title, to_position):
-        self.tagger.moveTrack(title, to_position - 1)
+        self.tagger.move_track(title, to_position - 1)
 
     def change_settings(self, **settings):
         self.tagger.change_settings(**settings)
 
     def has_settings(self, **settings):
-        self.tagger.hasSettings(**settings)
+        self.tagger.has_settings(**settings)
 
     def assign_isni_to_lead_performer(self):
         self.tagger.assign_isni_to_lead_performer()
@@ -77,3 +77,6 @@ class ApplicationRunner(object):
     def finds_isni_of_lead_performer(self):
         self.tagger.finds_isni_of_lead_performer()
         self.tagger.save_album()
+
+    def closes_album(self):
+        self.tagger.closes_album()

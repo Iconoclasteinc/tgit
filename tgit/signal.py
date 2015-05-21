@@ -58,7 +58,7 @@ class Signal:
 
     def emit(self, event):
         if not isinstance(event, self._type):
-            raise TypeError("{} event should be of type {}, not {}".format(
+            raise TypeError("{0} event should be of type {1}, not {2}".format(
                 self._name, self._type.__name__, type(event).__name__))
 
         for subscriber in self._subscribers:

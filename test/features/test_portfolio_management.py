@@ -39,10 +39,9 @@ def app():
     runner.stop()
 
 
-@pytest.mark.wip
 def test_closing_an_album(app, recordings):
     app.new_album(of_type="mp3")
 
     track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
-    app.close_album()
+    app.closes_album()

@@ -32,7 +32,7 @@ class AlbumScreenDriver(ScreenDriver):
         album_composition_page(self).removeTrack(title)
 
     def moveTrack(self, title, to):
-        album_composition_page(self).moveTrack(title, to)
+        album_composition_page(self).move_track(title, to)
 
     def previousPage(self):
         self.button(named("previous")).click()
@@ -61,7 +61,7 @@ class AlbumScreenDriver(ScreenDriver):
     def showsSaveButton(self):
         self._is_enabled(self.button(named("save")))
 
-    def showsAlbumContains(self, *tracks):
+    def shows_album_contains(self, *tracks):
         album_composition_page(self).showsTracksInOrder(*tracks)
 
     def shows_album_metadata(self, **tags):

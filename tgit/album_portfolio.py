@@ -28,6 +28,7 @@ class AlbumPortfolioListener(object):
 
 class AlbumPortfolio(metaclass=Observable):
     album_created = signal(Album)
+    album_removed = signal(Album)
 
     def __init__(self):
         self._albums = []
@@ -35,6 +36,10 @@ class AlbumPortfolio(metaclass=Observable):
     def add_album(self, album):
         self._albums.append(album)
         self.album_created.emit(album)
+
+    def remove_album(self, album):
+        self._albums.remove(album)
+        self.album_removed.emit(album)
 
     def __getitem__(self, index):
         return self._albums[index]
