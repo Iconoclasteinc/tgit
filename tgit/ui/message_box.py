@@ -37,7 +37,7 @@ def isni_assignation_failed_message_box(parent, details):
 
 
 def close_album_confirmation_box(parent):
-    return ConfirmationBox(parent, "???")
+    return ConfirmationBox(parent, "Are you sure that you are done working on this release?")
 
 
 class ConfirmationBox(QMessageBox):

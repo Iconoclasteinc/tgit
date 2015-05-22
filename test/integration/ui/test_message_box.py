@@ -26,6 +26,7 @@ from cute.robot import Robot
 from cute.widgets import QMessageBoxDriver
 from test.integration.ui import show_widget
 from tgit.ui import isni_assignation_failed_message_box
+from tgit.ui.message_box import close_album_confirmation_box
 
 
 @pytest.yield_fixture()
@@ -36,7 +37,7 @@ def window(qt):
     main_window.close()
 
 
-def test_shows_assignation_failed_message_with_details(window):
+def test_shows_isni_assignation_failed_message_with_details(window):
     dialog = isni_assignation_failed_message_box(window, "Details")
     driver = QMessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
     dialog.open()
@@ -44,3 +45,12 @@ def test_shows_assignation_failed_message_with_details(window):
     driver.shows_message("Could not assign an ISNI")
     driver.shows_details("Details")
     driver.ok()
+
+
+def test_shows_close_album_message(window):
+    dialog = close_album_confirmation_box(window)
+    driver = QMessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
+    dialog.open()
+
+    driver.shows_message("Are you sure that you are done working on this release?")
+    driver.yes()

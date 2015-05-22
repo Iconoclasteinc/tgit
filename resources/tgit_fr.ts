@@ -431,17 +431,22 @@
 <context>
     <name>MessageBox</name>
     <message>
-        <location filename="tgit/ui/message_box.py" line="63"/>
+        <location filename="tgit/ui/message_box.py" line="32"/>
         <source>You need to restart TGiT for changes to take effect.</source>
         <translation>Veuillez redémarrer TGiT pour que ces modifications prennent effet.</translation>
     </message>
-</context>
-<context>
-    <name>MessageBox</name>
     <message>
-        <location filename="tgit/ui/message_box.py" line="53"/>
+        <location filename="tgit/ui/message_box.py" line="36"/>
         <source>Could not assign an ISNI</source>
         <translation>Impossible d&apos;assigner un ISNI</translation>
+    </message>
+</context>
+<context>
+    <name>ConfirmationBox</name>
+    <message>
+        <location filename="tgit/ui/message_box.py" line="40"/>
+        <source>Are you sure that you are done working on this release?</source>
+        <translation>Êtes-vous certain que vous avez terminer de travailler sur cet album?</translation>
     </message>
 </context>
 <context>
