@@ -22,9 +22,9 @@ def main_window(qt):
 
 @pytest.yield_fixture()
 def driver(main_window):
-    driver = MenuBarDriver(WidgetIdentity(main_window.menu_bar), EventProcessingProber(), Robot())
-    yield driver
-    driver.close()
+    menu_bar_driver = MenuBarDriver(WidgetIdentity(main_window.menu_bar), EventProcessingProber(), Robot())
+    yield menu_bar_driver
+    menu_bar_driver.close()
 
 
 def test_album_menu_is_initially_disabled(driver):
@@ -59,6 +59,16 @@ def test_signals_when_export_menu_item_clicked(main_window, driver):
 
     driver.export()
     driver.check(export_album_signal)
+
+
+def test_signals_when_close_album_menu_item_clicked(main_window, driver):
+    album = build.album()
+    close_album_signal = ValueMatcherProbe("close", album)
+    main_window.close_album.connect(close_album_signal.received)
+    main_window.enable_menu_actions(album)
+
+    driver.close_album()
+    driver.check(close_album_signal)
 
 
 def test_signals_when_settings_menu_item_clicked(main_window, driver):
