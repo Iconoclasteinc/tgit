@@ -27,7 +27,7 @@ class ApplicationRunner:
                         use_local_isni_backend=True, native=False)
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
-                                   EventProcessingProber(timeout_in_ms=ONE_SECOND_IN_MILLISECONDS), Robot())
+                                       EventProcessingProber(timeout_in_ms=ONE_SECOND_IN_MILLISECONDS), Robot())
 
     def stop(self):
         self.tagger.close()

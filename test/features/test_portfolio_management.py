@@ -45,3 +45,6 @@ def test_closing_an_album(app, recordings):
     track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
     app.closes_album()
+
+    app.new_album(of_type="mp3")
+    app.shows_album_content()
