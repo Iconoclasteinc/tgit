@@ -68,7 +68,7 @@ class AlbumCompositionPageTest(WidgetTest):
         removeTrackSignal = ValueMatcherProbe('remove track', hasTitle('Set Fire to the Rain'))
         self.page.removeTrack.connect(removeTrackSignal.received)
 
-        self.driver.removeTrack('Set Fire to the Rain')
+        self.driver.remove_track('Set Fire to the Rain')
         self.driver.check(removeTrackSignal)
 
     def testSignalsWhenTrackWasMoved(self):
@@ -80,7 +80,7 @@ class AlbumCompositionPageTest(WidgetTest):
         trackMovedSignal = ValueMatcherProbe('track moved', contains(hasTitle('Tears and Rain'), newPosition))
         self.page.trackMoved.connect(lambda track, to: trackMovedSignal.received([track, newPosition]))
 
-        self.driver.moveTrack('Tears and Rain', newPosition)
+        self.driver.move_track('Tears and Rain', newPosition)
         self.driver.check(trackMovedSignal)
 
     def test_disables_playback_for_unsupported_audio_tracks(self):

@@ -28,10 +28,10 @@ class AlbumScreenDriver(ScreenDriver):
         album_composition_page(self).add_tracks()
         track_selection_dialog(self).select_tracks(*paths)
 
-    def removeTrack(self, title):
-        album_composition_page(self).removeTrack(title)
+    def remove_track(self, title):
+        album_composition_page(self).remove_track(title)
 
-    def moveTrack(self, title, to):
+    def move_track(self, title, to):
         album_composition_page(self).move_track(title, to)
 
     def previousPage(self):

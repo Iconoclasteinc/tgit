@@ -85,9 +85,7 @@ def test_tagging_an_album_with_several_tracks(app, recordings):
 
     app.add_tracks_to_album(*tracks)
 
-    app.shows_album_content(["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
     app.shows_album_metadata()
-
     app.change_album_metadata(lead_performer="Joel Miller")
 
     app.shows_next_track_metadata(track_title="Chevere!")

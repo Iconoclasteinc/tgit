@@ -4,7 +4,7 @@ import sys
 
 from PyQt5.QtCore import QDir, QPoint, Qt, QTime
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
-                             QToolButton, QFileDialog, QMenu, QAction, QComboBox, QMessageBox, QTextEdit, QLabel)
+                             QToolButton, QFileDialog, QMenu, QComboBox, QMessageBox, QTextEdit, QLabel)
 from hamcrest import all_of, equal_to
 
 from hamcrest.core.base_matcher import BaseMatcher
@@ -524,8 +524,8 @@ class QMessageBoxDriver(WidgetDriver):
             nonlocal button
             button = message_box.button(role)
 
-        self.manipulate("query button text", query_button_role)
-        return ButtonDriver(WidgetIdentity(button), EventProcessingProber(), Robot())
+        self.manipulate("lookup button with role {0}".format(role), query_button_role)
+        return ButtonDriver(WidgetIdentity(button), self.prober, self.gesture_performer)
 
 
 class TableViewDriver(WidgetDriver):

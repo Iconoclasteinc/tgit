@@ -28,8 +28,11 @@ class TaggerDriver(MainWindowDriver):
 
     def move_track(self, title, to):
         album_screen(self).move_track(title, to)
-    # todo have a quick navigation button
 
+    def remove_track(self, title):
+        album_screen(self).remove_track(title)
+
+    # todo have a quick navigation button
     def next(self):
         album_screen(self).nextPage()
 

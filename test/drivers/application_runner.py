@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collections import namedtuple
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
@@ -9,6 +10,11 @@ from test.util import doubles
 from tgit.tagger import TGiT
 
 ONE_SECOND_IN_MILLISECONDS = 1000
+
+
+def _make_tracks(tracks):
+    Track = namedtuple('Track', 'title')
+    return map(Track._make, tracks)
 
 
 class ApplicationRunner:
@@ -39,6 +45,14 @@ class ApplicationRunner:
 
     def shows_album_content(self, *tracks):
         self.tagger.shows_album_contains(*tracks)
+
+    def change_order_of_tracks(self, *tracks):
+        for position, track in enumerate(_make_tracks(tracks)):
+            self.tagger.move_track(track.title, position)
+
+    def remove_tracks(self, *titles):
+        for title in titles:
+            self.tagger.remove_track(title)
 
     def shows_album_metadata(self, **tags):
         self.tagger.next()
