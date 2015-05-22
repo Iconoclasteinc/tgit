@@ -7,7 +7,7 @@ from .settings_dialog_driver import settings_dialog
 
 
 def menu_bar(parent):
-    return MenuBarDriver.find_single(parent, QMenuBar)
+    return MenuBarDriver.find_single(parent, QMenuBar, named("menu_bar"))
 
 
 class MenuBarDriver(QMenuBarDriver):
@@ -16,6 +16,7 @@ class MenuBarDriver(QMenuBarDriver):
         menu.menu_item(named("add_files_action")).is_disabled()
         menu.menu_item(named("add_folder_action")).is_disabled()
         menu.menu_item(named("export_action")).is_disabled()
+        menu.menu_item(named("close_album_action")).is_disabled()
         menu.close()
 
     def add_files(self):

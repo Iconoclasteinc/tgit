@@ -6,25 +6,25 @@ from cute.finders import WidgetIdentity
 from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
 from cute.robot import Robot
-from test.drivers import MenuBarDriver
+from test.drivers.main_window_driver import MainWindowDriver
+from test.drivers.menu_bar_driver import MenuBarDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
 from tgit.ui.main_window import MainWindow
 
 
-@pytest.yield_fixture()
+@pytest.fixture()
 def main_window(qt):
     window = MainWindow()
     show_widget(window)
-    yield window
-    window.close()
+    return window
 
 
 @pytest.yield_fixture()
 def driver(main_window):
-    menu_bar_driver = MenuBarDriver(WidgetIdentity(main_window.menu_bar), EventProcessingProber(), Robot())
-    yield menu_bar_driver
-    menu_bar_driver.close()
+    main_window_driver = MainWindowDriver(WidgetIdentity(main_window), EventProcessingProber(), Robot())
+    yield main_window_driver
+    main_window_driver.close()
 
 
 def test_album_menu_is_initially_disabled(driver):
@@ -68,6 +68,16 @@ def test_signals_when_close_album_menu_item_clicked(main_window, driver):
     main_window.enable_menu_actions(album)
 
     driver.close_album()
+    driver.check(close_album_signal)
+
+
+def test_signals_when_close_album_keyboard_shortcut_is_activated(main_window, driver):
+    album = build.album()
+    close_album_signal = ValueMatcherProbe("close", album)
+    main_window.close_album.connect(close_album_signal.received)
+    main_window.enable_menu_actions(album)
+
+    driver.close_album(using_shortcut=True)
     driver.check(close_album_signal)
 
 

@@ -6,7 +6,6 @@ from PyQt5.QtCore import QDir, QPoint, Qt, QTime
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QComboBox, QMessageBox, QTextEdit, QLabel)
 from hamcrest import all_of, equal_to
-
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
@@ -112,10 +111,6 @@ class WidgetDriver(object):
 
     def pause(self, ms):
         self.perform(gestures.pause(ms))
-
-
-class MainWindowDriver(WidgetDriver):
-    pass
 
 
 class ButtonDriver(WidgetDriver):

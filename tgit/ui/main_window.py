@@ -19,6 +19,7 @@
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QMainWindow
 
 from tgit.album import Album
@@ -473,6 +474,8 @@ class MainWindow(QMainWindow):
         self.close_album_action.triggered.connect(lambda checked: self.close_album.emit(self.close_album_action.data()))
         self.export_action.triggered.connect(lambda checked: self.export.emit(self.export_action.data()))
         self.settings_action.triggered.connect(lambda checked: self.settings.emit())
+
+        self.close_album_action.setShortcut(QKeySequence.Close)
 
     def enable_menu_actions(self, album):
         _enable_action(self.add_files_action, album)

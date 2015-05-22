@@ -9,7 +9,7 @@ from .settings_dialog_driver import settings_dialog
 from .welcome_screen_driver import welcome_screen
 
 
-class TaggerDriver(MainWindowDriver):
+class TaggerDriver(WidgetDriver):
     def __init__(self, selector, prober, gesture_performer):
         super().__init__(selector, prober, gesture_performer)
 
