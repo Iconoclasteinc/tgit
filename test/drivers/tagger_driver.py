@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-
 from cute.widgets import MainWindowDriver
-from test.drivers import import_album_from_track_dialog
-from test.drivers.message_box_driver import message_box
-from test.drivers.isni_lookup_dialog_driver import isni_lookup_dialog
-from test.drivers.menu_bar_driver import menu_bar
-from test.drivers.album_screen_driver import album_screen
-from test.drivers.settings_dialog_driver import settings_dialog
-from test.drivers.welcome_screen_driver import welcome_screen
+from .album_screen_driver import album_screen
+from .import_album_from_track_dialog_driver import import_album_from_track_dialog
+from .isni_lookup_dialog_driver import isni_lookup_dialog
+from .menu_bar_driver import menu_bar
+from .message_box_driver import message_box
+from .settings_dialog_driver import settings_dialog
+from .welcome_screen_driver import welcome_screen
 
 
 class TaggerDriver(MainWindowDriver):

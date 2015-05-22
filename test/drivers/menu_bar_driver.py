@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-
 from PyQt5.QtWidgets import QMenuBar
 
 from cute.matchers import named
 from cute.widgets import QMenuBarDriver
-from test.drivers.settings_dialog_driver import settings_dialog
+from .settings_dialog_driver import settings_dialog
 
 
 def menu_bar(parent):

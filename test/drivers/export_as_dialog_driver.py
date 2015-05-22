@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from PyQt5.QtWidgets import QFileDialog
 
 from cute.matchers import named

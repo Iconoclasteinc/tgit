@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
+
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
 from cute.prober import EventProcessingProber
 from cute.robot import Robot
-from test.drivers.tagger_driver import TaggerDriver
 from test.util import doubles
 from tgit.tagger import TGiT
+from .tagger_driver import TaggerDriver
 
 ONE_SECOND_IN_MILLISECONDS = 1000
 

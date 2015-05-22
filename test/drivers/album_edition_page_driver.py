@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named, with_buddy, with_pixmap_height, with_pixmap_width
-from test.drivers import ScreenDriver
-from test.drivers import picture_selection_dialog
 from tgit.ui.album_edition_page import AlbumEditionPage
+from ._screen_driver import ScreenDriver
+from .picture_selection_dialog_driver import picture_selection_dialog
 
 
 def album_edition_page(parent):

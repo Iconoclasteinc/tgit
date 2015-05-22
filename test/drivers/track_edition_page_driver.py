@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named, with_buddy, showing_on_screen, with_pixmap_height, with_pixmap_width
-from test.drivers import ScreenDriver
 from tgit.ui.track_edition_page import TrackEditionPage
+from ._screen_driver import ScreenDriver
 
 
 def track_edition_page(parent):

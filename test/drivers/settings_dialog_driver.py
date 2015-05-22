@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-
 from PyQt5.QtWidgets import QDialog
 
 from cute.matchers import named, with_text, with_buddy, showing_on_screen
 from cute.widgets import window
-from test.drivers import ScreenDriver
+from ._screen_driver import ScreenDriver
 
 
 def settings_dialog(parent):
