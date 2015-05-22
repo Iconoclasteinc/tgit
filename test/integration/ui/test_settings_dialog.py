@@ -8,7 +8,7 @@ from cute.finders import WidgetIdentity
 from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
 from cute.robot import Robot
-from test.drivers import SettingsDialogDriver
+from test.drivers.settings_dialog_driver import SettingsDialogDriver
 from test.integration.ui import show_widget
 from tgit.ui.settings_dialog import SettingsDialog
 

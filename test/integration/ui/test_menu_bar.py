@@ -6,7 +6,7 @@ from cute.finders import WidgetIdentity
 from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
 from cute.robot import Robot
-from test.drivers import MenuBarDriver
+from test.drivers.menu_bar_driver import MenuBarDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
 from tgit.ui.main_window import MainWindow

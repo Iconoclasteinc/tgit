@@ -7,7 +7,7 @@ from cute.finders import WidgetIdentity
 from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
 from cute.robot import Robot
-from test.drivers import PerformerDialogDriver
+from test.drivers.performer_dialog_driver import PerformerDialogDriver
 from test.integration.ui import show_widget
 from tgit.ui.performer_dialog import PerformerDialog
 

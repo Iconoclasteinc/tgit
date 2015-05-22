@@ -11,7 +11,7 @@ from cute.widgets import window
 from cute.probes import ValueMatcherProbe
 from test.integration.ui import show_widget
 from test.util import resources
-from test.drivers import ImportAlbumFromTrackDialogDriver
+from test.drivers.import_album_from_track_dialog_driver import ImportAlbumFromTrackDialogDriver
 from tgit.ui.import_album_from_track_dialog import ImportAlbumFromTrackDialog
 
 

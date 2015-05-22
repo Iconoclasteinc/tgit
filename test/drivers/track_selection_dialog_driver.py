@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
 
-from PyQt5.QtWidgets import QFileDialog, QComboBox
-from hamcrest import contains_string, contains
+from PyQt5.QtWidgets import QFileDialog
+from hamcrest import contains_string
 
-from cute.matchers import named, disabled, showing_on_screen
-from cute.widgets import FileDialogDriver, window, ComboBoxDriver
+from cute.matchers import named, disabled
+from cute.widgets import FileDialogDriver, window
 
 
 def track_selection_dialog(parent):
