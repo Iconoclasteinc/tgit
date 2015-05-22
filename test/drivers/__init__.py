@@ -15,4 +15,4 @@ from .settings_dialog_driver import settings_dialog, SettingsDialogDriver
 from .track_edition_page_driver import track_edition_page, TrackEditionPageDriver
 from .welcome_screen_driver import welcome_screen, WelcomeScreenDriver
 
-from .tagger_driver import TaggerDriver
+from .main_window_driver import MainWindowDriver

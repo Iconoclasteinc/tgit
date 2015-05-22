@@ -8,7 +8,7 @@ from cute.prober import EventProcessingProber
 from cute.robot import Robot
 from test.util import doubles
 from tgit.tagger import TGiT
-from .tagger_driver import TaggerDriver
+from .main_window_driver import MainWindowDriver
 
 ONE_SECOND_IN_MILLISECONDS = 1000
 
@@ -26,7 +26,7 @@ class ApplicationRunner:
         self.app = TGiT(doubles.null_audio_player, NameRegistry(host="localhost", assign_host="localhost", port=5000),
                         use_local_isni_backend=True, native=False)
         self.app.show(preferences)
-        self.tagger = TaggerDriver(main_application_window(named("main_window"), showing_on_screen()),
+        self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                    EventProcessingProber(timeout_in_ms=ONE_SECOND_IN_MILLISECONDS), Robot())
 
     def stop(self):

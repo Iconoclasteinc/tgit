@@ -6,8 +6,7 @@ from cute.finders import WidgetIdentity
 from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
 from cute.robot import Robot
-from test.drivers.main_window_driver import MainWindowDriver
-from test.drivers.menu_bar_driver import MenuBarDriver
+from test.drivers import MainWindowDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
 from tgit.ui.main_window import MainWindow
@@ -37,7 +36,7 @@ def test_signals_when_add_files_menu_item_clicked(main_window, driver):
     main_window.add_files.connect(add_files_signal.received)
     main_window.enable_menu_actions(album)
 
-    driver.add_files()
+    driver.add_tracks_to_album(from_menu=True)
     driver.check(add_files_signal)
 
 
@@ -47,7 +46,7 @@ def test_signals_when_add_folder_menu_item_clicked(main_window, driver):
     main_window.add_folder.connect(add_folder_signal.received)
     main_window.enable_menu_actions(album)
 
-    driver.add_folder()
+    driver.add_tracks_in_folder()
     driver.check(add_folder_signal)
 
 
