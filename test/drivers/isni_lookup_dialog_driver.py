@@ -20,7 +20,7 @@
 from cute.matchers import named
 from cute.widgets import window
 
-from test.drivers._screen_driver import ScreenDriver
+from test.drivers import ScreenDriver
 from tgit.ui import ISNILookupDialog
 
 

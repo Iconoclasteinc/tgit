@@ -4,7 +4,7 @@ import os
 from PyQt5.QtWidgets import QFileDialog
 from hamcrest import contains_string
 
-from cute.matchers import named, disabled
+from cute.matchers import named, disabled, showing_on_screen
 from cute.widgets import FileDialogDriver, window
 
 

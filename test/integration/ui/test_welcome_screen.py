@@ -6,7 +6,7 @@ from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
 from cute.finders import WidgetIdentity
 from cute.robot import Robot
-from test.drivers.welcome_screen_driver import WelcomeScreenDriver
+from test.drivers import WelcomeScreenDriver
 from test.integration.ui import show_widget
 from tgit.album import Album
 

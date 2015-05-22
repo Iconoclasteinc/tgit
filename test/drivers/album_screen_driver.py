@@ -3,8 +3,7 @@ from PyQt5.QtCore import Qt
 from hamcrest.library.text import contains_string
 
 from cute.matchers import named
-from test.drivers._screen_driver import ScreenDriver
-from test.drivers.track_selection_dialog_driver import track_selection_dialog
+from test.drivers import ScreenDriver, track_selection_dialog
 from test.drivers.album_edition_page_driver import album_edition_page
 from test.drivers.album_composition_page_driver import album_composition_page
 from test.drivers.track_edition_page_driver import track_edition_page

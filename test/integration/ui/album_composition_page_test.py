@@ -7,7 +7,7 @@ from hamcrest import has_property, contains
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
 from test.integration.ui import WidgetTest
-from test.drivers.album_composition_page_driver import AlbumCompositionPageDriver
+from test.drivers import AlbumCompositionPageDriver
 from test.util import builders as build, doubles
 from tgit.ui.album_composition_page import AlbumCompositionPage
 

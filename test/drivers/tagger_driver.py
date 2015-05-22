@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from cute.widgets import MainWindowDriver
-from test.drivers.import_album_from_track_dialog_driver import import_album_from_track_dialog
+from test.drivers import import_album_from_track_dialog
 from test.drivers.message_box_driver import message_box
 from test.drivers.isni_lookup_dialog_driver import isni_lookup_dialog
 from test.drivers.menu_bar_driver import menu_bar

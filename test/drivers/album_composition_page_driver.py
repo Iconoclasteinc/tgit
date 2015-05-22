@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QAbstractButton
 
 from cute.widgets import ButtonDriver
 from cute.matchers import named
-from test.drivers._screen_driver import ScreenDriver
+from test.drivers import ScreenDriver
 from tgit.ui.album_composition_model import Columns
 from tgit.ui.album_composition_page import AlbumCompositionPage
 

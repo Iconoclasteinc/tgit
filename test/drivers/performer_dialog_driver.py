@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named, with_text
-from test.drivers._screen_driver import ScreenDriver
+from test.drivers import ScreenDriver
 
 
 class PerformerDialogDriver(ScreenDriver):

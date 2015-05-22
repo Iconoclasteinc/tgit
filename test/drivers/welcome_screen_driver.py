@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named
-from test.drivers._screen_driver import ScreenDriver
+from test.drivers import ScreenDriver
 from tgit.ui.welcome_screen import WelcomeScreen
 
 
