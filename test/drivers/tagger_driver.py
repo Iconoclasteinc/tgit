@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QDialog, QAbstractButton
-
-from cute import matchers as match
-from cute.matchers import showing_on_screen, with_text
-from cute.widgets import MainWindowDriver, WidgetDriver, ButtonDriver
+from cute.widgets import MainWindowDriver
 from test.drivers import import_album_from_track_dialog
 from test.drivers.message_box_driver import message_box
 from test.drivers.isni_lookup_dialog_driver import isni_lookup_dialog
@@ -58,7 +54,7 @@ class TaggerDriver(MainWindowDriver):
     def change_settings(self, **settings):
         menu_bar(self).settings()
         settings_dialog(self).changeSettings(settings)
-        self.acknowledge()
+        message_box(self).ok()
 
     def has_settings(self, **settings):
         dialog = menu_bar(self).settings()
@@ -66,10 +62,6 @@ class TaggerDriver(MainWindowDriver):
             dialog.showsSettings(settings)
         finally:
             dialog.close()
-
-    def acknowledge(self):
-        ok = ButtonDriver.find_single(self.restart_message(), QAbstractButton, with_text("OK"))
-        ok.click()
 
     def assign_isni_to_lead_performer(self):
         album_screen(self).assign_isni_to_lead_performer()
@@ -79,23 +71,20 @@ class TaggerDriver(MainWindowDriver):
         message_box(self).is_showing_on_screen()
 
         try:
-            message_box(self).is_showing_message("Could not assign an ISNI")
-            message_box(self).is_showing_details("invalid code creationRole eee")
+            message_box(self).shows_message("Could not assign an ISNI")
+            message_box(self).shows_details("invalid code creationRole eee")
         finally:
-            message_box(self).acknowledge()
+            message_box(self).ok()
 
     def finds_isni_of_lead_performer(self):
         album_screen(self).lookup_isni_of_lead_performer()
         isni_lookup_dialog(self).selects_first_identity()
-        isni_lookup_dialog(self).confirm()
-
-    def restart_message(self):
-        return WidgetDriver.find_single(self, QDialog, match.named("restart-message"), showing_on_screen())
+        isni_lookup_dialog(self).accept()
 
     def closes_album(self):
         menu_bar(self).close_album()
         try:
             message_box(self).is_showing_on_screen()
         finally:
-            message_box(self).confirm()
+            message_box(self).yes()
         welcome_screen(self).is_showing_on_screen()

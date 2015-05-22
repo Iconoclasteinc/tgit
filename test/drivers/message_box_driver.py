@@ -18,25 +18,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtWidgets import QMessageBox
-from hamcrest import contains_string
 
-from cute.matchers import named, with_text
-from test.drivers import ScreenDriver
+from cute.matchers import named
+from cute.widgets import QMessageBoxDriver, window
 
 
 def message_box(parent):
-    return MessageBoxDriver.find_single(parent, QMessageBox, named("message_box"))
-
-
-class MessageBoxDriver(ScreenDriver):
-    def is_showing_message(self, message):
-        self.label(named("qt_msgbox_label")).has_text(message)
-
-    def is_showing_details(self, message):
-        self.rich_text_edit().has_plain_text(message)
-
-    def acknowledge(self):
-        self.button(with_text("OK")).click()
-
-    def confirm(self):
-        self.button(with_text(contains_string("Yes"))).click()
+    return QMessageBoxDriver(window(QMessageBox, named("message_box")), parent.prober, parent.gesture_performer)

@@ -34,8 +34,8 @@ from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
-from tgit.ui.restart_message_box import RestartMessageBox
-from tgit.ui.restart_message_box import isni_assignation_failed_message_box
+from tgit.ui.message_box import restart_message_box
+from tgit.ui.message_box import isni_assignation_failed_message_box
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
@@ -184,13 +184,13 @@ def make_picture_selection_dialog(parent_window, native, album):
     return dialog
 
 
-def SettingsDialogController(restartNotice, preferences, parent):
+def SettingsDialogController(restart_notice, preferences, parent):
     dialog = SettingsDialog(parent)
 
     def save_preferences():
         preferences.add(**dialog.settings)
         dialog.close()
-        restartNotice(parent).display()
+        restart_notice(parent).open()
 
     dialog.accepted.connect(save_preferences)
     dialog.add_language("en", dialog.tr("English"))
@@ -275,7 +275,7 @@ class Dialogs:
 
 def create_main_window(portfolio, player, preferences, name_registry, use_local_isni_backend, native):
     def show_settings_dialog():
-        return SettingsDialogController(RestartMessageBox, preferences, window)
+        return SettingsDialogController(restart_message_box, preferences, window)
 
     def create_welcome_screen():
         return WelcomeScreen(dialogs, portfolio)

@@ -4,7 +4,7 @@ import sys
 
 from PyQt5.QtCore import QDir, QPoint, Qt, QTime
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
-                             QToolButton, QFileDialog, QMenu, QAction, QComboBox)
+                             QToolButton, QFileDialog, QMenu, QAction, QComboBox, QMessageBox, QTextEdit, QLabel)
 from hamcrest import all_of, equal_to
 
 from hamcrest.core.base_matcher import BaseMatcher
@@ -502,6 +502,30 @@ class MenuItemDriver(WidgetDriver):
     def click(self):
         self.is_enabled()
         self.perform(gestures.mouse_move(self._center_of_item()), gestures.mouse_click())
+
+
+class QMessageBoxDriver(WidgetDriver):
+    def shows_message(self, message):
+        LabelDriver.find_single(self, QLabel, match.named("qt_msgbox_label")).has_text(message)
+
+    def shows_details(self, details):
+        TextEditDriver.find_single(self, QTextEdit).has_plain_text(details)
+
+    def ok(self):
+        self._dialog_button(QMessageBox.Ok).click()
+
+    def yes(self):
+        self._dialog_button(QMessageBox.Yes).click()
+
+    def _dialog_button(self, role):
+        button = None
+
+        def query_button_role(message_box):
+            nonlocal button
+            button = message_box.button(role)
+
+        self.manipulate("query button text", query_button_role)
+        return ButtonDriver(WidgetIdentity(button), EventProcessingProber(), Robot())
 
 
 class TableViewDriver(WidgetDriver):

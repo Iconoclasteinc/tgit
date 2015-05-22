@@ -16,19 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 from PyQt5.QtCore import pyqtSignal
-
 from PyQt5.QtWidgets import QMessageBox, QStyle
-
-
-def _create_message_box(parent, message, details=None):
-    message_box = QMessageBox(parent)
-    message_box.setObjectName("message_box")
-    message_box.setText(message_box.tr(message))
-    if details is not None:
-        message_box.setDetailedText(details)
-    message_box.setModal(True)
-    return message_box
 
 
 def _append_icon_to(message_box, icon_to_append):
@@ -38,17 +28,16 @@ def _append_icon_to(message_box, icon_to_append):
     message_box.setIconPixmap(icon.pixmap(icon_size, icon_size))
 
 
-def isni_assignation_failed_message_box(parent, details):
-    message_box = _create_message_box(parent, "Could not assign an ISNI", details)
-    _append_icon_to(message_box, QStyle.SP_MessageBoxWarning)
+def restart_message_box(parent):
+    return MessageBox.inform(parent, "You need to restart TGiT for changes to take effect.")
 
-    return message_box
+
+def isni_assignation_failed_message_box(parent, details):
+    return MessageBox.warn(parent, "Could not assign an ISNI", details)
 
 
 def close_album_confirmation_box(parent):
-    message_box = ConfirmationBox(parent, "???")
-    _append_icon_to(message_box, QStyle.SP_MessageBoxQuestion)
-    return message_box
+    return ConfirmationBox(parent, "???")
 
 
 class ConfirmationBox(QMessageBox):
@@ -61,6 +50,7 @@ class ConfirmationBox(QMessageBox):
         self.setModal(True)
         self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         self.buttonClicked.connect(self._button_clicked)
+        _append_icon_to(self, QStyle.SP_MessageBoxQuestion)
 
     def _button_clicked(self, button):
         role = self.buttonRole(button)
@@ -69,11 +59,24 @@ class ConfirmationBox(QMessageBox):
             self.yes.emit()
 
 
-class RestartMessageBox(QMessageBox):
-    def __init__(self, parent=None):
-        QMessageBox.__init__(self, parent)
-        self.setObjectName("restart-message")
-        self.setText(self.tr("You need to restart TGiT for changes to take effect."))
+class MessageBox(QMessageBox):
+    def __init__(self, parent, message, icon=QStyle.SP_MessageBoxInformation, details=None):
+        super().__init__(parent)
+        self.setObjectName("message_box")
+        self.setText(self.tr(message))
+        self.setModal(True)
+        self.setDetailedText(details)
+        self.setStandardButtons(QMessageBox.Ok)
+        _append_icon_to(self, icon)
 
-    def display(self):
-        self.open()
+    @staticmethod
+    def inform(parent, message, details=None):
+        return MessageBox(parent, message, QStyle.SP_MessageBoxInformation, details)
+
+    @staticmethod
+    def warn(parent, message, details=None):
+        return MessageBox(parent, message, QStyle.SP_MessageBoxWarning, details)
+
+    @staticmethod
+    def error(parent, message, details=None):
+        return MessageBox(parent, message, QStyle.SP_MessageBoxCritical, details)

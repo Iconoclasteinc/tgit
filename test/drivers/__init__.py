@@ -10,7 +10,6 @@ from .import_album_from_track_dialog_driver import import_album_from_track_dialo
 from .album_composition_page_driver import album_composition_page, AlbumCompositionPageDriver
 from .album_edition_page_driver import album_edition_page, AlbumEditionPageDriver
 from .album_screen_driver import album_screen, AlbumScreenDriver
-from .message_box_driver import MessageBoxDriver
 from .menu_bar_driver import menu_bar, MenuBarDriver
 from .performer_dialog_driver import PerformerDialogDriver
 from .settings_dialog_driver import settings_dialog, SettingsDialogDriver

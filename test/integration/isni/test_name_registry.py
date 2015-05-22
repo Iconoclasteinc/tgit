@@ -45,6 +45,7 @@ def has_identity(isni=anything(), name=anything(), birth_date=anything(), title=
 
 
 def test_finds_person(server, registry):
+    server.persons.clear()
     server.persons["00000001"] = [{"names": [
         ("Joel", "Miller", "1969-"), ("Joel E.", "Miller", ""), ("joel", "miller", "")], "titles": ["Honeycombs"]}]
 

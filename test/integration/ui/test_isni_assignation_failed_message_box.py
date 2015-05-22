@@ -23,7 +23,7 @@ import pytest
 from cute.finders import WidgetIdentity
 from cute.prober import EventProcessingProber
 from cute.robot import Robot
-from test.drivers import MessageBoxDriver
+from cute.widgets import QMessageBoxDriver
 from test.integration.ui import show_widget
 from tgit.ui import isni_assignation_failed_message_box
 
@@ -38,9 +38,9 @@ def window(qt):
 
 def test_shows_assignation_failed_message_with_details(window):
     dialog = isni_assignation_failed_message_box(window, "Details")
-    driver = MessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
+    driver = QMessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
     dialog.open()
 
-    driver.is_showing_message("Could not assign an ISNI")
-    driver.is_showing_details("Details")
-    driver.acknowledge()
+    driver.shows_message("Could not assign an ISNI")
+    driver.shows_details("Details")
+    driver.ok()

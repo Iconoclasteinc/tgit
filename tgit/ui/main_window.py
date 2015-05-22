@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QMainWindow
 
 from tgit.album import Album
 from tgit.ui.helpers import ui_file
-from tgit.ui.restart_message_box import close_album_confirmation_box
+from tgit.ui.message_box import close_album_confirmation_box
 
 
 StyleSheet = """

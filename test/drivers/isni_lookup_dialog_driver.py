@@ -33,5 +33,5 @@ class IsniLookupDialogDriver(ScreenDriver):
     def selects_first_identity(self):
         self.radio(named("identity_radio_0")).click()
 
-    def confirm(self):
+    def accept(self):
         self.button(named("ok-button")).click()
