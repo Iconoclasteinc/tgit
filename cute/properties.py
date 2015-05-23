@@ -14,6 +14,10 @@ def text():
     return PropertyQuery("text", lambda w: w.text())
 
 
+def data():
+    return PropertyQuery("data", lambda w: w.data())
+
+
 def label_pixmap():
     return PropertyQuery("pixmap", QLabel.pixmap)
 
@@ -48,6 +52,10 @@ def list_item_text():
 
 def time():
     return PropertyQuery("time", QDateTimeEdit.time)
+
+
+def date():
+    return PropertyQuery("date", QDateTimeEdit.date)
 
 
 def title():

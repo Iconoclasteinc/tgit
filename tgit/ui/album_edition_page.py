@@ -17,280 +17,175 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QSizePolicy, QGroupBox, QLabel
+from queue import Queue
 
+from PyQt5.QtCore import Qt, pyqtSignal, QDate, QEventLoop
+from PyQt5.QtWidgets import QWidget, QLabel, QApplication
+
+from .helpers import image, formatting, ui_file
+from tgit import album_director as director
 from tgit.album import AlbumListener
 from tgit.genres import GENRES
-from tgit.ui.helpers import form, image, formatting
+from tgit.isni.name_registry import NameRegistry
+from tgit.util import async_task_runner as task_runner
+
+
+def make_album_edition_page(dialogs, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
+                            performer_dialog_factory, show_assignation_failed, album, name_registry,
+                            use_local_isni_backend):
+    def poll_queue():
+        while queue.empty():
+            QApplication.processEvents(QEventLoop.AllEvents, 100)
+        return queue.get(True)
+
+    def lookup_isni():
+        activity_dialog = activity_indicator_dialog_factory()
+        activity_dialog.show()
+        task_runner.runAsync(lambda: director.lookupISNI(name_registry, album.lead_performer)).andPutResultInto(
+            queue).run()
+
+        identities = poll_queue()
+        activity_dialog.close()
+        dialog = lookup_isni_dialog_factory(album, identities)
+        dialog.show()
+
+    def assign_isni():
+        activity_dialog = activity_indicator_dialog_factory()
+        activity_dialog.show()
+        task_runner.runAsync(lambda: director.assign_isni(name_registry, album)).andPutResultInto(queue).run()
+        code, payload = poll_queue()
+        activity_dialog.close()
+        if code == NameRegistry.Codes.SUCCESS:
+            album.isni = payload
+        else:
+            show_assignation_failed(payload)
+
+    def add_performer():
+        dialog = performer_dialog_factory(album)
+        dialog.show()
+
+    queue = Queue()
+    page = AlbumEditionPage(use_local_isni_backend)
+    page.metadata_changed.connect(lambda metadata: director.updateAlbum(album, **metadata))
+    page.select_picture.connect(lambda: dialogs.select_cover(album).open())
+    page.remove_picture.connect(lambda: director.removeAlbumCover(album))
+    page.lookup_isni.connect(lookup_isni)
+    page.assign_isni.connect(assign_isni)
+    page.clear_isni.connect(lambda: director.clearISNI(album))
+    page.add_performer.connect(add_performer)
+    album.addAlbumListener(page)
+    page.refresh(album)
+    return page
 
 
 class AlbumEditionPage(QWidget, AlbumListener):
-    selectPicture = pyqtSignal()
-    removePicture = pyqtSignal()
-    lookupISNI = pyqtSignal()
-    clearISNI = pyqtSignal()
-    assignISNI = pyqtSignal()
-    addPerformer = pyqtSignal()
-    metadataChanged = pyqtSignal(dict)
+    select_picture = pyqtSignal()
+    remove_picture = pyqtSignal()
+    lookup_isni = pyqtSignal()
+    clear_isni = pyqtSignal()
+    assign_isni = pyqtSignal()
+    add_performer = pyqtSignal()
+    metadata_changed = pyqtSignal(dict)
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, album, use_local_isni_backend=False):
-        QWidget.__init__(self)
+    def __init__(self, use_local_isni_backend=False):
+        super().__init__()
+        ui_file.load(":/ui/album_page.ui", self)
         self.use_local_isni_backend = use_local_isni_backend
-        self.album = album
         self.picture = None
-        self._build()
 
-    def _build(self):
-        self.setObjectName("album-edition-page")
-        layout = form.row()
-        layout.setSpacing(0)
-        layout.addWidget(self._make_left_column())
-        layout.addWidget(self._make_right_column())
-        self.setLayout(layout)
         self._disable_mac_focus_frame()
-        self._disable_teaser_fields()
+
+        # picture box
+        self.front_cover.setFixedSize(*self.FRONT_COVER_SIZE)
+        self.select_picture_button.clicked.connect(lambda pressed: self.select_picture.emit())
+        self.remove_picture_button.clicked.connect(lambda pressed: self.remove_picture.emit())
+
+        # date box
+        self.release_time.dateChanged.connect(lambda: self.metadata_changed.emit(self.metadata("releaseTime")))
+        self.digital_release_time.dateChanged.connect(
+            lambda: self.metadata_changed.emit(self.metadata("digitalReleaseTime")))
+        self.original_release_time.dateChanged.connect(
+            lambda: self.metadata_changed.emit(self.metadata("originalReleaseTime")))
+        self.recording_time.dateChanged.connect(lambda: self.metadata_changed.emit(self.metadata("recording_time")))
+
+        # album box
+        self.release_name.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("release_name")))
+        self.lookup_isni_button.clicked.connect(lambda pressed: self.lookup_isni.emit())
+        self.assign_isni_button.clicked.connect(lambda: self.assign_isni.emit())
+        self.compilation.clicked.connect(lambda: self.metadata_changed.emit(self.metadata("compilation")))
+        self.compilation.clicked.connect(self._adjust_isni_lookup_state_on_compilation_changed)
+        self.lead_performer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("lead_performer")))
+        self.lead_performer.textChanged.connect(self._adjust_isni_lookup_and_assign_state_on_lead_performer_changed)
+        self.clear_isni_button.clicked.connect(lambda: self.clear_isni.emit())
+        self.clear_isni_button.clicked.connect(lambda: self.release_time.calendarWidget().show())
+        self.add_guest_performers_button.clicked.connect(lambda: self.add_performer.emit())
+        self.guest_performers.editingFinished.connect(
+            lambda: self.metadata_changed.emit(self.metadata("guestPerformers")))
+
+        # record
+        self.label_name.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("label_name")))
+        self.catalog_number.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("catalogNumber")))
+        self.barcode.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("upc")))
+        self.media_type.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("media_type")))
+        self.release_type.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("releaseType")))
+        self.comments.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("comments")))
+
+        # recording
+        self.recording_studios.editingFinished.connect(
+            lambda: self.metadata_changed.emit(self.metadata("recordingStudios")))
+        self.producer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("producer")))
+        self.mixer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("mixer")))
+        self.genre.addItems(sorted(GENRES))
+        self.genre.activated.connect(lambda: self.metadata_changed.emit(self.metadata("primary_style")))
+        self.genre.lineEdit().textEdited.connect(
+            lambda: self.metadata_changed.emit(self.metadata("primary_style")))
 
     def albumStateChanged(self, album):
-        self.refresh()
+        self.refresh(album)
 
-    def _make_left_column(self):
-        column = QWidget()
-        column.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        layout = form.column()
-        layout.addWidget(self._make_pictures_fields())
-        layout.addWidget(self._make_dates_fields())
-        layout.addStretch()
-        column.setLayout(layout)
-        return column
-
-    def _make_right_column(self):
-        column = QWidget()
-        layout = form.column()
-        layout.addWidget(self._make_album_fields())
-        layout.addWidget(self._make_record_fields())
-        layout.addWidget(self._make_recording_fields())
-        layout.addStretch()
-        column.setLayout(layout)
-        return column
-
-    def _make_pictures_fields(self):
-        pictures = QGroupBox()
-        pictures.setObjectName("pictures")
-        pictures.setTitle(self.tr("PICTURES"))
-        layout = form.column()
-        self.mainCover = form.label("front-cover")
-        self.mainCover.setFixedSize(*self.FRONT_COVER_SIZE)
-        layout.addWidget(self.mainCover)
-        buttons = form.row()
-        buttons.addStretch()
-        select_picture = form.button("select-picture", self.tr("SELECT PICTURE..."))
-        select_picture.clicked.connect(lambda pressed: self.selectPicture.emit())
-        buttons.addWidget(select_picture)
-        remove_picture = form.button("remove-picture", self.tr("REMOVE"))
-        remove_picture.clicked.connect(lambda pressed: self.removePicture.emit())
-        buttons.addWidget(remove_picture)
-        buttons.addStretch()
-        layout.addLayout(buttons)
-        pictures.setLayout(layout)
-        return pictures
-
-    def _make_dates_fields(self):
-        dates = QGroupBox()
-        dates.setTitle(self.tr("DATES"))
-        layout = form.layout()
-        self.releaseTime = form.lineEdit("release-time")
-        self.releaseTime.setPlaceholderText(self.tr("YYYY-MM-DD"))
-        self.releaseTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("releaseTime")))
-        layout.addRow(form.labelFor(self.releaseTime, self.tr("Release Time:")), self.releaseTime)
-        self.digitalReleaseTime = form.lineEdit("digital-release-time")
-        self.digitalReleaseTime.editingFinished.connect(
-            lambda: self.metadataChanged.emit(self.metadata("digitalReleaseTime")))
-        layout.addRow(form.labelFor(self.digitalReleaseTime, self.tr("Digital Release Time:")), self.digitalReleaseTime)
-        self.originalReleaseTime = form.lineEdit("original-release-time")
-        self.originalReleaseTime.editingFinished.connect(
-            lambda: self.metadataChanged.emit(self.metadata("originalReleaseTime")))
-        layout.addRow(form.labelFor(self.originalReleaseTime, self.tr("Original Release Time:")),
-                      self.originalReleaseTime)
-        self.recordingTime = form.lineEdit("recording-time")
-        self.recordingTime.setPlaceholderText(self.tr("YYYY-MM-DD"))
-        self.recordingTime.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("recording_time")))
-        layout.addRow(form.labelFor(self.recordingTime, self.tr("Recording Time:")), self.recordingTime)
-        dates.setLayout(layout)
-        return dates
-
-    def _make_album_fields(self):
-        def adjust_isni_lookup_state_on_compilation_changed(state):
-            buttons = [lookup_isni]
-            AlbumEditionPage._enable_or_disable_isni_button(state is Qt.Checked, self.album.lead_performer, buttons)
-
-        def adjust_isni_lookup_and_assign_state_on_lead_performer_changed(text):
-            buttons = [lookup_isni]
-            if self.use_local_isni_backend and buttons.count(assign_isni) == 0:
-                buttons.append(assign_isni)
-
-            AlbumEditionPage._enable_or_disable_isni_button(self.album.compilation, text, buttons)
-
-        albums = QGroupBox()
-        albums.setObjectName("album-box")
-        albums.setTitle(self.tr("ALBUM"))
-        layout = form.layout()
-
-        self.releaseName = form.lineEdit("release-name")
-        self.releaseName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("release_name")))
-        layout.addRow(form.labelFor(self.releaseName, self.tr("Release Name:")), self.releaseName)
-
-        lookup_isni = form.button("lookup-isni", self.tr("LOOKUP ISNI"), disabled=True)
-        lookup_isni.clicked.connect(lambda pressed: self.lookupISNI.emit())
-        lookup_isni.setAttribute(Qt.WA_LayoutUsesWidgetRect)
-        lookup_isni.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-
-        assign_isni = form.button("assign-isni", self.tr("ASSIGN ISNI"), disabled=True)
-        assign_isni.clicked.connect(lambda: self.assignISNI.emit())
-        assign_isni.setAttribute(Qt.WA_LayoutUsesWidgetRect)
-        assign_isni.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-
-        self.compilation = form.checkBox("compilation")
-        self.compilation.clicked.connect(lambda: self.metadataChanged.emit(self.metadata("compilation")))
-        self.compilation.stateChanged.connect(adjust_isni_lookup_state_on_compilation_changed)
-        layout.addRow(form.labelFor(self.compilation, self.tr("Compilation:")), self.compilation)
-
-        self.leadPerformer = form.lineEdit("lead-performer")
-        self.leadPerformer.setPlaceholderText(self.tr("Artist, Band or Various Artists"))
-        self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("lead_performer")))
-        self.leadPerformer.textChanged.connect(adjust_isni_lookup_and_assign_state_on_lead_performer_changed)
-        lead_performer_row = form.row()
-        lead_performer_row.addWidget(self.leadPerformer)
-        lead_performer_row.addWidget(lookup_isni)
-        lead_performer_row.addWidget(assign_isni)
-        layout.addRow(form.labelFor(self.leadPerformer, self.tr("Lead Performer:")), lead_performer_row)
-
-        clear_isni = form.button("clear-isni", self.tr("CLEAR ISNI"))
-        clear_isni.clicked.connect(lambda: self.clearISNI.emit())
-        clear_isni.setAttribute(Qt.WA_LayoutUsesWidgetRect)
-        clear_isni.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        self.isni = form.lineEdit("isni", disabled=True)
-        isni_row = form.row()
-        isni_row.addWidget(self.isni)
-        isni_row.addWidget(clear_isni)
-        layout.addRow(form.labelFor(self.isni, self.tr("ISNI:"), disabled=True), isni_row)
-
-        self.area = form.lineEdit("area")
-        layout.addRow(form.labelFor(self.area, self.tr("Area:")), self.area)
-
-        add_performer = form.button("add-performer", self.tr("+"))
-        add_performer.clicked.connect(lambda: self.addPerformer.emit())
-        add_performer.setAttribute(Qt.WA_LayoutUsesWidgetRect)
-        add_performer.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        self.guestPerformers = form.lineEdit("guest-performers")
-        self.guestPerformers.setPlaceholderText(self.tr("Instrument1: Performer1; Instrument2: Performer2; ..."))
-        self.guestPerformers.editingFinished.connect(
-            lambda: self.metadataChanged.emit(self.metadata("guestPerformers")))
-        performers_row = form.row()
-        performers_row.addWidget(self.guestPerformers)
-        performers_row.addWidget(add_performer)
-        layout.addRow(form.labelFor(self.guestPerformers, self.tr("Guest Performers:")), performers_row)
-
-        albums.setLayout(layout)
-        return albums
-
-    def _make_record_fields(self):
-        record = QGroupBox()
-        record.setTitle(self.tr("RECORD"))
-        layout = form.layout()
-        self.labelName = form.lineEdit("label-name")
-        self.labelName.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("label_name")))
-        layout.addRow(form.labelFor(self.labelName, self.tr("Label Name:")), self.labelName)
-        self.catalogNumber = form.lineEdit("catalog-number")
-        self.catalogNumber.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("catalogNumber")))
-        layout.addRow(form.labelFor(self.catalogNumber, self.tr("Catalog Number:")), self.catalogNumber)
-        self.upc = form.lineEdit("upc")
-        self.upc.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("upc")))
-        self.upc.setPlaceholderText("1234567899999")
-        layout.addRow(form.labelFor(self.upc, self.tr("UPC/EAN:")), self.upc)
-        self.mediaType = form.lineEdit("media-type")
-        self.mediaType.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("mediaType")))
-        layout.addRow(form.labelFor(self.mediaType, self.tr("Media Type:")), self.mediaType)
-        self.releaseType = form.lineEdit("release-type")
-        self.releaseType.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("releaseType")))
-        # layout.addRow(form.labelFor(self.releaseType, self.tr("Release Type:")), self.releaseType)
-        self.comments = form.textArea("comments")
-        self.comments.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("comments")))
-        layout.addRow(form.labelFor(self.comments, self.tr("Comments:")), self.comments)
-        record.setLayout(layout)
-        return record
-
-    def _make_recording_fields(self):
-        recording = QGroupBox()
-        recording.setTitle(self.tr("RECORDING"))
-        layout = form.layout()
-        self.recordingStudios = form.lineEdit("recording-studios")
-        self.recordingStudios.editingFinished.connect(
-            lambda: self.metadataChanged.emit(self.metadata("recordingStudios")))
-        layout.addRow(form.labelFor(self.recordingStudios, self.tr("Recording Studios:")), self.recordingStudios)
-        self.producer = form.lineEdit("producer")
-        self.producer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("producer")))
-        layout.addRow(form.labelFor(self.producer, self.tr("Producer:")), self.producer)
-        self.mixer = form.lineEdit("mixer")
-        self.mixer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata("mixer")))
-        layout.addRow(form.labelFor(self.mixer, self.tr("Mixer:")), self.mixer)
-        self.primaryStyle = form.comboBox("primary-style")
-        self.primaryStyle.addItems(sorted(GENRES))
-        self.primaryStyle.activated.connect(lambda: self.metadataChanged.emit(self.metadata("primary_style")))
-        self.primaryStyle.lineEdit().textEdited.connect(
-            lambda: self.metadataChanged.emit(self.metadata("primary_style")))
-        layout.addRow(form.labelFor(self.primaryStyle, self.tr("Primary Style:")), self.primaryStyle)
-        recording.setLayout(layout)
-        return recording
-
-    def _disable_teaser_fields(self):
-        for field in (self.digitalReleaseTime, self.originalReleaseTime, self.area, self.mediaType):#, self.releaseType):
-            field.setDisabled(True)
-            self._label_for(field).setDisabled(True)
-
-    def refresh(self):
-        if self.album.mainCover is not self.picture or self.album.mainCover is None:
-            self.mainCover.setPixmap(image.scale(self.album.mainCover, *self.FRONT_COVER_SIZE))
-            self.picture = self.album.mainCover
-        self.releaseName.setText(self.album.release_name)
-        self.compilation.setChecked(self.album.compilation is True)
-        self._display_lead_performer(self.album)
-        self.isni.setText(self.album.isni)
-        self.guestPerformers.setText(formatting.toPeopleList(self.album.guestPerformers))
-        self.labelName.setText(self.album.label_name)
-        self.catalogNumber.setText(self.album.catalogNumber)
-        self.upc.setText(self.album.upc)
-        self.comments.setPlainText(self.album.comments)
-        self.releaseTime.setText(self.album.releaseTime)
-        self.recordingTime.setText(self.album.recording_time)
-        self.recordingStudios.setText(self.album.recordingStudios)
-        self.producer.setText(self.album.producer)
-        self.mixer.setText(self.album.mixer)
-        self.primaryStyle.setEditText(self.album.primary_style)
+    def refresh(self, album):
+        if album.mainCover is not self.picture or album.mainCover is None:
+            self.front_cover.setPixmap(image.scale(album.mainCover, *self.FRONT_COVER_SIZE))
+            self.picture = album.mainCover
+        self.release_name.setText(album.release_name)
+        self.compilation.setChecked(album.compilation is True)
+        self._display_lead_performer(album)
+        self.isni.setText(album.isni)
+        self.guest_performers.setText(formatting.toPeopleList(album.guestPerformers))
+        self.label_name.setText(album.label_name)
+        self.catalog_number.setText(album.catalogNumber)
+        self.barcode.setText(album.upc)
+        self.comments.setPlainText(album.comments)
+        self.release_time.setDate(QDate.fromString(album.releaseTime, "yyyy-MM-dd"))
+        self.recording_time.setDate(QDate.fromString(album.recording_time, "yyyy-MM-dd"))
+        self.recording_studios.setText(album.recordingStudios)
+        self.producer.setText(album.producer)
+        self.mixer.setText(album.mixer)
+        self.genre.setEditText(album.primary_style)
 
     def _display_lead_performer(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
-        self.leadPerformer.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
-        self.leadPerformer.setDisabled(album.compilation is True)
+        self.lead_performer.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
+        self.lead_performer.setDisabled(album.compilation is True)
 
     def metadata(self, *keys):
-        all_values = dict(release_name=self.releaseName.text(),
+        all_values = dict(release_name=self.release_name.text(),
                           compilation=self.compilation.isChecked(),
-                          lead_performer=self.leadPerformer.text(),
+                          lead_performer=self.lead_performer.text(),
                           isni=self.isni.text(),
-                          guestPerformers=formatting.fromPeopleList(self.guestPerformers.text()),
-                          label_name=self.labelName.text(),
-                          catalogNumber=self.catalogNumber.text(),
-                          upc=self.upc.text(),
+                          guestPerformers=formatting.fromPeopleList(self.guest_performers.text()),
+                          label_name=self.label_name.text(),
+                          catalogNumber=self.catalog_number.text(),
+                          upc=self.barcode.text(),
                           comments=self.comments.toPlainText(),
-                          recording_time=self.recordingTime.text(),
-                          releaseTime=self.releaseTime.text(),
-                          recordingStudios=self.recordingStudios.text(),
+                          recording_time=self.recording_time.date().toString("yyyy-MM-dd"),
+                          releaseTime=self.release_time.date().toString("yyyy-MM-dd"),
+                          recordingStudios=self.recording_studios.text(),
                           producer=self.producer.text(),
                           mixer=self.mixer.text(),
-                          primary_style=self.primaryStyle.currentText())
+                          primary_style=self.genre.currentText())
 
         if len(keys) == 0:
             return all_values
@@ -316,6 +211,17 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
     def _child_widget(self, of_type, matching):
         return next(child for child in self.findChildren(of_type) if matching(child))
+
+    def _adjust_isni_lookup_state_on_compilation_changed(self):
+        buttons = [self.lookup_isni_button]
+        self._enable_or_disable_isni_button(self.compilation.isChecked(), self.lead_performer.text(), buttons)
+
+    def _adjust_isni_lookup_and_assign_state_on_lead_performer_changed(self, text):
+        buttons = [self.lookup_isni_button]
+        if self.use_local_isni_backend and buttons.count(self.assign_isni_button) == 0:
+            buttons.append(self.assign_isni_button)
+
+        self._enable_or_disable_isni_button(self.compilation.isChecked(), text, buttons)
 
     @staticmethod
     def _enable_or_disable_isni_button(compilation, lead_performer, buttons):

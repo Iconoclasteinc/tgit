@@ -28,6 +28,10 @@ def with_text(text):
     return with_(properties.text(), wrap_matcher(text))
 
 
+def with_data(data):
+    return with_(properties.data(), wrap_matcher(data))
+
+
 def with_list_item_text(text):
     return with_(properties.list_item_text(), wrap_matcher(text))
 

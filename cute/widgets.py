@@ -2,14 +2,16 @@
 
 import sys
 
-from PyQt5.QtCore import QDir, QPoint, Qt, QTime
+from PyQt5.QtCore import QDir, QPoint, Qt, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
-                             QToolButton, QFileDialog, QMenu, QComboBox, QMessageBox, QTextEdit, QLabel)
+                             QToolButton, QFileDialog, QMenu, QComboBox, QMessageBox, QTextEdit, QLabel,
+                             QAbstractButton, QSpinBox, QTableView)
 from hamcrest import all_of, equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from . import gestures, properties, keyboard_shortcuts as shortcuts, matchers as match
+from cute import keyboard_shortcuts
 from cute.prober import EventProcessingProber
 from cute.robot import Robot
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
@@ -183,6 +185,9 @@ class TextEditDriver(AbstractEditDriver):
         self.perform(shortcuts.ENTER)
 
 
+class QAbstractSpinBoxDriver(AbstractEditDriver):
+    pass
+
 class ComboBoxDriver(AbstractEditDriver):
     CHOICES_DISPLAY_DELAY = 250
 
@@ -201,14 +206,142 @@ class ComboBoxDriver(AbstractEditDriver):
 
 class DateTimeEditDriver(WidgetDriver):
     def has_time(self, time):
-        class QueryDisplayFormat(object):
-            def __call__(self, dateTimeEdit):
-                self.result = dateTimeEdit.displayFormat()
+        display_format = None
 
-        query_display_format = QueryDisplayFormat()
-        self.manipulate('query display format', query_display_format)
+        def query_display_format(date_edit):
+            nonlocal display_format
+            display_format = date_edit.displayFormat()
 
-        self.has(properties.time(), equal_to(QTime.fromString(time, query_display_format.result)))
+        self.manipulate("query display format", query_display_format)
+        self.has(properties.time(), equal_to(QTime.fromString(time, display_format)))
+
+    def has_date(self, date):
+        def query_display_format(date_edit):
+            nonlocal display_format
+            display_format = date_edit.displayFormat()
+
+        display_format = None
+        self.manipulate("query display format", query_display_format)
+        self.has(properties.date(), equal_to(QDate.fromString(date, display_format)))
+
+    def change_date(self, year, month, day):
+        self._popup_calendar()
+        self.pause(250)
+        self._calendar().select_date(year, month, day)
+
+    def _popup_calendar(self):
+        probe = WidgetScreenBoundsProbe(self.selector)
+        self.check(probe)
+        point = QPoint(probe.bounds.right(), probe.bounds.center().y())
+        self.perform(gestures.click_at(point))
+
+    def _calendar(self):
+        def query_calendar_widget(date_edit):
+            nonlocal calendar
+            calendar = date_edit.calendarWidget()
+
+        calendar = None
+        self.manipulate("query calendar widget", query_calendar_widget)
+
+        return QCalendarDriver(WidgetIdentity(calendar), self.prober, self.gesture_performer)
+
+
+class QCalendarDriver(WidgetDriver):
+    def select_date(self, year, month, day):
+        self.select_year(year)
+        self.select_month(month)
+        self.select_day(day)
+
+    def select_year(self, year):
+        self._year_button().click()
+        self._year_spinner().type(str(year))
+        self.perform(keyboard_shortcuts.ENTER)
+
+    def select_month(self, month):
+        # for some reason, clicking the toolbutton blocks the execution
+        # self._month_button().click()
+        self._popup_month_menu()
+        self.pause(250)
+        self._month_menu().select_menu_item(match.with_data(month))
+
+    def select_day(self, day):
+        row_index, column_index = self._find_day(day)
+        self._table().click_on_cell(row_index, column_index)
+
+    def _year_button(self):
+        return ButtonDriver.find_single(self, QAbstractButton, match.named("qt_calendar_yearbutton"))
+
+    def _year_spinner(self):
+        return QAbstractSpinBoxDriver.find_single(self, QSpinBox, match.named("qt_calendar_yearedit"))
+
+    def _month_button(self):
+        return ButtonDriver.find_single(self, QAbstractButton, match.named("qt_calendar_monthbutton"))
+
+    def _month_menu(self):
+        def query_month_menu(calendar):
+            nonlocal month_menu
+            month_menu = calendar.findChild(QToolButton, "qt_calendar_monthbutton").menu()
+
+        month_menu = None
+        self.manipulate("query month selector menu", query_month_menu)
+        return MenuDriver(WidgetIdentity(month_menu), self.prober, self.gesture_performer)
+
+    def _popup_month_menu(self):
+        def query_month_menu(calendar):
+            button = calendar.findChild(QToolButton, "qt_calendar_monthbutton")
+            button.menu().popup(button.mapToGlobal(button.rect().bottomLeft()))
+
+        self.manipulate("query month selector menu", query_month_menu)
+
+    def _table(self):
+        def query_table_view(calendar):
+            nonlocal table_view
+            table_view = calendar.findChild(QTableView, "qt_calendar_calendarview")
+
+        table_view = None
+        self.manipulate("query table view", query_table_view)
+        return TableViewDriver(WidgetIdentity(table_view), self.prober, self.gesture_performer)
+
+    def _find_day(self, day):
+        def query_table(calendar):
+            nonlocal row_index
+            nonlocal column_index
+            table_view = calendar.findChild(QTableView, "qt_calendar_calendarview")
+
+            row_idx, col_idx = QCalendarDriver._find_first_day_of_month_indices(table_view)
+            while row_idx < 7:
+                while col_idx < 7:
+                    current_day = str(table_view.model().data(table_view.model().index(row_idx, col_idx)))
+
+                    if current_day == str(day):
+                        row_index = row_idx
+                        column_index = col_idx
+                        return
+
+                    col_idx += 1
+                col_idx = 0
+                row_idx += 1
+
+        row_index = 0
+        column_index = 0
+        self.manipulate("query day", query_table)
+        return row_index, column_index
+
+    @staticmethod
+    def _find_first_day_of_month_indices(table):
+        row_idx = 0
+        while row_idx < 7:
+            col_idx = 0
+            while col_idx < 7:
+                current_day = str(table.model().data(table.model().index(row_idx, col_idx)))
+
+                if current_day == "1":
+                    return row_idx, col_idx
+
+                col_idx += 1
+            row_idx += 1
+
+        return 0, 0
 
 
 class FileDialogDriver(WidgetDriver):

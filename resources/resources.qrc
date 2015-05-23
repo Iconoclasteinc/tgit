@@ -31,5 +31,6 @@
      <file>ui/welcome_screen.ui</file>
      <file>ui/main_window.ui</file>
      <file>ui/album_screen.ui</file>
+     <file>ui/album_page.ui</file>
 </qresource>
 </RCC>
