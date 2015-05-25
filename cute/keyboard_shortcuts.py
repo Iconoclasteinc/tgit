@@ -11,5 +11,4 @@ SELECT_ALL = gestures.with_modifiers(Qt.ControlModifier, gestures.type_key(Qt.Ke
 DELETE_PREVIOUS = gestures.type_key(Qt.Key_Backspace)
 UNSELECT = gestures.type_key(Qt.Key_Escape)
 ENTER = gestures.type_key(Qt.Key_Enter)
-CLOSE = gestures.with_modifiers(Qt.ControlModifier,
-                                gestures.type_key(Qt.Key_F4) if windows else gestures.type_key(Qt.Key_W))
+CLOSE = gestures.with_modifiers(Qt.ControlModifier, gestures.type_key(Qt.Key_F4 if windows else Qt.Key_W))
