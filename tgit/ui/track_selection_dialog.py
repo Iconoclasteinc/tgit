@@ -22,6 +22,12 @@ from PyQt5.QtCore import QDir, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
 
 
+def make_track_selection_dialog(parent, native=True, *, on_select_tracks):
+    dialog = TrackSelectionDialog(parent, native)
+    dialog.tracks_selected.connect(on_select_tracks)
+    return dialog
+
+
 class TrackSelectionDialog(QFileDialog):
     tracks_selected = pyqtSignal(list)
 
@@ -32,12 +38,9 @@ class TrackSelectionDialog(QFileDialog):
         self.setObjectName("track-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
         self.setDirectory(QDir.homePath())
-        self.filesSelected.connect(self._signal_tracks_selected)
+        self.filesSelected.connect(lambda selected: self.tracks_selected.emit(list(map(os.path.abspath, selected))))
         self.select_files()
         self.filter_tracks('mp3')
-
-    def _signal_tracks_selected(self, selection):
-        return self.tracks_selected.emit([os.path.abspath(entry) for entry in selection])
 
     def select_folders(self):
         self.setFileMode(QFileDialog.Directory)

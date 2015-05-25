@@ -25,9 +25,9 @@ from tgit.album import AlbumListener
 
 from tgit.isni.name_registry import NameRegistry
 from tgit import album_director as director
-from tgit.export.csv_format import CsvFormat
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
-from tgit.ui.import_album_from_track_dialog import ImportAlbumFromTrackDialog
+from tgit.ui.dialogs import Dialogs
+from tgit.ui.album_selection_dialog import AlbumSelectionDialog
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.album_composition_page import AlbumCompositionPage
@@ -81,7 +81,7 @@ def showCenteredOnScreen(widget):
 
 def AlbumCompositionPageController(dialogs, player, album):
     page = AlbumCompositionPage()
-    page.addTracks.connect(lambda: dialogs.select_tracks(album).open())
+    page.addTracks.connect(lambda: dialogs.add_tracks(album).open())
     page.trackMoved.connect(lambda track, position: director.moveTrack(album, track, position))
     page.playTrack.connect(lambda track: director.playTrack(player, track))
     page.removeTrack.connect(lambda track: director.removeTrack(player, album, track))
@@ -126,7 +126,7 @@ def AlbumEditionPageController(dialogs, lookup_isni_dialog_factory, activity_ind
     queue = Queue()
     page = AlbumEditionPage(album, use_local_isni_backend)
     page.metadataChanged.connect(lambda metadata: director.updateAlbum(album, **metadata))
-    page.selectPicture.connect(lambda: dialogs.select_picture(album).open())
+    page.selectPicture.connect(lambda: dialogs.select_cover(album).open())
     page.removePicture.connect(lambda: director.removeAlbumCover(album))
     page.lookupISNI.connect(lookup_isni)
     page.assignISNI.connect(assign_isni)
@@ -178,18 +178,11 @@ def TrackEditionPageController(album, track):
     return page
 
 
-def make_picture_selection_dialog(parent_window, native, album):
-    dialog = PictureSelectionDialog(parent_window, native)
-    dialog.picture_selected.connect(lambda selection: director.changeAlbumCover(album, selection))
-    return dialog
-
-
 def SettingsDialogController(restart_notice, preferences, parent):
     dialog = SettingsDialog(parent)
 
     def save_preferences():
         preferences.add(**dialog.settings)
-        dialog.close()
         restart_notice(parent).open()
 
     dialog.accepted.connect(save_preferences)
@@ -197,80 +190,6 @@ def SettingsDialogController(restart_notice, preferences, parent):
     dialog.add_language("fr", dialog.tr("French"))
     dialog.display(**preferences)
     return dialog
-
-
-def make_export_as_dialog(parent_window, native, format_, album):
-    dialog = ExportAsDialog(parent_window, native)
-    dialog.export_as.connect(lambda destination: director.export_album(format_, album, destination, "windows-1252"))
-    return dialog
-
-
-def make_track_selection_dialog(parent, native, album):
-    dialog = TrackSelectionDialog(parent, native)
-    dialog.tracks_selected.connect(lambda selection: director.add_tracks_to_album(album, *selection))
-    return dialog
-
-
-def make_import_album_dialog(parent, native, album_portfolio):
-    dialog = ImportAlbumFromTrackDialog(parent, native)
-    dialog.track_selected.connect(lambda track_file: director.import_album(album_portfolio, track_file))
-    return dialog
-
-
-class Dialogs:
-    _pictures = None
-    _tracks = None
-    _import = None
-    _export = None
-
-    def __init__(self, native):
-        self.parent = None
-        self._native = native
-
-    def _picture_selection_dialog(self, album):
-        if not self._pictures:
-            self._pictures = make_picture_selection_dialog(self.parent, self._native, album)
-
-        return self._pictures
-
-    def _track_selection_dialog(self, album):
-        if not self._tracks:
-            self._tracks = make_track_selection_dialog(self.parent, self._native, album)
-
-        return self._tracks
-
-    def _import_selection_dialog(self, album_portfolio):
-        if not self._import:
-            self._import = make_import_album_dialog(self.parent, self._native, album_portfolio)
-
-        return self._import
-
-    def _export_album_dialog(self, album):
-        if not self._export:
-            self._export = make_export_as_dialog(self.parent, self._native, CsvFormat(), album)
-
-        return self._export
-
-    def select_picture(self, album):
-        return self._picture_selection_dialog(album)
-
-    def select_tracks(self, album):
-        dialog = self._track_selection_dialog(album)
-        dialog.select_files()
-        dialog.filter_tracks(album.type)
-        return dialog
-
-    def select_tracks_in_folder(self, album):
-        dialog = self._track_selection_dialog(album)
-        dialog.select_folders()
-        dialog.filter_tracks(album.type)
-        return dialog
-
-    def import_album(self, album_portfolio):
-        return self._import_selection_dialog(album_portfolio)
-
-    def export_album(self, album):
-        return self._export_album_dialog(album)
 
 
 def create_main_window(portfolio, player, preferences, name_registry, use_local_isni_backend, native):
@@ -307,7 +226,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
         return AlbumScreen(create_composition_page, create_album_page, create_track_page, album)
 
-    dialogs = Dialogs(native)
+    dialogs = Dialogs(director, native)
     window = MainWindow(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio)
     dialogs.parent = window
 

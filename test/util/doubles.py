@@ -84,14 +84,3 @@ class FakeAudioPlayer(object):
 
     def remove_player_listener(self, listener):
         self._announce.removeListener(listener)
-
-
-def export_format():
-    return FakeExportFormat()
-
-
-class FakeExportFormat(object):
-    def write(self, album, out):
-        for track in album.tracks:
-            out.write(track.track_title or "")
-            out.write('\n')

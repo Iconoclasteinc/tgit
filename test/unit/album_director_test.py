@@ -7,7 +7,7 @@ import unittest
 from dateutil import tz
 
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
-    has_item, empty, has_property
+    has_item, empty, has_property, contains_string
 import pytest
 
 from test.util import builders as build, resources, doubles, mp3_file
@@ -42,7 +42,7 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
     recordings.add_mp3(track_title='Someone Like You')
 
     album = build.album()
-    director.add_tracks_to_album(album, *[recording.filename for recording in recordings.entries])
+    director.add_tracks_to(album)([recording.filename for recording in recordings.entries])
 
     assert_that(album.tracks, contains(
         has_properties(track_title='Rolling in the Deep'),
@@ -51,12 +51,12 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
 
 
 def test_imports_album_from_track(recordings):
-    track_file = recordings.add_mp3(track_title="Smash Smash",
+    album_file = recordings.add_mp3(track_title="Smash Smash",
                                     release_name="Honeycomb", lead_performer="Joel Miller",
                                     front_cover=('image/jpeg', 'front cover', b'front.jpeg'))
 
     portfolio = AlbumPortfolio()
-    director.import_album(portfolio, track_file)
+    director.import_album_to(portfolio)(album_file)
     album = portfolio[0]
 
     assert_that(album.release_name, equal_to("Honeycomb"), "imported release name")
@@ -71,7 +71,7 @@ def test_adds_to_album_all_album_compatible_audio_files_found_in_selected_folder
     recordings.add_mp3(track_title='Set Fire to the Rain')
 
     album = build.album(of_type="mp3")
-    director.add_tracks_to_album(album, recordings.root)
+    director.add_tracks_to(album)([recordings.root])
 
     assert_that(album.tracks, contains_inanyorder(
         has_properties(track_title='Rolling in the Deep'),
@@ -130,6 +130,32 @@ def test_tags_file_to_same_directory_under_artist_and_title_name():
         album.addTrack(t)
 
     assert_that(director.tagged_name(track), equal_to('artist - 03 - title.mp3'), 'name of tagged file')
+
+
+def test_exports_album_as_csv_encoded_file(tmpdir):
+    album = build.album(tracks=[build.track(track_title="Les Comédiens")])
+    destination_file = tmpdir.join("french.csv").strpath
+
+    director.export_as_csv(album)(destination_file)
+
+    def read_lines(file):
+        content = open(file, 'r', encoding="windows-1252").read()
+        return content.split("\n")
+
+    assert_that(read_lines(destination_file), has_item(contains_string("Les Comédiens")))
+
+
+def test_changes_main_album_cover_to_specified_image_file():
+    album = build.album()
+    album.addFrontCover(mime='image/gif', data='old cover')
+
+    cover_file = resources.path('front-cover.jpg')
+    director.change_cover_of(album)(cover_file)
+
+    assert_that(album.images, contains(has_properties(mime='image/jpeg',
+                                                      data=fs.binary_content_of(cover_file),
+                                                      type=Image.FRONT_COVER,
+                                                      desc='Front Cover')), 'images')
 
 
 class AlbumDirectorTest(unittest.TestCase):
@@ -198,18 +224,6 @@ class AlbumDirectorTest(unittest.TestCase):
         director.removeAlbumCover(album)
         assert_that(album.images, equal_to([]), 'images')
 
-    def testLoadsAndChangesAlbumMainCover(self):
-        album = build.album()
-        album.addFrontCover(mime='image/gif', data='old cover')
-
-        coverFile = resources.path('front-cover.jpg')
-        director.changeAlbumCover(album, coverFile)
-
-        assert_that(album.images, contains(has_properties(mime='image/jpeg',
-                                                          data=fs.binary_content_of(coverFile),
-                                                          type=Image.FRONT_COVER,
-                                                          desc='Front Cover')), 'images')
-
     def testMovesTrackInAlbum(self):
         setFireToTheRain = build.track(track_title='Set Fire to the Rain')
         rollingInTheDeep = build.track(track_title='Rolling in the Deep')
@@ -217,17 +231,6 @@ class AlbumDirectorTest(unittest.TestCase):
 
         director.moveTrack(twentyOne, rollingInTheDeep, 0)
         assert_that(twentyOne.tracks, contains(rollingInTheDeep, setFireToTheRain), 'reordered tracks')
-
-    def test_encodes_exported_file_in_specified_charset(self):
-        album = build.album(tracks=[build.track(track_title="Les Comédiens")])
-        destination_file = os.path.join(self.tempdir, 'french.csv')
-
-        director.export_album(doubles.export_format(), album, destination_file, 'windows-1252')
-
-        def text_content_of(file):
-            return open(file, 'r', encoding='windows-1252').read()
-
-        assert_that(text_content_of(destination_file), equal_to('Les Comédiens\n'))
 
     def testReplacesInvalidCharactersForFileNamesWithUnderscores(self):
         assert_that(director.sanitize('1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')

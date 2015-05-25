@@ -444,9 +444,9 @@ def main_window(create_welcome_screen, create_album_screen, show_settings_dialog
         confirmation.open()
 
     window = MainWindow()
-    window.add_files.connect(lambda album: dialogs.select_tracks(album).open())
-    window.add_folder.connect(lambda album: dialogs.select_tracks_in_folder(album).open())
-    window.export.connect(lambda album: dialogs.export_album(album).open())
+    window.add_files.connect(lambda album: dialogs.add_tracks(album).open())
+    window.add_folder.connect(lambda album: dialogs.add_tracks_in_folder(album).open())
+    window.export.connect(lambda album: dialogs.export(album).open())
     window.settings.connect(lambda: show_settings_dialog())
     window.close_album.connect(close_album)
     window.show_screen(create_welcome_screen())

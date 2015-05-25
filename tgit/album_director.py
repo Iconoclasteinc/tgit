@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from datetime import datetime
+import functools
 import os
 import re
 import shutil
@@ -28,6 +29,7 @@ import requests
 import tgit
 from tgit import tagging
 from tgit.album import Album
+from tgit.export.csv_format import CsvFormat
 from tgit.track import Track
 from tgit.util import fs
 
@@ -36,19 +38,24 @@ def create_album(portfolio, of_type=Album.Type.FLAC):
     portfolio.add_album(Album(of_type=of_type))
 
 
-def import_album(portfolio, track_file):
-    _, extension = os.path.splitext(track_file)
-    all_metadata = tagging.load_metadata(track_file)
-    album_metadata = all_metadata.copy(*Album.tags())
-    album = Album(album_metadata, of_type=extension[1:])
-    portfolio.add_album(album)
+def import_album_to(portfolio):
+    def import_album_to_portfolio(album_file):
+        _, extension = os.path.splitext(album_file)
+        all_metadata = tagging.load_metadata(album_file)
+        album_metadata = all_metadata.copy(*Album.tags())
+        album = Album(album_metadata, of_type=extension[1:])
+        portfolio.add_album(album)
+        add_tracks_to(album)([album_file])
 
-    add_tracks_to_album(album, track_file)
+    return import_album_to_portfolio
 
 
-def add_tracks_to_album(album, *selection):
-    for filename in list_audio_files_from(selection, of_type=".{}".format(album.type)):
-        album.addTrack(Track(filename, tagging.load_metadata(filename)))
+def add_tracks_to(album):
+    def add_tracks_to_album(selection):
+        for filename in list_audio_files_from(selection, of_type=".{}".format(album.type)):
+            album.addTrack(Track(filename, tagging.load_metadata(filename)))
+
+    return add_tracks_to_album
 
 
 def updateTrack(track, **metadata):
@@ -65,10 +72,13 @@ def updateAlbum(album, **metadata):
             track.lead_performer = metadata.get('lead_performer')
 
 
-def changeAlbumCover(album, filename):
-    album.removeImages()
-    mime, data = fs.guessMimeType(filename), fs.binary_content_of(filename)
-    album.addFrontCover(mime, data)
+def change_cover_of(album):
+    def change_album_cover(filename):
+        album.removeImages()
+        mime, data = fs.guessMimeType(filename), fs.binary_content_of(filename)
+        album.addFrontCover(mime, data)
+
+    return change_album_cover
 
 
 def removeAlbumCover(album):
@@ -124,9 +134,12 @@ def record_track(destination_file, track, time):
     save_track_metadata()
 
 
-def export_album(export_format, album, destination, charset):
-    with open(destination, 'w', encoding=charset) as out:
-        export_format.write(album, out)
+def export_as_csv(album):
+    def export_album_as_csv(export_format, charset, destination):
+        with open(destination, 'w', encoding=charset) as out:
+            export_format.write(album, out)
+
+    return functools.partial(export_album_as_csv, CsvFormat(), "windows-1252")
 
 
 def sanitize(filename):

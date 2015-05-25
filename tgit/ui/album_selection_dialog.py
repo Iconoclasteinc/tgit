@@ -22,7 +22,13 @@ from PyQt5.QtCore import QDir, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
 
 
-class ImportAlbumFromTrackDialog(QFileDialog):
+def make_album_selection_dialog(parent_window, native=True, *, on_select_album):
+    dialog = AlbumSelectionDialog(parent_window, native)
+    dialog.track_selected.connect(on_select_album)
+    return dialog
+
+
+class AlbumSelectionDialog(QFileDialog):
     track_selected = pyqtSignal(str)
 
     def __init__(self, parent, native):
@@ -33,7 +39,4 @@ class ImportAlbumFromTrackDialog(QFileDialog):
         self.setNameFilters(
             ["{0} ({1})".format(self.tr("MP3 files"), "*.mp3"), "{0} ({1})".format(self.tr("FLAC files"), "*.flac")])
         self.setDirectory(QDir.homePath())
-        self.fileSelected.connect(self._signal_track_selected)
-
-    def _signal_track_selected(self, selection):
-        return self.track_selected.emit(os.path.abspath(selection))
+        self.fileSelected.connect(lambda selected: self.track_selected.emit(os.path.abspath(selected)))

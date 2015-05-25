@@ -30,7 +30,7 @@ def driver(export_dialog):
     dialog_driver.close()
 
 
-def test_signals_export_as_destination(tmpdir, export_dialog, driver):
+def test_signals_export_destination(tmpdir, export_dialog, driver):
     destination = tmpdir.join("album.csv").strpath
     export_as_signal = ValueMatcherProbe('export as', equal_to(destination))
 

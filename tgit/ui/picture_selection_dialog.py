@@ -22,6 +22,12 @@ from PyQt5.QtCore import QDir, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
 
 
+def make_picture_selection_dialog(parent_window, native=True, *, on_select_picture):
+    dialog = PictureSelectionDialog(parent_window, native)
+    dialog.picture_selected.connect(on_select_picture)
+    return dialog
+
+
 class PictureSelectionDialog(QFileDialog):
     picture_selected = pyqtSignal(str)
 
@@ -32,7 +38,4 @@ class PictureSelectionDialog(QFileDialog):
         self.setDirectory(QDir.homePath())
         self.setFileMode(QFileDialog.ExistingFile)
         self.setNameFilter("{0} (*.png *.jpeg *.jpg)".format(self.tr("Image files")))
-        self.fileSelected.connect(self._signal_picture_selected)
-
-    def _signal_picture_selected(self, selection):
-        self.picture_selected.emit(os.path.abspath(selection))
+        self.fileSelected.connect(lambda selected: self.picture_selected.emit(os.path.abspath(selected)))

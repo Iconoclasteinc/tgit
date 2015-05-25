@@ -12,14 +12,14 @@ from cute.probes import ValueMatcherProbe
 from test.integration.ui import show_widget
 from test.util import resources
 from test.drivers import ImportAlbumFromTrackDialogDriver
-from tgit.ui.import_album_from_track_dialog import ImportAlbumFromTrackDialog
+from tgit.ui.album_selection_dialog import AlbumSelectionDialog
 
 
 @pytest.yield_fixture()
 def import_album_dialog(qt):
     main_window = QMainWindow()
     show_widget(main_window)
-    yield ImportAlbumFromTrackDialog(main_window, native=False)
+    yield AlbumSelectionDialog(main_window, native=False)
     main_window.close()
 
 
@@ -31,7 +31,7 @@ def driver(import_album_dialog):
     dialog_driver.close()
 
 
-def test_signals_when_track_file_selected(driver, import_album_dialog):
+def test_signals_when_file_selected(driver, import_album_dialog):
     track_file = resources.path('audio', 'Rolling in the Deep.mp3')
     track_selection_signal = ValueMatcherProbe('track selection', track_file)
 

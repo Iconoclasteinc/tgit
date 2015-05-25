@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from tgit.album_portfolio import AlbumPortfolio
 
 from tgit.metadata import Metadata, Image
 from tgit.album import Album
@@ -40,3 +41,7 @@ def album(of_type=Album.Type.FLAC, images=(), tracks=(), **meta):
         album.addTrack(track)
 
     return album
+
+
+def album_portfolio():
+    return AlbumPortfolio()

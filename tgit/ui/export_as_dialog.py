@@ -19,8 +19,14 @@
 
 import os
 
-from PyQt5.QtCore import QDir, Qt, QObject, pyqtSignal
+from PyQt5.QtCore import QDir, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
+
+
+def make_export_as_dialog(parent_window, native=True, *, on_export_as):
+    dialog = ExportAsDialog(parent_window, native)
+    dialog.export_as.connect(on_export_as)
+    return dialog
 
 
 class ExportAsDialog(QFileDialog):
@@ -33,7 +39,4 @@ class ExportAsDialog(QFileDialog):
         self.setDirectory(QDir.homePath())
         self.setFileMode(QFileDialog.AnyFile)
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
-        self.fileSelected.connect(self._signal_export_as)
-
-    def _signal_export_as(self, selection):
-        self.export_as.emit(os.path.abspath(selection))
+        self.fileSelected.connect(lambda selected: self.export_as.emit(os.path.abspath(selected)))
