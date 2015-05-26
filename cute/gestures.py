@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-
-from .robot import Robot
+from PyQt5.QtCore import Qt
 
 ONE_SECOND_IN_MS = 60000
 AVERAGE_WORD_LENGTH = 5  # precisely 5.1 in english
 MEDIUM_TYPING_SPEED = 240  # in wpm
 FAST_TYPING_SPEED = 480  # in wpm
 SUPER_FAST_TYPING_SPEED = 960  # in wpm
+MOUSE_MOVE_DELAY = 10 # in ms
 MOUSE_CLICK_DELAY = 20  # in ms
 
+LEFT_BUTTON = Qt.LeftButton
+RIGHT_BUTTON = Qt.RightButton
 
 def sequence(*gestures):
     return lambda robot: [gesture(robot) for gesture in gestures]
@@ -59,27 +61,27 @@ def click_at(point):
 
 
 def mouse_move(point):
-    return lambda robot: robot.move_mouse(point.x(), point.y())
+    return sequence(lambda robot: robot.move_mouse(point.x(), point.y()), pause(MOUSE_MOVE_DELAY))
 
 
-def mouse_click():
-    return sequence(mouse_press(), pause(MOUSE_CLICK_DELAY), mouse_release())
+def mouse_click(button=LEFT_BUTTON):
+    return sequence(mouse_press(button), pause(MOUSE_CLICK_DELAY), mouse_release(button))
 
 
-def mouse_press():
-    return lambda robot: robot.press_mouse(Robot.LEFT_BUTTON)
+def mouse_press(button=LEFT_BUTTON):
+    return lambda robot: robot.press_mouse(button)
 
 
-def mouse_release():
-    return lambda robot: robot.release_mouse(Robot.LEFT_BUTTON)
+def mouse_release(button=LEFT_BUTTON):
+    return lambda robot: robot.release_mouse(button)
 
 
-def mouse_double_click():
+def mouse_double_click(button=LEFT_BUTTON):
     # Apparently Qt uses a special DClickEvent which is not the same as 2 clicks,
     # so the following fails:
     # return sequence(mouse_click(), pause(MOUSE_DOUBLE_CLICK_DELAY), mouse_click())
     # We need a double click action from the robot itself
-    return lambda robot: robot.double_click_mouse()
+    return lambda robot: robot.double_click_mouse(button)
 
 
 def pause(ms):

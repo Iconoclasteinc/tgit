@@ -138,14 +138,6 @@ StyleSheet = """
         color: transparent;
     }
 
-    QTableView::item {
-        border-bottom: 1px solid #F7C3B7;
-    }
-
-    QTableView::item:alternate {
-        background-color: #F9F7F7;
-    }
-
     QToolButton#play-track {
         border-image: url(:/play.png);
     }
@@ -172,18 +164,6 @@ StyleSheet = """
 
     QToolButton#play-track:checked:pressed {
         border-image: url(:/stop-pressed.png);
-    }
-
-    QToolButton#remove-track {
-        border-image: url(:/remove.png);
-    }
-
-    QToolButton#remove-track:hover {
-        border-image: url(:/remove-hover.png);
-    }
-
-    QToolButton#remove-track-track:pressed {
-        border-image: url(:/remove-pressed.png);
     }
 
     QGroupBox {

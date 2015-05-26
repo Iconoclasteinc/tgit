@@ -107,9 +107,8 @@ class Columns(metaclass=ColumnEnum):
     bitrate = Column(name='Bitrate', value=lambda row: '%s kbps' % formatting.inKbps(row.bitrate()))
     duration = Column(name='Duration', value=lambda row: formatting.toDuration(row.duration()))
     play = Column(name='', value=lambda row: (row.inPlay, row.playback_supported))
-    remove = Column(name='', value=lambda row: None)
 
-    __values__ = trackTitle, leadPerformer, releaseName, bitrate, duration, play, remove
+    __values__ = trackTitle, leadPerformer, releaseName, bitrate, duration, play
 
 
 class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
@@ -131,7 +130,7 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
         return len(self.rows)
 
     def flags(self, index):
-        return Qt.ItemFlags(Qt.ItemIsEnabled)
+        return Qt.ItemFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if not role == Qt.DisplayRole:

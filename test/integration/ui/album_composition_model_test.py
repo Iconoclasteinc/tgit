@@ -106,7 +106,6 @@ class RowTest(unittest.TestCase):
 
         assert_that(row.playback_supported, is_(True), 'mp3 playback supported')
 
-
     def test_indicates_that_flac_playback_is_disabled(self):
         album = build.album()
         track = build.track(filename='track.flac', album=album)
@@ -219,7 +218,7 @@ class AlbumCompositionModelTest(unittest.TestCase):
         modelListener = flexmock()
         self.model.dataChanged.connect(lambda start, end: modelListener.dataChanged(start, end))
         modelListener.should_receive('dataChanged').with_args(self.model.index(1, 0),
-                                                              self.model.index(1, 6)).once()
+                                                              self.model.index(1, 5)).once()
 
         track.track_title = 'Track #2'
         self.assertRowMatchesTrack(1, track)
@@ -238,11 +237,11 @@ class AlbumCompositionModelTest(unittest.TestCase):
         # each track in album also triggers a data change
         # todo change this behavior. What do we want to see?
         modelListener.should_receive('dataChanged').with_args(self.model.index(0, 0),
-                                                              self.model.index(0, 6)).once()
+                                                              self.model.index(0, 5)).once()
         modelListener.should_receive('dataChanged').with_args(self.model.index(1, 0),
-                                                              self.model.index(1, 6)).once()
+                                                              self.model.index(1, 5)).once()
         modelListener.should_receive('dataChanged').with_args(self.model.index(2, 0),
-                                                              self.model.index(2, 6)).once()
+                                                              self.model.index(2, 5)).once()
 
         self.album.release_name = 'Album'
         self.album.leadPerfomer = 'Artist'

@@ -404,10 +404,13 @@ class ListViewDriver(WidgetDriver):
 
 class QMenuBarDriver(WidgetDriver):
     def menu(self, matching):
-        # We have to make sure the menu actually exists on the menu bar
-        # Checking that the menu is a child of the menu bar is not sufficient
+        # First we have to make sure the menu actually exists on the menu bar
         self.has_menu(matching)
-        return MenuDriver.find_single(self, QMenu, matching)
+
+        # QMenuBar on Mac OS X is a wrapper for using the system-wide menu bar
+        # so we cannot just click on it, we have to pop it up manually
+        menu_driver = TopLevelQMenuDriver.find_single(self, QMenu, matching)
+        return menu_driver
 
     def has_menu(self, matching):
         class ContainingMenu(BaseMatcher):
@@ -434,16 +437,13 @@ class QMenuBarDriver(WidgetDriver):
 
 class MenuDriver(WidgetDriver):
     def open(self):
-        # QMenuBar on Mac OS X is a wrapper for using the system-wide menu bar
-        # so we cannot just click on it, we have to pop it up manually
-        def popup(menu):
-            menu_bar = menu.parent()
-            menu_title_visible_area = menu_bar.actionGeometry(menu.menuAction())
-            # We try to pop up the menu at a position that makes sense on all platforms
-            # i.e. just below the menu title
-            menu.popup(menu_bar.mapToGlobal(menu_title_visible_area.bottomLeft()))
+        # For some unknown reason, menu does not pop up on right click on Mac
+        # self.perform(gestures.mouse_click(gestures.RIGHT_BUTTON))
+        self.open_at(*self.gesture_performer.position)
 
-        self.manipulate('open', popup)
+    def open_at(self, x, y):
+        # For some reason, we can't open the menu by just right clicking, so open it manually
+        self.manipulate("open at ({0}, {1})".format(x, y), lambda menu: menu.popup(QPoint(x, y)))
 
     def menu_item(self, matching):
         # We have to make sure the item menu actually exists in the menu
@@ -480,6 +480,21 @@ class MenuDriver(WidgetDriver):
         containing_menu_item = ContainingMenuItem(matching)
         self.is_(containing_menu_item)
         return containing_menu_item.action
+
+
+class TopLevelQMenuDriver(MenuDriver):
+    def open(self):
+        class FindPositionInMenuBar:
+            def __call__(self, menu):
+                menu_bar = menu.parent()
+                menu_title_visible_area = menu_bar.actionGeometry(menu.menuAction())
+                # We try to pop up the menu at a position that makes sense on all platforms
+                # i.e. just below the menu title
+                self.coordinates = menu_bar.mapToGlobal(menu_title_visible_area.bottomLeft())
+
+        position = FindPositionInMenuBar()
+        self.manipulate('find position in menu bar', position)
+        self.open_at(position.coordinates.x(), position.coordinates.y())
 
 
 class MenuItemDriver(WidgetDriver):

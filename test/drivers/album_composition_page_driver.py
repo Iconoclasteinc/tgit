@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-
 from hamcrest import contains, has_items, equal_to
-from PyQt5.QtWidgets import QAbstractButton
+from PyQt5.QtWidgets import QAbstractButton, QMenu
 
-from cute.widgets import ButtonDriver
+from cute.widgets import ButtonDriver, MenuDriver
 from cute.matchers import named
 from tgit.ui.album_composition_model import Columns
 from tgit.ui.album_composition_page import AlbumCompositionPage
@@ -41,23 +40,22 @@ class AlbumCompositionPageDriver(ScreenDriver):
     def add_tracks(self):
         self.button(named('add-tracks')).click()
 
-    def remove_track(self, title):
+    def _select_track(self, title):
         row = self.shows_track(title)
-        self._click_remove_button(row)
+        self._track_table().click_on_cell(row, 0)
+
+    def _delete_from_context_menu(self):
+        context_menu = MenuDriver.find_single(self, QMenu, named("context_menu"))
+        context_menu.open()
+        context_menu.select_menu_item(named("delete_action"))
+
+    def remove_track(self, title):
+        self._select_track(title)
+        self._delete_from_context_menu()
 
     def move_track(self, title, to):
         from_ = self.shows_track(title)
         self._track_table().move_row(from_, to)
-
-    def _remove_button_at(self, row):
-        return ButtonDriver.find_single(self.removeWidget(row), QAbstractButton, named('remove-track'))
-
-    def removeWidget(self, index):
-        return self._track_table().widget_in_cell(index, Columns.index(Columns.remove))
-
-    def _click_remove_button(self, row):
-        self._remove_button_at(row).is_showing_on_screen()
-        self._track_table().click_on_cell(row, Columns.index(Columns.remove))
 
     def _play_button_at(self, index):
         return ButtonDriver.find_single(self.playWidget(index), QAbstractButton, named('play-track'))

@@ -3,13 +3,48 @@
 from datetime import timedelta
 
 from hamcrest import has_property, contains
+from pytest import yield_fixture
 
 from cute.finders import WidgetIdentity
+from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
-from test.integration.ui import WidgetTest
+from cute.robot import Robot
+from test.integration.ui import WidgetTest, show_widget
 from test.drivers import AlbumCompositionPageDriver
 from test.util import builders as build, doubles
 from tgit.ui.album_composition_page import AlbumCompositionPage
+from tgit.ui.main_window import MainWindow
+
+
+@yield_fixture()
+def page(qt):
+    main_window = MainWindow()
+    composition_page = AlbumCompositionPage()
+    main_window.setCentralWidget(composition_page)
+    show_widget(main_window)
+    yield composition_page
+    main_window.close()
+
+
+@yield_fixture()
+def driver(page):
+    page_driver = AlbumCompositionPageDriver(WidgetIdentity(page), EventProcessingProber(), Robot())
+    yield page_driver
+    page_driver.close()
+
+
+def test_signals_when_track_selected_for_removal(page, driver):
+    album = build.album()
+    page.display(doubles.null_audio_player(), album)
+    # todo for the moment, we need to add tracks to the album to trigger an update of the table
+    album.addTrack(build.track())
+    album.addTrack(build.track(track_title='Chevere!'))
+
+    remove_track_signal = ValueMatcherProbe('remove track', hasTitle('Chevere!'))
+    page.remove_track.connect(remove_track_signal.received)
+
+    driver.remove_track('Chevere!')
+    driver.check(remove_track_signal)
 
 
 # todo find a home for feature matchers
@@ -30,7 +65,7 @@ class AlbumCompositionPageTest(WidgetTest):
         return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
     def testDisplaysColumnHeadings(self):
-        self.driver.showsColumnHeaders('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration', '', '')
+        self.driver.showsColumnHeaders('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration', '')
 
     def testDisplaysTrackDetailsInColumns(self):
         self.album.release_name = 'All the Little Lights'
@@ -61,15 +96,6 @@ class AlbumCompositionPageTest(WidgetTest):
 
         self.driver.add_tracks()
         self.driver.check(addTracksSignal)
-
-    def testSignalsWhenRemoveTrackButtonClicked(self):
-        self.album.addTrack(build.track())
-        self.album.addTrack(build.track(track_title='Set Fire to the Rain'))
-        removeTrackSignal = ValueMatcherProbe('remove track', hasTitle('Set Fire to the Rain'))
-        self.page.removeTrack.connect(removeTrackSignal.received)
-
-        self.driver.remove_track('Set Fire to the Rain')
-        self.driver.check(removeTrackSignal)
 
     def testSignalsWhenTrackWasMoved(self):
         self.album.addTrack(build.track(track_title='Wisemen'))

@@ -19,9 +19,9 @@
 
 import functools as func
 
-from PyQt5.QtCore import Qt, QModelIndex, QAbstractItemModel, pyqtSignal
+from PyQt5.QtCore import Qt, QModelIndex, QAbstractItemModel, pyqtSignal, QPoint
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtWidgets import QWidget, QTableView, QStyledItemDelegate, QHeaderView, QToolButton, QFrame
+from PyQt5.QtWidgets import QWidget, QTableView, QStyledItemDelegate, QHeaderView, QToolButton, QFrame, QAction, QMenu
 
 from tgit.track import Track
 from tgit.ui.album_composition_model import Columns, AlbumCompositionModel
@@ -64,29 +64,12 @@ class PlayButtonDelegate(QStyledItemDelegate):
         QStyledItemDelegate.paint(self, painter, option, UglyHack())
 
 
-class RemoveButtonDelegate(QStyledItemDelegate):
-    clicked = pyqtSignal(Track)
-
-    def __init__(self, view):
-        QStyledItemDelegate.__init__(self, view)
-
-    def paint(self, painter, option, index):
-        if not self.parent().indexWidget(index):
-            button = QToolButton()
-            button.setObjectName('remove-track')
-            button.setCursor(Qt.PointingHandCursor)
-            button.clicked.connect(func.partial(self.clicked.emit, index.model().trackAt(index.row())))
-            self.parent().setIndexWidget(index, button)
-
-        QStyledItemDelegate.paint(self, painter, option, index)
-
-
 LIGHT_GRAY = QColor.fromRgb(0xDDDDDD)
 
 
 class AlbumCompositionPage(QWidget):
     playTrack = pyqtSignal(Track)
-    removeTrack = pyqtSignal(Track)
+    remove_track = pyqtSignal(Track)
     addTracks = pyqtSignal()
     trackMoved = pyqtSignal(Track, int)
 
@@ -95,7 +78,7 @@ class AlbumCompositionPage(QWidget):
     COLUMNS_WIDTHS = [345, 225, 225, 85, 65, 30, 30]
 
     def __init__(self):
-        QWidget.__init__(self)
+        super().__init__()
         self.build()
 
     def build(self):
@@ -104,6 +87,7 @@ class AlbumCompositionPage(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self.makeHeader())
         self.table = self.makeTrackTable()
+        self._add_context_menu()
         layout.addWidget(self.makeTableFrame(self.table))
         self.setLayout(layout)
 
@@ -141,7 +125,8 @@ class AlbumCompositionPage(QWidget):
         table.setFrameStyle(QFrame.NoFrame)
         table.setObjectName('track-list')
         table.setEditTriggers(QTableView.NoEditTriggers)
-        table.setSelectionMode(QTableView.NoSelection)
+        table.setSelectionMode(QTableView.SingleSelection)
+        table.setSelectionBehavior(QTableView.SelectRows)
         table.setAlternatingRowColors(True)
         table.setShowGrid(False)
         table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
@@ -150,8 +135,16 @@ class AlbumCompositionPage(QWidget):
         table.verticalHeader().sectionMoved.connect(
             lambda _, from_, to: self.trackMoved.emit(table.model().trackAt(from_), to))
         table.setItemDelegateForColumn(Columns.index(Columns.play), self.makePlayButton(table))
-        table.setItemDelegateForColumn(Columns.index(Columns.remove), self.makeRemoveButton(table))
         table.setStyleSheet("""
+            QTableView {
+                alternate-background-color: #F9F7F7;
+                selection-background-color: #F25C0A
+            }
+
+            QTableView::item {
+                border-bottom: 1px solid #F7C3B7;
+            }
+
             QHeaderView {
                 background-color: white;
             }
@@ -188,21 +181,42 @@ class AlbumCompositionPage(QWidget):
         """)
         return table
 
+    def _add_context_menu(self):
+        # We don't want the menu to block so we can't use the ActionsContextMenu policy
+        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
+        context_menu = QMenu(self.table)
+        context_menu.setObjectName("context_menu")
+        remove_action = QAction(self.tr("Delete"), self.table)
+        remove_action.setObjectName("delete_action")
+        remove_action.triggered.connect(lambda checked: self._signal_remove_track(self.table.selectedIndexes()))
+        context_menu.addAction(remove_action)
+
+        def open_menu(pos):
+            context_menu.popup(self._global_position(pos))
+
+        self.table.customContextMenuRequested.connect(open_menu)
+        remove_action.setShortcut(Qt.Key_Delete)
+        # For the shortcut to work, it needs to be part of the action list of the table
+        self.table.addAction(remove_action)
+
+    def _global_position(self, pos):
+        left_margin, top_margin = self.table.verticalHeader().width(), self.table.horizontalHeader().height()
+        position_in_table = QPoint(pos.x() + left_margin, pos.y() + top_margin)
+        return self.table.mapToGlobal(position_in_table)
+
+    def _signal_remove_track(self, selection):
+        if selection:
+            self.remove_track.emit(self.table.model().trackAt(selection[0].row()))
+
     def makePlayButton(self, table):
         button = PlayButtonDelegate(table)
         button.clicked.connect(self.playTrack.emit)
-        return button
-
-    def makeRemoveButton(self, table):
-        button = RemoveButtonDelegate(table)
-        button.clicked.connect(self.removeTrack.emit)
         return button
 
     def resizeColumns(self):
         for index, width in enumerate(self.COLUMNS_WIDTHS):
             self.table.horizontalHeader().resizeSection(index, width)
         self.table.horizontalHeader().setSectionResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
-        self.table.horizontalHeader().setSectionResizeMode(Columns.index(Columns.remove), QHeaderView.Fixed)
 
     def display(self, player, album):
         self.table.setModel(AlbumCompositionModel(album, player))

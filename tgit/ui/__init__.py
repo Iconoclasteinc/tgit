@@ -79,12 +79,12 @@ def showCenteredOnScreen(widget):
     activate(widget)
 
 
-def AlbumCompositionPageController(dialogs, player, album):
+def AlbumCompositionPageController(dialogs, player, album, *, on_remove_track):
     page = AlbumCompositionPage()
     page.addTracks.connect(lambda: dialogs.add_tracks(album).open())
     page.trackMoved.connect(lambda track, position: director.moveTrack(album, track, position))
     page.playTrack.connect(lambda track: director.playTrack(player, track))
-    page.removeTrack.connect(lambda track: director.removeTrack(player, album, track))
+    page.remove_track.connect(on_remove_track)
     page.display(player, album)
     return page
 
@@ -200,7 +200,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return WelcomeScreen(dialogs, portfolio)
 
     def create_composition_page(album):
-        return AlbumCompositionPageController(dialogs, player, album)
+        return AlbumCompositionPageController(dialogs, player, album,
+                                              on_remove_track=director.remove_track_from(player, album))
 
     def create_album_page(album):
         return AlbumEditionPageController(dialogs, show_isni_lookup_dialog,
