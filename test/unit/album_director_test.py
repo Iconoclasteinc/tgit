@@ -36,6 +36,20 @@ def mp3(tmpdir):
     shutil.rmtree(tmpdir.strpath)
 
 
+def test_adds_new_album_to_porfolio():
+    portfolio = AlbumPortfolio()
+    director.create_album(portfolio)
+    assert_that(portfolio._albums, not empty())
+
+
+def test_removes_album_from_portfolio():
+    portfolio = AlbumPortfolio()
+    album = build.album()
+    portfolio.add_album(album)
+    director.remove_album_from(portfolio)(album)
+    assert_that(portfolio._albums, empty())
+
+
 def test_adds_selected_tracks_to_album_in_selection_order(recordings):
     recordings.add_mp3(track_title='Rolling in the Deep')
     recordings.add_mp3(track_title='Set Fire to the Rain')

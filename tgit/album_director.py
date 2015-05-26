@@ -38,6 +38,13 @@ def create_album(portfolio, of_type=Album.Type.FLAC):
     portfolio.add_album(Album(of_type=of_type))
 
 
+def remove_album_from(portfolio):
+    def close_album(album):
+        portfolio.remove_album(album)
+
+    return close_album
+
+
 def import_album_to(portfolio):
     def import_album_to_portfolio(album_file):
         _, extension = os.path.splitext(album_file)

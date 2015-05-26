@@ -26,7 +26,6 @@ from tgit.album import Album
 from tgit.ui.helpers import ui_file
 from tgit.ui.message_box import close_album_confirmation_box
 
-
 StyleSheet = """
     MainWindow {
         background-color: #F6F6F6;
@@ -417,10 +416,10 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
     """
 
 
-def main_window(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio):
+def main_window(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio, on_remove_album):
     def close_album(album):
         confirmation = close_album_confirmation_box(window)
-        confirmation.yes.connect(lambda: portfolio.remove_album(album))
+        confirmation.yes.connect(lambda: on_remove_album(album))
         confirmation.open()
 
     window = MainWindow()
