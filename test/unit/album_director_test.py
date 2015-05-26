@@ -158,6 +158,25 @@ def test_changes_main_album_cover_to_specified_image_file():
                                                       desc='Front Cover')), 'images')
 
 
+def test_stops_playing_track_if_already_playing():
+    player = doubles.audio_player()
+    track = build.track()
+    player.play(track)
+
+    director.play_or_stop(player)(track)
+
+    assert_that(player.is_playing(track), is_(False), 'stopped playing')
+
+
+def test_plays_track_if_not_already_playing():
+    player = doubles.audio_player()
+    track = build.track()
+
+    director.play_or_stop(player)(track)
+
+    assert_that(player.is_playing(track), is_(True), 'started playing')
+
+
 class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
         self.tempdir = resources.makeTempDir()

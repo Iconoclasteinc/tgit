@@ -92,7 +92,7 @@ def moveTrack(album, track, position):
 
 def remove_track_from(player, album):
     def remove_track_from_album(track):
-        if player.is_playing(track.filename):
+        if player.is_playing(track):
             player.stop()
 
         album.removeTrack(track)
@@ -100,11 +100,14 @@ def remove_track_from(player, album):
     return remove_track_from_album
 
 
-def playTrack(player, track):
-    if player.is_playing(track.filename):
-        player.stop()
-    else:
-        player.play(track.filename)
+def play_or_stop(player):
+    def play_or_stop_track(track):
+        if player.is_playing(track):
+            player.stop()
+        else:
+            player.play(track)
+
+    return play_or_stop_track
 
 
 def recordAlbum(album):

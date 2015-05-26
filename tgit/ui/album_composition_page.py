@@ -17,69 +17,46 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import functools as func
-
-from PyQt5.QtCore import Qt, QModelIndex, QAbstractItemModel, pyqtSignal, QPoint
+from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QModelIndex
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtWidgets import QWidget, QTableView, QStyledItemDelegate, QHeaderView, QToolButton, QFrame, QAction, QMenu
+from PyQt5.QtWidgets import QWidget, QTableView, QHeaderView, QFrame, QAction, QMenu
+from cute.events import MainEventLoop
+from tgit.album import Album
 
 from tgit.track import Track
-from tgit.ui.album_composition_model import Columns, AlbumCompositionModel
+from tgit.ui.album_composition_model import AlbumCompositionModel
 from tgit.ui.helpers import form
-
-
-class PlayButtonDelegate(QStyledItemDelegate):
-    clicked = pyqtSignal(Track)
-
-    def __init__(self, view):
-        QStyledItemDelegate.__init__(self, view)
-
-    def paint(self, painter, option, index):
-        play_button = self.parent().indexWidget(index)
-        if not play_button:
-            play_button = QToolButton()
-            play_button.setObjectName('play-track')
-            play_button.setCursor(Qt.PointingHandCursor)
-            play_button.clicked.connect(func.partial(self.clicked.emit, index.model().trackAt(index.row())))
-            play_button.setCheckable(True)
-            _, playable = index.model().data(index)
-            play_button.setEnabled(playable)
-            if not playable:
-                play_button.setToolTip(self.tr('FLAC playback is not supported on your platform'))
-            self.parent().setIndexWidget(index, play_button)
-
-        playing, _ = index.model().data(index)
-        play_button.setChecked(playing)
-
-        # This is awful, we need to remove the widgets from the table
-        class UglyHack(QModelIndex):
-            def model(self):
-                class FakeModel(QAbstractItemModel):
-                    def data(self, index):
-                        return ''
-
-                return FakeModel()
-
-        # We need to call the super implementation to style the column according to the stylesheet
-        QStyledItemDelegate.paint(self, painter, option, UglyHack())
-
+from tgit.ui.observer import Observer
 
 LIGHT_GRAY = QColor.fromRgb(0xDDDDDD)
 
 
+@Observer
 class AlbumCompositionPage(QWidget):
-    playTrack = pyqtSignal(Track)
+    play_track = pyqtSignal(Track)
     remove_track = pyqtSignal(Track)
+    move_track = pyqtSignal(Track, int)
     addTracks = pyqtSignal()
-    trackMoved = pyqtSignal(Track, int)
 
     # Using stylesheets on the table corrupts the display of the button widgets in the
     # cells, at least on OSX. So we have to style programmatically
-    COLUMNS_WIDTHS = [345, 225, 225, 85, 65, 30, 30]
+    COLUMNS_WIDTHS = [345, 255, 255, 85, 65, 30]
 
-    def __init__(self):
+    _playing_track = None
+
+    def __init__(self, player):
         super().__init__()
+
+        self.subscribe(player.playing, self._on_playing_track)
+        self.subscribe(player.stopped, self._on_stopped_track)
+
         self.build()
+
+    def _on_playing_track(self, track):
+        self._playing_track = track
+
+    def _on_stopped_track(self, track):
+        self._playing_track = None
 
     def build(self):
         self.setObjectName('album-composition-page')
@@ -87,7 +64,7 @@ class AlbumCompositionPage(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self.makeHeader())
         self.table = self.makeTrackTable()
-        self._add_context_menu()
+        self._make_context_menu()
         layout.addWidget(self.makeTableFrame(self.table))
         self.setLayout(layout)
 
@@ -132,9 +109,8 @@ class AlbumCompositionPage(QWidget):
         table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
         table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         table.verticalHeader().setSectionsMovable(True)
-        table.verticalHeader().sectionMoved.connect(
-            lambda _, from_, to: self.trackMoved.emit(table.model().trackAt(from_), to))
-        table.setItemDelegateForColumn(Columns.index(Columns.play), self.makePlayButton(table))
+        table.verticalHeader().sectionMoved.connect(self._signal_move_track)
+        table.verticalHeader().sectionMoved.connect(lambda _, from_, to: self._select_row(to))
         table.setStyleSheet("""
             QTableView {
                 alternate-background-color: #F9F7F7;
@@ -181,43 +157,77 @@ class AlbumCompositionPage(QWidget):
         """)
         return table
 
-    def _add_context_menu(self):
+    def _signal_move_track(self, _, from_, to):
+        self.move_track.emit(self.table.model().trackAt(from_), to)
+
+    def _select_row(self, row):
+        self.table.setCurrentIndex(self.table.model().index(row, 0))
+
+    def _is_selected(self, track):
+        return self.selected_track == track
+
+    def _update_context_menu(self):
+        play_action_text = "Stop" if self._is_selected(self._playing_track) else "Play"
+        self._play_action.setText(self.tr('{0} "{1}"'.format(play_action_text, self.selected_track.track_title)))
+        self._play_action.setDisabled(self.selected_track.type == Album.Type.FLAC)
+
+    def _make_context_menu(self):
         # We don't want the menu to block so we can't use the ActionsContextMenu policy
         self.table.setContextMenuPolicy(Qt.CustomContextMenu)
-        context_menu = QMenu(self.table)
-        context_menu.setObjectName("context_menu")
+        self._context_menu = QMenu(self.table)
+        self._context_menu.setObjectName("context_menu")
+
         remove_action = QAction(self.tr("Delete"), self.table)
         remove_action.setObjectName("delete_action")
-        remove_action.triggered.connect(lambda checked: self._signal_remove_track(self.table.selectedIndexes()))
-        context_menu.addAction(remove_action)
-
-        def open_menu(pos):
-            context_menu.popup(self._global_position(pos))
-
-        self.table.customContextMenuRequested.connect(open_menu)
         remove_action.setShortcut(Qt.Key_Delete)
-        # For the shortcut to work, it needs to be part of the action list of the table
+        remove_action.triggered.connect(lambda checked: self._signal_remove_track())
+        self._context_menu.addAction(remove_action)
         self.table.addAction(remove_action)
 
-    def _global_position(self, pos):
+        self._play_action = QAction(self.table)
+        self._play_action.setObjectName("play_action")
+        self._play_action.triggered.connect(lambda checked: self._signal_play_track())
+        self._context_menu.addAction(self._play_action)
+        self.table.addAction(self._play_action)
+
+        self.table.customContextMenuRequested.connect(self._open_context_menu)
+
+    def _open_context_menu(self, pos):
+        if self.selected_row is not None:
+            self._update_context_menu()
+            self._context_menu.popup(self._map_to_global(pos))
+
+    def _map_to_global(self, pos):
+        return self.table.mapToGlobal(self._map_to_table(pos))
+
+    def _map_to_table(self, pos):
         left_margin, top_margin = self.table.verticalHeader().width(), self.table.horizontalHeader().height()
-        position_in_table = QPoint(pos.x() + left_margin, pos.y() + top_margin)
-        return self.table.mapToGlobal(position_in_table)
+        return QPoint(pos.x() + left_margin, pos.y() + top_margin)
 
-    def _signal_remove_track(self, selection):
-        if selection:
-            self.remove_track.emit(self.table.model().trackAt(selection[0].row()))
+    @property
+    def selected_row(self):
+        current_selection = self.table.selectedIndexes()
+        if current_selection:
+            return current_selection[0].row()
+        else:
+            return None
 
-    def makePlayButton(self, table):
-        button = PlayButtonDelegate(table)
-        button.clicked.connect(self.playTrack.emit)
-        return button
+    @property
+    def selected_track(self):
+        return self._track_at(self.selected_row)
 
-    def resizeColumns(self):
+    def _track_at(self, row):
+        return self.table.model().trackAt(row) if row is not None else None
+
+    def _signal_remove_track(self):
+        if self.selected_track is not None:
+            self.remove_track.emit(self.selected_track)
+
+    def _signal_play_track(self):
+        if self.selected_track is not None:
+            self.play_track.emit(self.selected_track)
+
+    def display(self, album):
+        self.table.setModel(AlbumCompositionModel(album))
         for index, width in enumerate(self.COLUMNS_WIDTHS):
             self.table.horizontalHeader().resizeSection(index, width)
-        self.table.horizontalHeader().setSectionResizeMode(Columns.index(Columns.play), QHeaderView.Fixed)
-
-    def display(self, player, album):
-        self.table.setModel(AlbumCompositionModel(album, player))
-        self.resizeColumns()

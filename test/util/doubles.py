@@ -5,8 +5,9 @@ from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 
 from test.util import mp3_file as mp3, flac_file as flac
 from tgit import tagging
-from tgit.announcer import Announcer
 from tgit.metadata import Image
+from tgit.signal import Observable, signal
+from tgit.track import Track
 from tgit.util import fs
 
 
@@ -55,32 +56,28 @@ class RecordingLibrary(object):
             recording.delete()
 
 
-def null_audio_player(*args):
+def audio_player():
     return FakeAudioPlayer()
 
 
-class FakeAudioPlayer(object):
-    def __init__(self):
-        self._filename = None
-        self._announce = Announcer()
+class FakeAudioPlayer(metaclass=Observable):
+    playing = signal(Track)
+    stopped = signal(Track)
+
+    _track = None
 
     @property
-    def media(self):
-        return self._filename
+    def current_track(self):
+        return self._track
 
-    def is_playing(self, filename):
-        return self._filename == filename
+    def is_playing(self, track):
+        return self._track == track
 
-    def play(self, filename):
-        self._filename = filename
-        self._announce.started(self._filename)
+    def play(self, track):
+        self._track = track
+        self.playing.emit(self._track)
 
     def stop(self):
-        self._announce.stopped(self._filename)
-        self._filename = None
-
-    def add_player_listener(self, listener):
-        self._announce.addListener(listener)
-
-    def remove_player_listener(self, listener):
-        self._announce.removeListener(listener)
+        self._track = None
+        if self._track is not None:
+            self.playing.emit(self._track)

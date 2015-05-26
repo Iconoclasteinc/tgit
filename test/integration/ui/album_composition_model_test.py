@@ -51,7 +51,6 @@ class RowTest(unittest.TestCase):
         assert_that(row.releaseName(), equal_to('Album'), 'release name')
         assert_that(row.bitrate(), equal_to(192000), 'bitrate')
         assert_that(row.duration(), equal_to(100), 'duration')
-        assert_that(row.inPlay, equal_to(False), 'playing')
 
     def testSignalsRowChangedWhenTrackStateChanges(self):
         track = build.track()
@@ -60,58 +59,6 @@ class RowTest(unittest.TestCase):
         row.rowChanged.connect(lambda row: listener.rowChanged(row))
         listener.should_receive('rowChanged').with_args(row).once()
         row.track_state_changed(track)
-
-    def testSignalsRowChangedWhenTrackIsLoading(self):
-        album = build.album()
-        track = build.track(filename='track.mp3')
-        other = build.track(filename='other.mp3')
-        album.addTrack(track)
-        album.addTrack(other)
-
-        row = Row(album, track, False)
-        listener = flexmock()
-        row.rowChanged.connect(lambda row: listener.rowChanged(row))
-
-        listener.should_receive('rowChanged').never()
-        row.loading('other.mp3')
-        assert_that(row.inPlay, is_(False), 'playing when not started')
-
-        listener.should_receive('rowChanged').with_args(row).once()
-        row.loading('track.mp3')
-        assert_that(row.inPlay, is_(True), 'playing once started')
-
-    def testSignalsRowChangedWhenTrackHasStopped(self):
-        album = build.album()
-        track = build.track(filename='track.mp3')
-        other = build.track(filename='other.mp3')
-        album.addTrack(track)
-        album.addTrack(other)
-
-        row = Row(album, track, True)
-        listener = flexmock()
-        row.rowChanged.connect(lambda row: listener.rowChanged(row))
-
-        listener.should_receive('rowChanged').never()
-        row.stopped('other.mp3')
-        assert_that(row.inPlay, is_(True), 'playing when not stopped')
-
-        listener.should_receive('rowChanged').with_args(row).once()
-        row.stopped('track.mp3')
-        assert_that(row.inPlay, is_(False), 'playing once stopped')
-
-    def test_indicates_that_mp3_playback_is_enabled(self):
-        album = build.album()
-        track = build.track(filename='track.mp3', album=album)
-        row = Row(album, track)
-
-        assert_that(row.playback_supported, is_(True), 'mp3 playback supported')
-
-    def test_indicates_that_flac_playback_is_disabled(self):
-        album = build.album()
-        track = build.track(filename='track.flac', album=album)
-        row = Row(album, track)
-
-        assert_that(row.playback_supported, is_(False), 'flac playback supported')
 
 
 class ColumnsTest(unittest.TestCase):
@@ -129,25 +76,11 @@ class ColumnsTest(unittest.TestCase):
         assert_that(Columns.bitrate.value(row), equal_to('192 kbps'), 'bitrate')
         assert_that(Columns.duration.value(row), equal_to('04:37'), 'duration')
 
-    def test_indicates_when_track_is_playing(self):
-        album = build.album()
-        track = build.track(album=album)
-
-        row = Row(album, track, True)
-        assert_that(Columns.play.value(row), contains(True, True), 'playing')
-
-    def test_indicates_when_track_cannot_play(self):
-        album = build.album()
-        track = build.track(filename='track.flac', album=album)
-
-        row = Row(album, track)
-        assert_that(Columns.play.value(row), contains(False, False), 'playable')
-
 
 class AlbumCompositionModelTest(unittest.TestCase):
     def setUp(self):
         self.album = build.album()
-        self.model = flexmock(StubAlbumCompositionModel(self.album, doubles.null_audio_player()))
+        self.model = flexmock(StubAlbumCompositionModel(self.album))
 
     def testHasEnoughColumns(self):
         assert_that(self.model.columnCount(), equal_to(len(Columns)), 'column count')
@@ -218,7 +151,7 @@ class AlbumCompositionModelTest(unittest.TestCase):
         modelListener = flexmock()
         self.model.dataChanged.connect(lambda start, end: modelListener.dataChanged(start, end))
         modelListener.should_receive('dataChanged').with_args(self.model.index(1, 0),
-                                                              self.model.index(1, 5)).once()
+                                                              self.model.index(1, 4)).once()
 
         track.track_title = 'Track #2'
         self.assertRowMatchesTrack(1, track)
@@ -237,11 +170,11 @@ class AlbumCompositionModelTest(unittest.TestCase):
         # each track in album also triggers a data change
         # todo change this behavior. What do we want to see?
         modelListener.should_receive('dataChanged').with_args(self.model.index(0, 0),
-                                                              self.model.index(0, 5)).once()
+                                                              self.model.index(0, 4)).once()
         modelListener.should_receive('dataChanged').with_args(self.model.index(1, 0),
-                                                              self.model.index(1, 5)).once()
+                                                              self.model.index(1, 4)).once()
         modelListener.should_receive('dataChanged').with_args(self.model.index(2, 0),
-                                                              self.model.index(2, 5)).once()
+                                                              self.model.index(2, 4)).once()
 
         self.album.release_name = 'Album'
         self.album.leadPerfomer = 'Artist'

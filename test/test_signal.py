@@ -2,7 +2,8 @@
 
 from hamcrest import assert_that, contains, empty, is_
 import pytest
-from tgit.signal import Signal
+
+from tgit.signal import Signal, MultiSubscription
 
 
 class Subscriber(object):
@@ -41,7 +42,7 @@ def signal():
     return Signal("signal", str)
 
 
-def test_signals_event_to_all_subscribed_listeners(signal):
+def test_emits_event_to_all_subscribed_listeners(signal):
     subscribers = register_subscribers_to(signal)
     signal.emit('event')
     assert_subscribers_have_been_notified(subscribers, 'event')
@@ -86,9 +87,23 @@ def test_will_not_emit_events_of_incompatible_type(signal):
 
 def test_can_unsubscribe_all_listeners_at_once(signal):
     subscribers = register_subscribers_to(signal)
-    signal.unsubscribe()
+    signal.unsubscribe_all()
 
     signal.emit('event')
 
     for index, subscriber in enumerate(subscribers):
         assert_that(subscriber.events, empty(), 'events received by subscriber #{}'.format(index))
+
+
+def test_cancelling_a_multi_subscription_cancels_all_subscriptions(signal):
+    subscribers = (Subscriber(), Subscriber(), Subscriber())
+
+    subscriptions = MultiSubscription()
+
+    for subscriber in subscribers:
+        subscriptions += signal.subscribe(subscriber)
+
+    subscriptions.cancel()
+
+    for index, subscriber in enumerate(subscribers):
+        assert_that(not signal.is_subscribed(subscriber), "subscription #{} still active".format(index))

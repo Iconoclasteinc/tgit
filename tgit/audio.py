@@ -19,70 +19,45 @@
 import os
 
 from PyQt5.QtCore import QUrl
-
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 
-from tgit.announcer import Announcer
+from tgit.signal import Observable, signal
+from tgit.track import Track
 from tgit.util import fs
 
 
-class PlayerListener(object):
-    def loading(self, track):
-        pass
-
-    def playing(self, track):
-        pass
-
-    def stopped(self, track):
-        pass
-
-    def paused(self, track):
-        pass
-
-
-# todo take a track instead of a filename?
-class MediaPlayer(object):
-    LOADING = QMediaPlayer.LoadingMedia
+class MediaPlayer(metaclass=Observable):
     PLAYING = QMediaPlayer.BufferedMedia
     STOPPED = QMediaPlayer.EndOfMedia
 
+    playing = signal(Track)
+    stopped = signal(Track)
+
     _player = None
-    _current_media = None
-    _actual_file = None
+    _current_track = None
+    _media_file = None
 
-    def __init__(self):
-        self._announce = Announcer()
+    def is_playing(self, track):
+        return self._player is not None and self._player.mediaStatus() == self.PLAYING and self._current_track == track
 
-    def is_playing(self, filename):
-        return self._player is not None and self._player.mediaStatus() == self.PLAYING and self._current_media == filename
-
-    def play(self, filename):
+    def play(self, track):
         self.stop()
-
         self._player = QMediaPlayer()
-        self._player.mediaStatusChanged.connect(self._media_changed)
-        self._current_media = filename
-        self._actual_file = fs.make_temp_copy(filename)
-        self._player.setMedia(QMediaContent(QUrl.fromLocalFile(self._actual_file)))
+        self._player.mediaStatusChanged.connect(self._media_state_changed)
+        self._current_track = track
+        self._media_file = fs.make_temp_copy(track.filename)
+        self._player.setMedia(QMediaContent(QUrl.fromLocalFile(self._media_file)))
         self._player.play()
 
     def stop(self):
         if self._player is not None:
             self._player.stop()
-            self._announce.stopped(self._current_media)
+            self.stopped.emit(self._current_track)
             self._player = None
-            os.unlink(self._actual_file)
+            os.unlink(self._media_file)
 
-    def add_player_listener(self, listener):
-        self._announce.addListener(listener)
-
-    def remove_player_listener(self, listener):
-        self._announce.removeListener(listener)
-
-    def _media_changed(self, state):
-        if state == self.LOADING:
-            self._announce.loading(self._current_media)
+    def _media_state_changed(self, state):
         if state == self.PLAYING:
-            self._announce.playing(self._current_media)
+            self.playing.emit(self._current_track)
         if state == self.STOPPED:
             self.stop()

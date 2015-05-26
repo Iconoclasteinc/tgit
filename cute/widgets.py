@@ -721,20 +721,35 @@ class TableViewDriver(WidgetDriver):
 
         self.is_(WithRowCount(matching))
 
-    def move_row(self, old_position, new_position):
-        class MoveRow(object):
-            def __init__(self, old_position, new_position):
-                self._oldPosition = old_position
-                self._newPosition = new_position
+    def has_selected_row(self, matching):
+        class WithMatchingSelectedRow(BaseMatcher):
+            @staticmethod
+            def _cells_of_row(table, row):
+                return [cell_text(table, row, column) for column in range(column_count(table))]
 
-            def __call__(self, table):
-                table.verticalHeader().moveSection(row_location(table, old_position),
-                                                   row_location(table, new_position))
+            def _selected_row(self, table):
+                return self._cells_of_row(table, table.currentIndex().row())
+
+            def _matches(self, table):
+                return matching.matches(self._selected_row(table))
+
+            def describe_to(self, description):
+                description.append_text('with selected row ')
+                matching.describe_to(description)
+
+            def describe_mismatch(self, table, mismatch_description):
+                mismatch_description.append_text('selected row was ')
+                mismatch_description.append_description_of(self._selected_row(table))
+
+        self.is_(WithMatchingSelectedRow())
+
+    def move_row(self, from_, to):
+        def move_table_row(table):
+            table.verticalHeader().moveSection(row_location(table, from_), row_location(table, to))
 
         # We'd like to use gestures but drag and drop is not supported by our Robot
         # so we have to use a manipulation
-        self.manipulate('move row %s to position %s' % (old_position, new_position),
-                        MoveRow(old_position, new_position))
+        self.manipulate('move row %s to position %s' % (from_, to), move_table_row)
 
 
 class TableWidgetDriver(TableViewDriver):

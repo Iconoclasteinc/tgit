@@ -52,5 +52,9 @@ class Track(object, metaclass=tag.Taggable):
         self.filename = filename
         self.metadata = metadata or Metadata()
 
+    @property
+    def type(self):
+        return self.album.type if self.album is not None else None
+
     def metadataChanged(self):
         self.metadata_changed.emit(self.metadata)

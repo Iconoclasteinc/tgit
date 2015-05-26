@@ -36,7 +36,7 @@ def tgit(use_local_isni_backend=False):
         name_registry = NameRegistry(host="isni-m.oclc.nl", assign_host="isni-m-acc.oclc.nl", secure=True,
                                      username="ICON", password="crmeoS4d")
 
-    app = TGiT(MediaPlayer, name_registry, use_local_isni_backend)
+    app = TGiT(MediaPlayer(), name_registry, use_local_isni_backend)
     app.setApplicationName("TGiT")
     app.setOrganizationName("Iconoclaste Inc.")
     app.setOrganizationDomain("tagyourmusic.com")
@@ -69,7 +69,7 @@ class TGiT(QApplication):
 
     def show(self, preferences):
         self.set_locale(preferences["language"])
-        self.mainWindow = ui.create_main_window(AlbumPortfolio(), self.player(), preferences, self.name_registry,
+        self.mainWindow = ui.create_main_window(AlbumPortfolio(), self.player, preferences, self.name_registry,
                                                 self.use_local_isni_backend, self.native)
         ui.showCenteredOnScreen(self.mainWindow)
 
