@@ -82,3 +82,8 @@ class Dialogs:
 
     def export(self, album):
         return self._export_as_dialog(album)
+
+    def clear(self):
+        self._pictures = None
+        self._tracks = None
+        self._export = None

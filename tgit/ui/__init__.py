@@ -178,5 +178,6 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
     window = MainWindow(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio,
                         on_remove_album=director.remove_album_from(portfolio))
     dialogs.parent = window
+    portfolio.album_removed.subscribe(lambda album: dialogs.clear())
 
     return window
