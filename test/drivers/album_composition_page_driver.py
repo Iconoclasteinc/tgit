@@ -66,7 +66,7 @@ class AlbumCompositionPageDriver(ScreenDriver):
 
     def _delete_from_context_menu(self):
         context_menu = self._open_context_menu()
-        context_menu.select_menu_item(named("delete_action"))
+        context_menu.select_menu_item(named("remove_action"))
 
     def remove_track(self, title):
         self.select_track(title)

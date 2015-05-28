@@ -179,8 +179,8 @@ class AlbumCompositionPage(QWidget):
         self._context_menu = QMenu(self.table)
         self._context_menu.setObjectName("context_menu")
 
-        remove_action = QAction(self.tr("Delete"), self.table)
-        remove_action.setObjectName("delete_action")
+        remove_action = QAction(self.tr("Remove"), self.table)
+        remove_action.setObjectName("remove_action")
         remove_action.setShortcut(Qt.Key_Delete)
         remove_action.triggered.connect(lambda checked: self._signal_remove_track())
         self._context_menu.addAction(remove_action)
