@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1046</width>
+    <width>1118</width>
     <height>599</height>
    </rect>
   </property>
@@ -493,6 +493,9 @@ QComboBox::down-arrow:focus {
          <string>ALBUM</string>
         </property>
         <layout class="QFormLayout" name="formLayout_2">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -730,6 +733,9 @@ QComboBox::down-arrow:focus {
          <string>RECORD</string>
         </property>
         <layout class="QFormLayout" name="formLayout_3">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -881,6 +887,9 @@ QComboBox::down-arrow:focus {
          <string>RECORDING</string>
         </property>
         <layout class="QFormLayout" name="formLayout_4">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
