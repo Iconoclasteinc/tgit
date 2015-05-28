@@ -430,9 +430,10 @@ def main_window(create_welcome_screen, create_album_screen, show_settings_dialog
     window.close_album.connect(close_album)
     window.show_screen(create_welcome_screen())
 
-    portfolio.album_created.subscribe(lambda album: window.enable_menu_actions(album))
+    portfolio.album_created.subscribe(lambda album: window.enable_album_actions(album))
     portfolio.album_created.subscribe(lambda album: window.show_screen(create_album_screen(album)))
     portfolio.album_removed.subscribe(lambda album: window.show_screen(create_welcome_screen()))
+    portfolio.album_removed.subscribe(lambda album: window.disable_album_actions())
     return window
 
 
@@ -456,16 +457,15 @@ class MainWindow(QMainWindow):
 
         self.close_album_action.setShortcut(QKeySequence.Close)
 
-    def enable_menu_actions(self, album):
-        _enable_action(self.add_files_action, album)
-        _enable_action(self.add_folder_action, album)
-        _enable_action(self.export_action, album)
-        _enable_action(self.close_album_action, album)
+    def enable_album_actions(self, album):
+        for action in (self.add_files_action, self.add_folder_action, self.export_action, self.close_album_action):
+            action.setEnabled(True)
+            action.setData(album)
+
+    def disable_album_actions(self):
+        for action in (self.add_files_action, self.add_folder_action, self.export_action, self.close_album_action):
+            action.setEnabled(False)
+            action.setData(None)
 
     def show_screen(self, screen):
         self.setCentralWidget(screen)
-
-
-def _enable_action(action, album):
-    action.setEnabled(True)
-    action.setData(album)

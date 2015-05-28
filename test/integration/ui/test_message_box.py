@@ -52,5 +52,5 @@ def test_shows_close_album_message(window):
     driver = QMessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
     dialog.open()
 
-    driver.shows_message("Are you sure that you are done working on this release?")
+    driver.shows_message("Are you sure you want to stop working on this release?")
     driver.yes()

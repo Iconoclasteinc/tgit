@@ -457,8 +457,8 @@
     <name>ConfirmationBox</name>
     <message>
         <location filename="tgit/ui/message_box.py" line="40"/>
-        <source>Are you sure that you are done working on this release?</source>
-        <translation>Êtes-vous certain que vous avez terminer de travailler sur cet album?</translation>
+        <source>Are you sure you want to stop working on this release?</source>
+        <translation>Êtes-vous certain de vouloir arrêter de travailler sur cet album?</translation>
     </message>
 </context>
 <context>
