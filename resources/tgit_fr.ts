@@ -132,6 +132,18 @@
         <source>Organize the release's tracks.</source>
         <translation>Organisez les pistes qui composent l&apos;album.</translation>
     </message>
+    <message>
+        <source>Remove</source>
+        <translation>Enlever</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Jouer</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Arrêter</translation>
+    </message>
 </context>
 <context>
     <name>AlbumEditionPage</name>

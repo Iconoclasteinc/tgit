@@ -170,7 +170,7 @@ class AlbumCompositionPage(QWidget):
 
     def _update_context_menu(self):
         play_action_text = "Stop" if self._is_selected(self._playing_track) else "Play"
-        self._play_action.setText(self.tr('{0} "{1}"'.format(play_action_text, self.selected_track.track_title)))
+        self._play_action.setText('{0} "{1}"'.format(self.tr(play_action_text), self.selected_track.track_title))
         self._play_action.setDisabled(self.selected_track.type == Album.Type.FLAC)
 
     def _make_context_menu(self):
