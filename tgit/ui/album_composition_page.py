@@ -111,13 +111,16 @@ class AlbumCompositionPage(QWidget):
         table.verticalHeader().sectionMoved.connect(self._signal_move_track)
         table.verticalHeader().sectionMoved.connect(lambda _, from_, to: self._select_row(to))
         table.setStyleSheet("""
-            QTableView {
-                alternate-background-color: #F9F7F7;
-                selection-background-color: #F25C0A
-            }
-
             QTableView::item {
                 border-bottom: 1px solid #F7C3B7;
+            }
+
+            QTableView::item::alternate {
+                background-color:#F9F7F7;
+            }
+
+            QTableView::item::selected {
+                background-color:#F25C0A;
             }
 
             QHeaderView {
