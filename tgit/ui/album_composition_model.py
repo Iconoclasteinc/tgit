@@ -20,20 +20,18 @@
 from PyQt5.QtCore import QObject, QAbstractTableModel, QModelIndex, Qt, pyqtSignal
 
 from tgit.album import AlbumListener
-from tgit.audio import PlayerListener
 from tgit.ui.helpers import formatting
 
 
 # We need to keep Row until we get rid of the playing state
-class Row(QObject, AlbumListener, PlayerListener):
+class Row(QObject, AlbumListener):
     rowChanged = pyqtSignal(object)
 
     # todo remove album from params
-    def __init__(self, album, track, playing=False):
+    def __init__(self, album, track):
         QObject.__init__(self)
         self.album = album
         self.track = track
-        self.inPlay = playing
 
     @property
     def trackTitle(self):
@@ -51,28 +49,11 @@ class Row(QObject, AlbumListener, PlayerListener):
     def duration(self):
         return self.track.duration
 
-    @property
-    def playback_supported(self):
-        return self.track.filename.endswith('.mp3')
-
     def track_state_changed(self, track):
         self.signalRowChange()
 
     def albumStateChanged(self, album):
         self.signalRowChange()
-
-    def loading(self, filename):
-        if filename == self.track.filename:
-            self.inPlay = True
-            self.signalRowChange()
-
-    def paused(self, filename):
-        self.stopped(filename)
-
-    def stopped(self, filename):
-        if filename == self.track.filename:
-            self.inPlay = False
-            self.signalRowChange()
 
     def signalRowChange(self):
         self.rowChanged.emit(self)
@@ -106,17 +87,15 @@ class Columns(metaclass=ColumnEnum):
     releaseName = Column(name="Release Name", value=Row.releaseName)
     bitrate = Column(name='Bitrate', value=lambda row: '%s kbps' % formatting.inKbps(row.bitrate()))
     duration = Column(name='Duration', value=lambda row: formatting.toDuration(row.duration()))
-    play = Column(name='', value=lambda row: (row.inPlay, row.playback_supported))
 
-    __values__ = trackTitle, leadPerformer, releaseName, bitrate, duration, play
+    __values__ = trackTitle, leadPerformer, releaseName, bitrate, duration
 
 
 class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
-    def __init__(self, album, player, parent=None):
+    def __init__(self, album, parent=None):
         QAbstractTableModel.__init__(self, parent)
         self.album = album
         self.album.addAlbumListener(self)
-        self.player = player
         self.rows = []
 
     @property
@@ -142,10 +121,7 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
             return str(section + 1)
 
     def data(self, index, role=Qt.DisplayRole):
-        if not index.isValid() or not (0 <= index.row() < len(self.album)):
-            return None
-
-        if role != Qt.DisplayRole:
+        if role != Qt.DisplayRole or not index.isValid() or not (0 <= index.row() < len(self.album)):
             return None
 
         return Columns[index.column()].value(self.rows[index.row()])
@@ -158,10 +134,9 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
                               self.index(self.rowCount() - 1, Columns.index(Columns.releaseName)))
 
     def trackAdded(self, track, position):
-        row = Row(self.album, track, self.player.is_playing(track.filename))
+        row = Row(self.album, track)
         track.metadata_changed.subscribe(row.track_state_changed)
         self.album.addAlbumListener(row)
-        self.player.add_player_listener(row)
         self.rows.insert(position, row)
         row.rowChanged.connect(self.rowChanged)
         self.insertRows(position, 1, QModelIndex())
@@ -174,7 +149,6 @@ class AlbumCompositionModel(QAbstractTableModel, AlbumListener):
         row = self.rows[position]
         track.metadata_changed.unsubscribe(row.track_state_changed)
         self.album.removeAlbumListener(row)
-        self.player.remove_player_listener(row)
         row.rowChanged.disconnect()
         self.rows.remove(row)
         self.removeRows(position, 1, QModelIndex())

@@ -18,8 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 
-# Descriptor class for signals
 class signal:
+    """Descriptor class for signals"""
     def __init__(self, type_=None, name=None):
         self.name = name
         self._type = type_
@@ -33,15 +33,34 @@ class signal:
 
 
 class Subscription:
-    def __init__(self, observable, subscriber):
-        self._observable = observable
+    """Subscription are returned from `Signal.subscribe` to allow unsubscribing"""
+    def __init__(self, signal, subscriber):
+        self._observable = signal
         self._subscriber = subscriber
 
     def cancel(self):
         self._observable.unsubscribe(self._subscriber)
 
 
+class MultiSubscription:
+    """Groups multiple Subscriptions together and unsubscribes from all of them together"""
+    def __init__(self):
+        self._subscriptions = []
+
+    def __iadd__(self, subscription):
+        self.append(subscription)
+        return self
+
+    def append(self, subscription):
+        self._subscriptions.append(subscription)
+
+    def cancel(self):
+        for subscription in self._subscriptions:
+            subscription.cancel()
+
+
 class Observable(type):
+    """Metaclass for Observable types that have signals"""
     def __new__(mcs, clsname, bases, methods):
         # Attach names to the signals
         for key, value in methods.items():
@@ -51,10 +70,15 @@ class Observable(type):
 
 
 class Signal:
+    """A signal emits events and allows subscribing and unsubscribing"""
     def __init__(self, name, type_):
         self._name = name
         self._type = type_
         self._subscribers = []
+
+    @property
+    def subscribers(self):
+        return list(self._subscribers)
 
     def emit(self, event):
         if not isinstance(event, self._type):
@@ -80,8 +104,8 @@ class Signal:
         return subscriber in self._subscribers
 
     def unsubscribe(self, *subscribers):
-        if len(subscribers) == 0:
-            subscribers = tuple(self._subscribers)
-
         for subscriber in subscribers:
             self._remove(subscriber)
+
+    def unsubscribe_all(self):
+        self.unsubscribe(*self._subscribers)

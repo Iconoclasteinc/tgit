@@ -23,7 +23,7 @@ class ApplicationRunner:
     tagger = None
 
     def start(self, preferences):
-        self.app = TGiT(doubles.null_audio_player, NameRegistry(host="localhost", assign_host="localhost", port=5000),
+        self.app = TGiT(doubles.audio_player(), NameRegistry(host="localhost", assign_host="localhost", port=5000),
                         use_local_isni_backend=True, native=False)
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),

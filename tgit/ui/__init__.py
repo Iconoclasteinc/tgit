@@ -75,13 +75,14 @@ def showCenteredOnScreen(widget):
     activate(widget)
 
 
-def AlbumCompositionPageController(dialogs, player, album, *, on_remove_track):
-    page = AlbumCompositionPage()
+def AlbumCompositionPageController(dialogs, player, album, *, on_remove_track, on_play_track):
+    page = AlbumCompositionPage(player)
     page.addTracks.connect(lambda: dialogs.add_tracks(album).open())
-    page.trackMoved.connect(lambda track, position: director.moveTrack(album, track, position))
-    page.playTrack.connect(lambda track: director.playTrack(player, track))
+    page.move_track.connect(lambda track, position: director.moveTrack(album, track, position))
+    page.play_track.connect(on_play_track)
     page.remove_track.connect(on_remove_track)
-    page.display(player, album)
+
+    page.display(album)
     return page
 
 
@@ -118,6 +119,7 @@ def TrackEditionPageController(album, track):
             if removed == track:
                 subscription.cancel()
                 album.removeAlbumListener(page)
+                album.removeAlbumListener(self)
 
     subscription = track.metadata_changed.subscribe(page.display_track)
     album.addAlbumListener(page)
@@ -149,7 +151,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
     def create_composition_page(album):
         return AlbumCompositionPageController(dialogs, player, album,
-                                              on_remove_track=director.remove_track_from(player, album))
+                                              on_remove_track=director.remove_track_from(player, album),
+                                              on_play_track=director.play_or_stop(player))
 
     def create_album_page(album):
         return make_album_edition_page(dialogs, show_isni_lookup_dialog, show_activity_indicator_dialog,

@@ -34,6 +34,7 @@ class AlbumListener:
 
 
 class Album(metaclass=tag.Taggable):
+    # todo this should probably be in Track
     class Type:
         MP3 = "mp3"
         FLAC = "flac"

@@ -4,7 +4,7 @@ from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
 from test.drivers import AlbumScreenDriver
 from test.integration.ui import WidgetTest
-from test.util import builders as build
+from test.util import builders as build, doubles
 
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
@@ -17,7 +17,8 @@ class AlbumScreenTest(WidgetTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
         self.album = build.album()
-        self.view = AlbumScreen(AlbumCompositionPage(), AlbumEditionPage(self.album), self.createTrackEditionPage)
+        self.view = AlbumScreen(AlbumCompositionPage(doubles.audio_player()), AlbumEditionPage(self.album),
+                                self.createTrackEditionPage)
         self.show(self.view)
         self.driver = self.createDriverFor(self.view)
 
