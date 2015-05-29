@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>album_screen</class>
  <widget class="QWidget" name="album_screen">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>499</width>
+    <height>127</height>
+   </rect>
+  </property>
   <property name="styleSheet">
    <string notr="true">QStackedWidget {
 	margin: 0 15px 15px 15px;
@@ -86,7 +94,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>0</number>
+    <number>10</number>
    </property>
    <property name="leftMargin">
     <number>0</number>
@@ -243,8 +251,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
