@@ -178,6 +178,9 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
         <property name="text">
          <string>PREVIOUS</string>
         </property>
@@ -201,6 +204,9 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
         <property name="text">
          <string>SAVE</string>
         </property>
@@ -223,6 +229,9 @@
        <widget class="QPushButton" name="next">
         <property name="enabled">
          <bool>false</bool>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
         </property>
         <property name="text">
          <string>NEXT</string>

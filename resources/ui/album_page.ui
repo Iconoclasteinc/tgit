@@ -301,6 +301,9 @@ QComboBox::down-arrow:focus {
             </item>
             <item>
              <widget class="QPushButton" name="select_picture_button">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
               <property name="text">
                <string>SELECT PICTURE...</string>
               </property>
@@ -308,6 +311,9 @@ QComboBox::down-arrow:focus {
             </item>
             <item>
              <widget class="QPushButton" name="remove_picture_button">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
               <property name="text">
                <string>REMOVE</string>
               </property>
@@ -584,6 +590,9 @@ QComboBox::down-arrow:focus {
               <property name="enabled">
                <bool>false</bool>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
               <property name="text">
                <string>LOOKUP ISNI</string>
               </property>
@@ -593,6 +602,9 @@ QComboBox::down-arrow:focus {
              <widget class="QPushButton" name="assign_isni_button">
               <property name="enabled">
                <bool>false</bool>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
               </property>
               <property name="text">
                <string>ASSING ISNI</string>
@@ -642,6 +654,9 @@ QComboBox::down-arrow:focus {
             </item>
             <item>
              <widget class="QPushButton" name="clear_isni_button">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
               <property name="text">
                <string>CLEAR ISNI</string>
               </property>
@@ -710,6 +725,9 @@ QComboBox::down-arrow:focus {
             </item>
             <item>
              <widget class="QPushButton" name="add_guest_performers_button">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
               <property name="text">
                <string>+</string>
               </property>
