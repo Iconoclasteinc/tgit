@@ -12,5 +12,7 @@
 	<string>icon.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.tagyourmusic.tgit</string>
+	<key>NSHighResolutionCapable</key>
+    <true/>
 </dict>
 </plist>
