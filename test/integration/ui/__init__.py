@@ -5,11 +5,10 @@ import unittest
 
 from PyQt5.QtWidgets import QApplication
 
-from cute.events import MainEventLoop
 from cute.prober import EventProcessingProber
 from cute.robot import Robot
 from tgit import ui
-from tgit.ui.main_window import MainWindow, StyleSheet
+from tgit.ui.main_window import StyleSheet
 
 SIZE = (1100, 745)
 
@@ -39,7 +38,7 @@ class WidgetTest(unittest.TestCase):
         self.prober.check(probe)
 
     def pause(self, ms):
-        MainEventLoop.process_events_for(ms)
+        self.gesture_performer.delay(ms)
 
     def tearDown(self):
         self.pause(END_OF_TEST_PAUSE)

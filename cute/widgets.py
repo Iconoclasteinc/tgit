@@ -10,8 +10,7 @@ from hamcrest import all_of, equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
-from . import gestures, properties, keyboard_shortcuts as shortcuts, matchers as match
-from cute import keyboard_shortcuts
+from . import gestures, properties, matchers as match
 from cute.prober import EventProcessingProber
 from cute.robot import Robot
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
@@ -94,10 +93,10 @@ class WidgetDriver(object):
 
     def left_click_on_widget(self):
         self.is_showing_on_screen()
-        self.perform(gestures.click_at(self.widget_center()))
+        self.perform(gestures.mouse_click_at(self.widget_center()))
 
     def enter(self):
-        self.perform(shortcuts.ENTER)
+        self.perform(gestures.enter())
 
     def perform(self, *gestures):
         self.gesture_performer.perform(*gestures)
@@ -161,10 +160,10 @@ class AbstractEditDriver(WidgetDriver):
         self.delete_selected_text()
 
     def select_all_text(self):
-        self.perform(shortcuts.SELECT_ALL)
+        self.perform(gestures.select_all())
 
     def delete_selected_text(self):
-        self.perform(shortcuts.DELETE_PREVIOUS)
+        self.perform(gestures.delete_previous())
 
     def type(self, text):
         self.perform(gestures.type_text(text))
@@ -182,7 +181,7 @@ class TextEditDriver(AbstractEditDriver):
     def add_line(self, text):
         self.focus_with_mouse()
         self.type(text)
-        self.perform(shortcuts.ENTER)
+        self.perform(gestures.enter())
 
 
 class QAbstractSpinBoxDriver(AbstractEditDriver):
@@ -233,7 +232,7 @@ class DateTimeEditDriver(WidgetDriver):
         probe = WidgetScreenBoundsProbe(self.selector)
         self.check(probe)
         point = QPoint(probe.bounds.right(), probe.bounds.center().y())
-        self.perform(gestures.click_at(point))
+        self.perform(gestures.mouse_click_at(point))
 
     def _calendar(self):
         def query_calendar_widget(date_edit):
@@ -255,7 +254,7 @@ class QCalendarDriver(WidgetDriver):
     def select_year(self, year):
         self._year_button().click()
         self._year_spinner().type(str(year))
-        self.perform(keyboard_shortcuts.ENTER)
+        self.perform(gestures.enter())
 
     def select_month(self, month):
         # for some reason, clicking the toolbutton blocks the execution
@@ -484,11 +483,11 @@ class ListViewDriver(WidgetDriver):
 
     def _multi_select_item(self, index):
         self._scroll_item_to_visible(index)
-        self.perform(gestures.with_modifiers(Qt.ControlModifier, gestures.click_at(self._center_of_item(index))))
+        self.perform(gestures.mouse_multi_click_at(self._center_of_item(index)))
 
     def _select_item(self, index):
         self._scroll_item_to_visible(index)
-        self.perform(gestures.click_at(self._center_of_item(index)))
+        self.perform(gestures.mouse_click_at(self._center_of_item(index)))
 
     def _scroll_item_to_visible(self, index):
         self.manipulate('scroll item to visible', lambda listView: listView.scrollTo(index))
@@ -572,7 +571,7 @@ class MenuDriver(WidgetDriver):
     def open(self):
         # For some unknown reason, menu does not pop up on right click on Mac
         # self.perform(gestures.mouse_click(gestures.RIGHT_BUTTON))
-        self.open_at(*self.gesture_performer.position)
+        self.open_at(*self.gesture_performer.mouse_position)
 
     def open_at(self, x, y):
         # For some reason, we can't open the menu by just right clicking, so open it manually
@@ -786,7 +785,7 @@ class TableViewDriver(WidgetDriver):
 
         cell_position = CalculateCellPosition(row, column)
         self.manipulate('calculate cell (%s, %s) center position' % (row, column), cell_position)
-        self.perform(gestures.click_at(cell_position.center))
+        self.perform(gestures.mouse_click_at(cell_position.center))
 
     def click_on_cell(self, row, column):
         self.scroll_cell_to_visible(row, column)

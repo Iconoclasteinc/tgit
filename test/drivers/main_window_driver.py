@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from cute import keyboard_shortcuts
+from cute import gestures
 from cute.widgets import WidgetDriver
 from .album_screen_driver import album_screen
 from .import_album_from_track_dialog_driver import import_album_from_track_dialog
@@ -104,7 +104,7 @@ class MainWindowDriver(WidgetDriver):
     def close_album(self, using_shortcut=False):
         if using_shortcut:
             self.click()
-            self.perform(keyboard_shortcuts.CLOSE)
+            self.perform(gestures.close())
         else:
             menu_bar(self).close_album()
 

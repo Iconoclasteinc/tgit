@@ -5,7 +5,104 @@ from PyQt5.QtGui import QCursor
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
-from .events import MainEventLoop
+from . import event_loop
+
+
+class KeyboardLayout:
+    MODIFIER_MAP = {
+        'control': Qt.ControlModifier,
+        'command': Qt.ControlModifier
+    }
+
+    KEY_MAP = {
+        'backspace': Qt.Key_Backspace,
+        'escape': Qt.Key_Escape,
+        'return': Qt.Key_Return,
+        'f4': Qt.Key_F4,
+    }
+
+    @staticmethod
+    def modifier_code(key):
+        return KeyboardLayout.MODIFIER_MAP.get(key, key)
+
+    @staticmethod
+    def is_modifier(key):
+        return key in KeyboardLayout.MODIFIER_MAP
+
+    @staticmethod
+    def key_code(key):
+        return KeyboardLayout.KEY_MAP.get(key, key)
+
+
+class MouseLayout:
+    BUTTON_MAP = {
+        'left': Qt.LeftButton,
+        'right': Qt.RightButton,
+    }
+
+    @staticmethod
+    def button_code(button):
+        return MouseLayout.BUTTON_MAP.get(button, button)
+
+
+class Robot(object):
+    MOUSE_MOVE_DELAY = 10 # in ms
+
+    def __init__(self):
+        self._modifiers = Qt.NoModifier
+
+    def perform(self, *gestures):
+        for gesture in gestures:
+            gesture(self)
+
+    @property
+    def mouse_position(self):
+        current_position = QCursor.pos()
+        return current_position.x(), current_position.y()
+
+    def press_key(self, key):
+        if KeyboardLayout.is_modifier(key):
+            self._modifiers |= KeyboardLayout.modifier_code(key)
+        else:
+            QTest.keyPress(self._widget_under_cursor(), KeyboardLayout.key_code(key), self._modifiers)
+
+    def release_key(self, key):
+        if KeyboardLayout.is_modifier(key):
+            self._modifiers &= ~KeyboardLayout.modifier_code(key)
+        else:
+            QTest.keyRelease(self._widget_under_cursor(), KeyboardLayout.key_code(key), self._modifiers)
+
+    def type(self, key):
+        QTest.keyClick(self._widget_under_cursor(), KeyboardLayout.key_code(key), self._modifiers)
+
+    def move_mouse(self, x, y):
+        QCursor.setPos(x, y)
+        self.delay(self.MOUSE_MOVE_DELAY)
+
+    def press_mouse(self, button):
+        self._at_cursor_position(QTest.mousePress, MouseLayout.button_code(button))
+
+    def release_mouse(self, button):
+        self._at_cursor_position(QTest.mouseRelease, MouseLayout.button_code(button))
+
+    def double_click_mouse(self, button):
+        self._at_cursor_position(QTest.mouseDClick, MouseLayout.button_code(button))
+
+    @staticmethod
+    def delay(ms):
+        event_loop.process_events_for(ms)
+
+    def _at_cursor_position(self, mouse_action, button):
+        # By default QTest will operate mouse at the center of the widget,
+        # but we want the action to occur at the current cursor position
+        mouse_action(self._widget_under_cursor(), button, self._modifiers,
+                     self._relative_position_to_widget_under_cursor())
+
+    def _widget_under_cursor(self):
+        return _widget_at(*self.mouse_position)
+
+    def _relative_position_to_widget_under_cursor(self):
+        return _compute_relative_position(self._widget_under_cursor(), *self.mouse_position)
 
 
 def _widget_at(x, y):
@@ -19,59 +116,3 @@ def _widget_at(x, y):
 def _compute_relative_position(widget, x, y):
     return widget.mapFromGlobal(QPoint(x, y))
 
-
-class Robot(object):
-    def __init__(self):
-        self._active_modifiers = Qt.NoModifier
-
-    def perform(self, *gestures):
-        for gesture in gestures:
-            gesture(self)
-
-    @property
-    def position(self):
-        current_position = QCursor.pos()
-        return current_position.x(), current_position.y()
-
-    def activate_modifiers(self, mask):
-        self._active_modifiers = self._active_modifiers | mask
-
-    def deactivate_modifiers(self, mask):
-        self._active_modifiers = self._active_modifiers & ~mask
-
-    def press_key(self, key):
-        QTest.keyPress(self._target(), key, self._active_modifiers)
-
-    def release_key(self, key):
-        QTest.keyRelease(self._target(), key, self._active_modifiers)
-
-    def type(self, key):
-        QTest.keyClick(self._target(), key, self._active_modifiers)
-
-    @staticmethod
-    def move_mouse(x, y):
-        QCursor.setPos(x, y)
-
-    def press_mouse(self, button):
-        self._at_cursor_position(QTest.mousePress, button)
-
-    def release_mouse(self, button):
-        self._at_cursor_position(QTest.mouseRelease, button)
-
-    def double_click_mouse(self, button):
-        self._at_cursor_position(QTest.mouseDClick, button)
-
-    @staticmethod
-    def delay(ms):
-        MainEventLoop.process_events_for(ms)
-
-    def _at_cursor_position(self, mouse_action, button):
-        # By default QTest will operate mouse at the center of the widget,
-        # but we want the action to occur at the current cursor position
-        mouse_action(self._target(), button, self._active_modifiers, self._position_relative_to_target())
-
-    def _target(self):
-        return _widget_at(*self.position)
-
-    def _position_relative_to_target(self):
-        return _compute_relative_position(self._target(), *self.position)

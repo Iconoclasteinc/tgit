@@ -5,7 +5,7 @@ import time
 from hamcrest.core.selfdescribing import SelfDescribing
 from hamcrest.core.string_description import StringDescription
 
-from .events import MainEventLoop
+from . import event_loop
 
 DEFAULT_POLL_DELAY = 25
 DEFAULT_POLL_TIMEOUT = 1000
@@ -88,5 +88,5 @@ class EventProcessingProber(PollingProber):
         probe.test()
 
     def _wait_for(self, ms):
-        MainEventLoop.process_events_for(ms)
+        event_loop.process_events_for(ms)
 
