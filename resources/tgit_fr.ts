@@ -422,6 +422,13 @@
     </message>
 </context>
 <context>
+    <name>MainWindow</name>
+    <message>
+        <source>Settings</source>
+        <translation>Préférences</translation>
+    </message>
+</context>
+<context>
     <name>PerformerDialog</name>
     <message>
         <location filename="tgit/ui/performer_dialog.py" line="33"/>
