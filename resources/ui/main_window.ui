@@ -97,7 +97,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Close album</string>
+    <string>Close release</string>
    </property>
   </action>
  </widget>
