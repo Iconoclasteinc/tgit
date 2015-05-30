@@ -13,13 +13,6 @@ from test.util import builders as build
 from tgit.ui.main_window import MainWindow
 
 
-@pytest.fixture()
-def main_window(qt):
-    window = MainWindow()
-    show_widget(window)
-    return window
-
-
 @pytest.yield_fixture()
 def driver(main_window):
     main_window_driver = MainWindowDriver(WidgetIdentity(main_window), EventProcessingProber(), Robot())

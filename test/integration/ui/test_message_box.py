@@ -17,29 +17,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtWidgets import QMainWindow
-import pytest
-
 from cute.finders import WidgetIdentity
-from cute.prober import EventProcessingProber
-from cute.robot import Robot
 from cute.widgets import QMessageBoxDriver
-from test.integration.ui import show_widget
 from tgit.ui import isni_assignation_failed_message_box
 from tgit.ui.message_box import close_album_confirmation_box
 
 
-@pytest.yield_fixture()
-def window(qt):
-    main_window = QMainWindow()
-    show_widget(main_window)
-    yield main_window
-    main_window.close()
-
-
-def test_shows_isni_assignation_failed_message_with_details(window):
-    dialog = isni_assignation_failed_message_box(window, "Details")
-    driver = QMessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
+def test_shows_isni_assignation_failed_message_with_details(main_window, prober, automaton):
+    dialog = isni_assignation_failed_message_box(main_window, "Details")
+    driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
     dialog.open()
 
     driver.shows_message("Could not assign an ISNI")
@@ -47,9 +33,9 @@ def test_shows_isni_assignation_failed_message_with_details(window):
     driver.ok()
 
 
-def test_shows_close_album_message(window):
-    dialog = close_album_confirmation_box(window)
-    driver = QMessageBoxDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
+def test_shows_close_album_message(main_window, prober, automaton):
+    dialog = close_album_confirmation_box(main_window)
+    driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
     dialog.open()
 
     driver.shows_message("Are you sure you want to stop working on this release?")

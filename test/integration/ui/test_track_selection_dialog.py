@@ -16,18 +16,14 @@ from test.util import resources
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 
-@pytest.yield_fixture()
-def dialog(qt):
-    main_window = QMainWindow()
-    show_widget(main_window)
-    yield TrackSelectionDialog(main_window, native=False)
-    main_window.close()
+@pytest.fixture()
+def dialog(main_window):
+    return TrackSelectionDialog(main_window, native=False)
 
 
 @pytest.yield_fixture()
-def driver(dialog):
-    dialog_driver = TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')),
-                                               EventProcessingProber(), Robot())
+def driver(dialog, prober, automaton):
+    dialog_driver = TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')), prober, automaton)
     yield dialog_driver
     dialog_driver.close()
 

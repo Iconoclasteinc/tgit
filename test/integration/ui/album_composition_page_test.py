@@ -7,15 +7,12 @@ import pytest
 
 from cute.finders import WidgetIdentity
 from cute.matchers import with_text
-from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
-from cute.robot import Robot
-from test.integration.ui import WidgetTest, show_widget
+from test.integration.ui import WidgetTest
 from test.drivers import AlbumCompositionPageDriver
 from test.util import builders as build, doubles
 from tgit.album import Album
 from tgit.ui.album_composition_page import AlbumCompositionPage
-from tgit.ui.main_window import MainWindow
 
 
 @pytest.fixture
@@ -23,19 +20,16 @@ def player():
     return doubles.audio_player()
 
 
-@pytest.yield_fixture()
-def page(qt, player):
-    main_window = MainWindow()
+@pytest.fixture()
+def page(main_window, player):
     composition_page = AlbumCompositionPage(player)
     main_window.setCentralWidget(composition_page)
-    show_widget(main_window)
-    yield composition_page
-    main_window.close()
+    return composition_page
 
 
 @pytest.yield_fixture()
-def driver(page):
-    page_driver = AlbumCompositionPageDriver(WidgetIdentity(page), EventProcessingProber(), Robot())
+def driver(page, prober, automaton):
+    page_driver = AlbumCompositionPageDriver(WidgetIdentity(page), prober, automaton)
     yield page_driver
     page_driver.close()
 
