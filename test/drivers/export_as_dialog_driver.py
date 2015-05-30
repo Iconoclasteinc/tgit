@@ -12,5 +12,5 @@ def export_as_dialog(parent):
 class ExportAsDialogDriver(FileDialogDriver):
     def export_as(self, filename):
         self.enter_manually(filename)
-        self.accept_button_has_text('&Save')
+        self.has_accept_button_text('&Save')
         self.accept()

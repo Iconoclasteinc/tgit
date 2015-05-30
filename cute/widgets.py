@@ -120,7 +120,7 @@ class WidgetDriver:
 class ButtonDriver(WidgetDriver):
     def click(self):
         self.is_enabled()
-        WidgetDriver.click(self)
+        super().click()
 
     def has_text(self, matcher):
         self.has(properties.text(), wrap_matcher(matcher))
@@ -178,6 +178,8 @@ class LineEditDriver(AbstractEditDriver):
 
 
 class TextEditDriver(AbstractEditDriver):
+    MULTILINE_DELAY = 10
+
     def has_plain_text(self, text):
         self.has(properties.plain_text(), equal_to(text))
 
@@ -185,20 +187,22 @@ class TextEditDriver(AbstractEditDriver):
         self.focus_with_mouse()
         self.type(text)
         self.perform(gestures.enter())
+        self.pause(self.MULTILINE_DELAY)
 
 
 class QAbstractSpinBoxDriver(AbstractEditDriver):
     pass
 
+
 class ComboBoxDriver(AbstractEditDriver):
     CHOICES_DISPLAY_DELAY = 250
 
     def select_option(self, matching):
-        popup = self._popup()
+        options_list = self._open_options_list()
         self.pause(self.CHOICES_DISPLAY_DELAY)
-        popup.select_item(match.with_list_item_text(matching))
+        options_list.select_item(match.with_list_item_text(matching))
 
-    def _popup(self):
+    def _open_options_list(self):
         self.manipulate("pop up", lambda w: w.showPopup())
         return ListViewDriver.find_single(self, QListView)
 
@@ -248,6 +252,8 @@ class DateTimeEditDriver(WidgetDriver):
 
 
 class QCalendarDriver(WidgetDriver):
+    MENU_DISPLAY_DELAY = 250
+
     def select_date(self, year, month, day):
         self.select_year(year)
         self.select_month(month)
@@ -264,7 +270,7 @@ class QCalendarDriver(WidgetDriver):
         self.perform(gestures.mouse_move(self._month_button().widget_center()))
         self._month_menu().open()
 
-        self.pause(DateTimeEditDriver.CALENDAR_DISPLAY_DELAY)
+        self.pause(self.MENU_DISPLAY_DELAY)
         self._month_menu().select_menu_item(match.with_data(month))
 
     def select_day(self, day):
@@ -364,10 +370,7 @@ class FileDialogDriver(WidgetDriver):
 
     def into_folder(self, name):
         self.select_file(name)
-        self._double_click_on_folder()
-
-    def _double_click_on_folder(self):
-        self.perform(gestures.mouse_double_click())
+        self.enter()
 
     def filter_files_of_type(self, matching):
         driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
@@ -381,10 +384,8 @@ class FileDialogDriver(WidgetDriver):
         self._list_view().select_items(*[match.with_list_item_text(name) for name in names])
 
     def up_one_folder(self):
-        self._tool_button_named('toParentButton').click()
-
-    def _tool_button_named(self, name):
-        return ButtonDriver.find_single(self, QToolButton, match.named(name))
+        up_button = ButtonDriver.find_single(self, QToolButton, match.named("toParentButton"))
+        up_button.click()
 
     def enter_manually(self, filename):
         self._filename_edit().replace_all_text(filename)
@@ -392,20 +393,20 @@ class FileDialogDriver(WidgetDriver):
     def accept(self):
         self._accept_button().click()
 
-    def accept_button_is(self, criteria):
+    def has_accept_button(self, criteria):
         return self._accept_button().is_(criteria)
 
-    def accept_button_has_text(self, text):
+    def has_accept_button_text(self, text):
         return self._accept_button().has_text(text)
 
     def reject(self):
-        return self.reject_button().click()
+        return self._reject_button().click()
 
-    def reject_button_is(self, criteria):
-        return self.reject_button().is_(criteria)
+    def has_reject_button(self, criteria):
+        return self._reject_button().is_(criteria)
 
-    def reject_button_has_text(self, text):
-        return self.reject_button().has_text(text)
+    def has_reject_button_text(self, text):
+        return self._reject_button().has_text(text)
 
     def _list_view(self):
         return ListViewDriver.find_single(self, QListView, match.named("listView"))
@@ -416,7 +417,7 @@ class FileDialogDriver(WidgetDriver):
     def _accept_button(self):
         return self._dialog_button(QFileDialog.Accept)
 
-    def reject_button(self):
+    def _reject_button(self):
         return self._dialog_button(QFileDialog.Reject)
 
     def _dialog_button(self, label):
@@ -549,7 +550,7 @@ class MenuDriver(WidgetDriver):
         # We have to make sure the item menu actually exists in the menu
         # Checking that the item is a child of the menu is not sufficient
         action = self.has_menu_item(matching)
-        return MenuItemDriver(WidgetIdentity(action), EventProcessingProber(), Robot())
+        return MenuItemDriver(WidgetIdentity(action), self.prober, self.gesture_performer)
 
     def select_menu_item(self, matching):
         menu_item = self.menu_item(matching)
@@ -606,7 +607,7 @@ class MenuItemDriver(WidgetDriver):
 
     def click(self):
         self.is_enabled()
-        self.perform(gestures.mouse_move(self._center_of_item()), gestures.mouse_click())
+        self.perform(gestures.mouse_click_at(self._center_of_item()))
 
 
 class QMessageBoxDriver(WidgetDriver):

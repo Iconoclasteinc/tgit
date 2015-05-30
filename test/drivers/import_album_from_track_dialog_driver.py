@@ -26,5 +26,5 @@ class ImportAlbumFromTrackDialogDriver(FileDialogDriver):
         self.show_hidden_files()
         self.navigate_to_dir(os.path.dirname(path))
         self.select_file(os.path.basename(path))
-        self.accept_button_is(disabled())
+        self.has_accept_button(disabled())
         self.reject()

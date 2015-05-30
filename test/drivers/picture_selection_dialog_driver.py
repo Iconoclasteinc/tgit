@@ -22,5 +22,5 @@ class PictureSelectionDialogDriver(FileDialogDriver):
     def rejects_selection_of(self, filename):
         self.navigate_to_dir(os.path.dirname(filename))
         self.select_file(os.path.basename(filename))
-        self.accept_button_is(disabled())
+        self.has_accept_button(disabled())
         self.reject()

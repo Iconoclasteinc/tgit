@@ -11,7 +11,7 @@ MEDIUM_TYPING_SPEED = 240  # in wpm
 FAST_TYPING_SPEED = 480  # in wpm
 SUPER_FAST_TYPING_SPEED = 960  # in wpm
 
-MOUSE_CLICK_DELAY = 50  # in ms
+MOUSE_CLICK_DELAY = 10  # in ms
 
 LEFT_BUTTON = 'left'
 RIGHT_BUTTON = 'right'
