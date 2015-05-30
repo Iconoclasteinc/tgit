@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import time
+
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QCursor
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
 from . import event_loop
+from cute import gestures
+
+ONE_SECOND_IN_MILLIS = 1000
 
 
 class KeyboardLayout:
@@ -45,8 +50,17 @@ class MouseLayout:
         return MouseLayout.BUTTON_MAP.get(button, button)
 
 
+def current_time():
+    return time.perf_counter()
+
+
 class Robot(object):
-    MOUSE_MOVE_DELAY = 10 # in ms
+    MOUSE_MOVE_DELAY = 10  # in ms
+
+    # For detecting double clicks
+    _last_button_clicked = -1
+    _last_click_time = 0
+    _last_click_position = (-1, -1)
 
     def __init__(self):
         self._modifiers = Qt.NoModifier
@@ -80,7 +94,21 @@ class Robot(object):
         self.delay(self.MOUSE_MOVE_DELAY)
 
     def press_mouse(self, button):
-        self._at_cursor_position(QTest.mousePress, MouseLayout.button_code(button))
+        mouse_action = QTest.mouseDClick if self._double_click_detected(button) else QTest.mousePress
+        self._at_cursor_position(mouse_action, MouseLayout.button_code(button))
+
+        # for detecting double clicks
+        self._last_click_time = current_time()
+        self._last_button_clicked = button
+        self._last_click_position = self.mouse_position
+
+    def _double_click_detected(self, button_clicked):
+        current_position = self.mouse_position
+        elapsed_time_in_ms = (current_time() - self._last_click_time) * ONE_SECOND_IN_MILLIS
+
+        return (button_clicked == self._last_button_clicked) and \
+               (current_position == self._last_click_position) and \
+               (elapsed_time_in_ms <= gestures.MIN_TIME_TO_AVOID_DOUBLE_CLICK)
 
     def release_mouse(self, button):
         self._at_cursor_position(QTest.mouseRelease, MouseLayout.button_code(button))

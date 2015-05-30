@@ -12,6 +12,8 @@ FAST_TYPING_SPEED = 480  # in wpm
 SUPER_FAST_TYPING_SPEED = 960  # in wpm
 
 MOUSE_CLICK_DELAY = 10  # in ms
+MOUSE_DOUBLE_CLICK_DELAY = 50  # in ms
+MIN_TIME_TO_AVOID_DOUBLE_CLICK = 500  # in ms
 
 LEFT_BUTTON = 'left'
 RIGHT_BUTTON = 'right'
@@ -66,11 +68,11 @@ def mouse_click_at(pos, button=LEFT_BUTTON):
 
 
 def mouse_double_click(button=LEFT_BUTTON):
-    # Apparently Qt uses a special DClickEvent which is not the same as 2 clicks,
-    # so the following fails:
-    # return sequence(mouse_click(), pause(MOUSE_DOUBLE_CLICK_DELAY), mouse_click())
-    # We need a double click action from the robot itself
-    return lambda robot: robot.double_click_mouse(button)
+    return sequence(mouse_click(button), pause(MOUSE_DOUBLE_CLICK_DELAY), mouse_click(button))
+
+
+def avoid_double_click():
+    return pause(MIN_TIME_TO_AVOID_DOUBLE_CLICK)
 
 
 def mouse_multi_click(button=LEFT_BUTTON):
@@ -115,5 +117,3 @@ def _keystroke_delay(wpm):
 
 def _keystrokes_per_minute(wpm):
     return wpm * AVERAGE_WORD_LENGTH
-
-
