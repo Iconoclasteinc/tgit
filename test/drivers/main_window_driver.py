@@ -75,27 +75,26 @@ class MainWindowDriver(WidgetDriver):
     def assign_isni_to_lead_performer(self):
         album_screen(self).assign_isni_to_lead_performer()
 
-    def tries_to_assign_isni_to_lead_performer_with_invalid_data(self):
-        album_screen(self).assign_isni_to_lead_performer()
+    def shows_assignation_failed(self):
         message_box(self).is_showing_on_screen()
-
         try:
             message_box(self).shows_message("Could not assign an ISNI")
             message_box(self).shows_details("invalid code creationRole eee")
         finally:
             message_box(self).ok()
 
-    def finds_isni_of_lead_performer(self):
+    def find_isni_of_lead_performer(self):
         album_screen(self).lookup_isni_of_lead_performer()
-        isni_lookup_dialog(self).selects_first_identity()
+        isni_lookup_dialog(self).select_first_identity()
         isni_lookup_dialog(self).accept()
 
-    def closes_album(self):
-        menu_bar(self).close_album()
+    def shows_confirmation_message(self):
         try:
             message_box(self).is_showing_on_screen()
         finally:
             message_box(self).yes()
+
+    def shows_welcome_screen(self):
         welcome_screen(self).is_showing_on_screen()
 
     def has_disabled_album_actions(self):

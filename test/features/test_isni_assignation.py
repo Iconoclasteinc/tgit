@@ -55,6 +55,7 @@ def test_assigning_an_isni_to_the_lead_performer(app, library):
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.assign_isni_to_lead_performer()
 
+    app.save()
     library.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
                      release_name="Honeycomb",
                      isni="0000000121707484",
@@ -62,11 +63,11 @@ def test_assigning_an_isni_to_the_lead_performer(app, library):
                      track_title="Salsa Coltrane")
 
 
-def test_fails_to_assign_isni_to_lead_performer(app, library):
+def test_failing_to_assign_isni_to_lead_performer_when_data_is_invalid(app, library):
     tracks = [library.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
     isni_database.assignation_generator = iter(["invalid data"])
 
     app.import_album(*tracks)
     app.shows_album_content(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
-    app.tries_to_assign_isni_to_lead_performer_with_invalid_data()
+    app.fails_to_assign_isni_to_lead_performer()

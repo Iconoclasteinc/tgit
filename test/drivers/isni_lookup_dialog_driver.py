@@ -29,7 +29,7 @@ def isni_lookup_dialog(parent):
 
 
 class IsniLookupDialogDriver(ScreenDriver):
-    def selects_first_identity(self):
+    def select_first_identity(self):
         self.radio(named("identity_radio_0")).click()
 
     def accept(self):

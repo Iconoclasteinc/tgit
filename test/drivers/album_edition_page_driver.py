@@ -41,6 +41,8 @@ class AlbumEditionPageDriver(ScreenDriver):
                 self.showsMixer(value)
             elif tag == "primary_style":
                 self.shows_primary_style(value)
+            elif tag == "isni":
+                self.shows_isni(value, disabled=True)
             else:
                 raise AssertionError("Don't know how to verify '{0}'".format(tag))
 
@@ -137,7 +139,7 @@ class AlbumEditionPageDriver(ScreenDriver):
         edit.has_text(name)
         edit.is_disabled(disabled)
 
-    def showsISNI(self, name, disabled=False):
+    def shows_isni(self, name, disabled=False):
         label = self.label(with_buddy(named("isni")))
         label.is_showing_on_screen()
         label.is_disabled(disabled)

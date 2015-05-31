@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import pytest
 import sys
 
+import pytest
+
 from cute.finders import WidgetIdentity
-from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
-from cute.robot import Robot
 from test.drivers import MainWindowDriver
-from test.integration.ui import show_widget
 from test.util import builders as build
-from tgit.ui.main_window import MainWindow
 
 
 @pytest.yield_fixture()
-def driver(main_window):
-    main_window_driver = MainWindowDriver(WidgetIdentity(main_window), EventProcessingProber(), Robot())
+def driver(main_window, prober, automaton):
+    main_window_driver = MainWindowDriver(WidgetIdentity(main_window), prober, automaton)
     yield main_window_driver
     main_window_driver.close()
 

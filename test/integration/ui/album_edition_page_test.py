@@ -53,7 +53,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.showsReleaseName("Album")
         self.driver.shows_compilation(False)
         self.driver.shows_lead_performer("Artist")
-        self.driver.showsISNI("123456789", True)
+        self.driver.shows_isni("123456789", True)
         self.driver.showsArea("")
         self.driver.showsGuestPerformers("Guitar: Guitarist; Piano: Pianist")
         self.driver.showsLabelName("Label")

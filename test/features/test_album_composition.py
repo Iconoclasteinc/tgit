@@ -58,7 +58,9 @@ def test_removing_tracks_from_album(app, recordings):
     app.add_tracks_to_album(*tracks)
 
     app.shows_album_content(["Horse Power"], ["Chevere!"], ["Zumbar"], ["Big Ideas"], ["Salsa Coltrane"])
-    app.remove_tracks("Big Ideas", "Horse Power")
+    app.remove_track("Big Ideas")
+    app.shows_album_content(["Horse Power"], ["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
+    app.remove_track("Horse Power")
     app.shows_album_content(["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
 
     app.shows_album_metadata()

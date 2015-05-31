@@ -2,16 +2,13 @@
 
 import sys
 
-from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QFileDialog
 import pytest
 
 from cute.matchers import named
-from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
-from cute.robot import Robot
 from cute.widgets import window
 from test.drivers import PictureSelectionDialogDriver
-from test.integration.ui import show_widget
 from test.util import resources
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 

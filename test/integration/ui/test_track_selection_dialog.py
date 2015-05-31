@@ -2,16 +2,13 @@
 import sys
 
 from hamcrest import contains
-from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QFileDialog
 import pytest
 
-from cute.prober import EventProcessingProber
-from cute.robot import Robot
 from cute.matchers import named
 from cute.widgets import window
 from cute.probes import ValueMatcherProbe
 from test.drivers import TrackSelectionDialogDriver
-from test.integration.ui import show_widget
 from test.util import resources
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 

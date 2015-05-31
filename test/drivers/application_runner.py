@@ -11,6 +11,7 @@ from tgit.tagger import TGiT
 from .main_window_driver import MainWindowDriver
 
 ONE_SECOND_IN_MILLISECONDS = 1000
+SAVE_DELAY = 500
 
 
 def _make_tracks(tracks):
@@ -51,9 +52,8 @@ class ApplicationRunner:
         for position, track in enumerate(_make_tracks(tracks)):
             self.tagger.move_track(track.title, position)
 
-    def remove_tracks(self, *titles):
-        for title in titles:
-            self.tagger.remove_track(title)
+    def remove_track(self, title):
+        self.tagger.remove_track(title)
 
     def shows_album_metadata(self, **tags):
         self.tagger.next()
@@ -63,7 +63,6 @@ class ApplicationRunner:
 
     def change_album_metadata(self, **tags):
         self.tagger.edit_album_metadata(**tags)
-        self.tagger.save_album()
 
     def shows_next_track_metadata(self, **tags):
         self.tagger.next()
@@ -71,7 +70,6 @@ class ApplicationRunner:
 
     def change_track_metadata(self, **tags):
         self.tagger.editTrackMetadata(**tags)
-        self.tagger.save_album()
 
     def change_track_position(self, title, to_position):
         self.tagger.move_track(title, to_position - 1)
@@ -84,14 +82,19 @@ class ApplicationRunner:
 
     def assign_isni_to_lead_performer(self):
         self.tagger.assign_isni_to_lead_performer()
+
+    def save(self):
         self.tagger.save_album()
+        self.tagger.pause(SAVE_DELAY)
 
-    def tries_to_assign_isni_to_lead_performer_with_invalid_data(self):
-        self.tagger.tries_to_assign_isni_to_lead_performer_with_invalid_data()
+    def fails_to_assign_isni_to_lead_performer(self):
+        self.tagger.assign_isni_to_lead_performer()
+        self.tagger.shows_assignation_failed()
 
-    def finds_isni_of_lead_performer(self):
-        self.tagger.finds_isni_of_lead_performer()
-        self.tagger.save_album()
+    def find_isni_of_lead_performer(self):
+        self.tagger.find_isni_of_lead_performer()
 
-    def closes_album(self):
-        self.tagger.closes_album()
+    def close_album(self):
+        self.tagger.close_album()
+        self.tagger.shows_confirmation_message()
+        self.tagger.shows_welcome_screen()

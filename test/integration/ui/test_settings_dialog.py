@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
-
+from PyQt5.QtCore import Qt
 from hamcrest import assert_that, equal_to
 import pytest
 
 from cute.finders import WidgetIdentity
-from cute.prober import EventProcessingProber
 from cute.probes import ValueMatcherProbe
-from cute.robot import Robot
 from test.drivers import SettingsDialogDriver
 from tgit.ui import SettingsDialog
 
 
 @pytest.fixture()
 def dialog(main_window):
-    return SettingsDialog(main_window)
+    dialog = SettingsDialog(main_window)
+    # todo we should keep a single instance of the dialog instead
+    dialog.setAttribute(Qt.WA_DeleteOnClose, False)
+    return dialog
 
 
 @pytest.yield_fixture()
-def driver(dialog):
-    dialog_driver = SettingsDialogDriver(WidgetIdentity(dialog), EventProcessingProber(), Robot())
+def driver(dialog, prober, automaton):
+    dialog_driver = SettingsDialogDriver(WidgetIdentity(dialog), prober, automaton)
     yield dialog_driver
     dialog_driver.close()
 
