@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QLabel, QLineEdit, QDateTimeEdit, QComboBox

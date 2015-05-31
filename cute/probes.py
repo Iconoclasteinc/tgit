@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from PyQt5.QtCore import QPoint, QRect
 from hamcrest import described_as, none
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
+
 from .keys import *
 
 mac = sys.platform == "darwin"

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from PyQt5.QtWidgets import QWidget
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher

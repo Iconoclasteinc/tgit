@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-
 import time
 
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QCursor
 from PyQt5.QtTest import QTest
-
 from PyQt5.QtWidgets import QApplication
 
 from . import event_loop

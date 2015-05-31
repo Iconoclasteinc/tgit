@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import sys
 
 from PyQt5.QtCore import QDir, QPoint, Qt, QTime, QDate

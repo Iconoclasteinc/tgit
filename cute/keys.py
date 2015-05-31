@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 CONTROL = 'control'
 COMMAND = 'command'
 BACKSPACE = 'backspace'
