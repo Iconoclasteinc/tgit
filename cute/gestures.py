@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-from cute.keys import *
+from .keys import *
 
 mac = sys.platform == "darwin"
 windows = sys.platform == "win32"
@@ -19,16 +19,49 @@ LEFT_BUTTON = 'left'
 RIGHT_BUTTON = 'right'
 
 
+class GesturePerformer:
+    """A mixin for performing human gestures"""
+    def perform(self, *gestures):
+        pass
+
+
+class Automaton(GesturePerformer):
+    """An automaton performs human gestures by manipulating keyboard and mouse"""
+    def mouse_position(self):
+        pass
+
+    def press_key(self, key):
+        pass
+
+    def release_key(self, key):
+        pass
+
+    def type(self, key):
+        pass
+
+    def move_mouse(self, x, y):
+        pass
+
+    def press_mouse(self, button):
+        pass
+
+    def release_mouse(self, button):
+        pass
+
+    def delay(self, ms):
+        pass
+
+
 def sequence(*gestures):
-    return lambda robot: [gesture(robot) for gesture in gestures]
+    return lambda automaton: [gesture(automaton) for gesture in gestures]
 
 
 def key_press(key):
-    return lambda robot: robot.press_key(key)
+    return lambda automaton: automaton.press_key(key)
 
 
 def key_release(key):
-    return lambda robot: robot.release_key(key)
+    return lambda automaton: automaton.release_key(key)
 
 
 def holding_modifier_key(key, gesture):
@@ -40,7 +73,7 @@ def holding_control(gesture):
 
 
 def type_key(key):
-    return lambda robot: robot.type(key)
+    return lambda automaton: automaton.type(key)
 
 
 def type_text(text, typing_speed=SUPER_FAST_TYPING_SPEED):
@@ -48,15 +81,15 @@ def type_text(text, typing_speed=SUPER_FAST_TYPING_SPEED):
 
 
 def mouse_move(pos):
-    return lambda robot: robot.move_mouse(pos.x(), pos.y())
+    return lambda automaton: automaton.move_mouse(pos.x(), pos.y())
 
 
 def mouse_press(button=LEFT_BUTTON):
-    return lambda robot: robot.press_mouse(button)
+    return lambda automaton: automaton.press_mouse(button)
 
 
 def mouse_release(button=LEFT_BUTTON):
-    return lambda robot: robot.release_mouse(button)
+    return lambda automaton: automaton.release_mouse(button)
 
 
 def mouse_click(button=LEFT_BUTTON):
@@ -104,7 +137,7 @@ def close():
 
 
 def pause(ms):
-    return lambda robot: robot.delay(ms)
+    return lambda automaton: automaton.delay(ms)
 
 
 def _at_speed(wpm, typing_gesture):

@@ -11,8 +11,6 @@ from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from . import gestures, properties, matchers as match
-from cute.prober import EventProcessingProber
-from cute.robot import Robot
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                      WidgetScreenBoundsProbe)
 from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector,
@@ -265,10 +263,9 @@ class QCalendarDriver(WidgetDriver):
         self.perform(gestures.enter())
 
     def select_month(self, month):
-        # for some reason, clicking the toolbutton blocks the execution
-        # self._month_button().click()
-        self.perform(gestures.mouse_move(self._month_button().widget_center()))
-        self._month_menu().open()
+        # Clicking the toolbutton blocks the execution, so pop up menu manually
+        bottom_left = self._month_button().widget_bounds().bottomLeft()
+        self._month_menu().open_at(bottom_left.x(), bottom_left.y())
 
         self.pause(self.MENU_DISPLAY_DELAY)
         self._month_menu().select_menu_item(match.with_data(month))

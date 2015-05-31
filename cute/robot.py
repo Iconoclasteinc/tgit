@@ -5,10 +5,11 @@ import time
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QCursor
 from PyQt5.QtTest import QTest
+
 from PyQt5.QtWidgets import QApplication
 
 from . import event_loop
-from cute import gestures
+from .gestures import Automaton, MIN_TIME_TO_AVOID_DOUBLE_CLICK
 
 ONE_SECOND_IN_MILLIS = 1000
 
@@ -54,7 +55,14 @@ def current_time():
     return time.perf_counter()
 
 
-class Robot(object):
+class Robot(Automaton):
+    """
+    A robotic automaton that simulates human gestures. It is very fast, but has limitations.
+
+    The known limitations are:
+        - no mouse drag and drop
+        - no right clicks on Mac
+    """
     MOUSE_MOVE_DELAY = 10  # in ms
 
     # For detecting double clicks
@@ -108,7 +116,7 @@ class Robot(object):
 
         return (button_clicked == self._last_button_clicked) and \
                (current_position == self._last_click_position) and \
-               (elapsed_time_in_ms <= gestures.MIN_TIME_TO_AVOID_DOUBLE_CLICK)
+               (elapsed_time_in_ms <= MIN_TIME_TO_AVOID_DOUBLE_CLICK)
 
     def release_mouse(self, button):
         self._at_cursor_position(QTest.mouseRelease, MouseLayout.button_code(button))
@@ -116,8 +124,7 @@ class Robot(object):
     def double_click_mouse(self, button):
         self._at_cursor_position(QTest.mouseDClick, MouseLayout.button_code(button))
 
-    @staticmethod
-    def delay(ms):
+    def delay(self, ms):
         event_loop.process_events_for(ms)
 
     def _at_cursor_position(self, mouse_action, button):
