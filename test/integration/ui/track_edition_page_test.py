@@ -130,12 +130,12 @@ class TrackEditionPageTest(WidgetTest):
         self.driver.addLyrics('...')
         self.check(metadataChangedSignal)
 
-        metadataChangedSignal.expect(has_entries(language='eng'))
-        self.driver.changeLanguage('eng')
-        self.check(metadataChangedSignal)
-
         metadataChangedSignal.expect(has_entries(language='fra'))
         self.driver.selectLanguage('fra')
+        self.check(metadataChangedSignal)
+
+        metadataChangedSignal.expect(has_entries(language='eng'))
+        self.driver.changeLanguage('eng')
         self.check(metadataChangedSignal)
 
     def testDisplaysSoftwareNoticeInLocalTime(self):

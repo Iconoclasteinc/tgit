@@ -139,6 +139,7 @@ class LabelDriver(WidgetDriver):
 
 
 class AbstractEditDriver(WidgetDriver):
+    FOCUS_DELAY = 50
     EDITION_DELAY = 20
 
     def change_text(self, text):
@@ -155,8 +156,9 @@ class AbstractEditDriver(WidgetDriver):
         self.left_click_on_widget()
 
     def clear_all_text(self):
+        self.pause(self.FOCUS_DELAY)
         self.select_all_text()
-        self.perform(gestures.pause(self.EDITION_DELAY))
+        self.pause(self.EDITION_DELAY)
         self.delete_selected_text()
 
     def select_all_text(self):
@@ -175,7 +177,7 @@ class LineEditDriver(AbstractEditDriver):
 
 
 class TextEditDriver(AbstractEditDriver):
-    MULTILINE_DELAY = 10
+    MULTILINE_DELAY = 25
 
     def has_plain_text(self, text):
         self.has(properties.plain_text(), equal_to(text))
@@ -192,12 +194,13 @@ class QAbstractSpinBoxDriver(AbstractEditDriver):
 
 
 class ComboBoxDriver(AbstractEditDriver):
-    CHOICES_DISPLAY_DELAY = 250
+    CHOICES_DISPLAY_DELAY = 100
 
     def select_option(self, matching):
         options_list = self._open_options_list()
         self.pause(self.CHOICES_DISPLAY_DELAY)
         options_list.select_item(match.with_list_item_text(matching))
+        self.pause(self.CHOICES_DISPLAY_DELAY)
 
     def _open_options_list(self):
         self.manipulate("pop up", lambda w: w.showPopup())
@@ -212,7 +215,7 @@ def _right_edge_of(rect):
 
 
 class DateTimeEditDriver(WidgetDriver):
-    CALENDAR_DISPLAY_DELAY = 250
+    CALENDAR_DISPLAY_DELAY = 100
 
     def display_format(self):
         class QueryDisplayFormat:
@@ -249,17 +252,19 @@ class DateTimeEditDriver(WidgetDriver):
 
 
 class QCalendarDriver(WidgetDriver):
-    MENU_DISPLAY_DELAY = 250
+    MENU_DISPLAY_DELAY = 100
+    CALENDAR_UPDATE_DELAY = 100
 
     def select_date(self, year, month, day):
-        self.select_year(year)
+        self.enter_year(year)
         self.select_month(month)
         self.select_day(day)
 
-    def select_year(self, year):
+    def enter_year(self, year):
         self._year_button().click()
         self._year_spinner().type(str(year))
         self.perform(gestures.enter())
+        self.pause(self.CALENDAR_UPDATE_DELAY)
 
     def select_month(self, month):
         # Clicking the toolbutton blocks the execution, so pop up menu manually
@@ -268,6 +273,7 @@ class QCalendarDriver(WidgetDriver):
 
         self.pause(self.MENU_DISPLAY_DELAY)
         self._month_menu().select_menu_item(match.with_data(month))
+        self.pause(self.CALENDAR_UPDATE_DELAY)
 
     def select_day(self, day):
         row, col = self._find_day(day)
