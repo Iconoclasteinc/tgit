@@ -14,7 +14,7 @@ ONE_SECOND_IN_MILLIS = 1000
 
 class KeyboardLayout:
     MODIFIER_MAP = {
-        'control': Qt.ControlModifier,
+        'ctrl': Qt.ControlModifier,
         'command': Qt.ControlModifier
     }
 

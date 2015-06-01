@@ -15,6 +15,7 @@ INITIAL_DISPLAY_TIME = 100  # time for main window to display its central widget
 def qt():
     app = QApplication([])
     yield app
+    event_loop.process_pending_events()
     app.quit()
 
 

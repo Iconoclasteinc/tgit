@@ -997,7 +997,7 @@ QComboBox::down-arrow:focus {
             </sizepolicy>
            </property>
            <property name="focusPolicy">
-            <enum>Qt::TabFocus</enum>
+            <enum>Qt::StrongFocus</enum>
            </property>
            <property name="editable">
             <bool>true</bool>
