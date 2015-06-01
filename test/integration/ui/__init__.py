@@ -4,9 +4,9 @@ import os
 import unittest
 
 from PyQt5.QtWidgets import QApplication
+from cute.animatron import Animatron
 
 from cute.prober import EventProcessingProber
-from cute.robot import Robot
 from tgit import ui
 from tgit.ui.main_window import StyleSheet
 
@@ -26,7 +26,7 @@ class WidgetTest(unittest.TestCase):
     def setUp(self):
         self.app = QApplication([])
         self.prober = EventProcessingProber(timeout_in_ms=1000)
-        self.gesture_performer = Robot()
+        self.gesture_performer = Animatron()
         self.driver = None
 
     def show(self, widget):

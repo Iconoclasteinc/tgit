@@ -36,7 +36,7 @@ def prober():
 
 @pytest.fixture()
 def automaton():
-    return Robot()
+    return Animatron()
 
 
 @pytest.fixture()

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
 from cute import event_loop
+from cute.animatron import Animatron
 
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
 from cute.prober import EventProcessingProber
-from cute.robot import Robot
 from test.util import doubles
 from tgit.tagger import TGiT
 from .main_window_driver import MainWindowDriver
@@ -29,7 +29,7 @@ class ApplicationRunner:
                         use_local_isni_backend=True, native=False)
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
-                                       EventProcessingProber(timeout_in_ms=ONE_SECOND_IN_MILLISECONDS), Robot())
+                                       EventProcessingProber(timeout_in_ms=ONE_SECOND_IN_MILLISECONDS), Animatron())
 
     def stop(self):
         self.tagger.close()
