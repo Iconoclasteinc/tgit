@@ -33,25 +33,30 @@ def headers():
     return {"content-type": "application/atom+xml"}
 
 
+@pytest.mark.live
 def request_has_not_assigned_an_isni(response):
     results = etree.fromstring(response.content)
     no_isni = results.find("noISNI")
     assert_that(no_isni, not_none(), "no ISNI tag")
 
 
+@pytest.mark.live
 def request_has_assigned_an_isni(response):
     results = etree.fromstring(response.content)
     assert_that(results.find("ISNIAssigned"), not_none(), "response code")
 
 
+@pytest.mark.live
 def request_was_ok(response):
     assert_that(response.status_code, equal_to(requests.codes.ok), "response code")
 
 
+@pytest.mark.live
 def request_was_not_acceptable(response):
     assert_that(response.status_code, equal_to(requests.codes.not_acceptable), "response code")
 
 
+@pytest.mark.live
 def response_has_invalid_data_reason(response):
     results = etree.fromstring(response.content)
     no_isni = results.find("noISNI")
@@ -59,30 +64,35 @@ def response_has_invalid_data_reason(response):
     return no_isni
 
 
+@pytest.mark.live
 def request_had_incomplete_data(response):
     no_isni = response_has_invalid_data_reason(response)
     information = no_isni.find("information")
     assert_that(information.text.lower(), contains_string("tag 028c is missing"), "missing information")
 
 
+@pytest.mark.live
 def request_was_malformed(response):
     no_isni = response_has_invalid_data_reason(response)
     information = no_isni.find("information")
     assert_that(information.text.lower(), contains_string("tag 028c is missing"), "missing information")
 
 
+@pytest.mark.live
 def request_contained_sparse_information(response):
     no_isni = response_has_invalid_data_reason(response)
     information = no_isni.find("information")
     assert_that(information.text.lower(), contains_string("sparse"), "sparse information")
 
 
+@pytest.mark.live
 def request_has_possible_matches(response):
     no_isni = response_has_invalid_data_reason(response)
     sparse = no_isni.find("reason")
     assert_that(sparse.text, equal_to("possibleMatch"), "possible matches response")
 
 
+@pytest.mark.live
 def request_had_insufficient_information(response):
     no_isni = response_has_invalid_data_reason(response)
     information = no_isni.find("information")
@@ -90,6 +100,7 @@ def request_had_insufficient_information(response):
                 "insufficient information")
 
 
+@pytest.mark.live
 def test_assign_isni_using_the_remote_accept_environment_with_a_well_formed_request(url, headers):
     payload = '''
         <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
@@ -175,6 +186,7 @@ def test_assign_isni_using_the_remote_accept_environment_with_a_well_formed_requ
     request_has_assigned_an_isni(response)
 
 
+@pytest.mark.live
 def test_assign_isni_using_the_remote_accept_environment_with_an_isnot_request(url, headers):
     payload = '''
         <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
@@ -234,6 +246,7 @@ def test_assign_isni_using_the_remote_accept_environment_with_an_isnot_request(u
     request_has_assigned_an_isni(response)
 
 
+@pytest.mark.live
 def test_assign_isni_using_the_remote_accept_environment_with_a_request_containing_insufficient_info(url, headers):
     payload = '''
         <Request>
@@ -312,6 +325,7 @@ def test_assign_isni_using_the_remote_accept_environment_with_a_malformed_reques
     request_was_malformed(response)
 
 
+@pytest.mark.live
 def test_assign_isni_using_the_remote_accept_environment_with_an_incomplete_request(url, headers):
     payload = '''
         <Request>
@@ -349,6 +363,7 @@ def test_assign_isni_using_the_remote_accept_environment_with_an_incomplete_requ
     request_had_incomplete_data(response)
 
 
+@pytest.mark.live
 def test_assign_isni_to_an_organisation_using_the_remote_accept_environment_with_a_sparse_request(url, headers):
     payload = '''
         <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
@@ -381,6 +396,7 @@ def test_assign_isni_to_an_organisation_using_the_remote_accept_environment_with
     request_contained_sparse_information(response)
 
 
+@pytest.mark.live
 def test_assign_isni_to_a_person_using_the_remote_accept_environment_with_a_sparse_request(url, headers):
     payload = '''
         <Request>
