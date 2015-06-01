@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
+from cute import event_loop
 
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
@@ -32,9 +33,8 @@ class ApplicationRunner:
 
     def stop(self):
         self.tagger.close()
-        del self.tagger
+        event_loop.process_pending_events()
         self.app.quit()
-        del self.app
 
     def new_album(self, of_type="mp3"):
         self.tagger.create_album(of_type)
