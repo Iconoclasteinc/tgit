@@ -15,8 +15,7 @@ from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropert
 from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector,
                       WidgetIdentity)
 
-
-windows = sys.platform == 'win32'
+windows = sys.platform == "win32"
 
 
 def all_top_level_widgets():
@@ -33,6 +32,15 @@ def main_application_window(*matchers):
 
 def window(of_type, *matchers):
     return only_widget(of_type, all_of(*matchers))
+
+
+class SingleQueryManipulation:
+    def __init__(self, query):
+        self.query = query
+        self.value = None
+
+    def __call__(self, widget):
+        self.value = self.query(widget)
 
 
 class WidgetDriver:
@@ -79,6 +87,11 @@ class WidgetDriver:
 
     def manipulate(self, description, manipulation):
         self.check(WidgetManipulatorProbe(self.selector, manipulation, description))
+
+    def query(self, description, query):
+        manipulation = SingleQueryManipulation(query)
+        self.manipulate("query {0}".format(description), manipulation)
+        return manipulation.value
 
     def widget_center(self):
         return self.widget_bounds().center()
@@ -218,13 +231,7 @@ class DateTimeEditDriver(WidgetDriver):
     CALENDAR_DISPLAY_DELAY = 100
 
     def display_format(self):
-        class QueryDisplayFormat:
-            def __call__(self, date_time_edit):
-                self.display_format = date_time_edit.displayFormat()
-
-        query = QueryDisplayFormat()
-        self.manipulate("query display format", query)
-        return query.display_format
+        return self.query("display format", lambda date_time: date_time.displayFormat())
 
     def has_date(self, date):
         self.has(properties.date(), equal_to(QDate.fromString(date, self.display_format())))
@@ -241,13 +248,7 @@ class DateTimeEditDriver(WidgetDriver):
         self.perform(gestures.mouse_click_at(_right_edge_of(self.widget_bounds())))
 
     def _calendar(self):
-        def find_calendar_widget(date_edit):
-            nonlocal calendar
-            calendar = date_edit.calendarWidget()
-
-        calendar = None
-        self.manipulate("find calendar widget", find_calendar_widget)
-
+        calendar = self.query("calendar widget", lambda date_edit: date_edit.calendarWidget())
         return QCalendarDriver(WidgetIdentity(calendar), self.prober, self.gesture_performer)
 
 
@@ -289,22 +290,14 @@ class QCalendarDriver(WidgetDriver):
         return ButtonDriver.find_single(self, QAbstractButton, match.named("qt_calendar_monthbutton"))
 
     def _month_menu(self):
-        def find_month_menu(calendar):
-            nonlocal month_menu
-            month_menu = calendar.findChild(QToolButton, "qt_calendar_monthbutton").menu()
-
-        month_menu = None
-        self.manipulate("find month selector menu", find_month_menu)
+        month_menu = self.query("month selector menu",
+                                lambda calendar: calendar.findChild(QToolButton, "qt_calendar_monthbutton").menu())
         return MenuDriver(WidgetIdentity(month_menu), self.prober, self.gesture_performer)
 
     def _table(self):
-        def find_calendar_table(calendar):
-            nonlocal table_view
-            table_view = calendar.findChild(QTableView, "qt_calendar_calendarview")
-
-        table_view = None
-        self.manipulate("find calendar table", find_calendar_table)
-        return TableViewDriver(WidgetIdentity(table_view), self.prober, self.gesture_performer)
+        table = self.query("calendar table",
+                           lambda calendar: calendar.findChild(QTableView, "qt_calendar_calendarview"))
+        return TableViewDriver(WidgetIdentity(table), self.prober, self.gesture_performer)
 
     def _find_day(self, day):
         class FindDayInCalendar:
@@ -626,13 +619,7 @@ class QMessageBoxDriver(WidgetDriver):
         self._dialog_button(QMessageBox.Yes).click()
 
     def _dialog_button(self, role):
-        button = None
-
-        def query_button_role(message_box):
-            nonlocal button
-            button = message_box.button(role)
-
-        self.manipulate("lookup button with role {0}".format(role), query_button_role)
+        button = self.query("button with role {0}".format(role), lambda message_box: message_box.button(role))
         return ButtonDriver(WidgetIdentity(button), self.prober, self.gesture_performer)
 
 
