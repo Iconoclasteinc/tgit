@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from PyQt5.QtCore import Qt
 
 from hamcrest import assert_that, equal_to
 import pytest
@@ -15,6 +16,7 @@ DISPLAY_DELAY = 200
 @pytest.fixture()
 def dialog(qt):
     dialog = PerformerDialog()
+    dialog.setAttribute(Qt.WA_DeleteOnClose, False)
     show_widget(dialog)
     return dialog
 

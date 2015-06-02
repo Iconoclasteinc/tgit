@@ -194,7 +194,7 @@ class QAbstractSpinBoxDriver(AbstractEditDriver):
 
 
 class ComboBoxDriver(AbstractEditDriver):
-    CHOICES_DISPLAY_DELAY = 100
+    CHOICES_DISPLAY_DELAY = 250
 
     def select_option(self, matching):
         options_list = self._open_options_list()
