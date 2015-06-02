@@ -19,6 +19,7 @@
 from tgit.ui.album_selection_dialog import make_album_selection_dialog
 from tgit.ui.export_as_dialog import make_export_as_dialog
 from tgit.ui.picture_selection_dialog import make_picture_selection_dialog
+from tgit.ui.save_as_dialog import make_save_as_dialog
 from tgit.ui.track_selection_dialog import make_track_selection_dialog
 
 
@@ -27,6 +28,7 @@ class Dialogs:
     _tracks = None
     _import = None
     _export = None
+    _save_as = None
 
     parent = None
 
@@ -62,6 +64,13 @@ class Dialogs:
 
         return self._export
 
+    def _save_as_dialog(self, album_portfolio, of_type):
+        if not self._save_as:
+            self._save_as = make_save_as_dialog(self.parent, native=self._native,
+                                                on_save_as=self._commands.add_album_to(album_portfolio, of_type))
+
+        return self._save_as
+
     def select_cover(self, album):
         return self._select_cover_dialog(album)
 
@@ -82,6 +91,9 @@ class Dialogs:
 
     def export(self, album):
         return self._export_as_dialog(album)
+
+    def save_album_file(self, album_portfolio, of_type):
+        return self._save_as_dialog(album_portfolio, of_type)
 
     def clear(self):
         self._pictures = None

@@ -25,10 +25,10 @@ from tgit.album import Album
 from tgit.ui.helpers import ui_file
 
 
-def welcome_screen(dialogs, album_portfolio):
+def make_welcome_screen(*, on_create_new_album, on_import_album):
     page = WelcomeScreen()
-    page.create_new_album.connect(lambda album_type: director.create_album(album_portfolio, album_type))
-    page.import_album.connect(lambda: dialogs.import_album(album_portfolio).open())
+    page.create_new_album.connect(on_create_new_album)
+    page.import_album.connect(on_import_album)
     return page
 
 

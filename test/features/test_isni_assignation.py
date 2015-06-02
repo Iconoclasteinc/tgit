@@ -25,29 +25,14 @@ from test.drivers.application_runner import ApplicationRunner
 from test.util import isni_database
 
 
-@pytest.yield_fixture
-def library(tmpdir):
-    recordings = doubles.recording_library(tmpdir.strpath)
-    yield recordings
-    recordings.delete()
-
-
-@pytest.yield_fixture
-def app():
-    runner = ApplicationRunner()
-    runner.start(Preferences(QSettings()))
-    yield runner
-    runner.stop()
-
-
 @pytest.fixture(autouse=True)
 def isni(request):
     database_thread = isni_database.start()
     request.addfinalizer(lambda: isni_database.stop(database_thread))
 
 
-def test_assigning_an_isni_to_the_lead_performer(app, library):
-    tracks = [library.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
+def test_assigning_an_isni_to_the_lead_performer(app, recordings):
+    tracks = [recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
     isni_database.assignation_generator = iter(["0000000121707484"])
 
     app.import_album(*tracks)
@@ -56,15 +41,15 @@ def test_assigning_an_isni_to_the_lead_performer(app, library):
     app.assign_isni_to_lead_performer()
 
     app.save()
-    library.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
+    recordings.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
                      release_name="Honeycomb",
                      isni="0000000121707484",
                      lead_performer="Joel Miller",
                      track_title="Salsa Coltrane")
 
 
-def test_failing_to_assign_isni_to_lead_performer_when_data_is_invalid(app, library):
-    tracks = [library.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
+def test_failing_to_assign_isni_to_lead_performer_when_data_is_invalid(app, recordings):
+    tracks = [recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
     isni_database.assignation_generator = iter(["invalid data"])
 
     app.import_album(*tracks)

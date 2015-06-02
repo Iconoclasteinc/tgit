@@ -16,31 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
 
-from PyQt5.QtCore import QSettings
-import pytest
-from test.drivers.application_runner import ApplicationRunner
-from test.util import doubles
-from tgit.preferences import Preferences
-
-
-def test_closing_an_album(app, recordings):
-    app.new_album(of_type="mp3")
-
-    track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
-    app.add_tracks_to_album(track)
-    app.shows_album_content(["???"])
-    app.close_album()
-
-    app.new_album(of_type="mp3")
-    app.shows_album_content()
+from PyQt5.QtWidgets import QFileDialog
+from cute.matchers import named
+from cute.widgets import FileDialogDriver, window
 
 
-def test_loading_an_album(app, recordings):
-    app.new_album(of_type="mp3", save_as="new_album")
+def save_album_as_dialog(parent):
+    return SaveAlbumAsDialog(window(QFileDialog, named("save_as_dialog")), parent.prober, parent.gesture_performer)
 
-    track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
-    app.add_tracks_to_album(track)
-    app.shows_album_content(["???"])
-    app.close_album()
 
+class SaveAlbumAsDialog(FileDialogDriver):
+    def save_as(self, filename, in_directory):
+        self.show_hidden_files()
+        self.navigate_to_dir(os.path.dirname(in_directory))
+        self.enter_manually(filename)
+        self.has_accept_button_text("&Save")
+        self.accept()

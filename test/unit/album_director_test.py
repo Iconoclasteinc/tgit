@@ -38,7 +38,7 @@ def mp3(tmpdir):
 
 def test_adds_new_album_to_porfolio():
     portfolio = AlbumPortfolio()
-    director.create_album(portfolio)
+    director.add_album_to(portfolio)(save_at="")
     assert_that(portfolio._albums, not empty())
 
 

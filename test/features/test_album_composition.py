@@ -8,21 +8,6 @@ from test.util import resources, doubles
 from test.drivers.application_runner import ApplicationRunner
 
 
-@pytest.yield_fixture
-def recordings(tmpdir):
-    library = doubles.recording_library(tmpdir.strpath)
-    yield library
-    library.delete()
-
-
-@pytest.yield_fixture
-def app():
-    runner = ApplicationRunner()
-    runner.start(Preferences(QSettings()))
-    yield runner
-    runner.stop()
-
-
 def test_ordering_tracks_in_album(app, recordings):
     app.new_album()
 

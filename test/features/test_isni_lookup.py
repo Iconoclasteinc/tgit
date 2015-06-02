@@ -25,21 +25,6 @@ from test.drivers.application_runner import ApplicationRunner
 from test.util import isni_database
 
 
-@pytest.yield_fixture
-def recordings(tmpdir):
-    recordings = doubles.recording_library(tmpdir.strpath)
-    yield recordings
-    recordings.delete()
-
-
-@pytest.yield_fixture
-def app():
-    runner = ApplicationRunner()
-    runner.start(Preferences(QSettings()))
-    yield runner
-    runner.stop()
-
-
 @pytest.fixture(autouse=True)
 def isni(request):
     database_thread = isni_database.start()

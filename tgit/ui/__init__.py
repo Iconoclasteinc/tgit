@@ -21,6 +21,7 @@ from PyQt5.QtWidgets import QApplication
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
+from tgit.ui import commands as ui_commands
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
 from tgit.ui.album_selection_dialog import AlbumSelectionDialog
@@ -36,7 +37,7 @@ from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
-from tgit.ui.welcome_screen import welcome_screen as WelcomeScreen
+from tgit.ui.welcome_screen import make_welcome_screen
 from tgit.ui.main_window import main_window as MainWindow
 from tgit.ui.album_screen import album_screen as AlbumScreen
 
@@ -148,7 +149,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return SettingsDialogController(restart_message_box, preferences, window)
 
     def create_welcome_screen():
-        return WelcomeScreen(dialogs, portfolio)
+        return make_welcome_screen(on_create_new_album=ui_commands.create_new_album_in(portfolio, dialogs),
+                                   on_import_album=ui_commands.import_album_in(portfolio, dialogs))
 
     def create_composition_page(album):
         return AlbumCompositionPageController(dialogs, player, album,

@@ -34,8 +34,11 @@ from tgit.track import Track
 from tgit.util import fs
 
 
-def create_album(portfolio, of_type=Album.Type.FLAC):
-    portfolio.add_album(Album(of_type=of_type))
+def add_album_to(portfolio, of_type=Album.Type.FLAC):
+    def add_album(save_at):
+        portfolio.add_album(Album(of_type=of_type))
+
+    return add_album
 
 
 def remove_album_from(portfolio):

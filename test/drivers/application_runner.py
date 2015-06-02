@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
+import tempfile
 from cute import event_loop
 from cute.animatron import Animatron
 
@@ -16,13 +17,16 @@ SAVE_DELAY = 500
 
 
 def _make_tracks(tracks):
-    Track = namedtuple('Track', 'title')
+    Track = namedtuple("Track", "title")
     return map(Track._make, tracks)
 
 
 class ApplicationRunner:
     app = None
     tagger = None
+
+    def __init__(self, tmpdir):
+        self._save_album_directory = tmpdir
 
     def start(self, preferences):
         self.app = TGiT(doubles.audio_player(), NameRegistry(host="localhost", assign_host="localhost", port=5000),
@@ -36,8 +40,8 @@ class ApplicationRunner:
         event_loop.process_pending_events()
         self.app.quit()
 
-    def new_album(self, of_type="mp3"):
-        self.tagger.create_album(of_type)
+    def new_album(self, of_type="mp3", save_as="album"):
+        self.tagger.create_album(of_type, save_as, in_directory=self._save_album_directory.strpath)
 
     def add_tracks_to_album(self, *tracks):
         self.tagger.add_tracks_to_album(*tracks)
