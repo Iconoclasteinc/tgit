@@ -6,11 +6,11 @@ import pytest
 from tgit.signal import Signal, MultiSubscription
 
 
-class Subscriber(object):
+class Subscriber:
     def __init__(self):
         self.events = []
 
-    def __call__(self, event):
+    def __call__(self, *event):
         self.events.append(event)
 
 
@@ -42,10 +42,19 @@ def signal():
     return Signal("signal", str)
 
 
+@pytest.fixture()
+def multi_value_signal():
+    return Signal("multi value signal", int, str)
+
+
+def event(*value):
+    return value
+
+
 def test_emits_event_to_all_subscribed_listeners(signal):
     subscribers = register_subscribers_to(signal)
-    signal.emit('event')
-    assert_subscribers_have_been_notified(subscribers, 'event')
+    signal.emit('value')
+    assert_subscribers_have_been_notified(subscribers, event('value'))
 
 
 def test_stops_emitting_to_unsubscribed_listeners(signal):
@@ -56,10 +65,10 @@ def test_stops_emitting_to_unsubscribed_listeners(signal):
     signal.unsubscribe(ex_subscriber)
     assert_that(signal.is_subscribed(ex_subscriber), is_(False), 'subscription still active')
 
-    signal.emit('event')
+    signal.emit('value')
 
     assert_that(ex_subscriber.events, empty(), 'events received by ex-subscriber')
-    assert_subscribers_have_been_notified(subscribers, 'event')
+    assert_subscribers_have_been_notified(subscribers, event('value'))
 
 
 def test_registers_same_subscriber_only_once(signal):
@@ -67,9 +76,9 @@ def test_registers_same_subscriber_only_once(signal):
     signal.subscribe(subscriber)
     signal.subscribe(subscriber)
 
-    signal.emit('event')
+    signal.emit('value')
 
-    assert_that(subscriber.events, contains('event'), 'events received only once')
+    assert_that(subscriber.events, contains(event('value')), 'events received only once')
 
 
 def test_cancelling_a_subscription_unregisters_the_subscriber(signal):
@@ -107,3 +116,9 @@ def test_cancelling_a_multi_subscription_cancels_all_subscriptions(signal):
 
     for index, subscriber in enumerate(subscribers):
         assert_that(not signal.is_subscribed(subscriber), "subscription #{} still active".format(index))
+
+
+def test_signals_can_emit_multiple_values_of_different_types(multi_value_signal):
+    subscribers = register_subscribers_to(multi_value_signal)
+    multi_value_signal.emit(42, 'text')
+    assert_subscribers_have_been_notified(subscribers, event(42, 'text'))

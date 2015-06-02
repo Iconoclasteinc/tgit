@@ -6,6 +6,7 @@ from hamcrest import (assert_that, equal_to, is_, contains, has_property, none,
                       has_length, has_item, is_not, match_equality as matching)
 from hamcrest.library.collection.is_empty import empty
 from flexmock import flexmock
+from test.test_signal import Subscriber, event
 
 from test.util import builders as build
 from tgit.metadata import Image
@@ -61,6 +62,19 @@ def test_renumbers_tracks_when_removed():
 
     for track in album.tracks:
         assert_that(track.total_tracks, equal_to(2), "track #{} total tracks left".format(track.track_number))
+
+
+def test_signals_track_insertion_events():
+    album = build.album()
+    subscriber = Subscriber()
+    tracks = [build.track(), build.track(), build.track()]
+
+    album.track_inserted.subscribe(subscriber)
+    for track in tracks:
+        album.addTrack(track)
+
+    for index, track in enumerate(tracks):
+        assert_that(subscriber.events, has_item(event(index, track)), "track {0} insertion event".format(index))
 
 
 class AlbumTest(unittest.TestCase):

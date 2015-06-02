@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from hamcrest import contains, has_items, equal_to
-from PyQt5.QtWidgets import QMenu
+from PyQt5.QtWidgets import QMenu, QTableWidget
 from cute import gestures
 
-from cute.widgets import MenuDriver
+from cute.widgets import MenuDriver, TableWidgetDriver
 from cute.matchers import named
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from ._screen_driver import ScreenDriver
@@ -15,23 +15,36 @@ def album_composition_page(parent):
 
 class AlbumCompositionPageDriver(ScreenDriver):
     def __init__(self, selector, prober, gesture_performer):
-        super(AlbumCompositionPageDriver, self).__init__(selector, prober, gesture_performer)
+        super().__init__(selector, prober, gesture_performer)
 
-    def showsColumnHeaders(self, *headers):
+    def shows_column_headers(self, *headers):
         self._track_table().has_headers(contains(*headers))
 
+    def showsColumnHeaders(self, *headers):
+        self._track_table_view().has_headers(contains(*headers))
+
+    def shows_track_details(self, *details):
+        return self._track_table().has_row(has_items(*details))
+
     def shows_track(self, *cells):
-        return self._track_table().has_row(has_items(*cells))
+        return self._track_table_view().has_row(has_items(*cells))
 
     def has_selected_track(self, *cells):
-        return self._track_table().has_selected_row(has_items(*cells))
+        return self._track_table_view().has_selected_row(has_items(*cells))
 
-    def showsTracksInOrder(self, *tracks):
+    def shows_tracks_in_order(self, *tracks):
         rows = [has_items(*[column for column in track]) for track in tracks]
         return self._track_table().contains_rows(contains(*rows))
 
-    def hasTrackCount(self, count):
+    def showsTracksInOrder(self, *tracks):
+        rows = [has_items(*[column for column in track]) for track in tracks]
+        return self._track_table_view().contains_rows(contains(*rows))
+
+    def has_track_count(self, count):
         self._track_table().has_row_count(equal_to(count))
+
+    def hasTrackCount(self, count):
+        self._track_table_view().has_row_count(equal_to(count))
 
     def add_tracks(self):
         self.button(named('add-tracks')).click()
@@ -47,7 +60,7 @@ class AlbumCompositionPageDriver(ScreenDriver):
 
     def select_track(self, title):
         row = self.shows_track(title)
-        self._track_table().click_on_cell(row, 0)
+        self._track_table_view().click_on_cell(row, 0)
 
     def _play_from_context_menu(self):
         self._from_context_menu().select_menu_item(named("play_action"))
@@ -66,7 +79,10 @@ class AlbumCompositionPageDriver(ScreenDriver):
 
     def move_track(self, title, to):
         from_ = self.shows_track(title)
-        self._track_table().move_row(from_, to)
+        self._track_table_view().move_row(from_, to)
+
+    def _track_table_view(self):
+        return self.table(named('track-list-view'))
 
     def _track_table(self):
-        return self.table(named('track-list'))
+        return TableWidgetDriver.find_single(self, QTableWidget, named('track_list'))

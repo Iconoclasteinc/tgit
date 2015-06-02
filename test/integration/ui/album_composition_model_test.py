@@ -210,9 +210,9 @@ class AlbumCompositionModelTest(unittest.TestCase):
         self.assertCellDisplays(row, Columns.trackTitle, track.track_title)
         self.assertCellDisplays(row, Columns.leadPerformer, track.lead_performer)
         if track.bitrate:
-            self.assertCellDisplays(row, Columns.bitrate, '%d kbps' % formatting.inKbps(track.bitrate))
+            self.assertCellDisplays(row, Columns.bitrate, '%d kbps' % formatting.in_kbps(track.bitrate))
         if track.duration:
-            self.assertCellDisplays(row, Columns.duration, formatting.toDuration(track.duration))
+            self.assertCellDisplays(row, Columns.duration, formatting.to_duration(track.duration))
 
     def assertCellDisplays(self, row, column, value):
         assert_that(self.cellValue(column, row), equal_to(value), 'cell (%d, %d)' % (row, Columns.index(column)))

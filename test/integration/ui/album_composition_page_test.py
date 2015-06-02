@@ -20,18 +20,54 @@ def player():
     return doubles.audio_player()
 
 
+@pytest.fixture
+def album():
+    return build.album()
+
+
 @pytest.fixture()
-def page(main_window, player):
-    composition_page = AlbumCompositionPage(player)
+def page(main_window, album, player):
+    composition_page = AlbumCompositionPage(album, player)
     main_window.setCentralWidget(composition_page)
     return composition_page
 
 
 @pytest.yield_fixture()
 def driver(page, prober, automaton):
-    page_driver = AlbumCompositionPageDriver(WidgetIdentity(page), prober, automaton)
+    page_driver = AlbumCompositionPageDriver(WidgetIdentity(page, 'under test'), prober, automaton)
     yield page_driver
     page_driver.close()
+
+
+def test_displays_column_headings(driver):
+    driver.shows_column_headers('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
+
+
+def test_displays_track_details_in_columns(album, driver):
+    album.release_name = 'Honeycom'
+    album.lead_performer = 'Joel Miller'
+    album.add_track(build.track(track_title='Chevere!',
+                               bitrate=192000,
+                               duration=timedelta(minutes=4, seconds=12).total_seconds()))
+
+    driver.shows_track_details('Chevere!', 'Joel Miller', 'Honeycom', '192 kbps', '04:12')
+
+
+def test_displays_all_tracks_in_rows(album, driver):
+    album.add_track(build.track(track_title='Give Life Back To Music'))
+    album.add_track(build.track(track_title='Get Lucky'))
+
+    driver.has_track_count(2)
+    driver.shows_tracks_in_order(['Give Life Back To Music'], ['Get Lucky'])
+
+
+def test_updates_track_list_when_album_metadata_changes(album, driver):
+    album.add_track(build.track(track_title="Chevere!"))
+    album.add_track(build.track(track_title='Zumbar'))
+
+    album.release_name = 'Honeycomb'
+
+    driver.shows_tracks_in_order(['Chevere!', 'Honeycomb'], ['Zumbar', 'Honeycomb'])
 
 
 def test_signals_user_request_to_remove_track(page, driver):
@@ -103,9 +139,10 @@ def test_selected_row_follows_reorders(page, driver):
     driver.has_selected_track('Choices')
 
 
-def test_unsubscribes_from_event_signals_on_close(player, page):
+def test_unsubscribes_from_event_signals_on_close(album, player, page):
     page.close()
 
+    assert_that(album.track_inserted.subscribers, empty(), "'track inserted' subscriptions")
     assert_that(player.playing.subscribers, empty(), "'player playing' subscriptions")
     assert_that(player.stopped.subscribers, empty(), "'player stopped' subscriptions")
 
@@ -118,7 +155,7 @@ def hasTitle(title):
 class AlbumCompositionPageTest(WidgetTest):
     def setUp(self):
         super(AlbumCompositionPageTest, self).setUp()
-        self.page = AlbumCompositionPage(doubles.audio_player())
+        self.page = AlbumCompositionPage(build.album(), doubles.audio_player())
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
         self.album = build.album()
@@ -126,24 +163,6 @@ class AlbumCompositionPageTest(WidgetTest):
 
     def createDriverFor(self, widget):
         return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
-
-    def testDisplaysColumnHeadings(self):
-        self.driver.showsColumnHeaders('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
-
-    def testDisplaysTrackDetailsInColumns(self):
-        self.album.release_name = 'All the Little Lights'
-        self.album.lead_performer = 'Passenger'
-        self.album.addTrack(build.track(track_title='Let Her Go',
-                                        bitrate=192000,
-                                        duration=timedelta(minutes=4, seconds=12).total_seconds()))
-
-        self.driver.shows_track('Let Her Go', 'Passenger', 'All the Little Lights', '192 kbps', '04:12')
-
-    def testDisplaysAllTracksInRows(self):
-        self.album.addTrack(build.track(track_title='Give Life Back To Music'))
-        self.album.addTrack(build.track(track_title='Get Lucky'))
-        self.driver.hasTrackCount(2)
-        self.driver.showsTracksInOrder(['Give Life Back To Music'], ['Get Lucky'])
 
     def testSignalsWhenAddTracksButtonClicked(self):
         addTracksSignal = ValueMatcherProbe('add tracks')

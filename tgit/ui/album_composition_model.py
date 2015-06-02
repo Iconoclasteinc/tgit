@@ -85,8 +85,8 @@ class Columns(metaclass=ColumnEnum):
     trackTitle = Column(name='Track Title', value=lambda row: row.trackTitle)
     leadPerformer = Column(name='Lead Performer', value=Row.leadPerformer)
     releaseName = Column(name="Release Name", value=Row.releaseName)
-    bitrate = Column(name='Bitrate', value=lambda row: '%s kbps' % formatting.inKbps(row.bitrate()))
-    duration = Column(name='Duration', value=lambda row: formatting.toDuration(row.duration()))
+    bitrate = Column(name='Bitrate', value=lambda row: '%s kbps' % formatting.in_kbps(row.bitrate()))
+    duration = Column(name='Duration', value=lambda row: formatting.to_duration(row.duration()))
 
     __values__ = trackTitle, leadPerformer, releaseName, bitrate, duration
 

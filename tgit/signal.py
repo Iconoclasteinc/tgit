@@ -20,15 +20,13 @@
 
 class signal:
     """Descriptor class for signals"""
-    def __init__(self, type_=None, name=None):
+    def __init__(self, *types, name=None):
         self.name = name
-        self._type = type_
+        self._types = types
 
     def __get__(self, instance, owner):
         if self.name not in instance.__dict__:
-            if not self._type:
-                self._type = type(instance)
-            instance.__dict__[self.name] = Signal(self.name, self._type)
+            instance.__dict__[self.name] = Signal(self.name, *self._types)
         return instance.__dict__[self.name]
 
 
@@ -71,22 +69,23 @@ class Observable(type):
 
 class Signal:
     """A signal emits events and allows subscribing and unsubscribing"""
-    def __init__(self, name, type_):
+    def __init__(self, name, *types):
         self._name = name
-        self._type = type_
+        self._types = types
         self._subscribers = []
 
     @property
     def subscribers(self):
         return list(self._subscribers)
 
-    def emit(self, event):
-        if not isinstance(event, self._type):
-            raise TypeError("{0} event should be of type {1}, not {2}".format(
-                self._name, self._type.__name__, type(event).__name__))
+    def emit(self, *event):
+        for index, (value, type_) in enumerate(zip(event, self._types)):
+            if not isinstance(value, type_):
+                raise TypeError("{0} event should have parameter {1} of type {2}, not {3}".format(
+                    self._name, index, type_.__name__, type(value).__name__))
 
         for subscriber in self._subscribers:
-            subscriber(event)
+            subscriber(*event)
 
     def subscribe(self, subscriber):
         if not callable(subscriber):

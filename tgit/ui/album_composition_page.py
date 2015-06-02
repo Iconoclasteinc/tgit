@@ -16,38 +16,44 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from enum import Enum
 
 from PyQt5.QtCore import Qt, pyqtSignal, QPoint
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtWidgets import QWidget, QTableView, QHeaderView, QFrame, QAction, QMenu
-from tgit.album import Album
+from PyQt5.QtWidgets import QWidget, QTableView, QHeaderView, QFrame, QAction, QMenu, QTableWidget, QTableWidgetItem
+from tgit.album import Album, AlbumListener
 
 from tgit.track import Track
 from tgit.ui.album_composition_model import AlbumCompositionModel
-from tgit.ui.helpers import form
+from tgit.ui.helpers import form, formatting
 from tgit.ui.observer import Observer
 
 LIGHT_GRAY = QColor.fromRgb(0xDDDDDD)
 
 
 @Observer
-class AlbumCompositionPage(QWidget):
+class AlbumCompositionPage(QWidget, AlbumListener):
     play_track = pyqtSignal(Track)
     remove_track = pyqtSignal(Track)
     move_track = pyqtSignal(Track, int)
     addTracks = pyqtSignal()
 
+    HEADERS = ('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
     # Using stylesheets on the table corrupts the display of the button widgets in the
     # cells, at least on OSX. So we have to style programmatically
-    COLUMNS_WIDTHS = [345, 255, 255, 85, 65, 30]
+    COLUMNS_WIDTHS = [345, 255, 255, 85, 85]
 
     _playing_track = None
 
-    def __init__(self, player):
+    def __init__(self, album, player):
         super().__init__()
 
+        self.subscribe(album.track_inserted, self._insert_track)
         self.subscribe(player.playing, self._on_playing_track)
         self.subscribe(player.stopped, self._on_stopped_track)
+
+        # todo when we have proper signals on album, we can get rid of that
+        album.addAlbumListener(self)
 
         self.build()
 
@@ -62,9 +68,11 @@ class AlbumCompositionPage(QWidget):
         layout = form.column()
         layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self.makeHeader())
-        self.table = self.makeTrackTable()
+        self._table_view = self.makeTrackTableView()
+        self._table = self.makeTrackTable()
         self._make_context_menu()
-        layout.addWidget(self.makeTableFrame(self.table))
+        layout.addWidget(self.makeTableFrame(self._table))
+        layout.addWidget(self.makeTableFrame(self._table_view))
         self.setLayout(layout)
 
     def makeHeader(self):
@@ -97,9 +105,30 @@ class AlbumCompositionPage(QWidget):
         return frame
 
     def makeTrackTable(self):
+        table = QTableWidget()
+        table.setFrameStyle(QFrame.NoFrame)
+        table.setObjectName('track_list')
+        table.setColumnCount(len(self.HEADERS))
+        table.setHorizontalHeaderLabels([self.tr(header) for header in self.HEADERS])
+        return table
+
+    def _display_album(self, album):
+        for index, track in enumerate(album.tracks):
+            self._display_track(index, track)
+
+    albumStateChanged = _display_album
+
+    def _insert_track(self, index, track):
+        self._table.insertRow(index)
+        self._display_track(index, track)
+
+    def _display_track(self, index, track):
+        Row(index, track).display(self._table)
+
+    def makeTrackTableView(self):
         table = QTableView()
         table.setFrameStyle(QFrame.NoFrame)
-        table.setObjectName('track-list')
+        table.setObjectName('track-list-view')
         table.setEditTriggers(QTableView.NoEditTriggers)
         table.setSelectionMode(QTableView.SingleSelection)
         table.setSelectionBehavior(QTableView.SelectRows)
@@ -160,10 +189,10 @@ class AlbumCompositionPage(QWidget):
         return table
 
     def _signal_move_track(self, _, from_, to):
-        self.move_track.emit(self.table.model().trackAt(from_), to)
+        self.move_track.emit(self._table_view.model().trackAt(from_), to)
 
     def _select_row(self, row):
-        self.table.setCurrentIndex(self.table.model().index(row, 0))
+        self._table_view.setCurrentIndex(self._table_view.model().index(row, 0))
 
     def _is_selected(self, track):
         return self.selected_track == track
@@ -175,24 +204,24 @@ class AlbumCompositionPage(QWidget):
 
     def _make_context_menu(self):
         # We don't want the menu to block so we can't use the ActionsContextMenu policy
-        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
-        self._context_menu = QMenu(self.table)
+        self._table_view.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._context_menu = QMenu(self._table_view)
         self._context_menu.setObjectName("context_menu")
 
-        remove_action = QAction(self.tr("Remove"), self.table)
+        remove_action = QAction(self.tr("Remove"), self._table_view)
         remove_action.setObjectName("remove_action")
         remove_action.setShortcut(Qt.Key_Delete)
         remove_action.triggered.connect(lambda checked: self._signal_remove_track())
         self._context_menu.addAction(remove_action)
-        self.table.addAction(remove_action)
+        self._table_view.addAction(remove_action)
 
-        self._play_action = QAction(self.table)
+        self._play_action = QAction(self._table_view)
         self._play_action.setObjectName("play_action")
         self._play_action.triggered.connect(lambda checked: self._signal_play_track())
         self._context_menu.addAction(self._play_action)
-        self.table.addAction(self._play_action)
+        self._table_view.addAction(self._play_action)
 
-        self.table.customContextMenuRequested.connect(self._open_context_menu)
+        self._table_view.customContextMenuRequested.connect(self._open_context_menu)
 
     def _open_context_menu(self, pos):
         if self.selected_row is not None:
@@ -200,15 +229,15 @@ class AlbumCompositionPage(QWidget):
             self._context_menu.popup(self._map_to_global(pos))
 
     def _map_to_global(self, pos):
-        return self.table.mapToGlobal(self._map_to_table(pos))
+        return self._table_view.mapToGlobal(self._map_to_table(pos))
 
     def _map_to_table(self, pos):
-        left_margin, top_margin = self.table.verticalHeader().width(), self.table.horizontalHeader().height()
+        left_margin, top_margin = self._table_view.verticalHeader().width(), self._table_view.horizontalHeader().height()
         return QPoint(pos.x() + left_margin, pos.y() + top_margin)
 
     @property
     def selected_row(self):
-        current_selection = self.table.selectedIndexes()
+        current_selection = self._table_view.selectedIndexes()
         if current_selection:
             return current_selection[0].row()
         else:
@@ -219,7 +248,7 @@ class AlbumCompositionPage(QWidget):
         return self._track_at(self.selected_row)
 
     def _track_at(self, row):
-        return self.table.model().trackAt(row) if row is not None else None
+        return self._table_view.model().trackAt(row) if row is not None else None
 
     def _signal_remove_track(self):
         if self.selected_track is not None:
@@ -230,6 +259,36 @@ class AlbumCompositionPage(QWidget):
             self.play_track.emit(self.selected_track)
 
     def display(self, album):
-        self.table.setModel(AlbumCompositionModel(album))
+        self._table_view.setModel(AlbumCompositionModel(album))
         for index, width in enumerate(self.COLUMNS_WIDTHS):
-            self.table.horizontalHeader().resizeSection(index, width)
+            self._table_view.horizontalHeader().resizeSection(index, width)
+
+
+class Columns(Enum):
+    __LEFT_ALIGNED__ = Qt.AlignLeft | Qt.AlignVCenter
+    __RIGHT_ALIGNED__ = Qt.AlignRight | Qt.AlignVCenter
+
+    track_title = (lambda track: track.track_title, __LEFT_ALIGNED__)
+    lead_performer = (lambda track: track.lead_performer, __LEFT_ALIGNED__)
+    release_name = (lambda track: track.album.release_name, __LEFT_ALIGNED__)
+    bitrate = (lambda track: "{0} kbps".format(formatting.in_kbps(track.bitrate)), __RIGHT_ALIGNED__)
+    duration = (lambda track: formatting.to_duration(track.duration), __RIGHT_ALIGNED__)
+
+    def __init__(self, value, alignement=__LEFT_ALIGNED__):
+        self._value = value
+        self._alignement = alignement
+
+    def item(self, track):
+        item = QTableWidgetItem(self._value(track))
+        item.setTextAlignment(self._alignement)
+        return item
+
+
+class Row:
+    def __init__(self, index, track):
+        self.index = index
+        self.track = track
+
+    def display(self, table):
+        for index, column in enumerate(Columns):
+            table.setItem(self.index, index, column.item(self.track))

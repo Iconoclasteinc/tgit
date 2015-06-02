@@ -58,3 +58,6 @@ class Track(object, metaclass=tag.Taggable):
 
     def metadataChanged(self):
         self.metadata_changed.emit(self.metadata)
+
+    def __repr__(self):
+        return "Track(filename={0}, metadata={1})".format(self.filename, self.metadata)
