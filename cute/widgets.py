@@ -270,7 +270,7 @@ class QCalendarDriver(WidgetDriver):
     def select_month(self, month):
         # Clicking the toolbutton blocks the execution, so pop up menu manually
         bottom_left = self._month_button().widget_bounds().bottomLeft()
-        self._month_menu().open_at(bottom_left.x(), bottom_left.y())
+        self._month_menu().popup_manually_at(bottom_left.x(), bottom_left.y())
 
         self.pause(self.MENU_DISPLAY_DELAY)
         self._month_menu().select_menu_item(match.with_data(month))
@@ -532,12 +532,7 @@ class QMenuBarDriver(WidgetDriver):
 
 
 class MenuDriver(WidgetDriver):
-    def open(self):
-        # For some unknown reason, menu does not pop up on right click on Mac
-        # self.perform(gestures.mouse_click(gestures.RIGHT_BUTTON))
-        self.open_at(*self.gesture_performer.mouse_position)
-
-    def open_at(self, x, y):
+    def popup_manually_at(self, x, y):
         # For some reason, we can't open the menu by just right clicking, so open it manually
         self.manipulate("open at ({0}, {1})".format(x, y), lambda menu: menu.popup(QPoint(x, y)))
 
@@ -585,7 +580,7 @@ class TopLevelQMenuDriver(MenuDriver):
 
         find_position = FindPositionInMenuBar()
         self.manipulate("find position in menu bar", find_position)
-        self.open_at(find_position.coordinates.x(), find_position.coordinates.y())
+        self.popup_manually_at(find_position.coordinates.x(), find_position.coordinates.y())
 
 
 class MenuItemDriver(WidgetDriver):

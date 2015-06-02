@@ -97,6 +97,10 @@ def mouse_click(button=LEFT_BUTTON):
     return sequence(mouse_press(button), pause(MOUSE_CLICK_DELAY), mouse_release(button))
 
 
+def mouse_right_click():
+    return mouse_click(RIGHT_BUTTON)
+
+
 def mouse_click_at(pos, button=LEFT_BUTTON):
     return sequence(mouse_move(pos), mouse_click(button))
 
