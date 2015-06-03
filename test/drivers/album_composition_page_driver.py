@@ -49,35 +49,43 @@ class AlbumCompositionPageDriver(ScreenDriver):
     def add_tracks(self):
         self.button(named('add-tracks')).click()
 
-    def has_context_menu_item(self, matching):
-        context_menu = self._from_context_menu()
+    def has_bottom_table_context_menu_item(self, matching):
+        context_menu = self._from_bottom_table_context_menu()
         context_menu.has_menu_item(matching)
         context_menu.close()
+
+    def _from_bottom_table_context_menu(self):
+        self.perform(gestures.mouse_right_click())
+        return MenuDriver.find_single(self, QMenu, named("context_menu_bottom"))
 
     def _from_context_menu(self):
         self.perform(gestures.mouse_right_click())
         return MenuDriver.find_single(self, QMenu, named("context_menu"))
 
-    def select_track(self, title):
+    def select_track_in_bottom_table(self, title):
         row = self.shows_track(title)
         self._track_table_view().click_on_cell(row, 0)
 
-    def _play_from_context_menu(self):
-        self._from_context_menu().select_menu_item(named("play_action"))
+    def select_track(self, title):
+        row = self.shows_track_details(title)
+        self._track_table().click_on_cell(row, 0)
 
-    def play_track(self, title):
-        self.select_track(title)
-        self._play_from_context_menu()
+    def _play_from_bottom_table_context_menu(self):
+        self._from_bottom_table_context_menu().select_menu_item(named("play_action_bottom"))
 
-    def cannot_play_track(self, title):
-        self.select_track(title)
-        self._from_context_menu().menu_item(named("play_action")).is_disabled()
+    def play_track_in_bottom_table(self, title):
+        self.select_track_in_bottom_table(title)
+        self._play_from_bottom_table_context_menu()
+
+    def cannot_play_track_in_bottom_table(self, title):
+        self.select_track_in_bottom_table(title)
+        self._from_bottom_table_context_menu().menu_item(named("play_action_bottom")).is_disabled()
 
     def remove_track(self, title):
         self.select_track(title)
         self._from_context_menu().select_menu_item(named("remove_action"))
 
-    def move_track(self, title, to):
+    def move_track_in_bottom_table(self, title, to):
         from_ = self.shows_track(title)
         self._track_table_view().move_row(from_, to)
 

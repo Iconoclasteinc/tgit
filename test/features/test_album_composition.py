@@ -22,7 +22,6 @@ def app():
     yield runner
     runner.stop()
 
-
 def test_ordering_tracks_in_album(app, recordings):
     app.new_album()
 

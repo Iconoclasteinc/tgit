@@ -100,12 +100,10 @@ def test_removes_row_from_table_when_track_removed_from_album(album, driver):
         assert_that(track.metadata_changed.subscribers, empty(), "track #{} 'metadata changed' subscribers".format(index))
 
 
-def test_signals_user_request_to_remove_track(page, driver):
-    album = build.album()
+def test_signals_user_request_to_remove_track(album, page, driver):
     page.display(album)
-    # todo for the moment, we need to add tracks to the album to trigger an update of the table
-    album.addTrack(build.track())
-    album.addTrack(build.track(track_title="Chevere!"))
+    album.add_track(build.track())
+    album.add_track(build.track(track_title="Chevere!"))
 
     remove_track_signal = ValueMatcherProbe("remove track", hasTitle("Chevere!"))
     page.remove_track.connect(remove_track_signal.received)
@@ -122,7 +120,7 @@ def test_signals_user_request_to_play_or_stop_track(page, driver):
     play_track_signal = ValueMatcherProbe("play track", hasTitle("Spain"))
     page.play_track.connect(play_track_signal.received)
 
-    driver.play_track('Spain')
+    driver.play_track_in_bottom_table('Spain')
     driver.check(play_track_signal)
 
 
@@ -131,7 +129,7 @@ def test_prevents_playing_flac_files(page, driver):
     page.display(album)
     album.addTrack(build.track(track_title="Spain"))
 
-    driver.cannot_play_track('Spain')
+    driver.cannot_play_track_in_bottom_table('Spain')
 
 
 def test_shows_title_of_track_to_play_in_context_menu(page, driver):
@@ -139,8 +137,8 @@ def test_shows_title_of_track_to_play_in_context_menu(page, driver):
     page.display(album)
     album.addTrack(build.track(track_title="Partways"))
 
-    driver.select_track("Partways")
-    driver.has_context_menu_item(with_text('Play "Partways"'))
+    driver.select_track_in_bottom_table("Partways")
+    driver.has_bottom_table_context_menu_item(with_text('Play "Partways"'))
 
 
 def test_changes_context_menu_option_to_stop_when_selected_track_is_playing(player, page, driver):
@@ -152,8 +150,8 @@ def test_changes_context_menu_option_to_stop_when_selected_track_is_playing(play
 
     player.play(track)
 
-    driver.select_track("Choices")
-    driver.has_context_menu_item(with_text('Stop "Choices"'))
+    driver.select_track_in_bottom_table("Choices")
+    driver.has_bottom_table_context_menu_item(with_text('Stop "Choices"'))
 
 
 @pytest.mark.xfail(reason="fails probably because we're moving rows programmatically?")
@@ -165,8 +163,16 @@ def test_selected_row_follows_reorders(page, driver):
     album.addTrack(build.track(track_title='Choices'))
     album.addTrack(build.track(track_title='Place St-Henri'))
 
-    driver.move_track('Choices', 2)
+    driver.move_track_in_bottom_table('Choices', 2)
     driver.has_selected_track('Choices')
+
+
+def test_signals_when_add_tracks_button_clicked(page, driver):
+    add_tracks_signal = ValueMatcherProbe('add tracks')
+    page.add_tracks.connect(add_tracks_signal.received)
+
+    driver.add_tracks()
+    driver.check(add_tracks_signal)
 
 
 def test_unsubscribes_from_event_signals_on_close(album, player, page):
@@ -194,13 +200,6 @@ class AlbumCompositionPageTest(WidgetTest):
     def createDriverFor(self, widget):
         return AlbumCompositionPageDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
-    def testSignalsWhenAddTracksButtonClicked(self):
-        addTracksSignal = ValueMatcherProbe('add tracks')
-        self.page.addTracks.connect(addTracksSignal.received)
-
-        self.driver.add_tracks()
-        self.driver.check(addTracksSignal)
-
     def testSignalsWhenTrackWasMoved(self):
         self.album.addTrack(build.track(track_title='Wisemen'))
         self.album.addTrack(build.track(track_title='1973'))
@@ -210,5 +209,5 @@ class AlbumCompositionPageTest(WidgetTest):
         trackMovedSignal = ValueMatcherProbe('track moved', contains(hasTitle('Tears and Rain'), newPosition))
         self.page.move_track.connect(lambda track, to: trackMovedSignal.received([track, newPosition]))
 
-        self.driver.move_track('Tears and Rain', newPosition)
+        self.driver.move_track_in_bottom_table('Tears and Rain', newPosition)
         self.driver.check(trackMovedSignal)

@@ -77,7 +77,7 @@ def showCenteredOnScreen(widget):
 
 def AlbumCompositionPageController(dialogs, player, album, *, on_remove_track, on_play_track):
     page = AlbumCompositionPage(album, player)
-    page.addTracks.connect(lambda: dialogs.add_tracks(album).open())
+    page.add_tracks.connect(lambda: dialogs.add_tracks(album).open())
     page.move_track.connect(lambda track, position: director.moveTrack(album, track, position))
     page.play_track.connect(on_play_track)
     page.remove_track.connect(on_remove_track)

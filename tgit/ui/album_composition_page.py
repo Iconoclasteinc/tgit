@@ -36,7 +36,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     play_track = pyqtSignal(Track)
     remove_track = pyqtSignal(Track)
     move_track = pyqtSignal(Track, int)
-    addTracks = pyqtSignal()
+    add_tracks = pyqtSignal()
 
     HEADERS = ('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
     # Using stylesheets on the table corrupts the display of the button widgets in the
@@ -66,11 +66,14 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         layout = form.column()
         layout.setContentsMargins(10, 10, 10, 10)
         layout.addWidget(self.makeHeader())
-        self._table_view = self.makeTrackTableView()
-        self._table = self.makeTrackTable()
-        self._make_context_menu()
+        self._table = self.make_track_table()
+        self._make_context_menu(self._table)
         layout.addWidget(self.makeTableFrame(self._table))
+
+        self._table_view = self.makeTrackTableView()
+        self._make_bottom_table_context_menu(self._table_view)
         layout.addWidget(self.makeTableFrame(self._table_view))
+
         self.setLayout(layout)
 
     def makeHeader(self):
@@ -81,7 +84,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         row.addWidget(help)
         row.addStretch()
         addButton = form.button('add-tracks', self.tr('ADD'))
-        addButton.clicked.connect(lambda pressed: self.addTracks.emit())
+        addButton.clicked.connect(lambda pressed: self.add_tracks.emit())
         row.addWidget(addButton)
         header.setLayout(row)
 
@@ -102,13 +105,62 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
         return frame
 
-    def makeTrackTable(self):
+    def make_track_table(self):
         table = QTableWidget()
         table.setFrameStyle(QFrame.NoFrame)
         table.setObjectName('track_list')
         table.setColumnCount(len(self.HEADERS))
         table.setHorizontalHeaderLabels([self.tr(header) for header in self.HEADERS])
+        table.setEditTriggers(QTableView.NoEditTriggers)
+        table.setSelectionMode(QTableView.SingleSelection)
+        table.setSelectionBehavior(QTableView.SelectRows)
+        table.setAlternatingRowColors(True)
+        table.setShowGrid(False)
+        table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
+        table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         return table
+
+    def _make_context_menu(self, table):
+        # We don't want the menu to block so we can't use the ActionsContextMenu policy
+        table.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._context_menu = QMenu(table)
+        self._context_menu.setObjectName("context_menu")
+
+        remove_action = QAction(self.tr("Remove"), table)
+        remove_action.setObjectName("remove_action")
+        remove_action.setShortcut(Qt.Key_Delete)
+        remove_action.triggered.connect(lambda checked: self._signal_remove_track())
+        self._context_menu.addAction(remove_action)
+        table.addAction(remove_action)
+
+        table.customContextMenuRequested.connect(self._open_context_menu)
+
+    def _open_context_menu(self, pos):
+        if self.selected_row is not None:
+            self._context_menu.popup(self._map_to_global(pos))
+
+    def _map_to_global(self, pos):
+        return self._table.mapToGlobal(self._map_to_table(pos))
+
+    def _map_to_table(self, pos):
+        left_margin, top_margin = self._table.verticalHeader().width(), self._table.horizontalHeader().height()
+        return QPoint(pos.x() + left_margin, pos.y() + top_margin)
+
+    @property
+    def selected_row(self):
+        current_selection = self._table.selectedIndexes()
+        if current_selection:
+            return current_selection[0].row()
+        else:
+            return None
+
+    @property
+    def selected_track(self):
+        return self._track_at(self.selected_row)
+
+    def _signal_remove_track(self):
+        if self.selected_track is not None:
+            self.remove_track.emit(self.selected_track)
 
     def _update_all_rows(self, _):
         for index in range(len(self._rows)):
@@ -211,49 +263,49 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     def _select_row(self, row):
         self._table_view.setCurrentIndex(self._table_view.model().index(row, 0))
 
-    def _is_selected(self, track):
-        return self.selected_track == track
+    def _is_selected_in_bottom_table(self, track):
+        return self.selected_track_in_bottom_table == track
 
-    def _update_context_menu(self):
-        play_action_text = "Stop" if self._is_selected(self._playing_track) else "Play"
-        self._play_action.setText('{0} "{1}"'.format(self.tr(play_action_text), self.selected_track.track_title))
-        self._play_action.setDisabled(self.selected_track.type == Album.Type.FLAC)
+    def _update_bottom_table_context_menu(self):
+        play_action_text = "Stop" if self._is_selected_in_bottom_table(self._playing_track) else "Play"
+        self._play_action_bottom.setText('{0} "{1}"'.format(self.tr(play_action_text), self.selected_track_in_bottom_table.track_title))
+        self._play_action_bottom.setDisabled(self.selected_track_in_bottom_table.type == Album.Type.FLAC)
 
-    def _make_context_menu(self):
+    def _make_bottom_table_context_menu(self, table):
         # We don't want the menu to block so we can't use the ActionsContextMenu policy
-        self._table_view.setContextMenuPolicy(Qt.CustomContextMenu)
-        self._context_menu = QMenu(self._table_view)
-        self._context_menu.setObjectName("context_menu")
+        table.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._bottom_table_context_menu = QMenu(table)
+        self._bottom_table_context_menu.setObjectName("context_menu_bottom")
 
-        remove_action = QAction(self.tr("Remove"), self._table_view)
-        remove_action.setObjectName("remove_action")
-        remove_action.setShortcut(Qt.Key_Delete)
-        remove_action.triggered.connect(lambda checked: self._signal_remove_track())
-        self._context_menu.addAction(remove_action)
-        self._table_view.addAction(remove_action)
+        remove_action_bottom = QAction(self.tr("Remove"), table)
+        remove_action_bottom.setObjectName("remove_action_bottom")
+        remove_action_bottom.setShortcut(Qt.Key_Delete)
+        remove_action_bottom.triggered.connect(lambda checked: self._signal_remove_track_from_bottom_table())
+        self._bottom_table_context_menu.addAction(remove_action_bottom)
+        table.addAction(remove_action_bottom)
 
-        self._play_action = QAction(self._table_view)
-        self._play_action.setObjectName("play_action")
-        self._play_action.triggered.connect(lambda checked: self._signal_play_track())
-        self._context_menu.addAction(self._play_action)
-        self._table_view.addAction(self._play_action)
+        self._play_action_bottom = QAction(table)
+        self._play_action_bottom.setObjectName("play_action_bottom")
+        self._play_action_bottom.triggered.connect(lambda checked: self._signal_play_track_from_bottom_table())
+        self._bottom_table_context_menu.addAction(self._play_action_bottom)
+        table.addAction(self._play_action_bottom)
 
-        self._table_view.customContextMenuRequested.connect(self._open_context_menu)
+        table.customContextMenuRequested.connect(self._open_bottom_table_context_menu)
 
-    def _open_context_menu(self, pos):
-        if self.selected_row is not None:
-            self._update_context_menu()
-            self._context_menu.popup(self._map_to_global(pos))
+    def _open_bottom_table_context_menu(self, pos):
+        if self.selected_row_in_bottom_table is not None:
+            self._update_bottom_table_context_menu()
+            self._bottom_table_context_menu.popup(self._map_to_global_bottom(pos))
 
-    def _map_to_global(self, pos):
-        return self._table_view.mapToGlobal(self._map_to_table(pos))
+    def _map_to_global_bottom(self, pos):
+        return self._table_view.mapToGlobal(self._map_to_table_bottom(pos))
 
-    def _map_to_table(self, pos):
+    def _map_to_table_bottom(self, pos):
         left_margin, top_margin = self._table_view.verticalHeader().width(), self._table_view.horizontalHeader().height()
         return QPoint(pos.x() + left_margin, pos.y() + top_margin)
 
     @property
-    def selected_row(self):
+    def selected_row_in_bottom_table(self):
         current_selection = self._table_view.selectedIndexes()
         if current_selection:
             return current_selection[0].row()
@@ -261,19 +313,19 @@ class AlbumCompositionPage(QWidget, AlbumListener):
             return None
 
     @property
-    def selected_track(self):
-        return self._track_at(self.selected_row)
+    def selected_track_in_bottom_table(self):
+        return self._track_at(self.selected_row_in_bottom_table)
 
     def _track_at(self, row):
         return self._table_view.model().trackAt(row) if row is not None else None
 
-    def _signal_remove_track(self):
-        if self.selected_track is not None:
-            self.remove_track.emit(self.selected_track)
+    def _signal_remove_track_from_bottom_table(self):
+        if self.selected_track_in_bottom_table is not None:
+            self.remove_track.emit(self.selected_track_in_bottom_table)
 
-    def _signal_play_track(self):
-        if self.selected_track is not None:
-            self.play_track.emit(self.selected_track)
+    def _signal_play_track_from_bottom_table(self):
+        if self.selected_track_in_bottom_table is not None:
+            self.play_track.emit(self.selected_track_in_bottom_table)
 
     def display(self, album):
         self._table_view.setModel(AlbumCompositionModel(album))
