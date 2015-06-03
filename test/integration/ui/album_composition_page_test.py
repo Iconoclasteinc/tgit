@@ -44,13 +44,13 @@ def test_displays_column_headings(driver):
 
 
 def test_displays_track_details_in_columns(album, driver):
-    album.release_name = 'Honeycom'
+    album.release_name = 'Honeycomb'
     album.lead_performer = 'Joel Miller'
     album.add_track(build.track(track_title='Chevere!',
                                bitrate=192000,
                                duration=timedelta(minutes=4, seconds=12).total_seconds()))
 
-    driver.shows_track_details('Chevere!', 'Joel Miller', 'Honeycom', '192 kbps', '04:12')
+    driver.shows_track_details('Chevere!', 'Joel Miller', 'Honeycomb', '192 kbps', '04:12')
 
 
 def test_displays_all_tracks_in_rows(album, driver):
@@ -61,13 +61,23 @@ def test_displays_all_tracks_in_rows(album, driver):
     driver.shows_tracks_in_order(['Give Life Back To Music'], ['Get Lucky'])
 
 
-def test_updates_track_list_when_album_metadata_changes(album, driver):
+def test_updates_track_list_when_album_metadata_change(album, driver):
     album.add_track(build.track(track_title="Chevere!"))
     album.add_track(build.track(track_title='Zumbar'))
 
     album.release_name = 'Honeycomb'
 
     driver.shows_tracks_in_order(['Chevere!', 'Honeycomb'], ['Zumbar', 'Honeycomb'])
+
+
+def test_updates_track_row_when_track_metadata_change(album, driver):
+    track = build.track()
+    album.add_track(track)
+
+    track.track_title = "Chevere!"
+    track.lead_performer = 'Joel Miller'
+
+    driver.shows_track_details('Chevere!', 'Joel Miller')
 
 
 def test_signals_user_request_to_remove_track(page, driver):
@@ -104,7 +114,7 @@ def test_prevents_playing_flac_files(page, driver):
     driver.cannot_play_track('Spain')
 
 
-def test_displays_track_title_to_play_in_context_menu(page, driver):
+def test_shows_title_of_track_to_play_in_context_menu(page, driver):
     album = build.album()
     page.display(album)
     album.addTrack(build.track(track_title="Partways"))
@@ -113,7 +123,7 @@ def test_displays_track_title_to_play_in_context_menu(page, driver):
     driver.has_context_menu_item(with_text('Play "Partways"'))
 
 
-def test_displays_stop_in_context_menu_when_selected_track_is_playing(player, page, driver):
+def test_changes_context_menu_option_to_stop_when_selected_track_is_playing(player, page, driver):
     album = build.album()
     page.display(album)
 

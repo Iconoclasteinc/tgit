@@ -115,7 +115,7 @@ class Album(metaclass=tag.Taggable):
         self.add_track(track)
 
     def add_track(self, track):
-        self.insertTrack(track, len(self.tracks))
+        self.insert_track(len(self.tracks), track)
 
     def insertTrack(self, track, position):
         self.insert_track(position, track)

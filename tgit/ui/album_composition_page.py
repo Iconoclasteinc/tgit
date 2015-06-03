@@ -48,20 +48,18 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     def __init__(self, album, player):
         super().__init__()
 
-        self.subscribe(album.track_inserted, self._insert_track)
-        self.subscribe(player.playing, self._on_playing_track)
-        self.subscribe(player.stopped, self._on_stopped_track)
+        self._rows = []
 
+        self.subscribe(album.track_inserted, self._insert_row)
+        self.subscribe(player.playing, lambda track: self._mark_playing_track(track))
+        self.subscribe(player.stopped, lambda track: self._mark_playing_track(None))
         # todo when we have proper signals on album, we can get rid of that
         album.addAlbumListener(self)
 
         self.build()
 
-    def _on_playing_track(self, track):
+    def _mark_playing_track(self, track):
         self._playing_track = track
-
-    def _on_stopped_track(self, track):
-        self._playing_track = None
 
     def build(self):
         self.setObjectName('album-composition-page')
@@ -112,18 +110,24 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         table.setHorizontalHeaderLabels([self.tr(header) for header in self.HEADERS])
         return table
 
-    def _display_album(self, album):
-        for index, track in enumerate(album.tracks):
-            self._display_track(index, track)
+    def _update_all_rows(self, _):
+        for index in range(len(self._rows)):
+            self._update_row(at_index=index)
 
-    albumStateChanged = _display_album
+    albumStateChanged = _update_all_rows
 
-    def _insert_track(self, index, track):
-        self._table.insertRow(index)
-        self._display_track(index, track)
+    def _insert_row(self, at_index, track):
+        self._rows.insert(at_index, Row(track))
+        self._table.insertRow(at_index)
+        self._update_row(at_index)
+        self.subscribe(track.metadata_changed,
+                       lambda state: self._update_row(at_index=self._track_position_in_table(state)))
 
-    def _display_track(self, index, track):
-        Row(index, track).display(self._table)
+    def _track_position_in_table(self, track):
+        return track.track_number - 1
+
+    def _update_row(self, at_index):
+        self._rows[at_index].display(at_index, in_table=self._table)
 
     def makeTrackTableView(self):
         table = QTableView()
@@ -285,10 +289,9 @@ class Columns(Enum):
 
 
 class Row:
-    def __init__(self, index, track):
-        self.index = index
+    def __init__(self, track):
         self.track = track
 
-    def display(self, table):
+    def display(self, at_row, in_table):
         for index, column in enumerate(Columns):
-            table.setItem(self.index, index, column.item(self.track))
+            in_table.setItem(at_row, index, column.item(self.track))
