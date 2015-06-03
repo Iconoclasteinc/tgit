@@ -87,8 +87,8 @@ class ApplicationRunner:
     def assign_isni_to_lead_performer(self):
         self.tagger.assign_isni_to_lead_performer()
 
-    def save(self):
-        self.tagger.save_album()
+    def tag(self):
+        self.tagger.tag_album()
         self.tagger.pause(SAVE_DELAY)
 
     def fails_to_assign_isni_to_lead_performer(self):
@@ -102,3 +102,9 @@ class ApplicationRunner:
         self.tagger.close_album()
         self.tagger.shows_confirmation_message()
         self.tagger.shows_welcome_screen()
+
+    def load_album(self, album_name):
+        self.tagger.load_album(album_name, in_directory=self._save_album_directory)
+
+    def save(self):
+        self.tagger.save()

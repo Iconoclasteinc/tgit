@@ -40,7 +40,7 @@ def test_assigning_an_isni_to_the_lead_performer(app, recordings):
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.assign_isni_to_lead_performer()
 
-    app.save()
+    app.tag()
     recordings.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
                      release_name="Honeycomb",
                      isni="0000000121707484",

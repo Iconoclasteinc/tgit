@@ -90,7 +90,7 @@ class AlbumScreenTest(WidgetTest):
         save_album_signal = ValueMatcherProbe("save album signal")
         self.view.record_album.connect(save_album_signal.received)
 
-        self.driver.save()
+        self.driver.tag()
         self.driver.check(save_album_signal)
 
     def testOffersBackAndForthNavigationBetweenPages(self):

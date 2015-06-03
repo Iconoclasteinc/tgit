@@ -41,7 +41,7 @@ class AlbumScreenDriver(ScreenDriver):
     def nextPage(self):
         self.button(named("next")).click()
 
-    def save(self):
+    def tag(self):
         self.button(named("save")).click()
 
     def hidesPreviousPageButton(self):

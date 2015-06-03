@@ -4,6 +4,7 @@ from cute.widgets import WidgetDriver
 from .album_screen_driver import album_screen
 from .import_album_from_track_dialog_driver import import_album_from_track_dialog
 from .save_album_as_dialog_driver import save_album_as_dialog
+from .load_album_dialog_driver import load_album_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
@@ -59,8 +60,8 @@ class MainWindowDriver(WidgetDriver):
     def editTrackMetadata(self, **tags):
         album_screen(self).edit_track_metadata(**tags)
 
-    def save_album(self):
-        album_screen(self).save()
+    def tag_album(self):
+        album_screen(self).tag()
 
     def change_settings(self, **settings):
         menu_bar(self).settings()
@@ -114,3 +115,11 @@ class MainWindowDriver(WidgetDriver):
 
     def settings(self):
         menu_bar(self).settings()
+
+    def load_album(self, album_name, in_directory):
+        welcome_screen(self).load_album()
+        load_album_dialog(self).load(album_name, in_directory=in_directory)
+        album_screen(self).is_showing_on_screen()
+
+    def save(self):
+        menu_bar(self).save()
