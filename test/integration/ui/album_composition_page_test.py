@@ -134,34 +134,28 @@ def test_signals_user_request_to_play_or_stop_track(album, page, driver):
     driver.check(play_track_signal)
 
 
-def test_prevents_playing_flac_files(page, driver):
-    album = build.album(of_type=Album.Type.FLAC)
-    page.display(album)
-    album.addTrack(build.track(track_title="Spain"))
+def test_prevents_playing_flac_files(album, driver):
+    album.type = 'flac'
+    album.add_track(build.track(track_title="Spain"))
 
-    driver.cannot_play_track_in_bottom_table('Spain')
-
-
-def test_shows_title_of_track_to_play_in_context_menu(page, driver):
-    album = build.album()
-    page.display(album)
-    album.addTrack(build.track(track_title="Partways"))
-
-    driver.select_track_in_bottom_table("Partways")
-    driver.has_bottom_table_context_menu_item(with_text('Play "Partways"'))
+    driver.cannot_play_track('Spain')
 
 
-def test_changes_context_menu_option_to_stop_when_selected_track_is_playing(player, page, driver):
-    album = build.album()
-    page.display(album)
+def test_shows_title_of_track_to_play_in_context_menu(album, driver):
+    album.add_track(build.track(track_title="Partways"))
 
+    driver.select_track("Partways")
+    driver.has_context_menu_item(with_text('Play "Partways"'))
+
+
+def test_changes_context_menu_option_to_stop_when_selected_track_is_playing(album, player, driver):
     track = build.track(track_title="Choices")
-    album.addTrack(track)
+    album.add_track(track)
 
     player.play(track)
 
-    driver.select_track_in_bottom_table("Choices")
-    driver.has_bottom_table_context_menu_item(with_text('Stop "Choices"'))
+    driver.select_track("Choices")
+    driver.has_context_menu_item(with_text('Stop "Choices"'))
 
 
 @pytest.mark.xfail(reason="fails probably because we're moving rows programmatically?")

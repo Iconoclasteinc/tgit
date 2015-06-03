@@ -54,6 +54,11 @@ class AlbumCompositionPageDriver(ScreenDriver):
         context_menu.has_menu_item(matching)
         context_menu.close()
 
+    def has_context_menu_item(self, matching):
+        context_menu = self._from_context_menu()
+        context_menu.has_menu_item(matching)
+        context_menu.close()
+
     def _from_bottom_table_context_menu(self):
         self.perform(gestures.mouse_right_click())
         return MenuDriver.find_single(self, QMenu, named("context_menu_bottom"))
@@ -83,6 +88,10 @@ class AlbumCompositionPageDriver(ScreenDriver):
     def play_track_in_bottom_table(self, title):
         self.select_track_in_bottom_table(title)
         self._play_from_bottom_table_context_menu()
+
+    def cannot_play_track(self, title):
+        self.select_track(title)
+        self._from_context_menu().menu_item(named("play_action")).is_disabled()
 
     def cannot_play_track_in_bottom_table(self, title):
         self.select_track_in_bottom_table(title)

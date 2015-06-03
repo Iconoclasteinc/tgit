@@ -141,8 +141,14 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
         table.customContextMenuRequested.connect(self._open_context_menu)
 
+    def _update_context_menu(self):
+        play_action_text = "Stop" if (self.selected_track == self._playing_track) else "Play"
+        self._play_action.setText('{0} "{1}"'.format(self.tr(play_action_text), self.selected_track.track_title))
+        self._play_action.setDisabled(self.selected_track.type == Album.Type.FLAC)
+
     def _open_context_menu(self, pos):
         if self.selected_row is not None:
+            self._update_context_menu()
             self._context_menu.popup(self._map_to_global(pos))
 
     def _map_to_global(self, pos):
