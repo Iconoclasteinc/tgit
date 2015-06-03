@@ -108,6 +108,10 @@ class AlbumCompositionPageDriver(ScreenDriver):
         from_ = self.shows_track(title)
         self._track_table_view().move_row(from_, to)
 
+    def move_track(self, title, to):
+        from_ = self.shows_track_details(title)
+        self._track_table().move_row(from_, to)
+
     def _track_table_view(self):
         return self.table(named('track-list-view'))
 

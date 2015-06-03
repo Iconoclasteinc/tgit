@@ -118,7 +118,13 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         table.setShowGrid(False)
         table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
         table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
+        table.verticalHeader().setSectionsMovable(True)
+        table.verticalHeader().sectionMoved.connect(self._signal_move_track)
+        table.verticalHeader().sectionMoved.connect(lambda _, from_, to: self._select_row(to))
         return table
+
+    def _select_row(self, row):
+        self._table.setCurrentIndex(self._table.model().index(row, 0))
 
     def _make_context_menu(self, table):
         # We don't want the menu to block so we can't use the ActionsContextMenu policy
@@ -168,7 +174,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
     @property
     def selected_track(self):
-        return self._rows[self.selected_row].track
+        return self._track_at(self.selected_row)
 
     def _signal_remove_track(self):
         if self.selected_track is not None:
@@ -177,6 +183,12 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     def _signal_play_track(self):
         if self.selected_track is not None:
             self.play_track.emit(self.selected_track)
+
+    def _signal_move_track(self, _, from_, to):
+        self.move_track.emit(self._track_at(from_), to)
+
+    def _track_at(self, from_):
+        return self._rows[from_].track
 
     def _update_all_rows(self, _):
         for index in range(len(self._rows)):
@@ -222,8 +234,8 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
         table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         table.verticalHeader().setSectionsMovable(True)
-        table.verticalHeader().sectionMoved.connect(self._signal_move_track)
-        table.verticalHeader().sectionMoved.connect(lambda _, from_, to: self._select_row(to))
+        table.verticalHeader().sectionMoved.connect(self._signal_move_track_from_bottom_table)
+        table.verticalHeader().sectionMoved.connect(lambda _, from_, to: self._select_row_in_bottom_table(to))
         table.setStyleSheet("""
             QTableView::item {
                 border-bottom: 1px solid #F7C3B7;
@@ -273,10 +285,10 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         """)
         return table
 
-    def _signal_move_track(self, _, from_, to):
+    def _signal_move_track_from_bottom_table(self, _, from_, to):
         self.move_track.emit(self._table_view.model().trackAt(from_), to)
 
-    def _select_row(self, row):
+    def _select_row_in_bottom_table(self, row):
         self._table_view.setCurrentIndex(self._table_view.model().index(row, 0))
 
     def _is_selected_in_bottom_table(self, track):

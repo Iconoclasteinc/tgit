@@ -33,7 +33,7 @@ class AlbumScreenDriver(ScreenDriver):
         album_composition_page(self).remove_track(title)
 
     def move_track(self, title, to):
-        album_composition_page(self).move_track_in_bottom_table(title, to)
+        album_composition_page(self).move_track(title, to)
 
     def previousPage(self):
         self.button(named("previous")).click()
