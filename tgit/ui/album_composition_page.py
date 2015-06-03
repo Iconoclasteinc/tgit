@@ -28,6 +28,54 @@ from tgit.ui.album_composition_model import AlbumCompositionModel
 from tgit.ui.helpers import form, formatting
 from tgit.ui.observer import Observer
 
+STYLE_SHEET = """
+            QTableView::item {
+                border-bottom: 1px solid #F7C3B7;
+            }
+
+            QTableView::item::alternate {
+                background-color:#F9F7F7;
+            }
+
+            QTableView::item::selected {
+                background-color:#F25C0A;
+            }
+
+            QHeaderView {
+                background-color: white;
+            }
+
+            QHeaderView::section {
+                background-color: transparent;
+            }
+
+            QHeaderView::section:horizontal {
+                text-align: left;
+                font-weight: bold;
+                font-size: 13px;
+                padding: 21px 0 18px 5px;
+                border-top: 1px solid #F7C3B7;
+                border-bottom: 1px solid #F7C3B7;
+                border-right: 1px solid  #F2F2F2;
+                min-height: 15px;
+            }
+
+            QHeaderView::section:vertical {
+                padding: 4px 7px;
+                border-bottom: 1px solid #F7C3B7;
+                border-right: 1px solid #F7C3B7;
+                border-left: none;
+                border-top: none;
+            }
+
+            QTableCornerButton::section:vertical {
+                background-color: white;
+                border-top: 1px solid #F7C3B7;
+                border-bottom: 1px solid #F7C3B7;
+                border-right: 1px solid  #F2F2F2;
+            }
+        """
+
 LIGHT_GRAY = QColor.fromRgb(0xDDDDDD)
 
 
@@ -109,6 +157,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         table = QTableWidget()
         table.setFrameStyle(QFrame.NoFrame)
         table.setObjectName('track_list')
+        table.setStyleSheet(STYLE_SHEET)
         table.setColumnCount(len(self.HEADERS))
         table.setHorizontalHeaderLabels([self.tr(header) for header in self.HEADERS])
         table.setEditTriggers(QTableView.NoEditTriggers)
@@ -117,6 +166,8 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         table.setAlternatingRowColors(True)
         table.setShowGrid(False)
         table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
+        for index, width in enumerate(self.COLUMNS_WIDTHS):
+            table.horizontalHeader().resizeSection(index, width)
         table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         table.verticalHeader().setSectionsMovable(True)
         table.verticalHeader().sectionMoved.connect(self._signal_move_track)
@@ -236,53 +287,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         table.verticalHeader().setSectionsMovable(True)
         table.verticalHeader().sectionMoved.connect(self._signal_move_track_from_bottom_table)
         table.verticalHeader().sectionMoved.connect(lambda _, from_, to: self._select_row_in_bottom_table(to))
-        table.setStyleSheet("""
-            QTableView::item {
-                border-bottom: 1px solid #F7C3B7;
-            }
-
-            QTableView::item::alternate {
-                background-color:#F9F7F7;
-            }
-
-            QTableView::item::selected {
-                background-color:#F25C0A;
-            }
-
-            QHeaderView {
-                background-color: white;
-            }
-
-            QHeaderView::section {
-                background-color: transparent;
-            }
-
-            QHeaderView::section:horizontal {
-                text-align: left;
-                font-weight: bold;
-                font-size: 13px;
-                padding: 21px 0 18px 5px;
-                border-top: 1px solid #F7C3B7;
-                border-bottom: 1px solid #F7C3B7;
-                border-right: 1px solid  #F2F2F2;
-                min-height: 15px;
-            }
-
-            QHeaderView::section:vertical {
-                padding: 4px 7px;
-                border-bottom: 1px solid #F7C3B7;
-                border-right: 1px solid #F7C3B7;
-                border-left: none;
-                border-top: none;
-            }
-
-            QTableCornerButton::section:vertical {
-                background-color: white;
-                border-top: 1px solid #F7C3B7;
-                border-bottom: 1px solid #F7C3B7;
-                border-right: 1px solid  #F2F2F2;
-            }
-        """)
+        table.setStyleSheet(STYLE_SHEET)
         return table
 
     def _signal_move_track_from_bottom_table(self, _, from_, to):

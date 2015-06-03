@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr_CA" sourcelanguage="en_US">
 <context>
-    <name>Column</name>
+    <name>AlbumCompositionPage</name>
     <message>
         <location filename="album_composition_model.py" line="126"/>
         <source>Track Title</source>
