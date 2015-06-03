@@ -51,6 +51,7 @@
     </property>
     <addaction name="add_files_action"/>
     <addaction name="add_folder_action"/>
+    <addaction name="save_album_action"/>
     <addaction name="close_album_action"/>
     <addaction name="export_action"/>
     <addaction name="separator"/>
@@ -98,6 +99,14 @@
    </property>
    <property name="text">
     <string>Close release</string>
+   </property>
+  </action>
+  <action name="save_album_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save release</string>
    </property>
   </action>
  </widget>

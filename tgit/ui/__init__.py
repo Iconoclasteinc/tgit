@@ -181,8 +181,16 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return AlbumScreen(create_composition_page, create_album_page, create_track_page, album)
 
     dialogs = Dialogs(director, native)
-    window = MainWindow(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio,
-                        on_remove_album=director.remove_album_from(portfolio))
+    window = MainWindow(portfolio,
+                        on_display=create_welcome_screen,
+                        on_close_album=ui_commands.close_album_and(director.remove_album_from(portfolio)),
+                        on_save_album=director.export_as_yaml,
+                        on_album_created=ui_commands.create_album_and(create_album_screen),
+                        on_album_removed=ui_commands.remove_album_and(create_welcome_screen),
+                        on_add_files=ui_commands.add_files_to(dialogs),
+                        on_add_folder=ui_commands.add_folder_to(dialogs),
+                        on_export=ui_commands.export_to(dialogs),
+                        on_settings=show_settings_dialog)
     dialogs.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())
 

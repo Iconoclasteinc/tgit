@@ -411,6 +411,10 @@
         <translation>Fermer l'album (release)</translation>
     </message>
     <message>
+        <source>Save release</source>
+        <translation>Sauvegarder l'album (release)</translation>
+    </message>
+    <message>
         <location filename="tgit/ui/menu_bar.py" line="67"/>
         <source>Add Folder...</source>
         <translation>Ajouter un dossier... </translation>

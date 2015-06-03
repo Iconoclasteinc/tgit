@@ -37,10 +37,10 @@ from tgit.util import fs
 
 def create_album_into(portfolio, of_type=Album.Type.FLAC):
     def add_album(destination):
-        album = Album(of_type=of_type)
+        # todo: find a way to notify the portfolio's listeners of the destination
+        album = Album(of_type=of_type, destination=destination)
+        export_as_yaml(album)
         portfolio.add_album(album)
-        with open(destination, "w") as out:
-            dump({"type": album.type}, stream=out, Dumper=Dumper, default_flow_style=False)
 
     return add_album
 
@@ -152,6 +152,11 @@ def record_track(destination_file, track, time):
     update_track_metadata()
     copy_track_file()
     save_track_metadata()
+
+
+def export_as_yaml(album):
+    with open(album.destination, "w") as out:
+        dump({"type": album.type}, stream=out, Dumper=Dumper, default_flow_style=False)
 
 
 def export_as_csv(album):

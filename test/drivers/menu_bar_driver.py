@@ -17,6 +17,7 @@ class MenuBarDriver(QMenuBarDriver):
         menu.menu_item(named("add_folder_action")).is_disabled()
         menu.menu_item(named("export_action")).is_disabled()
         menu.menu_item(named("close_album_action")).is_disabled()
+        menu.menu_item(named("save_album_action")).is_disabled()
         menu.close()
 
     def add_files(self):
@@ -39,6 +40,10 @@ class MenuBarDriver(QMenuBarDriver):
     def close_album(self):
         menu = self.open_menu(named("file_menu"))
         menu.menu_item(named("close_album_action")).click()
+
+    def save(self):
+        menu = self.open_menu(named("file_menu"))
+        menu.menu_item(named("save_album_action")).click()
 
     def open_menu(self, matching):
         menu = self.menu(matching)
