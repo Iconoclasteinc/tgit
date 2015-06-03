@@ -105,7 +105,7 @@ def test_signals_user_request_to_remove_track(album, page, driver):
     album.add_track(build.track())
     album.add_track(build.track(track_title="Chevere!"))
 
-    remove_track_signal = ValueMatcherProbe("remove track", hasTitle("Chevere!"))
+    remove_track_signal = ValueMatcherProbe("remove track", has_title("Chevere!"))
     page.remove_track.connect(remove_track_signal.received)
 
     driver.remove_track('Chevere!')
@@ -116,22 +116,21 @@ def test_can_remove_track_using_keyboard_shortcut(album, page, driver):
     page.display(album)
     album.add_track(build.track(track_title="Chevere!"))
 
-    remove_track_signal = ValueMatcherProbe("remove track", hasTitle("Chevere!"))
+    remove_track_signal = ValueMatcherProbe("remove track", has_title("Chevere!"))
     page.remove_track.connect(remove_track_signal.received)
 
     driver.remove_track('Chevere!', using_shortcut=True)
     driver.check(remove_track_signal)
 
 
-def test_signals_user_request_to_play_or_stop_track(page, driver):
-    album = build.album(of_type=Album.Type.MP3)
-    page.display(album)
-    album.addTrack(build.track(track_title="Spain"))
+def test_signals_user_request_to_play_or_stop_track(album, page, driver):
+    album.type = 'mp3'
+    album.add_track(build.track(track_title="Spain"))
 
-    play_track_signal = ValueMatcherProbe("play track", hasTitle("Spain"))
+    play_track_signal = ValueMatcherProbe("play track", has_title("Spain"))
     page.play_track.connect(play_track_signal.received)
 
-    driver.play_track_in_bottom_table('Spain')
+    driver.play_track('Spain')
     driver.check(play_track_signal)
 
 
@@ -194,8 +193,7 @@ def test_unsubscribes_from_event_signals_on_close(album, player, page):
     assert_that(player.stopped.subscribers, empty(), "'player stopped' subscriptions")
 
 
-# todo find a home for feature matchers
-def hasTitle(title):
+def has_title(title):
     return has_property('track_title', title)
 
 
@@ -217,7 +215,7 @@ class AlbumCompositionPageTest(WidgetTest):
         self.album.addTrack(build.track(track_title='Tears and Rain'))
 
         newPosition = 1
-        trackMovedSignal = ValueMatcherProbe('track moved', contains(hasTitle('Tears and Rain'), newPosition))
+        trackMovedSignal = ValueMatcherProbe('track moved', contains(has_title('Tears and Rain'), newPosition))
         self.page.move_track.connect(lambda track, to: trackMovedSignal.received([track, newPosition]))
 
         self.driver.move_track_in_bottom_table('Tears and Rain', newPosition)

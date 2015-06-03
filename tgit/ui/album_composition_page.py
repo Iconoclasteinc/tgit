@@ -133,6 +133,12 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         self._context_menu.addAction(remove_action)
         table.addAction(remove_action)
 
+        self._play_action = QAction(table)
+        self._play_action.setObjectName("play_action")
+        self._play_action.triggered.connect(lambda checked: self._signal_play_track())
+        self._context_menu.addAction(self._play_action)
+        table.addAction(self._play_action)
+
         table.customContextMenuRequested.connect(self._open_context_menu)
 
     def _open_context_menu(self, pos):
@@ -156,11 +162,15 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
     @property
     def selected_track(self):
-        return self._track_at(self.selected_row)
+        return self._rows[self.selected_row].track
 
     def _signal_remove_track(self):
         if self.selected_track is not None:
             self.remove_track.emit(self.selected_track)
+
+    def _signal_play_track(self):
+        if self.selected_track is not None:
+            self.play_track.emit(self.selected_track)
 
     def _update_all_rows(self, _):
         for index in range(len(self._rows)):
@@ -313,9 +323,9 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
     @property
     def selected_track_in_bottom_table(self):
-        return self._track_at(self.selected_row_in_bottom_table)
+        return self._track_in_bottom_table_at(self.selected_row_in_bottom_table)
 
-    def _track_at(self, row):
+    def _track_in_bottom_table_at(self, row):
         return self._table_view.model().trackAt(row) if row is not None else None
 
     def _signal_remove_track_from_bottom_table(self):

@@ -70,6 +70,13 @@ class AlbumCompositionPageDriver(ScreenDriver):
         row = self.shows_track_details(title)
         self._track_table().click_on_cell(row, 0)
 
+    def _play_from_context_menu(self):
+        self._from_context_menu().select_menu_item(named("play_action"))
+
+    def play_track(self, title):
+        self.select_track(title)
+        self._play_from_context_menu()
+
     def _play_from_bottom_table_context_menu(self):
         self._from_bottom_table_context_menu().select_menu_item(named("play_action_bottom"))
 
