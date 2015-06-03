@@ -114,20 +114,33 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         for index in range(len(self._rows)):
             self._update_row(at_index=index)
 
-    albumStateChanged = _update_all_rows
-
     def _insert_row(self, at_index, track):
         self._rows.insert(at_index, Row(track))
         self._table.insertRow(at_index)
         self._update_row(at_index)
-        self.subscribe(track.metadata_changed,
-                       lambda state: self._update_row(at_index=self._track_position_in_table(state)))
+        self.subscribe(track.metadata_changed, lambda state: self._update_track(track))
+
+    def _remove_row(self, at_index, track):
+        self.unsubscribe(track.metadata_changed)
+        self._table.removeRow(at_index)
+        self._rows.pop(at_index)
+
+    def _update_track(self, track):
+        self._update_row(at_index=self._track_position_in_table(track))
 
     def _track_position_in_table(self, track):
-        return track.track_number - 1
+        return self._rows.index(self._row_of(track))
+
+    def _row_of(self, track):
+        return next(filter(lambda row: row.track == track, self._rows))
 
     def _update_row(self, at_index):
         self._rows[at_index].display(at_index, in_table=self._table)
+
+    albumStateChanged = _update_all_rows
+
+    def trackRemoved(self, track, position):
+        self._remove_row(at_index=position, track=track)
 
     def makeTrackTableView(self):
         table = QTableView()

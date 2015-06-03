@@ -80,6 +80,26 @@ def test_updates_track_row_when_track_metadata_change(album, driver):
     driver.shows_track_details('Chevere!', 'Joel Miller')
 
 
+def test_removes_row_from_table_when_track_removed_from_album(album, driver):
+    tracks = [build.track(track_title="Chevere!"),
+              build.track(track_title='Zumbar'),
+              build.track(track_title='Salsa Coltrane')]
+
+    for track in tracks:
+        album.add_track(track)
+
+    driver.shows_tracks_in_order(['Chevere!'], ['Zumbar'], ['Salsa Coltrane'])
+    album.remove_track(tracks[1])
+    driver.shows_tracks_in_order(['Chevere!'], ['Salsa Coltrane'])
+    album.remove_track(tracks[2])
+    driver.shows_tracks_in_order(['Chevere!'])
+    album.remove_track(tracks[0])
+    driver.shows_tracks_in_order()
+
+    for index, track in enumerate(tracks):
+        assert_that(track.metadata_changed.subscribers, empty(), "track #{} 'metadata changed' subscribers".format(index))
+
+
 def test_signals_user_request_to_remove_track(page, driver):
     album = build.album()
     page.display(album)

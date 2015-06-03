@@ -3,7 +3,7 @@
 from hamcrest import assert_that, contains, empty, is_
 import pytest
 
-from tgit.signal import Signal, MultiSubscription
+from tgit.signal import Signal, MultiSubscription, Subscription
 
 
 class Subscriber:
@@ -116,6 +116,18 @@ def test_cancelling_a_multi_subscription_cancels_all_subscriptions(signal):
 
     for index, subscriber in enumerate(subscribers):
         assert_that(not signal.is_subscribed(subscriber), "subscription #{} still active".format(index))
+
+
+def test_cancels_subscription_removed_from_a_multi_subscription(signal):
+    subscriber = Subscriber()
+    subscriptions = MultiSubscription()
+    subscription = signal.subscribe(subscriber)
+    subscriptions += subscription
+    assert_that(signal.is_subscribed(subscriber), "subscription not active")
+
+    subscriptions -= subscription
+    assert_that(subscriptions, empty())
+    assert_that(not signal.is_subscribed(subscriber), "subscription still active")
 
 
 def test_signals_can_emit_multiple_values_of_different_types(multi_value_signal):

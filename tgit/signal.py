@@ -32,9 +32,13 @@ class signal:
 
 class Subscription:
     """Subscription are returned from `Signal.subscribe` to allow unsubscribing"""
-    def __init__(self, signal, subscriber):
-        self._observable = signal
+    def __init__(self, observable, subscriber):
+        self._observable = observable
         self._subscriber = subscriber
+
+    @property
+    def observable(self):
+        return self._observable
 
     def cancel(self):
         self._observable.unsubscribe(self._subscriber)
@@ -46,11 +50,25 @@ class MultiSubscription:
         self._subscriptions = []
 
     def __iadd__(self, subscription):
-        self.append(subscription)
+        self.add(subscription)
         return self
 
-    def append(self, subscription):
+    def __isub__(self, subscription):
+        self.remove(subscription)
+        return self
+
+    def __iter__(self):
+        return iter(self._subscriptions)
+
+    def __len__(self):
+        return len(self._subscriptions)
+
+    def add(self, subscription):
         self._subscriptions.append(subscription)
+
+    def remove(self, subscription):
+        self._subscriptions.remove(subscription)
+        subscription.cancel()
 
     def cancel(self):
         for subscription in self._subscriptions:

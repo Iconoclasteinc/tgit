@@ -125,21 +125,27 @@ class Album(metaclass=tag.Taggable):
         # todo move to Track
         if not self.compilation:
             track.lead_performer = self.lead_performer
+
         self.tracks.insert(position, track)
-        self._number_tracks()
+        self._renumber_tracks()
+
         self.listeners.trackAdded(track, position)
         self.track_inserted.emit(position, track)
 
     def removeTrack(self, track):
+        self.remove_track(track)
+
+    def remove_track(self, track):
         position = self.tracks.index(track)
         self.tracks.remove(track)
-        self._number_tracks()
+        self._renumber_tracks()
+
         self.listeners.trackRemoved(track, position)
 
     def metadataChanged(self):
         self.listeners.albumStateChanged(self)
 
-    def _number_tracks(self):
+    def _renumber_tracks(self):
         for index, track in enumerate(self.tracks):
             track.track_number = index + 1
             track.total_tracks = len(self.tracks)
