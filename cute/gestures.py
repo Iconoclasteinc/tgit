@@ -138,7 +138,10 @@ def unselect():
 
 
 def close():
-    return holding_modifier_key(CONTROL, type_key(F4 if windows else 'w'))
+    if windows:
+        return holding_modifier_key(CONTROL, type_key(F4))
+    else:
+        return holding_modifier_key(COMMAND, type_key('w'))
 
 
 def pause(ms):
