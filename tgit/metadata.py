@@ -24,16 +24,16 @@ class Image(object):
     FRONT_COVER = 1
     BACK_COVER = 2
 
-    def __init__(self, mime, data, type_=OTHER, desc=''):
+    def __init__(self, mime, data, type_=OTHER, desc=""):
         self.mime = mime
         self.data = data
         self.type = type_
         self.desc = desc
 
     def __repr__(self):
-        data = binascii.hexlify(self.data[:25] + b'..' if len(self.data) > 25 else self.data)
-        return 'Image(mime=%s, type_=%s, desc=%s, data=%s) (%s bytes)' \
-               % (self.mime, self.type, self.desc, data, len(self.data))
+        data = binascii.hexlify(self.data[:25] + b".." if len(self.data) > 25 else self.data)
+        return "Image(mime={0}, type_={1}, desc={2}, data={3}) ({4} bytes)".format(self.mime, self.type, self.desc,
+                                                                                   data, len(self.data))
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -45,11 +45,7 @@ class Image(object):
         return not self.__eq__(other)
 
 
-class Metadata(object):
-    @classmethod
-    def from_dict(cls, metadata):
-        return cls(**metadata)
-
+class Metadata:
     def __init__(self, **metadata):
         self._images = []
         self._tags = dict(**metadata)
@@ -97,10 +93,10 @@ class Metadata(object):
     def images(self):
         return list(self._images)
 
-    def imagesOfType(self, imageType):
-        return [image for image in self._images if image.type == imageType]
+    def imagesOfType(self, image_type):
+        return [image for image in self._images if image.type == image_type]
 
-    def addImage(self, mime, data, type_=Image.OTHER, desc=''):
+    def addImage(self, mime, data, type_=Image.OTHER, desc=""):
         self._images.append(Image(mime, data, type_, desc))
 
     def addImages(self, *images):
@@ -119,7 +115,7 @@ class Metadata(object):
         if not keys:
             keys = self.keys()
 
-        copy = Metadata.from_dict({key:self[key] for key in keys if key in self})
+        copy = Metadata(**{key: self[key] for key in keys if key in self})
         copy.addImages(*self.images)
         return copy
 
@@ -128,4 +124,4 @@ class Metadata(object):
         self.removeImages()
 
     def __str__(self):
-        return str(self._tags) + ' with images ' + str(self._images)
+        return str(self._tags) + " with images " + str(self._images)

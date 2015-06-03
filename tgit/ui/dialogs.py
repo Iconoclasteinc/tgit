@@ -67,7 +67,7 @@ class Dialogs:
     def _save_as_dialog(self, album_portfolio, of_type):
         if not self._save_as:
             self._save_as = make_save_as_dialog(self.parent, native=self._native,
-                                                on_save_as=self._commands.add_album_to(album_portfolio, of_type))
+                                                on_save_as=self._commands.create_album_into(album_portfolio, of_type))
 
         return self._save_as
 

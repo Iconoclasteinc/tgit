@@ -25,14 +25,14 @@ from tgit.preferences import Preferences
 
 
 def test_closing_an_album(app, recordings):
-    app.new_album(of_type="mp3")
+    app.new_album(of_type="mp3", save_as="album1")
 
     track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
     app.shows_album_content(["???"])
     app.close_album()
 
-    app.new_album(of_type="mp3")
+    app.new_album(of_type="mp3", save_as="album2")
     app.shows_album_content()
 
 

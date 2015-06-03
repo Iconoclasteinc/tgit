@@ -20,6 +20,7 @@ from tgit.util import fs
 
 NOW = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
 
+
 @pytest.fixture
 def recordings(request, tmpdir):
     library = doubles.recording_library(tmpdir.strpath)
@@ -36,10 +37,23 @@ def mp3(tmpdir):
     shutil.rmtree(tmpdir.strpath)
 
 
-def test_adds_new_album_to_porfolio():
+def test_adds_new_album_to_porfolio(tmpdir):
+    destination = tmpdir.join("album.tgit").strpath
     portfolio = AlbumPortfolio()
-    director.add_album_to(portfolio)(save_at="")
-    assert_that(portfolio._albums, not empty())
+    director.create_album_into(portfolio)(destination=destination)
+    assert_that(portfolio, not empty())
+
+
+def test_saves_new_album_to_disk(tmpdir):
+    destination = tmpdir.join("album.tgit").strpath
+    portfolio = AlbumPortfolio()
+    director.create_album_into(portfolio)(destination=destination)
+
+    def read_lines(file):
+        content = open(file, "r").read()
+        return content.split("\n")
+
+    assert_that(read_lines(destination), has_item(contains_string("type: flac")))
 
 
 def test_removes_album_from_portfolio():
@@ -47,7 +61,7 @@ def test_removes_album_from_portfolio():
     album = build.album()
     portfolio.add_album(album)
     director.remove_album_from(portfolio)(album)
-    assert_that(portfolio._albums, empty())
+    assert_that(portfolio, empty())
 
 
 def test_adds_selected_tracks_to_album_in_selection_order(recordings):

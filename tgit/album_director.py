@@ -25,6 +25,7 @@ import shutil
 
 from dateutil import tz
 import requests
+from yaml import dump, Dumper
 
 import tgit
 from tgit import tagging
@@ -34,9 +35,12 @@ from tgit.track import Track
 from tgit.util import fs
 
 
-def add_album_to(portfolio, of_type=Album.Type.FLAC):
-    def add_album(save_at):
-        portfolio.add_album(Album(of_type=of_type))
+def create_album_into(portfolio, of_type=Album.Type.FLAC):
+    def add_album(destination):
+        album = Album(of_type=of_type)
+        portfolio.add_album(album)
+        with open(destination, "w") as out:
+            dump({"type": album.type}, stream=out, Dumper=Dumper, default_flow_style=False)
 
     return add_album
 
