@@ -81,9 +81,12 @@ class AlbumCompositionPageDriver(ScreenDriver):
         self.select_track_in_bottom_table(title)
         self._from_bottom_table_context_menu().menu_item(named("play_action_bottom")).is_disabled()
 
-    def remove_track(self, title):
+    def remove_track(self, title, using_shortcut=False):
         self.select_track(title)
-        self._from_context_menu().select_menu_item(named("remove_action"))
+        if using_shortcut:
+            self.perform(gestures.delete())
+        else:
+            self._from_context_menu().select_menu_item(named("remove_action"))
 
     def move_track_in_bottom_table(self, title, to):
         from_ = self.shows_track(title)

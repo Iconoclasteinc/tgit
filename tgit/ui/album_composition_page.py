@@ -279,7 +279,6 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
         remove_action_bottom = QAction(self.tr("Remove"), table)
         remove_action_bottom.setObjectName("remove_action_bottom")
-        remove_action_bottom.setShortcut(Qt.Key_Delete)
         remove_action_bottom.triggered.connect(lambda checked: self._signal_remove_track_from_bottom_table())
         self._bottom_table_context_menu.addAction(remove_action_bottom)
         table.addAction(remove_action_bottom)

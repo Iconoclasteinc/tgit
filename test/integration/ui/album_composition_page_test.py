@@ -112,6 +112,17 @@ def test_signals_user_request_to_remove_track(album, page, driver):
     driver.check(remove_track_signal)
 
 
+def test_can_remove_track_using_keyboard_shortcut(album, page, driver):
+    page.display(album)
+    album.add_track(build.track(track_title="Chevere!"))
+
+    remove_track_signal = ValueMatcherProbe("remove track", hasTitle("Chevere!"))
+    page.remove_track.connect(remove_track_signal.received)
+
+    driver.remove_track('Chevere!', using_shortcut=True)
+    driver.check(remove_track_signal)
+
+
 def test_signals_user_request_to_play_or_stop_track(page, driver):
     album = build.album(of_type=Album.Type.MP3)
     page.display(album)

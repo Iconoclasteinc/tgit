@@ -129,6 +129,10 @@ def enter():
     return type_key(RETURN)
 
 
+def delete():
+    return type_key(DELETE)
+
+
 def delete_previous():
     return type_key(BACKSPACE)
 
