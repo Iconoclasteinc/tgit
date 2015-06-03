@@ -24,13 +24,13 @@ from cute.widgets import FileDialogDriver, window
 
 
 def save_album_as_dialog(parent):
-    return SaveAlbumAsDialog(window(QFileDialog, named("save_as_dialog")), parent.prober, parent.gesture_performer)
+    return SaveAlbumAsDialogDriver(window(QFileDialog, named("save_as_dialog")), parent.prober, parent.gesture_performer)
 
 
-class SaveAlbumAsDialog(FileDialogDriver):
+class SaveAlbumAsDialogDriver(FileDialogDriver):
     def save_as(self, filename, in_directory):
         self.show_hidden_files()
-        self.navigate_to_dir(os.path.dirname(in_directory))
+        self.navigate_to_dir(in_directory)
         self.enter_manually(filename)
         self.has_accept_button_text("&Save")
         self.accept()
