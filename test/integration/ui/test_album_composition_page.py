@@ -8,10 +8,8 @@ import pytest
 from cute.finders import WidgetIdentity
 from cute.matchers import with_text
 from cute.probes import ValueMatcherProbe
-from test.integration.ui import WidgetTest
 from test.drivers import AlbumCompositionPageDriver
 from test.util import builders as build, doubles
-from tgit.album import Album
 from tgit.ui.album_composition_page import AlbumCompositionPage
 
 
@@ -101,7 +99,6 @@ def test_removes_row_from_table_when_track_removed_from_album(album, driver):
 
 
 def test_signals_user_request_to_remove_track(album, page, driver):
-    page.display(album)
     album.add_track(build.track())
     album.add_track(build.track(track_title="Chevere!"))
 
@@ -113,7 +110,6 @@ def test_signals_user_request_to_remove_track(album, page, driver):
 
 
 def test_can_remove_track_using_keyboard_shortcut(album, page, driver):
-    page.display(album)
     album.add_track(build.track(track_title="Chevere!"))
 
     remove_track_signal = ValueMatcherProbe("remove track", has_title("Chevere!"))

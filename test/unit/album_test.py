@@ -77,6 +77,22 @@ def test_signals_track_insertion_events():
         assert_that(subscriber.events, has_item(event(index, track)), "track {0} insertion event".format(index))
 
 
+def test_signals_track_removal_events():
+    tracks = [build.track(), build.track(), build.track()]
+    album = build.album()
+    for track in tracks:
+        album.add_track(track)
+
+    subscriber = Subscriber()
+    album.track_removed.subscribe(subscriber)
+
+    for track in reversed(tracks):
+        album.remove_track(track)
+
+    for index, track in enumerate(tracks):
+        assert_that(subscriber.events, has_item(contains(index, track)), "track {0} removal event".format(index))
+
+
 class AlbumTest(unittest.TestCase):
     def testIsInitiallyEmpty(self):
         assert_that(build.album().empty(), is_(True), 'emptiness')

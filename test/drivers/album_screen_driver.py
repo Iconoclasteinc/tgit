@@ -63,7 +63,7 @@ class AlbumScreenDriver(ScreenDriver):
         self._is_enabled(self.button(named("save")))
 
     def shows_album_contains(self, *tracks):
-        album_composition_page(self).showsTracksInOrder(*tracks)
+        album_composition_page(self).shows_tracks_in_order(*tracks)
 
     def shows_album_metadata(self, **tags):
         album_edition_page(self).shows_metadata(**tags)
