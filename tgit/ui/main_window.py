@@ -462,6 +462,7 @@ class MainWindow(QMainWindow):
             self.settings_action.setText(self.tr(self.settings_action.text()))
 
         self.close_album_action.setShortcut(QKeySequence.Close)
+        self.save_album_action.setShortcut(QKeySequence.Save)
         self.album_dependent_action = [
             self.add_files_action,
             self.add_folder_action,

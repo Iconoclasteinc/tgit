@@ -121,5 +121,9 @@ class MainWindowDriver(WidgetDriver):
         load_album_dialog(self).load(album_name, in_directory=in_directory)
         album_screen(self).is_showing_on_screen()
 
-    def save(self):
-        menu_bar(self).save()
+    def save(self, using_shortcut=False):
+        if using_shortcut:
+            self.click()
+            self.perform(gestures.save())
+        else:
+            menu_bar(self).save()

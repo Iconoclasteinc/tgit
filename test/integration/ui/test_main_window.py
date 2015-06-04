@@ -68,6 +68,16 @@ def test_signals_when_save_album_menu_item_clicked(main_window, driver):
     driver.check(save_album_signal)
 
 
+def test_signals_when_save_album_keyboard_shortcut_is_activated(main_window, driver):
+    album = build.album()
+    save_album_signal = ValueMatcherProbe("save", album)
+    main_window.save.connect(save_album_signal.received)
+    main_window.enable_album_actions(album)
+
+    driver.save(using_shortcut=True)
+    driver.check(save_album_signal)
+
+
 def test_signals_when_close_album_menu_item_clicked(main_window, driver):
     album = build.album()
     close_album_signal = ValueMatcherProbe("close", album)
