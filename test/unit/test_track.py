@@ -3,7 +3,7 @@
 from hamcrest import contains_inanyorder, contains, has_entry
 from hamcrest import assert_that
 
-from test.test_signal import Subscriber
+from test.test_signal import Subscriber, event
 from test.util import builders as build
 from tgit.track import Track
 
@@ -31,4 +31,4 @@ def assert_notifies_of_metadata_change(prop, value):
 
     setattr(track, prop, value)
 
-    assert_that(subscriber.events, contains(has_entry(prop, value)), "track changed events")
+    assert_that(subscriber.events, contains(contains(has_entry(prop, value))), "track changed events")

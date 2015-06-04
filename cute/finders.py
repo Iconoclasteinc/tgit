@@ -110,8 +110,9 @@ class SingleWidgetFinder(WidgetSelector):
 
 
 class WidgetIdentity(WidgetSelector):
-    def __init__(self, widget):
+    def __init__(self, widget, description=None):
         self._widget = widget
+        self._description = description
 
     def test(self):
         pass
@@ -125,7 +126,7 @@ class WidgetIdentity(WidgetSelector):
     def describe_to(self, description):
         description.append_text('the exact ') \
             .append_text(type(self._widget).__name__) \
-            .append_text(" '%s'" % repr(self._widget))
+            .append_text(" '{0}'".format(self._description or repr(self._widget)))
 
     def describe_failure_to(self, description):
         self.describe_to(description)

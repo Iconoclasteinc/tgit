@@ -92,9 +92,12 @@ def removeAlbumCover(album):
     album.removeImages()
 
 
-def moveTrack(album, track, position):
-    album.removeTrack(track)
-    album.insertTrack(track, position)
+def move_track_of(album):
+    def move_track_of_album(track, new_position):
+        album.remove_track(track)
+        album.insert_track(new_position, track)
+
+    return move_track_of_album
 
 
 def remove_track_from(player, album):

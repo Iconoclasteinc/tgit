@@ -6,7 +6,7 @@ from hamcrest import contains
 from hamcrest import assert_that
 import pytest
 
-from test.test_signal import Subscriber
+from test.test_signal import Subscriber, event
 from test.util import builders as build
 from tgit.album_portfolio import AlbumPortfolio
 
@@ -23,7 +23,7 @@ def test_notifies_when_album_is_added(portfolio):
     portfolio.album_created.subscribe(subscriber)
     portfolio.add_album(album)
 
-    assert_that(subscriber.events, contains(album), "albums created")
+    assert_that(subscriber.events, contains(event(album)), "albums created")
 
 def test_notifies_when_album_is_removed(portfolio):
     album = build.album()
@@ -33,4 +33,4 @@ def test_notifies_when_album_is_removed(portfolio):
     portfolio.album_removed.subscribe(subscriber)
     portfolio.remove_album(album)
 
-    assert_that(subscriber.events, contains(album), "albums removed")
+    assert_that(subscriber.events, contains(event(album)), "albums removed")
