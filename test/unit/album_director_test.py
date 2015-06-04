@@ -205,6 +205,15 @@ def test_plays_track_if_not_already_playing():
     assert_that(player.is_playing(track), is_(True), 'started playing')
 
 
+def test_moves_track_of_album():
+    chevere = build.track(track_title='Chevere!')
+    salsa_coltrane = build.track(track_title='Salsa Coltrane')
+    honeycomb = build.album(tracks=[salsa_coltrane, chevere])
+
+    director.move_track_of(honeycomb)(salsa_coltrane, 1)
+    assert_that(honeycomb.tracks, contains(chevere, salsa_coltrane), 'reordered tracks')
+
+
 class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
         self.tempdir = resources.makeTempDir()
@@ -270,14 +279,6 @@ class AlbumDirectorTest(unittest.TestCase):
         album = build.album(images=[build.image('image/jpeg', 'image data')])
         director.removeAlbumCover(album)
         assert_that(album.images, equal_to([]), 'images')
-
-    def testMovesTrackInAlbum(self):
-        setFireToTheRain = build.track(track_title='Set Fire to the Rain')
-        rollingInTheDeep = build.track(track_title='Rolling in the Deep')
-        twentyOne = build.album(tracks=[setFireToTheRain, rollingInTheDeep])
-
-        director.moveTrack(twentyOne, rollingInTheDeep, 0)
-        assert_that(twentyOne.tracks, contains(rollingInTheDeep, setFireToTheRain), 'reordered tracks')
 
     def testReplacesInvalidCharactersForFileNamesWithUnderscores(self):
         assert_that(director.sanitize('1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')

@@ -20,23 +20,25 @@
 
 class signal:
     """Descriptor class for signals"""
-    def __init__(self, type_=None, name=None):
+    def __init__(self, *types, name=None):
         self.name = name
-        self._type = type_
+        self._types = types
 
     def __get__(self, instance, owner):
         if self.name not in instance.__dict__:
-            if not self._type:
-                self._type = type(instance)
-            instance.__dict__[self.name] = Signal(self.name, self._type)
+            instance.__dict__[self.name] = Signal(self.name, *self._types)
         return instance.__dict__[self.name]
 
 
 class Subscription:
     """Subscription are returned from `Signal.subscribe` to allow unsubscribing"""
-    def __init__(self, signal, subscriber):
-        self._observable = signal
+    def __init__(self, observable, subscriber):
+        self._observable = observable
         self._subscriber = subscriber
+
+    @property
+    def observable(self):
+        return self._observable
 
     def cancel(self):
         self._observable.unsubscribe(self._subscriber)
@@ -48,11 +50,25 @@ class MultiSubscription:
         self._subscriptions = []
 
     def __iadd__(self, subscription):
-        self.append(subscription)
+        self.add(subscription)
         return self
 
-    def append(self, subscription):
+    def __isub__(self, subscription):
+        self.remove(subscription)
+        return self
+
+    def __iter__(self):
+        return iter(self._subscriptions)
+
+    def __len__(self):
+        return len(self._subscriptions)
+
+    def add(self, subscription):
         self._subscriptions.append(subscription)
+
+    def remove(self, subscription):
+        self._subscriptions.remove(subscription)
+        subscription.cancel()
 
     def cancel(self):
         for subscription in self._subscriptions:
@@ -71,22 +87,23 @@ class Observable(type):
 
 class Signal:
     """A signal emits events and allows subscribing and unsubscribing"""
-    def __init__(self, name, type_):
+    def __init__(self, name, *types):
         self._name = name
-        self._type = type_
+        self._types = types
         self._subscribers = []
 
     @property
     def subscribers(self):
         return list(self._subscribers)
 
-    def emit(self, event):
-        if not isinstance(event, self._type):
-            raise TypeError("{0} event should be of type {1}, not {2}".format(
-                self._name, self._type.__name__, type(event).__name__))
+    def emit(self, *event):
+        for index, (value, type_) in enumerate(zip(event, self._types)):
+            if not isinstance(value, type_):
+                raise TypeError("{0} event should have parameter {1} of type {2}, not {3}".format(
+                    self._name, index, type_.__name__, type(value).__name__))
 
         for subscriber in self._subscribers:
-            subscriber(event)
+            subscriber(*event)
 
     def subscribe(self, subscriber):
         if not callable(subscriber):

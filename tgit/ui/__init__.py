@@ -27,7 +27,7 @@ from tgit.ui.dialogs import Dialogs
 from tgit.ui.album_selection_dialog import AlbumSelectionDialog
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.performer_dialog import PerformerDialog
-from tgit.ui.album_composition_page import AlbumCompositionPage
+from tgit.ui.album_composition_page import AlbumCompositionPage, make_album_composition_page
 from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
@@ -74,17 +74,6 @@ def showCenteredOnScreen(widget):
     show(widget)
     centerOnScreen(widget)
     activate(widget)
-
-
-def AlbumCompositionPageController(dialogs, player, album, *, on_remove_track, on_play_track):
-    page = AlbumCompositionPage(player)
-    page.addTracks.connect(lambda: dialogs.add_tracks(album).open())
-    page.move_track.connect(lambda track, position: director.moveTrack(album, track, position))
-    page.play_track.connect(on_play_track)
-    page.remove_track.connect(on_remove_track)
-
-    page.display(album)
-    return page
 
 
 def PerformerDialogController(parent, album):
@@ -153,9 +142,10 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                                    on_import_album=ui_commands.import_album_in(portfolio, dialogs))
 
     def create_composition_page(album):
-        return AlbumCompositionPageController(dialogs, player, album,
-                                              on_remove_track=director.remove_track_from(player, album),
-                                              on_play_track=director.play_or_stop(player))
+        return make_album_composition_page(dialogs, player, album,
+                                           on_move_track=director.move_track_of(album),
+                                           on_remove_track=director.remove_track_from(player, album),
+                                           on_play_track=director.play_or_stop(player))
 
     def create_album_page(album):
         return make_album_edition_page(dialogs, show_isni_lookup_dialog, show_activity_indicator_dialog,

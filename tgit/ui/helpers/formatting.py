@@ -20,11 +20,11 @@
 from dateutil import tz, parser as dateparser
 
 
-def inKbps(bps):
+def in_kbps(bps):
     return bps and int(round(bps, -3) / 1000) or ''
 
 
-def toDuration(seconds):
+def to_duration(seconds):
     return seconds and '%02d:%02d' % divmod(round(seconds), 60) or ''
 
 

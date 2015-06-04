@@ -17,7 +17,7 @@ class AlbumScreenTest(WidgetTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
         self.album = build.album()
-        self.view = AlbumScreen(AlbumCompositionPage(doubles.audio_player()), AlbumEditionPage(self.album),
+        self.view = AlbumScreen(AlbumCompositionPage(self.album, doubles.audio_player()), AlbumEditionPage(self.album),
                                 self.createTrackEditionPage)
         self.show(self.view)
         self.driver = self.createDriverFor(self.view)
