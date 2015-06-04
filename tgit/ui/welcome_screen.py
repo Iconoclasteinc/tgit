@@ -25,10 +25,11 @@ from tgit.album import Album
 from tgit.ui.helpers import ui_file
 
 
-def make_welcome_screen(*, on_create_new_album, on_import_album):
+def make_welcome_screen(*, on_load_album, on_create_new_album, on_import_album):
     page = WelcomeScreen()
     page.create_new_album.connect(on_create_new_album)
     page.import_album.connect(on_import_album)
+    page.load.connect(on_load_album)
     return page
 
 
@@ -36,6 +37,7 @@ def make_welcome_screen(*, on_create_new_album, on_import_album):
 class WelcomeScreen(QtWidgets.QFrame):
     create_new_album = pyqtSignal(str)
     import_album = pyqtSignal()
+    load = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -44,3 +46,4 @@ class WelcomeScreen(QtWidgets.QFrame):
         self.import_album_button.clicked.connect(lambda: self.import_album.emit())
         self.new_mp3_album_button.clicked.connect(lambda: self.create_new_album.emit(Album.Type.MP3))
         self.new_flac_album_button.clicked.connect(lambda: self.create_new_album.emit(Album.Type.FLAC))
+        self.load_album_button.clicked.connect(lambda: self.load.emit())

@@ -138,7 +138,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return SettingsDialogController(restart_message_box, preferences, window)
 
     def create_welcome_screen():
-        return make_welcome_screen(on_create_new_album=ui_commands.create_new_album_in(portfolio, dialogs),
+        return make_welcome_screen(on_load_album=ui_commands.load_album_in(portfolio, dialogs),
+                                   on_create_new_album=ui_commands.create_new_album_in(portfolio, dialogs),
                                    on_import_album=ui_commands.import_album_in(portfolio, dialogs))
 
     def create_composition_page(album):

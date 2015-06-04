@@ -639,8 +639,8 @@
     </message>
     <message>
         <location filename="../tgit/ui/welcome_screen.py"/>
-        <source>CHOOSE...</source>
-        <translation>CHOISIR...</translation>
+        <source>CHOOSE</source>
+        <translation>CHOISIR</translation>
     </message>
     <message>
         <location filename="../tgit/ui/welcome_screen.py"/>

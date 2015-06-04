@@ -16,26 +16,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
 import os
+from PyQt5.QtCore import pyqtSignal, QDir
 from PyQt5.QtWidgets import QFileDialog
-from cute.matchers import named, disabled
-from cute.widgets import window, FileDialogDriver
 
 
-def load_album_dialog(parent):
-    return LoadAlbumDialogDriver(window(QFileDialog, named("load_dialog")), parent.prober, parent.gesture_performer)
+def make_load_album_dialog(parent_window, native=True, *, on_select_album):
+    dialog = LoadAlbumDialog(parent_window, native)
+    dialog.album_selected.connect(on_select_album)
+    return dialog
 
 
-class LoadAlbumDialogDriver(FileDialogDriver):
-    def load(self, filename):
-        self.show_hidden_files()
-        self.navigate_to_dir(os.path.dirname(filename))
-        self.select_file(os.path.basename(filename))
-        self.accept()
+class LoadAlbumDialog(QFileDialog):
+    album_selected = pyqtSignal(str)
 
-    def rejects_selection_of(self, filename):
-        self.navigate_to_dir(os.path.dirname(filename))
-        self.select_file(os.path.basename(filename))
-        self.has_accept_button(disabled())
-        self.reject()
+    def __init__(self, parent, native):
+        super().__init__(parent)
+        self.setObjectName("load_album_dialog")
+        self.setOption(QFileDialog.DontUseNativeDialog, not native)
+        self.setFileMode(QFileDialog.ExistingFile)
+        self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT Album files")))
+        self.setDirectory(QDir.homePath())
+        self.fileSelected.connect(lambda selected: self.album_selected.emit(os.path.abspath(selected)))

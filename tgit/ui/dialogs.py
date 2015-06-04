@@ -16,11 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 from tgit.ui.album_selection_dialog import make_album_selection_dialog
 from tgit.ui.export_as_dialog import make_export_as_dialog
 from tgit.ui.picture_selection_dialog import make_picture_selection_dialog
 from tgit.ui.save_as_dialog import make_save_as_dialog
 from tgit.ui.track_selection_dialog import make_track_selection_dialog
+from tgit.ui.load_dialog import make_load_album_dialog
 
 
 class Dialogs:
@@ -29,6 +31,7 @@ class Dialogs:
     _import = None
     _export = None
     _save_as = None
+    _load = None
 
     parent = None
 
@@ -71,6 +74,13 @@ class Dialogs:
 
         return self._save_as
 
+    def _load_dialog(self, album_portfolio):
+        if not self._load:
+            self._load = make_load_album_dialog(self.parent, native=self._native,
+                                                on_select_album=self._commands.load_album_into(album_portfolio))
+
+        return self._load
+
     def select_cover(self, album):
         return self._select_cover_dialog(album)
 
@@ -94,6 +104,9 @@ class Dialogs:
 
     def save_album_file(self, album_portfolio, of_type):
         return self._save_as_dialog(album_portfolio, of_type)
+
+    def load_album_file(self, album_portfolio):
+        return self._load_dialog(album_portfolio)
 
     def clear(self):
         self._pictures = None

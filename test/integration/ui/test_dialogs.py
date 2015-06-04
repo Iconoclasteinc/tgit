@@ -26,6 +26,13 @@ def test_creates_a_single_save_as_dialog_for_a_given_portfolio(dialogs):
     assert_that(dialogs.save_album_file(album_portfolio, of_type="mp3"), same_instance(save_as_dialog))
 
 
+def test_creates_a_single_load_dialog_for_a_given_portfolio(dialogs):
+    album_portfolio = make.album_portfolio()
+    load_dialog = dialogs.load_album_file(album_portfolio)
+
+    assert_that(dialogs.load_album_file(album_portfolio), same_instance(load_dialog))
+
+
 def test_creates_a_single_picture_selection_dialog_for_a_given_album(dialogs):
     album = make.album()
     picture_dialog = dialogs.select_cover(album)

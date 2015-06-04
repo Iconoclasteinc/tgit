@@ -45,6 +45,13 @@ def create_album_into(portfolio, of_type=Album.Type.FLAC):
     return add_album
 
 
+def load_album_into(portfolio):
+    def load_album(destination):
+        pass
+
+    return load_album
+
+
 def remove_album_from(portfolio):
     def close_album(album):
         portfolio.remove_album(album)
