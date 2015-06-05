@@ -1,0 +1,24 @@
+catalogNumber: XXX123456789
+comments: 'Comments
+
+  ...'
+compilation: true
+guestPerformers:
+- !!python/tuple
+  - Guitar
+  - Guitarist
+- !!python/tuple
+  - Piano
+  - Pianist
+isni: 0000123456789
+label_name: Label
+lead_performer: Artist
+mixer: Engineer
+primary_style: Style
+producer: Producer
+recordingStudios: Studios
+recording_time: '2008-09-15'
+releaseTime: '2009-01-01'
+release_name: Title
+type: flac
+upc: '123456789999'

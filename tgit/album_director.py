@@ -25,12 +25,13 @@ import shutil
 
 from dateutil import tz
 import requests
-from yaml import dump, Dumper
+from yaml import dump, Dumper, load
 
 import tgit
 from tgit import tagging
 from tgit.album import Album
 from tgit.export.csv_format import CsvFormat
+from tgit.metadata import Metadata
 from tgit.track import Track
 from tgit.util import fs
 
@@ -47,7 +48,7 @@ def create_album_into(portfolio, of_type=Album.Type.FLAC):
 
 def load_album_into(portfolio):
     def load_album(destination):
-        pass
+        portfolio.add_album(import_from_yaml(destination))
 
     return load_album
 
@@ -164,9 +165,19 @@ def record_track(destination_file, track, time):
     save_track_metadata()
 
 
+def import_from_yaml(destination):
+    with open(destination, "r") as album_file_stream:
+        album_dict = load(album_file_stream)
+        type_ = album_dict["type"]
+        del album_dict["type"]
+        return Album(metadata=Metadata(**album_dict), of_type=type_, destination=destination)
+
+
 def export_as_yaml(album):
     with open(album.destination, "w") as out:
-        dump({"type": album.type}, stream=out, Dumper=Dumper, default_flow_style=False)
+        metadata = dict(album.metadata)
+        metadata["type"] = album.type
+        dump(metadata, stream=out, Dumper=Dumper, default_flow_style=False)
 
 
 def export_as_csv(album):
