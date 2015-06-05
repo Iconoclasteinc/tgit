@@ -48,7 +48,8 @@ def create_album_into(portfolio, of_type=Album.Type.FLAC):
 
 def load_album_into(portfolio):
     def load_album(destination):
-        portfolio.add_album(import_from_yaml(destination))
+        album = import_from_yaml(destination)
+        portfolio.add_album(album)
 
     return load_album
 
@@ -169,14 +170,23 @@ def import_from_yaml(destination):
     with open(destination, "r") as album_file_stream:
         album_dict = load(album_file_stream)
         type_ = album_dict["type"]
+        images = album_dict["images"]
         del album_dict["type"]
-        return Album(metadata=Metadata(**album_dict), of_type=type_, destination=destination)
+        del album_dict["images"]
+
+        # todo: change the Metadata class to count images as tags.
+        # We need to add the images to the metadata property after having created the album because the Album class
+        # chooses to create a new Metadata instance
+        album = Album(metadata=(Metadata(**album_dict)), of_type=type_, destination=destination)
+        album.metadata.addImages(*images)
+        return album
 
 
 def export_as_yaml(album):
     with open(album.destination, "w") as out:
         metadata = dict(album.metadata)
         metadata["type"] = album.type
+        metadata["images"] = album.metadata.images
         dump(metadata, stream=out, Dumper=Dumper, default_flow_style=False)
 
 
