@@ -36,7 +36,6 @@ def test_closing_an_album(app, recordings):
     app.shows_album_content()
 
 
-@pytest.mark.wip
 def test_loading_an_album(app):
     app.new_album(of_type="mp3", save_as="new_album")
 

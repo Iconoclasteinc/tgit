@@ -24,7 +24,7 @@ from cute.widgets import window, FileDialogDriver
 
 
 def load_album_dialog(parent):
-    return LoadAlbumDialogDriver(window(QFileDialog, named("load_dialog")), parent.prober, parent.gesture_performer)
+    return LoadAlbumDialogDriver(window(QFileDialog, named("load_album_dialog")), parent.prober, parent.gesture_performer)
 
 
 class LoadAlbumDialogDriver(FileDialogDriver):

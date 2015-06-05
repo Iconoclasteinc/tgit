@@ -116,9 +116,9 @@ class MainWindowDriver(WidgetDriver):
     def settings(self):
         menu_bar(self).settings()
 
-    def load_album(self, album_name, in_directory):
-        welcome_screen(self).load_album()
-        load_album_dialog(self).load(album_name, in_directory=in_directory)
+    def load_album(self, album_name):
+        welcome_screen(self).load()
+        load_album_dialog(self).load(album_name)
         album_screen(self).is_showing_on_screen()
 
     def save(self, using_shortcut=False):

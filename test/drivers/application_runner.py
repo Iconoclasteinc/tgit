@@ -104,7 +104,7 @@ class ApplicationRunner:
         self.tagger.shows_welcome_screen()
 
     def load_album(self, album_name):
-        self.tagger.load_album(album_name, in_directory=self._save_album_directory)
+        self.tagger.load_album(self._save_album_directory.join(album_name).strpath)
 
     def save(self):
         self.tagger.save()
