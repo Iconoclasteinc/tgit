@@ -100,7 +100,7 @@ class WidgetDriver:
 
     def query(self, description, widget_query):
         manipulation = QueryManipulation(widget_query)
-        self.manipulate("query {0}".format(description), widget_query)
+        self.manipulate("query {0}".format(description), manipulation)
         return manipulation.value
 
     def widget_center(self):
