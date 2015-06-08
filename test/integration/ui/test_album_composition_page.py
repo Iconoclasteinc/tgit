@@ -154,12 +154,14 @@ def test_changes_context_menu_option_to_stop_when_selected_track_is_playing(albu
     driver.has_context_menu_item(with_text('Stop "Choices"'))
 
 
-@pytest.mark.xfail(reason="fails probably because we're moving rows programmatically?")
+@pytest.mark.xfail(reason="not reliable")
 def test_selected_row_follows_reorders(album, driver):
     album.add_track(build.track(track_title='Chaconne'))
     album.add_track(build.track(track_title='Choices'))
     album.add_track(build.track(track_title='Place St-Henri'))
 
+    # Give table some time to draw its content
+    driver.pause(250)
     driver.move_track('Choices', 2)
     driver.has_selected_track('Choices')
 
@@ -181,7 +183,10 @@ def test_signals_when_track_was_moved(album, page, driver):
     track_moved_signal = ValueMatcherProbe('track moved', contains(has_title('Place St-Henri'), new_position))
     page.move_track.connect(lambda track, to: track_moved_signal.received([track, new_position]))
 
+    # Give time to the table to draw its content
+    driver.pause(250)
     driver.move_track('Place St-Henri', new_position)
+
     driver.check(track_moved_signal)
 
 

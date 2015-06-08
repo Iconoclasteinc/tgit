@@ -121,6 +121,10 @@ def mouse_multi_click_at(pos, button=LEFT_BUTTON):
     return holding_control(mouse_click_at(pos, button))
 
 
+def mouse_drag(from_pos, to_pos):
+    return sequence(mouse_move(from_pos), mouse_press(), mouse_move(to_pos), mouse_release())
+
+
 def select_all():
     return holding_modifier_key(COMMAND if mac else CONTROL, type_key('a'))
 

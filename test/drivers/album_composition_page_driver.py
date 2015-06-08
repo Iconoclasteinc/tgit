@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from hamcrest import contains, has_items, equal_to
 from PyQt5.QtWidgets import QMenu, QTableWidget
-from cute import gestures
 
-from cute.widgets import MenuDriver, TableWidgetDriver
+from cute import gestures
+from cute.widgets import MenuDriver, TableViewDriver
 from cute.matchers import named
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from ._screen_driver import ScreenDriver
@@ -69,4 +69,4 @@ class AlbumCompositionPageDriver(ScreenDriver):
         self._track_table().move_row(from_, to)
 
     def _track_table(self):
-        return TableWidgetDriver.find_single(self, QTableWidget, named('track_list'))
+        return TableViewDriver.find_single(self, QTableWidget, named('track_list'))
