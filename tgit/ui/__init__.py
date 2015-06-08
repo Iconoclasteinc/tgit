@@ -56,16 +56,7 @@ def centerOnScreen(widget):
 
 
 def activate(widget):
-    from PyQt5.QtCore import QSysInfo
-
-    if hasattr(QSysInfo, "MacintoshVersion") and QSysInfo.MacintoshVersion > QSysInfo.MV_10_8:
-        # Since Maverick, menu bar does not appear until the window is manually activated, so force
-        # user to activate by not raising the window
-        pass
-    else:
-        # we can safely raise the window
-        widget.raise_()
-
+    widget.raise_()
     widget.activateWindow()
 
 
