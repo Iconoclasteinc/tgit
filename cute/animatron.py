@@ -35,6 +35,8 @@ class Animatron(Automaton):
         event_loop.process_pending_events()
 
     def move_mouse(self, x, y):
+        # OS X requires a special drag event, but it seems Qt does not need it.
+        # Maybe it recognizes the drag event by itself, so there's no need to do anything special to trigger drag.
         pyautogui.moveTo(x, y)
         event_loop.process_pending_events()
 

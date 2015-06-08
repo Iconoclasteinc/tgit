@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from PyQt5.QtCore import QDir, QPoint, Qt, QTime, QDate
+from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QComboBox, QMessageBox, QTextEdit, QLabel,
                              QAbstractButton, QSpinBox, QTableView)
@@ -10,6 +10,8 @@ from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from . import gestures, properties, matchers as match
+from cute import rect
+from cute.table import TableMatcher, TableManipulation, Table
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                      WidgetScreenBoundsProbe)
 from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector,
@@ -34,13 +36,21 @@ def window(of_type, *matchers):
     return only_widget(of_type, all_of(*matchers))
 
 
-class SingleQueryManipulation:
+class QueryManipulation:
     def __init__(self, query):
-        self.query = query
-        self.value = None
+        self._query = query
+        self._values = []
 
     def __call__(self, widget):
-        self.value = self.query(widget)
+        self._values.append(self._query(widget))
+
+    @property
+    def value(self):
+        return self.values[0] if self.values else None
+
+    @property
+    def values(self):
+        return self._values
 
 
 class WidgetDriver:
@@ -88,9 +98,9 @@ class WidgetDriver:
     def manipulate(self, description, manipulation):
         self.check(WidgetManipulatorProbe(self.selector, manipulation, description))
 
-    def query(self, description, query):
-        manipulation = SingleQueryManipulation(query)
-        self.manipulate("query {0}".format(description), manipulation)
+    def query(self, description, widget_query):
+        manipulation = QueryManipulation(widget_query)
+        self.manipulate("query {0}".format(description), widget_query)
         return manipulation.value
 
     def widget_center(self):
@@ -223,10 +233,6 @@ class ComboBoxDriver(AbstractEditDriver):
         self.has(properties.current_text(), wrap_matcher(matching))
 
 
-def _right_edge_of(rect):
-    return QPoint(rect.right(), rect.center().y())
-
-
 class DateTimeEditDriver(WidgetDriver):
     CALENDAR_DISPLAY_DELAY = 100
 
@@ -245,7 +251,7 @@ class DateTimeEditDriver(WidgetDriver):
         self._calendar().select_date(year, month, day)
 
     def _popup_calendar(self):
-        self.perform(gestures.mouse_click_at(_right_edge_of(self.widget_bounds())))
+        self.perform(gestures.mouse_click_at(rect.center_right(self.widget_bounds())))
 
     def _calendar(self):
         calendar = self.query("calendar widget", lambda date_edit: date_edit.calendarWidget())
@@ -302,16 +308,13 @@ class QCalendarDriver(WidgetDriver):
     def _find_day(self, day):
         class FindDayInCalendar:
             def __call__(self, table):
-                def day_at(row, col):
-                    return str(table.model().data(table.model().index(row, col)))
-
                 def find_position_of_day_in_calendar(which_day, from_row=0, from_col=0):
                     row = from_row
                     col = from_col
 
                     while row < 7:
                         while col < 7:
-                            if str(which_day) == day_at(row, col):
+                            if str(which_day) == str(table.cell_text(row, col)):
                                 return row, col
                             col += 1
                         row, col = row + 1, 0
@@ -619,14 +622,16 @@ class QMessageBoxDriver(WidgetDriver):
 
 
 class TableViewDriver(WidgetDriver):
+    def manipulate(self, description, manipulation):
+        super().manipulate(description, TableManipulation(manipulation))
+
+    def is_(self, criteria):
+        super().is_(TableMatcher(criteria))
+
     def has_headers(self, matching):
         class WithMatchingHeaders(BaseMatcher):
-            @staticmethod
-            def _headers(table):
-                return [header_text(table, column) for column in range(column_count(table))]
-
             def _matches(self, table):
-                return matching.matches(self._headers(table))
+                return matching.matches(table.headers())
 
             def describe_to(self, description):
                 description.append_text("with headers ")
@@ -634,20 +639,16 @@ class TableViewDriver(WidgetDriver):
 
             def describe_mismatch(self, table, mismatch_description):
                 mismatch_description.append_text("headers ")
-                matching.describe_mismatch(self._headers(table), mismatch_description)
+                matching.describe_mismatch(table.headers(), mismatch_description)
 
         self.is_(WithMatchingHeaders())
 
     def has_row(self, matching):
         class WithMatchingRow(BaseMatcher):
-            @staticmethod
-            def _cells_of(table, row):
-                return [cell_text(table, row, column) for column in range(column_count(table))]
-
             def _matches(self, table):
-                for row in range(row_count(table)):
-                    if matching.matches(self._cells_of(table, row)):
-                        self.index = visual_row(table, row)
+                for row in range(table.row_count()):
+                    if matching.matches(table.cells(row)):
+                        self.index = row
                         return True
                 return False
 
@@ -665,19 +666,8 @@ class TableViewDriver(WidgetDriver):
 
     def contains_rows(self, matching):
         class WithMatchingRows(BaseMatcher):
-            @staticmethod
-            def _cells_in(table, row):
-                return [cell_text(table, row, column) for column in range(column_count(table))]
-
-            @staticmethod
-            def _rows_in(table):
-                rows = []
-                for row in range(row_count(table)):
-                    rows.append(WithMatchingRows._cells_in(table, row))
-                return rows
-
             def _matches(self, table):
-                return matching.matches(self._rows_in(table))
+                return matching.matches(table.all_cells())
 
             def describe_to(self, description):
                 description.append_text("with rows ")
@@ -685,32 +675,20 @@ class TableViewDriver(WidgetDriver):
 
             def describe_mismatch(self, table, mismatch_description):
                 mismatch_description.append_text("rows ")
-                matching.describe_mismatch(self._rows_in(table), mismatch_description)
+                matching.describe_mismatch(table.all_cells(), mismatch_description)
 
         self.is_(WithMatchingRows())
 
     def scroll_cell_to_visible(self, row, column):
-        class ScrollCellToVisible:
-            def __call__(self, table):
-                logical_row, logical_column = logical_cell(table, row, column)
-                table.scrollTo(table.indexAt(QPoint(table.columnViewportPosition(logical_column),
-                                                    table.rowViewportPosition(logical_row))))
+        def scroll_cell_to_visible(table):
+            table.scroll_to(row, column)
 
-        scroll_cell_to_visible = ScrollCellToVisible()
         self.manipulate("scroll cell ({0}, {1}) into view".format(row, column), scroll_cell_to_visible)
 
     def _click_at_cell_center(self, row, column):
         class CalculateCellPosition:
-            @staticmethod
-            def center_of_cell(table):
-                logical_row, logical_column = logical_cell(table, row, column)
-                row_offset = table.horizontalHeader().height() + table.rowViewportPosition(logical_row)
-                column_offset = table.verticalHeader().width() + table.columnViewportPosition(logical_column)
-                return QPoint(column_offset + table.columnWidth(column) / 2,
-                              row_offset + table.rowHeight(row) / 2)
-
             def __call__(self, table):
-                self.center = table.mapToGlobal(self.center_of_cell(table))
+                self.center = table.cell_center(row, column)
 
         calculate_position = CalculateCellPosition()
         self.manipulate("calculate cell ({0}, {1}) center position".format(row, column), calculate_position)
@@ -755,15 +733,15 @@ class TableViewDriver(WidgetDriver):
                     self._widget_in_cell = None
                     return
 
-                table = self._table_selector.widget()
-                self._widget_in_cell = widget_at(table, row, column)
+                widget = self._table_selector.widget()
+                self._widget_in_cell = Table(widget).widget_at(row, column)
 
         return WidgetDriver(WidgetInCell(self.selector), self.prober, self.gesture_performer)
 
     def has_row_count(self, matching):
         class WithMatchingRowCount(BaseMatcher):
             def _matches(self, table):
-                return matching.matches(row_count(table))
+                return matching.matches(table.row_count())
 
             def describe_to(self, description):
                 description.append_text("with row count ")
@@ -771,124 +749,41 @@ class TableViewDriver(WidgetDriver):
 
             def describe_mismatch(self, table, mismatch_description):
                 mismatch_description.append_text("row count ")
-                matching.describe_mismatch(row_count(table), mismatch_description)
+                matching.describe_mismatch(table.row_count(), mismatch_description)
 
         self.is_(WithMatchingRowCount())
 
+    def has_selected_row(self, matching):
+        class WithMatchingSelectedRow(BaseMatcher):
+            def _selected_row(self, table):
+                return table.cells(table.selected_row())
+
+            def _matches(self, table):
+                return matching.matches(self._selected_row(table))
+
+            def describe_to(self, description):
+                description.append_text('with selected row ')
+                matching.describe_to(description)
+
+            def describe_mismatch(self, table, mismatch_description):
+                mismatch_description.append_text('selected row was ')
+                mismatch_description.append_description_of(self._selected_row(table))
+
+        self.is_(WithMatchingSelectedRow())
+
     def move_row(self, from_position, to_position):
-        def move_row_to_new_position(table):
-            table.verticalHeader().moveSection(logical_row(table, from_position),
-                                               logical_row(table, to_position))
+        class CalculateHeaderBounds:
+            def __init__(self, row):
+                self.row = row
 
-        # We'd like to use gestures but drag and drop is not supported by our Robot
-        # so we have to use a manipulation
-        self.manipulate("move row {0} to position {1}".format(from_position, to_position), move_row_to_new_position)
+            def __call__(self, table):
+                self.bounds = table.vertical_header_bounds(self.row)
 
+        from_header = CalculateHeaderBounds(from_position)
+        self.manipulate("calculate bounds of header row {0}".format(from_position), from_header)
+        to_header = CalculateHeaderBounds(to_position)
+        self.manipulate("calculate bounds of header row {0}".format(to_position), to_header)
 
-class TableWidgetDriver(TableViewDriver):
-    def has_header_items(self, matching):
-        class WithMatchingHeaders(BaseMatcher):
-            @staticmethod
-            def _header_items(table):
-                return [table.horizontalHeaderItem(logical_column(table, column))
-                        for column in range(table.columnCount())]
-
-            def _matches(self, table):
-                return matching.matches(self._header_items(table))
-
-            def describe_to(self, description):
-                description.append_text("with header items ")
-                matching.describe_to(description)
-
-            def describe_mismatch(self, table, mismatch_description):
-                mismatch_description.append_text("header items ")
-                matching.describe_mismatch(self._header_items(table), mismatch_description)
-
-        self.is_(WithMatchingHeaders())
-
-    def hasRowItems(self, matching):
-        class WithMatchingRow(BaseMatcher):
-            @staticmethod
-            def _cell_items(table, row):
-                return [table.item(row, column) for column in range(table.columnCount())]
-
-            def _matches(self, table):
-                for row in range(table.rowCount()):
-                    if matching.matches(self._cell_items(table, row)):
-                        self.index = table.visualRow(row)
-                        return True
-                return False
-
-            def describe_to(self, description):
-                description.append_text("containing row items ")
-                matching.describe_to(description)
-
-            def describe_mismatch(self, table, mismatch_description):
-                mismatch_description.append_text("contained no items ")
-                matching.describe_to(mismatch_description)
-
-        with_matching_row = WithMatchingRow()
-        self.is_(with_matching_row)
-        return with_matching_row.index
-
-    def contains_row_items(self, matching):
-        class WithMatchingRowItems(BaseMatcher):
-            @staticmethod
-            def _cellItems(table, row):
-                return [table.item(row, column) for column in range(table.columnCount())]
-
-            @staticmethod
-            def _rowsItems(table):
-                rows = []
-                for row in range(table.rowCount()):
-                    rows.append(WithMatchingRowItems._cellItems(table, row))
-                return rows
-
-            def _matches(self, table):
-                return matching.matches(self._rowsItems(table))
-
-            def describe_to(self, description):
-                description.append_text("with row items ")
-                matching.describe_to(description)
-
-            def describe_mismatch(self, table, mismatch_description):
-                mismatch_description.append_text("row items ")
-                matching.describe_mismatch(self._rowsItems(table), mismatch_description)
-
-        self.is_(WithMatchingRowItems())
-
-
-def logical_column(table, visual_column):
-    return table.horizontalHeader().logicalIndex(visual_column)
-
-
-def logical_row(table, visual_row):
-    return table.verticalHeader().logicalIndex(visual_row)
-
-
-def logical_cell(table, visual_row, visual_column):
-    return logical_row(table, visual_row), logical_column(table, visual_column)
-
-
-def cell_text(table, row, column):
-    return table.model().data(table.model().index(row, column), Qt.DisplayRole)
-
-
-def header_text(table, column):
-    return table.model().headerData(column, Qt.Horizontal, Qt.DisplayRole)
-
-
-def column_count(table):
-    return table.model().columnCount()
-
-
-def row_count(table):
-    return table.model().rowCount()
-
-
-def widget_at(table, row, column):
-    return table.indexWidget(table.model().index(row, column))
-
-
-def visual_row(table, logical_row):
-    return table.verticalHeader().visualIndex(logical_row)
+        drop_target = rect.bottom_center(to_header.bounds) if (from_position < to_position) \
+            else rect.top_center(to_header.bounds)
+        self.perform(gestures.mouse_drag(from_header.bounds.center(), drop_target))
