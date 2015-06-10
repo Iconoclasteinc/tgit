@@ -163,6 +163,7 @@ def test_selected_row_follows_reorders(album, driver):
     # Give table some time to draw its content
     driver.pause(250)
     driver.move_track('Choices', 2)
+    driver.pause(250)
     driver.has_selected_track('Choices')
 
 

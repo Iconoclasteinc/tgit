@@ -18,8 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from enum import Enum
 
-from PyQt5.QtCore import Qt, pyqtSignal, QPoint
-from PyQt5.QtGui import QPalette, QColor
+from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QObject, QEvent
+from PyQt5.QtGui import QPalette, QColor, QIcon
 from PyQt5.QtWidgets import QWidget, QTableView, QHeaderView, QFrame, QAction, QMenu, QTableWidget, QTableWidgetItem
 
 from tgit.album import Album, AlbumListener
@@ -60,24 +60,22 @@ STYLE_SHEET = """
             }
 
             QHeaderView::section:vertical {
-                padding: 4px 7px;
+                padding: 4px 0px;
                 border-bottom: 1px solid #F7C3B7;
-                border-right: 1px solid #F7C3B7;
                 border-left: none;
                 border-top: none;
             }
 
             QTableCornerButton::section:vertical {
-                background-color: white;
+                background-color: transparent;
                 border-top: 1px solid #F7C3B7;
                 border-bottom: 1px solid #F7C3B7;
-                border-right: 1px solid  #F2F2F2;
             }
         """
 
 LIGHT_GRAY = QColor.fromRgb(0xDDDDDD)
 HEADERS = ('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
-COLUMNS_WIDTHS = [345, 255, 255, 85, 65]
+COLUMNS_WIDTHS = [345, 250, 255, 85, 65]
 
 
 def make_album_composition_page(dialogs, player, album, *, on_remove_track, on_play_track, on_move_track):
@@ -119,6 +117,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         layout.addWidget(self.make_header())
         self._table = self.make_track_table()
         self._context_menu = self._make_context_menu(self._table)
+        self._cursor_filter = self._enable_drag_and_drop_cursor(self._table)
         layout.addWidget(self._make_table_frame(self._table))
         self.setLayout(layout)
 
@@ -155,9 +154,12 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         table.verticalHeader().setSectionsMovable(True)
         table.verticalHeader().sectionMoved.connect(self._signal_move_track)
         table.verticalHeader().sectionMoved.connect(lambda _, from_, to: self._select_row(to))
+        table.verticalHeader().setMinimumWidth(24)
+
         # We don't want the menu to block so we can't use the ActionsContextMenu policy
         table.setContextMenuPolicy(Qt.CustomContextMenu)
         table.customContextMenuRequested.connect(self._open_context_menu)
+
         return table
 
     def _make_context_menu(self, table):
@@ -178,6 +180,12 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         table.addAction(self._play_action)
 
         return context_menu
+
+    def _enable_drag_and_drop_cursor(self, table):
+        table.verticalHeader().setMouseTracking(True)
+        cursor_filter = DragAndDropCursor(table)
+        table.verticalHeader().viewport().installEventFilter(cursor_filter)
+        return cursor_filter
 
     def _make_table_frame(self, table):
         frame = QFrame()
@@ -247,6 +255,9 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     def _insert_row(self, at_index, track):
         self._tracks.insert(at_index, track)
         self._table.insertRow(at_index)
+        item = QTableWidgetItem()
+        item.setIcon(QIcon(":/images/icon-drag.gif"))
+        self._table.setVerticalHeaderItem(at_index, item)
         self._update_row(at_index)
         self.subscribe(track.metadata_changed, lambda state: self._update_track(track))
 
@@ -283,3 +294,37 @@ class Columns(Enum):
         item = QTableWidgetItem(self._value(track))
         item.setTextAlignment(self._alignment)
         return item
+
+
+class DragAndDropCursor(QObject):
+    REGULAR_CURSOR = Qt.ArrowCursor
+    DRAGGABLE_CURSOR = Qt.OpenHandCursor
+    DRAGGING_CURSOR = Qt.ClosedHandCursor
+
+    _mouse_pressed = False
+
+    def __init__(self, table):
+        super().__init__()
+        self._table = table
+
+    def _header_height(self):
+        return sum(map(self._table.rowHeight, range(self._table.rowCount())))
+
+    def _within_bounds(self, pos):
+        return 0 < pos.y() <= self._header_height()
+
+    def eventFilter(self, target, event):
+        if event.type() == QEvent.Leave:
+            self._table.setCursor(self.REGULAR_CURSOR)
+        if event.type() == QEvent.MouseButtonPress:
+            self._mouse_pressed = True
+            self._table.setCursor(self.DRAGGING_CURSOR)
+        if event.type() == QEvent.MouseButtonRelease:
+            self._mouse_pressed = False
+            self._table.setCursor(self.DRAGGABLE_CURSOR if self._within_bounds(event.pos()) else self.REGULAR_CURSOR)
+        if event.type() == QEvent.MouseMove:
+            self._table.setCursor(self.DRAGGING_CURSOR if self._mouse_pressed
+                                  else self.DRAGGABLE_CURSOR if self._within_bounds(event.pos())
+                                  else self.REGULAR_CURSOR)
+
+        return super().eventFilter(target, event)

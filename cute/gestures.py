@@ -14,6 +14,7 @@ SUPER_FAST_TYPING_SPEED = 960  # in wpm
 
 MOUSE_CLICK_DELAY = 10  # in ms
 MOUSE_DOUBLE_CLICK_DELAY = 50  # in ms
+MOUSE_DRAG_DELAY = 100
 MIN_TIME_TO_AVOID_DOUBLE_CLICK = 500  # in ms
 
 LEFT_BUTTON = 'left'
@@ -122,7 +123,13 @@ def mouse_multi_click_at(pos, button=LEFT_BUTTON):
 
 
 def mouse_drag(from_pos, to_pos):
-    return sequence(mouse_move(from_pos), mouse_press(), mouse_move(to_pos), mouse_release())
+    return sequence(mouse_move(from_pos),
+                    pause(MOUSE_DRAG_DELAY),
+                    mouse_press(),
+                    pause(MOUSE_DRAG_DELAY),
+                    mouse_move(to_pos),
+                    pause(MOUSE_DRAG_DELAY),
+                    mouse_release())
 
 
 def select_all():
