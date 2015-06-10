@@ -94,7 +94,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     move_track = pyqtSignal(Track, int)
     add_tracks = pyqtSignal()
 
-    _track_currently_playing = None
+    _playing_track = None
 
     def __init__(self, album, player):
         super().__init__()
@@ -103,8 +103,8 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
         self.subscribe(album.track_inserted, self._insert_row)
         self.subscribe(album.track_removed, self._remove_row)
-        self.subscribe(player.playing, lambda track: self._mark_playing_track(track))
-        self.subscribe(player.stopped, lambda track: self._mark_playing_track(None))
+        self.subscribe(player.playing, lambda track: self._update_playing_track(track))
+        self.subscribe(player.stopped, lambda track: self._update_playing_track(None))
         # todo when we have proper signals on album, we can get rid of that
         album.addAlbumListener(self)
 
@@ -202,8 +202,9 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
         return frame
 
-    def _mark_playing_track(self, track):
-        self._track_currently_playing = track
+    def _update_playing_track(self, playing_track):
+        self._playing_track = playing_track
+        self._update_all_rows()
 
     def _select_row(self, row):
         self._table.selectRow(row)
@@ -213,8 +214,11 @@ class AlbumCompositionPage(QWidget, AlbumListener):
             self._update_context_menu()
             self._context_menu.popup(self._map_to_global(pos))
 
+    def _is_playing(self, track):
+        return self._playing_track == track
+
     def _update_context_menu(self):
-        play_action_text = "Stop" if (self.selected_track == self._track_currently_playing) else "Play"
+        play_action_text = "Stop" if self._is_playing(self.selected_track) else "Play"
         self._play_action.setText('{0} "{1}"'.format(self.tr(play_action_text), self.selected_track.track_title))
         self._play_action.setDisabled(self.selected_track.type == Album.Type.FLAC)
 
@@ -248,16 +252,13 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     def _signal_move_track(self, _, from_, to):
         self.move_track.emit(self._tracks[from_], to)
 
-    def _update_all_rows(self, _):
+    def _update_all_rows(self, _=None):
         for index in range(len(self._tracks)):
-            self._update_row(row=index)
+            self._update_row(index=index)
 
     def _insert_row(self, at_index, track):
         self._tracks.insert(at_index, track)
         self._table.insertRow(at_index)
-        item = QTableWidgetItem()
-        item.setIcon(QIcon(":/images/icon-drag.gif"))
-        self._table.setVerticalHeaderItem(at_index, item)
         self._update_row(at_index)
         self.subscribe(track.metadata_changed, lambda state: self._update_track(track))
 
@@ -267,11 +268,17 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         self._tracks.pop(at_index)
 
     def _update_track(self, track):
-        self._update_row(row=self._tracks.index(track))
+        self._update_row(index=self._tracks.index(track))
 
-    def _update_row(self, row):
+    def _update_row(self, index):
+        track = self._tracks[index]
+        header_item = QTableWidgetItem()
+        header_item.setIcon(QIcon(":/images/volume-up.png") if self._is_playing(track)
+                            else QIcon(":/images/drag-handle.gif"))
+        self._table.setVerticalHeaderItem(index, header_item)
+
         for index, column in enumerate(Columns):
-            self._table.setItem(row, index, column.item(self._tracks[row]))
+            self._table.setItem(index, index, column.item(track))
 
     albumStateChanged = _update_all_rows
 
