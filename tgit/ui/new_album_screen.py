@@ -24,16 +24,18 @@ from tgit.album import Album
 from tgit.ui.helpers import ui_file
 
 
-def make_new_album_screen(of_type, on_create_album, on_select_album_location):
+def make_new_album_screen(of_type, on_create_album, on_select_album_location, on_select_track_location):
     page = NewAlbumScreen(of_type)
     page.create_album.connect(on_create_album)
     page.select_album_location.connect(lambda: on_select_album_location(page.change_album_location))
+    page.select_track_location.connect(lambda: on_select_track_location(page.change_track_location))
     return page
 
 
 class AlbumCreationProperties:
-    def __init__(self, type_, album_location):
+    def __init__(self, type_, album_location, track_location=None):
         self.album_location = album_location
+        self.track_location = track_location
         self.type = type_
 
 
@@ -49,11 +51,15 @@ class NewAlbumScreen(QFrame):
         ui_file.load(":/ui/new_album_screen.ui", self)
 
         self.continue_button.clicked.connect(self.on_create_album)
-        self.browse_album_file_location_button.clicked.connect(self.select_album_location.emit)
+        self.browse_album_location_button.clicked.connect(self.select_album_location.emit)
+        self.browse_track_location_button.clicked.connect(self.select_track_location.emit)
 
     def on_create_album(self):
         self.create_album.emit(
-            AlbumCreationProperties(type_=self.of_type, album_location=self.album_file_location.text()))
+            AlbumCreationProperties(self.of_type, self.album_location.text(), self.track_location.text()))
 
     def change_album_location(self, destination):
-        self.album_file_location.setText(destination)
+        self.album_location.setText(destination)
+
+    def change_track_location(self, destination):
+        self.track_location.setText(destination)

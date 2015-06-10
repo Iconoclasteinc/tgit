@@ -24,7 +24,7 @@ from tgit import album_director as director
 from tgit.ui import commands as ui_commands
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
-from tgit.ui.album_selection_dialog import AlbumSelectionDialog
+from tgit.ui.reference_track_selection_dialog import ReferenceTrackSelectionDialog
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.new_album_screen import make_new_album_screen
 from tgit.ui.performer_dialog import PerformerDialog
@@ -141,12 +141,12 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
     def create_new_album_screen(of_type):
         return make_new_album_screen(of_type,
                                      on_create_album=director.create_album_into(portfolio),
-                                     on_select_album_location=dialogs.select_album_destination())
+                                     on_select_album_location=dialogs.select_album_destination(),
+                                     on_select_track_location=dialogs.select_reference_track())
 
     def create_welcome_screen(on_create_new_album):
         return make_welcome_screen(on_create_new_album=on_create_new_album,
-                                   on_load_album=ui_commands.load_album_in(portfolio, dialogs),
-                                   on_import_album=ui_commands.import_album_in(portfolio, dialogs))
+                                   on_load_album=ui_commands.load_album_in(portfolio, dialogs))
 
     def create_composition_page(album):
         return make_album_composition_page(dialogs, player, album,

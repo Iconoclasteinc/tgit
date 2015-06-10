@@ -4,7 +4,7 @@ from hamcrest import assert_that, same_instance
 import pytest
 from cute.matchers import named
 from cute.widgets import window
-from test.drivers.save_album_as_dialog_driver import SaveAlbumAsDialogDriver
+from test.drivers.select_album_destination_dialog_driver import SelectAlbumDestinationDialogDriver
 
 from test.util import builders as make
 from tgit import album_director
@@ -18,16 +18,20 @@ def dialogs(main_window):
     return dialogs
 
 
-def test_creates_a_single_import_dialog_for_a_given_portfolio(dialogs):
-    album_portfolio = make.album_portfolio()
-    import_dialog = dialogs.import_album(album_portfolio)
+def test_creates_a_single_import_dialog_for_a_given_portfolio(dialogs, prober, automaton):
+    dialogs.select_reference_track()(lambda: None)
+    driver = SelectAlbumDestinationDialogDriver(window(QFileDialog, named("import_album_from_track_dialog")), prober,
+                                                automaton)
+    driver.is_showing_on_screen()
 
-    assert_that(dialogs.import_album(album_portfolio), same_instance(import_dialog))
+    dialogs.select_reference_track()(lambda: None)
+    driver.is_showing_on_screen()
 
 
-def test_creates_a_single_save_as_dialog_for_a_given_portfolio(dialogs, prober, automaton):
+def test_creates_a_single_album_destination_selection_dialog_for_a_given_portfolio(dialogs, prober, automaton):
     dialogs.select_album_destination()(lambda: None)
-    driver = SaveAlbumAsDialogDriver(window(QFileDialog, named("save_as_dialog")), prober, automaton)
+    driver = SelectAlbumDestinationDialogDriver(window(QFileDialog, named("select_album_destination_dialog")), prober,
+                                                automaton)
     driver.is_showing_on_screen()
 
     dialogs.select_album_destination()(lambda: None)

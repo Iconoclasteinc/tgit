@@ -10,9 +10,6 @@ def welcome_screen(parent):
 
 
 class WelcomeScreenDriver(ScreenDriver):
-    def import_album(self):
-        self.button(named("import_album_button")).click()
-
     def new_album(self, of_type):
         self.button(named("new_{0}_album_button".format(of_type))).click()
 

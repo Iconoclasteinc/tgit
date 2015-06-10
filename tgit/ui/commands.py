@@ -20,13 +20,6 @@
 from tgit.ui.message_box import close_album_confirmation_box
 
 
-def import_album_in(portfolio, dialogs):
-    def import_album():
-        dialogs.import_album(portfolio).open()
-
-    return import_album
-
-
 def load_album_in(portfolio, dialogs):
     def load_album():
         dialogs.load_album_file(portfolio).open()

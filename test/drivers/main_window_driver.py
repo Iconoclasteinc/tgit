@@ -2,7 +2,7 @@
 from cute import gestures
 from cute.widgets import WidgetDriver
 from .album_screen_driver import album_screen
-from .import_album_from_track_dialog_driver import import_album_from_track_dialog
+from .reference_track_selection_dialog_driver import reference_track_selection_dialog
 from .load_album_dialog_driver import load_album_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
@@ -16,9 +16,9 @@ class MainWindowDriver(WidgetDriver):
     def __init__(self, selector, prober, gesture_performer):
         super().__init__(selector, prober, gesture_performer)
 
-    def import_album(self, path, of_type):
-        welcome_screen(self).import_album()
-        import_album_from_track_dialog(self).select_track(path, of_type=of_type)
+    def import_album(self, of_type, track_path, album_path):
+        welcome_screen(self).new_album(of_type)
+        new_album_screen(self).import_album(album_path, track_path)
         album_screen(self).is_showing_on_screen()
 
     def create_album(self, of_type, filename):

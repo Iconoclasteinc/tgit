@@ -38,14 +38,6 @@ def test_signals_when_new_flac_album_button_clicked(screen, driver):
     driver.check(new_album_signal)
 
 
-def test_signals_when_import_album_button_clicked(screen, driver):
-    import_album_signal = ValueMatcherProbe("import album")
-    screen.import_album.connect(import_album_signal.received)
-
-    driver.import_album()
-    driver.check(import_album_signal)
-
-
 def test_signals_when_load_album_button_clicked(screen, driver):
     load_album_signal = ValueMatcherProbe("load album")
     screen.load.connect(load_album_signal.received)

@@ -16,29 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtCore import QDir
+
 from PyQt5.QtWidgets import QFileDialog
 
+from cute.matchers import named
+from cute.widgets import FileDialogDriver, window
 
-class SelectAlbumDestinationDialog(QFileDialog):
-    save_as = pyqtSignal(str)
 
-    def __init__(self, parent, native):
-        super().__init__(parent)
-        self.setObjectName("save_as_dialog")
-        self.setAcceptMode(QFileDialog.AcceptSave)
-        self.setDirectory(QDir.homePath())
-        self.setFileMode(QFileDialog.AnyFile)
-        self.setOption(QFileDialog.DontUseNativeDialog, not native)
-        self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT Album files")))
-        self.setDefaultSuffix("tgit")
+def select_album_destination_dialog(parent):
+    return SelectAlbumDestinationDialogDriver(window(QFileDialog, named("select_album_destination_dialog")),
+                                              parent.prober, parent.gesture_performer)
 
-    def display(self, on_save_as):
-        self.fileSelected.connect(on_save_as)
-        self.open()
 
-    def done(self, result):
-        self.fileSelected.disconnect()
-        super().done(result)
+class SelectAlbumDestinationDialogDriver(FileDialogDriver):
+    def save_as(self, filename, in_directory):
+        self.show_hidden_files()
+        self.navigate_to_dir(in_directory)
+        self.enter_manually(filename)
+        self.has_accept_button_text("&Save")
+        self.accept()

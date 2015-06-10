@@ -27,12 +27,23 @@ def new_album_screen(parent):
 
 
 class NewAlbumScreenDriver(ScreenDriver):
-    def create_empty_album(self, location):
-        self.lineEdit(named("album_file_location")).change_text(location)
+    def create_empty_album(self, album_path):
+        self.lineEdit(named("album_location")).change_text(album_path)
+        self.button(named("continue_button")).click()
+
+    def import_album(self, album_path, track_path):
+        self.lineEdit(named("album_location")).change_text(album_path)
+        self.lineEdit(named("track_location")).change_text(track_path)
         self.button(named("continue_button")).click()
 
     def select_album(self):
-        self.button(named("browse_album_file_location_button")).click()
+        self.button(named("browse_album_location_button")).click()
+
+    def select_track(self):
+        self.button(named("browse_track_location_button")).click()
 
     def has_album_location(self, destination):
-        self.lineEdit(named("album_file_location")).has_text(destination)
+        self.lineEdit(named("album_location")).has_text(destination)
+
+    def has_track_location(self, destination):
+        self.lineEdit(named("track_location")).has_text(destination)

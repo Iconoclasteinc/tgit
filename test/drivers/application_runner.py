@@ -46,8 +46,9 @@ class ApplicationRunner:
     def add_tracks_to_album(self, *tracks):
         self.tagger.add_tracks_to_album(*tracks)
 
-    def import_album(self, track, of_type="mp3"):
-        self.tagger.import_album(track, of_type=of_type)
+    def import_album(self, track, of_type="mp3", save_as="album.tgit"):
+        self.tagger.import_album(of_type=of_type, track_path=track,
+                                 album_path=self._save_album_directory.join(save_as).strpath)
 
     def shows_album_content(self, *tracks):
         self.tagger.shows_album_contains(*tracks)

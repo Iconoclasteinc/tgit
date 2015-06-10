@@ -136,51 +136,6 @@ QLabel {
          <property name="spacing">
           <number>16</number>
          </property>
-         <item row="1" column="1">
-          <widget class="QLabel" name="new_release_label">
-           <property name="styleSheet">
-            <string notr="true">QLabel {
-	font-size: 16px;
-}</string>
-           </property>
-           <property name="text">
-            <string>Create a new release*:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="import_from_track_label">
-           <property name="styleSheet">
-            <string notr="true">QLabel {
-	font-size: 16px;
-}
-</string>
-           </property>
-           <property name="text">
-            <string>Start from a reference track:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Load a release from disk:</string>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="2">
           <widget class="QWidget" name="new_album_button_container" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout">
@@ -247,61 +202,6 @@ QLabel {
            </layout>
           </widget>
          </item>
-         <item row="3" column="2">
-          <widget class="QWidget" name="import_album_button_container" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="import_album_button">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
-	background-color:#F25C0A;
-	border-color: #F25C0A;
-}
-
-QPushButton:hover {
-	background-color: #D95109;
-	border-color: #D95109;
-}</string>
-              </property>
-              <property name="text">
-               <string>CHOOSE</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
-         </item>
          <item row="0" column="2">
           <widget class="QWidget" name="load_album_button_container" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -345,6 +245,38 @@ QPushButton:hover {
             </item>
            </layout>
           </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="new_release_label">
+           <property name="styleSheet">
+            <string notr="true">QLabel {
+	font-size: 16px;
+}</string>
+           </property>
+           <property name="text">
+            <string>Create a new release*:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="load_album_label">
+           <property name="text">
+            <string>Load a release from disk:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>

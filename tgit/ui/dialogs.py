@@ -17,10 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.ui.album_selection_dialog import make_album_selection_dialog
+from tgit.ui.reference_track_selection_dialog import make_reference_track_selection_dialog
 from tgit.ui.export_as_dialog import make_export_as_dialog
 from tgit.ui.picture_selection_dialog import make_picture_selection_dialog
-from tgit.ui.save_as_dialog import SelectAlbumDestinationDialog
+from tgit.ui.select_album_destination_dialog import SelectAlbumDestinationDialog
 from tgit.ui.track_selection_dialog import make_track_selection_dialog
 from tgit.ui.load_dialog import make_load_album_dialog
 
@@ -28,7 +28,7 @@ from tgit.ui.load_dialog import make_load_album_dialog
 class Dialogs:
     _pictures = None
     _tracks = None
-    _import = None
+    _select_reference_track = None
     _export = None
     _select_album_destination = None
     _load = None
@@ -53,12 +53,11 @@ class Dialogs:
 
         return self._tracks
 
-    def _select_album_dialog(self, album_portfolio):
-        if not self._import:
-            self._import = make_album_selection_dialog(self.parent, native=self._native,
-                                                       on_select_album=self._commands.import_album_to(album_portfolio))
+    def _select_reference_track_dialog(self):
+        if not self._select_reference_track:
+            self._select_reference_track = make_reference_track_selection_dialog(self.parent, native=self._native)
 
-        return self._import
+        return self._select_reference_track
 
     def _export_as_dialog(self, album):
         if not self._export:
@@ -95,8 +94,8 @@ class Dialogs:
         dialog.filter_tracks(album.type)
         return dialog
 
-    def import_album(self, album_portfolio):
-        return self._select_album_dialog(album_portfolio)
+    def select_reference_track(self):
+        return self._select_reference_track_dialog().display
 
     def export(self, album):
         return self._export_as_dialog(album)

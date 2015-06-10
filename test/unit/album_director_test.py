@@ -39,9 +39,10 @@ def mp3(tmpdir):
 
 
 def test_adds_new_album_to_porfolio(tmpdir):
-    destination = tmpdir.join("album.tgit").strpath
+    album_destination = tmpdir.join("album.tgit").strpath
     portfolio = AlbumPortfolio()
-    director.create_album_into(portfolio)(AlbumCreationProperties(type_=Album.Type.MP3, album_location=destination))
+    director.create_album_into(portfolio)(
+        AlbumCreationProperties(type_=Album.Type.MP3, album_location=album_destination))
     assert_that(portfolio, not empty())
 
 
@@ -126,7 +127,7 @@ def test_load_album_from_project_file():
     assert_that(album.primary_style, equal_to("Style"), "primary style")
     assert_that(album.images, contains(
         Image("image/jpeg", fs.binary_content_of(resources.path("front-cover.jpg")), Image.FRONT_COVER, "Front Cover")),
-        "attached pictures")
+                "attached pictures")
 
 
 def test_removes_album_from_portfolio():
@@ -152,12 +153,13 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
 
 
 def test_imports_album_from_track(recordings):
-    album_file = recordings.add_mp3(track_title="Smash Smash",
-                                    release_name="Honeycomb", lead_performer="Joel Miller",
-                                    front_cover=('image/jpeg', 'front cover', b'front.jpeg'))
+    track_location = recordings.add_mp3(track_title="Smash Smash",
+                                        release_name="Honeycomb", lead_performer="Joel Miller",
+                                        front_cover=("image/jpeg", "front cover", b"front.jpeg"))
 
     portfolio = AlbumPortfolio()
-    director.import_album_to(portfolio)(album_file)
+    director.create_album_into(portfolio)(
+        AlbumCreationProperties(Album.Type.MP3, resources.path("album.tgit"), track_location=track_location))
     album = portfolio[0]
 
     assert_that(album.release_name, equal_to("Honeycomb"), "imported release name")
