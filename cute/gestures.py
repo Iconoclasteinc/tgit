@@ -124,11 +124,8 @@ def mouse_multi_click_at(pos, button=LEFT_BUTTON):
 
 def mouse_drag(from_pos, to_pos):
     return sequence(mouse_move(from_pos),
-                    pause(MOUSE_DRAG_DELAY),
                     mouse_press(),
-                    pause(MOUSE_DRAG_DELAY),
                     mouse_move(to_pos),
-                    pause(MOUSE_DRAG_DELAY),
                     mouse_release())
 
 

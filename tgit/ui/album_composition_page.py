@@ -41,7 +41,7 @@ STYLE_SHEET = """
             }
 
             QHeaderView {
-                background-color: white;
+                background-color: transparent;
             }
 
             QHeaderView::section {
@@ -74,8 +74,8 @@ STYLE_SHEET = """
         """
 
 LIGHT_GRAY = QColor.fromRgb(0xDDDDDD)
-HEADERS = ('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
-COLUMNS_WIDTHS = [345, 250, 255, 85, 65]
+HEADERS = ('#', 'Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
+COLUMNS_WIDTHS = [30, 320, 245, 255, 85, 65]
 
 
 def make_album_composition_page(dialogs, player, album, *, on_remove_track, on_play_track, on_move_track):
@@ -254,7 +254,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
     def _update_all_rows(self, _=None):
         for index in range(len(self._tracks)):
-            self._update_row(index=index)
+            self._update_row(row_index=index)
 
     def _insert_row(self, at_index, track):
         self._tracks.insert(at_index, track)
@@ -268,17 +268,17 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         self._tracks.pop(at_index)
 
     def _update_track(self, track):
-        self._update_row(index=self._tracks.index(track))
+        self._update_row(row_index=self._tracks.index(track))
 
-    def _update_row(self, index):
-        track = self._tracks[index]
+    def _update_row(self, row_index):
+        track = self._tracks[row_index]
         header_item = QTableWidgetItem()
         header_item.setIcon(QIcon(":/images/volume-up.png") if self._is_playing(track)
                             else QIcon(":/images/drag-handle.gif"))
-        self._table.setVerticalHeaderItem(index, header_item)
+        self._table.setVerticalHeaderItem(row_index, header_item)
 
-        for index, column in enumerate(Columns):
-            self._table.setItem(index, index, column.item(track))
+        for col_index, column in enumerate(Columns):
+            self._table.setItem(row_index, col_index, column.item(track))
 
     albumStateChanged = _update_all_rows
 
@@ -287,6 +287,7 @@ class Columns(Enum):
     __LEFT_ALIGNED__ = Qt.AlignLeft | Qt.AlignVCenter
     __RIGHT_ALIGNED__ = Qt.AlignRight | Qt.AlignVCenter
 
+    track_number = (lambda track: str(track.track_number), __RIGHT_ALIGNED__)
     track_title = (lambda track: track.track_title, __LEFT_ALIGNED__)
     lead_performer = (lambda track: track.lead_performer, __LEFT_ALIGNED__)
     release_name = (lambda track: track.album.release_name, __LEFT_ALIGNED__)

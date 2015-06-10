@@ -38,7 +38,7 @@ def driver(page, prober, automaton):
 
 
 def test_displays_column_headings(driver):
-    driver.shows_column_headers('Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
+    driver.shows_column_headers('#', 'Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
 
 
 def test_displays_track_details_in_columns(album, driver):
@@ -48,7 +48,7 @@ def test_displays_track_details_in_columns(album, driver):
                                bitrate=192000,
                                duration=timedelta(minutes=4, seconds=12).total_seconds()))
 
-    driver.shows_track_details('Chevere!', 'Joel Miller', 'Honeycomb', '192 kbps', '04:12')
+    driver.shows_track_details('1', 'Chevere!', 'Joel Miller', 'Honeycomb', '192 kbps', '04:12')
 
 
 def test_displays_all_tracks_in_rows(album, driver):
@@ -56,7 +56,7 @@ def test_displays_all_tracks_in_rows(album, driver):
     album.add_track(build.track(track_title='Get Lucky'))
 
     driver.has_track_count(2)
-    driver.shows_tracks_in_order(['Give Life Back To Music'], ['Get Lucky'])
+    driver.shows_tracks_in_order(['1', 'Give Life Back To Music'], ['2', 'Get Lucky'])
 
 
 def test_updates_track_list_when_album_metadata_change(album, driver):
@@ -152,19 +152,6 @@ def test_changes_context_menu_option_to_stop_when_selected_track_is_playing(albu
 
     driver.select_track("Choices")
     driver.has_context_menu_item(with_text('Stop "Choices"'))
-
-
-@pytest.mark.xfail(reason="not reliable")
-def test_selected_row_follows_reorders(album, driver):
-    album.add_track(build.track(track_title='Chaconne'))
-    album.add_track(build.track(track_title='Choices'))
-    album.add_track(build.track(track_title='Place St-Henri'))
-
-    # Give table some time to draw its content
-    driver.pause(250)
-    driver.move_track('Choices', 2)
-    driver.pause(250)
-    driver.has_selected_track('Choices')
 
 
 def test_signals_when_add_tracks_button_clicked(page, driver):
