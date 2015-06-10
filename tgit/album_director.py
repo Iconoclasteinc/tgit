@@ -36,10 +36,10 @@ from tgit.track import Track
 from tgit.util import fs
 
 
-def create_album_into(portfolio, of_type=Album.Type.FLAC):
-    def add_album(destination):
+def create_album_into(portfolio):
+    def add_album(creation_properties):
         # todo: find a way to notify the portfolio's listeners of the destination
-        album = Album(of_type=of_type, destination=destination)
+        album = Album(of_type=creation_properties.type, destination=creation_properties.album_location)
         export_as_yaml(album)
         portfolio.add_album(album)
 

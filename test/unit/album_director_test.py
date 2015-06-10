@@ -13,8 +13,10 @@ import pytest
 from test.util import builders as build, resources, doubles, mp3_file
 import tgit
 from tgit import album_director as director, tagging
+from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.metadata import Image
+from tgit.ui.new_album_screen import AlbumCreationProperties
 from tgit.util import fs
 
 NOW = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
@@ -39,14 +41,14 @@ def mp3(tmpdir):
 def test_adds_new_album_to_porfolio(tmpdir):
     destination = tmpdir.join("album.tgit").strpath
     portfolio = AlbumPortfolio()
-    director.create_album_into(portfolio)(destination=destination)
+    director.create_album_into(portfolio)(AlbumCreationProperties(type_=Album.Type.MP3, album_location=destination))
     assert_that(portfolio, not empty())
 
 
 def test_saves_new_album_to_disk(tmpdir):
     destination = tmpdir.join("album.tgit").strpath
     portfolio = AlbumPortfolio()
-    director.create_album_into(portfolio)(destination=destination)
+    director.create_album_into(portfolio)(AlbumCreationProperties(type_=Album.Type.FLAC, album_location=destination))
 
     def read_lines(file):
         content = open(file, "r").read()

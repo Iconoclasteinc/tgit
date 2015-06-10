@@ -3,12 +3,12 @@ from cute import gestures
 from cute.widgets import WidgetDriver
 from .album_screen_driver import album_screen
 from .import_album_from_track_dialog_driver import import_album_from_track_dialog
-from .save_album_as_dialog_driver import save_album_as_dialog
 from .load_album_dialog_driver import load_album_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
-from test.drivers import menu_bar
+from .menu_bar_driver import menu_bar
+from .new_album_screen_driver import new_album_screen
 from .welcome_screen_driver import welcome_screen
 
 
@@ -21,9 +21,9 @@ class MainWindowDriver(WidgetDriver):
         import_album_from_track_dialog(self).select_track(path, of_type=of_type)
         album_screen(self).is_showing_on_screen()
 
-    def create_album(self, of_type, save_as, in_directory):
+    def create_album(self, of_type, filename):
         welcome_screen(self).new_album(of_type)
-        save_album_as_dialog(self).save_as(save_as, in_directory=in_directory)
+        new_album_screen(self).create_empty_album(filename)
         album_screen(self).is_showing_on_screen()
 
     def add_tracks_in_folder(self):

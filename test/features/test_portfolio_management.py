@@ -25,7 +25,7 @@ from tgit.preferences import Preferences
 
 
 def test_closing_an_album(app, recordings):
-    app.new_album(of_type="mp3", save_as="album1")
+    app.new_album(of_type="mp3", save_as="album1.tgit")
 
     track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
@@ -37,7 +37,7 @@ def test_closing_an_album(app, recordings):
 
 
 def test_loading_an_album(app):
-    app.new_album(of_type="mp3", save_as="new_album")
+    app.new_album(of_type="mp3", save_as="new_album.tgit")
 
     app.shows_album_metadata()
     app.change_album_metadata(release_name="Honeycomb")

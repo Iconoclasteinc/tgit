@@ -26,12 +26,12 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.save_album_as_dialog_driver import SaveAlbumAsDialogDriver
-from tgit.ui.save_as_dialog import SaveAsDialog
+from tgit.ui.save_as_dialog import SelectAlbumDestinationDialog
 
 
 @pytest.fixture()
 def dialog(main_window):
-    return SaveAsDialog(main_window, native=False)
+    return SelectAlbumDestinationDialog(main_window, native=False)
 
 
 @pytest.yield_fixture()

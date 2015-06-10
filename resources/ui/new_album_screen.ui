@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>new_album_screen</class>
+ <widget class="QFrame" name="new_album_screen">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>937</width>
+    <height>659</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#new_album_screen {
+    background-color: #484848
+}
+
+#new_album_dialog {
+	padding: 20px;
+	min-width: 500px;
+	max-width: 500px;
+	min-height: 300px;
+	max-height: 300px;
+	background: white url(':/logo.png') no-repeat top left;
+}
+
+#buttons_container QPushButton {
+	background-color: #EC2327;
+	border: 2px solid #EC2327;
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: bold;
+	color: white;
+	padding: 10px 10px 7px 10px;
+}
+
+#buttons_container QPushButton:hover {
+	background-color: #D42023;
+	border-color: #D42023;
+}
+
+#buttons_container QPushButton:pressed {
+	border: 2px solid transparent;
+}
+
+#new_album_info_container QPushButton {
+	background-color: #F25C0A;
+	border: 2px solid #F25C0A;
+	border-radius: 4px;
+	color: white;
+	font-weight: bold;
+	font-size: 10px;
+	padding: 3px 10px;
+}
+
+#new_album_info_container QPushButton:hover,
+#new_album_info_container QPushButton:focus {
+	background-color: #D95109;
+	border-color: #D95109;
+}
+
+#new_album_info_container QPushButton:pressed {
+	border: 2px solid transparent;
+}
+
+QLabel {
+	color: #2D2D25;
+	font-size: 16px;
+}
+
+QLineEdit {
+	background-color: #F9F9F9;
+	border: 1px solid #B1B1B1;
+	color: #222222;
+	min-height: 20px;
+}
+
+QLineEdit:focus {
+	border: 1px solid #F79D6C;
+}
+</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QWidget" name="new_album_dialog" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <property name="topMargin">
+       <number>9</number>
+      </property>
+      <item>
+       <spacer name="verticalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="title">
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	font-size: 28px;
+	font-weight: bold;
+}</string>
+        </property>
+        <property name="text">
+         <string>Create a new release*</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer_7">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QWidget" name="new_album_info_container" native="true">
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="1" column="2">
+          <widget class="QPushButton" name="browse_album_file_location_button">
+           <property name="text">
+            <string>BROWSE ...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="album_file_location"/>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="import_location"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="import_location_label">
+           <property name="text">
+            <string>Import the album metadata from an audio file (optional):</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="album_file_location_label">
+           <property name="text">
+            <string>Please choose the location to save the release:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QPushButton" name="browse_import_location_button">
+           <property name="text">
+            <string>BROWSE ...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="buttons_container" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="continue_button">
+           <property name="text">
+            <string>CONTINUE</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="footnote">
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	font-size: 10px;
+}</string>
+        </property>
+        <property name="text">
+         <string>*as per MusicBrainz terminology</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

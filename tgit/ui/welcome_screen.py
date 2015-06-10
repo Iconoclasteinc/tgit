@@ -25,7 +25,7 @@ from tgit.album import Album
 from tgit.ui.helpers import ui_file
 
 
-def make_welcome_screen(*, on_load_album, on_create_new_album, on_import_album):
+def make_welcome_screen(*, on_create_new_album, on_load_album, on_import_album):
     page = WelcomeScreen()
     page.create_new_album.connect(on_create_new_album)
     page.import_album.connect(on_import_album)

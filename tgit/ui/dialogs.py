@@ -20,7 +20,7 @@
 from tgit.ui.album_selection_dialog import make_album_selection_dialog
 from tgit.ui.export_as_dialog import make_export_as_dialog
 from tgit.ui.picture_selection_dialog import make_picture_selection_dialog
-from tgit.ui.save_as_dialog import make_save_as_dialog
+from tgit.ui.save_as_dialog import SelectAlbumDestinationDialog
 from tgit.ui.track_selection_dialog import make_track_selection_dialog
 from tgit.ui.load_dialog import make_load_album_dialog
 
@@ -30,7 +30,7 @@ class Dialogs:
     _tracks = None
     _import = None
     _export = None
-    _save_as = None
+    _select_album_destination = None
     _load = None
 
     parent = None
@@ -67,12 +67,11 @@ class Dialogs:
 
         return self._export
 
-    def _save_as_dialog(self, album_portfolio, of_type):
-        if not self._save_as:
-            self._save_as = make_save_as_dialog(self.parent, native=self._native,
-                                                on_save_as=self._commands.create_album_into(album_portfolio, of_type))
+    def _select_album_destination_dialog(self):
+        if not self._select_album_destination:
+            self._select_album_destination = SelectAlbumDestinationDialog(self.parent, native=self._native)
 
-        return self._save_as
+        return self._select_album_destination
 
     def _load_dialog(self, album_portfolio):
         if not self._load:
@@ -102,8 +101,8 @@ class Dialogs:
     def export(self, album):
         return self._export_as_dialog(album)
 
-    def save_album_file(self, album_portfolio, of_type):
-        return self._save_as_dialog(album_portfolio, of_type)
+    def select_album_destination(self):
+        return self._select_album_destination_dialog().display
 
     def load_album_file(self, album_portfolio):
         return self._load_dialog(album_portfolio)

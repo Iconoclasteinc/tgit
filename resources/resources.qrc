@@ -22,5 +22,6 @@
      <file>ui/main_window.ui</file>
      <file>ui/album_screen.ui</file>
      <file>ui/album_page.ui</file>
+     <file>ui/new_album_screen.ui</file>
 </qresource>
 </RCC>

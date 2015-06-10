@@ -22,13 +22,7 @@ from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QFileDialog
 
 
-def make_save_as_dialog(parent_window, native=True, *, on_save_as):
-    dialog = SaveAsDialog(parent_window, native)
-    dialog.save_as.connect(on_save_as)
-    return dialog
-
-
-class SaveAsDialog(QFileDialog):
+class SelectAlbumDestinationDialog(QFileDialog):
     save_as = pyqtSignal(str)
 
     def __init__(self, parent, native):
@@ -40,4 +34,11 @@ class SaveAsDialog(QFileDialog):
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
         self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT Album files")))
         self.setDefaultSuffix("tgit")
-        self.fileSelected.connect(lambda selected: self.save_as.emit(os.path.abspath(selected)))
+
+    def display(self, on_save_as):
+        self.fileSelected.connect(on_save_as)
+        self.open()
+
+    def done(self, result):
+        self.fileSelected.disconnect()
+        super().done(result)

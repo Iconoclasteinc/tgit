@@ -421,8 +421,8 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
     """
 
 
-def main_window(portfolio, on_close_album, on_save_album, on_album_created, on_album_removed, on_add_files,
-                on_add_folder, on_export, on_settings, on_display):
+def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_add_folder, on_export, on_settings,
+                     welcome_screen, new_album_screen, album_screen):
     window = MainWindow()
     window.add_files.connect(on_add_files)
     window.add_folder.connect(on_add_folder)
@@ -430,10 +430,22 @@ def main_window(portfolio, on_close_album, on_save_album, on_album_created, on_a
     window.settings.connect(on_settings)
     window.close_album.connect(lambda album: on_close_album(album, window))
     window.save.connect(on_save_album)
-    window.show_screen(on_display())
 
-    portfolio.album_created.subscribe(lambda album: on_album_created(album, window))
-    portfolio.album_removed.subscribe(lambda album: on_album_removed(window))
+    def display_new_album_screen(of_type):
+        window.show_screen(new_album_screen(of_type))
+
+    def display_welcome_screen(*_):
+        window.show_screen(welcome_screen(on_create_new_album=display_new_album_screen))
+        window.disable_album_actions()
+
+    def display_album_screen(album):
+        window.enable_album_actions(album)
+        window.show_screen(album_screen(album))
+
+    portfolio.album_removed.subscribe(display_welcome_screen)
+    portfolio.album_created.subscribe(display_album_screen)
+
+    display_welcome_screen()
 
     return window
 

@@ -20,13 +20,6 @@
 from tgit.ui.message_box import close_album_confirmation_box
 
 
-def create_new_album_in(portfolio, dialogs):
-    def create_new_album(of_type):
-        dialogs.save_album_file(portfolio, of_type).open()
-
-    return create_new_album
-
-
 def import_album_in(portfolio, dialogs):
     def import_album():
         dialogs.import_album(portfolio).open()
@@ -48,22 +41,6 @@ def close_album_and(remove_album):
         confirmation.open()
 
     return close_album
-
-
-def create_album_and(show_album_screen):
-    def album_created(album, window):
-        window.enable_album_actions(album)
-        window.show_screen(show_album_screen(album))
-
-    return album_created
-
-
-def remove_album_and(show_welcome_screen):
-    def album_removed(window):
-        window.show_screen(show_welcome_screen())
-        window.disable_album_actions()
-
-    return album_removed
 
 
 def add_files_to(dialogs):

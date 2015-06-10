@@ -40,8 +40,8 @@ class ApplicationRunner:
         event_loop.process_pending_events()
         self.app.quit()
 
-    def new_album(self, of_type="mp3", save_as="album"):
-        self.tagger.create_album(of_type, save_as, in_directory=self._save_album_directory.strpath)
+    def new_album(self, of_type="mp3", save_as="album.tgit"):
+        self.tagger.create_album(of_type, self._save_album_directory.join(save_as).strpath)
 
     def add_tracks_to_album(self, *tracks):
         self.tagger.add_tracks_to_album(*tracks)
