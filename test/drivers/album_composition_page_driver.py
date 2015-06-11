@@ -10,7 +10,7 @@ from ._screen_driver import ScreenDriver
 
 
 def album_composition_page(parent):
-    return AlbumCompositionPageDriver.find_single(parent, AlbumCompositionPage, named('album-composition-page'))
+    return AlbumCompositionPageDriver.find_single(parent, AlbumCompositionPage, named('album_composition_page'))
 
 
 class AlbumCompositionPageDriver(ScreenDriver):
@@ -34,7 +34,7 @@ class AlbumCompositionPageDriver(ScreenDriver):
         self._track_table().has_row_count(equal_to(count))
 
     def add_tracks(self):
-        self.button(named('add-tracks')).click()
+        self.button(named('_add_tracks_button')).click()
 
     def has_context_menu_item(self, matching):
         context_menu = self._from_context_menu()
@@ -51,22 +51,22 @@ class AlbumCompositionPageDriver(ScreenDriver):
 
     def play_track(self, title):
         self.select_track(title)
-        self._from_context_menu().select_menu_item(named("play_action"))
+        self._from_context_menu().select_menu_item(named("_play_action"))
 
     def cannot_play_track(self, title):
         self.select_track(title)
-        self._from_context_menu().menu_item(named("play_action")).is_disabled()
+        self._from_context_menu().menu_item(named("_play_action")).is_disabled()
 
     def remove_track(self, title, using_shortcut=False):
         self.select_track(title)
         if using_shortcut:
             self.perform(gestures.delete())
         else:
-            self._from_context_menu().select_menu_item(named("remove_action"))
+            self._from_context_menu().select_menu_item(named("_remove_action"))
 
     def move_track(self, title, to):
         from_ = self.shows_track_details(title)
         self._track_table().move_row(from_, to)
 
     def _track_table(self):
-        return TableViewDriver.find_single(self, QTableWidget, named('track_list'))
+        return TableViewDriver.find_single(self, QTableWidget, named('_track_table'))

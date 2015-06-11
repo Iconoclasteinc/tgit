@@ -19,63 +19,16 @@
 from enum import Enum
 
 from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QObject, QEvent
-from PyQt5.QtGui import QPalette, QColor, QIcon
-from PyQt5.QtWidgets import QWidget, QTableView, QHeaderView, QFrame, QAction, QMenu, QTableWidget, QTableWidgetItem
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem
 
 from tgit.album import Album, AlbumListener
 from tgit.track import Track
-from tgit.ui.helpers import form, formatting
+from tgit.ui.helpers import formatting, ui_file
 from tgit.ui.observer import Observer
 
-STYLE_SHEET = """
-            QTableView::item {
-                border-bottom: 1px solid #F7C3B7;
-            }
 
-            QTableView::item::alternate {
-                background-color:#F9F7F7;
-            }
-
-            QTableView::item::selected {
-                background-color:#F25C0A;
-            }
-
-            QHeaderView {
-                background-color: transparent;
-            }
-
-            QHeaderView::section {
-                background-color: transparent;
-            }
-
-            QHeaderView::section:horizontal {
-                text-align: left;
-                font-weight: bold;
-                font-size: 13px;
-                padding: 21px 0 18px 5px;
-                border-top: 1px solid #F7C3B7;
-                border-bottom: 1px solid #F7C3B7;
-                border-right: 1px solid  #F2F2F2;
-                min-height: 15px;
-            }
-
-            QHeaderView::section:vertical {
-                padding: 4px 0px;
-                border-bottom: 1px solid #F7C3B7;
-                border-left: none;
-                border-top: none;
-            }
-
-            QTableCornerButton::section:vertical {
-                background-color: transparent;
-                border-top: 1px solid #F7C3B7;
-                border-bottom: 1px solid #F7C3B7;
-            }
-        """
-
-LIGHT_GRAY = QColor.fromRgb(0xDDDDDD)
-HEADERS = ('#', 'Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
-COLUMNS_WIDTHS = [30, 320, 245, 255, 85, 65]
+COLUMNS_WIDTHS = [30, 300, 245, 270, 90, 70]
 
 
 def make_album_composition_page(dialogs, player, album, *, on_remove_track, on_play_track, on_move_track):
@@ -98,9 +51,11 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
     def __init__(self, album, player):
         super().__init__()
-
+        self._setup_ui()
+        self._subscribe_to_events(album, player)
         self._tracks = []
 
+    def _subscribe_to_events(self, album, player):
         self.subscribe(album.track_inserted, self._insert_row)
         self.subscribe(album.track_removed, self._remove_row)
         self.subscribe(player.playing, lambda track: self._update_playing_track(track))
@@ -108,106 +63,49 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         # todo when we have proper signals on album, we can get rid of that
         album.addAlbumListener(self)
 
-        self.build()
+    def _setup_ui(self):
+        ui_file.load(":/ui/album_composition_page.ui", self)
+        self._add_tracks_button.clicked.connect(lambda pressed: self.add_tracks.emit())
+        self._drag_and_drop_cursor = self._make_drag_and_drop_cursor(self._track_table)
+        self._context_menu = self._make_context_menu(self._track_table)
+        self._resize_columns(self._track_table)
+        self._setup_vertical_header(self._track_table)
 
-    def build(self):
-        self.setObjectName('album-composition-page')
-        layout = form.column()
-        layout.setContentsMargins(10, 10, 10, 10)
-        layout.addWidget(self.make_header())
-        self._table = self.make_track_table()
-        self._context_menu = self._make_context_menu(self._table)
-        self._cursor_filter = self._enable_drag_and_drop_cursor(self._table)
-        layout.addWidget(self._make_table_frame(self._table))
-        self.setLayout(layout)
+    def _make_drag_and_drop_cursor(self, table):
+        cursor = DragAndDropCursor(table)
+        table.verticalHeader().setMouseTracking(True)
+        table.verticalHeader().viewport().installEventFilter(cursor)
+        return cursor
 
-    def make_header(self):
-        header = QWidget()
-        row = form.row()
-        help = form.label()
-        help.setText(self.tr("Organize the release's tracks."))
-        row.addWidget(help)
-        row.addStretch()
-        addButton = form.button('add-tracks', self.tr('ADD'))
-        addButton.clicked.connect(lambda pressed: self.add_tracks.emit())
-        row.addWidget(addButton)
-        header.setLayout(row)
-
-        return header
-
-    def make_track_table(self):
-        table = QTableWidget()
-        table.setFrameStyle(QFrame.NoFrame)
-        table.setObjectName('track_list')
-        table.setStyleSheet(STYLE_SHEET)
-        table.setColumnCount(len(HEADERS))
-        table.setHorizontalHeaderLabels([self.tr(header) for header in HEADERS])
-        table.setEditTriggers(QTableView.NoEditTriggers)
-        table.setSelectionMode(QTableView.SingleSelection)
-        table.setSelectionBehavior(QTableView.SelectRows)
-        table.setAlternatingRowColors(True)
-        table.setShowGrid(False)
-        table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
-        for index, width in enumerate(COLUMNS_WIDTHS):
-            table.horizontalHeader().resizeSection(index, width)
+    def _setup_vertical_header(self, table):
         table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         table.verticalHeader().setSectionsMovable(True)
         table.verticalHeader().sectionMoved.connect(self._signal_move_track)
         table.verticalHeader().sectionMoved.connect(lambda _, from_, to: self._select_row(to))
-        table.verticalHeader().setMinimumWidth(24)
+        table.verticalHeader().setMinimumWidth(18)
 
-        # We don't want the menu to block so we can't use the ActionsContextMenu policy
-        table.setContextMenuPolicy(Qt.CustomContextMenu)
-        table.customContextMenuRequested.connect(self._open_context_menu)
-
-        return table
+    def _resize_columns(self, table):
+        for index, width in enumerate(COLUMNS_WIDTHS):
+            table.horizontalHeader().resizeSection(index, width)
 
     def _make_context_menu(self, table):
-        context_menu = QMenu(table)
+        table.customContextMenuRequested.connect(self._open_context_menu)
+        context_menu = QMenu(self._track_table)
         context_menu.setObjectName("context_menu")
-
-        remove_action = QAction(self.tr("Remove"), table)
-        remove_action.setObjectName("remove_action")
-        remove_action.setShortcut(Qt.Key_Delete)
-        remove_action.triggered.connect(lambda checked: self._signal_remove_track())
-        context_menu.addAction(remove_action)
-        table.addAction(remove_action)
-
-        self._play_action = QAction(table)
-        self._play_action.setObjectName("play_action")
+        self._remove_action.triggered.connect(lambda checked: self._signal_remove_track())
+        context_menu.addAction(self._remove_action)
+        table.addAction(self._remove_action)
         self._play_action.triggered.connect(lambda checked: self._signal_play_track())
         context_menu.addAction(self._play_action)
         table.addAction(self._play_action)
-
         return context_menu
-
-    def _enable_drag_and_drop_cursor(self, table):
-        table.verticalHeader().setMouseTracking(True)
-        cursor_filter = DragAndDropCursor(table)
-        table.verticalHeader().viewport().installEventFilter(cursor_filter)
-        return cursor_filter
-
-    def _make_table_frame(self, table):
-        frame = QFrame()
-        frame.setFrameStyle(QFrame.Panel | QFrame.Plain)
-        frame.setAutoFillBackground(True)
-        palette = frame.palette()
-        palette.setColor(QPalette.Background, Qt.white)
-        palette.setColor(QPalette.WindowText, LIGHT_GRAY)
-        frame.setPalette(palette)
-        layout = form.column()
-        layout.setContentsMargins(10, 10, 10, 10)
-        layout.addWidget(table)
-        frame.setLayout(layout)
-
-        return frame
 
     def _update_playing_track(self, playing_track):
         self._playing_track = playing_track
         self._update_all_rows()
 
     def _select_row(self, row):
-        self._table.selectRow(row)
+        self._track_table.selectRow(row)
 
     def _open_context_menu(self, pos):
         if self.selected_row is not None:
@@ -223,23 +121,21 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         self._play_action.setDisabled(self.selected_track.type == Album.Type.FLAC)
 
     def _map_to_global(self, pos):
-        return self._table.mapToGlobal(self._map_to_table(pos))
+        return self._track_table.mapToGlobal(self._map_to_table(pos))
 
     def _map_to_table(self, pos):
-        left_margin, top_margin = self._table.verticalHeader().width(), self._table.horizontalHeader().height()
-        return QPoint(pos.x() + left_margin, pos.y() + top_margin)
+        vertical_header_width = self._track_table.verticalHeader().width()
+        horizontal_header_height = self._track_table.horizontalHeader().height()
+        return QPoint(pos.x() + vertical_header_width, pos.y() + horizontal_header_height)
 
     @property
     def selected_row(self):
-        current_selection = self._table.selectedIndexes()
-        if current_selection:
-            return current_selection[0].row()
-        else:
-            return None
+        current_selection = self._track_table.selectedIndexes()
+        return current_selection[0].row() if current_selection else None
 
     @property
     def selected_track(self):
-        return self._tracks[self.selected_row]
+        return self._tracks[self.selected_row] if self.selected_row is not None else None
 
     def _signal_remove_track(self):
         if self.selected_track:
@@ -258,13 +154,13 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
     def _insert_row(self, at_index, track):
         self._tracks.insert(at_index, track)
-        self._table.insertRow(at_index)
+        self._track_table.insertRow(at_index)
         self._update_row(at_index)
         self.subscribe(track.metadata_changed, lambda state: self._update_track(track))
 
     def _remove_row(self, at_index, track):
         self.unsubscribe(track.metadata_changed)
-        self._table.removeRow(at_index)
+        self._track_table.removeRow(at_index)
         self._tracks.pop(at_index)
 
     def _update_track(self, track):
@@ -275,10 +171,10 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         header_item = QTableWidgetItem()
         header_item.setIcon(QIcon(":/images/volume-up.png") if self._is_playing(track)
                             else QIcon(":/images/drag-handle.gif"))
-        self._table.setVerticalHeaderItem(row_index, header_item)
+        self._track_table.setVerticalHeaderItem(row_index, header_item)
 
         for col_index, column in enumerate(Columns):
-            self._table.setItem(row_index, col_index, column.item(track))
+            self._track_table.setItem(row_index, col_index, column.item(track))
 
     albumStateChanged = _update_all_rows
 

@@ -17,11 +17,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+import sys
+
 from PyQt5 import QtGui
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QMainWindow
-import sys
 
 from tgit.album import Album
 from tgit.ui.helpers import ui_file
@@ -50,25 +51,6 @@ StyleSheet = """
 
     #controls {
         min-height: 60px;
-    }
-
-    QPushButton#add-tracks {
-        background-color: #EC2327;
-        border: 2px solid #EC2327;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: bold;
-        color: white;
-        padding: 10px 10px 7px 10px;
-    }
-
-    QPushButton#add-tracks:hover {
-        background-color: #D42023;
-        border-color: #D42023;
-    }
-
-    QPushButton#add-tracks:pressed {
-        border: 2px solid transparent;
     }
 
     #navigation, #controls {
@@ -138,34 +120,6 @@ StyleSheet = """
         border-image: url(:/nothing.png) 1 1 1 1;
         background-color: transparent;
         color: transparent;
-    }
-
-    QToolButton#play-track {
-        border-image: url(:/play.png);
-    }
-
-    QToolButton#play-track:hover {
-        border-image: url(:/play-hover.png);
-    }
-
-    QToolButton#play-track:pressed {
-        border-image: url(:/play-pressed.png);
-    }
-
-    QToolButton#play-track:disabled {
-        border-image: url(:/play-disabled.png);
-    }
-
-    QToolButton#play-track:checked {
-        border-image: url(:/stop.png);
-    }
-
-    QToolButton#play-track:checked:hover {
-        border-image: url(:/stop-hover.png);
-    }
-
-    QToolButton#play-track:checked:pressed {
-        border-image: url(:/stop-pressed.png);
     }
 
     QGroupBox {
