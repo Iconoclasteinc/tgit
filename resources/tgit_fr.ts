@@ -629,8 +629,8 @@
     </message>
     <message>
         <location filename="../tgit/ui/welcome_screen.py"/>
-        <source>or</source>
-        <translation>ou</translation>
+        <source>Load a release:</source>
+        <translation>Charger un album :</translation>
     </message>
     <message>
         <location filename="../tgit/ui/welcome_screen.py"/>
@@ -646,6 +646,34 @@
         <location filename="../tgit/ui/welcome_screen.py"/>
         <source>*as per MusicBrainz terminology</source>
         <translation>*terminologie MusicBrainz</translation>
+    </message>
+</context>
+<context>
+    <name>new_album_screen</name>
+    <message>
+        <location filename="../tgit/ui/new_album_screen.py"/>
+        <source>New release</source>
+        <translation>Nouvel album</translation>
+    </message>
+    <message>
+        <location filename="../tgit/ui/new_album_screen.py"/>
+        <source>Choose the location to save the release:</source>
+        <translation>Choisir l'endroit où sauvegarder l'album :</translation>
+    </message>
+    <message>
+        <location filename="../tgit/ui/new_album_screen.py"/>
+        <source>Import the album metadata from an audio file (optional):</source>
+        <translation>Importer les métadonnées à partir d'un fichier audio (optionel) :</translation>
+    </message>
+    <message>
+        <location filename="../tgit/ui/new_album_screen.py"/>
+        <source>BROWSE ...</source>
+        <translation>PARCOURIR ...</translation>
+    </message>
+    <message>
+        <location filename="../tgit/ui/new_album_screen.py"/>
+        <source>CONTINUE</source>
+        <translation>CONTINUER</translation>
     </message>
 </context>
 <context>

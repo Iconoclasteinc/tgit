@@ -261,7 +261,7 @@ QLabel {
          <item row="0" column="1">
           <widget class="QLabel" name="load_album_label">
            <property name="text">
-            <string>Load a release from disk:</string>
+            <string>Load a release:</string>
            </property>
           </widget>
          </item>

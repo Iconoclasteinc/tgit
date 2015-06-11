@@ -168,7 +168,7 @@ QPushButton:pressed {
          <item row="0" column="1">
           <widget class="QLabel" name="album_location_label">
            <property name="text">
-            <string>Please choose the location to save the release:</string>
+            <string>Choose the location to save the release:</string>
            </property>
           </widget>
          </item>
