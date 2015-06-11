@@ -663,7 +663,7 @@
     <message>
         <location filename="../tgit/ui/new_album_screen.py"/>
         <source>Import the album metadata from an audio file (optional):</source>
-        <translation>Importer les métadonnées à partir d'un fichier audio (optionel) :</translation>
+        <translation>Importer les métadonnées à partir d'un fichier audio (optionnel) :</translation>
     </message>
     <message>
         <location filename="../tgit/ui/new_album_screen.py"/>
@@ -672,8 +672,8 @@
     </message>
     <message>
         <location filename="../tgit/ui/new_album_screen.py"/>
-        <source>CONTINUE</source>
-        <translation>CONTINUER</translation>
+        <source>CREATE</source>
+        <translation>CRÉER</translation>
     </message>
 </context>
 <context>

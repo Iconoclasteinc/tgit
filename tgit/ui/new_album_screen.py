@@ -53,6 +53,7 @@ class NewAlbumScreen(QFrame):
         self.continue_button.clicked.connect(self.on_create_album)
         self.browse_album_location_button.clicked.connect(self.select_album_location.emit)
         self.browse_track_location_button.clicked.connect(self.select_track_location.emit)
+        self.album_location.textChanged.connect(self._toggle_create_button)
 
     def on_create_album(self):
         self.create_album.emit(
@@ -63,3 +64,6 @@ class NewAlbumScreen(QFrame):
 
     def change_track_location(self, destination):
         self.track_location.setText(destination)
+
+    def _toggle_create_button(self, text):
+        self.continue_button.setDisabled(text == "")
