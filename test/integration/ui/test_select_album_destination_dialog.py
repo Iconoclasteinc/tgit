@@ -42,14 +42,14 @@ def driver(dialog, prober, automaton):
     dialog_driver.close()
 
 
-def test_signals_save_as_destination(tmpdir, dialog, driver):
+def test_signals_select_album_destination(tmpdir, dialog, driver):
     destination = tmpdir.join("album.tgit").strpath
-    save_as_signal = ValueMatcherProbe("select destination", equal_to(destination))
+    select_album_destination_signal = ValueMatcherProbe("select destination", equal_to(destination))
 
-    dialog.display(lambda dest: save_as_signal.received(os.path.abspath(dest)))
+    dialog.display(lambda dest: select_album_destination_signal.received(os.path.abspath(dest)))
 
     driver.save_as("album.tgit", tmpdir.strpath)
-    driver.check(save_as_signal)
+    driver.check(select_album_destination_signal)
 
 
 def test_automatically_appends_extention(tmpdir, dialog, driver):
