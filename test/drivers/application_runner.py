@@ -56,6 +56,7 @@ class ApplicationRunner:
     def change_order_of_tracks(self, *tracks):
         for position, track in enumerate(_make_tracks(tracks)):
             self.tagger.move_track(track.title, position)
+            self.tagger.pause(100)
 
     def remove_track(self, title):
         self.tagger.remove_track(title)
