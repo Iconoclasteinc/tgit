@@ -208,7 +208,7 @@
       </palette>
      </property>
      <property name="autoFillBackground">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: white;</string>
@@ -220,7 +220,7 @@
       <enum>QFrame::Plain</enum>
      </property>
      <property name="lineWidth">
-      <number>0</number>
+      <number>1</number>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="leftMargin">
@@ -249,11 +249,11 @@ QMenu {
 	background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 white, stop:1 #EEEEEE);
 }
 
-::item::alternate {
+QTableView::item::alternate {
   background-color:#F9F7F7;
 }
 
-::item::selected {
+QTableView::item::selected {
   background-color:#F25C0A;
 }
 
@@ -271,7 +271,7 @@ QHeaderView::section:horizontal {
   padding: 21px 5px 18px 5px;
   border-top: 1px solid #F7C3B7;
   border-bottom: 1px solid #F7C3B7;
-  border-right: 1px solid  #F2F2F2;
+  border-right: 1px solid #F2F2F2;
   min-height: 15px;
 }
 
@@ -283,7 +283,7 @@ QHeaderView::section:vertical {
   max-width: 24px;
 }
 
-QTableCornerButton::section:vertical {
+QTableCornerButton::section {
   background-color: transparent;
   border-top: 1px solid #F7C3B7;
   border-bottom: 1px solid #F7C3B7;

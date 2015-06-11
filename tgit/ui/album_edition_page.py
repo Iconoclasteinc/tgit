@@ -203,15 +203,6 @@ class AlbumEditionPage(QWidget, AlbumListener):
         for child in self.findChildren(QWidget):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
-    def _label_for(self, widget):
-        def with_buddy(buddy):
-            return lambda w: w.buddy() == buddy
-
-        return self._child_widget(QLabel, with_buddy(widget))
-
-    def _child_widget(self, of_type, matching):
-        return next(child for child in self.findChildren(of_type) if matching(child))
-
     def _adjust_isni_lookup_state_on_compilation_changed(self):
         buttons = [self.lookup_isni_button]
         self._enable_or_disable_isni_button(self.compilation.isChecked(), self.lead_performer.text(), buttons)
