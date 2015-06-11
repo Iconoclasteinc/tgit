@@ -32,7 +32,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Organize the release's tracks</string>
+         <string>Organize the release's tracks.</string>
         </property>
        </widget>
       </item>

@@ -2,31 +2,49 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr_CA" sourcelanguage="en_US">
 <context>
-    <name>AlbumCompositionPage</name>
+    <name>album_composition_page</name>
     <message>
-        <location filename="album_composition_model.py" line="126"/>
         <source>Track Title</source>
         <translation>Titre de la piste</translation>
     </message>
     <message>
-        <location filename="album_composition_model.py" line="127"/>
         <source>Lead Performer</source>
         <translation>Artiste principal</translation>
     </message>
     <message>
-        <location filename="album_composition_model.py" line="128"/>
         <source>Release Name</source>
         <translation>Titre de l&apos;album</translation>
     </message>
     <message>
-        <location filename="album_composition_model.py" line="129"/>
         <source>Bitrate</source>
         <translation>Débit</translation>
     </message>
     <message>
-        <location filename="album_composition_model.py" line="130"/>
         <source>Duration</source>
         <translation>Durée</translation>
+    </message>
+    <message>
+        <source>ADD</source>
+        <translation>AJOUTER</translation>
+    </message>
+    <message>
+        <source>Organize the release's tracks.</source>
+        <translation>Organisez les pistes qui composent l&apos;album.</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Enlever</translation>
+    </message>
+</context>
+<context>
+    <name>AlbumCompositionPage</name>
+    <message>
+        <source>Play</source>
+        <translation>Jouer</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Arrêter</translation>
     </message>
 </context>
 <context>
@@ -118,31 +136,6 @@
     <message>
         <source>Composer</source>
         <translation>Compositeur</translation>
-    </message>
-</context>
-<context>
-    <name>AlbumCompositionPage</name>
-    <message>
-        <location filename="tgit/ui/album_composition_page.py" line="112"/>
-        <source>ADD</source>
-        <translation>AJOUTER</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_composition_page.py" line="109"/>
-        <source>Organize the release's tracks.</source>
-        <translation>Organisez les pistes qui composent l&apos;album.</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation>Enlever</translation>
-    </message>
-    <message>
-        <source>Play</source>
-        <translation>Jouer</translation>
-    </message>
-    <message>
-        <source>Stop</source>
-        <translation>Arrêter</translation>
     </message>
 </context>
 <context>
@@ -692,14 +685,6 @@
         <location filename="tgit/ui/track_selection_dialog.py"/>
         <source>MP3 files</source>
         <translation>Fichiers MP3</translation>
-    </message>
-</context>
-<context>
-    <name>PlayButtonDelegate</name>
-    <message>
-        <location filename="tgit/ui/album_composition_page"/>
-        <source>FLAC playback is not supported on your platform</source>
-        <translation>La lecture de fichier FLAC n&apos;est pas supportée sur votre machine</translation>
     </message>
 </context>
 </TS>
