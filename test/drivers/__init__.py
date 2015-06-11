@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from .export_as_dialog_driver import export_as_dialog
-from .import_album_from_track_dialog_driver import import_album_from_track_dialog, ImportAlbumFromTrackDialogDriver
+from .reference_track_selection_dialog_driver import reference_track_selection_dialog, ReferenceTrackSelectionDialogDriver
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
 from .picture_selection_dialog_driver import picture_selection_dialog, PictureSelectionDialogDriver

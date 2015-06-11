@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+from PyQt5.QtWidgets import QFileDialog
 from hamcrest import assert_that, same_instance
 import pytest
+from cute.matchers import named
+from cute.widgets import window
+from test.drivers.select_album_destination_dialog_driver import SelectAlbumDestinationDialogDriver
 
 from test.util import builders as make
 from tgit import album_director
@@ -8,15 +12,37 @@ from tgit.ui import Dialogs
 
 
 @pytest.fixture()
-def dialogs(qt):
-    return Dialogs(album_director, native=True)
+def dialogs(main_window):
+    dialogs = Dialogs(album_director, native=True)
+    dialogs.parent = main_window
+    return dialogs
 
 
-def test_creates_a_single_import_dialog_for_a_given_portfolio(dialogs):
+def test_creates_a_single_import_dialog_for_a_given_portfolio(dialogs, prober, automaton):
+    dialogs.select_reference_track()(lambda: None)
+    driver = SelectAlbumDestinationDialogDriver(window(QFileDialog, named("import_album_from_track_dialog")), prober,
+                                                automaton)
+    driver.is_showing_on_screen()
+
+    dialogs.select_reference_track()(lambda: None)
+    driver.is_showing_on_screen()
+
+
+def test_creates_a_single_album_destination_selection_dialog_for_a_given_portfolio(dialogs, prober, automaton):
+    dialogs.select_album_destination()(lambda: None)
+    driver = SelectAlbumDestinationDialogDriver(window(QFileDialog, named("select_album_destination_dialog")), prober,
+                                                automaton)
+    driver.is_showing_on_screen()
+
+    dialogs.select_album_destination()(lambda: None)
+    driver.is_showing_on_screen()
+
+
+def test_creates_a_single_load_dialog_for_a_given_portfolio(dialogs):
     album_portfolio = make.album_portfolio()
-    import_dialog = dialogs.import_album(album_portfolio)
+    load_dialog = dialogs.load_album_file(album_portfolio)
 
-    assert_that(dialogs.import_album(album_portfolio), same_instance(import_dialog))
+    assert_that(dialogs.load_album_file(album_portfolio), same_instance(load_dialog))
 
 
 def test_creates_a_single_picture_selection_dialog_for_a_given_album(dialogs):

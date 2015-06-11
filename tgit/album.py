@@ -62,11 +62,12 @@ class Album(metaclass=tag.Taggable):
     comments = tag.text()
     primary_style = tag.text()
 
-    def __init__(self, metadata=None, of_type=Type.FLAC):
+    def __init__(self, metadata=None, of_type=Type.FLAC, destination=None):
         self.metadata = metadata or Metadata()
         self.tracks = []
         self.listeners = Announcer()
         self.type = of_type
+        self.destination = destination
 
     def addAlbumListener(self, listener):
         self.listeners.addListener(listener)

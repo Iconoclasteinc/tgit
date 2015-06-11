@@ -25,17 +25,49 @@ import shutil
 
 from dateutil import tz
 import requests
+from yaml import dump, Dumper, load
 
 import tgit
 from tgit import tagging
 from tgit.album import Album
 from tgit.export.csv_format import CsvFormat
+from tgit.metadata import Metadata
 from tgit.track import Track
 from tgit.util import fs
 
 
-def create_album(portfolio, of_type=Album.Type.FLAC):
-    portfolio.add_album(Album(of_type=of_type))
+def create_album_into(portfolio):
+    def create_new_album(creation_properties):
+        # todo: find a way to notify the portfolio's listeners of the destination
+        album = Album(of_type=creation_properties.type, destination=creation_properties.album_location)
+        portfolio.add_album(album)
+        return album
+
+    def import_album_to_portfolio(creation_properties):
+        _, extension = os.path.splitext(creation_properties.track_location)
+        all_metadata = tagging.load_metadata(creation_properties.track_location)
+        album_metadata = all_metadata.copy(*Album.tags())
+        album = Album(album_metadata, of_type=creation_properties.type, destination=creation_properties.album_location)
+        portfolio.add_album(album)
+        add_tracks_to(album)([creation_properties.track_location])
+        return album
+
+    def add_album(creation_properties):
+        if creation_properties.track_location:
+            album = import_album_to_portfolio(creation_properties)
+        else:
+            album = create_new_album(creation_properties)
+        export_as_yaml(album)
+
+    return add_album
+
+
+def load_album_into(portfolio):
+    def load_album(destination):
+        album = import_from_yaml(destination)
+        portfolio.add_album(album)
+
+    return load_album
 
 
 def remove_album_from(portfolio):
@@ -43,18 +75,6 @@ def remove_album_from(portfolio):
         portfolio.remove_album(album)
 
     return close_album
-
-
-def import_album_to(portfolio):
-    def import_album_to_portfolio(album_file):
-        _, extension = os.path.splitext(album_file)
-        all_metadata = tagging.load_metadata(album_file)
-        album_metadata = all_metadata.copy(*Album.tags())
-        album = Album(album_metadata, of_type=extension[1:])
-        portfolio.add_album(album)
-        add_tracks_to(album)([album_file])
-
-    return import_album_to_portfolio
 
 
 def add_tracks_to(album):
@@ -148,6 +168,30 @@ def record_track(destination_file, track, time):
     update_track_metadata()
     copy_track_file()
     save_track_metadata()
+
+
+def import_from_yaml(destination):
+    with open(destination, "r") as album_file_stream:
+        album_dict = load(album_file_stream)
+        type_ = album_dict["type"]
+        images = album_dict["images"]
+        del album_dict["type"]
+        del album_dict["images"]
+
+        # todo: change the Metadata class to count images as tags.
+        # We need to add the images to the metadata property after having created the album because the Album class
+        # chooses to create a new Metadata instance
+        album = Album(metadata=(Metadata(**album_dict)), of_type=type_, destination=destination)
+        album.metadata.addImages(*images)
+        return album
+
+
+def export_as_yaml(album):
+    with open(album.destination, "w") as out:
+        metadata = dict(album.metadata)
+        metadata["type"] = album.type
+        metadata["images"] = album.metadata.images
+        dump(metadata, stream=out, Dumper=Dumper, default_flow_style=False)
 
 
 def export_as_csv(album):

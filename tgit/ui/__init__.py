@@ -21,10 +21,12 @@ from PyQt5.QtWidgets import QApplication
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
+from tgit.ui import commands as ui_commands
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
-from tgit.ui.album_selection_dialog import AlbumSelectionDialog
+from tgit.ui.reference_track_selection_dialog import ReferenceTrackSelectionDialog
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
+from tgit.ui.new_album_screen import make_new_album_screen
 from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.album_composition_page import AlbumCompositionPage, make_album_composition_page
 from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
@@ -36,8 +38,8 @@ from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
-from tgit.ui.welcome_screen import welcome_screen as WelcomeScreen
-from tgit.ui.main_window import main_window as MainWindow
+from tgit.ui.welcome_screen import make_welcome_screen
+from tgit.ui.main_window import make_main_window as MainWindow
 from tgit.ui.album_screen import album_screen as AlbumScreen
 
 # noinspection PyUnresolvedReferences
@@ -127,8 +129,15 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
     def show_settings_dialog():
         return SettingsDialogController(restart_message_box, preferences, window)
 
-    def create_welcome_screen():
-        return WelcomeScreen(dialogs, portfolio)
+    def create_new_album_screen(of_type):
+        return make_new_album_screen(of_type,
+                                     on_create_album=director.create_album_into(portfolio),
+                                     on_select_album_location=dialogs.select_album_destination(),
+                                     on_select_track_location=dialogs.select_reference_track())
+
+    def create_welcome_screen(on_create_new_album):
+        return make_welcome_screen(on_create_new_album=on_create_new_album,
+                                   on_load_album=ui_commands.load_album_in(portfolio, dialogs))
 
     def create_composition_page(album):
         return make_album_composition_page(dialogs, player, album,
@@ -160,8 +169,16 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return AlbumScreen(create_composition_page, create_album_page, create_track_page, album)
 
     dialogs = Dialogs(director, native)
-    window = MainWindow(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio,
-                        on_remove_album=director.remove_album_from(portfolio))
+    window = MainWindow(portfolio,
+                        welcome_screen=create_welcome_screen,
+                        new_album_screen=create_new_album_screen,
+                        album_screen=create_album_screen,
+                        on_close_album=ui_commands.close_album_and(director.remove_album_from(portfolio)),
+                        on_save_album=director.export_as_yaml,
+                        on_add_files=ui_commands.add_files_to(dialogs),
+                        on_add_folder=ui_commands.add_folder_to(dialogs),
+                        on_export=ui_commands.export_to(dialogs),
+                        on_settings=show_settings_dialog)
     dialogs.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())
 

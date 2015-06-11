@@ -8,21 +8,6 @@ from test.util import resources, doubles
 from test.drivers.application_runner import ApplicationRunner
 
 
-@pytest.yield_fixture
-def recordings(tmpdir):
-    library = doubles.recording_library(tmpdir.strpath)
-    yield library
-    library.delete()
-
-
-@pytest.yield_fixture
-def app():
-    runner = ApplicationRunner()
-    runner.start(Preferences(QSettings()))
-    yield runner
-    runner.stop()
-
-
 def test_tagging_an_mp3_track(app, recordings):
     app.new_album(of_type="mp3")
 
@@ -36,7 +21,7 @@ def test_tagging_an_mp3_track(app, recordings):
     app.shows_next_track_metadata(track_title="???")
     app.change_track_metadata(track_title="Rashers")
 
-    app.save()
+    app.tag()
     recordings.contains("Joel Miller - 01 - Rashers.mp3",
                         front_cover=(resources.path("honeycomb.jpg"), "Front Cover"),
                         release_name="Honeycomb",
@@ -59,7 +44,7 @@ def test_tagging_a_flac_track(app, recordings):
     app.shows_next_track_metadata(track_title="???")
     app.change_track_metadata(track_title="Squareboy")
 
-    app.save()
+    app.tag()
     recordings.contains("John Roney - 01 - Squareboy.flac",
                         front_cover=(resources.path("st-henri.jpg"), "Front Cover"),
                         release_name="St-Henri",
@@ -94,7 +79,7 @@ def test_tagging_an_album_with_several_tracks(app, recordings):
     app.shows_next_track_metadata(track_title="Zumbar")
     app.shows_next_track_metadata(track_title="Salsa Coltrane")
 
-    app.save()
+    app.tag()
     recordings.contains("Joel Miller - 01 - Chevere!.mp3", lead_performer="Joel Miller", track_number=1, total_tracks=3)
     recordings.contains("Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller", track_number=2, total_tracks=3)
     recordings.contains("Joel Miller - 03 - Salsa Coltrane.mp3", lead_performer="Joel Miller", track_number=3,
@@ -123,7 +108,7 @@ def test_tagging_a_compilation(app, recordings):
     app.shows_next_track_metadata(track_title="Horse Power", lead_performer="???")
     app.change_track_metadata(lead_performer="Joel Miller")
 
-    app.save()
+    app.tag()
     recordings.contains("Joel Miller - 01 - Big Ideas.mp3", lead_performer="Joel Miller")
     recordings.contains("John Roney - 02 - Partways.mp3", lead_performer="John Roney")
     recordings.contains("Joel Miller - 03 - Horse Power.mp3", lead_performer="Joel Miller")

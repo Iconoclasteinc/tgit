@@ -25,22 +25,22 @@ from tgit.album import Album
 from tgit.ui.helpers import ui_file
 
 
-def welcome_screen(dialogs, album_portfolio):
+def make_welcome_screen(*, on_create_new_album, on_load_album):
     page = WelcomeScreen()
-    page.create_new_album.connect(lambda album_type: director.create_album(album_portfolio, album_type))
-    page.import_album.connect(lambda: dialogs.import_album(album_portfolio).open())
+    page.create_new_album.connect(on_create_new_album)
+    page.load.connect(on_load_album)
     return page
 
 
 # We have to inherit from QFrame and not QWidget if we want a background without reimplementing QWidget.paintEvent
 class WelcomeScreen(QtWidgets.QFrame):
     create_new_album = pyqtSignal(str)
-    import_album = pyqtSignal()
+    load = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
         ui_file.load(":/ui/welcome_screen.ui", self)
 
-        self.import_album_button.clicked.connect(lambda: self.import_album.emit())
         self.new_mp3_album_button.clicked.connect(lambda: self.create_new_album.emit(Album.Type.MP3))
         self.new_flac_album_button.clicked.connect(lambda: self.create_new_album.emit(Album.Type.FLAC))
+        self.load_album_button.clicked.connect(lambda: self.load.emit())

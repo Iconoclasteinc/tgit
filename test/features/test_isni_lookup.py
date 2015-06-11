@@ -25,21 +25,6 @@ from test.drivers.application_runner import ApplicationRunner
 from test.util import isni_database
 
 
-@pytest.yield_fixture
-def recordings(tmpdir):
-    recordings = doubles.recording_library(tmpdir.strpath)
-    yield recordings
-    recordings.delete()
-
-
-@pytest.yield_fixture
-def app():
-    runner = ApplicationRunner()
-    runner.start(Preferences(QSettings()))
-    yield runner
-    runner.stop()
-
-
 @pytest.fixture(autouse=True)
 def isni(request):
     database_thread = isni_database.start()
@@ -56,7 +41,7 @@ def test_finding_the_isni_of_the_lead_performer(app, recordings):
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.find_isni_of_lead_performer()
 
-    app.save()
+    app.tag()
     recordings.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
                         release_name="Honeycomb",
                         isni="0000000121707484",

@@ -170,3 +170,10 @@ def _keystroke_delay(wpm):
 
 def _keystrokes_per_minute(wpm):
     return wpm * AVERAGE_WORD_LENGTH
+
+
+def save():
+    if windows:
+        return holding_modifier_key(CONTROL, type_key("s"))
+    else:
+        return holding_modifier_key(COMMAND, type_key("s"))

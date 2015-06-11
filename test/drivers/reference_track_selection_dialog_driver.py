@@ -8,12 +8,12 @@ from cute.matchers import named, disabled, showing_on_screen
 from cute.widgets import FileDialogDriver, window
 
 
-def import_album_from_track_dialog(parent):
-    return ImportAlbumFromTrackDialogDriver(
+def reference_track_selection_dialog(parent):
+    return ReferenceTrackSelectionDialogDriver(
         window(QFileDialog, named("import_album_from_track_dialog")), parent.prober, parent.gesture_performer)
 
 
-class ImportAlbumFromTrackDialogDriver(FileDialogDriver):
+class ReferenceTrackSelectionDialogDriver(FileDialogDriver):
     def select_track(self, path, of_type="mp3"):
         self.view_as_list()
         self.show_hidden_files()

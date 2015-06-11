@@ -22,6 +22,7 @@ import sys
 from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QKeySequence
+
 from PyQt5.QtWidgets import QMainWindow
 
 from tgit.album import Album
@@ -373,24 +374,32 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
     """
 
 
-def main_window(create_welcome_screen, create_album_screen, show_settings_dialog, dialogs, portfolio, on_remove_album):
-    def close_album(album):
-        confirmation = close_album_confirmation_box(window)
-        confirmation.yes.connect(lambda: on_remove_album(album))
-        confirmation.open()
-
+def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_add_folder, on_export, on_settings,
+                     welcome_screen, new_album_screen, album_screen):
     window = MainWindow()
-    window.add_files.connect(lambda album: dialogs.add_tracks(album).open())
-    window.add_folder.connect(lambda album: dialogs.add_tracks_in_folder(album).open())
-    window.export.connect(lambda album: dialogs.export(album).open())
-    window.settings.connect(lambda: show_settings_dialog())
-    window.close_album.connect(close_album)
-    window.show_screen(create_welcome_screen())
+    window.add_files.connect(on_add_files)
+    window.add_folder.connect(on_add_folder)
+    window.export.connect(on_export)
+    window.settings.connect(on_settings)
+    window.close_album.connect(lambda album: on_close_album(album, window))
+    window.save.connect(on_save_album)
 
-    portfolio.album_created.subscribe(lambda album: window.enable_album_actions(album))
-    portfolio.album_created.subscribe(lambda album: window.show_screen(create_album_screen(album)))
-    portfolio.album_removed.subscribe(lambda album: window.show_screen(create_welcome_screen()))
-    portfolio.album_removed.subscribe(lambda album: window.disable_album_actions())
+    def display_new_album_screen(of_type):
+        window.show_screen(new_album_screen(of_type))
+
+    def display_welcome_screen(*_):
+        window.show_screen(welcome_screen(on_create_new_album=display_new_album_screen))
+        window.disable_album_actions()
+
+    def display_album_screen(album):
+        window.enable_album_actions(album)
+        window.show_screen(album_screen(album))
+
+    portfolio.album_removed.subscribe(display_welcome_screen)
+    portfolio.album_created.subscribe(display_album_screen)
+
+    display_welcome_screen()
+
     return window
 
 
@@ -399,6 +408,7 @@ class MainWindow(QMainWindow):
     add_folder = pyqtSignal(Album)
     export = pyqtSignal(Album)
     close_album = pyqtSignal(Album)
+    save = pyqtSignal(Album)
     settings = pyqtSignal()
 
     def __init__(self):
@@ -409,6 +419,7 @@ class MainWindow(QMainWindow):
         self.add_files_action.triggered.connect(lambda checked: self.add_files.emit(self.add_files_action.data()))
         self.add_folder_action.triggered.connect(lambda checked: self.add_folder.emit(self.add_folder_action.data()))
         self.close_album_action.triggered.connect(lambda checked: self.close_album.emit(self.close_album_action.data()))
+        self.save_album_action.triggered.connect(lambda checked: self.save.emit(self.save_album_action.data()))
         self.export_action.triggered.connect(lambda checked: self.export.emit(self.export_action.data()))
         self.settings_action.triggered.connect(lambda checked: self.settings.emit())
 
@@ -416,14 +427,22 @@ class MainWindow(QMainWindow):
             self.settings_action.setText(self.tr(self.settings_action.text()))
 
         self.close_album_action.setShortcut(QKeySequence.Close)
+        self.save_album_action.setShortcut(QKeySequence.Save)
+        self.album_dependent_action = [
+            self.add_files_action,
+            self.add_folder_action,
+            self.export_action,
+            self.close_album_action,
+            self.save_album_action
+        ]
 
     def enable_album_actions(self, album):
-        for action in (self.add_files_action, self.add_folder_action, self.export_action, self.close_album_action):
+        for action in self.album_dependent_action:
             action.setEnabled(True)
             action.setData(album)
 
     def disable_album_actions(self):
-        for action in (self.add_files_action, self.add_folder_action, self.export_action, self.close_album_action):
+        for action in self.album_dependent_action:
             action.setEnabled(False)
             action.setData(None)
 

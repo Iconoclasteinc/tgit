@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
+import tempfile
 from cute import event_loop
 from cute.animatron import Animatron
 
@@ -16,13 +17,16 @@ SAVE_DELAY = 500
 
 
 def _make_tracks(tracks):
-    Track = namedtuple('Track', 'title')
+    Track = namedtuple("Track", "title")
     return map(Track._make, tracks)
 
 
 class ApplicationRunner:
     app = None
     tagger = None
+
+    def __init__(self, tmpdir):
+        self._save_album_directory = tmpdir
 
     def start(self, preferences):
         self.app = TGiT(doubles.audio_player(), NameRegistry(host="localhost", assign_host="localhost", port=5000),
@@ -36,14 +40,15 @@ class ApplicationRunner:
         event_loop.process_pending_events()
         self.app.quit()
 
-    def new_album(self, of_type="mp3"):
-        self.tagger.create_album(of_type)
+    def new_album(self, of_type="mp3", save_as="album.tgit"):
+        self.tagger.create_album(of_type, self._save_album_directory.join(save_as).strpath)
 
     def add_tracks_to_album(self, *tracks):
         self.tagger.add_tracks_to_album(*tracks)
 
-    def import_album(self, track, of_type="mp3"):
-        self.tagger.import_album(track, of_type=of_type)
+    def import_album(self, track, of_type="mp3", save_as="album.tgit"):
+        self.tagger.import_album(of_type=of_type, track_path=track,
+                                 album_path=self._save_album_directory.join(save_as).strpath)
 
     def shows_album_content(self, *tracks):
         self.tagger.shows_album_contains(*tracks)
@@ -83,8 +88,8 @@ class ApplicationRunner:
     def assign_isni_to_lead_performer(self):
         self.tagger.assign_isni_to_lead_performer()
 
-    def save(self):
-        self.tagger.save_album()
+    def tag(self):
+        self.tagger.tag_album()
         self.tagger.pause(SAVE_DELAY)
 
     def fails_to_assign_isni_to_lead_performer(self):
@@ -98,3 +103,9 @@ class ApplicationRunner:
         self.tagger.close_album()
         self.tagger.shows_confirmation_message()
         self.tagger.shows_welcome_screen()
+
+    def load_album(self, album_name):
+        self.tagger.load_album(self._save_album_directory.join(album_name).strpath)
+
+    def save(self):
+        self.tagger.save()

@@ -1,0 +1,10 @@
+images:
+- !!python/object:tgit.metadata.Image
+  data: !!binary |
+    ZnJvbnQuanBlZw==
+  desc: front cover
+  mime: image/jpeg
+  type: 1
+lead_performer: Joel Miller
+release_name: Honeycomb
+type: mp3

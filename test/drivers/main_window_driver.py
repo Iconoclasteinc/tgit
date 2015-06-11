@@ -2,11 +2,13 @@
 from cute import gestures
 from cute.widgets import WidgetDriver
 from .album_screen_driver import album_screen
-from .import_album_from_track_dialog_driver import import_album_from_track_dialog
+from .reference_track_selection_dialog_driver import reference_track_selection_dialog
+from .load_album_dialog_driver import load_album_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
-from test.drivers import menu_bar
+from .menu_bar_driver import menu_bar
+from .new_album_screen_driver import new_album_screen
 from .welcome_screen_driver import welcome_screen
 
 
@@ -14,13 +16,14 @@ class MainWindowDriver(WidgetDriver):
     def __init__(self, selector, prober, gesture_performer):
         super().__init__(selector, prober, gesture_performer)
 
-    def import_album(self, path, of_type):
-        welcome_screen(self).import_album()
-        import_album_from_track_dialog(self).select_track(path, of_type=of_type)
+    def import_album(self, of_type, track_path, album_path):
+        welcome_screen(self).new_album(of_type)
+        new_album_screen(self).import_album(album_path, track_path)
         album_screen(self).is_showing_on_screen()
 
-    def create_album(self, of_type):
+    def create_album(self, of_type, filename):
         welcome_screen(self).new_album(of_type)
+        new_album_screen(self).create_empty_album(filename)
         album_screen(self).is_showing_on_screen()
 
     def add_tracks_in_folder(self):
@@ -57,8 +60,8 @@ class MainWindowDriver(WidgetDriver):
     def editTrackMetadata(self, **tags):
         album_screen(self).edit_track_metadata(**tags)
 
-    def save_album(self):
-        album_screen(self).save()
+    def tag_album(self):
+        album_screen(self).tag()
 
     def change_settings(self, **settings):
         menu_bar(self).settings()
@@ -112,3 +115,15 @@ class MainWindowDriver(WidgetDriver):
 
     def settings(self):
         menu_bar(self).settings()
+
+    def load_album(self, album_name):
+        welcome_screen(self).load()
+        load_album_dialog(self).load(album_name)
+        album_screen(self).is_showing_on_screen()
+
+    def save(self, using_shortcut=False):
+        if using_shortcut:
+            self.click()
+            self.perform(gestures.save())
+        else:
+            menu_bar(self).save()

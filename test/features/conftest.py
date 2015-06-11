@@ -24,25 +24,16 @@ from test.util import doubles
 from tgit.preferences import Preferences
 
 
-def test_closing_an_album(app, recordings):
-    app.new_album(of_type="mp3", save_as="album1.tgit")
-
-    track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
-    app.add_tracks_to_album(track)
-    app.shows_album_content(["???"])
-    app.close_album()
-
-    app.new_album(of_type="mp3", save_as="album2")
-    app.shows_album_content()
+@pytest.yield_fixture
+def recordings(tmpdir):
+    library = doubles.recording_library(tmpdir.strpath)
+    yield library
+    library.delete()
 
 
-def test_loading_an_album(app):
-    app.new_album(of_type="mp3", save_as="new_album.tgit")
-
-    app.shows_album_metadata()
-    app.change_album_metadata(release_name="Honeycomb")
-    app.save()
-    app.close_album()
-
-    app.load_album("new_album.tgit")
-    app.shows_album_metadata(release_name="Honeycomb")
+@pytest.yield_fixture
+def app(tmpdir):
+    runner = ApplicationRunner(tmpdir)
+    runner.start(Preferences(QSettings()))
+    yield runner
+    runner.stop()
