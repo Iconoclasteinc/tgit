@@ -657,8 +657,13 @@
     </message>
     <message>
         <location filename="../tgit/ui/new_album_screen.py"/>
+        <source>Choose a name for the release:</source>
+        <translation>Choisissez un nom pour l'album :</translation>
+    </message>
+    <message>
+        <location filename="../tgit/ui/new_album_screen.py"/>
         <source>Choose the location to save the release:</source>
-        <translation>Choisir l'endroit où sauvegarder l'album :</translation>
+        <translation>Choisissez l'endroit où sauvegarder l'album :</translation>
     </message>
     <message>
         <location filename="../tgit/ui/new_album_screen.py"/>
