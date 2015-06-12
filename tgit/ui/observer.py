@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from tgit.signal import MultiSubscription, Subscription
+from tgit.signal import MultiSubscription
 
 
 def Observer(cls):
@@ -40,7 +40,7 @@ def Observer(cls):
 
     def close(self):
         self.subscriptions.cancel()
-        widget_close(self)
+        return widget_close(self)
 
     cls.subscribe = subscribe
     cls.unsubscribe = unsubscribe

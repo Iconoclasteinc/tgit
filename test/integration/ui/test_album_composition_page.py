@@ -59,7 +59,7 @@ def test_displays_all_tracks_in_rows(album, driver):
     driver.shows_tracks_in_order(['1', 'Give Life Back To Music'], ['2', 'Get Lucky'])
 
 
-def test_updates_track_list_when_album_metadata_change(album, driver):
+def test_updates_all_rows_when_album_metadata_change(album, driver):
     album.add_track(build.track(track_title="Chevere!"))
     album.add_track(build.track(track_title='Zumbar'))
 
@@ -103,7 +103,7 @@ def test_signals_user_request_to_remove_track(album, page, driver):
     album.add_track(build.track(track_title="Chevere!"))
 
     remove_track_signal = ValueMatcherProbe("remove track", has_title("Chevere!"))
-    page.remove_track.connect(remove_track_signal.received)
+    page.on_remove_track(remove_track_signal.received)
 
     driver.remove_track('Chevere!')
     driver.check(remove_track_signal)
@@ -113,7 +113,7 @@ def test_can_remove_track_using_keyboard_shortcut(album, page, driver):
     album.add_track(build.track(track_title="Chevere!"))
 
     remove_track_signal = ValueMatcherProbe("remove track", has_title("Chevere!"))
-    page.remove_track.connect(remove_track_signal.received)
+    page.on_remove_track(remove_track_signal.received)
 
     driver.remove_track('Chevere!', using_shortcut=True)
     driver.check(remove_track_signal)
@@ -124,7 +124,7 @@ def test_signals_user_request_to_play_or_stop_track(album, page, driver):
     album.add_track(build.track(track_title="Spain"))
 
     play_track_signal = ValueMatcherProbe("play track", has_title("Spain"))
-    page.play_track.connect(play_track_signal.received)
+    page.on_play_track(play_track_signal.received)
 
     driver.play_track('Spain')
     driver.check(play_track_signal)
@@ -156,7 +156,7 @@ def test_changes_context_menu_option_to_stop_when_selected_track_is_playing(albu
 
 def test_signals_when_add_tracks_button_clicked(page, driver):
     add_tracks_signal = ValueMatcherProbe('add tracks')
-    page.add_tracks.connect(add_tracks_signal.received)
+    page.on_add_tracks(add_tracks_signal.received)
 
     driver.add_tracks()
     driver.check(add_tracks_signal)
@@ -169,7 +169,7 @@ def test_signals_when_track_was_moved(album, page, driver):
 
     new_position = 1
     track_moved_signal = ValueMatcherProbe('track moved', contains(has_title('Place St-Henri'), new_position))
-    page.move_track.connect(lambda track, to: track_moved_signal.received([track, new_position]))
+    page.on_move_track(lambda track, to: track_moved_signal.received((track, new_position)))
 
     # Give time to the table to draw its content
     driver.pause(250)

@@ -44,10 +44,3 @@ class PreferencesTest(unittest.TestCase):
         self.preferences['native_dialogs'] = False
 
         assertContainsEntries(**self.preferences)
-
-    def testAcceptsDictionary(self):
-        self.preferences['language'] = 'French'
-        self.preferences['native_dialogs'] = False
-
-        assert_that(self.preferences['language'], equal_to('French'), 'language')
-        assert_that(self.preferences['native_dialogs'], is_(False), 'language')

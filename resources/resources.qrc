@@ -20,6 +20,11 @@
      <file alias="checkbox-checked-pressed.png">images/checkbox-checked-pressed.png</file>
      <file>images/drag-handle.gif</file>
      <file>images/volume-up.png</file>
+     <file>images/chevron-right-white-12.png</file>
+     <file>images/chevron-left-white-12.png</file>
+     <file>images/chevron-down-white-8.png</file>
+     <file>images/chevron-down-black-8.png</file>
+     <file>images/chevron-up-black-8.png</file>
      <file>ui/welcome_screen.ui</file>
      <file>ui/main_window.ui</file>
      <file>ui/album_screen.ui</file>

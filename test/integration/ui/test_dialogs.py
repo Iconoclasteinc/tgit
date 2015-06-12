@@ -2,10 +2,11 @@
 from PyQt5.QtWidgets import QFileDialog
 from hamcrest import assert_that, same_instance
 import pytest
+
 from cute.matchers import named
 from cute.widgets import window
 from test.drivers.select_album_destination_dialog_driver import SelectAlbumDestinationDialogDriver
-
+from test.drivers import TrackSelectionDialogDriver
 from test.util import builders as make
 from tgit import album_director
 from tgit.ui import Dialogs
@@ -16,6 +17,13 @@ def dialogs(main_window):
     dialogs = Dialogs(album_director, native=True)
     dialogs.parent = main_window
     return dialogs
+
+
+@pytest.yield_fixture()
+def track_selection_dialog_driver(prober, automaton):
+    driver = TrackSelectionDialogDriver(window(QFileDialog, named("track-selection-dialog")), prober, automaton)
+    yield driver
+    driver.close()
 
 
 def test_creates_a_single_import_dialog_for_a_given_portfolio(dialogs, prober, automaton):
@@ -38,13 +46,6 @@ def test_creates_a_single_album_destination_selection_dialog_for_a_given_portfol
     driver.is_showing_on_screen()
 
 
-def test_creates_a_single_load_dialog_for_a_given_portfolio(dialogs):
-    album_portfolio = make.album_portfolio()
-    load_dialog = dialogs.load_album_file(album_portfolio)
-
-    assert_that(dialogs.load_album_file(album_portfolio), same_instance(load_dialog))
-
-
 def test_creates_a_single_picture_selection_dialog_for_a_given_album(dialogs):
     album = make.album()
     picture_dialog = dialogs.select_cover(album)
@@ -60,13 +61,15 @@ def test_creates_a_new_picture_selection_dialog_for_each_album(dialogs):
     assert_that(dialogs.select_cover(make.album()), not same_instance(picture_dialog))
 
 
-def test_creates_a_single_track_selection_dialog_for_a_given_album(dialogs):
+def test_creates_a_single_track_selection_dialog_for_a_given_album(dialogs, track_selection_dialog_driver):
     album = make.album()
-    track_dialog = dialogs.add_tracks(album)
+    dialogs.add_tracks(album)()
+    track_selection_dialog_driver.is_showing_on_screen()
+    track_selection_dialog_driver.close()
 
-    assert_that(dialogs.add_tracks(album), same_instance(track_dialog))
-    assert_that(dialogs.add_tracks_in_folder(album), same_instance(track_dialog))
-
+    dialogs.add_tracks(album)()
+    track_selection_dialog_driver.is_showing_on_screen()
+    track_selection_dialog_driver.close()
 
 def test_creates_a_new_track_selection_dialog_for_each_album(dialogs):
     album = make.album()

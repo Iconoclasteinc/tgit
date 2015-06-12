@@ -10,13 +10,14 @@ from test.drivers import AlbumEditionPageDriver
 from test.integration.ui import WidgetTest
 from test.util import resources, builders as build
 from tgit.metadata import Image
+from tgit.preferences import Preferences
 from tgit.ui.album_edition_page import AlbumEditionPage
 from tgit.util import fs
 
 
 class AlbumEditionPageTest(WidgetTest):
     def render(self, album):
-        self.page = AlbumEditionPage(use_local_isni_backend=True)
+        self.page = AlbumEditionPage(Preferences(), use_local_isni_backend=True)
         self.page.refresh(album)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)

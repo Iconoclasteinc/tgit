@@ -19,8 +19,9 @@
 
 from queue import Queue
 
-from PyQt5.QtCore import Qt, pyqtSignal, QDate, QEventLoop
-from PyQt5.QtWidgets import QWidget, QLabel, QApplication
+from PyQt5.QtCore import Qt, pyqtSignal, QDate, QEventLoop, QLocale
+from PyQt5.QtGui import QPalette, QColor, QIcon
+from PyQt5.QtWidgets import QWidget, QApplication
 
 from .helpers import image, formatting, ui_file
 from tgit import album_director as director
@@ -29,8 +30,7 @@ from tgit.genres import GENRES
 from tgit.isni.name_registry import NameRegistry
 from tgit.util import async_task_runner as task_runner
 
-
-def make_album_edition_page(dialogs, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
+def make_album_edition_page(preferences, dialogs, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
                             performer_dialog_factory, show_assignation_failed, album, name_registry,
                             use_local_isni_backend):
     def poll_queue():
@@ -65,7 +65,7 @@ def make_album_edition_page(dialogs, lookup_isni_dialog_factory, activity_indica
         dialog.show()
 
     queue = Queue()
-    page = AlbumEditionPage(use_local_isni_backend)
+    page = AlbumEditionPage(preferences, use_local_isni_backend)
     page.metadata_changed.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.select_picture.connect(lambda: dialogs.select_cover(album).open())
     page.remove_picture.connect(lambda: director.removeAlbumCover(album))
@@ -76,6 +76,10 @@ def make_album_edition_page(dialogs, lookup_isni_dialog_factory, activity_indica
     album.addAlbumListener(page)
     page.refresh(album)
     return page
+
+
+LIGHT_GRAY = QColor.fromRgb(0xF25C0A)
+ORANGE = QColor.fromRgb(0xF9F9F9)
 
 
 class AlbumEditionPage(QWidget, AlbumListener):
@@ -89,10 +93,11 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, use_local_isni_backend=False):
+    def __init__(self, preferences, use_local_isni_backend=False):
         super().__init__()
         ui_file.load(":/ui/album_page.ui", self)
         self.use_local_isni_backend = use_local_isni_backend
+        self._preferences = preferences
         self.picture = None
 
         self._disable_mac_focus_frame()
@@ -141,6 +146,36 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.genre.activated.connect(lambda: self.metadata_changed.emit(self.metadata("primary_style")))
         self.genre.lineEdit().textEdited.connect(
             lambda: self.metadata_changed.emit(self.metadata("primary_style")))
+
+        for date_edit in (self.release_time, self.digital_release_time, self.original_release_time, self.recording_time):
+            self._style_calendar(date_edit)
+
+    def _style_calendar(self, date_edit):
+        calendar = date_edit.calendarWidget()
+        calendar.setLocale(QLocale(self._preferences["language"]))
+        self._style_navigation_bar(calendar)
+        self._style_calendar_view(calendar)
+        self._style_year_edit(calendar)
+
+    def _style_calendar_view(self, calendar):
+        calendar_view = calendar.findChild(QWidget, "qt_calendar_calendarview")
+        palette = calendar.palette()
+        palette.setColor(QPalette.AlternateBase, ORANGE)
+        calendar_view.setPalette(palette)
+
+    def _style_navigation_bar(self, calendar):
+        navbar = calendar.findChild(QWidget, "qt_calendar_navigationbar")
+        palette = calendar.palette()
+        palette.setColor(QPalette.Highlight, LIGHT_GRAY)
+        navbar.setPalette(palette)
+        left_arrow = calendar.findChild(QWidget, "qt_calendar_prevmonth")
+        left_arrow.setIcon(QIcon(":/images/chevron-left-white-12.png"))
+        right_arrow = calendar.findChild(QWidget, "qt_calendar_nextmonth")
+        right_arrow.setIcon(QIcon(":/images/chevron-right-white-12.png"))
+
+    def _style_year_edit(self, calendar):
+        year_edit = calendar.findChild(QWidget, "qt_calendar_yearedit")
+        year_edit.setAttribute(Qt.WA_MacShowFocusRect, False)
 
     def albumStateChanged(self, album):
         self.refresh(album)
@@ -202,15 +237,6 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def _disable_mac_focus_frame(self):
         for child in self.findChildren(QWidget):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
-
-    def _label_for(self, widget):
-        def with_buddy(buddy):
-            return lambda w: w.buddy() == buddy
-
-        return self._child_widget(QLabel, with_buddy(widget))
-
-    def _child_widget(self, of_type, matching):
-        return next(child for child in self.findChildren(of_type) if matching(child))
 
     def _adjust_isni_lookup_state_on_compilation_changed(self):
         buttons = [self.lookup_isni_button]

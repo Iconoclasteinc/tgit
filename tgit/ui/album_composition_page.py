@@ -18,12 +18,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from enum import Enum
 
-from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QObject, QEvent
+from PyQt5.QtCore import Qt, QPoint, QObject, QEvent
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem
 
 from tgit.album import Album, AlbumListener
-from tgit.track import Track
 from tgit.ui.helpers import formatting, ui_file
 from tgit.ui.observer import Observer
 
@@ -31,29 +30,29 @@ from tgit.ui.observer import Observer
 COLUMNS_WIDTHS = [30, 300, 245, 270, 90, 70]
 
 
-def make_album_composition_page(dialogs, player, album, *, on_remove_track, on_play_track, on_move_track):
-    page = AlbumCompositionPage(album, player)
-    page.add_tracks.connect(lambda: dialogs.add_tracks(album).open())
-    page.move_track.connect(on_move_track)
-    page.play_track.connect(on_play_track)
-    page.remove_track.connect(on_remove_track)
-    return page
-
-
 @Observer
 class AlbumCompositionPage(QWidget, AlbumListener):
-    play_track = pyqtSignal(Track)
-    remove_track = pyqtSignal(Track)
-    move_track = pyqtSignal(Track, int)
-    add_tracks = pyqtSignal()
-
     _playing_track = None
 
-    def __init__(self, album, player):
+    def __init__(self, album, player, **handlers):
         super().__init__()
         self._setup_ui()
         self._subscribe_to_events(album, player)
         self._tracks = []
+        for name, handler in handlers.items():
+            getattr(self, name)(handler)
+
+    def on_add_tracks(self, handler):
+        self._add_tracks_button.clicked.connect(lambda pressed: handler())
+
+    def on_move_track(self, handler):
+        self._track_table.verticalHeader().sectionMoved.connect(lambda _, from_, to: handler(self._tracks[from_], to))
+
+    def on_play_track(self, handler):
+        self._play_action.triggered.connect(lambda pressed: handler(self.selected_track))
+
+    def on_remove_track(self, handler):
+        self._remove_action.triggered.connect(lambda checked: handler(self.selected_track))
 
     def _subscribe_to_events(self, album, player):
         self.subscribe(album.track_inserted, self._insert_row)
@@ -65,7 +64,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
     def _setup_ui(self):
         ui_file.load(":/ui/album_composition_page.ui", self)
-        self._add_tracks_button.clicked.connect(lambda pressed: self.add_tracks.emit())
+        self._track_table.itemSelectionChanged.connect(self._update_actions)
         self._drag_and_drop_cursor = self._make_drag_and_drop_cursor(self._track_table)
         self._context_menu = self._make_context_menu(self._track_table)
         self._resize_columns(self._track_table)
@@ -80,8 +79,6 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     def _setup_vertical_header(self, table):
         table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         table.verticalHeader().setSectionsMovable(True)
-        table.verticalHeader().sectionMoved.connect(self._signal_move_track)
-        table.verticalHeader().sectionMoved.connect(lambda _, from_, to: self._select_row(to))
         table.verticalHeader().setMinimumWidth(18)
 
     def _resize_columns(self, table):
@@ -92,61 +89,49 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         table.customContextMenuRequested.connect(self._open_context_menu)
         context_menu = QMenu(self._track_table)
         context_menu.setObjectName("context_menu")
-        self._remove_action.triggered.connect(lambda checked: self._signal_remove_track())
         context_menu.addAction(self._remove_action)
+        self._remove_action.setDisabled(True)
         table.addAction(self._remove_action)
-        self._play_action.triggered.connect(lambda checked: self._signal_play_track())
         context_menu.addAction(self._play_action)
+        self._play_action.setDisabled(True)
         table.addAction(self._play_action)
         return context_menu
 
-    def _update_playing_track(self, playing_track):
-        self._playing_track = playing_track
-        self._update_all_rows()
-
-    def _select_row(self, row):
-        self._track_table.selectRow(row)
-
     def _open_context_menu(self, pos):
-        if self.selected_row is not None:
-            self._update_context_menu()
+        if self._track_table.indexAt(pos).isValid():
             self._context_menu.popup(self._map_to_global(pos))
-
-    def _is_playing(self, track):
-        return self._playing_track == track
-
-    def _update_context_menu(self):
-        play_action_text = "Stop" if self._is_playing(self.selected_track) else "Play"
-        self._play_action.setText('{0} "{1}"'.format(self.tr(play_action_text), self.selected_track.track_title))
-        self._play_action.setDisabled(self.selected_track.type == Album.Type.FLAC)
 
     def _map_to_global(self, pos):
         return self._track_table.mapToGlobal(self._map_to_table(pos))
+
+    def _update_playing_track(self, playing_track):
+        self._playing_track = playing_track
+        self._update_actions()
+        self._update_all_rows()
 
     def _map_to_table(self, pos):
         vertical_header_width = self._track_table.verticalHeader().width()
         horizontal_header_height = self._track_table.horizontalHeader().height()
         return QPoint(pos.x() + vertical_header_width, pos.y() + horizontal_header_height)
 
+    def _is_playing(self, track):
+        return self._playing_track == track
+
+    def _update_actions(self):
+        self._remove_action.setEnabled(self.selected_track is not None)
+        self._play_action.setEnabled(self.selected_track is not None and self.selected_track.type == Album.Type.MP3)
+        if self.selected_track is not None:
+            play_action_text = "Stop" if self._is_playing(self.selected_track) else "Play"
+            self._play_action.setText('{0} "{1}"'.format(self.tr(play_action_text), self.selected_track.track_title))
+
     @property
-    def selected_row(self):
-        current_selection = self._track_table.selectedIndexes()
-        return current_selection[0].row() if current_selection else None
+    def _selected_row(self):
+        selection = self._track_table.selectedIndexes()
+        return selection[0].row() if selection else None
 
     @property
     def selected_track(self):
-        return self._tracks[self.selected_row] if self.selected_row is not None else None
-
-    def _signal_remove_track(self):
-        if self.selected_track:
-            self.remove_track.emit(self.selected_track)
-
-    def _signal_play_track(self):
-        if self.selected_track:
-            self.play_track.emit(self.selected_track)
-
-    def _signal_move_track(self, _, from_, to):
-        self.move_track.emit(self._tracks[from_], to)
+        return self._tracks[self._selected_row] if self._selected_row is not None else None
 
     def _update_all_rows(self, _=None):
         for index in range(len(self._tracks)):

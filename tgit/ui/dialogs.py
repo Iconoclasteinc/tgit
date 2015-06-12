@@ -86,7 +86,7 @@ class Dialogs:
         dialog = self._select_tracks_dialog(album)
         dialog.select_files()
         dialog.filter_tracks(album.type)
-        return dialog
+        return dialog.open
 
     def add_tracks_in_folder(self, album):
         dialog = self._select_tracks_dialog(album)

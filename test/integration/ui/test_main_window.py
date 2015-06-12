@@ -68,6 +68,7 @@ def test_signals_when_save_album_menu_item_clicked(main_window, driver):
     driver.check(save_album_signal)
 
 
+@pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")
 def test_signals_when_save_album_keyboard_shortcut_is_activated(main_window, driver):
     album = build.album()
     save_album_signal = ValueMatcherProbe("save", album)
