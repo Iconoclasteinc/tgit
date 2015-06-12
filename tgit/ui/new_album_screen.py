@@ -74,4 +74,4 @@ class NewAlbumScreen(QFrame):
         self.continue_button.setDisabled(self._should_disable_continue_button())
 
     def _should_disable_continue_button(self):
-        return self.album_location.text() == "" and self.album_name.text() == ""
+        return self.album_location.text() == "" or self.album_name.text() == ""
