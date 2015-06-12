@@ -49,7 +49,7 @@ def test_signals_album_creation_properties(screen, driver, tmpdir):
     create_album_signal = ValueMatcherProbe("new album",
                                             has_properties(album_name="Honeycomb", album_location=destination,
                                                            type=Album.Type.FLAC, track_location=track_location))
-    screen.create_album.connect(create_album_signal.received)
+    screen.on_create_album(create_album_signal.received)
 
     driver.import_album("Honeycomb", destination, track_location)
     driver.check(create_album_signal)
@@ -57,7 +57,7 @@ def test_signals_album_creation_properties(screen, driver, tmpdir):
 
 def test_signals_when_selecting_a_location_for_the_album(screen, driver):
     browse_album_signal = ValueMatcherProbe("selecting album")
-    screen.select_album_location.connect(browse_album_signal.received)
+    screen.on_select_album_location(lambda pressed: browse_album_signal.received())
 
     driver.select_album()
     driver.check(browse_album_signal)
@@ -65,14 +65,14 @@ def test_signals_when_selecting_a_location_for_the_album(screen, driver):
 
 def test_signals_when_selecting_the_location_of_the_reference_track(screen, driver):
     browse_track_signal = ValueMatcherProbe("selecting reference track")
-    screen.select_track_location.connect(browse_track_signal.received)
+    screen.on_select_track_location(lambda pressed: browse_track_signal.received())
 
     driver.select_track()
     driver.check(browse_track_signal)
 
 
 def test_changes_the_album_location(screen, driver, tmpdir):
-    destination = tmpdir.join("album.tgit").strpath
+    destination = tmpdir.strpath
     screen.change_album_location(destination)
 
     driver.has_album_location(destination)
