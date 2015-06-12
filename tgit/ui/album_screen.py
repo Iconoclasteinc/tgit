@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 #
 # TGiT, Music Tagger for Professionals

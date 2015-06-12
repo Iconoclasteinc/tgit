@@ -7,12 +7,15 @@
     <x>0</x>
     <y>0</y>
     <width>1118</width>
-    <height>599</height>
+    <height>656</height>
    </rect>
   </property>
   <property name="styleSheet">
    <string notr="true">QLineEdit,
 QPlainTextEdit,
+QDateEdit,
+QDateEdit::drop-down,
+QDateEdit QAbsractItemView,
 QComboBox,
 QComboBox::drop-down,
 QComboBox QAbstractItemView {
@@ -20,6 +23,62 @@ QComboBox QAbstractItemView {
 	border: 1px solid #B1B1B1;
 	color: #222222;
 	min-height: 20px;
+}
+
+QCalendarWidget QAbstractItemView {
+    selection-background-color: #F25C0A;
+}
+
+QCalendarWidget QToolButton {
+	color: white;
+    background-color: transparent;
+}
+
+QCalendarWidget QToolButton#qt_calendar_monthbutton {
+	padding-right: 15px;
+}
+
+QCalendarWidget QMenu {
+	background-color: white;
+}
+
+QCalendarWidget QMenu::item::selected {
+  background-color:#F25C0A;
+}
+
+QCalendarWidget QToolButton::menu-indicator {
+    subcontrol-position: right center;
+    top: 2px; right: 2px;
+}
+
+QCalendarWidget QToolButton::menu-indicator {
+	image: url(:/images/chevron-down-white-8.png);
+}
+
+QCalendarWidget QToolButton::menu-indicator:open {
+    top: 3px; right: 1px; /* shift it a bit */
+}
+
+QSpinBox::up-button { 
+	background-color: transparent;
+	border: 1px solid #F79D6C;
+    padding: 1px;
+	image: url(:/images/chevron-up-black-8.png);
+}
+
+QSpinBox::up-button:pressed { 
+	padding: 0px 1px 2px 2px;
+}
+
+QSpinBox::down-button { 
+	background-color: transparent;
+	border: 1px solid #F79D6C;
+    padding: 1px;
+	image: url(:/images/chevron-down-black-8.png);
+}
+
+QSpinBox::down-button:pressed { 
+	padding: 2px 1px 0px 2px;
 }
 
 #lead_performer_container, #guest_performers_container, #isni_container {
@@ -72,12 +131,6 @@ QPushButton:pressed {
 	padding: 13px 14px 10px 14px;
  }
 
-#picture_box::title {
-	background-color: transparent;
-	color: transparent;
-	border: none;
- }
-
 #front_cover {
 	min-width: 350px;
 	max-width: 350px;
@@ -108,16 +161,24 @@ QPushButton#select_picture_button {
 
 QLineEdit:focus,
 QPlainTextEdit:focus,
+QDateEdit:focus,
+QDateEdit:on,
+QDateEdit::drop-down:focus,
+QDateEdit::drop-down:on,
+QDateEdit QAbstractItemView:focus,
 QComboBox:focus,
 QComboBox:on,
 QComboBox::drop-down:focus,
 QComboBox::drop-down:on,
-QComboBox QAbstractItemView:focus {
+QComboBox QAbstractItemView:focus,
+QSpinBox:focus {
 	border: 1px solid #F79D6C;
 }
 
 QLineEdit:disabled,
-QPlainTextEdit:disabled {
+QPlainTextEdit:disabled,
+QDateEdit:disabled,
+QDateEdit::drop-down:disabled {
 	background-color: #FCFCFC;
 	border-color: #E7E7E7;
 }
@@ -168,7 +229,7 @@ QLabel:disabled {
 	color: #C2C2C2;
 }
 
-QComboBox::drop-down {
+QDateEdit::drop-down, QComboBox::drop-down {
 	padding: 0;
 	margin: 0;
 	subcontrol-origin: border;
@@ -176,14 +237,17 @@ QComboBox::drop-down {
 	width: 20px;
 }
 
-QComboBox::down-arrow {
+QDateEdit::down-arrow, QComboBox::down-arrow {
 	image: url(:/down-arrow.png);
 }
 
+QDateEdit::down-arrow:on,
+QDateEdit::down-arrow:focus,
 QComboBox::down-arrow:on,
 QComboBox::down-arrow:focus {
 	image: url(:/down-arrow-on.png);
-}</string>
+}
+</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_7">
    <property name="spacing">
@@ -228,7 +292,7 @@ QComboBox::down-arrow:focus {
       <item>
        <widget class="QGroupBox" name="picture_box">
         <property name="title">
-         <string/>
+         <string>PICTURE</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <property name="leftMargin">
@@ -301,16 +365,22 @@ QComboBox::down-arrow:focus {
             </item>
             <item>
              <widget class="QPushButton" name="select_picture_button">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
               <property name="text">
-               <string>SELECT PICTURE...</string>
+               <string>SELECT...</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="remove_picture_button">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
@@ -377,6 +447,9 @@ QComboBox::down-arrow:focus {
          </item>
          <item row="0" column="1">
           <widget class="QDateEdit" name="release_time">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="accelerated">
             <bool>true</bool>
            </property>
@@ -458,6 +531,9 @@ QComboBox::down-arrow:focus {
          </item>
          <item row="3" column="1">
           <widget class="QDateEdit" name="recording_time">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="accelerated">
             <bool>true</bool>
            </property>
@@ -488,6 +564,9 @@ QComboBox::down-arrow:focus {
    <item>
     <widget class="QWidget" name="right_column" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="spacing">
+       <number>6</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -590,6 +669,9 @@ QComboBox::down-arrow:focus {
               <property name="enabled">
                <bool>false</bool>
               </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
@@ -602,6 +684,9 @@ QComboBox::down-arrow:focus {
              <widget class="QPushButton" name="assign_isni_button">
               <property name="enabled">
                <bool>false</bool>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
               </property>
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
@@ -654,6 +739,9 @@ QComboBox::down-arrow:focus {
             </item>
             <item>
              <widget class="QPushButton" name="clear_isni_button">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
@@ -725,6 +813,9 @@ QComboBox::down-arrow:focus {
             </item>
             <item>
              <widget class="QPushButton" name="add_guest_performers_button">
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
@@ -995,6 +1086,9 @@ QComboBox::down-arrow:focus {
              <horstretch>0</horstretch>
              <verstretch>1</verstretch>
             </sizepolicy>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
            </property>
            <property name="focusPolicy">
             <enum>Qt::StrongFocus</enum>

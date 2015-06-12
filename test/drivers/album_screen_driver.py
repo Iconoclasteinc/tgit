@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import Qt
 from hamcrest.library.text import contains_string
 
 from cute.matchers import named
@@ -45,22 +44,22 @@ class AlbumScreenDriver(ScreenDriver):
         self.button(named("save")).click()
 
     def hidesPreviousPageButton(self):
-        self._is_disabled(self.button(named("previous")))
+        self.button(named("previous")).is_disabled()
 
     def showsPreviousPageButton(self):
-        self._is_enabled(self.button(named("previous")))
+        self.button(named("previous")).is_enabled()
 
     def hidesNextPageButton(self):
-        self._is_disabled(self.button(named("next")))
+        self.button(named("next")).is_disabled()
 
     def showsNextPageButton(self):
-        self._is_enabled(self.button(named("next")))
+        self.button(named("next")).is_enabled()
 
     def hidesSaveButton(self):
-        self._is_disabled(self.button(named("save")))
+        self.button(named("save")).is_disabled()
 
     def showsSaveButton(self):
-        self._is_enabled(self.button(named("save")))
+        self.button(named("save")).is_enabled()
 
     def shows_album_contains(self, *tracks):
         album_composition_page(self).shows_tracks_in_order(*tracks)
@@ -88,13 +87,3 @@ class AlbumScreenDriver(ScreenDriver):
 
     def lookup_isni_of_lead_performer(self):
         album_edition_page(self).lookup_isni_of_lead_performer()
-
-    @staticmethod
-    def _is_disabled(button):
-        button.is_disabled()
-        button.has_cursor_shape(Qt.ArrowCursor)
-
-    @staticmethod
-    def _is_enabled(button):
-        button.is_enabled()
-        button.has_cursor_shape(Qt.PointingHandCursor)

@@ -147,7 +147,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                                     on_add_tracks=dialogs.add_tracks(album))
 
     def create_album_page(album):
-        return make_album_edition_page(dialogs, show_isni_lookup_dialog, show_activity_indicator_dialog,
+        return make_album_edition_page(preferences, dialogs, show_isni_lookup_dialog, show_activity_indicator_dialog,
                                        show_performer_dialog, show_isni_assignation_failed_message_box, album,
                                        name_registry, use_local_isni_backend)
 

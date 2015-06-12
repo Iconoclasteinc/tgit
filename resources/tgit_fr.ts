@@ -139,7 +139,7 @@
     </message>
 </context>
 <context>
-    <name>AlbumEditionPage</name>
+    <name>album_edition_page</name>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="267"/>
         <source>Various Artists</source>
@@ -147,13 +147,13 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="81"/>
-        <source>PICTURES</source>
-        <translation>ILLUSTRATIONS</translation>
+        <source>PICTURE</source>
+        <translation>ILLUSTRATION</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="88"/>
-        <source>SELECT PICTURE...</source>
-        <translation>CHOISIR L'ILLUSTRATION...</translation>
+        <source>SELECT...</source>
+        <translation>CHOISIR...</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="91"/>

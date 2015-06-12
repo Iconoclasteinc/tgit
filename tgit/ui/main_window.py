@@ -22,12 +22,10 @@ import sys
 from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QKeySequence
-
 from PyQt5.QtWidgets import QMainWindow
 
 from tgit.album import Album
 from tgit.ui.helpers import ui_file
-from tgit.ui.message_box import close_album_confirmation_box
 
 windows = sys.platform == "win32"
 
@@ -38,89 +36,12 @@ StyleSheet = """
         padding: 0;
     }
 
+    QComboBox QAbstractItemView {
+        selection-background-color:#F25C0A;
+    }
+
     #activity-indicator-dialog-frame {
         border: 1px solid #DDDDDD;
-    }
-
-    QStackedWidget {
-        margin: 0 15px 0 15px;
-    }
-
-    #navigation {
-        min-height: 48px;
-    }
-
-    #controls {
-        min-height: 60px;
-    }
-
-    #navigation, #controls {
-        background-color: #595959;
-    }
-
-    #controls QPushButton#previous {
-        padding: 4px 2px 2px 12px;
-        color: white;
-        background-color: transparent;
-        border-image: url(:/previous.png) 1 1 1 12;
-        border-top: 1px transparent;
-        border-right: 12px transparent;
-        border-bottom: 1px transparent;
-        border-left: 12px transparent;
-        margin-left: 14px;
-        text-align: left;
-    }
-
-    #controls QPushButton#previous:disabled {
-        border-image: url(:/nothing.png) 1 1 1 1;
-        background-color: transparent;
-        color: transparent;
-    }
-
-    #controls QPushButton#save {
-        border: 2px solid #F25C0A;
-        border-radius: 5px;
-        background-color: #F25C0A;
-        font-size: 15px;
-        min-width: 150px;
-        min-height: 15px;
-        font-weight: bold;
-        color: white;
-        padding: 13px 13px 10px 13px;
-    }
-
-    #controls QPushButton#save:disabled {
-        background-color: transparent;
-        border: none;
-        color: transparent;
-    }
-
-    #controls QPushButton#save:focus, #controls QPushButton#save:hover {
-        background-color: #D95109;
-        border-color: #D95109;
-    }
-
-    #controls QPushButton#save:pressed {
-        border: 2px solid #595959;
-    }
-
-    #controls QPushButton#next {
-        padding: 4px 12px 2px 2px;
-        color: #F25C0A;
-        background-color: transparent;
-        border-image: url(:/next.png) 1 12 1 1;
-        border-top: 1px transparent;
-        border-right: 12px transparent;
-        border-bottom: 1px transparent;
-        border-left: 12px transparent;
-        margin-right: 14px;
-        text-align: right;
-    }
-
-    #controls QPushButton#next:disabled {
-        border-image: url(:/nothing.png) 1 1 1 1;
-        background-color: transparent;
-        color: transparent;
     }
 
     QGroupBox {
@@ -310,11 +231,7 @@ StyleSheet = """
     }
 
     #album-banner {
-        background-color: white;
-        border: 1px solid #DDDDDD;
-        border-bottom: 2px solid rgba(0, 0, 0, 20%);
-        margin: 0px 8px;
-        padding: 14px;
+        padding-left: 14px;
         max-height: 50px;
     }
 

@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QLabel, QWidget, QGroupBox, QFrame
+from PyQt5.QtWidgets import QLabel, QWidget, QGroupBox
 
 from tgit.album import AlbumListener
 from tgit.languages import LANGUAGES
@@ -40,6 +40,7 @@ class TrackEditionPage(QWidget, AlbumListener):
     def build(self):
         self.setObjectName('track-edition-page')
         layout = form.column()
+        layout.setSpacing(6)
         layout.addWidget(self.makeAlbumBanner())
         layout.addWidget(self.makeMainContent())
         self.setLayout(layout)
@@ -50,7 +51,8 @@ class TrackEditionPage(QWidget, AlbumListener):
         self.display(album=album)
 
     def makeAlbumBanner(self):
-        header = QFrame()
+        header = QGroupBox()
+        header.setTitle(self.tr("ALBUM"))
         header.setObjectName('album-banner')
         layout = form.row()
         layout.addWidget(self.makeAlbumCover())
@@ -118,6 +120,7 @@ class TrackEditionPage(QWidget, AlbumListener):
     def makeLeftColumn(self):
         column = QWidget()
         layout = form.column()
+        layout.setSpacing(6)
         layout.addWidget(self.makeTrackFields())
         layout.addWidget(self.makeContributorsFields())
         layout.addWidget(self.makeIdentificationFields())
@@ -181,6 +184,7 @@ class TrackEditionPage(QWidget, AlbumListener):
     def makeRightColumn(self):
         column = QWidget()
         layout = form.column()
+        layout.setSpacing(6)
         layout.addWidget(self.makeContentFields())
         layout.addLayout(self.makeNotice())
         column.setLayout(layout)

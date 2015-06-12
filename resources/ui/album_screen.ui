@@ -7,12 +7,12 @@
     <x>0</x>
     <y>0</y>
     <width>499</width>
-    <height>127</height>
+    <height>147</height>
    </rect>
   </property>
   <property name="styleSheet">
    <string notr="true">QStackedWidget {
-	margin: 0 15px 15px 15px;
+	margin: 5 15px 5px 15px;
 }
 
 #navigation {
@@ -20,7 +20,7 @@
 }
 
 #controls {
-    min-height: 64px;
+    min-height: 48px;
 }
 
 #controls, #navigation {
@@ -51,11 +51,11 @@
     border-radius: 5px;
     background-color: #F25C0A;
     font-size: 15px;
-    min-width: 150px;
+    min-width: 100px;
     min-height: 15px;
     font-weight: bold;
     color: white;
-    padding: 13px 13px 10px 13px;
+    padding: 8px 8px 5px 8px;
 }
 
 #save:disabled {
@@ -94,7 +94,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>10</number>
+    <number>0</number>
    </property>
    <property name="leftMargin">
     <number>0</number>
@@ -138,6 +138,9 @@
       </item>
       <item>
        <widget class="QLabel" name="feature_request_link">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="text">
          <string>&lt;a style=&quot;color: white&quot; href=&quot;mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !&quot;&gt;Request Feature&lt;/a&gt;</string>
         </property>
@@ -148,6 +151,9 @@
       </item>
       <item>
        <widget class="QLabel" name="help_link">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="text">
          <string>&lt;a style=&quot;color: white&quot; href=&quot;http://tagyourmusic.com/#style-guide&quot;&gt;Help&lt;/a&gt;</string>
         </property>
@@ -186,6 +192,9 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -212,6 +221,9 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -237,6 +249,9 @@
        <widget class="QPushButton" name="next">
         <property name="enabled">
          <bool>false</bool>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
