@@ -39,7 +39,7 @@ from tgit.util import fs
 def create_album_into(portfolio):
     def create_new_album(creation_properties):
         # todo: find a way to notify the portfolio's listeners of the destination
-        album = Album(of_type=creation_properties.type, destination=creation_properties.album_location)
+        album = Album(of_type=creation_properties.type, destination=creation_properties.album_full_path)
         portfolio.add_album(album)
         return album
 
@@ -47,7 +47,7 @@ def create_album_into(portfolio):
         _, extension = os.path.splitext(creation_properties.track_location)
         all_metadata = tagging.load_metadata(creation_properties.track_location)
         album_metadata = all_metadata.copy(*Album.tags())
-        album = Album(album_metadata, of_type=creation_properties.type, destination=creation_properties.album_location)
+        album = Album(album_metadata, of_type=creation_properties.type, destination=creation_properties.album_full_path)
         portfolio.add_album(album)
         add_tracks_to(album)([creation_properties.track_location])
         return album

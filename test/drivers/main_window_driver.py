@@ -16,14 +16,14 @@ class MainWindowDriver(WidgetDriver):
     def __init__(self, selector, prober, gesture_performer):
         super().__init__(selector, prober, gesture_performer)
 
-    def import_album(self, of_type, track_path, album_path):
+    def import_album(self, of_type, name, track_path, album_path):
         welcome_screen(self).new_album(of_type)
-        new_album_screen(self).import_album(album_path, track_path)
+        new_album_screen(self).import_album(name, album_path, track_path)
         album_screen(self).is_showing_on_screen()
 
-    def create_album(self, of_type, filename):
+    def create_album(self, of_type, name, directory):
         welcome_screen(self).new_album(of_type)
-        new_album_screen(self).create_empty_album(filename)
+        new_album_screen(self).create_empty_album(name, directory)
         album_screen(self).is_showing_on_screen()
 
     def add_tracks_in_folder(self):

@@ -29,9 +29,8 @@ def select_album_destination_dialog(parent):
 
 
 class SelectAlbumDestinationDialogDriver(FileDialogDriver):
-    def save_as(self, filename, in_directory):
+    def select_destination(self, destination):
         self.show_hidden_files()
-        self.navigate_to_dir(in_directory)
-        self.enter_manually(filename)
-        self.has_accept_button_text("&Save")
+        self.navigate_to_dir(destination)
+        self.has_accept_button_text("&Choose")
         self.accept()

@@ -39,23 +39,24 @@ def mp3(tmpdir):
 
 
 def test_adds_new_album_to_porfolio(tmpdir):
-    album_destination = tmpdir.join("album.tgit").strpath
+    album_destination = tmpdir.strpath
     portfolio = AlbumPortfolio()
     director.create_album_into(portfolio)(
-        AlbumCreationProperties(type_=Album.Type.MP3, album_location=album_destination))
+        AlbumCreationProperties(type_=Album.Type.MP3, album_name="album", album_location=album_destination))
     assert_that(portfolio, not empty())
 
 
 def test_saves_new_album_to_disk(tmpdir):
-    destination = tmpdir.join("album.tgit").strpath
+    destination = tmpdir.strpath
     portfolio = AlbumPortfolio()
-    director.create_album_into(portfolio)(AlbumCreationProperties(type_=Album.Type.FLAC, album_location=destination))
+    creation_properties = AlbumCreationProperties(type_=Album.Type.FLAC, album_name="album", album_location=destination)
+    director.create_album_into(portfolio)(creation_properties)
 
     def read_lines(file):
         content = open(file, "r").read()
         return content.split("\n")
 
-    assert_that(read_lines(destination), has_item(contains_string("type: flac")))
+    assert_that(read_lines(creation_properties.album_full_path), has_item(contains_string("type: flac")))
 
 
 def test_saves_album_metadata_to_disk(tmpdir):
@@ -152,14 +153,14 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
         has_properties(track_title='Someone Like You')))
 
 
-def test_imports_album_from_track(recordings):
+def test_imports_album_from_track(recordings, tmpdir):
     track_location = recordings.add_mp3(track_title="Smash Smash",
                                         release_name="Honeycomb", lead_performer="Joel Miller",
                                         front_cover=("image/jpeg", "front cover", b"front.jpeg"))
 
     portfolio = AlbumPortfolio()
     director.create_album_into(portfolio)(
-        AlbumCreationProperties(Album.Type.MP3, resources.path("album.tgit"), track_location=track_location))
+        AlbumCreationProperties(Album.Type.MP3, "album", tmpdir.strpath, track_location=track_location))
     album = portfolio[0]
 
     assert_that(album.release_name, equal_to("Honeycomb"), "imported release name")

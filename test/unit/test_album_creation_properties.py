@@ -16,25 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtCore import QDir
-from PyQt5.QtWidgets import QFileDialog
+from hamcrest import assert_that, equal_to
+
+from tgit.ui.new_album_screen import AlbumCreationProperties
 
 
-class SelectAlbumDestinationDialog(QFileDialog):
-    def __init__(self, parent, native):
-        super().__init__(parent)
-        self.setObjectName("select_album_destination_dialog")
-        self.setAcceptMode(QFileDialog.AcceptOpen)
-        self.setDirectory(QDir.homePath())
-        self.setFileMode(QFileDialog.Directory)
-        self.setOption(QFileDialog.DontUseNativeDialog, not native)
+def test_returns_full_album_path():
+    properties = AlbumCreationProperties("...", "album_name", "/album/directory")
 
-    def display(self, on_save_as):
-        self.fileSelected.connect(on_save_as)
-        self.open()
-
-    def done(self, result):
-        self.fileSelected.disconnect()
-        super().done(result)
+    assert_that(properties.album_full_path, equal_to("/album/directory/album_name.tgit"), "album full path")
