@@ -26,7 +26,7 @@ from tgit.album import Album, AlbumListener
 from tgit.ui.helpers import formatting, ui_file
 from tgit.ui.observer import Observer
 
-
+VERTICAL_HEADER_WIDTH = 18
 COLUMNS_WIDTHS = [30, 300, 245, 270, 90, 70]
 
 
@@ -79,7 +79,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     def _setup_vertical_header(self, table):
         table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         table.verticalHeader().setSectionsMovable(True)
-        table.verticalHeader().setMinimumWidth(18)
+        table.verticalHeader().setMinimumWidth(VERTICAL_HEADER_WIDTH)
 
     def _resize_columns(self, table):
         for index, width in enumerate(COLUMNS_WIDTHS):
@@ -154,7 +154,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     def _update_row(self, row_index):
         track = self._tracks[row_index]
         header_item = QTableWidgetItem()
-        header_item.setIcon(QIcon(":/images/volume-up.png") if self._is_playing(track)
+        header_item.setIcon(QIcon(":/images/volume-up-16.png") if self._is_playing(track)
                             else QIcon(":/images/drag-handle.gif"))
         self._track_table.setVerticalHeaderItem(row_index, header_item)
 
