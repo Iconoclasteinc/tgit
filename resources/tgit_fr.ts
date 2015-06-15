@@ -50,7 +50,7 @@
 <context>
     <name>CsvFormat</name>
     <message>
-        <source>Album Title</source>
+        <source>Release Name</source>
         <translation>Titre de l&apos;album</translation>
     </message>
     <message>
