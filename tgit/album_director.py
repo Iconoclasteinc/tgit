@@ -142,10 +142,10 @@ def play_or_stop(player):
 
 def recordAlbum(album):
     for track in album.tracks:
-        record_track(tagged_name(track), track, datetime.now(tz.tzlocal()))
+        tag_track(tagged_file(album, track), track, datetime.now(tz.tzlocal()))
 
 
-def record_track(destination_file, track, time):
+def tag_track(to_file, track, time):
     def album_metadata(album):
         metadata = album.metadata.copy()
         if album.compilation:
@@ -159,11 +159,11 @@ def record_track(destination_file, track, time):
         track.metadata.update(album_metadata(track.album))
 
     def copy_track_file():
-        if destination_file != track.filename:
-            shutil.copy(track.filename, destination_file)
+        if to_file != track.filename:
+            shutil.copy(track.filename, to_file)
 
     def save_track_metadata():
-        tagging.save_metadata(destination_file, track.metadata)
+        tagging.save_metadata(to_file, track.metadata)
 
     update_track_metadata()
     copy_track_file()
@@ -206,8 +206,8 @@ def sanitize(filename):
     return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
 
 
-def tagged_name(track):
-    dirname = os.path.dirname(track.filename)
+def tagged_file(album, track):
+    dirname = os.path.dirname(album.destination)
     _, ext = os.path.splitext(track.filename)
     filename = sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
                                                                        number=track.track_number,

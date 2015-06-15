@@ -191,7 +191,7 @@ def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
                         album=album)
 
     destination_file = os.path.join(os.path.dirname(track.filename), 'tagged.mp3')
-    director.record_track(destination_file, track, NOW)
+    director.tag_track(destination_file, track, NOW)
 
     metadata = tagging.load_metadata(destination_file)
     assert_that(metadata, has_entries(release_name='Album Title', lead_performer='Album Artist'), 'metadata tags')
@@ -203,7 +203,7 @@ def test_does_not_update_track_with_album_lead_performer_when_album_is_a_compila
     track = build.track(filename=mp3(), lead_performer='Track Artist', album=album)
 
     tagged_file = mp3()
-    director.record_track(tagged_file, track, NOW)
+    director.tag_track(tagged_file, track, NOW)
 
     metadata = tagging.load_metadata(tagged_file)
     assert_that(metadata, has_entries(lead_performer='Track Artist'), 'metadata tags')
@@ -213,7 +213,7 @@ def test_adds_version_information_to_tags(mp3):
     track = build.track(filename=mp3(), album=build.album())
 
     tagged_file = mp3()
-    director.record_track(tagged_file, track, NOW)
+    director.tag_track(tagged_file, track, NOW)
 
     metadata = tagging.load_metadata(tagged_file)
     assert_that(metadata, has_entries(tagger='TGiT', tagger_version=tgit.__version__,
@@ -224,16 +224,24 @@ def test_gracefully_handles_when_tagging_original_recording(mp3):
     original_file = mp3()
     track = build.track(filename=original_file, album=build.album())
 
-    director.record_track(original_file, track, datetime.now())
+    director.tag_track(original_file, track, datetime.now())
 
 
-def test_tags_file_to_same_directory_under_artist_and_title_name():
-    album = build.album(lead_performer='artist')
-    track = build.track(filename='track.mp3', track_title='title')
-    for t in (build.track(), build.track(), track):
-        album.addTrack(t)
+def test_tags_file_to_album_directory_under_artist_and_title_name(tmpdir):
+    album = build.album(destination=tmpdir.join('album.tgit').strpath)
+    track = build.track(filename='track.mp3', track_title='title', lead_performer='artist')
+    track.track_number = 3
 
-    assert_that(director.tagged_name(track), equal_to('artist - 03 - title.mp3'), 'name of tagged file')
+    assert_that(director.tagged_file(album, track),
+                equal_to(tmpdir.join('artist - 03 - title.mp3')), 'name of tagged file')
+
+
+def test_replaces_invalid_characters_for_file_names_with_underscores():
+    assert_that(director.sanitize('1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')
+
+
+def test_strips_leading_and_trailing_whitespace_from_file_names():
+    assert_that(director.sanitize('  filename   '), equal_to('filename'), 'sanitized name')
 
 
 def test_exports_album_as_csv_encoded_file(tmpdir):
@@ -355,12 +363,6 @@ class AlbumDirectorTest(unittest.TestCase):
         album = build.album(images=[build.image('image/jpeg', 'image data')])
         director.removeAlbumCover(album)
         assert_that(album.images, equal_to([]), 'images')
-
-    def testReplacesInvalidCharactersForFileNamesWithUnderscores(self):
-        assert_that(director.sanitize('1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')
-
-    def testStripsLeadingAndTrailingWhitespaceFromFileNames(self):
-        assert_that(director.sanitize('  filename   '), equal_to('filename'), 'sanitized name')
 
     def testReturnsListOfIdentitiesWhenISNIFoundInRegistry(self):
         class NameRegistry:

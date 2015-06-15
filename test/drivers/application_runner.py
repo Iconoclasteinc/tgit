@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
-import tempfile
+import os
+from hamcrest import assert_that, contains
+from hamcrest import has_entries
 from cute import event_loop
 from cute.animatron import Animatron
+from tgit import tagging
 
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
 from cute.prober import EventProcessingProber
 from test.util import doubles
+from tgit.metadata import Image
 from tgit.tagger import TGiT
 from .main_window_driver import MainWindowDriver
+from tgit.util import fs
 
 ONE_SECOND_IN_MILLISECONDS = 1000
 SAVE_DELAY = 500
@@ -40,8 +45,8 @@ class ApplicationRunner:
         event_loop.process_pending_events()
         self.app.quit()
 
-    def new_album(self, of_type="mp3", save_as="album"):
-        self.tagger.create_album(of_type, save_as, self._save_album_directory.strpath)
+    def new_album(self, of_type="mp3", filename="album"):
+        self.tagger.create_album(of_type, filename, self._save_album_directory.strpath)
 
     def add_tracks_to_album(self, *tracks):
         self.tagger.add_tracks_to_album(*tracks)
@@ -110,3 +115,21 @@ class ApplicationRunner:
 
     def save(self):
         self.tagger.save()
+
+    def has_tagged_track(self, filename, front_cover=None, **tags):
+        path = self._save_album_directory.join(filename)
+        if not os.path.exists(path):
+            raise AssertionError('Not tagged file: ' + path)
+
+        metadata = tagging.load_metadata(path)
+        images = []
+        # todo use builders and metadata
+        if front_cover:
+            image, desc = front_cover
+            mime = fs.guessMimeType(image)
+            images.append(Image(mime, fs.binary_content_of(image), type_=Image.FRONT_COVER, desc=desc))
+
+        assert_that(metadata, has_entries(tags), 'metadata tags')
+        assert_that(metadata.images, contains(*images), 'attached pictures')
+
+

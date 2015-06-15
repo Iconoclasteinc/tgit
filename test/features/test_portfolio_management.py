@@ -17,27 +17,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import QSettings
-import pytest
-from test.drivers.application_runner import ApplicationRunner
-from test.util import doubles
-from tgit.preferences import Preferences
-
-
 def test_closing_an_album(app, recordings):
-    app.new_album(of_type="mp3", save_as="album1")
+    app.new_album(of_type="mp3", filename="album1")
 
     track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
     app.shows_album_content(["???"])
     app.close_album()
 
-    app.new_album(of_type="mp3", save_as="album2")
+    app.new_album(of_type="mp3", filename="album2")
     app.shows_album_content()
 
 
 def test_loading_an_album(app):
-    app.new_album(of_type="mp3", save_as="new_album")
+    app.new_album(of_type="mp3", filename="new_album")
 
     app.shows_album_metadata()
     app.change_album_metadata(release_name="Honeycomb")
