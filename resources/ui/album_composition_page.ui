@@ -396,6 +396,10 @@ QTableCornerButton::section {
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>_add_tracks_button</tabstop>
+  <tabstop>_track_table</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

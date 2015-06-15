@@ -314,6 +314,11 @@ QLabel {
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>load_album_button</tabstop>
+  <tabstop>new_flac_album_button</tabstop>
+  <tabstop>new_mp3_album_button</tabstop>
+ </tabstops>
  <resources>
   <include location="../resources.qrc"/>
  </resources>

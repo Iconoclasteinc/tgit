@@ -59,25 +59,25 @@ QCalendarWidget QToolButton::menu-indicator:open {
     top: 3px; right: 1px; /* shift it a bit */
 }
 
-QSpinBox::up-button { 
+QSpinBox::up-button {
 	background-color: transparent;
 	border: 1px solid #F79D6C;
     padding: 1px;
 	image: url(:/images/chevron-up-black-8.png);
 }
 
-QSpinBox::up-button:pressed { 
+QSpinBox::up-button:pressed {
 	padding: 0px 1px 2px 2px;
 }
 
-QSpinBox::down-button { 
+QSpinBox::down-button {
 	background-color: transparent;
 	border: 1px solid #F79D6C;
     padding: 1px;
 	image: url(:/images/chevron-down-black-8.png);
 }
 
-QSpinBox::down-button:pressed { 
+QSpinBox::down-button:pressed {
 	padding: 2px 1px 0px 2px;
 }
 
@@ -1149,6 +1149,34 @@ QComboBox::down-arrow:focus {
    <header>tgit.ui.helpers.text_area</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>release_name</tabstop>
+  <tabstop>compilation</tabstop>
+  <tabstop>lead_performer</tabstop>
+  <tabstop>lookup_isni_button</tabstop>
+  <tabstop>assign_isni_button</tabstop>
+  <tabstop>isni</tabstop>
+  <tabstop>clear_isni_button</tabstop>
+  <tabstop>area</tabstop>
+  <tabstop>guest_performers</tabstop>
+  <tabstop>add_guest_performers_button</tabstop>
+  <tabstop>label_name</tabstop>
+  <tabstop>catalog_number</tabstop>
+  <tabstop>barcode</tabstop>
+  <tabstop>media_type</tabstop>
+  <tabstop>release_type</tabstop>
+  <tabstop>comments</tabstop>
+  <tabstop>recording_studios</tabstop>
+  <tabstop>producer</tabstop>
+  <tabstop>mixer</tabstop>
+  <tabstop>genre</tabstop>
+  <tabstop>select_picture_button</tabstop>
+  <tabstop>remove_picture_button</tabstop>
+  <tabstop>release_time</tabstop>
+  <tabstop>digital_release_time</tabstop>
+  <tabstop>original_release_time</tabstop>
+  <tabstop>recording_time</tabstop>
+ </tabstops>
  <resources>
   <include location="../resources.qrc"/>
  </resources>

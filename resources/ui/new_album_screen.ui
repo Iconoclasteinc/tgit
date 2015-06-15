@@ -287,6 +287,14 @@ QPushButton:disabled {
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>album_name</tabstop>
+  <tabstop>album_location</tabstop>
+  <tabstop>browse_album_location_button</tabstop>
+  <tabstop>track_location</tabstop>
+  <tabstop>browse_track_location_button</tabstop>
+  <tabstop>continue_button</tabstop>
+ </tabstops>
  <resources>
   <include location="../resources.qrc"/>
  </resources>
