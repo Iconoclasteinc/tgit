@@ -19,21 +19,30 @@
 
 from PyQt5.QtCore import QSettings
 import pytest
+
 from test.drivers.application_runner import ApplicationRunner
 from test.util import doubles
+from test.util.workspace import AlbumWorkspace
 from tgit.preferences import Preferences
 
 
 @pytest.yield_fixture
 def recordings(tmpdir):
-    library = doubles.recording_library(tmpdir.strpath)
+    library = doubles.recording_library(tmpdir.mkdir("library").strpath)
     yield library
     library.delete()
 
 
 @pytest.yield_fixture
-def app(tmpdir):
-    runner = ApplicationRunner(tmpdir)
+def workspace(tmpdir):
+    album_workspace = AlbumWorkspace(tmpdir.mkdir("workspace").strpath)
+    yield album_workspace
+    album_workspace.delete()
+
+
+@pytest.yield_fixture
+def app(workspace):
+    runner = ApplicationRunner(workspace)
     runner.start(Preferences(QSettings()))
     yield runner
     runner.stop()

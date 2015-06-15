@@ -5,7 +5,6 @@ import shutil
 import unittest
 
 from dateutil import tz
-
 from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
     has_item, empty, has_property, contains_string
 import pytest
@@ -145,7 +144,7 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
     recordings.add_mp3(track_title='Someone Like You')
 
     album = build.album()
-    director.add_tracks_to(album)([recording.filename for recording in recordings.entries])
+    director.add_tracks_to(album)([recording.filename for recording in recordings.files])
 
     assert_that(album.tracks, contains(
         has_properties(track_title='Rolling in the Deep'),
@@ -300,12 +299,11 @@ def test_moves_track_of_album():
 
 class AlbumDirectorTest(unittest.TestCase):
     def setUp(self):
-        self.tempdir = resources.makeTempDir()
+        self.tempdir = resources.make_temp_dir()
         self.library = doubles.recording_library(self.tempdir)
 
     def tearDown(self):
         self.library.delete()
-        shutil.rmtree(self.tempdir)
 
     def testUpdatesTrackMetadata(self):
         track = build.track()
