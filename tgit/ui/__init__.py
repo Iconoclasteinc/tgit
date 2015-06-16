@@ -176,8 +176,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                         album_screen=create_album_screen,
                         on_close_album=ui_commands.close_album_and(director.remove_album_from(portfolio)),
                         on_save_album=director.export_as_yaml,
-                        on_add_files=ui_commands.add_files_to(dialogs),
-                        on_add_folder=ui_commands.add_folder_to(dialogs),
+                        on_add_files=dialogs.add_tracks,
+                        on_add_folder=dialogs.add_tracks_in_folder,
                         on_export=ui_commands.export_to(dialogs),
                         on_settings=show_settings_dialog)
     dialogs.parent = window

@@ -49,7 +49,7 @@ def create_album_into(portfolio):
         album_metadata = all_metadata.copy(*Album.tags())
         album = Album(album_metadata, of_type=creation_properties.type, destination=creation_properties.album_full_path)
         portfolio.add_album(album)
-        add_tracks_to(album)([creation_properties.track_location])
+        add_tracks_to(album)(creation_properties.track_location)
         return album
 
     def add_album(creation_properties):
@@ -78,8 +78,8 @@ def remove_album_from(portfolio):
 
 
 def add_tracks_to(album):
-    def add_tracks_to_album(selection):
-        for filename in fs.list_files(selection, of_type=".{}".format(album.type)):
+    def add_tracks_to_album(*selection):
+        for filename in selection:
             album.add_track(Track(filename, tagging.load_metadata(filename)))
 
     return add_tracks_to_album

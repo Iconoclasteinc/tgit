@@ -3,7 +3,7 @@ from datetime import datetime
 import unittest
 
 from dateutil import tz
-from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, contains_inanyorder, none, \
+from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_entries, none, \
     has_item, empty, has_property, contains_string
 import pytest
 
@@ -139,25 +139,12 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
                    ('Rolling in the Deep', 'Set Fire to the Rain', 'Someone Like You')]
 
     album = build.album()
-    director.add_tracks_to(album)(track_files)
+    director.add_tracks_to(album)(*track_files)
 
     assert_that(album.tracks, contains(
         has_properties(track_title='Rolling in the Deep'),
         has_properties(track_title='Set Fire to the Rain'),
         has_properties(track_title='Someone Like You')))
-
-
-def test_adds_to_album_all_compatible_audio_files_found_in_selected_folder(recordings):
-    recordings.add_mp3(track_title='Rolling in the Deep')
-    recordings.add_flac(track_title='Someone Like Me')
-    recordings.add_mp3(track_title='Set Fire to the Rain')
-
-    album = build.album(of_type="mp3")
-    director.add_tracks_to(album)([recordings.root_path])
-
-    assert_that(album.tracks, contains_inanyorder(
-        has_properties(track_title='Rolling in the Deep'),
-        has_properties(track_title='Set Fire to the Rain')))
 
 
 def test_imports_album_from_track(recordings, workspace):
@@ -174,9 +161,6 @@ def test_imports_album_from_track(recordings, workspace):
     assert_that(album.images, contains(has_property("data", b"front.jpeg")), "imported images")
     assert_that(album.type, equal_to("mp3"))
     assert_that(album.tracks, contains(has_properties(track_title="Smash Smash")))
-
-    album = build.album(of_type="mp3")
-    director.add_tracks_to(album)([recordings.root_path])
 
 
 def test_tags_copy_of_original_recording_with_complete_metadata(recordings, workspace):

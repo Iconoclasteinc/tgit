@@ -36,20 +36,6 @@ def close_album_and(remove_album):
     return close_album
 
 
-def add_files_to(dialogs):
-    def add_files(album):
-        dialogs.add_tracks(album).open()
-
-    return add_files
-
-
-def add_folder_to(dialogs):
-    def add_folder(album):
-        dialogs.add_tracks_in_folder(album).open()
-
-    return add_folder
-
-
 def export_to(dialogs):
     def export(album):
         dialogs.export(album).open()

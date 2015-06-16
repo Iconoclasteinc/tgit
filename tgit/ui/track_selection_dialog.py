@@ -16,37 +16,38 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
-
-from PyQt5.QtCore import QDir, pyqtSignal
+from PyQt5.QtCore import QDir, QFileInfo
 from PyQt5.QtWidgets import QFileDialog
 
 
-def make_track_selection_dialog(parent, native=True, *, on_select_tracks):
-    dialog = TrackSelectionDialog(parent, native)
-    dialog.tracks_selected.connect(on_select_tracks)
-    return dialog
-
-
 class TrackSelectionDialog(QFileDialog):
-    tracks_selected = pyqtSignal(list)
-
-    file_types = {'mp3': "MP3 Files", 'flac': "FLAC files"}
+    _FILTERS = {'mp3': "MP3 Files", 'flac': "FLAC files"}
 
     def __init__(self, parent, native):
         super().__init__(parent)
         self.setObjectName("track-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
         self.setDirectory(QDir.homePath())
-        self.filesSelected.connect(lambda selected: self.tracks_selected.emit(list(map(os.path.abspath, selected))))
-        self.select_files()
-        self.filter_tracks('mp3')
 
-    def select_folders(self):
+    def select_files_in_folder(self, file_type, on_select):
         self.setFileMode(QFileDialog.Directory)
+        self.setNameFilter(self._filter_for(file_type))
+        self.filesSelected.connect(lambda files: on_select(*self._list_files(folder=files[0], file_type=file_type)))
+        self.open()
 
-    def select_files(self):
+    def select_files(self, file_type, on_select):
         self.setFileMode(QFileDialog.ExistingFiles)
+        self.setNameFilter(self._filter_for(file_type))
+        self.filesSelected.connect(lambda files: on_select(*files))
+        self.open()
 
-    def filter_tracks(self, type_):
-        self.setNameFilter("{0} {1}".format(self.tr(self.file_types[type_]), "*.{}".format(type_)))
+    def _filter_for(self, type_):
+        return "{0} {1}".format(self.tr(self._FILTERS[type_]), "*.{}".format(type_))
+
+    def done(self, result):
+        self.filesSelected.disconnect()
+        return super().done(result)
+
+    def _list_files(self, folder, file_type):
+        return list(map(QFileInfo.absoluteFilePath,
+                        QDir(folder, self._filter_for(file_type), filters=QDir.Files).entryInfoList()))

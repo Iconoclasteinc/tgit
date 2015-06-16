@@ -63,13 +63,15 @@ def test_creates_a_new_picture_selection_dialog_for_each_album(dialogs):
 
 def test_creates_a_single_track_selection_dialog_for_a_given_album(dialogs, track_selection_dialog_driver):
     album = make.album()
-    dialogs.add_tracks(album)()
-    track_selection_dialog_driver.is_showing_on_screen()
-    track_selection_dialog_driver.close()
 
     dialogs.add_tracks(album)()
     track_selection_dialog_driver.is_showing_on_screen()
     track_selection_dialog_driver.close()
+
+    dialogs.add_tracks_in_folder(album)()
+    track_selection_dialog_driver.is_showing_on_screen()
+    track_selection_dialog_driver.close()
+
 
 def test_creates_a_new_track_selection_dialog_for_each_album(dialogs):
     album = make.album()

@@ -46,7 +46,8 @@ class ApplicationRunner:
         self.tagger.add_tracks_to_album(*tracks)
 
     def import_album(self, from_track, of_type="mp3", save_as="album"):
-        self.tagger.import_album(of_type=of_type, name=save_as, track_path=from_track, album_path=self._workspace.root_path)
+        self.tagger.import_album(of_type=of_type, name=save_as, track_path=from_track,
+                                 album_path=self._workspace.root_path)
 
     def shows_album_content(self, *tracks):
         self.tagger.shows_album_contains(*tracks)
