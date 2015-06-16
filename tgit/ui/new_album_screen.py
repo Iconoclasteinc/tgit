@@ -31,18 +31,6 @@ def make_new_album_screen(of_type, on_create_album, on_select_album_location, on
     return page
 
 
-class AlbumCreationProperties:
-    def __init__(self, type_, album_name, album_location, track_location=None):
-        self.album_name = album_name
-        self.album_location = album_location
-        self.track_location = track_location
-        self.type = type_
-
-    @property
-    def album_full_path(self):
-        return "{0}/{1}.tgit".format(self.album_location, self.album_name)
-
-
 class NewAlbumScreen(QFrame):
     def __init__(self, parent=None, of_type=Album.Type.FLAC):
         super().__init__(parent)
@@ -55,8 +43,8 @@ class NewAlbumScreen(QFrame):
 
     def on_create_album(self, on_create_album):
         self.continue_button.clicked.connect(lambda: on_create_album(
-            AlbumCreationProperties(self.of_type, self.album_name.text(), self.album_location.text(),
-                                    self.track_location.text())))
+            dict(type=self.of_type, album_name=self.album_name.text(), album_location=self.album_location.text(),
+                 track_location=self.track_location.text())))
 
     def on_select_album_location(self, on_select_album_location):
         self.browse_album_location_button.clicked.connect(on_select_album_location)

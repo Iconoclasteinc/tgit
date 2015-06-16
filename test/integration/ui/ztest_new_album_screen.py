@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from hamcrest import has_properties
+from hamcrest import has_properties, has_entries
 import pytest
 
 from cute.finders import WidgetIdentity
@@ -46,9 +46,9 @@ def test_signals_album_creation_properties(screen, driver, tmpdir):
     destination = tmpdir.strpath
     track_location = resources.path("base.mp3")
 
-    create_album_signal = ValueMatcherProbe("new album",
-                                            has_properties(album_name="Honeycomb", album_location=destination,
-                                                           type=Album.Type.FLAC, track_location=track_location))
+    create_album_signal = ValueMatcherProbe("new album properties",
+                                            has_entries(album_name="Honeycomb", album_location=destination,
+                                                        type=Album.Type.FLAC, track_location=track_location))
     screen.on_create_album(create_album_signal.received)
 
     driver.import_album("Honeycomb", destination, track_location)

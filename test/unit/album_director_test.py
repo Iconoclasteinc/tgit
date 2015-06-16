@@ -14,7 +14,6 @@ from tgit import album_director as director, tagging
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.metadata import Image
-from tgit.ui.new_album_screen import AlbumCreationProperties
 from tgit.util import fs
 
 NOW = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
@@ -37,21 +36,22 @@ def workspace(tmpdir):
 def test_adds_new_album_to_porfolio(workspace):
     portfolio = AlbumPortfolio()
     director.create_album_into(portfolio)(
-        AlbumCreationProperties(type_=Album.Type.MP3, album_name="album", album_location=workspace.root_path))
+        dict(type=Album.Type.MP3, album_name="album", album_location=workspace.root_path, track_location=""))
     assert_that(portfolio, not empty())
 
 
 def test_saves_new_album_to_disk(workspace):
     portfolio = AlbumPortfolio()
-    creation_properties = AlbumCreationProperties(type_=Album.Type.FLAC, album_name="album",
-                                                  album_location=workspace.root_path)
+    creation_properties = dict(type=Album.Type.FLAC, album_name="album", album_location=workspace.root_path,
+                               track_location="")
     director.create_album_into(portfolio)(creation_properties)
 
     def read_lines(file):
         content = open(file, "r").read()
         return content.split("\n")
 
-    assert_that(read_lines(creation_properties.album_full_path), has_item(contains_string("type: flac")))
+    full_path = "{0}/{1}.tgit".format(workspace.root_path, "album")
+    assert_that(read_lines(full_path), has_item(contains_string("type: flac")))
 
 
 def test_saves_album_metadata_to_disk(workspace):
@@ -154,7 +154,7 @@ def test_imports_album_from_track(recordings, workspace):
 
     portfolio = AlbumPortfolio()
     director.create_album_into(portfolio)(
-        AlbumCreationProperties(Album.Type.MP3, "album", workspace.root_path, track_location=track_file))
+        dict(type=Album.Type.MP3, album_name="album", album_location=workspace.root_path, track_location=track_file))
     album = portfolio[0]
 
     assert_that(album.release_name, equal_to("Honeycomb"), "imported release name")

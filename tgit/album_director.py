@@ -37,23 +37,27 @@ from tgit.util import fs
 
 
 def create_album_into(portfolio):
+    def build_full_path(creation_properties):
+        return "{0}/{1}.tgit".format(creation_properties["album_location"], creation_properties["album_name"])
+
     def create_new_album(creation_properties):
         # todo: find a way to notify the portfolio's listeners of the destination
-        album = Album(of_type=creation_properties.type, destination=creation_properties.album_full_path)
+        album = Album(of_type=creation_properties["type"], destination=build_full_path(creation_properties))
         portfolio.add_album(album)
         return album
 
     def import_album_to_portfolio(creation_properties):
-        _, extension = os.path.splitext(creation_properties.track_location)
-        all_metadata = tagging.load_metadata(creation_properties.track_location)
+        _, extension = os.path.splitext(creation_properties["track_location"])
+        all_metadata = tagging.load_metadata(creation_properties["track_location"])
         album_metadata = all_metadata.copy(*Album.tags())
-        album = Album(album_metadata, of_type=creation_properties.type, destination=creation_properties.album_full_path)
+        album = Album(album_metadata, of_type=creation_properties["type"],
+                      destination=build_full_path(creation_properties))
         portfolio.add_album(album)
-        add_tracks_to(album)(creation_properties.track_location)
+        add_tracks_to(album)(creation_properties["track_location"])
         return album
 
     def add_album(creation_properties):
-        if creation_properties.track_location:
+        if creation_properties["track_location"]:
             album = import_album_to_portfolio(creation_properties)
         else:
             album = create_new_album(creation_properties)
