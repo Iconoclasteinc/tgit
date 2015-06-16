@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-import os
-import shutil
 import unittest
 
 from dateutil import tz
@@ -9,7 +7,8 @@ from hamcrest import assert_that, equal_to, is_, contains, has_properties, has_e
     has_item, empty, has_property, contains_string
 import pytest
 
-from test.util import builders as build, resources, doubles, mp3_file
+from test.util import builders as build, resources, doubles
+from test.util.workspace import AlbumWorkspace
 import tgit
 from tgit import album_director as director, tagging
 from tgit.album import Album
@@ -21,34 +20,31 @@ from tgit.util import fs
 NOW = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
 
 
-@pytest.fixture
-def recordings(request, tmpdir):
-    library = doubles.recording_library(tmpdir.strpath)
-    request.addfinalizer(library.delete)
-    return library
+@pytest.yield_fixture
+def recordings(tmpdir):
+    library = doubles.recording_library(tmpdir.mkdir("library"))
+    yield library
+    library.delete()
 
 
 @pytest.yield_fixture
-def mp3(tmpdir):
-    def maker(**tags):
-        return mp3_file.make(to=tmpdir.strpath, **tags).filename
-
-    yield maker
-    shutil.rmtree(tmpdir.strpath)
+def workspace(tmpdir):
+    album_workspace = AlbumWorkspace(tmpdir.mkdir("workspace"))
+    yield album_workspace
+    album_workspace.delete()
 
 
-def test_adds_new_album_to_porfolio(tmpdir):
-    album_destination = tmpdir.strpath
+def test_adds_new_album_to_porfolio(workspace):
     portfolio = AlbumPortfolio()
     director.create_album_into(portfolio)(
-        AlbumCreationProperties(type_=Album.Type.MP3, album_name="album", album_location=album_destination))
+        AlbumCreationProperties(type_=Album.Type.MP3, album_name="album", album_location=workspace.root_path))
     assert_that(portfolio, not empty())
 
 
-def test_saves_new_album_to_disk(tmpdir):
-    destination = tmpdir.strpath
+def test_saves_new_album_to_disk(workspace):
     portfolio = AlbumPortfolio()
-    creation_properties = AlbumCreationProperties(type_=Album.Type.FLAC, album_name="album", album_location=destination)
+    creation_properties = AlbumCreationProperties(type_=Album.Type.FLAC, album_name="album",
+                                                  album_location=workspace.root_path)
     director.create_album_into(portfolio)(creation_properties)
 
     def read_lines(file):
@@ -58,16 +54,16 @@ def test_saves_new_album_to_disk(tmpdir):
     assert_that(read_lines(creation_properties.album_full_path), has_item(contains_string("type: flac")))
 
 
-def test_saves_album_metadata_to_disk(tmpdir):
-    destination = tmpdir.join("album.tgit").strpath
-    album = build.album(release_name="Title", compilation=True, lead_performer="Artist", isni="0000123456789",
+def test_saves_album_metadata_to_disk(workspace):
+    album_file = workspace.path("album.tgit")
+    album = build.album(filename=album_file,
+                        release_name="Title", compilation=True, lead_performer="Artist", isni="0000123456789",
                         guestPerformers=[("Guitar", "Guitarist"), ("Piano", "Pianist")], label_name="Label",
                         catalogNumber="XXX123456789", upc="123456789999", comments="Comments\n...",
                         releaseTime="2009-01-01", recording_time="2008-09-15", recordingStudios="Studios",
                         producer="Producer", mixer="Engineer", primary_style="Style",
                         images=[build.image("image/jpeg", fs.binary_content_of(resources.path("front-cover.jpg")),
                                             Image.FRONT_COVER, "Front Cover")])
-    album.destination = destination
 
     director.export_as_yaml(album)
 
@@ -75,7 +71,7 @@ def test_saves_album_metadata_to_disk(tmpdir):
         content = open(file, "r").read()
         return content.split("\n")
 
-    lines = read_lines(destination)
+    lines = read_lines(album_file)
     assert_that(lines, has_item(contains_string("release_name: Title")), "release name")
     assert_that(lines, has_item(contains_string("compilation: true")), "compilation")
     assert_that(lines, has_item(contains_string("lead_performer: Artist")), "lead performer")
@@ -139,12 +135,11 @@ def test_removes_album_from_portfolio():
 
 
 def test_adds_selected_tracks_to_album_in_selection_order(recordings):
-    recordings.add_mp3(track_title='Rolling in the Deep')
-    recordings.add_mp3(track_title='Set Fire to the Rain')
-    recordings.add_mp3(track_title='Someone Like You')
+    track_files = [recordings.add_mp3(track_title=filename) for filename in
+                   ('Rolling in the Deep', 'Set Fire to the Rain', 'Someone Like You')]
 
     album = build.album()
-    director.add_tracks_to(album)([recording.filename for recording in recordings.files])
+    director.add_tracks_to(album)(track_files)
 
     assert_that(album.tracks, contains(
         has_properties(track_title='Rolling in the Deep'),
@@ -152,14 +147,27 @@ def test_adds_selected_tracks_to_album_in_selection_order(recordings):
         has_properties(track_title='Someone Like You')))
 
 
-def test_imports_album_from_track(recordings, tmpdir):
-    track_location = recordings.add_mp3(track_title="Smash Smash",
-                                        release_name="Honeycomb", lead_performer="Joel Miller",
-                                        front_cover=("image/jpeg", "front cover", b"front.jpeg"))
+def test_adds_to_album_all_compatible_audio_files_found_in_selected_folder(recordings):
+    recordings.add_mp3(track_title='Rolling in the Deep')
+    recordings.add_flac(track_title='Someone Like Me')
+    recordings.add_mp3(track_title='Set Fire to the Rain')
+
+    album = build.album(of_type="mp3")
+    director.add_tracks_to(album)([recordings.root_path])
+
+    assert_that(album.tracks, contains_inanyorder(
+        has_properties(track_title='Rolling in the Deep'),
+        has_properties(track_title='Set Fire to the Rain')))
+
+
+def test_imports_album_from_track(recordings, workspace):
+    track_file = recordings.add_mp3(track_title="Smash Smash",
+                                    release_name="Honeycomb", lead_performer="Joel Miller",
+                                    front_cover=("image/jpeg", "front cover", b"front.jpeg"))
 
     portfolio = AlbumPortfolio()
     director.create_album_into(portfolio)(
-        AlbumCreationProperties(Album.Type.MP3, "album", tmpdir.strpath, track_location=track_location))
+        AlbumCreationProperties(Album.Type.MP3, "album", workspace.root_path, track_location=track_file))
     album = portfolio[0]
 
     assert_that(album.release_name, equal_to("Honeycomb"), "imported release name")
@@ -167,51 +175,41 @@ def test_imports_album_from_track(recordings, tmpdir):
     assert_that(album.type, equal_to("mp3"))
     assert_that(album.tracks, contains(has_properties(track_title="Smash Smash")))
 
-
-def test_adds_to_album_all_album_compatible_audio_files_found_in_selected_folder(recordings):
-    recordings.add_mp3(track_title='Rolling in the Deep')
-    recordings.add_flac(track_title='Someone Like Me')
-    recordings.add_mp3(track_title='Set Fire to the Rain')
-
     album = build.album(of_type="mp3")
-    director.add_tracks_to(album)([recordings.root])
-
-    assert_that(album.tracks, contains_inanyorder(
-        has_properties(track_title='Rolling in the Deep'),
-        has_properties(track_title='Set Fire to the Rain')))
+    director.add_tracks_to(album)([recordings.root_path])
 
 
-def test_tags_copy_of_original_recording_with_complete_metadata(mp3):
+def test_tags_copy_of_original_recording_with_complete_metadata(recordings, workspace):
     album = build.album(release_name='Album Title',
                         lead_performer='Album Artist',
                         images=[build.image(mime='image/jpeg', data=b'<image data>')])
-    track = build.track(filename=mp3(),
+    track = build.track(filename=recordings.add_mp3(),
                         track_title='Track Title',
                         album=album)
 
-    destination_file = os.path.join(os.path.dirname(track.filename), 'tagged.mp3')
-    director.tag_track(destination_file, track, NOW)
+    tagged_file = workspace.path('tagged.mp3')
+    director.tag_track(tagged_file, track, NOW)
 
-    metadata = tagging.load_metadata(destination_file)
+    metadata = tagging.load_metadata(tagged_file)
     assert_that(metadata, has_entries(release_name='Album Title', lead_performer='Album Artist'), 'metadata tags')
     assert_that(metadata.images, contains(Image(mime='image/jpeg', data=b'<image data>')), 'attached pictures')
 
 
-def test_does_not_update_track_with_album_lead_performer_when_album_is_a_compilation(mp3):
+def test_does_not_update_track_with_album_lead_performer_when_album_is_a_compilation(recordings, workspace):
     album = build.album(lead_performer='Various Artists', compilation=True)
-    track = build.track(filename=mp3(), lead_performer='Track Artist', album=album)
+    track = build.track(filename=recordings.add_mp3(), lead_performer='Track Artist', album=album)
 
-    tagged_file = mp3()
+    tagged_file = workspace.path('tagged.mp3')
     director.tag_track(tagged_file, track, NOW)
 
     metadata = tagging.load_metadata(tagged_file)
     assert_that(metadata, has_entries(lead_performer='Track Artist'), 'metadata tags')
 
 
-def test_adds_version_information_to_tags(mp3):
-    track = build.track(filename=mp3(), album=build.album())
+def test_adds_version_information_to_tags(recordings, workspace):
+    track = build.track(filename=recordings.add_mp3(), album=build.album())
 
-    tagged_file = mp3()
+    tagged_file = workspace.path('tagged.mp3')
     director.tag_track(tagged_file, track, NOW)
 
     metadata = tagging.load_metadata(tagged_file)
@@ -219,33 +217,25 @@ def test_adds_version_information_to_tags(mp3):
                                       tagging_time="2014-03-23 16:44:33 +0000"))
 
 
-def test_gracefully_handles_when_tagging_original_recording(mp3):
-    original_file = mp3()
+def test_gracefully_handles_when_tagging_original_recording(recordings):
+    original_file = recordings.add_mp3()
     track = build.track(filename=original_file, album=build.album())
 
     director.tag_track(original_file, track, datetime.now())
 
 
-def test_tags_file_to_album_directory_under_artist_and_title_name(tmpdir):
-    album = build.album(destination=tmpdir.join('album.tgit').strpath)
+def test_tags_file_to_album_directory_under_artist_and_title_name(workspace):
+    album = build.album(destination=workspace.path('album.tgit'))
     track = build.track(filename='track.mp3', track_title='title', lead_performer='artist')
     track.track_number = 3
 
     assert_that(director.tagged_file(album, track),
-                equal_to(tmpdir.join('artist - 03 - title.mp3')), 'name of tagged file')
+                equal_to(workspace.path('artist - 03 - title.mp3')), 'name of tagged file')
 
 
-def test_replaces_invalid_characters_for_file_names_with_underscores():
-    assert_that(director.sanitize('1/2<3>4:5"6/7\\8?9*10|'), equal_to('1_2_3_4_5_6_7_8_9_10_'), 'sanitized name')
-
-
-def test_strips_leading_and_trailing_whitespace_from_file_names():
-    assert_that(director.sanitize('  filename   '), equal_to('filename'), 'sanitized name')
-
-
-def test_exports_album_as_csv_encoded_file(tmpdir):
+def test_exports_album_as_csv_encoded_file(workspace):
     album = build.album(tracks=[build.track(track_title="Les Comédiens")])
-    destination_file = tmpdir.join("french.csv").strpath
+    destination_file = workspace.path("french.csv")
 
     director.export_as_csv(album)(destination_file)
 
@@ -298,13 +288,6 @@ def test_moves_track_of_album():
 
 
 class AlbumDirectorTest(unittest.TestCase):
-    def setUp(self):
-        self.tempdir = resources.make_temp_dir()
-        self.library = doubles.recording_library(self.tempdir)
-
-    def tearDown(self):
-        self.library.delete()
-
     def testUpdatesTrackMetadata(self):
         track = build.track()
         director.updateTrack(track,

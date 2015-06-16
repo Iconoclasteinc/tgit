@@ -40,13 +40,13 @@ class ApplicationRunner:
         self.app.quit()
 
     def new_album(self, of_type="mp3", filename="album"):
-        self.tagger.create_album(of_type, filename, self._workspace.root)
+        self.tagger.create_album(of_type, filename, self._workspace.root_path)
 
     def add_tracks_to_album(self, *tracks):
         self.tagger.add_tracks_to_album(*tracks)
 
     def import_album(self, from_track, of_type="mp3", save_as="album"):
-        self.tagger.import_album(of_type=of_type, name=save_as, track_path=from_track, album_path=self._workspace.root)
+        self.tagger.import_album(of_type=of_type, name=save_as, track_path=from_track, album_path=self._workspace.root_path)
 
     def shows_album_content(self, *tracks):
         self.tagger.shows_album_contains(*tracks)

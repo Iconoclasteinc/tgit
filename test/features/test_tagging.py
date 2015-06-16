@@ -50,7 +50,7 @@ def test_tagging_a_flac_track(app, recordings, workspace):
                              tagger_version=tgit.__version__)
 
 
-def test_importing_an_album_from_an_existing_track(app, recordings, workspace):
+def test_importing_an_album_from_an_existing_track(app, recordings):
     track = recordings.add_mp3(release_name="Honeycomb", lead_performer="Joel Miller", track_title="Rashers")
 
     app.import_album(from_track=track, of_type="mp3")

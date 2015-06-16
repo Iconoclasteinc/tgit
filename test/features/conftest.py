@@ -28,14 +28,14 @@ from tgit.preferences import Preferences
 
 @pytest.yield_fixture
 def recordings(tmpdir):
-    library = doubles.recording_library(tmpdir.mkdir("library").strpath)
+    library = doubles.recording_library(tmpdir.mkdir("library"))
     yield library
     library.delete()
 
 
 @pytest.yield_fixture
 def workspace(tmpdir):
-    album_workspace = AlbumWorkspace(tmpdir.mkdir("workspace").strpath)
+    album_workspace = AlbumWorkspace(tmpdir.mkdir("workspace"))
     yield album_workspace
     album_workspace.delete()
 

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import shutil
 
 from test.util import mp3_file as mp3, flac_file as flac
 from tgit.signal import Observable, signal
@@ -11,13 +10,13 @@ def recording_library(tmpdir):
 
 
 class RecordingLibrary(object):
-    def __init__(self, root):
-        self._root = root
+    def __init__(self, local_path):
+        self._local_path = local_path
         self._entries = []
 
     @property
-    def root(self):
-        return self._root
+    def root_path(self):
+        return self._local_path.strpath
 
     @property
     def files(self):
@@ -28,13 +27,13 @@ class RecordingLibrary(object):
         return recording.filename
 
     def add_mp3(self, **metadata):
-        return self._add(mp3.make(to=self._root, **metadata))
+        return self._add(mp3.make(to=self.root_path, **metadata))
 
     def add_flac(self, **metadata):
-        return self._add(flac.make(to=self._root, **metadata))
+        return self._add(flac.make(to=self.root_path, **metadata))
 
     def delete(self):
-        shutil.rmtree(self._root)
+        self._local_path.remove()
 
 
 def audio_player():

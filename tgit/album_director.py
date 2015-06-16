@@ -20,10 +20,10 @@
 from datetime import datetime
 import functools
 import os
-import re
 import shutil
 
 from dateutil import tz
+
 import requests
 from yaml import dump, Dumper, load
 
@@ -79,8 +79,8 @@ def remove_album_from(portfolio):
 
 def add_tracks_to(album):
     def add_tracks_to_album(selection):
-        for filename in list_audio_files_from(selection, of_type=".{}".format(album.type)):
-            album.addTrack(Track(filename, tagging.load_metadata(filename)))
+        for filename in fs.list_files(selection, of_type=".{}".format(album.type)):
+            album.add_track(Track(filename, tagging.load_metadata(filename)))
 
     return add_tracks_to_album
 
@@ -102,7 +102,7 @@ def updateAlbum(album, **metadata):
 def change_cover_of(album):
     def change_album_cover(filename):
         album.removeImages()
-        mime, data = fs.guessMimeType(filename), fs.binary_content_of(filename)
+        mime, data = fs.guess_mime_type(filename), fs.binary_content_of(filename)
         album.addFrontCover(mime, data)
 
     return change_album_cover
@@ -202,33 +202,15 @@ def export_as_csv(album):
     return functools.partial(export_album_as_csv, CsvFormat(), "windows-1252")
 
 
-def sanitize(filename):
-    return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
-
-
 def tagged_file(album, track):
     dirname = os.path.dirname(album.destination)
     _, ext = os.path.splitext(track.filename)
-    filename = sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
-                                                                       number=track.track_number,
-                                                                       title=track.track_title,
-                                                                       ext=ext))
+    filename = fs.sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
+                                                                          number=track.track_number,
+                                                                          title=track.track_title,
+                                                                          ext=ext))
 
     return os.path.join(dirname, filename)
-
-
-def list_audio_files_from(selection, of_type):
-    files = []
-    for filepath in selection:
-        if os.path.isdir(filepath):
-            files.extend(audio_files_in(filepath, of_type))
-        else:
-            files.append(filepath)
-    return files
-
-
-def audio_files_in(folder, of_type):
-    return [os.path.join(folder, f) for f in os.listdir(folder) if f.endswith(of_type)]
 
 
 def lookupISNI(registry, leadPerformer):
