@@ -36,14 +36,13 @@ def workspace(tmpdir):
 def test_adds_new_album_to_porfolio(workspace):
     portfolio = AlbumPortfolio()
     director.create_album_into(portfolio)(
-        dict(type=Album.Type.MP3, album_name="album", album_location=workspace.root_path, track_location=""))
+        dict(type=Album.Type.MP3, album_name="album", album_location=workspace.root_path))
     assert_that(portfolio, not empty())
 
 
 def test_saves_new_album_to_disk(workspace):
     portfolio = AlbumPortfolio()
-    creation_properties = dict(type=Album.Type.FLAC, album_name="album", album_location=workspace.root_path,
-                               track_location="")
+    creation_properties = dict(type=Album.Type.FLAC, album_name="album", album_location=workspace.root_path)
     director.create_album_into(portfolio)(creation_properties)
 
     def read_lines(file):
@@ -153,7 +152,7 @@ def test_imports_album_from_track(recordings, workspace):
                                     front_cover=("image/jpeg", "front cover", b"front.jpeg"))
 
     portfolio = AlbumPortfolio()
-    director.create_album_into(portfolio)(
+    director.import_album_into(portfolio)(
         dict(type=Album.Type.MP3, album_name="album", album_location=workspace.root_path, track_location=track_file))
     album = portfolio[0]
 

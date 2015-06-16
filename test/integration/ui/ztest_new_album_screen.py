@@ -42,17 +42,29 @@ def driver(screen, prober, automaton):
     screen_driver.close()
 
 
-def test_signals_album_creation_properties(screen, driver, tmpdir):
+def test_signals_album_creation(screen, driver, tmpdir):
     destination = tmpdir.strpath
-    track_location = resources.path("base.mp3")
 
     create_album_signal = ValueMatcherProbe("new album properties",
                                             has_entries(album_name="Honeycomb", album_location=destination,
-                                                        type=Album.Type.FLAC, track_location=track_location))
+                                                        type=Album.Type.FLAC))
     screen.on_create_album(create_album_signal.received)
 
-    driver.import_album("Honeycomb", destination, track_location)
+    driver.create_empty_album("Honeycomb", destination)
     driver.check(create_album_signal)
+
+
+def test_signals_album_import(screen, driver, tmpdir):
+    destination = tmpdir.strpath
+    track_location = resources.path("base.mp3")
+
+    import_album_signal = ValueMatcherProbe("new album properties",
+                                            has_entries(album_name="Honeycomb", album_location=destination,
+                                                        type=Album.Type.FLAC, track_location=track_location))
+    screen.on_import_album(import_album_signal.received)
+
+    driver.import_album("Honeycomb", destination, track_location)
+    driver.check(import_album_signal)
 
 
 def test_signals_when_selecting_a_location_for_the_album(screen, driver):

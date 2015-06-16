@@ -23,9 +23,10 @@ from tgit.album import Album
 from tgit.ui.helpers import ui_file
 
 
-def make_new_album_screen(of_type, on_create_album, on_select_album_location, on_select_track_location):
+def make_new_album_screen(of_type, on_create_album, on_import_album, on_select_album_location, on_select_track_location):
     page = NewAlbumScreen(of_type=of_type)
     page.on_create_album(on_create_album)
+    page.on_import_album(on_import_album)
     page.on_select_album_location(lambda: on_select_album_location(page.change_album_location))
     page.on_select_track_location(lambda: on_select_track_location(page.change_track_location))
     return page
@@ -34,17 +35,21 @@ def make_new_album_screen(of_type, on_create_album, on_select_album_location, on
 class NewAlbumScreen(QFrame):
     def __init__(self, parent=None, of_type=Album.Type.FLAC):
         super().__init__(parent)
-        self.of_type = of_type
+        self._of_type = of_type
+        self._on_create_album = lambda properties: None
+        self._on_import_album = lambda properties: None
 
         ui_file.load(":/ui/new_album_screen.ui", self)
 
-        self.album_location.textChanged.connect(self._toggle_create_button)
-        self.album_name.textChanged.connect(self._toggle_create_button)
+        self.album_location.textChanged.connect(lambda text: self._toggle_create_button())
+        self.album_name.textChanged.connect(lambda text: self._toggle_create_button())
+        self.continue_button.clicked.connect(self._create_album)
 
     def on_create_album(self, on_create_album):
-        self.continue_button.clicked.connect(lambda: on_create_album(
-            dict(type=self.of_type, album_name=self.album_name.text(), album_location=self.album_location.text(),
-                 track_location=self.track_location.text())))
+        self._on_create_album = on_create_album
+
+    def on_import_album(self, on_import_album):
+        self._on_import_album = on_import_album
 
     def on_select_album_location(self, on_select_album_location):
         self.browse_album_location_button.clicked.connect(on_select_album_location)
@@ -58,8 +63,19 @@ class NewAlbumScreen(QFrame):
     def change_track_location(self, destination):
         self.track_location.setText(destination)
 
-    def _toggle_create_button(self, text):
+    def _toggle_create_button(self):
         self.continue_button.setDisabled(self._should_disable_continue_button())
 
     def _should_disable_continue_button(self):
         return self.album_location.text() == "" or self.album_name.text() == ""
+
+    def _create_album(self):
+        properties = dict(type=self._of_type, album_name=self.album_name.text(),
+                          album_location=self.album_location.text())
+
+        track_location = self.track_location.text()
+        if not track_location:
+            self._on_create_album(properties)
+        else:
+            properties["track_location"] = track_location
+            self._on_import_album(properties)

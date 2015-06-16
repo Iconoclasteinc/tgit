@@ -132,6 +132,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
     def create_new_album_screen(of_type):
         return make_new_album_screen(of_type,
                                      on_create_album=director.create_album_into(portfolio),
+                                     on_import_album=director.import_album_into(portfolio),
                                      on_select_album_location=dialogs.select_album_destination(),
                                      on_select_track_location=dialogs.select_reference_track())
 
