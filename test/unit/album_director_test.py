@@ -16,7 +16,7 @@ from tgit import album_director as director, tagging
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.metadata import Image
-from tgit.ui.new_album_screen import AlbumCreationProperties
+from tgit.ui.new_album_page import AlbumCreationProperties
 from tgit.util import fs
 
 NOW = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())

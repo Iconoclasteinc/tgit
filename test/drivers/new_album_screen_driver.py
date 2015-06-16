@@ -19,14 +19,14 @@
 
 from cute.matchers import named
 from ._screen_driver import ScreenDriver
-from tgit.ui.new_album_screen import NewAlbumScreen
+from tgit.ui.new_album_page import NewAlbumPage
 
 
-def new_album_screen(parent):
-    return NewAlbumScreenDriver.find_single(parent, NewAlbumScreen, named("new_album_screen"))
+def new_album_page(parent):
+    return NewAlbumPageDriver.find_single(parent, NewAlbumPage, named("new_album_page"))
 
 
-class NewAlbumScreenDriver(ScreenDriver):
+class NewAlbumPageDriver(ScreenDriver):
     def create_empty_album(self, album_name, album_path):
         self.lineEdit(named("album_name")).change_text(album_name)
         self.lineEdit(named("album_location")).change_text(album_path)
@@ -49,3 +49,6 @@ class NewAlbumScreenDriver(ScreenDriver):
 
     def has_track_location(self, destination):
         self.lineEdit(named("track_location")).has_text(destination)
+
+    def creation_is_disabled(self):
+        self.button(named("continue_button")).is_disabled()

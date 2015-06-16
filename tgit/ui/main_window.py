@@ -292,8 +292,8 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
 
 
 def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_add_folder, on_export, on_settings,
-                     welcome_screen, new_album_screen, album_screen):
-    window = MainWindow()
+                     create_startup_screen, create_album_screen):
+    window = MainWindow(create_startup_screen=create_startup_screen, create_album_screen=create_album_screen)
     window.add_files.connect(on_add_files)
     window.add_folder.connect(on_add_folder)
     window.export.connect(on_export)
@@ -301,21 +301,10 @@ def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_
     window.close_album.connect(lambda album: on_close_album(album, window))
     window.save.connect(on_save_album)
 
-    def display_new_album_screen(of_type):
-        window.show_screen(new_album_screen(of_type))
+    portfolio.album_removed.subscribe(lambda album: window.display_startup_screen())
+    portfolio.album_created.subscribe(window.display_album_screen)
 
-    def display_welcome_screen(*_):
-        window.show_screen(welcome_screen(on_create_new_album=display_new_album_screen))
-        window.disable_album_actions()
-
-    def display_album_screen(album):
-        window.enable_album_actions(album)
-        window.show_screen(album_screen(album))
-
-    portfolio.album_removed.subscribe(display_welcome_screen)
-    portfolio.album_created.subscribe(display_album_screen)
-
-    display_welcome_screen()
+    window.display_startup_screen()
 
     return window
 
@@ -328,8 +317,10 @@ class MainWindow(QMainWindow):
     save = pyqtSignal(Album)
     settings = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, *, create_startup_screen, create_album_screen):
         super().__init__()
+        self._create_startup_screen = create_startup_screen
+        self._create_album_screen = create_album_screen
         ui_file.load(":/ui/main_window.ui", self)
 
         self.setStyleSheet(StyleSheet)
@@ -363,5 +354,10 @@ class MainWindow(QMainWindow):
             action.setEnabled(False)
             action.setData(None)
 
-    def show_screen(self, screen):
-        self.setCentralWidget(screen)
+    def display_startup_screen(self):
+        self.disable_album_actions()
+        self.setCentralWidget(self._create_startup_screen())
+
+    def display_album_screen(self, album):
+        self.enable_album_actions(album)
+        self.setCentralWidget(self._create_album_screen(album))

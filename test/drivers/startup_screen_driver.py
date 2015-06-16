@@ -16,12 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from hamcrest import assert_that, equal_to
 
-from tgit.ui.new_album_page import AlbumCreationProperties
+from ._screen_driver import ScreenDriver
+from test.drivers import welcome_page
+from test.drivers.new_album_screen_driver import new_album_page
 
 
-def test_returns_full_album_path():
-    properties = AlbumCreationProperties("...", "album_name", "/album/directory")
+class StartupScreenDriver(ScreenDriver):
+    def shows_welcome_page(self):
+        welcome_page(self).is_showing_on_screen()
 
-    assert_that(properties.album_full_path, equal_to("/album/directory/album_name.tgit"), "album full path")
+    def creates_album(self, of_type):
+        welcome_page(self).new_album(of_type)
+        new_album_page(self).is_showing_on_screen()

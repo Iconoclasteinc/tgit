@@ -16,12 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from hamcrest import assert_that, equal_to
 
-from tgit.ui.new_album_page import AlbumCreationProperties
+from PyQt5.QtWidgets import QStackedWidget
 
 
-def test_returns_full_album_path():
-    properties = AlbumCreationProperties("...", "album_name", "/album/directory")
+class StartupScreen(QStackedWidget):
+    def __init__(self, create_welcome_page, create_new_album_page):
+        super().__init__()
+        self._welcome_page = create_welcome_page()
+        self._new_album_page = create_new_album_page()
 
-    assert_that(properties.album_full_path, equal_to("/album/directory/album_name.tgit"), "album full path")
+        self._welcome_page.on_create_album(self._move_to_new_album_page)
+
+        self.addWidget(self._welcome_page)
+        self.addWidget(self._new_album_page)
+
+    def _move_to_new_album_page(self, of_type):
+        self._new_album_page.set_type(of_type)
+        self.setCurrentWidget(self._new_album_page)

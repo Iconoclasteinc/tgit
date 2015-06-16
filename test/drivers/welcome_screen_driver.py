@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named
-from tgit.ui.welcome_screen import WelcomeScreen
+from tgit.ui.welcome_page import WelcomePage
 from ._screen_driver import ScreenDriver
 
 
-def welcome_screen(parent):
-    return WelcomeScreenDriver.find_single(parent, WelcomeScreen, named("welcome_screen"))
+def welcome_page(parent):
+    return WelcomePageDriver.find_single(parent, WelcomePage, named("welcome_page"))
 
 
-class WelcomeScreenDriver(ScreenDriver):
+class WelcomePageDriver(ScreenDriver):
     def new_album(self, of_type):
         self.button(named("new_{0}_album_button".format(of_type))).click()
 

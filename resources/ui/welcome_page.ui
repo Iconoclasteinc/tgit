@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>welcome_screen</class>
- <widget class="QFrame" name="welcome_screen">
+ <widget class="QFrame" name="welcome_page">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="styleSheet">
-   <string notr="true">#welcome_screen {
+   <string notr="true">#welcome_page {
     background-color: #484848
 }
 

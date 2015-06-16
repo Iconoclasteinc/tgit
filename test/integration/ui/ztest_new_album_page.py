@@ -22,64 +22,57 @@ import pytest
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
-from test.drivers.new_album_screen_driver import NewAlbumScreenDriver
+from test.drivers.new_album_screen_driver import NewAlbumPageDriver
 from test.util import resources
 from tgit.album import Album
-from tgit.ui.new_album_screen import NewAlbumScreen
+from tgit.ui.new_album_page import NewAlbumPage
 
 
 @pytest.fixture()
-def screen(main_window):
-    new_album_screen = NewAlbumScreen(parent=main_window)
-    new_album_screen.show()
+def on_select(tmpdir):
+    def on_select_callback(callback):
+        callback(tmpdir.strpath)
+
+    return on_select_callback
+
+
+@pytest.fixture()
+def page(main_window, on_select):
+    new_album_screen = NewAlbumPage(select_album_destination=on_select, select_track_location=on_select)
+    main_window.setCentralWidget(new_album_screen)
     return new_album_screen
 
 
 @pytest.yield_fixture()
-def driver(screen, prober, automaton):
-    screen_driver = NewAlbumScreenDriver(WidgetIdentity(screen), prober, automaton)
-    yield screen_driver
-    screen_driver.close()
+def driver(page, prober, automaton):
+    page_driver = NewAlbumPageDriver(WidgetIdentity(page), prober, automaton)
+    yield page_driver
+    page_driver.close()
 
 
-def test_signals_album_creation_properties(screen, driver, tmpdir):
+def test_signals_album_creation_properties(page, driver, tmpdir):
     destination = tmpdir.strpath
     track_location = resources.path("base.mp3")
+    page.set_type(Album.Type.FLAC)
 
     create_album_signal = ValueMatcherProbe("new album",
                                             has_properties(album_name="Honeycomb", album_location=destination,
                                                            type=Album.Type.FLAC, track_location=track_location))
-    screen.on_create_album(create_album_signal.received)
+    page.on_create_album(create_album_signal.received)
 
     driver.import_album("Honeycomb", destination, track_location)
     driver.check(create_album_signal)
 
 
-def test_signals_when_selecting_a_location_for_the_album(screen, driver):
-    browse_album_signal = ValueMatcherProbe("selecting album")
-    screen.on_select_album_location(lambda pressed: browse_album_signal.received())
-
+def test_selects_an_album_location(driver, tmpdir):
     driver.select_album()
-    driver.check(browse_album_signal)
+    driver.has_album_location(tmpdir.strpath)
 
 
-def test_signals_when_selecting_the_location_of_the_reference_track(screen, driver):
-    browse_track_signal = ValueMatcherProbe("selecting reference track")
-    screen.on_select_track_location(lambda pressed: browse_track_signal.received())
-
+def test_selects_reference_track_location(driver, tmpdir):
     driver.select_track()
-    driver.check(browse_track_signal)
+    driver.has_track_location(tmpdir.strpath)
 
 
-def test_changes_the_album_location(screen, driver, tmpdir):
-    destination = tmpdir.strpath
-    screen.change_album_location(destination)
-
-    driver.has_album_location(destination)
-
-
-def test_changes_the_reference_track_location(screen, driver, tmpdir):
-    destination = tmpdir.join("base.mp3").strpath
-    screen.change_track_location(destination)
-
-    driver.has_track_location(destination)
+def test_initially_disables_create_button(driver):
+    driver.creation_is_disabled()

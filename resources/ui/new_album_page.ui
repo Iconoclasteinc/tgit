@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>new_album_screen</class>
- <widget class="QFrame" name="new_album_screen">
+ <widget class="QFrame" name="new_album_page">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="styleSheet">
-   <string notr="true">#new_album_screen {
+   <string notr="true">#new_album_page {
     background-color: #484848
 }
 
