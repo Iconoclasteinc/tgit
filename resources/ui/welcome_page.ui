@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>welcome_screen</class>
+ <class>welcome_page</class>
  <widget class="QFrame" name="welcome_page">
   <property name="geometry">
    <rect>

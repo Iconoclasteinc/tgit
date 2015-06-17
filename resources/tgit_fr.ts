@@ -609,69 +609,69 @@
     </message>
 </context>
 <context>
-    <name>welcome_screen</name>
+    <name>welcome_page</name>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py"/>
+        <location filename="tgit/ui/welcome_page.py"/>
         <source>Welcome to TGiT!</source>
         <translation>Bienvenue dans TGiT !</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py"/>
+        <location filename="tgit/ui/welcome_page.py"/>
         <source>Create a new release*:</source>
         <translation>Créer un nouvel album (release*) :</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py"/>
+        <location filename="tgit/ui/welcome_page.py"/>
         <source>Load a release:</source>
         <translation>Charger un album :</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py"/>
-        <source>Start from a reference track:</source>
-        <translation>Démarrer à partir d'une piste :</translation>
-    </message>
-    <message>
-        <location filename="../tgit/ui/welcome_screen.py"/>
+        <location filename="tgit/ui/welcome_page.py"/>
         <source>CHOOSE</source>
         <translation>CHOISIR</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/welcome_screen.py"/>
+        <location filename="tgit/ui/welcome_page.py"/>
         <source>*as per MusicBrainz terminology</source>
         <translation>*terminologie MusicBrainz</translation>
     </message>
 </context>
 <context>
-    <name>new_album_screen</name>
+    <name>new_album_page</name>
     <message>
-        <location filename="../tgit/ui/new_album_screen.py"/>
+        <location filename="tgit/ui/new_album_page.py"/>
         <source>New release</source>
         <translation>Nouvel album</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/new_album_screen.py"/>
+        <location filename="tgit/ui/new_album_page.py"/>
         <source>Choose a name for the release:</source>
         <translation>Choisissez un nom pour l'album :</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/new_album_screen.py"/>
+        <location filename="tgit/ui/new_album_page.py"/>
         <source>Choose the location to save the release:</source>
         <translation>Choisissez l'endroit où sauvegarder l'album :</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/new_album_screen.py"/>
+        <location filename="tgit/ui/new_album_page.py"/>
         <source>Import the album metadata from an audio file (optional):</source>
         <translation>Importer les métadonnées à partir d'un fichier audio (optionnel) :</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/new_album_screen.py"/>
+        <location filename="tgit/ui/new_album_page.py"/>
         <source>BROWSE ...</source>
         <translation>PARCOURIR ...</translation>
     </message>
     <message>
-        <location filename="../tgit/ui/new_album_screen.py"/>
+        <location filename="tgit/ui/new_album_page.py"/>
         <source>CREATE</source>
         <translation>CRÉER</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/new_album_page.py"/>
+        <source>CANCEL</source>
+        <translation>ANNULER</translation>
     </message>
 </context>
 <context>
