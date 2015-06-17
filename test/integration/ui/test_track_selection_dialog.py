@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 
-from hamcrest import contains
+from hamcrest import contains, contains_inanyorder
+
 from PyQt5.QtWidgets import QFileDialog
 import pytest
 
@@ -25,48 +27,50 @@ def driver(dialog, prober, automaton):
     dialog_driver.close()
 
 
-def test_signals_when_audio_files_selected(driver, dialog):
-    audio_files = [resources.path("audio", "Rolling in the Deep.mp3"),
-                   resources.path("audio", "Set Fire to the Rain.mp3"),
-                   resources.path("audio", "Someone Like You.mp3")]
-
-    track_selection_signal = ValueMatcherProbe("track(s) selection", audio_files)
-
-    dialog.tracks_selected.connect(track_selection_signal.received)
-    dialog.open()
-
-    driver.select_tracks(*audio_files)
-    driver.check(track_selection_signal)
+def abs_path(selection):
+    return list(map(os.path.abspath, selection))
 
 
-def test_alternatively_selects_directories_instead_of_files(driver, dialog):
-    audio_folder = resources.path("audio")
-    track_selection_signal = ValueMatcherProbe("track(s) selection", contains(audio_folder))
+def test_signals_selected_files(driver, dialog):
+    mp3s = (resources.path("audio", "Rolling in the Deep.mp3"),
+            resources.path("audio", "Set Fire to the Rain.mp3"),
+            resources.path("audio", "Someone Like You.mp3"))
 
-    dialog.tracks_selected.connect(track_selection_signal.received)
-    dialog.select_folders()
-    dialog.open()
+    tracks_selection_signal = ValueMatcherProbe("track(s) selection", contains(*mp3s))
 
-    driver.select_tracks_in_folder(audio_folder)
-    driver.check(track_selection_signal)
+    dialog.select_files('mp3', lambda *selection: tracks_selection_signal.received(abs_path(selection)))
+
+    driver.select_tracks(*mp3s)
+    driver.check(tracks_selection_signal)
 
 
-def test_allows_selection_of_flac_files(driver, dialog):
-    flac_files = [resources.path("audio", "Zumbar.flac")]
-    track_selection_signal = ValueMatcherProbe("track(s) selection", flac_files)
+def test_alternatively_selects_files_of_given_type_in_folder(driver, dialog):
+    mp3s = (resources.path("audio", "Rolling in the Deep.mp3"),
+            resources.path("audio", "Set Fire to the Rain.mp3"),
+            resources.path("audio", "Someone Like You.mp3"))
 
-    dialog.tracks_selected.connect(track_selection_signal.received)
-    dialog.filter_tracks('flac')
-    dialog.open()
+    tracks_selection_signal = ValueMatcherProbe("track(s) selection", contains_inanyorder(*mp3s))
 
-    driver.select_tracks(*flac_files)
-    driver.check(track_selection_signal)
+    dialog.select_files_in_folder('mp3', lambda *selection: tracks_selection_signal.received(abs_path(selection)))
+
+    driver.select_tracks_in_folder(resources.path("audio"))
+    driver.check(tracks_selection_signal)
+
+
+def test_restricts_selection_based_on_file_type(driver, dialog):
+    flac_file = resources.path("audio", "Zumbar.flac")
+    tracks_selection_signal = ValueMatcherProbe("track(s) selection", contains(flac_file))
+
+    dialog.select_files('flac', lambda *selection: tracks_selection_signal.received(abs_path(selection)))
+
+    driver.select_tracks(flac_file)
+    driver.check(tracks_selection_signal)
 
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="not supported on Windows")
 def test_rejects_non_audio_files(driver, dialog):
     unsupported_file = resources.path('front-cover.jpg')
 
-    dialog.open()
+    dialog.select_files('mp3', on_select=None)
 
     driver.rejects_selection_of(unsupported_file)

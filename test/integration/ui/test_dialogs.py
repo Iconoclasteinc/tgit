@@ -77,7 +77,7 @@ def test_creates_a_single_track_selection_dialog_for_a_given_album(dialogs, trac
     dialogs.add_tracks(album)()
     track_selection_dialog_driver.is_showing_on_screen()
 
-    dialogs.add_tracks(album)()
+    dialogs.add_tracks_in_folder(album)()
     track_selection_dialog_driver.is_showing_on_screen()
 
 

@@ -21,11 +21,6 @@ from tgit.album import Album
 from tgit.signal import signal, Observable
 
 
-class AlbumPortfolioListener(object):
-    def albumCreated(self, album):
-        pass
-
-
 class AlbumPortfolio(metaclass=Observable):
     album_created = signal(Album)
     album_removed = signal(Album)

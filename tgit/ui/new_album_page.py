@@ -30,22 +30,12 @@ def new_album_page(select_album_location, select_track_location, **handlers):
     return page
 
 
-class AlbumCreationProperties:
-    def __init__(self, type_, album_name, album_location, track_location=None):
-        self.album_name = album_name
-        self.album_location = album_location
-        self.track_location = track_location
-        self.type = type_
-
-    @property
-    def album_full_path(self):
-        return "{0}/{1}.tgit".format(self.album_location, self.album_name)
-
-
 class NewAlbumPage(QFrame):
     def __init__(self, *, parent=None, select_album_destination, select_track_location):
         super().__init__(parent)
         self._of_type = None
+        self._on_create_album = lambda properties: None
+        self._on_import_album = lambda properties: None
 
         ui_file.load(":/ui/new_album_page.ui", self)
 
@@ -53,11 +43,13 @@ class NewAlbumPage(QFrame):
         self.album_name.textChanged.connect(lambda text: self._toggle_create_button())
         self.browse_album_location_button.clicked.connect(lambda: select_album_destination(self.album_location.setText))
         self.browse_track_location_button.clicked.connect(lambda: select_track_location(self.track_location.setText))
+        self.continue_button.clicked.connect(self._create_album)
 
     def on_create_album(self, on_create_album):
-        self.continue_button.clicked.connect(lambda: on_create_album(
-            AlbumCreationProperties(self._of_type, self.album_name.text(), self.album_location.text(),
-                                    self.track_location.text())))
+        self._on_create_album = on_create_album
+
+    def on_import_album(self, on_import_album):
+        self._on_import_album = on_import_album
 
     def set_type(self, type_):
         self._of_type = type_
@@ -67,3 +59,14 @@ class NewAlbumPage(QFrame):
 
     def _should_disable_continue_button(self):
         return self.album_location.text() == "" or self.album_name.text() == ""
+
+    def _create_album(self):
+        properties = dict(type=self._of_type, album_name=self.album_name.text(),
+                          album_location=self.album_location.text())
+
+        track_location = self.track_location.text()
+        if not track_location:
+            self._on_create_album(properties)
+        else:
+            properties["track_location"] = track_location
+            self._on_import_album(properties)

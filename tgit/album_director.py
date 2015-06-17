@@ -20,10 +20,10 @@
 from datetime import datetime
 import functools
 import os
-import re
 import shutil
 
 from dateutil import tz
+
 import requests
 from yaml import dump, Dumper, load
 
@@ -36,30 +36,34 @@ from tgit.track import Track
 from tgit.util import fs
 
 
+def _build_full_path(creation_properties):
+    return "{0}/{1}.tgit".format(creation_properties["album_location"], creation_properties["album_name"])
+
+
 def create_album_into(portfolio):
     def create_new_album(creation_properties):
         # todo: find a way to notify the portfolio's listeners of the destination
-        album = Album(of_type=creation_properties.type, destination=creation_properties.album_full_path)
+        album = Album(of_type=creation_properties["type"], destination=_build_full_path(creation_properties))
         portfolio.add_album(album)
-        return album
-
-    def import_album_to_portfolio(creation_properties):
-        _, extension = os.path.splitext(creation_properties.track_location)
-        all_metadata = tagging.load_metadata(creation_properties.track_location)
-        album_metadata = all_metadata.copy(*Album.tags())
-        album = Album(album_metadata, of_type=creation_properties.type, destination=creation_properties.album_full_path)
-        portfolio.add_album(album)
-        add_tracks_to(album)([creation_properties.track_location])
-        return album
-
-    def add_album(creation_properties):
-        if creation_properties.track_location:
-            album = import_album_to_portfolio(creation_properties)
-        else:
-            album = create_new_album(creation_properties)
         export_as_yaml(album)
+        return album
 
-    return add_album
+    return create_new_album
+
+
+def import_album_into(portfolio):
+    def import_album_to_portfolio(creation_properties):
+        _, extension = os.path.splitext(creation_properties["track_location"])
+        all_metadata = tagging.load_metadata(creation_properties["track_location"])
+        album_metadata = all_metadata.copy(*Album.tags())
+        album = Album(album_metadata, of_type=creation_properties["type"],
+                      destination=_build_full_path(creation_properties))
+        portfolio.add_album(album)
+        add_tracks_to(album)(creation_properties["track_location"])
+        export_as_yaml(album)
+        return album
+
+    return import_album_to_portfolio
 
 
 def load_album_into(portfolio):
@@ -78,9 +82,9 @@ def remove_album_from(portfolio):
 
 
 def add_tracks_to(album):
-    def add_tracks_to_album(selection):
-        for filename in list_audio_files_from(selection, of_type=".{}".format(album.type)):
-            album.addTrack(Track(filename, tagging.load_metadata(filename)))
+    def add_tracks_to_album(*selection):
+        for filename in selection:
+            album.add_track(Track(filename, tagging.load_metadata(filename)))
 
     return add_tracks_to_album
 
@@ -102,7 +106,7 @@ def updateAlbum(album, **metadata):
 def change_cover_of(album):
     def change_album_cover(filename):
         album.removeImages()
-        mime, data = fs.guessMimeType(filename), fs.binary_content_of(filename)
+        mime, data = fs.guess_mime_type(filename), fs.binary_content_of(filename)
         album.addFrontCover(mime, data)
 
     return change_album_cover
@@ -202,33 +206,15 @@ def export_as_csv(album):
     return functools.partial(export_album_as_csv, CsvFormat(), "windows-1252")
 
 
-def sanitize(filename):
-    return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
-
-
 def tagged_file(album, track):
     dirname = os.path.dirname(album.destination)
     _, ext = os.path.splitext(track.filename)
-    filename = sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
-                                                                       number=track.track_number,
-                                                                       title=track.track_title,
-                                                                       ext=ext))
+    filename = fs.sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
+                                                                          number=track.track_number,
+                                                                          title=track.track_title,
+                                                                          ext=ext))
 
     return os.path.join(dirname, filename)
-
-
-def list_audio_files_from(selection, of_type):
-    files = []
-    for filepath in selection:
-        if os.path.isdir(filepath):
-            files.extend(audio_files_in(filepath, of_type))
-        else:
-            files.append(filepath)
-    return files
-
-
-def audio_files_in(folder, of_type):
-    return [os.path.join(folder, f) for f in os.listdir(folder) if f.endswith(of_type)]
 
 
 def lookupISNI(registry, leadPerformer):

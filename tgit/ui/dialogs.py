@@ -18,10 +18,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit.ui.reference_track_selection_dialog import make_reference_track_selection_dialog
+from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.export_as_dialog import make_export_as_dialog
 from tgit.ui.picture_selection_dialog import make_picture_selection_dialog
 from tgit.ui.select_album_destination_dialog import SelectAlbumDestinationDialog
-from tgit.ui.track_selection_dialog import make_track_selection_dialog
 from tgit.ui.load_album_dialog import LoadAlbumDialog
 
 
@@ -46,10 +46,9 @@ class Dialogs:
 
         return self._pictures
 
-    def _select_tracks_dialog(self, album):
+    def _select_tracks_dialog(self):
         if not self._tracks:
-            self._tracks = make_track_selection_dialog(self.parent, native=self._native,
-                                                       on_select_tracks=self._commands.add_tracks_to(album))
+            self._tracks = TrackSelectionDialog(self.parent, native=self._native)
 
         return self._tracks
 
@@ -82,16 +81,13 @@ class Dialogs:
         return self._select_cover_dialog(album)
 
     def add_tracks(self, album):
-        dialog = self._select_tracks_dialog(album)
-        dialog.select_files()
-        dialog.filter_tracks(album.type)
-        return dialog.open
+        dialog = self._select_tracks_dialog()
+        return lambda: dialog.select_files(album.type, on_select=self._commands.add_tracks_to(album))
 
     def add_tracks_in_folder(self, album):
-        dialog = self._select_tracks_dialog(album)
-        dialog.select_folders()
-        dialog.filter_tracks(album.type)
-        return dialog
+        dialog = self._select_tracks_dialog()
+        return lambda: dialog.select_files_in_folder(file_type=album.type,
+                                                     on_select=self._commands.add_tracks_to(album))
 
     def select_reference_track(self):
         return self._select_reference_track_dialog().display

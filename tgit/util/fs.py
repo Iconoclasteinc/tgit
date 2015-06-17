@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import os
+import re
 import shutil
 import tempfile
 import mimetypes
@@ -27,7 +28,7 @@ def binary_content_of(filename):
     return open(filename, 'rb').read()
 
 
-def guessMimeType(filename):
+def guess_mime_type(filename):
     return mimetypes.guess_type(filename)[0]
 
 
@@ -37,3 +38,7 @@ def make_temp_copy(filename, dirname=None):
     shutil.copy(filename, path)
     os.close(copy)
     return path
+
+
+def sanitize(filename):
+    return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()

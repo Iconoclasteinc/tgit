@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from hamcrest import has_properties
+from hamcrest import has_properties, has_entries
 import pytest
 
 from cute.finders import WidgetIdentity
@@ -50,18 +50,31 @@ def driver(page, prober, automaton):
     page_driver.close()
 
 
-def test_signals_album_creation_properties(page, driver, tmpdir):
+def test_signals_album_creation(page, driver, tmpdir):
+    destination = tmpdir.strpath
+    page.set_type(Album.Type.FLAC)
+
+    create_album_signal = ValueMatcherProbe("new album properties",
+                                            has_entries(album_name="Honeycomb", album_location=destination,
+                                                        type=Album.Type.FLAC))
+    page.on_create_album(create_album_signal.received)
+
+    driver.create_empty_album("Honeycomb", destination)
+    driver.check(create_album_signal)
+
+
+def test_signals_album_import(page, driver, tmpdir):
     destination = tmpdir.strpath
     track_location = resources.path("base.mp3")
     page.set_type(Album.Type.FLAC)
 
-    create_album_signal = ValueMatcherProbe("new album",
-                                            has_properties(album_name="Honeycomb", album_location=destination,
-                                                           type=Album.Type.FLAC, track_location=track_location))
-    page.on_create_album(create_album_signal.received)
+    import_album_signal = ValueMatcherProbe("new album properties",
+                                            has_entries(album_name="Honeycomb", album_location=destination,
+                                                        type=Album.Type.FLAC, track_location=track_location))
+    page.on_import_album(import_album_signal.received)
 
     driver.import_album("Honeycomb", destination, track_location)
-    driver.check(create_album_signal)
+    driver.check(import_album_signal)
 
 
 def test_selects_an_album_location(driver, tmpdir):

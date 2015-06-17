@@ -16,12 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import QSettings
 import pytest
 
-from tgit.preferences import Preferences
-from test.util import doubles
-from test.drivers.application_runner import ApplicationRunner
 from test.util import isni_database
 
 
@@ -31,28 +27,28 @@ def isni(request):
     request.addfinalizer(lambda: isni_database.stop(database_thread))
 
 
-def test_assigning_an_isni_to_the_lead_performer(app, recordings):
-    tracks = [recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
+def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace):
+    track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
     isni_database.assignation_generator = iter(["0000000121707484"])
 
-    app.import_album(*tracks)
+    app.import_album(track)
     app.shows_album_content(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.assign_isni_to_lead_performer()
 
     app.tag()
-    recordings.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
-                     release_name="Honeycomb",
-                     isni="0000000121707484",
-                     lead_performer="Joel Miller",
-                     track_title="Salsa Coltrane")
+    workspace.contains_track(filename="Joel Miller - 01 - Salsa Coltrane.mp3",
+                             release_name="Honeycomb",
+                             isni="0000000121707484",
+                             lead_performer="Joel Miller",
+                             track_title="Salsa Coltrane")
 
 
 def test_failing_to_assign_isni_to_lead_performer_when_data_is_invalid(app, recordings):
-    tracks = [recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
+    track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
     isni_database.assignation_generator = iter(["invalid data"])
 
-    app.import_album(*tracks)
+    app.import_album(track)
     app.shows_album_content(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.fails_to_assign_isni_to_lead_performer()

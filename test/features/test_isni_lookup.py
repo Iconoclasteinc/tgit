@@ -16,12 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import QSettings
 import pytest
 
-from tgit.preferences import Preferences
-from test.util import doubles
-from test.drivers.application_runner import ApplicationRunner
 from test.util import isni_database
 
 
@@ -31,7 +27,7 @@ def isni(request):
     request.addfinalizer(lambda: isni_database.stop(database_thread))
 
 
-def test_finding_the_isni_of_the_lead_performer(app, recordings):
+def test_finding_the_isni_of_the_lead_performer(app, recordings, workspace):
     tracks = [recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
     isni_database.persons.clear()
     isni_database.persons["0000000121707484"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
@@ -42,8 +38,8 @@ def test_finding_the_isni_of_the_lead_performer(app, recordings):
     app.find_isni_of_lead_performer()
 
     app.tag()
-    recordings.contains("Joel Miller - 01 - Salsa Coltrane.mp3",
-                        release_name="Honeycomb",
-                        isni="0000000121707484",
-                        lead_performer="Joel Miller",
-                        track_title="Salsa Coltrane")
+    workspace.contains_track(filename="Joel Miller - 01 - Salsa Coltrane.mp3",
+                             release_name="Honeycomb",
+                             isni="0000000121707484",
+                             lead_performer="Joel Miller",
+                             track_title="Salsa Coltrane")
