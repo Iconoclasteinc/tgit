@@ -4,9 +4,10 @@ from hamcrest import assert_that, same_instance
 import pytest
 
 from cute.matchers import named
-from cute.widgets import window
+from cute.widgets import window, FileDialogDriver
+from test.drivers.load_album_dialog_driver import LoadAlbumDialogDriver
 from test.drivers.select_album_destination_dialog_driver import SelectAlbumDestinationDialogDriver
-from test.drivers import TrackSelectionDialogDriver
+from test.drivers import TrackSelectionDialogDriver, ReferenceTrackSelectionDialogDriver
 from test.util import builders as make
 from tgit import album_director
 from tgit.ui import Dialogs
@@ -21,29 +22,63 @@ def dialogs(main_window):
 
 @pytest.yield_fixture()
 def track_selection_dialog_driver(prober, automaton):
-    driver = TrackSelectionDialogDriver(window(QFileDialog, named("track-selection-dialog")), prober, automaton)
+    driver = FileDialogDriver(window(QFileDialog, named("track-selection-dialog")), prober, automaton)
     yield driver
     driver.close()
 
 
-def test_creates_a_single_import_dialog_for_a_given_portfolio(dialogs, prober, automaton):
+@pytest.yield_fixture()
+def reference_track_selection_dialog_driver(prober, automaton):
+    driver = FileDialogDriver(window(QFileDialog, named("import_album_from_track_dialog")), prober, automaton)
+    yield driver
+    driver.close()
+
+
+@pytest.yield_fixture()
+def select_album_destination_dialog_driver(prober, automaton):
+    driver = FileDialogDriver(window(QFileDialog, named("select_album_destination_dialog")), prober, automaton)
+    yield driver
+    driver.close()
+
+
+@pytest.yield_fixture()
+def select_album_to_load_dialog_driver(prober, automaton):
+    driver = FileDialogDriver(window(QFileDialog, named("load_album_dialog")), prober, automaton)
+    yield driver
+    driver.close()
+
+
+def test_creates_a_single_reference_track_selection_dialog(dialogs, reference_track_selection_dialog_driver):
     dialogs.select_reference_track()(lambda: None)
-    driver = SelectAlbumDestinationDialogDriver(window(QFileDialog, named("import_album_from_track_dialog")), prober,
-                                                automaton)
-    driver.is_showing_on_screen()
+    reference_track_selection_dialog_driver.is_showing_on_screen()
 
     dialogs.select_reference_track()(lambda: None)
-    driver.is_showing_on_screen()
+    reference_track_selection_dialog_driver.is_showing_on_screen()
 
 
-def test_creates_a_single_album_destination_selection_dialog_for_a_given_portfolio(dialogs, prober, automaton):
+def test_creates_a_single_album_destination_selection_dialog(dialogs, select_album_destination_dialog_driver):
     dialogs.select_album_destination()(lambda: None)
-    driver = SelectAlbumDestinationDialogDriver(window(QFileDialog, named("select_album_destination_dialog")), prober,
-                                                automaton)
-    driver.is_showing_on_screen()
+    select_album_destination_dialog_driver.is_showing_on_screen()
 
     dialogs.select_album_destination()(lambda: None)
-    driver.is_showing_on_screen()
+    select_album_destination_dialog_driver.is_showing_on_screen()
+
+
+def test_creates_a_single_album_to_load_selection_dialog(dialogs, select_album_to_load_dialog_driver):
+    dialogs.select_album_to_load()(lambda: None)
+    select_album_to_load_dialog_driver.is_showing_on_screen()
+
+    dialogs.select_album_to_load()(lambda: None)
+    select_album_to_load_dialog_driver.is_showing_on_screen()
+
+
+def test_creates_a_single_track_selection_dialog_for_a_given_album(dialogs, track_selection_dialog_driver):
+    album = make.album()
+    dialogs.add_tracks(album)()
+    track_selection_dialog_driver.is_showing_on_screen()
+
+    dialogs.add_tracks_in_folder(album)()
+    track_selection_dialog_driver.is_showing_on_screen()
 
 
 def test_creates_a_single_picture_selection_dialog_for_a_given_album(dialogs):
@@ -59,18 +94,6 @@ def test_creates_a_new_picture_selection_dialog_for_each_album(dialogs):
     dialogs.clear()
 
     assert_that(dialogs.select_cover(make.album()), not same_instance(picture_dialog))
-
-
-def test_creates_a_single_track_selection_dialog_for_a_given_album(dialogs, track_selection_dialog_driver):
-    album = make.album()
-
-    dialogs.add_tracks(album)()
-    track_selection_dialog_driver.is_showing_on_screen()
-    track_selection_dialog_driver.close()
-
-    dialogs.add_tracks_in_folder(album)()
-    track_selection_dialog_driver.is_showing_on_screen()
-    track_selection_dialog_driver.close()
 
 
 def test_creates_a_new_track_selection_dialog_for_each_album(dialogs):

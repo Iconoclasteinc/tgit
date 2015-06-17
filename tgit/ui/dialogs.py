@@ -22,7 +22,7 @@ from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.export_as_dialog import make_export_as_dialog
 from tgit.ui.picture_selection_dialog import make_picture_selection_dialog
 from tgit.ui.select_album_destination_dialog import SelectAlbumDestinationDialog
-from tgit.ui.load_dialog import make_load_album_dialog
+from tgit.ui.load_album_dialog import LoadAlbumDialog
 
 
 class Dialogs:
@@ -31,7 +31,7 @@ class Dialogs:
     _select_reference_track = None
     _export = None
     _select_album_destination = None
-    _load = None
+    _select_album_to_load = None
 
     parent = None
 
@@ -71,12 +71,11 @@ class Dialogs:
 
         return self._select_album_destination
 
-    def _load_dialog(self, album_portfolio):
-        if not self._load:
-            self._load = make_load_album_dialog(self.parent, native=self._native,
-                                                on_select_album=self._commands.load_album_into(album_portfolio))
+    def _select_album_to_load_dialog(self):
+        if not self._select_album_to_load:
+            self._select_album_to_load = LoadAlbumDialog(self.parent, native=self._native)
 
-        return self._load
+        return self._select_album_to_load
 
     def select_cover(self, album):
         return self._select_cover_dialog(album)
@@ -99,8 +98,8 @@ class Dialogs:
     def select_album_destination(self):
         return self._select_album_destination_dialog().display
 
-    def load_album_file(self, album_portfolio):
-        return self._load_dialog(album_portfolio)
+    def select_album_to_load(self):
+        return self._select_album_to_load_dialog().display
 
     def clear(self):
         self._pictures = None

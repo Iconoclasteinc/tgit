@@ -8,8 +8,8 @@ from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
 from .menu_bar_driver import menu_bar
-from .new_album_screen_driver import new_album_screen
-from .welcome_screen_driver import welcome_screen
+from .new_album_screen_driver import new_album_page
+from .welcome_screen_driver import welcome_page
 
 
 class MainWindowDriver(WidgetDriver):
@@ -17,13 +17,13 @@ class MainWindowDriver(WidgetDriver):
         super().__init__(selector, prober, gesture_performer)
 
     def import_album(self, of_type, name, track_path, album_path):
-        welcome_screen(self).new_album(of_type)
-        new_album_screen(self).import_album(name, album_path, track_path)
+        welcome_page(self).new_album(of_type)
+        new_album_page(self).import_album(name, album_path, track_path)
         album_screen(self).is_showing_on_screen()
 
     def create_album(self, of_type, name, directory):
-        welcome_screen(self).new_album(of_type)
-        new_album_screen(self).create_empty_album(name, directory)
+        welcome_page(self).new_album(of_type)
+        new_album_page(self).create_empty_album(name, directory)
         album_screen(self).is_showing_on_screen()
 
     def add_tracks_in_folder(self):
@@ -98,7 +98,7 @@ class MainWindowDriver(WidgetDriver):
             message_box(self).yes()
 
     def shows_welcome_screen(self):
-        welcome_screen(self).is_showing_on_screen()
+        welcome_page(self).is_showing_on_screen()
 
     def has_disabled_album_actions(self):
         menu_bar(self).has_disabled_album_actions()
@@ -117,7 +117,7 @@ class MainWindowDriver(WidgetDriver):
         menu_bar(self).settings()
 
     def load_album(self, filename):
-        welcome_screen(self).load()
+        welcome_page(self).load()
         load_album_dialog(self).load(filename)
         album_screen(self).is_showing_on_screen()
 

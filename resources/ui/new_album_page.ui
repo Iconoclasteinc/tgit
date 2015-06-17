@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>new_album_screen</class>
- <widget class="QFrame" name="new_album_screen">
+ <class>new_album_page</class>
+ <widget class="QFrame" name="new_album_page">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="styleSheet">
-   <string notr="true">#new_album_screen {
+   <string notr="true">#new_album_page {
     background-color: #484848
 }
 
@@ -267,7 +267,14 @@ QPushButton:disabled {
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="continue_button">
+          <widget class="QPushButton" name="cancel_button">
+           <property name="text">
+            <string>CANCEL</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="create_button">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -286,6 +293,31 @@ QPushButton:disabled {
     </widget>
    </item>
   </layout>
+  <action name="cancel_creation_action">
+   <property name="text">
+    <string>Cancel Creation</string>
+   </property>
+   <property name="shortcut">
+    <string>Esc</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
+   </property>
+  </action>
+  <action name="create_album_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Create album</string>
+   </property>
+   <property name="shortcut">
+    <string>Return</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>album_name</tabstop>
@@ -293,10 +325,43 @@ QPushButton:disabled {
   <tabstop>browse_album_location_button</tabstop>
   <tabstop>track_location</tabstop>
   <tabstop>browse_track_location_button</tabstop>
-  <tabstop>continue_button</tabstop>
+  <tabstop>create_button</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>cancel_button</sender>
+   <signal>clicked()</signal>
+   <receiver>cancel_creation_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>682</x>
+     <y>512</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_button</sender>
+   <signal>clicked()</signal>
+   <receiver>create_album_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>769</x>
+     <y>512</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

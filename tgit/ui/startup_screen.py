@@ -17,20 +17,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.ui.message_box import close_album_confirmation_box
+from PyQt5.QtWidgets import QStackedWidget
 
 
-def close_album_and(remove_album):
-    def close_album(album, window):
-        confirmation = close_album_confirmation_box(window)
-        confirmation.yes.connect(lambda: remove_album(album))
-        confirmation.open()
+class StartupScreen(QStackedWidget):
+    def __init__(self, create_welcome_page, create_new_album_page):
+        super().__init__()
+        self._welcome_page = create_welcome_page()
+        self._new_album_page = create_new_album_page()
 
-    return close_album
+        self._welcome_page.on_create_album(self._move_to_new_album_page)
+        self._new_album_page.on_cancel_creation(self._move_to_welcome_page)
 
+        self.addWidget(self._welcome_page)
+        self.addWidget(self._new_album_page)
 
-def export_to(dialogs):
-    def export(album):
-        dialogs.export(album).open()
+    def _move_to_new_album_page(self, of_type):
+        self._new_album_page.set_type(of_type)
+        self.setCurrentWidget(self._new_album_page)
 
-    return export
+    def _move_to_welcome_page(self):
+        self.setCurrentWidget(self._welcome_page)

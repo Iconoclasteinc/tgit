@@ -17,30 +17,28 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QFrame
 
-from tgit import album_director as director
 from tgit.album import Album
 from tgit.ui.helpers import ui_file
 
+def welcome_page(select_album, **handlers):
+    screen = WelcomePage(select_album=select_album)
+    for name, handler in handlers.items():
+        getattr(screen, name)(handler)
 
-def make_welcome_screen(*, on_create_new_album, on_load_album):
-    page = WelcomeScreen()
-    page.create_new_album.connect(on_create_new_album)
-    page.load.connect(on_load_album)
-    return page
+    return screen
 
 
-# We have to inherit from QFrame and not QWidget if we want a background without reimplementing QWidget.paintEvent
-class WelcomeScreen(QtWidgets.QFrame):
-    create_new_album = pyqtSignal(str)
-    load = pyqtSignal()
-
-    def __init__(self, parent=None):
+class WelcomePage(QFrame):
+    def __init__(self, *, select_album, parent=None):
         super().__init__(parent)
-        ui_file.load(":/ui/welcome_screen.ui", self)
+        self._select_album = select_album
+        ui_file.load(":/ui/welcome_page.ui", self)
 
-        self.new_mp3_album_button.clicked.connect(lambda: self.create_new_album.emit(Album.Type.MP3))
-        self.new_flac_album_button.clicked.connect(lambda: self.create_new_album.emit(Album.Type.FLAC))
-        self.load_album_button.clicked.connect(lambda: self.load.emit())
+    def on_create_album(self, on_create_album):
+        self.new_mp3_album_button.clicked.connect(lambda: on_create_album(Album.Type.MP3))
+        self.new_flac_album_button.clicked.connect(lambda: on_create_album(Album.Type.FLAC))
+
+    def on_load_album(self, on_load_album):
+        self.load_album_button.clicked.connect(lambda: self._select_album(on_load_album))

@@ -17,20 +17,21 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.ui.message_box import close_album_confirmation_box
+from ._screen_driver import ScreenDriver
+from test.drivers import welcome_page
+from test.drivers.new_album_screen_driver import new_album_page
+from tgit.album import Album
 
 
-def close_album_and(remove_album):
-    def close_album(album, window):
-        confirmation = close_album_confirmation_box(window)
-        confirmation.yes.connect(lambda: remove_album(album))
-        confirmation.open()
+class StartupScreenDriver(ScreenDriver):
+    def shows_welcome_page(self):
+        welcome_page(self).is_showing_on_screen()
 
-    return close_album
+    def creates_album(self, of_type):
+        welcome_page(self).new_album(of_type)
+        new_album_page(self).is_showing_on_screen()
 
-
-def export_to(dialogs):
-    def export(album):
-        dialogs.export(album).open()
-
-    return export
+    def cancels_creation(self):
+        welcome_page(self).new_album(of_type=Album.Type.MP3)
+        new_album_page(self).cancels_creation()
+        welcome_page(self).is_showing_on_screen()

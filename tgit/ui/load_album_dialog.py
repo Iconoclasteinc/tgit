@@ -21,15 +21,7 @@ from PyQt5.QtCore import pyqtSignal, QDir
 from PyQt5.QtWidgets import QFileDialog
 
 
-def make_load_album_dialog(parent_window, native=True, *, on_select_album):
-    dialog = LoadAlbumDialog(parent_window, native)
-    dialog.album_selected.connect(on_select_album)
-    return dialog
-
-
 class LoadAlbumDialog(QFileDialog):
-    album_selected = pyqtSignal(str)
-
     def __init__(self, parent, native):
         super().__init__(parent)
         self.setObjectName("load_album_dialog")
@@ -37,4 +29,11 @@ class LoadAlbumDialog(QFileDialog):
         self.setFileMode(QFileDialog.ExistingFile)
         self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT Album files")))
         self.setDirectory(QDir.homePath())
-        self.fileSelected.connect(lambda selected: self.album_selected.emit(os.path.abspath(selected)))
+
+    def display(self, on_load):
+        self.fileSelected.connect(on_load)
+        self.open()
+
+    def done(self, result):
+        self.fileSelected.disconnect()
+        super().done(result)

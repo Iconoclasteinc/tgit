@@ -16,27 +16,47 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from cute import gestures
 
 from cute.matchers import named
 from ._screen_driver import ScreenDriver
-from tgit.ui.new_album_screen import NewAlbumScreen
+from tgit.ui.new_album_page import NewAlbumPage
 
 
-def new_album_screen(parent):
-    return NewAlbumScreenDriver.find_single(parent, NewAlbumScreen, named("new_album_screen"))
+def new_album_page(parent):
+    return NewAlbumPageDriver.find_single(parent, NewAlbumPage, named("new_album_page"))
 
 
-class NewAlbumScreenDriver(ScreenDriver):
-    def create_empty_album(self, album_name, album_path):
-        self.lineEdit(named("album_name")).change_text(album_name)
-        self.lineEdit(named("album_location")).change_text(album_path)
-        self.button(named("continue_button")).click()
+class NewAlbumPageDriver(ScreenDriver):
+    def create_empty_album(self, album_name, album_path, using_shortcut=False):
+        self.lineEdit(named("album_name")).replace_all_text(album_name)
+        self.lineEdit(named("album_location")).replace_all_text(album_path)
+
+        if using_shortcut:
+            self.perform(gestures.enter())
+        else:
+            self.button(named("create_button")).click()
 
     def import_album(self, album_name, album_path, track_path):
-        self.lineEdit(named("album_name")).change_text(album_name)
-        self.lineEdit(named("album_location")).change_text(album_path)
-        self.lineEdit(named("track_location")).change_text(track_path)
-        self.button(named("continue_button")).click()
+        self.lineEdit(named("album_name")).replace_all_text(album_name)
+        self.lineEdit(named("album_location")).replace_all_text(album_path)
+        self.lineEdit(named("track_location")).replace_all_text(track_path)
+        self.button(named("create_button")).click()
+
+    def cancels_creation(self, album_name="", album_path="", using_shortcut=False):
+        if album_name:
+            self.lineEdit(named("album_name")).replace_all_text(album_name)
+
+        if album_path:
+            self.lineEdit(named("album_location")).replace_all_text(album_path)
+
+        if using_shortcut:
+            self.perform(gestures.unselect())
+        else:
+            self.button(named("cancel_button")).click()
+        self.lineEdit(named("album_name")).has_text("")
+        self.lineEdit(named("album_location")).has_text("")
+        self.lineEdit(named("track_location")).has_text("")
 
     def select_album(self):
         self.button(named("browse_album_location_button")).click()
@@ -49,3 +69,6 @@ class NewAlbumScreenDriver(ScreenDriver):
 
     def has_track_location(self, destination):
         self.lineEdit(named("track_location")).has_text(destination)
+
+    def creation_is_disabled(self):
+        self.button(named("create_button")).is_disabled()

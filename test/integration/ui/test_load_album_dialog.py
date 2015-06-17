@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
 from PyQt5.QtWidgets import QFileDialog
 
 import pytest
@@ -25,7 +26,7 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.load_album_dialog_driver import LoadAlbumDialogDriver
 from test.util import resources
-from tgit.ui.load_dialog import LoadAlbumDialog
+from tgit.ui.load_album_dialog import LoadAlbumDialog
 
 
 @pytest.fixture()
@@ -42,8 +43,7 @@ def driver(dialog, prober, automaton):
 
 def test_signals_when_album_selected(dialog, driver):
     album_selected_signal = ValueMatcherProbe("album file selected", resources.path("album_mp3.tgit"))
-    dialog.album_selected.connect(album_selected_signal.received)
-    dialog.open()
+    dialog.display(lambda dest: album_selected_signal.received(os.path.abspath(dest)))
 
     driver.load(resources.path("album_mp3.tgit"))
     driver.check(album_selected_signal)

@@ -21,7 +21,7 @@ def qt():
 
 @pytest.yield_fixture()
 def main_window(qt):
-    window = MainWindow()
+    window = MainWindow(create_startup_screen=lambda: None, create_album_screen=lambda: None)
     show_widget(window)
     yield window
     window.close()
