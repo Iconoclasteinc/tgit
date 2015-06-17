@@ -322,7 +322,7 @@
     </message>
 </context>
 <context>
-    <name>AlbumScreen</name>
+    <name>album_screen</name>
     <message>
         <location filename="tgit/ui/album_screen.py" line="90"/>
         <source>PREVIOUS</source>
@@ -340,13 +340,13 @@
     </message>
     <message>
         <location filename="tgit/ui/album_screen.py" line="67"/>
-        <source>Help</source>
-        <translation>Aide</translation>
+        <source>&lt;a style="color: white" href="http://tagyourmusic.com/#style-guide"&gt;Help&lt;/a&gt;</source>
+        <translation>&lt;a style="color: white" href="http://tagyourmusic.com/#style-guide"&gt;Aide&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_screen.py" line="75"/>
-        <source>Request Feature</source>
-        <translation>Réclamer une nouvelle fonctionnalité</translation>
+        <source>&lt;a style="color: white" href="mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!"&gt;Request Feature&lt;/a&gt;</source>
+        <translation>&lt;a style="color: white" href="mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !"&gt;Réclamer une nouvelle fonctionnalité&lt;/a&gt;</translation>
     </message>
 </context>
 <context>
