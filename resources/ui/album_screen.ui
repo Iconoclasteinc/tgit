@@ -51,11 +51,10 @@
     border-radius: 5px;
     background-color: #F25C0A;
     font-size: 15px;
-    min-width: 100px;
-    min-height: 15px;
+    min-width: 110px;
     font-weight: bold;
     color: white;
-    padding: 8px 8px 5px 8px;
+    padding: 5px 8px 5px 8px;
 }
 
 #save:disabled {
@@ -142,7 +141,7 @@
          <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="text">
-         <string>&lt;a style=&quot;color: white&quot; href=&quot;mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !&quot;&gt;Request Feature&lt;/a&gt;</string>
+         <string>&lt;a style=&quot;color: white&quot; href=&quot;mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!&quot;&gt;Request Feature&lt;/a&gt;</string>
         </property>
         <property name="openExternalLinks">
          <bool>true</bool>
