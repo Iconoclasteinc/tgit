@@ -77,6 +77,13 @@ def test_signals_album_import(page, driver, tmpdir):
     driver.check(import_album_signal)
 
 
+def test_signals_album_creation_cancellation(page, driver):
+    cancel_creation_signal = ValueMatcherProbe("cancel creation")
+    page.on_cancel_creation(lambda: cancel_creation_signal.received())
+
+    driver.cancel_creation()
+    driver.check(cancel_creation_signal)
+
 def test_selects_an_album_location(driver, tmpdir):
     driver.select_album()
     driver.has_album_location(tmpdir.strpath)

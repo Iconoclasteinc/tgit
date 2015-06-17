@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>new_album_screen</class>
+ <class>new_album_page</class>
  <widget class="QFrame" name="new_album_page">
   <property name="geometry">
    <rect>
@@ -267,7 +267,14 @@ QPushButton:disabled {
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="continue_button">
+          <widget class="QPushButton" name="cancel_button">
+           <property name="text">
+            <string>CANCEL</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="create_button">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -293,7 +300,7 @@ QPushButton:disabled {
   <tabstop>browse_album_location_button</tabstop>
   <tabstop>track_location</tabstop>
   <tabstop>browse_track_location_button</tabstop>
-  <tabstop>continue_button</tabstop>
+  <tabstop>create_button</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>

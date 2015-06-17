@@ -30,13 +30,16 @@ class NewAlbumPageDriver(ScreenDriver):
     def create_empty_album(self, album_name, album_path):
         self.lineEdit(named("album_name")).change_text(album_name)
         self.lineEdit(named("album_location")).change_text(album_path)
-        self.button(named("continue_button")).click()
+        self.button(named("create_button")).click()
 
     def import_album(self, album_name, album_path, track_path):
         self.lineEdit(named("album_name")).change_text(album_name)
         self.lineEdit(named("album_location")).change_text(album_path)
         self.lineEdit(named("track_location")).change_text(track_path)
-        self.button(named("continue_button")).click()
+        self.button(named("create_button")).click()
+
+    def cancel_creation(self):
+        self.button(named("cancel_button")).click()
 
     def select_album(self):
         self.button(named("browse_album_location_button")).click()
@@ -51,4 +54,4 @@ class NewAlbumPageDriver(ScreenDriver):
         self.lineEdit(named("track_location")).has_text(destination)
 
     def creation_is_disabled(self):
-        self.button(named("continue_button")).is_disabled()
+        self.button(named("create_button")).is_disabled()

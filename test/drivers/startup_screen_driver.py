@@ -20,6 +20,7 @@
 from ._screen_driver import ScreenDriver
 from test.drivers import welcome_page
 from test.drivers.new_album_screen_driver import new_album_page
+from tgit.album import Album
 
 
 class StartupScreenDriver(ScreenDriver):
@@ -29,3 +30,8 @@ class StartupScreenDriver(ScreenDriver):
     def creates_album(self, of_type):
         welcome_page(self).new_album(of_type)
         new_album_page(self).is_showing_on_screen()
+
+    def cancels_creation(self):
+        welcome_page(self).new_album(of_type=Album.Type.MP3)
+        new_album_page(self).cancel_creation()
+        welcome_page(self).is_showing_on_screen()

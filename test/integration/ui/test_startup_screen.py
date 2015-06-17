@@ -59,3 +59,7 @@ def test_navigates_to_new_album_page_when_creating_mp3_album(driver):
 
 def test_navigates_to_new_album_page_when_creating_flac_album(driver):
     driver.creates_album(of_type=Album.Type.FLAC)
+
+
+def test_navigates_to_welcome_page_when_cancelling_the_creation(driver):
+    driver.cancels_creation()
