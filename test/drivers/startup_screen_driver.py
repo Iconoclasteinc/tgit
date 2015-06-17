@@ -33,5 +33,5 @@ class StartupScreenDriver(ScreenDriver):
 
     def cancels_creation(self):
         welcome_page(self).new_album(of_type=Album.Type.MP3)
-        new_album_page(self).cancel_creation()
+        new_album_page(self).cancels_creation()
         welcome_page(self).is_showing_on_screen()

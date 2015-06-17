@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from hamcrest import has_properties, has_entries
+from hamcrest import has_entries
 import pytest
 
 from cute.finders import WidgetIdentity
@@ -90,11 +90,11 @@ def test_signals_album_import(page, driver, tmpdir):
     driver.check(import_album_signal)
 
 
-def test_signals_album_creation_cancellation(page, driver):
+def test_signals_album_creation_cancellation(page, driver, tmpdir):
     cancel_creation_signal = ValueMatcherProbe("cancel creation")
     page.on_cancel_creation(lambda: cancel_creation_signal.received())
 
-    driver.cancel_creation()
+    driver.cancels_creation(album_name="Honeycomb", album_path=tmpdir.strpath)
     driver.check(cancel_creation_signal)
 
 
@@ -102,7 +102,7 @@ def test_signals_album_creation_cancellation_using_shortcut(page, driver):
     cancel_creation_signal = ValueMatcherProbe("cancel creation")
     page.on_cancel_creation(lambda: cancel_creation_signal.received())
 
-    driver.cancel_creation(using_shortcut=True)
+    driver.cancels_creation(using_shortcut=True)
     driver.check(cancel_creation_signal)
 
 

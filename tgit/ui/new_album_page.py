@@ -41,11 +41,11 @@ class NewAlbumPage(QFrame):
         self.addAction(self.cancel_creation_action)
         self.addAction(self.create_album_action)
 
-        self.album_location.textChanged.connect(self._toggle_create_button)
-        self.album_name.textChanged.connect(self._toggle_create_button)
+        self.album_location.textChanged.connect(lambda: self._toggle_create_button())
+        self.album_name.textChanged.connect(lambda: self._toggle_create_button())
         self.browse_album_location_button.clicked.connect(lambda: select_album_destination(self.album_location.setText))
         self.browse_track_location_button.clicked.connect(lambda: select_track_location(self.track_location.setText))
-        self.create_album_action.triggered.connect(self._create_album)
+        self.create_album_action.triggered.connect(lambda: self._create_album())
 
     def on_create_album(self, on_create_album):
         self._on_create_album = on_create_album
@@ -54,7 +54,7 @@ class NewAlbumPage(QFrame):
         self._on_import_album = on_import_album
 
     def on_cancel_creation(self, on_cancel_creation):
-        self.cancel_creation_action.triggered.connect(on_cancel_creation)
+        self.cancel_creation_action.triggered.connect(lambda: self._cancel_creation(on_cancel_creation))
 
     def set_type(self, type_):
         self._of_type = type_
@@ -80,3 +80,9 @@ class NewAlbumPage(QFrame):
         else:
             properties["track_location"] = track_location
             self._on_import_album(properties)
+
+    def _cancel_creation(self, on_cancel_creation):
+        self.album_name.setText("")
+        self.album_location.setText("")
+        self.track_location.setText("")
+        on_cancel_creation()

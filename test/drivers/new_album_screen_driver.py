@@ -43,11 +43,20 @@ class NewAlbumPageDriver(ScreenDriver):
         self.lineEdit(named("track_location")).replace_all_text(track_path)
         self.button(named("create_button")).click()
 
-    def cancel_creation(self, using_shortcut=False):
+    def cancels_creation(self, album_name="", album_path="", using_shortcut=False):
+        if album_name:
+            self.lineEdit(named("album_name")).replace_all_text(album_name)
+
+        if album_path:
+            self.lineEdit(named("album_location")).replace_all_text(album_path)
+
         if using_shortcut:
             self.perform(gestures.unselect())
         else:
             self.button(named("cancel_button")).click()
+        self.lineEdit(named("album_name")).has_text("")
+        self.lineEdit(named("album_location")).has_text("")
+        self.lineEdit(named("track_location")).has_text("")
 
     def select_album(self):
         self.button(named("browse_album_location_button")).click()
