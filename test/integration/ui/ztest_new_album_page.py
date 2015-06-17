@@ -63,6 +63,19 @@ def test_signals_album_creation(page, driver, tmpdir):
     driver.check(create_album_signal)
 
 
+def test_signals_album_creation_using_shortcut(page, driver, tmpdir):
+    destination = tmpdir.strpath
+    page.set_type(Album.Type.FLAC)
+
+    create_album_signal = ValueMatcherProbe("new album properties",
+                                            has_entries(album_name="Honeycomb", album_location=destination,
+                                                        type=Album.Type.FLAC))
+    page.on_create_album(create_album_signal.received)
+
+    driver.create_empty_album("Honeycomb", destination, using_shortcut=True)
+    driver.check(create_album_signal)
+
+
 def test_signals_album_import(page, driver, tmpdir):
     destination = tmpdir.strpath
     track_location = resources.path("base.mp3")
@@ -83,6 +96,15 @@ def test_signals_album_creation_cancellation(page, driver):
 
     driver.cancel_creation()
     driver.check(cancel_creation_signal)
+
+
+def test_signals_album_creation_cancellation_using_shortcut(page, driver):
+    cancel_creation_signal = ValueMatcherProbe("cancel creation")
+    page.on_cancel_creation(lambda: cancel_creation_signal.received())
+
+    driver.cancel_creation(using_shortcut=True)
+    driver.check(cancel_creation_signal)
+
 
 def test_selects_an_album_location(driver, tmpdir):
     driver.select_album()

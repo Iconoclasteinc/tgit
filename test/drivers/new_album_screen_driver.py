@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from cute import gestures
 
 from cute.matchers import named
 from ._screen_driver import ScreenDriver
@@ -27,19 +28,26 @@ def new_album_page(parent):
 
 
 class NewAlbumPageDriver(ScreenDriver):
-    def create_empty_album(self, album_name, album_path):
-        self.lineEdit(named("album_name")).change_text(album_name)
-        self.lineEdit(named("album_location")).change_text(album_path)
-        self.button(named("create_button")).click()
+    def create_empty_album(self, album_name, album_path, using_shortcut=False):
+        self.lineEdit(named("album_name")).replace_all_text(album_name)
+        self.lineEdit(named("album_location")).replace_all_text(album_path)
+
+        if using_shortcut:
+            self.perform(gestures.enter())
+        else:
+            self.button(named("create_button")).click()
 
     def import_album(self, album_name, album_path, track_path):
-        self.lineEdit(named("album_name")).change_text(album_name)
-        self.lineEdit(named("album_location")).change_text(album_path)
-        self.lineEdit(named("track_location")).change_text(track_path)
+        self.lineEdit(named("album_name")).replace_all_text(album_name)
+        self.lineEdit(named("album_location")).replace_all_text(album_path)
+        self.lineEdit(named("track_location")).replace_all_text(track_path)
         self.button(named("create_button")).click()
 
-    def cancel_creation(self):
-        self.button(named("cancel_button")).click()
+    def cancel_creation(self, using_shortcut=False):
+        if using_shortcut:
+            self.perform(gestures.unselect())
+        else:
+            self.button(named("cancel_button")).click()
 
     def select_album(self):
         self.button(named("browse_album_location_button")).click()

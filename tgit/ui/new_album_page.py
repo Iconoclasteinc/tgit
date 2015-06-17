@@ -38,12 +38,14 @@ class NewAlbumPage(QFrame):
         self._on_import_album = lambda properties: None
 
         ui_file.load(":/ui/new_album_page.ui", self)
+        self.addAction(self.cancel_creation_action)
+        self.addAction(self.create_album_action)
 
         self.album_location.textChanged.connect(self._toggle_create_button)
         self.album_name.textChanged.connect(self._toggle_create_button)
         self.browse_album_location_button.clicked.connect(lambda: select_album_destination(self.album_location.setText))
         self.browse_track_location_button.clicked.connect(lambda: select_track_location(self.track_location.setText))
-        self.create_button.clicked.connect(self._create_album)
+        self.create_album_action.triggered.connect(self._create_album)
 
     def on_create_album(self, on_create_album):
         self._on_create_album = on_create_album
@@ -52,20 +54,25 @@ class NewAlbumPage(QFrame):
         self._on_import_album = on_import_album
 
     def on_cancel_creation(self, on_cancel_creation):
-        self.cancel_button.clicked.connect(on_cancel_creation)
+        self.cancel_creation_action.triggered.connect(on_cancel_creation)
 
     def set_type(self, type_):
         self._of_type = type_
 
     def _toggle_create_button(self):
-        self.create_button.setDisabled(self._should_disable_continue_button())
+        disable_continue_button = self._should_disable_continue_button()
+        self.create_button.setDisabled(disable_continue_button)
+        self.create_album_action.setDisabled(disable_continue_button)
 
     def _should_disable_continue_button(self):
         return self.album_location.text() == "" or self.album_name.text() == ""
 
+    @property
+    def properties(self):
+        return dict(type=self._of_type, album_name=self.album_name.text(), album_location=self.album_location.text())
+
     def _create_album(self):
-        properties = dict(type=self._of_type, album_name=self.album_name.text(),
-                          album_location=self.album_location.text())
+        properties = self.properties
 
         track_location = self.track_location.text()
         if not track_location:
