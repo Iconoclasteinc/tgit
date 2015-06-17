@@ -2,15 +2,36 @@
 
 import unittest
 
-from hamcrest import (assert_that, equal_to, is_, contains, has_property, none,
-                      has_length, has_item, is_not, match_equality as matching)
+from hamcrest import (assert_that, equal_to, is_, contains, has_property, none, has_length, has_item, is_not,
+                      match_equality as matching, contains_inanyorder, not_, has_key)
 from hamcrest.library.collection.is_empty import empty
 from flexmock import flexmock
-from test.test_signal import Subscriber, event
 
+from test.test_signal import Subscriber, event
 from test.util import builders as build
 from tgit.metadata import Image
 from tgit.album import Album, AlbumListener
+
+
+def test_defines_metadata_tags():
+    assert_that(tuple(Album.tags()), contains_inanyorder(
+        'release_name', 'compilation', 'lead_performer', 'isni', 'guestPerformers', 'label_name', 'upc',
+        'catalogNumber', 'recording_time', 'releaseTime', 'originalReleaseTime', 'recordingStudios', 'producer',
+        'mixer', 'contributors', 'comments', 'primary_style'))
+
+
+def test_initializes_with_album_only_metadata():
+    metadata = build.metadata(track_title="Smash Smash",
+                              release_name="Honeycomb",
+                              lead_performer="Joel Miller",
+                              images=[build.image(data=b"front.jpeg")])
+
+    album = Album(metadata)
+
+    assert_that(album.release_name, equal_to("Honeycomb"), "release name")
+    assert_that(album.lead_performer, equal_to("Joel Miller"), "lead performer")
+    assert_that(album.images, contains(has_property("data", b"front.jpeg")), "attached pictures")
+    assert_that(album.metadata, not_(has_key("track_title")), "album metadata")
 
 
 def test_contained_tracks_have_lead_performer_of_album_when_album_is_not_a_compilation():

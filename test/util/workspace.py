@@ -23,7 +23,7 @@ class AlbumWorkspace(object):
         if not exists(self.path(filename)):
             raise AssertionError("Track file '{}' not found in workspace".format(filename))
 
-        metadata = tagging.load_metadata(self.path(filename))
+        track = tagging.load_track(self.path(filename))
         images = []
         # todo use builders and metadata
         if front_cover:
@@ -31,8 +31,8 @@ class AlbumWorkspace(object):
             mime = fs.guess_mime_type(image)
             images.append(Image(mime, fs.binary_content_of(image), type_=Image.FRONT_COVER, desc=desc))
 
-        assert_that(metadata, has_entries(tags), 'metadata tags')
-        assert_that(metadata.images, contains(*images), 'attached pictures')
+        assert_that(track.metadata, has_entries(tags), 'metadata tags')
+        assert_that(track.metadata.images, contains(*images), 'attached pictures')
 
     def delete(self):
         self._local_path.remove()

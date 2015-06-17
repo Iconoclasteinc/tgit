@@ -29,7 +29,7 @@ from tgit.ui.helpers import ui_file
 def album_screen(composition_page, album_page, track_page, album):
     page = AlbumScreen(composition_page(album), album_page(album), track_page)
     album.addAlbumListener(page)
-    page.record_album.connect(lambda: director.recordAlbum(album))
+    page.record_album.connect(lambda: director.save_tracks(album))
     return page
 
 

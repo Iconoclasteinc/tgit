@@ -17,4 +17,4 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from .embedded_metadata import load_metadata, save_metadata
+from .tagging import load_track, save_track

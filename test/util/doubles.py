@@ -22,6 +22,9 @@ class RecordingLibrary(object):
     def files(self):
         return iter(self._entries)
 
+    def path(self, filename):
+        return self._local_path.join(filename).strpath
+
     def _add(self, recording):
         self._entries.append(recording)
         return recording.filename

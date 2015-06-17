@@ -29,7 +29,6 @@ class EmptyContainer():
     def load(filename):
         return Metadata()
 
-
     @staticmethod
     def save(filename, metadata):
         pass

@@ -17,22 +17,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from datetime import datetime
 import functools
 import os
-import shutil
-
-from dateutil import tz
 
 import requests
 from yaml import dump, Dumper, load
 
-import tgit
 from tgit import tagging
 from tgit.album import Album
 from tgit.export.csv_format import CsvFormat
 from tgit.metadata import Metadata
-from tgit.track import Track
 from tgit.util import fs
 
 
@@ -51,15 +45,13 @@ def create_album_into(portfolio):
     return create_new_album
 
 
-def import_album_into(portfolio):
+def import_album_into(portfolio, from_catalog=tagging):
     def import_album_to_portfolio(creation_properties):
-        _, extension = os.path.splitext(creation_properties["track_location"])
-        all_metadata = tagging.load_metadata(creation_properties["track_location"])
-        album_metadata = all_metadata.copy(*Album.tags())
-        album = Album(album_metadata, of_type=creation_properties["type"],
+        reference_track = from_catalog.load_track(creation_properties["track_location"])
+        album = Album(reference_track.metadata, of_type=creation_properties["type"],
                       destination=_build_full_path(creation_properties))
         portfolio.add_album(album)
-        add_tracks_to(album)(creation_properties["track_location"])
+        add_tracks_to(album, from_catalog)(creation_properties["track_location"])
         export_as_yaml(album)
         return album
 
@@ -81,12 +73,12 @@ def remove_album_from(portfolio):
     return close_album
 
 
-def add_tracks_to(album):
-    def add_tracks_to_album(*selection):
-        for filename in selection:
-            album.add_track(Track(filename, tagging.load_metadata(filename)))
+def add_tracks_to(to_album, from_catalog=tagging):
+    def add_tracks_from_catalog_to_album(*track_files):
+        for filename in track_files:
+            to_album.add_track(from_catalog.load_track(filename))
 
-    return add_tracks_to_album
+    return add_tracks_from_catalog_to_album
 
 
 def updateTrack(track, **metadata):
@@ -144,34 +136,9 @@ def play_or_stop(player):
     return play_or_stop_track
 
 
-def recordAlbum(album):
+def save_tracks(album):
     for track in album.tracks:
-        tag_track(tagged_file(album, track), track, datetime.now(tz.tzlocal()))
-
-
-def tag_track(to_file, track, time):
-    def album_metadata(album):
-        metadata = album.metadata.copy()
-        if album.compilation:
-            del metadata['lead_performer']
-        return metadata
-
-    def update_track_metadata():
-        track.tagger = 'TGiT'
-        track.tagger_version = tgit.__version__
-        track.tagging_time = time.strftime('%Y-%m-%d %H:%M:%S %z')
-        track.metadata.update(album_metadata(track.album))
-
-    def copy_track_file():
-        if to_file != track.filename:
-            shutil.copy(track.filename, to_file)
-
-    def save_track_metadata():
-        tagging.save_metadata(to_file, track.metadata)
-
-    update_track_metadata()
-    copy_track_file()
-    save_track_metadata()
+        tagging.save_track(to_file=tagged_file(album, track), track=track)
 
 
 def import_from_yaml(destination):

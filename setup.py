@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from distutils.cmd import Command
-
 import sys
 import os
 
 import PyQt5
 from PyQt5.QtCore import QCoreApplication
 from cx_Freeze import setup, Executable
-from tgit import __version__
+
+from tgit import __app_name__, __version__
 
 windows = sys.platform == "win32"
 
 app_script = "tgit.py"
 app_package = "tgit"
-app_name = "TGiT"
+app_name = __app_name__
 app_version = __version__
 app_publisher = "Iconoclaste Musique, Inc."
 app_publisher_email = "jr@iconoclaste.ca"
