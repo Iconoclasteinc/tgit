@@ -46,9 +46,9 @@ class Image(object):
 
 
 class Metadata:
-    def __init__(self, **metadata):
+    def __init__(self, dict_=None, **meta):
         self._images = []
-        self._tags = dict(**metadata)
+        self._tags = dict(dict_ or {}, **meta)
 
     def __getattribute__(self, name):
         try:
@@ -115,7 +115,7 @@ class Metadata:
         if not keys:
             keys = self.keys()
 
-        copy = Metadata(**{key: self[key] for key in keys if key in self})
+        copy = Metadata({key: self[key] for key in keys if key in self})
         copy.addImages(*self.images)
         return copy
 

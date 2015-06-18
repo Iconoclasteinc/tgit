@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-from hamcrest import assert_that, equal_to, is_, contains, has_properties, none, \
-    has_item, empty, contains_string, has_length, is_not
+from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
+                      has_key)
+from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
 from test.util import builders as build, resources, doubles
@@ -10,7 +11,7 @@ from test.util.workspace import AlbumWorkspace
 from tgit import album_director as director
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.metadata import Image
+from tgit.metadata import Image, Metadata
 from tgit.util import fs
 
 
@@ -45,117 +46,66 @@ def track_catalog():
     return Catalog()
 
 
-def test_adds_new_album_to_porfolio(workspace):
-    portfolio = AlbumPortfolio()
-    director.create_album_into(portfolio)(
-        dict(type=Album.Type.MP3, album_name="album", album_location=workspace.root_path))
-    assert_that(portfolio, is_not(empty()))
+@pytest.fixture
+def album_catalog():
+    class Catalog:
+        def __init__(self):
+            self._albums = {}
+
+        def load_album(self, filename):
+            return self._albums[filename]
+
+        def save_album(self, album):
+            self._albums[album.destination] = album
+
+        add = save_album
+
+        def assert_contains(self, album):
+            assert_that(self._albums, has_key(album.destination), "list of albums in catalog")
+            assert_that(self._albums[album.destination], wrap_matcher(album), "album {}".format(album.destination))
+
+    return Catalog()
 
 
-def test_saves_new_album_to_disk(workspace):
-    portfolio = AlbumPortfolio()
-    creation_properties = dict(type=Album.Type.FLAC, album_name="album", album_location=workspace.root_path)
-    director.create_album_into(portfolio)(creation_properties)
-
-    def read_lines(file):
-        content = open(file, "r").read()
-        return content.split("\n")
-
-    assert_that(read_lines(workspace.path("album.tgit")), has_item(contains_string("type: flac")))
+@pytest.fixture
+def portfolio():
+    return AlbumPortfolio()
 
 
-def test_imports_album_from_track(workspace, track_catalog):
-    track_catalog.add_track(filename="smash", metadata=build.metadata(release_name="Honeycomb"),
-                            track_title="Smash Smash")
+def test_creates_and_adds_album_to_porfolio_and_catalog(portfolio, album_catalog):
+    director.create_album_into(portfolio, to_catalog=album_catalog)(
+        dict(type=Album.Type.MP3, album_name="album", album_location="/path/to/workspace"))
 
-    portfolio = AlbumPortfolio()
-    director.import_album_into(portfolio, track_catalog)(
-        dict(type=Album.Type.MP3, album_name="album", album_location=workspace.root_path, track_location='smash'))
-
-    assert_that(portfolio, has_length(1), "resulting portfolio")
-    album = portfolio[0]
-    assert_that(album, has_properties(type="mp3", release_name="Honeycomb",
-                                      tracks=contains(has_properties(track_title="Smash Smash"))), "imported album")
+    assert_that(portfolio, contains(has_properties(type="mp3", destination="/path/to/workspace/album.tgit")),
+                "albums in portfolio")
+    album_catalog.assert_contains(portfolio[0])
 
 
-def test_saves_album_metadata_to_disk(workspace):
-    album_file = workspace.path("album.tgit")
-    album = build.album(filename=album_file,
-                        release_name="Title", compilation=True, lead_performer="Artist", isni="0000123456789",
-                        guestPerformers=[("Guitar", "Guitarist"), ("Piano", "Pianist")], label_name="Label",
-                        catalogNumber="XXX123456789", upc="123456789999", comments="Comments\n...",
-                        releaseTime="2009-01-01", recording_time="2008-09-15", recordingStudios="Studios",
-                        producer="Producer", mixer="Engineer", primary_style="Style",
-                        images=[build.image("image/jpeg", fs.binary_content_of(resources.path("front-cover.jpg")),
-                                            Image.FRONT_COVER, "Front Cover")])
+def test_imports_album_from_an_existing_track(portfolio, album_catalog, track_catalog):
+    track_catalog.add_track(filename="smash", metadata=Metadata(release_name="Honeycomb"), track_title="Smash Smash")
 
-    director.export_as_yaml(album)
+    director.import_album_into(portfolio, to_catalog=album_catalog, from_catalog=track_catalog)(
+        dict(type=Album.Type.MP3, album_name="album", album_location="/path/to/workspace/album.tgit",
+             track_location='smash'))
 
-    def read_lines(file):
-        content = open(file, "r").read()
-        return content.split("\n")
+    assert_that(portfolio, contains(has_properties(type="mp3", release_name="Honeycomb",
+                                                   tracks=contains(has_properties(track_title="Smash Smash")))),
+                "imported albums in portfolio")
 
-    lines = read_lines(album_file)
-    assert_that(lines, has_item(contains_string("release_name: Title")), "release name")
-    assert_that(lines, has_item(contains_string("compilation: true")), "compilation")
-    assert_that(lines, has_item(contains_string("lead_performer: Artist")), "lead performer")
-    assert_that(lines, has_item(contains_string("isni: 0000123456789")), "isni")
-    assert_that(lines, has_item(contains_string("label_name: Label")), "label name")
-    assert_that(lines, has_item(contains_string("upc: '123456789999'")), "upc")
-    assert_that(lines, has_item(contains_string("comments: 'Comments")), "comments")
-    assert_that(lines, has_item(contains_string(" ...'")), "comments")
-    assert_that(lines, has_item(contains_string("releaseTime: '2009-01-01'")), "release time")
-    assert_that(lines, has_item(contains_string("recording_time: '2008-09-15'")), "recording time")
-    assert_that(lines, has_item(contains_string("recordingStudios: Studios")), "recording studios")
-    assert_that(lines, has_item(contains_string("producer: Producer")), "producer")
-    assert_that(lines, has_item(contains_string("mixer: Engineer")), "mixer")
-    assert_that(lines, has_item(contains_string("primary_style: Style")), "primary style")
-    assert_that(lines, has_item(contains_string("guestPerformers:")), "guest performers")
-    assert_that(lines, has_item(contains_string("  - Guitar")), "guest performers")
-    assert_that(lines, has_item(contains_string("  - Guitarist")), "guest performers")
-    assert_that(lines, has_item(contains_string("  - Piano")), "guest performers")
-    assert_that(lines, has_item(contains_string("  - Pianist")), "guest performers")
-    assert_that(lines, has_item(contains_string("images:")), "images")
-    assert_that(lines, has_item(contains_string("  data: !!binary |")), "images")
-    assert_that(lines, has_item(
-        contains_string("    /9j/4AAQSkZJRgABAQEASABIAAD/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbnRyUkdC")), "images")
-    assert_that(lines, has_item(contains_string("  desc: Front Cover")), "images")
-    assert_that(lines, has_item(contains_string("  mime: image/jpeg")), "images")
-    assert_that(lines, has_item(contains_string("  type: 1")), "images")
+def test_loads_album_from_catalog_into_portfolio(portfolio, album_catalog):
+    target_album = build.album("album.tgit")
+    album_catalog.add(target_album)
+
+    director.load_album_into(portfolio, from_catalog=album_catalog)(filename="album.tgit")
+
+    assert_that(portfolio, contains(target_album), "album portfolio")
 
 
-def test_load_album_from_project_file():
-    portfolio = AlbumPortfolio()
-    director.load_album_into(portfolio)(destination=resources.path("album_mp3.tgit"))
-    album = portfolio[0]
-
-    assert_that(album.type, equal_to("mp3"), "Type")
-    assert_that(album.release_name, equal_to("Title"), "release name")
-    assert_that(album.compilation, is_(True), "compilation")
-    assert_that(album.lead_performer, equal_to("Artist"), "lead performer")
-    assert_that(album.isni, equal_to("0000123456789"), "isni")
-    assert_that(album.guestPerformers, equal_to([("Guitar", "Guitarist"), ("Piano", "Pianist")]), "guest performers")
-    assert_that(album.label_name, equal_to("Label"), "label name")
-    assert_that(album.catalogNumber, equal_to("XXX123456789"), "catalog number")
-    assert_that(album.upc, equal_to("123456789999"), "upc")
-    assert_that(album.comments, equal_to("Comments\n..."), "comments")
-    assert_that(album.releaseTime, equal_to("2009-01-01"), "release time")
-    assert_that(album.recording_time, equal_to("2008-09-15"), "recording time")
-    assert_that(album.recordingStudios, equal_to("Studios"), "recording studios")
-    assert_that(album.producer, equal_to("Producer"), "producer")
-    assert_that(album.mixer, equal_to("Engineer"), "mixer")
-    assert_that(album.primary_style, equal_to("Style"), "primary style")
-    assert_that(album.images, contains(
-        Image("image/jpeg", fs.binary_content_of(resources.path("front-cover.jpg")), Image.FRONT_COVER, "Front Cover")),
-                "attached pictures")
-
-
-def test_removes_album_from_portfolio():
-    portfolio = AlbumPortfolio()
+def test_removes_album_from_portfolio(portfolio):
     album = build.album()
     portfolio.add_album(album)
     director.remove_album_from(portfolio)(album)
-    assert_that(portfolio, empty())
+    assert_that(portfolio, empty(), "album portfolio")
 
 
 def test_adds_selected_tracks_to_album_in_order(track_catalog):
@@ -164,7 +114,7 @@ def test_adds_selected_tracks_to_album_in_order(track_catalog):
     album = build.album()
     director.add_tracks_to(album, from_catalog=track_catalog)('first.mp3', 'second.mp3', 'third.mp3')
 
-    assert_that(album.tracks, contains(*tracks))
+    assert_that(album.tracks, contains(*tracks), "list of tracks in album")
 
 
 def test_tags_file_to_album_directory_under_artist_and_title_name(workspace):

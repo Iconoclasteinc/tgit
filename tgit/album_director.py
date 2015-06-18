@@ -21,12 +21,11 @@ import functools
 import os
 
 import requests
-from yaml import dump, Dumper, load
 
+from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
-from tgit.export.csv_format import CsvFormat
-from tgit.metadata import Metadata
+from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
 
@@ -34,36 +33,40 @@ def _build_full_path(creation_properties):
     return "{0}/{1}.tgit".format(creation_properties["album_location"], creation_properties["album_name"])
 
 
-def create_album_into(portfolio):
+def create_album_into(portfolio, to_catalog=local_storage):
     def create_new_album(creation_properties):
-        # todo: find a way to notify the portfolio's listeners of the destination
-        album = Album(of_type=creation_properties["type"], destination=_build_full_path(creation_properties))
+        full_path = _build_full_path(creation_properties)
+
+        album = Album(of_type=creation_properties["type"], destination=full_path)
+        save_album(to_catalog)(album)
         portfolio.add_album(album)
-        export_as_yaml(album)
         return album
 
     return create_new_album
 
 
-def import_album_into(portfolio, from_catalog=tagging):
+def import_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging):
     def import_album_to_portfolio(creation_properties):
         reference_track = from_catalog.load_track(creation_properties["track_location"])
         album = Album(reference_track.metadata, of_type=creation_properties["type"],
                       destination=_build_full_path(creation_properties))
+        save_album(to_catalog)(album)
         portfolio.add_album(album)
         add_tracks_to(album, from_catalog)(creation_properties["track_location"])
-        export_as_yaml(album)
         return album
 
     return import_album_to_portfolio
 
 
-def load_album_into(portfolio):
-    def load_album(destination):
-        album = import_from_yaml(destination)
-        portfolio.add_album(album)
+def load_album_into(portfolio, from_catalog=local_storage):
+    def load_album(filename):
+        portfolio.add_album(from_catalog.load_album(filename))
 
     return load_album
+
+
+def save_album(to_catalog=local_storage):
+    return to_catalog.save_album
 
 
 def remove_album_from(portfolio):
@@ -74,8 +77,8 @@ def remove_album_from(portfolio):
 
 
 def add_tracks_to(to_album, from_catalog=tagging):
-    def add_tracks_from_catalog_to_album(*track_files):
-        for filename in track_files:
+    def add_tracks_from_catalog_to_album(*filename):
+        for filename in filename:
             to_album.add_track(from_catalog.load_track(filename))
 
     return add_tracks_from_catalog_to_album
@@ -139,30 +142,6 @@ def play_or_stop(player):
 def save_tracks(album):
     for track in album.tracks:
         tagging.save_track(to_file=tagged_file(album, track), track=track)
-
-
-def import_from_yaml(destination):
-    with open(destination, "r") as album_file_stream:
-        album_dict = load(album_file_stream)
-        type_ = album_dict["type"]
-        images = album_dict["images"]
-        del album_dict["type"]
-        del album_dict["images"]
-
-        # todo: change the Metadata class to count images as tags.
-        # We need to add the images to the metadata property after having created the album because the Album class
-        # chooses to create a new Metadata instance
-        album = Album(metadata=(Metadata(**album_dict)), of_type=type_, destination=destination)
-        album.metadata.addImages(*images)
-        return album
-
-
-def export_as_yaml(album):
-    with open(album.destination, "w") as out:
-        metadata = dict(album.metadata)
-        metadata["type"] = album.type
-        metadata["images"] = album.metadata.images
-        dump(metadata, stream=out, Dumper=Dumper, default_flow_style=False)
 
 
 def export_as_csv(album):
