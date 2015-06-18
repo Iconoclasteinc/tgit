@@ -340,8 +340,7 @@ class QDialogDriver(WidgetDriver):
 
 
 class FileDialogDriver(WidgetDriver):
-    DISPLAY_DELAY = 500 if windows else 250
-    INITIAL_SETUP_DELAY = 1000 if windows else 0
+    DISPLAY_DELAY = 250
 
     def show_hidden_files(self):
         def show_dialog_hidden_files(dialog):
@@ -356,7 +355,6 @@ class FileDialogDriver(WidgetDriver):
         self.manipulate("set the view mode to list", set_list_view_mode)
 
     def navigate_to_dir(self, path):
-        self.pause(self.INITIAL_SETUP_DELAY)
         for folder_name in self._navigation_path_to(path):
             if folder_name == '':
                 pass
@@ -477,7 +475,7 @@ class ListViewDriver(WidgetDriver):
         self.perform(gestures.mouse_click_at(self._center_of_item(index)))
 
     def _scroll_item_to_visible(self, index):
-        self.manipulate("scroll item to visible", lambda listView: listView.scrollTo(index))
+        self.manipulate("scroll item to visible", lambda list_view: list_view.scrollTo(index))
 
     def _center_of_item(self, index):
         class CalculateCenterOfItem:
