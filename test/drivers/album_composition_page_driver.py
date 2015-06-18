@@ -3,8 +3,8 @@ from hamcrest import contains, has_items, equal_to
 from PyQt5.QtWidgets import QMenu, QTableWidget
 
 from cute import gestures
-from cute.widgets import MenuDriver, TableViewDriver, WidgetDriver
-from cute.matchers import named, showing_on_screen
+from cute.widgets import MenuDriver, TableViewDriver
+from cute.matchers import named
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from ._screen_driver import ScreenDriver
 
@@ -70,7 +70,5 @@ class AlbumCompositionPageDriver(ScreenDriver):
 
     def _track_table(self):
         table = TableViewDriver.find_single(self, QTableWidget, named('_track_table'))
-        # todo we need to remove the overloded is_ and manipulate on TableViewDriver, they break
-        # non table matchers
-        WidgetDriver.is_(table, showing_on_screen())
+        table.is_showing_on_screen()
         return table

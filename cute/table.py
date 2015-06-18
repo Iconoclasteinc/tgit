@@ -21,24 +21,24 @@ class TableManipulation:
         self._manipulation = wrapped_manipulation
 
     def __call__(self, widget):
-        return self._manipulation(Table(widget))
+        self._manipulation(Table(widget))
 
 
 class Table:
     def __init__(self, widget):
-        self._table = widget
+        self.widget = widget
 
     def _logical_col(self, visual_col):
-        return self._table.horizontalHeader().logicalIndex(visual_col)
+        return self.widget.horizontalHeader().logicalIndex(visual_col)
 
     def _logical_row(self, visual_row):
-        return self._table.verticalHeader().logicalIndex(visual_row)
+        return self.widget.verticalHeader().logicalIndex(visual_row)
 
     def visual_row(self, logical_row):
-        return self._table.verticalHeader().visualIndex(logical_row)
+        return self.widget.verticalHeader().visualIndex(logical_row)
 
     def cell_text(self, row, col):
-        return self._table.model().data(self.index(row, col), Qt.DisplayRole)
+        return self.widget.model().data(self.index(row, col), Qt.DisplayRole)
 
     def cells(self, row):
         return [self.cell_text(row, column) for column in range(self.column_count())]
@@ -47,26 +47,26 @@ class Table:
         return [self.cells(row) for row in range(self.row_count())]
 
     def header_text(self, col):
-        return self._table.model().headerData(self._logical_col(col), Qt.Horizontal, Qt.DisplayRole)
+        return self.widget.model().headerData(self._logical_col(col), Qt.Horizontal, Qt.DisplayRole)
 
     def headers(self):
         return [self.header_text(column) for column in range(self.column_count())]
 
     def column_count(self):
-        return self._table.model().columnCount()
+        return self.widget.model().columnCount()
 
     def row_count(self):
-        return self._table.model().rowCount()
+        return self.widget.model().rowCount()
 
     def widget_at(self, row, col):
-        return self._table.indexWidget(self.index(row, col))
+        return self.widget.indexWidget(self.index(row, col))
 
     def index(self, row, col):
-        return self._table.model().index(self._logical_row(row), self._logical_col(col))
+        return self.widget.model().index(self._logical_row(row), self._logical_col(col))
 
     def cell_bounds(self, row, col):
-        bounds = self._table.visualRect(self.index(row, col)).translated(self._table.verticalHeader().width(),
-                                                                         self._table.horizontalHeader().height())
+        bounds = self.widget.visualRect(self.index(row, col)).translated(self.widget.verticalHeader().width(),
+                                                                         self.widget.horizontalHeader().height())
         return self._absolute(bounds)
 
     def cell_center(self, row, col):
@@ -74,16 +74,16 @@ class Table:
 
     def vertical_header_bounds(self, row):
         x = 0
-        y = self._table.horizontalHeader().height() + self._table.rowViewportPosition(self._logical_row(row))
-        width = self._table.verticalHeader().width()
-        height = self._table.rowHeight(self._logical_row(row))
+        y = self.widget.horizontalHeader().height() + self.widget.rowViewportPosition(self._logical_row(row))
+        width = self.widget.verticalHeader().width()
+        height = self.widget.rowHeight(self._logical_row(row))
         return self._absolute(QRect(x, y, width, height))
 
     def _absolute(self, rect):
-        return rect.translated(self._table.mapToGlobal(QPoint(0, 0)))
+        return rect.translated(self.widget.mapToGlobal(QPoint(0, 0)))
 
     def scroll_to(self, row, col):
-        self._table.scrollTo(self.index(row, col))
+        self.widget.scrollTo(self.index(row, col))
 
     def selected_row(self):
-        return self.visual_row(self._table.currentIndex().row())
+        return self.visual_row(self.widget.currentIndex().row())

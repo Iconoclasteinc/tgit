@@ -324,7 +324,7 @@ class QCalendarDriver(WidgetDriver):
                 self.row, self.col = find_position_of_day_in_calendar(day, *find_position_of_day_in_calendar(1))
 
         find_position = FindDayInCalendar()
-        self._table().manipulate("find position of day '{0}' in calendar".format(day), find_position)
+        self._table().manipulate_table("find position of day '{0}' in calendar".format(day), find_position)
         return find_position.row, find_position.col
 
 
@@ -631,11 +631,11 @@ class QMessageBoxDriver(WidgetDriver):
 
 
 class TableViewDriver(WidgetDriver):
-    def manipulate(self, description, manipulation):
-        super().manipulate(description, TableManipulation(manipulation))
+    def manipulate_table(self, description, manipulation):
+        self.manipulate(description, TableManipulation(manipulation))
 
-    def is_(self, criteria):
-        super().is_(TableMatcher(criteria))
+    def is_table(self, criteria):
+        self.is_(TableMatcher(criteria))
 
     def has_headers(self, matching):
         class WithMatchingHeaders(BaseMatcher):
@@ -650,7 +650,7 @@ class TableViewDriver(WidgetDriver):
                 mismatch_description.append_text("headers ")
                 matching.describe_mismatch(table.headers(), mismatch_description)
 
-        self.is_(WithMatchingHeaders())
+        self.is_table(WithMatchingHeaders())
 
     def has_row(self, matching):
         class WithMatchingRow(BaseMatcher):
@@ -670,7 +670,7 @@ class TableViewDriver(WidgetDriver):
                 matching.describe_to(mismatch_description)
 
         with_matching_row = WithMatchingRow()
-        self.is_(with_matching_row)
+        self.is_table(with_matching_row)
         return with_matching_row.index
 
     def contains_rows(self, matching):
@@ -686,13 +686,13 @@ class TableViewDriver(WidgetDriver):
                 mismatch_description.append_text("rows ")
                 matching.describe_mismatch(table.all_cells(), mismatch_description)
 
-        self.is_(WithMatchingRows())
+        self.is_table(WithMatchingRows())
 
     def scroll_cell_to_visible(self, row, column):
         def scroll_cell_to_visible(table):
             table.scroll_to(row, column)
 
-        self.manipulate("scroll cell ({0}, {1}) into view".format(row, column), scroll_cell_to_visible)
+        self.manipulate_table("scroll cell ({0}, {1}) into view".format(row, column), scroll_cell_to_visible)
 
     def _click_at_cell_center(self, row, column):
         class CalculateCellPosition:
@@ -700,7 +700,7 @@ class TableViewDriver(WidgetDriver):
                 self.center = table.cell_center(row, column)
 
         calculate_position = CalculateCellPosition()
-        self.manipulate("calculate cell ({0}, {1}) center position".format(row, column), calculate_position)
+        self.manipulate_table("calculate cell ({0}, {1}) center position".format(row, column), calculate_position)
         self.perform(gestures.mouse_click_at(calculate_position.center))
 
     def click_on_cell(self, row, column):
@@ -760,7 +760,7 @@ class TableViewDriver(WidgetDriver):
                 mismatch_description.append_text("row count ")
                 matching.describe_mismatch(table.row_count(), mismatch_description)
 
-        self.is_(WithMatchingRowCount())
+        self.is_table(WithMatchingRowCount())
 
     def has_selected_row(self, matching):
         class WithMatchingSelectedRow(BaseMatcher):
@@ -778,7 +778,7 @@ class TableViewDriver(WidgetDriver):
                 mismatch_description.append_text('selected row was ')
                 mismatch_description.append_description_of(self._selected_row(table))
 
-        self.is_(WithMatchingSelectedRow())
+        self.is_table(WithMatchingSelectedRow())
 
     def move_row(self, from_position, to_position):
         class CalculateHeaderBounds:
@@ -789,9 +789,9 @@ class TableViewDriver(WidgetDriver):
                 self.bounds = table.vertical_header_bounds(self.row)
 
         from_header = CalculateHeaderBounds(from_position)
-        self.manipulate("calculate bounds of header row {0}".format(from_position), from_header)
+        self.manipulate_table("calculate bounds of header row {0}".format(from_position), from_header)
         to_header = CalculateHeaderBounds(to_position)
-        self.manipulate("calculate bounds of header row {0}".format(to_position), to_header)
+        self.manipulate_table("calculate bounds of header row {0}".format(to_position), to_header)
 
         drop_target = rect.bottom_center(to_header.bounds) if (from_position < to_position) \
             else rect.top_center(to_header.bounds)
