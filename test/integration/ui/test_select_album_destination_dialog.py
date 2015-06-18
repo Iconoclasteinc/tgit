@@ -30,8 +30,8 @@ from tgit.ui.select_album_destination_dialog import SelectAlbumDestinationDialog
 
 
 @pytest.fixture()
-def dialog(main_window):
-    return SelectAlbumDestinationDialog(main_window, native=False)
+def dialog(qt):
+    return SelectAlbumDestinationDialog(native=False)
 
 
 @pytest.yield_fixture()
@@ -50,4 +50,3 @@ def test_signals_select_album_destination(tmpdir, dialog, driver):
 
     driver.select_destination(destination)
     driver.check(select_album_destination_signal)
-

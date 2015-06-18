@@ -7,6 +7,7 @@ from test.drivers import WelcomePageDriver
 from tgit.album import Album
 from tgit.ui.welcome_page import WelcomePage
 
+
 @pytest.fixture()
 def select_album():
     def on_select_album(callback):
@@ -14,10 +15,11 @@ def select_album():
 
     return on_select_album
 
+
 @pytest.fixture()
-def page(main_window, select_album):
+def page(qt, select_album):
     welcome_page = WelcomePage(select_album=select_album)
-    main_window.setCentralWidget(welcome_page)
+    welcome_page.show()
     return welcome_page
 
 

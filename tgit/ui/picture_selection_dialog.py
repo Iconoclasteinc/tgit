@@ -31,7 +31,7 @@ def make_picture_selection_dialog(parent_window, native=True, *, on_select_pictu
 class PictureSelectionDialog(QFileDialog):
     picture_selected = pyqtSignal(str)
 
-    def __init__(self, parent, native):
+    def __init__(self, parent=None, native=True):
         super().__init__(parent)
         self.setObjectName("picture-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)

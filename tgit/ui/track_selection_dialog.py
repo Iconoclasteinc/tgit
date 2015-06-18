@@ -23,7 +23,7 @@ from PyQt5.QtWidgets import QFileDialog
 class TrackSelectionDialog(QFileDialog):
     _FILTERS = {'mp3': "MP3 Files", 'flac': "FLAC files"}
 
-    def __init__(self, parent, native):
+    def __init__(self, parent=None, native=True):
         super().__init__(parent)
         self.setObjectName("track-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)

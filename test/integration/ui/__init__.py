@@ -4,8 +4,8 @@ import os
 import unittest
 
 from PyQt5.QtWidgets import QApplication
-from cute.animatron import Animatron
 
+from cute.animatron import Animatron
 from cute.prober import EventProcessingProber
 from tgit import ui
 from tgit.ui.main_window import StyleSheet
@@ -16,7 +16,7 @@ SIZE = (1100, 745)
 def show_widget(widget):
     widget.setStyleSheet(StyleSheet)
     widget.setFixedSize(*SIZE)
-    ui.showCenteredOnScreen(widget)
+    widget.show()
 
 
 END_OF_TEST_PAUSE = int(os.environ.get('END_OF_TEST_PAUSE', 0))

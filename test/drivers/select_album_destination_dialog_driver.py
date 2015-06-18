@@ -30,6 +30,7 @@ def select_album_destination_dialog(parent):
 
 class SelectAlbumDestinationDialogDriver(FileDialogDriver):
     def select_destination(self, destination):
+        self.view_as_list()
         self.show_hidden_files()
         self.navigate_to_dir(destination)
         self.has_accept_button_text("&Choose")

@@ -54,4 +54,4 @@ class SettingsDialog(QDialog):
     def display(self, **settings):
         if 'language' in settings:
             self.languages.setCurrentIndex(self.languages.findData(settings['language']))
-        self.show()
+        self.open()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
+import sip
 
-from cute import event_loop
 from cute.animatron import Animatron
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
@@ -36,8 +36,10 @@ class ApplicationRunner:
 
     def stop(self):
         self.tagger.close()
-        event_loop.process_pending_events()
         self.app.quit()
+        # If we don't force deletion of the C++ wrapped object, it causes the test suite to eventually crash
+        # Never ever remove this!!
+        sip.delete(self.app)
 
     def new_album(self, of_type="mp3", filename="album"):
         self.tagger.create_album(of_type, filename, self._workspace.root_path)

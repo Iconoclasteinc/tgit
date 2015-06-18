@@ -16,9 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
 
-from PyQt5.QtCore import QDir, pyqtSignal
+from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QFileDialog
 
 
@@ -27,7 +26,7 @@ def make_reference_track_selection_dialog(parent_window, native=True):
 
 
 class ReferenceTrackSelectionDialog(QFileDialog):
-    def __init__(self, parent, native):
+    def __init__(self, parent=None, native=True):
         super().__init__(parent)
         self.setObjectName("import_album_from_track_dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)

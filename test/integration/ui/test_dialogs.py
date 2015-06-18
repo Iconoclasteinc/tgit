@@ -5,18 +5,14 @@ import pytest
 
 from cute.matchers import named
 from cute.widgets import window, FileDialogDriver
-from test.drivers.load_album_dialog_driver import LoadAlbumDialogDriver
-from test.drivers.select_album_destination_dialog_driver import SelectAlbumDestinationDialogDriver
-from test.drivers import TrackSelectionDialogDriver, ReferenceTrackSelectionDialogDriver
 from test.util import builders as make
 from tgit import album_director
 from tgit.ui import Dialogs
 
 
 @pytest.fixture()
-def dialogs(main_window):
-    dialogs = Dialogs(album_director, native=True)
-    dialogs.parent = main_window
+def dialogs(qt):
+    dialogs = Dialogs(album_director, native=False)
     return dialogs
 
 
@@ -48,37 +44,49 @@ def select_album_to_load_dialog_driver(prober, automaton):
     driver.close()
 
 
-def test_creates_a_single_reference_track_selection_dialog(dialogs, reference_track_selection_dialog_driver):
-    dialogs.select_reference_track()(lambda: None)
-    reference_track_selection_dialog_driver.is_showing_on_screen()
+def ignore(*args):
+    pass
 
-    dialogs.select_reference_track()(lambda: None)
+
+def test_creates_a_single_reference_track_selection_dialog(dialogs, reference_track_selection_dialog_driver):
+    dialogs.select_reference_track()(ignore)
     reference_track_selection_dialog_driver.is_showing_on_screen()
+    reference_track_selection_dialog_driver.reject()
+
+    dialogs.select_reference_track()(ignore)
+    reference_track_selection_dialog_driver.is_showing_on_screen()
+    reference_track_selection_dialog_driver.reject()
 
 
 def test_creates_a_single_album_destination_selection_dialog(dialogs, select_album_destination_dialog_driver):
-    dialogs.select_album_destination()(lambda: None)
+    dialogs.select_album_destination()(ignore)
     select_album_destination_dialog_driver.is_showing_on_screen()
+    select_album_destination_dialog_driver.reject()
 
-    dialogs.select_album_destination()(lambda: None)
+    dialogs.select_album_destination()(ignore)
     select_album_destination_dialog_driver.is_showing_on_screen()
+    select_album_destination_dialog_driver.reject()
 
 
 def test_creates_a_single_album_to_load_selection_dialog(dialogs, select_album_to_load_dialog_driver):
-    dialogs.select_album_to_load()(lambda: None)
+    dialogs.select_album_to_load()(ignore)
     select_album_to_load_dialog_driver.is_showing_on_screen()
+    select_album_to_load_dialog_driver.reject()
 
-    dialogs.select_album_to_load()(lambda: None)
+    dialogs.select_album_to_load()(ignore)
     select_album_to_load_dialog_driver.is_showing_on_screen()
+    select_album_to_load_dialog_driver.reject()
 
 
 def test_creates_a_single_track_selection_dialog_for_a_given_album(dialogs, track_selection_dialog_driver):
     album = make.album()
     dialogs.add_tracks(album)()
     track_selection_dialog_driver.is_showing_on_screen()
+    track_selection_dialog_driver.reject()
 
     dialogs.add_tracks_in_folder(album)()
     track_selection_dialog_driver.is_showing_on_screen()
+    track_selection_dialog_driver.reject()
 
 
 def test_creates_a_single_picture_selection_dialog_for_a_given_album(dialogs):

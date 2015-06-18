@@ -21,7 +21,7 @@ import pytest
 
 from cute.finders import WidgetIdentity
 from test.drivers.startup_screen_driver import StartupScreenDriver
-from test.util import resources
+from test.integration.ui import show_widget
 from tgit.album import Album
 from tgit.ui import StartupScreen
 from tgit.ui.new_album_page import NewAlbumPage
@@ -29,7 +29,7 @@ from tgit.ui.welcome_page import WelcomePage
 
 
 @pytest.fixture()
-def screen(main_window):
+def screen(qt):
     def create_welcome_page():
         return WelcomePage(select_album=lambda: None)
 
@@ -38,7 +38,7 @@ def screen(main_window):
 
     startup_screen = StartupScreen(create_welcome_page=create_welcome_page,
                                    create_new_album_page=create_new_album_page)
-    main_window.setCentralWidget(startup_screen)
+    show_widget(startup_screen)
     return startup_screen
 
 

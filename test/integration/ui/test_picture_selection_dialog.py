@@ -14,8 +14,8 @@ from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 
 
 @pytest.fixture()
-def dialog(main_window):
-    return PictureSelectionDialog(main_window, native=False)
+def dialog(qt):
+    return PictureSelectionDialog(native=False)
 
 
 @pytest.yield_fixture()

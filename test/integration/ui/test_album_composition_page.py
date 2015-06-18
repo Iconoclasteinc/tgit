@@ -9,6 +9,7 @@ from cute.finders import WidgetIdentity
 from cute.matchers import with_text
 from cute.probes import ValueMatcherProbe
 from test.drivers import AlbumCompositionPageDriver
+from test.integration.ui import show_widget
 from test.util import builders as build, doubles
 from tgit.ui.album_composition_page import AlbumCompositionPage
 
@@ -24,9 +25,9 @@ def album():
 
 
 @pytest.fixture()
-def page(main_window, album, player):
+def page(qt, album, player):
     composition_page = AlbumCompositionPage(album, player)
-    main_window.setCentralWidget(composition_page)
+    show_widget(composition_page)
     return composition_page
 
 
@@ -45,8 +46,8 @@ def test_displays_track_details_in_columns(album, driver):
     album.release_name = 'Honeycomb'
     album.lead_performer = 'Joel Miller'
     album.add_track(build.track(track_title='Chevere!',
-                               bitrate=192000,
-                               duration=timedelta(minutes=4, seconds=12).total_seconds()))
+                                bitrate=192000,
+                                duration=timedelta(minutes=4, seconds=12).total_seconds()))
 
     driver.shows_track_details('1', 'Chevere!', 'Joel Miller', 'Honeycomb', '192 kbps', '04:12')
 
@@ -95,7 +96,8 @@ def test_removes_row_from_table_when_track_removed_from_album(album, driver):
     driver.shows_tracks_in_order()
 
     for index, track in enumerate(tracks):
-        assert_that(track.metadata_changed.subscribers, empty(), "track #{} 'metadata changed' subscribers".format(index))
+        assert_that(track.metadata_changed.subscribers, empty(),
+                    "track #{} 'metadata changed' subscribers".format(index))
 
 
 def test_signals_user_request_to_remove_track(album, page, driver):

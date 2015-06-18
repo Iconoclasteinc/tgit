@@ -166,11 +166,11 @@ class AbstractEditDriver(WidgetDriver):
     EDITION_DELAY = 20
 
     def change_text(self, text):
-        self.is_enabled()
         self.replace_all_text(text)
         self.enter()
 
     def replace_all_text(self, text):
+        self.is_enabled()
         self.focus_with_mouse()
         self.clear_all_text()
         self.type(text)
@@ -328,6 +328,17 @@ class QCalendarDriver(WidgetDriver):
         return find_position.row, find_position.col
 
 
+class QDialogDriver(WidgetDriver):
+    def ok(self):
+        self._button(match.with_text('OK')).click()
+
+    def cancel(self):
+        self._button(match.with_text('Cancel')).click()
+
+    def _button(self, matching):
+        return ButtonDriver.find_single(self, QAbstractButton, matching)
+
+
 class FileDialogDriver(WidgetDriver):
     DISPLAY_DELAY = 500 if windows else 250
     INITIAL_SETUP_DELAY = 1000 if windows else 0
@@ -398,13 +409,13 @@ class FileDialogDriver(WidgetDriver):
         return self._accept_button().has_text(text)
 
     def reject(self):
-        return self._reject_button().click()
+        self._reject_button().click()
 
     def has_reject_button(self, criteria):
-        return self._reject_button().is_(criteria)
+        self._reject_button().is_(criteria)
 
     def has_reject_button_text(self, text):
-        return self._reject_button().has_text(text)
+        self._reject_button().has_text(text)
 
     def _list_view(self):
         return ListViewDriver.find_single(self, QListView, match.named("listView"))

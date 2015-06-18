@@ -37,9 +37,9 @@ def on_select(tmpdir):
 
 
 @pytest.fixture()
-def page(main_window, on_select):
+def page(on_select, qt):
     new_album_screen = NewAlbumPage(select_album_destination=on_select, select_track_location=on_select)
-    main_window.setCentralWidget(new_album_screen)
+    new_album_screen.show()
     return new_album_screen
 
 

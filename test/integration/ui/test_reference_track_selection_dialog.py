@@ -14,8 +14,8 @@ from tgit.ui.reference_track_selection_dialog import ReferenceTrackSelectionDial
 
 
 @pytest.fixture()
-def dialog(main_window):
-    return ReferenceTrackSelectionDialog(main_window, native=False)
+def dialog(qt):
+    return ReferenceTrackSelectionDialog(native=False)
 
 
 @pytest.yield_fixture()
@@ -24,6 +24,10 @@ def driver(dialog, prober, automaton):
                                                         prober, automaton)
     yield dialog_driver
     dialog_driver.close()
+
+
+def ignore(*args):
+    pass
 
 
 def test_signals_when_file_selected(driver, dialog):
@@ -50,6 +54,6 @@ def test_allows_selection_of_flac_files(driver, dialog):
 def test_rejects_non_audio_files(driver, dialog):
     unsupported_file = resources.path("front-cover.jpg")
 
-    dialog.open()
+    dialog.display(ignore)
 
     driver.rejects_selection_of(unsupported_file)

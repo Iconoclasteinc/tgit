@@ -7,7 +7,21 @@ import pytest
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
 from test.drivers import MainWindowDriver
+from test.integration.ui import show_widget
 from test.util import builders as build
+from tgit.ui.main_window import MainWindow
+
+
+def ignore(*args):
+    pass
+
+
+@pytest.yield_fixture()
+def main_window(qt):
+    window = MainWindow(create_startup_screen=ignore, create_album_screen=ignore)
+    show_widget(window)
+    yield window
+    window.close()
 
 
 @pytest.yield_fixture()

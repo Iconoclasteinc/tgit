@@ -12,8 +12,8 @@ from tgit.ui.export_as_dialog import ExportAsDialog
 
 
 @pytest.fixture()
-def dialog(main_window):
-    return ExportAsDialog(main_window, native=False)
+def dialog(qt):
+    return ExportAsDialog(native=False)
 
 
 @pytest.yield_fixture()

@@ -23,8 +23,8 @@ from tgit.ui import isni_assignation_failed_message_box
 from tgit.ui.message_box import close_album_confirmation_box
 
 
-def test_shows_isni_assignation_failed_message_with_details(main_window, prober, automaton):
-    dialog = isni_assignation_failed_message_box(main_window, "Details")
+def test_shows_isni_assignation_failed_message_with_details(qt, prober, automaton):
+    dialog = isni_assignation_failed_message_box(details="Details")
     driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
     dialog.open()
 
@@ -33,8 +33,8 @@ def test_shows_isni_assignation_failed_message_with_details(main_window, prober,
     driver.ok()
 
 
-def test_shows_close_album_message(main_window, prober, automaton):
-    dialog = close_album_confirmation_box(main_window)
+def test_shows_close_album_message(qt, prober, automaton):
+    dialog = close_album_confirmation_box()
     driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
     dialog.open()
 

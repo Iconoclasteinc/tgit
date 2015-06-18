@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import Qt
-
 from hamcrest import assert_that, equal_to
 import pytest
 

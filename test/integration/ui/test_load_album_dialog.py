@@ -17,10 +17,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
-from PyQt5.QtWidgets import QFileDialog
-
-import pytest
 import sys
+
+from PyQt5.QtWidgets import QFileDialog
+import pytest
+
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
@@ -30,15 +31,19 @@ from tgit.ui.load_album_dialog import LoadAlbumDialog
 
 
 @pytest.fixture()
-def dialog(main_window):
-    return LoadAlbumDialog(main_window, native=False)
+def dialog(qt):
+    return LoadAlbumDialog(native=False)
 
 
 @pytest.yield_fixture()
 def driver(dialog, prober, automaton):
-    driver = LoadAlbumDialogDriver(window(QFileDialog, named("load_album_dialog")), prober, automaton)
-    yield driver
-    driver.close()
+    dialog_driver = LoadAlbumDialogDriver(window(QFileDialog, named("load_album_dialog")), prober, automaton)
+    yield dialog_driver
+    dialog_driver.close()
+
+
+def ignore(*args):
+    pass
 
 
 def test_signals_when_album_selected(dialog, driver):
@@ -51,6 +56,6 @@ def test_signals_when_album_selected(dialog, driver):
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="not supported on Windows")
 def test_only_accepts_tgit_album_files(dialog, driver):
-    dialog.open()
+    dialog.display(ignore)
 
     driver.rejects_selection_of(resources.path("base.mp3"))

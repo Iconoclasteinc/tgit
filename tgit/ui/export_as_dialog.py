@@ -32,7 +32,7 @@ def make_export_as_dialog(parent_window, native=True, *, on_export_as):
 class ExportAsDialog(QFileDialog):
     export_as = pyqtSignal(str)
 
-    def __init__(self, parent, native):
+    def __init__(self, parent=None, native=True):
         super().__init__(parent)
         self.setObjectName("export-as-dialog")
         self.setAcceptMode(QFileDialog.AcceptSave)

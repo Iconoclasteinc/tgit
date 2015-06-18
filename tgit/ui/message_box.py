@@ -32,11 +32,11 @@ def restart_message_box(parent):
     return MessageBox.inform(parent, "You need to restart TGiT for changes to take effect.")
 
 
-def isni_assignation_failed_message_box(parent, details):
+def isni_assignation_failed_message_box(parent=None, details=None):
     return MessageBox.warn(parent, "Could not assign an ISNI", details)
 
 
-def close_album_confirmation_box(parent):
+def close_album_confirmation_box(parent=None):
     return ConfirmationBox(parent, "Are you sure you want to stop working on this release?")
 
 

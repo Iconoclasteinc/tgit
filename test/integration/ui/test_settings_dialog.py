@@ -10,8 +10,8 @@ from tgit.ui import SettingsDialog
 
 
 @pytest.fixture()
-def dialog(main_window):
-    dialog = SettingsDialog(main_window)
+def dialog(qt):
+    dialog = SettingsDialog()
     # todo we should keep a single instance of the dialog instead
     dialog.setAttribute(Qt.WA_DeleteOnClose, False)
     return dialog
@@ -28,7 +28,6 @@ def test_displays_user_preferences(dialog, driver):
     dialog.add_language('en', 'English')
     dialog.add_language('fr', 'French')
     dialog.display(language='fr')
-    dialog.open()
 
     driver.shows_language('French')
 
@@ -38,7 +37,7 @@ def test_offers_selection_of_available_languages(dialog, driver):
     dialog.add_language('fr', 'French')
     assert_that(dialog.settings['language'], equal_to('en'), 'default language')
 
-    dialog.open()
+    dialog.display()
 
     driver.shows_language('English')
     driver.select_language('French')
@@ -51,8 +50,9 @@ def test_signals_when_selection_accepted(dialog, driver):
     accepted_signal = ValueMatcherProbe("click on button 'OK'")
     dialog.accepted.connect(accepted_signal.received)
 
-    dialog.open()
+    dialog.display()
 
+    driver.select_language('English')
     driver.ok()
     driver.check(accepted_signal)
 
@@ -62,8 +62,8 @@ def test_signals_when_selection_rejected(dialog, driver):
     rejected_signal = ValueMatcherProbe("click on button 'Cancel'")
     dialog.rejected.connect(rejected_signal.received)
 
-    dialog.open()
+    dialog.display()
 
+    driver.select_language('English')
     driver.cancel()
     driver.check(rejected_signal)
-

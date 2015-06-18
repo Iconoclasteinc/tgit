@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QDialog
 
-from cute.matchers import named, with_text, with_buddy, showing_on_screen
-from cute.widgets import window
+from cute.matchers import named, with_buddy, showing_on_screen
+from cute.widgets import window, QDialogDriver
 from ._screen_driver import ScreenDriver
 
 
@@ -11,7 +11,7 @@ def settings_dialog(parent):
                                 parent.gesture_performer)
 
 
-class SettingsDialogDriver(ScreenDriver):
+class SettingsDialogDriver(QDialogDriver, ScreenDriver):
     def showsSettings(self, settings):
         if 'language' in settings:
             self.shows_language(settings['language'])
@@ -29,9 +29,3 @@ class SettingsDialogDriver(ScreenDriver):
         label = self.label(with_buddy(named('language')))
         label.is_showing_on_screen()
         self.combobox(named('language')).select_option(language)
-
-    def ok(self):
-        self.button(with_text('OK')).click()
-
-    def cancel(self):
-        self.button(with_text('Cancel')).click()

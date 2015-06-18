@@ -16,8 +16,8 @@ from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 
 @pytest.fixture()
-def dialog(main_window):
-    return TrackSelectionDialog(main_window, native=False)
+def dialog(qt):
+    return TrackSelectionDialog(native=False)
 
 
 @pytest.yield_fixture()
