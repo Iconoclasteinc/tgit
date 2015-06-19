@@ -42,3 +42,16 @@ def make_temp_copy(filename, dirname=None):
 
 def sanitize(filename):
     return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
+
+
+WITHOUT_LEADING_DOT = slice(1, None)
+
+
+def extension(filename):
+    _, ext = os.path.splitext(filename)
+    return ext[WITHOUT_LEADING_DOT]
+
+
+def copy(source_file, destination_file):
+    if source_file != destination_file:
+        shutil.copy(source_file, destination_file)

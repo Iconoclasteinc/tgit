@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import shutil
-
 from hamcrest import assert_that, has_entry, has_key, has_length, contains, is_not, contains_inanyorder, \
-    equal_to, has_entries, not_, all_of
+    has_entries, not_, all_of
 from mutagen.mp3 import MP3
 import pytest
 
 from test.util import mp3_file
-
 from tgit.tagging.id3_container import ID3Container
 from tgit.metadata import Metadata, Image
 
@@ -24,7 +21,7 @@ def mp3(tmpdir):
         return mp3_file.make(to=tmpdir.strpath, **tags).filename
 
     yield maker
-    shutil.rmtree(tmpdir.strpath)
+    tmpdir.remove()
 
 
 def test_reads_album_title_from_t_a_l_b_frame(mp3):

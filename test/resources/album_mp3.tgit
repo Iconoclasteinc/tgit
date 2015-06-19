@@ -442,3 +442,7 @@ images:
   desc: Front Cover
   mime: image/jpeg
   type: 1
+tracks:
+- 1st
+- 2nd
+- 3rd

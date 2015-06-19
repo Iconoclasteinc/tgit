@@ -16,41 +16,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
-from yaml import dump, Dumper, load
+from os.path import join, dirname
 
 from tgit.album import Album
 from tgit.metadata import Metadata
+from tgit.tagging import tagging
+from tgit.util import fs
+from . import naming, yaml
 
 
 def load_album(filename):
-    metadata = _load_album_data_from_yaml(filename)
-    # todo: change the Metadata class to count images as tags.
-    # We need to add the images to the metadata property after having created the album because the Album class
-    # chooses to create a new Metadata instance
-    album = Album(metadata, of_type=metadata["type"], destination=filename)
-    return album
-
-
-def save_album(album):
-    data = dict(album.metadata)
-    data["type"] = album.type
-    data["images"] = album.metadata.images
-    _save_album_data_to_yaml(album.destination, data)
-
-
-def _load_album_data_from_yaml(filename):
-    with open(filename, "r") as album_file:
-        data = load(album_file)
+    data = yaml.read_data(filename)
 
     metadata = Metadata(data)
     metadata.addImages(*data["images"])
-    return metadata
+    album = Album(metadata, of_type=data["type"], destination=filename)
+
+    for track_filename in data["tracks"]:
+        track_file = join(dirname(album.destination), track_filename)
+        album.add_track(tagging.load_track(track_file))
+
+    return album
 
 
-def _save_album_data_to_yaml(filename, data):
-    with open(filename, "w") as album_file:
-        dump(data, stream=album_file, Dumper=Dumper, default_flow_style=False)
+def save_album(album, naming_scheme=naming.default_scheme, track_catalog=tagging):
+    data = dict(album.metadata)
+    data["type"] = album.type
+    data["images"] = album.metadata.images
+    data["tracks"] = [naming_scheme(track) for track in album.tracks]
 
+    yaml.write_data(album.destination, data)
 
-
+    for track in album.tracks:
+        track_file = join(dirname(album.destination), naming_scheme(track))
+        fs.copy(track.filename, track_file)
+        track.filename = track_file
+        track_catalog.save_track(track)

@@ -63,7 +63,7 @@ class Album(metaclass=tag.Taggable):
     primary_style = tag.text()
 
     def __init__(self, metadata=None, of_type=Type.FLAC, destination=None):
-        self.metadata = metadata.copy(*Album.tags()) if metadata else Metadata()
+        self.metadata = metadata.copy(*Album.tags()) if metadata is not None else Metadata()
         self.tracks = []
         self.listeners = Announcer()
         self.type = of_type

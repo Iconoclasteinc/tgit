@@ -25,6 +25,7 @@ import requests
 from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
+from tgit.local_storage import naming
 from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
@@ -139,9 +140,13 @@ def play_or_stop(player):
     return play_or_stop_track
 
 
+# todo this will soon be changed to simply saving the album
 def save_tracks(album):
     for track in album.tracks:
-        tagging.save_track(to_file=tagged_file(album, track), track=track)
+        destination_file = tagged_file(album, track)
+        fs.copy(track.filename, destination_file)
+        track.filename = destination_file
+        tagging.save_track(track=track)
 
 
 def export_as_csv(album):
@@ -154,13 +159,7 @@ def export_as_csv(album):
 
 def tagged_file(album, track):
     dirname = os.path.dirname(album.destination)
-    _, ext = os.path.splitext(track.filename)
-    filename = fs.sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
-                                                                          number=track.track_number,
-                                                                          title=track.track_title,
-                                                                          ext=ext))
-
-    return os.path.join(dirname, filename)
+    return os.path.join(dirname, naming.default_scheme(track))
 
 
 def lookupISNI(registry, leadPerformer):

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-import shutil
 
 from dateutil import tz
 
@@ -13,17 +12,11 @@ def load_track(filename):
     return Track(filename, load_metadata(filename))
 
 
-def save_track(to_file, track, at_time=None):
+def save_track(track, at_time=None):
     track.tagger = __app_name__
     track.tagger_version = __version__
     track.tagging_time = (at_time or datetime.now(tz.tzlocal())).strftime('%Y-%m-%d %H:%M:%S %z')
-    _copy_file(track.filename, to_file)
-    save_metadata(to_file, _all_metadata(track))
-
-
-def _copy_file(from_file, to_file):
-    if to_file != from_file:
-        shutil.copy(from_file, to_file)
+    save_metadata(track.filename, _all_metadata(track))
 
 
 def _all_metadata(track):
