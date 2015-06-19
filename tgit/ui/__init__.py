@@ -130,13 +130,13 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return SettingsDialogController(restart_message_box, preferences, window)
 
     def create_new_album_page():
-        return new_album_page(select_album_location=dialogs.select_album_destination(),
-                              select_track_location=dialogs.select_reference_track(),
+        return new_album_page(select_album_location=dialogs.select_album_destination,
+                              select_track_location=dialogs.select_reference_track,
                               on_create_album=director.create_album_into(portfolio),
                               on_import_album=director.import_album_into(portfolio))
 
     def create_welcome_page():
-        return welcome_page(select_album=dialogs.select_album_to_load(),
+        return welcome_page(select_album=dialogs.select_album_to_load,
                             on_load_album=director.load_album_into(portfolio))
 
     def create_startup_screen():

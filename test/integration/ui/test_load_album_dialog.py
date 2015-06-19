@@ -48,7 +48,7 @@ def ignore(*args):
 
 def test_signals_when_album_selected(dialog, driver):
     album_selected_signal = ValueMatcherProbe("album file selected", resources.path("album_mp3.tgit"))
-    dialog.display(lambda dest: album_selected_signal.received(os.path.abspath(dest)))
+    dialog.select(lambda dest: album_selected_signal.received(os.path.abspath(dest)))
 
     driver.load(resources.path("album_mp3.tgit"))
     driver.check(album_selected_signal)
@@ -56,6 +56,6 @@ def test_signals_when_album_selected(dialog, driver):
 
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="not supported on Windows")
 def test_only_accepts_tgit_album_files(dialog, driver):
-    dialog.display(ignore)
+    dialog.select(ignore)
 
     driver.rejects_selection_of(resources.path("base.mp3"))

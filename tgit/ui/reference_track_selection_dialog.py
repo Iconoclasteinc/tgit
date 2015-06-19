@@ -35,8 +35,8 @@ class ReferenceTrackSelectionDialog(QFileDialog):
             ["{0} ({1})".format(self.tr("MP3 files"), "*.mp3"), "{0} ({1})".format(self.tr("FLAC files"), "*.flac")])
         self.setDirectory(QDir.homePath())
 
-    def display(self, on_track_select):
-        self.fileSelected.connect(on_track_select)
+    def select(self, on_select):
+        self.fileSelected.connect(on_select)
         self.open()
 
     def done(self, result):

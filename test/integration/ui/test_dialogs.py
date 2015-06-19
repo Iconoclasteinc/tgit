@@ -49,31 +49,31 @@ def ignore(*args):
 
 
 def test_creates_a_single_reference_track_selection_dialog(dialogs, reference_track_selection_dialog_driver):
-    dialogs.select_reference_track()(ignore)
+    dialogs.select_reference_track(ignore)
     reference_track_selection_dialog_driver.is_showing_on_screen()
     reference_track_selection_dialog_driver.reject()
 
-    dialogs.select_reference_track()(ignore)
+    dialogs.select_reference_track(ignore)
     reference_track_selection_dialog_driver.is_showing_on_screen()
     reference_track_selection_dialog_driver.reject()
 
 
 def test_creates_a_single_album_destination_selection_dialog(dialogs, select_album_destination_dialog_driver):
-    dialogs.select_album_destination()(ignore)
+    dialogs.select_album_destination(ignore)
     select_album_destination_dialog_driver.is_showing_on_screen()
     select_album_destination_dialog_driver.reject()
 
-    dialogs.select_album_destination()(ignore)
+    dialogs.select_album_destination(ignore)
     select_album_destination_dialog_driver.is_showing_on_screen()
     select_album_destination_dialog_driver.reject()
 
 
 def test_creates_a_single_album_to_load_selection_dialog(dialogs, select_album_to_load_dialog_driver):
-    dialogs.select_album_to_load()(ignore)
+    dialogs.select_album_to_load(ignore)
     select_album_to_load_dialog_driver.is_showing_on_screen()
     select_album_to_load_dialog_driver.reject()
 
-    dialogs.select_album_to_load()(ignore)
+    dialogs.select_album_to_load(ignore)
     select_album_to_load_dialog_driver.is_showing_on_screen()
     select_album_to_load_dialog_driver.reject()
 

@@ -29,8 +29,8 @@ class LoadAlbumDialog(QFileDialog):
         self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT Album files")))
         self.setDirectory(QDir.homePath())
 
-    def display(self, on_load):
-        self.fileSelected.connect(on_load)
+    def select(self, on_select):
+        self.fileSelected.connect(on_select)
         self.open()
 
     def done(self, result):

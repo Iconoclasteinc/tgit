@@ -89,17 +89,17 @@ class Dialogs:
         return lambda: dialog.select_files_in_folder(file_type=album.type,
                                                      on_select=self._commands.add_tracks_to(album))
 
-    def select_reference_track(self):
-        return self._select_reference_track_dialog().display
+    def select_reference_track(self, on_select):
+        return self._select_reference_track_dialog().select(on_select)
 
     def export(self, album):
         return self._export_as_dialog(album)
 
-    def select_album_destination(self):
-        return self._select_album_destination_dialog().display
+    def select_album_destination(self, on_select):
+        return self._select_album_destination_dialog().select(on_select)
 
-    def select_album_to_load(self):
-        return self._select_album_to_load_dialog().display
+    def select_album_to_load(self, on_select):
+        return self._select_album_to_load_dialog().select(on_select)
 
     def clear(self):
         self._pictures = None

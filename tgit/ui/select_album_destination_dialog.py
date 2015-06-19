@@ -29,8 +29,8 @@ class SelectAlbumDestinationDialog(QFileDialog):
         self.setFileMode(QFileDialog.Directory)
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
 
-    def display(self, on_save_as):
-        self.fileSelected.connect(on_save_as)
+    def select(self, on_select):
+        self.fileSelected.connect(on_select)
         self.open()
 
     def done(self, result):

@@ -46,7 +46,7 @@ def test_signals_select_album_destination(tmpdir, dialog, driver):
     destination = tmpdir.strpath
     select_album_destination_signal = ValueMatcherProbe("select destination", equal_to(destination))
 
-    dialog.display(lambda dest: select_album_destination_signal.received(os.path.abspath(dest)))
+    dialog.select(lambda dest: select_album_destination_signal.received(os.path.abspath(dest)))
 
     driver.select_destination(destination)
     driver.check(select_album_destination_signal)

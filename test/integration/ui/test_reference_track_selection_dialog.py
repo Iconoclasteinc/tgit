@@ -34,7 +34,7 @@ def test_signals_when_file_selected(driver, dialog):
     track_file = resources.path("audio", "Rolling in the Deep.mp3")
     track_selection_signal = ValueMatcherProbe("track selection", track_file)
 
-    dialog.display(lambda destination: track_selection_signal.received(os.path.abspath(destination)))
+    dialog.select(lambda destination: track_selection_signal.received(os.path.abspath(destination)))
 
     driver.select_track(track_file)
     driver.check(track_selection_signal)
@@ -44,7 +44,7 @@ def test_allows_selection_of_flac_files(driver, dialog):
     flac_file = resources.path("audio", "Zumbar.flac")
     track_selection_signal = ValueMatcherProbe("track(s) selection", os.path.abspath(flac_file))
 
-    dialog.display(lambda destination: track_selection_signal.received(os.path.abspath(destination)))
+    dialog.select(lambda destination: track_selection_signal.received(os.path.abspath(destination)))
 
     driver.select_track(flac_file, of_type="flac")
     driver.check(track_selection_signal)
@@ -54,6 +54,6 @@ def test_allows_selection_of_flac_files(driver, dialog):
 def test_rejects_non_audio_files(driver, dialog):
     unsupported_file = resources.path("front-cover.jpg")
 
-    dialog.display(ignore)
+    dialog.select(ignore)
 
     driver.rejects_selection_of(unsupported_file)
