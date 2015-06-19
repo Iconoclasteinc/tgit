@@ -289,7 +289,7 @@ def test_assign_isni_using_the_remote_accept_environment_with_a_request_containi
     request_had_insufficient_information(response)
 
 
-@pytest.mark.wip
+@pytest.mark.xfail
 def test_assign_isni_using_the_remote_accept_environment_with_a_malformed_request(url, headers):
     payload = '''
         <Request>
@@ -433,7 +433,7 @@ def test_assign_isni_to_a_person_using_the_remote_accept_environment_with_a_spar
     request_contained_sparse_information(response)
 
 
-@pytest.mark.wip
+@pytest.mark.xfail
 def test_assign_isni_using_the_remote_accept_environment_with_a_possible_matches_request(url, headers):
     payload = '''
         <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
