@@ -2,7 +2,6 @@
 from cute import gestures
 from cute.widgets import WidgetDriver
 from .album_screen_driver import album_screen
-from .reference_track_selection_dialog_driver import reference_track_selection_dialog
 from .load_album_dialog_driver import load_album_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
@@ -79,7 +78,7 @@ class MainWindowDriver(WidgetDriver):
         album_screen(self).assign_isni_to_lead_performer()
 
     def shows_assignation_failed(self):
-        message_box(self).is_showing_on_screen()
+        message_box(self).is_active()
         try:
             message_box(self).shows_message("Could not assign an ISNI")
             message_box(self).shows_details("invalid code creationRole eee")
@@ -92,10 +91,8 @@ class MainWindowDriver(WidgetDriver):
         isni_lookup_dialog(self).accept()
 
     def shows_confirmation_message(self):
-        try:
-            message_box(self).is_showing_on_screen()
-        finally:
-            message_box(self).yes()
+        message_box(self).is_active()
+        message_box(self).yes()
 
     def shows_welcome_screen(self):
         welcome_page(self).is_showing_on_screen()

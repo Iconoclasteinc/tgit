@@ -15,13 +15,16 @@ def track_selection_dialog(parent):
 
 class TrackSelectionDialogDriver(FileDialogDriver):
     def select_tracks_in_folder(self, folder):
+        self._navigate_to(folder)
+        self.accept()
+
+    def _navigate_to(self, folder):
+        self.is_active()
         self.view_as_list()
         self.show_hidden_files()
         self.navigate_to_dir(folder)
-        self.accept()
 
     def enter_track(self, filename):
-        self.show_hidden_files()
         self.enter_manually(filename)
         self.accept()
 
@@ -29,14 +32,11 @@ class TrackSelectionDialogDriver(FileDialogDriver):
         if not files:
             self.reject()
 
-        self.view_as_list()
-        self.show_hidden_files()
-        self.navigate_to_dir(os.path.dirname(files[0]))
+        self._navigate_to(os.path.dirname(files[0]))
         self.select_files(*[os.path.basename(f) for f in files])
         self.accept()
 
     def rejects_selection_of(self, path):
-        self.show_hidden_files()
         self.navigate_to_dir(os.path.dirname(path))
         self.select_file(os.path.basename(path))
         self.has_accept_button(disabled())

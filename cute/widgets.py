@@ -344,6 +344,10 @@ class QDialogButtonBoxDriver(WidgetDriver):
 
 
 class QDialogDriver(WidgetDriver):
+    def is_active(self):
+        self.is_showing_on_screen()
+        self.is_(match.active_window())
+
     def ok(self):
         self._button_box().ok()
 
@@ -357,7 +361,7 @@ class QDialogDriver(WidgetDriver):
         return QDialogButtonBoxDriver.find_single(self, QDialogButtonBox)
 
 
-class FileDialogDriver(WidgetDriver):
+class FileDialogDriver(QDialogDriver):
     DISPLAY_DELAY = 250
 
     def show_hidden_files(self):

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-import time
 
 from hamcrest.core.selfdescribing import SelfDescribing
 from hamcrest.core.string_description import StringDescription
 
 from . import event_loop
+from cute.event_loop import Timeout
 
 DEFAULT_POLL_DELAY = 25
 DEFAULT_POLL_TIMEOUT = 1000
@@ -22,18 +22,6 @@ class Probe(SelfDescribing):
 
     def describe_failure_to(self, description):
         pass
-
-
-class Timeout(object):
-    def __init__(self, duration_in_ms):
-        self._duration = duration_in_ms
-        self._start_time = time.time()
-
-    def has_expired(self):
-        return self.elapsed_time(time.time()) > self._duration
-
-    def elapsed_time(self, now):
-        return (now - self._start_time) * 1000
 
 
 class Prober(object):

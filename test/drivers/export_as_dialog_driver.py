@@ -13,6 +13,7 @@ def export_as_dialog(parent):
 
 class ExportAsDialogDriver(FileDialogDriver):
     def export_as(self, filename):
+        self.is_active()
         self.view_as_list()
         self.show_hidden_files()
         self.navigate_to_dir(os.path.dirname(filename))

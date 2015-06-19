@@ -28,6 +28,7 @@ def test_shows_isni_assignation_failed_message_with_details(qt, prober, automato
     driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
     dialog.open()
 
+    driver.is_active()
     driver.shows_message("Could not assign an ISNI")
     driver.shows_details("Details")
     driver.ok()
@@ -38,5 +39,6 @@ def test_shows_close_album_message(qt, prober, automaton):
     driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
     dialog.open()
 
+    driver.is_active()
     driver.shows_message("Are you sure you want to stop working on this release?")
     driver.yes()

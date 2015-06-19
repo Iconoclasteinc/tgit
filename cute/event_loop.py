@@ -4,20 +4,22 @@ import time
 from PyQt5.QtCore import QCoreApplication, QEventLoop
 
 
-def in_seconds(ms):
-    return ms / 1000
+ONE_SECOND_IN_MILLIS = 1000
 
 
-SLEEP_DELAY = 10
-
-
-class Timeout:
+class Timeout(object):
     def __init__(self, duration_in_ms):
         self._duration = duration_in_ms
-        self._start = time.time()
+        self._start_time = time.time()
 
     def has_expired(self):
-        return time.time() - self._start >= in_seconds(self._duration)
+        return self.elapsed_time(time.time()) > self._duration
+
+    def elapsed_time(self, now):
+        return (now - self._start_time) * ONE_SECOND_IN_MILLIS
+
+
+SLEEP_DELAY_IN_SECONDS = .01
 
 
 def process_events_for(ms):
@@ -25,7 +27,7 @@ def process_events_for(ms):
     while not timeout.has_expired():
         process_pending_events(ms)
         QCoreApplication.sendPostedEvents()
-        time.sleep(in_seconds(SLEEP_DELAY))
+        time.sleep(SLEEP_DELAY_IN_SECONDS)
 
 
 def process_pending_events(for_ms=0):

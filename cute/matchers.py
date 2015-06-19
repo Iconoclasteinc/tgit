@@ -75,6 +75,10 @@ def unchecked():
     return StateMatcher(lambda b: not b.isChecked(), "unchecked", "checked")
 
 
+def active_window():
+    return StateMatcher(lambda w: w.isActiveWindow(), "ready", "not ready")
+
+
 class QueryResultMatcher(BaseMatcher):
     def __init__(self, query, matcher):
         super().__init__()

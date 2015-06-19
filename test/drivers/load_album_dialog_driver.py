@@ -18,7 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import os
+
 from PyQt5.QtWidgets import QFileDialog
+
 from cute.matchers import named, disabled
 from cute.widgets import window, FileDialogDriver
 
@@ -29,12 +31,14 @@ def load_album_dialog(parent):
 
 class LoadAlbumDialogDriver(FileDialogDriver):
     def load(self, filename):
+        self.is_active()
         self.show_hidden_files()
         self.navigate_to_dir(os.path.dirname(filename))
         self.select_file(os.path.basename(filename))
         self.accept()
 
     def rejects_selection_of(self, filename):
+        self.is_active()
         self.navigate_to_dir(os.path.dirname(filename))
         self.select_file(os.path.basename(filename))
         self.has_accept_button(disabled())
