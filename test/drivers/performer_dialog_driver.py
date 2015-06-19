@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from cute.matchers import named, with_text
 from ._screen_driver import ScreenDriver
+from cute.widgets import QDialogDriver
 
 
-class PerformerDialogDriver(ScreenDriver):
+class PerformerDialogDriver(QDialogDriver, ScreenDriver):
     def add_performer(self):
         self.button(with_text('ADD A PERFORMER')).click()
 
@@ -18,12 +19,6 @@ class PerformerDialogDriver(ScreenDriver):
 
     def change_instrument(self, instrument, index):
         self.lineEdit(named('instrument-%(index)i' % locals())).replace_all_text(instrument)
-
-    def ok(self):
-        self.button(with_text('OK')).click()
-
-    def cancel(self):
-        self.button(with_text('Cancel')).click()
 
     def shows_performers(self, performers):
         for index, performer in enumerate(performers):

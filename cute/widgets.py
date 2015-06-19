@@ -3,8 +3,8 @@ import sys
 
 from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
-                             QToolButton, QFileDialog, QMenu, QComboBox, QMessageBox, QTextEdit, QLabel,
-                             QAbstractButton, QSpinBox, QTableView)
+                             QToolButton, QFileDialog, QMenu, QComboBox, QTextEdit, QLabel,
+                             QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
 from hamcrest import all_of, equal_to
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
@@ -328,15 +328,33 @@ class QCalendarDriver(WidgetDriver):
         return find_position.row, find_position.col
 
 
-class QDialogDriver(WidgetDriver):
+class QDialogButtonBoxDriver(WidgetDriver):
     def ok(self):
-        self._button(match.with_text('OK')).click()
+        self._dialog_button(QDialogButtonBox.Ok).click()
+
+    def yes(self):
+        self._dialog_button(QDialogButtonBox.Yes).click()
 
     def cancel(self):
-        self._button(match.with_text('Cancel')).click()
+        self._dialog_button(QDialogButtonBox.Cancel).click()
 
-    def _button(self, matching):
-        return ButtonDriver.find_single(self, QAbstractButton, matching)
+    def _dialog_button(self, role):
+        button = self.query("button with role {0}".format(role), lambda button_box: button_box.button(role))
+        return ButtonDriver(WidgetIdentity(button), self.prober, self.gesture_performer)
+
+
+class QDialogDriver(WidgetDriver):
+    def ok(self):
+        self._button_box().ok()
+
+    def cancel(self):
+        self._button_box().cancel()
+
+    def yes(self):
+        self._button_box().yes()
+
+    def _button_box(self):
+        return QDialogButtonBoxDriver.find_single(self, QDialogButtonBox)
 
 
 class FileDialogDriver(WidgetDriver):
@@ -612,22 +630,12 @@ class MenuItemDriver(WidgetDriver):
         self.perform(gestures.mouse_click_at(self._center_of_item()))
 
 
-class QMessageBoxDriver(WidgetDriver):
+class QMessageBoxDriver(QDialogDriver):
     def shows_message(self, message):
         LabelDriver.find_single(self, QLabel, match.named("qt_msgbox_label")).has_text(message)
 
     def shows_details(self, details):
         TextEditDriver.find_single(self, QTextEdit).has_plain_text(details)
-
-    def ok(self):
-        self._dialog_button(QMessageBox.Ok).click()
-
-    def yes(self):
-        self._dialog_button(QMessageBox.Yes).click()
-
-    def _dialog_button(self, role):
-        button = self.query("button with role {0}".format(role), lambda message_box: message_box.button(role))
-        return ButtonDriver(WidgetIdentity(button), self.prober, self.gesture_performer)
 
 
 class TableViewDriver(WidgetDriver):
