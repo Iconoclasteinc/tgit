@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import QMessageBox, QStyle
 
 
@@ -36,27 +36,34 @@ def isni_assignation_failed_message_box(parent=None, details=None):
     return MessageBox.warn(parent, "Could not assign an ISNI", details)
 
 
-def close_album_confirmation_box(parent=None):
-    return ConfirmationBox(parent, "Are you sure you want to stop working on this release?")
+def close_album_confirmation_box(parent=None, **handlers):
+    return ConfirmationBox(parent, "Are you sure you want to stop working on this release?", **handlers)
 
 
 class ConfirmationBox(QMessageBox):
-    yes = pyqtSignal()
-
-    def __init__(self, parent, message):
+    def __init__(self, parent, message, **handlers):
         super().__init__(parent)
+        self._on_accept = lambda: None
+
         self.setObjectName("message_box")
         self.setText(self.tr(message))
         self.setModal(True)
         self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
         self.buttonClicked.connect(self._button_clicked)
         _append_icon_to(self, QStyle.SP_MessageBoxQuestion)
+
+        for name, handler in handlers.items():
+            getattr(self, name)(handler)
 
     def _button_clicked(self, button):
         role = self.buttonRole(button)
 
         if role == QMessageBox.YesRole:
-            self.yes.emit()
+            self._on_accept()
+
+    def on_accept(self, on_accept):
+        self._on_accept = on_accept
 
 
 class MessageBox(QMessageBox):
@@ -65,6 +72,7 @@ class MessageBox(QMessageBox):
         self.setObjectName("message_box")
         self.setText(self.tr(message))
         self.setModal(True)
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
         self.setDetailedText(details)
         self.setStandardButtons(QMessageBox.Ok)
         _append_icon_to(self, icon)

@@ -40,7 +40,7 @@ from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_page import welcome_page
-from tgit.ui.main_window import make_main_window as MainWindow
+from tgit.ui.main_window import make_main_window
 from tgit.ui.album_screen import album_screen as AlbumScreen
 
 # noinspection PyUnresolvedReferences
@@ -174,15 +174,16 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return AlbumScreen(create_composition_page, create_album_page, create_track_page, album)
 
     dialogs = Dialogs(director, native)
-    window = MainWindow(portfolio,
-                        create_startup_screen=create_startup_screen,
-                        create_album_screen=create_album_screen,
-                        on_close_album=ui_commands.close_album_and(director.remove_album_from(portfolio)),
-                        on_save_album=director.save_album(),
-                        on_add_files=dialogs.add_tracks,
-                        on_add_folder=dialogs.add_tracks_in_folder,
-                        on_export=ui_commands.export_to(dialogs),
-                        on_settings=show_settings_dialog)
+    window = make_main_window(portfolio,
+                              create_startup_screen=create_startup_screen,
+                              create_album_screen=create_album_screen,
+                              create_close_album_confirmation=message_box.close_album_confirmation_box,
+                              on_close_album=director.remove_album_from(portfolio),
+                              on_save_album=director.save_album(),
+                              on_add_files=dialogs.add_tracks,
+                              on_add_folder=dialogs.add_tracks_in_folder,
+                              on_export=ui_commands.export_to(dialogs),
+                              on_settings=show_settings_dialog)
     dialogs.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())
 

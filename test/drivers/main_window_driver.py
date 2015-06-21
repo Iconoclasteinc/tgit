@@ -100,12 +100,14 @@ class MainWindowDriver(WidgetDriver):
     def has_disabled_album_actions(self):
         menu_bar(self).has_disabled_album_actions()
 
-    def close_album(self, using_shortcut=False):
+    def closes_album(self, using_shortcut=False):
         if using_shortcut:
             self.click()
             self.perform(gestures.close())
         else:
             menu_bar(self).close_album()
+        message_box(self).is_showing_on_screen()
+        message_box(self).yes()
 
     def export(self):
         menu_bar(self).export()

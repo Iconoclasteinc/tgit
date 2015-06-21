@@ -17,17 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.ui.message_box import close_album_confirmation_box
-
-
-def close_album_and(remove_album):
-    def close_album(album, window):
-        confirmation = close_album_confirmation_box(window)
-        confirmation.yes.connect(lambda: remove_album(album))
-        confirmation.open()
-
-    return close_album
-
 
 def export_to(dialogs):
     def export(album):

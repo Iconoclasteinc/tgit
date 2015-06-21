@@ -292,13 +292,14 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
 
 
 def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_add_folder, on_export, on_settings,
-                     create_startup_screen, create_album_screen):
-    window = MainWindow(create_startup_screen=create_startup_screen, create_album_screen=create_album_screen)
+                     create_startup_screen, create_album_screen, create_close_album_confirmation):
+    window = MainWindow(create_startup_screen=create_startup_screen, create_album_screen=create_album_screen,
+                        create_close_album_confirmation=create_close_album_confirmation)
     window.add_files.connect(on_add_files)
     window.add_folder.connect(on_add_folder)
     window.export.connect(on_export)
     window.settings.connect(on_settings)
-    window.close_album.connect(lambda album: on_close_album(album, window))
+    window.close_album.connect(on_close_album)
     window.save.connect(on_save_album)
 
     portfolio.album_removed.subscribe(lambda album: window.display_startup_screen())
@@ -317,8 +318,9 @@ class MainWindow(QMainWindow):
     save = pyqtSignal(Album)
     settings = pyqtSignal()
 
-    def __init__(self, *, create_startup_screen, create_album_screen):
+    def __init__(self, *, create_startup_screen, create_album_screen, create_close_album_confirmation):
         super().__init__()
+        self._create_close_album_confirmation = create_close_album_confirmation
         self._create_startup_screen = create_startup_screen
         self._create_album_screen = create_album_screen
         ui_file.load(":/ui/main_window.ui", self)
@@ -326,7 +328,7 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(StyleSheet)
         self.add_files_action.triggered.connect(lambda checked: self.add_files.emit(self.add_files_action.data()))
         self.add_folder_action.triggered.connect(lambda checked: self.add_folder.emit(self.add_folder_action.data()))
-        self.close_album_action.triggered.connect(lambda checked: self.close_album.emit(self.close_album_action.data()))
+        self.close_album_action.triggered.connect(lambda checked: self._confirm_album_close())
         self.save_album_action.triggered.connect(lambda checked: self.save.emit(self.save_album_action.data()))
         self.export_action.triggered.connect(lambda checked: self.export.emit(self.export_action.data()))
         self.settings_action.triggered.connect(lambda checked: self.settings.emit())
@@ -343,6 +345,11 @@ class MainWindow(QMainWindow):
             self.close_album_action,
             self.save_album_action
         ]
+
+    def _confirm_album_close(self):
+        album = self.close_album_action.data()
+        confirmation_box = self._create_close_album_confirmation(self, on_accept=lambda: self.close_album.emit(album))
+        confirmation_box.open()
 
     def enable_album_actions(self, album):
         for action in self.album_dependent_action:

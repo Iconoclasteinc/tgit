@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from cute.finders import WidgetIdentity
+from cute.probes import ValueMatcherProbe
 from cute.widgets import QMessageBoxDriver
 from tgit.ui import isni_assignation_failed_message_box
 from tgit.ui.message_box import close_album_confirmation_box
@@ -41,4 +42,15 @@ def test_shows_close_album_message(qt, prober, automaton):
 
     driver.is_active()
     driver.shows_message("Are you sure you want to stop working on this release?")
+    driver.close()
+
+
+def test_signals_confirmation_of_closing(qt, prober, automaton):
+    accept_signal = ValueMatcherProbe("accept confirmation")
+    dialog = close_album_confirmation_box(on_accept=accept_signal.received)
+    driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
+    dialog.open()
+
+    driver.is_active()
     driver.yes()
+    driver.check(accept_signal)

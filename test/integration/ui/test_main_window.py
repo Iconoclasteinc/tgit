@@ -9,6 +9,7 @@ from cute.probes import ValueMatcherProbe
 from test.drivers import MainWindowDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
+from tgit.ui import message_box
 from tgit.ui.main_window import MainWindow
 
 
@@ -18,7 +19,8 @@ def ignore(*args):
 
 @pytest.yield_fixture()
 def main_window(qt):
-    window = MainWindow(create_startup_screen=ignore, create_album_screen=ignore)
+    window = MainWindow(create_startup_screen=ignore, create_album_screen=ignore,
+                        create_close_album_confirmation=message_box.close_album_confirmation_box)
     show_widget(window)
     yield window
     window.close()
@@ -93,25 +95,15 @@ def test_signals_when_save_album_keyboard_shortcut_is_activated(main_window, dri
     driver.check(save_album_signal)
 
 
-def test_signals_when_close_album_menu_item_clicked(main_window, driver):
-    album = build.album()
-    close_album_signal = ValueMatcherProbe("close", album)
-    main_window.close_album.connect(close_album_signal.received)
-    main_window.enable_album_actions(album)
-
-    driver.close_album()
-    driver.check(close_album_signal)
+def test_shows_confirmation_when_close_album_menu_item_clicked(main_window, driver):
+    main_window.enable_album_actions(build.album())
+    driver.closes_album()
 
 
 @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")
-def test_signals_when_close_album_keyboard_shortcut_is_activated(main_window, driver):
-    album = build.album()
-    close_album_signal = ValueMatcherProbe("close", album)
-    main_window.close_album.connect(close_album_signal.received)
-    main_window.enable_album_actions(album)
-
-    driver.close_album(using_shortcut=True)
-    driver.check(close_album_signal)
+def test_shows_confirmation_when_close_album_keyboard_shortcut_is_activated(main_window, driver):
+    main_window.enable_album_actions(build.album())
+    driver.closes_album(using_shortcut=True)
 
 
 def test_signals_when_settings_menu_item_clicked(main_window, driver):
