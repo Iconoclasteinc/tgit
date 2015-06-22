@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import pytest
 
 
 def test_closing_and_starting_a_new_album(app, recordings):
@@ -31,7 +30,6 @@ def test_closing_and_starting_a_new_album(app, recordings):
     app.shows_album_content()
 
 
-@pytest.mark.wip
 def test_saving_and_loading_an_album(app, recordings):
     app.new_album(of_type="mp3", filename="new_album")
 
@@ -46,5 +44,9 @@ def test_saving_and_loading_an_album(app, recordings):
     app.close_album()
 
     app.load_album("new_album.tgit")
+
     app.shows_album_content(("Chevere!",), ("Zumbar",), ("Salsa Coltrane",))
     app.shows_album_metadata(release_name="Honeycomb")
+    app.shows_next_track_metadata(track_title="Chevere!")
+    app.shows_next_track_metadata(track_title="Zumbar")
+    app.shows_next_track_metadata(track_title="Salsa Coltrane")
