@@ -31,7 +31,8 @@ def read_lines(file):
 
 def test_saves_data_to_yaml_file(project_file):
     album_file = project_file("album.tgit")
-    data = dict(release_name="Title",
+    data = dict(version="1.6.0",
+                release_name="Title",
                 compilation=True,
                 lead_performer="Artist",
                 isni="0000123456789",
@@ -48,6 +49,7 @@ def test_saves_data_to_yaml_file(project_file):
     yaml.write_data(album_file, data)
 
     lines = read_lines(album_file)
+    assert_that(lines, has_item(contains_string("version: 1.6.0")), "version")
     assert_that(lines, has_item(contains_string("release_name: Title")), "release name")
     assert_that(lines, has_item(contains_string("compilation: true")), "compilation")
     assert_that(lines, has_item(contains_string("lead_performer: Artist")), "lead performer")
@@ -83,6 +85,7 @@ def test_saves_data_to_yaml_file(project_file):
 def test_reads_data_from_yaml_file():
     data = yaml.read_data(resources.path("album_mp3.tgit"))
 
+    assert_that(data, has_entry("version", "1.6.0"), "version")
     assert_that(data, has_entry("type", "mp3"), "album type")
     assert_that(data, has_entry("release_name", "Title"), "release name")
     assert_that(data, has_entry("compilation", True), "compilation")

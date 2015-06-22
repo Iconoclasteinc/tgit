@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from os.path import join, dirname
 
+import tgit
 from tgit.album import Album
 from tgit.metadata import Metadata
 from tgit.tagging import tagging
@@ -41,6 +42,7 @@ def load_album(filename):
 
 def save_album(album, naming_scheme=naming.default_scheme, track_catalog=tagging):
     data = dict(album.metadata)
+    data["version"] = tgit.__version__
     data["type"] = album.type
     data["images"] = album.metadata.images
     data["tracks"] = [naming_scheme(track) for track in album.tracks]
