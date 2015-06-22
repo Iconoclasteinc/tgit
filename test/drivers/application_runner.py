@@ -21,6 +21,8 @@ def _make_tracks(tracks):
 
 
 class ApplicationRunner:
+    DRAG_AND_DROP_DELAY = 100
+
     app = None
     tagger = None
 
@@ -51,22 +53,20 @@ class ApplicationRunner:
         self.tagger.import_album(of_type=of_type, name=save_as, track_path=from_track,
                                  album_path=self._workspace.root_path)
 
-    def shows_album_content(self, *tracks):
+    def shows_track_list(self, *tracks):
         self.tagger.shows_album_contains(*tracks)
 
     def change_order_of_tracks(self, *tracks):
         for position, track in enumerate(_make_tracks(tracks)):
             self.tagger.move_track(track.title, position)
-            self.tagger.pause(100)
+            self.tagger.pause(self.DRAG_AND_DROP_DELAY)
 
     def remove_track(self, title):
         self.tagger.remove_track(title)
 
     def shows_album_metadata(self, **tags):
-        self.tagger.next()
+        self.tagger.navigate_to_album_page()
         self.tagger.shows_album_metadata(**tags)
-        # todo navigate back to track list
-        # so we always no where we're starting from
 
     def change_album_metadata(self, **tags):
         self.tagger.edit_album_metadata(**tags)

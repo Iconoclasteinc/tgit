@@ -385,17 +385,22 @@
 <context>
     <name>main_window</name>
     <message>
-        <location filename="tgit/ui/main_window.py" line="502"/>
+        <location filename="tgit/ui/main_window.py"/>
         <source>TGiT</source>
         <translation>TGiT</translation>
     </message>
     <message>
-        <location filename="tgit/ui/menu_bar.py" line="48"/>
+        <location filename="tgit/ui/main_window.py"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="tgit/ui/menu_bar.py" line="58"/>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>Navigate</source>
+        <translation>Naviguer</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
         <source>Add Files...</source>
         <translation>Ajouter des fichiers... </translation>
     </message>
@@ -408,14 +413,19 @@
         <translation>Sauvegarder l'album (release)</translation>
     </message>
     <message>
-        <location filename="tgit/ui/menu_bar.py" line="67"/>
+        <location filename="tgit/ui/main_window.py"/>
         <source>Add Folder...</source>
         <translation>Ajouter un dossier... </translation>
     </message>
     <message>
-        <location filename="tgit/ui/menu_bar.py" line="76"/>
+        <location filename="tgit/ui/main_window.py"/>
         <source>Export...</source>
         <translation>Exporter...</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>Album edition</source>
+        <translation>Édition de l'album</translation>
     </message>
 </context>
 <context>

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+import pytest
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
 from test.drivers import AlbumScreenDriver
-from test.integration.ui import WidgetTest
+from test.integration.ui import WidgetTest, show_widget
 from test.util import builders as build, doubles
 from tgit.preferences import Preferences
 
@@ -12,6 +13,43 @@ from tgit.ui.album_edition_page import AlbumEditionPage
 
 from tgit.ui.album_screen import AlbumScreen
 from tgit.ui.track_edition_page import TrackEditionPage
+
+
+@pytest.fixture()
+def album():
+    return build.album()
+
+
+@pytest.fixture()
+def track_edition_page_creator(album):
+    def create_track_edition_page(track):
+        page = TrackEditionPage()
+        page.display(album, track)
+        return page
+
+    return create_track_edition_page
+
+
+@pytest.yield_fixture()
+def screen(qt, album, track_edition_page_creator):
+    album_screen = AlbumScreen(AlbumCompositionPage(album, doubles.audio_player()),
+                               AlbumEditionPage(Preferences(), album),
+                               track_edition_page_creator)
+    show_widget(album_screen)
+    yield album_screen
+    album_screen.close()
+
+
+@pytest.yield_fixture()
+def driver(screen, prober, automaton):
+    album_screen_driver = AlbumScreenDriver(WidgetIdentity(screen), prober, automaton)
+    yield album_screen_driver
+    album_screen_driver.close()
+
+
+def test_navigates_to_album_edition_page(screen, driver):
+    screen.navigate_to_album_edition_page()
+    driver.showsAlbumEditionPage()
 
 
 class AlbumScreenTest(WidgetTest):

@@ -22,11 +22,11 @@ def test_closing_an_album(app, recordings):
 
     track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
-    app.shows_album_content(["???"])
+    app.shows_track_list(["???"])
     app.close_album()
 
     app.new_album(of_type="mp3", filename="album2")
-    app.shows_album_content()
+    app.shows_track_list()
 
 
 def test_loading_an_album(app):

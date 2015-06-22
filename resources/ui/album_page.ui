@@ -692,7 +692,7 @@ QComboBox::down-arrow:focus {
                <enum>Qt::StrongFocus</enum>
               </property>
               <property name="text">
-               <string>ASSING ISNI</string>
+               <string>ASSIGN ISNI</string>
               </property>
              </widget>
             </item>

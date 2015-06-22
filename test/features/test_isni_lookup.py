@@ -33,7 +33,7 @@ def test_finding_the_isni_of_the_lead_performer(app, recordings, workspace):
     isni_database.persons["0000000121707484"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
 
     app.import_album(*tracks)
-    app.shows_album_content(["Salsa Coltrane"])
+    app.shows_track_list(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.find_isni_of_lead_performer()
 

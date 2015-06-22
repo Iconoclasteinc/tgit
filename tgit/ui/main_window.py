@@ -337,6 +337,7 @@ class MainWindow(QMainWindow):
         self.save_album_action.triggered.connect(lambda checked: self.save.emit(self.save_album_action.data()))
         self.export_action.triggered.connect(lambda checked: self._choose_export_destination())
         self.settings_action.triggered.connect(lambda checked: self.settings.emit())
+        self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
 
         if windows:
             self.settings_action.setText(self.tr(self.settings_action.text()))
@@ -351,6 +352,9 @@ class MainWindow(QMainWindow):
             self.save_album_action
         ]
 
+    def _to_album_edition_page(self):
+        self.centralWidget().navigate_to_album_edition_page()
+
     def _confirm_album_close(self):
         album = self.close_album_action.data()
         confirmation_box = self._create_close_album_confirmation(self, on_accept=lambda: self.close_album.emit(album))
@@ -361,11 +365,13 @@ class MainWindow(QMainWindow):
         self._select_export_destination(lambda destination: self.export.emit(album, destination))
 
     def enable_album_actions(self, album):
+        self.navigate_menu.setEnabled(True)
         for action in self.album_dependent_action:
             action.setEnabled(True)
             action.setData(album)
 
     def disable_album_actions(self):
+        self.navigate_menu.setDisabled(True)
         for action in self.album_dependent_action:
             action.setEnabled(False)
             action.setData(None)

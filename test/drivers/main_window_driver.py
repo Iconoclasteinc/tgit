@@ -8,7 +8,6 @@ from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
 from .menu_bar_driver import menu_bar
 from .new_album_screen_driver import new_album_page
-from test.drivers import export_as_dialog
 from .welcome_screen_driver import welcome_page
 
 
@@ -27,11 +26,11 @@ class MainWindowDriver(WidgetDriver):
         album_screen(self).is_showing_on_screen()
 
     def add_tracks_in_folder(self):
-        menu_bar(self).add_folder()
+        menu_bar(self).file.add_folder()
 
     def add_tracks_to_album(self, *paths, from_menu=False):
         if from_menu:
-            menu_bar(self).add_files()
+            menu_bar(self).file.add_files()
         else:
             album_screen(self).add_tracks_to_album(*paths)
 
@@ -44,6 +43,9 @@ class MainWindowDriver(WidgetDriver):
     # todo have a quick navigation button
     def next(self):
         album_screen(self).nextPage()
+
+    def navigate_to_album_page(self):
+        menu_bar(self).navigate.to_composition_page()
 
     def shows_album_contains(self, *tracks):
         album_screen(self).shows_album_contains(*tracks)
@@ -64,12 +66,12 @@ class MainWindowDriver(WidgetDriver):
         album_screen(self).tag()
 
     def change_settings(self, **settings):
-        menu_bar(self).settings()
+        menu_bar(self).file.settings()
         settings_dialog(self).changeSettings(settings)
         message_box(self).ok()
 
     def has_settings(self, **settings):
-        dialog = menu_bar(self).settings()
+        dialog = menu_bar(self).file.settings()
         try:
             dialog.showsSettings(settings)
         finally:
@@ -99,20 +101,21 @@ class MainWindowDriver(WidgetDriver):
         welcome_page(self).is_showing_on_screen()
 
     def has_disabled_album_actions(self):
-        menu_bar(self).has_disabled_album_actions()
+        menu_bar(self).file.has_disabled_album_actions()
+        menu_bar(self).navigate.is_disabled()
 
     def close_album(self, using_shortcut=False):
         if using_shortcut:
             self.click()
             self.perform(gestures.close())
         else:
-            menu_bar(self).close_album()
+            menu_bar(self).file.close_album()
 
     def export(self):
-        menu_bar(self).export()
+        menu_bar(self).file.export()
 
     def settings(self):
-        menu_bar(self).settings()
+        menu_bar(self).file.settings()
 
     def load_album(self, filename):
         welcome_page(self).load()
@@ -124,4 +127,4 @@ class MainWindowDriver(WidgetDriver):
             self.click()
             self.perform(gestures.save())
         else:
-            menu_bar(self).save()
+            menu_bar(self).file.save()

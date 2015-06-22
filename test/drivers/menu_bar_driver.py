@@ -11,41 +11,57 @@ def menu_bar(parent):
 
 
 class MenuBarDriver(QMenuBarDriver):
-    def has_disabled_album_actions(self):
-        menu = self.open_menu(named("file_menu"))
-        menu.menu_item(named("add_files_action")).is_disabled()
-        menu.menu_item(named("add_folder_action")).is_disabled()
-        menu.menu_item(named("export_action")).is_disabled()
-        menu.menu_item(named("close_album_action")).is_disabled()
-        menu.menu_item(named("save_album_action")).is_disabled()
-        menu.close()
+    @property
+    def file(self):
+        return self.FileMenuDriver(self.open_menu(named("file_menu")), self)
 
-    def add_files(self):
-        menu = self.open_menu(named("file_menu"))
-        menu.menu_item(named("add_files_action")).click()
-
-    def add_folder(self):
-        menu = self.open_menu(named("file_menu"))
-        menu.menu_item(named("add_folder_action")).click()
-
-    def export(self):
-        menu = self.open_menu(named("file_menu"))
-        menu.menu_item(named("export_action")).click()
-
-    def settings(self):
-        menu = self.open_menu(named("file_menu"))
-        menu.select_menu_item(named("settings_action"))
-        return settings_dialog(self)
-
-    def close_album(self):
-        menu = self.open_menu(named("file_menu"))
-        menu.menu_item(named("close_album_action")).click()
-
-    def save(self):
-        menu = self.open_menu(named("file_menu"))
-        menu.menu_item(named("save_album_action")).click()
+    @property
+    def navigate(self):
+        return self.NavigateMenuDriver(self.open_menu(named("navigate_menu")))
 
     def open_menu(self, matching):
         menu = self.menu(matching)
         menu.open()
         return menu
+
+    class FileMenuDriver:
+        def __init__(self, menu_driver, menu_bar_driver):
+            self._menu_bar_driver = menu_bar_driver
+            self._menu_driver = menu_driver
+
+        def has_disabled_album_actions(self):
+            self._menu_driver.menu_item(named("add_files_action")).is_disabled()
+            self._menu_driver.menu_item(named("add_folder_action")).is_disabled()
+            self._menu_driver.menu_item(named("export_action")).is_disabled()
+            self._menu_driver.menu_item(named("close_album_action")).is_disabled()
+            self._menu_driver.menu_item(named("save_album_action")).is_disabled()
+            self._menu_driver.close()
+
+        def add_files(self):
+            self._menu_driver.menu_item(named("add_files_action")).click()
+
+        def add_folder(self):
+            self._menu_driver.menu_item(named("add_folder_action")).click()
+
+        def export(self):
+            self._menu_driver.menu_item(named("export_action")).click()
+
+        def settings(self):
+            self._menu_driver.select_menu_item(named("settings_action"))
+            return settings_dialog(self._menu_bar_driver)
+
+        def close_album(self):
+            self._menu_driver.menu_item(named("close_album_action")).click()
+
+        def save(self):
+            self._menu_driver.menu_item(named("save_album_action")).click()
+
+    class NavigateMenuDriver:
+        def __init__(self, menu_driver):
+            self._menu_driver = menu_driver
+
+        def to_composition_page(self):
+            self._menu_driver.select_menu_item(named("to_album_edition_action"))
+
+        def is_disabled(self):
+            self._menu_driver.is_disabled()

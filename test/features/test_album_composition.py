@@ -19,7 +19,7 @@ def test_ordering_tracks_in_album(app, recordings):
 
     app.add_tracks_to_album(*tracks)
 
-    app.shows_album_content(["Zumbar"], ["Salsa Coltrane"], ["Chevere!"], ["Horse Power"], ["Big Ideas"])
+    app.shows_track_list(["Zumbar"], ["Salsa Coltrane"], ["Chevere!"], ["Horse Power"], ["Big Ideas"])
     app.change_order_of_tracks(["Chevere!"], ["Zumbar"], ["Salsa Coltrane"], ["Big Ideas"], ["Horse Power"])
 
     app.shows_album_metadata()
@@ -42,11 +42,11 @@ def test_removing_tracks_from_album(app, recordings):
 
     app.add_tracks_to_album(*tracks)
 
-    app.shows_album_content(["Horse Power"], ["Chevere!"], ["Zumbar"], ["Big Ideas"], ["Salsa Coltrane"])
+    app.shows_track_list(["Horse Power"], ["Chevere!"], ["Zumbar"], ["Big Ideas"], ["Salsa Coltrane"])
     app.remove_track("Big Ideas")
-    app.shows_album_content(["Horse Power"], ["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
+    app.shows_track_list(["Horse Power"], ["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
     app.remove_track("Horse Power")
-    app.shows_album_content(["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
+    app.shows_track_list(["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
 
     app.shows_album_metadata()
 

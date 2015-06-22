@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from PyQt5.QtWidgets import QWidget
 
 from test.util import mp3_file as mp3, flac_file as flac
 from tgit.signal import Observable, signal
@@ -64,3 +65,19 @@ class FakeAudioPlayer(metaclass=Observable):
         self._track = None
         if self._track is not None:
             self.playing.emit(self._track)
+
+
+def album_screen():
+    return FakeAlbumScreen()
+
+
+class FakeAlbumScreen(QWidget):
+    NO_PAGE = "no selected page"
+    ALBUM_EDITION_PAGE = "album edition page"
+
+    def __init__(self):
+        super().__init__()
+        self.current_page = self.NO_PAGE
+
+    def navigate_to_album_edition_page(self):
+        self.current_page = self.ALBUM_EDITION_PAGE

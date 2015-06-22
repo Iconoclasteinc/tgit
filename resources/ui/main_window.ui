@@ -57,7 +57,17 @@
     <addaction name="separator"/>
     <addaction name="settings_action"/>
    </widget>
+   <widget class="QMenu" name="navigate_menu">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Navigate</string>
+    </property>
+    <addaction name="to_album_edition_action"/>
+   </widget>
    <addaction name="file_menu"/>
+   <addaction name="navigate_menu"/>
   </widget>
   <action name="settings_action">
    <property name="text">
@@ -88,11 +98,6 @@
     <string>Export...</string>
    </property>
   </action>
-  <action name="actionFiles">
-   <property name="text">
-    <string>Add Files...</string>
-   </property>
-  </action>
   <action name="close_album_action">
    <property name="enabled">
     <bool>false</bool>
@@ -107,6 +112,14 @@
    </property>
    <property name="text">
     <string>Save release</string>
+   </property>
+  </action>
+  <action name="to_album_edition_action">
+   <property name="text">
+    <string>Album edition</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
    </property>
   </action>
  </widget>
