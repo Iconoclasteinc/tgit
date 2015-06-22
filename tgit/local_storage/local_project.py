@@ -30,8 +30,10 @@ def load_album(filename):
     data = yaml.read_data(filename)
 
     metadata = Metadata(data)
-    metadata.addImages(*data["images"])
     album = Album(metadata, of_type=data["type"], destination=filename)
+
+    for image in data["images"]:
+        album.addImage(image[0], fs.read(join(dirname(album.destination), image[1])), image[2], image[3])
 
     for track_filename in data["tracks"]:
         track_file = join(dirname(album.destination), track_filename)
@@ -40,17 +42,21 @@ def load_album(filename):
     return album
 
 
-def save_album(album, naming_scheme=naming.default_scheme, track_catalog=tagging):
+def save_album(album, track_name=naming.track_scheme, track_catalog=tagging, artwork_name=naming.artwork_scheme):
     data = dict(album.metadata)
     data["version"] = tgit.__version__
     data["type"] = album.type
-    data["images"] = album.metadata.images
-    data["tracks"] = [naming_scheme(track) for track in album.tracks]
+    data["images"] = [(image.mime, artwork_name(image), image.type, image.desc) for image in album.images]
+    data["tracks"] = [track_name(track) for track in album.tracks]
 
     yaml.write_data(album.destination, data)
 
+    for image in album.images:
+        image_file = join(dirname(album.destination), artwork_name(image))
+        fs.write(image_file, image.data)
+
     for track in album.tracks:
-        track_file = join(dirname(album.destination), naming_scheme(track))
+        track_file = join(dirname(album.destination), track_name(track))
         fs.copy(track.filename, track_file)
         track.filename = track_file
         track_catalog.save_track(track)

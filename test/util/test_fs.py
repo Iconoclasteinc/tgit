@@ -18,3 +18,7 @@ def test_ignores_copy_to_same_destination(tmpdir):
     fs.copy(resources.path("base.mp3"), track_file)
 
     fs.copy(track_file, track_file)
+
+
+def test_guesses_file_extension_from_mime_type():
+    assert_that(fs.guess_extension("image/png"), equal_to("png"), "extension for png images")

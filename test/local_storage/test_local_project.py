@@ -4,10 +4,13 @@ import os
 from hamcrest import assert_that, contains, has_property, equal_to
 import pytest
 
-from test.util import builders as build, mp3_file
+from test.util import builders as build, mp3_file, resources
 from tgit.album import Album
 from tgit.local_storage import local_project
 from tgit.metadata import Image
+from tgit.util import fs
+
+sample_front_cover = "image/jpeg", fs.read(resources.path("front-cover.jpg")), Image.FRONT_COVER, "Front Cover"
 
 
 @pytest.yield_fixture
@@ -43,16 +46,16 @@ def test_round_trips_album_metadata_and_tracks_to_disk(project_file, mp3):
     original_album = build.album(filename=album_file,
                                  type=Album.Type.FLAC,
                                  lead_performer="Artist",
-                                 images=[build.image("image/jpeg", b"<image data>")],
+                                 images=[sample_front_cover],
                                  tracks=original_tracks)
 
-    local_project.save_album(original_album, naming_scheme=lambda track: track.track_title + ".mp3")
+    local_project.save_album(original_album, track_name=lambda track: track.track_title + ".mp3")
     delete_from_disk(*original_tracks)
     stored_album = local_project.load_album(album_file)
 
     assert_that(stored_album.type, equal_to(Album.Type.FLAC), "type")
     assert_that(stored_album.lead_performer, equal_to("Artist"), "lead performer")
-    assert_that(stored_album.images, contains(Image("image/jpeg", b"<image data>")), "images")
+    assert_that(stored_album.images, contains(Image(*sample_front_cover)), "images")
     assert_that(stored_album.tracks, contains(has_filename(project_file("1st.mp3")),
                                               has_filename(project_file("2nd.mp3")),
                                               has_filename(project_file("3rd.mp3")), ), "tracks")

@@ -29,7 +29,7 @@ class AlbumWorkspace(object):
         if front_cover:
             image, desc = front_cover
             mime = fs.guess_mime_type(image)
-            images.append(Image(mime, fs.binary_content_of(image), type_=Image.FRONT_COVER, desc=desc))
+            images.append(Image(mime, fs.read(image), type_=Image.FRONT_COVER, desc=desc))
 
         assert_that(track.metadata, has_entries(tags), 'metadata tags')
         assert_that(track.metadata.images, contains(*images), 'attached pictures')

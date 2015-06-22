@@ -26,4 +26,9 @@ def itunes_naming_scheme(track):
                                                                        title=track.track_title,
                                                                        ext=fs.extension(track.filename)))
 
-default_scheme = itunes_naming_scheme
+def picture_naming_scheme(image):
+    return fs.sanitize("{desc}.{ext}".format(desc=image.desc, ext=fs.guess_extension(image.mime)))
+
+
+track_scheme = itunes_naming_scheme
+artwork_scheme = picture_naming_scheme

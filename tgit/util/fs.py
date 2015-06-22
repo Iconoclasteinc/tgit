@@ -24,12 +24,28 @@ import tempfile
 import mimetypes
 
 
-def binary_content_of(filename):
+WITHOUT_LEADING_DOT = slice(1, None)
+
+
+def read(filename):
     return open(filename, 'rb').read()
+
+
+def write(filename, data):
+    with open(filename, 'wb') as file:
+        file.write(data)
 
 
 def guess_mime_type(filename):
     return mimetypes.guess_type(filename)[0]
+
+
+def guess_extension(mime_type):
+    ext = mimetypes.guess_extension(mime_type)[WITHOUT_LEADING_DOT]
+    if ext == "jpeg" or ext == "jpe":
+        ext = "jpg"
+
+    return ext
 
 
 def make_temp_copy(filename, dirname=None):
@@ -42,9 +58,6 @@ def make_temp_copy(filename, dirname=None):
 
 def sanitize(filename):
     return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
-
-
-WITHOUT_LEADING_DOT = slice(1, None)
 
 
 def extension(filename):

@@ -147,7 +147,7 @@ def test_changes_main_album_cover_to_specified_image_file():
     director.change_cover_of(album)(cover_file)
 
     assert_that(album.images, contains(has_properties(mime='image/jpeg',
-                                                      data=fs.binary_content_of(cover_file),
+                                                      data=fs.read(cover_file),
                                                       type=Image.FRONT_COVER,
                                                       desc='Front Cover')), 'images')
 

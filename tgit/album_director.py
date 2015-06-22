@@ -102,7 +102,7 @@ def updateAlbum(album, **metadata):
 def change_cover_of(album):
     def change_album_cover(filename):
         album.removeImages()
-        mime, data = fs.guess_mime_type(filename), fs.binary_content_of(filename)
+        mime, data = fs.guess_mime_type(filename), fs.read(filename)
         album.addFrontCover(mime, data)
 
     return change_album_cover
@@ -159,7 +159,7 @@ def export_as_csv(album):
 
 def tagged_file(album, track):
     dirname = os.path.dirname(album.destination)
-    return os.path.join(dirname, naming.default_scheme(track))
+    return os.path.join(dirname, naming.track_scheme(track))
 
 
 def lookupISNI(registry, leadPerformer):

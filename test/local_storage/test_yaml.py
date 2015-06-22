@@ -5,12 +5,6 @@ import pytest
 from test.util import resources
 from tgit.local_storage import yaml
 from tgit.metadata import Image
-from tgit.util import fs
-
-sample_front_cover = Image("image/jpeg",
-                           fs.binary_content_of(resources.path("front-cover.jpg")),
-                           Image.FRONT_COVER,
-                           "Front Cover")
 
 
 @pytest.yield_fixture
@@ -43,7 +37,7 @@ def test_saves_data_to_yaml_file(project_file):
                 comments="Comments\n...",
                 releaseTime="2009-01-01", recording_time="2008-09-15", recordingStudios="Studios",
                 producer="Producer", mixer="Engineer", primary_style="Style",
-                images=[sample_front_cover],
+                images=[("image/jpeg", "Front.jpeg", Image.FRONT_COVER, "Front")],
                 tracks=("1st", "2nd", "3rd"))
 
     yaml.write_data(album_file, data)
@@ -70,20 +64,17 @@ def test_saves_data_to_yaml_file(project_file):
     assert_that(lines, has_item(contains_string("  - Piano")), "guest performers")
     assert_that(lines, has_item(contains_string("  - Pianist")), "guest performers")
     assert_that(lines, has_item(contains_string("images:")), "images")
-    assert_that(lines, has_item(contains_string("  data: !!binary |")), "images")
-    assert_that(lines, has_item(
-        contains_string("    /9j/4AAQSkZJRgABAQEASABIAAD/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbnRyUkdC")),
-                "image data")
-    assert_that(lines, has_item(contains_string("  desc: Front Cover")), "image desc")
-    assert_that(lines, has_item(contains_string("  mime: image/jpeg")), "image mime")
-    assert_that(lines, has_item(contains_string("  type: 1")), "image type")
+    assert_that(lines, has_item(contains_string("  - image/jpeg")), "image mime type")
+    assert_that(lines, has_item(contains_string("  - Front.jpeg")), "image filename")
+    assert_that(lines, has_item(contains_string("  - 1")), "image type")
+    assert_that(lines, has_item(contains_string("  - Front")), "image desc")
     assert_that(lines, has_item(contains_string("- 1st")), "1st track")
     assert_that(lines, has_item(contains_string("- 2nd")), "2nd track")
     assert_that(lines, has_item(contains_string("- 3rd")), "3rd track")
 
 
 def test_reads_data_from_yaml_file():
-    data = yaml.read_data(resources.path("album_mp3.tgit"))
+    data = yaml.read_data(resources.path("album.tgit"))
 
     assert_that(data, has_entry("version", "1.6.0"), "version")
     assert_that(data, has_entry("type", "mp3"), "album type")
@@ -103,5 +94,6 @@ def test_reads_data_from_yaml_file():
     assert_that(data, has_entry("producer", "Producer"), "producer")
     assert_that(data, has_entry("mixer", "Engineer"), "mixer")
     assert_that(data, has_entry("primary_style", "Style"), "primary style")
-    assert_that(data, has_entry("images", contains(sample_front_cover)), "attached pictures")
+    assert_that(data, has_entry("images", contains(("image/jpeg", "Front.jpeg", Image.FRONT_COVER, "Front"))),
+                "attached pictures")
     assert_that(data, has_entry("tracks", contains("1st", "2nd", "3rd")))
