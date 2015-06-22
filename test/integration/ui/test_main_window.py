@@ -6,10 +6,10 @@ import pytest
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
-from test.drivers import MainWindowDriver
+from test.drivers import MainWindowDriver, message_box, export_as_dialog
 from test.integration.ui import show_widget
 from test.util import builders as build
-from tgit.ui import message_box
+from tgit.ui import message_box as message, Dialogs
 from tgit.ui.main_window import MainWindow
 
 
@@ -19,8 +19,11 @@ def ignore(*args):
 
 @pytest.yield_fixture()
 def main_window(qt):
+    dialogs = Dialogs(commands=None, native=False)
     window = MainWindow(create_startup_screen=ignore, create_album_screen=ignore,
-                        create_close_album_confirmation=message_box.close_album_confirmation_box)
+                        create_close_album_confirmation=message.close_album_confirmation_box,
+                        select_export_destination=dialogs.export)
+    dialogs.parent=window
     show_widget(window)
     yield window
     window.close()
@@ -31,6 +34,20 @@ def driver(main_window, prober, automaton):
     main_window_driver = MainWindowDriver(WidgetIdentity(main_window), prober, automaton)
     yield main_window_driver
     main_window_driver.close()
+
+
+@pytest.yield_fixture()
+def export_as_dialog_driver(driver):
+    export_as_driver = export_as_dialog(driver)
+    yield export_as_driver
+    export_as_driver.close()
+
+
+@pytest.yield_fixture()
+def message_box_driver(driver):
+    message_driver = message_box(driver)
+    yield message_driver
+    message_driver.close()
 
 
 def test_album_actions_are_initially_disabled(driver):
@@ -64,14 +81,12 @@ def test_signals_when_add_folder_menu_item_clicked(main_window, driver):
     driver.check(add_folder_signal)
 
 
-def test_signals_when_export_menu_item_clicked(main_window, driver):
+def test_signals_when_export_menu_item_clicked(main_window, driver, export_as_dialog_driver):
     album = build.album()
-    export_album_signal = ValueMatcherProbe("export", album)
-    main_window.export.connect(export_album_signal.received)
     main_window.enable_album_actions(album)
-
     driver.export()
-    driver.check(export_album_signal)
+    export_as_dialog_driver.is_showing_on_screen()
+    export_as_dialog_driver.reject()
 
 
 def test_signals_when_save_album_menu_item_clicked(main_window, driver):
@@ -95,15 +110,19 @@ def test_signals_when_save_album_keyboard_shortcut_is_activated(main_window, dri
     driver.check(save_album_signal)
 
 
-def test_shows_confirmation_when_close_album_menu_item_clicked(main_window, driver):
+def test_shows_confirmation_when_close_album_menu_item_clicked(main_window, driver, message_box_driver):
     main_window.enable_album_actions(build.album())
-    driver.closes_album()
+    driver.close_album()
+    message_box_driver.is_showing_on_screen()
+    message_box_driver.yes()
 
 
 @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")
-def test_shows_confirmation_when_close_album_keyboard_shortcut_is_activated(main_window, driver):
+def test_shows_confirmation_when_close_album_keyboard_shortcut_is_activated(main_window, driver, message_box_driver):
     main_window.enable_album_actions(build.album())
-    driver.closes_album(using_shortcut=True)
+    driver.close_album()
+    message_box_driver.is_showing_on_screen()
+    message_box_driver.yes()
 
 
 def test_signals_when_settings_menu_item_clicked(main_window, driver):

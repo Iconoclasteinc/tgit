@@ -292,9 +292,12 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
 
 
 def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_add_folder, on_export, on_settings,
-                     create_startup_screen, create_album_screen, create_close_album_confirmation):
-    window = MainWindow(create_startup_screen=create_startup_screen, create_album_screen=create_album_screen,
-                        create_close_album_confirmation=create_close_album_confirmation)
+                     create_startup_screen, create_album_screen, create_close_album_confirmation,
+                     select_export_destination):
+    window = MainWindow(create_startup_screen=create_startup_screen,
+                        create_album_screen=create_album_screen,
+                        create_close_album_confirmation=create_close_album_confirmation,
+                        select_export_destination=select_export_destination)
     window.add_files.connect(on_add_files)
     window.add_folder.connect(on_add_folder)
     window.export.connect(on_export)
@@ -313,13 +316,15 @@ def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_
 class MainWindow(QMainWindow):
     add_files = pyqtSignal(Album)
     add_folder = pyqtSignal(Album)
-    export = pyqtSignal(Album)
+    export = pyqtSignal(Album, str)
     close_album = pyqtSignal(Album)
     save = pyqtSignal(Album)
     settings = pyqtSignal()
 
-    def __init__(self, *, create_startup_screen, create_album_screen, create_close_album_confirmation):
+    def __init__(self, *, create_startup_screen, create_album_screen, create_close_album_confirmation,
+                 select_export_destination):
         super().__init__()
+        self._select_export_destination = select_export_destination
         self._create_close_album_confirmation = create_close_album_confirmation
         self._create_startup_screen = create_startup_screen
         self._create_album_screen = create_album_screen
@@ -330,7 +335,7 @@ class MainWindow(QMainWindow):
         self.add_folder_action.triggered.connect(lambda checked: self.add_folder.emit(self.add_folder_action.data()))
         self.close_album_action.triggered.connect(lambda checked: self._confirm_album_close())
         self.save_album_action.triggered.connect(lambda checked: self.save.emit(self.save_album_action.data()))
-        self.export_action.triggered.connect(lambda checked: self.export.emit(self.export_action.data()))
+        self.export_action.triggered.connect(lambda checked: self._choose_export_destination())
         self.settings_action.triggered.connect(lambda checked: self.settings.emit())
 
         if windows:
@@ -350,6 +355,10 @@ class MainWindow(QMainWindow):
         album = self.close_album_action.data()
         confirmation_box = self._create_close_album_confirmation(self, on_accept=lambda: self.close_album.emit(album))
         confirmation_box.open()
+
+    def _choose_export_destination(self):
+        album = self.export_action.data()
+        self._select_export_destination(lambda destination: self.export.emit(album, destination))
 
     def enable_album_actions(self, album):
         for action in self.album_dependent_action:

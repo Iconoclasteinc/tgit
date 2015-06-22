@@ -130,10 +130,10 @@ def test_exports_album_as_csv_encoded_file(workspace):
     album = build.album(tracks=[build.track(track_title="Les Comédiens")])
     destination_file = workspace.path("french.csv")
 
-    director.export_as_csv(album)(destination_file)
+    director.export_as_csv(album, destination_file)
 
     def read_lines(file):
-        content = open(file, 'r', encoding="windows-1252").read()
+        content = open(file, "r", encoding="windows-1252").read()
         return content.split("\n")
 
     assert_that(read_lines(destination_file), has_item(contains_string("Les Comédiens")))

@@ -21,7 +21,6 @@ from PyQt5.QtWidgets import QApplication
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
-from tgit.ui import commands as ui_commands
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
 from tgit.ui.startup_screen import StartupScreen
@@ -178,11 +177,12 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                               create_startup_screen=create_startup_screen,
                               create_album_screen=create_album_screen,
                               create_close_album_confirmation=message_box.close_album_confirmation_box,
+                              select_export_destination=dialogs.export,
                               on_close_album=director.remove_album_from(portfolio),
                               on_save_album=director.save_album(),
                               on_add_files=dialogs.add_tracks,
                               on_add_folder=dialogs.add_tracks_in_folder,
-                              on_export=ui_commands.export_to(dialogs),
+                              on_export=director.export_as_csv,
                               on_settings=show_settings_dialog)
     dialogs.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())

@@ -58,10 +58,9 @@ class Dialogs:
 
         return self._select_reference_track
 
-    def _export_as_dialog(self, album):
+    def _export_as_dialog(self):
         if not self._export:
-            self._export = make_export_as_dialog(self.parent, native=self._native,
-                                                 on_export_as=self._commands.export_as_csv(album))
+            self._export = make_export_as_dialog(self.parent, native=self._native)
 
         return self._export
 
@@ -92,8 +91,8 @@ class Dialogs:
     def select_reference_track(self, on_select):
         return self._select_reference_track_dialog().select(on_select)
 
-    def export(self, album):
-        return self._export_as_dialog(album)
+    def export(self, on_select):
+        return self._export_as_dialog().select(on_select)
 
     def select_album_destination(self, on_select):
         return self._select_album_destination_dialog().select(on_select)

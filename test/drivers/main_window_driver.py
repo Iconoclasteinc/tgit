@@ -8,6 +8,7 @@ from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
 from .menu_bar_driver import menu_bar
 from .new_album_screen_driver import new_album_page
+from test.drivers import export_as_dialog
 from .welcome_screen_driver import welcome_page
 
 
@@ -100,14 +101,12 @@ class MainWindowDriver(WidgetDriver):
     def has_disabled_album_actions(self):
         menu_bar(self).has_disabled_album_actions()
 
-    def closes_album(self, using_shortcut=False):
+    def close_album(self, using_shortcut=False):
         if using_shortcut:
             self.click()
             self.perform(gestures.close())
         else:
             menu_bar(self).close_album()
-        message_box(self).is_showing_on_screen()
-        message_box(self).yes()
 
     def export(self):
         menu_bar(self).export()

@@ -144,12 +144,9 @@ def save_tracks(album):
         tagging.save_track(to_file=tagged_file(album, track), track=track)
 
 
-def export_as_csv(album):
-    def export_album_as_csv(export_format, charset, destination):
-        with open(destination, 'w', encoding=charset) as out:
-            export_format.write(album, out)
-
-    return functools.partial(export_album_as_csv, CsvFormat(), "windows-1252")
+def export_as_csv(album, destination):
+    with open(destination, "w", encoding="windows-1252") as out:
+        CsvFormat().write(album, out)
 
 
 def tagged_file(album, track):

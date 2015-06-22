@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 from hamcrest import equal_to
 from PyQt5.QtWidgets import QFileDialog
@@ -27,8 +28,7 @@ def test_signals_export_destination(tmpdir, dialog, driver):
     destination = tmpdir.join("album.csv").strpath
     export_as_signal = ValueMatcherProbe('export as', equal_to(destination))
 
-    dialog.export_as.connect(export_as_signal.received)
-    dialog.open()
+    dialog.select(lambda dest: export_as_signal.received(os.path.abspath(dest)))
 
     driver.export_as(destination)
     driver.check(export_as_signal)

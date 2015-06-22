@@ -44,6 +44,13 @@ def select_album_to_load_dialog_driver(prober, automaton):
     driver.close()
 
 
+@pytest.yield_fixture()
+def export_dialog_driver(prober, automaton):
+    driver = FileDialogDriver(window(QFileDialog, named("export-as-dialog")), prober, automaton)
+    yield driver
+    driver.close()
+
+
 def ignore(*args):
     pass
 
@@ -112,16 +119,11 @@ def test_creates_a_new_track_selection_dialog_for_each_album(dialogs):
     assert_that(dialogs.add_tracks(make.album()), not same_instance(track_dialog))
 
 
-def test_creates_a_single_export_dialog_for_a_given_album(dialogs):
-    album = make.album()
-    export_dialog = dialogs.export(album)
+def test_creates_a_single_export_dialog_for_a_given_album(dialogs, export_dialog_driver):
+    dialogs.export(ignore)
+    export_dialog_driver.is_showing_on_screen()
+    export_dialog_driver.reject()
 
-    assert_that(dialogs.export(album), same_instance(export_dialog))
-
-
-def test_creates_a_new_export_dialog_for_each_album(dialogs):
-    album = make.album()
-    export_dialog = dialogs.export(album)
-    dialogs.clear()
-
-    assert_that(dialogs.export(make.album()), not same_instance(export_dialog))
+    dialogs.export(ignore)
+    export_dialog_driver.is_showing_on_screen()
+    export_dialog_driver.reject()
