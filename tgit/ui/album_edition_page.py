@@ -108,11 +108,11 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.remove_picture_button.clicked.connect(lambda pressed: self.remove_picture.emit())
 
         # date box
-        self.release_time.dateChanged.connect(lambda: self.metadata_changed.emit(self.metadata("releaseTime")))
+        self.release_time.dateChanged.connect(lambda: self.metadata_changed.emit(self.metadata("release_time")))
         self.digital_release_time.dateChanged.connect(
-            lambda: self.metadata_changed.emit(self.metadata("digitalReleaseTime")))
+            lambda: self.metadata_changed.emit(self.metadata("digital_release_time")))
         self.original_release_time.dateChanged.connect(
-            lambda: self.metadata_changed.emit(self.metadata("originalReleaseTime")))
+            lambda: self.metadata_changed.emit(self.metadata("original_release_time")))
         self.recording_time.dateChanged.connect(lambda: self.metadata_changed.emit(self.metadata("recording_time")))
 
         # album box
@@ -127,19 +127,19 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.clear_isni_button.clicked.connect(lambda: self.release_time.calendarWidget().show())
         self.add_guest_performers_button.clicked.connect(lambda: self.add_performer.emit())
         self.guest_performers.editingFinished.connect(
-            lambda: self.metadata_changed.emit(self.metadata("guestPerformers")))
+            lambda: self.metadata_changed.emit(self.metadata("guest_performers")))
 
         # record
         self.label_name.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("label_name")))
-        self.catalog_number.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("catalogNumber")))
+        self.catalog_number.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("catalog_number")))
         self.barcode.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("upc")))
         self.media_type.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("media_type")))
-        self.release_type.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("releaseType")))
+        self.release_type.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("release_type")))
         self.comments.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("comments")))
 
         # recording
         self.recording_studios.editingFinished.connect(
-            lambda: self.metadata_changed.emit(self.metadata("recordingStudios")))
+            lambda: self.metadata_changed.emit(self.metadata("recording_studios")))
         self.producer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("producer")))
         self.mixer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("mixer")))
         self.genre.addItems(sorted(GENRES))
@@ -188,14 +188,14 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.compilation.setChecked(album.compilation is True)
         self._display_lead_performer(album)
         self.isni.setText(album.isni)
-        self.guest_performers.setText(formatting.toPeopleList(album.guestPerformers))
+        self.guest_performers.setText(formatting.toPeopleList(album.guest_performers))
         self.label_name.setText(album.label_name)
-        self.catalog_number.setText(album.catalogNumber)
+        self.catalog_number.setText(album.catalog_number)
         self.barcode.setText(album.upc)
         self.comments.setPlainText(album.comments)
-        self.release_time.setDate(QDate.fromString(album.releaseTime, "yyyy-MM-dd"))
+        self.release_time.setDate(QDate.fromString(album.release_time, "yyyy-MM-dd"))
         self.recording_time.setDate(QDate.fromString(album.recording_time, "yyyy-MM-dd"))
-        self.recording_studios.setText(album.recordingStudios)
+        self.recording_studios.setText(album.recording_studios)
         self.producer.setText(album.producer)
         self.mixer.setText(album.mixer)
         self.genre.setEditText(album.primary_style)
@@ -210,14 +210,14 @@ class AlbumEditionPage(QWidget, AlbumListener):
                           compilation=self.compilation.isChecked(),
                           lead_performer=self.lead_performer.text(),
                           isni=self.isni.text(),
-                          guestPerformers=formatting.fromPeopleList(self.guest_performers.text()),
+                          guest_performers=formatting.fromPeopleList(self.guest_performers.text()),
                           label_name=self.label_name.text(),
-                          catalogNumber=self.catalog_number.text(),
+                          catalog_number=self.catalog_number.text(),
                           upc=self.barcode.text(),
                           comments=self.comments.toPlainText(),
                           recording_time=self.recording_time.date().toString("yyyy-MM-dd"),
-                          releaseTime=self.release_time.date().toString("yyyy-MM-dd"),
-                          recordingStudios=self.recording_studios.text(),
+                          release_time=self.release_time.date().toString("yyyy-MM-dd"),
+                          recording_studios=self.recording_studios.text(),
                           producer=self.producer.text(),
                           mixer=self.mixer.text(),
                           primary_style=self.genre.currentText())

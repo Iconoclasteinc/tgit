@@ -19,21 +19,21 @@ class AlbumEditionPageDriver(ScreenDriver):
                 self.shows_lead_performer(value)
             elif tag == "compilation":
                 self.shows_compilation(value)
-            elif tag == "guestPerformers":
+            elif tag == "guest_performers":
                 self.showsGuestPerformers(value)
             elif tag == "label_name":
                 self.showsLabelName(value)
-            elif tag == "catalogNumber":
+            elif tag == "catalog_number":
                 self.showsCatalogNumber(value)
             elif tag == "upc":
                 self.showsUpc(value)
             elif tag == "recording_time":
                 self.shows_recording_time(value)
-            elif tag == "releaseTime":
+            elif tag == "release_time":
                 self.showsReleaseTime(value)
-            elif tag == "originalReleaseTime":
+            elif tag == "original_release_time":
                 self.showsOriginalReleaseTime(value)
-            elif tag == "recordingStudios":
+            elif tag == "recording_studios":
                 self.showsRecordingStudios(value)
             elif tag == "producer":
                 self.showsProducer(value)
@@ -60,7 +60,7 @@ class AlbumEditionPageDriver(ScreenDriver):
                 self.changeGuestPerformers(value)
             elif tag == "label_name":
                 self.changeLabelName(value)
-            elif tag == "catalogNumber":
+            elif tag == "catalog_number":
                 self.changeCatalogNumber(value)
             elif tag == "upc":
                 self.changeUpc(value)
@@ -68,9 +68,9 @@ class AlbumEditionPageDriver(ScreenDriver):
                 self.change_recording_time(value)
             elif tag == "releaseTime":
                 self.changeReleaseTime(value)
-            elif tag == "originalReleaseTime":
+            elif tag == "original_release_time":
                 self.changeOriginalReleaseTime(value)
-            elif tag == "recordingStudios":
+            elif tag == "recording_studios":
                 self.changeRecordingStudios(value)
             elif tag == "producer":
                 self.changeProducer(value)

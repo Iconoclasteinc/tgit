@@ -42,7 +42,7 @@ def test_reads_lead_performer_from_tpe1_frame(mp3):
 def test_reads_guest_performers_from_t_m_c_l_frame(mp3):
     metadata = container.load(mp3(TMCL=[['Guitar', 'Guitarist'], ['Guitar', 'Bassist'],
                                         ['Piano', 'Pianist']]))
-    assert_that(metadata, has_entry('guestPerformers', contains_inanyorder(
+    assert_that(metadata, has_entry('guest_performers', contains_inanyorder(
         ('Guitar', 'Guitarist'),
         ('Guitar', 'Bassist'),
         ('Piano', 'Pianist'))), 'metadata')
@@ -50,7 +50,7 @@ def test_reads_guest_performers_from_t_m_c_l_frame(mp3):
 
 def test_ignores_t_m_c_l_entries_with_blank_names(mp3):
     metadata = container.load(mp3(TMCL=[['Guitar', 'Guitarist'], ['Piano', '']]))
-    assert_that(metadata, has_entry('guestPerformers', contains(('Guitar', 'Guitarist'))), 'metadata')
+    assert_that(metadata, has_entry('guest_performers', contains(('Guitar', 'Guitarist'))), 'metadata')
 
 
 def test_reads_label_name_from_t_o_w_n_frame(mp3):
@@ -60,7 +60,7 @@ def test_reads_label_name_from_t_o_w_n_frame(mp3):
 
 def test_reads_catalog_number_from_custom_frame(mp3):
     metadata = container.load(mp3(TXXX_CATALOG_NUMBER='123 456-1'))
-    assert_that(metadata, has_entry('catalogNumber', '123 456-1'), 'metadata')
+    assert_that(metadata, has_entry('catalog_number', '123 456-1'), 'metadata')
 
 
 def test_reads_upc_from_custom_barcode_frame(mp3):
@@ -75,17 +75,17 @@ def test_reads_recording_time_from_t_d_r_c_frame(mp3):
 
 def test_reads_release_time_from_t_d_r_l_frame(mp3):
     metadata = container.load(mp3(TDRL='2013-11-15'))
-    assert_that(metadata, has_entry('releaseTime', '2013-11-15'), 'metadata')
+    assert_that(metadata, has_entry('release_time', '2013-11-15'), 'metadata')
 
 
 def test_reads_original_release_time_from_t_d_o_r_frame(mp3):
     metadata = container.load(mp3(TDOR='1999-03-15'))
-    assert_that(metadata, has_entry('originalReleaseTime', '1999-03-15'), 'metadata')
+    assert_that(metadata, has_entry('original_release_time', '1999-03-15'), 'metadata')
 
 
 def test_reads_recording_studios_from_custom_frame(mp3):
     metadata = container.load(mp3(TXXX_RECORDING_STUDIOS='Studio Name'))
-    assert_that(metadata, has_entry('recordingStudios', 'Studio Name'), 'metadata')
+    assert_that(metadata, has_entry('recording_studios', 'Studio Name'), 'metadata')
 
 
 def test_reads_artistic_producer_from_t_i_p_l_frame(mp3):
@@ -237,14 +237,14 @@ def test_round_trips_metadata_to_file(mp3):
     metadata['compilation'] = True
     metadata['lead_performer'] = 'Lead Performer'
     metadata['isni'] = '0000123456789'
-    metadata['guestPerformers'] = [('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]
+    metadata['guest_performers'] = [('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]
     metadata['label_name'] = 'Label Name'
-    metadata['catalogNumber'] = '123 456-1'
+    metadata['catalog_number'] = '123 456-1'
     metadata['upc'] = '987654321111'
     metadata['recording_time'] = '2012-07-01'
-    metadata['releaseTime'] = '2013-12-01'
-    metadata['originalReleaseTime'] = '1999-01-01'
-    metadata['recordingStudios'] = 'Studio Name'
+    metadata['release_time'] = '2013-12-01'
+    metadata['original_release_time'] = '1999-01-01'
+    metadata['recording_studios'] = 'Studio Name'
     metadata['producer'] = 'Artistic Producer'
     metadata['mixer'] = 'Mixing Engineer'
     metadata['contributors'] = [('recording', 'Recording Eng.'),

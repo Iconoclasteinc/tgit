@@ -15,8 +15,8 @@ from tgit.album import Album, AlbumListener
 
 def test_defines_metadata_tags():
     assert_that(tuple(Album.tags()), contains_inanyorder(
-        'release_name', 'compilation', 'lead_performer', 'isni', 'guestPerformers', 'label_name', 'upc',
-        'catalogNumber', 'recording_time', 'releaseTime', 'originalReleaseTime', 'recordingStudios', 'producer',
+        'release_name', 'compilation', 'lead_performer', 'isni', 'guest_performers', 'label_name', 'upc',
+        'catalog_number', 'recording_time', 'release_time', 'original_release_time', 'recording_studios', 'producer',
         'mixer', 'contributors', 'comments', 'primary_style'))
 
 
@@ -186,11 +186,11 @@ class AlbumTest(unittest.TestCase):
         self.assertNotifiesListenerOnPropertyChange('release_name', 'Album')
         self.assertNotifiesListenerOnPropertyChange('lead_performer', 'Artist')
         self.assertNotifiesListenerOnPropertyChange('isni', '123456789')
-        self.assertNotifiesListenerOnPropertyChange('guestPerformers', [('Musician', 'Instrument')])
+        self.assertNotifiesListenerOnPropertyChange('guest_performers', [('Musician', 'Instrument')])
         self.assertNotifiesListenerOnPropertyChange('label_name', 'Label')
         self.assertNotifiesListenerOnPropertyChange('recording_time', 'Recorded')
-        self.assertNotifiesListenerOnPropertyChange('releaseTime', 'Released')
-        self.assertNotifiesListenerOnPropertyChange('originalReleaseTime', 'Original Release')
+        self.assertNotifiesListenerOnPropertyChange('release_time', 'Released')
+        self.assertNotifiesListenerOnPropertyChange('original_release_time', 'Original Release')
         self.assertNotifiesListenerOnPropertyChange('upc', 'Barcode')
         self.assertNotifiesListenerOnImagesChange(Image('image/jpeg', 'front-cover.jpg'))
 
