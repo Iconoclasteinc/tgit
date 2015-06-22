@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+from _pytest.runner import fail
 from hamcrest import assert_that, contains, has_item, anything, equal_to
 import pytest
 
@@ -94,11 +94,11 @@ def test_notifies_that_request_was_malformed_when_assigning_a_person(server, reg
     assert_that(message, equal_to("XML parsing error"))
 
 
-@pytest.mark.wip
+@pytest.mark.xfail
 def test_assigns_isni_to_person_from_a_possible_match(server, registry):
-    pass
+    fail("Not implemented")
 
 
-@pytest.mark.wip
+@pytest.mark.xfail
 def test_assigns_isni_to_person_after_having_turned_down_all_possible_matches(server, registry):
-    pass
+    fail("Not implemented")
