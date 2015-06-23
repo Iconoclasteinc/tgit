@@ -36,8 +36,9 @@ def album_screen(composition_page, album_page, track_page, album):
 class AlbumScreen(QWidget, AlbumListener):
     record_album = pyqtSignal()
 
-    TRACK_PAGES_INDEX = 2
+    ALBUM_COMPOSITION_PAGE_INDEX = 0
     ALBUM_EDITION_PAGE_INDEX = 1
+    TRACK_PAGES_INDEX = 2
 
     def __init__(self, compose_album, edit_album, edit_track):
         super().__init__()
@@ -62,6 +63,9 @@ class AlbumScreen(QWidget, AlbumListener):
 
     def navigate_to_album_edition_page(self):
         self._to_page(self.ALBUM_EDITION_PAGE_INDEX)
+
+    def navigate_to_album_composition_page(self):
+        self._to_page(self.ALBUM_COMPOSITION_PAGE_INDEX)
 
     def _has_track_page(self):
         return self.total_pages > self.TRACK_PAGES_INDEX

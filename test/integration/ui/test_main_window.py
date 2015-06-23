@@ -24,18 +24,13 @@ def fake_album_screen():
     return album_screen()
 
 
-@pytest.fixture()
-def create_album_screen(fake_album_screen):
+@pytest.yield_fixture()
+def main_window(qt, fake_album_screen):
     def create_fake_album_screen(album):
         return fake_album_screen
 
-    return create_fake_album_screen
-
-
-@pytest.yield_fixture()
-def main_window(qt, create_album_screen):
     dialogs = Dialogs(commands=None, native=False)
-    window = MainWindow(create_startup_screen=ignore, create_album_screen=create_album_screen,
+    window = MainWindow(create_startup_screen=ignore, create_album_screen=create_fake_album_screen,
                         create_close_album_confirmation=message.close_album_confirmation_box,
                         select_export_destination=dialogs.export)
     dialogs.parent=window
@@ -154,3 +149,12 @@ def test_navigates_to_album_edition_page_item_is_clicked(main_window, driver, fa
 
     driver.navigate_to_album_page()
     assert_that(fake_album_screen.current_page, equal_to(FakeAlbumScreen.ALBUM_EDITION_PAGE))
+
+
+def test_navigates_to_album_composition_page_item_is_clicked(main_window, driver, fake_album_screen):
+    album = build.album()
+    main_window.display_album_screen(album)
+
+    driver.navigate_to_album_page()
+    driver.navigate_to_composition_page()
+    assert_that(fake_album_screen.current_page, equal_to(FakeAlbumScreen.ALBUM_COMPOSITION_PAGE))

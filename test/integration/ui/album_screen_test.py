@@ -52,6 +52,12 @@ def test_navigates_to_album_edition_page(screen, driver):
     driver.showsAlbumEditionPage()
 
 
+def test_navigates_to_album_composition_page(screen, driver):
+    screen.navigate_to_album_edition_page()
+    screen.navigate_to_album_composition_page()
+    driver.showsAlbumCompositionPage()
+
+
 class AlbumScreenTest(WidgetTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()

@@ -60,7 +60,7 @@ class MenuBarDriver(QMenuBarDriver):
         def __init__(self, menu_driver):
             self._menu_driver = menu_driver
 
-        def to_edition_page(self):
+        def to_album_page(self):
             self._menu_driver.select_menu_item(matchers.named("to_album_edition_action"))
 
         def to_composition_page(self):

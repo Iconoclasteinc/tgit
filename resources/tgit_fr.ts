@@ -427,6 +427,11 @@
         <source>Album edition</source>
         <translation>Édition de l'album</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>Album composition</source>
+        <translation>Composition de l'album</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>

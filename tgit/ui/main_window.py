@@ -338,6 +338,7 @@ class MainWindow(QMainWindow):
         self.export_action.triggered.connect(lambda checked: self._choose_export_destination())
         self.settings_action.triggered.connect(lambda checked: self.settings.emit())
         self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
+        self.to_album_composition_action.triggered.connect(self._to_album_composition_page)
 
         if windows:
             self.settings_action.setText(self.tr(self.settings_action.text()))
@@ -354,6 +355,9 @@ class MainWindow(QMainWindow):
 
     def _to_album_edition_page(self):
         self.centralWidget().navigate_to_album_edition_page()
+
+    def _to_album_composition_page(self):
+        self.centralWidget().navigate_to_album_composition_page()
 
     def _confirm_album_close(self):
         album = self.close_album_action.data()

@@ -74,6 +74,7 @@ def album_screen():
 class FakeAlbumScreen(QWidget):
     NO_PAGE = "no selected page"
     ALBUM_EDITION_PAGE = "album edition page"
+    ALBUM_COMPOSITION_PAGE = "album composition page"
 
     def __init__(self):
         super().__init__()
@@ -81,3 +82,6 @@ class FakeAlbumScreen(QWidget):
 
     def navigate_to_album_edition_page(self):
         self.current_page = self.ALBUM_EDITION_PAGE
+
+    def navigate_to_album_composition_page(self):
+        self.current_page = self.ALBUM_COMPOSITION_PAGE

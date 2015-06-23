@@ -64,7 +64,9 @@
     <property name="title">
      <string>Navigate</string>
     </property>
+    <addaction name="to_album_composition_action"/>
     <addaction name="to_album_edition_action"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="file_menu"/>
    <addaction name="navigate_menu"/>
@@ -118,8 +120,10 @@
    <property name="text">
     <string>Album edition</string>
    </property>
-   <property name="iconVisibleInMenu">
-    <bool>false</bool>
+  </action>
+  <action name="to_album_composition_action">
+   <property name="text">
+    <string>Album composition</string>
    </property>
   </action>
  </widget>
