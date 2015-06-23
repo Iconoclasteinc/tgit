@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
 from os.path import join, dirname
 
 import tgit
@@ -66,9 +65,7 @@ def save_album(album, track_name=naming.track_scheme, track_catalog=tagging, art
 
     def save_album_artwork():
         fs.mkdirs(artwork_folder)
-
-        for previous_artwork in fs.list_dir(artwork_folder):
-            os.remove(previous_artwork)
+        fs.remove_files(artwork_folder)
 
         for image in album.images:
             artwork_file = join(artwork_folder, artwork_name(image))
@@ -83,9 +80,7 @@ def save_album(album, track_name=naming.track_scheme, track_catalog=tagging, art
             track.filename = track_file
             track_catalog.save_track(track)
 
-        for file in fs.list_dir(tracks_folder):
-            if file not in (track.filename for track in album.tracks):
-                os.remove(file)
+        fs.remove_files(tracks_folder, lambda filename: filename not in (track.filename for track in album.tracks))
 
     save_album_data()
     save_album_artwork()

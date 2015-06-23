@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from hamcrest import assert_that, equal_to, contains
+from hamcrest import assert_that, equal_to, contains, empty, ends_with
 
 from test.util import resources
 from tgit.util import fs
@@ -43,6 +43,22 @@ def test_list_file_entries_in_folder(tmpdir):
         tmpdir.mkdir(folder)
 
     assert_that(fs.list_dir(tmpdir.strpath), contains(*entries), "file entries")
+
+
+def test_ignores_errors_that_might_occur_when_removing_files(tmpdir):
+    missing_file = tmpdir.join("missing.mp3").strpath
+    fs.remove(missing_file)
+
+
+def test_removes_files_from_folder_if_they_match_given_condition(tmpdir):
+    for filename in "track1.mp3", "track2.flac", "track3.mp3":
+        touch(tmpdir.join(filename).strpath)
+
+    fs.remove_files(folder=tmpdir.strpath, matching=lambda entry: entry.endswith(".mp3"))
+    assert_that(fs.list_dir(tmpdir.strpath), contains(ends_with("track2.flac")), "files left after removing mp3 files")
+
+    fs.remove_files(folder=tmpdir.strpath)
+    assert_that(fs.list_dir(tmpdir.strpath), empty(), "files left after removing remaining files")
 
 
 def touch(filename):

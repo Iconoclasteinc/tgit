@@ -79,3 +79,21 @@ def list_dir(folder):
         return os.path.join(folder, filename)
 
     return [abspath(filename) for filename in os.listdir(folder) if os.path.isfile(abspath(filename))]
+
+
+def remove(path):
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+
+
+_all_files = lambda entry: True
+
+
+def remove_files(folder, matching=_all_files):
+    for filename in list_dir(folder):
+        if matching(filename):
+            remove(filename)
+
+
