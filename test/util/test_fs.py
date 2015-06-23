@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from hamcrest import assert_that, equal_to
+import os
+
+from hamcrest import assert_that, equal_to, contains
 
 from test.util import resources
 from tgit.util import fs
@@ -22,3 +24,27 @@ def test_ignores_copy_to_same_destination(tmpdir):
 
 def test_guesses_file_extension_from_mime_type():
     assert_that(fs.guess_extension("image/png"), equal_to("png"), "extension for png images")
+
+
+def test_creates_directory_tree(tmpdir):
+    folder = tmpdir.join("path/to/folder").strpath
+    fs.mkdirs(folder)
+
+    assert_that(os.path.exists(folder), "folder not created")
+    assert_that(os.path.isdir(folder), "not a folder")
+
+
+def test_list_file_entries_in_folder(tmpdir):
+    entries = [tmpdir.join(filename).strpath for filename in ("file1", "file2", "file3")]
+    for filename in entries:
+        touch(filename)
+
+    for folder in ("dir1", "dir2", "dir3"):
+        tmpdir.mkdir(folder)
+
+    assert_that(fs.list_dir(tmpdir.strpath), contains(*entries), "file entries")
+
+
+def touch(filename):
+    with open(filename, "wt") as file:
+        file.write("")

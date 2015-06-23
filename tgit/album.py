@@ -96,16 +96,20 @@ class Album(metaclass=tag.Taggable):
     def frontCovers(self):
         return self.imagesOfType(Image.FRONT_COVER)
 
-    def addImage(self, mime, data, type_=Image.OTHER, desc=''):
+    def add_image(self, mime, data, type_=Image.OTHER, desc=''):
         self.metadata.addImage(mime, data, type_, desc)
         self.metadataChanged()
+
+    addImage = add_image
 
     def addFrontCover(self, mime, data, desc='Front Cover'):
         self.addImage(mime, data, Image.FRONT_COVER, desc)
 
-    def removeImages(self):
+    def remove_images(self):
         self.metadata.removeImages()
         self.metadataChanged()
+
+    removeImages = remove_images
 
     def __len__(self):
         return len(self.tracks)
@@ -113,11 +117,10 @@ class Album(metaclass=tag.Taggable):
     def empty(self):
         return len(self) == 0
 
-    def addTrack(self, track):
-        self.add_track(track)
-
     def add_track(self, track):
         self.insert_track(len(self.tracks), track)
+
+    addTrack = add_track
 
     def insertTrack(self, track, position):
         self.insert_track(position, track)
@@ -134,9 +137,6 @@ class Album(metaclass=tag.Taggable):
         self.listeners.trackAdded(track, position)
         self.track_inserted.emit(position, track)
 
-    def removeTrack(self, track):
-        self.remove_track(track)
-
     def remove_track(self, track):
         position = self.tracks.index(track)
         self.tracks.remove(track)
@@ -144,6 +144,8 @@ class Album(metaclass=tag.Taggable):
 
         self.listeners.trackRemoved(track, position)
         self.track_removed.emit(position, track)
+
+    removeTrack = remove_track
 
     def metadataChanged(self):
         self.listeners.albumStateChanged(self)

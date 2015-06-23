@@ -68,3 +68,14 @@ def extension(filename):
 def copy(source_file, destination_file):
     if source_file != destination_file:
         shutil.copy(source_file, destination_file)
+
+
+def mkdirs(path):
+    os.makedirs(path, exist_ok=True)
+
+
+def list_dir(folder):
+    def abspath(filename):
+        return os.path.join(folder, filename)
+
+    return [abspath(filename) for filename in os.listdir(folder) if os.path.isfile(abspath(filename))]
