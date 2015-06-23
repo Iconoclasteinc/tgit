@@ -4,6 +4,7 @@ from os.path import exists
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 
 from tgit import tagging
+from tgit.local_storage.local_project import TRACKS_FOLDER_NAME
 from tgit.metadata import Image
 from tgit.util import fs
 
@@ -20,10 +21,10 @@ class AlbumWorkspace(object):
         return self._local_path.join(*paths).strpath
 
     def contains_track(self, album, filename, front_cover=None, **tags):
-        if not exists(self.file(album, "tracks", filename)):
+        if not exists(self.file(album, TRACKS_FOLDER_NAME, filename)):
             raise AssertionError("Track file '{}' not found in workspace".format(filename))
 
-        track = tagging.load_track(self.file(album, "tracks", filename))
+        track = tagging.load_track(self.file(album, TRACKS_FOLDER_NAME, filename))
         images = []
         # todo use builders and metadata
         if front_cover:

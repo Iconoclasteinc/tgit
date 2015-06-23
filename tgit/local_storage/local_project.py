@@ -25,8 +25,8 @@ from tgit.tagging import tagging
 from tgit.util import fs
 from . import naming, yaml
 
-ARTWORK_FOLDER_NAME = "artwork"
-TRACKS_FOLDER_NAME = "tracks"
+ARTWORK_FOLDER_NAME = "Artwork"
+TRACKS_FOLDER_NAME = "Tracks"
 
 
 def load_album(filename):
