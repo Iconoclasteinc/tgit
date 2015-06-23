@@ -54,6 +54,7 @@ class ApplicationRunner:
                                  album_path=self._workspace.root_path)
 
     def shows_track_list(self, *tracks):
+        self.tagger.navigate_to_composition_page()
         self.tagger.shows_album_contains(*tracks)
 
     def change_order_of_tracks(self, *tracks):
@@ -73,6 +74,10 @@ class ApplicationRunner:
 
     def shows_next_track_metadata(self, **tags):
         self.tagger.next()
+        self.tagger.shows_track_metadata(**tags)
+
+    def shows_track_metadata(self, track_number, **tags):
+        self.tagger.navigate_to_track_page(track_number)
         self.tagger.shows_track_metadata(**tags)
 
     def change_track_metadata(self, **tags):
