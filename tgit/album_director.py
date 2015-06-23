@@ -34,9 +34,7 @@ def _build_full_path(creation_properties):
 
 def create_album_into(portfolio, to_catalog=local_storage):
     def create_new_album(creation_properties):
-        full_path = _build_full_path(creation_properties)
-
-        album = Album(of_type=creation_properties["type"], destination=full_path)
+        album = Album(of_type=creation_properties["type"], destination=_build_full_path(creation_properties))
         save_album(to_catalog)(album)
         portfolio.add_album(album)
         return album
@@ -49,9 +47,9 @@ def import_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging)
         reference_track = from_catalog.load_track(creation_properties["track_location"])
         album = Album(reference_track.metadata, of_type=creation_properties["type"],
                       destination=_build_full_path(creation_properties))
+        add_tracks_to(album, from_catalog)(creation_properties["track_location"])
         save_album(to_catalog)(album)
         portfolio.add_album(album)
-        add_tracks_to(album, from_catalog)(creation_properties["track_location"])
         return album
 
     return import_album_to_portfolio

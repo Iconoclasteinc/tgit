@@ -50,3 +50,13 @@ def test_saving_and_loading_an_album(app, recordings):
     app.shows_next_track_metadata(track_title="Chevere!")
     app.shows_next_track_metadata(track_title="Zumbar")
     app.shows_next_track_metadata(track_title="Salsa Coltrane")
+
+
+def test_importing_an_album_from_an_existing_track(app, recordings):
+    track = recordings.add_mp3(release_name="Honeycomb", lead_performer="Joel Miller", track_title="Rashers")
+
+    app.import_album(from_track=track, of_type="mp3")
+
+    app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
+    app.shows_next_track_metadata(track_title="Rashers")
+
