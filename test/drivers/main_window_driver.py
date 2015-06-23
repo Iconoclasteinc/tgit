@@ -59,9 +59,6 @@ class MainWindowDriver(WidgetDriver):
     def editTrackMetadata(self, **tags):
         album_screen(self).edit_track_metadata(**tags)
 
-    def tag_album(self):
-        album_screen(self).tag()
-
     def change_settings(self, **settings):
         menu_bar(self).settings()
         settings_dialog(self).changeSettings(settings)

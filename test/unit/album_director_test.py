@@ -117,18 +117,9 @@ def test_adds_selected_tracks_to_album_in_order(track_catalog):
     assert_that(album.tracks, contains(*tracks), "list of tracks in album")
 
 
-def test_tags_file_to_album_directory_under_artist_and_title_name(workspace):
-    album = build.album(destination=workspace.path('album.tgit'))
-    track = build.track(filename='track.mp3', track_title='title', lead_performer='artist')
-    track.track_number = 3
-
-    assert_that(director.tagged_file(album, track),
-                equal_to(workspace.path('artist - 03 - title.mp3')), 'name of tagged file')
-
-
 def test_exports_album_as_csv_encoded_file(workspace):
     album = build.album(tracks=[build.track(track_title="Les Comédiens")])
-    destination_file = workspace.path("french.csv")
+    destination_file = workspace.file("french.csv")
 
     director.export_as_csv(album)(destination_file)
 

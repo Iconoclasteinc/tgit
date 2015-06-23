@@ -18,10 +18,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
-from tgit import album_director as director
 from tgit.album import AlbumListener
 from tgit.ui.helpers import ui_file
 
@@ -32,13 +30,10 @@ def album_screen(composition_page, album_page, track_page, album):
     album.addAlbumListener(page)
     for index, track in enumerate(album.tracks):
         page.trackAdded(track, index)
-    page.record_album.connect(lambda: director.save_tracks(album))
     return page
 
 
 class AlbumScreen(QWidget, AlbumListener):
-    record_album = pyqtSignal()
-
     TRACK_PAGES_INDEX = 2
 
     def __init__(self, compose_album, edit_album, edit_track):
@@ -47,7 +42,6 @@ class AlbumScreen(QWidget, AlbumListener):
 
         self.pages.currentChanged.connect(self._update_controls)
         self.previous.clicked.connect(self._to_previous_page)
-        self.save.clicked.connect(self.record_album.emit)
         self.next.clicked.connect(self._to_next_page)
 
         self.pages.addWidget(compose_album)
@@ -68,7 +62,6 @@ class AlbumScreen(QWidget, AlbumListener):
     def _update_controls(self):
         self.previous.setDisabled(self._on_first_page())
         self.next.setDisabled(self._on_last_page())
-        self.save.setEnabled(self._has_track_page())
 
     def _on_last_page(self):
         return self._on_page(self.total_pages - 1)

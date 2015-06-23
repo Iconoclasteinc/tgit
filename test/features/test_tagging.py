@@ -17,7 +17,7 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
     app.shows_next_track_metadata(track_title="???")
     app.change_track_metadata(track_title="Rashers")
 
-    app.tag()
+    app.save_album()
     workspace.contains_track(filename="Joel Miller - 01 - Rashers.mp3",
                              front_cover=(resources.path("honeycomb.jpg"), "Front Cover"),
                              release_name="Honeycomb",
@@ -40,7 +40,7 @@ def test_tagging_a_flac_track(app, recordings, workspace):
     app.shows_next_track_metadata(track_title="???")
     app.change_track_metadata(track_title="Squareboy")
 
-    app.tag()
+    app.save_album()
     workspace.contains_track(filename="John Roney - 01 - Squareboy.flac",
                              front_cover=(resources.path("st-henri.jpg"), "Front Cover"),
                              release_name="St-Henri",
@@ -75,7 +75,7 @@ def test_tagging_an_album_with_several_tracks(app, recordings, workspace):
     app.shows_next_track_metadata(track_title="Zumbar")
     app.shows_next_track_metadata(track_title="Salsa Coltrane")
 
-    app.tag()
+    app.save_album()
     workspace.contains_track(filename="Joel Miller - 01 - Chevere!.mp3", lead_performer="Joel Miller", track_number=1,
                              total_tracks=3)
     workspace.contains_track(filename="Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller", track_number=2,
@@ -106,7 +106,7 @@ def test_tagging_a_compilation(app, recordings, workspace):
     app.shows_next_track_metadata(track_title="Horse Power", lead_performer="???")
     app.change_track_metadata(lead_performer="Joel Miller")
 
-    app.tag()
+    app.save_album()
     workspace.contains_track(filename="Joel Miller - 01 - Big Ideas.mp3", lead_performer="Joel Miller")
     workspace.contains_track(filename="John Roney - 02 - Partways.mp3", lead_performer="John Roney")
     workspace.contains_track(filename="Joel Miller - 03 - Horse Power.mp3", lead_performer="Joel Miller")

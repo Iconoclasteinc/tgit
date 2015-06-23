@@ -16,14 +16,17 @@ class AlbumWorkspace(object):
     def root_path(self):
         return self._local_path.strpath
 
-    def path(self, filename):
+    def file(self, filename):
         return self._local_path.join(filename).strpath
 
+    def track_file(self, filename):
+        return self._local_path.join("tracks", filename).strpath
+
     def contains_track(self, filename, front_cover=None, **tags):
-        if not exists(self.path(filename)):
+        if not exists(self.track_file(filename)):
             raise AssertionError("Track file '{}' not found in workspace".format(filename))
 
-        track = tagging.load_track(self.path(filename))
+        track = tagging.load_track(self.track_file(filename))
         images = []
         # todo use builders and metadata
         if front_cover:

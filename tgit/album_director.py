@@ -18,14 +18,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import functools
-import os
 
 import requests
 
 from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
-from tgit.local_storage import naming
 from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
@@ -140,26 +138,12 @@ def play_or_stop(player):
     return play_or_stop_track
 
 
-# todo this will soon be changed to simply saving the album
-def save_tracks(album):
-    for track in album.tracks:
-        destination_file = tagged_file(album, track)
-        fs.copy(track.filename, destination_file)
-        track.filename = destination_file
-        tagging.save_track(track=track)
-
-
 def export_as_csv(album):
     def export_album_as_csv(export_format, charset, destination):
         with open(destination, 'w', encoding=charset) as out:
             export_format.write(album, out)
 
     return functools.partial(export_album_as_csv, CsvFormat(), "windows-1252")
-
-
-def tagged_file(album, track):
-    dirname = os.path.dirname(album.destination)
-    return os.path.join(dirname, naming.track_scheme(track))
 
 
 def lookupISNI(registry, leadPerformer):

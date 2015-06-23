@@ -37,7 +37,7 @@ def test_finding_the_isni_of_the_lead_performer(app, recordings, workspace):
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.find_isni_of_lead_performer()
 
-    app.tag()
+    app.save_album()
     workspace.contains_track(filename="Joel Miller - 01 - Salsa Coltrane.mp3",
                              release_name="Honeycomb",
                              isni="0000000121707484",
