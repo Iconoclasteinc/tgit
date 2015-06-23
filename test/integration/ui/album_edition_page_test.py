@@ -39,13 +39,13 @@ class AlbumEditionPageTest(WidgetTest):
             release_name="Album",
             lead_performer="Artist",
             isni="123456789",
-            guestPerformers=[("Guitar", "Guitarist"), ("Piano", "Pianist")],
+            guest_performers=[("Guitar", "Guitarist"), ("Piano", "Pianist")],
             label_name="Label",
-            catalogNumber="XXX123456789",
+            catalog_number="XXX123456789",
             upc="123456789999",
             recording_time="2008-09-15",
-            releaseTime="2009-01-01",
-            recordingStudios="Studio A, Studio B",
+            release_time="2009-01-01",
+            recording_studios="Studio A, Studio B",
             producer="Artistic Producer",
             mixer="Mixing Engineer",
             comments="Comments\n...",
@@ -197,7 +197,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.check(metadata_changed_signal)
 
         metadata_changed_signal.expect(has_entries(
-            guestPerformers=[("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]))
+            guest_performers=[("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]))
         self.driver.changeGuestPerformers("Guitar: Guitarist; Guitar: Bassist; Piano: Pianist")
         self.check(metadata_changed_signal)
 
@@ -205,7 +205,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.changeLabelName("Label")
         self.check(metadata_changed_signal)
 
-        metadata_changed_signal.expect(has_entries(catalogNumber="XXX12345678"))
+        metadata_changed_signal.expect(has_entries(catalog_number="XXX12345678"))
         self.driver.changeCatalogNumber("XXX12345678")
         self.check(metadata_changed_signal)
 
@@ -218,7 +218,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.addComments("...")
         self.check(metadata_changed_signal)
 
-        metadata_changed_signal.expect(has_entries(releaseTime="2009-01-01"))
+        metadata_changed_signal.expect(has_entries(release_time="2009-01-01"))
         self.driver.changeReleaseTime(2009, 1, 1)
         self.check(metadata_changed_signal)
 
@@ -226,7 +226,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.change_recording_time(2008, 9, 15)
         self.check(metadata_changed_signal)
 
-        metadata_changed_signal.expect(has_entries(recordingStudios="Studios"))
+        metadata_changed_signal.expect(has_entries(recording_studios="Studios"))
         self.driver.changeRecordingStudios("Studios")
         self.check(metadata_changed_signal)
 
@@ -248,4 +248,4 @@ class AlbumEditionPageTest(WidgetTest):
 
 
 def loadTestImage(name):
-    return fs.binary_content_of(resources.path(name))
+    return fs.read(resources.path(name))

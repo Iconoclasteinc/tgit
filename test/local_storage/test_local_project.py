@@ -1,87 +1,87 @@
 # -*- coding: utf-8 -*-
-from hamcrest import has_item, contains_string, assert_that, equal_to, contains, is_
+import os
+
+from hamcrest import assert_that, contains, has_property, equal_to, empty
 import pytest
 
-from test.util.workspace import AlbumWorkspace
-from test.util import builders as build, resources
+from test.util import builders as build, mp3_file, resources
+from tgit.album import Album
 from tgit.local_storage import local_project
+from tgit.local_storage.local_project import TRACKS_FOLDER_NAME, ARTWORK_FOLDER_NAME
 from tgit.metadata import Image
 from tgit.util import fs
 
+sample_front_cover = "image/jpeg", fs.read(resources.path("front-cover.jpg")), Image.FRONT_COVER, "Front Cover"
+simple_naming = lambda track: track.track_title + ".mp3"
 
 @pytest.yield_fixture
-def workspace(tmpdir):
-    album_workspace = AlbumWorkspace(tmpdir.mkdir("workspace"))
-    yield album_workspace
-    album_workspace.delete()
+def project_file(tmpdir):
+    folder = tmpdir.join("album")
+
+    def filename(*paths):
+        return folder.join(*paths).strpath
+
+    yield filename
+    folder.remove()
 
 
-def read_lines(file):
-    content = open(file, "r").read()
-    return content.split("\n")
+@pytest.yield_fixture
+def mp3(tmpdir):
+    folder = tmpdir.mkdir("mp3s")
+
+    def maker(**tags):
+        return mp3_file.make(to=folder.strpath, **tags).filename
+
+    yield maker
+    folder.remove()
 
 
-def test_saves_album_metadata_to_disk(workspace):
-    album_file = workspace.path("album.tgit")
+def has_filename(filename):
+    return has_property('filename', filename)
+
+
+def test_round_trips_album_metadata_and_tracks_to_disk(project_file, mp3):
+    album_file = project_file("album.tgit")
+    original_tracks = (build.track(mp3(), track_title=title) for title in ("1st", "2nd", "3rd"))
+
+    original_album = build.album(filename=album_file,
+                                 type=Album.Type.FLAC,
+                                 lead_performer="Artist",
+                                 images=[sample_front_cover],
+                                 tracks=original_tracks)
+
+    local_project.save_album(original_album, track_name=lambda track: track.track_title + ".mp3")
+    delete_from_disk(*original_tracks)
+    stored_album = local_project.load_album(album_file)
+
+    assert_that(stored_album.type, equal_to(Album.Type.FLAC), "type")
+    assert_that(stored_album.lead_performer, equal_to("Artist"), "lead performer")
+    assert_that(stored_album.images, contains(Image(*sample_front_cover)), "images")
+    assert_that(stored_album.tracks, contains(has_filename(project_file(TRACKS_FOLDER_NAME, "1st.mp3")),
+                                              has_filename(project_file(TRACKS_FOLDER_NAME, "2nd.mp3")),
+                                              has_filename(project_file(TRACKS_FOLDER_NAME, "3rd.mp3")), ), "tracks")
+
+
+def test_remove_previous_artwork_and_tracks(project_file, mp3):
+    album_file = project_file("album.tgit")
+    tracks = (build.track(mp3(), track_title=title) for title in ("1st", "2nd", "3rd"))
     album = build.album(filename=album_file,
-                        release_name="Title", compilation=True, lead_performer="Artist", isni="0000123456789",
-                        guestPerformers=[("Guitar", "Guitarist"), ("Piano", "Pianist")], label_name="Label",
-                        catalogNumber="XXX123456789", upc="123456789999", comments="Comments\n...",
-                        releaseTime="2009-01-01", recording_time="2008-09-15", recordingStudios="Studios",
-                        producer="Producer", mixer="Engineer", primary_style="Style",
-                        images=[build.image("image/jpeg", fs.binary_content_of(resources.path("front-cover.jpg")),
-                                            Image.FRONT_COVER, "Front Cover")])
+                        images=[sample_front_cover],
+                        tracks=tracks)
 
-    local_project.save_album(album)
+    local_project.save_album(album, simple_naming)
 
-    lines = read_lines(album_file)
-    assert_that(lines, has_item(contains_string("release_name: Title")), "release name")
-    assert_that(lines, has_item(contains_string("compilation: true")), "compilation")
-    assert_that(lines, has_item(contains_string("lead_performer: Artist")), "lead performer")
-    assert_that(lines, has_item(contains_string("isni: 0000123456789")), "isni")
-    assert_that(lines, has_item(contains_string("label_name: Label")), "label name")
-    assert_that(lines, has_item(contains_string("upc: '123456789999'")), "upc")
-    assert_that(lines, has_item(contains_string("comments: 'Comments")), "comments")
-    assert_that(lines, has_item(contains_string(" ...'")), "comments")
-    assert_that(lines, has_item(contains_string("releaseTime: '2009-01-01'")), "release time")
-    assert_that(lines, has_item(contains_string("recording_time: '2008-09-15'")), "recording time")
-    assert_that(lines, has_item(contains_string("recordingStudios: Studios")), "recording studios")
-    assert_that(lines, has_item(contains_string("producer: Producer")), "producer")
-    assert_that(lines, has_item(contains_string("mixer: Engineer")), "mixer")
-    assert_that(lines, has_item(contains_string("primary_style: Style")), "primary style")
-    assert_that(lines, has_item(contains_string("guestPerformers:")), "guest performers")
-    assert_that(lines, has_item(contains_string("  - Guitar")), "guest performers")
-    assert_that(lines, has_item(contains_string("  - Guitarist")), "guest performers")
-    assert_that(lines, has_item(contains_string("  - Piano")), "guest performers")
-    assert_that(lines, has_item(contains_string("  - Pianist")), "guest performers")
-    assert_that(lines, has_item(contains_string("images:")), "images")
-    assert_that(lines, has_item(contains_string("  data: !!binary |")), "images")
-    assert_that(lines, has_item(
-        contains_string("    /9j/4AAQSkZJRgABAQEASABIAAD/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbnRyUkdC")), "images")
-    assert_that(lines, has_item(contains_string("  desc: Front Cover")), "images")
-    assert_that(lines, has_item(contains_string("  mime: image/jpeg")), "images")
-    assert_that(lines, has_item(contains_string("  type: 1")), "images")
+    for track in list(album.tracks):
+        album.remove_track(track)
+
+    album.remove_images()
+
+    local_project.save_album(album, simple_naming)
+
+    assert_that(fs.list_dir(project_file(TRACKS_FOLDER_NAME)), empty(), "track files left")
+    assert_that(fs.list_dir(project_file(ARTWORK_FOLDER_NAME)), empty(), "artwork files left")
 
 
-def test_load_album_from_project_file():
-    album = local_project.load_album(resources.path("album_mp3.tgit"))
-
-    assert_that(album.type, equal_to("mp3"), "album type")
-    assert_that(album.release_name, equal_to("Title"), "release name")
-    assert_that(album.compilation, is_(True), "compilation")
-    assert_that(album.lead_performer, equal_to("Artist"), "lead performer")
-    assert_that(album.isni, equal_to("0000123456789"), "isni")
-    assert_that(album.guestPerformers, equal_to([("Guitar", "Guitarist"), ("Piano", "Pianist")]), "guest performers")
-    assert_that(album.label_name, equal_to("Label"), "label name")
-    assert_that(album.catalogNumber, equal_to("XXX123456789"), "catalog number")
-    assert_that(album.upc, equal_to("123456789999"), "upc")
-    assert_that(album.comments, equal_to("Comments\n..."), "comments")
-    assert_that(album.releaseTime, equal_to("2009-01-01"), "release time")
-    assert_that(album.recording_time, equal_to("2008-09-15"), "recording time")
-    assert_that(album.recordingStudios, equal_to("Studios"), "recording studios")
-    assert_that(album.producer, equal_to("Producer"), "producer")
-    assert_that(album.mixer, equal_to("Engineer"), "mixer")
-    assert_that(album.primary_style, equal_to("Style"), "primary style")
-    assert_that(album.images, contains(
-        Image("image/jpeg", fs.binary_content_of(resources.path("front-cover.jpg")), Image.FRONT_COVER, "Front Cover")),
-        "attached pictures")
+def delete_from_disk(*tracks):
+    for track in tracks:
+        os.remove(track.filename)

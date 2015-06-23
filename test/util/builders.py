@@ -29,7 +29,7 @@ def track(filename='track.mp3', metadata=None, **meta):
 
 
 def album(filename='album.tgit', of_type=Album.Type.FLAC, images=(), tracks=(), **meta):
-    album = Album(destination=filename, of_type=of_type)
+    album = Album(filename=filename, of_type=of_type)
 
     for tag, value in meta.items():
         setattr(album, tag, value)

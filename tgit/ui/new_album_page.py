@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
 
 from PyQt5.QtWidgets import QFrame
 
@@ -31,12 +32,12 @@ def new_album_page(select_album_location, select_track_location, **handlers):
 
 
 class NewAlbumPage(QFrame):
+    _of_type = None
+    _on_create_album = lambda *_: None
+    _on_import_album = lambda *_: None
+
     def __init__(self, *, parent=None, select_album_destination, select_track_location):
         super().__init__(parent)
-        self._of_type = None
-        self._on_create_album = lambda properties: None
-        self._on_import_album = lambda properties: None
-
         ui_file.load(":/ui/new_album_page.ui", self)
         self.addAction(self.cancel_creation_action)
         self.addAction(self.create_album_action)
@@ -45,7 +46,7 @@ class NewAlbumPage(QFrame):
         self.album_name.textChanged.connect(lambda: self._toggle_create_button())
         self.browse_album_location_button.clicked.connect(lambda: select_album_destination(self.album_location.setText))
         self.browse_track_location_button.clicked.connect(lambda: select_track_location(self.track_location.setText))
-        self.create_album_action.triggered.connect(lambda: self._create_album())
+        self.create_album_action.triggered.connect(self._create_album)
 
     def on_create_album(self, on_create_album):
         self._on_create_album = on_create_album
@@ -71,15 +72,14 @@ class NewAlbumPage(QFrame):
     def properties(self):
         return dict(type=self._of_type, album_name=self.album_name.text(), album_location=self.album_location.text())
 
-    def _create_album(self):
-        properties = self.properties
+    def _album_filename(self):
+        return os.path.join(self.album_location.text(), self.album_name.text(), self.album_name.text() + ".tgit")
 
-        track_location = self.track_location.text()
-        if not track_location:
-            self._on_create_album(properties)
+    def _create_album(self):
+        if not self.track_location.text():
+            self._on_create_album(self._of_type, self._album_filename())
         else:
-            properties["track_location"] = track_location
-            self._on_import_album(properties)
+            self._on_import_album(self._of_type, self._album_filename(), self.track_location.text())
 
     def _cancel_creation(self, on_cancel_creation):
         self.album_name.setText("")

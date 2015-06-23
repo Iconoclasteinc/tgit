@@ -5,7 +5,7 @@ from test.util import resources
 
 
 def test_tagging_an_mp3_track(app, recordings, workspace):
-    app.new_album(of_type="mp3")
+    app.new_album("Honeycomb", of_type="mp3")
 
     track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
@@ -17,8 +17,9 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
     app.shows_next_track_metadata(track_title="???")
     app.change_track_metadata(track_title="Rashers")
 
-    app.tag()
-    workspace.contains_track(filename="Joel Miller - 01 - Rashers.mp3",
+    app.save_album()
+    workspace.contains_track(album="Honeycomb",
+                             filename="Joel Miller - 01 - Rashers.mp3",
                              front_cover=(resources.path("honeycomb.jpg"), "Front Cover"),
                              release_name="Honeycomb",
                              lead_performer="Joel Miller",
@@ -28,7 +29,7 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
 
 
 def test_tagging_a_flac_track(app, recordings, workspace):
-    app.new_album(of_type="flac")
+    app.new_album("St-Henri", of_type="flac")
 
     track = recordings.add_flac(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
@@ -40,8 +41,9 @@ def test_tagging_a_flac_track(app, recordings, workspace):
     app.shows_next_track_metadata(track_title="???")
     app.change_track_metadata(track_title="Squareboy")
 
-    app.tag()
-    workspace.contains_track(filename="John Roney - 01 - Squareboy.flac",
+    app.save_album()
+    workspace.contains_track(album="St-Henri",
+                             filename="John Roney - 01 - Squareboy.flac",
                              front_cover=(resources.path("st-henri.jpg"), "Front Cover"),
                              release_name="St-Henri",
                              lead_performer="John Roney",
@@ -50,17 +52,8 @@ def test_tagging_a_flac_track(app, recordings, workspace):
                              tagger_version=tgit.__version__)
 
 
-def test_importing_an_album_from_an_existing_track(app, recordings):
-    track = recordings.add_mp3(release_name="Honeycomb", lead_performer="Joel Miller", track_title="Rashers")
-
-    app.import_album(from_track=track, of_type="mp3")
-
-    app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
-    app.shows_next_track_metadata(track_title="Rashers")
-
-
 def test_tagging_an_album_with_several_tracks(app, recordings, workspace):
-    app.new_album(of_type="mp3")
+    app.new_album("Honeycomb", of_type="mp3")
 
     tracks = (recordings.add_mp3(track_title="Chevere!", lead_performer="???"),
               recordings.add_mp3(track_title="Zumbar", lead_performer="???"),
@@ -75,17 +68,17 @@ def test_tagging_an_album_with_several_tracks(app, recordings, workspace):
     app.shows_next_track_metadata(track_title="Zumbar")
     app.shows_next_track_metadata(track_title="Salsa Coltrane")
 
-    app.tag()
-    workspace.contains_track(filename="Joel Miller - 01 - Chevere!.mp3", lead_performer="Joel Miller", track_number=1,
-                             total_tracks=3)
-    workspace.contains_track(filename="Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller", track_number=2,
-                             total_tracks=3)
-    workspace.contains_track(filename="Joel Miller - 03 - Salsa Coltrane.mp3", lead_performer="Joel Miller",
-                             track_number=3, total_tracks=3)
+    app.save_album()
+    workspace.contains_track(album="Honeycomb", filename="Joel Miller - 01 - Chevere!.mp3",
+                             lead_performer="Joel Miller", track_number=1, total_tracks=3)
+    workspace.contains_track(album="Honeycomb", filename="Joel Miller - 02 - Zumbar.mp3", lead_performer="Joel Miller",
+                             track_number=2, total_tracks=3)
+    workspace.contains_track(album="Honeycomb", filename="Joel Miller - 03 - Salsa Coltrane.mp3",
+                             lead_performer="Joel Miller", track_number=3, total_tracks=3)
 
 
 def test_tagging_a_compilation(app, recordings, workspace):
-    app.new_album(of_type="mp3")
+    app.new_album("St-Henri", of_type="mp3")
 
     tracks = (recordings.add_mp3(track_title="Big Ideas"),
               recordings.add_mp3(track_title="Partways"),
@@ -106,7 +99,9 @@ def test_tagging_a_compilation(app, recordings, workspace):
     app.shows_next_track_metadata(track_title="Horse Power", lead_performer="???")
     app.change_track_metadata(lead_performer="Joel Miller")
 
-    app.tag()
-    workspace.contains_track(filename="Joel Miller - 01 - Big Ideas.mp3", lead_performer="Joel Miller")
-    workspace.contains_track(filename="John Roney - 02 - Partways.mp3", lead_performer="John Roney")
-    workspace.contains_track(filename="Joel Miller - 03 - Horse Power.mp3", lead_performer="Joel Miller")
+    app.save_album()
+    workspace.contains_track(album="St-Henri", filename="Joel Miller - 01 - Big Ideas.mp3",
+                             lead_performer="Joel Miller")
+    workspace.contains_track(album="St-Henri", filename="John Roney - 02 - Partways.mp3", lead_performer="John Roney")
+    workspace.contains_track(album="St-Henri", filename="Joel Miller - 03 - Horse Power.mp3",
+                             lead_performer="Joel Miller")

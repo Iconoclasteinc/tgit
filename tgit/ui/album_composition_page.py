@@ -39,8 +39,12 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         self._setup_ui()
         self._subscribe_to_events(album, player)
         self._tracks = []
+
         for name, handler in handlers.items():
             getattr(self, name)(handler)
+
+        for index, track in enumerate(album.tracks):
+            self._insert_row(index, track)
 
     def on_add_tracks(self, handler):
         self._add_tracks_button.clicked.connect(lambda pressed: handler())

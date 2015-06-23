@@ -40,9 +40,6 @@ class AlbumScreenDriver(ScreenDriver):
     def nextPage(self):
         self.button(named("next")).click()
 
-    def tag(self):
-        self.button(named("save")).click()
-
     def hidesPreviousPageButton(self):
         self.button(named("previous")).is_disabled()
 
@@ -54,12 +51,6 @@ class AlbumScreenDriver(ScreenDriver):
 
     def showsNextPageButton(self):
         self.button(named("next")).is_enabled()
-
-    def hidesSaveButton(self):
-        self.button(named("save")).is_disabled()
-
-    def showsSaveButton(self):
-        self.button(named("save")).is_enabled()
 
     def shows_album_contains(self, *tracks):
         album_composition_page(self).shows_tracks_in_order(*tracks)
