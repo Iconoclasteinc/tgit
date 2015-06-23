@@ -19,19 +19,19 @@
 
 
 def test_closing_and_starting_a_new_album(app, recordings):
-    app.new_album(of_type="mp3", filename="album1")
+    app.new_album("album1", of_type="mp3")
 
     track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
     app.shows_album_content(["???"])
     app.close_album()
 
-    app.new_album(of_type="mp3", filename="album2")
+    app.new_album("album2", of_type="mp3")
     app.shows_album_content()
 
 
 def test_saving_and_loading_an_album(app, recordings):
-    app.new_album(of_type="mp3", filename="new_album")
+    app.new_album("Honeycomb")
 
     tracks = (recordings.add_mp3(track_title="Chevere!", lead_performer="???"),
               recordings.add_mp3(track_title="Zumbar", lead_performer="???"),
@@ -43,7 +43,7 @@ def test_saving_and_loading_an_album(app, recordings):
     app.save()
     app.close_album()
 
-    app.load_album("new_album.tgit")
+    app.load_album("Honeycomb")
 
     app.shows_album_content(("Chevere!",), ("Zumbar",), ("Salsa Coltrane",))
     app.shows_album_metadata(release_name="Honeycomb")
@@ -55,7 +55,7 @@ def test_saving_and_loading_an_album(app, recordings):
 def test_importing_an_album_from_an_existing_track(app, recordings):
     track = recordings.add_mp3(release_name="Honeycomb", lead_performer="Joel Miller", track_title="Rashers")
 
-    app.import_album(from_track=track, of_type="mp3")
+    app.import_album("Honeycomb", from_track=track, of_type="mp3")
 
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.shows_next_track_metadata(track_title="Rashers")

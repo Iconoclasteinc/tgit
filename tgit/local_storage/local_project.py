@@ -35,7 +35,7 @@ def load_album(filename):
     artwork_folder = join(album_folder, ARTWORK_FOLDER_NAME)
 
     data = yaml.read_data(filename)
-    album = Album(Metadata(data), of_type=data["type"], destination=filename)
+    album = Album(Metadata(data), of_type=data["type"], filename=filename)
 
     for image in data["images"]:
         mime, filename, type_, desc = image
@@ -49,7 +49,7 @@ def load_album(filename):
 
 
 def save_album(album, track_name=naming.track_scheme, track_catalog=tagging, artwork_name=naming.artwork_scheme):
-    album_folder = dirname(album.destination)
+    album_folder = dirname(album.filename)
     tracks_folder = join(album_folder, TRACKS_FOLDER_NAME)
     artwork_folder = join(album_folder, ARTWORK_FOLDER_NAME)
 
@@ -61,7 +61,7 @@ def save_album(album, track_name=naming.track_scheme, track_catalog=tagging, art
         data["tracks"] = [track_name(track) for track in album.tracks]
 
         fs.mkdirs(album_folder)
-        yaml.write_data(album.destination, data)
+        yaml.write_data(album.filename, data)
 
     def save_album_artwork():
         fs.mkdirs(artwork_folder)

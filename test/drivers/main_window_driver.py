@@ -7,7 +7,7 @@ from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
 from .menu_bar_driver import menu_bar
-from .new_album_screen_driver import new_album_page
+from .new_album_page_driver import new_album_page
 from .welcome_screen_driver import welcome_page
 
 
@@ -15,14 +15,9 @@ class MainWindowDriver(WidgetDriver):
     def __init__(self, selector, prober, gesture_performer):
         super().__init__(selector, prober, gesture_performer)
 
-    def import_album(self, of_type, name, track_path, album_path):
+    def create_album(self, of_type, name, location, import_from=""):
         welcome_page(self).new_album(of_type)
-        new_album_page(self).import_album(name, album_path, track_path)
-        album_screen(self).is_showing_on_screen()
-
-    def create_album(self, of_type, name, directory):
-        welcome_page(self).new_album(of_type)
-        new_album_page(self).create_empty_album(name, directory)
+        new_album_page(self).create_album(name, location, import_from=import_from)
         album_screen(self).is_showing_on_screen()
 
     def add_tracks_in_folder(self):

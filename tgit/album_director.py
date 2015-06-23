@@ -28,13 +28,9 @@ from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
 
-def _build_full_path(creation_properties):
-    return "{0}/{1}.tgit".format(creation_properties["album_location"], creation_properties["album_name"])
-
-
 def create_album_into(portfolio, to_catalog=local_storage):
-    def create_new_album(creation_properties):
-        album = Album(of_type=creation_properties["type"], destination=_build_full_path(creation_properties))
+    def create_new_album(type_, album_file):
+        album = Album(of_type=type_, filename=album_file)
         save_album(to_catalog)(album)
         portfolio.add_album(album)
         return album
@@ -43,11 +39,10 @@ def create_album_into(portfolio, to_catalog=local_storage):
 
 
 def import_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging):
-    def import_album_to_portfolio(creation_properties):
-        reference_track = from_catalog.load_track(creation_properties["track_location"])
-        album = Album(reference_track.metadata, of_type=creation_properties["type"],
-                      destination=_build_full_path(creation_properties))
-        add_tracks_to(album, from_catalog)(creation_properties["track_location"])
+    def import_album_to_portfolio(type_, album_file, reference_track_file):
+        reference_track = from_catalog.load_track(reference_track_file)
+        album = Album(reference_track.metadata, of_type=type_, filename=album_file)
+        add_tracks_to(album, from_catalog)(reference_track_file)
         save_album(to_catalog)(album)
         portfolio.add_album(album)
         return album

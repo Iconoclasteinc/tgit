@@ -28,17 +28,18 @@ def isni(request):
 
 
 def test_finding_the_isni_of_the_lead_performer(app, recordings, workspace):
-    tracks = [recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")]
+    track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
     isni_database.persons.clear()
     isni_database.persons["0000000121707484"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
 
-    app.import_album(*tracks)
+    app.import_album("Honeycomb", track)
     app.shows_album_content(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.find_isni_of_lead_performer()
 
     app.save_album()
-    workspace.contains_track(filename="Joel Miller - 01 - Salsa Coltrane.mp3",
+    workspace.contains_track(album="Honeycomb",
+                             filename="Joel Miller - 01 - Salsa Coltrane.mp3",
                              release_name="Honeycomb",
                              isni="0000000121707484",
                              lead_performer="Joel Miller",

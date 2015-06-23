@@ -56,13 +56,13 @@ def album_catalog():
             return self._albums[filename]
 
         def save_album(self, album):
-            self._albums[album.destination] = album
+            self._albums[album.filename] = album
 
         add = save_album
 
         def assert_contains(self, album):
-            assert_that(self._albums, has_key(album.destination), "list of albums in catalog")
-            assert_that(self._albums[album.destination], wrap_matcher(album), "album {}".format(album.destination))
+            assert_that(self._albums, has_key(album.filename), "list of albums in catalog")
+            assert_that(self._albums[album.filename], wrap_matcher(album), "album {}".format(album.filename))
 
     return Catalog()
 
@@ -73,10 +73,10 @@ def portfolio():
 
 
 def test_creates_and_adds_album_to_porfolio_and_catalog(portfolio, album_catalog):
-    director.create_album_into(portfolio, to_catalog=album_catalog)(
-        dict(type=Album.Type.MP3, album_name="album", album_location="/path/to/workspace"))
+    director.create_album_into(portfolio, to_catalog=album_catalog)(type_=Album.Type.MP3,
+                                                                    album_file="/path/to/workspace/album.tgit")
 
-    assert_that(portfolio, contains(has_properties(type="mp3", destination="/path/to/workspace/album.tgit")),
+    assert_that(portfolio, contains(has_properties(type="mp3", filename="/path/to/workspace/album.tgit")),
                 "albums in portfolio")
     album_catalog.assert_contains(portfolio[0])
 
@@ -85,12 +85,12 @@ def test_imports_album_from_an_existing_track(portfolio, album_catalog, track_ca
     track_catalog.add_track(filename="smash", metadata=Metadata(release_name="Honeycomb"), track_title="Smash Smash")
 
     director.import_album_into(portfolio, to_catalog=album_catalog, from_catalog=track_catalog)(
-        dict(type=Album.Type.MP3, album_name="album", album_location="/path/to/workspace/album.tgit",
-             track_location='smash'))
+        type_=Album.Type.MP3, album_file="/path/to/workspace/album.tgit", reference_track_file='smash')
 
     assert_that(portfolio, contains(has_properties(type="mp3", release_name="Honeycomb",
                                                    tracks=contains(has_properties(track_title="Smash Smash")))),
                 "imported albums in portfolio")
+
 
 def test_loads_album_from_catalog_into_portfolio(portfolio, album_catalog):
     target_album = build.album("album.tgit")
