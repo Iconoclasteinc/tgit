@@ -74,7 +74,7 @@ def PerformerDialogController(parent, album):
 
     dialog = PerformerDialog(parent)
     dialog.accepted.connect(assign_guest_performers)
-    dialog.display(album.guestPerformers)
+    dialog.display(album.guest_performers)
     dialog.open()
     return dialog
 
