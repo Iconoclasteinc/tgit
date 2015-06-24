@@ -16,8 +16,8 @@ class MainWindowDriver(WidgetDriver):
         super().__init__(selector, prober, gesture_performer)
 
     def create_album(self, of_type, name, location, import_from=""):
-        welcome_page(self).new_album(of_type)
-        new_album_page(self).create_album(name, location, import_from=import_from)
+        welcome_page(self).new_album()
+        new_album_page(self).create_album(of_type, name, location, import_from=import_from)
         album_screen(self).is_showing_on_screen()
 
     def add_tracks_in_folder(self):

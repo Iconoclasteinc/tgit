@@ -22,19 +22,20 @@ import pytest
 from cute.finders import WidgetIdentity
 from test.drivers.startup_screen_driver import StartupScreenDriver
 from test.integration.ui import show_widget
-from tgit.album import Album
 from tgit.ui import StartupScreen
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.welcome_page import WelcomePage
 
 
+nothing = lambda: None
+
 @pytest.fixture()
 def screen(qt):
     def create_welcome_page():
-        return WelcomePage(select_album=lambda: None)
+        return WelcomePage(select_album=nothing)
 
     def create_new_album_page():
-        return NewAlbumPage(select_album_destination=lambda: None, select_track_location=lambda: None)
+        return NewAlbumPage(select_album_destination=nothing, select_track_location=nothing)
 
     startup_screen = StartupScreen(create_welcome_page=create_welcome_page,
                                    create_new_album_page=create_new_album_page)
@@ -53,13 +54,9 @@ def test_initially_shows_the_welcome_page(driver):
     driver.shows_welcome_page()
 
 
-def test_navigates_to_new_album_page_when_creating_mp3_album(driver):
-    driver.create_album(of_type=Album.Type.MP3)
+def test_navigates_to_new_album_page_to_create_an_album(driver):
+    driver.create_album()
 
 
-def test_navigates_to_new_album_page_when_creating_flac_album(driver):
-    driver.create_album(of_type=Album.Type.FLAC)
-
-
-def test_navigates_to_welcome_page_when_cancelling_the_creation(driver):
+def test_navigates_to_welcome_page_after_cancelling_album_creation(driver):
     driver.cancel_creation()

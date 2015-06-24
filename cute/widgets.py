@@ -149,7 +149,6 @@ class ButtonDriver(WidgetDriver):
         self.is_checked(not unchecked)
 
     def is_checked(self, checked=True):
-        self.is_showing_on_screen()
         self.is_(checked and match.checked() or match.unchecked())
 
 

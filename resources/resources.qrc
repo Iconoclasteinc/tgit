@@ -1,35 +1,36 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-<qresource>
-     <file>qt_fr.qm</file>
-     <file>tgit_fr.qm</file>
-     <file alias="tgit.ico">tgit.ico</file>
-     <file alias="nothing.png">images/nothing.png</file>
-     <file alias="previous.png">images/previous.png</file>
-     <file alias="next.png">images/next.png</file>
-     <file alias="logo.png">images/logo.png</file>
-     <file alias="activity-indicator.gif">images/loader_gray_512.gif</file>
-     <file alias="add-picture.png">images/add-picture.png</file>
-     <file alias="down-arrow.png">images/down-arrow.png</file>
-     <file alias="down-arrow-on.png">images/down-arrow-on.png</file>
-     <file alias="checkbox.png">images/checkbox.png</file>
-     <file alias="checkbox-hover.png">images/checkbox-hover.png</file>
-     <file alias="checkbox-pressed.png">images/checkbox-pressed.png</file>
-     <file alias="checkbox-checked.png">images/checkbox-checked.png</file>
-     <file alias="checkbox-checked-hover.png">images/checkbox-checked-hover.png</file>
-     <file alias="checkbox-checked-pressed.png">images/checkbox-checked-pressed.png</file>
-     <file>images/drag-handle.gif</file>
-     <file>images/volume-up-16.png</file>
-     <file>images/chevron-right-white-12.png</file>
-     <file>images/chevron-left-white-12.png</file>
-     <file>images/chevron-down-white-8.png</file>
-     <file>images/chevron-down-black-8.png</file>
-     <file>images/chevron-up-black-8.png</file>
-     <file>ui/welcome_page.ui</file>
-     <file>ui/main_window.ui</file>
-     <file>ui/album_screen.ui</file>
-     <file>ui/album_page.ui</file>
-     <file>ui/new_album_page.ui</file>
-     <file>ui/album_composition_page.ui</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>qt_fr.qm</file>
+        <file>tgit_fr.qm</file>
+        <file alias="tgit.ico">tgit.ico</file>
+        <file alias="nothing.png">images/nothing.png</file>
+        <file alias="previous.png">images/previous.png</file>
+        <file alias="next.png">images/next.png</file>
+        <file alias="logo.png">images/logo.png</file>
+        <file alias="activity-indicator.gif">images/loader_gray_512.gif</file>
+        <file alias="add-picture.png">images/add-picture.png</file>
+        <file alias="down-arrow.png">images/down-arrow.png</file>
+        <file alias="down-arrow-on.png">images/down-arrow-on.png</file>
+        <file alias="checkbox.png">images/checkbox.png</file>
+        <file alias="checkbox-hover.png">images/checkbox-hover.png</file>
+        <file alias="checkbox-pressed.png">images/checkbox-pressed.png</file>
+        <file alias="checkbox-checked.png">images/checkbox-checked.png</file>
+        <file alias="checkbox-checked-hover.png">images/checkbox-checked-hover.png</file>
+        <file alias="checkbox-checked-pressed.png">images/checkbox-checked-pressed.png</file>
+        <file>images/drag-handle.gif</file>
+        <file>images/volume-up-16.png</file>
+        <file>images/chevron-right-white-12.png</file>
+        <file>images/chevron-left-white-12.png</file>
+        <file>images/chevron-down-white-8.png</file>
+        <file>images/chevron-down-black-8.png</file>
+        <file>images/chevron-up-black-8.png</file>
+        <file>ui/welcome_page.ui</file>
+        <file>ui/main_window.ui</file>
+        <file>ui/album_screen.ui</file>
+        <file>ui/album_page.ui</file>
+        <file>ui/new_album_page.ui</file>
+        <file>ui/album_composition_page.ui</file>
+        <file>images/folder-open-20-red.png</file>
+        <file>images/folder-20-red.png</file>
+    </qresource>
 </RCC>

@@ -4,7 +4,6 @@ import pytest
 from cute.probes import ValueMatcherProbe
 from cute.finders import WidgetIdentity
 from test.drivers import WelcomePageDriver
-from tgit.album import Album
 from tgit.ui.welcome_page import WelcomePage
 
 
@@ -30,19 +29,11 @@ def driver(page, prober, automaton):
     page_driver.close()
 
 
-def test_signals_when_new_mp3_album_button_clicked(page, driver):
-    new_album_signal = ValueMatcherProbe("new album", Album.Type.MP3)
-    page.on_create_album(new_album_signal.received)
+def test_signals_when_new_album_button_clicked(page, driver):
+    new_album_signal = ValueMatcherProbe("new album")
+    page.on_create_album(lambda: new_album_signal.received())
 
-    driver.new_album(of_type=Album.Type.MP3)
-    driver.check(new_album_signal)
-
-
-def test_signals_when_new_flac_album_button_clicked(page, driver):
-    new_album_signal = ValueMatcherProbe("new album", Album.Type.FLAC)
-    page.on_create_album(new_album_signal.received)
-
-    driver.new_album(of_type=Album.Type.FLAC)
+    driver.new_album()
     driver.check(new_album_signal)
 
 

@@ -28,7 +28,8 @@ def new_album_page(parent):
 
 
 class NewAlbumPageDriver(ScreenDriver):
-    def create_album(self, album_name, album_location, import_from="", using_shortcut=False):
+    def create_album(self, of_type, album_name, album_location, import_from="", using_shortcut=False):
+        self.radio(named("_{}_button".format(of_type))).click()
         self.lineEdit(named("album_name")).replace_all_text(album_name)
         self.lineEdit(named("album_location")).replace_all_text(album_location)
         self.lineEdit(named("track_location")).replace_all_text(import_from)
@@ -38,7 +39,8 @@ class NewAlbumPageDriver(ScreenDriver):
         else:
             self.button(named("create_button")).click()
 
-    def cancel_creation(self, album_name="", album_location="", import_from="", using_shortcut=False):
+    def cancel_creation(self, of_type="flac", album_name="", album_location="", import_from="", using_shortcut=False):
+        self.radio(named("_{}_button".format(of_type))).click()
         self.lineEdit(named("album_name")).replace_all_text(album_name)
         self.lineEdit(named("album_location")).replace_all_text(album_location)
         self.lineEdit(named("track_location")).replace_all_text(import_from)
@@ -47,10 +49,6 @@ class NewAlbumPageDriver(ScreenDriver):
             self.perform(gestures.unselect())
         else:
             self.button(named("cancel_button")).click()
-
-        self.lineEdit(named("album_name")).has_text("")
-        self.lineEdit(named("album_location")).has_text("")
-        self.lineEdit(named("track_location")).has_text("")
 
     def select_album(self):
         self.button(named("browse_album_location_button")).click()

@@ -89,6 +89,8 @@ class ApplicationRunner:
 
     def assign_isni_to_lead_performer(self):
         self.tagger.assign_isni_to_lead_performer()
+        # todo remove and verify in test that album metadata shows the isni
+        self.tagger.pause(100)
 
     def save_album(self):
         self.tagger.save()

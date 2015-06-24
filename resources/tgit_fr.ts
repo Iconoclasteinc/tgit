@@ -612,23 +612,13 @@
     <name>welcome_page</name>
     <message>
         <location filename="tgit/ui/welcome_page.py"/>
-        <source>Welcome to TGiT!</source>
-        <translation>Bienvenue dans TGiT !</translation>
+        <source>Create New Release*</source>
+        <translation>Créer un nouvel album (release*)</translation>
     </message>
     <message>
         <location filename="tgit/ui/welcome_page.py"/>
-        <source>Create a new release*:</source>
-        <translation>Créer un nouvel album (release*) :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/welcome_page.py"/>
-        <source>Load a release:</source>
-        <translation>Charger un album :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/welcome_page.py"/>
-        <source>CHOOSE</source>
-        <translation>CHOISIR</translation>
+        <source>Load Existing Release</source>
+        <translation>Charger un album</translation>
     </message>
     <message>
         <location filename="tgit/ui/welcome_page.py"/>
@@ -640,28 +630,27 @@
     <name>new_album_page</name>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
-        <source>New release</source>
+        <source>New Release</source>
         <translation>Nouvel album</translation>
     </message>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
-        <source>Choose a name for the release:</source>
-        <translation>Choisissez un nom pour l'album :</translation>
+        <source>Type:</source>
+        <translation>Type :</translation>
     </message>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
-        <source>Choose the location to save the release:</source>
-        <translation>Choisissez l'endroit où sauvegarder l'album :</translation>
+        <source>Name:</source>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
-        <source>Import the album metadata from an audio file (optional):</source>
-        <translation>Importer les métadonnées à partir d'un fichier audio (optionnel) :</translation>
+        <source>Location:</source>
+        <translation>Emplacement :</translation>
     </message>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
-        <source>BROWSE ...</source>
-        <translation>PARCOURIR ...</translation>
+        <source>Reference Track:</source>
+        <translation>Piste de référence :</translation>
     </message>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>

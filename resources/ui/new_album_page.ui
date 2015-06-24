@@ -36,6 +36,10 @@ QLineEdit {
 	min-height: 20px;
 }
 
+QRadioButton {
+	min-height: 22px;
+}
+
 QLineEdit:focus {
 	border: 1px solid #F79D6C;
 }
@@ -61,16 +65,16 @@ QLineEdit:focus {
        <number>5</number>
       </property>
       <property name="leftMargin">
-       <number>10</number>
+       <number>40</number>
       </property>
       <property name="topMargin">
-       <number>10</number>
+       <number>20</number>
       </property>
       <property name="rightMargin">
-       <number>10</number>
+       <number>40</number>
       </property>
       <property name="bottomMargin">
-       <number>10</number>
+       <number>30</number>
       </property>
       <item>
        <widget class="QLabel" name="title">
@@ -78,11 +82,12 @@ QLineEdit:focus {
          <string notr="true">QLabel {
 	font-size: 28px;
 	font-weight: bold;
-	margin-top: 36px;
+	margin-top: 24px;
+    margin-bottom: 12px;
 }</string>
         </property>
         <property name="text">
-         <string>New release</string>
+         <string>New Release</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -90,7 +95,7 @@ QLineEdit:focus {
        </widget>
       </item>
       <item>
-       <spacer name="verticalSpacer_7">
+       <spacer name="verticalSpacer_2">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -130,85 +135,145 @@ QPushButton:pressed {
           <number>0</number>
          </property>
          <property name="topMargin">
-          <number>10</number>
+          <number>12</number>
          </property>
          <property name="rightMargin">
           <number>0</number>
          </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <property name="horizontalSpacing">
-          <number>5</number>
-         </property>
          <property name="verticalSpacing">
-          <number>6</number>
+          <number>10</number>
          </property>
-         <item row="6" column="1">
-          <widget class="QLineEdit" name="track_location"/>
-         </item>
-         <item row="3" column="2">
-          <widget class="QPushButton" name="browse_album_location_button">
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
+         <item row="0" column="1">
+          <widget class="QWidget" name="widget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QRadioButton" name="_flac_button">
+              <property name="text">
+               <string>FLAC</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="_mp3_button">
+              <property name="text">
+               <string>MP3</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QLabel" name="track_location_label">
            <property name="text">
-            <string>BROWSE ...</string>
+            <string>Reference Track:</string>
+           </property>
+           <property name="buddy">
+            <cstring>track_location</cstring>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="album_location"/>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="album_name"/>
          </item>
-         <item row="6" column="2">
+         <item row="4" column="0">
+          <widget class="QLabel" name="album_name_label">
+           <property name="text">
+            <string>Name:</string>
+           </property>
+           <property name="buddy">
+            <cstring>album_name</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="album_location_label">
+           <property name="text">
+            <string>Location:</string>
+           </property>
+           <property name="buddy">
+            <cstring>album_location</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
+          <widget class="QLineEdit" name="track_location"/>
+         </item>
+         <item row="8" column="2">
           <widget class="QPushButton" name="browse_track_location_button">
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::ClickFocus</enum>
+           </property>
            <property name="text">
-            <string>BROWSE ...</string>
+            <string>...</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1" colspan="2">
-          <widget class="QLabel" name="album_location_label">
+         <item row="6" column="2">
+          <widget class="QPushButton" name="browse_album_location_button">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::ClickFocus</enum>
+           </property>
            <property name="text">
-            <string>Choose the location to save the release:</string>
+            <string>...</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1" colspan="2">
-          <widget class="QLabel" name="track_location_label">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
            <property name="text">
-            <string>Import the album metadata from an audio file (optional):</string>
+            <string>Type:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_flac_button</cstring>
            </property>
           </widget>
          </item>
-         <item row="0" column="1" colspan="2">
-          <widget class="QLabel" name="album_name_label">
-           <property name="text">
-            <string>Choose a name for the release:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="album_name"/>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="album_location"/>
          </item>
         </layout>
        </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item>
        <widget class="QWidget" name="buttons_container" native="true">
@@ -239,7 +304,7 @@ QPushButton:disabled {
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_12">
          <property name="spacing">
-          <number>5</number>
+          <number>10</number>
          </property>
          <property name="leftMargin">
           <number>0</number>
@@ -320,16 +385,15 @@ QPushButton:disabled {
   </action>
  </widget>
  <tabstops>
+  <tabstop>_flac_button</tabstop>
+  <tabstop>_mp3_button</tabstop>
   <tabstop>album_name</tabstop>
   <tabstop>album_location</tabstop>
-  <tabstop>browse_album_location_button</tabstop>
   <tabstop>track_location</tabstop>
-  <tabstop>browse_track_location_button</tabstop>
   <tabstop>create_button</tabstop>
+  <tabstop>cancel_button</tabstop>
  </tabstops>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>cancel_button</sender>

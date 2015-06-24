@@ -20,10 +20,10 @@
 import pytest
 
 from cute.finders import WidgetIdentity
+from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from test.drivers.new_album_page_driver import NewAlbumPageDriver
 from test.util import resources
-from tgit.album import Album
 from tgit.ui.new_album_page import NewAlbumPage
 
 
@@ -51,27 +51,23 @@ def driver(page, prober, automaton):
 
 @pytest.mark.parametrize("using_shortcut", [False, True])
 def test_signals_album_creation(page, driver, tmpdir, using_shortcut):
-    page.set_type(Album.Type.FLAC)
-
     create_album_signal = ValueMatcherProbe("new album",
                                             ("flac", tmpdir.join("Honeycomb", "Honeycomb.tgit").strpath))
 
     page.on_create_album(lambda *args: create_album_signal.received(args))
 
-    driver.create_album("Honeycomb", tmpdir.strpath, using_shortcut=using_shortcut)
+    driver.create_album("flac", "Honeycomb", tmpdir.strpath, using_shortcut=using_shortcut)
     driver.check(create_album_signal)
 
 
 def test_signals_album_import(page, driver, tmpdir):
-    page.set_type(Album.Type.FLAC)
     track_location = resources.path("base.mp3")
 
     import_album_signal = ValueMatcherProbe("import album",
-                                            (
-                                            "flac", tmpdir.join("Honeycomb", "Honeycomb.tgit").strpath, track_location))
+                                            ("mp3", tmpdir.join("Honeycomb", "Honeycomb.tgit").strpath, track_location))
     page.on_import_album(lambda *args: import_album_signal.received(args))
 
-    driver.create_album("Honeycomb", tmpdir.strpath, import_from=track_location)
+    driver.create_album("mp3", "Honeycomb", tmpdir.strpath, import_from=track_location)
     driver.check(import_album_signal)
 
 
@@ -80,7 +76,7 @@ def test_signals_album_creation_cancellation(page, driver, tmpdir, using_shortcu
     cancel_creation_signal = ValueMatcherProbe("cancel creation")
     page.on_cancel_creation(lambda: cancel_creation_signal.received())
 
-    driver.cancel_creation("Honeycomb", tmpdir.strpath, using_shortcut=using_shortcut)
+    driver.cancel_creation("mp3", "Honeycomb", tmpdir.strpath, using_shortcut=using_shortcut)
     driver.check(cancel_creation_signal)
 
 
@@ -96,3 +92,12 @@ def test_selects_reference_track_location(driver, tmpdir):
 
 def test_initially_disables_create_button(driver):
     driver.creation_is_disabled()
+
+
+def test_resets_form_on_cancel(driver, tmpdir):
+    driver.cancel_creation("mp3", "Honeycomb", tmpdir.strpath, resources.path("base.mp3"))
+
+    driver.radio(named("_flac_button")).is_checked()
+    driver.lineEdit(named("album_name")).has_text("")
+    driver.lineEdit(named("album_location")).has_text("")
+    driver.lineEdit(named("track_location")).has_text("")
