@@ -32,5 +32,11 @@
         <file>ui/album_composition_page.ui</file>
         <file>images/folder-open-20-red.png</file>
         <file>images/folder-20-red.png</file>
+        <file>images/circle-o-18-orange.png</file>
+        <file>images/circle-o-18-gray.png</file>
+        <file>images/circle-o-18-orange-silver.png</file>
+        <file>images/dot-circle-o-18-orange-gray.png</file>
+        <file>images/dot-circle-o-18-orange-gray-silver.png</file>
+        <file>images/dot-circle-o-18-gray.png</file>
     </qresource>
 </RCC>
