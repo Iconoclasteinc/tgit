@@ -391,53 +391,62 @@
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>File</source>
-        <translation>Fichier</translation>
+        <source>&amp;File</source>
+        <translation>&amp;Fichier</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>Navigate</source>
-        <translation>Naviguer</translation>
+        <source>&amp;Navigate</source>
+        <translation>&amp;Naviguer</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>Add Files...</source>
-        <translation>Ajouter des fichiers... </translation>
+        <source>Add &amp;Files...</source>
+        <translation>Ajouter des &amp;fichiers... </translation>
     </message>
     <message>
-        <source>Close release</source>
-        <translation>Fermer l'album (release)</translation>
+        <source>&amp;Close release</source>
+        <translation>&amp;Fermer l'album (release)</translation>
     </message>
     <message>
-        <source>Save release</source>
-        <translation>Sauvegarder l'album (release)</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/main_window.py"/>
-        <source>Add Folder...</source>
-        <translation>Ajouter un dossier... </translation>
+        <source>&amp;Save release</source>
+        <translation>&amp;Sauvegarder l'album (release)</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>Export...</source>
-        <translation>Exporter...</translation>
+        <source>Add F&amp;older...</source>
+        <translation>Ajouter un d&amp;ossier... </translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>Album edition</source>
-        <translation>Édition de l'album</translation>
+        <source>&amp;Export...</source>
+        <translation>&amp;Exporter...</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>Album composition</source>
-        <translation>Composition de l'album</translation>
+        <source>E&amp;xit</source>
+        <translation>&amp;Quitter</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>Album &amp;edition</source>
+        <translation>&amp;Édition de l'album</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>Album &amp;composition</source>
+        <translation>&amp;Composition de l'album</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <source>Settings</source>
-        <translation>Préférences</translation>
+        <source>Se&amp;ttings</source>
+        <translation>&amp;Préférences</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to exit?</source>
+        <translation>Êtes-vous certain de vouloir quitter?</translation>
     </message>
 </context>
 <context>

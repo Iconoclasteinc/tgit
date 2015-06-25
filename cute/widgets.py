@@ -334,6 +334,9 @@ class QDialogButtonBoxDriver(WidgetDriver):
     def yes(self):
         self._dialog_button(QDialogButtonBox.Yes).click()
 
+    def no(self):
+        self._dialog_button(QDialogButtonBox.No).click()
+
     def cancel(self):
         self._dialog_button(QDialogButtonBox.Cancel).click()
 
@@ -355,6 +358,9 @@ class QDialogDriver(WidgetDriver):
 
     def yes(self):
         self._button_box().yes()
+
+    def no(self):
+        self._button_box().no()
 
     def _button_box(self):
         return QDialogButtonBoxDriver.find_single(self, QDialogButtonBox)

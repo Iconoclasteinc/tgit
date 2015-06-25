@@ -22,7 +22,7 @@ import sys
 from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QMainWindow, QAction
+from PyQt5.QtWidgets import QMainWindow, QAction, QMessageBox
 
 from tgit.album import Album
 from tgit.ui.helpers import ui_file
@@ -315,7 +315,7 @@ class MainWindow(QMainWindow):
     add_files = pyqtSignal(Album)
     add_folder = pyqtSignal(Album)
     _album = None
-    _on_close_album = lambda: None
+    _on_close_album = lambda *_: None
     _on_save_album = lambda: None
     _on_export = lambda: None
 
@@ -338,6 +338,7 @@ class MainWindow(QMainWindow):
         self.export_action.triggered.connect(self._choose_export_destination)
         self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
         self.to_album_composition_action.triggered.connect(self._to_album_composition_page)
+        self.exit_action.triggered.connect(self.close)
 
         for name, handler in handlers.items():
             getattr(self, name)(handler)
@@ -348,6 +349,7 @@ class MainWindow(QMainWindow):
         if windows:
             self.settings_action.setText(self.tr(self.settings_action.text()))
 
+        self.exit_action.setShortcut(QKeySequence.Quit)
         self.close_album_action.setShortcut(QKeySequence.Close)
         self.save_album_action.setShortcut(QKeySequence.Save)
         self.album_dependent_action = [
@@ -433,3 +435,11 @@ class MainWindow(QMainWindow):
         if self.focusWidget() is not None:
             self.focusWidget().clearFocus()
         return self._on_save_album(self._album)
+
+    def closeEvent(self, event):
+        response = QMessageBox.question(self,
+                                        "",
+                                        self.tr("Are you sure you want to exit?"),
+                                        QMessageBox.Yes | QMessageBox.No)
+        if response == QMessageBox.No:
+            event.ignore()

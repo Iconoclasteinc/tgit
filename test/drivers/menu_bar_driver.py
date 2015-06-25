@@ -57,6 +57,9 @@ class MenuBarDriver(QMenuBarDriver):
         def save(self):
             self._menu_driver.menu_item(matchers.named("save_album_action")).click()
 
+        def exit(self):
+            self._menu_driver.menu_item(matchers.named("exit_action")).click()
+
     class NavigateMenuDriver:
         def __init__(self, menu_driver):
             self._menu_driver = menu_driver

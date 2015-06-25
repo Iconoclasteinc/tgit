@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
-
 import sys
-from hamcrest import assert_that, equal_to, contains
 
+from hamcrest import assert_that, equal_to, contains
 import pytest
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
-from test.drivers import MainWindowDriver, message_box, export_as_dialog
+from test.drivers import MainWindowDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
 from test.util.doubles import album_screen, FakeAlbumScreen
@@ -35,6 +34,7 @@ def main_window(qt, fake_album_screen):
                         create_startup_screen=ignore,
                         create_album_screen=create_fake_album_screen,
                         create_close_album_confirmation=message.close_album_confirmation_box,
+                        create_close_application_confirmation=message.close_application_confirmation_box,
                         select_export_destination=dialogs.export)
     dialogs.parent = window
     show_widget(window)
@@ -88,6 +88,19 @@ def test_signals_when_export_menu_item_clicked(main_window, driver, tmpdir):
     main_window.display_album_screen(album)
     driver.export(tmpdir.join("album.csv").strpath)
     driver.check(export_signal)
+
+
+def test_exits_application_when_menu_item_clicked(main_window, driver):
+    album = build.album()
+    main_window.display_album_screen(album)
+    driver.exits()
+
+
+def test_cancels_exit_when_confirmation_check_fails(main_window, driver):
+    album = build.album()
+    main_window.display_album_screen(album)
+    driver.exits(cancels=True)
+    driver.is_showing_on_screen()
 
 
 def test_signals_when_save_album_menu_item_clicked(main_window, driver):

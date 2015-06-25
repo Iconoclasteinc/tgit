@@ -41,9 +41,10 @@ def close_album_confirmation_box(parent=None, **handlers):
 
 
 class ConfirmationBox(QMessageBox):
+    _on_accept = lambda: None
+
     def __init__(self, parent, message, **handlers):
         super().__init__(parent)
-        self._on_accept = lambda: None
 
         self.setObjectName("message_box")
         self.setText(self.tr(message))
