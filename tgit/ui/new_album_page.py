@@ -19,6 +19,7 @@
 import os
 
 from PyQt5.QtCore import Qt
+
 from PyQt5.QtWidgets import QFrame, QLineEdit
 
 from tgit.album import Album
@@ -67,10 +68,6 @@ class NewAlbumPage(QFrame):
 
     def _should_disable_continue_button(self):
         return self.album_location.text() == "" or self.album_name.text() == ""
-
-    @property
-    def properties(self):
-        return dict(type=self._of_type, album_name=self.album_name.text(), album_location=self.album_location.text())
 
     def _album_filename(self):
         return os.path.join(self.album_location.text(), self.album_name.text(), self.album_name.text() + ".tgit")
