@@ -8,6 +8,7 @@ from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
 from .menu_bar_driver import menu_bar
 from .new_album_page_driver import new_album_page
+from test.drivers import export_as_dialog
 from .welcome_screen_driver import welcome_page
 
 
@@ -91,10 +92,6 @@ class MainWindowDriver(WidgetDriver):
         isni_lookup_dialog(self).select_first_identity()
         isni_lookup_dialog(self).accept()
 
-    def shows_confirmation_message(self):
-        message_box(self).is_active()
-        message_box(self).yes()
-
     def shows_welcome_screen(self):
         welcome_page(self).is_showing_on_screen()
 
@@ -114,9 +111,12 @@ class MainWindowDriver(WidgetDriver):
             self.perform(gestures.close())
         else:
             menu_bar(self).file.close_album()
+        message_box(self).is_showing_on_screen()
+        message_box(self).yes()
 
-    def export(self):
+    def export(self, filename):
         menu_bar(self).file.export()
+        export_as_dialog(self). export_as(filename)
 
     def settings(self):
         menu_bar(self).file.settings()

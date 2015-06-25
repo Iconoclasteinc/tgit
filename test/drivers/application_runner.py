@@ -112,7 +112,6 @@ class ApplicationRunner:
 
     def close_album(self):
         self.tagger.close_album()
-        self.tagger.shows_confirmation_message()
         self.tagger.shows_welcome_screen()
 
     def load_album(self, album_name):

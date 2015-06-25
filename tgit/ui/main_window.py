@@ -23,7 +23,6 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QAction
-import functools
 
 from tgit.album import Album
 from tgit.ui.helpers import ui_file
@@ -293,24 +292,20 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
     """
 
 
-def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_add_folder, on_export, on_settings,
-                     create_startup_screen, create_album_screen, create_close_album_confirmation,
-                     select_export_destination):
-    window = MainWindow(create_startup_screen=create_startup_screen,
+def make_main_window(portfolio, on_add_files, on_add_folder,
+                     create_startup_screen,
+                     create_album_screen,
+                     create_close_album_confirmation,
+                     select_export_destination,
+                     **handlers):
+    window = MainWindow(portfolio=portfolio,
+                        create_startup_screen=create_startup_screen,
                         create_album_screen=create_album_screen,
                         create_close_album_confirmation=create_close_album_confirmation,
-                        select_export_destination=select_export_destination)
+                        select_export_destination=select_export_destination,
+                        **handlers)
     window.add_files.connect(on_add_files)
     window.add_folder.connect(on_add_folder)
-    window.export.connect(on_export)
-    window.settings.connect(on_settings)
-    window.close_album.connect(on_close_album)
-    window.save.connect(on_save_album)
-
-    portfolio.album_removed.subscribe(lambda album: window.display_startup_screen())
-    portfolio.album_created.subscribe(window.display_album_screen)
-
-    window.display_startup_screen()
 
     return window
 
@@ -319,17 +314,16 @@ def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_
 class MainWindow(QMainWindow):
     add_files = pyqtSignal(Album)
     add_folder = pyqtSignal(Album)
-    export = pyqtSignal(Album, str)
-    close_album = pyqtSignal(Album)
-    save = pyqtSignal(Album)
-    settings = pyqtSignal()
+    _album = None
+    _on_close_album = lambda: None
+    _on_save_album = lambda: None
+    _on_export = lambda: None
 
     TRACK_ACTIONS_START_INDEX = 3
 
-    def __init__(self, *, create_startup_screen, create_album_screen, create_close_album_confirmation,
-                 select_export_destination):
+    def __init__(self, *, portfolio, create_startup_screen, create_album_screen, create_close_album_confirmation,
+                 select_export_destination, **handlers):
         super().__init__()
-        self._album = None
         self._select_export_destination = select_export_destination
         self._create_close_album_confirmation = create_close_album_confirmation
         self._create_startup_screen = create_startup_screen
@@ -342,9 +336,14 @@ class MainWindow(QMainWindow):
         self.close_album_action.triggered.connect(self._confirm_album_close)
         self.save_album_action.triggered.connect(self._save_album)
         self.export_action.triggered.connect(self._choose_export_destination)
-        self.settings_action.triggered.connect(self.settings.emit)
         self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
         self.to_album_composition_action.triggered.connect(self._to_album_composition_page)
+
+        for name, handler in handlers.items():
+            getattr(self, name)(handler)
+
+        self.subscribe(portfolio.album_removed, self.display_startup_screen)
+        self.subscribe(portfolio.album_created, self.display_album_screen)
 
         if windows:
             self.settings_action.setText(self.tr(self.settings_action.text()))
@@ -359,6 +358,8 @@ class MainWindow(QMainWindow):
             self.save_album_action
         ]
 
+        self.display_startup_screen()
+
     def enable_album_actions(self, album):
         self.navigate_menu.setEnabled(True)
         for action in self.album_dependent_action:
@@ -371,7 +372,7 @@ class MainWindow(QMainWindow):
             action.setEnabled(False)
             action.setData(None)
 
-    def display_startup_screen(self):
+    def display_startup_screen(self, *_):
         self._album = None
         self.disable_album_actions()
         self._clear_track_actions()
@@ -383,19 +384,29 @@ class MainWindow(QMainWindow):
         self._create_track_actions()
         self.setCentralWidget(self._create_album_screen(album))
 
-        self.subscribe(album.track_inserted, lambda pos, track: self._rebuild_track_actions())
-        self.subscribe(album.track_removed, lambda pos, track: self._rebuild_track_actions())
+        self.subscribe(album.track_inserted, self._rebuild_track_actions)
+        self.subscribe(album.track_removed, self._rebuild_track_actions)
 
-    def _rebuild_track_actions(self):
+    def on_close_album(self, on_close_album):
+        self._on_close_album = on_close_album
+
+    def on_save_album(self, on_save_album):
+        self._on_save_album = on_save_album
+
+    def on_export(self, on_export):
+        self._on_export = on_export
+
+    def on_settings(self, on_settings):
+        self.settings_action.triggered.connect(on_settings)
+
+    def _rebuild_track_actions(self, *_):
         self._clear_track_actions()
         self._create_track_actions()
 
     def _create_track_actions(self):
         for track in self._album.tracks:
             action = QAction("{0} - {1}".format(track.track_number, track.track_title), self)
-            # We're using functools instead of a lambda to capture the track number right now.
-            # Lambdas are only evaluated on call, capturing the last track for every actions.
-            action.triggered.connect(functools.partial(self._to_track_page, track.track_number))
+            action.triggered.connect(lambda checked, track_number=track.track_number: self._to_track_page(track_number))
             self.navigate_menu.addAction(action)
 
     def _clear_track_actions(self):
@@ -413,15 +424,12 @@ class MainWindow(QMainWindow):
         self.centralWidget().navigate_to_track_page(track_number)
 
     def _confirm_album_close(self):
-        album = self.close_album_action.data()
-        confirmation_box = self._create_close_album_confirmation(self, on_accept=lambda: self.close_album.emit(album))
-        confirmation_box.open()
+        self._create_close_album_confirmation(self, on_accept=lambda: self._on_close_album(self._album)).open()
 
     def _choose_export_destination(self):
-        album = self.export_action.data()
-        self._select_export_destination(lambda destination: self.export.emit(album, destination))
+        self._select_export_destination(lambda dest: self._on_export(self._album, dest))
 
     def _save_album(self):
         if self.focusWidget() is not None:
             self.focusWidget().clearFocus()
-        return self.save.emit(self.save_album_action.data())
+        return self._on_save_album(self._album)
