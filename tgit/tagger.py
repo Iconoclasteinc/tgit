@@ -45,8 +45,9 @@ def tgit(use_local_isni_backend=False):
 
 
 class TGiT(QApplication):
-    def __init__(self, player, name_registry, use_local_isni_backend=False, native=True):
+    def __init__(self, player, name_registry, use_local_isni_backend=False, native=True, confirm_exit=True):
         super().__init__([])
+        self._confirm_exit = confirm_exit
         self.use_local_isni_backend = use_local_isni_backend
         self.player = player
         self.name_registry = name_registry
@@ -70,7 +71,7 @@ class TGiT(QApplication):
     def show(self, preferences):
         self.set_locale(preferences["language"])
         self.mainWindow = ui.create_main_window(AlbumPortfolio(), self.player, preferences, self.name_registry,
-                                                self.use_local_isni_backend, self.native)
+                                                self.use_local_isni_backend, self.native, self._confirm_exit)
         ui.showCenteredOnScreen(self.mainWindow)
 
     def launch(self, preferences):

@@ -321,9 +321,10 @@ class MainWindow(QMainWindow):
 
     TRACK_ACTIONS_START_INDEX = 3
 
-    def __init__(self, *, portfolio, create_startup_screen, create_album_screen, create_close_album_confirmation,
-                 select_export_destination, **handlers):
+    def __init__(self, *, portfolio, confirm_exit, create_startup_screen, create_album_screen,
+                 create_close_album_confirmation, select_export_destination, **handlers):
         super().__init__()
+        self._confirm_exit = confirm_exit
         self._select_export_destination = select_export_destination
         self._create_close_album_confirmation = create_close_album_confirmation
         self._create_startup_screen = create_startup_screen
@@ -437,9 +438,9 @@ class MainWindow(QMainWindow):
         return self._on_save_album(self._album)
 
     def closeEvent(self, event):
-        response = QMessageBox.question(self,
-                                        "",
-                                        self.tr("Are you sure you want to exit?"),
-                                        QMessageBox.Yes | QMessageBox.No)
-        if response == QMessageBox.No:
+        if not self._confirm_exit:
+            return
+
+        if QMessageBox.question(self, "", self.tr("Are you sure you want to exit?"), QMessageBox.Yes | QMessageBox.No)\
+                == QMessageBox.No:
             event.ignore()

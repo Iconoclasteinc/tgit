@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
@@ -124,7 +124,7 @@ def SettingsDialogController(restart_notice, preferences, parent):
     return dialog
 
 
-def create_main_window(portfolio, player, preferences, name_registry, use_local_isni_backend, native):
+def create_main_window(portfolio, player, preferences, name_registry, use_local_isni_backend, native, confirm_exit):
     def show_settings_dialog():
         return SettingsDialogController(restart_message_box, preferences, window)
 
@@ -174,6 +174,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
     dialogs = Dialogs(director, native)
     window = make_main_window(portfolio,
+                              confirm_exit=confirm_exit,
                               create_startup_screen=create_startup_screen,
                               create_album_screen=create_album_screen,
                               create_close_album_confirmation=message_box.close_album_confirmation_box,

@@ -34,8 +34,8 @@ def main_window(qt, fake_album_screen):
                         create_startup_screen=ignore,
                         create_album_screen=create_fake_album_screen,
                         create_close_album_confirmation=message.close_album_confirmation_box,
-                        create_close_application_confirmation=message.close_application_confirmation_box,
-                        select_export_destination=dialogs.export)
+                        select_export_destination=dialogs.export,
+                        confirm_exit=False)
     dialogs.parent = window
     show_widget(window)
     yield window
@@ -88,19 +88,6 @@ def test_signals_when_export_menu_item_clicked(main_window, driver, tmpdir):
     main_window.display_album_screen(album)
     driver.export(tmpdir.join("album.csv").strpath)
     driver.check(export_signal)
-
-
-def test_exits_application_when_menu_item_clicked(main_window, driver):
-    album = build.album()
-    main_window.display_album_screen(album)
-    driver.exits()
-
-
-def test_cancels_exit_when_confirmation_check_fails(main_window, driver):
-    album = build.album()
-    main_window.display_album_screen(album)
-    driver.exits(cancels=True)
-    driver.is_showing_on_screen()
 
 
 def test_signals_when_save_album_menu_item_clicked(main_window, driver):

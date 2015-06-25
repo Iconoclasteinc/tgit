@@ -132,11 +132,3 @@ class MainWindowDriver(WidgetDriver):
             self.perform(gestures.save())
         else:
             menu_bar(self).file.save()
-
-    def exits(self, cancels=False):
-        menu_bar(self).file.exit()
-        message_box(self).is_showing_on_screen()
-        if cancels:
-            message_box(self).no()
-        else:
-            message_box(self).yes()
