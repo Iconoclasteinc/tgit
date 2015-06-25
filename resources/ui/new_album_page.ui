@@ -333,6 +333,9 @@ QPushButton:disabled {
          </item>
          <item>
           <widget class="QPushButton" name="cancel_button">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
            <property name="text">
             <string>CANCEL</string>
            </property>
