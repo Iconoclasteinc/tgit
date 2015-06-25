@@ -58,6 +58,17 @@ def test_navigates_to_album_composition_page(screen, driver):
     driver.showsAlbumCompositionPage()
 
 
+# todo change test_navigates_to_track_page to not register to the listener.
+def test_navigates_to_track_page(screen, driver, album):
+    album.addAlbumListener(screen)
+    album.add_track(build.track(track_title="Chevere!"))
+    album.add_track(build.track(track_title="Zumbar"))
+    album.add_track(build.track(track_title="Salsa Coltrane"))
+
+    screen.navigate_to_track_page(2)
+    driver.shows_track_metadata(track_title="Zumbar")
+
+
 class AlbumScreenTest(WidgetTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()

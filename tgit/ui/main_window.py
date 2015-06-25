@@ -22,10 +22,12 @@ import sys
 from PyQt5 import QtGui
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QAction
+import functools
 
 from tgit.album import Album
 from tgit.ui.helpers import ui_file
+from tgit.ui.observer import Observer
 
 windows = sys.platform == "win32"
 
@@ -313,6 +315,7 @@ def make_main_window(portfolio, on_close_album, on_save_album, on_add_files, on_
     return window
 
 
+@Observer
 class MainWindow(QMainWindow):
     add_files = pyqtSignal(Album)
     add_folder = pyqtSignal(Album)
@@ -321,9 +324,12 @@ class MainWindow(QMainWindow):
     save = pyqtSignal(Album)
     settings = pyqtSignal()
 
+    TRACK_ACTIONS_START_INDEX = 3
+
     def __init__(self, *, create_startup_screen, create_album_screen, create_close_album_confirmation,
                  select_export_destination):
         super().__init__()
+        self._album = None
         self._select_export_destination = select_export_destination
         self._create_close_album_confirmation = create_close_album_confirmation
         self._create_startup_screen = create_startup_screen
@@ -353,21 +359,6 @@ class MainWindow(QMainWindow):
             self.save_album_action
         ]
 
-    def _to_album_edition_page(self):
-        self.centralWidget().navigate_to_album_edition_page()
-
-    def _to_album_composition_page(self):
-        self.centralWidget().navigate_to_album_composition_page()
-
-    def _confirm_album_close(self):
-        album = self.close_album_action.data()
-        confirmation_box = self._create_close_album_confirmation(self, on_accept=lambda: self.close_album.emit(album))
-        confirmation_box.open()
-
-    def _choose_export_destination(self):
-        album = self.export_action.data()
-        self._select_export_destination(lambda destination: self.export.emit(album, destination))
-
     def enable_album_actions(self, album):
         self.navigate_menu.setEnabled(True)
         for action in self.album_dependent_action:
@@ -381,9 +372,49 @@ class MainWindow(QMainWindow):
             action.setData(None)
 
     def display_startup_screen(self):
+        self._album = None
         self.disable_album_actions()
         self.setCentralWidget(self._create_startup_screen())
 
     def display_album_screen(self, album):
+        self._album = album
         self.enable_album_actions(album)
         self.setCentralWidget(self._create_album_screen(album))
+
+        self.subscribe(album.track_inserted, lambda pos, track: self._rebuild_track_actions())
+        self.subscribe(album.track_removed, lambda pos, track: self._rebuild_track_actions())
+
+    def _rebuild_track_actions(self):
+        self._clear_track_actions_from_menu()
+        self._create_track_actions()
+
+    def _create_track_actions(self):
+        for track in self._album.tracks:
+            action = QAction("{0} - {1}".format(track.track_number, track.track_title), self)
+            # We're using functools instead of a lambda to capture the track number right now.
+            # Lambdas are only evaluated on call, capturing the last track for every actions.
+            action.triggered.connect(functools.partial(self._to_track_page, track.track_number))
+            self.navigate_menu.addAction(action)
+
+    def _clear_track_actions_from_menu(self):
+        for action in self.navigate_menu.actions()[self.TRACK_ACTIONS_START_INDEX:]:
+            self.navigate_menu.removeAction(action)
+            action.setParent(None)
+
+    def _to_album_edition_page(self):
+        self.centralWidget().navigate_to_album_edition_page()
+
+    def _to_album_composition_page(self):
+        self.centralWidget().navigate_to_album_composition_page()
+
+    def _to_track_page(self, track_number):
+        self.centralWidget().navigate_to_track_page(track_number)
+
+    def _confirm_album_close(self):
+        album = self.close_album_action.data()
+        confirmation_box = self._create_close_album_confirmation(self, on_accept=lambda: self.close_album.emit(album))
+        confirmation_box.open()
+
+    def _choose_export_destination(self):
+        album = self.export_action.data()
+        self._select_export_destination(lambda destination: self.export.emit(album, destination))

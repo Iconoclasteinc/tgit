@@ -143,7 +143,7 @@ def test_signals_when_settings_menu_item_clicked(main_window, driver):
     driver.check(change_settings_signal)
 
 
-def test_navigates_to_album_edition_page_item_is_clicked(main_window, driver, fake_album_screen):
+def test_navigates_to_album_edition_page_item_when_menu_item_is_clicked(main_window, driver, fake_album_screen):
     album = build.album()
     main_window.display_album_screen(album)
 
@@ -151,10 +151,40 @@ def test_navigates_to_album_edition_page_item_is_clicked(main_window, driver, fa
     assert_that(fake_album_screen.current_page, equal_to(FakeAlbumScreen.ALBUM_EDITION_PAGE))
 
 
-def test_navigates_to_album_composition_page_item_is_clicked(main_window, driver, fake_album_screen):
+def test_navigates_to_album_composition_page_item_when_menu_item_is_clicked(main_window, driver, fake_album_screen):
     album = build.album()
     main_window.display_album_screen(album)
 
     driver.navigate_to_album_page()
     driver.navigate_to_composition_page()
     assert_that(fake_album_screen.current_page, equal_to(FakeAlbumScreen.ALBUM_COMPOSITION_PAGE))
+
+
+def test_adds_track_menu_item_when_adding_a_track_to_the_album(main_window, driver):
+    album = build.album()
+    main_window.display_album_screen(album)
+    album.add_track(build.track(track_title="Chevere!"))
+
+    driver.shows_track_menu_item(title="Chevere!", track_number=1)
+
+
+def test_removes_track_menu_item_when_removing_a_track_to_the_album(main_window, driver):
+    album = build.album()
+    main_window.display_album_screen(album)
+
+    track = build.track(track_title="Chevere!")
+    album.add_track(track)
+    album.remove_track(track)
+
+    driver.does_not_show_menu_item(title="Chevere!")
+
+
+def test_navigates_to_track_page_when_menu_item_is_clicked(main_window, driver, fake_album_screen):
+    album = build.album()
+    main_window.display_album_screen(album)
+    album.add_track(build.track(track_title="Chevere!"))
+    album.add_track(build.track(track_title="Zumbar"))
+    album.add_track(build.track(track_title="Salsa Coltrane"))
+
+    driver.navigate_to_track_page(title="Salsa Coltrane", track_number=3)
+    assert_that(fake_album_screen.current_page, equal_to(FakeAlbumScreen.TRACK_3))

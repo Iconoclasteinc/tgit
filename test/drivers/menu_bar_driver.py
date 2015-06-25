@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QMenuBar
+from hamcrest import all_of, is_not, has_item
 
 from cute import matchers
 from cute.widgets import QMenuBarDriver
@@ -66,8 +67,22 @@ class MenuBarDriver(QMenuBarDriver):
         def to_composition_page(self):
             self._menu_driver.select_menu_item(matchers.named("to_album_composition_action"))
 
-        def to_track_page(self, track_number):
-            self._menu_driver.select_menu_item(matchers.with_data(track_number))
+        def to_track_page(self, title, track_number):
+            self._menu_driver.select_menu_item(matchers.with_text(track_menu_item(title, track_number)))
+
+        def shows_track_action(self, title, track_number):
+            self._menu_driver.has_menu_item(matchers.with_text(track_menu_item(title, track_number)))
+
+        def does_not_show_action(self, title):
+            self._menu_driver.contains_menu_items(without_item(title))
 
         def is_disabled(self):
             self._menu_driver.is_disabled()
+
+
+def without_item(title):
+    return is_not(has_item(title))
+
+
+def track_menu_item(title, track_number):
+    return "{0} - {1}".format(track_number, title)

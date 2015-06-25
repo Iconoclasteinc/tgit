@@ -5,7 +5,7 @@ from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QComboBox, QTextEdit, QLabel,
                              QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
-from hamcrest import all_of, equal_to
+from hamcrest import all_of, equal_to, assert_that, has_item, is_not
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
@@ -600,6 +600,10 @@ class MenuDriver(WidgetDriver):
         containing_menu_item = ContainingMatchingMenuItem()
         self.is_(containing_menu_item)
         return containing_menu_item.action
+
+    def contains_menu_items(self, matching):
+        actions = self.query("actions", lambda menu: [action.text() for action in menu.actions()])
+        assert_that(actions, matching)
 
 
 class TopLevelQMenuDriver(MenuDriver):

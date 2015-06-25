@@ -50,8 +50,8 @@ class MainWindowDriver(WidgetDriver):
     def navigate_to_album_page(self):
         menu_bar(self).navigate.to_album_page()
 
-    def navigate_to_track_page(self, track_number):
-        menu_bar(self).navigate.to_track_page(track_number)
+    def navigate_to_track_page(self, title, track_number):
+        menu_bar(self).navigate.to_track_page(title, track_number)
 
     def shows_album_contains(self, *tracks):
         album_screen(self).shows_album_contains(*tracks)
@@ -105,6 +105,12 @@ class MainWindowDriver(WidgetDriver):
 
     def shows_welcome_screen(self):
         welcome_page(self).is_showing_on_screen()
+
+    def shows_track_menu_item(self, title, track_number):
+        menu_bar(self).navigate.shows_track_action(title, track_number)
+
+    def does_not_show_menu_item(self, title):
+        menu_bar(self).navigate.does_not_show_action(title)
 
     def has_disabled_album_actions(self):
         menu_bar(self).file.has_disabled_album_actions()
