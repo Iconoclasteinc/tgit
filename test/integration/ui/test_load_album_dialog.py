@@ -20,6 +20,8 @@ import os
 import sys
 
 from PyQt5.QtWidgets import QFileDialog
+
+from hamcrest import ends_with
 import pytest
 
 from cute.matchers import named
@@ -28,6 +30,11 @@ from cute.widgets import window
 from test.drivers.load_album_dialog_driver import LoadAlbumDialogDriver
 from test.util import resources
 from tgit.ui.load_album_dialog import LoadAlbumDialog
+
+do_nothing = lambda *_: None
+
+
+DISPLAY_DELAY = 250
 
 
 @pytest.fixture()
@@ -49,6 +56,7 @@ def ignore(*args):
 def test_signals_when_album_selected(dialog, driver):
     album_selected_signal = ValueMatcherProbe("album file selected", resources.path("album.tgit"))
     dialog.select(lambda dest: album_selected_signal.received(os.path.abspath(dest)))
+    driver.pause(DISPLAY_DELAY)
 
     driver.load(resources.path("album.tgit"))
     driver.check(album_selected_signal)
@@ -57,5 +65,9 @@ def test_signals_when_album_selected(dialog, driver):
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="not supported on Windows")
 def test_only_accepts_tgit_album_files(dialog, driver):
     dialog.select(ignore)
-
+    driver.pause(DISPLAY_DELAY)
     driver.rejects_selection_of(resources.path("base.mp3"))
+
+
+def test_initially_starts_in_documents_folder(driver):
+    driver.has_current_directory(ends_with("Documents"))

@@ -29,6 +29,7 @@ class StartupScreenDriver(ScreenDriver):
     def create_album(self):
         welcome_page(self).new_album()
         new_album_page(self).is_showing_on_screen()
+        new_album_page(self).has_reset_form()
 
     def cancel_creation(self):
         self.create_album()

@@ -20,12 +20,10 @@
 import pytest
 
 from cute.finders import WidgetIdentity
-from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from test.drivers.new_album_page_driver import NewAlbumPageDriver
 from test.util import resources
 from tgit.ui.new_album_page import NewAlbumPage
-
 
 @pytest.fixture()
 def on_select(tmpdir):
@@ -90,14 +88,20 @@ def test_selects_reference_track_location(driver, tmpdir):
     driver.has_track_location(tmpdir.strpath)
 
 
-def test_initially_disables_create_button(driver):
+def test_disables_create_button_when_album_name_or_location_missing(driver):
+    driver.enter_album_name("")
+    driver.creation_is_disabled()
+    driver.enter_album_name("Honeycomb")
+    driver.enter_album_location("")
     driver.creation_is_disabled()
 
 
-def test_resets_form_on_cancel(driver, tmpdir):
-    driver.cancel_creation("mp3", "Honeycomb", tmpdir.strpath, resources.path("base.mp3"))
+def test_resets_form(page, driver):
+    driver.select_album_type("mp3")
+    driver.enter_album_name("Honeycomb")
+    driver.enter_album_location("/path/to/albums")
+    driver.enter_track_location("/path/to/tracks")
 
-    driver.radio(named("_flac_button")).is_checked()
-    driver.lineEdit(named("album_name")).has_text("")
-    driver.lineEdit(named("album_location")).has_text("")
-    driver.lineEdit(named("track_location")).has_text("")
+    page.reset()
+
+    driver.has_reset_form()
