@@ -27,34 +27,28 @@
 	max-width: 500px;
 	min-height: 300px;
 	max-height: 300px;
-	background: white url(':/logo.png') no-repeat top left;
+	background: white url(:/logo.png) no-repeat top left;
 }
 
 QPushButton {
-	background-color: #EC2327;
-	border: 2px solid #EC2327;
-	border-radius: 4px;
-	font-size: 14px;
-	font-weight: bold;
-	color: white;
-	padding: 10px 10px 7px 10px;
-	width: 75px;
+	background-color: transparent;
+    border: none;
+	font-size: 16px;
+    text-align: left;
+    padding-left: 30px;
 }
 
 QPushButton:hover {
-	background-color: #D42023;
-	border-color: #D42023;
+	color: #EC2327;
 }
 
-QPushButton:pressed {
-	border: 2px solid transparent;
+QPushButton#_new_album_button {
+   background: transparent url(:/images/folder-20-red.png) no-repeat center left;
 }
 
-QLabel {
-	color: #2D2D25;
-	font-size: 16px;
+QPushButton#_load_album_button {
+   background: transparent url(:/images/folder-open-20-red.png) no-repeat center left;
 }
-
 </string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -92,13 +86,29 @@ QLabel {
        <widget class="QLabel" name="title">
         <property name="styleSheet">
          <string notr="true">QLabel {
+    padding-top: 36px;
 	font-size: 28px;
 	font-weight: bold;
-	padding-top: 36px;
 }</string>
         </property>
         <property name="text">
-         <string>Welcome to TGiT!</string>
+         <string>TGiT</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="_version_label">
+        <property name="styleSheet">
+         <string notr="true">QLabel {
+	font-size: 16px;
+    color: #666666;
+}</string>
+        </property>
+        <property name="text">
+         <string>v1.7.0</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -133,140 +143,30 @@ QLabel {
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <property name="spacing">
-          <number>10</number>
+         <property name="horizontalSpacing">
+          <number>0</number>
          </property>
-         <item row="1" column="2">
-          <widget class="QWidget" name="new_album_button_container" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="new_flac_album_button">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="text">
-               <string>FLAC</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="new_mp3_album_button">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="styleSheet">
-               <string notr="true"/>
-              </property>
-              <property name="text">
-               <string>MP3</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QWidget" name="load_album_button_container" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="load_album_button">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="text">
-               <string>CHOOSE</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="new_release_label">
+         <property name="verticalSpacing">
+          <number>25</number>
+         </property>
+         <item row="4" column="1">
+          <widget class="QPushButton" name="_new_album_button">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
+           </property>
            <property name="styleSheet">
-            <string notr="true">QLabel {
-	font-size: 16px;
-}</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string>Create a new release*:</string>
+            <string>Create New Release*</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="load_album_label">
-           <property name="text">
-            <string>Load a release:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <spacer name="horizontalSpacer_3">
+         <item row="2" column="2">
+          <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -277,6 +177,41 @@ QLabel {
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="2" column="0">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="2" column="1">
+          <widget class="QPushButton" name="_load_album_button">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>Load Existing Release</string>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -315,9 +250,8 @@ QLabel {
   </layout>
  </widget>
  <tabstops>
-  <tabstop>load_album_button</tabstop>
-  <tabstop>new_flac_album_button</tabstop>
-  <tabstop>new_mp3_album_button</tabstop>
+  <tabstop>_load_album_button</tabstop>
+  <tabstop>_new_album_button</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>

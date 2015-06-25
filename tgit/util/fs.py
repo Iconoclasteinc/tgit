@@ -24,12 +24,28 @@ import tempfile
 import mimetypes
 
 
-def binary_content_of(filename):
+WITHOUT_LEADING_DOT = slice(1, None)
+
+
+def read(filename):
     return open(filename, 'rb').read()
+
+
+def write(filename, data):
+    with open(filename, 'wb') as file:
+        file.write(data)
 
 
 def guess_mime_type(filename):
     return mimetypes.guess_type(filename)[0]
+
+
+def guess_extension(mime_type):
+    ext = mimetypes.guess_extension(mime_type)[WITHOUT_LEADING_DOT]
+    if ext == "jpeg" or ext == "jpe":
+        ext = "jpg"
+
+    return ext
 
 
 def make_temp_copy(filename, dirname=None):
@@ -42,3 +58,42 @@ def make_temp_copy(filename, dirname=None):
 
 def sanitize(filename):
     return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
+
+
+def extension(filename):
+    _, ext = os.path.splitext(filename)
+    return ext[WITHOUT_LEADING_DOT]
+
+
+def copy(source_file, destination_file):
+    if source_file != destination_file:
+        shutil.copy(source_file, destination_file)
+
+
+def mkdirs(path):
+    os.makedirs(path, exist_ok=True)
+
+
+def list_dir(folder):
+    def abspath(filename):
+        return os.path.join(folder, filename)
+
+    return [abspath(filename) for filename in os.listdir(folder) if os.path.isfile(abspath(filename))]
+
+
+def remove(path):
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+
+
+_all_files = lambda entry: True
+
+
+def remove_files(folder, matching=_all_files):
+    for filename in list_dir(folder):
+        if matching(filename):
+            remove(filename)
+
+

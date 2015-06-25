@@ -33,7 +33,7 @@ def main_window(qt, fake_album_screen):
     window = MainWindow(create_startup_screen=ignore, create_album_screen=create_fake_album_screen,
                         create_close_album_confirmation=message.close_album_confirmation_box,
                         select_export_destination=dialogs.export)
-    dialogs.parent=window
+    dialogs.parent = window
     show_widget(window)
     yield window
     window.close()

@@ -60,7 +60,7 @@ class AlbumCompositionPageDriver(ScreenDriver):
     def remove_track(self, title, using_shortcut=False):
         self.select_track(title)
         if using_shortcut:
-            self.perform(gestures.delete())
+            self.perform(gestures.delete_previous())
         else:
             self._from_context_menu().select_menu_item(named("_remove_action"))
 

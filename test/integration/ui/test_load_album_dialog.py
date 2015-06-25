@@ -47,10 +47,10 @@ def ignore(*args):
 
 
 def test_signals_when_album_selected(dialog, driver):
-    album_selected_signal = ValueMatcherProbe("album file selected", resources.path("album_mp3.tgit"))
+    album_selected_signal = ValueMatcherProbe("album file selected", resources.path("album.tgit"))
     dialog.select(lambda dest: album_selected_signal.received(os.path.abspath(dest)))
 
-    driver.load(resources.path("album_mp3.tgit"))
+    driver.load(resources.path("album.tgit"))
     driver.check(album_selected_signal)
 
 

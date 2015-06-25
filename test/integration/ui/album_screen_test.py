@@ -2,7 +2,6 @@
 import pytest
 
 from cute.finders import WidgetIdentity
-from cute.probes import ValueMatcherProbe
 from test.drivers import AlbumScreenDriver
 from test.integration.ui import WidgetTest, show_widget
 from test.util import builders as build, doubles
@@ -95,11 +94,9 @@ class AlbumScreenTest(WidgetTest):
     def testInitiallyContainsOnlyAlbumCompositionAndEditionPages(self):
         self.driver.showsAlbumCompositionPage()
         self.driver.hidesPreviousPageButton()
-        self.driver.hidesSaveButton()
         self.driver.nextPage()
         self.driver.showsAlbumEditionPage()
         self.driver.hidesNextPageButton()
-        self.driver.hidesSaveButton()
 
     def testAddsTrackEditionPageForEachNewTrackInAlbum(self):
         self.album.addAlbumListener(self.view)
@@ -137,17 +134,6 @@ class AlbumScreenTest(WidgetTest):
         self.driver.shows_track_metadata(track_title="Where is My Mind?")
         self.album.removeTrack(surfer_rosa[1])
         self.driver.showsAlbumEditionPage()
-        self.driver.hidesSaveButton()
-
-    def testSignalsWhenSaveButtonClicked(self):
-        self.album.addAlbumListener(self.view)
-
-        self.album.addTrack(build.track())
-        save_album_signal = ValueMatcherProbe("save album signal")
-        self.view.record_album.connect(save_album_signal.received)
-
-        self.driver.tag()
-        self.driver.check(save_album_signal)
 
     def testOffersBackAndForthNavigationBetweenPages(self):
         self.album.addAlbumListener(self.view)

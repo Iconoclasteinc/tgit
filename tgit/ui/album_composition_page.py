@@ -19,7 +19,7 @@
 from enum import Enum
 
 from PyQt5.QtCore import Qt, QPoint, QObject, QEvent
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem
 
 from tgit.album import Album, AlbumListener
@@ -39,8 +39,12 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         self._setup_ui()
         self._subscribe_to_events(album, player)
         self._tracks = []
+
         for name, handler in handlers.items():
             getattr(self, name)(handler)
+
+        for index, track in enumerate(album.tracks):
+            self._insert_row(index, track)
 
     def on_add_tracks(self, handler):
         self._add_tracks_button.clicked.connect(lambda pressed: handler())
@@ -91,6 +95,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         context_menu.setObjectName("context_menu")
         context_menu.addAction(self._remove_action)
         self._remove_action.setDisabled(True)
+        self._remove_action.setShortcuts([QKeySequence.Delete, QKeySequence(Qt.Key_Backspace)])
         table.addAction(self._remove_action)
         context_menu.addAction(self._play_action)
         self._play_action.setDisabled(True)

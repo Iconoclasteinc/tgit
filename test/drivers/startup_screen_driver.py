@@ -19,19 +19,18 @@
 
 from ._screen_driver import ScreenDriver
 from test.drivers import welcome_page
-from test.drivers.new_album_screen_driver import new_album_page
-from tgit.album import Album
+from test.drivers.new_album_page_driver import new_album_page
 
 
 class StartupScreenDriver(ScreenDriver):
     def shows_welcome_page(self):
         welcome_page(self).is_showing_on_screen()
 
-    def creates_album(self, of_type):
-        welcome_page(self).new_album(of_type)
+    def create_album(self):
+        welcome_page(self).new_album()
         new_album_page(self).is_showing_on_screen()
 
-    def cancels_creation(self):
-        welcome_page(self).new_album(of_type=Album.Type.MP3)
-        new_album_page(self).cancels_creation()
+    def cancel_creation(self):
+        self.create_album()
+        new_album_page(self).cancel_creation()
         welcome_page(self).is_showing_on_screen()

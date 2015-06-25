@@ -19,8 +19,9 @@
 
 from PyQt5.QtWidgets import QFrame
 
-from tgit.album import Album
+import tgit
 from tgit.ui.helpers import ui_file
+
 
 def welcome_page(select_album, **handlers):
     screen = WelcomePage(select_album=select_album)
@@ -35,10 +36,10 @@ class WelcomePage(QFrame):
         super().__init__(parent)
         self._select_album = select_album
         ui_file.load(":/ui/welcome_page.ui", self)
+        self._version_label.setText("v{0}".format(tgit.__version__))
 
     def on_create_album(self, on_create_album):
-        self.new_mp3_album_button.clicked.connect(lambda: on_create_album(Album.Type.MP3))
-        self.new_flac_album_button.clicked.connect(lambda: on_create_album(Album.Type.FLAC))
+        self._new_album_button.clicked.connect(on_create_album)
 
     def on_load_album(self, on_load_album):
-        self.load_album_button.clicked.connect(lambda: self._select_album(on_load_album))
+        self._load_album_button.clicked.connect(lambda: self._select_album(on_load_album))

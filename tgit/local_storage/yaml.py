@@ -6,7 +6,7 @@
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
+# of the License, or (at your option) any later version.qp6
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,34 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from collections import defaultdict
-
-from tgit.metadata import Metadata
-from tgit.util import fs
-from .flac_container import FlacContainer
-from .id3_container import ID3Container
+import yaml
 
 
-class EmptyContainer():
-    @staticmethod
-    def load(filename):
-        return Metadata()
-
-    @staticmethod
-    def save(filename, metadata):
-        pass
+def write_data(filename, album_data):
+    with open(filename, "w") as album_file:
+        yaml.dump(album_data, stream=album_file, Dumper=yaml.Dumper, default_flow_style=False)
 
 
-_containers = defaultdict(EmptyContainer, mp3=ID3Container(), flac=FlacContainer())
+def read_data(filename):
+    with open(filename, "r") as album_file:
+        data = yaml.load(album_file)
 
-
-def _container_for(filename):
-    return _containers[fs.extension(filename)]
-
-
-def load_metadata(filename):
-    return _container_for(filename).load(filename)
-
-
-def save_metadata(filename, metadata):
-    return _container_for(filename).save(filename, metadata)
+    return data

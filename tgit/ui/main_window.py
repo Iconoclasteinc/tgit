@@ -339,10 +339,10 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(StyleSheet)
         self.add_files_action.triggered.connect(lambda checked: self.add_files.emit(self.add_files_action.data()))
         self.add_folder_action.triggered.connect(lambda checked: self.add_folder.emit(self.add_folder_action.data()))
-        self.close_album_action.triggered.connect(lambda checked: self._confirm_album_close())
-        self.save_album_action.triggered.connect(lambda checked: self.save.emit(self.save_album_action.data()))
-        self.export_action.triggered.connect(lambda checked: self._choose_export_destination())
-        self.settings_action.triggered.connect(lambda checked: self.settings.emit())
+        self.close_album_action.triggered.connect(self._confirm_album_close)
+        self.save_album_action.triggered.connect(self._save_album)
+        self.export_action.triggered.connect(self._choose_export_destination)
+        self.settings_action.triggered.connect(self.settings.emit)
         self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
         self.to_album_composition_action.triggered.connect(self._to_album_composition_page)
 
@@ -418,3 +418,8 @@ class MainWindow(QMainWindow):
     def _choose_export_destination(self):
         album = self.export_action.data()
         self._select_export_destination(lambda destination: self.export.emit(album, destination))
+
+    def _save_album(self):
+        if self.focusWidget() is not None:
+            self.focusWidget().clearFocus()
+        return self.save.emit(self.save_album_action.data())

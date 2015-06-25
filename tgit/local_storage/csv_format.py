@@ -51,8 +51,8 @@ class CsvFormat(QObject):
 
     def writeRecord(self, writer, album, track):
         row = album.release_name, toBoolean(album.compilation), track.lead_performer, album.isni, \
-              toPeopleList(album.guestPerformers), album.label_name, album.catalogNumber, album.upc, album.comments, \
-              album.releaseTime, album.recording_time, album.recordingStudios, album.producer, \
+              toPeopleList(album.guest_performers), album.label_name, album.catalog_number, album.upc, album.comments, \
+              album.release_time, album.recording_time, album.recording_studios, album.producer, \
               album.mixer, album.primary_style, track.track_title, track.versionInfo, str(track.track_number), \
               str(track.total_tracks), track.featuredGuest, track.lyrics, track.language, track.publisher, \
               track.lyricist, track.composer, track.isrc, track.labels

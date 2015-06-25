@@ -5,7 +5,7 @@ from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QComboBox, QTextEdit, QLabel,
                              QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
-from hamcrest import all_of, equal_to, assert_that, has_item, is_not
+from hamcrest import all_of, equal_to, anything, assert_that, has_item, is_not
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
@@ -24,16 +24,16 @@ def all_top_level_widgets():
     return TopLevelWidgetsFinder(QApplication.instance())
 
 
-def only_widget(of_type, matching):
+def only_widget(of_type, matching=anything()):
     return SingleWidgetFinder(RecursiveWidgetFinder(of_type, matching, all_top_level_widgets()))
-
-
-def main_application_window(*matchers):
-    return only_widget(QMainWindow, all_of(*matchers))
 
 
 def window(of_type, *matchers):
     return only_widget(of_type, all_of(*matchers))
+
+
+def main_application_window(*matchers):
+    return only_widget(QMainWindow, all_of(*matchers))
 
 
 class QueryManipulation:
@@ -149,7 +149,6 @@ class ButtonDriver(WidgetDriver):
         self.is_checked(not unchecked)
 
     def is_checked(self, checked=True):
-        self.is_showing_on_screen()
         self.is_(checked and match.checked() or match.unchecked())
 
 

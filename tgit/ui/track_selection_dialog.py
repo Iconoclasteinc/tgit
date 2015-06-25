@@ -16,8 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import QDir, QFileInfo
+from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QFileDialog
+
+from tgit.util import fs
 
 
 class TrackSelectionDialog(QFileDialog):
@@ -49,5 +51,4 @@ class TrackSelectionDialog(QFileDialog):
         return super().done(result)
 
     def _list_files(self, folder, file_type):
-        return list(map(QFileInfo.absoluteFilePath,
-                        QDir(folder, self._filter_for(file_type), filters=QDir.Files).entryInfoList()))
+        return [filename for filename in fs.list_dir(folder) if filename.endswith("." + file_type)]

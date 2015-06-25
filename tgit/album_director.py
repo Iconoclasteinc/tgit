@@ -17,9 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import functools
-import os
-
 import requests
 
 from tgit import local_storage
@@ -29,15 +26,9 @@ from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
 
-def _build_full_path(creation_properties):
-    return "{0}/{1}.tgit".format(creation_properties["album_location"], creation_properties["album_name"])
-
-
 def create_album_into(portfolio, to_catalog=local_storage):
-    def create_new_album(creation_properties):
-        full_path = _build_full_path(creation_properties)
-
-        album = Album(of_type=creation_properties["type"], destination=full_path)
+    def create_new_album(type_, album_file):
+        album = Album(of_type=type_, filename=album_file)
         save_album(to_catalog)(album)
         portfolio.add_album(album)
         return album
@@ -46,13 +37,12 @@ def create_album_into(portfolio, to_catalog=local_storage):
 
 
 def import_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging):
-    def import_album_to_portfolio(creation_properties):
-        reference_track = from_catalog.load_track(creation_properties["track_location"])
-        album = Album(reference_track.metadata, of_type=creation_properties["type"],
-                      destination=_build_full_path(creation_properties))
+    def import_album_to_portfolio(type_, album_file, reference_track_file):
+        reference_track = from_catalog.load_track(reference_track_file)
+        album = Album(reference_track.metadata, of_type=type_, filename=album_file)
+        add_tracks_to(album, from_catalog)(reference_track_file)
         save_album(to_catalog)(album)
         portfolio.add_album(album)
-        add_tracks_to(album, from_catalog)(creation_properties["track_location"])
         return album
 
     return import_album_to_portfolio
@@ -101,7 +91,7 @@ def updateAlbum(album, **metadata):
 def change_cover_of(album):
     def change_album_cover(filename):
         album.removeImages()
-        mime, data = fs.guess_mime_type(filename), fs.binary_content_of(filename)
+        mime, data = fs.guess_mime_type(filename), fs.read(filename)
         album.addFrontCover(mime, data)
 
     return change_album_cover
@@ -139,25 +129,9 @@ def play_or_stop(player):
     return play_or_stop_track
 
 
-def save_tracks(album):
-    for track in album.tracks:
-        tagging.save_track(to_file=tagged_file(album, track), track=track)
-
-
 def export_as_csv(album, destination):
     with open(destination, "w", encoding="windows-1252") as out:
         CsvFormat().write(album, out)
-
-
-def tagged_file(album, track):
-    dirname = os.path.dirname(album.destination)
-    _, ext = os.path.splitext(track.filename)
-    filename = fs.sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
-                                                                          number=track.track_number,
-                                                                          title=track.track_title,
-                                                                          ext=ext))
-
-    return os.path.join(dirname, filename)
 
 
 def lookupISNI(registry, leadPerformer):

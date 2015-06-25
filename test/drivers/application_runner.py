@@ -43,15 +43,15 @@ class ApplicationRunner:
         # Never ever remove this!!
         sip.delete(self.app)
 
-    def new_album(self, of_type="mp3", filename="album"):
-        self.tagger.create_album(of_type, filename, self._workspace.root_path)
+    def new_album(self, name="album", of_type="mp3"):
+        self.tagger.create_album(of_type, name, self._workspace.root_path)
 
     def add_tracks_to_album(self, *tracks):
         self.tagger.add_tracks_to_album(*tracks)
 
-    def import_album(self, from_track, of_type="mp3", save_as="album"):
-        self.tagger.import_album(of_type=of_type, name=save_as, track_path=from_track,
-                                 album_path=self._workspace.root_path)
+    def import_album(self, name, from_track, of_type="mp3"):
+        self.tagger.create_album(of_type=of_type, name=name, location=self._workspace.root_path,
+                                 import_from=from_track)
 
     def shows_track_list(self, *tracks):
         self.tagger.navigate_to_composition_page()
@@ -94,9 +94,11 @@ class ApplicationRunner:
 
     def assign_isni_to_lead_performer(self):
         self.tagger.assign_isni_to_lead_performer()
+        # todo remove and verify in test that album metadata shows the isni
+        self.tagger.pause(100)
 
-    def tag(self):
-        self.tagger.tag_album()
+    def save_album(self):
+        self.tagger.save()
         self.tagger.pause(SAVE_DELAY)
 
     def fails_to_assign_isni_to_lead_performer(self):
@@ -105,6 +107,8 @@ class ApplicationRunner:
 
     def find_isni_of_lead_performer(self):
         self.tagger.find_isni_of_lead_performer()
+        # todo remove and verify in test that album metadata shows the isni
+        self.tagger.pause(100)
 
     def close_album(self):
         self.tagger.close_album()
@@ -112,7 +116,7 @@ class ApplicationRunner:
         self.tagger.shows_welcome_screen()
 
     def load_album(self, album_name):
-        self.tagger.load_album(self._workspace.path(album_name))
+        self.tagger.load_album(self._workspace.file(album_name, album_name + ".tgit"))
 
     def save(self):
         self.tagger.save()

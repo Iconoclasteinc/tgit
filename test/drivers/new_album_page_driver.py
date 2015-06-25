@@ -28,35 +28,27 @@ def new_album_page(parent):
 
 
 class NewAlbumPageDriver(ScreenDriver):
-    def create_empty_album(self, album_name, album_path, using_shortcut=False):
+    def create_album(self, of_type, album_name, album_location, import_from="", using_shortcut=False):
+        self.radio(named("_{}_button".format(of_type))).click()
         self.lineEdit(named("album_name")).replace_all_text(album_name)
-        self.lineEdit(named("album_location")).replace_all_text(album_path)
+        self.lineEdit(named("album_location")).replace_all_text(album_location)
+        self.lineEdit(named("track_location")).replace_all_text(import_from)
 
         if using_shortcut:
             self.perform(gestures.enter())
         else:
             self.button(named("create_button")).click()
 
-    def import_album(self, album_name, album_path, track_path):
+    def cancel_creation(self, of_type="flac", album_name="", album_location="", import_from="", using_shortcut=False):
+        self.radio(named("_{}_button".format(of_type))).click()
         self.lineEdit(named("album_name")).replace_all_text(album_name)
-        self.lineEdit(named("album_location")).replace_all_text(album_path)
-        self.lineEdit(named("track_location")).replace_all_text(track_path)
-        self.button(named("create_button")).click()
-
-    def cancels_creation(self, album_name="", album_path="", using_shortcut=False):
-        if album_name:
-            self.lineEdit(named("album_name")).replace_all_text(album_name)
-
-        if album_path:
-            self.lineEdit(named("album_location")).replace_all_text(album_path)
+        self.lineEdit(named("album_location")).replace_all_text(album_location)
+        self.lineEdit(named("track_location")).replace_all_text(import_from)
 
         if using_shortcut:
             self.perform(gestures.unselect())
         else:
             self.button(named("cancel_button")).click()
-        self.lineEdit(named("album_name")).has_text("")
-        self.lineEdit(named("album_location")).has_text("")
-        self.lineEdit(named("track_location")).has_text("")
 
     def select_album(self):
         self.button(named("browse_album_location_button")).click()

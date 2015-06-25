@@ -1,10 +1,35 @@
-images:
-- !!python/object:tgit.metadata.Image
-  data: !!binary |
-    ZnJvbnQuanBlZw==
-  desc: front cover
-  mime: image/jpeg
-  type: 1
-lead_performer: Joel Miller
-release_name: Honeycomb
+version: 1.6.0
 type: mp3
+catalogNumber: XXX123456789
+comments: 'Comments
+
+  ...'
+compilation: true
+guestPerformers:
+- !!python/tuple
+  - Guitar
+  - Guitarist
+- !!python/tuple
+  - Piano
+  - Pianist
+isni: 0000123456789
+label_name: Label
+lead_performer: Artist
+mixer: Engineer
+primary_style: Style
+producer: Producer
+recordingStudios: Studios
+recording_time: '2008-09-15'
+releaseTime: '2009-01-01'
+release_name: Title
+upc: '123456789999'
+images:
+- !!python/tuple
+  - image/jpeg
+  - Front.jpeg
+  - 1
+  - Front
+tracks:
+- 1st
+- 2nd
+- 3rd

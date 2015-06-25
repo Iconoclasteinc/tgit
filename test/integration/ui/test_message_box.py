@@ -23,6 +23,8 @@ from cute.widgets import QMessageBoxDriver
 from tgit.ui import isni_assignation_failed_message_box
 from tgit.ui.message_box import close_album_confirmation_box
 
+DISPLAY_DELAY = 100
+
 
 def test_shows_isni_assignation_failed_message_with_details(qt, prober, automaton):
     dialog = isni_assignation_failed_message_box(details="Details")
@@ -52,5 +54,6 @@ def test_signals_confirmation_of_closing(qt, prober, automaton):
     dialog.open()
 
     driver.is_active()
+    driver.pause(DISPLAY_DELAY)
     driver.yes()
     driver.check(accept_signal)

@@ -377,9 +377,6 @@ QTableCornerButton::section {
    <property name="text">
     <string>Remove</string>
    </property>
-   <property name="shortcut">
-    <string>Del</string>
-   </property>
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
    </property>
