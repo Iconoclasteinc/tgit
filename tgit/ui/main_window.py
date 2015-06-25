@@ -374,18 +374,20 @@ class MainWindow(QMainWindow):
     def display_startup_screen(self):
         self._album = None
         self.disable_album_actions()
+        self._clear_track_actions()
         self.setCentralWidget(self._create_startup_screen())
 
     def display_album_screen(self, album):
         self._album = album
         self.enable_album_actions(album)
+        self._create_track_actions()
         self.setCentralWidget(self._create_album_screen(album))
 
         self.subscribe(album.track_inserted, lambda pos, track: self._rebuild_track_actions())
         self.subscribe(album.track_removed, lambda pos, track: self._rebuild_track_actions())
 
     def _rebuild_track_actions(self):
-        self._clear_track_actions_from_menu()
+        self._clear_track_actions()
         self._create_track_actions()
 
     def _create_track_actions(self):
@@ -396,7 +398,7 @@ class MainWindow(QMainWindow):
             action.triggered.connect(functools.partial(self._to_track_page, track.track_number))
             self.navigate_menu.addAction(action)
 
-    def _clear_track_actions_from_menu(self):
+    def _clear_track_actions(self):
         for action in self.navigate_menu.actions()[self.TRACK_ACTIONS_START_INDEX:]:
             self.navigate_menu.removeAction(action)
             action.setParent(None)

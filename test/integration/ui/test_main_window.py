@@ -176,7 +176,28 @@ def test_removes_track_menu_item_when_removing_a_track_to_the_album(main_window,
     album.add_track(track)
     album.remove_track(track)
 
-    driver.does_not_show_menu_item(title="Chevere!")
+    driver.does_not_show_menu_item(title="Chevere!", track_number=1)
+
+
+def test_displays_track_menu_item_when_loading_an_existing_album(main_window, driver):
+    album = build.album(tracks=[build.track(track_title="Chevere!"), build.track(track_title="Zumbar")])
+    main_window.display_album_screen(album)
+
+    driver.shows_track_menu_item(title="Chevere!", track_number=1)
+    driver.shows_track_menu_item(title="Zumbar", track_number=2)
+
+
+def test_removes_track_menu_item_when_closing_an_album(main_window, driver):
+    album = build.album(tracks=[build.track(track_title="Chevere!"), build.track(track_title="Zumbar")])
+    main_window.display_album_screen(album)
+
+    main_window.display_startup_screen()
+
+    album = build.album()
+    main_window.display_album_screen(album)
+
+    driver.does_not_show_menu_item(title="Chevere!", track_number=1)
+    driver.does_not_show_menu_item(title="Zumbar", track_number=2)
 
 
 def test_navigates_to_track_page_when_menu_item_is_clicked(main_window, driver, fake_album_screen):

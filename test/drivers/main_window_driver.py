@@ -101,8 +101,8 @@ class MainWindowDriver(WidgetDriver):
     def shows_track_menu_item(self, title, track_number):
         menu_bar(self).navigate.shows_track_action(title, track_number)
 
-    def does_not_show_menu_item(self, title):
-        menu_bar(self).navigate.does_not_show_action(title)
+    def does_not_show_menu_item(self, title, track_number):
+        menu_bar(self).navigate.does_not_show_action(title, track_number)
 
     def has_disabled_album_actions(self):
         menu_bar(self).file.has_disabled_album_actions()
