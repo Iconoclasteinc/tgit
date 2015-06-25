@@ -47,7 +47,7 @@
    </property>
    <widget class="QMenu" name="file_menu">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="add_files_action"/>
     <addaction name="add_folder_action"/>
@@ -62,7 +62,7 @@
      <bool>false</bool>
     </property>
     <property name="title">
-     <string>Navigate</string>
+     <string>&amp;Navigate</string>
     </property>
     <addaction name="to_album_composition_action"/>
     <addaction name="to_album_edition_action"/>
@@ -73,7 +73,7 @@
   </widget>
   <action name="settings_action">
    <property name="text">
-    <string notr="true">Settings</string>
+    <string notr="true">Se&amp;ttings</string>
    </property>
   </action>
   <action name="add_files_action">
@@ -81,7 +81,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Add Files...</string>
+    <string>Add &amp;Files...</string>
    </property>
   </action>
   <action name="add_folder_action">
@@ -89,7 +89,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Add Folder...</string>
+    <string>Add F&amp;older...</string>
    </property>
   </action>
   <action name="export_action">
@@ -97,7 +97,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Export...</string>
+    <string>&amp;Export...</string>
    </property>
   </action>
   <action name="close_album_action">
@@ -105,7 +105,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Close release</string>
+    <string>&amp;Close release</string>
    </property>
   </action>
   <action name="save_album_action">
@@ -113,17 +113,23 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Save release</string>
+    <string>&amp;Save release</string>
    </property>
   </action>
   <action name="to_album_edition_action">
    <property name="text">
-    <string>Album edition</string>
+    <string>Album &amp;edition</string>
+   </property>
+   <property name="iconText">
+    <string>Album &amp;edition</string>
    </property>
   </action>
   <action name="to_album_composition_action">
    <property name="text">
-    <string>Album composition</string>
+    <string>Album &amp;composition</string>
+   </property>
+   <property name="iconText">
+    <string>Album &amp;composition</string>
    </property>
   </action>
  </widget>
