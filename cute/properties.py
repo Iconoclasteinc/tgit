@@ -73,6 +73,10 @@ def has_option_text(index):
     return PropertyQuery("option {0}".format(index), lambda combo_box: combo_box.itemText(index))
 
 
+def current_directory():
+    return PropertyQuery("current directory", lambda dialog: dialog.directory().absolutePath())
+
+
 class Query(SelfDescribing):
     def __call__(self, arg):
         pass

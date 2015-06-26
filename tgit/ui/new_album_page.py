@@ -18,12 +18,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
 
-from PyQt5.QtCore import Qt
-
+from PyQt5.QtCore import Qt, QStandardPaths
 from PyQt5.QtWidgets import QFrame, QLineEdit
 
 from tgit.album import Album
 from tgit.ui.helpers import ui_file
+
+DOCUMENTS_FOLDER = QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)
 
 
 def new_album_page(select_album_location, select_track_location, **handlers):
@@ -49,7 +50,7 @@ class NewAlbumPage(QFrame):
         self.browse_album_location_button.clicked.connect(lambda: select_album_destination(self.album_location.setText))
         self.browse_track_location_button.clicked.connect(lambda: select_track_location(self.track_location.setText))
         self.create_album_action.triggered.connect(self._create_album)
-        self.cancel_creation_action.triggered.connect(self._clear_form)
+        self.cancel_creation_action.triggered.connect(self.reset)
         self._disable_mac_focus_frame()
 
     def on_create_album(self, on_create_album):
@@ -81,10 +82,12 @@ class NewAlbumPage(QFrame):
         else:
             self._on_import_album(self._album_type(), self._album_filename(), self.track_location.text())
 
-    def _clear_form(self):
+    def reset(self):
         self._flac_button.setChecked(True)
-        self.album_name.setText("")
-        self.album_location.setText("")
+        self.album_name.setText(self.tr("untitled"))
+        self.album_name.selectAll()
+        self.album_name.setFocus()
+        self.album_location.setText(DOCUMENTS_FOLDER)
         self.track_location.setText("")
 
     def _disable_mac_focus_frame(self):

@@ -18,8 +18,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
 
-from PyQt5.QtCore import QDir, pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QFileDialog
+
+from tgit.ui import locations
 
 
 def make_picture_selection_dialog(parent_window, native=True, *, on_select_picture):
@@ -35,7 +37,7 @@ class PictureSelectionDialog(QFileDialog):
         super().__init__(parent)
         self.setObjectName("picture-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
-        self.setDirectory(QDir.homePath())
+        self.setDirectory(locations.Pictures)
         self.setFileMode(QFileDialog.ExistingFile)
         self.setNameFilter("{0} (*.png *.jpeg *.jpg)".format(self.tr("Image files")))
         self.fileSelected.connect(lambda selected: self.picture_selected.emit(os.path.abspath(selected)))

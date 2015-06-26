@@ -17,8 +17,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QFileDialog
+
+from tgit.ui import locations
 
 
 def make_reference_track_selection_dialog(parent_window, native=True):
@@ -33,7 +34,7 @@ class ReferenceTrackSelectionDialog(QFileDialog):
         self.setFileMode(QFileDialog.ExistingFile)
         self.setNameFilters(
             ["{0} ({1})".format(self.tr("MP3 files"), "*.mp3"), "{0} ({1})".format(self.tr("FLAC files"), "*.flac")])
-        self.setDirectory(QDir.homePath())
+        self.setDirectory(locations.Music)
 
     def select(self, on_select):
         self.fileSelected.connect(on_select)

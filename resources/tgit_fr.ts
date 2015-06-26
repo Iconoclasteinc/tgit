@@ -651,6 +651,14 @@
     </message>
 </context>
 <context>
+    <name>NewAlbumPage</name>
+    <message>
+        <location filename="tgit/ui/new_album_page.py"/>
+        <source>untitled</source>
+        <translation>sans titre</translation>
+    </message>
+</context>
+<context>
     <name>new_album_page</name>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>

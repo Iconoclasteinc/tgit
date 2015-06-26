@@ -37,6 +37,7 @@ class TrackSelectionDialogDriver(FileDialogDriver):
         self.accept()
 
     def rejects_selection_of(self, path):
+        self.is_active()
         self.navigate_to_dir(os.path.dirname(path))
         self.select_file(os.path.basename(path))
         self.has_accept_button(disabled())

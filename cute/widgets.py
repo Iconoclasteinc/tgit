@@ -5,7 +5,7 @@ from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QComboBox, QTextEdit, QLabel,
                              QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
-from hamcrest import all_of, equal_to, anything, assert_that, has_item, is_not
+from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
@@ -89,11 +89,11 @@ class WidgetDriver:
     def is_(self, criteria):
         self.check(WidgetAssertionProbe(self.selector, criteria))
 
-    def has_cursor_shape(self, shape):
-        self.has(properties.cursor_shape(), wrap_matcher(shape))
-
     def has(self, query, criteria):
-        self.check(WidgetPropertyAssertionProbe(self.selector, query, criteria))
+        self.check(WidgetPropertyAssertionProbe(self.selector, query, wrap_matcher(criteria)))
+
+    def has_cursor_shape(self, shape):
+        self.has(properties.cursor_shape(), shape)
 
     def manipulate(self, description, manipulation):
         self.check(WidgetManipulatorProbe(self.selector, manipulation, description))
@@ -143,7 +143,7 @@ class ButtonDriver(WidgetDriver):
         super().click()
 
     def has_text(self, matcher):
-        self.has(properties.text(), wrap_matcher(matcher))
+        self.has(properties.text(), matcher)
 
     def is_unchecked(self, unchecked=True):
         self.is_checked(not unchecked)
@@ -154,7 +154,7 @@ class ButtonDriver(WidgetDriver):
 
 class LabelDriver(WidgetDriver):
     def has_text(self, matcher):
-        self.has(properties.text(), wrap_matcher(matcher))
+        self.has(properties.text(), matcher)
 
     def has_pixmap(self, matcher):
         self.has(properties.label_pixmap(), matcher)
@@ -195,14 +195,14 @@ class AbstractEditDriver(WidgetDriver):
 
 class LineEditDriver(AbstractEditDriver):
     def has_text(self, text):
-        self.has(properties.input_text(), equal_to(text))
+        self.has(properties.input_text(), text)
 
 
 class TextEditDriver(AbstractEditDriver):
     MULTILINE_DELAY = 25
 
     def has_plain_text(self, text):
-        self.has(properties.plain_text(), equal_to(text))
+        self.has(properties.plain_text(), text)
 
     def add_line(self, text):
         self.focus_with_mouse()
@@ -229,7 +229,7 @@ class ComboBoxDriver(AbstractEditDriver):
         return ListViewDriver.find_single(self, QListView)
 
     def has_current_text(self, matching):
-        self.has(properties.current_text(), wrap_matcher(matching))
+        self.has(properties.current_text(), matching)
 
 
 class DateTimeEditDriver(WidgetDriver):
@@ -239,10 +239,10 @@ class DateTimeEditDriver(WidgetDriver):
         return self.query("display format", lambda date_time: date_time.displayFormat())
 
     def has_date(self, date):
-        self.has(properties.date(), equal_to(QDate.fromString(date, self.display_format())))
+        self.has(properties.date(), QDate.fromString(date, self.display_format()))
 
     def has_time(self, time):
-        self.has(properties.time(), equal_to(QTime.fromString(time, self.display_format())))
+        self.has(properties.time(), QTime.fromString(time, self.display_format()))
 
     def change_date(self, year, month, day):
         self._popup_calendar()
@@ -382,6 +382,7 @@ class FileDialogDriver(QDialogDriver):
         self.manipulate("set the view mode to list", set_list_view_mode)
 
     def navigate_to_dir(self, path):
+        self.pause(self.DISPLAY_DELAY)
         for folder_name in self._navigation_path_to(path):
             if folder_name == '':
                 pass
@@ -401,6 +402,9 @@ class FileDialogDriver(QDialogDriver):
         find_folder = FindOutCurrentFolder()
         self.manipulate("find out current folder", find_folder)
         return find_folder.name
+
+    def has_current_directory(self, matching):
+        self.has(properties.current_directory(), matching)
 
     def into_folder(self, name):
         self.select_file(name)
@@ -469,7 +473,7 @@ class FileDialogDriver(QDialogDriver):
 
     def _has_file_type_options_count(self, matching):
         driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
-        driver.has(properties.count(), wrap_matcher(matching))
+        driver.has(properties.count(), matching)
 
     def has_file_type_options(self, *options):
         for index, option in enumerate(options):
@@ -478,7 +482,7 @@ class FileDialogDriver(QDialogDriver):
 
     def _has_file_type_option(self, option, *, index):
         driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
-        driver.has(properties.has_option_text(index), wrap_matcher(option))
+        driver.has(properties.has_option_text(index), option)
 
 
 class ListViewDriver(WidgetDriver):

@@ -3,6 +3,7 @@
 import sys
 
 from PyQt5.QtWidgets import QFileDialog
+from hamcrest import ends_with
 import pytest
 
 from cute.matchers import named
@@ -39,3 +40,7 @@ def test_only_accepts_picture_files(dialog, driver):
     dialog.open()
 
     driver.rejects_selection_of(resources.path('base.mp3'))
+
+
+def test_initially_starts_in_user_pictures_folder(driver):
+    driver.has_current_directory(ends_with("Pictures"))

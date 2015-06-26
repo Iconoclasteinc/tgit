@@ -20,6 +20,7 @@ import os
 import sys
 
 from PyQt5.QtWidgets import QFileDialog
+from hamcrest import ends_with
 import pytest
 
 from cute.matchers import named
@@ -28,6 +29,11 @@ from cute.widgets import window
 from test.drivers.load_album_dialog_driver import LoadAlbumDialogDriver
 from test.util import resources
 from tgit.ui.load_album_dialog import LoadAlbumDialog
+
+do_nothing = lambda *_: None
+
+
+DISPLAY_DELAY = 250
 
 
 @pytest.fixture()
@@ -59,3 +65,7 @@ def test_only_accepts_tgit_album_files(dialog, driver):
     dialog.select(ignore)
 
     driver.rejects_selection_of(resources.path("base.mp3"))
+
+
+def test_initially_starts_in_documents_folder(driver):
+    driver.has_current_directory(ends_with("Documents"))
