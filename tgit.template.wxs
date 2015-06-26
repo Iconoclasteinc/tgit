@@ -7,10 +7,10 @@
 
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="{B880DBE7-A29E-4869-A0F9-DE07ED1348B3}" Name="$(var.ProductName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="{9D3E4EB2-EFC4-4DD0-B38C-8D3A4EFF6388}">
+    <Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="{9D3E4EB2-EFC4-4DD0-B38C-8D3A4EFF6388}">
         <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 		<Media Id="1" Cabinet="tgit.cab" EmbedCab="yes" />
-        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+        <MajorUpgrade AllowDowngrades="no" AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<Icon Id="tgit.ico" SourceFile="$(var.Icon)"/>
 		<Property Id="ARPPRODUCTICON" Value="tgit.ico" />
 
@@ -37,7 +37,7 @@
 
 		<DirectoryRef Id="ApplicationProgramsFolder">
 			<Component Id="ApplicationShortcut" Guid="{83F223F2-5EC3-4676-9945-7D94CE5BE50C}">
-				<Shortcut Id="ApplicationStartMenuShortcut" 
+				<Shortcut Id="ApplicationStartMenuShortcut"
 						  Name="$(var.ProductName)"
 						  Target="[INSTALLFOLDER]$(var.ProductName).exe"
 						  WorkingDirectory="INSTALLFOLDER"/>
