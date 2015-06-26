@@ -16,19 +16,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt5.QtWidgets import QMessageBox
+import pytest
 
-from cute.finders import WidgetIdentity
+from cute.matchers import named
 from cute.probes import ValueMatcherProbe
-from cute.widgets import QMessageBoxDriver
+from cute.widgets import QMessageBoxDriver, window
 from tgit.ui import isni_assignation_failed_message_box
-from tgit.ui.message_box import close_album_confirmation_box
+from tgit.ui.message_box import close_album_confirmation_box, overwrite_confirmation_message
 
 DISPLAY_DELAY = 100
 
 
-def test_shows_isni_assignation_failed_message_with_details(qt, prober, automaton):
+@pytest.yield_fixture()
+def driver(qt, prober, automaton):
+    driver = QMessageBoxDriver(window(QMessageBox, named("message_box")), prober, automaton)
+    yield driver
+    driver.close()
+
+
+def test_shows_isni_assignation_failed_message_with_details(driver):
     dialog = isni_assignation_failed_message_box(details="Details")
-    driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
     dialog.open()
 
     driver.is_active()
@@ -37,20 +45,25 @@ def test_shows_isni_assignation_failed_message_with_details(qt, prober, automato
     driver.ok()
 
 
-def test_shows_close_album_message(qt, prober, automaton):
+def test_shows_close_album_message(driver):
     dialog = close_album_confirmation_box()
-    driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
     dialog.open()
 
     driver.is_active()
     driver.shows_message("Are you sure you want to stop working on this release?")
-    driver.close()
 
 
-def test_signals_confirmation_of_closing(qt, prober, automaton):
+def test_shows_overwrite_album_confirmation_message(driver):
+    dialog = overwrite_confirmation_message()
+    dialog.open()
+
+    driver.is_active()
+    driver.shows_message("This album already exists. Are you sure you want to replace it?")
+
+
+def test_signals_when_confirmed(driver):
     accept_signal = ValueMatcherProbe("accept confirmation")
     dialog = close_album_confirmation_box(on_accept=accept_signal.received)
-    driver = QMessageBoxDriver(WidgetIdentity(dialog), prober, automaton)
     dialog.open()
 
     driver.is_active()

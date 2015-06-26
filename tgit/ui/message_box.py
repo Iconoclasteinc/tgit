@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QStyle
 
 
@@ -38,6 +38,10 @@ def isni_assignation_failed_message_box(parent=None, details=None):
 
 def close_album_confirmation_box(parent=None, **handlers):
     return ConfirmationBox(parent, "Are you sure you want to stop working on this release?", **handlers)
+
+
+def overwrite_confirmation_message(parent=None, **handlers):
+    return ConfirmationBox(parent, "This album already exists. Are you sure you want to replace it?", **handlers)
 
 
 class ConfirmationBox(QMessageBox):

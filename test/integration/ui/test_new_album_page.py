@@ -24,6 +24,8 @@ from cute.probes import ValueMatcherProbe
 from test.drivers.new_album_page_driver import NewAlbumPageDriver
 from test.util import resources
 from tgit.ui.new_album_page import NewAlbumPage
+from tgit.util import fs
+
 
 @pytest.fixture()
 def on_select(tmpdir):
@@ -105,3 +107,15 @@ def test_resets_form(page, driver):
     page.reset()
 
     driver.has_reset_form()
+
+
+def test_asks_for_confirmation_when_album_file_already_exists(driver, tmpdir):
+    album_folder = tmpdir.mkdir("Honeycomb")
+    touch(album_folder.join("Honeycomb.tgit"))
+
+    driver.create_album("mp3", "Honeycomb", tmpdir.strpath)
+    driver.confirm_overwrite()
+
+
+def touch(filename):
+    fs.write(filename.strpath, b"")

@@ -22,6 +22,7 @@ from PyQt5.QtCore import Qt, QStandardPaths
 from PyQt5.QtWidgets import QFrame, QLineEdit
 
 from tgit.album import Album
+from tgit.ui import message_box
 from tgit.ui.helpers import ui_file
 
 DOCUMENTS_FOLDER = QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)
@@ -77,10 +78,17 @@ class NewAlbumPage(QFrame):
         return Album.Type.FLAC if self._flac_button.isChecked() else Album.Type.MP3
 
     def _create_album(self):
-        if not self.track_location.text():
-            self._on_create_album(self._album_type(), self._album_filename())
+        def create_or_import_album():
+            if not self.track_location.text():
+                self._on_create_album(self._album_type(), self._album_filename())
+            else:
+                self._on_import_album(self._album_type(), self._album_filename(), self.track_location.text())
+
+        if os.path.exists(self._album_filename()):
+            confirmation = message_box.overwrite_confirmation_message(self, on_accept=create_or_import_album)
+            confirmation.open()
         else:
-            self._on_import_album(self._album_type(), self._album_filename(), self.track_location.text())
+            create_or_import_album()
 
     def reset(self):
         self._flac_button.setChecked(True)
