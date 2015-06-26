@@ -5,7 +5,7 @@ from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QComboBox, QTextEdit, QLabel,
                              QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
-from hamcrest import all_of, anything
+from hamcrest import all_of, anything, assert_that
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
@@ -18,6 +18,7 @@ from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidget
                       WidgetIdentity)
 
 windows = sys.platform == "win32"
+mac = sys.platform == "darwin"
 
 
 def all_top_level_widgets():
@@ -368,6 +369,7 @@ class QDialogDriver(WidgetDriver):
 
 class FileDialogDriver(QDialogDriver):
     DISPLAY_DELAY = 250
+    DISMISS_DELAY = 250 if mac else 0
 
     def show_hidden_files(self):
         def show_dialog_hidden_files(dialog):
@@ -430,6 +432,7 @@ class FileDialogDriver(QDialogDriver):
 
     def accept(self):
         self._accept_button().click()
+        self.pause(self.DISMISS_DELAY)
 
     def has_accept_button(self, criteria):
         return self._accept_button().is_(criteria)
@@ -439,6 +442,7 @@ class FileDialogDriver(QDialogDriver):
 
     def reject(self):
         self._reject_button().click()
+        self.pause(self.DISMISS_DELAY)
 
     def has_reject_button(self, criteria):
         self._reject_button().is_(criteria)
@@ -575,6 +579,8 @@ class QMenuBarDriver(WidgetDriver):
 
 
 class MenuDriver(WidgetDriver):
+    DISMISS_DELAY = 250 if mac else 0
+
     def popup_manually_at(self, x, y):
         # For some reason, we can't open the menu by just right clicking, so open it manually
         self.manipulate("open at ({0}, {1})".format(x, y), lambda menu: menu.popup(QPoint(x, y)))
@@ -586,8 +592,10 @@ class MenuDriver(WidgetDriver):
         return MenuItemDriver(WidgetIdentity(action), self.prober, self.gesture_performer)
 
     def select_menu_item(self, matching):
+        self.is_showing_on_screen()
         menu_item = self.menu_item(matching)
         menu_item.click()
+        self.pause(self.DISMISS_DELAY)
 
     def has_menu_item(self, matching):
         class ContainingMatchingMenuItem(BaseMatcher):
@@ -612,6 +620,7 @@ class MenuDriver(WidgetDriver):
 
     def contains_menu_items(self, matching):
         actions = self.query("actions", lambda menu: [action.text() for action in menu.actions()])
+        #todo change for a custom matcher for better diagnostics
         assert_that(actions, matching)
 
 
