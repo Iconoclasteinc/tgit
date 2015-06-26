@@ -16,8 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QFileDialog
+
+from tgit.ui import locations
 
 from tgit.util import fs
 
@@ -29,7 +30,7 @@ class TrackSelectionDialog(QFileDialog):
         super().__init__(parent)
         self.setObjectName("track-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
-        self.setDirectory(QDir.homePath())
+        self.setDirectory(locations.Music)
 
     def select_files_in_folder(self, file_type, on_select):
         self.setFileMode(QFileDialog.Directory)

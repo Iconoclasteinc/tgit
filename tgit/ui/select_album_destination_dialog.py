@@ -16,8 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QFileDialog
+
+from tgit.ui import locations
 
 
 class SelectAlbumDestinationDialog(QFileDialog):
@@ -25,7 +26,7 @@ class SelectAlbumDestinationDialog(QFileDialog):
         super().__init__(parent)
         self.setObjectName("select_album_destination_dialog")
         self.setAcceptMode(QFileDialog.AcceptOpen)
-        self.setDirectory(QDir.homePath())
+        self.setDirectory(locations.Home)
         self.setFileMode(QFileDialog.Directory)
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
 

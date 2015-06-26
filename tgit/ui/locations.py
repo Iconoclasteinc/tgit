@@ -16,29 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt5.QtCore import QStandardPaths, QDir
 
-from PyQt5.QtWidgets import QFileDialog
-
-from tgit.ui import locations
-
-
-def make_export_as_dialog(parent_window, native=True):
-    return ExportAsDialog(parent_window, native)
-
-
-class ExportAsDialog(QFileDialog):
-    def __init__(self, parent=None, native=True):
-        super().__init__(parent)
-        self.setObjectName("export-as-dialog")
-        self.setAcceptMode(QFileDialog.AcceptSave)
-        self.setDirectory(locations.Home)
-        self.setFileMode(QFileDialog.AnyFile)
-        self.setOption(QFileDialog.DontUseNativeDialog, not native)
-
-    def select(self, on_select):
-        self.fileSelected.connect(on_select)
-        self.open()
-
-    def done(self, result):
-        self.fileSelected.disconnect()
-        super().done(result)
+Music = QStandardPaths.writableLocation(QStandardPaths.MusicLocation)
+Documents = QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)
+Pictures = QStandardPaths.writableLocation(QStandardPaths.PicturesLocation)
+Home = QDir.homePath()

@@ -2,8 +2,7 @@
 import os
 import sys
 
-from hamcrest import contains, contains_inanyorder
-
+from hamcrest import contains, contains_inanyorder, ends_with
 from PyQt5.QtWidgets import QFileDialog
 import pytest
 
@@ -74,3 +73,7 @@ def test_rejects_non_audio_files(driver, dialog):
     dialog.select_files('mp3', on_select=None)
 
     driver.rejects_selection_of(unsupported_file)
+
+
+def test_initially_starts_in_user_music_folder(driver):
+    driver.has_current_directory(ends_with("Music"))

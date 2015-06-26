@@ -20,7 +20,6 @@ import os
 import sys
 
 from PyQt5.QtWidgets import QFileDialog
-
 from hamcrest import ends_with
 import pytest
 
@@ -56,7 +55,6 @@ def ignore(*args):
 def test_signals_when_album_selected(dialog, driver):
     album_selected_signal = ValueMatcherProbe("album file selected", resources.path("album.tgit"))
     dialog.select(lambda dest: album_selected_signal.received(os.path.abspath(dest)))
-    driver.pause(DISPLAY_DELAY)
 
     driver.load(resources.path("album.tgit"))
     driver.check(album_selected_signal)
@@ -65,7 +63,7 @@ def test_signals_when_album_selected(dialog, driver):
 @pytest.mark.skipif(sys.platform.startswith("win"), reason="not supported on Windows")
 def test_only_accepts_tgit_album_files(dialog, driver):
     dialog.select(ignore)
-    driver.pause(DISPLAY_DELAY)
+
     driver.rejects_selection_of(resources.path("base.mp3"))
 
 

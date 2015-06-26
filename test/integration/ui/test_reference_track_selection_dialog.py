@@ -3,6 +3,7 @@ import os
 import sys
 
 from PyQt5.QtWidgets import QFileDialog
+from hamcrest import ends_with
 import pytest
 
 from cute.matchers import named
@@ -55,5 +56,8 @@ def test_rejects_non_audio_files(driver, dialog):
     unsupported_file = resources.path("front-cover.jpg")
 
     dialog.select(ignore)
-
     driver.rejects_selection_of(unsupported_file)
+
+
+def test_initially_starts_in_user_music_folder(driver):
+    driver.has_current_directory(ends_with("Music"))

@@ -376,6 +376,7 @@ class FileDialogDriver(QDialogDriver):
         self.manipulate("set the view mode to list", set_list_view_mode)
 
     def navigate_to_dir(self, path):
+        self.pause(self.DISPLAY_DELAY)
         for folder_name in self._navigation_path_to(path):
             if folder_name == '':
                 pass

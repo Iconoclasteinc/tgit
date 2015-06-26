@@ -16,10 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import QStandardPaths
 from PyQt5.QtWidgets import QFileDialog
 
-DOCUMENTS_FOLDER = QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)
+from tgit.ui import locations
 
 
 class LoadAlbumDialog(QFileDialog):
@@ -27,7 +26,7 @@ class LoadAlbumDialog(QFileDialog):
         super().__init__(parent)
         self.setObjectName("load_album_dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
-        self.setDirectory(DOCUMENTS_FOLDER)
+        self.setDirectory(locations.Documents)
         self.setFileMode(QFileDialog.ExistingFile)
         self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT Album files")))
 
