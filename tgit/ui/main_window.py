@@ -438,9 +438,10 @@ class MainWindow(QMainWindow):
         return self._on_save_album(self._album)
 
     def closeEvent(self, event):
-        if not self._confirm_exit:
+        if not self._confirm_exit or self._album is None:
             return
 
-        if QMessageBox.question(self, "", self.tr("Are you sure you want to exit?"), QMessageBox.Yes | QMessageBox.No)\
-                == QMessageBox.No:
+        response = QMessageBox.question(self, "", self.tr("Are you sure you want to exit?"),
+                                        QMessageBox.Yes | QMessageBox.No)
+        if response == QMessageBox.No:
             event.ignore()
