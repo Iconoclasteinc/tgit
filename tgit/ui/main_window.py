@@ -314,6 +314,7 @@ def make_main_window(portfolio, on_add_files, on_add_folder,
 class MainWindow(QMainWindow):
     add_files = pyqtSignal(Album)
     add_folder = pyqtSignal(Album)
+    _closing = False
     _album = None
     _on_close_album = lambda *_: None
     _on_save_album = lambda: None
@@ -438,10 +439,12 @@ class MainWindow(QMainWindow):
         return self._on_save_album(self._album)
 
     def closeEvent(self, event):
-        if not self._confirm_exit or self._album is None:
+        if self._closing or not self._confirm_exit or self._album is None:
             return
 
         response = QMessageBox.question(self, "", self.tr("Are you sure you want to exit?"),
                                         QMessageBox.Yes | QMessageBox.No)
         if response == QMessageBox.No:
             event.ignore()
+        else:
+            self._closing = True
