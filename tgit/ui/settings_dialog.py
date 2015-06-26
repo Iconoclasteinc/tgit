@@ -32,7 +32,7 @@ class SettingsDialog(QDialog):
         self.setWindowTitle(self.tr('Settings'))
         self.setModal(True)
         layout = QGridLayout()
-        label = QLabel(self.tr('&Language'))
+        label = QLabel(self.tr('&Language:'))
         self.languages = QComboBox()
         self.languages.setObjectName('language')
         label.setBuddy(self.languages)
@@ -54,4 +54,4 @@ class SettingsDialog(QDialog):
     def display(self, **settings):
         if 'language' in settings:
             self.languages.setCurrentIndex(self.languages.findData(settings['language']))
-        self.open()
+        self.show()

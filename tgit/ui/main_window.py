@@ -442,7 +442,7 @@ class MainWindow(QMainWindow):
         if self._closing or not self._confirm_exit or self._album is None:
             return
 
-        response = QMessageBox.question(self, "", self.tr("Are you sure you want to exit?"),
+        response = QMessageBox.question(self, "", self.tr("Are you sure you want to quit?"),
                                         QMessageBox.Yes | QMessageBox.No)
         if response == QMessageBox.No:
             event.ignore()

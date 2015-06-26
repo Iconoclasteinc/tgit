@@ -445,7 +445,7 @@
         <translation>&amp;Préférences</translation>
     </message>
     <message>
-        <source>Are you sure you want to exit?</source>
+        <source>Are you sure you want to quit?</source>
         <translation>Êtes-vous certain de vouloir quitter?</translation>
     </message>
 </context>
@@ -502,8 +502,8 @@
     </message>
     <message>
         <location filename="tgit/ui/settings_dialog.py" line="36"/>
-        <source>&amp;Language</source>
-        <translation>&amp;Langue</translation>
+        <source>&amp;Language:</source>
+        <translation>&amp;Langue :</translation>
     </message>
     <message>
         <source>English</source>
