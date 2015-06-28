@@ -35,7 +35,7 @@ def screen(qt):
         return WelcomePage(select_album=nothing)
 
     def create_new_album_page():
-        return NewAlbumPage(select_album_destination=nothing, select_track_location=nothing)
+        return NewAlbumPage(select_album_destination=nothing, select_track_location=nothing, confirm_overwrite=nothing)
 
     startup_screen = StartupScreen(create_welcome_page=create_welcome_page,
                                    create_new_album_page=create_new_album_page)

@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
@@ -131,6 +131,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
     def create_new_album_page():
         return new_album_page(select_album_location=dialogs.select_album_destination,
                               select_track_location=dialogs.select_reference_track,
+                              confirm_overwrite=message_box.overwrite_confirmation_message,
                               on_create_album=director.create_album_into(portfolio),
                               on_import_album=director.import_album_into(portfolio))
 

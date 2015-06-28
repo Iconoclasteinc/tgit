@@ -18,18 +18,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
 
-from PyQt5.QtCore import Qt, QStandardPaths
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFrame, QLineEdit
 
 from tgit.album import Album
-from tgit.ui import message_box
+from tgit.ui import locations
 from tgit.ui.helpers import ui_file
 
-DOCUMENTS_FOLDER = QStandardPaths.writableLocation(QStandardPaths.DocumentsLocation)
 
-
-def new_album_page(select_album_location, select_track_location, **handlers):
-    page = NewAlbumPage(select_album_destination=select_album_location, select_track_location=select_track_location)
+def new_album_page(select_album_location, select_track_location, confirm_overwrite, **handlers):
+    page = NewAlbumPage(select_album_destination=select_album_location,
+                        select_track_location=select_track_location,
+                        confirm_overwrite=confirm_overwrite)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -40,7 +40,7 @@ class NewAlbumPage(QFrame):
     _on_create_album = lambda *_: None
     _on_import_album = lambda *_: None
 
-    def __init__(self, *, parent=None, select_album_destination, select_track_location):
+    def __init__(self, *, parent=None, select_album_destination, select_track_location, confirm_overwrite):
         super().__init__(parent)
 
         ui_file.load(":/ui/new_album_page.ui", self)
@@ -50,7 +50,7 @@ class NewAlbumPage(QFrame):
         self.album_name.textChanged.connect(lambda: self._toggle_create_button())
         self.browse_album_location_button.clicked.connect(lambda: select_album_destination(self.album_location.setText))
         self.browse_track_location_button.clicked.connect(lambda: select_track_location(self.track_location.setText))
-        self.create_album_action.triggered.connect(self._create_album)
+        self.create_album_action.triggered.connect(lambda: self._create_album(confirm_overwrite))
         self.cancel_creation_action.triggered.connect(self.reset)
         self._disable_mac_focus_frame()
 
@@ -77,7 +77,7 @@ class NewAlbumPage(QFrame):
     def _album_type(self):
         return Album.Type.FLAC if self._flac_button.isChecked() else Album.Type.MP3
 
-    def _create_album(self):
+    def _create_album(self, confirm_overwrite):
         def create_or_import_album():
             if not self.track_location.text():
                 self._on_create_album(self._album_type(), self._album_filename())
@@ -85,7 +85,7 @@ class NewAlbumPage(QFrame):
                 self._on_import_album(self._album_type(), self._album_filename(), self.track_location.text())
 
         if os.path.exists(self._album_filename()):
-            confirmation = message_box.overwrite_confirmation_message(self, on_accept=create_or_import_album)
+            confirmation = confirm_overwrite(self, on_accept=create_or_import_album)
             confirmation.open()
         else:
             create_or_import_album()
@@ -95,7 +95,7 @@ class NewAlbumPage(QFrame):
         self.album_name.setText(self.tr("untitled"))
         self.album_name.selectAll()
         self.album_name.setFocus()
-        self.album_location.setText(DOCUMENTS_FOLDER)
+        self.album_location.setText(locations.Documents)
         self.track_location.setText("")
 
     def _disable_mac_focus_frame(self):

@@ -23,6 +23,7 @@ from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
 from test.drivers.new_album_page_driver import NewAlbumPageDriver
 from test.util import resources
+from tgit.ui import message_box
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.util import fs
 
@@ -37,9 +38,11 @@ def on_select(tmpdir):
 
 @pytest.fixture()
 def page(on_select, qt):
-    new_album_screen = NewAlbumPage(select_album_destination=on_select, select_track_location=on_select)
-    new_album_screen.show()
-    return new_album_screen
+    new_album_page = NewAlbumPage(select_album_destination=on_select,
+                                    select_track_location=on_select,
+                                    confirm_overwrite=message_box.overwrite_confirmation_message)
+    new_album_page.show()
+    return new_album_page
 
 
 @pytest.yield_fixture()
