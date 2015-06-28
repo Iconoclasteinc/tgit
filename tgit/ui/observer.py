@@ -39,8 +39,10 @@ def Observer(cls):
                 self.subscriptions.remove(subscription)
 
     def close(self):
-        self.subscriptions.cancel()
-        return widget_close(self)
+        closed = widget_close(self)
+        if closed:
+            self.subscriptions.cancel()
+        return closed
 
     cls.subscribe = subscribe
     cls.unsubscribe = unsubscribe

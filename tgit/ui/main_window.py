@@ -380,13 +380,24 @@ class MainWindow(QMainWindow):
         self._album = None
         self.disable_album_actions()
         self._clear_track_actions()
-        self.setCentralWidget(self._create_startup_screen())
+        self._change_screen(self._create_startup_screen())
+
+    def _close_current_screen(self):
+        if self.centralWidget() is not None:
+            self.centralWidget().close()
+
+    def _show_screen(self, screen):
+        self.setCentralWidget(screen)
+
+    def _change_screen(self, screen):
+        self._close_current_screen()
+        self._show_screen(screen)
 
     def display_album_screen(self, album):
         self._album = album
         self.enable_album_actions(album)
         self._create_track_actions()
-        self.setCentralWidget(self._create_album_screen(album))
+        self._change_screen(self._create_album_screen(album))
 
         self.subscribe(album.track_inserted, self._rebuild_track_actions)
         self.subscribe(album.track_removed, self._rebuild_track_actions)
@@ -419,13 +430,13 @@ class MainWindow(QMainWindow):
             action.setParent(None)
 
     def _to_album_edition_page(self):
-        self.centralWidget().navigate_to_album_edition_page()
+        self.centralWidget().show_album_edition_page()
 
     def _to_album_composition_page(self):
-        self.centralWidget().navigate_to_album_composition_page()
+        self.centralWidget().show_album_composition_page()
 
     def _to_track_page(self, track_number):
-        self.centralWidget().navigate_to_track_page(track_number)
+        self.centralWidget().show_track_page(track_number)
 
     def _confirm_album_close(self):
         self._create_close_album_confirmation(self, on_accept=lambda: self._on_close_album(self._album)).open()
@@ -437,6 +448,12 @@ class MainWindow(QMainWindow):
         if self.focusWidget() is not None:
             self.focusWidget().clearFocus()
         return self._on_save_album(self._album)
+
+    def close(self):
+        closed = super().close()
+        if closed:
+            self._close_current_screen()
+        return closed
 
     def closeEvent(self, event):
         if self._closing or not self._confirm_exit or self._album is None:

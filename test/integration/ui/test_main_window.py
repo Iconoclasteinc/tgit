@@ -2,15 +2,16 @@
 import os
 import sys
 
-from hamcrest import assert_that, equal_to, contains
+from hamcrest import contains
 import pytest
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
 from test.drivers import MainWindowDriver
+from test.drivers.fake_drivers import fake_album_screen, fake_startup_screen
 from test.integration.ui import show_widget
+from test.integration.ui import fake_widgets
 from test.util import builders as build
-from test.util.doubles import album_screen, FakeAlbumScreen
 from tgit.ui import message_box as message, Dialogs
 from tgit.ui.main_window import MainWindow
 
@@ -20,26 +21,17 @@ def ignore(*_):
 
 
 @pytest.fixture()
-def fake_album_screen():
-    return album_screen()
-
-
-@pytest.yield_fixture()
-def main_window(qt, fake_album_screen):
-    def create_fake_album_screen(album):
-        return fake_album_screen
-
+def main_window(qt):
     dialogs = Dialogs(commands=None, native=False)
     window = MainWindow(portfolio=build.album_portfolio(),
-                        create_startup_screen=ignore,
-                        create_album_screen=create_fake_album_screen,
+                        create_startup_screen=fake_widgets.startup_screen,
+                        create_album_screen=fake_widgets.album_screen,
                         create_close_album_confirmation=message.close_album_confirmation_box,
                         select_export_destination=dialogs.export,
                         confirm_exit=False)
     dialogs.parent = window
     show_widget(window)
-    yield window
-    window.close()
+    return window
 
 
 @pytest.yield_fixture()
@@ -130,21 +122,21 @@ def test_signals_when_settings_menu_item_clicked(main_window, driver):
     driver.check(change_settings_signal)
 
 
-def test_navigates_to_album_edition_page_item_when_menu_item_is_clicked(main_window, driver, fake_album_screen):
+def test_navigates_to_album_edition_page_item_when_menu_item_is_clicked(main_window, driver):
     album = build.album()
     main_window.display_album_screen(album)
 
     driver.navigate_to_album_page()
-    assert_that(fake_album_screen.current_page, equal_to(FakeAlbumScreen.ALBUM_EDITION_PAGE))
+    fake_album_screen(driver).is_showing_album_edition_page()
 
 
-def test_navigates_to_album_composition_page_item_when_menu_item_is_clicked(main_window, driver, fake_album_screen):
+def test_navigates_to_album_composition_page_item_when_menu_item_is_clicked(main_window, driver):
     album = build.album()
     main_window.display_album_screen(album)
 
     driver.navigate_to_album_page()
     driver.navigate_to_composition_page()
-    assert_that(fake_album_screen.current_page, equal_to(FakeAlbumScreen.ALBUM_COMPOSITION_PAGE))
+    fake_album_screen(driver).is_showing_album_composition_page()
 
 
 def test_adds_track_menu_item_when_adding_a_track_to_the_album(main_window, driver):
@@ -187,7 +179,7 @@ def test_removes_track_menu_item_when_closing_an_album(main_window, driver):
     driver.does_not_show_menu_item(title="Zumbar", track_number=2)
 
 
-def test_navigates_to_track_page_when_menu_item_is_clicked(main_window, driver, fake_album_screen):
+def test_navigates_to_track_page_when_menu_item_is_clicked(main_window, driver):
     album = build.album()
     main_window.display_album_screen(album)
     album.add_track(build.track(track_title="Chevere!"))
@@ -195,4 +187,12 @@ def test_navigates_to_track_page_when_menu_item_is_clicked(main_window, driver, 
     album.add_track(build.track(track_title="Salsa Coltrane"))
 
     driver.navigate_to_track_page(title="Salsa Coltrane", track_number=3)
-    assert_that(fake_album_screen.current_page, equal_to(FakeAlbumScreen.TRACK_3))
+    fake_album_screen(driver).is_showing_track_edition_page(3)
+
+
+def test_closes_main_widget_when_changing_page(main_window, driver):
+    album = build.album()
+    main_window.display_album_screen(album)
+    fake_startup_screen(driver).is_closed()
+    main_window.display_startup_screen()
+    fake_album_screen(driver).is_closed()

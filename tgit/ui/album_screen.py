@@ -58,13 +58,13 @@ class AlbumScreen(QWidget, AlbumListener):
     def trackRemoved(self, track, position):
         self._remove_track_edition_page(position)
 
-    def navigate_to_album_edition_page(self):
+    def show_album_edition_page(self):
         self._to_page(self.ALBUM_EDITION_PAGE_INDEX)
 
-    def navigate_to_album_composition_page(self):
+    def show_album_composition_page(self):
         self._to_page(self.ALBUM_COMPOSITION_PAGE_INDEX)
 
-    def navigate_to_track_page(self, track_number):
+    def show_track_page(self, track_number):
         self._to_page(self.TRACK_PAGES_INDEX + (track_number - 1))
 
     def _has_track_page(self):
@@ -115,3 +115,7 @@ class AlbumScreen(QWidget, AlbumListener):
 
     def _to_page(self, number):
         self.pages.setCurrentIndex(number)
+
+    def close(self):
+        for index in range(0, self.total_pages):
+            self.pages.widget(index).close()

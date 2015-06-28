@@ -1,78 +1,86 @@
 # -*- coding: utf-8 -*-
+
 import pytest
 
 from cute.finders import WidgetIdentity
+from cute.matchers import named
+from cute.widgets import window
 from test.drivers import AlbumScreenDriver
+from test.drivers.fake_drivers import fake_album_edition_page, fake_album_composition_page, fake_track_edition_page
 from test.integration.ui import WidgetTest, show_widget
+from test.integration.ui import fake_widgets
 from test.util import builders as build, doubles
 from tgit.preferences import Preferences
-
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
-
 from tgit.ui.album_screen import AlbumScreen
 from tgit.ui.track_edition_page import TrackEditionPage
 
 
 @pytest.fixture()
-def album():
-    return build.album()
+def album_screen(qt):
+    def create_screen(album):
+        screen = AlbumScreen(fake_widgets.album_composition_page(),
+                             fake_widgets.album_edition_page(),
+                             lambda track: fake_widgets.track_edition_page(track.track_number))
 
+        # todo this should soon move to the screen itself
+        album.addAlbumListener(screen)
+        for index, track in enumerate(album.tracks):
+            screen.trackAdded(track, index)
 
-@pytest.fixture()
-def track_edition_page_creator(album):
-    def create_track_edition_page(track):
-        page = TrackEditionPage()
-        page.display(album, track)
-        return page
+        show_widget(screen)
+        return screen
 
-    return create_track_edition_page
-
-
-@pytest.yield_fixture()
-def screen(qt, album, track_edition_page_creator):
-    album_screen = AlbumScreen(AlbumCompositionPage(album, doubles.audio_player()),
-                               AlbumEditionPage(Preferences(), album),
-                               track_edition_page_creator)
-    show_widget(album_screen)
-    yield album_screen
-    album_screen.close()
+    return create_screen
 
 
 @pytest.yield_fixture()
-def driver(screen, prober, automaton):
-    album_screen_driver = AlbumScreenDriver(WidgetIdentity(screen), prober, automaton)
+def driver(prober, automaton):
+    album_screen_driver = AlbumScreenDriver(window(AlbumScreen, named("album_screen")), prober, automaton)
     yield album_screen_driver
     album_screen_driver.close()
 
 
-def test_navigates_to_album_edition_page(screen, driver):
-    screen.navigate_to_album_edition_page()
-    driver.showsAlbumEditionPage()
+def test_jumps_to_album_edition_page(album_screen, driver):
+    screen = album_screen(build.album())
+    screen.show_album_edition_page()
+
+    fake_album_edition_page(driver).is_showing_on_screen()
 
 
-def test_navigates_to_album_composition_page(screen, driver):
-    screen.navigate_to_album_edition_page()
-    screen.navigate_to_album_composition_page()
-    driver.showsAlbumCompositionPage()
+def test_jumps_to_album_composition_page(album_screen, driver):
+    screen = album_screen(build.album())
+    screen.show_album_edition_page()
+    screen.show_album_composition_page()
+
+    fake_album_composition_page(driver).is_showing_on_screen()
 
 
-# todo change test_navigates_to_track_page to not register to the listener.
-def test_navigates_to_track_page(screen, driver, album):
-    album.addAlbumListener(screen)
-    album.add_track(build.track(track_title="Chevere!"))
-    album.add_track(build.track(track_title="Zumbar"))
-    album.add_track(build.track(track_title="Salsa Coltrane"))
+def test_jumps_to_track_page(album_screen, driver):
+    screen = album_screen(build.album(tracks=(build.track(), build.track(), build.track())))
+    screen.show_track_page(2)
 
-    screen.navigate_to_track_page(2)
-    driver.shows_track_metadata(track_title="Zumbar")
+    fake_track_edition_page(driver, number=2).is_showing_on_screen()
+
+
+def test_closes_children_pages_on_close(album_screen, driver):
+    screen = album_screen(build.album(tracks=(build.track(), build.track(), build.track())))
+    screen.close()
+
+    fake_album_composition_page(driver).is_closed()
+    fake_album_edition_page(driver).is_closed()
+    fake_track_edition_page(driver, number=1).is_closed()
+    fake_track_edition_page(driver, number=2).is_closed()
+    fake_track_edition_page(driver, number=3).is_closed()
 
 
 class AlbumScreenTest(WidgetTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
         self.album = build.album()
-        self.view = AlbumScreen(AlbumCompositionPage(self.album, doubles.audio_player()), AlbumEditionPage(Preferences(), self.album),
+        self.view = AlbumScreen(AlbumCompositionPage(self.album, doubles.audio_player()),
+                                AlbumEditionPage(Preferences(), self.album),
                                 self.createTrackEditionPage)
         self.show(self.view)
         self.driver = self.createDriverFor(self.view)
