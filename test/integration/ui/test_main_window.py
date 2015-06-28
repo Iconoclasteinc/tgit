@@ -9,7 +9,7 @@ from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
 from test.drivers import MainWindowDriver
 from test.integration.ui import show_widget
-from test.util import builders as build
+from test.util import builders as build, resources
 from test.util.doubles import album_screen, FakeAlbumScreen
 from tgit.ui import message_box as message, Dialogs
 from tgit.ui.main_window import MainWindow
@@ -35,6 +35,7 @@ def main_window(qt, fake_album_screen):
                         create_album_screen=create_fake_album_screen,
                         create_close_album_confirmation=message.close_album_confirmation_box,
                         select_export_destination=dialogs.export,
+                        select_tracks=dialogs.add_tracks,
                         confirm_exit=False)
     dialogs.parent = window
     show_widget(window)
@@ -62,11 +63,12 @@ def test_actions_are_disabled_once_album_is_closed(main_window, driver):
 
 def test_signals_when_add_files_menu_item_clicked(main_window, driver):
     album = build.album()
-    add_files_signal = ValueMatcherProbe("add files", album)
-    main_window.add_files.connect(add_files_signal.received)
-    main_window.enable_album_actions(album)
+    filename = resources.path("audio", "Zumbar.flac")
+    add_files_signal = ValueMatcherProbe("add files", contains(album, filename))
+    main_window.on_add_files(lambda current_album, file: add_files_signal.received([album, os.path.abspath(file)]))
+    main_window.display_album_screen(album)
 
-    driver.add_tracks_to_album(from_menu=True)
+    driver.add_tracks_to_album(filename, from_menu=True)
     driver.check(add_files_signal)
 
 
@@ -155,7 +157,7 @@ def test_adds_track_menu_item_when_adding_a_track_to_the_album(main_window, driv
     driver.shows_track_menu_item(title="Chevere!", track_number=1)
 
 
-def test_removes_track_menu_item_when_removing_a_track_to_the_album(main_window, driver):
+def test_removes_track_menu_item_when_removing_a_track_from_the_album(main_window, driver):
     album = build.album()
     main_window.display_album_screen(album)
 

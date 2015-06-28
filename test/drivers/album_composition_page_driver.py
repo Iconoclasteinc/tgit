@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMenu, QTableWidget
 from cute import gestures
 from cute.widgets import MenuDriver, TableViewDriver
 from cute.matchers import named
+from test.drivers import track_selection_dialog
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from ._screen_driver import ScreenDriver
 
@@ -33,8 +34,9 @@ class AlbumCompositionPageDriver(ScreenDriver):
     def has_track_count(self, count):
         self._track_table().has_row_count(equal_to(count))
 
-    def add_tracks(self):
-        self.button(named('_add_tracks_button')).click()
+    def add_tracks(self, *files):
+        self.button(named("_add_tracks_button")).click()
+        track_selection_dialog(self).select_tracks(*files)
 
     def has_context_menu_item(self, matching):
         context_menu = self._from_context_menu()

@@ -292,19 +292,20 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
     """
 
 
-def make_main_window(portfolio, on_add_files, on_add_folder,
+def make_main_window(portfolio, on_add_folder,
                      create_startup_screen,
                      create_album_screen,
                      create_close_album_confirmation,
                      select_export_destination,
+                     select_tracks,
                      **handlers):
     window = MainWindow(portfolio=portfolio,
                         create_startup_screen=create_startup_screen,
                         create_album_screen=create_album_screen,
                         create_close_album_confirmation=create_close_album_confirmation,
                         select_export_destination=select_export_destination,
+                        select_tracks=select_tracks,
                         **handlers)
-    window.add_files.connect(on_add_files)
     window.add_folder.connect(on_add_folder)
 
     return window
@@ -312,10 +313,10 @@ def make_main_window(portfolio, on_add_files, on_add_folder,
 
 @Observer
 class MainWindow(QMainWindow):
-    add_files = pyqtSignal(Album)
     add_folder = pyqtSignal(Album)
     _closing = False
     _album = None
+    _on_add_files = lambda *_: None
     _on_close_album = lambda *_: None
     _on_save_album = lambda: None
     _on_export = lambda: None
@@ -323,38 +324,23 @@ class MainWindow(QMainWindow):
     TRACK_ACTIONS_START_INDEX = 3
 
     def __init__(self, *, portfolio, confirm_exit, create_startup_screen, create_album_screen,
-                 create_close_album_confirmation, select_export_destination, **handlers):
+                 create_close_album_confirmation, select_export_destination, select_tracks, **handlers):
         super().__init__()
+        self._select_tracks = select_tracks
         self._confirm_exit = confirm_exit
         self._select_export_destination = select_export_destination
         self._create_close_album_confirmation = create_close_album_confirmation
         self._create_startup_screen = create_startup_screen
         self._create_album_screen = create_album_screen
-        ui_file.load(":/ui/main_window.ui", self)
 
-        self.setStyleSheet(StyleSheet)
-        self.add_files_action.triggered.connect(lambda checked: self.add_files.emit(self.add_files_action.data()))
-        self.add_folder_action.triggered.connect(lambda checked: self.add_folder.emit(self.add_folder_action.data()))
-        self.close_album_action.triggered.connect(self._confirm_album_close)
-        self.save_album_action.triggered.connect(self._save_album)
-        self.export_action.triggered.connect(self._choose_export_destination)
-        self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
-        self.to_album_composition_action.triggered.connect(self._to_album_composition_page)
-        self.exit_action.triggered.connect(self.close)
+        self._setup_ui()
+        self._setup_menu_bar()
+        self._setup_signals(portfolio)
 
         for name, handler in handlers.items():
             getattr(self, name)(handler)
 
-        self.subscribe(portfolio.album_removed, self.display_startup_screen)
-        self.subscribe(portfolio.album_created, self.display_album_screen)
-
-        if windows:
-            self.settings_action.setText(self.tr(self.settings_action.text()))
-
-        self.exit_action.setShortcut(QKeySequence.Quit)
-        self.close_album_action.setShortcut(QKeySequence.Close)
-        self.save_album_action.setShortcut(QKeySequence.Save)
-        self.album_dependent_action = [
+        self._album_dependent_action = [
             self.add_files_action,
             self.add_folder_action,
             self.export_action,
@@ -366,13 +352,13 @@ class MainWindow(QMainWindow):
 
     def enable_album_actions(self, album):
         self.navigate_menu.setEnabled(True)
-        for action in self.album_dependent_action:
+        for action in self._album_dependent_action:
             action.setEnabled(True)
             action.setData(album)
 
     def disable_album_actions(self):
         self.navigate_menu.setDisabled(True)
-        for action in self.album_dependent_action:
+        for action in self._album_dependent_action:
             action.setEnabled(False)
             action.setData(None)
 
@@ -402,6 +388,37 @@ class MainWindow(QMainWindow):
 
     def on_settings(self, on_settings):
         self.settings_action.triggered.connect(on_settings)
+
+    def on_add_files(self, handler):
+        self._on_add_files = handler
+
+    def _setup_ui(self):
+        ui_file.load(":/ui/main_window.ui", self)
+        self.setStyleSheet(StyleSheet)
+
+    def _setup_menu_bar(self):
+        self.add_files_action.triggered.connect(self._add_files)
+        self.add_folder_action.triggered.connect(lambda checked: self.add_folder.emit(self.add_folder_action.data()))
+        self.close_album_action.triggered.connect(self._confirm_album_close)
+        self.save_album_action.triggered.connect(self._save_album)
+        self.export_action.triggered.connect(self._choose_export_destination)
+        self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
+        self.to_album_composition_action.triggered.connect(self._to_album_composition_page)
+        self.exit_action.triggered.connect(self.close)
+
+        if windows:
+            self.settings_action.setText(self.tr(self.settings_action.text()))
+
+        self.exit_action.setShortcut(QKeySequence.Quit)
+        self.close_album_action.setShortcut(QKeySequence.Close)
+        self.save_album_action.setShortcut(QKeySequence.Save)
+
+    def _setup_signals(self, portfolio):
+        self.subscribe(portfolio.album_removed, self.display_startup_screen)
+        self.subscribe(portfolio.album_created, self.display_album_screen)
+
+    def _add_files(self):
+        self._select_tracks(self._album.type, lambda *files: self._on_add_files(self._album, *files))
 
     def _rebuild_track_actions(self, *_):
         self._clear_track_actions()
@@ -439,12 +456,19 @@ class MainWindow(QMainWindow):
         return self._on_save_album(self._album)
 
     def closeEvent(self, event):
-        if self._closing or not self._confirm_exit or self._album is None:
+        if self._should_close:
             return
 
-        response = QMessageBox.question(self, "", self.tr("Are you sure you want to quit?"),
-                                        QMessageBox.Yes | QMessageBox.No)
-        if response == QMessageBox.No:
-            event.ignore()
-        else:
+        if self._confirm_close("Are you sure you want to quit?"):
+            # There is an issue on MAC which results on the closeEvent being called twice when exiting the application.
+            # Setting _closing to True will prevent the confirmation message to be seen twice.
             self._closing = True
+        else:
+            event.ignore()
+
+    @property
+    def _should_close(self):
+        return self._closing or not self._confirm_exit or self._album is None
+
+    def _confirm_close(self, message):
+        return QMessageBox.question(self, "", self.tr(message), QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes

@@ -33,10 +33,12 @@ COLUMNS_WIDTHS = [30, 300, 245, 270, 90, 70]
 @Observer
 class AlbumCompositionPage(QWidget, AlbumListener):
     _playing_track = None
+    _on_add_tracks = lambda *_: None
 
-    def __init__(self, album, player, **handlers):
+    def __init__(self, album, player, select_tracks, **handlers):
         super().__init__()
-        self._setup_ui()
+        self._select_tracks = select_tracks
+        self._setup_ui(album)
         self._subscribe_to_events(album, player)
         self._tracks = []
 
@@ -47,7 +49,7 @@ class AlbumCompositionPage(QWidget, AlbumListener):
             self._insert_row(index, track)
 
     def on_add_tracks(self, handler):
-        self._add_tracks_button.clicked.connect(lambda pressed: handler())
+        self._on_add_tracks = handler
 
     def on_move_track(self, handler):
         self._track_table.verticalHeader().sectionMoved.connect(lambda _, from_, to: handler(self._tracks[from_], to))
@@ -66,8 +68,10 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         # todo when we have proper signals on album, we can get rid of that
         album.addAlbumListener(self)
 
-    def _setup_ui(self):
+    def _setup_ui(self, album):
         ui_file.load(":/ui/album_composition_page.ui", self)
+        self._add_tracks_button.clicked.connect(
+            lambda pressed: self._select_tracks(album.type, lambda *files: self._on_add_tracks(album, *files)))
         self._track_table.itemSelectionChanged.connect(self._update_actions)
         self._drag_and_drop_cursor = self._make_drag_and_drop_cursor(self._track_table)
         self._context_menu = self._make_context_menu(self._track_table)
@@ -219,6 +223,6 @@ class DragAndDropCursor(QObject):
         if event.type() == QEvent.MouseMove:
             self._table.setCursor(self.DRAGGING_CURSOR if self._mouse_pressed
                                   else self.DRAGGABLE_CURSOR if self._within_bounds(event.pos())
-                                  else self.REGULAR_CURSOR)
+            else self.REGULAR_CURSOR)
 
         return super().eventFilter(target, event)

@@ -6,12 +6,17 @@ from test.drivers import AlbumScreenDriver
 from test.integration.ui import WidgetTest, show_widget
 from test.util import builders as build, doubles
 from tgit.preferences import Preferences
+from tgit.ui import Dialogs
 
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
 
 from tgit.ui.album_screen import AlbumScreen
 from tgit.ui.track_edition_page import TrackEditionPage
+
+
+def ignore(*_):
+    pass
 
 
 @pytest.fixture()
@@ -31,7 +36,7 @@ def track_edition_page_creator(album):
 
 @pytest.yield_fixture()
 def screen(qt, album, track_edition_page_creator):
-    album_screen = AlbumScreen(AlbumCompositionPage(album, doubles.audio_player()),
+    album_screen = AlbumScreen(AlbumCompositionPage(album, doubles.audio_player(), select_tracks=ignore),
                                AlbumEditionPage(Preferences(), album),
                                track_edition_page_creator)
     show_widget(album_screen)
@@ -72,8 +77,8 @@ class AlbumScreenTest(WidgetTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
         self.album = build.album()
-        self.view = AlbumScreen(AlbumCompositionPage(self.album, doubles.audio_player()), AlbumEditionPage(Preferences(), self.album),
-                                self.createTrackEditionPage)
+        self.view = AlbumScreen(AlbumCompositionPage(self.album, doubles.audio_player(), select_tracks=ignore),
+                                AlbumEditionPage(Preferences(), self.album), self.createTrackEditionPage)
         self.show(self.view)
         self.driver = self.createDriverFor(self.view)
 

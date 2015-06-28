@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
+import os
 
 from hamcrest import has_property, contains, assert_that, empty
 import pytest
@@ -10,7 +11,8 @@ from cute.matchers import with_text
 from cute.probes import ValueMatcherProbe
 from test.drivers import AlbumCompositionPageDriver
 from test.integration.ui import show_widget
-from test.util import builders as build, doubles
+from test.util import resources, builders as build, doubles
+from tgit.ui import Dialogs
 from tgit.ui.album_composition_page import AlbumCompositionPage
 
 
@@ -21,12 +23,14 @@ def player():
 
 @pytest.fixture
 def album():
-    return build.album()
+    return build.album(release_name="Honeycomb")
 
 
 @pytest.fixture()
 def page(qt, album, player):
-    composition_page = AlbumCompositionPage(album, player)
+    dialogs = Dialogs(commands=None, native=False)
+    composition_page = AlbumCompositionPage(album, player, dialogs.add_tracks)
+    dialogs.parent=composition_page
     show_widget(composition_page)
     return composition_page
 
@@ -157,10 +161,11 @@ def test_changes_context_menu_option_to_stop_when_selected_track_is_playing(albu
 
 
 def test_signals_when_add_tracks_button_clicked(page, driver):
-    add_tracks_signal = ValueMatcherProbe('add tracks')
-    page.on_add_tracks(add_tracks_signal.received)
+    filename = resources.path("audio", "Zumbar.flac")
+    add_tracks_signal = ValueMatcherProbe("add tracks", contains(has_release_name("Honeycomb"), filename))
+    page.on_add_tracks(lambda current_album, file: add_tracks_signal.received([current_album, os.path.abspath(file)]))
 
-    driver.add_tracks()
+    driver.add_tracks(filename)
     driver.check(add_tracks_signal)
 
 
@@ -190,3 +195,7 @@ def test_unsubscribes_from_event_signals_on_close(album, player, page):
 
 def has_title(title):
     return has_property('track_title', title)
+
+
+def has_release_name(name):
+    return has_property("release_name", name)
