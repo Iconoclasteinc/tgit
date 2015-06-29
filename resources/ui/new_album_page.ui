@@ -35,6 +35,7 @@ QLineEdit {
 	color: #222222;
 	min-height: 20px;
     selection-background-color: #F9CFBA;
+	selection-color: #222222;
 }
 
 QRadioButton {

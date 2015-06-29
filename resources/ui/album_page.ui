@@ -31,6 +31,7 @@ QDateEdit,
 QComboBox,
 QSpinBox {
 	selection-background-color: #F9CFBA;
+	selection-color: #222222;
 }
 
 QCalendarWidget QAbstractItemView {

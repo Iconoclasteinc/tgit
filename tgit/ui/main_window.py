@@ -153,6 +153,7 @@ StyleSheet = """
 
     #track-edition-page QLineEdit, #track-edition-page TextArea, #track-edition-page QComboBox {
         selection-background-color: #F9CFBA;
+        selection-color: #222222;
     }
 
     #album-edition-page QLineEdit:focus, #album-edition-page TextArea:focus, #album-edition-page QComboBox:focus,
