@@ -237,17 +237,23 @@ QDateEdit::drop-down, QComboBox::drop-down {
 	width: 20px;
 }
 
-QDateEdit::down-arrow, QComboBox::down-arrow {
+QComboBox::down-arrow {
 	image: url(:/down-arrow.png);
 }
 
+QDateEdit::down-arrow {
+	image: url(:/images/calendar-14.png);
+}
+
 QDateEdit::down-arrow:on,
-QDateEdit::down-arrow:focus,
+QDateEdit::down-arrow:focus  {
+	image: url(:/images/calendar-14-focus.png);
+}
+
 QComboBox::down-arrow:on,
 QComboBox::down-arrow:focus {
 	image: url(:/down-arrow-on.png);
-}
-</string>
+}</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_7">
    <property name="spacing">

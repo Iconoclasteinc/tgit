@@ -38,5 +38,7 @@
         <file>images/dot-circle-o-18-orange-gray.png</file>
         <file>images/dot-circle-o-18-orange-gray-silver.png</file>
         <file>images/dot-circle-o-18-gray.png</file>
+        <file>images/calendar-14.png</file>
+        <file>images/calendar-14-focus.png</file>
     </qresource>
 </RCC>
