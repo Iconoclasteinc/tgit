@@ -1,0 +1,2461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>main_window</class>
+ <widget class="QMainWindow" name="main_window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1100</width>
+    <height>745</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1100</width>
+    <height>745</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>TGiT</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../Documents/Code/tgit/resources/resources.qrc">
+    <normaloff>:/tgit.ico</normaloff>:/tgit.ico</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="central_widget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QStackedWidget" name="page_container">
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QFrame" name="welcome_page">
+       <property name="styleSheet">
+        <string notr="true">#welcome_page {
+    background-color: #484848
+}
+
+#welcome_dialog {
+	padding: 20px;
+	min-width: 500px;
+	max-width: 500px;
+	min-height: 300px;
+	max-height: 300px;
+	background: white url(:/logo.png) no-repeat top left;
+}
+
+QPushButton {
+	background-color: transparent;
+    border: none;
+	font-size: 16px;
+    text-align: left;
+    padding-left: 30px;
+}
+
+QPushButton:hover {
+	color: #EC2327;
+}
+
+QPushButton#_new_album_button {
+   background: transparent url(:/images/folder-20-red.png) no-repeat center left;
+}
+
+QPushButton#_load_album_button {
+   background: transparent url(:/images/folder-open-20-red.png) no-repeat center left;
+}
+</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QWidget" name="welcome_dialog" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="leftMargin">
+            <number>10</number>
+           </property>
+           <property name="topMargin">
+            <number>10</number>
+           </property>
+           <property name="rightMargin">
+            <number>10</number>
+           </property>
+           <property name="bottomMargin">
+            <number>10</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="title">
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+    padding-top: 36px;
+	font-size: 28px;
+	font-weight: bold;
+}</string>
+             </property>
+             <property name="text">
+              <string>TGiT</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="_version_label">
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+	font-size: 16px;
+    color: #666666;
+}</string>
+             </property>
+             <property name="text">
+              <string>v1.7.0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QWidget" name="widget" native="true">
+             <layout class="QGridLayout" name="gridLayout_2">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <property name="horizontalSpacing">
+               <number>0</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>25</number>
+              </property>
+              <item row="4" column="1">
+               <widget class="QPushButton" name="_new_album_button">
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::TabFocus</enum>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string>Create New Release*</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="0">
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="1">
+               <widget class="QPushButton" name="_load_album_button">
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::TabFocus</enum>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
+                <property name="text">
+                 <string>Load Existing Release</string>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="footnote">
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+	font-size: 10px;
+}</string>
+             </property>
+             <property name="text">
+              <string>*as per MusicBrainz terminology</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QFrame" name="new_album_page">
+       <property name="styleSheet">
+        <string notr="true">#new_album_page {
+    background-color: #484848
+}
+
+#new_album_dialog {
+	padding: 20px;
+	min-width: 500px;
+	max-width: 500px;
+	min-height: 300px;
+	max-height: 300px;
+	background: white url(':/logo.png') no-repeat top left;
+}
+
+QLabel {
+	color: #2D2D25;
+	font-size: 14px;
+}
+
+QLineEdit {
+	background-color: #F9F9F9;
+	border: 1px solid #B1B1B1;
+	color: #222222;
+	min-height: 20px;
+    selection-background-color: #F9CFBA;
+	selection-color: #222222;
+}
+
+QRadioButton {
+	min-height: 22px;
+}
+
+QLineEdit:focus {
+	border: 1px solid #F79D6C;
+}
+</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QWidget" name="new_album_dialog" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="leftMargin">
+            <number>40</number>
+           </property>
+           <property name="topMargin">
+            <number>20</number>
+           </property>
+           <property name="rightMargin">
+            <number>40</number>
+           </property>
+           <property name="bottomMargin">
+            <number>30</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="title_2">
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+	font-size: 28px;
+	font-weight: bold;
+	margin-top: 24px;
+    margin-bottom: 12px;
+}</string>
+             </property>
+             <property name="text">
+              <string>New Release</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QWidget" name="new_album_info_container" native="true">
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+	background-color: #F25C0A;
+	border: 2px solid #F25C0A;
+	border-radius: 4px;
+	color: white;
+	font-weight: bold;
+	font-size: 10px;
+	padding: 3px 10px;
+}
+
+QPushButton:hover,
+QPushButton:focus {
+	background-color: #D95109;
+	border-color: #D95109;
+}
+
+QPushButton:pressed {
+	border: 2px solid transparent;
+}</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>12</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>10</number>
+              </property>
+              <item row="0" column="1">
+               <widget class="QWidget" name="widget_2" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>22</height>
+                 </size>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QRadioButton::indicator {
+    width: 22px;
+    height: 22px;
+}
+
+QRadioButton::indicator::unchecked {
+	image: url(:/images/radio-unchecked.png);
+}
+
+QRadioButton::indicator:unchecked:focus {
+	image: url(:/images/radio-unchecked-focus.png);
+}
+
+QRadioButton::indicator:unchecked:pressed {
+    image: url(:/images/radio-unchecked-pressed.png)
+}
+
+QRadioButton::indicator::checked {
+    image: url(:/images/radio-checked.png)
+}
+
+QRadioButton::indicator:checked:focus {
+    image: url(:/images/radio-checked-focus.png)
+}
+
+QRadioButton::indicator:checked:pressed {
+    image: url(:/images/radio-checked-pressed.png)
+}</string>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QRadioButton" name="_flac_button">
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                   <property name="text">
+                    <string>FLAC</string>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>22</width>
+                     <height>22</height>
+                    </size>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="_mp3_button">
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
+                   <property name="text">
+                    <string>MP3</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_3">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="track_location_label">
+                <property name="text">
+                 <string>Reference Track:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>track_location</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="album_name"/>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="album_name_label">
+                <property name="text">
+                 <string>Name:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>album_name</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="album_location_label">
+                <property name="text">
+                 <string>Location:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>album_location</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QLineEdit" name="track_location"/>
+              </item>
+              <item row="8" column="2">
+               <widget class="QPushButton" name="browse_track_location_button">
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::ClickFocus</enum>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="2">
+               <widget class="QPushButton" name="browse_album_location_button">
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="focusPolicy">
+                 <enum>Qt::ClickFocus</enum>
+                </property>
+                <property name="text">
+                 <string>...</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Type:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>_flac_button</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="album_location"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="buttons_container" native="true">
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+	background-color: #EC2327;
+	border: 2px solid #EC2327;
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: bold;
+	color: white;
+	padding: 10px 10px 7px 10px;
+}
+
+QPushButton:hover {
+	background-color: #D42023;
+	border-color: #D42023;
+}
+
+QPushButton:pressed {
+	border: 2px solid transparent;
+}
+
+QPushButton:disabled {
+	border-color: #E16365;
+	background-color: #E16365;
+}</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_12">
+              <property name="spacing">
+               <number>10</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <spacer name="horizontalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="cancel_button">
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="text">
+                 <string>CANCEL</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="create_button">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="text">
+                 <string>CREATE</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="album_screen">
+       <property name="styleSheet">
+        <string notr="true">QStackedWidget {
+	margin: 5 15px 5px 15px;
+}
+
+#navigation {
+    min-height: 48px;
+}
+
+#controls {
+    min-height: 48px;
+}
+
+#controls, #navigation {
+    background-color: #595959;
+}
+
+#previous {
+	padding: 4px 2px 2px 12px;
+    color: white;
+	background-color: transparent;
+    border-image: url(:/previous.png) 1 1 1 12;
+	border-top: 1px transparent;
+    border-right: 12px transparent;
+	border-bottom: 1px transparent;
+    border-left: 12px transparent;
+	margin-left: 14px;
+    text-align: left;
+}
+
+#previous:disabled {
+    border-image: url(:/nothing.png) 1 1 1 1;
+    background-color: transparent;
+    color: transparent;
+}
+
+#save {
+    border: 2px solid #F25C0A;
+    border-radius: 5px;
+    background-color: #F25C0A;
+    font-size: 15px;
+    min-width: 110px;
+    font-weight: bold;
+    color: white;
+    padding: 5px 8px 5px 8px;
+}
+
+#save:disabled {
+    background-color: transparent;
+    border: none;
+    color: transparent;
+}
+
+#save:focus, #save:hover {
+    background-color: #D95109;
+    border-color: #D95109;
+}
+
+#save:pressed {
+    border: 2px solid #595959;
+}
+
+#next {
+    padding: 4px 12px 2px 2px;
+    color: #F25C0A;
+    background-color: transparent;
+    border-image: url(:/next.png) 1 12 1 1;
+    border-top: 1px transparent;
+    border-right: 12px transparent;
+    border-bottom: 1px transparent;
+    border-left: 12px transparent;
+    margin-right: 14px;
+    text-align: right;
+}
+
+#next:disabled {
+    border-image: url(:/nothing.png) 1 1 1 1;
+    background-color: transparent;
+    color: transparent;
+}</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QWidget" name="navigation" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <property name="leftMargin">
+            <number>25</number>
+           </property>
+           <property name="topMargin">
+            <number>10</number>
+           </property>
+           <property name="rightMargin">
+            <number>25</number>
+           </property>
+           <property name="bottomMargin">
+            <number>10</number>
+           </property>
+           <item>
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="feature_request_link">
+             <property name="text">
+              <string>&lt;a style=&quot;color: white&quot; href=&quot;mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !&quot;&gt;Request Feature&lt;/a&gt;</string>
+             </property>
+             <property name="openExternalLinks">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="help_link">
+             <property name="text">
+              <string>&lt;a style=&quot;color: white&quot; href=&quot;http://tagyourmusic.com/#style-guide&quot;&gt;Help&lt;/a&gt;</string>
+             </property>
+             <property name="openExternalLinks">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QStackedWidget" name="album_pages">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="album_composition_page">
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QWidget" name="widget_3" native="true">
+              <property name="styleSheet">
+               <string notr="true">margin: 10px 0;</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_14">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>Organize the release's tracks.</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame">
+              <property name="palette">
+               <palette>
+                <active>
+                 <colorrole role="WindowText">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>213</red>
+                    <green>213</green>
+                    <blue>213</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                 <colorrole role="Button">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                 <colorrole role="Base">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                 <colorrole role="Window">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                </active>
+                <inactive>
+                 <colorrole role="WindowText">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>213</red>
+                    <green>213</green>
+                    <blue>213</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                 <colorrole role="Button">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                 <colorrole role="Base">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                 <colorrole role="Window">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                </inactive>
+                <disabled>
+                 <colorrole role="WindowText">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>127</red>
+                    <green>127</green>
+                    <blue>127</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                 <colorrole role="Button">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                 <colorrole role="Base">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                 <colorrole role="Window">
+                  <brush brushstyle="SolidPattern">
+                   <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                   </color>
+                  </brush>
+                 </colorrole>
+                </disabled>
+               </palette>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: white;</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::Panel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
+              </property>
+              <property name="lineWidth">
+               <number>1</number>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <property name="leftMargin">
+                <number>10</number>
+               </property>
+               <property name="topMargin">
+                <number>10</number>
+               </property>
+               <property name="rightMargin">
+                <number>10</number>
+               </property>
+               <property name="bottomMargin">
+                <number>10</number>
+               </property>
+               <item>
+                <widget class="QTableWidget" name="_track_table">
+                 <property name="contextMenuPolicy">
+                  <enum>Qt::CustomContextMenu</enum>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QTableView::item {
+  border-bottom: 1px solid #F7C3B7;
+}
+
+QMenu {
+	background-color: white;
+}
+
+::item::alternate {
+  background-color:#F9F7F7;
+}
+
+::item::selected {
+  background-color:#F25C0A;
+}
+
+QHeaderView {
+  background-color: transparent;
+}
+
+QHeaderView::section {
+  background-color: transparent;
+}
+
+QHeaderView::section:horizontal {
+  font-weight: bold;
+  font-size: 13px;
+  padding: 21px 5px 18px 5px;
+  border-top: 1px solid #F7C3B7;
+  border-bottom: 1px solid #F7C3B7;
+  border-right: 1px solid #F2F2F2;
+  min-height: 15px;
+}
+
+QHeaderView::section:vertical {
+  padding: 4px 0px;
+  border-bottom: 1px solid #F7C3B7;
+  border-left: none;
+  border-top: none;
+  max-width: 24px;
+}
+
+QTableCornerButton::section {
+  background-color: transparent;
+  border-top: 1px solid #F7C3B7;
+  border-bottom: 1px solid #F7C3B7;
+}</string>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>0</number>
+                 </property>
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+                 </property>
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SingleSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectRows</enum>
+                 </property>
+                 <property name="showGrid">
+                  <bool>false</bool>
+                 </property>
+                 <property name="columnCount">
+                  <number>6</number>
+                 </property>
+                 <attribute name="verticalHeaderDefaultSectionSize">
+                  <number>30</number>
+                 </attribute>
+                 <attribute name="verticalHeaderMinimumSectionSize">
+                  <number>30</number>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>#</string>
+                  </property>
+                  <property name="textAlignment">
+                   <set>AlignRight|AlignVCenter</set>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Track Title</string>
+                  </property>
+                  <property name="textAlignment">
+                   <set>AlignLeft|AlignVCenter</set>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Lead Performer</string>
+                  </property>
+                  <property name="textAlignment">
+                   <set>AlignLeft|AlignVCenter</set>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Release Name</string>
+                  </property>
+                  <property name="textAlignment">
+                   <set>AlignLeft|AlignVCenter</set>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Bitrate</string>
+                  </property>
+                  <property name="textAlignment">
+                   <set>AlignRight|AlignVCenter</set>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Duration</string>
+                  </property>
+                  <property name="textAlignment">
+                   <set>AlignRight|AlignVCenter</set>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="widget_4" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_13">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QPushButton" name="_add_tracks_button">
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">* {
+    background-color: #EC2327;
+    border: 2px solid #EC2327;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    padding: 10px 10px 7px 10px;
+}
+
+:hover {
+    background-color: #D42023;
+    border-color: #D42023;
+}
+
+:pressed {
+    border: 2px solid transparent;
+}
+
+</string>
+                    </property>
+                    <property name="text">
+                     <string>ADD</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_10">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="album_edition_page">
+           <property name="styleSheet">
+            <string notr="true">QLineEdit,
+QPlainTextEdit,
+QDateEdit,
+QDateEdit::drop-down,
+QDateEdit QAbsractItemView,
+QComboBox,
+QComboBox::drop-down,
+QComboBox QAbstractItemView {
+	background-color: #F9F9F9;
+	border: 1px solid #B1B1B1;
+	color: #222222;
+	min-height: 20px;
+}
+
+QLineEdit,
+QPlainTextEdit,
+QDateEdit,
+QComboBox,
+QSpinBox {
+	selection-background-color: #F9CFBA;
+	selection-color: #222222;
+}
+
+QCalendarWidget QAbstractItemView {
+    selection-background-color: #F25C0A;
+}
+
+QCalendarWidget QToolButton {
+	color: white;
+    background-color: transparent;
+}
+
+QCalendarWidget QToolButton#qt_calendar_monthbutton {
+	padding-right: 15px;
+}
+
+QCalendarWidget QMenu {
+	background-color: white;
+}
+
+QCalendarWidget QMenu::item::selected {
+  background-color:#F25C0A;
+}
+
+QCalendarWidget QToolButton::menu-indicator {
+    subcontrol-position: right center;
+    top: 2px; right: 2px;
+}
+
+QCalendarWidget QToolButton::menu-indicator {
+	image: url(:/images/chevron-down-white-8.png);
+}
+
+QCalendarWidget QToolButton::menu-indicator:open {
+    top: 3px; right: 1px; /* shift it a bit */
+}
+
+QSpinBox::up-button {
+	background-color: transparent;
+	border: 1px solid #F79D6C;
+    padding: 1px;
+	image: url(:/images/chevron-up-black-8.png);
+}
+
+QSpinBox::up-button:pressed {
+	padding: 0px 1px 2px 2px;
+}
+
+QSpinBox::down-button {
+	background-color: transparent;
+	border: 1px solid #F79D6C;
+    padding: 1px;
+	image: url(:/images/chevron-down-black-8.png);
+}
+
+QSpinBox::down-button:pressed {
+	padding: 2px 1px 0px 2px;
+}
+
+#lead_performer_container, #guest_performers_container, #isni_container {
+    min-height: 22px;
+}
+
+QGroupBox {
+	border: 1px solid #DDDDDD;
+	border-bottom: 2px solid rgba(0, 0, 0, 20%);
+	background-color: white;
+	padding: 17px 14px 14px 0px;
+	margin: 5px 8px;
+	font-size: 10px;
+}
+
+QGroupBox::title {
+	subcontrol-origin: margin;
+	subcontrol-position: top left;
+	left: 1px;
+	padding: 0 3px;
+	color: #777777;
+	border: 1px solid #DFDFDF;
+	background-color: #F7F7F7;
+ }
+
+QPushButton {
+	background-color: #F25C0A;
+	border: 2px solid #F25C0A;
+	border-radius: 4px;
+	color: white;
+	font-weight: bold;
+}
+
+QPushButton:disabled {
+	border-color: #ED8D58;
+	background-color: #ED8D58;
+}
+
+QPushButton:hover,
+QPushButton:focus {
+	background-color: #D95109;
+	border-color: #D95109;
+}
+
+QPushButton:pressed {
+	border: 2px solid transparent;
+}
+
+#picture_box {
+	padding: 13px 14px 10px 14px;
+ }
+
+#front_cover {
+	min-width: 350px;
+	max-width: 350px;
+	min-height: 350px;
+	max-height: 350px;
+	background-color: #F9F9F9;
+	border: 1px solid #F79D6C;
+}
+
+#album_box QPushButton {
+	font-size: 10px;
+	padding: 3px 10px;
+	margin: 0;
+}
+
+#picture_box QPushButton {
+	font-size: 12px;
+	padding: 10px 10px 7px 10px;
+}
+
+QPushButton#select_picture_button {
+	background-image: url(:/add-picture.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-origin: border;
+	padding-left: 34px;
+}
+
+QLineEdit:focus,
+QPlainTextEdit:focus,
+QDateEdit:focus,
+QDateEdit:on,
+QDateEdit::drop-down:focus,
+QDateEdit::drop-down:on,
+QDateEdit QAbstractItemView:focus,
+QComboBox:focus,
+QComboBox:on,
+QComboBox::drop-down:focus,
+QComboBox::drop-down:on,
+QComboBox QAbstractItemView:focus,
+QSpinBox:focus {
+	border: 1px solid #F79D6C;
+}
+
+QLineEdit:disabled,
+QPlainTextEdit:disabled,
+QDateEdit:disabled,
+QDateEdit::drop-down:disabled {
+	background-color: #FCFCFC;
+	border-color: #E7E7E7;
+	color: #C2C2C2;
+}
+
+QCheckBox {
+	min-height: 20px;
+	padding: 1px 2px 2px 2px;
+}
+
+QCheckBox::indicator {
+	width: 14px;
+	height: 14px;
+	subcontrol-position: left center;
+}
+
+QCheckBox::indicator:unchecked {
+	image: url(:/checkbox.png);
+}
+
+QCheckBox::indicator:unchecked:focus {
+	image: url(:/checkbox-hover.png);
+}
+
+QCheckBox::indicator:unchecked:pressed {
+	image: url(:/checkbox-pressed.png);
+}
+
+QCheckBox::indicator:checked {
+	image: url(:/checkbox-checked.png);
+}
+
+QCheckBox::indicator:checked:focus {
+	image: url(:/checkbox-checked-hover.png);
+}
+
+QCheckBox::indicator:checked:pressed {
+	image: url(:/checkbox-checked-pressed.png);
+}
+
+QLabel {
+	color: #444444;
+	min-width: 175px;
+}
+
+QLabel:disabled {
+	color: #C2C2C2;
+}
+
+QDateEdit::drop-down, QComboBox::drop-down {
+	padding: 0;
+	margin: 0;
+	subcontrol-origin: border;
+	subcontrol-position: top right;
+	width: 20px;
+}
+
+QComboBox::down-arrow {
+	image: url(:/down-arrow.png);
+}
+
+QComboBox::down-arrow:on,
+QComboBox::down-arrow:focus {
+	image: url(:/down-arrow-on.png);
+}
+
+QDateEdit::down-arrow {
+	image: url(:/images/calendar.png);
+}
+
+QDateEdit::down-arrow:on,
+QDateEdit::down-arrow:focus  {
+	image: url(:/images/calendar-focus.png);
+}
+
+QDateEdit::down-arrow:disabled  {
+	image: url(:/images/calendar-disabled.png);
+}</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QWidget" name="left_column" native="true">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+               <property name="spacing">
+                <number>6</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QGroupBox" name="picture_box">
+                 <property name="title">
+                  <string/>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_5">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="front_cover">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>352</width>
+                      <height>352</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>352</width>
+                      <height>352</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="buddy">
+                     <cstring>front_cover</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QWidget" name="picture_box_buttons" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_10">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <spacer name="horizontalSpacer_7">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="select_picture_button">
+                       <property name="text">
+                        <string>SELECT PICTURE...</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="remove_picture_button">
+                       <property name="text">
+                        <string>REMOVE</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_8">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="dates_box">
+                 <property name="title">
+                  <string>DATES</string>
+                 </property>
+                 <layout class="QFormLayout" name="formLayout">
+                  <property name="horizontalSpacing">
+                   <number>6</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="release_time_caption">
+                    <property name="text">
+                     <string>Release Time:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>release_time</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QDateEdit" name="release_time">
+                    <property name="accelerated">
+                     <bool>true</bool>
+                    </property>
+                    <property name="calendarPopup">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="digital_release_time_caption">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Digital Release Time:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>digital_release_time</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QDateEdit" name="digital_release_time">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="accelerated">
+                     <bool>true</bool>
+                    </property>
+                    <property name="calendarPopup">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="original_release_time_caption">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Original Release Time:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>original_release_time</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QDateEdit" name="original_release_time">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="accelerated">
+                     <bool>true</bool>
+                    </property>
+                    <property name="calendarPopup">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="recording_time_caption">
+                    <property name="text">
+                     <string>Recording Time:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>recording_time</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QDateEdit" name="recording_time">
+                    <property name="accelerated">
+                     <bool>true</bool>
+                    </property>
+                    <property name="calendarPopup">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="right_column" native="true">
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QGroupBox" name="album_box">
+                 <property name="title">
+                  <string>ALBUM</string>
+                 </property>
+                 <layout class="QFormLayout" name="formLayout_2">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="release_name_caption">
+                    <property name="text">
+                     <string>Release Name:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>release_name</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="release_name"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="compilation_caption">
+                    <property name="text">
+                     <string>Compilation:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>compilation</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QCheckBox" name="compilation">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QWidget" name="lead_performer_container" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_7">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLineEdit" name="lead_performer">
+                       <property name="placeholderText">
+                        <string>Artist, Band or Various Artists</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="lookup_isni_button">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>LOOKUP ISNI</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="assign_isni_button">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>ASSING ISNI</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="isni_caption">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>ISNI:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>isni</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QWidget" name="isni_container" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_8">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLineEdit" name="isni">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="clear_isni_button">
+                       <property name="text">
+                        <string>CLEAR ISNI</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="area_caption">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Area:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>area</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QLineEdit" name="area">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="guest_performers_caption">
+                    <property name="text">
+                     <string>Guest Performers:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>guest_performers</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QWidget" name="guest_performers_container" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_9">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLineEdit" name="guest_performers">
+                       <property name="placeholderText">
+                        <string>Instrument1: Performer1; Instrument2: Performer2; ...</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="add_guest_performers_button">
+                       <property name="text">
+                        <string>+</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="lead_performer_caption">
+                    <property name="text">
+                     <string>Lead Performer:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>lead_performer</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="record_box">
+                 <property name="title">
+                  <string>RECORD</string>
+                 </property>
+                 <layout class="QFormLayout" name="formLayout_3">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_name_caption">
+                    <property name="text">
+                     <string>Label Name:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>label_name</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="label_name"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="catalog_number_caption">
+                    <property name="text">
+                     <string>Catalog Number:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>catalog_number</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="catalog_number"/>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="barcode_caption">
+                    <property name="text">
+                     <string>UPC/EAN:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>barcode</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="barcode">
+                    <property name="placeholderText">
+                     <string>1234567899999</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="media_type_caption">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Media Type:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>media_type</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLineEdit" name="media_type">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="release_type_label">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Release Type:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>release_type</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QLineEdit" name="release_type">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="comments_caption">
+                    <property name="text">
+                     <string>Comments:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>comments</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="TextArea" name="comments">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>1</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="tabChangesFocus">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="recording_box">
+                 <property name="title">
+                  <string>RECORDING</string>
+                 </property>
+                 <layout class="QFormLayout" name="formLayout_4">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="recording_studios_caption">
+                    <property name="text">
+                     <string>Recording Studios:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>recording_studios</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="recording_studios"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="producer_caption">
+                    <property name="text">
+                     <string>Producer:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>producer</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="producer"/>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="mixer_caption">
+                    <property name="text">
+                     <string>Mixer:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>mixer</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="mixer"/>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="genre_caption">
+                    <property name="text">
+                     <string>Primary Style:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="buddy">
+                     <cstring>genre</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QComboBox" name="genre">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>1</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::TabFocus</enum>
+                    </property>
+                    <property name="editable">
+                     <bool>true</bool>
+                    </property>
+                    <property name="insertPolicy">
+                     <enum>QComboBox::NoInsert</enum>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>Blues</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Country</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Dance</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Hip-Hop</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="controls" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="previous">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>PREVIOUS</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="next">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>NEXT</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menu_bar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1100</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="file_menu">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="add_files_action"/>
+    <addaction name="add_folder_action"/>
+    <addaction name="close_album_action"/>
+    <addaction name="export_action"/>
+    <addaction name="separator"/>
+    <addaction name="settings_action"/>
+   </widget>
+   <addaction name="file_menu"/>
+  </widget>
+  <action name="settings_action">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="add_files_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Add Files...</string>
+   </property>
+  </action>
+  <action name="add_folder_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Add Folder...</string>
+   </property>
+  </action>
+  <action name="export_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Export...</string>
+   </property>
+  </action>
+  <action name="actionFiles">
+   <property name="text">
+    <string>Add Files...</string>
+   </property>
+  </action>
+  <action name="close_album_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Close album</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TextArea</class>
+   <extends>QPlainTextEdit</extends>
+   <header>tgit.ui.helpers.text_area</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../Documents/Code/tgit/resources/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
