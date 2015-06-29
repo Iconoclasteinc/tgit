@@ -492,6 +492,10 @@
         <source>Are you sure you want to stop working on this release?</source>
         <translation>Êtes-vous certain de vouloir arrêter de travailler sur cet album?</translation>
     </message>
+    <message>
+        <source>This album already exists. Are you sure you want to replace it?</source>
+        <translation>Cet album existe déjà. Êtes-vous sur de vouloir le remplacer ?</translation>
+    </message>
 </context>
 <context>
     <name>SettingsDialog</name>
