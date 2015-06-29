@@ -15,7 +15,7 @@ from cute.table import TableMatcher, TableManipulation, Table
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                      WidgetScreenBoundsProbe)
 from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector,
-                      WidgetIdentity)
+                      WidgetIdentity, MissingWidgetFinder)
 
 windows = sys.platform == "win32"
 mac = sys.platform == "darwin"
@@ -67,13 +67,19 @@ class WidgetDriver:
             parent.gesture_performer)
 
     @classmethod
+    def find_none(cls, parent, widget_type, *matchers):
+        return cls(MissingWidgetFinder(
+            RecursiveWidgetFinder(widget_type, all_of(*matchers), parent.selector)), parent.prober,
+            parent.gesture_performer)
+
+    @classmethod
     def find_nth(cls, parent, widget_type, index, *matchers):
         return cls(NthWidgetFinder(
             RecursiveWidgetFinder(widget_type, all_of(*matchers), parent.selector), index),
             parent.prober, parent.gesture_performer)
 
     def exists(self):
-        self.is_(match.existing())
+        self.check(self.selector)
 
     def is_showing_on_screen(self):
         self.is_(match.showing_on_screen())
@@ -103,6 +109,9 @@ class WidgetDriver:
         manipulation = QueryManipulation(widget_query)
         self.manipulate("query {0}".format(description), manipulation)
         return manipulation.value
+
+    def widget(self):
+        return self.query("widget", lambda widget: widget)
 
     def widget_center(self):
         return self.widget_bounds().center()

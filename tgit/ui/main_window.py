@@ -391,7 +391,8 @@ class MainWindow(QMainWindow):
 
     def _close_current_screen(self):
         if self.centralWidget() is not None:
-            self.centralWidget().close()
+            widget = self.takeCentralWidget()
+            widget.close()
 
     def _show_screen(self, screen):
         self.setCentralWidget(screen)

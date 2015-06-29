@@ -6,9 +6,11 @@ from cute.finders import WidgetIdentity
 from cute.matchers import named
 from cute.widgets import window
 from test.drivers import AlbumScreenDriver
-from test.drivers.fake_drivers import fake_album_edition_page, fake_album_composition_page, fake_track_edition_page
+from test.drivers.fake_drivers import album_edition_page, album_composition_page, track_edition_page, \
+    no_album_edition_page, no_album_composition_page, no_track_edition_page
 from test.integration.ui import WidgetTest, show_widget
-from test.integration.ui import fake_widgets
+from test.integration.ui.fake_widgets import fake_album_composition_page, fake_track_edition_page
+from test.integration.ui.fake_widgets import fake_album_edition_page
 from test.util import builders as build, doubles
 from tgit.preferences import Preferences
 from tgit.ui.album_composition_page import AlbumCompositionPage
@@ -20,9 +22,9 @@ from tgit.ui.track_edition_page import TrackEditionPage
 @pytest.fixture()
 def album_screen(qt):
     def create_screen(album):
-        screen = AlbumScreen(fake_widgets.album_composition_page(),
-                             fake_widgets.album_edition_page(),
-                             lambda track: fake_widgets.track_edition_page(track.track_number))
+        screen = AlbumScreen(fake_album_composition_page(),
+                             fake_album_edition_page(),
+                             lambda track: fake_track_edition_page(track.track_number))
 
         # todo this should soon move to the screen itself
         album.addAlbumListener(screen)
@@ -46,7 +48,7 @@ def test_jumps_to_album_edition_page(album_screen, driver):
     screen = album_screen(build.album())
     screen.show_album_edition_page()
 
-    fake_album_edition_page(driver).is_showing_on_screen()
+    album_edition_page(driver).is_showing_on_screen()
 
 
 def test_jumps_to_album_composition_page(album_screen, driver):
@@ -54,25 +56,32 @@ def test_jumps_to_album_composition_page(album_screen, driver):
     screen.show_album_edition_page()
     screen.show_album_composition_page()
 
-    fake_album_composition_page(driver).is_showing_on_screen()
+    album_composition_page(driver).is_showing_on_screen()
 
 
 def test_jumps_to_track_page(album_screen, driver):
     screen = album_screen(build.album(tracks=(build.track(), build.track(), build.track())))
     screen.show_track_page(2)
 
-    fake_track_edition_page(driver, number=2).is_showing_on_screen()
+    track_edition_page(driver, number=2).is_showing_on_screen()
 
 
 def test_closes_children_pages_on_close(album_screen, driver):
     screen = album_screen(build.album(tracks=(build.track(), build.track(), build.track())))
+
+    composition_page = album_composition_page(driver).widget()
+    album_page = album_edition_page(driver).widget()
+    track_pages = [track_edition_page(driver, number + 1).widget() for number in range(3)]
+
     screen.close()
 
-    fake_album_composition_page(driver).is_closed()
-    fake_album_edition_page(driver).is_closed()
-    fake_track_edition_page(driver, number=1).is_closed()
-    fake_track_edition_page(driver, number=2).is_closed()
-    fake_track_edition_page(driver, number=3).is_closed()
+    no_album_composition_page(driver).exists()
+    composition_page.is_closed()
+    no_album_edition_page(driver).exists()
+    album_page.is_closed()
+    for number, track_page in enumerate(track_pages):
+        no_track_edition_page(driver, number).exists()
+        track_page.is_closed()
 
 
 class AlbumScreenTest(WidgetTest):

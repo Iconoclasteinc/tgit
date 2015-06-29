@@ -8,9 +8,9 @@ import pytest
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
 from test.drivers import MainWindowDriver
-from test.drivers.fake_drivers import fake_album_screen, fake_startup_screen
+from test.drivers.fake_drivers import no_startup_screen, no_album_screen, album_screen, startup_screen
 from test.integration.ui import show_widget
-from test.integration.ui import fake_widgets
+from test.integration.ui.fake_widgets import fake_startup_screen, fake_album_screen
 from test.util import builders as build
 from tgit.ui import message_box as message, Dialogs
 from tgit.ui.main_window import MainWindow
@@ -24,8 +24,8 @@ def ignore(*_):
 def main_window(qt):
     dialogs = Dialogs(commands=None, native=False)
     window = MainWindow(portfolio=build.album_portfolio(),
-                        create_startup_screen=fake_widgets.startup_screen,
-                        create_album_screen=fake_widgets.album_screen,
+                        create_startup_screen=fake_startup_screen,
+                        create_album_screen=fake_album_screen,
                         create_close_album_confirmation=message.close_album_confirmation_box,
                         select_export_destination=dialogs.export,
                         confirm_exit=False)
@@ -127,7 +127,7 @@ def test_navigates_to_album_edition_page_item_when_menu_item_is_clicked(main_win
     main_window.display_album_screen(album)
 
     driver.navigate_to_album_page()
-    fake_album_screen(driver).is_showing_album_edition_page()
+    album_screen(driver).is_showing_album_edition_page()
 
 
 def test_navigates_to_album_composition_page_item_when_menu_item_is_clicked(main_window, driver):
@@ -136,7 +136,7 @@ def test_navigates_to_album_composition_page_item_when_menu_item_is_clicked(main
 
     driver.navigate_to_album_page()
     driver.navigate_to_composition_page()
-    fake_album_screen(driver).is_showing_album_composition_page()
+    album_screen(driver).is_showing_album_composition_page()
 
 
 def test_adds_track_menu_item_when_adding_a_track_to_the_album(main_window, driver):
@@ -187,12 +187,18 @@ def test_navigates_to_track_page_when_menu_item_is_clicked(main_window, driver):
     album.add_track(build.track(track_title="Salsa Coltrane"))
 
     driver.navigate_to_track_page(title="Salsa Coltrane", track_number=3)
-    fake_album_screen(driver).is_showing_track_edition_page(3)
+    album_screen(driver).is_showing_track_edition_page(3)
 
 
 def test_closes_main_widget_when_changing_page(main_window, driver):
     album = build.album()
+
+    screen = startup_screen(driver).widget()
     main_window.display_album_screen(album)
-    fake_startup_screen(driver).is_closed()
+    no_startup_screen(driver).exists()
+    screen.is_closed()
+
+    screen = album_screen(driver).widget()
     main_window.display_startup_screen()
-    fake_album_screen(driver).is_closed()
+    no_album_screen(driver).exists()
+    screen.is_closed()

@@ -109,6 +109,30 @@ class SingleWidgetFinder(WidgetSelector):
         return len(self.widgets()) == 1
 
 
+class MissingWidgetFinder(WidgetFinder):
+    def __init__(self, finder):
+        super().__init__()
+        self._finder = finder
+
+    def is_satisfied(self):
+        return self._finder.is_satisfied() & self._is_missing()
+
+    def test(self):
+        self._finder.test()
+
+    def widgets(self):
+        return self._finder.widgets()
+
+    def describe_to(self, description):
+        description.append_text('no ').append_description_of(self._finder)
+
+    def describe_failure_to(self, description):
+        self._finder.describe_failure_to(description)
+
+    def _is_missing(self):
+        return len(self.widgets()) == 0
+
+
 class WidgetIdentity(WidgetSelector):
     def __init__(self, widget, description=None):
         self._widget = widget

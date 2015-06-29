@@ -87,7 +87,7 @@ class AlbumScreen(QWidget, AlbumListener):
         self._insert_page(page, self.TRACK_PAGES_INDEX + position)
 
     def _remove_track_edition_page(self, position):
-        return self._remove_page(self.TRACK_PAGES_INDEX + position)
+        self._remove_page(self.TRACK_PAGES_INDEX + position)
 
     def _insert_page(self, widget, position):
         self.pages.insertWidget(position, widget)
@@ -96,8 +96,9 @@ class AlbumScreen(QWidget, AlbumListener):
     def _remove_page(self, number):
         page = self.pages.widget(number)
         self.pages.removeWidget(page)
+        page.setParent(None)
+        page.close()
         self._update_controls()
-        return page
 
     @property
     def current_page(self):
@@ -117,5 +118,5 @@ class AlbumScreen(QWidget, AlbumListener):
         self.pages.setCurrentIndex(number)
 
     def close(self):
-        for index in range(0, self.total_pages):
-            self.pages.widget(index).close()
+        for index in reversed(range(self.total_pages)):
+            self._remove_page(index)

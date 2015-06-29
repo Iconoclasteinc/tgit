@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget
+from hamcrest import assert_that
 
 STARTUP_SCREEN_NAME = "startup_screen"
 ALBUM_SCREEN_NAME = "album_screen"
@@ -12,7 +13,7 @@ def track_edition_page_name(number):
     return "{}_{}".format(TRACK_EDITION_PAGE_NAME, number)
 
 
-def widget(name):
+def fake_widget(name):
     return FakeWidget(name)
 
 
@@ -26,24 +27,27 @@ class FakeWidget(QWidget):
     def close(self):
         self.closed = True
 
-
-def album_composition_page():
-    return widget(ALBUM_COMPOSITION_PAGE_NAME)
-
-
-def album_edition_page():
-    return widget(ALBUM_EDITION_PAGE_NAME)
+    def is_closed(self):
+        assert_that(self.closed, "widget named '{}' still open".format(self.objectName()))
 
 
-def track_edition_page(track_number):
-    return widget(track_edition_page_name(track_number))
+def fake_album_composition_page():
+    return fake_widget(ALBUM_COMPOSITION_PAGE_NAME)
 
 
-def startup_screen():
-    return widget(STARTUP_SCREEN_NAME)
+def fake_album_edition_page():
+    return fake_widget(ALBUM_EDITION_PAGE_NAME)
 
 
-def album_screen(*_):
+def fake_track_edition_page(track_number):
+    return fake_widget(track_edition_page_name(track_number))
+
+
+def fake_startup_screen():
+    return fake_widget(STARTUP_SCREEN_NAME)
+
+
+def fake_album_screen(*_):
     return FakeAlbumScreen()
 
 

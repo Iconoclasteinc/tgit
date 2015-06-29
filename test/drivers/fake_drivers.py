@@ -1,24 +1,15 @@
 # -*- coding: utf-8 -*-
-from cute.matchers import StateMatcher, named
+from cute.matchers import named
 from cute.properties import PropertyQuery
 from cute.widgets import WidgetDriver
 from test.integration.ui.fake_widgets import *
-
-
-def closed():
-    return StateMatcher(lambda w: w.closed, "closed", "still open")
 
 
 def current_page():
     return PropertyQuery("current page", lambda w: w.current_page)
 
 
-class FakeWidgetDriver(WidgetDriver):
-    def is_closed(self):
-        self.is_(closed())
-
-
-class FakeAlbumScreenDriver(FakeWidgetDriver):
+class FakeAlbumScreenDriver(WidgetDriver):
     def is_showing_page(self, matching):
         self.has(current_page(), matching)
 
@@ -32,25 +23,49 @@ class FakeAlbumScreenDriver(FakeWidgetDriver):
         self.is_showing_page(track_edition_page_name(number))
 
 
-def fake_widget(parent, matching):
-    return FakeWidgetDriver.find_single(parent, FakeWidget, matching)
+def widget(parent, matching):
+    return WidgetDriver.find_single(parent, FakeWidget, matching)
 
 
-def fake_album_composition_page(parent):
-    return fake_widget(parent, named(ALBUM_COMPOSITION_PAGE_NAME))
+def album_composition_page(parent):
+    return widget(parent, named(ALBUM_COMPOSITION_PAGE_NAME))
 
 
-def fake_album_edition_page(parent):
-    return fake_widget(parent, named(ALBUM_EDITION_PAGE_NAME))
+def album_edition_page(parent):
+    return widget(parent, named(ALBUM_EDITION_PAGE_NAME))
 
 
-def fake_startup_screen(parent):
-    return fake_widget(parent, named(STARTUP_SCREEN_NAME))
+def startup_screen(parent):
+    return widget(parent, named(STARTUP_SCREEN_NAME))
 
 
-def fake_album_screen(parent):
+def album_screen(parent):
     return FakeAlbumScreenDriver.find_single(parent, FakeAlbumScreen, named(ALBUM_SCREEN_NAME))
 
 
-def fake_track_edition_page(parent, number):
-    return fake_widget(parent, named(track_edition_page_name(number)))
+def track_edition_page(parent, number):
+    return widget(parent, named(track_edition_page_name(number)))
+
+
+def no_widget(in_parent, matching):
+    return WidgetDriver.find_none(in_parent, FakeWidget, matching)
+
+
+def no_startup_screen(driver):
+    return no_widget(driver, named(STARTUP_SCREEN_NAME))
+
+
+def no_album_screen(driver):
+        return no_widget(driver, named(ALBUM_SCREEN_NAME))
+
+
+def no_album_composition_page(driver):
+    return no_widget(driver, named(ALBUM_COMPOSITION_PAGE_NAME))
+
+
+def no_album_edition_page(driver):
+    return no_widget(driver, named(ALBUM_EDITION_PAGE_NAME))
+
+
+def no_track_edition_page(driver, number):
+    return no_widget(driver, named(track_edition_page_name(number)))
