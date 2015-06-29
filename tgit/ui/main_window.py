@@ -161,9 +161,11 @@ StyleSheet = """
     }
 
     #album-edition-page QLineEdit:disabled, #album-edition-page TextArea:disabled,
-    #track-edition-page QLineEdit:disabled, #track-edition-page TextArea:disabled {
+    #track-edition-page QLineEdit:disabled, #track-edition-page TextArea:disabled,
+    #track-edition-page QSpinBox:disabled {
         background-color: #FCFCFC;
         border-color: #E7E7E7;
+        color: #C2C2C2;
     }
 
     #album-edition-page QCheckBox {

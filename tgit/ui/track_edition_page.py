@@ -231,6 +231,7 @@ class TrackEditionPage(QWidget, AlbumListener):
         self.albumLeadPerformer.setText(album.compilation and self.tr('Various Artists') or album.lead_performer)
         self.recordLabel.setText(album.label_name)
         self.leadPerformer.setEnabled(album.compilation is True)
+        self.labelFor(self.leadPerformer).setEnabled(self.leadPerformer.isEnabled())
 
     def display_track(self, track):
         self.trackNumber.setText(self.tr('Track %s of %d') % (track.track_number, track.total_tracks))
