@@ -25,6 +25,14 @@ QComboBox QAbstractItemView {
 	min-height: 20px;
 }
 
+QLineEdit,
+QPlainTextEdit,
+QDateEdit,
+QComboBox,
+QSpinBox {
+	selection-background-color: #F9CFBA;
+}
+
 QCalendarWidget QAbstractItemView {
     selection-background-color: #F25C0A;
 }

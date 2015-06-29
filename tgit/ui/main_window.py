@@ -151,6 +151,10 @@ StyleSheet = """
         min-height: 20px;
     }
 
+    #track-edition-page QLineEdit, #track-edition-page TextArea, #track-edition-page QComboBox {
+        selection-background-color: #F9CFBA;
+    }
+
     #album-edition-page QLineEdit:focus, #album-edition-page TextArea:focus, #album-edition-page QComboBox:focus,
     #album-edition-page QComboBox:on, #album-edition-page QComboBox::drop-down:focus,
     #album-edition-page QComboBox::drop-down:on, #album-edition-page QComboBox QAbstractItemView:focus,
