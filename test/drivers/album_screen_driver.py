@@ -25,8 +25,7 @@ class AlbumScreenDriver(ScreenDriver):
         track_edition_page(self).is_showing_on_screen()
 
     def add_tracks_to_album(self, *paths):
-        album_composition_page(self).add_tracks()
-        track_selection_dialog(self).select_tracks(*paths)
+        album_composition_page(self).add_tracks(*paths)
 
     def remove_track(self, title):
         album_composition_page(self).remove_track(title)

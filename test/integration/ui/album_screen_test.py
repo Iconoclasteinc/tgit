@@ -19,6 +19,10 @@ from tgit.ui.album_screen import AlbumScreen
 from tgit.ui.track_edition_page import TrackEditionPage
 
 
+def ignore(*_):
+    pass
+
+
 @pytest.fixture()
 def album_screen(qt):
     def create_screen(album):
@@ -88,7 +92,7 @@ class AlbumScreenTest(WidgetTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
         self.album = build.album()
-        self.view = AlbumScreen(AlbumCompositionPage(self.album, doubles.audio_player()),
+        self.view = AlbumScreen(AlbumCompositionPage(self.album, doubles.audio_player(), select_tracks=ignore),
                                 AlbumEditionPage(Preferences(), self.album),
                                 self.createTrackEditionPage)
         self.show(self.view)

@@ -627,11 +627,6 @@ class MenuDriver(WidgetDriver):
         self.is_(containing_menu_item)
         return containing_menu_item.action
 
-    def contains_menu_items(self, matching):
-        actions = self.query("actions", lambda menu: [action.text() for action in menu.actions()])
-        #todo change for a custom matcher for better diagnostics
-        assert_that(actions, matching)
-
 
 class TopLevelQMenuDriver(MenuDriver):
     def open(self):

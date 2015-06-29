@@ -77,7 +77,7 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.has_menu_item(matchers.with_text(track_menu_item(title, track_number)))
 
         def does_not_show_action(self, title, track_number):
-            self._menu_driver.contains_menu_items(without_item(track_menu_item(title, track_number)))
+            self._menu_driver.has_menu_item(without_item(track_menu_item(title, track_number)))
 
         def is_disabled(self):
             self._menu_driver.is_disabled()

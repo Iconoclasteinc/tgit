@@ -79,9 +79,8 @@ class Dialogs:
     def select_cover(self, album):
         return self._select_cover_dialog(album)
 
-    def add_tracks(self, album):
-        dialog = self._select_tracks_dialog()
-        return lambda: dialog.select_files(album.type, on_select=self._commands.add_tracks_to(album))
+    def add_tracks(self, file_type, on_select):
+        return self._select_tracks_dialog().select_files(file_type, on_select)
 
     def add_tracks_in_folder(self, album):
         dialog = self._select_tracks_dialog()

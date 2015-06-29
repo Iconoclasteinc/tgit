@@ -8,7 +8,7 @@ from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
 from .menu_bar_driver import menu_bar
 from .new_album_page_driver import new_album_page
-from test.drivers import export_as_dialog
+from test.drivers import export_as_dialog, track_selection_dialog
 from .welcome_screen_driver import welcome_page
 
 
@@ -27,6 +27,7 @@ class MainWindowDriver(WidgetDriver):
     def add_tracks_to_album(self, *paths, from_menu=False):
         if from_menu:
             menu_bar(self).file.add_files()
+            track_selection_dialog(self).select_tracks(*paths)
         else:
             album_screen(self).add_tracks_to_album(*paths)
 
