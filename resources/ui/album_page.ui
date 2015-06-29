@@ -181,6 +181,7 @@ QDateEdit:disabled,
 QDateEdit::drop-down:disabled {
 	background-color: #FCFCFC;
 	border-color: #E7E7E7;
+	color: #C2C2C2;
 }
 
 QCheckBox {
@@ -198,7 +199,6 @@ QCheckBox::indicator:unchecked {
 	image: url(:/checkbox.png);
 }
 
-QCheckBox::indicator:unchecked:hover,
 QCheckBox::indicator:unchecked:focus {
 	image: url(:/checkbox-hover.png);
 }
@@ -211,7 +211,6 @@ QCheckBox::indicator:checked {
 	image: url(:/checkbox-checked.png);
 }
 
-QCheckBox::indicator:checked:hover,
 QCheckBox::indicator:checked:focus {
 	image: url(:/checkbox-checked-hover.png);
 }
@@ -241,18 +240,22 @@ QComboBox::down-arrow {
 	image: url(:/down-arrow.png);
 }
 
+QComboBox::down-arrow:on,
+QComboBox::down-arrow:focus {
+	image: url(:/down-arrow-on.png);
+}
+
 QDateEdit::down-arrow {
-	image: url(:/images/calendar-14.png);
+	image: url(:/images/calendar.png);
 }
 
 QDateEdit::down-arrow:on,
 QDateEdit::down-arrow:focus  {
-	image: url(:/images/calendar-14-focus.png);
+	image: url(:/images/calendar-focus.png);
 }
 
-QComboBox::down-arrow:on,
-QComboBox::down-arrow:focus {
-	image: url(:/down-arrow-on.png);
+QDateEdit::down-arrow:disabled  {
+	image: url(:/images/calendar-disabled.png);
 }</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -642,6 +645,9 @@ QComboBox::down-arrow:focus {
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
            </property>
            <property name="text">
             <string/>
@@ -1183,8 +1189,6 @@ QComboBox::down-arrow:focus {
   <tabstop>original_release_time</tabstop>
   <tabstop>recording_time</tabstop>
  </tabstops>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -12,10 +12,10 @@
         <file alias="down-arrow.png">images/down-arrow.png</file>
         <file alias="down-arrow-on.png">images/down-arrow-on.png</file>
         <file alias="checkbox.png">images/checkbox.png</file>
-        <file alias="checkbox-hover.png">images/checkbox-hover.png</file>
+        <file alias="checkbox-hover.png">images/checkbox-focus.png</file>
         <file alias="checkbox-pressed.png">images/checkbox-pressed.png</file>
         <file alias="checkbox-checked.png">images/checkbox-checked.png</file>
-        <file alias="checkbox-checked-hover.png">images/checkbox-checked-hover.png</file>
+        <file alias="checkbox-checked-hover.png">images/checkbox-checked-focus.png</file>
         <file alias="checkbox-checked-pressed.png">images/checkbox-checked-pressed.png</file>
         <file>images/drag-handle.gif</file>
         <file>images/volume-up-16.png</file>
@@ -32,13 +32,14 @@
         <file>ui/album_composition_page.ui</file>
         <file>images/folder-open-20-red.png</file>
         <file>images/folder-20-red.png</file>
-        <file>images/circle-o-18-orange.png</file>
-        <file>images/circle-o-18-gray.png</file>
-        <file>images/circle-o-18-orange-silver.png</file>
-        <file>images/dot-circle-o-18-orange-gray.png</file>
-        <file>images/dot-circle-o-18-orange-gray-silver.png</file>
-        <file>images/dot-circle-o-18-gray.png</file>
-        <file>images/calendar-14.png</file>
-        <file>images/calendar-14-focus.png</file>
+        <file>images/calendar-focus.png</file>
+        <file>images/calendar.png</file>
+        <file>images/radio-checked.png</file>
+        <file>images/radio-checked-focus.png</file>
+        <file>images/radio-checked-pressed.png</file>
+        <file>images/radio-unchecked.png</file>
+        <file>images/radio-unchecked-focus.png</file>
+        <file>images/radio-unchecked-pressed.png</file>
+        <file>images/calendar-disabled.png</file>
     </qresource>
 </RCC>

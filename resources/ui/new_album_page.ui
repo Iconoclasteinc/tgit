@@ -161,27 +161,27 @@ QPushButton:pressed {
 }
 
 QRadioButton::indicator::unchecked {
-	image: url(:/images/circle-o-18-gray.png);
+	image: url(:/images/radio-unchecked.png);
 }
 
-QRadioButton::indicator:unchecked:hover {
-	image: url(:/images/circle-o-18-orange.png);
+QRadioButton::indicator:unchecked:focus {
+	image: url(:/images/radio-unchecked-focus.png);
 }
 
 QRadioButton::indicator:unchecked:pressed {
-    image: url(:/images/circle-o-18-orange-silver.png)
+    image: url(:/images/radio-unchecked-pressed.png)
 }
 
 QRadioButton::indicator::checked {
-    image: url(:/images/dot-circle-o-18-gray.png)
+    image: url(:/images/radio-checked.png)
 }
 
-QRadioButton::indicator:checked:hover {
-    image: url(:/images/dot-circle-o-18-orange-gray.png)
+QRadioButton::indicator:checked:focus {
+    image: url(:/images/radio-checked-focus.png)
 }
 
 QRadioButton::indicator:checked:pressed {
-    image: url(:/images/dot-circle-o-18-orange-gray-silver.png)
+    image: url(:/images/radio-checked-pressed.png)
 }</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -200,7 +200,7 @@ QRadioButton::indicator:checked:pressed {
             <item>
              <widget class="QRadioButton" name="_flac_button">
               <property name="focusPolicy">
-               <enum>Qt::TabFocus</enum>
+               <enum>Qt::StrongFocus</enum>
               </property>
               <property name="text">
                <string>FLAC</string>
@@ -219,7 +219,7 @@ QRadioButton::indicator:checked:pressed {
             <item>
              <widget class="QRadioButton" name="_mp3_button">
               <property name="focusPolicy">
-               <enum>Qt::TabFocus</enum>
+               <enum>Qt::StrongFocus</enum>
               </property>
               <property name="styleSheet">
                <string notr="true"/>
