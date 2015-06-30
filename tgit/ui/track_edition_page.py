@@ -44,7 +44,7 @@ class TrackEditionPage(QWidget, AlbumListener):
         layout.addWidget(self.makeAlbumBanner())
         layout.addWidget(self.makeMainContent())
         self.setLayout(layout)
-        self.disableMacFocusFrame()
+        self._disable_mac_focus_frame()
         self.disableTeaserFields()
 
     def albumStateChanged(self, album):
@@ -57,8 +57,6 @@ class TrackEditionPage(QWidget, AlbumListener):
         layout = form.row()
         layout.addWidget(self.makeAlbumCover())
         layout.addWidget(self.makeAlbumTitle())
-        layout.addStretch()
-        layout.addWidget(self.makeRecordLabel())
         layout.addStretch()
         layout.addStretch()
         layout.addWidget(self.makeTrackNumber())
@@ -82,20 +80,6 @@ class TrackEditionPage(QWidget, AlbumListener):
         layout.addStretch()
         title.setLayout(layout)
         return title
-
-    def makeRecordLabel(self):
-        label = QWidget()
-        layout = form.column()
-        layout.addStretch()
-        self.recordLabel = form.label('record-label')
-        self.recordLabel.setProperty('title', 'h2')
-        layout.addWidget(self.recordLabel)
-        push = QLabel()
-        push.setProperty('title', 'h3')
-        layout.addWidget(push)
-        layout.addStretch()
-        label.setLayout(layout)
-        return label
 
     def makeTrackNumber(self):
         numbering = QWidget()
@@ -221,15 +205,14 @@ class TrackEditionPage(QWidget, AlbumListener):
 
     def display(self, album=None, track=None):
         if album:
-            self.displayAlbum(album)
+            self._display_album(album)
         if track:
             self.display_track(track)
 
-    def displayAlbum(self, album):
-        self.displayAlbumCover(album.mainCover)
+    def _display_album(self, album):
+        self._display_album_cover(album.mainCover)
         self.albumTitle.setText(album.release_name)
         self.albumLeadPerformer.setText(album.compilation and self.tr('Various Artists') or album.lead_performer)
-        self.recordLabel.setText(album.label_name)
         self.leadPerformer.setEnabled(album.compilation is True)
         self.labelFor(self.leadPerformer).setEnabled(self.leadPerformer.isEnabled())
 
@@ -250,7 +233,7 @@ class TrackEditionPage(QWidget, AlbumListener):
         self.languages.setEditText(track.language)
         self.softwareNotice.setText(self._compose_software_notice(track))
 
-    def displayAlbumCover(self, picture):
+    def _display_album_cover(self, picture):
         # Cache the cover image to avoid recomputing the image each time the screen updates
         if self.cover is not picture:
             self.cover = picture
@@ -288,7 +271,7 @@ class TrackEditionPage(QWidget, AlbumListener):
                     lyrics=self.lyrics.toPlainText(),
                     language=self.languages.currentText())
 
-    def disableMacFocusFrame(self):
+    def _disable_mac_focus_frame(self):
         for child in self.findChildren(QWidget):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
