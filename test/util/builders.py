@@ -27,6 +27,8 @@ def track(filename='track.mp3', metadata=None, **meta):
 
     return track
 
+make_track = track
+
 
 def album(filename='album.tgit', of_type=Album.Type.FLAC, images=(), tracks=(), **meta):
     album = Album(filename=filename, of_type=of_type)
@@ -41,6 +43,8 @@ def album(filename='album.tgit', of_type=Album.Type.FLAC, images=(), tracks=(), 
         album.addTrack(track)
 
     return album
+
+make_album = album
 
 
 def album_portfolio():

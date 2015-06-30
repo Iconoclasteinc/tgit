@@ -7,7 +7,6 @@ from ._screen_driver import ScreenDriver
 from .album_edition_page_driver import album_edition_page
 from .album_composition_page_driver import album_composition_page
 from .track_edition_page_driver import track_edition_page
-from .track_selection_dialog_driver import track_selection_dialog
 
 
 def album_screen(parent):
@@ -24,8 +23,8 @@ class AlbumScreenDriver(ScreenDriver):
     def showsTrackEditionPage(self):
         track_edition_page(self).is_showing_on_screen()
 
-    def add_tracks_to_album(self, *paths):
-        album_composition_page(self).add_tracks(*paths)
+    def add_tracks_to_album(self):
+        album_composition_page(self).add_tracks()
 
     def remove_track(self, title):
         album_composition_page(self).remove_track(title)

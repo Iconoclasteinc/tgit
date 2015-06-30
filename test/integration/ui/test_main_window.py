@@ -7,7 +7,7 @@ import pytest
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
-from test.drivers import MainWindowDriver
+from test.drivers import MainWindowDriver, track_selection_dialog
 from test.drivers.fake_drivers import no_startup_screen, no_album_screen, album_screen, startup_screen
 from test.integration.ui import show_widget
 from test.integration.ui.fake_widgets import fake_startup_screen, fake_album_screen
@@ -60,7 +60,8 @@ def test_signals_when_add_files_menu_item_clicked(main_window, driver):
     main_window.on_add_files(lambda current_album, file: add_files_signal.received([album, os.path.abspath(file)]))
     main_window.display_album_screen(album)
 
-    driver.add_tracks_to_album(filename, from_menu=True)
+    driver.add_tracks_to_album(from_menu=True)
+    track_selection_dialog(driver).select_tracks(filename)
     driver.check(add_files_signal)
 
 

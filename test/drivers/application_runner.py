@@ -3,6 +3,7 @@ from collections import namedtuple
 import sip
 
 from cute.animatron import Animatron
+from test.drivers import track_selection_dialog
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
@@ -47,7 +48,8 @@ class ApplicationRunner:
         self.tagger.create_album(of_type, name, self._workspace.root_path)
 
     def add_tracks_to_album(self, *tracks):
-        self.tagger.add_tracks_to_album(*tracks)
+        self.tagger.add_tracks_to_album()
+        track_selection_dialog(self.tagger).select_tracks(*tracks)
 
     def import_album(self, name, from_track, of_type="mp3"):
         self.tagger.create_album(of_type=of_type, name=name, location=self._workspace.root_path,
