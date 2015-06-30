@@ -19,81 +19,80 @@
 
 import pytest
 
-from cute.finders import WidgetIdentity
+from cute.matchers import named
 from cute.probes import ValueMatcherProbe
+from cute.widgets import window
 from test.drivers.new_album_page_driver import NewAlbumPageDriver
-from test.util import resources
 from tgit.ui import message_box
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.util import fs
 
 
-@pytest.fixture()
-def on_select(tmpdir):
-    def on_select_callback(callback):
-        callback(tmpdir.strpath)
-
-    return on_select_callback
-
-
-@pytest.fixture()
-def page(on_select, qt):
-    new_album_page = NewAlbumPage(select_album_destination=on_select,
-                                    select_track_location=on_select,
-                                    confirm_overwrite=message_box.overwrite_confirmation_message)
-    new_album_page.show()
-    return new_album_page
-
-
 @pytest.yield_fixture()
-def driver(page, prober, automaton):
-    page_driver = NewAlbumPageDriver(WidgetIdentity(page), prober, automaton)
+def driver(qt, prober, automaton):
+    page_driver = NewAlbumPageDriver(window(NewAlbumPage, named("new_album_page")), prober, automaton)
     yield page_driver
     page_driver.close()
 
 
+ignore = lambda *_: None
+
+
+def show_page(select_album=ignore, select_track=ignore):
+    page = NewAlbumPage(select_album_destination=select_album,
+                        select_track_location=select_track,
+                        confirm_overwrite=message_box.overwrite_confirmation_message)
+    page.show()
+    return page
+
+
 @pytest.mark.parametrize("using_shortcut", [False, True])
-def test_signals_album_creation(page, driver, tmpdir, using_shortcut):
-    create_album_signal = ValueMatcherProbe("new album",
-                                            ("flac", tmpdir.join("Honeycomb", "Honeycomb.tgit").strpath))
+def test_signals_album_creation(driver, using_shortcut):
+    page = show_page()
+    create_album_signal = ValueMatcherProbe("new album", ("flac", "~Documents/Honeycomb/Honeycomb.tgit"))
 
     page.on_create_album(lambda *args: create_album_signal.received(args))
 
-    driver.create_album("flac", "Honeycomb", tmpdir.strpath, using_shortcut=using_shortcut)
+    driver.create_album("flac", "Honeycomb", "~Documents", using_shortcut=using_shortcut)
     driver.check(create_album_signal)
 
 
-def test_signals_album_import(page, driver, tmpdir):
-    track_location = resources.path("base.mp3")
-
-    import_album_signal = ValueMatcherProbe("import album",
-                                            ("mp3", tmpdir.join("Honeycomb", "Honeycomb.tgit").strpath, track_location))
+def test_signals_album_import(driver):
+    page = show_page()
+    import_album_signal = ValueMatcherProbe("import album", ("mp3", "~Documents/Honeycomb/Honeycomb.tgit", "track.mp3"))
     page.on_import_album(lambda *args: import_album_signal.received(args))
 
-    driver.create_album("mp3", "Honeycomb", tmpdir.strpath, import_from=track_location)
+    driver.create_album("mp3", "Honeycomb", "~Documents", import_from="track.mp3")
     driver.check(import_album_signal)
 
 
 @pytest.mark.parametrize("using_shortcut", [False, True])
-def test_signals_album_creation_cancellation(page, driver, tmpdir, using_shortcut):
+def test_signals_album_creation_cancellation(driver, using_shortcut):
     cancel_creation_signal = ValueMatcherProbe("cancel creation")
+    page = show_page()
     page.on_cancel_creation(lambda: cancel_creation_signal.received())
 
-    driver.cancel_creation("mp3", "Honeycomb", tmpdir.strpath, using_shortcut=using_shortcut)
+    driver.cancel_creation("mp3", "Honeycomb", "~Documents", using_shortcut=using_shortcut)
     driver.check(cancel_creation_signal)
 
 
-def test_selects_an_album_location(driver, tmpdir):
+def test_selects_an_album_location(driver):
+    show_page(select_album=lambda handler: handler("/path/to/album"))
+
     driver.select_album()
-    driver.has_album_location(tmpdir.strpath)
+    driver.has_album_location("/path/to/album")
 
 
-def test_selects_reference_track_location(driver, tmpdir):
+def test_selects_reference_track_location(driver):
+    show_page(select_track=lambda handler: handler("/path/to/reference/track"))
+
     driver.select_track()
-    driver.has_track_location(tmpdir.strpath)
+    driver.has_track_location("/path/to/reference/track")
 
 
 def test_disables_create_button_when_album_name_or_location_missing(driver):
+    show_page()
+
     driver.enter_album_name("")
     driver.creation_is_disabled()
     driver.enter_album_name("Honeycomb")
@@ -101,11 +100,13 @@ def test_disables_create_button_when_album_name_or_location_missing(driver):
     driver.creation_is_disabled()
 
 
-def test_resets_form(page, driver):
+def test_resets_form(driver):
+    page = show_page()
+
     driver.select_album_type("mp3")
     driver.enter_album_name("Honeycomb")
-    driver.enter_album_location("/path/to/albums")
-    driver.enter_track_location("/path/to/tracks")
+    driver.enter_album_location("~Documents")
+    driver.enter_track_location("~Music/track.mp3")
 
     page.reset()
 
@@ -115,6 +116,8 @@ def test_resets_form(page, driver):
 def test_asks_for_confirmation_when_album_file_already_exists(driver, tmpdir):
     album_folder = tmpdir.mkdir("Honeycomb")
     touch(album_folder.join("Honeycomb.tgit"))
+
+    show_page()
 
     driver.create_album("mp3", "Honeycomb", tmpdir.strpath)
     driver.confirm_overwrite()
