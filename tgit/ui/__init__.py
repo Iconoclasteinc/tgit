@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import functools as func
 
 from PyQt5.QtWidgets import QApplication
 
@@ -145,11 +146,11 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
     def create_composition_page(album):
         return AlbumCompositionPage(album, player,
-                                    select_tracks=dialogs.add_tracks,
+                                    select_tracks=func.partial(dialogs.select_tracks, album.type),
                                     on_move_track=director.move_track_of(album),
                                     on_remove_track=director.remove_track_from(player, album),
                                     on_play_track=director.play_or_stop(player),
-                                    on_add_tracks=director.add_tracks_from_catalog_to_album)
+                                    on_add_tracks=func.partial(director.add_tracks(), album))
 
     def create_album_page(album):
         return make_album_edition_page(preferences, dialogs, show_isni_lookup_dialog, show_activity_indicator_dialog,
@@ -181,10 +182,10 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                               create_album_screen=create_album_screen,
                               create_close_album_confirmation=message_box.close_album_confirmation_box,
                               select_export_destination=dialogs.export,
-                              select_tracks=dialogs.add_tracks,
+                              select_tracks=dialogs.select_tracks,
                               on_close_album=director.remove_album_from(portfolio),
                               on_save_album=director.save_album(),
-                              on_add_files=director.add_tracks_from_catalog_to_album,
+                              on_add_files=director.add_tracks,
                               on_add_folder=dialogs.add_tracks_in_folder,
                               on_export=director.export_as_csv,
                               on_settings=show_settings_dialog)

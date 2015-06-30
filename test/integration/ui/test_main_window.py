@@ -28,7 +28,7 @@ def main_window(qt):
                         create_album_screen=fake_album_screen,
                         create_close_album_confirmation=message.close_album_confirmation_box,
                         select_export_destination=dialogs.export,
-                        select_tracks=dialogs.add_tracks,
+                        select_tracks=dialogs.select_tracks,
                         confirm_exit=False)
     dialogs.parent = window
     show_widget(window)

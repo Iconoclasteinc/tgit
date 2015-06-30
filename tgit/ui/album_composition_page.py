@@ -33,23 +33,22 @@ COLUMNS_WIDTHS = [30, 300, 245, 270, 90, 70]
 @Observer
 class AlbumCompositionPage(QWidget, AlbumListener):
     _playing_track = None
-    _on_add_tracks = lambda *_: None
 
     def __init__(self, album, player, select_tracks, **handlers):
         super().__init__()
+        self._tracks = []
         self._select_tracks = select_tracks
         self._setup_ui(album)
         self._subscribe_to_events(album, player)
-        self._tracks = []
+        self._register_handlers(handlers)
+        self._display_album(album)
 
+    def _register_handlers(self, handlers):
         for name, handler in handlers.items():
             getattr(self, name)(handler)
 
-        for index, track in enumerate(album.tracks):
-            self._insert_row(index, track)
-
     def on_add_tracks(self, handler):
-        self._on_add_tracks = handler
+        self._add_tracks_button.clicked.connect(lambda pressed: self._select_tracks(handler))
 
     def on_move_track(self, handler):
         self._track_table.verticalHeader().sectionMoved.connect(lambda _, from_, to: handler(self._tracks[from_], to))
@@ -70,8 +69,6 @@ class AlbumCompositionPage(QWidget, AlbumListener):
 
     def _setup_ui(self, album):
         ui_file.load(":/ui/album_composition_page.ui", self)
-        self._add_tracks_button.clicked.connect(
-            lambda pressed: self._select_tracks(album.type, lambda *files: self._on_add_tracks(album, *files)))
         self._track_table.itemSelectionChanged.connect(self._update_actions)
         self._drag_and_drop_cursor = self._make_drag_and_drop_cursor(self._track_table)
         self._context_menu = self._make_context_menu(self._track_table)
@@ -141,6 +138,13 @@ class AlbumCompositionPage(QWidget, AlbumListener):
     @property
     def selected_track(self):
         return self._tracks[self._selected_row] if self._selected_row is not None else None
+
+    def _display_album(self, album):
+        for index, track in enumerate(self._tracks):
+            self._remove_row(index, track)
+
+        for index, track in enumerate(album.tracks):
+            self._insert_row(index, track)
 
     def _update_all_rows(self, _=None):
         for index in range(len(self._tracks)):

@@ -79,7 +79,7 @@ class Dialogs:
     def select_cover(self, album):
         return self._select_cover_dialog(album)
 
-    def add_tracks(self, file_type, on_select):
+    def select_tracks(self, file_type, on_select):
         return self._select_tracks_dialog().select_files(file_type, on_select)
 
     def add_tracks_in_folder(self, album):

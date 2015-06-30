@@ -87,11 +87,11 @@ def test_creates_a_single_album_to_load_selection_dialog(dialogs, select_album_t
 
 
 def test_creates_a_single_track_selection_dialog(dialogs, track_selection_dialog_driver):
-    dialogs.add_tracks(Album.Type.MP3, ignore)
+    dialogs.select_tracks(Album.Type.MP3, ignore)
     track_selection_dialog_driver.is_showing_on_screen()
     track_selection_dialog_driver.reject()
 
-    dialogs.add_tracks(Album.Type.MP3, ignore)
+    dialogs.select_tracks(Album.Type.MP3, ignore)
     track_selection_dialog_driver.is_showing_on_screen()
     track_selection_dialog_driver.reject()
 

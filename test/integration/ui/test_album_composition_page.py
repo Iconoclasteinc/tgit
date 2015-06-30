@@ -166,16 +166,10 @@ def test_changes_context_menu_text_to_stop_when_selected_track_is_playing(show_p
 
 def test_signals_when_add_tracks_button_clicked(show_page, page_driver):
     album = make_album()
-    page = show_page(album, select_tracks=lambda file_type, on_select: on_select("track1", "track2", "track3"))
+    page = show_page(album, select_tracks=lambda on_select: on_select("track1", "track2", "track3"))
 
-    add_tracks_signal = ValueMatcherProbe("add tracks", contains(album, "track1", "track2", "track3"))
-
-    def signal_add_tracks(album, *track_files):
-        values = [album]
-        values.extend(track_files)
-        add_tracks_signal.received(values)
-
-    page.on_add_tracks(signal_add_tracks)
+    add_tracks_signal = ValueMatcherProbe("add tracks", contains("track1", "track2", "track3"))
+    page.on_add_tracks(lambda *track_files: add_tracks_signal.received(track_files))
 
     page_driver.add_tracks()
     page_driver.check(add_tracks_signal)
