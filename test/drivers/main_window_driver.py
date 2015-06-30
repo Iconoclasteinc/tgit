@@ -114,9 +114,8 @@ class MainWindowDriver(WidgetDriver):
         message_box(self).is_showing_on_screen()
         message_box(self).yes()
 
-    def export(self, filename):
+    def export(self):
         menu_bar(self).file.export()
-        export_as_dialog(self).export_as(filename)
 
     def settings(self):
         menu_bar(self).file.settings()
