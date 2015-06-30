@@ -20,11 +20,9 @@
 import sys
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QAction, QMessageBox
 
-from tgit.album import Album
 from tgit.ui.helpers import ui_file
 from tgit.ui.observer import Observer
 
@@ -299,12 +297,13 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
     """
 
 
-def make_main_window(portfolio, on_add_folder,
+def make_main_window(portfolio,
                      create_startup_screen,
                      create_album_screen,
                      create_close_album_confirmation,
                      select_export_destination,
                      select_tracks,
+                     select_tracks_in_folder,
                      **handlers):
     window = MainWindow(portfolio=portfolio,
                         create_startup_screen=create_startup_screen,
@@ -312,15 +311,14 @@ def make_main_window(portfolio, on_add_folder,
                         create_close_album_confirmation=create_close_album_confirmation,
                         select_export_destination=select_export_destination,
                         select_tracks=select_tracks,
+                        select_tracks_in_folder=select_tracks_in_folder,
                         **handlers)
-    window.add_folder.connect(on_add_folder)
 
     return window
 
 
 @Observer
 class MainWindow(QMainWindow):
-    add_folder = pyqtSignal(Album)
     _closing = False
     _album = None
     _on_add_files = lambda *_: None
@@ -331,8 +329,10 @@ class MainWindow(QMainWindow):
     TRACK_ACTIONS_START_INDEX = 3
 
     def __init__(self, *, portfolio, confirm_exit, create_startup_screen, create_album_screen,
-                 create_close_album_confirmation, select_export_destination, select_tracks, **handlers):
+                 create_close_album_confirmation, select_export_destination, select_tracks, select_tracks_in_folder,
+                 **handlers):
         super().__init__()
+        self._select_tracks_in_folder = select_tracks_in_folder
         self._select_tracks = select_tracks
         self._confirm_exit = confirm_exit
         self._select_export_destination = select_export_destination
@@ -417,7 +417,7 @@ class MainWindow(QMainWindow):
 
     def _setup_menu_bar(self):
         self.add_files_action.triggered.connect(self._add_files)
-        self.add_folder_action.triggered.connect(lambda checked: self.add_folder.emit(self.add_folder_action.data()))
+        self.add_folder_action.triggered.connect(self._add_folder)
         self.close_album_action.triggered.connect(self._confirm_album_close)
         self.save_album_action.triggered.connect(self._save_album)
         self.export_action.triggered.connect(self._choose_export_destination)
@@ -436,8 +436,14 @@ class MainWindow(QMainWindow):
         self.subscribe(portfolio.album_removed, self.display_startup_screen)
         self.subscribe(portfolio.album_created, self.display_album_screen)
 
-    def _add_files(self):
-        self._select_tracks(self._album.type, lambda *files: self._on_add_files(self._album, *files))
+    def _add_files(self, *_):
+        self._select_tracks(self._album.type, self._add_files_to_album)
+
+    def _add_folder(self, *_):
+        self._select_tracks_in_folder(self._album.type, self._add_files_to_album)
+
+    def _add_files_to_album(self, *files):
+        self._on_add_files(self._album, *files)
 
     def _rebuild_track_actions(self, *_):
         self._clear_track_actions()

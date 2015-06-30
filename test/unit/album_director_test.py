@@ -112,7 +112,7 @@ def test_adds_selected_tracks_to_album_in_order(track_catalog):
     tracks = [track_catalog.add_track(filename) for filename in ("first.mp3", "second.mp3", "third.mp3")]
 
     album = build.album()
-    director.add_tracks(from_catalog=track_catalog)(album, "first.mp3", "second.mp3", "third.mp3")
+    director.add_tracks(album, "first.mp3", "second.mp3", "third.mp3", from_catalog=track_catalog)
 
     assert_that(album.tracks, contains(*tracks), "list of tracks in album")
 

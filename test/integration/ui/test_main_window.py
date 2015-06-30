@@ -29,6 +29,7 @@ def main_window(qt):
                         create_close_album_confirmation=message.close_album_confirmation_box,
                         select_export_destination=dialogs.export,
                         select_tracks=dialogs.select_tracks,
+                        select_tracks_in_folder=dialogs.add_tracks_in_folder,
                         confirm_exit=False)
     dialogs.parent = window
     show_widget(window)
@@ -67,11 +68,15 @@ def test_signals_when_add_files_menu_item_clicked(main_window, driver):
 
 def test_signals_when_add_folder_menu_item_clicked(main_window, driver):
     album = build.album()
-    add_folder_signal = ValueMatcherProbe("add folder", album)
-    main_window.add_folder.connect(add_folder_signal.received)
-    main_window.enable_album_actions(album)
+    directory = resources.path("audio")
+    filename = resources.path("audio", "Zumbar.flac")
+    add_folder_signal = ValueMatcherProbe("add folder", contains(album, filename))
+    main_window.on_add_files(
+        lambda current_album, *file: add_folder_signal.received([current_album, os.path.abspath(*file)]))
+    main_window.display_album_screen(album)
 
     driver.add_tracks_in_folder()
+    track_selection_dialog(driver).select_tracks_in_folder(directory)
     driver.check(add_folder_signal)
 
 

@@ -82,10 +82,8 @@ class Dialogs:
     def select_tracks(self, file_type, on_select):
         return self._select_tracks_dialog().select_files(file_type, on_select)
 
-    def add_tracks_in_folder(self, album):
-        dialog = self._select_tracks_dialog()
-        return lambda: dialog.select_files_in_folder(file_type=album.type,
-                                                     on_select=self._commands.add_tracks_to(album))
+    def add_tracks_in_folder(self, file_type, on_select):
+        return self._select_tracks_dialog().select_files_in_folder(file_type, on_select)
 
     def select_reference_track(self, on_select):
         return self._select_reference_track_dialog().select(on_select)
