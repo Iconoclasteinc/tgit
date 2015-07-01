@@ -75,11 +75,6 @@ class TrackEditionPageDriver(ScreenDriver):
         label.is_showing_on_screen()
         label.has_text(title)
 
-    def showsAlbumLabel(self, name):
-        label = self.label(named('record-label'))
-        label.is_showing_on_screen()
-        label.has_text(name)
-
     def showsTrackNumber(self, number):
         label = self.label(named('track-number'))
         label.is_showing_on_screen()

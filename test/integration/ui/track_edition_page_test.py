@@ -31,7 +31,6 @@ class TrackEditionPageTest(WidgetTest):
 
         self.driver.showsAlbumTitle('Album Title')
         self.driver.shows_album_lead_performer('Artist')
-        self.driver.showsAlbumLabel('Record Label')
         self.driver.showsTrackNumber(contains_string('2 of 3'))
 
     def testIndicatesWhenAlbumPerformedByVariousArtists(self):
