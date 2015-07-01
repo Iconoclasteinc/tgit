@@ -9,7 +9,7 @@ from cute.prober import EventProcessingProber
 from cute.robot import Robot
 
 
-@pytest.yield_fixture(autouse=True)
+@pytest.yield_fixture()
 def qt():
     app = QApplication([])
     yield app

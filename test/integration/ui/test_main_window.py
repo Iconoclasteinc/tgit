@@ -43,7 +43,7 @@ def create_main_window(portfolio=build.album_portfolio(),
 
 
 @pytest.yield_fixture()
-def driver(prober, automaton):
+def driver(qt, prober, automaton):
     main_window_driver = MainWindowDriver(window(MainWindow, named("main_window")), prober, automaton)
     yield main_window_driver
     main_window_driver.close()
