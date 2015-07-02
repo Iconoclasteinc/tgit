@@ -21,29 +21,35 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QStyle
 
 
+class MessageBoxes:
+    parent = None
+
+    def inform_restart_required(self):
+        message_box = MessageBox.inform(self.parent, "You need to restart TGiT for changes to take effect.")
+        message_box.open()
+        return message_box
+
+    def warn_isni_assignation_failed(self, details=None):
+        message_box = MessageBox.warn(self.parent, "Could not assign an ISNI", details)
+        message_box.open()
+        return message_box
+
+    def confirm_close_album(self, **handlers):
+        message_box = ConfirmationBox(self.parent, "Are you sure you want to stop working on this release?", **handlers)
+        message_box.open()
+        return message_box
+
+    def confirm_album_overwrite(self, **handlers):
+        message_box = ConfirmationBox(self.parent, "This album already exists. Are you sure you want to replace it?", **handlers)
+        message_box.open()
+        return message_box
+
+
 def _append_icon_to(message_box, icon_to_append):
     style = message_box.style()
     icon_size = style.pixelMetric(QStyle.PM_MessageBoxIconSize, widget=message_box)
     icon = style.standardIcon(icon_to_append, widget=message_box)
     message_box.setIconPixmap(icon.pixmap(icon_size, icon_size))
-
-
-def restart_message_box(parent):
-    return MessageBox.inform(parent, "You need to restart TGiT for changes to take effect.")
-
-
-def isni_assignation_failed_message_box(parent=None, details=None):
-    return MessageBox.warn(parent, "Could not assign an ISNI", details)
-
-
-def close_album_confirmation_box(parent=None, **handlers):
-    return ConfirmationBox(parent, "Are you sure you want to stop working on this release?", **handlers)
-
-
-def overwrite_confirmation_message(parent=None, **handlers):
-    confirmation = ConfirmationBox(parent, "This album already exists. Are you sure you want to replace it?", **handlers)
-    confirmation.open()
-    return confirmation
 
 
 class ConfirmationBox(QMessageBox):

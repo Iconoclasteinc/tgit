@@ -5,7 +5,7 @@ from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QComboBox, QTextEdit, QLabel,
                              QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
-from hamcrest import all_of, anything, assert_that
+from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
@@ -351,6 +351,7 @@ class QDialogButtonBoxDriver(WidgetDriver):
         self._dialog_button(QDialogButtonBox.Cancel).click()
 
     def _dialog_button(self, role):
+        self.is_showing_on_screen()
         button = self.query("button with role {0}".format(role), lambda button_box: button_box.button(role))
         return ButtonDriver(WidgetIdentity(button), self.prober, self.gesture_performer)
 
@@ -373,6 +374,7 @@ class QDialogDriver(WidgetDriver):
         self._button_box().no()
 
     def _button_box(self):
+        self.is_showing_on_screen()
         return QDialogButtonBoxDriver.find_single(self, QDialogButtonBox)
 
 

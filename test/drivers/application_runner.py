@@ -3,7 +3,7 @@ from collections import namedtuple
 import sip
 
 from cute.animatron import Animatron
-from test.drivers import track_selection_dialog
+from test.drivers import track_selection_dialog, message_box
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
@@ -114,6 +114,7 @@ class ApplicationRunner:
 
     def close_album(self):
         self.tagger.close_album()
+        message_box(self.tagger).yes()
         self.tagger.shows_welcome_screen()
 
     def load_album(self, album_name):

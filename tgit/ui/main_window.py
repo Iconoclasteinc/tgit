@@ -297,26 +297,6 @@ if hasattr(QtGui, "qt_mac_set_native_menubar"):
     """
 
 
-def make_main_window(portfolio,
-                     create_startup_screen,
-                     create_album_screen,
-                     create_close_album_confirmation,
-                     select_export_destination,
-                     select_tracks,
-                     select_tracks_in_folder,
-                     **handlers):
-    window = MainWindow(portfolio=portfolio,
-                        create_startup_screen=create_startup_screen,
-                        create_album_screen=create_album_screen,
-                        create_close_album_confirmation=create_close_album_confirmation,
-                        select_export_destination=select_export_destination,
-                        select_tracks=select_tracks,
-                        select_tracks_in_folder=select_tracks_in_folder,
-                        **handlers)
-
-    return window
-
-
 @Observer
 class MainWindow(QMainWindow):
     _closing = False
@@ -328,15 +308,15 @@ class MainWindow(QMainWindow):
 
     TRACK_ACTIONS_START_INDEX = 3
 
-    def __init__(self, *, portfolio, confirm_exit, create_startup_screen, create_album_screen,
-                 create_close_album_confirmation, select_export_destination, select_tracks, select_tracks_in_folder,
+    def __init__(self, portfolio, confirm_exit, create_startup_screen, create_album_screen,
+                 confirm_close, select_export_destination, select_tracks, select_tracks_in_folder,
                  **handlers):
         super().__init__()
         self._select_tracks_in_folder = select_tracks_in_folder
         self._select_tracks = select_tracks
         self._confirm_exit = confirm_exit
         self._select_export_destination = select_export_destination
-        self._create_close_album_confirmation = create_close_album_confirmation
+        self._confirm_close = confirm_close
         self._create_startup_screen = create_startup_screen
         self._create_album_screen = create_album_screen
 
@@ -470,7 +450,7 @@ class MainWindow(QMainWindow):
         self.centralWidget().show_track_page(track_number)
 
     def _confirm_album_close(self):
-        self._create_close_album_confirmation(self, on_accept=lambda: self._on_close_album(self._album)).open()
+        self._confirm_close(on_accept=lambda: self._on_close_album(self._album))
 
     def _choose_export_destination(self):
         self._select_export_destination(lambda dest: self._on_export(self._album, dest))
@@ -487,10 +467,10 @@ class MainWindow(QMainWindow):
         return closed
 
     def closeEvent(self, event):
-        if self._should_close:
+        if self._should_close_immediately:
             return
 
-        if self._confirm_close("Are you sure you want to quit?"):
+        if self._ask_for_exit_confirmation():
             # There is an issue on MAC which results on the closeEvent being called twice when exiting the application.
             # Setting _closing to True will prevent the confirmation message to be seen twice.
             self._closing = True
@@ -498,8 +478,9 @@ class MainWindow(QMainWindow):
             event.ignore()
 
     @property
-    def _should_close(self):
+    def _should_close_immediately(self):
         return self._closing or not self._confirm_exit or self._album is None
 
-    def _confirm_close(self, message):
-        return QMessageBox.question(self, "", self.tr(message), QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes
+    def _ask_for_exit_confirmation(self):
+        return QMessageBox.question(self, "", self.tr("Are you sure you want to quit?"),
+                                    QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes

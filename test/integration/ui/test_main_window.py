@@ -12,8 +12,8 @@ from test.drivers.fake_drivers import no_startup_screen, no_album_screen, album_
 from test.integration.ui import show_widget
 from test.integration.ui.fake_widgets import fake_startup_screen, fake_album_screen
 from test.util import builders as build
+from test.util.builders import make_album
 from tgit.album import Album
-from tgit.ui import message_box as message
 from tgit.ui.main_window import MainWindow
 
 
@@ -24,19 +24,21 @@ def ignore(*_):
 def create_main_window(portfolio=build.album_portfolio(),
                        create_startup_screen=fake_startup_screen,
                        create_album_screen=fake_album_screen,
-                       create_close_album_confirmation=message.close_album_confirmation_box,
+                       confirm_close=ignore,
                        select_export_destination=ignore,
                        select_tracks=ignore,
                        select_tracks_in_folder=ignore,
-                       confirm_exit=False):
+                       confirm_exit=False,
+                       **handlers):
     main_window = MainWindow(portfolio=portfolio,
+                             confirm_exit=confirm_exit,
                              create_startup_screen=create_startup_screen,
                              create_album_screen=create_album_screen,
-                             create_close_album_confirmation=create_close_album_confirmation,
+                             confirm_close=confirm_close,
                              select_export_destination=select_export_destination,
                              select_tracks=select_tracks,
                              select_tracks_in_folder=select_tracks_in_folder,
-                             confirm_exit=confirm_exit)
+                             **handlers)
     show_widget(main_window)
 
     return main_window
@@ -121,10 +123,27 @@ def test_signals_when_save_album_keyboard_shortcut_is_activated(driver):
     driver.check(save_album_signal)
 
 
-def test_shows_confirmation_when_close_album_menu_item_clicked(driver):
-    main_window = create_main_window()
-    main_window.enable_album_actions(build.album())
+def test_asks_for_confirmation_before_closing_album(driver):
+    album = make_album()
+    confirm_close_query = ValueMatcherProbe("confirm close")
+
+    main_window = create_main_window(confirm_close=lambda on_accept: confirm_close_query.received())
+    main_window.display_album_screen(album)
+
     driver.close_album()
+    driver.check(confirm_close_query)
+
+
+def test_signals_when_album_closed(driver):
+    album = make_album()
+    close_album_signal = ValueMatcherProbe("close", album)
+
+    main_window = create_main_window(confirm_close=lambda on_accept: on_accept(),
+                                     on_close_album=close_album_signal.received)
+    main_window.display_album_screen(album)
+
+    driver.close_album()
+    driver.check(close_album_signal)
 
 
 @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")

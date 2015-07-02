@@ -8,7 +8,6 @@ from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
 from .menu_bar_driver import menu_bar
 from .new_album_page_driver import new_album_page
-from test.drivers import export_as_dialog
 from .welcome_screen_driver import welcome_page
 
 
@@ -111,8 +110,6 @@ class MainWindowDriver(WidgetDriver):
             self.perform(gestures.close())
         else:
             menu_bar(self).file.close_album()
-        message_box(self).is_showing_on_screen()
-        message_box(self).yes()
 
     def export(self):
         menu_bar(self).file.export()

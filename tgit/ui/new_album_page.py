@@ -81,7 +81,7 @@ class NewAlbumPage(QFrame, UIFile):
                 self._on_import_album(self._album_type(), self._album_filename(), self.track_location.text())
 
         if self._album_exists(self._album_filename()):
-            confirm_overwrite(self, on_accept=create_or_import_album)
+            confirm_overwrite(on_accept=create_or_import_album)
         else:
             create_or_import_album()
 
