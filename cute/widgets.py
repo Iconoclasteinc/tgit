@@ -172,7 +172,7 @@ class LabelDriver(WidgetDriver):
 
 class AbstractEditDriver(WidgetDriver):
     FOCUS_DELAY = 50
-    EDITION_DELAY = 20
+    EDITION_DELAY = 50
 
     def change_text(self, text):
         self.replace_all_text(text)

@@ -20,26 +20,35 @@
 from PyQt5.QtWidgets import QFrame
 
 import tgit
-from tgit.ui.helpers import ui_file
+from tgit.ui.helpers.ui_file import UIFile
+from tgit.ui.rescue import rescue
 
 
-def welcome_page(select_album, **handlers):
-    screen = WelcomePage(select_album=select_album)
-    for name, handler in handlers.items():
-        getattr(screen, name)(handler)
-
-    return screen
-
-
-class WelcomePage(QFrame):
-    def __init__(self, *, select_album, parent=None):
-        super().__init__(parent)
+class WelcomePage(QFrame, UIFile):
+    def __init__(self, select_album, show_error, **handlers):
+        super().__init__()
         self._select_album = select_album
-        ui_file.load(":/ui/welcome_page.ui", self)
+        self._show_error = show_error
+        self._setup_ui()
+        self._register_signal_handlers(handlers)
+
+    def _register_signal_handlers(self, handlers):
+        for name, handler in handlers.items():
+            getattr(self, name)(handler)
+
+    def _setup_ui(self):
+        self.load(":/ui/welcome_page.ui")
         self._version_label.setText("v{0}".format(tgit.__version__))
 
     def on_create_album(self, on_create_album):
         self._new_album_button.clicked.connect(on_create_album)
 
     def on_load_album(self, on_load_album):
-        self._load_album_button.clicked.connect(lambda: self._select_album(on_load_album))
+        def try_loading_album(filename):
+            with rescue(on_error=self._show_load_error):
+                on_load_album(filename)
+
+        self._load_album_button.clicked.connect(lambda: self._select_album(try_loading_album))
+
+    def _show_load_error(self, error):
+        self._show_error("We're sorry, but the album file you selected cannot be loaded.")

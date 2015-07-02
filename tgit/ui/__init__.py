@@ -38,9 +38,8 @@ from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
-from tgit.ui.welcome_page import welcome_page
+from tgit.ui.welcome_page import WelcomePage
 from tgit.ui.album_screen import album_screen as AlbumScreen
-
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
 
@@ -139,8 +138,9 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                             on_import_album=director.import_album_into(portfolio))
 
     def create_welcome_page():
-        return welcome_page(select_album=dialogs.select_album_to_load,
-                            on_load_album=director.load_album_into(portfolio))
+        return WelcomePage(select_album=dialogs.select_album_to_load,
+                           show_error=message_boxes.show_error,
+                           on_load_album=director.load_album_into(portfolio))
 
     def create_startup_screen():
         return StartupScreen(create_welcome_page=create_welcome_page,
@@ -155,7 +155,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                                     on_add_tracks=director.add_tracks_to(album))
 
     def create_album_page(album):
-        return make_album_edition_page(preferences, dialogs, show_isni_lookup_dialog, show_activity_indicator_dialog,
+        return make_album_edition_page(preferences, dialogs, show_isni_lookup_dialog,
+                                       show_activity_indicator_dialog,
                                        show_performer_dialog, message_boxes.warn_isni_assignation_failed, album,
                                        name_registry, use_local_isni_backend)
 

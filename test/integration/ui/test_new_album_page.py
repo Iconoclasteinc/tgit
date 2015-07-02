@@ -34,7 +34,7 @@ def driver(qt, prober, automaton):
 
 
 ignore = lambda *_, **__: None
-always = lambda _, on_accept: on_accept()
+always = lambda on_accept: on_accept()
 no = lambda _: False
 yes = lambda _: True
 

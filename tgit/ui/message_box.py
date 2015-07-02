@@ -24,6 +24,11 @@ from PyQt5.QtWidgets import QMessageBox, QStyle
 class MessageBoxes:
     parent = None
 
+    def show_error(self, message, details=None):
+        message_box = MessageBox.error(self.parent, message, details)
+        message_box.open()
+        return message_box
+
     def inform_restart_required(self):
         message_box = MessageBox.inform(self.parent, "You need to restart TGiT for changes to take effect.")
         message_box.open()

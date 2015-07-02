@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtWidgets import QFileDialog
 
-from tgit.ui import locations
+from tgit.ui import locations, timing
 
 
 class LoadAlbumDialog(QFileDialog):
@@ -31,7 +31,7 @@ class LoadAlbumDialog(QFileDialog):
         self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT Album files")))
 
     def select(self, on_select):
-        self.fileSelected.connect(on_select)
+        self.fileSelected.connect(timing.after_delay(on_select))
         self.open()
 
     def done(self, result):

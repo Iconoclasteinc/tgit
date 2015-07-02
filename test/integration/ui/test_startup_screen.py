@@ -27,18 +27,18 @@ from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.welcome_page import WelcomePage
 
 
-nothing = lambda: None
+ignore = lambda: None
 no = lambda _: False
 
 
 @pytest.fixture()
 def screen(qt):
     def create_welcome_page():
-        return WelcomePage(select_album=nothing)
+        return WelcomePage(select_album=ignore, show_error=ignore)
 
     def create_new_album_page():
-        return NewAlbumPage(select_album_location=nothing, select_track=nothing, check_album_exists=no,
-                            confirm_overwrite=nothing)
+        return NewAlbumPage(select_album_location=ignore, select_track=ignore, check_album_exists=no,
+                            confirm_overwrite=ignore)
 
     startup_screen = StartupScreen(create_welcome_page=create_welcome_page,
                                    create_new_album_page=create_new_album_page)
