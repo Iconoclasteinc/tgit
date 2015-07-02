@@ -41,7 +41,9 @@ def close_album_confirmation_box(parent=None, **handlers):
 
 
 def overwrite_confirmation_message(parent=None, **handlers):
-    return ConfirmationBox(parent, "This album already exists. Are you sure you want to replace it?", **handlers)
+    confirmation = ConfirmationBox(parent, "This album already exists. Are you sure you want to replace it?", **handlers)
+    confirmation.open()
+    return confirmation
 
 
 class ConfirmationBox(QMessageBox):

@@ -26,3 +26,8 @@ def load(path, widget):
     file.open(QIODevice.ReadOnly)
     uic.loadUi(file, widget)
     file.close()
+
+
+class UIFile:
+    def load(self, path):
+        load(path, self)

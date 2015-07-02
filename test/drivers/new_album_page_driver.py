@@ -21,7 +21,6 @@ from hamcrest import ends_with
 
 from cute import gestures
 from cute.matchers import named
-from test.drivers import message_box
 from tgit.ui.new_album_page import NewAlbumPage
 from ._screen_driver import ScreenDriver
 
@@ -91,7 +90,3 @@ class NewAlbumPageDriver(ScreenDriver):
         self.has_album_name("untitled")
         self.has_album_location(ends_with("Documents"))
         self.has_track_location("")
-
-    def confirm_overwrite(self):
-        message_box(self).is_active()
-        message_box(self).yes()

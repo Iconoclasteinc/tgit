@@ -23,9 +23,7 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.new_album_page_driver import NewAlbumPageDriver
-from tgit.ui import message_box
 from tgit.ui.new_album_page import NewAlbumPage
-from tgit.util import fs
 
 
 @pytest.yield_fixture()
@@ -35,13 +33,17 @@ def driver(qt, prober, automaton):
     page_driver.close()
 
 
-ignore = lambda *_: None
+ignore = lambda *_, **__: None
+always = lambda _, on_accept: on_accept()
+no = lambda _: False
+yes = lambda _: True
 
 
-def show_page(select_album=ignore, select_track=ignore):
-    page = NewAlbumPage(select_album_destination=select_album,
-                        select_track_location=select_track,
-                        confirm_overwrite=message_box.overwrite_confirmation_message)
+def show_page(select_album=ignore, select_track=ignore, confirm_overwrite=always, album_exists=no):
+    page = NewAlbumPage(select_album_location=select_album,
+                        select_track=select_track,
+                        confirm_overwrite=confirm_overwrite,
+                        check_album_exists=album_exists)
     page.show()
     return page
 
@@ -100,7 +102,7 @@ def test_disables_create_button_when_album_name_or_location_missing(driver):
     driver.creation_is_disabled()
 
 
-def test_resets_form(driver):
+def test_resets_form_on_show(driver):
     page = show_page()
 
     driver.select_album_type("mp3")
@@ -108,20 +110,23 @@ def test_resets_form(driver):
     driver.enter_album_location("~Documents")
     driver.enter_track_location("~Music/track.mp3")
 
-    page.reset()
+    page.hide()
+    page.show()
 
     driver.has_reset_form()
 
+def test_asks_for_confirmation_when_album_file_already_exists(driver):
+    album_exists_query = ValueMatcherProbe("check album exists", "~Documents/Honeycomb/Honeycomb.tgit")
+    show_page(album_exists=album_exists_query.received)
 
-def test_asks_for_confirmation_when_album_file_already_exists(driver, tmpdir):
-    album_folder = tmpdir.mkdir("Honeycomb")
-    touch(album_folder.join("Honeycomb.tgit"))
-
-    show_page()
-
-    driver.create_album("mp3", "Honeycomb", tmpdir.strpath)
-    driver.confirm_overwrite()
+    driver.create_album("mp3", "Honeycomb", "~Documents")
+    driver.check(album_exists_query)
 
 
-def touch(filename):
-    fs.write(filename.strpath, b"")
+def test_creates_album_if_confirmed(driver):
+    create_album_signal = ValueMatcherProbe("new album", ("flac", "~Documents/Honeycomb/Honeycomb.tgit"))
+    page = show_page(album_exists=yes)
+    page.on_create_album(lambda *args: create_album_signal.received(args))
+
+    driver.create_album("flac", "Honeycomb", "~Documents")
+    driver.check(create_album_signal)

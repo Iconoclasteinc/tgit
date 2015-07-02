@@ -54,8 +54,7 @@ def test_shows_close_album_message(driver):
 
 
 def test_shows_overwrite_album_confirmation_message(driver):
-    dialog = overwrite_confirmation_message()
-    dialog.open()
+    _ = overwrite_confirmation_message()
 
     driver.is_active()
     driver.shows_message("This album already exists. Are you sure you want to replace it?")

@@ -34,7 +34,6 @@ class StartupScreen(QStackedWidget):
 
     def _move_to_new_album_page(self):
         self.setCurrentWidget(self._new_album_page)
-        self._new_album_page.reset()
 
     def _move_to_welcome_page(self):
         self.setCurrentWidget(self._welcome_page)

@@ -23,27 +23,25 @@ from PyQt5.QtWidgets import QFrame, QLineEdit
 
 from tgit.album import Album
 from tgit.ui import locations
-from tgit.ui.helpers import ui_file
+from tgit.ui.helpers.ui_file import UIFile
 
 
-def new_album_page(select_album_location, select_track_location, confirm_overwrite, **handlers):
-    page = NewAlbumPage(select_album_destination=select_album_location,
-                        select_track_location=select_track_location,
-                        confirm_overwrite=confirm_overwrite)
-    for name, handler in handlers.items():
-        getattr(page, name)(handler)
-
-    return page
-
-
-class NewAlbumPage(QFrame):
+class NewAlbumPage(QFrame, UIFile):
     _on_create_album = lambda *_: None
     _on_import_album = lambda *_: None
 
-    def __init__(self, *, parent=None, select_album_destination, select_track_location, confirm_overwrite):
-        super().__init__(parent)
+    def __init__(self, select_album_location, select_track, check_album_exists, confirm_overwrite, **handlers):
+        super().__init__()
+        self._album_exists = check_album_exists
+        self._setup_ui(select_album_location, select_track, confirm_overwrite)
+        self._register_event_handlers(handlers)
 
-        ui_file.load(":/ui/new_album_page.ui", self)
+    def _register_event_handlers(self, handlers):
+        for name, handler in handlers.items():
+            getattr(self, name)(handler)
+
+    def _setup_ui(self, select_album_destination, select_track_location, confirm_overwrite):
+        self.load(":/ui/new_album_page.ui")
         self.addAction(self.cancel_creation_action)
         self.addAction(self.create_album_action)
         self.album_location.textChanged.connect(lambda: self._toggle_create_button())
@@ -51,7 +49,6 @@ class NewAlbumPage(QFrame):
         self.browse_album_location_button.clicked.connect(lambda: select_album_destination(self.album_location.setText))
         self.browse_track_location_button.clicked.connect(lambda: select_track_location(self.track_location.setText))
         self.create_album_action.triggered.connect(lambda: self._create_album(confirm_overwrite))
-        self.cancel_creation_action.triggered.connect(self.reset)
         self._disable_mac_focus_frame()
 
     def on_create_album(self, on_create_album):
@@ -64,18 +61,17 @@ class NewAlbumPage(QFrame):
         self.cancel_creation_action.triggered.connect(on_cancel_creation)
 
     def _toggle_create_button(self):
-        disable_continue_button = self._should_disable_continue_button()
-        self.create_button.setDisabled(disable_continue_button)
-        self.create_album_action.setDisabled(disable_continue_button)
+        self.create_button.setEnabled(self._can_continue())
+        self.create_album_action.setEnabled(self._can_continue())
 
-    def _should_disable_continue_button(self):
-        return self.album_location.text() == "" or self.album_name.text() == ""
-
-    def _album_filename(self):
-        return os.path.join(self.album_location.text(), self.album_name.text(), self.album_name.text() + ".tgit")
+    def _can_continue(self):
+        return self.album_location.text() != "" and self.album_name.text() != ""
 
     def _album_type(self):
         return Album.Type.FLAC if self._flac_button.isChecked() else Album.Type.MP3
+
+    def _album_filename(self):
+        return os.path.join(self.album_location.text(), self.album_name.text(), self.album_name.text() + ".tgit")
 
     def _create_album(self, confirm_overwrite):
         def create_or_import_album():
@@ -84,17 +80,16 @@ class NewAlbumPage(QFrame):
             else:
                 self._on_import_album(self._album_type(), self._album_filename(), self.track_location.text())
 
-        if os.path.exists(self._album_filename()):
-            confirmation = confirm_overwrite(self, on_accept=create_or_import_album)
-            confirmation.open()
+        if self._album_exists(self._album_filename()):
+            confirm_overwrite(self, on_accept=create_or_import_album)
         else:
             create_or_import_album()
 
-    def reset(self):
+    def showEvent(self, event):
         self._flac_button.setChecked(True)
         self.album_name.setText(self.tr("untitled"))
-        self.album_name.selectAll()
         self.album_name.setFocus()
+        self.album_name.selectAll()
         self.album_location.setText(locations.Documents)
         self.track_location.setText("")
 

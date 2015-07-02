@@ -7,6 +7,7 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
 from test.util import builders as build, resources, doubles
+from test.util.builders import make_album
 from test.util.workspace import AlbumWorkspace
 from tgit import album_director as director
 from tgit.album import Album
@@ -51,6 +52,9 @@ def album_catalog():
     class Catalog:
         def __init__(self):
             self._albums = {}
+
+        def album_exists(self, filename):
+            return filename in self._albums
 
         def load_album(self, filename):
             return self._albums[filename]
@@ -99,6 +103,12 @@ def test_loads_album_from_catalog_into_portfolio(portfolio, album_catalog):
     director.load_album_into(portfolio, from_catalog=album_catalog)(filename="album.tgit")
 
     assert_that(portfolio, contains(target_album), "album portfolio")
+
+
+def test_checks_if_album_exists_in_catalog(album_catalog):
+    album_catalog.save_album(make_album("existing.tgit"))
+    assert_that(director.album_exists("existing.tgit", in_catalog=album_catalog), is_(True), "found existing album")
+    assert_that(director.album_exists("new.tgit", in_catalog=album_catalog), is_(False), "found brand new album")
 
 
 def test_removes_album_from_portfolio(portfolio):

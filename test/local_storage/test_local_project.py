@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from hamcrest import assert_that, contains, has_property, equal_to, empty
+from hamcrest import assert_that, contains, has_property, equal_to, empty, is_
 import pytest
 
 from test.util import builders as build, mp3_file, resources
@@ -82,6 +82,19 @@ def test_remove_previous_artwork_and_tracks(project_file, mp3):
     assert_that(fs.list_dir(project_file(ARTWORK_FOLDER_NAME)), empty(), "artwork files left")
 
 
+def test_checks_if_album_exists_in_catalog(project_file):
+    album_file = project_file("existing.tgit")
+    touch(album_file)
+
+    assert_that(local_project.album_exists(album_file), is_(True), "found existing album file on disk")
+    assert_that(local_project.album_exists(project_file("missing.tgit")), is_(False), "found new album file on disk")
+
+
 def delete_from_disk(*tracks):
     for track in tracks:
         os.remove(track.filename)
+
+
+def touch(filename):
+    fs.mkdirs(os.path.dirname(filename))
+    fs.write(filename, b"")

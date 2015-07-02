@@ -40,12 +40,16 @@ def import_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging)
     def import_album_to_portfolio(type_, album_file, reference_track_file):
         reference_track = from_catalog.load_track(reference_track_file)
         album = Album(reference_track.metadata, of_type=type_, filename=album_file)
-        _add_tracks_to_album(album, from_catalog, reference_track_file)
+        add_tracks(album, reference_track_file, from_catalog=from_catalog)
         save_album(to_catalog)(album)
         portfolio.add_album(album)
         return album
 
     return import_album_to_portfolio
+
+
+def album_exists(album_file, in_catalog=local_storage):
+    return in_catalog.album_exists(album_file)
 
 
 def load_album_into(portfolio, from_catalog=local_storage):
@@ -67,16 +71,12 @@ def remove_album_from(portfolio):
 
 
 def add_tracks(album, *filenames, from_catalog=tagging):
-    _add_tracks_to_album(album, from_catalog, *filenames)
+    for filename in filenames:
+        album.add_track(from_catalog.load_track(filename))
 
 
 def add_tracks_to(album, from_catalog=tagging):
-    return lambda *filenames: _add_tracks_to_album(album, from_catalog, *filenames)
-
-
-def _add_tracks_to_album(album, catalog, *filenames):
-    for filename in filenames:
-        album.add_track(catalog.load_track(filename))
+    return lambda *filenames: add_tracks(album, *filenames, from_catalog=from_catalog)
 
 
 def updateTrack(track, **metadata):

@@ -27,7 +27,7 @@ from tgit.ui.dialogs import Dialogs
 from tgit.ui.startup_screen import StartupScreen
 from tgit.ui.reference_track_selection_dialog import ReferenceTrackSelectionDialog
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
-from tgit.ui.new_album_page import new_album_page
+from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
@@ -130,11 +130,12 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return SettingsDialogController(restart_message_box, preferences, window)
 
     def create_new_album_page():
-        return new_album_page(select_album_location=dialogs.select_album_destination,
-                              select_track_location=dialogs.select_reference_track,
-                              confirm_overwrite=message_box.overwrite_confirmation_message,
-                              on_create_album=director.create_album_into(portfolio),
-                              on_import_album=director.import_album_into(portfolio))
+        return NewAlbumPage(select_album_location=dialogs.select_album_destination,
+                            select_track=dialogs.select_reference_track,
+                            check_album_exists=director.album_exists,
+                            confirm_overwrite=message_box.overwrite_confirmation_message,
+                            on_create_album=director.create_album_into(portfolio),
+                            on_import_album=director.import_album_into(portfolio))
 
     def create_welcome_page():
         return welcome_page(select_album=dialogs.select_album_to_load,
