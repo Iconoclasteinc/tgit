@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from hamcrest import starts_with
 
 from cute.matchers import named, with_buddy, showing_on_screen, with_pixmap_height, with_pixmap_width
 from tgit.ui.track_edition_page import TrackEditionPage
@@ -14,28 +15,28 @@ class TrackEditionPageDriver(ScreenDriver):
         for tag, value in meta.items():
             if tag == "track_title":
                 self.showsTrackTitle(value)
-            elif tag == 'lead_performer':
+            elif tag == "lead_performer":
                 self.shows_lead_performer(value)
-            elif tag == 'versionInfo':
+            elif tag == "versionInfo":
                 self.showsVersionInfo(value)
-            elif tag == 'featuredGuest':
+            elif tag == "featuredGuest":
                 self.showsFeaturedGuest(value)
-            elif tag == 'lyricist':
+            elif tag == "lyricist":
                 self.showsLyricist(value)
-            elif tag == 'composer':
+            elif tag == "composer":
                 self.showsComposer(value)
-            elif tag == 'publichser':
+            elif tag == "publichser":
                 self.showsPublisher(value)
-            elif tag == 'isrc':
+            elif tag == "isrc":
                 self.showsIsrc(value)
-            elif tag == 'bitrate':
+            elif tag == "bitrate":
                 self.showsBitrate(value)
-            elif tag == 'duration':
+            elif tag == "duration":
                 self.showsDuration(value)
-            elif tag == 'trackNumber':
+            elif tag == "track_number":
                 self.showsTrackNumber(value)
             else:
-                raise AssertionError("Don't know how to verify <%s>" % tag)
+                raise AssertionError("Don't know how to verify {0}".format(tag))
 
     def change_metadata(self, **meta):
         for tag, value in meta.items():
@@ -76,9 +77,9 @@ class TrackEditionPageDriver(ScreenDriver):
         label.has_text(title)
 
     def showsTrackNumber(self, number):
-        label = self.label(named('track-number'))
+        label = self.label(named("track-number"))
         label.is_showing_on_screen()
-        label.has_text(number)
+        label.has_text(starts_with("Track " + str(number)))
 
     def showsTrackTitle(self, trackTitle):
         self.label(with_buddy(named('track-title'))).is_showing_on_screen()

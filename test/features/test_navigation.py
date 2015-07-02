@@ -17,10 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import pytest
 
-
-@pytest.mark.wip
 def test_navigating_through_the_album_non_linearly(app, recordings):
     app.new_album(of_type="mp3")
 
@@ -31,7 +28,7 @@ def test_navigating_through_the_album_non_linearly(app, recordings):
     app.add_tracks_to_album(*tracks)
 
     app.shows_track_metadata(track_number=3, track_title="Salsa Coltrane")
-    app.shows_track_list(*tracks)
+    app.shows_track_list(["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
     app.shows_track_metadata(track_number=2, track_title="Zumbar")
     app.shows_album_metadata()
     app.shows_track_metadata(track_number=1, track_title="Chevere!")

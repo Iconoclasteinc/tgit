@@ -78,9 +78,9 @@ class ApplicationRunner:
         self.tagger.next()
         self.tagger.shows_track_metadata(**tags)
 
-    def shows_track_metadata(self, track_number, **tags):
-        self.tagger.navigate_to_track_page(track_number)
-        self.tagger.shows_track_metadata(**tags)
+    def shows_track_metadata(self, track_number, track_title, **tags):
+        self.tagger.navigate_to_track_page(track_title, track_number)
+        self.tagger.shows_track_metadata(track_number=track_number, track_title=track_title, **tags)
 
     def change_track_metadata(self, **tags):
         self.tagger.editTrackMetadata(**tags)
