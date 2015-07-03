@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from hamcrest import contains
+from hamcrest import contains, instance_of
 import pytest
 
 from cute.matchers import named
@@ -16,25 +16,26 @@ from test.util.builders import make_album
 from tgit.album import Album
 from tgit.ui.main_window import MainWindow
 
-
 ignore = lambda *_: None
 yes = lambda: True
 
 
-def create_main_window(portfolio=build.album_portfolio(),
-                       create_startup_screen=fake_startup_screen,
-                       create_album_screen=fake_album_screen,
-                       confirm_close=ignore,
-                       select_export_destination=ignore,
-                       select_tracks=ignore,
-                       select_tracks_in_folder=ignore,
-                       confirm_exit=yes,
-                       **handlers):
+def show_page(portfolio=build.album_portfolio(),
+              create_startup_screen=fake_startup_screen,
+              create_album_screen=fake_album_screen,
+              confirm_close=ignore,
+              show_save_error=ignore,
+              select_export_destination=ignore,
+              select_tracks=ignore,
+              select_tracks_in_folder=ignore,
+              confirm_exit=yes,
+              **handlers):
     main_window = MainWindow(portfolio=portfolio,
                              confirm_exit=confirm_exit,
                              create_startup_screen=create_startup_screen,
                              create_album_screen=create_album_screen,
                              confirm_close=confirm_close,
+                             show_save_error=show_save_error,
                              select_export_destination=select_export_destination,
                              select_tracks=select_tracks,
                              select_tracks_in_folder=select_tracks_in_folder,
@@ -52,12 +53,12 @@ def driver(qt, prober, automaton):
 
 
 def test_album_actions_are_initially_disabled(driver):
-    create_main_window()
+    show_page()
     driver.has_disabled_album_actions()
 
 
 def test_actions_are_disabled_once_album_is_closed(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     main_window.enable_album_actions(build.album())
 
     main_window.disable_album_actions()
@@ -65,7 +66,7 @@ def test_actions_are_disabled_once_album_is_closed(driver):
 
 
 def test_signals_when_add_files_menu_item_clicked(driver):
-    main_window = create_main_window(
+    main_window = show_page(
         select_tracks=lambda type_, on_select: on_select("track1." + type_, "track2." + type_))
     album = build.album(of_type=Album.Type.FLAC)
     add_files_signal = ValueMatcherProbe("add files", contains(album, ("track1.flac", "track2.flac")))
@@ -77,7 +78,7 @@ def test_signals_when_add_files_menu_item_clicked(driver):
 
 
 def test_signals_when_add_folder_menu_item_clicked(driver):
-    main_window = create_main_window(
+    main_window = show_page(
         select_tracks_in_folder=lambda type_, on_select: on_select("track1." + type_, "track2." + type_))
     album = build.album()
     add_folder_signal = ValueMatcherProbe("add folder", contains(album, ("track1.flac", "track2.flac")))
@@ -89,7 +90,7 @@ def test_signals_when_add_folder_menu_item_clicked(driver):
 
 
 def test_signals_when_export_menu_item_clicked(driver):
-    main_window = create_main_window(select_export_destination=lambda on_select: on_select("album.csv"))
+    main_window = show_page(select_export_destination=lambda on_select: on_select("album.csv"))
     album = build.album()
     export_signal = ValueMatcherProbe("export", contains(album, "album.csv"))
     main_window.on_export(
@@ -101,10 +102,10 @@ def test_signals_when_export_menu_item_clicked(driver):
 
 
 def test_signals_when_save_album_menu_item_clicked(driver):
-    main_window = create_main_window()
-    album = build.album()
+    album = make_album()
     save_album_signal = ValueMatcherProbe("save", album)
-    main_window.on_save_album(save_album_signal.received)
+
+    main_window = show_page(on_save_album=save_album_signal.received)
     main_window.display_album_screen(album)
 
     driver.save()
@@ -113,10 +114,10 @@ def test_signals_when_save_album_menu_item_clicked(driver):
 
 @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")
 def test_signals_when_save_album_keyboard_shortcut_is_activated(driver):
-    main_window = create_main_window()
-    album = build.album()
+    album = make_album()
     save_album_signal = ValueMatcherProbe("save", album)
-    main_window.on_save_album(save_album_signal.received)
+
+    main_window = show_page(on_save_album=save_album_signal.received)
     main_window.display_album_screen(album)
 
     driver.save(using_shortcut=True)
@@ -127,7 +128,7 @@ def test_asks_for_confirmation_before_closing_album(driver):
     album = make_album()
     confirm_close_query = ValueMatcherProbe("confirm close")
 
-    main_window = create_main_window(confirm_close=lambda on_accept: confirm_close_query.received())
+    main_window = show_page(confirm_close=lambda on_accept: confirm_close_query.received())
     main_window.display_album_screen(album)
 
     driver.close_album()
@@ -138,8 +139,8 @@ def test_signals_when_album_closed(driver):
     album = make_album()
     close_album_signal = ValueMatcherProbe("close", album)
 
-    main_window = create_main_window(confirm_close=lambda on_accept: on_accept(),
-                                     on_close_album=close_album_signal.received)
+    main_window = show_page(confirm_close=lambda on_accept: on_accept(),
+                            on_close_album=close_album_signal.received)
     main_window.display_album_screen(album)
 
     driver.close_album()
@@ -148,13 +149,13 @@ def test_signals_when_album_closed(driver):
 
 @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")
 def test_shows_confirmation_when_close_album_keyboard_shortcut_is_activated(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     main_window.enable_album_actions(build.album())
     driver.close_album(using_shortcut=True)
 
 
 def test_signals_when_settings_menu_item_clicked(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     change_settings_signal = ValueMatcherProbe("change settings")
     main_window.on_settings(lambda checked: change_settings_signal.received())
 
@@ -163,7 +164,7 @@ def test_signals_when_settings_menu_item_clicked(driver):
 
 
 def test_navigates_to_album_edition_page_item_when_menu_item_is_clicked(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     album = build.album()
     main_window.display_album_screen(album)
 
@@ -172,7 +173,7 @@ def test_navigates_to_album_edition_page_item_when_menu_item_is_clicked(driver):
 
 
 def test_navigates_to_album_composition_page_item_when_menu_item_is_clicked(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     album = build.album()
     main_window.display_album_screen(album)
 
@@ -182,7 +183,7 @@ def test_navigates_to_album_composition_page_item_when_menu_item_is_clicked(driv
 
 
 def test_adds_track_menu_item_when_adding_a_track_to_the_album(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     album = build.album()
     main_window.display_album_screen(album)
     album.add_track(build.track(track_title="Chevere!"))
@@ -191,7 +192,7 @@ def test_adds_track_menu_item_when_adding_a_track_to_the_album(driver):
 
 
 def test_removes_track_menu_item_when_removing_a_track_from_the_album(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     album = build.album()
     main_window.display_album_screen(album)
 
@@ -203,7 +204,7 @@ def test_removes_track_menu_item_when_removing_a_track_from_the_album(driver):
 
 
 def test_displays_track_menu_item_when_loading_an_existing_album(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     album = build.album(tracks=[build.track(track_title="Chevere!"), build.track(track_title="Zumbar")])
     main_window.display_album_screen(album)
 
@@ -212,7 +213,7 @@ def test_displays_track_menu_item_when_loading_an_existing_album(driver):
 
 
 def test_removes_track_menu_item_when_closing_an_album(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     album = build.album(tracks=[build.track(track_title="Chevere!"), build.track(track_title="Zumbar")])
     main_window.display_album_screen(album)
 
@@ -226,7 +227,7 @@ def test_removes_track_menu_item_when_closing_an_album(driver):
 
 
 def test_navigates_to_track_page_when_menu_item_is_clicked(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     album = build.album()
     main_window.display_album_screen(album)
     album.add_track(build.track(track_title="Chevere!"))
@@ -238,7 +239,7 @@ def test_navigates_to_track_page_when_menu_item_is_clicked(driver):
 
 
 def test_closes_main_widget_when_changing_page(driver):
-    main_window = create_main_window()
+    main_window = show_page()
     album = build.album()
 
     screen = startup_screen(driver).widget()
@@ -250,3 +251,18 @@ def test_closes_main_widget_when_changing_page(driver):
     main_window.display_startup_screen()
     no_album_screen(driver).exists()
     screen.is_closed()
+
+
+def save_fails(_):
+    raise OSError("Save failed")
+
+
+def test_warn_user_if_save_failed(driver):
+    save_failed_signal = ValueMatcherProbe("save album failed", instance_of(OSError))
+    album = make_album()
+
+    page = show_page(on_save_album=save_fails, show_save_error=save_failed_signal.received)
+    page.display_album_screen(album)
+
+    driver.save()
+    driver.check(save_failed_signal)

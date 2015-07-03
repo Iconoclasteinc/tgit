@@ -83,3 +83,10 @@ def test_shows_load_album_failed_message(driver):
     driver.is_active()
     driver.shows_message("We're sorry, but the album file you selected cannot be loaded.")
 
+
+def test_shows_save_album_failed_message(driver):
+    _ = messages().save_album_failed(Exception())
+
+    driver.is_active()
+    driver.shows_message("We're sorry, but we could not save your album.")
+

@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction
 
 from tgit.ui.helpers import ui_file
 from tgit.ui.observer import Observer
+from tgit.ui.rescue import rescue
 
 windows = sys.platform == "win32"
 
@@ -308,10 +309,11 @@ class MainWindow(QMainWindow):
 
     TRACK_ACTIONS_START_INDEX = 3
 
-    def __init__(self, portfolio, confirm_exit, create_startup_screen, create_album_screen,
+    def __init__(self, portfolio, confirm_exit, show_save_error, create_startup_screen, create_album_screen,
                  confirm_close, select_export_destination, select_tracks, select_tracks_in_folder, **handlers):
         super().__init__()
         self._confirm_exit = confirm_exit
+        self._show_save_error = show_save_error
         self._create_startup_screen = create_startup_screen
         self._create_album_screen = create_album_screen
         self._confirm_close = confirm_close
@@ -458,7 +460,8 @@ class MainWindow(QMainWindow):
         if self.focusWidget() is not None:
             self.focusWidget().clearFocus()
 
-        return self._on_save_album(self._album)
+        with rescue(on_error=self._show_save_error):
+            self._on_save_album(self._album)
 
     def close(self):
         closed = super().close()
