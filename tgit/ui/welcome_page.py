@@ -25,10 +25,10 @@ from tgit.ui.rescue import rescue
 
 
 class WelcomePage(QFrame, UIFile):
-    def __init__(self, select_album, show_error, **handlers):
+    def __init__(self, select_album, show_load_error, **handlers):
         super().__init__()
         self._select_album = select_album
-        self._show_error = show_error
+        self._show_load_error = show_load_error
         self._setup_ui()
         self._register_signal_handlers(handlers)
 
@@ -37,7 +37,7 @@ class WelcomePage(QFrame, UIFile):
             getattr(self, name)(handler)
 
     def _setup_ui(self):
-        self.load(":/ui/welcome_page.ui")
+        self._load(":/ui/welcome_page.ui")
         self._version_label.setText("v{0}".format(tgit.__version__))
 
     def on_create_album(self, on_create_album):
@@ -49,6 +49,3 @@ class WelcomePage(QFrame, UIFile):
                 on_load_album(filename)
 
         self._load_album_button.clicked.connect(lambda: self._select_album(try_loading_album))
-
-    def _show_load_error(self, error):
-        self._show_error("We're sorry, but the album file you selected cannot be loaded.")

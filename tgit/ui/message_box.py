@@ -21,13 +21,18 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox, QStyle
 
 
-class MessageBoxes:
+class Messages:
     parent = None
 
-    def show_error(self, message, details=None):
-        message_box = MessageBox.error(self.parent, message, details)
+    def _open(self, message_box):
         message_box.open()
         return message_box
+
+    def _show_error(self, message, details=None):
+        return self._open(MessageBox.error(self.parent, message, details))
+
+    def load_album_failed(self, error):
+        return self._show_error("We're sorry, but the album file you selected cannot be loaded.")
 
     def inform_restart_required(self):
         message_box = MessageBox.inform(self.parent, "You need to restart TGiT for changes to take effect.")

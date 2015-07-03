@@ -22,56 +22,63 @@ import pytest
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import QMessageBoxDriver, window
-from tgit.ui.message_box import MessageBoxes
+from tgit.ui.message_box import Messages
 
 DISPLAY_DELAY = 100
 
 
 @pytest.yield_fixture()
-def message_box_driver(prober, automaton):
-    driver = QMessageBoxDriver(window(QMessageBox, named("message_box")), prober, automaton)
-    yield driver
-    driver.close()
+def driver(qt, prober, automaton):
+    message_box_driver = QMessageBoxDriver(window(QMessageBox, named("message_box")), prober, automaton)
+    yield message_box_driver
+    message_box_driver.close()
 
 
-@pytest.fixture()
-def message_boxes(qt):
-    return MessageBoxes()
+def messages():
+    return Messages()
 
 
-def test_shows_isni_assignation_failed_message_with_details(message_boxes, message_box_driver):
-    _ = message_boxes.warn_isni_assignation_failed(details="Details")
-    message_box_driver.is_active()
-    message_box_driver.shows_message("Could not assign an ISNI")
-    message_box_driver.shows_details("Details")
-    message_box_driver.ok()
+def test_shows_isni_assignation_failed_message_with_details(driver):
+    _ = messages().warn_isni_assignation_failed(details="Details")
+    driver.is_active()
+    driver.shows_message("Could not assign an ISNI")
+    driver.shows_details("Details")
+    driver.ok()
 
 
-def test_shows_close_album_message(message_boxes, message_box_driver):
-    _ = message_boxes.confirm_close_album()
+def test_shows_close_album_message(driver):
+    _ = messages().confirm_close_album()
 
-    message_box_driver.is_active()
-    message_box_driver.shows_message("Are you sure you want to stop working on this release?")
+    driver.is_active()
+    driver.shows_message("Are you sure you want to stop working on this release?")
 
-def test_shows_restart_message(message_boxes, message_box_driver):
-    _ = message_boxes.inform_restart_required()
+def test_shows_restart_message(driver):
+    _ = messages().inform_restart_required()
 
-    message_box_driver.is_active()
-    message_box_driver.shows_message("You need to restart TGiT for changes to take effect.")
-
-
-def test_shows_overwrite_album_confirmation_message(message_boxes, message_box_driver):
-    _ = message_boxes.confirm_album_overwrite()
-
-    message_box_driver.is_active()
-    message_box_driver.shows_message("This album already exists. Are you sure you want to replace it?")
+    driver.is_active()
+    driver.shows_message("You need to restart TGiT for changes to take effect.")
 
 
-def test_signals_when_confirmed(message_boxes, message_box_driver):
+def test_shows_overwrite_album_confirmation_message(driver):
+    _ = messages().confirm_album_overwrite()
+
+    driver.is_active()
+    driver.shows_message("This album already exists. Are you sure you want to replace it?")
+
+
+def test_signals_when_confirmed(driver):
     accept_signal = ValueMatcherProbe("accept confirmation")
-    _ = message_boxes.confirm_close_album(on_accept=accept_signal.received)
+    _ = messages().confirm_close_album(on_accept=accept_signal.received)
 
-    message_box_driver.is_active()
-    message_box_driver.pause(DISPLAY_DELAY)
-    message_box_driver.yes()
-    message_box_driver.check(accept_signal)
+    driver.is_active()
+    driver.pause(DISPLAY_DELAY)
+    driver.yes()
+    driver.check(accept_signal)
+
+
+def test_shows_load_album_error(driver):
+    _ = messages().load_album_failed(Exception())
+
+    driver.is_active()
+    driver.shows_message("We're sorry, but the album file you selected cannot be loaded.")
+

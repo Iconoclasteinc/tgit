@@ -29,5 +29,5 @@ def load(path, widget):
 
 
 class UIFile:
-    def load(self, path):
+    def _load(self, path):
         load(path, self)

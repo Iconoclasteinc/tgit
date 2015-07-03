@@ -33,7 +33,7 @@ from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
-from tgit.ui.message_box import MessageBoxes
+from tgit.ui.message_box import Messages
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
@@ -124,7 +124,7 @@ def SettingsDialogController(notify_restart_required, preferences, parent):
 
 def create_main_window(portfolio, player, preferences, name_registry, use_local_isni_backend, native, confirm_exit):
     dialogs = Dialogs(director, native)
-    message_boxes = MessageBoxes()
+    message_boxes = Messages()
 
     def show_settings_dialog():
         return SettingsDialogController(message_boxes.inform_restart_required, preferences, window)
@@ -139,7 +139,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
     def create_welcome_page():
         return WelcomePage(select_album=dialogs.select_album_to_load,
-                           show_error=message_boxes.show_error,
+                           show_load_error=message_boxes.load_album_failed,
                            on_load_album=director.load_album_into(portfolio))
 
     def create_startup_screen():

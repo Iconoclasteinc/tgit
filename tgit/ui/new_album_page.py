@@ -41,7 +41,7 @@ class NewAlbumPage(QFrame, UIFile):
             getattr(self, name)(handler)
 
     def _setup_ui(self, select_album_destination, select_track_location, confirm_overwrite):
-        self.load(":/ui/new_album_page.ui")
+        self._load(":/ui/new_album_page.ui")
         self.addAction(self.cancel_creation_action)
         self.addAction(self.create_album_action)
         self.album_location.textChanged.connect(lambda: self._toggle_create_button())

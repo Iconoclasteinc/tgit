@@ -34,7 +34,7 @@ no = lambda _: False
 @pytest.fixture()
 def screen(qt):
     def create_welcome_page():
-        return WelcomePage(select_album=ignore, show_error=ignore)
+        return WelcomePage(select_album=ignore, show_load_error=ignore)
 
     def create_new_album_page():
         return NewAlbumPage(select_album_location=ignore, select_track=ignore, check_album_exists=no,
