@@ -89,7 +89,7 @@ def test_selects_an_album_location(driver):
 
 
 def test_selects_reference_track_location(driver):
-    show_page(select_track=lambda handler: handler("/path/to/reference/track"))
+    show_page(select_track=lambda type_, handler: handler("/path/to/reference/track"))
 
     driver.select_track()
     driver.has_track_location("/path/to/reference/track")

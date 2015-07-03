@@ -44,6 +44,12 @@ class TrackSelectionDialog(QFileDialog):
         self.filesSelected.connect(lambda files: on_select(*files))
         self.open()
 
+    def select_file(self, file_type, on_select):
+        self.setFileMode(QFileDialog.ExistingFile)
+        self.setNameFilter(self._filter_for(file_type))
+        self.filesSelected.connect(lambda files: on_select(files[0]))
+        self.open()
+
     def _filter_for(self, type_):
         return "{0} {1}".format(self.tr(self._FILTERS[type_]), "*.{}".format(type_))
 

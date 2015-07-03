@@ -36,6 +36,14 @@ class TrackSelectionDialogDriver(FileDialogDriver):
         self.select_files(*[os.path.basename(f) for f in files])
         self.accept()
 
+    def select_track(self, file):
+        if not file:
+            self.reject()
+
+        self._navigate_to(os.path.dirname(file))
+        self.select_file(os.path.basename(file))
+        self.accept()
+
     def rejects_selection_of(self, path):
         self.is_active()
         self.navigate_to_dir(os.path.dirname(path))

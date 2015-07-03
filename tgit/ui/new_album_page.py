@@ -47,7 +47,8 @@ class NewAlbumPage(QFrame, UIFile):
         self.album_location.textChanged.connect(lambda: self._toggle_create_button())
         self.album_name.textChanged.connect(lambda: self._toggle_create_button())
         self.browse_album_location_button.clicked.connect(lambda: select_album_destination(self.album_location.setText))
-        self.browse_track_location_button.clicked.connect(lambda: select_track_location(self.track_location.setText))
+        self.browse_track_location_button.clicked.connect(
+            lambda: select_track_location(self._album_type(), self.track_location.setText))
         self.create_album_action.triggered.connect(lambda: self._create_album(confirm_overwrite))
         self._disable_mac_focus_frame()
 

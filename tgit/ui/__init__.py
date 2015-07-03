@@ -25,7 +25,6 @@ from tgit import album_director as director
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
 from tgit.ui.startup_screen import StartupScreen
-from tgit.ui.reference_track_selection_dialog import ReferenceTrackSelectionDialog
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.performer_dialog import PerformerDialog
@@ -123,7 +122,7 @@ def SettingsDialogController(notify_restart_required, preferences, parent):
 
 
 def create_main_window(portfolio, player, preferences, name_registry, use_local_isni_backend, native, confirm_exit):
-    dialogs = Dialogs(director, native)
+    dialogs = Dialogs(native)
     message_boxes = Messages()
 
     def show_settings_dialog():
@@ -131,7 +130,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
     def create_new_album_page():
         return NewAlbumPage(select_album_location=dialogs.select_album_destination,
-                            select_track=dialogs.select_reference_track,
+                            select_track=dialogs.select_track,
                             check_album_exists=director.album_exists,
                             confirm_overwrite=message_boxes.confirm_album_overwrite,
                             on_create_album=director.create_album_into(portfolio),

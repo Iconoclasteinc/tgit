@@ -9,10 +9,12 @@ from tgit.album import Album
 from tgit.ui import Dialogs
 
 
+ignore = lambda *_, **__: None
+
+
 @pytest.fixture()
 def dialogs(qt):
-    dialogs = Dialogs(album_director, native=False)
-    return dialogs
+    return Dialogs(native=False)
 
 
 @pytest.yield_fixture()
@@ -55,20 +57,6 @@ def picture_selection_dialog_driver(prober, automaton):
     driver = FileDialogDriver(window(QFileDialog, named("picture-selection-dialog")), prober, automaton)
     yield driver
     driver.close()
-
-
-def ignore(*_):
-    pass
-
-
-def test_creates_a_single_reference_track_selection_dialog(dialogs, reference_track_selection_dialog_driver):
-    dialogs.select_reference_track(ignore)
-    reference_track_selection_dialog_driver.is_showing_on_screen()
-    reference_track_selection_dialog_driver.reject()
-
-    dialogs.select_reference_track(ignore)
-    reference_track_selection_dialog_driver.is_showing_on_screen()
-    reference_track_selection_dialog_driver.reject()
 
 
 def test_creates_a_single_album_destination_selection_dialog(dialogs, select_album_destination_dialog_driver):

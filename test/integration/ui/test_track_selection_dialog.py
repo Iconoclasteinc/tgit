@@ -30,6 +30,17 @@ def abs_path(selection):
     return list(map(os.path.abspath, selection))
 
 
+def test_signals_selected_file(driver, dialog):
+    mp3 = resources.path("audio", "Rolling in the Deep.mp3")
+
+    track_selection_signal = ValueMatcherProbe("track selection", mp3)
+
+    dialog.select_file('mp3', lambda selection: track_selection_signal.received(os.path.abspath(selection)))
+
+    driver.select_tracks(mp3)
+    driver.check(track_selection_signal)
+
+
 def test_signals_selected_files(driver, dialog):
     mp3s = (resources.path("audio", "Rolling in the Deep.mp3"),
             resources.path("audio", "Set Fire to the Rain.mp3"),

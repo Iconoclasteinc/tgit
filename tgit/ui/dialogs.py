@@ -17,7 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.ui.reference_track_selection_dialog import make_reference_track_selection_dialog
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.export_as_dialog import make_export_as_dialog
 from tgit.ui.picture_selection_dialog import make_picture_selection_dialog
@@ -28,22 +27,14 @@ from tgit.ui.load_album_dialog import LoadAlbumDialog
 class Dialogs:
     _pictures = None
     _tracks = None
-    _select_reference_track = None
     _export = None
     _select_album_destination = None
     _select_album_to_load = None
 
     parent = None
 
-    def __init__(self, commands, native):
-        self._commands = commands
+    def __init__(self, native):
         self._native = native
-
-    def _select_cover_dialog(self):
-        if not self._pictures:
-            self._pictures = make_picture_selection_dialog(self.parent, native=self._native)
-
-        return self._pictures
 
     def _select_tracks_dialog(self):
         if not self._tracks:
@@ -51,32 +42,11 @@ class Dialogs:
 
         return self._tracks
 
-    def _select_reference_track_dialog(self):
-        if not self._select_reference_track:
-            self._select_reference_track = make_reference_track_selection_dialog(self.parent, native=self._native)
-
-        return self._select_reference_track
-
-    def _export_as_dialog(self):
-        if not self._export:
-            self._export = make_export_as_dialog(self.parent, native=self._native)
-
-        return self._export
-
-    def _select_album_destination_dialog(self):
-        if not self._select_album_destination:
-            self._select_album_destination = SelectAlbumDestinationDialog(self.parent, native=self._native)
-
-        return self._select_album_destination
-
-    def _select_album_to_load_dialog(self):
-        if not self._select_album_to_load:
-            self._select_album_to_load = LoadAlbumDialog(self.parent, native=self._native)
-
-        return self._select_album_to_load
-
     def select_cover(self, on_select):
-        return self._select_cover_dialog().select(on_select)
+        if not self._pictures:
+            self._pictures = make_picture_selection_dialog(self.parent, native=self._native)
+
+        return self._pictures.select(on_select)
 
     def select_tracks(self, file_type, on_select):
         return self._select_tracks_dialog().select_files(file_type, on_select)
@@ -84,17 +54,26 @@ class Dialogs:
     def add_tracks_in_folder(self, file_type, on_select):
         return self._select_tracks_dialog().select_files_in_folder(file_type, on_select)
 
-    def select_reference_track(self, on_select):
-        return self._select_reference_track_dialog().select(on_select)
+    def select_track(self, file_type, on_select):
+        return self._select_tracks_dialog().select_file(file_type, on_select)
 
     def export(self, on_select):
-        return self._export_as_dialog().select(on_select)
+        if not self._export:
+            self._export = make_export_as_dialog(self.parent, native=self._native)
+
+        return self._export.select(on_select)
 
     def select_album_destination(self, on_select):
-        return self._select_album_destination_dialog().select(on_select)
+        if not self._select_album_destination:
+            self._select_album_destination = SelectAlbumDestinationDialog(self.parent, native=self._native)
+
+        return self._select_album_destination.select(on_select)
 
     def select_album_to_load(self, on_select):
-        return self._select_album_to_load_dialog().select(on_select)
+        if not self._select_album_to_load:
+            self._select_album_to_load = LoadAlbumDialog(self.parent, native=self._native)
+
+        return self._select_album_to_load.select(on_select)
 
     def clear(self):
         self._pictures = None
