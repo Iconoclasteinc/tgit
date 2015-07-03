@@ -35,7 +35,7 @@ class PictureSelectionDialog(QFileDialog):
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
         self.setDirectory(locations.Pictures)
         self.setFileMode(QFileDialog.ExistingFile)
-        self.setNameFilter("{0} (*.png *.jpeg *.jpg)".format(self.tr("Image files")))
+        self.setNameFilter("{0} (*.png *.jpeg *.jpg *.jpe)".format(self.tr("Image files")))
 
     def select(self, on_select):
         self.fileSelected.connect(on_select)
