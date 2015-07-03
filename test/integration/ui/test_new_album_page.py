@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
 
 import pytest
 
@@ -51,7 +52,8 @@ def show_page(select_album=ignore, select_track=ignore, confirm_overwrite=always
 @pytest.mark.parametrize("using_shortcut", [False, True])
 def test_signals_album_creation(driver, using_shortcut):
     page = show_page()
-    create_album_signal = ValueMatcherProbe("new album", ("flac", "~Documents/Honeycomb/Honeycomb.tgit"))
+    create_album_signal = ValueMatcherProbe("new album",
+                                            ("flac", os.path.normpath("~Documents/Honeycomb/Honeycomb.tgit")))
 
     page.on_create_album(lambda *args: create_album_signal.received(args))
 
@@ -61,7 +63,8 @@ def test_signals_album_creation(driver, using_shortcut):
 
 def test_signals_album_import(driver):
     page = show_page()
-    import_album_signal = ValueMatcherProbe("import album", ("mp3", "~Documents/Honeycomb/Honeycomb.tgit", "track.mp3"))
+    import_album_signal = ValueMatcherProbe("import album", (
+        "mp3", os.path.normpath("~Documents/Honeycomb/Honeycomb.tgit"), "track.mp3"))
     page.on_import_album(lambda *args: import_album_signal.received(args))
 
     driver.create_album("mp3", "Honeycomb", "~Documents", import_from="track.mp3")
@@ -115,8 +118,10 @@ def test_resets_form_on_show(driver):
 
     driver.has_reset_form()
 
+
 def test_asks_for_confirmation_when_album_file_already_exists(driver):
-    album_exists_query = ValueMatcherProbe("check album exists", "~Documents/Honeycomb/Honeycomb.tgit")
+    album_exists_query = ValueMatcherProbe("check album exists",
+                                           os.path.normpath("~Documents/Honeycomb/Honeycomb.tgit"))
     show_page(album_exists=album_exists_query.received)
 
     driver.create_album("mp3", "Honeycomb", "~Documents")
@@ -124,7 +129,8 @@ def test_asks_for_confirmation_when_album_file_already_exists(driver):
 
 
 def test_creates_album_if_confirmed(driver):
-    create_album_signal = ValueMatcherProbe("new album", ("flac", "~Documents/Honeycomb/Honeycomb.tgit"))
+    create_album_signal = ValueMatcherProbe("new album",
+                                            ("flac", os.path.normpath("~Documents/Honeycomb/Honeycomb.tgit")))
     page = show_page(album_exists=yes)
     page.on_create_album(lambda *args: create_album_signal.received(args))
 

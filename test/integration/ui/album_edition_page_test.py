@@ -15,9 +15,13 @@ from tgit.ui.album_edition_page import AlbumEditionPage
 from tgit.util import fs
 
 
+def ignore(*_):
+    pass
+
+
 class AlbumEditionPageTest(WidgetTest):
-    def render(self, album):
-        self.page = AlbumEditionPage(Preferences(), use_local_isni_backend=True)
+    def render(self, album, select_picture=ignore, **handlers):
+        self.page = AlbumEditionPage(Preferences(), use_local_isni_backend=True, select_picture=select_picture, **handlers)
         self.page.refresh(album)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
@@ -113,14 +117,14 @@ class AlbumEditionPageTest(WidgetTest):
         self.render(build.album())
         self.driver.enablesISNIAssign(False)
 
-    def testSignalsWhenPictureSelected(self):
-        self.render(build.album())
-
-        select_picture_signal = ValueMatcherProbe("select picture")
-        self.page.select_picture.connect(select_picture_signal.received)
+    def test_signals_when_picture_selected(self):
+        album = build.album()
+        signal = ValueMatcherProbe("select picture", "front-cover.jpg")
+        self.render(album, select_picture=lambda callback: callback("front-cover.jpg"),
+                    on_select_picture=signal.received)
 
         self.driver.addPicture()
-        self.check(select_picture_signal)
+        self.check(signal)
 
     def testSignalsWhenAddingAPerformer(self):
         self.render(build.album())

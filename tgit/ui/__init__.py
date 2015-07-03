@@ -155,10 +155,11 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                                     on_add_tracks=director.add_tracks_to(album))
 
     def create_album_page(album):
-        return make_album_edition_page(preferences, dialogs, show_isni_lookup_dialog,
-                                       show_activity_indicator_dialog,
+        return make_album_edition_page(preferences, show_isni_lookup_dialog, show_activity_indicator_dialog,
                                        show_performer_dialog, message_boxes.warn_isni_assignation_failed, album,
-                                       name_registry, use_local_isni_backend)
+                                       name_registry, use_local_isni_backend,
+                                       select_picture=dialogs.select_cover,
+                                       on_select_picture=director.change_cover_of(album))
 
     def show_isni_lookup_dialog(album, identities):
         return ISNILookupDialogController(window, album, identities)

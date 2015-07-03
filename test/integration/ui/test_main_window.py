@@ -17,7 +17,7 @@ from tgit.album import Album
 from tgit.ui.main_window import MainWindow
 
 
-def ignore(*_):
+def ignore(*arg, **kwargs):
     pass
 
 

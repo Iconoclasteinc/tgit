@@ -24,15 +24,11 @@ from PyQt5.QtWidgets import QFileDialog
 from tgit.ui import locations
 
 
-def make_picture_selection_dialog(parent_window, native=True, *, on_select_picture):
-    dialog = PictureSelectionDialog(parent_window, native)
-    dialog.picture_selected.connect(on_select_picture)
-    return dialog
+def make_picture_selection_dialog(parent, native=True):
+    return PictureSelectionDialog(parent, native)
 
 
 class PictureSelectionDialog(QFileDialog):
-    picture_selected = pyqtSignal(str)
-
     def __init__(self, parent=None, native=True):
         super().__init__(parent)
         self.setObjectName("picture-selection-dialog")
@@ -40,4 +36,11 @@ class PictureSelectionDialog(QFileDialog):
         self.setDirectory(locations.Pictures)
         self.setFileMode(QFileDialog.ExistingFile)
         self.setNameFilter("{0} (*.png *.jpeg *.jpg)".format(self.tr("Image files")))
-        self.fileSelected.connect(lambda selected: self.picture_selected.emit(os.path.abspath(selected)))
+
+    def select(self, on_select):
+        self.fileSelected.connect(on_select)
+        self.open()
+
+    def done(self, result):
+        self.fileSelected.disconnect()
+        super().done(result)

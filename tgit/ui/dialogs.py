@@ -39,10 +39,9 @@ class Dialogs:
         self._commands = commands
         self._native = native
 
-    def _select_cover_dialog(self, album):
+    def _select_cover_dialog(self):
         if not self._pictures:
-            self._pictures = make_picture_selection_dialog(self.parent, native=self._native,
-                                                           on_select_picture=self._commands.change_cover_of(album))
+            self._pictures = make_picture_selection_dialog(self.parent, native=self._native)
 
         return self._pictures
 
@@ -76,8 +75,8 @@ class Dialogs:
 
         return self._select_album_to_load
 
-    def select_cover(self, album):
-        return self._select_cover_dialog(album)
+    def select_cover(self, on_select):
+        return self._select_cover_dialog().select(on_select)
 
     def select_tracks(self, file_type, on_select):
         return self._select_tracks_dialog().select_files(file_type, on_select)

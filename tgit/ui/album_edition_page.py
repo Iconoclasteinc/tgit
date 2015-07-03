@@ -30,9 +30,10 @@ from tgit.genres import GENRES
 from tgit.isni.name_registry import NameRegistry
 from tgit.util import async_task_runner as task_runner
 
-def make_album_edition_page(preferences, dialogs, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
+
+def make_album_edition_page(preferences, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
                             performer_dialog_factory, show_assignation_failed, album, name_registry,
-                            use_local_isni_backend):
+                            use_local_isni_backend, select_picture, **handlers):
     def poll_queue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -65,9 +66,11 @@ def make_album_edition_page(preferences, dialogs, lookup_isni_dialog_factory, ac
         dialog.show()
 
     queue = Queue()
-    page = AlbumEditionPage(preferences, use_local_isni_backend)
+    page = AlbumEditionPage(preferences,
+                            select_picture=select_picture,
+                            use_local_isni_backend=use_local_isni_backend,
+                            **handlers)
     page.metadata_changed.connect(lambda metadata: director.updateAlbum(album, **metadata))
-    page.select_picture.connect(lambda: dialogs.select_cover(album).open())
     page.remove_picture.connect(lambda: director.removeAlbumCover(album))
     page.lookup_isni.connect(lookup_isni)
     page.assign_isni.connect(assign_isni)
@@ -83,7 +86,6 @@ ORANGE = QColor.fromRgb(0xF9F9F9)
 
 
 class AlbumEditionPage(QWidget, AlbumListener):
-    select_picture = pyqtSignal()
     remove_picture = pyqtSignal()
     lookup_isni = pyqtSignal()
     clear_isni = pyqtSignal()
@@ -91,20 +93,24 @@ class AlbumEditionPage(QWidget, AlbumListener):
     add_performer = pyqtSignal()
     metadata_changed = pyqtSignal(dict)
 
+    picture = None
+
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, preferences, use_local_isni_backend=False):
+    def __init__(self, preferences, select_picture, use_local_isni_backend=False, **handlers):
         super().__init__()
         ui_file.load(":/ui/album_page.ui", self)
         self.use_local_isni_backend = use_local_isni_backend
         self._preferences = preferences
-        self.picture = None
+        self._select_picture = select_picture
 
         self._disable_mac_focus_frame()
 
+        for name, handler in handlers.items():
+            getattr(self, name)(handler)
+
         # picture box
         self.front_cover.setFixedSize(*self.FRONT_COVER_SIZE)
-        self.select_picture_button.clicked.connect(lambda pressed: self.select_picture.emit())
         self.remove_picture_button.clicked.connect(lambda pressed: self.remove_picture.emit())
 
         # date box
@@ -147,8 +153,12 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.genre.lineEdit().textEdited.connect(
             lambda: self.metadata_changed.emit(self.metadata("primary_style")))
 
-        for date_edit in (self.release_time, self.digital_release_time, self.original_release_time, self.recording_time):
+        for date_edit in (
+                self.release_time, self.digital_release_time, self.original_release_time, self.recording_time):
             self._style_calendar(date_edit)
+
+    def on_select_picture(self, on_select_picture):
+        self.select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
 
     def _style_calendar(self, date_edit):
         calendar = date_edit.calendarWidget()
