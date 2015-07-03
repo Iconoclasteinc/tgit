@@ -34,7 +34,7 @@ QLineEdit {
 	border: 1px solid #B1B1B1;
 	color: #222222;
 	min-height: 20px;
-    selection-background-color: #F9CFBA;
+    selection-background-color: #F2C1A7;
 	selection-color: #222222;
 }
 

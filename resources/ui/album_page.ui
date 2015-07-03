@@ -30,7 +30,7 @@ QPlainTextEdit,
 QDateEdit,
 QComboBox,
 QSpinBox {
-	selection-background-color: #F9CFBA;
+	selection-background-color: #F2C1A7;
 	selection-color: #222222;
 }
 

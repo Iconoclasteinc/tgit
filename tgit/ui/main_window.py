@@ -151,7 +151,7 @@ StyleSheet = """
     }
 
     #track-edition-page QLineEdit, #track-edition-page TextArea, #track-edition-page QComboBox {
-        selection-background-color: #F9CFBA;
+        selection-background-color: #F2C1A7;
         selection-color: #222222;
     }
 
@@ -394,7 +394,7 @@ class MainWindow(QMainWindow):
 
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)
-        # self.setStyleSheet(StyleSheet)
+        self.setStyleSheet(StyleSheet)
 
     def _setup_menu_bar(self):
         self.add_files_action.triggered.connect(self._add_files)
