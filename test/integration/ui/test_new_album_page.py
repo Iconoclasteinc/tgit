@@ -24,6 +24,7 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.new_album_page_driver import NewAlbumPageDriver
+from tgit.album import Album
 from tgit.ui.new_album_page import NewAlbumPage
 
 
@@ -89,10 +90,11 @@ def test_selects_an_album_location(driver):
 
 
 def test_selects_reference_track_location(driver):
-    show_page(select_track=lambda type_, handler: handler("/path/to/reference/track"))
+    show_page(select_track=lambda type_, handler: handler("track." + type_))
 
+    driver.select_album_type(Album.Type.MP3)
     driver.select_track()
-    driver.has_track_location("/path/to/reference/track")
+    driver.has_track_location("track.mp3")
 
 
 def test_disables_create_button_when_album_name_or_location_missing(driver):
