@@ -32,7 +32,7 @@ from tgit.ui.album_composition_page import AlbumCompositionPage
 from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
-from tgit.ui.message_box import Messages
+from tgit.ui.message_box import MessageBoxes
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
@@ -123,22 +123,22 @@ def SettingsDialogController(notify_restart_required, preferences, parent):
 
 def create_main_window(portfolio, player, preferences, name_registry, use_local_isni_backend, native, confirm_exit):
     dialogs = Dialogs(native)
-    message_boxes = Messages()
+    messages = MessageBoxes(confirm_exit)
 
     def show_settings_dialog():
-        return SettingsDialogController(message_boxes.inform_restart_required, preferences, window)
+        return SettingsDialogController(messages.restart_required, preferences, window)
 
     def create_new_album_page():
         return NewAlbumPage(select_album_location=dialogs.select_album_destination,
                             select_track=dialogs.select_track,
                             check_album_exists=director.album_exists,
-                            confirm_overwrite=message_boxes.confirm_album_overwrite,
+                            confirm_overwrite=messages.overwrite_album_confirmation,
                             on_create_album=director.create_album_into(portfolio),
                             on_import_album=director.import_album_into(portfolio))
 
     def create_welcome_page():
         return WelcomePage(select_album=dialogs.select_album_to_load,
-                           show_load_error=message_boxes.load_album_failed,
+                           show_load_error=messages.load_album_failed,
                            on_load_album=director.load_album_into(portfolio))
 
     def create_startup_screen():
@@ -155,7 +155,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
     def create_album_page(album):
         return make_album_edition_page(preferences, show_isni_lookup_dialog, show_activity_indicator_dialog,
-                                       show_performer_dialog, message_boxes.warn_isni_assignation_failed, album,
+                                       show_performer_dialog, messages.isni_assignation_failed, album,
                                        name_registry, use_local_isni_backend,
                                        select_picture=dialogs.select_cover,
                                        on_select_picture=director.change_cover_of(album))
@@ -176,10 +176,10 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return AlbumScreen(create_composition_page, create_album_page, create_track_page, album)
 
     window = MainWindow(portfolio,
-                        confirm_exit=confirm_exit,
+                        confirm_exit=messages.confirm_exit,
                         create_startup_screen=create_startup_screen,
                         create_album_screen=create_album_screen,
-                        confirm_close=message_boxes.confirm_close_album,
+                        confirm_close=messages.close_album_confirmation,
                         select_export_destination=dialogs.export,
                         select_tracks=dialogs.select_tracks,
                         select_tracks_in_folder=dialogs.add_tracks_in_folder,
@@ -189,7 +189,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                         on_export=director.export_as_csv,
                         on_settings=show_settings_dialog)
     dialogs.parent = window
-    message_boxes.parent = window
+    messages.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())
 
     return window

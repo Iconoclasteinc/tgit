@@ -21,7 +21,7 @@ import sys
 
 from PyQt5 import QtGui
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QMainWindow, QAction, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QAction
 
 from tgit.ui.helpers import ui_file
 from tgit.ui.observer import Observer
@@ -309,16 +309,15 @@ class MainWindow(QMainWindow):
     TRACK_ACTIONS_START_INDEX = 3
 
     def __init__(self, portfolio, confirm_exit, create_startup_screen, create_album_screen,
-                 confirm_close, select_export_destination, select_tracks, select_tracks_in_folder,
-                 **handlers):
+                 confirm_close, select_export_destination, select_tracks, select_tracks_in_folder, **handlers):
         super().__init__()
-        self._select_tracks_in_folder = select_tracks_in_folder
-        self._select_tracks = select_tracks
         self._confirm_exit = confirm_exit
-        self._select_export_destination = select_export_destination
-        self._confirm_close = confirm_close
         self._create_startup_screen = create_startup_screen
         self._create_album_screen = create_album_screen
+        self._confirm_close = confirm_close
+        self._select_tracks_in_folder = select_tracks_in_folder
+        self._select_tracks = select_tracks
+        self._select_export_destination = select_export_destination
 
         self._setup_ui()
         self._setup_menu_bar()
@@ -393,7 +392,7 @@ class MainWindow(QMainWindow):
 
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)
-        self.setStyleSheet(StyleSheet)
+        # self.setStyleSheet(StyleSheet)
 
     def _setup_menu_bar(self):
         self.add_files_action.triggered.connect(self._add_files)
@@ -458,6 +457,7 @@ class MainWindow(QMainWindow):
     def _save_album(self):
         if self.focusWidget() is not None:
             self.focusWidget().clearFocus()
+
         return self._on_save_album(self._album)
 
     def close(self):
@@ -470,7 +470,7 @@ class MainWindow(QMainWindow):
         if self._should_close_immediately:
             return
 
-        if self._ask_for_exit_confirmation():
+        if self._confirm_exit():
             # There is an issue on MAC which results on the closeEvent being called twice when exiting the application.
             # Setting _closing to True will prevent the confirmation message to be seen twice.
             self._closing = True
@@ -479,8 +479,4 @@ class MainWindow(QMainWindow):
 
     @property
     def _should_close_immediately(self):
-        return self._closing or not self._confirm_exit or self._album is None
-
-    def _ask_for_exit_confirmation(self):
-        return QMessageBox.question(self, "", self.tr("Are you sure you want to quit?"),
-                                    QMessageBox.Yes | QMessageBox.No) == QMessageBox.Yes
+        return self._closing or self._album is None

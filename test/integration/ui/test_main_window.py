@@ -17,8 +17,8 @@ from tgit.album import Album
 from tgit.ui.main_window import MainWindow
 
 
-def ignore(*arg, **kwargs):
-    pass
+ignore = lambda *_: None
+yes = lambda: True
 
 
 def create_main_window(portfolio=build.album_portfolio(),
@@ -28,7 +28,7 @@ def create_main_window(portfolio=build.album_portfolio(),
                        select_export_destination=ignore,
                        select_tracks=ignore,
                        select_tracks_in_folder=ignore,
-                       confirm_exit=False,
+                       confirm_exit=yes,
                        **handlers):
     main_window = MainWindow(portfolio=portfolio,
                              confirm_exit=confirm_exit,

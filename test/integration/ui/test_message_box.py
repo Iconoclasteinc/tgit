@@ -22,7 +22,7 @@ import pytest
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import QMessageBoxDriver, window
-from tgit.ui.message_box import Messages
+from tgit.ui.message_box import MessageBoxes
 
 DISPLAY_DELAY = 100
 
@@ -35,11 +35,11 @@ def driver(qt, prober, automaton):
 
 
 def messages():
-    return Messages()
+    return MessageBoxes()
 
 
 def test_shows_isni_assignation_failed_message_with_details(driver):
-    _ = messages().warn_isni_assignation_failed(details="Details")
+    _ = messages().isni_assignation_failed(details="Details")
     driver.is_active()
     driver.shows_message("Could not assign an ISNI")
     driver.shows_details("Details")
@@ -47,28 +47,29 @@ def test_shows_isni_assignation_failed_message_with_details(driver):
 
 
 def test_shows_close_album_message(driver):
-    _ = messages().confirm_close_album()
+    _ = messages().close_album_confirmation()
 
     driver.is_active()
     driver.shows_message("Are you sure you want to stop working on this release?")
 
+
 def test_shows_restart_message(driver):
-    _ = messages().inform_restart_required()
+    _ = messages().restart_required()
 
     driver.is_active()
     driver.shows_message("You need to restart TGiT for changes to take effect.")
 
 
 def test_shows_overwrite_album_confirmation_message(driver):
-    _ = messages().confirm_album_overwrite()
+    _ = messages().overwrite_album_confirmation()
 
     driver.is_active()
-    driver.shows_message("This album already exists. Are you sure you want to replace it?")
+    driver.shows_message("This album already exists. Do you want to replace it?")
 
 
 def test_signals_when_confirmed(driver):
     accept_signal = ValueMatcherProbe("accept confirmation")
-    _ = messages().confirm_close_album(on_accept=accept_signal.received)
+    _ = messages().close_album_confirmation(on_accept=accept_signal.received)
 
     driver.is_active()
     driver.pause(DISPLAY_DELAY)
@@ -76,7 +77,7 @@ def test_signals_when_confirmed(driver):
     driver.check(accept_signal)
 
 
-def test_shows_load_album_error(driver):
+def test_shows_load_album_failed_message(driver):
     _ = messages().load_album_failed(Exception())
 
     driver.is_active()

@@ -17,65 +17,96 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+import sys
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMessageBox, QStyle
+from PyQt5.QtWidgets import QMessageBox
 
 
-class Messages:
+class MessageBoxes:
     parent = None
 
-    def _open(self, message_box):
-        message_box.open()
-        return message_box
+    def __init__(self, confirm_before_exiting=False):
+        self._confirm_before_exiting = confirm_before_exiting
 
-    def _show_error(self, message, details=None):
-        return self._open(MessageBox.error(self.parent, message, details))
+    def _open(self, message):
+        message.open()
+        return message
 
     def load_album_failed(self, error):
-        return self._show_error("We're sorry, but the album file you selected cannot be loaded.")
+        return self._open(MessageBox.warn(self.parent,
+                                          "We're sorry, but the album file you selected cannot be loaded.",
+                                          "The file might be corrupted or part of the album content cannot be found."))
 
-    def inform_restart_required(self):
-        message_box = MessageBox.inform(self.parent, "You need to restart TGiT for changes to take effect.")
-        message_box.open()
-        return message_box
+    def save_album_failed(self, error):
+        return self._open(MessageBox.warn(self.parent,
+                                          "We're sorry, but we could not save your album.",
+                                          "Please check that you have permission to write to the album location."))
 
-    def warn_isni_assignation_failed(self, details=None):
-        message_box = MessageBox.warn(self.parent, "Could not assign an ISNI", details)
-        message_box.open()
-        return message_box
+    def restart_required(self):
+        return self._open(MessageBox.inform(self.parent, "You need to restart TGiT for changes to take effect."))
 
-    def confirm_close_album(self, **handlers):
-        message_box = ConfirmationBox(self.parent, "Are you sure you want to stop working on this release?", **handlers)
-        message_box.open()
-        return message_box
+    def isni_assignation_failed(self, details=None):
+        return self._open(MessageBox.warn(self.parent, "Could not assign an ISNI", details=details))
 
-    def confirm_album_overwrite(self, **handlers):
-        message_box = ConfirmationBox(self.parent, "This album already exists. Are you sure you want to replace it?", **handlers)
-        message_box.open()
-        return message_box
+    def close_album_confirmation(self, **handlers):
+        return self._open(ConfirmationBox.warn(self.parent,
+                                               "Are you sure you want to stop working on this release?", **handlers))
+
+    def overwrite_album_confirmation(self, **handlers):
+        return self._open(ConfirmationBox.warn(self.parent,
+                                               "This album already exists. Do you want to replace it?",
+                                               "An album file with the same name already exists at "
+                                               "the location you entered. "
+                                               "Replacing it will overwrite its current contents.",
+                                               **handlers))
+
+    def confirm_exit(self):
+        box = ConfirmationBox.warn(self.parent, "Are you sure you want to quit?")
+        return self._confirm_before_exiting and box.exec() == QMessageBox.Yes
 
 
-def _append_icon_to(message_box, icon_to_append):
-    style = message_box.style()
-    icon_size = style.pixelMetric(QStyle.PM_MessageBoxIconSize, widget=message_box)
-    icon = style.standardIcon(icon_to_append, widget=message_box)
-    message_box.setIconPixmap(icon.pixmap(icon_size, icon_size))
+mac = sys.platform == "darwin"
 
 
-class ConfirmationBox(QMessageBox):
-    _on_accept = lambda: None
-
-    def __init__(self, parent, message, **handlers):
+class MessageBox(QMessageBox):
+    def __init__(self, parent, message, information, icon, details):
         super().__init__(parent)
-
         self.setObjectName("message_box")
         self.setText(self.tr(message))
+        self.setInformativeText(self.tr(information))
         self.setModal(True)
-        self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         self.setAttribute(Qt.WA_DeleteOnClose, True)
-        self.buttonClicked.connect(self._button_clicked)
-        _append_icon_to(self, QStyle.SP_MessageBoxQuestion)
+        self.setDetailedText(details)
+        self.setStandardButtons(QMessageBox.Ok)
+        self.setIcon(icon)
+        if mac:
+            # On OS X, setting a stylesheet on the main window messes up the message box style
+            self.setStyleSheet("#qt_msgbox_informativelabel {font: normal 10px; margin-bottom: 10px;}")
 
+    @classmethod
+    def inform(cls, parent, message, information=None, details=None, **handlers):
+        return cls(parent, message, information, QMessageBox.NoIcon, details, **handlers)
+
+    @classmethod
+    def warn(cls, parent, message, information=None, details=None, **handlers):
+        return cls(parent, message, information, QMessageBox.Warning, details, **handlers)
+
+
+class ConfirmationBox(MessageBox):
+    _on_accept = lambda _: None
+
+    def __init__(self, parent, message, information, icon, details=None, **handlers):
+        super().__init__(parent, message, information, icon, details)
+
+        self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        self.buttonClicked.connect(self._button_clicked)
+        self._register_signal_handlers(handlers)
+
+    def on_accept(self, on_accept):
+        self._on_accept = on_accept
+
+    def _register_signal_handlers(self, handlers):
         for name, handler in handlers.items():
             getattr(self, name)(handler)
 
@@ -84,30 +115,3 @@ class ConfirmationBox(QMessageBox):
 
         if role == QMessageBox.YesRole:
             self._on_accept()
-
-    def on_accept(self, on_accept):
-        self._on_accept = on_accept
-
-
-class MessageBox(QMessageBox):
-    def __init__(self, parent, message, icon=QStyle.SP_MessageBoxInformation, details=None):
-        super().__init__(parent)
-        self.setObjectName("message_box")
-        self.setText(self.tr(message))
-        self.setModal(True)
-        self.setAttribute(Qt.WA_DeleteOnClose, True)
-        self.setDetailedText(details)
-        self.setStandardButtons(QMessageBox.Ok)
-        _append_icon_to(self, icon)
-
-    @staticmethod
-    def inform(parent, message, details=None):
-        return MessageBox(parent, message, QStyle.SP_MessageBoxInformation, details)
-
-    @staticmethod
-    def warn(parent, message, details=None):
-        return MessageBox(parent, message, QStyle.SP_MessageBoxWarning, details)
-
-    @staticmethod
-    def error(parent, message, details=None):
-        return MessageBox(parent, message, QStyle.SP_MessageBoxCritical, details)
