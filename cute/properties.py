@@ -61,6 +61,10 @@ def title():
     return PropertyQuery("title", lambda w: w.title())
 
 
+def window_title():
+    return PropertyQuery("window title", lambda w: w.windowTitle())
+
+
 def cursor_shape():
     return PropertyQuery("cursor shape", lambda w: w.cursor().shape())
 

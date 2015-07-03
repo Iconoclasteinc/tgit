@@ -35,10 +35,6 @@ def with_list_item_text(text):
     return with_(properties.list_item_text(), wrap_matcher(text))
 
 
-def with_title(text):
-    return with_(properties.title(), wrap_matcher(text))
-
-
 def with_(query, matcher):
     return QueryResultMatcher(query, matcher)
 

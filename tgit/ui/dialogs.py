@@ -57,9 +57,9 @@ class Dialogs:
     def select_track(self, file_type, on_select):
         return self._select_tracks_dialog().select_file(file_type, on_select)
 
-    def export(self, on_select):
+    def export(self, on_select, default_file_name=""):
         if not self._export:
-            self._export = make_export_as_dialog(self.parent, native=self._native)
+            self._export = make_export_as_dialog(default_file_name, self.parent, self._native)
 
         return self._export.select(on_select)
 

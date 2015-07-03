@@ -454,7 +454,7 @@ class MainWindow(QMainWindow):
         self._confirm_close(on_accept=lambda: self._on_close_album(self._album))
 
     def _choose_export_destination(self):
-        self._select_export_destination(lambda dest: self._on_export(self._album, dest))
+        self._select_export_destination(lambda dest: self._on_export(self._album, dest), self._album.release_name)
 
     def _save_album(self):
         if self.focusWidget() is not None:

@@ -102,6 +102,9 @@ class WidgetDriver:
     def has_cursor_shape(self, shape):
         self.has(properties.cursor_shape(), shape)
 
+    def has_window_title(self, title):
+        self.has(properties.window_title(), title)
+
     def manipulate(self, description, manipulation):
         self.check(WidgetManipulatorProbe(self.selector, manipulation, description))
 
@@ -441,6 +444,9 @@ class FileDialogDriver(QDialogDriver):
     def enter_manually(self, filename):
         self._filename_edit().replace_all_text(filename)
 
+    def has_filename(self, filename):
+        self._filename_edit().has_text(filename)
+
     def accept(self):
         self._accept_button().click()
         self.pause(self.DISMISS_DELAY)
@@ -591,10 +597,12 @@ class QMenuBarDriver(WidgetDriver):
 
 class MenuDriver(WidgetDriver):
     DISMISS_DELAY = 250 if mac else 0
+    POPUP_DELAY = 25 if windows else 0
 
     def popup_manually_at(self, x, y):
         # For some reason, we can't open the menu by just right clicking, so open it manually
         self.manipulate("open at ({0}, {1})".format(x, y), lambda menu: menu.popup(QPoint(x, y)))
+        self.pause(self.POPUP_DELAY)
 
     def menu_item(self, matching):
         # We have to make sure the item menu actually exists in the menu

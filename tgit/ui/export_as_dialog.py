@@ -22,18 +22,22 @@ from PyQt5.QtWidgets import QFileDialog
 from tgit.ui import locations
 
 
-def make_export_as_dialog(parent_window, native=True):
-    return ExportAsDialog(parent_window, native)
+def make_export_as_dialog(default_file_name="", parent=None, native=True):
+    return ExportAsDialog(default_file_name, parent, native)
 
 
 class ExportAsDialog(QFileDialog):
-    def __init__(self, parent=None, native=True):
+    def __init__(self, default_file_name="", parent=None, native=True):
         super().__init__(parent)
         self.setObjectName("export-as-dialog")
         self.setAcceptMode(QFileDialog.AcceptSave)
         self.setDirectory(locations.Home)
         self.setFileMode(QFileDialog.AnyFile)
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
+        self.setMimeTypeFilters(["text/csv"])
+        self.setDefaultSuffix("csv")
+        self.setWindowTitle(self.tr("Export As"))
+        self.selectFile(default_file_name)
 
     def select(self, on_select):
         self.fileSelected.connect(on_select)

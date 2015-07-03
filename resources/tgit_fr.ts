@@ -37,6 +37,13 @@
     </message>
 </context>
 <context>
+    <name>ExportAsDialog</name>
+    <message>
+        <source>Export As</source>
+        <translation>Export As</translation>
+    </message>
+</context>
+<context>
     <name>AlbumCompositionPage</name>
     <message>
         <source>Play</source>

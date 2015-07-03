@@ -16,7 +16,8 @@ from test.util.builders import make_album
 from tgit.album import Album
 from tgit.ui.main_window import MainWindow
 
-ignore = lambda *_: None
+
+ignore = lambda *_, **__: None
 yes = lambda: True
 
 
@@ -90,9 +91,9 @@ def test_signals_when_add_folder_menu_item_clicked(driver):
 
 
 def test_signals_when_export_menu_item_clicked(driver):
-    main_window = show_page(select_export_destination=lambda on_select: on_select("album.csv"))
-    album = build.album()
-    export_signal = ValueMatcherProbe("export", contains(album, "album.csv"))
+    main_window = show_page(select_export_destination=lambda on_select, name: on_select(name + ".csv"))
+    album = build.album(release_name="Honeycomb")
+    export_signal = ValueMatcherProbe("export", contains(album, "Honeycomb.csv"))
     main_window.on_export(
         lambda current_album, destination: export_signal.received([current_album, destination]))
     main_window.display_album_screen(album)
