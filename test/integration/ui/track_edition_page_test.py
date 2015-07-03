@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 
-from hamcrest import contains_string, has_entries
+from hamcrest import has_entries
 
 from cute.finders import WidgetIdentity
 from cute.probes import ValueMatcherProbe
@@ -31,7 +31,7 @@ class TrackEditionPageTest(WidgetTest):
 
         self.driver.showsAlbumTitle('Album Title')
         self.driver.shows_album_lead_performer('Artist')
-        self.driver.showsTrackNumber(contains_string('2 of 3'))
+        self.driver.showsTrackNumber('2')
 
     def testIndicatesWhenAlbumPerformedByVariousArtists(self):
         track = build.track()
