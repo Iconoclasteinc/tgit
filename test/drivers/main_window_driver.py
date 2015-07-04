@@ -131,3 +131,6 @@ class MainWindowDriver(WidgetDriver):
 
     def about_qt(self):
         menu_bar(self).help.about_qt()
+
+    def about(self):
+        menu_bar(self).help.about()

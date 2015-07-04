@@ -392,6 +392,9 @@ class MainWindow(QMainWindow):
     def on_add_files(self, handler):
         self._on_add_files = handler
 
+    def on_about(self, handler):
+        self._about_action.triggered.connect(handler)
+
     def on_about_qt(self, handler):
         self._about_qt_action.triggered.connect(handler)
 

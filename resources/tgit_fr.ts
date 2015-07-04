@@ -451,6 +451,11 @@
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
+        <source>&amp;About</source>
+        <translation>À &amp;propos</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
         <source>About &amp;Qt</source>
         <translation>À propos de &amp;Qt</translation>
     </message>

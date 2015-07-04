@@ -75,6 +75,7 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="_about_qt_action"/>
+    <addaction name="_about_action"/>
    </widget>
    <addaction name="file_menu"/>
    <addaction name="navigate_menu"/>
@@ -149,6 +150,11 @@
   <action name="_about_qt_action">
    <property name="text">
     <string>About &amp;Qt</string>
+   </property>
+  </action>
+  <action name="_about_action">
+   <property name="text">
+    <string>&amp;About</string>
    </property>
   </action>
  </widget>

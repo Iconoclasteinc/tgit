@@ -116,10 +116,19 @@ def test_signals_when_save_album_menu_item_clicked(driver):
 def test_signals_when_about_qt_menu_item_clicked(driver):
     about_qt_signal = ValueMatcherProbe("about Qt")
 
-    show_page(on_about_qt=about_qt_signal.received)
+    show_page(on_about_qt=lambda pressed: about_qt_signal.received())
 
     driver.about_qt()
     driver.check(about_qt_signal)
+
+
+def test_signals_when_about_menu_item_clicked(driver):
+    about_signal = ValueMatcherProbe("about")
+
+    show_page(on_about=lambda pressed: about_signal.received())
+
+    driver.about()
+    driver.check(about_signal)
 
 
 @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")

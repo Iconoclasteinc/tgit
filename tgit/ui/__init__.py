@@ -22,6 +22,7 @@ from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
+from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
 from tgit.ui.startup_screen import StartupScreen
@@ -177,6 +178,9 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
     def show_about_qt_dialog():
         QMessageBox.aboutQt(window)
 
+    def show_about_dialog():
+        AboutDialog(window).open()
+
     window = MainWindow(portfolio,
                         confirm_exit=messages.confirm_exit,
                         create_startup_screen=create_startup_screen,
@@ -191,7 +195,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                         on_add_files=director.add_tracks,
                         on_export=director.export_as_csv,
                         on_settings=show_settings_dialog,
-                        on_about_qt=show_about_qt_dialog)
+                        on_about_qt=show_about_qt_dialog,
+                        on_about=show_about_dialog)
     dialogs.parent = window
     messages.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())
