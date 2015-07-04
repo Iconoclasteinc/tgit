@@ -37,39 +37,28 @@ def driver(qt, prober, automaton):
 
 ignore = lambda *_, **__: None
 always = lambda on_accept: on_accept()
-no = lambda _: False
-yes = lambda _: True
+no = lambda *_: False
+yes = lambda *_: True
 
 
-def show_page(select_album=ignore, select_track=ignore, confirm_overwrite=always, album_exists=no):
+def show_page(select_album=ignore, select_track=ignore, confirm_overwrite=always, album_exists=no,
+              on_create_album=ignore):
     page = NewAlbumPage(select_album_location=select_album,
                         select_track=select_track,
                         confirm_overwrite=confirm_overwrite,
-                        check_album_exists=album_exists)
+                        check_album_exists=album_exists,
+                        on_create_album=on_create_album)
     page.show()
     return page
 
 
 @pytest.mark.parametrize("using_shortcut", [False, True])
 def test_signals_album_creation(driver, using_shortcut):
-    page = show_page()
-    create_album_signal = ValueMatcherProbe("new album",
-                                            ("flac", os.path.normpath("~Documents/Honeycomb/Honeycomb.tgit")))
+    show_page(on_create_album=lambda *args: create_album_signal.received(args))
+    create_album_signal = ValueMatcherProbe("new album", ("flac", "Honeycomb", "~Documents", "track.mp3"))
 
-    page.on_create_album(lambda *args: create_album_signal.received(args))
-
-    driver.create_album("flac", "Honeycomb", "~Documents", using_shortcut=using_shortcut)
+    driver.create_album("flac", "Honeycomb", "~Documents", import_from="track.mp3", using_shortcut=using_shortcut)
     driver.check(create_album_signal)
-
-
-def test_signals_album_import(driver):
-    page = show_page()
-    import_album_signal = ValueMatcherProbe("import album", (
-        "mp3", os.path.normpath("~Documents/Honeycomb/Honeycomb.tgit"), "track.mp3"))
-    page.on_import_album(lambda *args: import_album_signal.received(args))
-
-    driver.create_album("mp3", "Honeycomb", "~Documents", import_from="track.mp3")
-    driver.check(import_album_signal)
 
 
 @pytest.mark.parametrize("using_shortcut", [False, True])
@@ -122,19 +111,16 @@ def test_resets_form_on_show(driver):
 
 
 def test_asks_for_confirmation_when_album_file_already_exists(driver):
-    album_exists_query = ValueMatcherProbe("check album exists",
-                                           os.path.normpath("~Documents/Honeycomb/Honeycomb.tgit"))
-    show_page(album_exists=album_exists_query.received)
+    album_exists_query = ValueMatcherProbe("check album exists", ("Honeycomb", "~Documents"))
+    show_page(album_exists=lambda *args: album_exists_query.received(args))
 
     driver.create_album("mp3", "Honeycomb", "~Documents")
     driver.check(album_exists_query)
 
 
 def test_creates_album_if_confirmed(driver):
-    create_album_signal = ValueMatcherProbe("new album",
-                                            ("flac", os.path.normpath("~Documents/Honeycomb/Honeycomb.tgit")))
-    page = show_page(album_exists=yes)
-    page.on_create_album(lambda *args: create_album_signal.received(args))
+    create_album_signal = ValueMatcherProbe("new album", ("flac", "Honeycomb", "~Documents", "track.mp3"))
+    show_page(album_exists=yes, on_create_album=lambda *args: create_album_signal.received(args))
 
-    driver.create_album("flac", "Honeycomb", "~Documents")
+    driver.create_album("flac", "Honeycomb", "~Documents", "track.mp3")
     driver.check(create_album_signal)

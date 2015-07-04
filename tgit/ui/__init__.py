@@ -133,8 +133,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                             select_track=dialogs.select_track,
                             check_album_exists=director.album_exists,
                             confirm_overwrite=messages.overwrite_album_confirmation,
-                            on_create_album=director.create_album_into(portfolio),
-                            on_import_album=director.import_album_into(portfolio))
+                            on_create_album=director.create_album_into(portfolio))
 
     def create_welcome_page():
         return WelcomePage(select_album=dialogs.select_album_to_load,

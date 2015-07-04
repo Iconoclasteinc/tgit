@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import os
 import unittest
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
                       has_key)
+
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
@@ -76,11 +78,16 @@ def portfolio():
     return AlbumPortfolio()
 
 
-def test_creates_and_adds_album_to_porfolio_and_catalog(portfolio, album_catalog):
-    director.create_album_into(portfolio, to_catalog=album_catalog)(type_=Album.Type.MP3,
-                                                                    album_file="/path/to/workspace/album.tgit")
+def make_filename(location, name):
+    return os.path.join(location, name, "{0}.tgit".format(name))
 
-    assert_that(portfolio, contains(has_properties(type="mp3", filename="/path/to/workspace/album.tgit")),
+
+def test_creates_and_adds_album_to_porfolio_and_catalog(portfolio, album_catalog):
+    director.create_album_into(portfolio, to_catalog=album_catalog)(type_=Album.Type.MP3, name="album",
+                                                                    location="workspace")
+
+    assert_that(portfolio,
+                contains(has_properties(type="mp3", filename=make_filename("workspace", "album"))),
                 "albums in portfolio")
     album_catalog.assert_contains(portfolio[0])
 
@@ -88,8 +95,8 @@ def test_creates_and_adds_album_to_porfolio_and_catalog(portfolio, album_catalog
 def test_imports_album_from_an_existing_track(portfolio, album_catalog, track_catalog):
     track_catalog.add_track(filename="smash", metadata=Metadata(release_name="Honeycomb"), track_title="Smash Smash")
 
-    director.import_album_into(portfolio, to_catalog=album_catalog, from_catalog=track_catalog)(
-        type_=Album.Type.MP3, album_file="/path/to/workspace/album.tgit", reference_track_file='smash')
+    director.create_album_into(portfolio, to_catalog=album_catalog, from_catalog=track_catalog)(
+        type_=Album.Type.MP3, name="album", location="workspace", reference_track_file="smash")
 
     assert_that(portfolio, contains(has_properties(type="mp3", release_name="Honeycomb",
                                                    tracks=contains(has_properties(track_title="Smash Smash")))),
@@ -106,9 +113,11 @@ def test_loads_album_from_catalog_into_portfolio(portfolio, album_catalog):
 
 
 def test_checks_if_album_exists_in_catalog(album_catalog):
-    album_catalog.save_album(make_album("existing.tgit"))
-    assert_that(director.album_exists("existing.tgit", in_catalog=album_catalog), is_(True), "found existing album")
-    assert_that(director.album_exists("new.tgit", in_catalog=album_catalog), is_(False), "found brand new album")
+    album_catalog.save_album(make_album(make_filename("workspace", "existing")))
+    assert_that(director.album_exists("existing", "workspace", in_catalog=album_catalog), is_(True),
+                "found existing album")
+    assert_that(director.album_exists("new", "workspace", in_catalog=album_catalog), is_(False),
+                "found brand new album")
 
 
 def test_removes_album_from_portfolio(portfolio):

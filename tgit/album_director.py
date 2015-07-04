@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
 
 import requests
 
@@ -26,9 +27,30 @@ from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
 
-def create_album_into(portfolio, to_catalog=local_storage):
-    def create_new_album(type_, album_file):
-        album = Album(of_type=type_, filename=album_file)
+def _build_filename(name, location):
+    return os.path.join(location, name, "{0}.tgit".format(name))
+
+
+def _must_import(filename):
+    return len(filename) > 0
+
+
+def _import(of_type, filename, reference_track_file, from_catalog):
+    reference_track = from_catalog.load_track(reference_track_file)
+    album = Album(of_type=of_type, filename=filename, metadata=reference_track.metadata)
+    add_tracks(album, reference_track_file, from_catalog=from_catalog)
+    return album
+
+
+def _create_or_import_album(of_type, filename, reference_track_file, from_catalog):
+    if _must_import(reference_track_file):
+        return _import(of_type, filename, reference_track_file, from_catalog)
+    return Album(of_type=of_type, filename=filename)
+
+
+def create_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging):
+    def create_new_album(type_, name, location, reference_track_file=""):
+        album = _create_or_import_album(type_, _build_filename(name, location), reference_track_file, from_catalog)
         save_album(to_catalog)(album)
         portfolio.add_album(album)
         return album
@@ -36,20 +58,8 @@ def create_album_into(portfolio, to_catalog=local_storage):
     return create_new_album
 
 
-def import_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging):
-    def import_album_to_portfolio(type_, album_file, reference_track_file):
-        reference_track = from_catalog.load_track(reference_track_file)
-        album = Album(reference_track.metadata, of_type=type_, filename=album_file)
-        add_tracks(album, reference_track_file, from_catalog=from_catalog)
-        save_album(to_catalog)(album)
-        portfolio.add_album(album)
-        return album
-
-    return import_album_to_portfolio
-
-
-def album_exists(album_file, in_catalog=local_storage):
-    return in_catalog.album_exists(album_file)
+def album_exists(name, location, in_catalog=local_storage):
+    return in_catalog.album_exists(_build_filename(name, location))
 
 
 def load_album_into(portfolio, from_catalog=local_storage):
