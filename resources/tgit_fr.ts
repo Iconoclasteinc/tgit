@@ -408,6 +408,11 @@
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
+        <source>&amp;Help</source>
+        <translation>&amp;Aide</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
         <source>Add &amp;Files...</source>
         <translation>Ajouter des &amp;fichiers... </translation>
     </message>
@@ -443,6 +448,11 @@
         <location filename="tgit/ui/main_window.py"/>
         <source>Album &amp;composition</source>
         <translation>&amp;Composition de l'album</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>About &amp;Qt</source>
+        <translation>À propos de &amp;Qt</translation>
     </message>
 </context>
 <context>

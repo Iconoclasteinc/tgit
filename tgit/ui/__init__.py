@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import functools as func
 
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
@@ -174,6 +174,9 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
         return AlbumScreen(create_composition_page, create_album_page, create_track_page, album)
 
+    def show_about_qt_dialog():
+        QMessageBox.aboutQt(window)
+
     window = MainWindow(portfolio,
                         confirm_exit=messages.confirm_exit,
                         create_startup_screen=create_startup_screen,
@@ -187,7 +190,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                         on_save_album=director.save_album(),
                         on_add_files=director.add_tracks,
                         on_export=director.export_as_csv,
-                        on_settings=show_settings_dialog)
+                        on_settings=show_settings_dialog,
+                        on_about_qt=show_about_qt_dialog)
     dialogs.parent = window
     messages.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())

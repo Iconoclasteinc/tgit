@@ -392,6 +392,9 @@ class MainWindow(QMainWindow):
     def on_add_files(self, handler):
         self._on_add_files = handler
 
+    def on_about_qt(self, handler):
+        self._about_qt_action.triggered.connect(handler)
+
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)
         self.setStyleSheet(StyleSheet)
