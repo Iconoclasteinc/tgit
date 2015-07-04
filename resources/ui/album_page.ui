@@ -35,7 +35,7 @@ QSpinBox {
 }
 
 QCalendarWidget QAbstractItemView {
-    selection-background-color: #F25C0A;
+    selection-background-color: #F08450;
 }
 
 QCalendarWidget QToolButton {
@@ -52,7 +52,7 @@ QCalendarWidget QMenu {
 }
 
 QCalendarWidget QMenu::item::selected {
-  background-color:#F25C0A;
+  background-color:#F08450;
 }
 
 QCalendarWidget QToolButton::menu-indicator {

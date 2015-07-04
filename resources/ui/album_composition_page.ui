@@ -251,7 +251,7 @@ QMenu {
 }
 
 ::item::selected {
-  background-color:#F25C0A;
+  background-color:#F08450;
 }
 
 QHeaderView {

@@ -37,7 +37,7 @@ StyleSheet = """
     }
 
     QComboBox QAbstractItemView {
-        selection-background-color:#F25C0A;
+        selection-background-color:#F08450;
     }
 
     #activity-indicator-dialog-frame {

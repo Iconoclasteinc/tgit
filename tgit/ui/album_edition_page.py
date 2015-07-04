@@ -81,8 +81,8 @@ def make_album_edition_page(preferences, lookup_isni_dialog_factory, activity_in
     return page
 
 
-LIGHT_GRAY = QColor.fromRgb(0xF25C0A)
-ORANGE = QColor.fromRgb(0xF9F9F9)
+ORANGE = QColor.fromRgb(0xF08450)
+LIGHT_GRAY = QColor.fromRgb(0xF6F6F6)
 
 
 class AlbumEditionPage(QWidget, AlbumListener):
@@ -170,13 +170,13 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def _style_calendar_view(self, calendar):
         calendar_view = calendar.findChild(QWidget, "qt_calendar_calendarview")
         palette = calendar.palette()
-        palette.setColor(QPalette.AlternateBase, ORANGE)
+        palette.setColor(QPalette.AlternateBase, LIGHT_GRAY)
         calendar_view.setPalette(palette)
 
     def _style_navigation_bar(self, calendar):
         navbar = calendar.findChild(QWidget, "qt_calendar_navigationbar")
         palette = calendar.palette()
-        palette.setColor(QPalette.Highlight, LIGHT_GRAY)
+        palette.setColor(QPalette.Highlight, ORANGE)
         navbar.setPalette(palette)
         left_arrow = calendar.findChild(QWidget, "qt_calendar_prevmonth")
         left_arrow.setIcon(QIcon(":/images/chevron-left-white-12.png"))
