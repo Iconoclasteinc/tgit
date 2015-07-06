@@ -8,12 +8,12 @@ import pytest
 from cute.matchers import with_text, named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from test.drivers import AlbumCompositionPageDriver
+from test.drivers import TrackListPageDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
 from test.util.builders import make_album, make_track
 from test.util.doubles import fake_audio_player
-from tgit.ui.album_composition_page import AlbumCompositionPage
+from tgit.ui.track_list_page import TrackListPage
 
 
 def ignore(*_):
@@ -23,17 +23,16 @@ def ignore(*_):
 @pytest.fixture()
 def show_page(qt):
     def create(album=make_album(), player=fake_audio_player(), select_tracks=ignore):
-        composition_page = AlbumCompositionPage(album, player, select_tracks)
-        show_widget(composition_page)
-        return composition_page
+        track_list_page = TrackListPage(album, player, select_tracks)
+        show_widget(track_list_page)
+        return track_list_page
 
     return create
 
 
 @pytest.yield_fixture()
 def page_driver(prober, automaton):
-    driver = AlbumCompositionPageDriver(window(AlbumCompositionPage, named("album_composition_page")),
-                                        prober, automaton)
+    driver = TrackListPageDriver(window(TrackListPage, named("track_list_page")), prober, automaton)
     yield driver
     driver.close()
 

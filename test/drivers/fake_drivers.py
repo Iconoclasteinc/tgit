@@ -13,8 +13,8 @@ class FakeAlbumScreenDriver(WidgetDriver):
     def is_showing_page(self, matching):
         self.has(current_page(), matching)
 
-    def is_showing_album_composition_page(self):
-        self.is_showing_page(ALBUM_COMPOSITION_PAGE_NAME)
+    def is_showing_track_list_page(self):
+        self.is_showing_page(TRACK_LIST_PAGE_NAME)
 
     def is_showing_album_edition_page(self):
         self.is_showing_page(ALBUM_EDITION_PAGE_NAME)
@@ -27,8 +27,8 @@ def widget(parent, matching):
     return WidgetDriver.find_single(parent, FakeWidget, matching)
 
 
-def album_composition_page(parent):
-    return widget(parent, named(ALBUM_COMPOSITION_PAGE_NAME))
+def track_list_page(parent):
+    return widget(parent, named(TRACK_LIST_PAGE_NAME))
 
 
 def album_edition_page(parent):
@@ -59,8 +59,8 @@ def no_album_screen(driver):
         return no_widget(driver, named(ALBUM_SCREEN_NAME))
 
 
-def no_album_composition_page(driver):
-    return no_widget(driver, named(ALBUM_COMPOSITION_PAGE_NAME))
+def no_track_list_page(driver):
+    return no_widget(driver, named(TRACK_LIST_PAGE_NAME))
 
 
 def no_album_edition_page(driver):

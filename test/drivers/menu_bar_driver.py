@@ -67,8 +67,8 @@ class MenuBarDriver(QMenuBarDriver):
         def to_album_page(self):
             self._menu_driver.select_menu_item(matchers.named("to_album_edition_action"))
 
-        def to_composition_page(self):
-            self._menu_driver.select_menu_item(matchers.named("to_album_composition_action"))
+        def to_track_list_page(self):
+            self._menu_driver.select_menu_item(matchers.named("to_track_list_action"))
 
         def to_track_page(self, title, track_number):
             self._menu_driver.select_menu_item(matchers.with_text(track_menu_item(title, track_number)))

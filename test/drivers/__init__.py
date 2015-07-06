@@ -6,7 +6,7 @@ from .message_box_driver import message_box
 from .picture_selection_dialog_driver import picture_selection_dialog, PictureSelectionDialogDriver
 from .track_selection_dialog_driver import track_selection_dialog, TrackSelectionDialogDriver
 
-from .album_composition_page_driver import album_composition_page, AlbumCompositionPageDriver
+from .track_list_page_driver import track_list_page, TrackListPageDriver
 from .album_edition_page_driver import album_edition_page, AlbumEditionPageDriver
 from .album_screen_driver import album_screen, AlbumScreenDriver
 from .menu_bar_driver import menu_bar, MenuBarDriver

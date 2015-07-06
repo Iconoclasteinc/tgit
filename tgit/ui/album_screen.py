@@ -24,8 +24,8 @@ from tgit.album import AlbumListener
 from tgit.ui.helpers import ui_file
 
 
-def album_screen(composition_page, album_page, track_page, album):
-    page = AlbumScreen(composition_page(album), album_page(album), track_page)
+def album_screen(track_list_page, album_page, track_page, album):
+    page = AlbumScreen(track_list_page(album), album_page(album), track_page)
     #todo make album screen accept the album as a constructor parameter
     album.addAlbumListener(page)
     for index, track in enumerate(album.tracks):
@@ -34,11 +34,11 @@ def album_screen(composition_page, album_page, track_page, album):
 
 
 class AlbumScreen(QWidget, AlbumListener):
-    ALBUM_COMPOSITION_PAGE_INDEX = 0
+    TRACK_LIST_PAGE_INDEX = 0
     ALBUM_EDITION_PAGE_INDEX = 1
     TRACK_PAGES_INDEX = 2
 
-    def __init__(self, compose_album, edit_album, edit_track):
+    def __init__(self, list_tracks, edit_album, edit_track):
         super().__init__()
         ui_file.load(":/ui/album_screen.ui", self)
 
@@ -46,7 +46,7 @@ class AlbumScreen(QWidget, AlbumListener):
         self.previous.clicked.connect(self._to_previous_page)
         self.next.clicked.connect(self._to_next_page)
 
-        self.pages.addWidget(compose_album)
+        self.pages.addWidget(list_tracks)
         self.pages.addWidget(edit_album)
         self._update_controls()
 
@@ -61,8 +61,8 @@ class AlbumScreen(QWidget, AlbumListener):
     def show_album_edition_page(self):
         self._to_page(self.ALBUM_EDITION_PAGE_INDEX)
 
-    def show_album_composition_page(self):
-        self._to_page(self.ALBUM_COMPOSITION_PAGE_INDEX)
+    def show_track_list_page(self):
+        self._to_page(self.TRACK_LIST_PAGE_INDEX)
 
     def show_track_page(self, track_number):
         self._to_page(self.TRACK_PAGES_INDEX + (track_number - 1))

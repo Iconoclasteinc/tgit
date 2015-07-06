@@ -5,7 +5,7 @@ from cute.matchers import named
 from tgit.ui.album_screen import AlbumScreen
 from ._screen_driver import ScreenDriver
 from .album_edition_page_driver import album_edition_page
-from .album_composition_page_driver import album_composition_page
+from .track_list_page_driver import track_list_page
 from .track_edition_page_driver import track_edition_page
 
 
@@ -14,8 +14,8 @@ def album_screen(parent):
 
 
 class AlbumScreenDriver(ScreenDriver):
-    def showsAlbumCompositionPage(self):
-        album_composition_page(self).is_showing_on_screen()
+    def shows_track_list_page(self):
+        track_list_page(self).is_showing_on_screen()
 
     def showsAlbumEditionPage(self):
         album_edition_page(self).is_showing_on_screen()
@@ -24,13 +24,13 @@ class AlbumScreenDriver(ScreenDriver):
         track_edition_page(self).is_showing_on_screen()
 
     def add_tracks_to_album(self):
-        album_composition_page(self).add_tracks()
+        track_list_page(self).add_tracks()
 
     def remove_track(self, title):
-        album_composition_page(self).remove_track(title)
+        track_list_page(self).remove_track(title)
 
     def move_track(self, title, to):
-        album_composition_page(self).move_track(title, to)
+        track_list_page(self).move_track(title, to)
 
     def previousPage(self):
         self.button(named("previous")).click()
@@ -51,7 +51,7 @@ class AlbumScreenDriver(ScreenDriver):
         self.button(named("next")).is_enabled()
 
     def shows_album_contains(self, *tracks):
-        album_composition_page(self).shows_tracks_in_order(*tracks)
+        track_list_page(self).shows_tracks_in_order(*tracks)
 
     def shows_album_metadata(self, **tags):
         album_edition_page(self).shows_metadata(**tags)

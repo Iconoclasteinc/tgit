@@ -28,7 +28,7 @@ from tgit.ui.startup_screen import StartupScreen
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.performer_dialog import PerformerDialog
-from tgit.ui.album_composition_page import AlbumCompositionPage
+from tgit.ui.track_list_page import TrackListPage
 from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
@@ -144,8 +144,8 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return StartupScreen(create_welcome_page=create_welcome_page,
                              create_new_album_page=create_new_album_page)
 
-    def create_composition_page(album):
-        return AlbumCompositionPage(album, player,
+    def create_track_list_page(album):
+        return TrackListPage(album, player,
                                     select_tracks=func.partial(dialogs.select_tracks, album.type),
                                     on_move_track=director.move_track_of(album),
                                     on_remove_track=director.remove_track_from(player, album),
@@ -172,7 +172,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         def create_track_page(track):
             return TrackEditionPageController(album, track)
 
-        return AlbumScreen(create_composition_page, create_album_page, create_track_page, album)
+        return AlbumScreen(create_track_list_page, create_album_page, create_track_page, album)
 
     window = MainWindow(portfolio,
                         confirm_exit=messages.confirm_exit,

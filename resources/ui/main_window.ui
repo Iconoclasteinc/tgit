@@ -66,7 +66,7 @@
     <property name="title">
      <string>&amp;Navigate</string>
     </property>
-    <addaction name="to_album_composition_action"/>
+    <addaction name="to_track_list_action"/>
     <addaction name="to_album_edition_action"/>
     <addaction name="separator"/>
    </widget>
@@ -126,12 +126,12 @@
     <string>Album &amp;edition</string>
    </property>
   </action>
-  <action name="to_album_composition_action">
+  <action name="to_track_list_action">
    <property name="text">
-    <string>Album &amp;composition</string>
+    <string>&amp;Track list</string>
    </property>
    <property name="iconText">
-    <string>Album &amp;composition</string>
+    <string>&amp;Track list</string>
    </property>
   </action>
   <action name="exit_action">

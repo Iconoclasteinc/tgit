@@ -4,7 +4,7 @@ from hamcrest import assert_that
 
 STARTUP_SCREEN_NAME = "startup_screen"
 ALBUM_SCREEN_NAME = "album_screen"
-ALBUM_COMPOSITION_PAGE_NAME = "album_composition_page"
+TRACK_LIST_PAGE_NAME = "track_list_page"
 ALBUM_EDITION_PAGE_NAME = "album_edition_page"
 TRACK_EDITION_PAGE_NAME = "track_edition_page"
 
@@ -31,8 +31,8 @@ class FakeWidget(QWidget):
         assert_that(self.closed, "widget named '{}' still open".format(self.objectName()))
 
 
-def fake_album_composition_page():
-    return fake_widget(ALBUM_COMPOSITION_PAGE_NAME)
+def fake_track_list_page():
+    return fake_widget(TRACK_LIST_PAGE_NAME)
 
 
 def fake_album_edition_page():
@@ -60,8 +60,8 @@ class FakeAlbumScreen(FakeWidget):
     def show_album_edition_page(self):
         self.current_page = ALBUM_EDITION_PAGE_NAME
 
-    def show_album_composition_page(self):
-        self.current_page = ALBUM_COMPOSITION_PAGE_NAME
+    def show_track_list_page(self):
+        self.current_page = TRACK_LIST_PAGE_NAME
 
     def show_track_page(self, track_number):
         self.current_page = track_edition_page_name(track_number)

@@ -403,7 +403,7 @@ class MainWindow(QMainWindow):
         self.save_album_action.triggered.connect(self._save_album)
         self.export_action.triggered.connect(self._choose_export_destination)
         self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
-        self.to_album_composition_action.triggered.connect(self._to_album_composition_page)
+        self.to_track_list_action.triggered.connect(self._to_track_list_page)
         self.exit_action.triggered.connect(self.close)
 
         if windows:
@@ -444,8 +444,8 @@ class MainWindow(QMainWindow):
     def _to_album_edition_page(self):
         self.centralWidget().show_album_edition_page()
 
-    def _to_album_composition_page(self):
-        self.centralWidget().show_album_composition_page()
+    def _to_track_list_page(self):
+        self.centralWidget().show_track_list_page()
 
     def _to_track_page(self, track_number):
         self.centralWidget().show_track_page(track_number)

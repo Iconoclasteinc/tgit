@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr_CA" sourcelanguage="en_US">
 <context>
-    <name>album_composition_page</name>
+    <name>track_list_page</name>
     <message>
         <source>Track Title</source>
         <translation>Titre de la piste</translation>
@@ -44,7 +44,7 @@
     </message>
 </context>
 <context>
-    <name>AlbumCompositionPage</name>
+    <name>TrackListPage</name>
     <message>
         <source>Play</source>
         <translation>Jouer</translation>
@@ -437,12 +437,12 @@
     <message>
         <location filename="tgit/ui/main_window.py"/>
         <source>Album &amp;edition</source>
-        <translation>&amp;Édition de l'album</translation>
+        <translation>É&amp;dition de l'album</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>Album &amp;composition</source>
-        <translation>&amp;Composition de l'album</translation>
+        <source>&amp;Track list</source>
+        <translation>&amp;Liste des pistes</translation>
     </message>
 </context>
 <context>

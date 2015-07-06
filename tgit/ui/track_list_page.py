@@ -31,14 +31,14 @@ COLUMNS_WIDTHS = [30, 300, 245, 270, 90, 70]
 
 
 @Observer
-class AlbumCompositionPage(QWidget, AlbumListener):
+class TrackListPage(QWidget, AlbumListener):
     _playing_track = None
 
     def __init__(self, album, player, select_tracks, **handlers):
         super().__init__()
         self._tracks = []
         self._select_tracks = select_tracks
-        self._setup_ui(album)
+        self._setup_ui()
         self._subscribe_to_events(album, player)
         self._register_handlers(handlers)
         self._display_album(album)
@@ -67,8 +67,8 @@ class AlbumCompositionPage(QWidget, AlbumListener):
         # todo when we have proper signals on album, we can get rid of that
         album.addAlbumListener(self)
 
-    def _setup_ui(self, album):
-        ui_file.load(":/ui/album_composition_page.ui", self)
+    def _setup_ui(self):
+        ui_file.load(":/ui/track_list_page.ui", self)
         self._track_table.itemSelectionChanged.connect(self._update_actions)
         self._drag_and_drop_cursor = self._make_drag_and_drop_cursor(self._track_table)
         self._context_menu = self._make_context_menu(self._track_table)

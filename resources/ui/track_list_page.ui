@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>album_composition_page</class>
- <widget class="QWidget" name="album_composition_page">
+ <class>track_list_page</class>
+ <widget class="QWidget" name="track_list_page">
   <property name="geometry">
    <rect>
     <x>0</x>

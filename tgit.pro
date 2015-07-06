@@ -20,7 +20,7 @@ FORMS    += \
     resources/ui/welcome_page.ui \
     resources/ui/new_album_page.ui \
     resources/ui/album_screen.ui \
-    resources/ui/album_composition_page.ui \
+    resources/ui/track_list_page.ui \
     resources/ui/main_window.ui \
     resources/ui/album_page.ui
 

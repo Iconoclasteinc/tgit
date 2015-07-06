@@ -5,15 +5,15 @@ from PyQt5.QtWidgets import QMenu, QTableWidget
 from cute import gestures
 from cute.widgets import MenuDriver, TableViewDriver
 from cute.matchers import named
-from tgit.ui.album_composition_page import AlbumCompositionPage
+from tgit.ui.track_list_page import TrackListPage
 from ._screen_driver import ScreenDriver
 
 
-def album_composition_page(parent):
-    return AlbumCompositionPageDriver.find_single(parent, AlbumCompositionPage, named('album_composition_page'))
+def track_list_page(parent):
+    return TrackListPageDriver.find_single(parent, TrackListPage, named("track_list_page"))
 
 
-class AlbumCompositionPageDriver(ScreenDriver):
+class TrackListPageDriver(ScreenDriver):
     def __init__(self, selector, prober, gesture_performer):
         super().__init__(selector, prober, gesture_performer)
 

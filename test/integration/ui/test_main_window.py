@@ -173,14 +173,14 @@ def test_navigates_to_album_edition_page_item_when_menu_item_is_clicked(driver):
     album_screen(driver).is_showing_album_edition_page()
 
 
-def test_navigates_to_album_composition_page_item_when_menu_item_is_clicked(driver):
+def test_navigates_to_track_list_page_item_when_menu_item_is_clicked(driver):
     main_window = show_page()
     album = build.album()
     main_window.display_album_screen(album)
 
     driver.navigate_to_album_page()
-    driver.navigate_to_composition_page()
-    album_screen(driver).is_showing_album_composition_page()
+    driver.navigate_to_track_list_page()
+    album_screen(driver).is_showing_track_list_page()
 
 
 def test_adds_track_menu_item_when_adding_a_track_to_the_album(driver):
