@@ -51,6 +51,7 @@ def _create_or_import_album(of_type, filename, reference_track_file, from_catalo
 def create_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging):
     def create_new_album(type_, name, location, reference_track_file=""):
         album = _create_or_import_album(type_, _build_filename(name, location), reference_track_file, from_catalog)
+        album.release_name = name
         save_album(to_catalog)(album)
         portfolio.add_album(album)
         return album

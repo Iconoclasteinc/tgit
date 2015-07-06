@@ -3,7 +3,7 @@ import os
 import unittest
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
-                      has_key)
+                      has_key, has_entry, has_property)
 
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
@@ -92,13 +92,19 @@ def test_creates_and_adds_album_to_porfolio_and_catalog(portfolio, album_catalog
     album_catalog.assert_contains(portfolio[0])
 
 
+def test_creates_album_using_the_name_as_release_name(portfolio, album_catalog):
+    director.create_album_into(portfolio, to_catalog=album_catalog)(type_="...", name="album", location="...")
+
+    assert_that(portfolio[0], has_property("release_name", "album"), "album with release name")
+
+
 def test_imports_album_from_an_existing_track(portfolio, album_catalog, track_catalog):
     track_catalog.add_track(filename="smash", metadata=Metadata(release_name="Honeycomb"), track_title="Smash Smash")
 
     director.create_album_into(portfolio, to_catalog=album_catalog, from_catalog=track_catalog)(
         type_=Album.Type.MP3, name="album", location="workspace", reference_track_file="smash")
 
-    assert_that(portfolio, contains(has_properties(type="mp3", release_name="Honeycomb",
+    assert_that(portfolio, contains(has_properties(type="mp3", release_name="album",
                                                    tracks=contains(has_properties(track_title="Smash Smash")))),
                 "imported albums in portfolio")
 
