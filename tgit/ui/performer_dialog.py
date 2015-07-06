@@ -136,6 +136,7 @@ class PerformerDialog(QDialog):
         edit = QLineEdit()
         edit.setObjectName(name)
         edit.setText(text)
+        edit.setAttribute(Qt.WA_MacShowFocusRect, False)
         return edit
 
     def getPerformers(self):
