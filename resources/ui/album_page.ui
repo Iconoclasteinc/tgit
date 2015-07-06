@@ -114,22 +114,21 @@ QGroupBox::title {
  }
 
 QPushButton {
-	background-color: #F25C0A;
-	border: 2px solid #F25C0A;
-	border-radius: 4px;
-	color: white;
-	font-weight: bold;
+    background-color: #BFBFBF;
+    border: 2px solid #BFBFBF;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
 }
 
 QPushButton:disabled {
-	border-color: #ED8D58;
-	background-color: #ED8D58;
+    border-color: #CCCCCC;
+    background-color: #CCCCCC;
 }
 
-QPushButton:hover,
-QPushButton:focus {
-	background-color: #D95109;
-	border-color: #D95109;
+QPushButton:hover, QPushButton:focus {
+    background-color: #A6A6A6;
+    border-color: #A6A6A6;
 }
 
 QPushButton:pressed {
@@ -345,6 +344,9 @@ QDateEdit::down-arrow:disabled  {
              <height>352</height>
             </size>
            </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -355,6 +357,25 @@ QDateEdit::down-arrow:disabled  {
          </item>
          <item>
           <widget class="QWidget" name="picture_box_buttons" native="true">
+           <property name="styleSheet">
+            <string notr="true">
+QPushButton {
+    background-color: #F25C0A;
+    border: 2px solid #F25C0A;
+}
+
+QPushButton:disabled {
+    border-color: #ED8D58;
+    background-color: #ED8D58;
+}
+
+QPushButton:hover,
+QPushButton:focus {
+    background-color: #D95109;
+    border-color: #D95109;
+}
+            </string>
+           </property>
            <layout class="QHBoxLayout" name="horizontalLayout">
             <property name="leftMargin">
              <number>0</number>

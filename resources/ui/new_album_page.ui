@@ -113,8 +113,8 @@ QLineEdit:focus {
        <widget class="QWidget" name="new_album_info_container" native="true">
         <property name="styleSheet">
          <string notr="true">QPushButton {
-	background-color: #F25C0A;
-	border: 2px solid #F25C0A;
+	background-color: #BFBFBF;
+	border: 2px solid #BFBFBF;
 	border-radius: 4px;
 	color: white;
 	font-weight: bold;
@@ -124,8 +124,8 @@ QLineEdit:focus {
 
 QPushButton:hover,
 QPushButton:focus {
-	background-color: #D95109;
-	border-color: #D95109;
+	background-color: #A6A6A6;
+	border-color: #A6A6A6;
 }
 
 QPushButton:pressed {
