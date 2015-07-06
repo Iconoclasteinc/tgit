@@ -10,7 +10,7 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
     track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
 
-    app.shows_album_metadata(release_name="", lead_performer="")
+    app.shows_album_metadata(release_name="Honeycomb", lead_performer="")
     app.change_album_metadata(front_cover=resources.path("honeycomb.jpg"),
                               release_name="Honeycomb", lead_performer="Joel Miller")
 
@@ -34,7 +34,7 @@ def test_tagging_a_flac_track(app, recordings, workspace):
     track = recordings.add_flac(release_name="ignore", lead_performer="ignore", track_title="???")
     app.add_tracks_to_album(track)
 
-    app.shows_album_metadata(release_name="", lead_performer="")
+    app.shows_album_metadata(release_name="St-Henri", lead_performer="")
     app.change_album_metadata(release_name="St-Henri", front_cover=resources.path("st-henri.jpg"),
                               lead_performer="John Roney")
 
