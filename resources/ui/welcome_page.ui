@@ -39,15 +39,23 @@ QPushButton {
 }
 
 QPushButton:hover {
-	color: #EC2327;
+	color: #D42023;
 }
 
 QPushButton#_new_album_button {
-   background: transparent url(:/images/folder-20-red.png) no-repeat center left;
+   background: transparent url(:/images/folder.png) no-repeat center left;
+}
+
+QPushButton#_new_album_button::hover {
+   background: transparent url(:/images/folder-hover.png) no-repeat center left;
 }
 
 QPushButton#_load_album_button {
-   background: transparent url(:/images/folder-open-20-red.png) no-repeat center left;
+   background: transparent url(:/images/folder-open.png) no-repeat center left;
+}
+
+QPushButton#_load_album_button::hover {
+   background: transparent url(:/images/folder-open-hover.png) no-repeat center left;
 }
 </string>
   </property>
