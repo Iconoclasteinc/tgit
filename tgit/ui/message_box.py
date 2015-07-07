@@ -21,6 +21,7 @@ import sys
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox
+from tgit.ui import AboutDialog
 
 
 class MessageBoxes:
@@ -65,6 +66,11 @@ class MessageBoxes:
         box = ConfirmationBox.warn(self.parent, "Are you sure you want to quit?")
         return self._confirm_before_exiting and box.exec() == QMessageBox.Yes
 
+    def about_qt(self):
+        QMessageBox.aboutQt(self.parent)
+
+    def about_tgit(self):
+        return self._open(AboutDialog(self.parent))
 
 mac = sys.platform == "darwin"
 
