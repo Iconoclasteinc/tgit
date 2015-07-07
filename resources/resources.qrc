@@ -32,16 +32,18 @@
         <file>ui/album_page.ui</file>
         <file>ui/new_album_page.ui</file>
         <file>ui/track_list_page.ui</file>
-        <file>images/folder-open-20-red.png</file>
-        <file>images/folder-20-red.png</file>
-        <file>images/calendar-focus.png</file>
+        <file>images/folder.png</file>
+        <file>images/folder-hover.png</file>
+        <file>images/folder-open.png</file>
+        <file>images/folder-open-hover.png</file>
         <file>images/calendar.png</file>
+        <file>images/calendar-focus.png</file>
+        <file>images/calendar-disabled.png</file>
         <file>images/radio-checked.png</file>
         <file>images/radio-checked-focus.png</file>
         <file>images/radio-checked-pressed.png</file>
         <file>images/radio-unchecked.png</file>
         <file>images/radio-unchecked-focus.png</file>
         <file>images/radio-unchecked-pressed.png</file>
-        <file>images/calendar-disabled.png</file>
     </qresource>
 </RCC>

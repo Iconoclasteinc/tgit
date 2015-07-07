@@ -37,7 +37,7 @@ StyleSheet = """
     }
 
     QComboBox QAbstractItemView {
-        selection-background-color:#F25C0A;
+        selection-background-color:#F08450;
     }
 
     #activity-indicator-dialog-frame {
@@ -96,7 +96,7 @@ StyleSheet = """
         padding: 10px 10px 7px 34px;
     }
 
-    #performer-dialog #form-box QPushButton,
+    #performer-dialog #form-box QPushButton#add-performer,
     #album-edition-page #album-box QPushButton,
     #album-edition-page QPushButton#remove-picture {
         background-color: #F25C0A;
@@ -109,8 +109,26 @@ StyleSheet = """
         margin-left: 10px;
     }
 
-    #performer-dialog #form-box QPushButton,
-    #album-edition-page #album-box QPushButton {
+    #performer-dialog #form-box QPushButton {
+        background-color: #BFBFBF;
+        border: 2px solid #BFBFBF;
+        border-radius: 4px;
+        color: white;
+        font-weight: bold;
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+
+    #performer-dialog #form-box QPushButton:hover, #performer-dialog #form-box QPushButton:focus {
+        background-color: #A6A6A6;
+        border-color: #A6A6A6;
+    }
+
+    #performer-dialog #form-box QPushButton:pressed {
+        border: 2px solid transparent;
+    }
+
+    #performer-dialog #form-box QPushButton#add-performer, #album-edition-page #album-box QPushButton {
         font-size: 10px;
         padding: 3px 10px;
         margin: 0;
@@ -121,8 +139,8 @@ StyleSheet = """
         background-color: #ED8D58;
     }
 
-    #performer-dialog #form-box QPushButton:hover,
-    #performer-dialog #form-box QPushButton:focus,
+    #performer-dialog #form-box QPushButton#add-performer:hover,
+    #performer-dialog #form-box QPushButton#add-performer:focus,
     #album-edition-page #album-box QPushButton:hover,
     #album-edition-page #album-box QPushButton:focus,
     #album-edition-page QPushButton#select-picture:hover,
@@ -133,13 +151,14 @@ StyleSheet = """
         border-color: #D95109;
     }
 
-    #performer-dialog #form-box QPushButton:pressed,
+    #performer-dialog QPushButton#add-performer:pressed,
     #album-edition-page #album-box QPushButton:pressed,
     #album-edition-page QPushButton#select-picture:pressed,
     #album-edition-page QPushButton#remove-picture:pressed {
         border: 2px solid white;
     }
 
+    #performer-dialog QLineEdit,
     #album-edition-page QLineEdit, #album-edition-page TextArea, #album-edition-page QComboBox,
     #album-edition-page QComboBox::drop-down, #album-edition-page QComboBox QAbstractItemView,
     #track-edition-page QLineEdit, #track-edition-page TextArea, #track-edition-page QComboBox,
@@ -150,11 +169,13 @@ StyleSheet = """
         min-height: 20px;
     }
 
+    #performer-dialog QLineEdit,
     #track-edition-page QLineEdit, #track-edition-page TextArea, #track-edition-page QComboBox {
         selection-background-color: #F2C1A7;
         selection-color: #222222;
     }
 
+    #performer-dialog QLineEdit:focus,
     #album-edition-page QLineEdit:focus, #album-edition-page TextArea:focus, #album-edition-page QComboBox:focus,
     #album-edition-page QComboBox:on, #album-edition-page QComboBox::drop-down:focus,
     #album-edition-page QComboBox::drop-down:on, #album-edition-page QComboBox QAbstractItemView:focus,
@@ -164,9 +185,17 @@ StyleSheet = """
         border: 1px solid #F79D6C;
     }
 
+    #performer-dialog QLineEdit:disabled,
     #album-edition-page QLineEdit:disabled, #album-edition-page TextArea:disabled,
     #track-edition-page QLineEdit:disabled, #track-edition-page TextArea:disabled,
     #track-edition-page QSpinBox:disabled {
+        background-color: #FCFCFC;
+        border-color: #E7E7E7;
+        color: #C2C2C2;
+    }
+
+    #track-edition-page QComboBox:disabled, #track-edition-page QComboBox::drop-down:disabled,
+    #track-edition-page QTimeEdit:disabled {
         background-color: #FCFCFC;
         border-color: #E7E7E7;
         color: #C2C2C2;

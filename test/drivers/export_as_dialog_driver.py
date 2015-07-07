@@ -3,7 +3,7 @@ import os
 
 from PyQt5.QtWidgets import QFileDialog
 
-from cute.matchers import named
+from cute.matchers import named, disabled
 from cute.widgets import FileDialogDriver, window
 
 
@@ -20,3 +20,10 @@ class ExportAsDialogDriver(FileDialogDriver):
         self.enter_manually(os.path.basename(filename))
         self.has_accept_button_text('&Save')
         self.accept()
+
+    def rejects_selection_of(self, path):
+        self.is_active()
+        self.navigate_to_dir(os.path.dirname(path))
+        self.select_file(os.path.basename(path))
+        self.has_accept_button(disabled())
+        self.reject()
