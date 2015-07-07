@@ -194,6 +194,13 @@ StyleSheet = """
         color: #C2C2C2;
     }
 
+    #track-edition-page QComboBox:disabled, #track-edition-page QComboBox::drop-down:disabled,
+    #track-edition-page QTimeEdit:disabled {
+        background-color: #FCFCFC;
+        border-color: #E7E7E7;
+        color: #C2C2C2;
+    }
+
     #album-edition-page QCheckBox {
         min-height: 20px;
         padding: 1px 2px 2px 2px;
