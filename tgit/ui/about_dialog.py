@@ -33,7 +33,7 @@ def _python_version():
 
 class AboutDialog(QDialog, UIFile):
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
         self._setup_ui()
 
     def _setup_ui(self):

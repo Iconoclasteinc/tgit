@@ -74,8 +74,8 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="_about_qt_action"/>
     <addaction name="_about_action"/>
+    <addaction name="_about_qt_action"/>
    </widget>
    <addaction name="file_menu"/>
    <addaction name="navigate_menu"/>
@@ -154,7 +154,7 @@
   </action>
   <action name="_about_action">
    <property name="text">
-    <string>&amp;About</string>
+    <string>&amp;About TGiT</string>
    </property>
   </action>
  </widget>

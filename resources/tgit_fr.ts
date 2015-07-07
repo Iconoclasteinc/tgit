@@ -451,8 +451,8 @@
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>&amp;About</source>
-        <translation>À &amp;propos</translation>
+        <source>&amp;About TGiT</source>
+        <translation>À &amp;propos de TGiT</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
@@ -737,6 +737,13 @@
         <location filename="tgit/ui/track_selection_dialog.py"/>
         <source>MP3 files</source>
         <translation>Fichiers MP3</translation>
+    </message>
+</context>
+<context>
+    <name>about_tgit_dialog</name>
+    <message>
+        <source>About TGiT</source>
+        <translation>À propos de TGiT</translation>
     </message>
 </context>
 </TS>
