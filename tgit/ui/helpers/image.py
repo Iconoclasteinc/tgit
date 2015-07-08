@@ -17,12 +17,29 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QFile, QIODevice
 from PyQt5.QtGui import QPixmap, QImage
 
 
-def scale(image, width, height):
-    if image is None:
-        return QPixmap()
-    scaled = QImage.fromData(image.data).scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-    return QPixmap.fromImage(scaled)
+def scale(image_to_scale, width, height):
+    image = _empty() if image_to_scale is None else QImage.fromData(image_to_scale.data)
+    if image.byteCount() == 0:
+        image = _not_found()
+
+    return QPixmap.fromImage(image.scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+
+
+def _not_found():
+    return QImage.fromData(_from_resources(":/images/invalid-image-placeholder.png"))
+
+
+def _empty():
+    return QImage.fromData(_from_resources(":/images/no-image-placeholder.png"))
+
+
+def _from_resources(path):
+    file = QFile(path)
+    file.open(QIODevice.ReadOnly)
+    bytes_ = file.readAll()
+    file.close()
+    return bytes_

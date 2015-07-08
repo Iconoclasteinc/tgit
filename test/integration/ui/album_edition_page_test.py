@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import timeit
+from PyQt5.QtCore import QByteArray
 
 from hamcrest import has_entries, assert_that, less_than
 
@@ -29,9 +30,13 @@ class AlbumEditionPageTest(WidgetTest):
     def createDriverFor(self, widget):
         return AlbumEditionPageDriver(WidgetIdentity(widget), self.prober, self.gesture_performer)
 
-    def testDisplaysPicturePlaceholderWhenAlbumHasNoCover(self):
+    def test_displays_invalid_image_placeholder_when_album_has_corrupted_picture(self):
+        self.render(build.album(images=[build.image("image/jpeg", QByteArray(), Image.FRONT_COVER)]))
+        self.driver.shows_picture_placeholder()
+
+    def test_displays_no_image_placeholder_when_album_has_no_cover(self):
         self.render(build.album())
-        self.driver.showsPicturePlaceholder()
+        self.driver.shows_picture_placeholder()
 
     def testDisplaysMainAlbumCoverWhenExisting(self):
         self.render(

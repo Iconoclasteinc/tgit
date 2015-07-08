@@ -90,8 +90,8 @@ class AlbumEditionPageDriver(ScreenDriver):
     def showsPicture(self):
         self.displaysPictureWithSize(*AlbumEditionPage.FRONT_COVER_SIZE)
 
-    def showsPicturePlaceholder(self):
-        self.displaysPictureWithSize(0, 0)
+    def shows_picture_placeholder(self):
+        self.displaysPictureWithSize(*AlbumEditionPage.FRONT_COVER_SIZE)
 
     def select_picture(self, filename):
         self.addPicture()
