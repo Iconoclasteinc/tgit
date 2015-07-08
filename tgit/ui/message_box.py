@@ -35,13 +35,13 @@ class MessageBoxes:
 
     def load_album_failed(self, error):
         return self._open(MessageBox.warn(self.parent,
-                                          "We're sorry, but the album file you selected cannot be loaded.",
+                                          "The album file you selected cannot be loaded.",
                                           "The file might be corrupted or part of the album content cannot be found."))
 
     def save_album_failed(self, error):
         return self._open(MessageBox.warn(self.parent,
-                                          "We're sorry, but we could not save your album.",
-                                          "Please check that you have permission to write to the album location."))
+                                          "Could not save your album.",
+                                          "Please check that you have permission to write to the album's location."))
 
     def restart_required(self):
         return self._open(MessageBox.inform(self.parent, "You need to restart TGiT for changes to take effect."))
@@ -50,19 +50,22 @@ class MessageBoxes:
         return self._open(MessageBox.warn(self.parent, "Could not assign an ISNI", details=details))
 
     def close_album_confirmation(self, **handlers):
-        return self._open(ConfirmationBox.warn(self.parent,
-                                               "Are you sure you want to stop working on this release?", **handlers))
+        return self._open(
+            ConfirmationBox.warn(self.parent,
+                                 "You are about to close the current album. Any unsaved work will be lost.",
+                                 "Are you sure you want to continue?", **handlers))
 
     def overwrite_album_confirmation(self, **handlers):
         return self._open(ConfirmationBox.warn(self.parent,
                                                "This album already exists. Do you want to replace it?",
-                                               "An album file with the same name already exists at "
-                                               "the location you entered. "
+                                               "A file with the same name already exists at the location you selected.",
                                                "Replacing it will overwrite its current contents.",
                                                **handlers))
 
     def confirm_exit(self):
-        box = ConfirmationBox.warn(self.parent, "Are you sure you want to quit?")
+        box = ConfirmationBox.warn(self.parent,
+                                   "You are about to close the application. Any unsaved work will be lost.",
+                                   "Are you sure you want to continue?")
         return self._confirm_before_exiting and box.exec() == QMessageBox.Yes
 
 

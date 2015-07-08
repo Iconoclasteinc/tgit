@@ -451,10 +451,6 @@
         <source>Se&amp;ttings</source>
         <translation>&amp;Préférences</translation>
     </message>
-    <message>
-        <source>Are you sure you want to quit?</source>
-        <translation>Êtes-vous certain de vouloir quitter?</translation>
-    </message>
 </context>
 <context>
     <name>PerformerDialog</name>
@@ -482,26 +478,67 @@
 <context>
     <name>MessageBox</name>
     <message>
-        <location filename="tgit/ui/message_box.py" line="32"/>
+        <location filename="tgit/ui/message_box.py" />
         <source>You need to restart TGiT for changes to take effect.</source>
         <translation>Veuillez redémarrer TGiT pour que ces modifications prennent effet.</translation>
     </message>
     <message>
-        <location filename="tgit/ui/message_box.py" line="36"/>
+        <location filename="tgit/ui/message_box.py" />
         <source>Could not assign an ISNI</source>
         <translation>Impossible d&apos;assigner un ISNI</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>The album file you selected cannot be loaded.</source>
+        <translation>Impossible de charger le fichier d'album sélectionné.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>The file might be corrupted or part of the album content cannot be found.</source>
+        <translation>Le fichier peut être endommagé ou une partie du contenu de l'album ne peut pas être trouvé.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Could not save your album.</source>
+        <translation>Impossible d'enregistrer votre album.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Please check that you have permission to write to the album's location.</source>
+        <translation>Vérifiez que vous avez les permissions d'écriture à l'emplacement sélectionné.</translation>
     </message>
 </context>
 <context>
     <name>ConfirmationBox</name>
     <message>
-        <location filename="tgit/ui/message_box.py" line="40"/>
-        <source>Are you sure you want to stop working on this release?</source>
-        <translation>Êtes-vous certain de vouloir arrêter de travailler sur cet album?</translation>
+        <location filename="tgit/ui/message_box.py" />
+        <source>You are about to close the current album. Any unsaved work will be lost.</source>
+        <translation>Vous êtes sur le point de fermer l'album en cours. Tout travail non enregistré sera perdu.</translation>
     </message>
     <message>
-        <source>This album already exists. Are you sure you want to replace it?</source>
-        <translation>Cet album existe déjà. Êtes-vous sur de vouloir le remplacer ?</translation>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Are you sure you want to continue?</source>
+        <translation>Êtes-vous sûr de vouloir continuer?</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>You are about to close the application. Any unsaved work will be lost.</source>
+        <translation>Vous êtes sur le point de fermer l'application. Tout travail non enregistré sera perdu.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>This album already exists. Do you want to replace it?</source>
+        <translation>Cet album existe déjà. Voulez-vous le remplacer?</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>A file with the same name already exists at the location you selected.</source>
+        <translation>Un fichier du même nom existe déjà à l'emplacement que vous avez sélectionné.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Replacing it will overwrite its current contents.</source>
+        <translation>Le remplacer écrasera son contenu actuel.</translation>
     </message>
 </context>
 <context>
