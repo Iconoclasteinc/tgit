@@ -3,13 +3,12 @@ import os
 import unittest
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
-                      has_key, has_entry, has_property)
-
+                      has_key, has_property)
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
 from test.util import builders as build, resources, doubles
-from test.util.builders import make_album
+from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
 from tgit import album_director as director
 from tgit.album import Album
@@ -39,12 +38,15 @@ def track_catalog():
             self.tracks = {}
 
         def add_track(self, filename='track.mp3', metadata=None, **meta):
-            track = build.track(filename, metadata, **meta)
+            track = make_track(filename, metadata, **meta)
             self.tracks[filename] = track
             return track
 
         def load_track(self, filename):
-            return self.tracks[filename] if filename in self.tracks else None
+            try:
+                return self.tracks[filename]
+            except:
+                raise Exception("{} not found".format(filename))
 
     return Catalog()
 
@@ -139,7 +141,16 @@ def test_adds_selected_tracks_to_album_in_order(track_catalog):
     album = build.album()
     director.add_tracks(album, "first.mp3", "second.mp3", "third.mp3", from_catalog=track_catalog)
 
-    assert_that(album.tracks, contains(*tracks), "list of tracks in album")
+    assert_that(album.tracks, contains(*tracks), "tracks added to album")
+
+
+def test_ignores_invalid_tracks(track_catalog):
+    valid_track = track_catalog.add_track("valid.mp3")
+
+    album = build.album()
+    director.add_tracks(album, "invalid.mp3", "valid.mp3", from_catalog=track_catalog)
+
+    assert_that(album.tracks, contains(valid_track), "valid tracks in album")
 
 
 def test_exports_album_as_csv_encoded_file(workspace):

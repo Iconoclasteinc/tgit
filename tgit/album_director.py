@@ -82,8 +82,14 @@ def remove_album_from(portfolio):
 
 
 def add_tracks(album, *filenames, from_catalog=tagging):
+    def add_track(filename):
+        try:
+            album.add_track(from_catalog.load_track(filename))
+        except Exception:
+            pass
+
     for filename in filenames:
-        album.add_track(from_catalog.load_track(filename))
+        add_track(filename)
 
 
 def add_tracks_to(album, from_catalog=tagging):
