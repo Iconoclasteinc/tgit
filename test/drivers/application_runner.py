@@ -12,9 +12,6 @@ from test.util import doubles
 from tgit.tagger import TGiT
 from .main_window_driver import MainWindowDriver
 
-ONE_SECOND_IN_MILLISECONDS = 1000
-SAVE_DELAY = 500
-
 
 def _make_tracks(tracks):
     Track = namedtuple("Track", "title")
@@ -23,6 +20,7 @@ def _make_tracks(tracks):
 
 class ApplicationRunner:
     DRAG_AND_DROP_DELAY = 100
+    SAVE_DELAY = 500
 
     app = None
     tagger = None
@@ -35,7 +33,7 @@ class ApplicationRunner:
                         use_local_isni_backend=True, native=False, confirm_exit=False)
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
-                                       EventProcessingProber(timeout_in_ms=ONE_SECOND_IN_MILLISECONDS), Animatron())
+                                       EventProcessingProber(timeout_in_ms=1000), Animatron())
 
     def stop(self):
         self.tagger.close()
@@ -101,7 +99,7 @@ class ApplicationRunner:
 
     def save_album(self):
         self.tagger.save()
-        self.tagger.pause(SAVE_DELAY)
+        self.tagger.pause(self.SAVE_DELAY)
 
     def fails_to_assign_isni_to_lead_performer(self):
         self.tagger.assign_isni_to_lead_performer()

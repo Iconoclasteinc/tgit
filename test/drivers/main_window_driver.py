@@ -80,11 +80,7 @@ class MainWindowDriver(WidgetDriver):
 
     def shows_assignation_failed(self):
         message_box(self).is_active()
-        try:
-            message_box(self).shows_message("Could not assign an ISNI")
-            message_box(self).shows_details("invalid code creationRole eee")
-        finally:
-            message_box(self).ok()
+        message_box(self).ok()
 
     def find_isni_of_lead_performer(self):
         album_screen(self).lookup_isni_of_lead_performer()
