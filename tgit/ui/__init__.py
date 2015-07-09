@@ -67,7 +67,7 @@ def showCenteredOnScreen(widget):
 
 def PerformerDialogController(parent, album):
     def assign_guest_performers():
-        album.guest_performers = dialog.performers
+        album.guest_performers = dialog.get_performers()
 
     dialog = PerformerDialog(parent)
     dialog.accepted.connect(assign_guest_performers)

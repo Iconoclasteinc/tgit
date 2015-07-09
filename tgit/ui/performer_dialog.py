@@ -27,21 +27,10 @@ from tgit.ui.helpers.ui_file import UIFile
 
 mac = sys.platform == "darwin"
 
-PERFORMER_COLUMN_INDEX = 0
-INSTRUMENT_COLUMN_INDEX = 1
-
-
-def _get_spacer_width():
-    return 39 if mac else 30
-
-
-def _get_performer_from(row_layout):
-    instrument = row_layout.itemAt(PERFORMER_COLUMN_INDEX).widget().text()
-    name = row_layout.itemAt(INSTRUMENT_COLUMN_INDEX).widget().text()
-
-    if instrument.strip() != "" and name.strip() != "":
-        return instrument, name
-    return None
+INSTRUMENT_COLUMN_INDEX = 0
+PERFORMER_COLUMN_INDEX = 1
+REMOVE_BUTTON_COLUMN_INDEX = 2
+FIRST_PERFORMER_ROW_INDEX = 1
 
 
 def _build_line_edit(content, name):
@@ -61,51 +50,60 @@ class PerformerDialog(QDialog, UIFile):
         self._add_performer.clicked.connect(self._add_performer_row)
 
     def _add_performer_row(self):
-        self._performers_table.addWidget(self._build_performer_row(index=self._performers_table.count()))
+        self._build_performer_row()
+
+    def get_performers(self):
+        performers = []
+        for row_index in range(FIRST_PERFORMER_ROW_INDEX, self._performers_table.layout().rowCount()):
+            performer = self._get_performer_from(row_index)
+            if performer is not None:
+                performers.append(performer)
+
+        return performers
+
+    def _get_performer_from(self, row_index):
+        if self._row_is_empty(row_index):
+            return None
+
+        layout = self._performers_table.layout()
+        name = layout.itemAtPosition(row_index, PERFORMER_COLUMN_INDEX).widget().text()
+        instrument = layout.itemAtPosition(row_index, INSTRUMENT_COLUMN_INDEX).widget().text()
+
+        if instrument.strip() != "" and name.strip() != "":
+            return instrument, name
+        return None
+
+    def _row_is_empty(self, index):
+        return self._performers_table.layout().itemAtPosition(index, PERFORMER_COLUMN_INDEX) is None
 
     def display(self, performers):
         if len(performers) > 0:
-            for index, performer in enumerate(performers):
-                self._performers_table.addWidget(self._build_performer_row(performer, index))
+            for performer in performers:
+                self._build_performer_row(performer)
         else:
-            self._performers_table.addWidget(self._build_performer_row())
+            self._build_performer_row()
 
-    def _build_performer_row(self, performer=(None, None), index=0):
+    def _build_performer_row(self, performer=(None, None)):
+        layout = self._performers_table.layout()
+        index = layout.rowCount()
+
         instrument, name = performer
-
-        layout = QHBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(_build_line_edit(instrument, "instrument_{0}".format(index)))
-        layout.addWidget(_build_line_edit(name, "performer_{0}".format(index)))
-
-        if index > 0:
-            layout.addWidget(self._build_remove_line_button(index))
-        else:
-            layout.addSpacing(_get_spacer_width())
-
-        widget = QWidget()
-        widget.setLayout(layout)
-        return widget
+        layout.addWidget(_build_line_edit(name, "performer_{0}".format(index)), index, PERFORMER_COLUMN_INDEX)
+        layout.addWidget(_build_line_edit(instrument, "instrument_{0}".format(index)), index, INSTRUMENT_COLUMN_INDEX)
+        if index > FIRST_PERFORMER_ROW_INDEX:
+            layout.addWidget(self._build_remove_line_button(index), index, REMOVE_BUTTON_COLUMN_INDEX)
 
     def _build_remove_line_button(self, index):
         button = QPushButton()
         button.setObjectName("remove_performer_{0}".format(index))
-        button.setText("-")
-        button.clicked.connect(lambda: self._remove_row(button.parentWidget()))
+        button.setCursor(Qt.PointingHandCursor)
+        button.setFixedSize(20, 20)
+        button.clicked.connect(lambda: self._remove_row(index))
         return button
 
-    @property
-    def performers(self):
-        performers = []
-        for i in range(self._performers_table.count()):
-            performer = _get_performer_from(self._performers_table.itemAt(i).widget().layout())
-            if performer is not None:
-                performers.append(performer)
-        return performers
-
-    def _remove_row(self, row):
-        layout = row.layout()
-        for index in reversed(range(layout.count())):
-            layout.takeAt(index).widget().close()
-        row.close()
-        self._performers_table.removeWidget(row)
+    def _remove_row(self, row_index):
+        layout = self._performers_table.layout()
+        for col_index in range(self._performers_table.layout().columnCount()):
+            widget = layout.itemAtPosition(row_index, col_index).widget()
+            layout.removeWidget(widget)
+            widget.close()

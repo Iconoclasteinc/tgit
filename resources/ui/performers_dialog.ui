@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>365</width>
-    <height>130</height>
+    <height>123</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -75,38 +75,7 @@ QGroupBox::title {
    <item>
     <widget class="QGroupBox" name="_form">
      <property name="styleSheet">
-      <string notr="true">QPushButton {
-	background-color: #BFBFBF;
-	border: 2px solid #FBFBFBF;
-	border-radius: 4px;
-	font-size: 10px;
-	font-weight: bold;
-	color: white;
-	padding: 3px 10px;
-	margin: 0;
-}
-
-QPushButton:hover,
-QPushButton:focus {
-	background-color: #A6A6A6;
-	border-color: #A6A6A6;
-}
-
-QPushButton:pressed {
-	border: 2px solid white;
-}
-
-#_add_performer {
-	background-color: #F25C0A;
-	border: 2px solid #F25C0A;
-}
-
-#_add_performer:hover,
-#_add_performer:focus {
-	background-color: #D95109;
-	border-color: #D95109;
-}
-</string>
+      <string notr="true"/>
      </property>
      <property name="title">
       <string/>
@@ -128,10 +97,22 @@ QPushButton:pressed {
        <number>10</number>
       </property>
       <item>
-       <widget class="QWidget" name="_header" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="spacing">
-          <number>5</number>
+       <widget class="QWidget" name="_performers_table" native="true">
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+	background: transparent url(&quot;:/images/remove-20.png&quot;) no-repeat;
+}
+
+QPushButton:hover,
+QPushButton:focus {
+	background: transparent url(&quot;:/images/remove-hover-20.png&quot;) no-repeat;
+}
+
+</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
          </property>
          <property name="leftMargin">
           <number>0</number>
@@ -145,21 +126,24 @@ QPushButton:pressed {
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QLabel" name="_instrument_header">
-           <property name="text">
-            <string>Instrument:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <item row="0" column="1">
           <widget class="QLabel" name="_name_header">
            <property name="text">
             <string>Performer:</string>
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="_instrument_header">
+           <property name="text">
+            <string>Instrument:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -169,7 +153,7 @@ QPushButton:pressed {
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>30</width>
+             <width>20</width>
              <height>20</height>
             </size>
            </property>
@@ -179,14 +163,30 @@ QPushButton:pressed {
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="_performers_table">
-        <property name="spacing">
-         <number>5</number>
-        </property>
-       </layout>
-      </item>
-      <item>
        <widget class="QPushButton" name="_add_performer">
+        <property name="styleSheet">
+         <string notr="true">*  {
+	background: #F25C0A;
+	border: 2px solid #F25C0A;
+	border-radius: 4px;
+	font-size: 10px;
+	font-weight: bold;
+	color: white;
+	padding: 3px 10px;
+	margin: 0;
+}
+
+:hover,
+:focus {
+	background-color: #D95109;
+	border-color: #D95109;
+}
+
+:pressed {
+	border: 2px solid white;
+}
+</string>
+        </property>
         <property name="text">
          <string>ADD A PERFORMER</string>
         </property>

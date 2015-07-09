@@ -42,8 +42,7 @@ def test_adds_performers(driver):
     driver.change_instrument("Vocals", index=1)
     driver.change_performer_name("Robert Plant", index=1)
 
-    performers = dialog.performers
-    assert_that(performers, equal_to([("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]), "performers")
+    assert_that(dialog.get_performers(), equal_to([("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]), "performers")
 
 
 def test_removes_performers(driver):
@@ -52,8 +51,7 @@ def test_removes_performers(driver):
 
     driver.remove_performer(1)
 
-    performers = dialog.performers
-    assert_that(performers, equal_to([("Guitar", "Jimmy Page")]), "performers")
+    assert_that(dialog.get_performers(), equal_to([("Guitar", "Jimmy Page")]), "performers")
 
 
 def test_shows_performers(driver):
