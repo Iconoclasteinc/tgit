@@ -23,6 +23,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 
+from tgit.album import Album
 from tgit.ui.helpers import formatting
 
 
@@ -43,6 +44,14 @@ class TrackItem:
     @property
     def is_playing(self):
         return self.state == State.playing
+
+    @property
+    def is_stopped(self):
+        return self.state == State.stopped
+
+    @property
+    def is_mp3(self):
+        return self.type == Album.Type.MP3
 
     @property
     def type(self):
@@ -72,10 +81,10 @@ class TrackItem:
     def duration(self):
         return self.track.duration
 
-    def play(self):
+    def mark_playing(self):
         self.state = State.playing
 
-    def stop(self):
+    def mark_stopped(self):
         self.state = State.stopped
 
 

@@ -56,7 +56,7 @@ def no_startup_screen(driver):
 
 
 def no_album_screen(driver):
-        return no_widget(driver, named(ALBUM_SCREEN_NAME))
+    return no_widget(driver, named(ALBUM_SCREEN_NAME))
 
 
 def no_track_list_page(driver):

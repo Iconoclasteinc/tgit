@@ -33,7 +33,7 @@ def test_displays_missing_values_as_blanks():
 
 def test_displays_icon_when_track_is_playing(qt):
     item = TrackItem(make_track())
-    item.play()
+    item.mark_playing()
 
     assert_that(Column.state.value(item).icon(), not_none(), "state icon")
 

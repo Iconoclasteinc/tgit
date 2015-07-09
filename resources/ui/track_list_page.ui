@@ -391,6 +391,9 @@ QMenu::item::selected {
    </item>
   </layout>
   <action name="_remove_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Remove</string>
    </property>
@@ -399,6 +402,9 @@ QMenu::item::selected {
    </property>
   </action>
   <action name="_play_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Play</string>
    </property>
@@ -407,6 +413,20 @@ QMenu::item::selected {
    </property>
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
+   </property>
+  </action>
+  <action name="_stop_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>

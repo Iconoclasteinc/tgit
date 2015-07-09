@@ -667,6 +667,7 @@ class MenuItemDriver(WidgetDriver):
 
     def click(self):
         self.is_enabled()
+        self.is_showing_on_screen()
         self.perform(gestures.mouse_click_at(self._center_of_item()))
 
 

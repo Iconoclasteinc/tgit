@@ -136,19 +136,9 @@ def remove_track_from(player, album):
         if player.is_playing(track):
             player.stop()
 
-        album.removeTrack(track)
+        album.remove_track(track)
 
     return remove_track_from_album
-
-
-def play_or_stop(player):
-    def play_or_stop_track(track):
-        if player.is_playing(track):
-            player.stop()
-        else:
-            player.play(track)
-
-    return play_or_stop_track
 
 
 def export_as_csv(album, destination):

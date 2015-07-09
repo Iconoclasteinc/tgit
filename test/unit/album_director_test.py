@@ -4,6 +4,7 @@ import unittest
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
                       has_key, has_property)
+
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
@@ -177,25 +178,6 @@ def test_changes_main_album_cover_to_specified_image_file():
                                                       data=fs.read(cover_file),
                                                       type=Image.FRONT_COVER,
                                                       desc='Front Cover')), 'images')
-
-
-def test_stops_playing_track_if_already_playing():
-    player = doubles.audio_player()
-    track = build.track()
-    player.play(track)
-
-    director.play_or_stop(player)(track)
-
-    assert_that(player.is_playing(track), is_(False), 'stopped playing')
-
-
-def test_plays_track_if_not_already_playing():
-    player = doubles.audio_player()
-    track = build.track()
-
-    director.play_or_stop(player)(track)
-
-    assert_that(player.is_playing(track), is_(True), 'started playing')
 
 
 def test_moves_track_of_album():

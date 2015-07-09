@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QWidget
 from hamcrest import anything
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
@@ -48,27 +47,27 @@ def with_children(type_, matcher):
 
 
 def showing_on_screen():
-    return StateMatcher(QWidget.isVisible, "showing on screen", "hidden")
+    return StateMatcher(lambda o: o.isVisible(), "showing on screen", "hidden")
 
 
 def hidden():
-    return StateMatcher(lambda w: not w.isVisible(), "hidden", "visible")
+    return StateMatcher(lambda o: not o.isVisible(), "hidden", "visible")
 
 
 def enabled():
-    return StateMatcher(lambda w: w.isEnabled(), "enabled", "disabled")
+    return StateMatcher(lambda o: o.isEnabled(), "enabled", "disabled")
 
 
 def disabled():
-    return StateMatcher(lambda w: not w.isEnabled(), "disabled", "enabled")
+    return StateMatcher(lambda o: not o.isEnabled(), "disabled", "enabled")
 
 
 def checked():
-    return StateMatcher(lambda b: b.isChecked(), "checked", "unchecked")
+    return StateMatcher(lambda o: o.isChecked(), "checked", "unchecked")
 
 
 def unchecked():
-    return StateMatcher(lambda b: not b.isChecked(), "unchecked", "checked")
+    return StateMatcher(lambda o: not o.isChecked(), "unchecked", "checked")
 
 
 def active_window():

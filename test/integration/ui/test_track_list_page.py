@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 
-from hamcrest import has_property, contains, assert_that, empty
+from hamcrest import has_property, contains, assert_that, empty, contains_string
 import pytest
 
 from cute.matchers import with_text, named
@@ -48,15 +48,16 @@ def test_displays_track_details_in_columns(driver):
     driver.shows_track_details('1', None, 'Chevere!', 'Joel Miller', 'Honeycomb', '192 kbps', '04:12')
 
 
-def test_displays_all_tracks_in_rows(driver):
+def test_displays_all_tracks_of_album(driver):
     show_page(make_album(tracks=[make_track(track_title='Give Life Back To Music'),
                                  make_track(track_title='Get Lucky')]))
 
     driver.has_track_count(2)
-    driver.shows_tracks_in_order(['1', 'Give Life Back To Music'], ['2', 'Get Lucky'])
+    driver.shows_tracks_in_order(['1', 'Give Life Back To Music'],
+                                 ['2', 'Get Lucky'])
 
 
-def test_updates_entire_table_when_album_metadata_change(driver):
+def test_updates_all_tracks_when_album_metadata_change(driver):
     album = make_album(tracks=[make_track(track_title="Chevere!"), build.track(track_title='Zumbar')])
     show_page(album)
 
@@ -104,7 +105,7 @@ def test_removes_row_from_table_when_track_removed_from_album(driver):
                     "track #{} 'metadata changed' subscribers".format(index))
 
 
-def test_signals_user_request_to_remove_track(driver):
+def test_makes_remove_track_request_when_remove_menu_item_selected(driver):
     page = show_page(make_album(tracks=[make_track(), make_track(track_title="Chevere!")]))
 
     remove_track_signal = ValueMatcherProbe("remove track", has_title("Chevere!"))
@@ -114,7 +115,7 @@ def test_signals_user_request_to_remove_track(driver):
     driver.check(remove_track_signal)
 
 
-def test_can_remove_track_using_keyboard_shortcut(driver):
+def test_makes_remove_track_request_when_remove_shortcut_activated(driver):
     page = show_page(make_album(tracks=[make_track(track_title="Chevere!")]))
 
     remove_track_signal = ValueMatcherProbe("remove track", has_title("Chevere!"))
@@ -124,41 +125,57 @@ def test_can_remove_track_using_keyboard_shortcut(driver):
     driver.check(remove_track_signal)
 
 
-def test_signals_user_playback_request(driver):
+def test_makes_play_track_request_when_play_context_menu_item_selected(driver):
     page = show_page(make_album(type='mp3', tracks=[make_track(track_title="Spain")]))
 
-    playback_signal = ValueMatcherProbe("play track", has_title("Spain"))
-    page.on_play_track(playback_signal.received)
+    play_request = ValueMatcherProbe("play track request", has_title("Spain"))
+    page.on_play_track(play_request.received)
 
     driver.play_track('Spain')
-    driver.check(playback_signal)
+    driver.check(play_request)
 
 
-def test_prevents_playing_flac_files(driver):
+def test_makes_stop_track_request_when_stop_context_menu_item_selected(driver):
+    spain = make_track(track_title="Spain")
+    stop_request = ValueMatcherProbe("stop track request")
+
+    page = show_page(make_album(type='mp3', tracks=[spain]))
+    page.on_stop_track(stop_request.received)
+
+    page.playback_started(spain)
+    driver.stop_track('Spain')
+    driver.check(stop_request)
+
+
+def test_disables_play_context_menu_item_for_flac_tracks(driver):
     show_page(make_album(type='flac', tracks=[make_track(track_title="Spain")]))
 
-    driver.cannot_play_track('Spain')
+    driver.has_disabled_play_context_menu_item('Spain')
 
 
-def test_shows_title_of_track_to_play_in_context_menu(driver):
-    show_page(make_album(tracks=[make_track(track_title="Partways")]))
+def test_shows_selected_track_title_in_context_menu(driver):
+    show_page(make_album(tracks=[make_track(track_title="Partways"),
+                                 make_track(track_title="Rebop")]))
 
     driver.select_track("Partways")
-    driver.has_context_menu_item(with_text('Play "Partways"'))
+    driver.has_context_menu_item(with_text(contains_string("Partways")))
+    driver.select_track("Rebop")
+    driver.has_context_menu_item(with_text(contains_string("Rebop")))
 
 
-def test_changes_context_menu_text_to_stop_when_selected_track_is_playing(driver):
-    player = fake_audio_player()
+def test_changes_play_context_menu_item_depending_on_playback_state(driver):
     track = make_track(track_title="Choices")
-    show_page(make_album(tracks=[track]), player)
-
-    player.play(track)
+    page = show_page(make_album(tracks=[track]))
 
     driver.select_track("Choices")
+    driver.has_context_menu_item(with_text('Play "Choices"'))
+    page.playback_started(track)
     driver.has_context_menu_item(with_text('Stop "Choices"'))
+    page.playback_stopped(track)
+    driver.has_context_menu_item(with_text('Play "Choices"'))
 
 
-def test_signals_when_add_tracks_button_clicked(driver):
+def test_makes_add_tracks_request_when_add_button_clicked(driver):
     album = make_album()
     page = show_page(album, select_tracks=lambda on_select: on_select("track1", "track2", "track3"))
 
@@ -169,7 +186,7 @@ def test_signals_when_add_tracks_button_clicked(driver):
     driver.check(add_tracks_signal)
 
 
-def test_signals_when_track_was_moved(driver):
+def test_makes_move_track_requests_when_track_row_moved(driver):
     page = show_page(make_album(tracks=[make_track(track_title='Chaconne'),
                                         make_track(track_title='Choices'),
                                         make_track(track_title='Place St-Henri')]))

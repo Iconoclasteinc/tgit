@@ -146,11 +146,12 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
     def create_track_list_page(album):
         return TrackListPage(album, player,
-                                    select_tracks=func.partial(dialogs.select_tracks, album.type),
-                                    on_move_track=director.move_track_of(album),
-                                    on_remove_track=director.remove_track_from(player, album),
-                                    on_play_track=director.play_or_stop(player),
-                                    on_add_tracks=director.add_tracks_to(album))
+                             select_tracks=func.partial(dialogs.select_tracks, album.type),
+                             on_move_track=director.move_track_of(album),
+                             on_remove_track=director.remove_track_from(player, album),
+                             on_play_track=player.play,
+                             on_stop_track=player.stop,
+                             on_add_tracks=director.add_tracks_to(album))
 
     def create_album_page(album):
         return make_album_edition_page(preferences, show_isni_lookup_dialog, show_activity_indicator_dialog,

@@ -62,6 +62,7 @@ class FakeAudioPlayer(metaclass=Observable):
         self.playing.emit(self._track)
 
     def stop(self):
-        self._track = None
         if self._track is not None:
-            self.playing.emit(self._track)
+            self.stopped.emit(self._track)
+
+        self._track = None

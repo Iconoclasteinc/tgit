@@ -41,6 +41,10 @@ class TrackListPageDriver(ScreenDriver):
         context_menu.has_menu_item(matching)
         context_menu.close()
 
+    def has_disabled_play_context_menu_item(self, title):
+        self.select_track(title)
+        self._from_context_menu().menu_item(named("_play_action")).is_disabled()
+
     def _from_context_menu(self):
         self.perform(gestures.mouse_right_click())
         return MenuDriver.find_single(self, QMenu, named("context_menu"))
@@ -53,9 +57,9 @@ class TrackListPageDriver(ScreenDriver):
         self.select_track(title)
         self._from_context_menu().select_menu_item(named("_play_action"))
 
-    def cannot_play_track(self, title):
+    def stop_track(self, title):
         self.select_track(title)
-        self._from_context_menu().menu_item(named("_play_action")).is_disabled()
+        self._from_context_menu().select_menu_item(named("_stop_action"))
 
     def remove_track(self, title, using_shortcut=False):
         self.select_track(title)
