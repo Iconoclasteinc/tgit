@@ -55,7 +55,8 @@ QCalendarWidget QMenu {
 }
 
 QCalendarWidget QMenu::item::selected {
-  background-color:#F08450;
+  color: black;
+  background-color:#DDDDDD;
 }
 
 QCalendarWidget QToolButton::menu-indicator {

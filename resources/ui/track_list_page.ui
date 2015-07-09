@@ -244,15 +244,11 @@
   border-bottom: 1px solid #F7C3B7;
 }
 
-QMenu {
-	background-color: white;
-}
-
-::item::alternate {
+QTableView::item::alternate {
   background-color:#F9F7F7;
 }
 
-::item::selected {
+QTableView::item::selected {
   background-color:#F08450;
 }
 
@@ -286,7 +282,18 @@ QTableCornerButton::section {
   background-color: transparent;
   border-top: 1px solid #F7C3B7;
   border-bottom: 1px solid #F7C3B7;
-}</string>
+}
+
+QMenu {
+    background-color: white;
+}
+
+QMenu::item::selected {
+	color: black;
+    background-color: #DDDDDD;
+}
+
+</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
