@@ -50,7 +50,7 @@ def test_shows_close_album_message(driver):
     _ = messages().close_album_confirmation()
 
     driver.is_active()
-    driver.shows_message("Are you sure you want to stop working on this release?")
+    driver.shows_message("You are about to close the current album. Any unsaved work will be lost.")
 
 
 def test_shows_restart_message(driver):
@@ -81,12 +81,11 @@ def test_shows_load_album_failed_message(driver):
     _ = messages().load_album_failed(Exception())
 
     driver.is_active()
-    driver.shows_message("We're sorry, but the album file you selected cannot be loaded.")
+    driver.shows_message("The album file you selected cannot be loaded.")
 
 
 def test_shows_save_album_failed_message(driver):
     _ = messages().save_album_failed(Exception())
 
     driver.is_active()
-    driver.shows_message("We're sorry, but we could not save your album.")
-
+    driver.shows_message("Could not save your album.")
