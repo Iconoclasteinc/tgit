@@ -30,6 +30,10 @@ from tgit.ui.event_filters import MovableSectionsCursor
 VERTICAL_HEADER_WIDTH = 18
 
 
+def ignore():
+    pass
+
+
 @Observer
 class TrackListPage(QWidget, UIFile, AlbumListener):
     _playing_track = None
@@ -64,23 +68,24 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         for name, handler in handlers.items():
             getattr(self, name)(handler)
 
-    def on_add_tracks(self, handler):
-        self._add_tracks_button.clicked.connect(lambda: self._select_tracks(handler))
+    def on_add_tracks(self, add):
+        self._add_tracks_button.clicked.connect(lambda: self._select_tracks(add))
 
-    def on_move_track(self, handler):
+    def on_move_track(self, move):
         # todo should we pass the index instead of the track?
-        move_track = lambda _, from_position, to_position: handler(self._items[from_position].track, to_position)
+        move_track = lambda _, from_position, to_position: move(self._items[from_position].track, to_position)
         self._track_table.verticalHeader().sectionMoved.connect(move_track)
 
-    def on_play_track(self, handler):
-        self._play_action.triggered.connect(lambda: handler(self._selected_item.track))
+    def on_play_track(self, play):
+        self._play_action.triggered.connect(lambda: play(self._selected_item.track))
 
-    def on_stop_track(self, handler):
-        self._stop_action.triggered.connect(lambda: handler())
+    def on_stop_track(self, stop):
+        self._stop_action.triggered.connect(lambda: stop())
+        self._remove_action.triggered.connect(lambda: stop() if self._selected_item.is_playing else ignore())
 
-    def on_remove_track(self, remove_track):
+    def on_remove_track(self, remove):
         # todo should we pass the index instead of the track?
-        self._remove_action.triggered.connect(lambda: remove_track(self._selected_item.track))
+        self._remove_action.triggered.connect(lambda: remove(self._selected_item.track))
 
     def _display_album(self, album):
         for index in range(self._item_count()):
@@ -145,14 +150,17 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
 
     def _update_actions(self):
         if self._selected_item:
+            self._remove_action.setEnabled(True)
             self._play_action.setVisible(self._selected_item.is_stopped)
+            self._play_action.setEnabled(self._selected_item.is_mp3)
             self._play_action.setText('{0} "{1}"'.format(self.tr("Play"), self._selected_item.track_title))
             self._stop_action.setVisible(self._selected_item.is_playing)
+            self._stop_action.setEnabled(self._selected_item.is_mp3)
             self._stop_action.setText('{0} "{1}"'.format(self.tr("Stop"), self._selected_item.track_title))
-
-        self._remove_action.setEnabled(self._selected_item is not None)
-        self._play_action.setEnabled(self._selected_item is not None and self._selected_item.is_mp3)
-        self._stop_action.setEnabled(self._selected_item is not None and self._selected_item.is_mp3)
+        else:
+            self._remove_action.setEnabled(False)
+            self._play_action.setEnabled(False)
+            self._stop_action.setEnabled(False)
 
     def _item_count(self):
         return len(self._items)

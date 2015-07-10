@@ -105,24 +105,27 @@ def test_removes_row_from_table_when_track_removed_from_album(driver):
                     "track #{} 'metadata changed' subscribers".format(index))
 
 
-def test_makes_remove_track_request_when_remove_menu_item_selected(driver):
+@pytest.mark.parametrize("using_shortcut", [False, True])
+def test_makes_remove_track_request_when_remove_menu_item_selected(driver, using_shortcut):
     page = show_page(make_album(tracks=[make_track(), make_track(track_title="Chevere!")]))
 
-    remove_track_signal = ValueMatcherProbe("remove track", has_title("Chevere!"))
-    page.on_remove_track(remove_track_signal.received)
+    remove_request = ValueMatcherProbe("remove track request", has_title("Chevere!"))
+    page.on_remove_track(remove_request.received)
 
-    driver.remove_track('Chevere!')
-    driver.check(remove_track_signal)
+    driver.remove_track("Chevere!", using_shortcut)
+    driver.check(remove_request)
 
 
-def test_makes_remove_track_request_when_remove_shortcut_activated(driver):
-    page = show_page(make_album(tracks=[make_track(track_title="Chevere!")]))
+def test_makes_stop_track_request_when_remove_menu_item_selected_and_track_is_playing(driver):
+    spain = make_track(track_title="Spain")
+    stop_request = ValueMatcherProbe("stop track request")
 
-    remove_track_signal = ValueMatcherProbe("remove track", has_title("Chevere!"))
-    page.on_remove_track(remove_track_signal.received)
+    page = show_page(make_album(type='mp3', tracks=[spain]))
+    page.on_stop_track(stop_request.received)
 
-    driver.remove_track('Chevere!', using_shortcut=True)
-    driver.check(remove_track_signal)
+    page.playback_started(spain)
+    driver.remove_track('Spain')
+    driver.check(stop_request)
 
 
 def test_makes_play_track_request_when_play_context_menu_item_selected(driver):

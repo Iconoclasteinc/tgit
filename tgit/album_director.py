@@ -131,14 +131,8 @@ def move_track_of(album):
     return move_track_of_album
 
 
-def remove_track_from(player, album):
-    def remove_track_from_album(track):
-        if player.is_playing(track):
-            player.stop()
-
-        album.remove_track(track)
-
-    return remove_track_from_album
+def remove_track_from(album):
+    return album.remove_track
 
 
 def export_as_csv(album, destination):
