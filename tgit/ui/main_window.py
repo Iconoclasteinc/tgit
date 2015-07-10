@@ -225,6 +225,7 @@ if mac:
         }
     """
 
+
 class HandlerRegistrar:
     def _register(self, **handlers):
         for name, handler in handlers.items():
@@ -363,9 +364,20 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def _create_track_actions(self):
         for track in self._album.tracks:
-            action = QAction("{0} - {1}".format(track.track_number, track.track_title), self)
-            action.triggered.connect(lambda checked, track_number=track.track_number: self._to_track_page(track_number))
-            self.navigate_menu.addAction(action)
+            self.navigate_menu.addAction(self._create_track_action(track))
+
+    def _create_track_action(self, track):
+        def format_name(number, title):
+            return "{0} - {1}".format(number, title)
+
+        def update_name(menu_item, metadata):
+            menu_item.setText("{0} - {1}".format(metadata["track_number"], metadata["track_title"]))
+
+        action = QAction(format_name(track.track_number, track.track_title), self)
+        action.triggered.connect(lambda _: self._to_track_page(track.track_number))
+        self.subscribe(track.metadata_changed, lambda metadata: update_name(action, metadata))
+
+        return action
 
     def _clear_track_actions(self):
         for action in self.navigate_menu.actions()[self.TRACK_ACTIONS_START_INDEX:]:

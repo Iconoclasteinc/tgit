@@ -199,6 +199,16 @@ def test_adds_track_menu_item_when_adding_a_track_to_the_album(driver):
     driver.shows_track_menu_item(title="Chevere!", track_number=1)
 
 
+def test_updates_track_menu_item_when_track_name_changes(driver):
+    main_window = show_page()
+    album = build.album()
+    main_window.display_album_screen(album)
+    album.add_track(build.track(track_title="Chevere!"))
+    album.tracks[0].track_title = "Zumbar"
+
+    driver.shows_track_menu_item(title="Zumbar", track_number=1)
+
+
 def test_removes_track_menu_item_when_removing_a_track_from_the_album(driver):
     main_window = show_page()
     album = build.album()
