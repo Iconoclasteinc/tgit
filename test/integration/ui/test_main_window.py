@@ -137,7 +137,7 @@ def test_asks_for_confirmation_before_closing_album(driver):
     album = make_album()
     confirm_close_query = ValueMatcherProbe("confirm close")
 
-    main_window = show_page(confirm_close=lambda on_accept: confirm_close_query.received())
+    main_window = show_page(confirm_close=lambda **_: confirm_close_query.received(), on_close_album=ignore)
     main_window.display_album_screen(album)
 
     driver.close_album()
@@ -148,8 +148,7 @@ def test_signals_when_album_closed(driver):
     album = make_album()
     close_album_signal = ValueMatcherProbe("close", album)
 
-    main_window = show_page(confirm_close=lambda on_accept: on_accept(),
-                            on_close_album=close_album_signal.received)
+    main_window = show_page(confirm_close=lambda on_accept: on_accept(), on_close_album=close_album_signal.received)
     main_window.display_album_screen(album)
 
     driver.close_album()
