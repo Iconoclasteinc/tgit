@@ -148,7 +148,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
         return TrackListPage(album, player,
                              select_tracks=func.partial(dialogs.select_tracks, album.type),
                              on_move_track=director.move_track_of(album),
-                             on_remove_track=director.remove_track_from(player, album),
+                             on_remove_track=director.remove_track_from(album),
                              on_play_track=player.play,
                              on_stop_track=player.stop,
                              on_add_tracks=director.add_tracks_to(album))

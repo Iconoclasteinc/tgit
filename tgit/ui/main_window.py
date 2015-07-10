@@ -310,6 +310,14 @@ StyleSheet = """
     #isni-lookup-dialog #connection-error-message {
         color: #F25C0A;
     }
+
+    QMessageBox[style=QMacStyle] {
+        messagebox-warning-icon: url(:/images/warning.png);
+    }
+
+    #qt_msgbox_informativelabel[style=QMacStyle] {
+        font: normal 11px;
+    }
  """
 
 if hasattr(QtGui, "qt_mac_set_native_menubar"):

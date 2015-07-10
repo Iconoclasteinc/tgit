@@ -47,5 +47,6 @@
         <file>images/radio-unchecked-pressed.png</file>
         <file>images/invalid-image-placeholder.png</file>
         <file>images/no-image-placeholder.png</file>
+        <file>images/warning.png</file>
     </qresource>
 </RCC>

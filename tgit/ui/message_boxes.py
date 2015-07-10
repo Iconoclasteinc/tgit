@@ -65,11 +65,16 @@ class MessageBoxes:
                                                **handlers))
 
     def confirm_exit(self):
+        if not self._confirm_before_exiting:
+            return True
+
         box = ConfirmationBox.warn(self.parent,
                                    "You are about to quit TGiT. Are you sure you want to continue?",
                                    "Make sure to save your work before you quit TGiT. "
                                    "Any unsaved work will be lost.")
-        return self._confirm_before_exiting and box.exec() == QMessageBox.Yes
+        box.setWindowModality(Qt.WindowModal)
+        return box.exec() == QMessageBox.Yes
+
 
 
 mac = sys.platform == "darwin"
@@ -85,10 +90,8 @@ class MessageBox(QMessageBox):
         self.setAttribute(Qt.WA_DeleteOnClose, True)
         self.setDetailedText(details)
         self.setStandardButtons(QMessageBox.Ok)
+        self.setDefaultButton(QMessageBox.Ok)
         self.setIcon(icon)
-        if mac:
-            # On OS X, setting a stylesheet on the main window messes up the message box style
-            self.setStyleSheet("#qt_msgbox_informativelabel {font: normal 10px; margin-bottom: 10px;}")
 
     @classmethod
     def inform(cls, parent, message, information=None, details=None, **handlers):
