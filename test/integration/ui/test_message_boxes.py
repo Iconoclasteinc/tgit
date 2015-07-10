@@ -17,14 +17,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtWidgets import QMessageBox
+from hamcrest import contains_string
 import pytest
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import QMessageBoxDriver, window
-from tgit.ui.message_box import MessageBoxes
+from tgit.ui.message_boxes import MessageBoxes
 
-DISPLAY_DELAY = 100
+DISPLAY_DELAY = 200
 
 
 @pytest.yield_fixture()
@@ -50,21 +51,21 @@ def test_shows_close_album_message(driver):
     _ = messages().close_album_confirmation()
 
     driver.is_active()
-    driver.shows_message("You are about to close the current album. Any unsaved work will be lost.")
+    driver.shows_message(contains_string("You are about to close the current album."))
 
 
 def test_shows_restart_message(driver):
     _ = messages().restart_required()
 
     driver.is_active()
-    driver.shows_message("You need to restart TGiT for changes to take effect.")
+    driver.shows_message(contains_string("You need to restart TGiT for changes to take effect."))
 
 
 def test_shows_overwrite_album_confirmation_message(driver):
     _ = messages().overwrite_album_confirmation()
 
     driver.is_active()
-    driver.shows_message("This album already exists. Do you want to replace it?")
+    driver.shows_message(contains_string("This album already exists."))
 
 
 def test_signals_when_confirmed(driver):
@@ -81,11 +82,11 @@ def test_shows_load_album_failed_message(driver):
     _ = messages().load_album_failed(Exception())
 
     driver.is_active()
-    driver.shows_message("The album file you selected cannot be loaded.")
+    driver.shows_message(contains_string("The album file you selected cannot be loaded."))
 
 
 def test_shows_save_album_failed_message(driver):
     _ = messages().save_album_failed(Exception())
 
     driver.is_active()
-    driver.shows_message("Could not save your album.")
+    driver.shows_message(contains_string("Your album file could not be saved."))

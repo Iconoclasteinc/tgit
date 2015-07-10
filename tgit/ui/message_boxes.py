@@ -40,7 +40,7 @@ class MessageBoxes:
 
     def save_album_failed(self, error):
         return self._open(MessageBox.warn(self.parent,
-                                          "Could not save your album.",
+                                          "Your album file could not be saved.",
                                           "Please check that you have permission to write to the album's location."))
 
     def restart_required(self):
@@ -52,20 +52,23 @@ class MessageBoxes:
     def close_album_confirmation(self, **handlers):
         return self._open(
             ConfirmationBox.warn(self.parent,
-                                 "You are about to close the current album. Any unsaved work will be lost.",
-                                 "Are you sure you want to continue?", **handlers))
+                                 "You are about to close the current album. Are you sure you want to continue?",
+                                 "Make sure to save your work before closing the album. "
+                                 "Any unsaved work will be lost.",
+                                 **handlers))
 
     def overwrite_album_confirmation(self, **handlers):
         return self._open(ConfirmationBox.warn(self.parent,
                                                "This album already exists. Do you want to replace it?",
-                                               "A file with the same name already exists at the location you selected.",
+                                               "A file with the same name already exists at the location you selected."
                                                "Replacing it will overwrite its current contents.",
                                                **handlers))
 
     def confirm_exit(self):
         box = ConfirmationBox.warn(self.parent,
-                                   "You are about to close the application. Any unsaved work will be lost.",
-                                   "Are you sure you want to continue?")
+                                   "You are about to quit TGiT. Are you sure you want to continue?",
+                                   "Make sure to save your work before you quit TGiT. "
+                                   "Any unsaved work will be lost.")
         return self._confirm_before_exiting and box.exec() == QMessageBox.Yes
 
 

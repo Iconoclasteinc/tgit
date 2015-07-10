@@ -495,11 +495,11 @@
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>The file might be corrupted or part of the album content cannot be found.</source>
-        <translation>Le fichier peut être endommagé ou une partie du contenu de l'album ne peut pas être trouvé.</translation>
+        <translation>Le fichier est peut être endommagé ou bien une partie du contenu de l'album ne peut être chargée.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Could not save your album.</source>
+        <source>Your album file could not be saved.</source>
         <translation>Impossible d'enregistrer votre album.</translation>
     </message>
     <message>
@@ -512,33 +512,33 @@
     <name>ConfirmationBox</name>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>You are about to close the current album. Any unsaved work will be lost.</source>
-        <translation>Vous êtes sur le point de fermer l'album en cours. Tout travail non enregistré sera perdu.</translation>
+        <source>You are about to close the current album. Are you sure you want to continue?</source>
+        <translation>Vous êtes sur le point de fermer l'album en cours. Êtes-vous sûr de vouloir continuer ?</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Are you sure you want to continue?</source>
-        <translation>Êtes-vous sûr de vouloir continuer?</translation>
+        <source>Make sure to save your work before closing the album. Any unsaved work will be lost.</source>
+        <translation>Assurez-vous d'enregistrer votre travail avant de fermer l'album. Tout travail non enregistré sera perdu.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>You are about to close the application. Any unsaved work will be lost.</source>
-        <translation>Vous êtes sur le point de fermer l'application. Tout travail non enregistré sera perdu.</translation>
+        <source>You are about to quit TGiT. Are you sure you want to continue?</source>
+        <translation>Vous êtes sur le point de quitter TGiT. Êtes-vous sûr de vouloir continuer ?</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Make sure to save your work before you quit TGiT. Any unsaved work will be lost.</source>
+        <translation>Assurez-vous d'enregistrer votre travail avant de quitter TGiT. Tout travail non enregistré sera perdu.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>This album already exists. Do you want to replace it?</source>
-        <translation>Cet album existe déjà. Voulez-vous le remplacer?</translation>
+        <translation>Cet album existe déjà. Voulez-vous le remplacer ?</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>A file with the same name already exists at the location you selected.</source>
-        <translation>Un fichier du même nom existe déjà à l'emplacement que vous avez sélectionné.</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/message_box.py" />
-        <source>Replacing it will overwrite its current contents.</source>
-        <translation>Le remplacer écrasera son contenu actuel.</translation>
+        <source>A file with the same name already exists at the location you selected. Replacing it will overwrite its current contents.</source>
+        <translation>Un fichier du même nom existe déjà à l'emplacement que vous avez sélectionné. Le remplacer écrasera son contenu actuel.</translation>
     </message>
 </context>
 <context>
