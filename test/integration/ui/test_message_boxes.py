@@ -90,3 +90,10 @@ def test_shows_save_album_failed_message(driver):
 
     driver.is_active()
     driver.shows_message(contains_string("Your album file could not be saved."))
+
+
+def test_shows_export_failed_message(driver):
+    _ = messages().export_failed(Exception())
+
+    driver.is_active()
+    driver.shows_message("Could not export your album.")

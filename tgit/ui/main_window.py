@@ -338,11 +338,13 @@ class MainWindow(QMainWindow):
 
     TRACK_ACTIONS_START_INDEX = 3
 
-    def __init__(self, portfolio, confirm_exit, show_save_error, create_startup_screen, create_album_screen,
-                 confirm_close, select_export_destination, select_tracks, select_tracks_in_folder, **handlers):
+    def __init__(self, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
+                 create_album_screen, confirm_close, select_export_destination, select_tracks, select_tracks_in_folder,
+                 **handlers):
         super().__init__()
         self._confirm_exit = confirm_exit
         self._show_save_error = show_save_error
+        self._show_export_error = show_export_error
         self._create_startup_screen = create_startup_screen
         self._create_album_screen = create_album_screen
         self._confirm_close = confirm_close
@@ -483,7 +485,11 @@ class MainWindow(QMainWindow):
         self._confirm_close(on_accept=lambda: self._on_close_album(self._album))
 
     def _choose_export_destination(self):
-        self._select_export_destination(lambda dest: self._on_export(self._album, dest), self._album.release_name)
+        def export(destination):
+            with rescue(on_error=self._show_export_error):
+                self._on_export(self._album, destination)
+
+        self._select_export_destination(export, self._album.release_name)
 
     def _save_album(self):
         if self.focusWidget() is not None:

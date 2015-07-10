@@ -507,6 +507,11 @@
         <source>Please check that you have permission to write to the album's location.</source>
         <translation>Vérifiez que vous avez les permissions d'écriture à l'emplacement sélectionné.</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Could not export your album.</source>
+        <translation>Impossible d'exporter votre album.</translation>
+    </message>
 </context>
 <context>
     <name>ConfirmationBox</name>

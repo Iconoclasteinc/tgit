@@ -16,9 +16,15 @@ from test.util.builders import make_album
 from tgit.album import Album
 from tgit.ui.main_window import MainWindow
 
-
 ignore = lambda *_, **__: None
 yes = lambda: True
+
+
+def raise_os_error(message):
+    def raise_error(*_):
+        raise OSError(message)
+
+    return raise_error
 
 
 def show_page(portfolio=build.album_portfolio(),
@@ -26,6 +32,7 @@ def show_page(portfolio=build.album_portfolio(),
               create_album_screen=fake_album_screen,
               confirm_close=ignore,
               show_save_error=ignore,
+              show_export_error=ignore,
               select_export_destination=ignore,
               select_tracks=ignore,
               select_tracks_in_folder=ignore,
@@ -37,6 +44,7 @@ def show_page(portfolio=build.album_portfolio(),
                              create_album_screen=create_album_screen,
                              confirm_close=confirm_close,
                              show_save_error=show_save_error,
+                             show_export_error=show_export_error,
                              select_export_destination=select_export_destination,
                              select_tracks=select_tracks,
                              select_tracks_in_folder=select_tracks_in_folder,
@@ -254,16 +262,27 @@ def test_closes_main_widget_when_changing_page(driver):
     screen.is_closed()
 
 
-def save_fails(_):
-    raise OSError("Save failed")
-
-
 def test_warn_user_if_save_failed(driver):
     save_failed_signal = ValueMatcherProbe("save album failed", instance_of(OSError))
     album = make_album()
 
-    page = show_page(on_save_album=save_fails, show_save_error=save_failed_signal.received)
+    page = show_page(on_save_album=raise_os_error("Save failed"), show_save_error=save_failed_signal.received)
     page.display_album_screen(album)
 
     driver.save()
     driver.check(save_failed_signal)
+
+
+def test_warn_user_if_export_failed(driver):
+    def on_export(callback, _):
+        callback("...")
+
+    export_failed_signal = ValueMatcherProbe("export failed", instance_of(OSError))
+    album = make_album()
+
+    page = show_page(on_export=raise_os_error("Export failed"), show_export_error=export_failed_signal.received,
+                     select_export_destination=on_export)
+    page.display_album_screen(album)
+
+    driver.export()
+    driver.check(export_failed_signal)
