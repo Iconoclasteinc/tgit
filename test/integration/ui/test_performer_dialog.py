@@ -1,25 +1,28 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import Qt
-from hamcrest import assert_that, equal_to
-import pytest
 import sys
+
+from PyQt5.QtCore import Qt
+
+from hamcrest import contains
+import pytest
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import PerformerDialogDriver
-from test.integration.ui import show_widget
+from test.util import builders as build
 from tgit.ui import PerformerDialog
 
 mac = sys.platform == "darwin"
+ignore = lambda *_: None
 
 DISPLAY_DELAY = 200 if mac else 0
 
 
-def show_dialog():
-    dialog = PerformerDialog()
+def show_dialog(album=build.album(guest_performers=[]), on_edit=ignore):
+    dialog = PerformerDialog(album)
     dialog.setAttribute(Qt.WA_DeleteOnClose, False)
-    show_widget(dialog)
+    dialog.edit(on_edit=on_edit)
     return dialog
 
 
@@ -32,49 +35,31 @@ def driver(qt, prober, automaton):
 
 
 def test_adds_performers(driver):
-    dialog = show_dialog()
-    dialog.display(performers=())
+    _ = show_dialog()
 
-    driver.change_instrument("Guitar", index=0)
-    driver.change_performer_name("Jimmy Page", index=0)
-    driver.add_performer()
-
-    driver.change_instrument("Vocals", index=1)
-    driver.change_performer_name("Robert Plant", index=1)
-
-    assert_that(dialog.get_performers(), equal_to([("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]), "performers")
-
-
-def test_removes_performers(driver):
-    dialog = show_dialog()
-    dialog.display(performers=(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")))
-
-    driver.remove_performer(1)
-
-    assert_that(dialog.get_performers(), equal_to([("Guitar", "Jimmy Page")]), "performers")
+    driver.add_performer(instrument="Guitar", name="Jimmy Page", row=1)
+    driver.add_performer(instrument="Vocals", name="Robert Plant", row=2)
+    driver.ok()
 
 
 def test_shows_performers(driver):
-    dialog = show_dialog()
-    dialog.display(performers=(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")))
+    _ = show_dialog(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
 
-    driver.shows_performers((("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")))
+    driver.shows_performer(instrument="Guitar", name="Jimmy Page", row=1)
+    driver.shows_performer(instrument="Vocals", name="Robert Plant", row=2)
+
+
+def test_removes_performers(driver):
+    _ = show_dialog(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
+
+    driver.remove_performer(row=2)
 
 
 def test_signals_when_accepted(driver):
-    dialog = show_dialog()
-    accepted_signal = ValueMatcherProbe("click on button 'OK'")
-    dialog.accepted.connect(accepted_signal.received)
+    accepted_signal = ValueMatcherProbe("accepted performers",
+                                        contains(contains("Guitar", "Jimmy Page"), contains("Vocals", "Robert Plant")))
+    _ = show_dialog(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]),
+                    on_edit=accepted_signal.received)
 
     driver.ok()
     driver.check(accepted_signal)
-
-
-def test_signals_when_rejected(driver):
-    dialog = show_dialog()
-    rejected_signal = ValueMatcherProbe("click on button 'Cancel'")
-
-    dialog.rejected.connect(rejected_signal.received)
-
-    driver.cancel()
-    driver.check(rejected_signal)

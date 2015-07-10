@@ -32,8 +32,8 @@ from tgit.util import async_task_runner as task_runner
 
 
 def make_album_edition_page(preferences, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
-                            performer_dialog_factory, show_assignation_failed, album, name_registry,
-                            use_local_isni_backend, select_picture, **handlers):
+                            show_assignation_failed, album, name_registry,
+                            use_local_isni_backend, edit_performers, select_picture, **handlers):
     def poll_queue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -61,12 +61,9 @@ def make_album_edition_page(preferences, lookup_isni_dialog_factory, activity_in
         else:
             show_assignation_failed(payload)
 
-    def add_performer():
-        dialog = performer_dialog_factory(album)
-        dialog.show()
-
     queue = Queue()
     page = AlbumEditionPage(preferences,
+                            edit_performers=edit_performers,
                             select_picture=select_picture,
                             use_local_isni_backend=use_local_isni_backend,
                             **handlers)
@@ -75,7 +72,6 @@ def make_album_edition_page(preferences, lookup_isni_dialog_factory, activity_in
     page.lookup_isni.connect(lookup_isni)
     page.assign_isni.connect(assign_isni)
     page.clear_isni.connect(lambda: director.clearISNI(album))
-    page.add_performer.connect(add_performer)
     album.addAlbumListener(page)
     page.refresh(album)
     return page
@@ -90,14 +86,13 @@ class AlbumEditionPage(QWidget, AlbumListener):
     lookup_isni = pyqtSignal()
     clear_isni = pyqtSignal()
     assign_isni = pyqtSignal()
-    add_performer = pyqtSignal()
     metadata_changed = pyqtSignal(dict)
 
     picture = None
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, preferences, select_picture, use_local_isni_backend=False, **handlers):
+    def __init__(self, preferences, edit_performers, select_picture, use_local_isni_backend=False, **handlers):
         super().__init__()
         ui_file.load(":/ui/album_page.ui", self)
         self.use_local_isni_backend = use_local_isni_backend
@@ -131,9 +126,8 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.lead_performer.textChanged.connect(self._adjust_isni_lookup_and_assign_state_on_lead_performer_changed)
         self.clear_isni_button.clicked.connect(lambda: self.clear_isni.emit())
         self.clear_isni_button.clicked.connect(lambda: self.release_time.calendarWidget().show())
-        self.add_guest_performers_button.clicked.connect(lambda: self.add_performer.emit())
-        self.guest_performers.editingFinished.connect(
-            lambda: self.metadata_changed.emit(self.metadata("guest_performers")))
+        self.add_guest_performers_button.clicked.connect(lambda: edit_performers(self._update_guest_performers))
+        self.guest_performers.textChanged.connect(lambda: self.metadata_changed.emit(self.metadata("guest_performers")))
 
         # record
         self.label_name.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("label_name")))
@@ -186,6 +180,9 @@ class AlbumEditionPage(QWidget, AlbumListener):
     def _style_year_edit(self, calendar):
         year_edit = calendar.findChild(QWidget, "qt_calendar_yearedit")
         year_edit.setAttribute(Qt.WA_MacShowFocusRect, False)
+
+    def _update_guest_performers(self, performers):
+        self.guest_performers.setText(formatting.toPeopleList(performers))
 
     def albumStateChanged(self, album):
         self.refresh(album)

@@ -40,19 +40,27 @@ def _build_line_edit(content, name):
 
 
 class PerformerDialog(QDialog, UIFile):
-    def __init__(self, parent=None):
+    def __init__(self, album, parent=None):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
-        self._setup_ui()
+        self._setup_ui(album.guest_performers)
 
-    def _setup_ui(self):
+    def _setup_ui(self, performers):
         self._load(":ui/performers_dialog.ui")
         self.setAttribute(Qt.WA_DeleteOnClose)
         self._add_performer.clicked.connect(self._add_performer_row)
+        self._build_performers_table(performers)
+
+    def _build_performers_table(self, performers):
+        if len(performers) > 0:
+            for performer in performers:
+                self._build_performer_row(performer)
+        else:
+            self._build_performer_row()
 
     def _add_performer_row(self):
         self._build_performer_row()
 
-    def get_performers(self):
+    def _get_performers(self):
         performers = []
         for row_index in range(FIRST_PERFORMER_ROW_INDEX, self._performers_table.layout().rowCount()):
             performer = self._get_performer_from(row_index)
@@ -76,12 +84,9 @@ class PerformerDialog(QDialog, UIFile):
     def _row_is_empty(self, index):
         return self._performers_table.layout().itemAtPosition(index, PERFORMER_COLUMN_INDEX) is None
 
-    def display(self, performers):
-        if len(performers) > 0:
-            for performer in performers:
-                self._build_performer_row(performer)
-        else:
-            self._build_performer_row()
+    def edit(self, on_edit):
+        self._action_buttons.accepted.connect(lambda: on_edit(self._get_performers()))
+        self.open()
 
     def _build_performer_row(self, performer=(None, None)):
         layout = self._performers_table.layout()

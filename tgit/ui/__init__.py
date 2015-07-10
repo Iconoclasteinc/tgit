@@ -65,17 +65,6 @@ def showCenteredOnScreen(widget):
     activate(widget)
 
 
-def PerformerDialogController(parent, album):
-    def assign_guest_performers():
-        album.guest_performers = dialog.get_performers()
-
-    dialog = PerformerDialog(parent)
-    dialog.accepted.connect(assign_guest_performers)
-    dialog.display(album.guest_performers)
-    dialog.open()
-    return dialog
-
-
 def ISNILookupDialogController(parent, album, identities):
     dialog = ISNILookupDialog(parent, identities)
     dialog.accepted.connect(lambda: director.selectISNI(dialog.selectedIdentity, album))
@@ -128,6 +117,9 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
     def show_settings_dialog():
         return SettingsDialogController(messages.restart_required, preferences, window)
 
+    def show_performers_dialog(album):
+        return lambda on_edit: PerformerDialog(album=album, parent=window).edit(on_edit)
+
     def create_new_album_page():
         return NewAlbumPage(select_album_location=dialogs.select_album_destination,
                             select_track=dialogs.select_track,
@@ -154,16 +146,14 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
     def create_album_page(album):
         return make_album_edition_page(preferences, show_isni_lookup_dialog, show_activity_indicator_dialog,
-                                       show_performer_dialog, messages.isni_assignation_failed, album,
+                                       messages.isni_assignation_failed, album,
                                        name_registry, use_local_isni_backend,
+                                       edit_performers=show_performers_dialog(album),
                                        select_picture=dialogs.select_cover,
                                        on_select_picture=director.change_cover_of(album))
 
     def show_isni_lookup_dialog(album, identities):
         return ISNILookupDialogController(window, album, identities)
-
-    def show_performer_dialog(album):
-        return PerformerDialogController(window, album)
 
     def show_activity_indicator_dialog():
         return ActivityIndicatorDialogController(window)
