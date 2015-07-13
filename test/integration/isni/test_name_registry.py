@@ -94,11 +94,11 @@ def test_notifies_that_request_was_malformed_when_assigning_a_person(server, reg
     assert_that(message, equal_to("XML parsing error"))
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(reason="Not yet implemented because we cannot trigger the right response from the ISNI server yet.")
 def test_assigns_isni_to_person_from_a_possible_match(server, registry):
     fail("Not implemented")
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(reason="Not yet implemented because we cannot trigger the right response from the ISNI server yet.")
 def test_assigns_isni_to_person_after_having_turned_down_all_possible_matches(server, registry):
     fail("Not implemented")

@@ -23,6 +23,9 @@ import pytest
 from tgit.isni.name_registry import NameRegistry
 
 
+pytestmark = pytest.mark.live
+
+
 @pytest.fixture
 def production_registry():
     return NameRegistry(host="isni.oclc.nl")
@@ -33,61 +36,52 @@ def accept_registry():
     return NameRegistry(host="isni-m-acc.oclc.nl")
 
 
-@pytest.mark.live
 def has_identity(isni=anything(), name=anything(), birth_date=anything(), title=anything()):
     return has_item(contains(isni, contains(name, birth_date, title)))
 
 
-@pytest.mark.live
 def test_finds_rebecca_ann_maloy_identity(production_registry):
     _, identities = production_registry.search_by_keywords("maloy", "rebecca", "ann")
 
     assert_that(identities, has_identity("0000000115677274", "Rebecca Ann Maloy"))
 
 
-@pytest.mark.live
 def test_finds_only_one_record_when_searching_for_rebecca_ann_maloy_indentity(production_registry):
     number_of_results, _ = production_registry.search_by_keywords("maloy", "rebecca", "ann")
 
     assert_that(number_of_results, equal_to("1"))
 
 
-@pytest.mark.live
 def test_finds_rebecca_ann_maloy_indentity_using_part_of_her_name(production_registry):
     _, identities = production_registry.search_by_keywords("malo", "reb", "a")
 
     assert_that(identities, has_identity("0000000115677274", "Rebecca Ann Maloy"))
 
 
-@pytest.mark.live
 def test_finds_joel_miller_indentity_with_dates(production_registry):
     _, identities = production_registry.search_by_keywords("miller", "joel")
 
     assert_that(identities, has_identity("0000000073759369", "Joel Miller", "1969-"))
 
 
-@pytest.mark.live
 def test_finds_more_than_twenty_matches_when_searching_for_jo_miller(production_registry):
     number_of_records, _ = production_registry.search_by_keywords("Miller", "Jo")
 
     assert_that(int(number_of_records), greater_than(20))
 
 
-@pytest.mark.live
 def test_finds_metallica_identity(production_registry):
     _, identities = production_registry.search_by_keywords("Metallica")
 
     assert_that(identities, has_identity("0000000122939631", "Metallica"))
 
 
-@pytest.mark.live
 def test_finds_the_beatles_identity(production_registry):
     _, identities = production_registry.search_by_keywords("Beatles", "The")
 
     assert_that(identities, has_identity("0000000121707484", "The Beatles"))
 
 
-@pytest.mark.live
 def test_finds_the_beatles_identity_with_prefix_sent_first(production_registry):
     _, identities = production_registry.search_by_keywords("The", "Beatles")
 
@@ -95,28 +89,24 @@ def test_finds_the_beatles_identity_with_prefix_sent_first(production_registry):
     assert_that(identities, has_identity("0000000121707484", "The Beatles", title=title))
 
 
-@pytest.mark.live
 def test_finds_led_zeppelin_identity(production_registry):
     _, identities = production_registry.search_by_keywords("Led", "Zeppelin")
 
     assert_that(identities, has_identity("0000000123483226", "Led Zeppelin"))
 
 
-@pytest.mark.live
 def test_finds_led_zeppelin_identity_with_prefix_sent_first(production_registry):
     _, identities = production_registry.search_by_keywords("Zeppelin", "Led")
 
     assert_that(identities, has_identity("0000000123483226", "Led Zeppelin"))
 
 
-@pytest.mark.live
 def test_finds_rage_against_the_machine_identity(production_registry):
     _, identities = production_registry.search_by_keywords("Rage", "Against", "The", "Machine")
 
     assert_that(identities, has_identity("0000000122905407", "Rage against the machine"))
 
 
-@pytest.mark.live
 def test_finds_rage_against_the_machine_with_prefix_sent_first(production_registry):
     _, identities = production_registry.search_by_keywords("Machine", "Rage", "Against", "The")
 

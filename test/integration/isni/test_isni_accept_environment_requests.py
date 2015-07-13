@@ -23,6 +23,9 @@ import pytest
 import requests
 
 
+pytestmark = pytest.mark.live
+
+
 @pytest.fixture()
 def url():
     return "https://isni-m-acc.oclc.nl/ATOM/isni"
@@ -33,30 +36,25 @@ def headers():
     return {"content-type": "application/atom+xml"}
 
 
-@pytest.mark.live
 def request_has_not_assigned_an_isni(response):
     results = etree.fromstring(response.content)
     no_isni = results.find("noISNI")
     assert_that(no_isni, not_none(), "no ISNI tag")
 
 
-@pytest.mark.live
 def request_has_assigned_an_isni(response):
     results = etree.fromstring(response.content)
     assert_that(results.find("ISNIAssigned"), not_none(), "response code")
 
 
-@pytest.mark.live
 def request_was_ok(response):
     assert_that(response.status_code, equal_to(requests.codes.ok), "response code")
 
 
-@pytest.mark.live
 def request_was_not_acceptable(response):
     assert_that(response.status_code, equal_to(requests.codes.not_acceptable), "response code")
 
 
-@pytest.mark.live
 def response_has_invalid_data_reason(response):
     results = etree.fromstring(response.content)
     no_isni = results.find("noISNI")
@@ -64,35 +62,30 @@ def response_has_invalid_data_reason(response):
     return no_isni
 
 
-@pytest.mark.live
 def request_had_incomplete_data(response):
     no_isni = response_has_invalid_data_reason(response)
     information = no_isni.find("information")
     assert_that(information.text.lower(), contains_string("tag 028c is missing"), "missing information")
 
 
-@pytest.mark.live
 def request_was_malformed(response):
     no_isni = response_has_invalid_data_reason(response)
     information = no_isni.find("information")
     assert_that(information.text.lower(), contains_string("tag 028c is missing"), "missing information")
 
 
-@pytest.mark.live
 def request_contained_sparse_information(response):
     no_isni = response_has_invalid_data_reason(response)
     information = no_isni.find("information")
     assert_that(information.text.lower(), contains_string("sparse"), "sparse information")
 
 
-@pytest.mark.live
 def request_has_possible_matches(response):
     no_isni = response_has_invalid_data_reason(response)
     sparse = no_isni.find("reason")
     assert_that(sparse.text, equal_to("possibleMatch"), "possible matches response")
 
 
-@pytest.mark.live
 def request_had_insufficient_information(response):
     no_isni = response_has_invalid_data_reason(response)
     information = no_isni.find("information")
@@ -100,8 +93,7 @@ def request_had_insufficient_information(response):
                 "insufficient information")
 
 
-@pytest.mark.live
-def test_assign_isni_using_the_remote_accept_environment_with_a_well_formed_request(url, headers):
+def test_assign_isni_with_a_well_formed_request(url, headers):
     payload = '''
         <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -186,8 +178,7 @@ def test_assign_isni_using_the_remote_accept_environment_with_a_well_formed_requ
     request_has_assigned_an_isni(response)
 
 
-@pytest.mark.live
-def test_assign_isni_using_the_remote_accept_environment_with_an_isnot_request(url, headers):
+def test_assign_isni_with_an_isnot_request(url, headers):
     payload = '''
         <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -246,8 +237,7 @@ def test_assign_isni_using_the_remote_accept_environment_with_an_isnot_request(u
     request_has_assigned_an_isni(response)
 
 
-@pytest.mark.live
-def test_assign_isni_using_the_remote_accept_environment_with_a_request_containing_insufficient_info(url, headers):
+def test_assign_isni_with_a_request_containing_insufficient_info(url, headers):
     payload = '''
         <Request>
             <requestID>
@@ -289,8 +279,8 @@ def test_assign_isni_using_the_remote_accept_environment_with_a_request_containi
     request_had_insufficient_information(response)
 
 
-@pytest.mark.xfail
-def test_assign_isni_using_the_remote_accept_environment_with_a_malformed_request(url, headers):
+@pytest.mark.xfail(reason="ISNI ACCEPT environment does not return the expected result set")
+def test_assign_isni_with_a_malformed_request(url, headers):
     payload = '''
         <Request>
             <requestID>
@@ -325,8 +315,7 @@ def test_assign_isni_using_the_remote_accept_environment_with_a_malformed_reques
     request_was_malformed(response)
 
 
-@pytest.mark.live
-def test_assign_isni_using_the_remote_accept_environment_with_an_incomplete_request(url, headers):
+def test_assign_isni_with_an_incomplete_request(url, headers):
     payload = '''
         <Request>
             <requestID>
@@ -363,8 +352,7 @@ def test_assign_isni_using_the_remote_accept_environment_with_an_incomplete_requ
     request_had_incomplete_data(response)
 
 
-@pytest.mark.live
-def test_assign_isni_to_an_organisation_using_the_remote_accept_environment_with_a_sparse_request(url, headers):
+def test_assign_isni_to_an_organisation_with_a_sparse_request(url, headers):
     payload = '''
         <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -396,8 +384,7 @@ def test_assign_isni_to_an_organisation_using_the_remote_accept_environment_with
     request_contained_sparse_information(response)
 
 
-@pytest.mark.live
-def test_assign_isni_to_a_person_using_the_remote_accept_environment_with_a_sparse_request(url, headers):
+def test_assign_isni_to_a_person_with_a_sparse_request(url, headers):
     payload = '''
         <Request>
             <requestID>
@@ -433,11 +420,10 @@ def test_assign_isni_to_a_person_using_the_remote_accept_environment_with_a_spar
     request_contained_sparse_information(response)
 
 
-@pytest.mark.xfail
-def test_assign_isni_using_the_remote_accept_environment_with_a_possible_matches_request(url, headers):
+@pytest.mark.xfail(reason="ISNI ACCEPT environment does not return the expected result set")
+def test_assign_isni_with_a_possible_matches_request(url, headers):
     payload = '''
-        <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <Request xsi:noNamespaceSchemaLocation="ISNI%20request.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <requestID>
                 <dateTimeOfRequest>2012-11-09T09:30:47Z</dateTimeOfRequest>
                 <requestorTransactionId>multiple match1</requestorTransactionId>
@@ -445,34 +431,40 @@ def test_assign_isni_using_the_remote_accept_environment_with_a_possible_matches
             <identityInformation>
                 <requestorIdentifierOfIdentity>
                     <referenceURI>myURL</referenceURI>
-                    <identifier>11112222332323</identifier>
+                    <identifier>11112222332348</identifier>
                 </requestorIdentifierOfIdentity>
                 <identity>
                     <personOrFiction>
                         <personalName>
                             <nameUse>public and private</nameUse>
-                            <surname>Adler</surname>
-                            <forename>Larry</forename>
+                            <surname>Adams</surname>
+                            <forename>A. John</forename>
                         </personalName>
-                        <birthDate>1914</birthDate>
-                        <deathDate>2001</deathDate>
+                        <birthDate>1950</birthDate>
                         <resource>
-                            <creationClass>jm</creationClass>
-                            <creationRole>prf</creationRole>
+                            <creationClass>txt</creationClass>
+                            <creationRole>aut</creationRole>
                             <titleOfWork>
-                                <title>St. Louis blues</title>
+                                <title>Working class organisation, industrial relationships</title>
                             </titleOfWork>
                         </resource>
                         <resource>
-                            <creationClass>jm</creationClass>
-                            <creationRole>prf</creationRole>
+                            <creationClass>txt</creationClass>
+                            <creationRole>aut</creationRole>
                             <titleOfWork>
-                                <title>Beguine</title>
+                                <title>drunk: an alcoholic's guide</title>
+                            </titleOfWork>
+                        </resource>
+                        <resource>
+                            <creationClass>txt</creationClass>
+                            <creationRole>aut</creationRole>
+                            <titleOfWork>
+                                <title>Civil rights; a current guide to the needs of the people</title>
                             </titleOfWork>
                         </resource>
                     </personOrFiction>
                 </identity>
-                <note>should return possible match with PPNs 37444949X, 36586272X and 083863184</note>
+                <note>trying to get low score matches with 038731754 date mismatch and partial title; 133937976 partial title; 034595961 full name match and partial title</note>
             </identityInformation>
         </Request>
     '''
