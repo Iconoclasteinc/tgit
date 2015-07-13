@@ -48,5 +48,7 @@
         <file>images/radio-unchecked-pressed.png</file>
         <file>images/remove-hover-20.png</file>
         <file>images/remove-20.png</file>
+        <file>images/edit-hover-20.png</file>
+        <file>images/edit-20.png</file>
     </qresource>
 </RCC>

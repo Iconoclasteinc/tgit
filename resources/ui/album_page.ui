@@ -855,14 +855,47 @@ QPushButton:focus {
             </item>
             <item>
              <widget class="QPushButton" name="add_guest_performers_button">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>20</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="cursor">
                <cursorShape>PointingHandCursor</cursorShape>
               </property>
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    background: transparent url(':/images/edit-20.png') no-repeat;
+    border: none;
+    border-radius: 0;
+}
+
+QPushButton:hover, QPushButton:focus {
+    background: transparent url(':/images/edit-hover-20.png') no-repeat;
+}
+
+QPushButton:pressed {
+	border: none;
+}</string>
+              </property>
               <property name="text">
-               <string>+</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -1219,6 +1252,8 @@ QPushButton:focus {
   <tabstop>original_release_time</tabstop>
   <tabstop>recording_time</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
