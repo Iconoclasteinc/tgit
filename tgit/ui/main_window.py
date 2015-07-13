@@ -19,7 +19,6 @@
 
 import sys
 
-from PyQt5 import QtGui
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QAction
 
@@ -28,14 +27,9 @@ from tgit.ui.observer import Observer
 from tgit.ui.rescue import rescue
 
 windows = sys.platform == "win32"
+mac = sys.platform == "darwin"
 
 StyleSheet = """
-    MainWindow {
-        background-color: #F6F6F6;
-        margin: 0;
-        padding: 0;
-    }
-
     QComboBox QAbstractItemView {
         selection-background-color:#F08450;
     }
@@ -63,42 +57,7 @@ StyleSheet = """
         background-color: #F7F7F7;
      }
 
-    #album-edition-page QGroupBox#pictures {
-        padding: 13px 14px 10px 14px;
-     }
-
-    #album-edition-page QGroupBox#pictures::title {
-        background-color: transparent;
-        color: transparent;
-        border: none;
-     }
-
-    #album-edition-page QGroupBox#pictures #front-cover {
-        min-width: 350px;
-        max-width: 350px;
-        min-height: 350px;
-        max-height: 350px;
-        background-color: #F9F9F9;
-        border: 1px solid #F79D6C;
-    }
-
-    #album-edition-page QPushButton#select-picture {
-        background-image: url(:/add-picture.png);
-        background-repeat: no-repeat;
-        background-position: left center;
-        background-origin: border;
-        background-color: #F25C0A;
-        border: 2px solid #F25C0A;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: bold;
-        color: white;
-        padding: 10px 10px 7px 34px;
-    }
-
-    #performer-dialog #form-box QPushButton#add-performer,
-    #album-edition-page #album-box QPushButton,
-    #album-edition-page QPushButton#remove-picture {
+    #performer-dialog #form-box QPushButton#add-performer {
         background-color: #F25C0A;
         border: 2px solid #F25C0A;
         border-radius: 4px;
@@ -128,39 +87,23 @@ StyleSheet = """
         border: 2px solid transparent;
     }
 
-    #performer-dialog #form-box QPushButton#add-performer, #album-edition-page #album-box QPushButton {
+    #performer-dialog #form-box QPushButton#add-performer {
         font-size: 10px;
         padding: 3px 10px;
         margin: 0;
     }
 
-    #album-edition-page #album-box QPushButton:disabled {
-        border-color: #ED8D58;
-        background-color: #ED8D58;
-    }
-
     #performer-dialog #form-box QPushButton#add-performer:hover,
-    #performer-dialog #form-box QPushButton#add-performer:focus,
-    #album-edition-page #album-box QPushButton:hover,
-    #album-edition-page #album-box QPushButton:focus,
-    #album-edition-page QPushButton#select-picture:hover,
-    #album-edition-page QPushButton#select-picture:focus,
-    #album-edition-page QPushButton#remove-picture:hover,
-    #album-edition-page QPushButton#remove-picture:focus {
+    #performer-dialog #form-box QPushButton#add-performer:focus {
         background-color: #D95109;
         border-color: #D95109;
     }
 
-    #performer-dialog QPushButton#add-performer:pressed,
-    #album-edition-page #album-box QPushButton:pressed,
-    #album-edition-page QPushButton#select-picture:pressed,
-    #album-edition-page QPushButton#remove-picture:pressed {
+    #performer-dialog QPushButton#add-performer:pressed {
         border: 2px solid white;
     }
 
     #performer-dialog QLineEdit,
-    #album-edition-page QLineEdit, #album-edition-page TextArea, #album-edition-page QComboBox,
-    #album-edition-page QComboBox::drop-down, #album-edition-page QComboBox QAbstractItemView,
     #track-edition-page QLineEdit, #track-edition-page TextArea, #track-edition-page QComboBox,
     #track-edition-page QComboBox::drop-down, #track-edition-page QComboBox QAbstractItemView {
         background-color: #F9F9F9;
@@ -176,9 +119,6 @@ StyleSheet = """
     }
 
     #performer-dialog QLineEdit:focus,
-    #album-edition-page QLineEdit:focus, #album-edition-page TextArea:focus, #album-edition-page QComboBox:focus,
-    #album-edition-page QComboBox:on, #album-edition-page QComboBox::drop-down:focus,
-    #album-edition-page QComboBox::drop-down:on, #album-edition-page QComboBox QAbstractItemView:focus,
     #track-edition-page QLineEdit:focus, #track-edition-page TextArea:focus, #track-edition-page QComboBox:focus,
     #track-edition-page QComboBox:on, #track-edition-page QComboBox::drop-down:focus,
     #track-edition-page QComboBox::drop-down:on, #track-edition-page QComboBox QAbstractItemView:focus  {
@@ -186,7 +126,6 @@ StyleSheet = """
     }
 
     #performer-dialog QLineEdit:disabled,
-    #album-edition-page QLineEdit:disabled, #album-edition-page TextArea:disabled,
     #track-edition-page QLineEdit:disabled, #track-edition-page TextArea:disabled,
     #track-edition-page QSpinBox:disabled {
         background-color: #FCFCFC;
@@ -201,42 +140,7 @@ StyleSheet = """
         color: #C2C2C2;
     }
 
-    #album-edition-page QCheckBox {
-        min-height: 20px;
-        padding: 1px 2px 2px 2px;
-    }
-
-    QCheckBox::indicator {
-        width: 14px;
-        height: 14px;
-        subcontrol-position: left center;
-    }
-
-    QCheckBox::indicator:unchecked {
-        image: url(:/checkbox.png);
-    }
-
-    QCheckBox::indicator:unchecked:hover, QCheckBox::indicator:unchecked:focus {
-        image: url(:/checkbox-hover.png);
-    }
-
-    QCheckBox::indicator:unchecked:pressed {
-        image: url(:/checkbox-pressed.png);
-    }
-
-    QCheckBox::indicator:checked {
-        image: url(:/checkbox-checked.png);
-    }
-
-    QCheckBox::indicator:checked:hover, QCheckBox::indicator:checked:focus {
-        image: url(:/checkbox-checked-hover.png);
-    }
-
-    QCheckBox::indicator:checked:pressed {
-        image: url(:/checkbox-checked-pressed.png);
-    }
-
-    #album-edition-page QLabel, #track-edition-page QLabel {
+    #track-edition-page QLabel {
         color: #444444;
         min-width: 175px;
     }
@@ -245,11 +149,11 @@ StyleSheet = """
         min-width: 125px;
     }
 
-    #album-edition-page QLabel:disabled, #track-edition-page QLabel:disabled {
+    #track-edition-page QLabel:disabled {
         color: #C2C2C2;
     }
 
-    #album-edition-page QComboBox::drop-down, #track-edition-page QComboBox::drop-down {
+    #track-edition-page QComboBox::drop-down {
         padding: 0;
         margin: 0;
         subcontrol-origin: border;
@@ -257,11 +161,10 @@ StyleSheet = """
         width: 20px;
     }
 
-    #album-edition-page QComboBox::down-arrow, #track-edition-page QComboBox::down-arrow {
+    #track-edition-page QComboBox::down-arrow {
         image: url(:/down-arrow.png);
     }
 
-    #album-edition-page QComboBox::down-arrow:on, #album-edition-page QComboBox::down-arrow:focus,
     #track-edition-page QComboBox::down-arrow:on, #track-edition-page QComboBox::down-arrow:focus {
         image: url(:/down-arrow-on.png);
     }
@@ -320,37 +223,37 @@ StyleSheet = """
     }
  """
 
-if hasattr(QtGui, "qt_mac_set_native_menubar"):
+if mac:
     StyleSheet += """
-        #album-edition-page QComboBox, #track-edition-page QComboBox {
+        #track-edition-page QComboBox {
             padding-left: 1px;
             padding-top: 1px;
             margin-left: 3px;
             margin-right: 2px;
         }
-
-        #album-edition-page QPushButton#lookup-isni {
-            margin-right: 5px;
-        }
     """
 
 
+class HandlerRegistrar:
+    def _register(self, **handlers):
+        for name, handler in handlers.items():
+            getattr(self, name)(handler)
+
+
 @Observer
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow, HandlerRegistrar):
     _closing = False
     _album = None
-    _on_add_files = lambda *_: None
-    _on_close_album = lambda *_: None
-    _on_save_album = lambda: None
-    _on_export = lambda: None
 
     TRACK_ACTIONS_START_INDEX = 3
 
-    def __init__(self, portfolio, confirm_exit, show_save_error, create_startup_screen, create_album_screen,
-                 confirm_close, select_export_destination, select_tracks, select_tracks_in_folder, **handlers):
+    def __init__(self, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
+                 create_album_screen, confirm_close, select_export_destination, select_tracks, select_tracks_in_folder,
+                 **handlers):
         super().__init__()
         self._confirm_exit = confirm_exit
         self._show_save_error = show_save_error
+        self._show_export_error = show_export_error
         self._create_startup_screen = create_startup_screen
         self._create_album_screen = create_album_screen
         self._confirm_close = confirm_close
@@ -361,9 +264,7 @@ class MainWindow(QMainWindow):
         self._setup_ui()
         self._setup_menu_bar()
         self._setup_signals(portfolio)
-
-        for name, handler in handlers.items():
-            getattr(self, name)(handler)
+        self._register(**handlers)
 
         self._album_dependent_action = [
             self.add_files_action,
@@ -393,18 +294,6 @@ class MainWindow(QMainWindow):
         self._clear_track_actions()
         self._change_screen(self._create_startup_screen())
 
-    def _close_current_screen(self):
-        if self.centralWidget() is not None:
-            widget = self.takeCentralWidget()
-            widget.close()
-
-    def _show_screen(self, screen):
-        self.setCentralWidget(screen)
-
-    def _change_screen(self, screen):
-        self._close_current_screen()
-        self._show_screen(screen)
-
     def display_album_screen(self, album):
         self._album = album
         self.enable_album_actions(album)
@@ -415,30 +304,44 @@ class MainWindow(QMainWindow):
         self.subscribe(album.track_removed, self._rebuild_track_actions)
 
     def on_close_album(self, on_close_album):
-        self._on_close_album = on_close_album
+        def confirm_album_close():
+            self._confirm_close(on_accept=lambda: on_close_album(self._album))
+
+        self.close_album_action.triggered.connect(confirm_album_close)
 
     def on_save_album(self, on_save_album):
-        self._on_save_album = on_save_album
+        def save_album():
+            if self.focusWidget() is not None:
+                self.focusWidget().clearFocus()
+
+            with rescue(on_error=self._show_save_error):
+                on_save_album(self._album)
+
+        self.save_album_action.triggered.connect(save_album)
 
     def on_export(self, on_export):
-        self._on_export = on_export
+        def export(destination):
+            with rescue(on_error=self._show_export_error):
+                on_export(self._album, destination)
+
+        self.export_action.triggered.connect(
+            lambda *_: self._select_export_destination(export, self._album.release_name))
 
     def on_settings(self, on_settings):
         self.settings_action.triggered.connect(on_settings)
 
-    def on_add_files(self, handler):
-        self._on_add_files = handler
+    def on_add_files(self, on_add_files):
+        def add_files(*files):
+            on_add_files(self._album, *files)
+
+        self.add_files_action.triggered.connect(lambda *_: self._select_tracks(self._album.type, add_files))
+        self.add_folder_action.triggered.connect(lambda *_: self._select_tracks_in_folder(self._album.type, add_files))
 
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)
         self.setStyleSheet(StyleSheet)
 
     def _setup_menu_bar(self):
-        self.add_files_action.triggered.connect(self._add_files)
-        self.add_folder_action.triggered.connect(self._add_folder)
-        self.close_album_action.triggered.connect(self._confirm_album_close)
-        self.save_album_action.triggered.connect(self._save_album)
-        self.export_action.triggered.connect(self._choose_export_destination)
         self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
         self.to_track_list_action.triggered.connect(self._to_track_list_page)
         self.exit_action.triggered.connect(self.close)
@@ -454,14 +357,14 @@ class MainWindow(QMainWindow):
         self.subscribe(portfolio.album_removed, self.display_startup_screen)
         self.subscribe(portfolio.album_created, self.display_album_screen)
 
-    def _add_files(self, *_):
-        self._select_tracks(self._album.type, self._add_files_to_album)
+    def _close_current_screen(self):
+        if self.centralWidget() is not None:
+            widget = self.takeCentralWidget()
+            widget.close()
 
-    def _add_folder(self, *_):
-        self._select_tracks_in_folder(self._album.type, self._add_files_to_album)
-
-    def _add_files_to_album(self, *files):
-        self._on_add_files(self._album, *files)
+    def _change_screen(self, screen):
+        self._close_current_screen()
+        self.setCentralWidget(screen)
 
     def _rebuild_track_actions(self, *_):
         self._clear_track_actions()
@@ -469,9 +372,20 @@ class MainWindow(QMainWindow):
 
     def _create_track_actions(self):
         for track in self._album.tracks:
-            action = QAction("{0} - {1}".format(track.track_number, track.track_title), self)
-            action.triggered.connect(lambda checked, track_number=track.track_number: self._to_track_page(track_number))
-            self.navigate_menu.addAction(action)
+            self.navigate_menu.addAction(self._create_track_action(track))
+
+    def _create_track_action(self, track):
+        def format_name(number, title):
+            return "{0} - {1}".format(number, title)
+
+        def update_name(menu_item, metadata):
+            menu_item.setText("{0} - {1}".format(metadata["track_number"], metadata["track_title"]))
+
+        action = QAction(format_name(track.track_number, track.track_title), self)
+        action.triggered.connect(lambda _: self._to_track_page(track.track_number))
+        self.subscribe(track.metadata_changed, lambda metadata: update_name(action, metadata))
+
+        return action
 
     def _clear_track_actions(self):
         for action in self.navigate_menu.actions()[self.TRACK_ACTIONS_START_INDEX:]:
@@ -486,19 +400,6 @@ class MainWindow(QMainWindow):
 
     def _to_track_page(self, track_number):
         self.centralWidget().show_track_page(track_number)
-
-    def _confirm_album_close(self):
-        self._confirm_close(on_accept=lambda: self._on_close_album(self._album))
-
-    def _choose_export_destination(self):
-        self._select_export_destination(lambda dest: self._on_export(self._album, dest), self._album.release_name)
-
-    def _save_album(self):
-        if self.focusWidget() is not None:
-            self.focusWidget().clearFocus()
-
-        with rescue(on_error=self._show_save_error):
-            self._on_save_album(self._album)
 
     def close(self):
         closed = super().close()

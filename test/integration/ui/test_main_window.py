@@ -16,9 +16,15 @@ from test.util.builders import make_album
 from tgit.album import Album
 from tgit.ui.main_window import MainWindow
 
-
 ignore = lambda *_, **__: None
 yes = lambda: True
+
+
+def raise_os_error(message):
+    def raise_error(*_):
+        raise OSError(message)
+
+    return raise_error
 
 
 def show_page(portfolio=build.album_portfolio(),
@@ -26,6 +32,7 @@ def show_page(portfolio=build.album_portfolio(),
               create_album_screen=fake_album_screen,
               confirm_close=ignore,
               show_save_error=ignore,
+              show_export_error=ignore,
               select_export_destination=ignore,
               select_tracks=ignore,
               select_tracks_in_folder=ignore,
@@ -37,6 +44,7 @@ def show_page(portfolio=build.album_portfolio(),
                              create_album_screen=create_album_screen,
                              confirm_close=confirm_close,
                              show_save_error=show_save_error,
+                             show_export_error=show_export_error,
                              select_export_destination=select_export_destination,
                              select_tracks=select_tracks,
                              select_tracks_in_folder=select_tracks_in_folder,
@@ -129,7 +137,7 @@ def test_asks_for_confirmation_before_closing_album(driver):
     album = make_album()
     confirm_close_query = ValueMatcherProbe("confirm close")
 
-    main_window = show_page(confirm_close=lambda on_accept: confirm_close_query.received())
+    main_window = show_page(confirm_close=lambda **_: confirm_close_query.received(), on_close_album=ignore)
     main_window.display_album_screen(album)
 
     driver.close_album()
@@ -140,8 +148,7 @@ def test_signals_when_album_closed(driver):
     album = make_album()
     close_album_signal = ValueMatcherProbe("close", album)
 
-    main_window = show_page(confirm_close=lambda on_accept: on_accept(),
-                            on_close_album=close_album_signal.received)
+    main_window = show_page(confirm_close=lambda on_accept: on_accept(), on_close_album=close_album_signal.received)
     main_window.display_album_screen(album)
 
     driver.close_album()
@@ -190,6 +197,16 @@ def test_adds_track_menu_item_when_adding_a_track_to_the_album(driver):
     album.add_track(build.track(track_title="Chevere!"))
 
     driver.shows_track_menu_item(title="Chevere!", track_number=1)
+
+
+def test_updates_track_menu_item_when_track_name_changes(driver):
+    main_window = show_page()
+    album = build.album()
+    main_window.display_album_screen(album)
+    album.add_track(build.track(track_title="Chevere!"))
+    album.tracks[0].track_title = "Zumbar"
+
+    driver.shows_track_menu_item(title="Zumbar", track_number=1)
 
 
 def test_removes_track_menu_item_when_removing_a_track_from_the_album(driver):
@@ -254,16 +271,27 @@ def test_closes_main_widget_when_changing_page(driver):
     screen.is_closed()
 
 
-def save_fails(_):
-    raise OSError("Save failed")
-
-
 def test_warn_user_if_save_failed(driver):
     save_failed_signal = ValueMatcherProbe("save album failed", instance_of(OSError))
     album = make_album()
 
-    page = show_page(on_save_album=save_fails, show_save_error=save_failed_signal.received)
+    page = show_page(on_save_album=raise_os_error("Save failed"), show_save_error=save_failed_signal.received)
     page.display_album_screen(album)
 
     driver.save()
     driver.check(save_failed_signal)
+
+
+def test_warn_user_if_export_failed(driver):
+    def on_export(callback, _):
+        callback("...")
+
+    export_failed_signal = ValueMatcherProbe("export failed", instance_of(OSError))
+    album = make_album()
+
+    page = show_page(on_export=raise_os_error("Export failed"), show_export_error=export_failed_signal.received,
+                     select_export_destination=on_export)
+    page.display_album_screen(album)
+
+    driver.export()
+    driver.check(export_failed_signal)

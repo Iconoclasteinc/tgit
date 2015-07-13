@@ -184,6 +184,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
                         select_tracks=dialogs.select_tracks,
                         select_tracks_in_folder=dialogs.add_tracks_in_folder,
                         show_save_error=messages.save_album_failed,
+                        show_export_error=messages.export_failed,
                         on_close_album=director.remove_album_from(portfolio),
                         on_save_album=director.save_album(),
                         on_add_files=director.add_tracks,

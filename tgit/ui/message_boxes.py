@@ -49,6 +49,11 @@ class MessageBoxes:
     def isni_assignation_failed(self, details=None):
         return self._open(MessageBox.warn(self.parent, "Could not assign an ISNI", details=details))
 
+    def export_failed(self, error):
+        return self._open(MessageBox.warn(self.parent,
+                                          "Could not export your album.",
+                                          "Please check that you have permission to write to the album's location."))
+
     def close_album_confirmation(self, **handlers):
         return self._open(
             ConfirmationBox.warn(self.parent,
