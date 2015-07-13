@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>365</width>
+    <width>348</width>
     <height>123</height>
    </rect>
   </property>
@@ -115,13 +115,13 @@ QPushButton:focus {
           <enum>QLayout::SetFixedSize</enum>
          </property>
          <property name="leftMargin">
-          <number>0</number>
+          <number>2</number>
          </property>
          <property name="topMargin">
           <number>0</number>
          </property>
          <property name="rightMargin">
-          <number>0</number>
+          <number>2</number>
          </property>
          <property name="bottomMargin">
           <number>0</number>
@@ -163,33 +163,63 @@ QPushButton:focus {
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="_add_performer">
-        <property name="styleSheet">
-         <string notr="true">*  {
-	background: #F25C0A;
-	border: 2px solid #F25C0A;
-	border-radius: 4px;
-	font-size: 10px;
-	font-weight: bold;
-	color: white;
-	padding: 3px 10px;
-	margin: 0;
+       <widget class="QWidget" name="widget" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="_add_performer">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">* {
+   	background: transparent url(:/images/add-performer-20.png) no-repeat center left;
+	font-size: 11px;
+    text-align: left;
+    padding-left: 25px;
+	min-height: 20px;
 }
 
-:hover,
-:focus {
-	background-color: #D95109;
-	border-color: #D95109;
+:hover {
+	color: #EC2327;
 }
 
 :pressed {
-	border: 2px solid white;
+	color: #EC2327;
 }
+
 </string>
-        </property>
-        <property name="text">
-         <string>ADD A PERFORMER</string>
-        </property>
+           </property>
+           <property name="text">
+            <string>ADD A PERFORMER</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -228,7 +258,9 @@ QPushButton:focus {
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>_action_buttons</sender>

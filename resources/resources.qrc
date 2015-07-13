@@ -50,5 +50,6 @@
         <file>images/remove-20.png</file>
         <file>images/edit-hover-20.png</file>
         <file>images/edit-20.png</file>
+        <file>images/add-performer-20.png</file>
     </qresource>
 </RCC>
