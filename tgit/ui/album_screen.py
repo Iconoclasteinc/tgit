@@ -17,10 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
+from tgit.signal import MultiSubscription
 from tgit.ui.helpers import ui_file
 
 
@@ -28,12 +29,20 @@ def album_screen(track_list_page, album_page, track_page, album):
     page = AlbumScreen(track_list_page(album), album_page(album), track_page)
     #todo make album screen accept the album as a constructor parameter
     album.addAlbumListener(page)
+
+    subscriptions = MultiSubscription()
+    subscriptions.add(album.track_moved.subscribe(page.track_moved))
+
+    page.closed.connect(lambda: subscriptions.cancel())
+
     for index, track in enumerate(album.tracks):
         page.trackAdded(track, index)
     return page
 
 
 class AlbumScreen(QWidget, AlbumListener):
+    closed = pyqtSignal()
+
     TRACK_LIST_PAGE_INDEX = 0
     ALBUM_EDITION_PAGE_INDEX = 1
     TRACK_PAGES_INDEX = 2
@@ -58,6 +67,15 @@ class AlbumScreen(QWidget, AlbumListener):
     def trackRemoved(self, track, position):
         self._remove_track_edition_page(position)
 
+    def track_moved(self, track, from_position, to_position):
+        page = self.pages.widget(self._track_page_index(from_position))
+        self.pages.removeWidget(page)
+        self.pages.insertWidget(self._track_page_index(to_position), page)
+        self._update_controls()
+
+    def _track_page_index(self, from_position):
+        return self.TRACK_PAGES_INDEX + from_position
+
     def show_album_edition_page(self):
         self._to_page(self.ALBUM_EDITION_PAGE_INDEX)
 
@@ -65,7 +83,7 @@ class AlbumScreen(QWidget, AlbumListener):
         self._to_page(self.TRACK_LIST_PAGE_INDEX)
 
     def show_track_page(self, track_number):
-        self._to_page(self.TRACK_PAGES_INDEX + (track_number - 1))
+        self._to_page(self._track_page_index(track_number - 1))
 
     def _has_track_page(self):
         return self.total_pages > self.TRACK_PAGES_INDEX
@@ -84,10 +102,10 @@ class AlbumScreen(QWidget, AlbumListener):
         return self.current_page == number
 
     def _add_track_edition_page(self, page, position):
-        self._insert_page(page, self.TRACK_PAGES_INDEX + position)
+        self._insert_page(page, self._track_page_index(position))
 
     def _remove_track_edition_page(self, position):
-        self._remove_page(self.TRACK_PAGES_INDEX + position)
+        self._remove_page(self._track_page_index(position))
 
     def _insert_page(self, widget, position):
         self.pages.insertWidget(position, widget)
@@ -120,3 +138,5 @@ class AlbumScreen(QWidget, AlbumListener):
     def close(self):
         for index in reversed(range(self.total_pages)):
             self._remove_page(index)
+
+        self.closed.emit()

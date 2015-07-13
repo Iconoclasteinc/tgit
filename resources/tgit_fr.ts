@@ -761,4 +761,21 @@
         <translation>Fichiers MP3</translation>
     </message>
 </context>
+<context>
+    <name>CellTexts</name>
+    <message>
+        <source>Your platform cannot play FLAC audio files</source>
+        <translation>Votre système ne supporte pas la lecture audio FLAC</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_selection_dialog.py"/>
+        <source>FLAC files</source>
+        <translation>Fichiers FLAC</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_selection_dialog.py"/>
+        <source>MP3 files</source>
+        <translation>Fichiers MP3</translation>
+    </message>
+</context>
 </TS>

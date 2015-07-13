@@ -19,11 +19,10 @@
 from collections import namedtuple
 from enum import Enum
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 
-from tgit.album import Album
 from tgit.ui.helpers import formatting
 
 
@@ -33,6 +32,7 @@ class State(Enum):
 
 class TrackItem:
     state = State.stopped
+    error = None
 
     def __init__(self, track):
         self.track = track
@@ -50,8 +50,8 @@ class TrackItem:
         return self.state == State.stopped
 
     @property
-    def is_mp3(self):
-        return self.type == Album.Type.MP3
+    def is_invalid(self):
+        return self.state == State.error
 
     @property
     def type(self):
@@ -87,6 +87,10 @@ class TrackItem:
     def mark_stopped(self):
         self.state = State.stopped
 
+    def mark_error(self, error):
+        self.state = State.error
+        self.error = error
+
 
 LEFT_ALIGNED = Qt.AlignLeft | Qt.AlignVCenter
 RIGHT_ALIGNED = Qt.AlignRight | Qt.AlignVCenter
@@ -102,12 +106,20 @@ class CellItem(QTableWidgetItem):
     pass
 
 
+class CellTexts(QObject):
+    pass
+
+
+texts = CellTexts()
+
+
 class Column(Enum):
     class track_number(CellItem):
         width = Width(26, RESIZABLE)
 
         def __init__(self, track):
-            super().__init__(str(track.track_number))
+            super().__init__()
+            self.setText(str(track.track_number))
             self.setTextAlignment(RIGHT_ALIGNED)
 
     class state(CellItem):
@@ -117,41 +129,48 @@ class Column(Enum):
             super().__init__()
             if track.is_playing:
                 self.setIcon(QIcon(":/images/volume-up-16.png"))
-            self.setTextAlignment(RIGHT_ALIGNED)
+            elif track.is_invalid:
+                self.setIcon(QIcon(":/playback-error"))
+                self.setToolTip(texts.tr("Your platform cannot play {} audio files".format(track.type.upper())))
 
     class track_title(CellItem):
         width = Width(300, RESIZABLE)
 
         def __init__(self, track):
-            super().__init__(track.track_title)
+            super().__init__()
+            self.setText(track.track_title)
             self.setTextAlignment(LEFT_ALIGNED)
 
     class lead_performer(CellItem):
         width = Width(245, RESIZABLE)
 
         def __init__(self, track):
-            super().__init__(track.lead_performer)
+            super().__init__()
+            self.setText(track.lead_performer)
             self.setTextAlignment(LEFT_ALIGNED)
 
     class release_name(CellItem):
         width = Width(250, RESIZABLE)
 
         def __init__(self, track):
-            super().__init__(track.release_name)
+            super().__init__()
+            self.setText(track.release_name)
             self.setTextAlignment(LEFT_ALIGNED)
 
     class bitrate(CellItem):
         width = Width(90, RESIZABLE)
 
         def __init__(self, track):
-            super().__init__("{0} kbps".format(formatting.in_kbps(track.bitrate)))
+            super().__init__()
+            self.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
             self.setTextAlignment(RIGHT_ALIGNED)
 
     class duration(CellItem):
         width = Width(70, RESIZABLE)
 
         def __init__(self, track):
-            super().__init__(formatting.to_duration(track.duration))
+            super().__init__()
+            self.setText(formatting.to_duration(track.duration))
             self.setTextAlignment(RIGHT_ALIGNED)
 
     @classmethod

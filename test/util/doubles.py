@@ -47,22 +47,19 @@ audio_player = fake_audio_player
 class FakeAudioPlayer(metaclass=Observable):
     playing = signal(Track)
     stopped = signal(Track)
+    error_occurred = signal(Track, int)
 
-    _track = None
-
-    @property
-    def current_track(self):
-        return self._track
-
-    def is_playing(self, track):
-        return self._track == track
+    track = None
 
     def play(self, track):
-        self._track = track
-        self.playing.emit(self._track)
+        self.track = track
+        self.playing.emit(self.track)
 
     def stop(self):
-        if self._track is not None:
-            self.stopped.emit(self._track)
+        if self.track is not None:
+            self.stopped.emit(self.track)
 
-        self._track = None
+        self.track = None
+
+    def error(self, error):
+        self.error_occured.emit(self.track, error)

@@ -11,7 +11,9 @@ from test.drivers.fake_drivers import album_edition_page, track_list_page, track
 from test.integration.ui import WidgetTest, show_widget
 from test.integration.ui.fake_widgets import fake_track_list_page, fake_track_edition_page
 from test.integration.ui.fake_widgets import fake_album_edition_page
-from test.util import builders as build, doubles
+from test.util import builders as build
+from test.util.builders import make_track
+from test.util.doubles import FakeAudioPlayer
 from tgit.preferences import Preferences
 from tgit.ui.track_list_page import TrackListPage
 from tgit.ui.album_edition_page import AlbumEditionPage
@@ -92,7 +94,7 @@ class AlbumScreenTest(WidgetTest):
     def setUp(self):
         super(AlbumScreenTest, self).setUp()
         self.album = build.album()
-        self.view = AlbumScreen(TrackListPage(self.album, doubles.audio_player(), select_tracks=ignore),
+        self.view = AlbumScreen(TrackListPage(self.album, FakeAudioPlayer(), select_tracks=ignore),
                                 AlbumEditionPage(Preferences(), self.album),
                                 self.createTrackEditionPage)
         self.show(self.view)
@@ -155,6 +157,24 @@ class AlbumScreenTest(WidgetTest):
         self.driver.shows_track_metadata(track_title="Where is My Mind?")
         self.album.removeTrack(surfer_rosa[1])
         self.driver.showsAlbumEditionPage()
+
+    def testMovesCorrespondingTrackPageWhenTrackPositionInAlbumChanges(self):
+        self.album.addAlbumListener(self.view)
+        self.album.track_moved.subscribe(self.view.track_moved)
+
+        self.album.addTrack(make_track(track_title="Zumbar"))
+        self.album.addTrack(make_track(track_title="Salsa Coltrane"))
+        self.album.addTrack(make_track(track_title="Chevere!"))
+
+        self.view.show_track_page(track_number=1)
+        self.album.move_track(0, 2)
+
+        self.driver.shows_track_metadata(track_title="Salsa Coltrane")
+        self.driver.nextPage()
+        self.driver.shows_track_metadata(track_title="Chevere!")
+        self.driver.nextPage()
+        self.driver.shows_track_metadata(track_title="Zumbar")
+        self.driver.hidesNextPageButton()
 
     def testOffersBackAndForthNavigationBetweenPages(self):
         self.album.addAlbumListener(self.view)

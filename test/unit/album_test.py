@@ -3,12 +3,13 @@
 import unittest
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_property, none, has_length, has_item, is_not,
-                      match_equality as matching, contains_inanyorder, not_, has_key)
+                      match_equality as matching, contains_inanyorder, not_, has_key, all_of)
 from hamcrest.library.collection.is_empty import empty
 from flexmock import flexmock
 
 from test.test_signal import Subscriber, event
 from test.util import builders as build
+from test.util.builders import make_album, make_track
 from tgit.metadata import Image
 from tgit.album import Album, AlbumListener
 
@@ -52,37 +53,26 @@ def test_contained_tracks_have_various_lead_performers_when_album_is_a_compilati
     assert_that(track.lead_performer, equal_to('Joel Miller'), 'track lead performer')
 
 
-def track_numbers(album):
-    return [album.track_number(track) for track in album.tracks]
+def assert_has_numbered_tracks(album):
+    for position, track in enumerate(album.tracks):
+        assert_that(track, all_of(has_property("track_number", position + 1),
+                                  has_property("total_tracks", len(album))), "track at position #{}".format(position))
+
 
 
 def test_numbers_tracks():
-    album = Album()
-    tracks = [build.track(), build.track(), build.track()]
-    for track in tracks:
-        album.addTrack(track)
+    album = make_album(tracks=(build.track(), build.track(), build.track()))
 
-    assert_that(tracks[0].track_number, equal_to(1), 'track #1 number')
-    assert_that(tracks[1].track_number, equal_to(2), 'track #2 number')
-    assert_that(tracks[2].track_number, equal_to(3), 'track #3 number')
-
-    for track in album.tracks:
-        assert_that(track.total_tracks, equal_to(3), "track #{} total tracks".format(track.track_number))
+    assert_has_numbered_tracks(album)
 
 
 def test_renumbers_tracks_when_removed():
-    album = Album()
-    tracks = [build.track(), build.track(), build.track()]
-    for track in tracks:
-        album.addTrack(track)
+    tracks = (build.track(), build.track(), build.track())
+    album = make_album(tracks=tracks)
 
-    album.removeTrack(tracks[0])
+    album.remove_track(tracks[0])
 
-    assert_that(tracks[1].track_number, equal_to(1), 'track #1 number')
-    assert_that(tracks[2].track_number, equal_to(2), 'track #2 number')
-
-    for track in album.tracks:
-        assert_that(track.total_tracks, equal_to(2), "track #{} total tracks left".format(track.track_number))
+    assert_has_numbered_tracks(album)
 
 
 def test_signals_track_insertion_events():
@@ -112,6 +102,31 @@ def test_signals_track_removal_events():
 
     for index, track in enumerate(tracks):
         assert_that(subscriber.events, has_item(contains(index, track)), "track {0} removal event".format(index))
+
+
+def has_title(title):
+    return has_property("track_title", title)
+
+
+def test_signals_track_move_events():
+    album = make_album(tracks=(make_track(track_title="Salsa Coltrane"),
+                               make_track(track_title="Zumbar"),
+                               make_track(track_title="Chevere!")))
+    subscriber = Subscriber()
+    album.track_moved.subscribe(subscriber)
+
+    album.move_track(1, 0)
+
+    assert_that(subscriber.events, has_item(contains(has_title("Zumbar"), 1, 0)), "move event")
+
+
+def test_renumbers_tracks_when_moved():
+    album = make_album(tracks=(build.track(), build.track(), build.track()))
+
+    album.move_track(1, 0)
+
+    assert_has_numbered_tracks(album)
+
 
 
 class AlbumTest(unittest.TestCase):

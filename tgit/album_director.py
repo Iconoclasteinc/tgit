@@ -124,11 +124,7 @@ def removeAlbumCover(album):
 
 
 def move_track_of(album):
-    def move_track_of_album(track, new_position):
-        album.remove_track(track)
-        album.insert_track(new_position, track)
-
-    return move_track_of_album
+    return album.move_track
 
 
 def remove_track_from(album):

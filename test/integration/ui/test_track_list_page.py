@@ -45,7 +45,7 @@ def test_displays_track_details_in_columns(driver):
                                             bitrate=192000,
                                             duration=timedelta(minutes=4, seconds=12).total_seconds())]))
 
-    driver.shows_track_details('1', None, 'Chevere!', 'Joel Miller', 'Honeycomb', '192 kbps', '04:12')
+    driver.shows_track_details('1', 'Chevere!', 'Joel Miller', 'Honeycomb', '192 kbps', '04:12')
 
 
 def test_displays_all_tracks_of_album(driver):
@@ -150,12 +150,6 @@ def test_makes_stop_track_request_when_stop_context_menu_item_selected(driver):
     driver.check(stop_request)
 
 
-def test_disables_play_context_menu_item_for_flac_tracks(driver):
-    show_page(make_album(type='flac', tracks=[make_track(track_title="Spain")]))
-
-    driver.has_disabled_play_context_menu_item('Spain')
-
-
 def test_shows_selected_track_title_in_context_menu(driver):
     show_page(make_album(tracks=[make_track(track_title="Partways"),
                                  make_track(track_title="Rebop")]))
@@ -194,12 +188,23 @@ def test_makes_move_track_requests_when_track_row_moved(driver):
                                         make_track(track_title='Choices'),
                                         make_track(track_title='Place St-Henri')]))
 
-    new_position = 1
-    track_moved_signal = ValueMatcherProbe('track moved', contains(has_title('Place St-Henri'), new_position))
+    track_moved_signal = ValueMatcherProbe('track moved', contains(2, 1))
     page.on_move_track(lambda track, to_position: track_moved_signal.received((track, to_position)))
 
-    driver.move_track('Place St-Henri', new_position)
+    driver.move_track('Place St-Henri', 1)
     driver.check(track_moved_signal)
+
+
+def test_moves_row_when_track_changes_position(driver):
+    tracks = (make_track(track_title="Chevere!"),
+              make_track(track_title='Zumbar'),
+              make_track(track_title='Salsa Coltrane'))
+    album = make_album(tracks=tracks)
+    show_page(album)
+
+    driver.shows_tracks_in_order(['Chevere!'], ['Zumbar'], ['Salsa Coltrane'])
+    album.move_track(2, 1)
+    driver.shows_tracks_in_order(['Chevere!'], ['Salsa Coltrane'], ["Zumbar"])
 
 
 def test_unsubscribes_from_event_signals_on_close(driver):

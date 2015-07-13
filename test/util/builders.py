@@ -40,7 +40,7 @@ def album(filename='album.tgit', of_type=Album.Type.FLAC, images=(), tracks=(), 
         album.addImage(*image)
 
     for track in tracks:
-        album.addTrack(track)
+        album.add_track(track)
 
     return album
 

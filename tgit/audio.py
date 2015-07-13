@@ -16,48 +16,57 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
+from enum import Enum
 
 from PyQt5.QtCore import QUrl
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 
 from tgit.signal import Observable, signal
 from tgit.track import Track
-from tgit.util import fs
+
+
+class PlaybackError(Enum):
+    none = QMediaPlayer.NoError
+    unsupported_format = QMediaPlayer.FormatError
+    access_denied = QMediaPlayer.AccessDeniedError
 
 
 class MediaPlayer(metaclass=Observable):
-    PLAYING = QMediaPlayer.BufferedMedia
-    STOPPED = QMediaPlayer.EndOfMedia
+    _PLAYING = QMediaPlayer.BufferedMedia
+    _STOPPED = QMediaPlayer.StoppedState
 
     playing = signal(Track)
     stopped = signal(Track)
+    error_occurred = signal(Track)
 
-    _player = None
-    _current_track = None
-    _media_file = None
+    _track = None
 
-    def is_playing(self, track):
-        return self._player is not None and self._player.mediaStatus() == self.PLAYING and self._current_track == track
+    def __init__(self):
+        self._player = QMediaPlayer()
+        self._player.stateChanged.connect(self._state_changed)
+        self._player.mediaStatusChanged.connect(self._media_status_changed)
 
     def play(self, track):
-        self.stop()
-        self._player = QMediaPlayer()
-        self._player.mediaStatusChanged.connect(self._media_state_changed)
-        self._current_track = track
-        self._media_file = fs.make_temp_copy(track.filename)
-        self._player.setMedia(QMediaContent(QUrl.fromLocalFile(self._media_file)))
+        self._player.stop()
+        self._track = track
+        self._player.setMedia(QMediaContent(QUrl.fromLocalFile(track.filename)))
         self._player.play()
 
     def stop(self):
-        if self._player is not None:
-            self._player.stop()
-            self.stopped.emit(self._current_track)
-            self._player = None
-            os.unlink(self._media_file)
+        self._player.stop()
+        self._player.setMedia(QMediaContent())
+        self._track = None
 
-    def _media_state_changed(self, state):
-        if state == self.PLAYING:
-            self.playing.emit(self._current_track)
-        if state == self.STOPPED:
-            self.stop()
+    def _media_status_changed(self, state):
+        if state == self._PLAYING:
+            self.playing.emit(self._track)
+
+    @property
+    def error(self):
+        return PlaybackError(self._player.error())
+
+    def _state_changed(self, state):
+        if state == self._STOPPED and self.error is not PlaybackError.none:
+            self.error_occurred.emit(self._track, self.error)
+        elif state == self._STOPPED:
+            self.stopped.emit(self._track)

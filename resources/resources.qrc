@@ -48,5 +48,6 @@
         <file>images/invalid-image-placeholder.png</file>
         <file>images/no-image-placeholder.png</file>
         <file>images/warning.png</file>
+        <file alias="playback-error">images/exclamation-16-dark.png</file>
     </qresource>
 </RCC>

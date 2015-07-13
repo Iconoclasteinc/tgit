@@ -59,8 +59,10 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
     def _listen_to(self, album, player):
         self.subscribe(album.track_inserted, self._insert_item)
         self.subscribe(album.track_removed, lambda index, _: self._remove_item(index))
-        self.subscribe(player.playing, lambda track: self.playback_started(track))
-        self.subscribe(player.stopped, lambda track: self.playback_stopped(track))
+        self.subscribe(album.track_moved, lambda _, from_index, to_index: self._move_item(from_index, to_index))
+        self.subscribe(player.playing, self.playback_started)
+        self.subscribe(player.stopped, self.playback_stopped)
+        self.subscribe(player.error_occurred, self.playback_error)
         # todo when we have proper signals on album, we can get rid of that
         album.addAlbumListener(self)
 
@@ -72,8 +74,7 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._add_tracks_button.clicked.connect(lambda: self._select_tracks(add))
 
     def on_move_track(self, move):
-        # todo should we pass the index instead of the track?
-        move_track = lambda _, from_position, to_position: move(self._items[from_position].track, to_position)
+        move_track = lambda _, from_position, to_position: move(from_position, to_position)
         self._track_table.verticalHeader().sectionMoved.connect(move_track)
 
     def on_play_track(self, play):
@@ -148,19 +149,22 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._update_actions()
         self._update_item(item)
 
+    def playback_error(self, track, error):
+        item = self._item_for(track)
+        item.mark_error(error)
+        self._update_actions()
+        self._update_item(item)
+
     def _update_actions(self):
         if self._selected_item:
-            self._remove_action.setEnabled(True)
-            self._play_action.setVisible(self._selected_item.is_stopped)
-            self._play_action.setEnabled(self._selected_item.is_mp3)
+            self._play_action.setVisible(not self._selected_item.is_playing)
             self._play_action.setText('{0} "{1}"'.format(self.tr("Play"), self._selected_item.track_title))
             self._stop_action.setVisible(self._selected_item.is_playing)
-            self._stop_action.setEnabled(self._selected_item.is_mp3)
             self._stop_action.setText('{0} "{1}"'.format(self.tr("Stop"), self._selected_item.track_title))
-        else:
-            self._remove_action.setEnabled(False)
-            self._play_action.setEnabled(False)
-            self._stop_action.setEnabled(False)
+
+        self._remove_action.setEnabled(self._selected_item is not None)
+        self._play_action.setEnabled(self._selected_item is not None)
+        self._stop_action.setEnabled(self._selected_item is not None)
 
     def _item_count(self):
         return len(self._items)
@@ -180,22 +184,23 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
             return None
 
     def _insert_item(self, at_index, track):
-        item = self._make_item(track)
+        item = TrackItem(track)
         self._items.insert(at_index, item)
         self._track_table.insertRow(at_index)
         self._refresh_row(at_index)
         self.subscribe(item.changed, lambda state: self._update_item(item))
 
-    def _make_item(self, track):
-        item = TrackItem(track)
-        if self._player.is_playing(track):
-            item.mark_playing()
-        return item
-
     def _remove_item(self, at_index):
         self.unsubscribe(self._items[at_index].changed)
         self._track_table.removeRow(at_index)
-        self._items.pop(at_index)
+        del self._items[at_index]
+
+    def _move_item(self, from_index, to_index):
+        self._track_table.removeRow(from_index)
+        item = self._items.pop(from_index)
+        self._items.insert(to_index, item)
+        self._track_table.insertRow(to_index)
+        self._refresh_row(to_index)
 
     def _update_item(self, item):
         self._refresh_row(self._index_of(item))

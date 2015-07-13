@@ -38,6 +38,7 @@ class AlbumListener:
 class Album(metaclass=tag.Taggable):
     track_inserted = signal(int, Track)
     track_removed = signal(int, Track)
+    track_moved = signal(Track, int, int)
 
     # todo this should probably be in Track
     class Type:
@@ -146,6 +147,13 @@ class Album(metaclass=tag.Taggable):
         self.track_removed.emit(position, track)
 
     removeTrack = remove_track
+
+    def move_track(self, from_position, to_position):
+        track = self.tracks.pop(from_position)
+        self.tracks.insert(to_position, track)
+        self._renumber_tracks()
+
+        self.track_moved.emit(track, from_position, to_position)
 
     def metadataChanged(self):
         self.listeners.albumStateChanged(self)

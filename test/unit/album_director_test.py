@@ -185,7 +185,7 @@ def test_moves_track_of_album():
     salsa_coltrane = build.track(track_title='Salsa Coltrane')
     honeycomb = build.album(tracks=[salsa_coltrane, chevere])
 
-    director.move_track_of(honeycomb)(salsa_coltrane, 1)
+    director.move_track_of(honeycomb)(0, 1)
     assert_that(honeycomb.tracks, contains(chevere, salsa_coltrane), 'reordered tracks')
 
 
