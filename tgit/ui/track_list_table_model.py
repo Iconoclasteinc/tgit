@@ -129,7 +129,7 @@ class Column(Enum):
         def __init__(self, track):
             super().__init__()
             if track.is_playing:
-                self.setIcon(QIcon(":/images/volume-up-16.png"))
+                self.setIcon(QIcon(":/playing"))
             elif track.is_invalid:
                 self.setIcon(QIcon(":/playback-error"))
                 self.setToolTip(texts.tr("Your platform cannot play {} audio files".format(track.type.upper())))
