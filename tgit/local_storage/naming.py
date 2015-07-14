@@ -28,7 +28,8 @@ def itunes_naming_scheme(track):
 
 
 def picture_naming_scheme(image):
-    return fs.sanitize("{desc}.{ext}".format(desc=image.desc, ext=fs.guess_extension(image.mime)))
+    desc = image.desc or 'Front Cover'
+    return fs.sanitize("{desc}{ext}".format(desc=desc, ext=fs.guess_extension(image.mime)))
 
 
 track_scheme = itunes_naming_scheme

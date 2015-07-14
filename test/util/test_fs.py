@@ -23,7 +23,7 @@ def test_ignores_copy_to_same_destination(tmpdir):
 
 
 def test_guesses_file_extension_from_mime_type():
-    assert_that(fs.guess_extension("image/png"), equal_to("png"), "extension for png images")
+    assert_that(fs.guess_extension("image/png"), equal_to(".png"), "extension for png images")
 
 
 def test_creates_directory_tree(tmpdir):

@@ -24,8 +24,6 @@ import tempfile
 import mimetypes
 import unicodedata
 
-WITHOUT_LEADING_DOT = slice(1, None)
-
 
 def read(filename):
     return open(filename, 'rb').read()
@@ -41,11 +39,7 @@ def guess_mime_type(filename):
 
 
 def guess_extension(mime_type):
-    ext = mimetypes.guess_extension(mime_type)[WITHOUT_LEADING_DOT]
-    if ext == "jpeg" or ext == "jpe":
-        ext = "jpg"
-
-    return ext
+    return mimetypes.guess_extension(mime_type)
 
 
 def make_temp_copy(filename, dirname=None):

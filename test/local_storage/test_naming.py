@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hamcrest import equal_to, starts_with
+from hamcrest import equal_to
 from hamcrest import assert_that
 
 from test.util import builders as build
@@ -16,4 +16,10 @@ def test_names_track_file_with_lead_performer_and_track_number_and_track_title()
 def test_names_artwork_file_with_desc_and_mime_type():
     artwork = Image("image/png", b"...", Image.FRONT_COVER, "Front Cover")
 
-    assert_that(naming.artwork_scheme(artwork), starts_with("Front Cover.png"), "name of picture file")
+    assert_that(naming.artwork_scheme(artwork), equal_to("Front Cover.png"), "name of picture file")
+
+
+def test_assumes_front_cover_image_for_artwork_without_a_description():
+    artwork = Image("image/png", b"...", Image.FRONT_COVER, "")
+
+    assert_that(naming.artwork_scheme(artwork), equal_to("Front Cover.png"), "name of picture file")
