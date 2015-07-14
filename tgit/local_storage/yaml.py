@@ -21,7 +21,7 @@ import yaml
 
 def write_data(filename, album_data):
     with open(filename, "w", encoding="utf-8") as album_file:
-        yaml.dump(album_data, stream=album_file, Dumper=yaml.Dumper, default_flow_style=False)
+        yaml.dump(album_data, stream=album_file, Dumper=yaml.Dumper, default_flow_style=False, allow_unicode=True)
 
 
 def read_data(filename):
