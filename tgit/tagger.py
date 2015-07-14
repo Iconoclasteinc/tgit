@@ -36,7 +36,7 @@ def tgit(use_local_isni_backend=False):
         name_registry = NameRegistry(host="isni-m.oclc.nl", assign_host="isni-m-acc.oclc.nl", secure=True,
                                      username="ICON", password="crmeoS4d")
 
-    app = TGiT(MediaPlayer(), name_registry, use_local_isni_backend)
+    app = TGiT(MediaPlayer, name_registry, use_local_isni_backend)
     app.setApplicationName("TGiT")
     app.setOrganizationName("Iconoclaste Inc.")
     app.setOrganizationDomain("tagyourmusic.com")
@@ -45,11 +45,11 @@ def tgit(use_local_isni_backend=False):
 
 
 class TGiT(QApplication):
-    def __init__(self, player, name_registry, use_local_isni_backend=False, native=True, confirm_exit=True):
+    def __init__(self, create_player, name_registry, use_local_isni_backend=False, native=True, confirm_exit=True):
         super().__init__([])
         self._confirm_exit = confirm_exit
         self.use_local_isni_backend = use_local_isni_backend
-        self.player = player
+        self.player = create_player()
         self.name_registry = name_registry
         self.translators = []
         self.native = native

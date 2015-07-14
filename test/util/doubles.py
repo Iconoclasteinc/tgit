@@ -41,8 +41,6 @@ class RecordingLibrary(object):
 def fake_audio_player():
     return FakeAudioPlayer()
 
-audio_player = fake_audio_player
-
 
 class FakeAudioPlayer(metaclass=Observable):
     playing = signal(Track)

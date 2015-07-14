@@ -4,11 +4,11 @@ import sip
 
 from cute.animatron import Animatron
 from test.drivers import track_selection_dialog, message_box
+from test.util.doubles import fake_audio_player
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
 from cute.prober import EventProcessingProber
-from test.util import doubles
 from tgit.tagger import TGiT
 from .main_window_driver import MainWindowDriver
 
@@ -29,7 +29,7 @@ class ApplicationRunner:
         self._workspace = workspace
 
     def start(self, preferences):
-        self.app = TGiT(doubles.audio_player(), NameRegistry(host="localhost", assign_host="localhost", port=5000),
+        self.app = TGiT(fake_audio_player, NameRegistry(host="localhost", assign_host="localhost", port=5000),
                         use_local_isni_backend=True, native=False, confirm_exit=False)
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
