@@ -41,6 +41,7 @@ class TGiT(QApplication):
         self._media_library = create_media_library()
         self._player = create_player(self._media_library)
         self._album_portfolio = AlbumPortfolio()
+        self._album_portfolio.album_removed.subscribe(lambda album: self._player.stop())
         self._translators = []
 
         self.setApplicationName("TGiT")
