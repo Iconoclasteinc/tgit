@@ -38,7 +38,7 @@ class RecordingLibrary(object):
         self._local_path.remove()
 
 
-def fake_audio_player(_):
+def fake_audio_player(*_):
     return FakeAudioPlayer()
 
 
