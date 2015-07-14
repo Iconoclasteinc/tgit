@@ -97,3 +97,12 @@ def test_reads_data_from_yaml_file():
     assert_that(data, has_entry("images", contains(("image/jpeg", "Front.jpeg", Image.FRONT_COVER, "Front"))),
                 "attached pictures")
     assert_that(data, has_entry("tracks", contains("1st", "2nd", "3rd")))
+
+
+def test_writes_unicode_strings_in_yaml_file(project_file):
+    album_file = project_file("album.tgit")
+    data = dict(entry="Les naïfs ægithales hâtifs pondant à Noël...")
+
+    yaml.write_data(album_file, data)
+    lines = read_lines(album_file)
+    assert_that(lines, has_item(contains_string("Les naïfs ægithales hâtifs pondant à Noël...")), "unicode string")
