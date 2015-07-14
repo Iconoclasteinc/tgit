@@ -23,7 +23,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
 from tgit.preferences import Preferences
-from tgit.audio import MediaPlayer
+from tgit.audio import MediaPlayer, create_media_library as media_library
 from tgit.isni.name_registry import NameRegistry
 from tgit.album_portfolio import AlbumPortfolio
 from tgit import ui
@@ -36,7 +36,7 @@ def tgit(use_local_isni_backend=False):
         name_registry = NameRegistry(host="isni-m.oclc.nl", assign_host="isni-m-acc.oclc.nl", secure=True,
                                      username="ICON", password="crmeoS4d")
 
-    app = TGiT(MediaPlayer, name_registry, use_local_isni_backend)
+    app = TGiT(MediaPlayer, media_library, name_registry, use_local_isni_backend)
     app.setApplicationName("TGiT")
     app.setOrganizationName("Iconoclaste Inc.")
     app.setOrganizationDomain("tagyourmusic.com")
@@ -45,15 +45,17 @@ def tgit(use_local_isni_backend=False):
 
 
 class TGiT(QApplication):
-    def __init__(self, create_player, name_registry, use_local_isni_backend=False, native=True, confirm_exit=True):
+    def __init__(self, create_player, create_media_library, name_registry, use_local_isni_backend=False, native=True,
+                 confirm_exit=True):
         super().__init__([])
         self._confirm_exit = confirm_exit
-        self.use_local_isni_backend = use_local_isni_backend
-        self.player = create_player()
-        self.name_registry = name_registry
-        self.translators = []
-        self.native = native
-        self.mainWindow = None
+        self._use_local_isni_backend = use_local_isni_backend
+        self._media_library = create_media_library()
+        self._player = create_player(self._media_library)
+        self._name_registry = name_registry
+        self._translators = []
+        self._native = native
+        self._main_window = None
 
     def set_locale(self, locale):
         if locale is None:
@@ -66,17 +68,20 @@ class TGiT(QApplication):
         translator = QTranslator()
         if translator.load("{0}_{1}".format(resource, locale), ":/"):
             self.installTranslator(translator)
-            self.translators.append(translator)
+            self._translators.append(translator)
 
     def show(self, preferences):
         self.set_locale(preferences["language"])
-        self.mainWindow = ui.create_main_window(AlbumPortfolio(), self.player, preferences, self.name_registry,
-                                                self.use_local_isni_backend, self.native, self._confirm_exit)
-        ui.showCenteredOnScreen(self.mainWindow)
+        self._main_window = ui.create_main_window(AlbumPortfolio(), self._player, preferences, self._name_registry,
+                                                  self._use_local_isni_backend, self._native, self._confirm_exit)
+        self._main_window.show()
 
     def launch(self, preferences):
         self.show(preferences)
         self.run()
 
     def run(self):
-        sys.exit(self.exec_())
+        exit_value = self.exec_()
+        self._player.close()
+        self._media_library.close()
+        sys.exit(exit_value)

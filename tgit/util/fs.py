@@ -49,6 +49,10 @@ def make_temp_copy(filename, dirname=None):
     return path
 
 
+def make_temp_dir():
+    return tempfile.mkdtemp(prefix="TGiT_")
+
+
 def sanitize(filename):
     return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
 

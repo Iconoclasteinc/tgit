@@ -17,12 +17,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from enum import Enum
+import shutil
 
 from PyQt5.QtCore import QUrl
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from tgit.platform import windows
 
 from tgit.signal import Observable, signal
 from tgit.track import Track
+from tgit.util import fs
 
 
 class MediaPlayer(metaclass=Observable):
@@ -35,7 +38,8 @@ class MediaPlayer(metaclass=Observable):
     stopped = signal(Track)
     error_occurred = signal(Track)
 
-    def __init__(self):
+    def __init__(self, media_library):
+        self._media_library = media_library
         self._playlist = []
         self._player = QMediaPlayer()
         self._player.stateChanged.connect(self._state_changed)
@@ -43,7 +47,7 @@ class MediaPlayer(metaclass=Observable):
 
     def play(self, track):
         self._playlist.append(track)
-        self._player.setMedia(QMediaContent(QUrl.fromLocalFile(track.filename)))
+        self._player.setMedia(self._media_library.fetch(track.filename))
         self._player.play()
 
     def stop(self):
@@ -67,3 +71,30 @@ class MediaPlayer(metaclass=Observable):
             self.error_occurred.emit(self._playlist.pop(0), self.error)
         elif state == QMediaPlayer.StoppedState:
             self.stopped.emit(self._playlist.pop(0))
+
+    def close(self):
+        self._player.stop()
+        self._player = None
+
+
+def create_media_library():
+    return WindowsMediaLibrary() if windows else MediaLibrary()
+
+
+class MediaLibrary:
+    def fetch(self, filename):
+        return QMediaContent(QUrl.fromLocalFile(filename))
+
+    def close(self):
+        pass
+
+
+class WindowsMediaLibrary(MediaLibrary):
+    def __init__(self):
+        self._directory = fs.make_temp_dir()
+
+    def fetch(self, filename):
+        return super().fetch(fs.make_temp_copy(filename, self._directory))
+
+    def close(self):
+        shutil.rmtree(self._directory, ignore_errors=True)
