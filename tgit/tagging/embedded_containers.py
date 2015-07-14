@@ -34,11 +34,11 @@ class EmptyContainer():
         pass
 
 
-_containers = defaultdict(EmptyContainer, mp3=ID3Container(), flac=FlacContainer())
+_containers = defaultdict(EmptyContainer, {".mp3": ID3Container(), ".flac": FlacContainer()})
 
 
 def _container_for(filename):
-    return _containers[fs.extension(filename)]
+    return _containers[fs.ext(filename)]
 
 
 def load_metadata(filename):

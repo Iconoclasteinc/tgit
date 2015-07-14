@@ -22,7 +22,7 @@ import re
 import shutil
 import tempfile
 import mimetypes
-
+import unicodedata
 
 WITHOUT_LEADING_DOT = slice(1, None)
 
@@ -49,10 +49,9 @@ def guess_extension(mime_type):
 
 
 def make_temp_copy(filename, dirname=None):
-    _, ext = os.path.splitext(filename)
-    copy, path = tempfile.mkstemp(suffix=ext, dir=dirname)
-    shutil.copy(filename, path)
-    os.close(copy)
+    temp_copy, path = tempfile.mkstemp(suffix=ext(filename), dir=dirname)
+    copy(filename, path)
+    os.close(temp_copy)
     return path
 
 
@@ -60,9 +59,9 @@ def sanitize(filename):
     return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
 
 
-def extension(filename):
-    _, ext = os.path.splitext(filename)
-    return ext[WITHOUT_LEADING_DOT]
+def ext(filename):
+    _, extension = os.path.splitext(filename)
+    return extension
 
 
 def copy(source_file, destination_file):
@@ -74,11 +73,19 @@ def mkdirs(path):
     os.makedirs(path, exist_ok=True)
 
 
-def list_dir(folder):
-    def abspath(filename):
-        return os.path.join(folder, filename)
+def normalize(filename):
+    return unicodedata.normalize("NFC", filename)
 
-    return [abspath(filename) for filename in os.listdir(folder) if os.path.isfile(abspath(filename))]
+
+def abspath(path):
+    return normalize(os.path.abspath(path))
+
+
+def list_dir(folder):
+    def full_path(filename):
+        return abspath(os.path.join(folder, filename))
+
+    return [full_path(filename) for filename in os.listdir(folder) if os.path.isfile(full_path(filename))]
 
 
 def remove(path):
@@ -95,5 +102,3 @@ def remove_files(folder, matching=_all_files):
     for filename in list_dir(folder):
         if matching(filename):
             remove(filename)
-
-

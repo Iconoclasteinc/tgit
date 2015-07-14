@@ -50,6 +50,15 @@ def test_ignores_errors_that_might_occur_when_removing_files(tmpdir):
     fs.remove(missing_file)
 
 
+def test_normalizes_filenames_to_fully_composed_unicode_strings(tmpdir):
+    fully_composed_form = tmpdir.join('Spicy Jalape\u00f1o.tgit').strpath
+    fully_decomposed_form = tmpdir.join('Spicy Jalapen\u0303o.tgit').strpath
+
+    touch(fully_decomposed_form)
+
+    assert_that(fs.abspath(fully_decomposed_form), equal_to(fully_composed_form), "absolute path")
+
+
 def test_removes_files_from_folder_if_they_match_given_condition(tmpdir):
     for filename in "track1.mp3", "track2.flac", "track3.mp3":
         touch(tmpdir.join(filename).strpath)

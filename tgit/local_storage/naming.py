@@ -21,10 +21,11 @@ from tgit.util import fs
 
 
 def itunes_naming_scheme(track):
-    return fs.sanitize("{artist} - {number:02} - {title}.{ext}".format(artist=track.lead_performer,
-                                                                       number=track.track_number,
-                                                                       title=track.track_title,
-                                                                       ext=fs.extension(track.filename)))
+    return fs.sanitize("{artist} - {number:02} - {title}{ext}".format(artist=track.lead_performer,
+                                                                      number=track.track_number,
+                                                                      title=track.track_title,
+                                                                      ext=fs.ext(track.filename)))
+
 
 def picture_naming_scheme(image):
     return fs.sanitize("{desc}.{ext}".format(desc=image.desc, ext=fs.guess_extension(image.mime)))
