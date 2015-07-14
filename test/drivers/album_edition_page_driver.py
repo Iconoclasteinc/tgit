@@ -108,7 +108,11 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.button(named("clear_isni_button")).click()
 
     def assign_isni_to_lead_performer(self):
+        self.enable_isni_assign()
         self.button(named("assign_isni_button")).click()
+
+    def enable_isni_assign(self):
+        self.button(named("assign_isni_button")).manipulate("enable", lambda button: button.setEnabled(True))
 
     def lookup_isni_of_lead_performer(self):
         self.button(named("lookup_isni_button")).click()
@@ -151,9 +155,13 @@ class AlbumEditionPageDriver(ScreenDriver):
         button = self.button(named("lookup_isni_button"))
         button.is_enabled(enabled)
 
-    def enablesISNIAssign(self, enabled=True):
+    def disables_isni_assign(self):
         button = self.button(named("assign_isni_button"))
-        button.is_enabled(enabled)
+        button.is_disabled(True)
+
+    def enables_isni_assign(self):
+        button = self.button(named("assign_isni_button"))
+        button.is_enabled(True)
 
     def changeLeadPerformer(self, name):
         self.lineEdit(named("lead_performer")).change_text(name)

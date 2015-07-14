@@ -33,7 +33,7 @@ from tgit.util import async_task_runner as task_runner
 
 def make_album_edition_page(preferences, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
                             performer_dialog_factory, show_assignation_failed, album, name_registry,
-                            use_local_isni_backend, select_picture, **handlers):
+                            select_picture, **handlers):
     def poll_queue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -68,7 +68,6 @@ def make_album_edition_page(preferences, lookup_isni_dialog_factory, activity_in
     queue = Queue()
     page = AlbumEditionPage(preferences,
                             select_picture=select_picture,
-                            use_local_isni_backend=use_local_isni_backend,
                             **handlers)
     page.metadata_changed.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.remove_picture.connect(lambda: director.removeAlbumCover(album))
@@ -97,10 +96,9 @@ class AlbumEditionPage(QWidget, AlbumListener):
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, preferences, select_picture, use_local_isni_backend=False, **handlers):
+    def __init__(self, preferences, select_picture, **handlers):
         super().__init__()
         ui_file.load(":/ui/album_page.ui", self)
-        self.use_local_isni_backend = use_local_isni_backend
         self._preferences = preferences
         self._select_picture = select_picture
 
@@ -126,9 +124,9 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.lookup_isni_button.clicked.connect(lambda pressed: self.lookup_isni.emit())
         self.assign_isni_button.clicked.connect(lambda: self.assign_isni.emit())
         self.compilation.clicked.connect(lambda: self.metadata_changed.emit(self.metadata("compilation")))
-        self.compilation.clicked.connect(self._adjust_isni_lookup_state_on_compilation_changed)
+        self.compilation.clicked.connect(self._update_isni_lookup_button)
         self.lead_performer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("lead_performer")))
-        self.lead_performer.textChanged.connect(self._adjust_isni_lookup_and_assign_state_on_lead_performer_changed)
+        self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
         self.clear_isni_button.clicked.connect(lambda: self.clear_isni.emit())
         self.clear_isni_button.clicked.connect(lambda: self.release_time.calendarWidget().show())
         self.add_guest_performers_button.clicked.connect(lambda: self.add_performer.emit())
@@ -248,22 +246,8 @@ class AlbumEditionPage(QWidget, AlbumListener):
         for child in self.findChildren(QWidget):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
-    def _adjust_isni_lookup_state_on_compilation_changed(self):
-        buttons = [self.lookup_isni_button]
-        self._enable_or_disable_isni_button(self.compilation.isChecked(), self.lead_performer.text(), buttons)
-
-    def _adjust_isni_lookup_and_assign_state_on_lead_performer_changed(self, text):
-        buttons = [self.lookup_isni_button]
-        if self.use_local_isni_backend and buttons.count(self.assign_isni_button) == 0:
-            buttons.append(self.assign_isni_button)
-
-        self._enable_or_disable_isni_button(self.compilation.isChecked(), text, buttons)
-
-    @staticmethod
-    def _enable_or_disable_isni_button(compilation, lead_performer, buttons):
-        is_disabled = compilation or is_blank(lead_performer)
-        for button in buttons:
-            button.setDisabled(is_disabled)
+    def _update_isni_lookup_button(self):
+        self.lookup_isni_button.setDisabled(self.compilation.isChecked() or is_blank(self.lead_performer.text()))
 
 
 def is_blank(text):

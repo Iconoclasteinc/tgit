@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QApplication
 
 from cute.animatron import Animatron
 from cute.prober import EventProcessingProber
-from tgit import ui
 from tgit.ui.main_window import StyleSheet
 
 SIZE = (1100, 745)
@@ -32,7 +31,7 @@ class WidgetTest(unittest.TestCase):
     def show(self, widget):
         widget.setStyleSheet(StyleSheet)
         widget.setFixedSize(*SIZE)
-        ui.showCenteredOnScreen(widget)
+        widget.show()
 
     def check(self, probe):
         self.prober.check(probe)

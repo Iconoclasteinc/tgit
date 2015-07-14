@@ -18,8 +18,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import functools as func
 
-from PyQt5.QtWidgets import QApplication
-
 from tgit.album import AlbumListener
 from tgit import album_director as director
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
@@ -41,28 +39,6 @@ from tgit.ui.welcome_page import WelcomePage
 from tgit.ui.album_screen import album_screen as AlbumScreen
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
-
-
-def show(widget):
-    widget.show()
-
-
-def centerOnScreen(widget):
-    desktop = QApplication.desktop()
-    position = widget.frameGeometry()
-    position.moveCenter(desktop.availableGeometry().center())
-    widget.move(position.topLeft())
-
-
-def activate(widget):
-    widget.raise_()
-    widget.activateWindow()
-
-
-def showCenteredOnScreen(widget):
-    show(widget)
-    centerOnScreen(widget)
-    activate(widget)
 
 
 def PerformerDialogController(parent, album):
@@ -121,7 +97,7 @@ def SettingsDialogController(notify_restart_required, preferences, parent):
     return dialog
 
 
-def create_main_window(portfolio, player, preferences, name_registry, use_local_isni_backend, native, confirm_exit):
+def create_main_window(portfolio, player, preferences, name_registry, native, confirm_exit):
     dialogs = Dialogs(native)
     messages = MessageBoxes(confirm_exit)
 
@@ -155,8 +131,7 @@ def create_main_window(portfolio, player, preferences, name_registry, use_local_
 
     def create_album_page(album):
         return make_album_edition_page(preferences, show_isni_lookup_dialog, show_activity_indicator_dialog,
-                                       show_performer_dialog, messages.isni_assignation_failed, album,
-                                       name_registry, use_local_isni_backend,
+                                       show_performer_dialog, messages.isni_assignation_failed, album, name_registry,
                                        select_picture=dialogs.select_cover,
                                        on_select_picture=director.change_cover_of(album))
 

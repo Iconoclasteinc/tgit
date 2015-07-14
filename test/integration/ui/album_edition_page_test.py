@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import timeit
-from PyQt5.QtCore import QByteArray
 
+from PyQt5.QtCore import QByteArray
 from hamcrest import has_entries, assert_that, less_than
 
 from cute.finders import WidgetIdentity
@@ -22,7 +22,7 @@ def ignore(*_):
 
 class AlbumEditionPageTest(WidgetTest):
     def render(self, album, select_picture=ignore, **handlers):
-        self.page = AlbumEditionPage(Preferences(), use_local_isni_backend=True, select_picture=select_picture, **handlers)
+        self.page = AlbumEditionPage(Preferences(), select_picture=select_picture, **handlers)
         self.page.refresh(album)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
@@ -114,13 +114,12 @@ class AlbumEditionPageTest(WidgetTest):
         self.render(build.album(lead_performer="     "))
         self.driver.enablesISNILookup(False)
 
-    def test_enables_assign_isni_button_when_lead_performer_is_not_empty(self):
-        self.render(build.album(lead_performer="performer"))
-        self.driver.enablesISNIAssign()
+    def test_disables_assign_isni_button(self):
+        self.render(build.album(lead_performer="     "))
+        self.driver.disables_isni_assign()
 
     def testDisablesAssignISNIButtonWhenLeadPerformerIsNotEmpty(self):
         self.render(build.album())
-        self.driver.enablesISNIAssign(False)
 
     def test_signals_when_picture_selected(self):
         album = build.album()

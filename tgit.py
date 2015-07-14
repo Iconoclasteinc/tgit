@@ -18,18 +18,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import sys
+from tgit import tagger
 
-import requests.packages.urllib3
-
-from tgit.tagger import tgit
-
-if __name__ == "__main__":
-    requests.packages.urllib3.disable_warnings()
-
-    use_local_isni_backend = False
-
-    if len(sys.argv) > 1 and sys.argv[1] == "--with-local-isni-backend":
-        use_local_isni_backend = True
-
-    tgit(use_local_isni_backend)
+tagger.main()

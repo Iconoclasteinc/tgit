@@ -13,9 +13,6 @@ from tgit.tagger import TGiT
 from .main_window_driver import MainWindowDriver
 
 
-ignore = lambda *_: None
-
-
 def _make_tracks(tracks):
     Track = namedtuple("Track", "title")
     return map(Track._make, tracks)
@@ -32,8 +29,8 @@ class ApplicationRunner:
         self._workspace = workspace
 
     def start(self, preferences):
-        self.app = TGiT(fake_audio_player, ignore, NameRegistry(host="localhost", assign_host="localhost", port=5000),
-                        use_local_isni_backend=True, native=False, confirm_exit=False)
+        self.app = TGiT(fake_audio_player, NameRegistry(host="localhost", assign_host="localhost", port=5000),
+                        native=False, confirm_exit=False)
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                        EventProcessingProber(timeout_in_ms=1000), Animatron())
