@@ -23,6 +23,8 @@ from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 
+from tgit.audio import MediaPlayer
+
 from tgit.ui.helpers import formatting
 
 
@@ -32,7 +34,7 @@ class State(Enum):
 
 class TrackItem:
     state = State.stopped
-    error = None
+    error = MediaPlayer.Error.none
 
     def __init__(self, track):
         self.track = track
@@ -97,7 +99,6 @@ RIGHT_ALIGNED = Qt.AlignRight | Qt.AlignVCenter
 RESIZABLE = QHeaderView.Interactive
 FIXED = QHeaderView.Fixed
 AUTO_ADJUST = QHeaderView.ResizeToContents
-
 
 Width = namedtuple('Width', ['length', 'resize_mode'])
 

@@ -25,48 +25,45 @@ from tgit.signal import Observable, signal
 from tgit.track import Track
 
 
-class PlaybackError(Enum):
-    none = QMediaPlayer.NoError
-    unsupported_format = QMediaPlayer.FormatError
-    access_denied = QMediaPlayer.AccessDeniedError
-
-
 class MediaPlayer(metaclass=Observable):
-    _PLAYING = QMediaPlayer.BufferedMedia
-    _STOPPED = QMediaPlayer.StoppedState
+    class Error(Enum):
+        none = QMediaPlayer.NoError
+        unsupported_format = QMediaPlayer.FormatError
+        access_denied = QMediaPlayer.AccessDeniedError
 
     playing = signal(Track)
     stopped = signal(Track)
     error_occurred = signal(Track)
 
-    _track = None
-
     def __init__(self):
+        self._playlist = []
         self._player = QMediaPlayer()
         self._player.stateChanged.connect(self._state_changed)
         self._player.mediaStatusChanged.connect(self._media_status_changed)
 
     def play(self, track):
-        self._player.stop()
-        self._track = track
+        self._playlist.append(track)
         self._player.setMedia(QMediaContent(QUrl.fromLocalFile(track.filename)))
         self._player.play()
 
     def stop(self):
         self._player.stop()
-        self._player.setMedia(QMediaContent())
-        self._track = None
 
     def _media_status_changed(self, state):
-        if state == self._PLAYING:
-            self.playing.emit(self._track)
+        if state == QMediaPlayer.BufferedMedia:
+            self._error = QMediaPlayer.NoError
+            self.playing.emit(self._playlist[0])
+        elif state == QMediaPlayer.InvalidMedia:
+            # On windows 8, we only get an InvalidMedia status in case of error,
+            # so we need to keep track of the error that occurred
+            self._error = QMediaPlayer.FormatError
 
     @property
     def error(self):
-        return PlaybackError(self._player.error())
+        return MediaPlayer.Error(self._player.error() or self._error)
 
     def _state_changed(self, state):
-        if state == self._STOPPED and self.error is not PlaybackError.none:
-            self.error_occurred.emit(self._track, self.error)
-        elif state == self._STOPPED:
-            self.stopped.emit(self._track)
+        if state == QMediaPlayer.StoppedState and self.error is not MediaPlayer.Error.none:
+            self.error_occurred.emit(self._playlist.pop(0), self.error)
+        elif state == QMediaPlayer.StoppedState:
+            self.stopped.emit(self._playlist.pop(0))
