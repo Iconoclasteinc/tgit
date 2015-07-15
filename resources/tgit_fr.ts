@@ -523,7 +523,7 @@
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>Make sure to save your work before closing the album. Any unsaved work will be lost.</source>
-        <translation>Assurez-vous d'enregistrer votre travail avant de fermer l'album. Tout travail non enregistré sera perdu.</translation>
+        <translation>Assurez-vous d'enregistrer avant de fermer l'album. Tout travail non enregistré sera perdu.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
@@ -533,7 +533,7 @@
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>Make sure to save your work before you quit TGiT. Any unsaved work will be lost.</source>
-        <translation>Assurez-vous d'enregistrer votre travail avant de quitter TGiT. Tout travail non enregistré sera perdu.</translation>
+        <translation>Assurez-vous d'enregistrer avant de quitter TGiT. Tout travail non enregistré sera perdu.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />

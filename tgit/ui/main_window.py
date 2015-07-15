@@ -220,6 +220,7 @@ StyleSheet = """
 
     #qt_msgbox_informativelabel[style=QMacStyle] {
         font: normal 11px;
+        margin-bottom: 5px;
     }
  """
 
