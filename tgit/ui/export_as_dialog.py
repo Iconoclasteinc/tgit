@@ -19,7 +19,7 @@
 
 from PyQt5.QtWidgets import QFileDialog
 
-from tgit.ui import locations
+from tgit.ui import locations, timing
 
 
 def make_export_as_dialog(default_file_name="", parent=None, native=True):
@@ -40,7 +40,7 @@ class ExportAsDialog(QFileDialog):
         self.selectFile(default_file_name)
 
     def select(self, on_select):
-        self.fileSelected.connect(on_select)
+        self.fileSelected.connect(timing.after_delay(on_select))
         self.open()
 
     def done(self, result):

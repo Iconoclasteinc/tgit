@@ -79,6 +79,7 @@ def abspath(path):
     return normalize(os.path.abspath(path))
 
 
+# todo take a filter argument
 def list_dir(folder):
     def full_path(filename):
         return abspath(os.path.join(folder, filename))
