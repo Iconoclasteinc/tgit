@@ -55,6 +55,11 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._make_context_menu(self._track_table)
         self._setup_horizontal_header(self._track_table.horizontalHeader())
         self._setup_vertical_header(self._track_table.verticalHeader())
+        self._remove_action.triggered.connect(lambda: self._stop_track(self._selected_item))
+
+    def _stop_track(self, item):
+        if item.is_playing:
+            self._stop_action.trigger()
 
     def _listen_to(self, album, player):
         self.subscribe(album.track_inserted, self._insert_item)
@@ -82,7 +87,6 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
 
     def on_stop_track(self, stop):
         self._stop_action.triggered.connect(lambda: stop())
-        self._remove_action.triggered.connect(lambda: stop() if self._selected_item.is_playing else ignore())
 
     def on_remove_track(self, remove):
         # todo should we pass the index instead of the track?
