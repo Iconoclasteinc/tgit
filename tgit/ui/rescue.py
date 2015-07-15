@@ -24,5 +24,4 @@ def rescue(on_error):
     try:
         yield
     except Exception as error:
-        print(repr(error))
         on_error(error)
