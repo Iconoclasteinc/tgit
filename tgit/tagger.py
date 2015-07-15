@@ -23,10 +23,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 import requests
 
-from tgit.preferences import Preferences
 from tgit.audio import MediaPlayer, create_media_library
 from tgit.isni.name_registry import NameRegistry
-
 from tgit.preferences import Preferences
 from tgit.album_portfolio import AlbumPortfolio
 from tgit import ui
@@ -53,7 +51,7 @@ class TGiT(QApplication):
         if locale is None:
             locale = QLocale.system().name()
 
-        for resource in ("qt", "tgit"):
+        for resource in ("qtbase", "tgit"):
             self._install_translations(resource, locale)
 
     def _install_translations(self, resource, locale):

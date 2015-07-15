@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>qt_fr.qm</file>
+        <file>qtbase_fr.qm</file>
         <file>tgit_fr.qm</file>
         <file alias="tgit.ico">tgit.ico</file>
         <file alias="nothing.png">images/nothing.png</file>

@@ -57,9 +57,13 @@ class translate(Command):
 
     def run(self):
         qt_binaries_path = qt_path if windows else os.path.join(qt_path, "bin")
-        translation_file = os.path.join(app_source_path, "resources/tgit_fr.ts")
-        compiled_translation_file = os.path.join(app_source_path, "resources/tgit_fr.qm")
-        os.system("{0}/lrelease {1} -qm {2}".format(qt_binaries_path, translation_file, compiled_translation_file))
+        app_translation_file = os.path.join(app_source_path, "resources/tgit_fr.ts")
+        app_compiled_translation_file = os.path.join(app_source_path, "resources/tgit_fr.qm")
+        os.system("{0}/lrelease {1} -qm {2}".format(qt_binaries_path, app_translation_file, app_compiled_translation_file))
+
+        qt_translation_file = os.path.join(app_source_path, "resources/qtbase_fr.ts")
+        qt_compiled_translation_file = os.path.join(app_source_path, "resources/qtbase_fr.qm")
+        os.system("{0}/lrelease {1} -qm {2}".format(qt_binaries_path, qt_translation_file, qt_compiled_translation_file))
 
         resources_file = os.path.join(app_source_path, "resources/resources.qrc")
         compiled_resources_file = os.path.join(app_source_path, "tgit/ui/resources.py")
