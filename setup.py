@@ -7,10 +7,12 @@ import os
 import PyQt5
 from PyQt5.QtCore import QCoreApplication
 from cx_Freeze import setup, Executable
+import cx_Freeze
 
 from tgit import __app_name__, __version__
 
 windows = sys.platform == "win32"
+mac = sys.platform == "darwin"
 
 app_script = "tgit.py"
 app_package = "tgit"
@@ -30,7 +32,8 @@ app_base = "Win32GUI" if windows else None
 if windows:
     qt_path = os.path.dirname(PyQt5.__file__)
     qt_plugins_path = os.path.join(qt_path, "plugins")
-else:
+
+if mac:
     qt_plugins_path = next(path for path in QCoreApplication.libraryPaths() if path.endswith("plugins"))
     qt_path = os.path.dirname(qt_plugins_path)
 
@@ -102,9 +105,29 @@ class bdist_wix(Command):
         os.system("light.exe -b {0} -nologo -ext WixUIExtension -cultures:en-us {1}\\*.wixobj -o build\\{2}-{3}.msi".format(app_build_dir, app_msi_dir, app_name, app_version))
 
 
+class bdist_mac(cx_Freeze.bdist_mac):
+    cx_Freeze.bdist_mac.user_options.append(('locales', None, 'List of supported locales'))
+
+    def initialize_options(self):
+        super().initialize_options()
+
+        self.locales = ["en"]
+
+    def run(self):
+        super().run()
+
+        for locale in self.locales:
+            # .lproj folder needs to exist, but needn't have any content
+            os.mkdir(os.path.join(self.resourcesDir, locale + ".lproj"))
+
+
 commands = {"translate": translate}
+
 if windows:
     commands["bdist_wix"] = bdist_wix
+
+if mac:
+    commands["bdist_mac"] = bdist_mac
 
 
 setup(
@@ -129,6 +152,7 @@ setup(
             "qt_menu_nib": os.path.join(qt_path, "qt_menu.nib"),
             "bundle_name": app_exe,
             "custom_info_plist": app_plist,
+            "locales": ["en", "fr"]
         },
         "bdist_dmg": {
             "volume_label": app_name,
