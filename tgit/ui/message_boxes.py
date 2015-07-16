@@ -60,13 +60,15 @@ class MessageBoxes:
                                  "You are about to close the current album. Are you sure you want to continue?",
                                  "Make sure to save your work before closing the album. "
                                  "Any unsaved work will be lost.",
+                                 yes_button_text="Close",
                                  **handlers))
 
     def overwrite_album_confirmation(self, **handlers):
         return self._open(ConfirmationBox.warn(self.parent,
                                                "This album already exists. Do you want to replace it?",
-                                               "A file with the same name already exists at the location you selected."
+                                               "A file with the same name already exists at the location you specified. "
                                                "Replacing it will overwrite its current contents.",
+                                               yes_button_text="Replace",
                                                **handlers))
 
     def confirm_exit(self):
@@ -76,7 +78,8 @@ class MessageBoxes:
         box = ConfirmationBox.warn(self.parent,
                                    "You are about to quit TGiT. Are you sure you want to continue?",
                                    "Make sure to save your work before you quit TGiT. "
-                                   "Any unsaved work will be lost.")
+                                   "Any unsaved work will be lost.",
+                                   yes_button_text="Quit")
         box.setWindowModality(Qt.WindowModal)
         return box.exec() == QMessageBox.Yes
 
@@ -113,12 +116,15 @@ class ConfirmationBox(MessageBox):
     def __init__(self, parent, message, information, icon, details=None, **handlers):
         super().__init__(parent, message, information, icon, details)
 
-        self.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        self.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
         self.buttonClicked.connect(self._button_clicked)
         self._register_signal_handlers(handlers)
 
     def on_accept(self, on_accept):
         self._on_accept = on_accept
+
+    def yes_button_text(self, text):
+        self.button(QMessageBox.Yes).setText(self.tr(text))
 
     def _register_signal_handlers(self, handlers):
         for name, handler in handlers.items():

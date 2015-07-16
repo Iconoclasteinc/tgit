@@ -542,8 +542,20 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>A file with the same name already exists at the location you selected. Replacing it will overwrite its current contents.</source>
-        <translation>Un fichier du même nom existe déjà à l'emplacement que vous avez sélectionné. Le remplacer écrasera son contenu actuel.</translation>
+        <source>A file with the same name already exists at the location you specified. Replacing it will overwrite its current contents.</source>
+        <translation>Un fichier du même nom existe déjà à l'emplacement que vous avez choisi. Le remplacer écrasera son contenu actuel.</translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation>Quitter</translation>
+    </message>
+    <message>
+        <source>Replace</source>
+        <translation>Remplacer</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Fermer</translation>
     </message>
 </context>
 <context>
