@@ -66,7 +66,7 @@ class TGiT(QApplication):
                                             self._native, self._confirm_exit)
         main_window.show()
 
-    def launch(self, preferences=Preferences(QSettings())):
+    def launch(self, preferences):
         self.show(preferences)
         self.run()
 
@@ -87,4 +87,4 @@ def main():
                                  password="crmeoS4d")
 
     tagger = TGiT(MediaPlayer, name_registry)
-    tagger.launch()
+    tagger.launch(Preferences(QSettings()))

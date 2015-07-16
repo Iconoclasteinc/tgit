@@ -73,60 +73,58 @@ class translate(Command):
         os.system("pyrcc5 -o {0} {1}".format(compiled_resources_file, resources_file))
 
 
-class bdist_wix(Command):
-    description = "create a MSI (.msi) binary distribution"
-    # List of option tuples: long name, short name (None if no short name), and help string.
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        app_msi_dir = os.path.join(app_source_path, r"build\msi")
-        if not os.path.exists(app_msi_dir):
-            os.makedirs(app_msi_dir)
-
-        with open("tgit.template.wxs", "r") as src, open(os.path.join(app_msi_dir, r"tgit.wxs"), "w") as dst:
-            lines = src.readlines()
-            data = []
-            for l in lines:
-                l = l.replace("@APP_NAME@", app_name)
-                l = l.replace("@APP_VERSION@", app_version)
-                l = l.replace("@APP_PUBLISHER@", app_publisher)
-                l = l.replace("@APP_ICON@", app_icon)
-                data.append(l)
-            dst.writelines(data)
-        os.environ["PATH"] += ";C:\\Program Files (x86)\\WiX Toolset v3.9\\bin"
-        os.system("heat.exe dir {0} -gg -sfrag -cg TgitComponent -nologo -dr INSTALLFOLDER -sreg -srd -out {1}\\tgit-dir.wxs".format(app_build_dir, app_msi_dir))
-        os.system("candle.exe {0}\\*.wxs -nologo -out {0}\\ ".format(app_msi_dir))
-        os.system("light.exe -b {0} -nologo -ext WixUIExtension -cultures:en-us {1}\\*.wixobj -o build\\{2}-{3}.msi".format(app_build_dir, app_msi_dir, app_name, app_version))
-
-
-class bdist_mac(cx_Freeze.bdist_mac):
-    cx_Freeze.bdist_mac.user_options.append(('locales', None, 'List of supported locales'))
-
-    def initialize_options(self):
-        super().initialize_options()
-
-        self.locales = ["en"]
-
-    def run(self):
-        super().run()
-
-        for locale in self.locales:
-            # .lproj folder needs to exist, but needn't have any content
-            os.mkdir(os.path.join(self.resourcesDir, locale + ".lproj"))
-
-
 commands = {"translate": translate}
 
 if windows:
+    class bdist_wix(Command):
+        description = "create a MSI (.msi) binary distribution"
+        # List of option tuples: long name, short name (None if no short name), and help string.
+        user_options = []
+
+        def initialize_options(self):
+            pass
+
+        def finalize_options(self):
+            pass
+
+        def run(self):
+            app_msi_dir = os.path.join(app_source_path, r"build\msi")
+            if not os.path.exists(app_msi_dir):
+                os.makedirs(app_msi_dir)
+
+            with open("tgit.template.wxs", "r") as src, open(os.path.join(app_msi_dir, r"tgit.wxs"), "w") as dst:
+                lines = src.readlines()
+                data = []
+                for l in lines:
+                    l = l.replace("@APP_NAME@", app_name)
+                    l = l.replace("@APP_VERSION@", app_version)
+                    l = l.replace("@APP_PUBLISHER@", app_publisher)
+                    l = l.replace("@APP_ICON@", app_icon)
+                    data.append(l)
+                dst.writelines(data)
+            os.environ["PATH"] += ";C:\\Program Files (x86)\\WiX Toolset v3.9\\bin"
+            os.system("heat.exe dir {0} -gg -sfrag -cg TgitComponent -nologo -dr INSTALLFOLDER -sreg -srd -out {1}\\tgit-dir.wxs".format(app_build_dir, app_msi_dir))
+            os.system("candle.exe {0}\\*.wxs -nologo -out {0}\\ ".format(app_msi_dir))
+            os.system("light.exe -b {0} -nologo -ext WixUIExtension -cultures:en-us {1}\\*.wixobj -o build\\{2}-{3}.msi".format(app_build_dir, app_msi_dir, app_name, app_version))
+
     commands["bdist_wix"] = bdist_wix
 
 if mac:
+    class bdist_mac(cx_Freeze.bdist_mac):
+        cx_Freeze.bdist_mac.user_options.append(('locales', None, 'List of supported locales'))
+
+        def initialize_options(self):
+            super().initialize_options()
+
+            self.locales = ["en"]
+
+        def run(self):
+            super().run()
+
+            for locale in self.locales:
+                # .lproj folder needs to exist, but needn't have any content
+                os.mkdir(os.path.join(self.resourcesDir, locale + ".lproj"))
+
     commands["bdist_mac"] = bdist_mac
 
 
