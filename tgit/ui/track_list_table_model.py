@@ -19,7 +19,7 @@
 from collections import namedtuple
 from enum import Enum
 
-from PyQt5.QtCore import Qt, QObject
+from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 
@@ -104,14 +104,8 @@ Width = namedtuple('Width', ['length', 'resize_mode'])
 
 
 class CellItem(QTableWidgetItem):
-    pass
-
-
-class CellTexts(QObject):
-    pass
-
-
-texts = CellTexts()
+    def tr(self, text):
+        return QCoreApplication.translate("CellItem", text)
 
 
 class Column(Enum):
@@ -132,7 +126,7 @@ class Column(Enum):
                 self.setIcon(QIcon(":/playing"))
             elif track.is_invalid:
                 self.setIcon(QIcon(":/playback-error"))
-                self.setToolTip(texts.tr("Your platform cannot play {} audio files".format(track.type.upper())))
+                self.setToolTip(self.tr("Your platform cannot play {} audio files".format(track.type.upper())))
 
     class track_title(CellItem):
         width = Width(300, RESIZABLE)

@@ -779,7 +779,7 @@
     </message>
 </context>
 <context>
-    <name>CellTexts</name>
+    <name>CellItem</name>
     <message>
         <source>Your platform cannot play FLAC audio files</source>
         <translation>Votre système ne supporte pas la lecture audio FLAC</translation>
