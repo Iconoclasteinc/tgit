@@ -26,7 +26,6 @@ from tgit.ui.helpers import ui_file
 from tgit.ui.observer import Observer
 from tgit.ui.rescue import rescue
 
-windows = sys.platform == "win32"
 mac = sys.platform == "darwin"
 
 StyleSheet = """
@@ -346,10 +345,6 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
         self.to_track_list_action.triggered.connect(self._to_track_list_page)
         self.exit_action.triggered.connect(self.close)
-
-        if windows:
-            self.settings_action.setText(self.tr(self.settings_action.text()))
-
         self.exit_action.setShortcut(QKeySequence.Quit)
         self.close_album_action.setShortcut(QKeySequence.Close)
         self.save_album_action.setShortcut(QKeySequence.Save)
