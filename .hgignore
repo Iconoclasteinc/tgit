@@ -8,3 +8,5 @@ tgit.egg-info
 *.pyc
 .DS_Store
 .coverage
+resources/*.qm
+tgit/ui/resources.py
