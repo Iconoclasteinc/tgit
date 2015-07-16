@@ -397,6 +397,10 @@
         <translation>TGiT</translation>
     </message>
     <message>
+        <source>Se&amp;ttings</source>
+        <translation>&amp;Préférences</translation>
+    </message>
+    <message>
         <location filename="tgit/ui/main_window.py"/>
         <source>&amp;File</source>
         <translation>&amp;Fichier</translation>
@@ -443,13 +447,6 @@
         <location filename="tgit/ui/main_window.py"/>
         <source>&amp;Track list</source>
         <translation>&amp;Liste des pistes</translation>
-    </message>
-</context>
-<context>
-    <name>MainWindow</name>
-    <message>
-        <source>Se&amp;ttings</source>
-        <translation>&amp;Préférences</translation>
     </message>
 </context>
 <context>
