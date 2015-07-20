@@ -25,8 +25,16 @@ def all_top_level_widgets():
     return TopLevelWidgetsFinder(QApplication.instance())
 
 
+def all_widgets(of_type, matching=anything()):
+    return RecursiveWidgetFinder(of_type, matching, all_top_level_widgets())
+
+
 def only_widget(of_type, matching=anything()):
-    return SingleWidgetFinder(RecursiveWidgetFinder(of_type, matching, all_top_level_widgets()))
+    return SingleWidgetFinder(all_widgets(of_type, matching))
+
+
+def no_widget(of_type, matching=anything()):
+    return MissingWidgetFinder(all_widgets(of_type, matching))
 
 
 def window(of_type, *matchers):
@@ -97,7 +105,7 @@ class WidgetDriver:
         self.check(WidgetAssertionProbe(self.selector, criteria))
 
     def has(self, query, criteria):
-        self.check(WidgetPropertyAssertionProbe(self.selector, query, wrap_matcher(criteria)))
+        self.check(WidgetPropertyAssertionProbe(self.selector, query, criteria))
 
     def has_cursor_shape(self, shape):
         self.has(properties.cursor_shape(), shape)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import QPoint, QRect
-from hamcrest import described_as, none
+from hamcrest import described_as, none, empty
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from .prober import Probe
@@ -39,7 +39,7 @@ class WidgetPropertyAssertionProbe(Probe):
         super(WidgetPropertyAssertionProbe, self).__init__()
         self._selector = selector
         self._property_value_query = query
-        self._property_value_matcher = matcher
+        self._property_value_matcher = wrap_matcher(matcher)
         self._property_value = None
 
     def test(self):
@@ -157,6 +157,39 @@ class ValueMatcherProbe(Probe):
     def received(self, value=None):
         self._has_received_a_value = True
         self._received_value = value
+
+
+class MultiValueMatcherProbe(Probe):
+    def __init__(self, message, matcher=empty()):
+        super().__init__()
+        self._message = message
+        self.expect(matcher)
+
+    def expect(self, matcher):
+        self._value_matcher = matcher
+        self._has_received_a_value = False
+        self._received_values = []
+
+    def test(self):
+        pass
+
+    def is_satisfied(self):
+        return self._has_received_a_value and self._value_matcher.matches(self._received_values)
+
+    def describe_to(self, description):
+        description.append_text(self._message).append_text(" with ") \
+            .append_description_of(self._value_matcher)
+
+    def describe_failure_to(self, description):
+        description.append_text(self._message).append_text(" ")
+        if self._has_received_a_value:
+            description.append_text('received ').append_list("values (", ", ", ")", self._received_values)
+        else:
+            description.append_text('was not received')
+
+    def received(self, *values):
+        self._has_received_a_value = True
+        self._received_values.extend(values)
 
 
 class AssertionProbe(Probe):

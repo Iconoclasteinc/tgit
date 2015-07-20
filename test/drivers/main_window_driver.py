@@ -37,7 +37,7 @@ class MainWindowDriver(WidgetDriver):
 
     # todo have a quick navigation button
     def next(self):
-        album_screen(self).nextPage()
+        album_screen(self).to_next_page()
 
     def navigate_to_track_list_page(self):
         menu_bar(self).navigate.to_track_list_page()

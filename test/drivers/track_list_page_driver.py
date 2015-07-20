@@ -13,6 +13,10 @@ def track_list_page(parent):
     return TrackListPageDriver.find_single(parent, TrackListPage, named("track_list_page"))
 
 
+def no_track_list_page(parent):
+    return TrackListPageDriver.find_none(parent, TrackListPage, named("track_list_page"))
+
+
 class TrackListPageDriver(ScreenDriver):
     def __init__(self, selector, prober, gesture_performer):
         super().__init__(selector, prober, gesture_performer)

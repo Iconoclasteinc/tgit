@@ -28,6 +28,7 @@ from tgit import album_director as director
 from tgit.album import AlbumListener
 from tgit.genres import GENRES
 from tgit.isni.name_registry import NameRegistry
+from tgit.ui.closeable import Closeable
 from tgit.util import async_task_runner as task_runner
 
 
@@ -84,7 +85,9 @@ ORANGE = QColor.fromRgb(0xF08450)
 LIGHT_GRAY = QColor.fromRgb(0xF6F6F6)
 
 
+@Closeable
 class AlbumEditionPage(QWidget, AlbumListener):
+    closed = pyqtSignal()
     remove_picture = pyqtSignal()
     lookup_isni = pyqtSignal()
     clear_isni = pyqtSignal()

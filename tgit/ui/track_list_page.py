@@ -17,11 +17,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, pyqtSignal
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem
 
 from tgit.album import AlbumListener
+from tgit.ui.closeable import Closeable
 from tgit.ui.track_list_table_model import Column, TrackItem
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.observer import Observer
@@ -35,7 +36,10 @@ def ignore():
 
 
 @Observer
+@Closeable
 class TrackListPage(QWidget, UIFile, AlbumListener):
+    closed = pyqtSignal()
+
     _playing_track = None
 
     def __init__(self, album, player, select_tracks, **request_handlers):

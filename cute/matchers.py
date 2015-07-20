@@ -7,31 +7,31 @@ from . import properties
 
 
 def named(name):
-    return with_(properties.name(), wrap_matcher(name))
+    return with_(properties.name(), name)
 
 
 def with_buddy(buddy):
-    return with_(properties.label_buddy(), wrap_matcher(buddy))
+    return with_(properties.label_buddy(), buddy)
 
 
 def with_pixmap_height(height):
-    return with_(properties.pixmap_height(), wrap_matcher(height))
+    return with_(properties.pixmap_height(), height)
 
 
 def with_pixmap_width(width):
-    return with_(properties.pixmap_width(), wrap_matcher(width))
+    return with_(properties.pixmap_width(), width)
 
 
 def with_text(text):
-    return with_(properties.text(), wrap_matcher(text))
+    return with_(properties.text(), text)
 
 
 def with_data(data):
-    return with_(properties.data(), wrap_matcher(data))
+    return with_(properties.data(), data)
 
 
 def with_list_item_text(text):
-    return with_(properties.list_item_text(), wrap_matcher(text))
+    return with_(properties.list_item_text(), text)
 
 
 def with_(query, matcher):
@@ -78,7 +78,7 @@ class QueryResultMatcher(BaseMatcher):
     def __init__(self, query, matcher):
         super().__init__()
         self._query = query
-        self._result_matcher = matcher
+        self._result_matcher = wrap_matcher(matcher)
 
     def _matches(self, widget):
         return widget and self._result_matcher.matches(self._query(widget))

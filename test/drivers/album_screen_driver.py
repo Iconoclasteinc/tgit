@@ -2,11 +2,12 @@
 from hamcrest.library.text import contains_string
 
 from cute.matchers import named
+from cute.properties import name
 from tgit.ui.album_screen import AlbumScreen
 from ._screen_driver import ScreenDriver
-from .album_edition_page_driver import album_edition_page
-from .track_list_page_driver import track_list_page
-from .track_edition_page_driver import track_edition_page
+from .album_edition_page_driver import album_edition_page, no_album_edition_page
+from .track_list_page_driver import track_list_page, no_track_list_page
+from .track_edition_page_driver import track_edition_page, no_track_edition_page
 
 
 def album_screen(parent):
@@ -17,11 +18,22 @@ class AlbumScreenDriver(ScreenDriver):
     def shows_track_list_page(self):
         track_list_page(self).is_showing_on_screen()
 
-    def showsAlbumEditionPage(self):
+    def has_no_track_list_page(self):
+        no_track_list_page(self).exists()
+
+    def shows_album_edition_page(self):
         album_edition_page(self).is_showing_on_screen()
 
-    def showsTrackEditionPage(self):
-        track_edition_page(self).is_showing_on_screen()
+    def has_no_album_edition_page(self):
+        no_album_edition_page(self).exists()
+
+    def shows_track_edition_page(self):
+        page = track_edition_page(self)
+        page.is_showing_on_screen()
+        return page
+
+    def has_no_track_edition_page(self):
+        no_track_edition_page(self).exists()
 
     def add_tracks_to_album(self):
         track_list_page(self).add_tracks()
@@ -32,23 +44,17 @@ class AlbumScreenDriver(ScreenDriver):
     def move_track(self, title, to):
         track_list_page(self).move_track(title, to)
 
-    def previousPage(self):
+    def to_previous_page(self):
         self.button(named("previous")).click()
 
-    def nextPage(self):
+    def to_next_page(self):
         self.button(named("next")).click()
 
-    def hidesPreviousPageButton(self):
+    def is_missing_previous_page_button(self):
         self.button(named("previous")).is_disabled()
 
-    def showsPreviousPageButton(self):
-        self.button(named("previous")).is_enabled()
-
-    def hidesNextPageButton(self):
+    def is_missing_next_page_button(self):
         self.button(named("next")).is_disabled()
-
-    def showsNextPageButton(self):
-        self.button(named("next")).is_enabled()
 
     def shows_album_contains(self, *tracks):
         track_list_page(self).shows_tracks_in_order(*tracks)
@@ -65,10 +71,10 @@ class AlbumScreenDriver(ScreenDriver):
     def edit_track_metadata(self, **tags):
         track_edition_page(self).change_metadata(**tags)
 
-    def linksHelpTo(self, location):
+    def links_help_to(self, location):
         self.label(named("help_link")).has_text(contains_string("href=\"{0}\"".format(location)))
 
-    def linksFeatureRequestTo(self, location):
+    def links_feature_request_to(self, location):
         self.label(named("feature_request_link")).has_text(contains_string("href=\"{0}".format(location)))
 
     def assign_isni_to_lead_performer(self):

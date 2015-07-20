@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hamcrest import starts_with
+from hamcrest import starts_with, is_
 
 from cute.matchers import named, with_buddy, showing_on_screen, with_pixmap_height, with_pixmap_width
 from tgit.ui.track_edition_page import TrackEditionPage
@@ -7,7 +7,12 @@ from ._screen_driver import ScreenDriver
 
 
 def track_edition_page(parent):
-    return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named('track-edition-page'), showing_on_screen())
+    return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named(starts_with("track_edition_page")),
+                                              showing_on_screen())
+
+
+def no_track_edition_page(parent):
+    return TrackEditionPageDriver.find_none(parent, TrackEditionPage, named(starts_with("track_edition_page")))
 
 
 class TrackEditionPageDriver(ScreenDriver):

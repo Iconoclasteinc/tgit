@@ -22,10 +22,13 @@ from PyQt5.QtWidgets import QLabel, QWidget, QGroupBox
 
 from tgit.album import AlbumListener
 from tgit.languages import LANGUAGES
+from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import form, image, formatting
 
 
+@Closeable
 class TrackEditionPage(QWidget, AlbumListener):
+    closed = pyqtSignal()
     metadataChanged = pyqtSignal(dict)
 
     ALBUM_COVER_SIZE = 60, 60

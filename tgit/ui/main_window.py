@@ -375,10 +375,10 @@ class MainWindow(QMainWindow, HandlerRegistrar):
             return "{0} - {1}".format(number, title)
 
         def update_name(menu_item, metadata):
-            menu_item.setText("{0} - {1}".format(metadata["track_number"], metadata["track_title"]))
+            menu_item.setText("{0} - {1}".format(metadata.track_number, metadata.track_title))
 
         action = QAction(format_name(track.track_number, track.track_title), self)
-        action.triggered.connect(lambda _: self._to_track_page(track.track_number))
+        action.triggered.connect(lambda _: self._to_track_page(track.track_number - 1))
         self.subscribe(track.metadata_changed, lambda metadata: update_name(action, metadata))
 
         return action
@@ -389,13 +389,13 @@ class MainWindow(QMainWindow, HandlerRegistrar):
             action.setParent(None)
 
     def _to_album_edition_page(self):
-        self.centralWidget().show_album_edition_page()
+        self.centralWidget().to_album_edition_page()
 
     def _to_track_list_page(self):
-        self.centralWidget().show_track_list_page()
+        self.centralWidget().to_track_list_page()
 
     def _to_track_page(self, track_number):
-        self.centralWidget().show_track_page(track_number)
+        self.centralWidget().to_track_page(track_number)
 
     def close(self):
         closed = super().close()
