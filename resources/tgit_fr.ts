@@ -813,5 +813,17 @@
         <source>About TGiT</source>
         <translation>À propos de TGiT</translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align="justify"&gt;Digitized music must contain metadata in order to be licensed, searched, tracked and paid for online usage. Whether factual, cultural (tags and folksonomy), contractual-time-sensitive, content based or usage generated, new norms and standards are being defined to acknowledge the increasing role of music metadata.&lt;/p&gt;&lt;p align="justify"&gt;The TGIT software project is an indexation platform containing music metadata for the use of creators, performers, producers of sound recordings, record labels.&lt;/p&gt;&lt;p align="justify"&gt;For more information, please visit &lt;a href="http://tagyourmusic.com/"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;tagyourmusic.com&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align="justify"&gt;Il n’est pas rare que nous comparions la culture de l’ère numérique à l’air que nous respirons, à l’eau qui coule de nos robinets. Chez TGiT nous soutenons que la musique, substantive matière noble, est comme un fromage qui, sous l’effet de la numérisation, se liquéfie! Les métadonnées sont comme le pain d’un sandwich au fromage fondu, la fibre qui permet de contenir cette liquéfaction, qui permet une consommation optimale et durable de la musique numérisée. Si nous privons la musique numérique des informations qui la décrivent, l’auditeur ne sait pas ce qu’il écoute et les créateurs ne sont pas payés pour leur travail. Si nous privons le « grilled-cheese » du pain, ce n’est plus un sandwich au fromage fondu, c’est un dégât.&lt;/p&lt;p align="justify"&gt;Pour plus d'informations, s'il vous plaît visiter &lt;a href="http://tagyourmusic.com/fr"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;tagyourmusic.com&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>TGiT is built with:</source>
+        <translation>TGIT est construit avec :</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This product is licensed under the &lt;a href="https://gnu.org/licenses/gpl.html"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;GNU General Public License v3&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ce produit est distribué sous la &lt;a href="https://gnu.org/licenses/gpl.html"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;GNU General Public License v3&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
 </context>
 </TS>
