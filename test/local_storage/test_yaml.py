@@ -19,7 +19,7 @@ def project_file(tmpdir):
 
 
 def read_lines(file):
-    content = open(file, "r").read()
+    content = open(file, "r", encoding="utf-8").read()
     return content.split("\n")
 
 
