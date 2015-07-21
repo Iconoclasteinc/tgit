@@ -41,7 +41,7 @@ class TrackEditionPage(QWidget, AlbumListener):
         self.build()
 
     def build(self):
-        self.setObjectName('track-edition-page')
+        self.setObjectName("track_edition_page")
         layout = form.column()
         layout.setSpacing(6)
         layout.addWidget(self.makeAlbumBanner())

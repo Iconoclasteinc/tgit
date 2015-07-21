@@ -70,8 +70,16 @@
     <addaction name="to_album_edition_action"/>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="help_menu">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="_about_action"/>
+    <addaction name="_about_qt_action"/>
+   </widget>
    <addaction name="file_menu"/>
    <addaction name="navigate_menu"/>
+   <addaction name="help_menu"/>
   </widget>
   <action name="settings_action">
    <property name="text">
@@ -143,6 +151,16 @@
    </property>
    <property name="menuRole">
     <enum>QAction::QuitRole</enum>
+   </property>
+  </action>
+  <action name="_about_qt_action">
+   <property name="text">
+    <string>About &amp;Qt</string>
+   </property>
+  </action>
+  <action name="_about_action">
+   <property name="text">
+    <string>&amp;About TGiT</string>
    </property>
   </action>
  </widget>

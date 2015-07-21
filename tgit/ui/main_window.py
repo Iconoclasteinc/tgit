@@ -103,8 +103,8 @@ StyleSheet = """
     }
 
     #performer-dialog QLineEdit,
-    #track-edition-page QLineEdit, #track-edition-page TextArea, #track-edition-page QComboBox,
-    #track-edition-page QComboBox::drop-down, #track-edition-page QComboBox QAbstractItemView {
+    #track_edition_page QLineEdit, #track_edition_page TextArea, #track_edition_page QComboBox,
+    #track_edition_page QComboBox::drop-down, #track_edition_page QComboBox QAbstractItemView {
         background-color: #F9F9F9;
         border: 1px solid #B1B1B1;
         color: #222222;
@@ -112,47 +112,47 @@ StyleSheet = """
     }
 
     #performer-dialog QLineEdit,
-    #track-edition-page QLineEdit, #track-edition-page TextArea, #track-edition-page QComboBox {
+    #track_edition_page QLineEdit, #track_edition_page TextArea, #track_edition_page QComboBox {
         selection-background-color: #F2C1A7;
         selection-color: #222222;
     }
 
     #performer-dialog QLineEdit:focus,
-    #track-edition-page QLineEdit:focus, #track-edition-page TextArea:focus, #track-edition-page QComboBox:focus,
-    #track-edition-page QComboBox:on, #track-edition-page QComboBox::drop-down:focus,
-    #track-edition-page QComboBox::drop-down:on, #track-edition-page QComboBox QAbstractItemView:focus  {
+    #track_edition_page QLineEdit:focus, #track_edition_page TextArea:focus, #track_edition_page QComboBox:focus,
+    #track_edition_page QComboBox:on, #track_edition_page QComboBox::drop-down:focus,
+    #track_edition_page QComboBox::drop-down:on, #track_edition_page QComboBox QAbstractItemView:focus  {
         border: 1px solid #F79D6C;
     }
 
     #performer-dialog QLineEdit:disabled,
-    #track-edition-page QLineEdit:disabled, #track-edition-page TextArea:disabled,
-    #track-edition-page QSpinBox:disabled {
+    #track_edition_page QLineEdit:disabled, #track_edition_page TextArea:disabled,
+    #track_edition_page QSpinBox:disabled {
         background-color: #FCFCFC;
         border-color: #E7E7E7;
         color: #C2C2C2;
     }
 
-    #track-edition-page QComboBox:disabled, #track-edition-page QComboBox::drop-down:disabled,
-    #track-edition-page QTimeEdit:disabled {
+    #track_edition_page QComboBox:disabled, #track_edition_page QComboBox::drop-down:disabled,
+    #track_edition_page QTimeEdit:disabled {
         background-color: #FCFCFC;
         border-color: #E7E7E7;
         color: #C2C2C2;
     }
 
-    #track-edition-page QLabel {
+    #track_edition_page QLabel {
         color: #444444;
         min-width: 175px;
     }
 
-    #track-edition-page #content QLabel {
+    #track_edition_page #content QLabel {
         min-width: 125px;
     }
 
-    #track-edition-page QLabel:disabled {
+    #track_edition_page QLabel:disabled {
         color: #C2C2C2;
     }
 
-    #track-edition-page QComboBox::drop-down {
+    #track_edition_page QComboBox::drop-down {
         padding: 0;
         margin: 0;
         subcontrol-origin: border;
@@ -160,11 +160,11 @@ StyleSheet = """
         width: 20px;
     }
 
-    #track-edition-page QComboBox::down-arrow {
+    #track_edition_page QComboBox::down-arrow {
         image: url(:/down-arrow.png);
     }
 
-    #track-edition-page QComboBox::down-arrow:on, #track-edition-page QComboBox::down-arrow:focus {
+    #track_edition_page QComboBox::down-arrow:on, #track_edition_page QComboBox::down-arrow:focus {
         image: url(:/down-arrow-on.png);
     }
 
@@ -202,7 +202,7 @@ StyleSheet = """
         max-width: 300px;
     }
 
-    #track-edition-page #software-notice {
+    #track_edition_page #software-notice {
         font-size: 10px;
         margin-right: 8px;
     }
@@ -225,7 +225,7 @@ StyleSheet = """
 
 if mac:
     StyleSheet += """
-        #track-edition-page QComboBox {
+        #track_edition_page QComboBox {
             padding-left: 1px;
             padding-top: 1px;
             margin-left: 3px;
@@ -336,6 +336,12 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
         self.add_files_action.triggered.connect(lambda *_: self._select_tracks(self._album.type, add_files))
         self.add_folder_action.triggered.connect(lambda *_: self._select_tracks_in_folder(self._album.type, add_files))
+
+    def on_about(self, handler):
+        self._about_action.triggered.connect(handler)
+
+    def on_about_qt(self, handler):
+        self._about_qt_action.triggered.connect(handler)
 
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)

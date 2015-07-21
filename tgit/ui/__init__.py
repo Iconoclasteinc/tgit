@@ -20,6 +20,7 @@ import functools as func
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
+from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
 from tgit.ui.startup_screen import StartupScreen
@@ -164,7 +165,9 @@ def create_main_window(portfolio, player, preferences, name_registry, native, co
                         on_save_album=director.save_album(),
                         on_add_files=director.add_tracks,
                         on_export=director.export_as_csv,
-                        on_settings=show_settings_dialog)
+                        on_settings=show_settings_dialog,
+                        on_about_qt=messages.about_qt,
+                        on_about=messages.about_tgit)
     dialogs.parent = window
     messages.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())

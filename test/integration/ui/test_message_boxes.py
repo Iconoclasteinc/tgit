@@ -19,18 +19,30 @@
 from PyQt5.QtWidgets import QMessageBox
 from hamcrest import contains_string
 import pytest
+import sys
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import QMessageBoxDriver, window
+from test.drivers.about_dialog_driver import AboutDialogDriver
+from tgit.ui import AboutDialog
 from tgit.ui.message_boxes import MessageBoxes
 
-DISPLAY_DELAY = 200
+mac = sys.platform == "darwin"
+
+DISPLAY_DELAY = 200 if mac else 0
 
 
 @pytest.yield_fixture()
 def driver(qt, prober, automaton):
     message_box_driver = QMessageBoxDriver(window(QMessageBox, named("message_box")), prober, automaton)
+    yield message_box_driver
+    message_box_driver.close()
+
+
+@pytest.yield_fixture()
+def about_tgit_driver(qt, prober, automaton):
+    message_box_driver = AboutDialogDriver(window(AboutDialog, named("about_tgit_dialog")), prober, automaton)
     yield message_box_driver
     message_box_driver.close()
 
@@ -97,3 +109,9 @@ def test_shows_export_failed_message(driver):
 
     driver.is_active()
     driver.shows_message("Could not export your album.")
+
+
+def test_shows_about_message(about_tgit_driver):
+    _ = messages().about_tgit()
+
+    about_tgit_driver.is_active()

@@ -26,12 +26,14 @@
         <file>images/chevron-up-black-8.png</file>
         <file>images/question-18.png</file>
         <file>images/add-track-30.png</file>
+        <file>images/logo-vert-big.png</file>
         <file>ui/welcome_page.ui</file>
         <file>ui/main_window.ui</file>
         <file>ui/album_screen.ui</file>
         <file>ui/album_page.ui</file>
         <file>ui/new_album_page.ui</file>
         <file>ui/track_list_page.ui</file>
+        <file>ui/about_dialog.ui</file>
         <file>images/folder.png</file>
         <file>images/folder-hover.png</file>
         <file>images/folder-open.png</file>

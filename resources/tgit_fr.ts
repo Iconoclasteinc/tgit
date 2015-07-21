@@ -412,6 +412,11 @@
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
+        <source>&amp;Help</source>
+        <translation>&amp;Aide</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
         <source>Add &amp;Files...</source>
         <translation>Ajouter des &amp;fichiers... </translation>
     </message>
@@ -447,6 +452,16 @@
         <location filename="tgit/ui/main_window.py"/>
         <source>&amp;Track list</source>
         <translation>&amp;Liste des pistes</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>&amp;About TGiT</source>
+        <translation>À &amp;propos de TGiT</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>About &amp;Qt</source>
+        <translation>À propos de &amp;Qt</translation>
     </message>
 </context>
 <context>
@@ -790,6 +805,13 @@
         <location filename="tgit/ui/track_selection_dialog.py"/>
         <source>MP3 files</source>
         <translation>Fichiers MP3</translation>
+    </message>
+</context>
+<context>
+    <name>about_tgit_dialog</name>
+    <message>
+        <source>About TGiT</source>
+        <translation>À propos de TGiT</translation>
     </message>
 </context>
 </TS>

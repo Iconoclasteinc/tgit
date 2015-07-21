@@ -124,3 +124,9 @@ class MainWindowDriver(WidgetDriver):
             self.perform(gestures.save())
         else:
             menu_bar(self).file.save()
+
+    def about_qt(self):
+        menu_bar(self).help.about_qt()
+
+    def about(self):
+        menu_bar(self).help.about()

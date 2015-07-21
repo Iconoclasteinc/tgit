@@ -20,6 +20,10 @@ class MenuBarDriver(QMenuBarDriver):
     def navigate(self):
         return self.NavigateMenuDriver(self.open_menu(matchers.named("navigate_menu")))
 
+    @property
+    def help(self):
+        return self.HelpMenuDriver(self.open_menu(matchers.named("help_menu")))
+
     def open_menu(self, matching):
         menu = self.menu(matching)
         menu.open()
@@ -81,6 +85,16 @@ class MenuBarDriver(QMenuBarDriver):
 
         def is_disabled(self):
             self._menu_driver.is_disabled()
+
+    class HelpMenuDriver:
+        def __init__(self, menu_driver):
+            self._menu_driver = menu_driver
+
+        def about_qt(self):
+            self._menu_driver.select_menu_item(matchers.named("_about_qt_action"))
+
+        def about(self):
+            self._menu_driver.select_menu_item(matchers.named("_about_action"))
 
 
 def without_item(title):
