@@ -139,6 +139,15 @@ def test_signals_when_about_menu_item_clicked(driver):
     driver.check(about_signal)
 
 
+def test_signals_when_online_help_menu_item_clicked(driver):
+    online_help_signal = ValueMatcherProbe("online help", "http://tagyourmusic.com/#style-guide")
+
+    show_page(on_online_help=online_help_signal.received)
+
+    driver.help()
+    driver.check(online_help_signal)
+
+
 @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")
 def test_signals_when_save_album_keyboard_shortcut_is_activated(driver):
     album = make_album()

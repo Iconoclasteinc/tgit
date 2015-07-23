@@ -38,6 +38,7 @@ from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_page import WelcomePage
 from tgit.ui.album_screen import album_screen as AlbumScreen
+from tgit.util import browser
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
 
@@ -167,7 +168,8 @@ def create_main_window(portfolio, player, preferences, name_registry, native, co
                         on_export=director.export_as_csv,
                         on_settings=show_settings_dialog,
                         on_about_qt=messages.about_qt,
-                        on_about=messages.about_tgit)
+                        on_about=messages.about_tgit,
+                        on_online_help=browser.open_)
     dialogs.parent = window
     messages.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())

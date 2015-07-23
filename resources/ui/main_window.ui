@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="file_menu">
@@ -74,6 +74,8 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="_online_help_action"/>
+    <addaction name="separator"/>
     <addaction name="_about_action"/>
     <addaction name="_about_qt_action"/>
    </widget>
@@ -161,6 +163,11 @@
   <action name="_about_action">
    <property name="text">
     <string>&amp;About TGiT</string>
+   </property>
+  </action>
+  <action name="_online_help_action">
+   <property name="text">
+    <string>&amp;Online Help</string>
    </property>
   </action>
  </widget>

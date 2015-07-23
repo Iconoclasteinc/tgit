@@ -148,19 +148,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLabel" name="help_link">
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="text">
-         <string>&lt;a style=&quot;color: white&quot; href=&quot;http://tagyourmusic.com/#style-guide&quot;&gt;Help&lt;/a&gt;</string>
-        </property>
-        <property name="openExternalLinks">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>

@@ -343,6 +343,9 @@ class MainWindow(QMainWindow, HandlerRegistrar):
     def on_about_qt(self, handler):
         self._about_qt_action.triggered.connect(handler)
 
+    def on_online_help(self, handler):
+        self._online_help_action.triggered.connect(lambda _: handler(self.tr("http://tagyourmusic.com/#style-guide")))
+
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)
         self.setStyleSheet(StyleSheet)

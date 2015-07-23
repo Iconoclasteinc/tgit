@@ -346,11 +346,6 @@
         <translation>ÉTAPE SUIVANTE</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_screen.py" line="67"/>
-        <source>&lt;a style="color: white" href="http://tagyourmusic.com/#style-guide"&gt;Help&lt;/a&gt;</source>
-        <translation>&lt;a style="color: white" href="http://tagyourmusic.com/#style-guide"&gt;Aide&lt;/a&gt;</translation>
-    </message>
-    <message>
         <location filename="tgit/ui/album_screen.py" line="75"/>
         <source>&lt;a style="color: white" href="mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!"&gt;Request Feature&lt;/a&gt;</source>
         <translation>&lt;a style="color: white" href="mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !"&gt;Réclamer une nouvelle fonctionnalité&lt;/a&gt;</translation>
@@ -462,6 +457,19 @@
         <location filename="tgit/ui/main_window.py"/>
         <source>About &amp;Qt</source>
         <translation>À propos de &amp;Qt</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>&amp;Online Help</source>
+        <translation>&amp;Aide en ligne</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>http://tagyourmusic.com/#style-guide</source>
+        <translation>http://tagyourmusic.com/fr/#guide-tgit</translation>
     </message>
 </context>
 <context>
