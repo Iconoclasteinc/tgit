@@ -133,3 +133,6 @@ class MainWindowDriver(WidgetDriver):
 
     def help(self):
         menu_bar(self).help.online_help()
+
+    def request_feature(self):
+        menu_bar(self).help.request_feature()

@@ -56,16 +56,6 @@ def driver(qt, prober, automaton):
     album_screen_driver.close()
 
 
-def test_includes_help_link_in_header(driver):
-    _ = display_album_screen()
-    driver.links_help_to("http://tagyourmusic.com/#style-guide")
-
-
-def test_includes_feature_request_link_in_header(driver):
-    _ = display_album_screen()
-    driver.links_feature_request_to("mailto:iconoclastejr@gmail.com")
-
-
 def test_is_initially_empty(driver):
     _ = display_album_screen()
 

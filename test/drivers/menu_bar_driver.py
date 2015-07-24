@@ -99,6 +99,9 @@ class MenuBarDriver(QMenuBarDriver):
         def online_help(self):
             self._menu_driver.select_menu_item(matchers.named("_online_help_action"))
 
+        def request_feature(self):
+            self._menu_driver.select_menu_item(matchers.named("_request_feature_action"))
+
 
 def without_item(title):
     return is_not(has_item(title))

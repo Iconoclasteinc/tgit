@@ -344,7 +344,11 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self._about_qt_action.triggered.connect(handler)
 
     def on_online_help(self, handler):
-        self._online_help_action.triggered.connect(lambda _: handler(self.tr("http://tagyourmusic.com/#style-guide")))
+        self._online_help_action.triggered.connect(lambda _: handler(self.tr("http://tagyourmusic.com/#documentation")))
+
+    def on_request_feature(self, handler):
+        self._request_feature_action.triggered.connect(
+            lambda _: handler(self.tr("mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!")))
 
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)

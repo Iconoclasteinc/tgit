@@ -15,15 +15,8 @@
 	margin: 5 15px 5px 15px;
 }
 
-#navigation {
-    min-height: 48px;
-}
-
 #controls {
     min-height: 48px;
-}
-
-#controls, #navigation {
     background-color: #595959;
 }
 
@@ -44,32 +37,6 @@
     border-image: url(:/nothing.png) 1 1 1 1;
     background-color: transparent;
     color: transparent;
-}
-
-#save {
-    border: 2px solid #F25C0A;
-    border-radius: 5px;
-    background-color: #F25C0A;
-    font-size: 15px;
-    min-width: 110px;
-    font-weight: bold;
-    color: white;
-    padding: 5px 8px 5px 8px;
-}
-
-#save:disabled {
-    background-color: transparent;
-    border: none;
-    color: transparent;
-}
-
-#save:focus, #save:hover {
-    background-color: #D95109;
-    border-color: #D95109;
-}
-
-#save:pressed {
-    border: 2px solid #595959;
 }
 
 #next {
@@ -107,50 +74,6 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
-    <widget class="QWidget" name="navigation" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="leftMargin">
-       <number>25</number>
-      </property>
-      <property name="topMargin">
-       <number>10</number>
-      </property>
-      <property name="rightMargin">
-       <number>25</number>
-      </property>
-      <property name="bottomMargin">
-       <number>10</number>
-      </property>
-      <item>
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="feature_request_link">
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="text">
-         <string>&lt;a style=&quot;color: white&quot; href=&quot;mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!&quot;&gt;Request Feature&lt;/a&gt;</string>
-        </property>
-        <property name="openExternalLinks">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item>
     <widget class="QStackedWidget" name="pages">
      <property name="currentIndex">

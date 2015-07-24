@@ -140,12 +140,22 @@ def test_signals_when_about_menu_item_clicked(driver):
 
 
 def test_signals_when_online_help_menu_item_clicked(driver):
-    online_help_signal = ValueMatcherProbe("online help", "http://tagyourmusic.com/#style-guide")
+    online_help_signal = ValueMatcherProbe("online help", "http://tagyourmusic.com/#documentation")
 
     show_page(on_online_help=online_help_signal.received)
 
     driver.help()
     driver.check(online_help_signal)
+
+
+def test_signals_when_request_feature_menu_item_clicked(driver):
+    request_feature_signal = ValueMatcherProbe("request feature",
+                                               "mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!")
+
+    show_page(on_request_feature=request_feature_signal.received)
+
+    driver.request_feature()
+    driver.check(request_feature_signal)
 
 
 @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")

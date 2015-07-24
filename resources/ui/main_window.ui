@@ -75,6 +75,7 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="_online_help_action"/>
+    <addaction name="_request_feature_action"/>
     <addaction name="separator"/>
     <addaction name="_about_action"/>
     <addaction name="_about_qt_action"/>
@@ -168,6 +169,11 @@
   <action name="_online_help_action">
    <property name="text">
     <string>&amp;Online Help</string>
+   </property>
+  </action>
+  <action name="_request_feature_action">
+   <property name="text">
+    <string>&amp;Request a Feature</string>
    </property>
   </action>
  </widget>

@@ -345,11 +345,6 @@
         <source>NEXT</source>
         <translation>ÉTAPE SUIVANTE</translation>
     </message>
-    <message>
-        <location filename="tgit/ui/album_screen.py" line="75"/>
-        <source>&lt;a style="color: white" href="mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!"&gt;Request Feature&lt;/a&gt;</source>
-        <translation>&lt;a style="color: white" href="mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !"&gt;Réclamer une nouvelle fonctionnalité&lt;/a&gt;</translation>
-    </message>
 </context>
 <context>
     <name>ISNILookupDialog</name>
@@ -463,13 +458,23 @@
         <source>&amp;Online Help</source>
         <translation>&amp;Aide en ligne</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>&amp;Request a Feature</source>
+        <translation>&amp;Réclamer une fonctionnalité</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>http://tagyourmusic.com/#style-guide</source>
-        <translation>http://tagyourmusic.com/fr/#guide-tgit</translation>
+        <source>http://tagyourmusic.com/#documentation</source>
+        <translation>http://tagyourmusic.com/fr/#documentation</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!</source>
+        <translation>mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !</translation>
     </message>
 </context>
 <context>
