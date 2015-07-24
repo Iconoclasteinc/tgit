@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>740</width>
     <height>300</height>
    </rect>
   </property>
@@ -29,7 +29,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Organize the release's tracks.</string>
+         <string>Organize the release's tracks. Press [space] to play a track. Press [delete] to remove the track from the list.</string>
         </property>
        </widget>
       </item>
@@ -333,7 +333,7 @@ QMenu::item::selected {
           <string>#</string>
          </property>
          <property name="textAlignment">
-          <set>AlignRight|AlignVCenter</set>
+          <set>AlignTrailing|AlignVCenter</set>
          </property>
         </column>
         <column>
@@ -341,7 +341,7 @@ QMenu::item::selected {
           <string/>
          </property>
          <property name="textAlignment">
-          <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          <set>AlignCenter</set>
          </property>
         </column>
         <column>
@@ -349,7 +349,7 @@ QMenu::item::selected {
           <string>Track Title</string>
          </property>
          <property name="textAlignment">
-          <set>AlignLeft|AlignVCenter</set>
+          <set>AlignLeading|AlignVCenter</set>
          </property>
         </column>
         <column>
@@ -357,7 +357,7 @@ QMenu::item::selected {
           <string>Lead Performer</string>
          </property>
          <property name="textAlignment">
-          <set>AlignLeft|AlignVCenter</set>
+          <set>AlignLeading|AlignVCenter</set>
          </property>
         </column>
         <column>
@@ -365,7 +365,7 @@ QMenu::item::selected {
           <string>Release Name</string>
          </property>
          <property name="textAlignment">
-          <set>AlignLeft|AlignVCenter</set>
+          <set>AlignLeading|AlignVCenter</set>
          </property>
         </column>
         <column>
@@ -373,7 +373,7 @@ QMenu::item::selected {
           <string>Bitrate</string>
          </property>
          <property name="textAlignment">
-          <set>AlignRight|AlignVCenter</set>
+          <set>AlignTrailing|AlignVCenter</set>
          </property>
         </column>
         <column>
@@ -381,7 +381,7 @@ QMenu::item::selected {
           <string>Duration</string>
          </property>
          <property name="textAlignment">
-          <set>AlignRight|AlignVCenter</set>
+          <set>AlignTrailing|AlignVCenter</set>
          </property>
         </column>
        </widget>
