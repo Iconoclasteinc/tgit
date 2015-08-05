@@ -35,119 +35,121 @@ class NameRegistry(object):
         SUCCESS = "SUCCESS"
 
     def __init__(self, host=None, assign_host=None, port=None, secure=False, username=None, password=None):
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
-        self.secure = secure
-        self.assign_host = assign_host
+        self._host = host
+        self._port = port
+        self._username = username
+        self._password = password
+        self._secure = secure
+        self._assign_host = assign_host
 
     def search_by_keywords(self, *keywords):
-        response = requests.get(self.uri() + create_payload_from(keywords), verify=False)
+        response = requests.get(self._uri + _create_payload_from(keywords), verify=False)
         results = etree.fromstring(response.content)
-        matches = extract_response_records_from(results)
-        number_of_records = extract_number_of_records(results)
+        matches = _extract_response_records_from(results)
+        number_of_records = _extract_number_of_records(results)
         return number_of_records, matches
 
     def assign(self, forename, surname, title_of_works):
-        response = self.request_assignation(forename, surname, title_of_works)
-        return self.handle_assignation_response(etree.fromstring(response.content))
+        response = self._request_assignation(forename, surname, title_of_works)
+        return self._handle_assignation_response(etree.fromstring(response.content))
 
-    def request_assignation(self, forename, surname, title_of_works):
+    def _request_assignation(self, forename, surname, title_of_works):
         titles = "".join("<title>{0}</title>".format(title) for title in title_of_works)
-        payload = create_assignation_payload(forename, surname, titles)
+        payload = _create_assignation_payload(forename, surname, titles)
         headers = {"content-type": "application/atom+xml"}
-        response = requests.post(self.assign_uri(), data=payload, headers=headers, verify=False)
+        response = requests.post(self._assign_uri, data=payload, headers=headers, verify=False)
         return response
 
-    def handle_assignation_response(self, response):
+    def _handle_assignation_response(self, response):
         assigned = response.find("ISNIAssigned")
         if assigned is not None:
             return self.Codes.SUCCESS, assigned.find("isniUnformatted").text
 
         no_isni = response.find("noISNI")
         if no_isni is not None:
-            return self.Codes.ERROR, get_information_field_value(no_isni)
+            return self.Codes.ERROR, _get_information_field_value(no_isni)
 
         return None
 
-    def uri(self):
-        fragments = ["https" if self.secure else "http", "://", self.host]
-        if self.port is not None:
+    @property
+    def _uri(self):
+        fragments = ["https" if self._secure else "http", "://", self._host]
+        if self._port is not None:
             fragments.append(":")
-            fragments.append(str(self.port))
+            fragments.append(str(self._port))
 
         fragments.append("/sru")
 
-        if self.username is not None:
+        if self._username is not None:
             fragments.append("/username=")
-            fragments.append(self.username)
+            fragments.append(self._username)
             fragments.append("/password=")
-            fragments.append(self.password)
+            fragments.append(self._password)
             fragments.append("/DB=1.3")
         else:
             fragments.append("/DB=1.2")
         return "".join(fragments)
 
-    def assign_uri(self):
-        fragments = ["https" if self.secure else "http", "://", self.assign_host]
-        if self.port is not None:
+    @property
+    def _assign_uri(self):
+        fragments = ["https" if self._secure else "http", "://", self._assign_host]
+        if self._port is not None:
             fragments.append(":")
-            fragments.append(str(self.port))
+            fragments.append(str(self._port))
 
         fragments.append("/ATOM/isni")
         return "".join(fragments)
 
 
-def get_information_field_value(no_isni):
+def _get_information_field_value(no_isni):
     return no_isni.xpath("//information/text()")[0]
 
 
-def extract_number_of_records(results):
+def _extract_number_of_records(results):
     return results.xpath("//srw:numberOfRecords/text()", namespaces=NAMESPACES)[0]
 
 
-def extract_response_records_from(results):
+def _extract_response_records_from(results):
     matched = []
     for record in results.xpath("//responseRecord"):
-        identity = parse_identity_from(record)
+        identity = _parse_identity_from(record)
         if identity is not None:
             matched.append(identity)
     return matched
 
 
-def parse_identity_from(record):
+def _parse_identity_from(record):
     assigned = record.find("ISNIAssigned")
     if assigned is not None:
         isni = assigned.find("isniUnformatted").text
-        if is_person(assigned):
-            surname = get_longest_in(assigned, ".//personalName/surname")
-            forename = get_longest_in(assigned, ".//personalName/forename")
-            date = get_longest_in(assigned, ".//personalName/dates")
-            title = get_longest_in(assigned, ".//creativeActivity/titleOfWork/title")
-            return isni, ("{0} {1}".format(forename, surname), date, remove_line_start_character(title))
+        if _is_person(assigned):
+            surname = _get_longest_in(assigned, ".//personalName/surname")
+            forename = _get_longest_in(assigned, ".//personalName/forename")
+            date = _get_longest_in(assigned, ".//personalName/dates")
+            title = _get_longest_in(assigned, ".//creativeActivity/titleOfWork/title")
+            return isni, ("{0} {1}".format(forename, surname), date, _remove_line_start_character(title))
 
-        if is_organisation(assigned):
-            name = get_organisation_name_from(assigned)
-            title = get_longest_in(assigned, ".//creativeActivity/titleOfWork/title")
-            return isni, (name, "", remove_line_start_character(title))
+        if _is_organisation(assigned):
+            name = _get_organisation_name_from(assigned)
+            title = _get_longest_in(assigned, ".//creativeActivity/titleOfWork/title")
+            return isni, (name, "", _remove_line_start_character(title))
 
     return None
 
 
-def get_organisation_name_from(record):
+def _get_organisation_name_from(record):
     organisation_names = record.xpath(".//organisation/organisationName/mainName")
-    return max([normalize(name.text) for name in organisation_names], key=len) if len(organisation_names) > 0 else ""
+    return max([_normalize(name.text) for name in organisation_names], key=len) if len(organisation_names) > 0 else ""
 
 
-def create_payload_from(keywords):
+def _create_payload_from(keywords):
     return "?query=pica.nw%3D{0}+pica.st%3DA" \
            "&operation=searchRetrieve" \
            "&recordSchema=isni-e" \
-           "&maximumRecords=20".format("+".join(format_keywords(keywords)))
+           "&maximumRecords=20".format("+".join(_format_keywords(keywords)))
 
 
-def create_assignation_payload(forename, surname, titles):
+def _create_assignation_payload(forename, surname, titles):
     return """
         <Request>
             <requestID>
@@ -184,13 +186,13 @@ def create_assignation_payload(forename, surname, titles):
     """.format(datetime.utcnow(), "http://tagtamusique.com/", surname, forename, "prf", titles)
 
 
-def format_keywords(keywords):
+def _format_keywords(keywords):
     formatted_keywords = [keyword + "*" for keyword in keywords]
     formatted_keywords[0] += ","
     return formatted_keywords
 
 
-def remove_line_start_character(title):
+def _remove_line_start_character(title):
     index_of_line_start_character = title.rfind("@")
     if index_of_line_start_character > -1:
         return "".join([title[:index_of_line_start_character], title[index_of_line_start_character + 1:]])
@@ -198,19 +200,19 @@ def remove_line_start_character(title):
         return title
 
 
-def get_longest_in(record, xpath):
+def _get_longest_in(record, xpath):
     expressions = [s.text for s in record.xpath(xpath) if s.text is not None]
     return max(expressions, key=len) if len(expressions) > 0 else ""
 
 
-def is_person(record):
+def _is_person(record):
     return len(record.xpath(".//personalName")) > 0
 
 
-def is_organisation(record):
+def _is_organisation(record):
     return len(record.xpath(".//organisation")) > 0
 
 
-def normalize(name):
+def _normalize(name):
     index = name.find("(")
     return name if index == -1 else name[:index].strip()
