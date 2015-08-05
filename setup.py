@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from distutils.cmd import Command
-import sys
 import os
 
 import PyQt5
@@ -10,9 +9,7 @@ from cx_Freeze import setup, Executable
 import cx_Freeze
 
 from tgit import __app_name__, __version__
-
-windows = sys.platform == "win32"
-mac = sys.platform == "darwin"
+from tgit.platform import windows, mac
 
 app_script = "tgit.py"
 app_package = "tgit"
@@ -28,6 +25,7 @@ app_plist = "resources/Info.plist"
 app_source_path = os.getcwd()
 app_build_dir = os.path.join(app_source_path, r"build\exe.win-amd64-3.4") if windows else None
 app_base = "Win32GUI" if windows else None
+wix_version = "3.10" if windows else ""
 
 if windows:
     qt_path = os.path.dirname(PyQt5.__file__)
@@ -102,7 +100,7 @@ if windows:
                     l = l.replace("@APP_ICON@", app_icon)
                     data.append(l)
                 dst.writelines(data)
-            os.environ["PATH"] += ";C:\\Program Files (x86)\\WiX Toolset v3.9\\bin"
+            os.environ["PATH"] += ";C:\\Program Files (x86)\\WiX Toolset v{0}\\bin".format(wix_version)
             os.system("heat.exe dir {0} -gg -sfrag -cg TgitComponent -nologo -dr INSTALLFOLDER -sreg -srd -out {1}\\tgit-dir.wxs".format(app_build_dir, app_msi_dir))
             os.system("candle.exe {0}\\*.wxs -nologo -out {0}\\ ".format(app_msi_dir))
             os.system("light.exe -b {0} -nologo -ext WixUIExtension -cultures:en-us {1}\\*.wixobj -o build\\{2}-{3}.msi".format(app_build_dir, app_msi_dir, app_name, app_version))
