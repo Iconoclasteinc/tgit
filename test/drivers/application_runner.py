@@ -29,7 +29,7 @@ class ApplicationRunner:
         self._workspace = workspace
 
     def start(self, preferences):
-        self.app = TGiT(fake_audio_player, NameRegistry(host="localhost", assign_host="localhost", port=5000),
+        self.app = TGiT(fake_audio_player, NameRegistry(host="localhost", port=5001),
                         native=False, confirm_exit=False)
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),

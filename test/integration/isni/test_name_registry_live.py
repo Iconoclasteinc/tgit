@@ -31,11 +31,6 @@ def production_registry():
     return NameRegistry(host="isni.oclc.nl")
 
 
-@pytest.fixture
-def accept_registry():
-    return NameRegistry(host="isni-m-acc.oclc.nl")
-
-
 def has_identity(isni=anything(), name=anything(), birth_date=anything(), title=anything()):
     return has_item(contains(isni, contains(name, birth_date, title)))
 

@@ -34,16 +34,13 @@ class NameRegistry(object):
         ERROR = "ERROR"
         SUCCESS = "SUCCESS"
 
-    def __init__(self, host=None, assign_host=None, port=None, secure=False, username=None, password=None):
+    def __init__(self, host, port=None, secure=False):
         self._host = host
         self._port = port
-        self._username = username
-        self._password = password
         self._secure = secure
-        self._assign_host = assign_host
 
     def search_by_keywords(self, *keywords):
-        response = requests.get(self._uri + _create_payload_from(keywords), verify=False)
+        response = requests.get(self._lookup_uri(*keywords), verify=False)
         results = etree.fromstring(response.content)
         matches = _extract_response_records_from(results)
         number_of_records = _extract_number_of_records(results)
@@ -54,10 +51,9 @@ class NameRegistry(object):
         return self._handle_assignation_response(etree.fromstring(response.content))
 
     def _request_assignation(self, forename, surname, title_of_works):
-        titles = "".join("<title>{0}</title>".format(title) for title in title_of_works)
-        payload = _create_assignation_payload(forename, surname, titles)
+        payload = _create_assignation_payload(forename, surname, title_of_works)
         headers = {"content-type": "application/atom+xml"}
-        response = requests.post(self._assign_uri, data=payload, headers=headers, verify=False)
+        response = requests.post(self._assignation_uri(), data=payload, headers=headers, verify=False)
         return response
 
     def _handle_assignation_response(self, response):
@@ -71,33 +67,19 @@ class NameRegistry(object):
 
         return None
 
+    def _lookup_uri(self, *keywords):
+        return self._hostname + "/isni/lookup" + _create_payload_from(keywords)
+
+    def _assignation_uri(self):
+        return self._hostname + "/isni/assign"
+
     @property
-    def _uri(self):
+    def _hostname(self):
         fragments = ["https" if self._secure else "http", "://", self._host]
         if self._port is not None:
             fragments.append(":")
             fragments.append(str(self._port))
 
-        fragments.append("/sru")
-
-        if self._username is not None:
-            fragments.append("/username=")
-            fragments.append(self._username)
-            fragments.append("/password=")
-            fragments.append(self._password)
-            fragments.append("/DB=1.3")
-        else:
-            fragments.append("/DB=1.2")
-        return "".join(fragments)
-
-    @property
-    def _assign_uri(self):
-        fragments = ["https" if self._secure else "http", "://", self._assign_host]
-        if self._port is not None:
-            fragments.append(":")
-            fragments.append(str(self._port))
-
-        fragments.append("/ATOM/isni")
         return "".join(fragments)
 
 
@@ -149,7 +131,9 @@ def _create_payload_from(keywords):
            "&maximumRecords=20".format("+".join(_format_keywords(keywords)))
 
 
-def _create_assignation_payload(forename, surname, titles):
+def _create_assignation_payload(forename, surname, title_of_works):
+    titles = "".join("<title>{0}</title>".format(title) for title in title_of_works)
+
     return """
         <Request>
             <requestID>

@@ -18,18 +18,25 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import pytest
 
-from test.util import isni_database
+
+@pytest.yield_fixture()
+def name_server():
+    from test.util import isni_database
+    database_thread = isni_database.start()
+    yield isni_database
+    isni_database.stop(database_thread)
 
 
 @pytest.fixture(autouse=True)
-def isni(request):
-    database_thread = isni_database.start()
-    request.addfinalizer(lambda: isni_database.stop(database_thread))
+def platform(name_server, request):
+    from test.util.platform import isni_api
+    server_thread = isni_api.start(name_server.host(), name_server.port())
+    request.addfinalizer(lambda: isni_api.stop(server_thread))
 
 
-def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace):
+def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, name_server):
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
-    isni_database.assignation_generator = iter(["0000000121707484"])
+    name_server.assignation_generator = iter(["0000000121707484"])
 
     app.import_album("Honeycomb", from_track=track)
     app.shows_track_list(["Salsa Coltrane"])
@@ -45,9 +52,9 @@ def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace):
                              track_title="Salsa Coltrane")
 
 
-def test_failing_to_assign_isni_to_lead_performer_when_data_is_invalid(app, recordings):
+def test_failing_to_assign_isni_to_lead_performer_when_data_is_invalid(app, recordings, name_server):
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
-    isni_database.assignation_generator = iter(["invalid data"])
+    name_server.assignation_generator = iter(["invalid data"])
 
     app.import_album("Honeycomb", from_track=track)
     app.shows_track_list(["Salsa Coltrane"])

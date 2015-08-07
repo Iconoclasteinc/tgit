@@ -28,11 +28,19 @@ import requests
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
 
 _app = Flask(__name__)
-port = 5000
 persons = {}
 organisations = {}
 assignation_generator = iter([])
 assignation_actions = {}
+
+
+def port():
+    return 5000
+
+
+def host():
+    return "localhost"
+
 
 @_app.route("/sru/DB=1.2")
 def _lookup():
@@ -88,13 +96,13 @@ def _shutdown():
 
 
 def start():
-    server_thread = Thread(target=lambda: _app.run(port=port))
+    server_thread = Thread(target=lambda: _app.run(port=port()))
     server_thread.start()
     return server_thread
 
 
 def stop(server_thread):
-    requests.get("http://localhost:{port}/shutdown".format(port=port))
+    requests.get("http://{host}:{port}/shutdown".format(host=host(), port=port()))
     server_thread.join()
 
 

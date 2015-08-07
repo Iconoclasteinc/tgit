@@ -21,7 +21,6 @@ import sys
 from PyQt5.QtCore import QTranslator, QLocale, QSettings
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
-import requests
 
 from tgit.audio import MediaPlayer, create_media_library
 from tgit.isni.name_registry import NameRegistry
@@ -31,8 +30,9 @@ from tgit import ui
 
 
 class TGiT(QApplication):
-    def __init__(self, create_player, name_registry, native=True, confirm_exit=True):
+    def __init__(self, create_player, name_registry, native=True, confirm_exit=True, on_exit=None):
         super().__init__([])
+        self._on_exit = on_exit
         self._confirm_exit = confirm_exit
         self._native = native
         self._name_registry = name_registry
@@ -74,17 +74,21 @@ class TGiT(QApplication):
         exit_value = self.exec_()
         self._player.close()
         self._media_library.close()
+        if self._on_exit is not None:
+            self._on_exit()
         sys.exit(exit_value)
 
 
 def main():
-    requests.packages.urllib3.disable_warnings()
+    from requests.packages import urllib3
+    urllib3.disable_warnings()
 
-    name_registry = NameRegistry(host="isni-m.oclc.nl",
-                                 assign_host="isni-m-acc.oclc.nl",
-                                 secure=True,
-                                 username="ICON",
-                                 password="crmeoS4d")
+    from test.util.platform import isni_api
+    server_thread = isni_api.start("isni.oclc.nl", 80)
 
-    tagger = TGiT(MediaPlayer, name_registry)
+    def shutdown_isni_api():
+        isni_api.stop(server_thread)
+
+    name_registry = NameRegistry(host="localhost", port=5001, secure=False)
+    tagger = TGiT(MediaPlayer, name_registry, on_exit=shutdown_isni_api)
     tagger.launch(Preferences(QSettings()))
