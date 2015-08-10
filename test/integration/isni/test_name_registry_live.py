@@ -26,9 +26,17 @@ from tgit.isni.name_registry import NameRegistry
 pytestmark = pytest.mark.live
 
 
+@pytest.yield_fixture
+def platform():
+    from test.util.platform import isni_api
+    server_thread = isni_api.start("isni.oclc.nl", 80)
+    yield isni_api
+    isni_api.stop(server_thread)
+
+
 @pytest.fixture
-def production_registry():
-    return NameRegistry(host="isni.oclc.nl")
+def production_registry(platform):
+    return NameRegistry(host=platform.host(), port=platform.port())
 
 
 def has_identity(isni=anything(), name=anything(), birth_date=anything(), title=anything()):
