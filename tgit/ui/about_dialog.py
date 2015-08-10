@@ -17,14 +17,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+import sys
+
 from PyQt5.QtWidgets import QDialog
 import mutagen
-import sys
+from PyQt5.QtCore import QT_VERSION_STR, PYQT_VERSION_STR, Qt
 
 import tgit
 from tgit.ui.helpers.ui_file import UIFile
-from PyQt5.QtCore import QT_VERSION_STR, Qt
-from PyQt5.Qt import PYQT_VERSION_STR
 
 
 def _python_version():

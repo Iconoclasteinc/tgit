@@ -19,20 +19,19 @@
 
 import sys
 
-from PyQt5.QtCore import Qt
 import mutagen
-
 import pytest
-from PyQt5.QtCore import QT_VERSION_STR
-
-from PyQt5.Qt import PYQT_VERSION_STR
+from PyQt5.QtCore import Qt, QT_VERSION_STR, PYQT_VERSION_STR
 
 from cute.matchers import named
 from cute.widgets import window
 from test.drivers.about_dialog_driver import AboutDialogDriver
 from test.integration.ui import show_widget
+from tgit.platform import mac
 from tgit.ui import AboutDialog
 from tgit import __version__
+
+DISPLAY_DELAY = 200 if mac else 0
 
 
 def show_dialog():
@@ -76,5 +75,6 @@ def test_shows_pyqt_version(driver):
 
 def test_closes_dialog(driver):
     _ = show_dialog()
+    driver.pause(DISPLAY_DELAY)
     driver.ok()
     driver.is_hidden()
