@@ -156,7 +156,7 @@ class AlbumEditionPageDriver(ScreenDriver):
         edit.has_text(name)
         edit.is_disabled(disabled)
 
-    def enablesISNILookup(self, enabled=True):
+    def enables_isni_lookup(self, enabled=True):
         button = self.button(named("lookup_isni_button"))
         button.is_enabled(enabled)
 

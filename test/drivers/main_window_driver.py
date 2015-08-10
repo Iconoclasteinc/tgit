@@ -8,6 +8,7 @@ from .message_box_driver import message_box
 from .settings_dialog_driver import settings_dialog
 from .menu_bar_driver import menu_bar
 from .new_album_page_driver import new_album_page
+from test.drivers.sign_in_dialog_driver import sign_in_dialog
 from .welcome_screen_driver import welcome_page
 
 
@@ -136,3 +137,10 @@ class MainWindowDriver(WidgetDriver):
 
     def request_feature(self):
         menu_bar(self).help.request_feature()
+
+    def sign_in(self, username, password):
+        menu_bar(self).account.sign_in()
+        sign_in_dialog(self).sign_in(username, password)
+
+    def isni_lookup_enabled(self):
+        album_screen(self).lookup_isni_is_enabled()

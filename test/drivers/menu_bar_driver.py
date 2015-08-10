@@ -21,6 +21,10 @@ class MenuBarDriver(QMenuBarDriver):
         return self.NavigateMenuDriver(self.open_menu(matchers.named("navigate_menu")))
 
     @property
+    def account(self):
+        return self.AccountMenuDriver(self.open_menu(matchers.named("_account_menu")))
+
+    @property
     def help(self):
         return self.HelpMenuDriver(self.open_menu(matchers.named("help_menu")))
 
@@ -101,6 +105,13 @@ class MenuBarDriver(QMenuBarDriver):
 
         def request_feature(self):
             self._menu_driver.select_menu_item(matchers.named("_request_feature_action"))
+
+    class AccountMenuDriver:
+        def __init__(self, menu_driver):
+            self._menu_driver = menu_driver
+
+        def sign_in(self):
+            self._menu_driver.menu_item(matchers.named("_sign_in_action")).click()
 
 
 def without_item(title):

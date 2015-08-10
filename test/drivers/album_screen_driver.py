@@ -82,3 +82,6 @@ class AlbumScreenDriver(ScreenDriver):
 
     def lookup_isni_of_lead_performer(self):
         album_edition_page(self).lookup_isni_of_lead_performer()
+
+    def lookup_isni_is_enabled(self):
+        album_edition_page(self).enables_isni_lookup()

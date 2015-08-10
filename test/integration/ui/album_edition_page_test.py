@@ -96,23 +96,23 @@ class AlbumEditionPageTest(WidgetTest):
     def testTogglesLookupISNIButtonWhenAlbumIsNoLongerACompilation(self):
         album = build.album(compilation=True, lead_performer="Album Artist")
         self.render(album)
-        self.driver.enablesISNILookup(False)
+        self.driver.enables_isni_lookup(False)
 
         album.compilation = False
         self.page.refresh(album)
-        self.driver.enablesISNILookup()
+        self.driver.enables_isni_lookup()
 
     def testDisablesLookupISNIButtonWhenAlbumIsACompilation(self):
         self.render(build.album(compilation=True, lead_performer="Album Artist"))
-        self.driver.enablesISNILookup(False)
+        self.driver.enables_isni_lookup(False)
 
     def testDisablesLookupISNIButtonWhenLeadPerformerIsEmpty(self):
         self.render(build.album(lead_performer=""))
-        self.driver.enablesISNILookup(False)
+        self.driver.enables_isni_lookup(False)
 
     def testDisablesLookupISNIButtonWhenLeadPerformerIsBlank(self):
         self.render(build.album(lead_performer="     "))
-        self.driver.enablesISNILookup(False)
+        self.driver.enables_isni_lookup(False)
 
     def test_disables_assign_isni_button(self):
         self.render(build.album(lead_performer="     "))

@@ -34,19 +34,8 @@ def platform(name_server, request):
     request.addfinalizer(lambda: isni_api.stop(server_thread))
 
 
-def test_finding_the_isni_of_the_lead_performer(app, recordings, workspace, name_server):
-    track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
-    name_server.persons["0000000121707484"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
-
-    app.import_album("Honeycomb", track)
-    app.shows_track_list(["Salsa Coltrane"])
-    app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
-    app.find_isni_of_lead_performer()
-
-    app.save_album()
-    workspace.contains_track(album="Honeycomb",
-                             filename="Joel Miller - 01 - Salsa Coltrane.mp3",
-                             release_name="Honeycomb",
-                             isni="0000000121707484",
-                             lead_performer="Joel Miller",
-                             track_title="Salsa Coltrane")
+@pytest.mark.wip
+def test_signing_in_enables_isni_lookup(app):
+    app.signs_in()
+    app.new_album()
+    app.registered_features_enabled()

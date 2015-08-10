@@ -120,3 +120,10 @@ class ApplicationRunner:
 
     def save(self):
         self.tagger.save()
+
+    def signs_in(self):
+        self.tagger.sign_in("jonathan", "passw0rd")
+
+    def registered_features_enabled(self):
+        self.tagger.navigate_to_album_page()
+        self.tagger.isni_lookup_enabled()
