@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 #
 # TGiT, Music Tagger for Professionals
@@ -26,17 +25,19 @@ from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def album_screen(track_list_page, album_page, track_page, album):
-    page = AlbumScreen(track_list_page, album_page, track_page)
+def make_album_screen(album, track_list_page, album_page, track_page):
+    screen = AlbumScreen(track_list_page, album_page, track_page)
 
-    album.addAlbumListener(page)
+    album.addAlbumListener(screen)
     subscriptions = MultiSubscription()
-    subscriptions.add(album.track_moved.subscribe(lambda track, from_, to: page.move_track_page(from_, to)))
-    page.closed.connect(lambda: subscriptions.cancel())
-    page.closed.connect(lambda: album.removeAlbumListener(page))
+    subscriptions.add(album.track_inserted.subscribe(screen.track_added))
+    subscriptions.add(album.track_removed.subscribe(lambda position, track: screen.track_removed(position)))
+    subscriptions.add(album.track_moved.subscribe(lambda track, from_, to: screen.track_moved(from_, to)))
+    screen.closed.connect(lambda: subscriptions.cancel())
+    screen.closed.connect(lambda: album.removeAlbumListener(screen))
+    screen.display(album)
+    return screen
 
-    page.display(album)
-    return page
 
 @Closeable
 class AlbumScreen(QWidget, UIFile, AlbumListener):
@@ -58,11 +59,12 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         self.next.clicked.connect(self._to_next_page)
 
     def display(self, album):
+        self._remove_all_pages()
         self._add_track_list_page(album)
         self._add_album_page(album)
 
         for index, track in enumerate(album.tracks):
-            self.add_track_page(track, index)
+            self.track_added(index, track)
 
     def _add_track_list_page(self, album):
         self._insert_page(self._list_tracks(album), self._TRACK_LIST_PAGE_INDEX)
@@ -70,22 +72,17 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
     def _add_album_page(self, album):
         self._insert_page(self._edit_album(album), self._ALBUM_PAGE_INDEX)
 
-    def add_track_page(self, track, position):
+    def track_added(self, position, track):
         self._insert_page(self._edit_track(track), self._track_page_index(position))
 
-    def remove_track_page(self, index):
+    def track_removed(self, index):
         self._remove_page(self._track_page_index(index))
 
-    def move_track_page(self, from_index, to_index):
+    def track_moved(self, from_index, to_index):
         page = self.pages.widget(self._track_page_index(from_index))
         self.pages.removeWidget(page)
         self.pages.insertWidget(self._track_page_index(to_index), page)
         self._update_navigation_controls()
-
-    trackAdded = add_track_page
-
-    def trackRemoved(self, track, position):
-        self.remove_track_page(position)
 
     def to_album_edition_page(self):
         self._to_page(self._ALBUM_PAGE_INDEX)
@@ -141,7 +138,9 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         self.pages.setCurrentIndex(number)
 
     def close(self):
+        self._remove_all_pages()
+        return True
+
+    def _remove_all_pages(self):
         for index in reversed(range(self._page_count)):
             self._remove_page(index)
-
-        return True

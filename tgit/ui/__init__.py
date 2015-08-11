@@ -36,7 +36,7 @@ from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_page import WelcomePage
-from tgit.ui.album_screen import album_screen as AlbumScreen
+from tgit.ui.album_screen import make_album_screen as AlbumScreen
 from tgit.util import browser
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
@@ -144,7 +144,7 @@ def create_main_window(portfolio, player, preferences, name_registry, native, co
         def create_track_page(track):
             return TrackEditionPageController(album, track)
 
-        return AlbumScreen(create_track_list_page, create_album_page, create_track_page, album)
+        return AlbumScreen(album, create_track_list_page, create_album_page, create_track_page)
 
     window = MainWindow(portfolio,
                         confirm_exit=messages.confirm_exit,

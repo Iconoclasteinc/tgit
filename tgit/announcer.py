@@ -28,7 +28,8 @@ class Announcer(object):
         self._listeners.append(listener)
 
     def removeListener(self, listener):
-        self._listeners.remove(listener)
+        if listener in self._listeners:
+            self._listeners.remove(listener)
 
     @property
     def listeners(self):
