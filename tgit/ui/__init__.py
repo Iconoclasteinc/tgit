@@ -18,7 +18,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import functools as func
 
-from tgit.album import AlbumListener
 from tgit import album_director as director
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
@@ -71,16 +70,11 @@ def TrackEditionPageController(album, track):
     page = TrackEditionPage()
     page.metadataChanged.connect(lambda metadata: director.updateTrack(track, **metadata))
 
-    class CancelSubscription(AlbumListener):
-        def trackRemoved(self, removed, position):
-            if removed == track:
-                subscription.cancel()
-                album.removeAlbumListener(page)
-                album.removeAlbumListener(self)
-
     subscription = track.metadata_changed.subscribe(page.display_track)
+    page.closed.connect(lambda: subscription.cancel())
     album.addAlbumListener(page)
-    album.addAlbumListener(CancelSubscription())
+    page.closed.connect(lambda: album.removeAlbumListener(page))
+
     page.display(album=album, track=track)
     return page
 
