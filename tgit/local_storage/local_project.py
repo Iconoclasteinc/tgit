@@ -85,7 +85,10 @@ def save_album(album, track_name=naming.track_scheme, track_catalog=tagging, art
             track.filename = track_file
             track_catalog.save_track(track)
 
-        fs.remove_files(tracks_folder, lambda filename: filename not in (track.filename for track in album.tracks))
+        def not_in_album(filename):
+            return fs.abspath(filename) not in (fs.abspath(track.filename) for track in album.tracks)
+
+        fs.remove_files(tracks_folder, not_in_album)
 
     save_album_data()
     save_album_artwork()
