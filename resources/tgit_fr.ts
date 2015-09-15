@@ -463,6 +463,11 @@
         <source>&amp;Request a Feature</source>
         <translation>&amp;Réclamer une fonctionnalité</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>R&amp;egister...</source>
+        <translation>S'&amp;enregistrer...</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -470,6 +475,11 @@
         <location filename="tgit/ui/main_window.py"/>
         <source>http://tagyourmusic.com/#documentation</source>
         <translation>http://tagyourmusic.com/fr/#documentation</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>http://tagyourmusic.herokuapp.com/en#sign-up</source>
+        <translation>http://tagyourmusic.herokuapp.com/fr#sign-up</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>

@@ -346,6 +346,10 @@ class MainWindow(QMainWindow, HandlerRegistrar):
     def on_online_help(self, handler):
         self._online_help_action.triggered.connect(lambda _: handler(self.tr("http://tagyourmusic.com/#documentation")))
 
+    def on_register(self, handler):
+        self._register_action.triggered.connect(
+            lambda _: handler(self.tr("http://tagyourmusic.herokuapp.com/en#sign-up")))
+
     def on_request_feature(self, handler):
         self._request_feature_action.triggered.connect(
             lambda _: handler(self.tr("mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!")))

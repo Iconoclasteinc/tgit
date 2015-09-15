@@ -158,6 +158,15 @@ def test_signals_when_request_feature_menu_item_clicked(driver):
     driver.check(request_feature_signal)
 
 
+def test_signals_when_register_menu_item_clicked(driver):
+    register_signal = ValueMatcherProbe("register", "http://tagyourmusic.herokuapp.com/#sign-up")
+
+    show_page(on_register=register_signal.received)
+
+    driver.register()
+    driver.check(register_signal)
+
+
 @pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")
 def test_signals_when_save_album_keyboard_shortcut_is_activated(driver):
     album = make_album()

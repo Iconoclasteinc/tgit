@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QMenuBar
-from hamcrest import all_of, is_not, has_item
+from hamcrest import is_not, has_item
 
 from cute import matchers
 from cute.widgets import QMenuBarDriver
@@ -105,6 +105,9 @@ class MenuBarDriver(QMenuBarDriver):
 
         def request_feature(self):
             self._menu_driver.select_menu_item(matchers.named("_request_feature_action"))
+
+        def register(self):
+            self._menu_driver.select_menu_item(matchers.named("_register_action"))
 
     class AccountMenuDriver:
         def __init__(self, menu_driver):

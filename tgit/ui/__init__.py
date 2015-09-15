@@ -170,7 +170,8 @@ def create_main_window(portfolio, player, preferences, name_registry, native, co
                         on_about_qt=messages.about_qt,
                         on_about=messages.about_tgit,
                         on_online_help=browser.open_,
-                        on_request_feature=browser.open_)
+                        on_request_feature=browser.open_,
+                        on_register=browser.open_)
     dialogs.parent = window
     messages.parent = window
     portfolio.album_removed.subscribe(lambda album: dialogs.clear())

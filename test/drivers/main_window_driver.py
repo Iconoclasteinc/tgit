@@ -138,6 +138,9 @@ class MainWindowDriver(WidgetDriver):
     def request_feature(self):
         menu_bar(self).help.request_feature()
 
+    def register(self):
+        menu_bar(self).help.register()
+
     def sign_in(self, username, password):
         menu_bar(self).account.sign_in()
         sign_in_dialog(self).sign_in(username, password)

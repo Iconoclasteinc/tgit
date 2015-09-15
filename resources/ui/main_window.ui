@@ -77,6 +77,8 @@
     <addaction name="_online_help_action"/>
     <addaction name="_request_feature_action"/>
     <addaction name="separator"/>
+    <addaction name="_register_action"/>
+    <addaction name="separator"/>
     <addaction name="_about_action"/>
     <addaction name="_about_qt_action"/>
    </widget>
@@ -174,6 +176,11 @@
   <action name="_request_feature_action">
    <property name="text">
     <string>&amp;Request a Feature</string>
+   </property>
+  </action>
+  <action name="_register_action">
+   <property name="text">
+    <string>R&amp;egister...</string>
    </property>
   </action>
  </widget>
