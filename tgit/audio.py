@@ -21,7 +21,7 @@ import shutil
 
 from PyQt5.QtCore import QUrl
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from tgit.platform import windows
+from tgit.platforms import windows
 
 from tgit.signal import Observable, signal
 from tgit.track import Track

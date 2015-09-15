@@ -9,7 +9,7 @@ from cx_Freeze import setup, Executable
 import cx_Freeze
 
 from tgit import __app_name__, __version__
-from tgit.platform import windows, mac
+from tgit.platforms import windows, mac
 
 app_script = "tgit.py"
 app_package = "tgit"

@@ -27,7 +27,7 @@ from cute.matchers import named
 from cute.widgets import window
 from test.drivers.about_dialog_driver import AboutDialogDriver
 from test.integration.ui import show_widget
-from tgit.platform import mac
+from tgit.platforms import mac
 from tgit.ui import AboutDialog
 from tgit import __version__
 
