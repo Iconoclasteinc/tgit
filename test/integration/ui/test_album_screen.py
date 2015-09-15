@@ -5,12 +5,11 @@ from hamcrest import contains
 import pytest
 
 from cute.matchers import named, with_
-from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
+from cute.probes import MultiValueMatcherProbe
 from cute.properties import name
 from cute.widgets import window
 from test.drivers import AlbumScreenDriver
 from test.integration.ui import show_widget
-from test.util import builders as build
 from test.util.builders import make_track, make_album
 from test.util.doubles import fake_audio_player
 from tgit.preferences import Preferences
@@ -27,7 +26,7 @@ def create_track_list_page(album):
 
 
 def create_album_page(album):
-    return AlbumEditionPage(Preferences(), ignore)
+    return AlbumEditionPage(Preferences(), ignore, ignore)
 
 
 def create_track_page(track):

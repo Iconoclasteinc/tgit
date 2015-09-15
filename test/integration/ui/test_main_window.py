@@ -159,7 +159,7 @@ def test_signals_when_request_feature_menu_item_clicked(driver):
 
 
 def test_signals_when_register_menu_item_clicked(driver):
-    register_signal = ValueMatcherProbe("register", "http://tagyourmusic.herokuapp.com/#sign-up")
+    register_signal = ValueMatcherProbe("register", "http://tagyourmusic.herokuapp.com/en#sign-up")
 
     show_page(on_register=register_signal.received)
 

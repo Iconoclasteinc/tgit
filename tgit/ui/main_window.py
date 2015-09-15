@@ -56,53 +56,6 @@ StyleSheet = """
         background-color: #F7F7F7;
      }
 
-    #performer-dialog #form-box QPushButton#add-performer {
-        background-color: #F25C0A;
-        border: 2px solid #F25C0A;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: bold;
-        color: white;
-        padding: 10px 10px 7px 10px;
-        margin-left: 10px;
-    }
-
-    #performer-dialog #form-box QPushButton {
-        background-color: #BFBFBF;
-        border: 2px solid #BFBFBF;
-        border-radius: 4px;
-        color: white;
-        font-weight: bold;
-        font-size: 10px;
-        padding: 3px 10px;
-    }
-
-    #performer-dialog #form-box QPushButton:hover, #performer-dialog #form-box QPushButton:focus {
-        background-color: #A6A6A6;
-        border-color: #A6A6A6;
-    }
-
-    #performer-dialog #form-box QPushButton:pressed {
-        border: 2px solid transparent;
-    }
-
-    #performer-dialog #form-box QPushButton#add-performer {
-        font-size: 10px;
-        padding: 3px 10px;
-        margin: 0;
-    }
-
-    #performer-dialog #form-box QPushButton#add-performer:hover,
-    #performer-dialog #form-box QPushButton#add-performer:focus {
-        background-color: #D95109;
-        border-color: #D95109;
-    }
-
-    #performer-dialog QPushButton#add-performer:pressed {
-        border: 2px solid white;
-    }
-
-    #performer-dialog QLineEdit,
     #track_edition_page QLineEdit, #track_edition_page TextArea, #track_edition_page QComboBox,
     #track_edition_page QComboBox::drop-down, #track_edition_page QComboBox QAbstractItemView {
         background-color: #F9F9F9;
@@ -111,20 +64,17 @@ StyleSheet = """
         min-height: 20px;
     }
 
-    #performer-dialog QLineEdit,
     #track_edition_page QLineEdit, #track_edition_page TextArea, #track_edition_page QComboBox {
         selection-background-color: #F2C1A7;
         selection-color: #222222;
     }
 
-    #performer-dialog QLineEdit:focus,
     #track_edition_page QLineEdit:focus, #track_edition_page TextArea:focus, #track_edition_page QComboBox:focus,
     #track_edition_page QComboBox:on, #track_edition_page QComboBox::drop-down:focus,
     #track_edition_page QComboBox::drop-down:on, #track_edition_page QComboBox QAbstractItemView:focus  {
         border: 1px solid #F79D6C;
     }
 
-    #performer-dialog QLineEdit:disabled,
     #track_edition_page QLineEdit:disabled, #track_edition_page TextArea:disabled,
     #track_edition_page QSpinBox:disabled {
         background-color: #FCFCFC;

@@ -21,8 +21,9 @@ def ignore(*_):
 
 
 class AlbumEditionPageTest(WidgetTest):
-    def render(self, album, select_picture=ignore, **handlers):
-        self.page = AlbumEditionPage(Preferences(), select_picture=select_picture, **handlers)
+    def render(self, album, select_picture=ignore, edit_performers=ignore, **handlers):
+        self.page = AlbumEditionPage(Preferences(), select_picture=select_picture, edit_performers=edit_performers,
+                                     **handlers)
         self.page.refresh(album)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
@@ -65,7 +66,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.shows_lead_performer("Artist")
         self.driver.shows_isni("123456789", True)
         self.driver.showsArea("")
-        self.driver.showsGuestPerformers("Guitar: Guitarist; Piano: Pianist")
+        self.driver.shows_guest_performers("Guitar: Guitarist; Piano: Pianist")
         self.driver.showsLabelName("Label")
         self.driver.showsCatalogNumber("XXX123456789")
         self.driver.showsUpc("123456789999")
@@ -130,14 +131,11 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.addPicture()
         self.check(signal)
 
-    def testSignalsWhenAddingAPerformer(self):
-        self.render(build.album())
-
-        addPerformerSignal = ValueMatcherProbe("add performer")
-        self.page.add_performer.connect(addPerformerSignal.received)
-
-        self.driver.addPerformer()
-        self.check(addPerformerSignal)
+    def test_updates_guest_performers_with_edition_dialog_return_value(self):
+        self.render(build.album(), edit_performers=lambda callback: callback(
+            [("instrument1", "performer1"), ("instrument2", "performer2")]))
+        self.driver.edit_performers()
+        self.driver.shows_guest_performers("instrument1: performer1; instrument2: performer2")
 
     def testEfficientlyDisplaysImageCoverWhenItDoesNotChange(self):
         album = build.album(images=[build.image("image/jpeg", loadTestImage("big-image.jpg"), Image.FRONT_COVER)])
