@@ -35,6 +35,7 @@
         <file>ui/track_list_page.ui</file>
         <file>ui/performers_dialog.ui</file>
         <file>ui/about_dialog.ui</file>
+        <file>ui/sign_in_dialog.ui</file>
         <file>images/folder.png</file>
         <file>images/folder-hover.png</file>
         <file>images/folder-open.png</file>

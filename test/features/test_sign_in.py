@@ -39,7 +39,7 @@ def platform(name_server):
 @pytest.mark.wip
 def test_signing_in_enables_isni_lookup(app, platform):
     platform.token_queue = iter(["token12345"])
-    app.sign_in()
+    app.signs_in()
     app.new_album()
     app.registered_features_enabled()
 

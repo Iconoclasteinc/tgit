@@ -82,8 +82,15 @@
     <addaction name="_about_action"/>
     <addaction name="_about_qt_action"/>
    </widget>
+   <widget class="QMenu" name="_account_menu">
+    <property name="title">
+     <string>&amp;Account</string>
+    </property>
+    <addaction name="_sign_in_action"/>
+   </widget>
    <addaction name="file_menu"/>
    <addaction name="navigate_menu"/>
+   <addaction name="_account_menu"/>
    <addaction name="help_menu"/>
   </widget>
   <action name="settings_action">
@@ -181,6 +188,11 @@
   <action name="_register_action">
    <property name="text">
     <string>R&amp;egister...</string>
+   </property>
+  </action>
+  <action name="_sign_in_action">
+   <property name="text">
+    <string>Sign &amp;In...</string>
    </property>
   </action>
  </widget>

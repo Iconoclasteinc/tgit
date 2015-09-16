@@ -20,6 +20,7 @@ import functools as func
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
+from tgit import remote_platform as platform
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
@@ -37,6 +38,7 @@ from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_page import WelcomePage
+from tgit.ui.sign_in_dialog import SignInDialog
 from tgit.ui.album_screen import album_screen as AlbumScreen
 from tgit.util import browser
 # noinspection PyUnresolvedReferences
@@ -98,6 +100,9 @@ def create_main_window(portfolio, player, preferences, name_registry, native, co
     def show_performers_dialog(album):
         return lambda on_edit: PerformerDialog(album=album, parent=window).edit(on_edit)
 
+    def show_sign_in_dialog(on_successful_authentication):
+        return SignInDialog(authenticate=platform.authenticate, parent=window).sign_in(on_successful_authentication)
+
     def create_new_album_page():
         return NewAlbumPage(select_album_location=dialogs.select_album_destination,
                             select_track=dialogs.select_track,
@@ -152,11 +157,13 @@ def create_main_window(portfolio, player, preferences, name_registry, native, co
                         select_tracks_in_folder=dialogs.add_tracks_in_folder,
                         show_save_error=messages.save_album_failed,
                         show_export_error=messages.export_failed,
+                        authenticate=show_sign_in_dialog,
                         on_close_album=director.remove_album_from(portfolio),
                         on_save_album=director.save_album(),
                         on_add_files=director.add_tracks,
                         on_export=director.export_as_csv,
                         on_settings=show_settings_dialog,
+                        on_sign_in=director.sign_in,
                         on_about_qt=messages.about_qt,
                         on_about=messages.about_tgit,
                         on_online_help=browser.open_,

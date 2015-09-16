@@ -37,7 +37,7 @@ StyleSheet = """
         border: 1px solid #DDDDDD;
     }
 
-    QGroupBox {
+    #track_edition_page QGroupBox {
         border: 1px solid #DDDDDD;
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
         background-color: white;
@@ -46,7 +46,7 @@ StyleSheet = """
         font-size: 10px;
     }
 
-    QGroupBox::title {
+    #track_edition_page QGroupBox::title {
         subcontrol-origin: margin;
         subcontrol-position: top left;
         left: 1px;
@@ -131,6 +131,7 @@ StyleSheet = """
         background-color: #F9F9F9;
         border: 1px solid #B8B8B8;
         margin-right: 15px;
+        margin-left: 15px;
     }
 
     #album-banner QLabel {
@@ -199,8 +200,9 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def __init__(self, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
                  create_album_screen, confirm_close, select_export_destination, select_tracks, select_tracks_in_folder,
-                 **handlers):
+                 authenticate, **handlers):
         super().__init__()
+        self._authenticate = authenticate
         self._confirm_exit = confirm_exit
         self._show_save_error = show_save_error
         self._show_export_error = show_export_error
@@ -303,6 +305,9 @@ class MainWindow(QMainWindow, HandlerRegistrar):
     def on_request_feature(self, handler):
         self._request_feature_action.triggered.connect(
             lambda _: handler(self.tr("mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!")))
+
+    def on_sign_in(self, handler):
+        self._sign_in_action.triggered.connect(lambda *_: self._authenticate(handler))
 
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)
