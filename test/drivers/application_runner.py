@@ -121,7 +121,7 @@ class ApplicationRunner:
     def save(self):
         self.tagger.save()
 
-    def signs_in(self):
+    def sign_in(self):
         self.tagger.sign_in("jonathan", "passw0rd")
 
     def registered_features_enabled(self):
