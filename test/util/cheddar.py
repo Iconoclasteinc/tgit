@@ -17,6 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from functools import wraps
+import json
 from threading import Thread
 import logging
 
@@ -73,7 +74,8 @@ def _assign():
 @_app.route("/api/authentications", methods=["POST"])
 @_requires_auth
 def _authenticate():
-    return next(token_queue)
+    token = next(token_queue)
+    return json.dumps({"token": token})
 
 @_app.route("/shutdown")
 def _shutdown():

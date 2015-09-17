@@ -22,16 +22,16 @@ import pytest
 
 from tgit.isni.name_registry import NameRegistry
 
-
 pytestmark = pytest.mark.live
 
 
 @pytest.yield_fixture
 def platform():
-    from test.util.platform import isni_api
-    server_thread = isni_api.start("isni.oclc.nl", 80)
-    yield isni_api
-    isni_api.stop(server_thread)
+    from test.util import cheddar
+
+    server_thread = cheddar.start("isni.oclc.nl", 80)
+    yield cheddar
+    cheddar.stop(server_thread)
 
 
 @pytest.fixture

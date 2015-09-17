@@ -22,6 +22,7 @@ from PyQt5.QtCore import QTranslator, QLocale, QSettings
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
+from cheddar import Cheddar
 from tgit.audio import MediaPlayer, create_media_library
 from tgit.isni.name_registry import NameRegistry
 from tgit.preferences import Preferences
@@ -30,8 +31,9 @@ from tgit import ui
 
 
 class TGiT(QApplication):
-    def __init__(self, create_player, name_registry, native=True, confirm_exit=True, on_exit=None):
+    def __init__(self, create_player, name_registry, cheddar, native=True, confirm_exit=True, on_exit=None):
         super().__init__([])
+        self._cheddar = cheddar
         self._on_exit = on_exit
         self._confirm_exit = confirm_exit
         self._native = native
@@ -63,7 +65,7 @@ class TGiT(QApplication):
     def show(self, preferences):
         self._set_locale(preferences["language"])
         main_window = ui.create_main_window(self._album_portfolio, self._player, preferences, self._name_registry,
-                                            self._native, self._confirm_exit)
+                                            self._cheddar, self._native, self._confirm_exit)
         main_window.show()
 
     def launch(self, preferences):
@@ -83,12 +85,14 @@ def main():
     from requests.packages import urllib3
     urllib3.disable_warnings()
 
-    from test.util.platform import isni_api
-    server_thread = isni_api.start("isni.oclc.nl", 80)
+    from test.util import cheddar as fake_cheddar
+    server_thread = fake_cheddar.start("isni.oclc.nl", 80)
 
     def shutdown_isni_api():
-        isni_api.stop(server_thread)
+        fake_cheddar.stop(server_thread)
 
     name_registry = NameRegistry(host="localhost", port=5001, secure=False)
-    tagger = TGiT(MediaPlayer, name_registry, on_exit=shutdown_isni_api)
+    cheddar = Cheddar(host="tagyourmusic.herokuapp.com", port=443, secure=True)
+
+    tagger = TGiT(MediaPlayer, name_registry, cheddar, on_exit=shutdown_isni_api)
     tagger.launch(Preferences(QSettings()))

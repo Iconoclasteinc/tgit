@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from hamcrest import contains
 import pytest
 
+from authentication_error import AuthenticationError
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
@@ -46,6 +47,11 @@ def test_calls_authenticate_with_credentials(driver):
     driver.check(authentication_successful_signal)
 
 
-@pytest.mark.wip
 def test_displays_error_message_when_authentication_is_not_successful(driver):
-    pass
+    def authenticate(_, __):
+        raise AuthenticationError()
+
+    _ = show_dialog(authenticate=authenticate)
+
+    driver.enter_credentials("jfalardeau@pyxis-tech.com", "passw0rd")
+    driver.shows_authentication_failed_message()

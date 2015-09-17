@@ -16,29 +16,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import pytest
+
+import json
+
+import requests
+
+from authentication_error import AuthenticationError
 
 
-@pytest.yield_fixture()
-def name_server():
-    from test.util import isni_database
-    database_thread = isni_database.start()
-    yield isni_database
-    isni_database.stop(database_thread)
+class Cheddar:
+    def __init__(self, host, port=443, secure=True):
+        self._secure = secure
+        self._port = port
+        self._host = host
 
+    @property
+    def _hostname(self):
+        fragments = ["https" if self._secure else "http", "://", self._host]
+        if self._port is not None:
+            fragments.append(":")
+            fragments.append(str(self._port))
 
-@pytest.yield_fixture()
-def platform(name_server):
-    from test.util import cheddar
+        return "".join(fragments)
 
-    server_thread = cheddar.start(name_server.host(), name_server.port())
-    yield cheddar
-    cheddar.stop(server_thread)
+    def authenticate(self, email, password):
+        response = requests.post(self._hostname + "/api/authentications", auth=(email, password))
+        if response.status_code == 401:
+            raise AuthenticationError()
 
-
-@pytest.mark.wip
-def test_signing_in_enables_isni_lookup(app, platform):
-    platform.token_queue = iter(["token12345"])
-    app.signs_in()
-    app.new_album()
-    app.registered_features_enabled()
+        deserialized = json.loads(response.content.decode("utf-8"))
+        return deserialized["token"]

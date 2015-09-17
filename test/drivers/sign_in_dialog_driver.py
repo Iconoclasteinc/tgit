@@ -31,3 +31,7 @@ class SignInDialogDriver(QDialogDriver, ScreenDriver):
         self.lineEdit(named("_email")).replace_all_text(username)
         self.lineEdit(named("_password")).replace_all_text(password)
         self.ok()
+
+    def shows_authentication_failed_message(self):
+        self.label(named("_authentication_error")).is_showing_on_screen()
+        self.label(named("_authentication_error")).has_text("Incorrect username and/or password.")

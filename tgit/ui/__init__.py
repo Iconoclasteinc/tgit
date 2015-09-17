@@ -20,7 +20,6 @@ import functools as func
 
 from tgit.album import AlbumListener
 from tgit import album_director as director
-from tgit import remote_platform as platform
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
@@ -90,7 +89,7 @@ def SettingsDialogController(notify_restart_required, preferences, parent):
     return dialog
 
 
-def create_main_window(portfolio, player, preferences, name_registry, native, confirm_exit):
+def create_main_window(portfolio, player, preferences, name_registry, cheddar, native, confirm_exit):
     dialogs = Dialogs(native)
     messages = MessageBoxes(confirm_exit)
 
@@ -101,7 +100,7 @@ def create_main_window(portfolio, player, preferences, name_registry, native, co
         return lambda on_edit: PerformerDialog(album=album, parent=window).edit(on_edit)
 
     def show_sign_in_dialog(on_successful_authentication):
-        return SignInDialog(authenticate=platform.authenticate, parent=window).sign_in(on_successful_authentication)
+        return SignInDialog(authenticate=cheddar.authenticate, parent=window).sign_in(on_successful_authentication)
 
     def create_new_album_page():
         return NewAlbumPage(select_album_location=dialogs.select_album_destination,

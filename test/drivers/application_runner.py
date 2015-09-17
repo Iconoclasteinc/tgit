@@ -2,6 +2,7 @@
 from collections import namedtuple
 import sip
 
+from cheddar import Cheddar
 from cute.animatron import Animatron
 from test.drivers import track_selection_dialog, message_box
 from test.util.doubles import fake_audio_player
@@ -30,7 +31,7 @@ class ApplicationRunner:
 
     def start(self, preferences):
         self.app = TGiT(fake_audio_player, NameRegistry(host="localhost", port=5001),
-                        native=False, confirm_exit=False)
+                        Cheddar(host="localhost", port=5001, secure=False), native=False, confirm_exit=False)
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                        EventProcessingProber(timeout_in_ms=1000), Animatron())
