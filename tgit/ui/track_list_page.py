@@ -22,62 +22,49 @@ from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem
 
 from tgit.album import AlbumListener
+from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
-from tgit.ui.track_list_table_model import Column, TrackItem
+from tgit.ui.track_list_table_model import Column, RowItem
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.observer import Observer
 from tgit.ui.event_filters import MovableSectionsCursor
 
+
+def make_track_list_page(album, player, select_tracks, **handlers):
+    page = TrackListPage(select_tracks)
+    for name, handler in handlers.items():
+        getattr(page, name)(handler)
+
+    subscriptions = MultiSubscription()
+    subscriptions.add(album.track_inserted.subscribe(page.track_added))
+    subscriptions.add(album.track_removed.subscribe(page.track_removed))
+    subscriptions.add(album.track_moved.subscribe(lambda _, from_, to: page.track_moved(from_, to)))
+    subscriptions.add(player.playing.subscribe(page.playback_started))
+    subscriptions.add(player.stopped.subscribe(page.playback_stopped))
+    subscriptions.add(player.error_occurred.subscribe(page.playback_error))
+    page.closed.connect(lambda: subscriptions.cancel())
+
+    # todo when we have proper signals on album, we can get rid of that
+    album.addAlbumListener(page)
+    page.closed.connect(lambda: album.removeAlbumListener(page))
+
+    page.display(album)
+    return page
+
+
 VERTICAL_HEADER_WIDTH = 18
 
 
-def ignore():
-    pass
-
-
-@Observer
 @Closeable
+@Observer
 class TrackListPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
 
-    _playing_track = None
-
-    def __init__(self, album, player, select_tracks, **request_handlers):
+    def __init__(self, select_tracks):
         super().__init__()
         self._items = []
-        self._player = player
         self._select_tracks = select_tracks
-
         self._setup_ui()
-        self._listen_to(album, player)
-        self._register_request_handlers(request_handlers)
-        self._display_album(album)
-
-    def _setup_ui(self):
-        self._load(":/ui/track_list_page.ui")
-        self._react_to_table_events(self._track_table)
-        self._make_context_menu(self._track_table)
-        self._setup_horizontal_header(self._track_table.horizontalHeader())
-        self._setup_vertical_header(self._track_table.verticalHeader())
-        self._remove_action.triggered.connect(lambda: self._stop_track(self._selected_item))
-
-    def _stop_track(self, item):
-        if item.is_playing:
-            self._stop_action.trigger()
-
-    def _listen_to(self, album, player):
-        self.subscribe(album.track_inserted, self._insert_item)
-        self.subscribe(album.track_removed, lambda index, _: self._remove_item(index))
-        self.subscribe(album.track_moved, lambda _, from_index, to_index: self._move_item(from_index, to_index))
-        self.subscribe(player.playing, self.playback_started)
-        self.subscribe(player.stopped, self.playback_stopped)
-        self.subscribe(player.error_occurred, self.playback_error)
-        # todo when we have proper signals on album, we can get rid of that
-        album.addAlbumListener(self)
-
-    def _register_request_handlers(self, handlers):
-        for name, handler in handlers.items():
-            getattr(self, name)(handler)
 
     def on_add_tracks(self, add):
         self._add_tracks_button.clicked.connect(lambda: self._select_tracks(add))
@@ -96,16 +83,21 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         # todo should we pass the index instead of the track?
         self._remove_action.triggered.connect(lambda: remove(self._selected_item.track))
 
-    def _display_album(self, album):
-        for index in range(self._item_count()):
-            self._remove_item(index)
+    def _setup_ui(self):
+        self._load(":/ui/track_list_page.ui")
+        self._react_to_table_events(self._track_table)
+        self._make_context_menu(self._track_table)
+        self._setup_horizontal_header(self._track_table.horizontalHeader())
+        self._setup_vertical_header(self._track_table.verticalHeader())
+        self._remove_action.triggered.connect(self._stop_selected_track)
 
+    def display(self, album):
         for index, track in enumerate(album.tracks):
-            self._insert_item(index, track)
+            self.track_added(index, track)
 
-    def albumStateChanged(self, state):
-        for item in self._items:
-            self._update_item(item)
+    def _stop_selected_track(self):
+        if self._selected_item.is_playing:
+            self._stop_action.trigger()
 
     def _react_to_table_events(self, table):
         table.customContextMenuRequested.connect(self._open_context_menu)
@@ -148,20 +140,20 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
     def playback_started(self, track):
         item = self._item_for(track)
         item.mark_playing()
+        self._item_changed(item)
         self._update_actions()
-        self._update_item(item)
 
     def playback_stopped(self, track):
         item = self._item_for(track)
         item.mark_stopped()
+        self._item_changed(item)
         self._update_actions()
-        self._update_item(item)
 
     def playback_error(self, track, error):
         item = self._item_for(track)
         item.mark_error(error)
+        self._item_changed(item)
         self._update_actions()
-        self._update_item(item)
 
     def _update_actions(self):
         if self._selected_item:
@@ -191,35 +183,41 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         except StopIteration:
             return None
 
-    def _insert_item(self, at_index, track):
-        item = TrackItem(track)
+    def track_added(self, at_index, track):
+        item = RowItem(track)
         self._items.insert(at_index, item)
         self._track_table.insertRow(at_index)
         self._refresh_row(at_index)
-        self.subscribe(item.changed, lambda state: self._update_item(item))
+        self.subscribe(track.metadata_changed, lambda _: self._item_changed(item))
 
-    def _remove_item(self, at_index):
-        self.unsubscribe(self._items[at_index].changed)
+    def track_removed(self, at_index, track):
+        self.unsubscribe(track.metadata_changed)
         self._track_table.removeRow(at_index)
         del self._items[at_index]
 
-    def _move_item(self, from_index, to_index):
+    def track_moved(self, from_index, to_index):
         self._track_table.removeRow(from_index)
         item = self._items.pop(from_index)
         self._items.insert(to_index, item)
         self._track_table.insertRow(to_index)
         self._refresh_row(to_index)
 
-    def _update_item(self, item):
+    def album_metadata_changed(self, *_):
+        for item in self._items:
+            self._item_changed(item)
+
+    albumStateChanged = album_metadata_changed
+
+    def _item_changed(self, item):
         self._refresh_row(self._index_of(item))
 
-    def _refresh_row(self, row):
-        self._track_table.setVerticalHeaderItem(row, self._header_item())
-        for col in range(Column.count()):
-            self._track_table.setItem(row, col, self._cell_item_at(row, col))
+    def _refresh_row(self, row_index):
+        self._track_table.setVerticalHeaderItem(row_index, self._header_item())
+        for col_index in range(Column.count()):
+            self._track_table.setItem(row_index, col_index, self._cell_item_at(row_index, col_index))
 
-    def _cell_item_at(self, row, col):
-        return Column.at(col).value(self._items[row])
+    def _cell_item_at(self, row_index, col_index):
+        return Column.at(col_index).value(self._items[row_index])
 
     def _header_item(self):
         return QTableWidgetItem(QIcon(":/images/drag-handle.gif"), None)

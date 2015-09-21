@@ -60,4 +60,4 @@ class FakeAudioPlayer(metaclass=Observable):
         self.track = None
 
     def error(self, error):
-        self.error_occured.emit(self.track, error)
+        self.error_occurred.emit(self.track, error)

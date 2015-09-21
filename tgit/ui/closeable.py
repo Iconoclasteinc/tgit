@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import pyqtSignal, QObject
-
 
 def Closeable(cls):
     """Decorator for closeable widgets. Closeable widgets emit a closed signal on close."""

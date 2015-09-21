@@ -4,11 +4,11 @@ from datetime import timedelta
 from hamcrest import assert_that, is_, not_none
 
 from test.util.builders import make_track, make_album
-from tgit.ui.track_list_table_model import TrackItem, Column
+from tgit.ui.track_list_table_model import RowItem, Column
 
 
 def test_retrieves_values_from_track_list_item():
-    item = TrackItem(make_track(album=make_album(release_name="Honeycomb"),
+    item = RowItem(make_track(album=make_album(release_name="Honeycomb"),
                                 track_title="Chevere!",
                                 lead_performer="Joel Miller",
                                 track_number=3,
@@ -24,7 +24,7 @@ def test_retrieves_values_from_track_list_item():
 
 
 def test_displays_missing_values_as_blanks():
-    item = TrackItem(make_track(album=make_album()))
+    item = RowItem(make_track(album=make_album()))
 
     assert_that(Column.track_title.value(item).text(), is_(""), "blank track title text")
     assert_that(Column.release_name.value(item).text(), is_(""), "blank release name text")
@@ -32,7 +32,7 @@ def test_displays_missing_values_as_blanks():
 
 
 def test_displays_icon_when_track_is_playing(qt):
-    item = TrackItem(make_track())
+    item = RowItem(make_track())
     item.mark_playing()
 
     assert_that(Column.state.value(item).icon(), not_none(), "state icon")
@@ -40,4 +40,3 @@ def test_displays_icon_when_track_is_playing(qt):
 
 def in_seconds(minutes, seconds):
     return timedelta(minutes=minutes, seconds=seconds).total_seconds()
-

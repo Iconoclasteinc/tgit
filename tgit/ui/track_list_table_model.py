@@ -24,7 +24,6 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 
 from tgit.audio import MediaPlayer
-
 from tgit.ui.helpers import formatting
 
 
@@ -32,16 +31,12 @@ class State(Enum):
     stopped, playing, error = range(3)
 
 
-class TrackItem:
+class RowItem:
     state = State.stopped
     error = MediaPlayer.Error.none
 
     def __init__(self, track):
         self.track = track
-
-    @property
-    def changed(self):
-        return self.track.metadata_changed
 
     @property
     def is_playing(self):
@@ -103,13 +98,13 @@ AUTO_ADJUST = QHeaderView.ResizeToContents
 Width = namedtuple('Width', ['length', 'resize_mode'])
 
 
-class CellItem(QTableWidgetItem):
+class Cell(QTableWidgetItem):
     def tr(self, text):
-        return QCoreApplication.translate("CellItem", text)
+        return QCoreApplication.translate("Cell", text)
 
 
 class Column(Enum):
-    class track_number(CellItem):
+    class track_number(Cell):
         width = Width(26, RESIZABLE)
 
         def __init__(self, track):
@@ -117,7 +112,7 @@ class Column(Enum):
             self.setText(str(track.track_number))
             self.setTextAlignment(RIGHT_ALIGNED)
 
-    class state(CellItem):
+    class state(Cell):
         width = Width(24, FIXED)
 
         def __init__(self, track):
@@ -128,7 +123,7 @@ class Column(Enum):
                 self.setIcon(QIcon(":/playback-error"))
                 self.setToolTip(self.tr("Your platform cannot play {} audio files".format(track.type.upper())))
 
-    class track_title(CellItem):
+    class track_title(Cell):
         width = Width(300, RESIZABLE)
 
         def __init__(self, track):
@@ -136,7 +131,7 @@ class Column(Enum):
             self.setText(track.track_title)
             self.setTextAlignment(LEFT_ALIGNED)
 
-    class lead_performer(CellItem):
+    class lead_performer(Cell):
         width = Width(245, RESIZABLE)
 
         def __init__(self, track):
@@ -144,7 +139,7 @@ class Column(Enum):
             self.setText(track.lead_performer)
             self.setTextAlignment(LEFT_ALIGNED)
 
-    class release_name(CellItem):
+    class release_name(Cell):
         width = Width(250, RESIZABLE)
 
         def __init__(self, track):
@@ -152,7 +147,7 @@ class Column(Enum):
             self.setText(track.release_name)
             self.setTextAlignment(LEFT_ALIGNED)
 
-    class bitrate(CellItem):
+    class bitrate(Cell):
         width = Width(90, RESIZABLE)
 
         def __init__(self, track):
@@ -160,7 +155,7 @@ class Column(Enum):
             self.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
             self.setTextAlignment(RIGHT_ALIGNED)
 
-    class duration(CellItem):
+    class duration(Cell):
         width = Width(70, RESIZABLE)
 
         def __init__(self, track):

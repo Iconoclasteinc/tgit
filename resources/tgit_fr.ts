@@ -814,7 +814,7 @@
     </message>
 </context>
 <context>
-    <name>CellItem</name>
+    <name>Cell</name>
     <message>
         <source>Your platform cannot play FLAC audio files</source>
         <translation>Votre système ne supporte pas la lecture audio FLAC</translation>

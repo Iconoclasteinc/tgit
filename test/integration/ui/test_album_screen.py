@@ -11,7 +11,6 @@ from cute.widgets import window
 from test.drivers import AlbumScreenDriver
 from test.integration.ui import show_widget
 from test.util.builders import make_track, make_album
-from test.util.doubles import fake_audio_player
 from tgit.preferences import Preferences
 from tgit.ui import TrackEditionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
@@ -22,7 +21,7 @@ ignore = lambda *_: None
 
 
 def create_track_list_page(album):
-    return TrackListPage(album, fake_audio_player(), ignore)
+    return TrackListPage(ignore)
 
 
 def create_album_page(album):
