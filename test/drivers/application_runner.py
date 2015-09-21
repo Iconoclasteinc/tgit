@@ -5,6 +5,7 @@ import sip
 from cute.animatron import Animatron
 from test.drivers import track_selection_dialog, message_box
 from test.util.doubles import fake_audio_player
+from tgit import platforms
 from tgit.isni.name_registry import NameRegistry
 from cute.matchers import named, showing_on_screen
 from cute.widgets import main_application_window
@@ -19,6 +20,7 @@ def _make_tracks(tracks):
 
 
 class ApplicationRunner:
+    STARTUP_DELAY = 250 if platforms.mac else 0
     DRAG_AND_DROP_DELAY = 100
     SAVE_DELAY = 500
 
@@ -34,6 +36,7 @@ class ApplicationRunner:
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                        EventProcessingProber(timeout_in_ms=1000), Animatron())
+        self.tagger.pause(self.STARTUP_DELAY)
 
     def stop(self):
         self.tagger.close()
@@ -112,6 +115,7 @@ class ApplicationRunner:
 
     def close_album(self):
         self.tagger.close_album()
+        self.tagger.pause(100)
         message_box(self.tagger).yes()
         self.tagger.shows_welcome_screen()
 

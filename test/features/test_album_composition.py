@@ -1,11 +1,4 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import QSettings
-import pytest
-
-import tgit
-from tgit.preferences import Preferences
-from test.util import resources, doubles
-from test.drivers.application_runner import ApplicationRunner
 
 
 def test_ordering_tracks_in_album(app, recordings):
