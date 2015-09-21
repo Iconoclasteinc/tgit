@@ -140,7 +140,7 @@ def test_signals_when_about_menu_item_clicked(driver):
 
 
 def test_signals_when_online_help_menu_item_clicked(driver):
-    online_help_signal = ValueMatcherProbe("online help", "http://tagyourmusic.com/#documentation")
+    online_help_signal = ValueMatcherProbe("online help", "http://tagyourmusic.com/en/#documentation")
 
     show_page(on_online_help=online_help_signal.received)
 
@@ -159,7 +159,7 @@ def test_signals_when_request_feature_menu_item_clicked(driver):
 
 
 def test_signals_when_register_menu_item_clicked(driver):
-    register_signal = ValueMatcherProbe("register", "http://tagyourmusic.herokuapp.com/#sign-up")
+    register_signal = ValueMatcherProbe("register", "http://tagyourmusic.herokuapp.com/en/#register")
 
     show_page(on_register=register_signal.received)
 

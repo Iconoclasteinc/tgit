@@ -473,13 +473,13 @@
     <name>MainWindow</name>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>http://tagyourmusic.com/#documentation</source>
+        <source>http://tagyourmusic.com/en/#documentation</source>
         <translation>http://tagyourmusic.com/fr/#documentation</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>http://tagyourmusic.herokuapp.com/en#sign-up</source>
-        <translation>http://tagyourmusic.herokuapp.com/fr#sign-up</translation>
+        <source>http://tagyourmusic.herokuapp.com/en/#register</source>
+        <translation>http://tagyourmusic.herokuapp.com/fr/#register</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
