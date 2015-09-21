@@ -260,9 +260,8 @@ def test_removes_track_menu_item_when_removing_a_track_from_the_album(driver):
     album = build.album()
     main_window.display_album_screen(album)
 
-    track = build.track(track_title="Chevere!")
-    album.add_track(track)
-    album.remove_track(track)
+    album.add_track(build.track(track_title="Chevere!"))
+    album.remove_track(0)
 
     driver.does_not_show_menu_item(title="Chevere!", track_number=1)
 

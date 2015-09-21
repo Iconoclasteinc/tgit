@@ -138,13 +138,13 @@ class Album(metaclass=tag.Taggable):
         self.listeners.trackAdded(track, position)
         self.track_inserted.emit(position, track)
 
-    def remove_track(self, track):
-        position = self.tracks.index(track)
-        self.tracks.remove(track)
+    def remove_track(self, position):
+        track = self.tracks.pop(position)
         self._renumber_tracks()
 
         self.listeners.trackRemoved(track, position)
         self.track_removed.emit(position, track)
+        return track
 
     removeTrack = remove_track
 

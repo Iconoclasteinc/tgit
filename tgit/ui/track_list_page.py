@@ -80,8 +80,7 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._stop_action.triggered.connect(lambda: stop())
 
     def on_remove_track(self, remove):
-        # todo should we pass the index instead of the track?
-        self._remove_action.triggered.connect(lambda: remove(self._selected_item.track))
+        self._remove_action.triggered.connect(lambda: remove(self._selected_row))
 
     def _setup_ui(self):
         self._load(":/ui/track_list_page.ui")
@@ -176,12 +175,19 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         return self._items.index(item)
 
     @property
-    def _selected_item(self):
+    def _selected_row(self):
         try:
-            selected_row = next(item.row() for item in self._track_table.selectedItems())
-            return self._items[selected_row]
+            return next(item.row() for item in self._track_table.selectedItems())
         except StopIteration:
             return None
+
+    @property
+    def _selected_item(self):
+        selected_row = self._selected_row
+        if selected_row is None:
+            return None
+        else:
+            return self._items[selected_row]
 
     def track_added(self, at_index, track):
         item = RowItem(track)

@@ -86,30 +86,35 @@ def test_adds_row_to_table_when_track_added_to_album(driver):
 
 
 def test_removes_row_from_table_when_track_removed_from_album(driver):
-    tracks = (make_track(track_title="Chevere!"),
-              make_track(track_title='Zumbar'),
-              make_track(track_title='Salsa Coltrane'))
-    album = make_album(tracks=tracks)
+    album = make_album(tracks=(make_track(track_title="Chevere!"),
+                               make_track(track_title='Zumbar'),
+                               make_track(track_title='Salsa Coltrane')))
     _ = show_track_list(album)
 
     driver.shows_tracks_in_order(['Chevere!'], ['Zumbar'], ['Salsa Coltrane'])
-    album.remove_track(tracks[1])
+    album.remove_track(1)
     driver.shows_tracks_in_order(['Chevere!'], ['Salsa Coltrane'])
-    album.remove_track(tracks[2])
+    album.remove_track(1)
     driver.shows_tracks_in_order(['Chevere!'])
-    album.remove_track(tracks[0])
+    album.remove_track(0)
     driver.shows_tracks_in_order()
 
-    for index, track in enumerate(tracks):
-        assert_that(track.metadata_changed.subscribers, empty(),
-                    "track #{} 'metadata changed' subscribers".format(index))
+
+def test_unsubscribe_from_track_events_track_removed_from_album(driver):
+    track = make_track()
+    album = make_album(tracks=[track])
+    _ = show_track_list(album)
+
+    album.remove_track(0)
+
+    assert_that(track.metadata_changed.subscribers, empty(), "track 'metadata changed' subscribers")
 
 
 @pytest.mark.parametrize("using_shortcut", [False, True])
 def test_makes_remove_track_request_when_remove_menu_item_selected(driver, using_shortcut):
     page = show_track_list(make_album(tracks=[make_track(), make_track(track_title="Chevere!")]))
 
-    remove_request = ValueMatcherProbe("remove track request", has_title("Chevere!"))
+    remove_request = ValueMatcherProbe("remove track request", 1)
     page.on_remove_track(remove_request.received)
 
     driver.remove_track("Chevere!", using_shortcut)

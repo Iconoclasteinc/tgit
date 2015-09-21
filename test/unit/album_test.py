@@ -67,10 +67,9 @@ def test_numbers_tracks():
 
 
 def test_renumbers_tracks_when_removed():
-    tracks = (build.track(), build.track(), build.track())
-    album = make_album(tracks=tracks)
+    album = make_album(tracks=(build.track(), build.track(), build.track()))
 
-    album.remove_track(tracks[0])
+    album.remove_track(0)
 
     assert_has_numbered_tracks(album)
 
@@ -97,8 +96,8 @@ def test_signals_track_removal_events():
     subscriber = Subscriber()
     album.track_removed.subscribe(subscriber)
 
-    for track in reversed(tracks):
-        album.remove_track(track)
+    for index in reversed(range(len(album))):
+        album.remove_track(index)
 
     for index, track in enumerate(tracks):
         assert_that(subscriber.events, has_item(contains(index, track)), "track {0} removal event".format(index))
@@ -161,8 +160,7 @@ class AlbumTest(unittest.TestCase):
             build.track(track_title='Track 2'),
             build.track(track_title='Track 3')])
 
-        removed = album.tracks[1]
-        album.removeTrack(removed)
+        album.remove_track(1)
 
         assert_that(album.tracks, has_length(2), 'remaining tracks')
         assert_that(album.tracks, is_not(has_item(has_property('track_title', 'Track 2'))), 'tracks')
