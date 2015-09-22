@@ -106,13 +106,13 @@ class MenuBarDriver(QMenuBarDriver):
         def request_feature(self):
             self._menu_driver.select_menu_item(matchers.named("_request_feature_action"))
 
-        def register(self):
-            self._menu_driver.select_menu_item(matchers.named("_register_action"))
-
     class AccountMenuDriver:
         def __init__(self, menu_driver, menu_bar_driver):
             self._menu_bar_driver = menu_bar_driver
             self._menu_driver = menu_driver
+
+        def register(self):
+            self._menu_driver.select_menu_item(matchers.named("_register_action"))
 
         def sign_in(self):
             self._menu_driver.menu_item(matchers.named("_sign_in_action")).click()

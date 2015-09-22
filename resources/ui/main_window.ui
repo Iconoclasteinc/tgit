@@ -77,8 +77,6 @@
     <addaction name="_online_help_action"/>
     <addaction name="_request_feature_action"/>
     <addaction name="separator"/>
-    <addaction name="_register_action"/>
-    <addaction name="separator"/>
     <addaction name="_about_action"/>
     <addaction name="_about_qt_action"/>
    </widget>
@@ -87,6 +85,8 @@
      <string>&amp;Account</string>
     </property>
     <addaction name="_sign_in_action"/>
+    <addaction name="separator"/>
+    <addaction name="_register_action"/>
    </widget>
    <addaction name="file_menu"/>
    <addaction name="navigate_menu"/>

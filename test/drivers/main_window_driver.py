@@ -139,7 +139,7 @@ class MainWindowDriver(WidgetDriver):
         menu_bar(self).help.request_feature()
 
     def register(self):
-        menu_bar(self).help.register()
+        menu_bar(self).account.register()
 
     def sign_in(self):
         menu_bar(self).account.sign_in()
