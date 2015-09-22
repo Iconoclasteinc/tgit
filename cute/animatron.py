@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 import pyautogui
 
-from . import event_loop
+from . import event_loop, platforms
 from .gestures import Automaton
 
+
+# We need to make a little pause on OS X otherwise keys and clicks might not
+# be detected
+MINIMUM_PAUSE = 0.01 if platforms.mac else 0
 
 class Animatron(Automaton):
     """
@@ -11,7 +15,7 @@ class Animatron(Automaton):
 
     It is more realistic although slower than the Robot.
     """
-    def __init__(self, pause=0):
+    def __init__(self, pause=MINIMUM_PAUSE):
         pyautogui.PAUSE = pause
 
     def perform(self, *gestures):

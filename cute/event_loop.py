@@ -19,7 +19,7 @@ class Timeout(object):
         return (now - self._start_time) * ONE_SECOND_IN_MILLIS
 
 
-SLEEP_DELAY_IN_SECONDS = .01
+SLEEP_DELAY_IN_MILLIS = 10
 
 
 def process_events_for(ms):
@@ -27,7 +27,7 @@ def process_events_for(ms):
     while not timeout.has_expired():
         process_pending_events(ms)
         QCoreApplication.sendPostedEvents()
-        time.sleep(SLEEP_DELAY_IN_SECONDS)
+        time.sleep(SLEEP_DELAY_IN_MILLIS / ONE_SECOND_IN_MILLIS)
 
 
 def process_pending_events(for_ms=0):

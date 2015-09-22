@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
-import sys
 
+from . import platforms
 from .keys import *
 
-mac = sys.platform == "darwin"
-windows = sys.platform == "win32"
-
-ONE_SECOND_IN_MS = 60000
+ONE_MINUTE_IN_MS = 60000
 AVERAGE_WORD_LENGTH = 5  # precisely 5.1 in english
 MEDIUM_TYPING_SPEED = 240  # in wpm
 FAST_TYPING_SPEED = 480  # in wpm
 SUPER_FAST_TYPING_SPEED = 960  # in wpm
+LIGHTNING_FAST_TYPING_SPEED = 4800  # in wpm
 
 MOUSE_CLICK_DELAY = 10  # in ms
 MOUSE_DOUBLE_CLICK_DELAY = 50  # in ms
@@ -71,14 +69,14 @@ def holding_modifier_key(key, gesture):
 
 
 def holding_control(gesture):
-    return holding_modifier_key(COMMAND if mac else CONTROL, gesture)
+    return holding_modifier_key(COMMAND if platforms.mac else CONTROL, gesture)
 
 
 def type_key(key):
     return lambda automaton: automaton.type(key)
 
 
-def type_text(text, typing_speed=SUPER_FAST_TYPING_SPEED):
+def type_text(text, typing_speed=LIGHTNING_FAST_TYPING_SPEED):
     return sequence(*[_at_speed(typing_speed, type_key(c)) for c in text])
 
 
@@ -110,12 +108,12 @@ def mouse_double_click(button=LEFT_BUTTON):
     return sequence(mouse_click(button), pause(MOUSE_DOUBLE_CLICK_DELAY), mouse_click(button))
 
 
-def avoid_double_click():
+def pause_to_avoid_double_click():
     return pause(MIN_TIME_TO_AVOID_DOUBLE_CLICK)
 
 
 def mouse_multi_click(button=LEFT_BUTTON):
-    return holding_modifier_key(COMMAND if mac else CONTROL, mouse_click(button))
+    return holding_modifier_key(COMMAND if platforms.mac else CONTROL, mouse_click(button))
 
 
 def mouse_multi_click_at(pos, button=LEFT_BUTTON):
@@ -130,7 +128,7 @@ def mouse_drag(from_pos, to_pos):
 
 
 def select_all():
-    return holding_modifier_key(COMMAND if mac else CONTROL, type_key('a'))
+    return holding_modifier_key(COMMAND if platforms.mac else CONTROL, type_key('a'))
 
 
 def enter():
@@ -150,7 +148,7 @@ def unselect():
 
 
 def close():
-    if windows:
+    if platforms.windows:
         return holding_modifier_key(CONTROL, type_key(F4))
     else:
         return holding_modifier_key(COMMAND, type_key('w'))
@@ -165,7 +163,7 @@ def _at_speed(wpm, typing_gesture):
 
 
 def _keystroke_delay(wpm):
-    return ONE_SECOND_IN_MS / _keystrokes_per_minute(wpm)
+    return ONE_MINUTE_IN_MS / _keystrokes_per_minute(wpm)
 
 
 def _keystrokes_per_minute(wpm):
@@ -173,7 +171,7 @@ def _keystrokes_per_minute(wpm):
 
 
 def save():
-    if windows:
+    if platforms.windows:
         return holding_modifier_key(CONTROL, type_key("s"))
     else:
         return holding_modifier_key(COMMAND, type_key("s"))

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
 
 from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
@@ -7,18 +6,13 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, 
                              QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
 from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
-from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
-from . import gestures, properties, matchers as match
-from cute import rect
-from cute.table import TableMatcher, TableManipulation, Table
+from . import gestures, properties, matchers as match, rect, platforms
+from .table import TableMatcher, TableManipulation, Table
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                      WidgetScreenBoundsProbe)
 from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector,
                       WidgetIdentity, MissingWidgetFinder)
-
-windows = sys.platform == "win32"
-mac = sys.platform == "darwin"
 
 
 def all_top_level_widgets():
@@ -391,7 +385,7 @@ class QDialogDriver(WidgetDriver):
 
 class FileDialogDriver(QDialogDriver):
     DISPLAY_DELAY = 250
-    DISMISS_DELAY = 250 if mac else 0
+    DISMISS_DELAY = 250 if platforms.mac else 0
 
     def show_hidden_files(self):
         def show_dialog_hidden_files(dialog):
@@ -604,8 +598,8 @@ class QMenuBarDriver(WidgetDriver):
 
 
 class MenuDriver(WidgetDriver):
-    DISMISS_DELAY = 250 if mac else 0
-    POPUP_DELAY = 25 if windows else 0
+    DISMISS_DELAY = 250 if platforms.mac else 0
+    POPUP_DELAY = 25 if platforms.windows else 0
 
     def popup_manually_at(self, x, y):
         # For some reason, we can't open the menu by just right clicking, so open it manually
