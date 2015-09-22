@@ -45,4 +45,4 @@ class Cheddar:
             raise AuthenticationError()
 
         deserialized = json.loads(response.content.decode("utf-8"))
-        return deserialized["token"]
+        return {"email": email, "token": deserialized["token"]}

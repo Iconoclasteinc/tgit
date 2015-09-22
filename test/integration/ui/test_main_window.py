@@ -345,9 +345,10 @@ def test_warn_user_if_export_fails(driver):
 
 
 def test_signals_when_sign_in_menu_item_clicked(driver):
-    sign_in_signal = ValueMatcherProbe("sign in")
+    account = {"email": "..."}
+    sign_in_signal = ValueMatcherProbe("sign in", account)
 
-    page = show_page(authenticate=lambda on_sign_in: on_sign_in())
+    page = show_page(authenticate=lambda on_sign_in: on_sign_in(account))
     page.on_sign_in(sign_in_signal.received)
 
     driver.sign_in()

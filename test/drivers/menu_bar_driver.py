@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QMenuBar
-from hamcrest import is_not, has_item
+from hamcrest import is_not, has_item, all_of
 
 from cute import matchers
 from cute.widgets import QMenuBarDriver
@@ -22,7 +22,7 @@ class MenuBarDriver(QMenuBarDriver):
 
     @property
     def account(self):
-        return self.AccountMenuDriver(self.open_menu(matchers.named("_account_menu")))
+        return self.AccountMenuDriver(self.open_menu(matchers.named("_account_menu")), self)
 
     @property
     def help(self):
@@ -110,11 +110,17 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.select_menu_item(matchers.named("_register_action"))
 
     class AccountMenuDriver:
-        def __init__(self, menu_driver):
+        def __init__(self, menu_driver, menu_bar_driver):
+            self._menu_bar_driver = menu_bar_driver
             self._menu_driver = menu_driver
 
         def sign_in(self):
             self._menu_driver.menu_item(matchers.named("_sign_in_action")).click()
+
+        def shows_signed_in_user(self, email):
+            self._menu_driver.menu_item(matchers.named("_sign_in_action")).is_disabled()
+            self._menu_bar_driver.pause(150)
+            self._menu_driver.has_menu_item(all_of(matchers.named("_sign_in_action"), matchers.with_text(email)))
 
 
 def without_item(title):

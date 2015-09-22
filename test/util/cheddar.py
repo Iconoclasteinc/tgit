@@ -40,7 +40,7 @@ def host():
 
 
 def _check_auth(username, password):
-    return username == "jonathan" and password == "passw0rd"
+    return username == "test@example.com" and password == "passw0rd"
 
 def _please_authenticate():
     return Response(
@@ -76,6 +76,7 @@ def _assign():
 def _authenticate():
     token = next(token_queue)
     return json.dumps({"token": token})
+
 
 @_app.route("/shutdown")
 def _shutdown():

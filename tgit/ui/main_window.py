@@ -307,7 +307,11 @@ class MainWindow(QMainWindow, HandlerRegistrar):
             lambda _: handler(self.tr("mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!")))
 
     def on_sign_in(self, handler):
-        self._sign_in_action.triggered.connect(lambda *_: self._authenticate(handler))
+        def on_successful_sign_in(account):
+            self._sign_in_action.setText(account["email"])
+            self._sign_in_action.setEnabled(False)
+            handler(account)
+        self._sign_in_action.triggered.connect(lambda _: self._authenticate(on_successful_sign_in))
 
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)
