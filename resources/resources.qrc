@@ -33,7 +33,9 @@
         <file>ui/album_page.ui</file>
         <file>ui/new_album_page.ui</file>
         <file>ui/track_list_page.ui</file>
+        <file>ui/performers_dialog.ui</file>
         <file>ui/about_dialog.ui</file>
+        <file>ui/sign_in_dialog.ui</file>
         <file>images/folder.png</file>
         <file>images/folder-hover.png</file>
         <file>images/folder-open.png</file>
@@ -51,5 +53,10 @@
         <file>images/no-image-placeholder.png</file>
         <file>images/warning.png</file>
         <file alias="playback-error">images/exclamation-16-dark.png</file>
+        <file>images/add-performer-20.png</file>
+        <file>images/edit-20.png</file>
+        <file>images/edit-hover-20.png</file>
+        <file>images/remove-20.png</file>
+        <file>images/remove-hover-20.png</file>
     </qresource>
 </RCC>

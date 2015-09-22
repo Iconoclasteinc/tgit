@@ -71,8 +71,8 @@ def test_remove_previous_artwork_and_tracks(project_file, mp3):
 
     local_project.save_album(album, simple_naming)
 
-    for track in list(album.tracks):
-        album.remove_track(track)
+    for position in reversed(range(len(album))):
+        album.remove_track(position)
 
     album.remove_images()
 

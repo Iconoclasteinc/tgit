@@ -402,6 +402,11 @@
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
+        <source>&amp;Account</source>
+        <translation>&amp;Compte</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
         <source>&amp;Help</source>
         <translation>&amp;Aide</translation>
     </message>
@@ -467,6 +472,11 @@
         <location filename="tgit/ui/main_window.py"/>
         <source>R&amp;egister...</source>
         <translation>S'&amp;enregistrer...</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>Sign &amp;In...</source>
+        <translation>Se &amp;connecter...</translation>
     </message>
 </context>
 <context>
@@ -847,6 +857,21 @@
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This product is licensed under the &lt;a href="https://gnu.org/licenses/gpl.html"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;GNU General Public License v3&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ce produit est distribué sous la &lt;a href="https://gnu.org/licenses/gpl.html"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;GNU General Public License v3&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>sign_in_dialog</name>
+    <message>
+        <source>Sign-In</source>
+        <translation>Se connecter</translation>
+    </message>
+    <message>
+        <source>Email</source>
+        <translation>Courriel</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>Mot de passe</translation>
     </message>
 </context>
 </TS>

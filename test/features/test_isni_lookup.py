@@ -29,9 +29,10 @@ def name_server():
 
 @pytest.fixture(autouse=True)
 def platform(name_server, request):
-    from test.util.platform import isni_api
-    server_thread = isni_api.start(name_server.host(), name_server.port())
-    request.addfinalizer(lambda: isni_api.stop(server_thread))
+    from test.util import cheddar
+
+    server_thread = cheddar.start(name_server.host(), name_server.port())
+    request.addfinalizer(lambda: cheddar.stop(server_thread))
 
 
 def test_finding_the_isni_of_the_lead_performer(app, recordings, workspace, name_server):

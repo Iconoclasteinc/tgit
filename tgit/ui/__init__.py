@@ -36,21 +36,11 @@ from tgit.ui.settings_dialog import SettingsDialog
 from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_page import WelcomePage
+from tgit.ui.sign_in_dialog import SignInDialog
 from tgit.ui.album_screen import make_album_screen as AlbumScreen
 from tgit.util import browser
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
-
-
-def PerformerDialogController(parent, album):
-    def assign_guest_performers():
-        album.guest_performers = dialog.getPerformers()
-
-    dialog = PerformerDialog(parent)
-    dialog.accepted.connect(assign_guest_performers)
-    dialog.display(album.guest_performers)
-    dialog.open()
-    return dialog
 
 
 def ISNILookupDialogController(parent, album, identities):
@@ -93,12 +83,18 @@ def SettingsDialogController(notify_restart_required, preferences, parent):
     return dialog
 
 
-def create_main_window(portfolio, player, preferences, name_registry, native, confirm_exit):
+def create_main_window(portfolio, player, preferences, name_registry, cheddar, native, confirm_exit):
     dialogs = Dialogs(native)
     messages = MessageBoxes(confirm_exit)
 
     def show_settings_dialog():
         return SettingsDialogController(messages.restart_required, preferences, window)
+
+    def show_performers_dialog(album):
+        return lambda on_edit: PerformerDialog(album=album, parent=window).edit(on_edit)
+
+    def show_sign_in_dialog(on_successful_authentication):
+        return SignInDialog(authenticate=cheddar.authenticate, parent=window).sign_in(on_successful_authentication)
 
     def create_new_album_page():
         return NewAlbumPage(select_album_location=dialogs.select_album_destination,
@@ -127,15 +123,13 @@ def create_main_window(portfolio, player, preferences, name_registry, native, co
 
     def create_album_page(album):
         return make_album_edition_page(preferences, show_isni_lookup_dialog, show_activity_indicator_dialog,
-                                       show_performer_dialog, messages.isni_assignation_failed, album, name_registry,
+                                       messages.isni_assignation_failed, album, name_registry,
+                                       edit_performers=show_performers_dialog(album),
                                        select_picture=dialogs.select_cover,
                                        on_select_picture=director.change_cover_of(album))
 
     def show_isni_lookup_dialog(album, identities):
         return ISNILookupDialogController(window, album, identities)
-
-    def show_performer_dialog(album):
-        return PerformerDialogController(window, album)
 
     def show_activity_indicator_dialog():
         return ActivityIndicatorDialogController(window)
@@ -156,11 +150,13 @@ def create_main_window(portfolio, player, preferences, name_registry, native, co
                         select_tracks_in_folder=dialogs.add_tracks_in_folder,
                         show_save_error=messages.save_album_failed,
                         show_export_error=messages.export_failed,
+                        authenticate=show_sign_in_dialog,
                         on_close_album=director.remove_album_from(portfolio),
                         on_save_album=director.save_album(),
                         on_add_files=director.add_tracks,
                         on_export=director.export_as_csv,
                         on_settings=show_settings_dialog,
+                        on_sign_in=director.sign_in,
                         on_about_qt=messages.about_qt,
                         on_about=messages.about_tgit,
                         on_online_help=browser.open_,

@@ -37,6 +37,7 @@ def show_page(portfolio=build.album_portfolio(),
               select_tracks=ignore,
               select_tracks_in_folder=ignore,
               confirm_exit=yes,
+              authenticate=ignore,
               **handlers):
     main_window = MainWindow(portfolio=portfolio,
                              confirm_exit=confirm_exit,
@@ -48,6 +49,7 @@ def show_page(portfolio=build.album_portfolio(),
                              select_export_destination=select_export_destination,
                              select_tracks=select_tracks,
                              select_tracks_in_folder=select_tracks_in_folder,
+                             authenticate=authenticate,
                              **handlers)
     show_widget(main_window)
 
@@ -316,7 +318,7 @@ def test_closes_main_widget_when_changing_page(driver):
     screen.is_closed()
 
 
-def test_warn_user_if_save_failed(driver):
+def test_warn_user_if_save_fails(driver):
     save_failed_signal = ValueMatcherProbe("save album failed", instance_of(OSError))
     album = make_album()
 
@@ -327,7 +329,7 @@ def test_warn_user_if_save_failed(driver):
     driver.check(save_failed_signal)
 
 
-def test_warn_user_if_export_failed(driver):
+def test_warn_user_if_export_fails(driver):
     def on_export(callback, _):
         callback("...")
 
@@ -340,3 +342,13 @@ def test_warn_user_if_export_failed(driver):
 
     driver.export()
     driver.check(export_failed_signal)
+
+
+def test_signals_when_sign_in_menu_item_clicked(driver):
+    sign_in_signal = ValueMatcherProbe("sign in")
+
+    page = show_page(authenticate=lambda on_sign_in: on_sign_in())
+    page.on_sign_in(sign_in_signal.received)
+
+    driver.sign_in()
+    driver.check(sign_in_signal)

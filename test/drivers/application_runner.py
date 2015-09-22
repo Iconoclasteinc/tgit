@@ -2,6 +2,7 @@
 from collections import namedtuple
 import sip
 
+from tgit.cheddar import Cheddar
 from cute.animatron import Animatron
 from test.drivers import track_selection_dialog, message_box
 from test.util.doubles import fake_audio_player
@@ -32,7 +33,7 @@ class ApplicationRunner:
 
     def start(self, preferences):
         self.app = TGiT(fake_audio_player, NameRegistry(host="localhost", port=5001),
-                        native=False, confirm_exit=False)
+                        Cheddar(host="localhost", port=5001, secure=False), native=False, confirm_exit=False)
         self.app.show(preferences)
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                        EventProcessingProber(timeout_in_ms=1000), Animatron())
@@ -126,7 +127,7 @@ class ApplicationRunner:
         self.tagger.save()
 
     def signs_in(self):
-        self.tagger.sign_in("jonathan", "passw0rd")
+        self.tagger.signs_in("jonathan", "passw0rd")
 
     def registered_features_enabled(self):
         self.tagger.navigate_to_album_page()

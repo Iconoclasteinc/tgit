@@ -36,10 +36,11 @@ def name_server():
 
 @pytest.yield_fixture
 def platform(name_server):
-    from test.util.platform import isni_api
-    server_thread = isni_api.start(name_server.host(), name_server.port())
-    yield isni_api
-    isni_api.stop(server_thread)
+    from test.util import cheddar
+
+    server_thread = cheddar.start(name_server.host(), name_server.port())
+    yield cheddar
+    cheddar.stop(server_thread)
 
 
 @pytest.fixture

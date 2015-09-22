@@ -171,8 +171,7 @@ class AlbumTest(unittest.TestCase):
             build.track(track_title='Track 2'),
             build.track(track_title='Track 3')])
 
-        first = album.tracks[0]
-        album.removeTrack(first)
+        first = album.removeTrack(0)
         album.insertTrack(first, 1)
 
         assert_that(album.tracks, contains(
@@ -229,13 +228,12 @@ class AlbumTest(unittest.TestCase):
         listener = flexmock(AlbumListener())
         album.addAlbumListener(listener)
 
-        first = album.tracks[0]
-        second = album.tracks[1]
+        first, second = album.tracks[0], album.tracks[1]
         listener.should_receive('trackRemoved').with_args(second, 1).once()
         listener.should_receive('trackRemoved').with_args(first, 0).once()
 
-        album.removeTrack(second)
-        album.removeTrack(first)
+        album.remove_track(position=1)
+        album.remove_track(position=0)
 
     def assertNotifiesListenerOnPropertyChange(self, prop, value):
         album = Album()

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named, with_buddy, with_pixmap_height, with_pixmap_width
-from cute.widgets import WidgetDriver, no_widget
 from tgit.ui.album_edition_page import AlbumEditionPage
 from ._screen_driver import ScreenDriver
 from .picture_selection_dialog_driver import picture_selection_dialog
@@ -25,7 +24,7 @@ class AlbumEditionPageDriver(ScreenDriver):
             elif tag == "compilation":
                 self.shows_compilation(value)
             elif tag == "guest_performers":
-                self.showsGuestPerformers(value)
+                self.shows_guest_performers(value)
             elif tag == "label_name":
                 self.showsLabelName(value)
             elif tag == "catalog_number":
@@ -122,7 +121,7 @@ class AlbumEditionPageDriver(ScreenDriver):
     def lookup_isni_of_lead_performer(self):
         self.button(named("lookup_isni_button")).click()
 
-    def addPerformer(self):
+    def edit_performers(self):
         self.button(named("add_guest_performers_button")).click()
 
     def showsReleaseName(self, name):
@@ -171,7 +170,7 @@ class AlbumEditionPageDriver(ScreenDriver):
     def changeLeadPerformer(self, name):
         self.lineEdit(named("lead_performer")).change_text(name)
 
-    def showsGuestPerformers(self, names):
+    def shows_guest_performers(self, names):
         self.label(with_buddy(named("guest_performers"))).is_showing_on_screen()
         self.lineEdit(named("guest_performers")).has_text(names)
 

@@ -16,13 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from functools import wraps
+import json
 from threading import Thread
 import logging
 
-from flask import Flask, request
+from flask import Flask, request, Response
 import requests
 
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
+token_queue = iter([])
 
 _app = Flask(__name__)
 _name_server_uri = ""
@@ -34,6 +37,25 @@ def port():
 
 def host():
     return "localhost"
+
+
+def _check_auth(username, password):
+    return username == "jonathan" and password == "passw0rd"
+
+def _please_authenticate():
+    return Response(
+        "Could not verify your access level for that URL.\n"
+        "You have to login with proper credentials", 401,
+        {"WWW-Authenticate": "Basic realm=\"Login Required\""})
+
+def _requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not _check_auth(auth.username, auth.password):
+            return _please_authenticate()
+        return f(*args, **kwargs)
+    return decorated
 
 
 @_app.route("/isni/lookup")
@@ -48,6 +70,12 @@ def _assign():
     response = requests.post(_name_server_uri + "/ATOM/isni", data=request.data.decode(), headers=headers, verify=False)
     return response.content
 
+
+@_app.route("/api/authentications", methods=["POST"])
+@_requires_auth
+def _authenticate():
+    token = next(token_queue)
+    return json.dumps({"token": token})
 
 @_app.route("/shutdown")
 def _shutdown():

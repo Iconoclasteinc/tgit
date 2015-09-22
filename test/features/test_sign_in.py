@@ -27,15 +27,18 @@ def name_server():
     isni_database.stop(database_thread)
 
 
-@pytest.fixture(autouse=True)
-def platform(name_server, request):
-    from test.util.platform import isni_api
-    server_thread = isni_api.start(name_server.host(), name_server.port())
-    request.addfinalizer(lambda: isni_api.stop(server_thread))
+@pytest.yield_fixture()
+def platform(name_server):
+    from test.util import cheddar
+
+    server_thread = cheddar.start(name_server.host(), name_server.port())
+    yield cheddar
+    cheddar.stop(server_thread)
 
 
 @pytest.mark.wip
-def test_signing_in_enables_isni_lookup(app):
+def test_signing_in_enables_isni_lookup(app, platform):
+    platform.token_queue = iter(["token12345"])
     app.signs_in()
     app.new_album()
     app.registered_features_enabled()

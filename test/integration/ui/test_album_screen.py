@@ -25,7 +25,7 @@ def create_track_list_page(album):
 
 
 def create_album_page(album):
-    return AlbumEditionPage(Preferences(), ignore)
+    return AlbumEditionPage(Preferences(), ignore, ignore)
 
 
 def create_track_page(track):

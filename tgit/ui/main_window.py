@@ -37,7 +37,7 @@ StyleSheet = """
         border: 1px solid #DDDDDD;
     }
 
-    QGroupBox {
+    #track_edition_page QGroupBox {
         border: 1px solid #DDDDDD;
         border-bottom: 2px solid rgba(0, 0, 0, 20%);
         background-color: white;
@@ -46,7 +46,7 @@ StyleSheet = """
         font-size: 10px;
     }
 
-    QGroupBox::title {
+    #track_edition_page QGroupBox::title {
         subcontrol-origin: margin;
         subcontrol-position: top left;
         left: 1px;
@@ -56,53 +56,6 @@ StyleSheet = """
         background-color: #F7F7F7;
      }
 
-    #performer-dialog #form-box QPushButton#add-performer {
-        background-color: #F25C0A;
-        border: 2px solid #F25C0A;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: bold;
-        color: white;
-        padding: 10px 10px 7px 10px;
-        margin-left: 10px;
-    }
-
-    #performer-dialog #form-box QPushButton {
-        background-color: #BFBFBF;
-        border: 2px solid #BFBFBF;
-        border-radius: 4px;
-        color: white;
-        font-weight: bold;
-        font-size: 10px;
-        padding: 3px 10px;
-    }
-
-    #performer-dialog #form-box QPushButton:hover, #performer-dialog #form-box QPushButton:focus {
-        background-color: #A6A6A6;
-        border-color: #A6A6A6;
-    }
-
-    #performer-dialog #form-box QPushButton:pressed {
-        border: 2px solid transparent;
-    }
-
-    #performer-dialog #form-box QPushButton#add-performer {
-        font-size: 10px;
-        padding: 3px 10px;
-        margin: 0;
-    }
-
-    #performer-dialog #form-box QPushButton#add-performer:hover,
-    #performer-dialog #form-box QPushButton#add-performer:focus {
-        background-color: #D95109;
-        border-color: #D95109;
-    }
-
-    #performer-dialog QPushButton#add-performer:pressed {
-        border: 2px solid white;
-    }
-
-    #performer-dialog QLineEdit,
     #track_edition_page QLineEdit, #track_edition_page TextArea, #track_edition_page QComboBox,
     #track_edition_page QComboBox::drop-down, #track_edition_page QComboBox QAbstractItemView {
         background-color: #F9F9F9;
@@ -111,20 +64,17 @@ StyleSheet = """
         min-height: 20px;
     }
 
-    #performer-dialog QLineEdit,
     #track_edition_page QLineEdit, #track_edition_page TextArea, #track_edition_page QComboBox {
         selection-background-color: #F2C1A7;
         selection-color: #222222;
     }
 
-    #performer-dialog QLineEdit:focus,
     #track_edition_page QLineEdit:focus, #track_edition_page TextArea:focus, #track_edition_page QComboBox:focus,
     #track_edition_page QComboBox:on, #track_edition_page QComboBox::drop-down:focus,
     #track_edition_page QComboBox::drop-down:on, #track_edition_page QComboBox QAbstractItemView:focus  {
         border: 1px solid #F79D6C;
     }
 
-    #performer-dialog QLineEdit:disabled,
     #track_edition_page QLineEdit:disabled, #track_edition_page TextArea:disabled,
     #track_edition_page QSpinBox:disabled {
         background-color: #FCFCFC;
@@ -181,6 +131,7 @@ StyleSheet = """
         background-color: #F9F9F9;
         border: 1px solid #B8B8B8;
         margin-right: 15px;
+        margin-left: 15px;
     }
 
     #album-banner QLabel {
@@ -249,8 +200,9 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def __init__(self, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
                  create_album_screen, confirm_close, select_export_destination, select_tracks, select_tracks_in_folder,
-                 **handlers):
+                 authenticate, **handlers):
         super().__init__()
+        self._authenticate = authenticate
         self._confirm_exit = confirm_exit
         self._show_save_error = show_save_error
         self._show_export_error = show_export_error
@@ -353,6 +305,9 @@ class MainWindow(QMainWindow, HandlerRegistrar):
     def on_request_feature(self, handler):
         self._request_feature_action.triggered.connect(
             lambda _: handler(self.tr("mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!")))
+
+    def on_sign_in(self, handler):
+        self._sign_in_action.triggered.connect(lambda *_: self._authenticate(handler))
 
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)

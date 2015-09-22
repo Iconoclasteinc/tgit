@@ -166,3 +166,7 @@ def assign_isni(registry, album):
     forename = album.lead_performer[:lastSpaceIndex]
 
     return registry.assign(forename, surname, [album.release_name])
+
+
+def sign_in(token):
+    pass
