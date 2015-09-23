@@ -3,6 +3,7 @@ from tgit.album_portfolio import AlbumPortfolio
 
 from tgit.metadata import Metadata, Image
 from tgit.album import Album
+from tgit.auth import Session, User
 from tgit.track import Track
 
 
@@ -49,3 +50,23 @@ make_album = album
 
 def album_portfolio():
     return AlbumPortfolio()
+
+
+def make_anonymous_user():
+    return User.anonymous()
+
+
+def make_registered_user(email="test@example.com", token="api-key"):
+    return User.registered_as(email, token)
+
+
+def make_anonymous_session():
+    return Session()
+
+
+def make_registered_session(email="test@example.com", token="api-key"):
+    session = Session()
+    session.login_as(email, token)
+    return session
+
+

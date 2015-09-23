@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import timeit
 
 from PyQt5.QtCore import QByteArray
@@ -10,9 +9,10 @@ from cute.probes import ValueMatcherProbe
 from test.drivers import AlbumEditionPageDriver
 from test.integration.ui import WidgetTest
 from test.util import resources, builders as build
+from test.util.builders import make_album, make_anonymous_session, make_registered_session
 from tgit.metadata import Image
 from tgit.preferences import Preferences
-from tgit.ui.album_edition_page import AlbumEditionPage
+from tgit.ui.album_edition_page import make_album_edition_page
 from tgit.util import fs
 
 
@@ -21,10 +21,8 @@ def ignore(*_):
 
 
 class AlbumEditionPageTest(WidgetTest):
-    def render(self, album, select_picture=ignore, edit_performers=ignore, **handlers):
-        self.page = AlbumEditionPage(Preferences(), select_picture=select_picture, edit_performers=edit_performers,
-                                     **handlers)
-        self.page.refresh(album)
+    def render(self, album, session=make_anonymous_session(), select_picture=ignore, edit_performers=ignore, **handlers):
+        self.page = make_album_edition_page(album, session, Preferences(), edit_performers, select_picture, **handlers)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
 
@@ -87,40 +85,47 @@ class AlbumEditionPageTest(WidgetTest):
         self.driver.shows_compilation(False)
 
         album.compilation = True
-        self.page.refresh(album)
         self.driver.shows_compilation(True)
 
     def testDisablesLeadPerformerEditionWhenAlbumIsACompilation(self):
         self.render(build.album(compilation=True, lead_performer="Album Artist"))
         self.driver.shows_lead_performer("Various Artists", disabled=True)
 
-    def testTogglesLookupISNIButtonWhenAlbumIsNoLongerACompilation(self):
-        album = build.album(compilation=True, lead_performer="Album Artist")
-        self.render(album)
+    def test_enables_isni_lookup_when_album_is_no_longer_a_compilation(self):
+        album = make_album(compilation=True, lead_performer="Album Artist")
+        self.render(album, make_registered_session())
         self.driver.enables_isni_lookup(False)
 
         album.compilation = False
-        self.page.refresh(album)
         self.driver.enables_isni_lookup()
 
-    def testDisablesLookupISNIButtonWhenAlbumIsACompilation(self):
-        self.render(build.album(compilation=True, lead_performer="Album Artist"))
+    def test_disables_isni_lookup_when_lead_performer_is_empty(self):
+        self.render(make_album(lead_performer=""), make_registered_session())
         self.driver.enables_isni_lookup(False)
 
-    def testDisablesLookupISNIButtonWhenLeadPerformerIsEmpty(self):
-        self.render(build.album(lead_performer=""))
+    def test_enables_isni_lookup_when_user_logs_in(self):
+        session = make_anonymous_session()
+        self.render(session=session, album=make_album(lead_performer="Album Artist"))
         self.driver.enables_isni_lookup(False)
 
-    def testDisablesLookupISNIButtonWhenLeadPerformerIsBlank(self):
-        self.render(build.album(lead_performer="     "))
+        session.login_as("somebody@mgail.com", "api-key")
+        self.driver.enables_isni_lookup(True)
+
+    def test_disables_isni_lookup_when_user_logs_out(self):
+        session = make_registered_session()
+        self.render(session=session, album=make_album(lead_performer="Album Artist"))
+        self.driver.enables_isni_lookup(True)
+
+        session.logout()
         self.driver.enables_isni_lookup(False)
 
-    def test_disables_assign_isni_button(self):
-        self.render(build.album(lead_performer="     "))
+    def test_disables_isni_lookup_when_lead_performer_is_blank(self):
+        self.render(make_album(lead_performer="     "))
+        self.driver.enables_isni_lookup(False)
+
+    def test_disables_isni_assign_by_default(self):
+        self.render(make_album(lead_performer="     "))
         self.driver.disables_isni_assign()
-
-    def testDisablesAssignISNIButtonWhenLeadPerformerIsNotEmpty(self):
-        self.render(build.album())
 
     def test_signals_when_picture_selected(self):
         album = build.album()
@@ -141,7 +146,7 @@ class AlbumEditionPageTest(WidgetTest):
         album = build.album(images=[build.image("image/jpeg", loadTestImage("big-image.jpg"), Image.FRONT_COVER)])
         self.render(album)
 
-        time = timeit.timeit(lambda: self.page.refresh(album), number=50)
+        time = timeit.timeit(lambda: self.page.display(album), number=50)
         assert_that(time, less_than(1), "time to execute render 50 times")
 
     def testSignalsWhenRemovePictureButtonClicked(self):
@@ -154,7 +159,7 @@ class AlbumEditionPageTest(WidgetTest):
         self.check(removePictureSignal)
 
     def test_signals_when_lookup_isni_button_clicked(self):
-        self.render(build.album(lead_performer="performer"))
+        self.render(make_album(lead_performer="performer"), make_registered_session())
 
         lookup_isni_signal = ValueMatcherProbe("lookup ISNI")
         self.page.lookup_isni.connect(lookup_isni_signal.received)

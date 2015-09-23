@@ -17,63 +17,32 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from queue import Queue
-
-from PyQt5.QtCore import Qt, pyqtSignal, QDate, QEventLoop, QLocale
+from PyQt5.QtCore import Qt, pyqtSignal, QDate, QLocale
 from PyQt5.QtGui import QPalette, QColor, QIcon
-from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtWidgets import QWidget
 
-from .helpers import image, formatting, ui_file
-from tgit import album_director as director
+from .helpers import image, formatting
 from tgit.album import AlbumListener
 from tgit.genres import GENRES
-from tgit.isni.name_registry import NameRegistry
+from tgit.auth import Permission
+from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
-from tgit.util import async_task_runner as task_runner
+from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_album_edition_page(preferences, lookup_isni_dialog_factory, activity_indicator_dialog_factory,
-                            show_assignation_failed, album, name_registry, edit_performers,
-                            select_picture, **handlers):
-    def poll_queue():
-        while queue.empty():
-            QApplication.processEvents(QEventLoop.AllEvents, 100)
-        return queue.get(True)
+def make_album_edition_page(album, session, preferences, edit_performers, select_picture, **handlers):
+    page = AlbumEditionPage(preferences, select_picture=select_picture, edit_performers=edit_performers, **handlers)
 
-    def lookup_isni():
-        activity_dialog = activity_indicator_dialog_factory()
-        activity_dialog.show()
-        task_runner.runAsync(lambda: director.lookupISNI(name_registry, album.lead_performer)).andPutResultInto(
-            queue).run()
+    subscriptions = MultiSubscription()
+    subscriptions.add(session.user_signed_in.subscribe(page.user_changed))
+    subscriptions.add(session.user_signed_out.subscribe(lambda user: page.user_changed(session.current_user)))
+    page.closed.connect(lambda: subscriptions.cancel())
 
-        identities = poll_queue()
-        activity_dialog.close()
-        dialog = lookup_isni_dialog_factory(album, identities)
-        dialog.show()
-
-    def assign_isni():
-        activity_dialog = activity_indicator_dialog_factory()
-        activity_dialog.show()
-        task_runner.runAsync(lambda: director.assign_isni(name_registry, album)).andPutResultInto(queue).run()
-        code, payload = poll_queue()
-        activity_dialog.close()
-        if code == NameRegistry.Codes.SUCCESS:
-            album.isni = payload
-        else:
-            show_assignation_failed(payload)
-
-    queue = Queue()
-    page = AlbumEditionPage(preferences,
-                            edit_performers=edit_performers,
-                            select_picture=select_picture,
-                            **handlers)
-    page.metadata_changed.connect(lambda metadata: director.updateAlbum(album, **metadata))
-    page.remove_picture.connect(lambda: director.removeAlbumCover(album))
-    page.lookup_isni.connect(lookup_isni)
-    page.assign_isni.connect(assign_isni)
-    page.clear_isni.connect(lambda: director.clearISNI(album))
     album.addAlbumListener(page)
-    page.refresh(album)
+    page.closed.connect(lambda: album.removeAlbumListener(page))
+
+    page.user_changed(session.current_user)
+    page.display(album)
     return page
 
 
@@ -82,7 +51,7 @@ LIGHT_GRAY = QColor.fromRgb(0xF6F6F6)
 
 
 @Closeable
-class AlbumEditionPage(QWidget, AlbumListener):
+class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
     remove_picture = pyqtSignal()
     lookup_isni = pyqtSignal()
@@ -90,20 +59,24 @@ class AlbumEditionPage(QWidget, AlbumListener):
     assign_isni = pyqtSignal()
     metadata_changed = pyqtSignal(dict)
 
-    picture = None
+    _picture = None
+    _isni_lookup = False
 
     FRONT_COVER_SIZE = 350, 350
 
     def __init__(self, preferences, edit_performers, select_picture, **handlers):
         super().__init__()
-        ui_file.load(":/ui/album_page.ui", self)
         self._preferences = preferences
         self._select_picture = select_picture
-
-        self._disable_mac_focus_frame()
+        self._edit_performers = edit_performers
+        self._setup_ui()
 
         for name, handler in handlers.items():
             getattr(self, name)(handler)
+
+    def _setup_ui(self):
+        self._load(":/ui/album_page.ui")
+        self._disable_mac_focus_frame()
 
         # picture box
         self.front_cover.setFixedSize(*self.FRONT_COVER_SIZE)
@@ -127,7 +100,7 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
         self.clear_isni_button.clicked.connect(lambda: self.clear_isni.emit())
         self.clear_isni_button.clicked.connect(lambda: self.release_time.calendarWidget().show())
-        self.add_guest_performers_button.clicked.connect(lambda: edit_performers(self._update_guest_performers))
+        self.add_guest_performers_button.clicked.connect(lambda: self._edit_performers(self._update_guest_performers))
         self.guest_performers.textChanged.connect(lambda: self.metadata_changed.emit(self.metadata("guest_performers")))
 
         # record
@@ -148,8 +121,9 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.genre.lineEdit().textEdited.connect(
             lambda: self.metadata_changed.emit(self.metadata("primary_style")))
 
-        for date_edit in (
-                self.release_time, self.digital_release_time, self.original_release_time, self.recording_time):
+        # style calendars
+        for date_edit in (self.release_time, self.digital_release_time, self.original_release_time,
+                          self.recording_time):
             self._style_calendar(date_edit)
 
     def on_select_picture(self, on_select_picture):
@@ -186,12 +160,16 @@ class AlbumEditionPage(QWidget, AlbumListener):
         self.guest_performers.setText(formatting.toPeopleList(performers))
 
     def albumStateChanged(self, album):
-        self.refresh(album)
+        self.display(album)
 
-    def refresh(self, album):
-        if album.mainCover is not self.picture or album.mainCover is None:
+    def user_changed(self, user):
+        self._isni_lookup = user.has_permission(Permission.isni_lookup)
+        self._update_isni_lookup_button()
+
+    def display(self, album):
+        if album.mainCover is not self._picture or album.mainCover is None:
             self.front_cover.setPixmap(image.scale(album.mainCover, *self.FRONT_COVER_SIZE))
-            self.picture = album.mainCover
+            self._picture = album.mainCover
         self.release_name.setText(album.release_name)
         self.compilation.setChecked(album.compilation is True)
         self._display_lead_performer(album)
@@ -247,7 +225,8 @@ class AlbumEditionPage(QWidget, AlbumListener):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
     def _update_isni_lookup_button(self):
-        self.lookup_isni_button.setDisabled(self.compilation.isChecked() or is_blank(self.lead_performer.text()))
+        self.lookup_isni_button.setEnabled(
+            self._isni_lookup and not self.compilation.isChecked() and not is_blank(self.lead_performer.text()))
 
 
 def is_blank(text):

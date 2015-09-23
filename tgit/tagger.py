@@ -22,6 +22,7 @@ from PyQt5.QtCore import QTranslator, QLocale, QSettings
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
+from tgit.auth import Session
 from tgit.cheddar import Cheddar
 from tgit.audio import MediaPlayer, create_media_library
 from tgit.isni.name_registry import NameRegistry
@@ -64,8 +65,8 @@ class TGiT(QApplication):
 
     def show(self, preferences):
         self._set_locale(preferences["language"])
-        main_window = ui.create_main_window(self._album_portfolio, self._player, preferences, self._name_registry,
-                                            self._cheddar, self._native, self._confirm_exit)
+        main_window = ui.create_main_window(Session(), self._album_portfolio, self._player, preferences,
+                                            self._name_registry, self._cheddar, self._native, self._confirm_exit)
         main_window.show()
 
     def launch(self, preferences):

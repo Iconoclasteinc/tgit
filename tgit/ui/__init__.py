@@ -17,8 +17,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import functools as func
+from queue import Queue
+
+from PyQt5.QtCore import QEventLoop
+
+from PyQt5.QtWidgets import QApplication
 
 from tgit import album_director as director
+from tgit.auth import User
+from tgit.isni.name_registry import NameRegistry
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
@@ -38,7 +45,9 @@ from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_page import WelcomePage
 from tgit.ui.sign_in_dialog import SignInDialog
 from tgit.ui.album_screen import make_album_screen as AlbumScreen
-from tgit.util import browser
+from tgit.util import browser, async_task_runner as task_runner
+
+
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
 
@@ -69,6 +78,48 @@ def TrackEditionPageController(album, track):
     return page
 
 
+def AlbumEditionPageController(session, preferences, make_lookup_isni_dialog, make_activity_indicator_dialog,
+                               show_isni_assignation_failed, album, name_registry, edit_performers,
+                               select_picture, **handlers):
+    def poll_queue():
+        while queue.empty():
+            QApplication.processEvents(QEventLoop.AllEvents, 100)
+        return queue.get(True)
+
+    def lookup_isni():
+        activity_dialog = make_activity_indicator_dialog()
+        activity_dialog.show()
+        task_runner.runAsync(lambda: director.lookupISNI(name_registry, album.lead_performer)).andPutResultInto(
+            queue).run()
+
+        identities = poll_queue()
+        activity_dialog.close()
+        dialog = make_lookup_isni_dialog(album, identities)
+        dialog.show()
+
+    def assign_isni():
+        activity_dialog = make_activity_indicator_dialog()
+        activity_dialog.show()
+        task_runner.runAsync(lambda: director.assign_isni(name_registry, album)).andPutResultInto(queue).run()
+        code, payload = poll_queue()
+        activity_dialog.close()
+        if code == NameRegistry.Codes.SUCCESS:
+            album.isni = payload
+        else:
+            show_isni_assignation_failed(payload)
+
+    queue = Queue()
+    page = make_album_edition_page(album, session, preferences, edit_performers, select_picture, **handlers)
+    # Simulate user login until we hook with login menu action
+    page.user_changed(User.registered_as("change.me@gmail.com", "???"))
+    page.metadata_changed.connect(lambda metadata: director.updateAlbum(album, **metadata))
+    page.remove_picture.connect(lambda: director.removeAlbumCover(album))
+    page.lookup_isni.connect(lookup_isni)
+    page.assign_isni.connect(assign_isni)
+    page.clear_isni.connect(lambda: director.clearISNI(album))
+    return page
+
+
 def SettingsDialogController(notify_restart_required, preferences, parent):
     dialog = SettingsDialog(parent)
 
@@ -83,7 +134,7 @@ def SettingsDialogController(notify_restart_required, preferences, parent):
     return dialog
 
 
-def create_main_window(portfolio, player, preferences, name_registry, cheddar, native, confirm_exit):
+def create_main_window(session, portfolio, player, preferences, name_registry, cheddar, native, confirm_exit):
     dialogs = Dialogs(native)
     messages = MessageBoxes(confirm_exit)
 
@@ -122,11 +173,11 @@ def create_main_window(portfolio, player, preferences, name_registry, cheddar, n
                              on_add_tracks=director.add_tracks_to(album))
 
     def create_album_page(album):
-        return make_album_edition_page(preferences, show_isni_lookup_dialog, show_activity_indicator_dialog,
-                                       messages.isni_assignation_failed, album, name_registry,
-                                       edit_performers=show_performers_dialog(album),
-                                       select_picture=dialogs.select_cover,
-                                       on_select_picture=director.change_cover_of(album))
+        return AlbumEditionPageController(session, preferences, show_isni_lookup_dialog, show_activity_indicator_dialog,
+                                          messages.isni_assignation_failed, album, name_registry,
+                                          edit_performers=show_performers_dialog(album),
+                                          select_picture=dialogs.select_cover,
+                                          on_select_picture=director.change_cover_of(album))
 
     def show_isni_lookup_dialog(album, identities):
         return ISNILookupDialogController(window, album, identities)
