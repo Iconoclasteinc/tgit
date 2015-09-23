@@ -68,5 +68,3 @@ def make_registered_session(email="test@example.com", token="api-key"):
     session = Session()
     session.login_as(email, token)
     return session
-
-

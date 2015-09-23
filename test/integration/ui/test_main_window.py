@@ -4,6 +4,7 @@ import sys
 from hamcrest import contains, instance_of
 import pytest
 
+from auth import User
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
@@ -27,7 +28,8 @@ def raise_os_error(message):
     return raise_error
 
 
-def show_page(portfolio=build.album_portfolio(),
+def show_page(session=build.make_anonymous_session(),
+              portfolio=build.album_portfolio(),
               create_startup_screen=fake_startup_screen,
               create_album_screen=fake_album_screen,
               confirm_close=ignore,
@@ -39,7 +41,8 @@ def show_page(portfolio=build.album_portfolio(),
               confirm_exit=yes,
               authenticate=ignore,
               **handlers):
-    main_window = MainWindow(portfolio=portfolio,
+    main_window = MainWindow(session=session,
+                             portfolio=portfolio,
                              confirm_exit=confirm_exit,
                              create_startup_screen=create_startup_screen,
                              create_album_screen=create_album_screen,
@@ -353,3 +356,10 @@ def test_signals_when_sign_in_menu_item_clicked(driver):
 
     driver.sign_in()
     driver.check(sign_in_signal)
+
+
+def test_displays_the_logged_user(driver):
+    page = show_page()
+    page.user_signed_in(User(email="test@example.com"))
+
+    driver.is_signed_in("test@example.com")

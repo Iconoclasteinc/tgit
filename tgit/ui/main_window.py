@@ -198,7 +198,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     TRACK_ACTIONS_START_INDEX = 3
 
-    def __init__(self, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
+    def __init__(self, session, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
                  create_album_screen, confirm_close, select_export_destination, select_tracks, select_tracks_in_folder,
                  authenticate, **handlers):
         super().__init__()
@@ -215,7 +215,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
         self._setup_ui()
         self._setup_menu_bar()
-        self._setup_signals(portfolio)
+        self._setup_signals(portfolio, session)
         self._register(**handlers)
 
         self._album_dependent_action = [
@@ -254,6 +254,11 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
         self.subscribe(album.track_inserted, self._rebuild_track_actions)
         self.subscribe(album.track_removed, self._rebuild_track_actions)
+
+    def user_signed_in(self, user):
+        self._sign_in_action.setVisible(False)
+        self._logged_user_action.setText(user.email)
+        self._logged_user_action.setVisible(True)
 
     def on_close_album(self, on_close_album):
         def confirm_album_close():
@@ -296,7 +301,8 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self._about_qt_action.triggered.connect(handler)
 
     def on_online_help(self, handler):
-        self._online_help_action.triggered.connect(lambda _: handler(self.tr("http://tagyourmusic.com/en/#documentation")))
+        self._online_help_action.triggered.connect(
+            lambda _: handler(self.tr("http://tagyourmusic.com/en/#documentation")))
 
     def on_register(self, handler):
         self._register_action.triggered.connect(
@@ -307,12 +313,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
             lambda _: handler(self.tr("mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!")))
 
     def on_sign_in(self, handler):
-        def on_successful_sign_in(account):
-            self._sign_in_action.setVisible(False)
-            self._logged_user_action.setText(account["email"])
-            self._logged_user_action.setVisible(True)
-            handler(account)
-        self._sign_in_action.triggered.connect(lambda _: self._authenticate(on_successful_sign_in))
+        self._sign_in_action.triggered.connect(lambda _: self._authenticate(handler))
 
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)
@@ -326,9 +327,10 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self.close_album_action.setShortcut(QKeySequence.Close)
         self.save_album_action.setShortcut(QKeySequence.Save)
 
-    def _setup_signals(self, portfolio):
+    def _setup_signals(self, portfolio, session):
         self.subscribe(portfolio.album_removed, self.display_startup_screen)
         self.subscribe(portfolio.album_created, self.display_album_screen)
+        self.subscribe(session.user_signed_in, self.user_signed_in)
 
     def _close_current_screen(self):
         if self.centralWidget() is not None:

@@ -8,6 +8,7 @@ from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
+from auth import Session
 from test.util import builders as build, resources, doubles
 from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
@@ -208,6 +209,12 @@ def test_updates_track_metadata():
     assert_that(track.labels, equal_to('Tags'), 'tags')
     assert_that(track.lyrics, equal_to('Lyrics\nLyrics\n...'), 'lyrics')
     assert_that(track.language, equal_to('und'), 'language')
+
+
+def test_logs_user_in():
+    session = Session()
+    director.sign_in_into(session)({"email": "the_email", "token": "the_token"})
+    assert_that(session.current_user.email, equal_to('the_email'))
 
 
 class AlbumDirectorTest(unittest.TestCase):

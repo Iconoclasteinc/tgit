@@ -20,6 +20,7 @@ import functools as func
 from queue import Queue
 
 from PyQt5.QtCore import QEventLoop
+
 from PyQt5.QtWidgets import QApplication
 
 from tgit import album_director as director
@@ -45,9 +46,6 @@ from tgit.ui.welcome_page import WelcomePage
 from tgit.ui.sign_in_dialog import SignInDialog
 from tgit.ui.album_screen import make_album_screen as AlbumScreen
 from tgit.util import browser, async_task_runner as task_runner
-
-
-
 
 
 # noinspection PyUnresolvedReferences
@@ -183,7 +181,8 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
     def create_album_screen(album):
         return AlbumScreen(album, create_track_list_page, create_album_page, create_track_page_for(album))
 
-    window = MainWindow(portfolio,
+    window = MainWindow(session,
+                        portfolio,
                         confirm_exit=messages.confirm_exit,
                         create_startup_screen=create_startup_screen,
                         create_album_screen=create_album_screen,
@@ -199,7 +198,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                         on_add_files=director.add_tracks,
                         on_export=director.export_as_csv,
                         on_settings=show_settings_dialog,
-                        on_sign_in=director.sign_in,
+                        on_sign_in=director.sign_in_into(session),
                         on_about_qt=messages.about_qt,
                         on_about=messages.about_tgit,
                         on_online_help=browser.open_,

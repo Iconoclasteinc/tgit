@@ -171,5 +171,8 @@ def assign_isni(registry, album):
     return registry.assign(forename, surname, [album.release_name])
 
 
-def sign_in(account):
-    pass
+def sign_in_into(session):
+    def sign_in(user):
+        session.login_as(user["email"], user["token"])
+
+    return sign_in

@@ -27,7 +27,7 @@ class Permission(Enum):
     isni_lookup = range(1)
 
 
-class User():
+class User:
     @classmethod
     def anonymous(cls):
         return cls()

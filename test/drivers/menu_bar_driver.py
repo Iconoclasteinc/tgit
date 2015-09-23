@@ -119,9 +119,9 @@ class MenuBarDriver(QMenuBarDriver):
 
         def shows_signed_in_user(self, email):
             self._menu_driver.menu_item(matchers.named("_sign_in_action")).is_hidden()
-            self._menu_bar_driver.pause(50)
+            self._menu_bar_driver.pause(100)
             self._menu_driver.menu_item(matchers.named("_logged_user_action")).is_disabled()
-            self._menu_bar_driver.pause(50)
+            self._menu_bar_driver.pause(100)
             self._menu_driver.has_menu_item(all_of(matchers.named("_logged_user_action"), matchers.with_text(email)))
 
 
