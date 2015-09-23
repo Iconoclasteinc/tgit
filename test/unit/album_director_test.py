@@ -189,27 +189,28 @@ def test_moves_track_of_album():
     assert_that(honeycomb.tracks, contains(chevere, salsa_coltrane), 'reordered tracks')
 
 
+def test_updates_track_metadata():
+    track = make_track()
+    director.update_track(track)(track_title='Title', lead_performer='Artist', versionInfo='Version',
+                                 featuredGuest='Featuring', lyricist='Lyricist', composer='Composer',
+                                 publisher='Publisher', isrc='ZZZ123456789', labels='Tags',
+                                 lyrics='Lyrics\nLyrics\n...',
+                                 language='und')
+
+    assert_that(track.track_title, equal_to('Title'), 'track title')
+    assert_that(track.lead_performer, equal_to('Artist'), 'lead performer')
+    assert_that(track.versionInfo, equal_to('Version'), 'version info')
+    assert_that(track.featuredGuest, equal_to('Featuring'), 'featured guest')
+    assert_that(track.lyricist, equal_to('Lyricist'), 'lyricist')
+    assert_that(track.composer, equal_to('Composer'), 'composer')
+    assert_that(track.publisher, equal_to('Publisher'), 'publisher')
+    assert_that(track.isrc, equal_to('ZZZ123456789'), 'isrc')
+    assert_that(track.labels, equal_to('Tags'), 'tags')
+    assert_that(track.lyrics, equal_to('Lyrics\nLyrics\n...'), 'lyrics')
+    assert_that(track.language, equal_to('und'), 'language')
+
+
 class AlbumDirectorTest(unittest.TestCase):
-    def testUpdatesTrackMetadata(self):
-        track = build.track()
-        director.updateTrack(track,
-                             track_title='Title', lead_performer='Artist', versionInfo='Version',
-                             featuredGuest='Featuring', lyricist='Lyricist', composer='Composer',
-                             publisher='Publisher', isrc='ZZZ123456789', labels='Tags', lyrics='Lyrics\nLyrics\n...',
-                             language='und')
-
-        assert_that(track.track_title, equal_to('Title'), 'track title')
-        assert_that(track.lead_performer, equal_to('Artist'), 'lead performer')
-        assert_that(track.versionInfo, equal_to('Version'), 'version info')
-        assert_that(track.featuredGuest, equal_to('Featuring'), 'featured guest')
-        assert_that(track.lyricist, equal_to('Lyricist'), 'lyricist')
-        assert_that(track.composer, equal_to('Composer'), 'composer')
-        assert_that(track.publisher, equal_to('Publisher'), 'publisher')
-        assert_that(track.isrc, equal_to('ZZZ123456789'), 'isrc')
-        assert_that(track.labels, equal_to('Tags'), 'tags')
-        assert_that(track.lyrics, equal_to('Lyrics\nLyrics\n...'), 'lyrics')
-        assert_that(track.language, equal_to('und'), 'language')
-
     def testUpdatesAlbumMetadata(self):
         album = build.album()
         director.updateAlbum(album,

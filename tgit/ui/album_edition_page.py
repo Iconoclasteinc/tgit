@@ -32,7 +32,9 @@ ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
 def make_album_edition_page(album, session, edit_performers, select_picture, **handlers):
-    page = AlbumEditionPage(select_picture=select_picture, edit_performers=edit_performers, **handlers)
+    page = AlbumEditionPage(select_picture=select_picture, edit_performers=edit_performers)
+    for name, handler in handlers.items():
+        getattr(page, name)(handler)
 
     subscriptions = MultiSubscription()
     subscriptions.add(session.user_signed_in.subscribe(page.user_changed))
@@ -61,14 +63,11 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, edit_performers, select_picture, **handlers):
+    def __init__(self, edit_performers, select_picture):
         super().__init__()
         self._select_picture = select_picture
         self._edit_performers = edit_performers
         self._setup_ui()
-
-        for name, handler in handlers.items():
-            getattr(self, name)(handler)
 
     def _setup_ui(self):
         self._load(":/ui/album_page.ui")

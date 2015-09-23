@@ -96,9 +96,12 @@ def add_tracks_to(album, from_catalog=tagging):
     return lambda *filenames: add_tracks(album, *filenames, from_catalog=from_catalog)
 
 
-def updateTrack(track, **metadata):
-    for key, value in metadata.items():
-        setattr(track, key, value)
+def update_track(track):
+    def update_track_metadata(**metadata):
+        for key, value in metadata.items():
+            setattr(track, key, value)
+
+    return update_track_metadata
 
 
 def updateAlbum(album, **metadata):

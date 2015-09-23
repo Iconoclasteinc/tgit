@@ -26,6 +26,20 @@ from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import form, image, formatting
 
 
+def make_track_edition_page(album, track, on_track_changed):
+    page = TrackEditionPage()
+
+    page.metadataChanged.connect(lambda metadata: on_track_changed(**metadata))
+
+    subscription = track.metadata_changed.subscribe(page.display_track)
+    page.closed.connect(lambda: subscription.cancel())
+    album.addAlbumListener(page)
+    page.closed.connect(lambda: album.removeAlbumListener(page))
+
+    page.display(album=album, track=track)
+    return page
+
+
 @Closeable
 class TrackEditionPage(QWidget, AlbumListener):
     closed = pyqtSignal()

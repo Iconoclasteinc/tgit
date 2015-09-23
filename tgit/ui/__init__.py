@@ -20,7 +20,6 @@ import functools as func
 from queue import Queue
 
 from PyQt5.QtCore import QEventLoop
-
 from PyQt5.QtWidgets import QApplication
 
 from tgit import album_director as director
@@ -40,12 +39,13 @@ from tgit.ui.main_window import MainWindow
 from tgit.ui.message_boxes import MessageBoxes
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.settings_dialog import SettingsDialog
-from tgit.ui.track_edition_page import TrackEditionPage
+from tgit.ui.track_edition_page import TrackEditionPage, make_track_edition_page
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_page import WelcomePage
 from tgit.ui.sign_in_dialog import SignInDialog
 from tgit.ui.album_screen import make_album_screen as AlbumScreen
 from tgit.util import browser, async_task_runner as task_runner
+
 
 
 
@@ -65,19 +65,6 @@ def ActivityIndicatorDialogController(parent):
     dialog = ActivityIndicatorDialog(parent)
     dialog.open()
     return dialog
-
-
-def TrackEditionPageController(album, track):
-    page = TrackEditionPage()
-    page.metadataChanged.connect(lambda metadata: director.updateTrack(track, **metadata))
-
-    subscription = track.metadata_changed.subscribe(page.display_track)
-    page.closed.connect(lambda: subscription.cancel())
-    album.addAlbumListener(page)
-    page.closed.connect(lambda: album.removeAlbumListener(page))
-
-    page.display(album=album, track=track)
-    return page
 
 
 def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_dialog, make_activity_indicator_dialog,
@@ -184,6 +171,9 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                                           select_picture=dialogs.select_cover,
                                           on_select_picture=director.change_cover_of(album))
 
+    def create_track_page_for(album):
+        return lambda track: make_track_edition_page(album, track, on_track_changed=director.update_track(track))
+
     def show_isni_lookup_dialog(album, identities):
         return ISNILookupDialogController(window, album, identities)
 
@@ -191,10 +181,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
         return ActivityIndicatorDialogController(window)
 
     def create_album_screen(album):
-        def create_track_page(track):
-            return TrackEditionPageController(album, track)
-
-        return AlbumScreen(album, create_track_list_page, create_album_page, create_track_page)
+        return AlbumScreen(album, create_track_list_page, create_album_page, create_track_page_for(album))
 
     window = MainWindow(portfolio,
                         confirm_exit=messages.confirm_exit,

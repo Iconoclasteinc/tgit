@@ -9,13 +9,15 @@ from cute.probes import ValueMatcherProbe
 from test.drivers import TrackEditionPageDriver
 from test.integration.ui import WidgetTest
 from test.util import builders as build
-from tgit.ui.track_edition_page import TrackEditionPage
+from tgit.ui.track_edition_page import make_track_edition_page
+
+
+ignore = lambda *_: None
 
 
 class TrackEditionPageTest(WidgetTest):
     def render(self, album, track):
-        self.page = TrackEditionPage()
-        self.page.display(album, track)
+        self.page = make_track_edition_page(album, track, on_track_changed=ignore)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
 
