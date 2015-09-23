@@ -308,8 +308,9 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def on_sign_in(self, handler):
         def on_successful_sign_in(account):
-            self._sign_in_action.setText(account["email"])
-            self._sign_in_action.setEnabled(False)
+            self._sign_in_action.setVisible(False)
+            self._logged_user_action.setText(account["email"])
+            self._logged_user_action.setVisible(True)
             handler(account)
         self._sign_in_action.triggered.connect(lambda _: self._authenticate(on_successful_sign_in))
 
