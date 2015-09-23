@@ -36,14 +36,7 @@ def platform(name_server):
     cheddar.stop(server_thread)
 
 
-def test_sign_in(app, platform):
+def test_signing_in(app, platform):
     platform.token_queue = iter(["token12345"])
-    app.signs_in()
-
-
-@pytest.mark.wip
-def test_signing_in_enables_isni_lookup(app, platform):
-    platform.token_queue = iter(["token12345"])
-    app.signs_in()
     app.new_album()
-    app.registered_features_enabled()
+    app.signs_in()

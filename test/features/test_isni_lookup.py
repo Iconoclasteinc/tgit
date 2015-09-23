@@ -32,6 +32,7 @@ def platform(name_server, request):
     from test.util import cheddar
 
     server_thread = cheddar.start(name_server.host(), name_server.port())
+    cheddar.token_queue = iter(["token12345"])
     request.addfinalizer(lambda: cheddar.stop(server_thread))
 
 
@@ -39,6 +40,7 @@ def test_finding_the_isni_of_the_lead_performer(app, recordings, workspace, name
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
     name_server.persons["0000000121707484"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
 
+    app.signs_in()
     app.import_album("Honeycomb", track)
     app.shows_track_list(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")

@@ -129,7 +129,3 @@ class ApplicationRunner:
     def signs_in(self):
         self.tagger.signs_in("test@example.com", "passw0rd")
         self.tagger.is_signed_in("test@example.com")
-
-    def registered_features_enabled(self):
-        self.tagger.navigate_to_album_page()
-        self.tagger.isni_lookup_enabled()

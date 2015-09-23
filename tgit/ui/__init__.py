@@ -24,7 +24,6 @@ from PyQt5.QtCore import QEventLoop
 from PyQt5.QtWidgets import QApplication
 
 from tgit import album_director as director
-from tgit.auth import User
 from tgit.isni.name_registry import NameRegistry
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
@@ -46,6 +45,7 @@ from tgit.ui.welcome_page import WelcomePage
 from tgit.ui.sign_in_dialog import SignInDialog
 from tgit.ui.album_screen import make_album_screen as AlbumScreen
 from tgit.util import browser, async_task_runner as task_runner
+
 
 
 # noinspection PyUnresolvedReferences
@@ -96,8 +96,6 @@ def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_d
 
     queue = Queue()
     page = make_album_edition_page(album, session, edit_performers, select_picture, **handlers)
-    # Simulate user login until we hook with login menu action
-    page.user_changed(User.registered_as("change.me@gmail.com", "???"))
     page.metadata_changed.connect(lambda metadata: director.updateAlbum(album, **metadata))
     page.remove_picture.connect(lambda: director.removeAlbumCover(album))
     page.lookup_isni.connect(lookup_isni)

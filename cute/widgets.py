@@ -599,7 +599,7 @@ class QMenuBarDriver(WidgetDriver):
 
 class MenuDriver(WidgetDriver):
     DISMISS_DELAY = 250 if platforms.mac else 0
-    POPUP_DELAY = 25 if platforms.windows else 0
+    POPUP_DELAY = 200 if platforms.windows else 0
 
     def popup_manually_at(self, x, y):
         # For some reason, we can't open the menu by just right clicking, so open it manually

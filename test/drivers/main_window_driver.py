@@ -148,8 +148,5 @@ class MainWindowDriver(WidgetDriver):
         self.sign_in()
         sign_in_dialog(self).enter_credentials(username, password)
 
-    def isni_lookup_enabled(self):
-        album_screen(self).lookup_isni_is_enabled()
-
     def is_signed_in(self, email):
         menu_bar(self).account.shows_signed_in_user(email)

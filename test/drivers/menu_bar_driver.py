@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QMenuBar
-from hamcrest import is_not, has_item, all_of
+from hamcrest import is_not, has_item
 
 from cute import matchers
 from cute.widgets import QMenuBarDriver
@@ -118,11 +118,12 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.menu_item(matchers.named("_sign_in_action")).click()
 
         def shows_signed_in_user(self, email):
+            self._menu_bar_driver.pause(150)
             self._menu_driver.menu_item(matchers.named("_sign_in_action")).is_hidden()
-            self._menu_bar_driver.pause(100)
+            self._menu_driver.menu_item(matchers.named("_logged_user_action")).is_showing_on_screen()
             self._menu_driver.menu_item(matchers.named("_logged_user_action")).is_disabled()
-            self._menu_bar_driver.pause(100)
-            self._menu_driver.has_menu_item(all_of(matchers.named("_logged_user_action"), matchers.with_text(email)))
+            self._menu_driver.has_menu_item(matchers.with_text(email))
+            self._menu_driver.close()
 
 
 def without_item(title):

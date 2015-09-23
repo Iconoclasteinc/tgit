@@ -12,7 +12,7 @@ from test.util import builders as build
 from tgit.ui.track_edition_page import make_track_edition_page
 
 
-ignore = lambda *_: None
+ignore = lambda *_, **__: None
 
 
 class TrackEditionPageTest(WidgetTest):
