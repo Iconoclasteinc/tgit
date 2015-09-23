@@ -7,4 +7,3 @@ tgit.egg-info
 .DS_Store
 .coverage
 resources/*.qm
-tgit/ui/resources.py
