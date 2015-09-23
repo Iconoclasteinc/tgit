@@ -11,7 +11,6 @@ from cute.widgets import window
 from test.drivers import AlbumScreenDriver
 from test.integration.ui import show_widget
 from test.util.builders import make_track, make_album
-from tgit.preferences import Preferences
 from tgit.ui import TrackEditionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
 from tgit.ui.album_screen import AlbumScreen, make_album_screen
@@ -25,7 +24,7 @@ def create_track_list_page(album):
 
 
 def create_album_page(album):
-    return AlbumEditionPage(Preferences(), ignore, ignore)
+    return AlbumEditionPage(ignore, ignore)
 
 
 def create_track_page(track):

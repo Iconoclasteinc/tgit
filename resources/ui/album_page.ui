@@ -496,6 +496,9 @@ QPushButton:focus {
            <property name="accelerated">
             <bool>true</bool>
            </property>
+           <property name="displayFormat">
+            <string notr="true">yyyy-MM-dd</string>
+           </property>
            <property name="calendarPopup">
             <bool>true</bool>
            </property>
@@ -524,6 +527,9 @@ QPushButton:focus {
            </property>
            <property name="accelerated">
             <bool>true</bool>
+           </property>
+           <property name="displayFormat">
+            <string notr="true">yyyy-MM-dd</string>
            </property>
            <property name="calendarPopup">
             <bool>true</bool>
@@ -554,6 +560,9 @@ QPushButton:focus {
            <property name="accelerated">
             <bool>true</bool>
            </property>
+           <property name="displayFormat">
+            <string notr="true">yyyy-MM-dd</string>
+           </property>
            <property name="calendarPopup">
             <bool>true</bool>
            </property>
@@ -579,6 +588,9 @@ QPushButton:focus {
            </property>
            <property name="accelerated">
             <bool>true</bool>
+           </property>
+           <property name="displayFormat">
+            <string notr="true">yyyy-MM-dd</string>
            </property>
            <property name="calendarPopup">
             <bool>true</bool>
@@ -1256,8 +1268,6 @@ QPushButton:pressed {
   <tabstop>original_release_time</tabstop>
   <tabstop>recording_time</tabstop>
  </tabstops>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

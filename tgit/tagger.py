@@ -51,20 +51,18 @@ class TGiT(QApplication):
         self.setWindowIcon(QIcon(":/tgit.ico"))
 
     def _set_locale(self, locale):
-        if locale is None:
-            locale = QLocale.system().name()
-
+        QLocale.setDefault(locale)
         for resource in ("qtbase", "tgit"):
             self._install_translations(resource, locale)
 
     def _install_translations(self, resource, locale):
         translator = QTranslator()
-        if translator.load("{0}_{1}".format(resource, locale), ":/"):
+        if translator.load("{0}_{1}".format(resource, locale.name()), ":/"):
             self.installTranslator(translator)
             self._translators.append(translator)
 
     def show(self, preferences):
-        self._set_locale(preferences["language"])
+        self._set_locale(QLocale(preferences["language"]) or QLocale.system())
         main_window = ui.create_main_window(Session(), self._album_portfolio, self._player, preferences,
                                             self._name_registry, self._cheddar, self._native, self._confirm_exit)
         main_window.show()

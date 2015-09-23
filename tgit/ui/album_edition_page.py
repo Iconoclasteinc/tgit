@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt, pyqtSignal, QDate, QLocale
+from PyQt5.QtCore import Qt, pyqtSignal, QDate
 from PyQt5.QtGui import QPalette, QColor, QIcon
 from PyQt5.QtWidgets import QWidget
 
@@ -30,8 +30,8 @@ from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_album_edition_page(album, session, preferences, edit_performers, select_picture, **handlers):
-    page = AlbumEditionPage(preferences, select_picture=select_picture, edit_performers=edit_performers, **handlers)
+def make_album_edition_page(album, session, edit_performers, select_picture, **handlers):
+    page = AlbumEditionPage(select_picture=select_picture, edit_performers=edit_performers, **handlers)
 
     subscriptions = MultiSubscription()
     subscriptions.add(session.user_signed_in.subscribe(page.user_changed))
@@ -64,9 +64,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, preferences, edit_performers, select_picture, **handlers):
+    def __init__(self, edit_performers, select_picture, **handlers):
         super().__init__()
-        self._preferences = preferences
         self._select_picture = select_picture
         self._edit_performers = edit_performers
         self._setup_ui()
@@ -131,7 +130,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def _style_calendar(self, date_edit):
         calendar = date_edit.calendarWidget()
-        calendar.setLocale(QLocale(self._preferences["language"]))
         self._style_navigation_bar(calendar)
         self._style_calendar_view(calendar)
         self._style_year_edit(calendar)

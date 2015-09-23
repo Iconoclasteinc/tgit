@@ -48,6 +48,8 @@ from tgit.ui.album_screen import make_album_screen as AlbumScreen
 from tgit.util import browser, async_task_runner as task_runner
 
 
+
+
 # noinspection PyUnresolvedReferences
 from tgit.ui import resources
 
@@ -78,9 +80,8 @@ def TrackEditionPageController(album, track):
     return page
 
 
-def AlbumEditionPageController(session, preferences, make_lookup_isni_dialog, make_activity_indicator_dialog,
-                               show_isni_assignation_failed, album, name_registry, edit_performers,
-                               select_picture, **handlers):
+def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_dialog, make_activity_indicator_dialog,
+                               show_isni_assignation_failed, edit_performers, select_picture, **handlers):
     def poll_queue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -109,7 +110,7 @@ def AlbumEditionPageController(session, preferences, make_lookup_isni_dialog, ma
             show_isni_assignation_failed(payload)
 
     queue = Queue()
-    page = make_album_edition_page(album, session, preferences, edit_performers, select_picture, **handlers)
+    page = make_album_edition_page(album, session, edit_performers, select_picture, **handlers)
     # Simulate user login until we hook with login menu action
     page.user_changed(User.registered_as("change.me@gmail.com", "???"))
     page.metadata_changed.connect(lambda metadata: director.updateAlbum(album, **metadata))
@@ -173,8 +174,12 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                              on_add_tracks=director.add_tracks_to(album))
 
     def create_album_page(album):
-        return AlbumEditionPageController(session, preferences, show_isni_lookup_dialog, show_activity_indicator_dialog,
-                                          messages.isni_assignation_failed, album, name_registry,
+        return AlbumEditionPageController(session,
+                                          album,
+                                          name_registry,
+                                          show_isni_lookup_dialog,
+                                          show_activity_indicator_dialog,
+                                          messages.isni_assignation_failed,
                                           edit_performers=show_performers_dialog(album),
                                           select_picture=dialogs.select_cover,
                                           on_select_picture=director.change_cover_of(album))

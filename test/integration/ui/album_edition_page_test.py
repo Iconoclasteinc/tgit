@@ -11,7 +11,6 @@ from test.integration.ui import WidgetTest
 from test.util import resources, builders as build
 from test.util.builders import make_album, make_anonymous_session, make_registered_session
 from tgit.metadata import Image
-from tgit.preferences import Preferences
 from tgit.ui.album_edition_page import make_album_edition_page
 from tgit.util import fs
 
@@ -22,7 +21,7 @@ def ignore(*_):
 
 class AlbumEditionPageTest(WidgetTest):
     def render(self, album, session=make_anonymous_session(), select_picture=ignore, edit_performers=ignore, **handlers):
-        self.page = make_album_edition_page(album, session, Preferences(), edit_performers, select_picture, **handlers)
+        self.page = make_album_edition_page(album, session, edit_performers, select_picture, **handlers)
         self.driver = self.createDriverFor(self.page)
         self.show(self.page)
 
