@@ -18,7 +18,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
-from PyQt5.QtGui import QPalette, QColor, QIcon
 from PyQt5.QtWidgets import QWidget
 
 from .helpers import image, formatting
@@ -28,6 +27,8 @@ from tgit.auth import Permission
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
+
+ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
 def make_album_edition_page(album, session, edit_performers, select_picture, **handlers):
@@ -44,10 +45,6 @@ def make_album_edition_page(album, session, edit_performers, select_picture, **h
     page.user_changed(session.current_user)
     page.display(album)
     return page
-
-
-ORANGE = QColor.fromRgb(0xF08450)
-LIGHT_GRAY = QColor.fromRgb(0xF6F6F6)
 
 
 @Closeable
@@ -120,39 +117,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.genre.lineEdit().textEdited.connect(
             lambda: self.metadata_changed.emit(self.metadata("primary_style")))
 
-        # style calendars
-        for date_edit in (self.release_time, self.digital_release_time, self.original_release_time,
-                          self.recording_time):
-            self._style_calendar(date_edit)
-
     def on_select_picture(self, on_select_picture):
         self.select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
-
-    def _style_calendar(self, date_edit):
-        calendar = date_edit.calendarWidget()
-        self._style_navigation_bar(calendar)
-        self._style_calendar_view(calendar)
-        self._style_year_edit(calendar)
-
-    def _style_calendar_view(self, calendar):
-        calendar_view = calendar.findChild(QWidget, "qt_calendar_calendarview")
-        palette = calendar.palette()
-        palette.setColor(QPalette.AlternateBase, LIGHT_GRAY)
-        calendar_view.setPalette(palette)
-
-    def _style_navigation_bar(self, calendar):
-        navbar = calendar.findChild(QWidget, "qt_calendar_navigationbar")
-        palette = calendar.palette()
-        palette.setColor(QPalette.Highlight, ORANGE)
-        navbar.setPalette(palette)
-        left_arrow = calendar.findChild(QWidget, "qt_calendar_prevmonth")
-        left_arrow.setIcon(QIcon(":/images/chevron-left-white-12.png"))
-        right_arrow = calendar.findChild(QWidget, "qt_calendar_nextmonth")
-        right_arrow.setIcon(QIcon(":/images/chevron-right-white-12.png"))
-
-    def _style_year_edit(self, calendar):
-        year_edit = calendar.findChild(QWidget, "qt_calendar_yearedit")
-        year_edit.setAttribute(Qt.WA_MacShowFocusRect, False)
 
     def _update_guest_performers(self, performers):
         self.guest_performers.setText(formatting.toPeopleList(performers))
@@ -177,8 +143,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.catalog_number.setText(album.catalog_number)
         self.barcode.setText(album.upc)
         self.comments.setPlainText(album.comments)
-        self.release_time.setDate(QDate.fromString(album.release_time, "yyyy-MM-dd"))
-        self.recording_time.setDate(QDate.fromString(album.recording_time, "yyyy-MM-dd"))
+        self.release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
+        self.recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
         self.recording_studios.setText(album.recording_studios)
         self.producer.setText(album.producer)
         self.mixer.setText(album.mixer)
@@ -199,8 +165,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           catalog_number=self.catalog_number.text(),
                           upc=self.barcode.text(),
                           comments=self.comments.toPlainText(),
-                          recording_time=self.recording_time.date().toString("yyyy-MM-dd"),
-                          release_time=self.release_time.date().toString("yyyy-MM-dd"),
+                          recording_time=self.recording_time.date().toString(ISO_8601_FORMAT),
+                          release_time=self.release_time.date().toString(ISO_8601_FORMAT),
                           recording_studios=self.recording_studios.text(),
                           producer=self.producer.text(),
                           mixer=self.mixer.text(),

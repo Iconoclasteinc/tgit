@@ -489,7 +489,7 @@ QPushButton:focus {
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QDateEdit" name="release_time">
+          <widget class="DatePicker" name="release_time">
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -521,7 +521,7 @@ QPushButton:focus {
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QDateEdit" name="digital_release_time">
+          <widget class="DatePicker" name="digital_release_time">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -553,7 +553,7 @@ QPushButton:focus {
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QDateEdit" name="original_release_time">
+          <widget class="DatePicker" name="original_release_time">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -582,7 +582,7 @@ QPushButton:focus {
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QDateEdit" name="recording_time">
+          <widget class="DatePicker" name="recording_time">
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -1238,6 +1238,11 @@ QPushButton:pressed {
    <class>TextArea</class>
    <extends>QPlainTextEdit</extends>
    <header>tgit.ui.helpers.text_area</header>
+  </customwidget>
+  <customwidget>
+   <class>DatePicker</class>
+   <extends>QDateEdit</extends>
+   <header>tgit.ui.date_picker</header>
   </customwidget>
  </customwidgets>
  <tabstops>
