@@ -2,17 +2,17 @@
 from collections import namedtuple
 import sip
 
-from tgit.cheddar import Cheddar
 from cute.animatron import Animatron
+from cute.matchers import named, showing_on_screen
+from cute.prober import EventProcessingProber
+from cute.widgets import main_application_window
+from .main_window_driver import MainWindowDriver
 from test.drivers import track_selection_dialog, message_box
 from test.util.doubles import fake_audio_player
 from tgit import platforms
+from tgit.cheddar import Cheddar
 from tgit.isni.name_registry import NameRegistry
-from cute.matchers import named, showing_on_screen
-from cute.widgets import main_application_window
-from cute.prober import EventProcessingProber
 from tgit.tagger import TGiT
-from .main_window_driver import MainWindowDriver
 
 
 def _make_tracks(tracks):
@@ -28,13 +28,14 @@ class ApplicationRunner:
     app = None
     tagger = None
 
-    def __init__(self, workspace):
+    def __init__(self, workspace, settings):
         self._workspace = workspace
+        self._settings = settings
 
-    def start(self, preferences):
-        self.app = TGiT(fake_audio_player, NameRegistry(host="localhost", port=5001),
+    def start(self):
+        self.app = TGiT(self._settings, fake_audio_player, NameRegistry(host="localhost", port=5001),
                         Cheddar(host="localhost", port=5001, secure=False), native=False, confirm_exit=False)
-        self.app.show(preferences)
+        self.app.show()
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                        EventProcessingProber(timeout_in_ms=1000), Animatron())
         self.tagger.pause(self.STARTUP_DELAY)

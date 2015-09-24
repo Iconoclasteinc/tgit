@@ -21,9 +21,9 @@ from PyQt5.QtCore import QSettings
 import pytest
 
 from test.drivers.application_runner import ApplicationRunner
+from test.drivers.application_settings_driver import ApplicationSettingsDriver
 from test.util import doubles
 from test.util.workspace import AlbumWorkspace
-from tgit.preferences import Preferences
 
 
 @pytest.yield_fixture
@@ -40,9 +40,21 @@ def workspace(tmpdir):
     album_workspace.delete()
 
 
+@pytest.fixture
+def settings_file(tmpdir):
+    return tmpdir.join("settings.ini").strpath
+
+
+@pytest.fixture
+def settings(settings_file):
+    settings_driver = ApplicationSettingsDriver(settings_file)
+    settings_driver["language"] = "en"
+    return settings_driver
+
+
 @pytest.yield_fixture
-def app(workspace):
-    runner = ApplicationRunner(workspace)
-    runner.start(Preferences(QSettings()))
+def app(workspace, settings_file):
+    runner = ApplicationRunner(workspace, QSettings(settings_file, QSettings.IniFormat))
+    runner.start()
     yield runner
     runner.stop()

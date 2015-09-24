@@ -22,18 +22,21 @@ from PyQt5.QtCore import QTranslator, QLocale, QSettings
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
+from tgit import ui
+from tgit.album_portfolio import AlbumPortfolio
+from tgit.audio import MediaPlayer, create_media_library
 from tgit.auth import Session
 from tgit.cheddar import Cheddar
-from tgit.audio import MediaPlayer, create_media_library
 from tgit.isni.name_registry import NameRegistry
 from tgit.preferences import Preferences
-from tgit.album_portfolio import AlbumPortfolio
-from tgit import ui
 
 
 class TGiT(QApplication):
-    def __init__(self, create_player, name_registry, cheddar, native=True, confirm_exit=True, on_exit=None):
+    def __init__(self, settings_backend, create_player, name_registry, cheddar, native=True, confirm_exit=True,
+                 on_exit=None):
         super().__init__([])
+
+        self._settings_backend = settings_backend
         self._cheddar = cheddar
         self._on_exit = on_exit
         self._confirm_exit = confirm_exit
@@ -61,14 +64,15 @@ class TGiT(QApplication):
             self.installTranslator(translator)
             self._translators.append(translator)
 
-    def show(self, preferences):
+    def show(self):
+        preferences = Preferences(self._settings_backend)
         self._set_locale(QLocale(preferences["language"]) or QLocale.system())
         main_window = ui.create_main_window(Session(), self._album_portfolio, self._player, preferences,
                                             self._name_registry, self._cheddar, self._native, self._confirm_exit)
         main_window.show()
 
-    def launch(self, preferences):
-        self.show(preferences)
+    def launch(self):
+        self.show()
         self.run()
 
     def run(self):
@@ -93,5 +97,5 @@ def main():
     name_registry = NameRegistry(host="localhost", port=5001, secure=False)
     cheddar = Cheddar(host="tagyourmusic.herokuapp.com", port=443, secure=True)
 
-    tagger = TGiT(MediaPlayer, name_registry, cheddar, on_exit=shutdown_isni_api)
-    tagger.launch(Preferences(QSettings()))
+    tagger = TGiT(QSettings(), MediaPlayer, name_registry, cheddar, on_exit=shutdown_isni_api)
+    tagger.launch()
