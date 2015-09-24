@@ -38,5 +38,5 @@ def platform(name_server):
 
 def test_signing_in(app, platform):
     platform.token_queue = iter(["token12345"])
-    app.new_album()
     app.signs_in()
+    app.signs_out()

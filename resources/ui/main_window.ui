@@ -86,6 +86,7 @@
     </property>
     <addaction name="_logged_user_action"/>
     <addaction name="_sign_in_action"/>
+    <addaction name="_sign_out_action"/>
     <addaction name="separator"/>
     <addaction name="_register_action"/>
    </widget>
@@ -201,10 +202,18 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string> </string>
+    <string/>
    </property>
    <property name="visible">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="_sign_out_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Sign &amp;Out</string>
    </property>
   </action>
  </widget>

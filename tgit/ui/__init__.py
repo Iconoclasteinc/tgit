@@ -194,6 +194,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                         on_export=director.export_as_csv,
                         on_settings=show_settings_dialog,
                         on_sign_in=director.sign_in_using(cheddar.authenticate, session),
+                        on_sign_out=director.sign_out_using(session),
                         on_about_qt=messages.about_qt,
                         on_about=messages.about_tgit,
                         on_online_help=browser.open_,

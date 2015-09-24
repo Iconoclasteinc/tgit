@@ -129,3 +129,7 @@ class ApplicationRunner:
     def signs_in(self):
         self.tagger.signs_in("test@example.com", "passw0rd")
         self.tagger.is_signed_in("test@example.com")
+
+    def signs_out(self):
+        self.tagger.sign_out()
+        self.tagger.is_signed_out()

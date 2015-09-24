@@ -351,8 +351,7 @@ def test_signals_when_sign_in_menu_item_clicked(driver):
     account = {"email": "..."}
     sign_in_signal = ValueMatcherProbe("sign in", account)
 
-    page = show_page(authenticate=lambda on_sign_in: on_sign_in(account))
-    page.on_sign_in(sign_in_signal.received)
+    _ = show_page(authenticate=lambda on_sign_in: on_sign_in(account), on_sign_in=sign_in_signal.received)
 
     driver.sign_in()
     driver.check(sign_in_signal)
@@ -363,3 +362,21 @@ def test_displays_the_logged_user(driver):
     page.user_signed_in(User(email="test@example.com"))
 
     driver.is_signed_in("test@example.com")
+
+
+def test_signals_when_sign_out_menu_item_clicked(driver):
+    sign_out_signal = ValueMatcherProbe("sign out")
+
+    page = show_page(on_sign_out=sign_out_signal.received)
+    page.user_signed_in(User(email="test@example.com"))
+
+    driver.sign_out()
+    driver.check(sign_out_signal)
+
+
+def test_hides_the_logged_user_menu_item(driver):
+    page = show_page()
+    page.user_signed_in(User(email="test@example.com"))
+    page.user_signed_out(None)
+
+    driver.is_signed_out()

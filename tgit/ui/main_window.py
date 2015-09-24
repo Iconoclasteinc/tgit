@@ -257,8 +257,14 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def user_signed_in(self, user):
         self._sign_in_action.setVisible(False)
+        self._sign_out_action.setEnabled(True)
         self._logged_user_action.setText(user.email)
         self._logged_user_action.setVisible(True)
+
+    def user_signed_out(self, _):
+        self._sign_out_action.setEnabled(False)
+        self._sign_in_action.setVisible(True)
+        self._logged_user_action.setVisible(False)
 
     def on_close_album(self, on_close_album):
         def confirm_album_close():
@@ -315,6 +321,9 @@ class MainWindow(QMainWindow, HandlerRegistrar):
     def on_sign_in(self, handler):
         self._sign_in_action.triggered.connect(lambda _: self._authenticate(handler))
 
+    def on_sign_out(self, handler):
+        self._sign_out_action.triggered.connect(lambda _: handler())
+
     def _setup_ui(self):
         ui_file.load(":/ui/main_window.ui", self)
         self.setStyleSheet(StyleSheet)
@@ -331,6 +340,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self.subscribe(portfolio.album_removed, self.display_startup_screen)
         self.subscribe(portfolio.album_created, self.display_album_screen)
         self.subscribe(session.user_signed_in, self.user_signed_in)
+        self.subscribe(session.user_signed_out, self.user_signed_out)
 
     def _close_current_screen(self):
         if self.centralWidget() is not None:

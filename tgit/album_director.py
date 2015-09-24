@@ -177,3 +177,10 @@ def sign_in_using(authenticate, session):
         session.login_as(user["email"], user["token"])
 
     return sign_in
+
+
+def sign_out_using(session):
+    def sign_out():
+        session.logout()
+
+    return sign_out

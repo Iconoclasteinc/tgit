@@ -150,3 +150,9 @@ class MainWindowDriver(WidgetDriver):
 
     def is_signed_in(self, email):
         menu_bar(self).account.shows_signed_in_user(email)
+
+    def sign_out(self):
+        menu_bar(self).account.sign_out()
+
+    def is_signed_out(self):
+        menu_bar(self).account.shows_sign_in_menu()

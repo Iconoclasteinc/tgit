@@ -117,12 +117,23 @@ class MenuBarDriver(QMenuBarDriver):
         def sign_in(self):
             self._menu_driver.menu_item(matchers.named("_sign_in_action")).click()
 
+        def sign_out(self):
+            self._menu_driver.menu_item(matchers.named("_sign_out_action")).click()
+
         def shows_signed_in_user(self, email):
             self._menu_bar_driver.pause(150)
             self._menu_driver.menu_item(matchers.named("_sign_in_action")).is_hidden()
             self._menu_driver.menu_item(matchers.named("_logged_user_action")).is_showing_on_screen()
             self._menu_driver.menu_item(matchers.named("_logged_user_action")).is_disabled()
+            self._menu_driver.menu_item(matchers.named("_sign_out_action")).is_enabled()
             self._menu_driver.has_menu_item(matchers.with_text(email))
+            self._menu_driver.close()
+
+        def shows_sign_in_menu(self):
+            self._menu_bar_driver.pause(150)
+            self._menu_driver.menu_item(matchers.named("_sign_in_action")).is_showing_on_screen()
+            self._menu_driver.menu_item(matchers.named("_sign_out_action")).is_disabled()
+            self._menu_driver.menu_item(matchers.named("_logged_user_action")).is_hidden()
             self._menu_driver.close()
 
 

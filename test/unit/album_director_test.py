@@ -4,6 +4,7 @@ import unittest
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
                       has_key, has_property)
+
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
@@ -210,10 +211,16 @@ def test_updates_track_metadata():
     assert_that(track.language, equal_to('und'), 'language')
 
 
-def test_logs_user_in():
+def test_signs_user_in():
     session = Session()
     director.sign_in_using(lambda *_: {"email": "the_email", "token": "the_token"}, session)("...", "...")
     assert_that(session.current_user.email, equal_to("the_email"))
+
+
+def test_signs_user_out():
+    session = build.make_registered_session("...", "...")
+    director.sign_out_using(session)()
+    assert_that(session.current_user.email, none())
 
 
 class AlbumDirectorTest(unittest.TestCase):
