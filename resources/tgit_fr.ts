@@ -486,6 +486,11 @@
         <source>Sign &amp;In...</source>
         <translation>Se &amp;connecter...</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
+        <source>Sign &amp;Out</source>
+        <translation>Se &amp;déconnecter</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
