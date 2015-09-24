@@ -4,7 +4,6 @@ import sys
 from hamcrest import contains, instance_of
 import pytest
 
-from auth import User
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
@@ -15,6 +14,7 @@ from test.integration.ui.fake_widgets import fake_startup_screen, fake_album_scr
 from test.util import builders as build
 from test.util.builders import make_album
 from tgit.album import Album
+from tgit.auth import User
 from tgit.ui.main_window import MainWindow
 
 ignore = lambda *_, **__: None
