@@ -47,9 +47,7 @@ def settings_file(tmpdir):
 
 @pytest.fixture
 def settings(settings_file):
-    settings_driver = ApplicationSettingsDriver(settings_file)
-    settings_driver["language"] = "en"
-    return settings_driver
+    return ApplicationSettingsDriver(settings_file)
 
 
 @pytest.yield_fixture
@@ -58,3 +56,20 @@ def app(workspace, settings_file):
     runner.start()
     yield runner
     runner.stop()
+
+
+@pytest.yield_fixture()
+def name_server():
+    from test.util import isni_database
+    database_thread = isni_database.start()
+    yield isni_database
+    isni_database.stop(database_thread)
+
+
+@pytest.fixture
+def platform(name_server, request):
+    from test.util import cheddar
+
+    server_thread = cheddar.start(name_server.host(), name_server.port())
+    cheddar.token_queue = iter(["token12345"])
+    request.addfinalizer(lambda: cheddar.stop(server_thread))

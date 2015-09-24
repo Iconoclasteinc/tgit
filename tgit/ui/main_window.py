@@ -227,6 +227,8 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         ]
 
         self.display_startup_screen()
+        if session.opened:
+            self.user_signed_in(session.current_user)
 
     def enable_album_actions(self, album):
         self.navigate_menu.setEnabled(True)

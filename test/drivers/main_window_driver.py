@@ -144,11 +144,11 @@ class MainWindowDriver(WidgetDriver):
     def sign_in(self):
         menu_bar(self).account.sign_in()
 
-    def signs_in(self, username, password):
+    def sign_in_as(self, username, password):
         self.sign_in()
         sign_in_dialog(self).enter_credentials(username, password)
 
-    def is_signed_in(self, email):
+    def is_signed_in_as(self, email):
         menu_bar(self).account.shows_signed_in_user(email)
 
     def sign_out(self):

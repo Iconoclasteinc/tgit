@@ -16,23 +16,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import QSettings
+from tgit.auth import Session
 
 
-# todo use the SettingsBackend
-class Preferences(object):
-    def __init__(self, settings=QSettings()):
-        self.settings = settings
+class SettingsBackend:
+    def __init__(self, storage):
+        self._storage = storage
 
-    def __getitem__(self, key):
-        return self.settings.value(key, None)
+    def load_session(self):
+        user_email = self._storage.value("user.email", None)
+        user_api_key = self._storage.value("user.api_key", None)
 
-    def __setitem__(self, key, value):
-        self.settings.setValue(key, value)
+        session = Session()
+        if user_email and user_api_key:
+            session.login_as(user_email, user_api_key)
 
-    def add(self, **settings):
-        for key, value in settings.items():
-            self[key] = value
+        session.user_signed_in.subscribe(self._store_user)
+        session.user_signed_out.subscribe(self._remove_user)
+        return session
 
-    def keys(self):
-        return self.settings.allKeys()
+    def _store_user(self, user):
+        self._storage.setValue("user.email", user.email)
+        self._storage.setValue("user.api_key", user.api_key)
+
+    def _remove_user(self, user):
+        self._storage.remove("user.email")
+        self._storage.remove("user.api_key")

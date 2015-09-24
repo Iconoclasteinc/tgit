@@ -16,31 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import pytest
 
 
-@pytest.yield_fixture()
-def name_server():
-    from test.util import isni_database
-    database_thread = isni_database.start()
-    yield isni_database
-    isni_database.stop(database_thread)
-
-
-@pytest.fixture(autouse=True)
-def platform(name_server, request):
-    from test.util import cheddar
-
-    server_thread = cheddar.start(name_server.host(), name_server.port())
-    cheddar.token_queue = iter(["token12345"])
-    request.addfinalizer(lambda: cheddar.stop(server_thread))
-
-
-def test_finding_the_isni_of_the_lead_performer(app, recordings, workspace, name_server):
+def test_finding_the_isni_of_the_lead_performer(app, platform, recordings, workspace, name_server):
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
     name_server.persons["0000000121707484"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
 
-    app.signs_in()
+    app.sign_in()
     app.import_album("Honeycomb", track)
     app.shows_track_list(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")

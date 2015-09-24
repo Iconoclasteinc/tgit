@@ -45,6 +45,10 @@ class User:
         return self._email
 
     @property
+    def api_key(self):
+        return self._api_key
+
+    @property
     def registered(self):
         return self._email is not None
 
@@ -56,7 +60,7 @@ class Session(metaclass=Observable):
     user_signed_in = signal(User)
     user_signed_out = signal(User)
 
-    _user = User.anonymous()
+    _user = None
 
     def login_as(self, email, token):
         self._user = User.registered_as(email, token)
@@ -64,9 +68,13 @@ class Session(metaclass=Observable):
 
     def logout(self):
         logged_out = self._user
-        self._user = User.anonymous()
+        self._user = None
         self.user_signed_out.emit(logged_out)
 
     @property
+    def opened(self):
+        return self._user is not None
+
+    @property
     def current_user(self):
-        return self._user
+        return self.opened and self._user or User.anonymous()

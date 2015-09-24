@@ -22,8 +22,8 @@ from PyQt5.QtWidgets import QWidget
 
 from .helpers import image, formatting
 from tgit.album import AlbumListener
-from tgit.genres import GENRES
 from tgit.auth import Permission
+from tgit.genres import GENRES
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
@@ -43,7 +43,6 @@ def make_album_edition_page(album, session, edit_performers, select_picture, **h
 
     album.addAlbumListener(page)
     page.closed.connect(lambda: album.removeAlbumListener(page))
-
     page.user_changed(session.current_user)
     page.display(album)
     return page

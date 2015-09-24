@@ -11,5 +11,8 @@ class ApplicationSettingsDriver():
     def __setitem__(self, key, value):
         self.backend.setValue(key, value)
 
+    def has_no(self, name):
+        self.has_stored(name, None)
+
     def has_stored(self, name, value):
         assert_that(self.backend.value(name), wrap_matcher(value), "settings[{0}]".format(name))

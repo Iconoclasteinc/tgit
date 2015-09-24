@@ -361,7 +361,7 @@ def test_displays_the_logged_user(driver):
     page = show_page()
     page.user_signed_in(User(email="test@example.com"))
 
-    driver.is_signed_in("test@example.com")
+    driver.is_signed_in_as("test@example.com")
 
 
 def test_signals_when_sign_out_menu_item_clicked(driver):
