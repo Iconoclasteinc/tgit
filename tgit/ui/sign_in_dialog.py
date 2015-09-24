@@ -24,22 +24,21 @@ from tgit.ui.helpers.ui_file import UIFile
 
 
 class SignInDialog(QDialog, UIFile):
-    _on_successful_authentication = lambda: None
+    _on_sign_in = lambda: None
 
-    def __init__(self, authenticate, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
-        self._authenticate = authenticate
         self._setup_ui()
 
     def _setup_ui(self):
         self._load(":ui/sign_in_dialog.ui")
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self._authentication_error.setVisible(False)
         self._action_buttons.clicked.connect(self._button_clicked)
+        self._authentication_error.setVisible(False)
         self.adjustSize()
 
-    def sign_in(self, on_successful_authentication):
-        self._on_successful_authentication = on_successful_authentication
+    def sign_in(self, on_sign_in):
+        self._on_sign_in = on_sign_in
         self.open()
 
     def _button_clicked(self, button):
@@ -47,8 +46,7 @@ class SignInDialog(QDialog, UIFile):
 
         if role == QMessageBox.AcceptRole:
             try:
-                identity = self._authenticate(self._email.text(), self._password.text())
-                self._on_successful_authentication(identity)
+                self._on_sign_in(self._email.text(), self._password.text())
                 self.accept()
             except AuthenticationError:
                 self._authentication_error.setVisible(True)

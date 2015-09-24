@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 import functools as func
 from queue import Queue
 
@@ -25,6 +26,7 @@ from PyQt5.QtWidgets import QApplication
 
 from tgit import album_director as director
 from tgit.isni.name_registry import NameRegistry
+from tgit.ui import resources
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
@@ -32,7 +34,7 @@ from tgit.ui.startup_screen import StartupScreen
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.performer_dialog import PerformerDialog
-from tgit.ui.track_list_page import make_track_list_page as TrackListPage
+from tgit.ui.track_list_page import make_track_list_page
 from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
 from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.main_window import MainWindow
@@ -43,13 +45,8 @@ from tgit.ui.track_edition_page import TrackEditionPage, make_track_edition_page
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.welcome_page import WelcomePage
 from tgit.ui.sign_in_dialog import SignInDialog
-from tgit.ui.album_screen import make_album_screen as AlbumScreen
+from tgit.ui.album_screen import make_album_screen
 from tgit.util import browser, async_task_runner as task_runner
-
-
-
-# noinspection PyUnresolvedReferences
-from tgit.ui import resources
 
 
 def ISNILookupDialogController(parent, album, identities):
@@ -128,8 +125,8 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
     def show_performers_dialog(album):
         return lambda on_edit: PerformerDialog(album=album, parent=window).edit(on_edit)
 
-    def show_sign_in_dialog(on_successful_authentication):
-        return SignInDialog(authenticate=cheddar.authenticate, parent=window).sign_in(on_successful_authentication)
+    def show_sign_in_dialog(on_sign_in):
+        return SignInDialog(parent=window).sign_in(on_sign_in)
 
     def create_new_album_page():
         return NewAlbumPage(select_album_location=dialogs.select_album_destination,
@@ -148,13 +145,13 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                              create_new_album_page=create_new_album_page)
 
     def create_track_list_page(album):
-        return TrackListPage(album, player,
-                             select_tracks=func.partial(dialogs.select_tracks, album.type),
-                             on_move_track=director.move_track_of(album),
-                             on_remove_track=director.remove_track_from(album),
-                             on_play_track=player.play,
-                             on_stop_track=player.stop,
-                             on_add_tracks=director.add_tracks_to(album))
+        return make_track_list_page(album, player,
+                                    select_tracks=func.partial(dialogs.select_tracks, album.type),
+                                    on_move_track=director.move_track_of(album),
+                                    on_remove_track=director.remove_track_from(album),
+                                    on_play_track=player.play,
+                                    on_stop_track=player.stop,
+                                    on_add_tracks=director.add_tracks_to(album))
 
     def create_album_page(album):
         return AlbumEditionPageController(session,
@@ -177,7 +174,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
         return ActivityIndicatorDialogController(window)
 
     def create_album_screen(album):
-        return AlbumScreen(album, create_track_list_page, create_album_page, create_track_page_for(album))
+        return make_album_screen(album, create_track_list_page, create_album_page, create_track_page_for(album))
 
     window = MainWindow(session,
                         portfolio,
@@ -196,7 +193,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                         on_add_files=director.add_tracks,
                         on_export=director.export_as_csv,
                         on_settings=show_settings_dialog,
-                        on_sign_in=director.sign_in_into(session),
+                        on_sign_in=director.sign_in_using(cheddar.authenticate, session),
                         on_about_qt=messages.about_qt,
                         on_about=messages.about_tgit,
                         on_online_help=browser.open_,

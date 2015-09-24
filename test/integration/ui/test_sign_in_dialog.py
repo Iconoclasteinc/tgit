@@ -5,7 +5,7 @@ import pytest
 
 from tgit.authentication_error import AuthenticationError
 from cute.matchers import named
-from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
+from cute.probes import MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers.sign_in_dialog_driver import SignInDialogDriver
 from tgit.ui.sign_in_dialog import SignInDialog
@@ -13,10 +13,10 @@ from tgit.ui.sign_in_dialog import SignInDialog
 ignore = lambda *_: None
 
 
-def show_dialog(on_successful_authentication=ignore, authenticate=ignore):
-    dialog = SignInDialog(authenticate=authenticate)
+def show_dialog(on_sign_in=ignore):
+    dialog = SignInDialog()
     dialog.setAttribute(Qt.WA_DeleteOnClose, False)
-    dialog.sign_in(on_successful_authentication)
+    dialog.sign_in(on_sign_in)
     return dialog
 
 
@@ -27,31 +27,20 @@ def driver(qt, prober, automaton):
     dialog_driver.close()
 
 
-def test_signals_with_authentication_result_when_authentication_is_successful(driver):
-    authentication_successful_signal = ValueMatcherProbe("authentication", "token")
-
-    _ = show_dialog(on_successful_authentication=authentication_successful_signal.received,
-                    authenticate=lambda *_: "token")
-
-    driver.enter_credentials("jfalardeau@pyxis-tech.com", "passw0rd")
-    driver.check(authentication_successful_signal)
-
-
 def test_calls_authenticate_with_credentials(driver):
-    authentication_successful_signal = MultiValueMatcherProbe("authentication",
-                                                              contains("jfalardeau@pyxis-tech.com", "passw0rd"))
+    sign_in_signal = MultiValueMatcherProbe("authentication", contains("jfalardeau@pyxis-tech.com", "passw0rd"))
 
-    _ = show_dialog(authenticate=authentication_successful_signal.received)
+    _ = show_dialog(on_sign_in=sign_in_signal.received)
 
     driver.enter_credentials("jfalardeau@pyxis-tech.com", "passw0rd")
-    driver.check(authentication_successful_signal)
+    driver.check(sign_in_signal)
 
 
 def test_displays_error_message_when_authentication_is_not_successful(driver):
-    def authenticate(_, __):
+    def authenticate(*_):
         raise AuthenticationError()
 
-    _ = show_dialog(authenticate=authenticate)
+    _ = show_dialog(on_sign_in=authenticate)
 
     driver.enter_credentials("jfalardeau@pyxis-tech.com", "passw0rd")
     driver.shows_authentication_failed_message()
