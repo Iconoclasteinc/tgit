@@ -73,6 +73,10 @@ def count():
     return PropertyQuery("options count", lambda w: w.count())
 
 
+def tooltip():
+    return PropertyQuery("tooltip", lambda w: w.toolTip())
+
+
 def has_option_text(index):
     return PropertyQuery("option {0}".format(index), lambda combo_box: combo_box.itemText(index))
 

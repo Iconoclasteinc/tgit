@@ -329,6 +329,14 @@
     </message>
 </context>
 <context>
+    <name>AlbumEditionPage</name>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" line="267"/>
+        <source>Please sign-in to activate ISNI lookup</source>
+        <translation>Veuillez vous connecter pour utiliser la recherche ISNI</translation>
+    </message>
+</context>
+<context>
     <name>album_screen</name>
     <message>
         <location filename="tgit/ui/album_screen.py" line="90"/>

@@ -167,6 +167,9 @@ class AlbumEditionPageDriver(ScreenDriver):
         button = self.button(named("assign_isni_button"))
         button.is_enabled(True)
 
+    def isni_lookup_has_tooltip(self, text):
+        self.button(named("lookup_isni_button")).has_tooltip(text)
+
     def changeLeadPerformer(self, name):
         self.lineEdit(named("lead_performer")).change_text(name)
 

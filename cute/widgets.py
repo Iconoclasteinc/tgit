@@ -101,6 +101,9 @@ class WidgetDriver:
     def has(self, query, criteria):
         self.check(WidgetPropertyAssertionProbe(self.selector, query, criteria))
 
+    def has_tooltip(self, text):
+        self.has(properties.tooltip(), text)
+
     def has_cursor_shape(self, shape):
         self.has(properties.cursor_shape(), shape)
 

@@ -118,6 +118,16 @@ class AlbumEditionPageTest(WidgetTest):
         session.logout()
         self.driver.enables_isni_lookup(False)
 
+    def test_displays_tooltip_on_isni_lookup_when_anonymously_connected(self):
+        session = make_anonymous_session()
+        self.render(session=session, album=make_album(lead_performer="Album Artist"))
+        self.driver.isni_lookup_has_tooltip("Please sign-in to activate ISNI lookup")
+
+    def test_removes_tooltip_on_isni_lookup_when_signed_in(self):
+        session = make_registered_session()
+        self.render(session=session, album=make_album(lead_performer="Album Artist"))
+        self.driver.isni_lookup_has_tooltip("")
+
     def test_disables_isni_lookup_when_lead_performer_is_blank(self):
         self.render(make_album(lead_performer="     "))
         self.driver.enables_isni_lookup(False)
