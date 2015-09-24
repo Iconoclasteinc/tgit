@@ -4,17 +4,16 @@ import unittest
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
                       has_key, has_property)
-
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
-from auth import Session
 from test.util import builders as build, resources, doubles
 from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
 from tgit import album_director as director
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
+from tgit.auth import Session
 from tgit.metadata import Image, Metadata
 from tgit.util import fs
 
