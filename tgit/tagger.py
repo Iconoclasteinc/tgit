@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import sys
 
-from PyQt5.QtCore import QTranslator, QLocale, QSettings
+from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
@@ -27,16 +27,14 @@ from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import MediaPlayer, create_media_library
 from tgit.cheddar import Cheddar
 from tgit.isni.name_registry import NameRegistry
-from tgit.preferences import Preferences
 from tgit.settings_backend import SettingsBackend
 
 
 class TGiT(QApplication):
-    def __init__(self, settings_file, create_player, name_registry, cheddar, native=True, confirm_exit=True,
-                 on_exit=None):
+    def __init__(self, create_player, name_registry, cheddar,
+                 settings_file=None, native=True, confirm_exit=True, on_exit=None):
         super().__init__([])
 
-        self._settings_file = settings_file
         self._settings_backend = SettingsBackend(settings_file)
         self._cheddar = cheddar
         self._on_exit = on_exit
@@ -66,10 +64,10 @@ class TGiT(QApplication):
             self._translators.append(translator)
 
     def show(self):
-        preferences = Preferences(self._settings_file)
-        self._set_locale(QLocale(preferences["language"]) or QLocale.system())
-        main_window = ui.create_main_window(self._settings_backend.load_session(),
-                                            self._album_portfolio, self._player, preferences,
+        preferences = self._settings_backend.load_user_preferences()
+        self._set_locale(preferences.locale)
+        session = self._settings_backend.load_session()
+        main_window = ui.create_main_window(session, self._album_portfolio, self._player, preferences,
                                             self._name_registry, self._cheddar, self._native, self._confirm_exit)
         main_window.show()
 
@@ -99,5 +97,5 @@ def main():
     name_registry = NameRegistry(host="localhost", port=5001, secure=False)
     cheddar = Cheddar(host="tagyourmusic.herokuapp.com", port=443, secure=True)
 
-    tagger = TGiT(QSettings(), MediaPlayer, name_registry, cheddar, on_exit=shutdown_isni_api)
+    tagger = TGiT(MediaPlayer, name_registry, cheddar, on_exit=shutdown_isni_api)
     tagger.launch()

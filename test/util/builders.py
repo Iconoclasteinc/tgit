@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-from tgit.album_portfolio import AlbumPortfolio
+from PyQt5.QtCore import QLocale
 
-from tgit.metadata import Metadata, Image
 from tgit.album import Album
+from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session, User
+from tgit.metadata import Metadata, Image
 from tgit.track import Track
+from tgit.user_preferences import UserPreferences
 
 
 def image(mime='image/jpeg', data='...', type_=Image.OTHER, desc=''):
@@ -68,3 +70,9 @@ def make_registered_session(email="test@example.com", token="api-key"):
     session = Session()
     session.login_as(email, token)
     return session
+
+
+def make_preferences(locale="en"):
+    preferences = UserPreferences()
+    preferences.locale = QLocale(locale)
+    return preferences

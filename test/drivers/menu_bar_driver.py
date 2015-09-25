@@ -4,7 +4,7 @@ from hamcrest import is_not, has_item
 
 from cute import matchers
 from cute.widgets import QMenuBarDriver
-from .settings_dialog_driver import settings_dialog
+from .user_preferences_dialog_driver import user_preferences_dialog
 
 
 def menu_bar(parent):
@@ -57,7 +57,7 @@ class MenuBarDriver(QMenuBarDriver):
 
         def settings(self):
             self._menu_driver.select_menu_item(matchers.named("settings_action"))
-            return settings_dialog(self._menu_bar_driver)
+            return user_preferences_dialog(self._menu_bar_driver)
 
         def close_album(self):
             self._menu_driver.menu_item(matchers.named("close_album_action")).click()

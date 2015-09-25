@@ -17,17 +17,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QDialog, QComboBox, QGridLayout, QDialogButtonBox, QLabel
 
 
-class SettingsDialog(QDialog):
+class UserPreferencesDialog(QDialog):
+    preferences_changed = pyqtSignal(dict)
+
     def __init__(self, parent=None):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
-        self._build()
+        self._setup_ui()
 
-    def _build(self):
-        self.setObjectName('settings-dialog')
+    def _setup_ui(self):
+        self.setObjectName('user_preferences_dialog')
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowTitle(self.tr('Settings'))
         self.setModal(True)
@@ -39,19 +41,24 @@ class SettingsDialog(QDialog):
         layout.addWidget(label, 0, 0)
         layout.addWidget(self.languages, 0, 1)
         self.buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        self.buttons.accepted.connect(lambda: self.preferences_changed.emit(self.preferences))
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
+        self.finished.connect(self.preferences_changed.disconnect)
         layout.addWidget(self.buttons, 1, 0, 1, 2)
         self.setLayout(layout)
 
+        self.add_language("en", "English")
+        self.add_language("fr", "Français")
+
     def add_language(self, locale, language):
-        self.languages.addItem(self.tr(language), locale)
+        self.languages.addItem(language, locale)
 
     @property
-    def settings(self):
-        return {'language': self.languages.itemData(self.languages.currentIndex())}
+    def preferences(self):
+        return {'locale': self.languages.itemData(self.languages.currentIndex())}
 
-    def display(self, **settings):
-        if 'language' in settings:
-            self.languages.setCurrentIndex(self.languages.findData(settings['language']))
+    def display(self, user_preferences, on_edit):
+        self.languages.setCurrentText(user_preferences.locale.nativeLanguageName().capitalize())
+        self.preferences_changed.connect(on_edit)
         self.show()

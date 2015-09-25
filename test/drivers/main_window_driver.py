@@ -5,7 +5,7 @@ from .album_screen_driver import album_screen
 from .load_album_dialog_driver import load_album_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
-from .settings_dialog_driver import settings_dialog
+from .user_preferences_dialog_driver import user_preferences_dialog
 from .menu_bar_driver import menu_bar
 from .new_album_page_driver import new_album_page
 from test.drivers.sign_in_dialog_driver import sign_in_dialog
@@ -66,13 +66,13 @@ class MainWindowDriver(WidgetDriver):
 
     def change_settings(self, **settings):
         menu_bar(self).file.settings()
-        settings_dialog(self).changeSettings(settings)
+        user_preferences_dialog(self).change_preferences(settings)
         message_box(self).ok()
 
     def has_settings(self, **settings):
         dialog = menu_bar(self).file.settings()
         try:
-            dialog.showsSettings(settings)
+            dialog.shows_preferences(settings)
         finally:
             dialog.close()
 

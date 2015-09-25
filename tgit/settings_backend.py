@@ -16,12 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt5.QtCore import QLocale, QSettings
+
 from tgit.auth import Session
+from tgit.user_preferences import UserPreferences
 
 
 class SettingsBackend:
-    def __init__(self, storage):
-        self._storage = storage
+    def __init__(self, file=None):
+        if file:
+            self._storage = QSettings(file, QSettings.IniFormat)
+        else:
+            self._storage = QSettings()
 
     def load_session(self):
         user_email = self._storage.value("user.email", None)
@@ -35,6 +41,13 @@ class SettingsBackend:
         session.user_signed_out.subscribe(self._remove_user)
         return session
 
+    def load_user_preferences(self):
+        preferences = UserPreferences()
+        preferences.locale = QLocale(self._storage.value("preferences.locale") or "en")
+
+        preferences.preferences_changed.subscribe(self._store_preferences)
+        return preferences
+
     def _store_user(self, user):
         self._storage.setValue("user.email", user.email)
         self._storage.setValue("user.api_key", user.api_key)
@@ -42,3 +55,6 @@ class SettingsBackend:
     def _remove_user(self, user):
         self._storage.remove("user.email")
         self._storage.remove("user.api_key")
+
+    def _store_preferences(self, preferences):
+        self._storage.setValue("preferences.locale", preferences.locale.name())

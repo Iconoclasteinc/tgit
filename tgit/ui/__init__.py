@@ -20,8 +20,7 @@
 import functools as func
 from queue import Queue
 
-from PyQt5.QtCore import QEventLoop
-
+from PyQt5.QtCore import QEventLoop, QLocale
 from PyQt5.QtWidgets import QApplication
 
 from tgit import album_director as director
@@ -29,23 +28,23 @@ from tgit.isni.name_registry import NameRegistry
 from tgit.ui import resources
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
-from tgit.ui.dialogs import Dialogs
-from tgit.ui.startup_screen import StartupScreen
-from tgit.ui.isni_lookup_dialog import ISNILookupDialog
-from tgit.ui.new_album_page import NewAlbumPage
-from tgit.ui.performer_dialog import PerformerDialog
-from tgit.ui.track_list_page import make_track_list_page
 from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
+from tgit.ui.album_screen import make_album_screen
+from tgit.ui.dialogs import Dialogs
 from tgit.ui.export_as_dialog import ExportAsDialog
+from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.main_window import MainWindow
 from tgit.ui.message_boxes import MessageBoxes
+from tgit.ui.new_album_page import NewAlbumPage
+from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
-from tgit.ui.settings_dialog import SettingsDialog
-from tgit.ui.track_edition_page import TrackEditionPage, make_track_edition_page
-from tgit.ui.track_selection_dialog import TrackSelectionDialog
-from tgit.ui.welcome_page import WelcomePage
 from tgit.ui.sign_in_dialog import SignInDialog
-from tgit.ui.album_screen import make_album_screen
+from tgit.ui.startup_screen import StartupScreen
+from tgit.ui.track_edition_page import TrackEditionPage, make_track_edition_page
+from tgit.ui.track_list_page import make_track_list_page
+from tgit.ui.track_selection_dialog import TrackSelectionDialog
+from tgit.ui.user_preferences_dialog import UserPreferencesDialog
+from tgit.ui.welcome_page import WelcomePage
 from tgit.util import browser, async_task_runner as task_runner
 
 
@@ -101,17 +100,14 @@ def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_d
     return page
 
 
-def SettingsDialogController(notify_restart_required, preferences, parent):
-    dialog = SettingsDialog(parent)
+def UserPreferencesDialogController(notify_restart_required, preferences, parent):
+    dialog = UserPreferencesDialog(parent)
 
-    def save_preferences():
-        preferences.add(**dialog.settings)
+    def save_preferences(prefs):
+        preferences.locale = QLocale(prefs["locale"])
         notify_restart_required()
 
-    dialog.accepted.connect(save_preferences)
-    dialog.add_language("en", dialog.tr("English"))
-    dialog.add_language("fr", dialog.tr("French"))
-    dialog.display(**preferences)
+    dialog.display(preferences, save_preferences)
     return dialog
 
 
@@ -120,7 +116,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
     messages = MessageBoxes(confirm_exit)
 
     def show_settings_dialog():
-        return SettingsDialogController(messages.restart_required, preferences, window)
+        return UserPreferencesDialogController(messages.restart_required, preferences, window)
 
     def show_performers_dialog(album):
         return lambda on_edit: PerformerDialog(album=album, parent=window).edit(on_edit)

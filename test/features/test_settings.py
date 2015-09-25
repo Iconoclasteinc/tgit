@@ -3,13 +3,13 @@
 
 def test_changing_the_application_language(app, settings):
     app.has_settings(language="English")
-    app.change_settings(language="French")
+    app.change_settings(language="Français")
 
-    settings.has_stored("language", "fr")
+    settings.has_stored("preferences.locale", "fr_FR")
     app.stop()
 
     app.start()
-    app.has_settings(language="Français")
+    app.has_settings(locale="Français")
 
 
 def test_remembering_logging_information(app, platform, settings):

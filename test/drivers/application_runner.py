@@ -33,8 +33,9 @@ class ApplicationRunner:
         self._settings = settings
 
     def start(self):
-        self.app = TGiT(self._settings, fake_audio_player, NameRegistry(host="localhost", port=5001),
-                        Cheddar(host="localhost", port=5001, secure=False), native=False, confirm_exit=False)
+        self.app = TGiT(fake_audio_player, NameRegistry(host="localhost", port=5001),
+                        Cheddar(host="localhost", port=5001, secure=False),
+                        self._settings, native=False, confirm_exit=False)
         self.app.show()
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                        EventProcessingProber(timeout_in_ms=1000), Animatron())

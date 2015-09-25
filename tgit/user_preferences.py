@@ -16,23 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import QSettings
+
+from tgit.signal import Observable, signal
 
 
-# todo use the SettingsBackend
-class Preferences(object):
-    def __init__(self, settings=QSettings()):
-        self.settings = settings
+class UserPreferences(metaclass=Observable):
+    preferences_changed = signal(object)
 
-    def __getitem__(self, key):
-        return self.settings.value(key, None)
+    def __init__(self):
+        super().__setattr__('_data', {})
 
-    def __setitem__(self, key, value):
-        self.settings.setValue(key, value)
+    def __getattr__(self, name):
+        try:
+            return self._data[name]
+        except KeyError:
+            raise AttributeError(name)
 
-    def add(self, **settings):
-        for key, value in settings.items():
-            self[key] = value
-
-    def keys(self):
-        return self.settings.allKeys()
+    def __setattr__(self, name, value):
+        self._data[name] = value
+        self.preferences_changed.emit(self)

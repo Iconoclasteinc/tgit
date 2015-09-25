@@ -17,7 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import QSettings
 import pytest
 
 from test.drivers.application_runner import ApplicationRunner
@@ -52,7 +51,7 @@ def settings(settings_file):
 
 @pytest.yield_fixture
 def app(workspace, settings_file):
-    runner = ApplicationRunner(workspace, QSettings(settings_file, QSettings.IniFormat))
+    runner = ApplicationRunner(workspace, settings_file)
     runner.start()
     yield runner
     runner.stop()
