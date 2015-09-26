@@ -21,6 +21,7 @@ import functools as func
 from queue import Queue
 
 from PyQt5.QtCore import QEventLoop, QLocale
+
 from PyQt5.QtWidgets import QApplication
 
 from tgit import album_director as director
@@ -34,7 +35,7 @@ from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.track_list_page import make_track_list_page
-from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
+from tgit.ui.album_edition_page import make_album_edition_page
 from tgit.ui.album_screen import make_album_screen
 from tgit.ui.dialogs import Dialogs
 from tgit.ui.export_as_dialog import ExportAsDialog
@@ -44,7 +45,7 @@ from tgit.ui.message_boxes import MessageBoxes
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
-from tgit.ui.settings_dialog import SettingsDialog
+from tgit.ui.sign_in_dialog import SignInDialog
 from tgit.ui.track_edition_page import make_track_edition_page
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.user_preferences_dialog import UserPreferencesDialog
@@ -116,7 +117,7 @@ def UserPreferencesDialogController(notify_restart_required, preferences, parent
 
 
 def create_main_window(session, portfolio, player, preferences, name_registry, cheddar, native, confirm_exit):
-    dialogs = Dialogs(native)
+    application_dialogs = Dialogs(native)
     messages = MessageBoxes(confirm_exit)
 
     def show_settings_dialog():
@@ -129,14 +130,14 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
         return SignInDialog(parent=window).sign_in(on_sign_in)
 
     def create_new_album_page():
-        return NewAlbumPage(select_album_location=dialogs.select_album_destination,
-                            select_track=dialogs.select_track,
+        return NewAlbumPage(select_album_location=application_dialogs.select_album_destination,
+                            select_track=application_dialogs.select_track,
                             check_album_exists=director.album_exists,
                             confirm_overwrite=messages.overwrite_album_confirmation,
                             on_create_album=director.create_album_into(portfolio))
 
     def create_welcome_page():
-        return WelcomePage(select_album=dialogs.select_album_to_load,
+        return WelcomePage(select_album=application_dialogs.select_album_to_load,
                            show_load_error=messages.load_album_failed,
                            on_load_album=director.load_album_into(portfolio))
 
@@ -146,7 +147,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
 
     def create_track_list_page(album):
         return make_track_list_page(album, player,
-                                    select_tracks=func.partial(dialogs.select_tracks, album.type),
+                                    select_tracks=func.partial(application_dialogs.select_tracks, album.type),
                                     on_move_track=director.move_track_of(album),
                                     on_remove_track=director.remove_track_from(album),
                                     on_play_track=player.play,
@@ -161,7 +162,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                                           show_activity_indicator_dialog,
                                           messages.isni_assignation_failed,
                                           edit_performers=show_performers_dialog(album),
-                                          select_picture=dialogs.select_cover,
+                                          select_picture=application_dialogs.select_cover,
                                           on_select_picture=director.change_cover_of(album))
 
     def create_track_page_for(album):
@@ -182,9 +183,9 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                         create_startup_screen=create_startup_screen,
                         create_album_screen=create_album_screen,
                         confirm_close=messages.close_album_confirmation,
-                        select_export_destination=dialogs.export,
-                        select_tracks=dialogs.select_tracks,
-                        select_tracks_in_folder=dialogs.add_tracks_in_folder,
+                        select_export_destination=application_dialogs.export,
+                        select_tracks=application_dialogs.select_tracks,
+                        select_tracks_in_folder=application_dialogs.add_tracks_in_folder,
                         show_save_error=messages.save_album_failed,
                         show_export_error=messages.export_failed,
                         authenticate=show_sign_in_dialog,
@@ -200,8 +201,8 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                         on_online_help=browser.open_,
                         on_request_feature=browser.open_,
                         on_register=browser.open_)
-    dialogs.parent = window
+    application_dialogs.parent = window
     messages.parent = window
-    portfolio.album_removed.subscribe(lambda album: dialogs.clear())
+    portfolio.album_removed.subscribe(lambda album: application_dialogs.clear())
 
     return window
