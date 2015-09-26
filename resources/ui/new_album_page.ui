@@ -21,7 +21,7 @@
 	max-width: 500px;
 	min-height: 300px;
 	max-height: 300px;
-	background: white url(':/logo.png') no-repeat top left;
+	background: white url(':/images/logo.png') no-repeat top left;
 }
 
 QLabel {
@@ -446,7 +446,9 @@ QPushButton:disabled {
   <tabstop>create_button</tabstop>
   <tabstop>cancel_button</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>cancel_button</sender>

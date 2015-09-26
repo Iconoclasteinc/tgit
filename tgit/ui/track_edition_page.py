@@ -18,18 +18,19 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QLabel, QWidget, QGroupBox
+from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
 from tgit.languages import LANGUAGES
 from tgit.ui.closeable import Closeable
-from tgit.ui.helpers import form, image, formatting
+from tgit.ui.helpers import image, formatting
+from tgit.ui.helpers.ui_file import UIFile
 
 
 def make_track_edition_page(album, track, on_track_changed):
     page = TrackEditionPage()
 
-    page.metadataChanged.connect(lambda metadata: on_track_changed(**metadata))
+    page.metadata_changed.connect(lambda metadata: on_track_changed(**metadata))
 
     subscription = track.metadata_changed.subscribe(page.display_track)
     page.closed.connect(lambda: subscription.cancel())
@@ -41,184 +42,42 @@ def make_track_edition_page(album, track, on_track_changed):
 
 
 @Closeable
-class TrackEditionPage(QWidget, AlbumListener):
+class TrackEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
-    metadataChanged = pyqtSignal(dict)
+    metadata_changed = pyqtSignal(dict)
 
-    ALBUM_COVER_SIZE = 60, 60
-    DURATION_FORMAT = 'mm:ss'
+    ALBUM_COVER_SIZE = 50, 50
+    DURATION_FORMAT = "mm:ss"
 
-    cover = None
+    _cover = None
 
     def __init__(self):
-        QWidget.__init__(self)
-        self.build()
+        super().__init__()
+        self._setup_ui()
 
-    def build(self):
-        self.setObjectName("track_edition_page")
-        layout = form.column()
-        layout.setSpacing(6)
-        layout.addWidget(self.makeAlbumBanner())
-        layout.addWidget(self.makeMainContent())
-        self.setLayout(layout)
+    def _setup_ui(self):
+        self._load(":/ui/track_page.ui")
         self._disable_mac_focus_frame()
-        self.disableTeaserFields()
+        self._disable_teaser_fields()
+
+        self._track_title.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._lead_performer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._version.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._featured_guest.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._lyricist.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._composer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._publisher.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._isrc.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._iswc.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._tags.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+
+        self._lyrics.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._language.addItems(sorted(LANGUAGES))
+        self._language.activated.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._language.lineEdit().textEdited.connect(lambda: self.metadata_changed.emit(self.metadata))
 
     def albumStateChanged(self, album):
         self.display(album=album)
-
-    def makeAlbumBanner(self):
-        header = QGroupBox()
-        header.setTitle(self.tr("ALBUM"))
-        header.setObjectName('album-banner')
-        layout = form.row()
-        layout.addWidget(self.makeAlbumCover())
-        layout.addWidget(self.makeAlbumTitle())
-        layout.addStretch()
-        layout.addStretch()
-        layout.addWidget(self.makeTrackNumber())
-        header.setLayout(layout)
-        return header
-
-    def makeAlbumCover(self):
-        self.albumCover = form.label('album-cover')
-        self.albumCover.setFixedSize(*self.ALBUM_COVER_SIZE)
-        return self.albumCover
-
-    def makeAlbumTitle(self):
-        title = QWidget()
-        layout = form.column()
-        self.albumTitle = form.label('album-title')
-        self.albumTitle.setProperty('title', 'h2')
-        layout.addWidget(self.albumTitle)
-        self.albumLeadPerformer = form.label('album-lead-performer')
-        self.albumLeadPerformer.setProperty('title', 'h3')
-        layout.addWidget(self.albumLeadPerformer)
-        layout.addStretch()
-        title.setLayout(layout)
-        return title
-
-    def makeTrackNumber(self):
-        numbering = QWidget()
-        layout = form.column()
-        layout.addStretch()
-        self.trackNumber = form.label('track-number')
-        self.trackNumber.setProperty('title', 'h3')
-        self.trackNumber.setAlignment(Qt.AlignRight)
-        layout.addWidget(self.trackNumber)
-        numbering.setLayout(layout)
-        return numbering
-
-    def makeMainContent(self):
-        content = QWidget()
-        layout = form.row()
-        layout.setSpacing(0)
-        layout.addWidget(self.makeLeftColumn())
-        layout.addWidget(self.makeRightColumn())
-        content.setLayout(layout)
-        return content
-
-    def makeLeftColumn(self):
-        column = QWidget()
-        layout = form.column()
-        layout.setSpacing(6)
-        layout.addWidget(self.makeTrackFields())
-        layout.addWidget(self.makeContributorsFields())
-        layout.addWidget(self.makeIdentificationFields())
-        layout.addStretch()
-        column.setLayout(layout)
-        return column
-
-    def makeTrackFields(self):
-        fieldSet = QGroupBox()
-        fieldSet.setTitle(self.tr('TRACK'))
-        layout = form.layout()
-        self.trackTitle = form.lineEdit('track-title')
-        self.trackTitle.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.trackTitle, self.tr('Track Title: ')), self.trackTitle)
-        self.leadPerformer = form.lineEdit('lead-performer')
-        self.leadPerformer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.leadPerformer, self.tr('Lead Performer: ')), self.leadPerformer)
-        self.versionInfo = form.lineEdit('version-info')
-        self.versionInfo.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.versionInfo, self.tr('Version Information: ')), self.versionInfo)
-        fieldSet.setLayout(layout)
-        return fieldSet
-
-    def makeContributorsFields(self):
-        fieldSet = QGroupBox()
-        fieldSet.setTitle(self.tr('CONTRIBUTORS'))
-        layout = form.layout()
-        self.featuredGuest = form.lineEdit('featured-guest')
-        self.featuredGuest.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.featuredGuest, self.tr('Featured Guest: ')), self.featuredGuest)
-        self.lyricist = form.lineEdit('lyricist')
-        self.lyricist.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.lyricist, self.tr('Lyricist: ')), self.lyricist)
-        self.composer = form.lineEdit('composer')
-        self.composer.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.composer, self.tr('Composer: ')), self.composer)
-        self.publisher = form.lineEdit('publisher')
-        self.publisher.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.publisher, self.tr('Publisher: ')), self.publisher)
-        fieldSet.setLayout(layout)
-        return fieldSet
-
-    def makeIdentificationFields(self):
-        fieldSet = QGroupBox()
-        fieldSet.setTitle(self.tr('IDENTIFICATION'))
-        layout = form.layout()
-        self.isrc = form.lineEdit('isrc')
-        self.isrc.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        self.isrc.setPlaceholderText('ZZZ123456789')
-        layout.addRow(form.labelFor(self.isrc, self.tr('ISRC: ')), self.isrc)
-        self.iswc = form.lineEdit('iswc')
-        self.iswc.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.iswc, self.tr('ISWC: ')), self.iswc)
-        self.tags = form.lineEdit('tags')
-        self.tags.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        self.tags.setPlaceholderText(self.tr('tag1, tag2, tag3 ...'))
-        layout.addRow(form.labelFor(self.tags, self.tr('Tags: ')), self.tags)
-        fieldSet.setLayout(layout)
-        return fieldSet
-
-    def makeRightColumn(self):
-        column = QWidget()
-        layout = form.column()
-        layout.setSpacing(6)
-        layout.addWidget(self.makeContentFields())
-        layout.addLayout(self.makeNotice())
-        column.setLayout(layout)
-        return column
-
-    def makeContentFields(self):
-        fieldSet = QGroupBox()
-        fieldSet.setObjectName('content')
-        fieldSet.setTitle(self.tr('CONTENT'))
-        layout = form.layout()
-        self.lyrics = form.textArea('lyrics')
-        self.lyrics.editingFinished.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.lyrics, self.tr('Lyrics: ')), self.lyrics)
-        self.languages = form.comboBox('languages')
-        self.languages.addItems(sorted(LANGUAGES))
-        self.languages.activated.connect(lambda: self.metadataChanged.emit(self.metadata))
-        self.languages.lineEdit().textEdited.connect(lambda: self.metadataChanged.emit(self.metadata))
-        layout.addRow(form.labelFor(self.languages, self.tr('Language: ')), self.languages)
-        self.previewTime = form.timeEdit('preview-time')
-        layout.addRow(form.labelFor(self.previewTime, self.tr('Preview Time: ')), self.previewTime)
-        self.duration = form.label('duration')
-        layout.addRow(form.labelFor(self.duration, self.tr('Duration: ')), self.duration)
-        self.bitrate = form.label('bitrate')
-        layout.addRow(form.labelFor(self.bitrate, self.tr('Bitrate: ')), self.bitrate)
-        fieldSet.setLayout(layout)
-        return fieldSet
-
-    def makeNotice(self):
-        layout = form.row()
-        layout.addStretch()
-        self.softwareNotice = form.label('software-notice')
-        layout.addWidget(self.softwareNotice)
-        return layout
 
     def display(self, album=None, track=None):
         if album:
@@ -228,36 +87,35 @@ class TrackEditionPage(QWidget, AlbumListener):
 
     def _display_album(self, album):
         self._display_album_cover(album.mainCover)
-        self.albumTitle.setText(album.release_name)
-        self.albumLeadPerformer.setText(album.compilation and self.tr('Various Artists') or album.lead_performer)
-        self.leadPerformer.setEnabled(album.compilation is True)
-        self.labelFor(self.leadPerformer).setEnabled(self.leadPerformer.isEnabled())
+        self._album_title.setText(album.release_name)
+        self._album_lead_performer.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
+        self._lead_performer.setEnabled(album.compilation is True)
+        self._lead_performer_caption.setEnabled(album.compilation is True)
 
     def display_track(self, track):
-        self.trackNumber.setText(self.tr('Track %s of %d') % (track.track_number, track.total_tracks))
-        self.trackTitle.setText(track.track_title)
-        self.leadPerformer.setText(track.lead_performer)
-        self.versionInfo.setText(track.versionInfo)
-        self.duration.setText(formatting.to_duration(track.duration))
-        self.bitrate.setText('%s kbps' % formatting.in_kbps(track.bitrate))
-        self.featuredGuest.setText(track.featuredGuest)
-        self.lyricist.setText(track.lyricist)
-        self.composer.setText(track.composer)
-        self.publisher.setText(track.publisher)
-        self.isrc.setText(track.isrc)
-        self.tags.setText(track.labels)
-        self.lyrics.setPlainText(track.lyrics)
-        self.languages.setEditText(track.language)
-        self.softwareNotice.setText(self._compose_software_notice(track))
+        self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
+        self._track_title.setText(track.track_title)
+        self._lead_performer.setText(track.lead_performer)
+        self._version.setText(track.versionInfo)
+        self._duration.setText(formatting.to_duration(track.duration))
+        self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
+        self._featured_guest.setText(track.featuredGuest)
+        self._lyricist.setText(track.lyricist)
+        self._composer.setText(track.composer)
+        self._publisher.setText(track.publisher)
+        self._isrc.setText(track.isrc)
+        self._tags.setText(track.labels)
+        self._lyrics.setPlainText(track.lyrics)
+        self._language.setEditText(track.language)
+        self._software_notice.setText(self._compose_software_notice(track))
 
     def _display_album_cover(self, picture):
         # Cache the cover image to avoid recomputing the image each time the screen updates
-        if self.cover is not picture:
-            self.cover = picture
-            self.albumCover.setPixmap(image.scale(self.cover, *self.ALBUM_COVER_SIZE))
+        if self._cover is not picture:
+            self._cover = picture
+            self._album_cover.setPixmap(image.scale(self._cover, *self.ALBUM_COVER_SIZE))
 
-    @staticmethod
-    def _compose_software_notice(track):
+    def _compose_software_notice(self, track):
         try:
             date, time = formatting.asLocalDateTime(track.tagging_time)
         except Exception:
@@ -265,43 +123,35 @@ class TrackEditionPage(QWidget, AlbumListener):
 
         notice = ""
         if track.tagger and track.tagger_version:
-            notice += " with {0} v{1}".format(track.tagger, track.tagger_version)
+            notice += self.tr(" with {0} v{1}").format(track.tagger, track.tagger_version)
         if date and time:
-            notice += " on {0} at {1}".format(date, time)
+            notice += self.tr(" on {0} at {1}").format(date, time)
 
         if notice != "":
-            notice = "Tagged" + notice
+            notice = self.tr("Tagged") + notice
 
         return notice
 
     @property
     def metadata(self):
-        return dict(track_title=self.trackTitle.text(),
-                    lead_performer=self.leadPerformer.text(),
-                    versionInfo=self.versionInfo.text(),
-                    featuredGuest=self.featuredGuest.text(),
-                    lyricist=self.lyricist.text(),
-                    composer=self.composer.text(),
-                    publisher=self.publisher.text(),
-                    isrc=self.isrc.text(),
-                    labels=self.tags.text(),
-                    lyrics=self.lyrics.toPlainText(),
-                    language=self.languages.currentText())
+        return dict(track_title=self._track_title.text(),
+                    lead_performer=self._lead_performer.text(),
+                    versionInfo=self._version.text(),
+                    featuredGuest=self._featured_guest.text(),
+                    lyricist=self._lyricist.text(),
+                    composer=self._composer.text(),
+                    publisher=self._publisher.text(),
+                    isrc=self._isrc.text(),
+                    labels=self._tags.text(),
+                    lyrics=self._lyrics.toPlainText(),
+                    language=self._language.currentText())
 
     def _disable_mac_focus_frame(self):
         for child in self.findChildren(QWidget):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
-    def disableTeaserFields(self):
-        for field in (self.iswc, self.previewTime):
-            field.setDisabled(True)
-            self.labelFor(field).setDisabled(True)
-
-    def labelFor(self, widget):
-        def withBuddy(buddy):
-            return lambda w: w.buddy() == buddy
-
-        return self.childWidget(QLabel, withBuddy(widget))
-
-    def childWidget(self, ofType, matching):
-        return next(child for child in self.findChildren(ofType) if matching(child))
+    def _disable_teaser_fields(self):
+        self._iswc.setDisabled(True)
+        self._iswc_caption.setDisabled(True)
+        self._preview_time.setDisabled(True)
+        self._preview_time_caption.setDisabled(True)

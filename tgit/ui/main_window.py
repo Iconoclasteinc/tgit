@@ -17,8 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import sys
-
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QAction
 
@@ -26,163 +24,13 @@ from tgit.ui.helpers import ui_file
 from tgit.ui.observer import Observer
 from tgit.ui.rescue import rescue
 
-mac = sys.platform == "darwin"
-
 StyleSheet = """
-    QComboBox QAbstractItemView {
-        selection-background-color:#F08450;
-    }
-
-    #activity-indicator-dialog-frame {
-        border: 1px solid #DDDDDD;
-    }
-
-    #track_edition_page QGroupBox {
-        border: 1px solid #DDDDDD;
-        border-bottom: 2px solid rgba(0, 0, 0, 20%);
-        background-color: white;
-        padding: 17px 14px 14px 0px;
-        margin: 5px 8px;
-        font-size: 10px;
-    }
-
-    #track_edition_page QGroupBox::title {
-        subcontrol-origin: margin;
-        subcontrol-position: top left;
-        left: 1px;
-        padding: 0 3px;
-        color: #777777;
-        border: 1px solid #DFDFDF;
-        background-color: #F7F7F7;
-     }
-
-    #track_edition_page QLineEdit, #track_edition_page TextArea, #track_edition_page QComboBox,
-    #track_edition_page QComboBox::drop-down, #track_edition_page QComboBox QAbstractItemView {
-        background-color: #F9F9F9;
-        border: 1px solid #B1B1B1;
-        color: #222222;
-        min-height: 20px;
-    }
-
-    #track_edition_page QLineEdit, #track_edition_page TextArea, #track_edition_page QComboBox {
-        selection-background-color: #F2C1A7;
-        selection-color: #222222;
-    }
-
-    #track_edition_page QLineEdit:focus, #track_edition_page TextArea:focus, #track_edition_page QComboBox:focus,
-    #track_edition_page QComboBox:on, #track_edition_page QComboBox::drop-down:focus,
-    #track_edition_page QComboBox::drop-down:on, #track_edition_page QComboBox QAbstractItemView:focus  {
-        border: 1px solid #F79D6C;
-    }
-
-    #track_edition_page QLineEdit:disabled, #track_edition_page TextArea:disabled,
-    #track_edition_page QSpinBox:disabled {
-        background-color: #FCFCFC;
-        border-color: #E7E7E7;
-        color: #C2C2C2;
-    }
-
-    #track_edition_page QComboBox:disabled, #track_edition_page QComboBox::drop-down:disabled,
-    #track_edition_page QTimeEdit:disabled {
-        background-color: #FCFCFC;
-        border-color: #E7E7E7;
-        color: #C2C2C2;
-    }
-
-    #track_edition_page QLabel {
-        color: #444444;
-        min-width: 175px;
-    }
-
-    #track_edition_page #content QLabel {
-        min-width: 125px;
-    }
-
-    #track_edition_page QLabel:disabled {
-        color: #C2C2C2;
-    }
-
-    #track_edition_page QComboBox::drop-down {
-        padding: 0;
-        margin: 0;
-        subcontrol-origin: border;
-        subcontrol-position: top right;
-        width: 20px;
-    }
-
-    #track_edition_page QComboBox::down-arrow {
-        image: url(:/down-arrow.png);
-    }
-
-    #track_edition_page QComboBox::down-arrow:on, #track_edition_page QComboBox::down-arrow:focus {
-        image: url(:/down-arrow-on.png);
-    }
-
-    #album-banner {
-        padding-left: 14px;
-        max-height: 50px;
-    }
-
-    #album-banner #album-cover {
-        min-width: 50px;
-        max-width: 50px;
-        min-height: 50px;
-        max-height: 50px;
-        background-color: #F9F9F9;
-        border: 1px solid #B8B8B8;
-        margin-right: 15px;
-        margin-left: 15px;
-    }
-
-    #album-banner QLabel {
-        color: #777777;
-        padding: 0;
-        margin: 0;
-        min-width: 0;
-    }
-
-    #album-banner QLabel[title='h2'] {
-        font-size: 22px;
-        min-width: 300px;
-        max-width: 300px;
-    }
-
-    #album-banner QLabel[title='h3'] {
-        font-size: 14px;
-        min-width: 300px;
-        max-width: 300px;
-    }
-
-    #track_edition_page #software-notice {
-        font-size: 10px;
-        margin-right: 8px;
-    }
-
     #isni-lookup-dialog #results-exceeds-shown,
     #isni-lookup-dialog #no-result-message,
     #isni-lookup-dialog #connection-error-message {
         color: #F25C0A;
     }
-
-    QMessageBox[style=QMacStyle] {
-        messagebox-warning-icon: url(:/images/warning.png);
-    }
-
-    #qt_msgbox_informativelabel[style=QMacStyle] {
-        font: normal 11px;
-        margin-bottom: 5px;
-    }
- """
-
-if mac:
-    StyleSheet += """
-        #track_edition_page QComboBox {
-            padding-left: 1px;
-            padding-top: 1px;
-            margin-left: 3px;
-            margin-right: 2px;
-        }
-    """
+"""
 
 
 class HandlerRegistrar:

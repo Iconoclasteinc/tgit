@@ -34,7 +34,28 @@
     background-color: #F6F6F6;
     margin: 0;
     padding: 0;
-}</string>
+}
+
+QMessageBox[style=QMacStyle] {
+    messagebox-warning-icon: url(:/images/warning.png);
+}
+
+#qt_msgbox_informativelabel[style=QMacStyle] {
+    font: normal 11px;
+    margin-bottom: 5px;
+}
+
+QComboBox[style=QMacStyle] {
+    padding-left: 1px;
+    padding-top: 1px;
+    margin-left: 3px;
+    margin-right: 2px;
+}
+
+#activity-indicator-dialog-frame {
+    border: 1px solid #DDDDDD;
+}
+</string>
   </property>
   <widget class="QMenuBar" name="menu_bar">
    <property name="geometry">

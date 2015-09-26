@@ -28,6 +28,12 @@ from tgit.isni.name_registry import NameRegistry
 from tgit.ui import resources
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
+from tgit.ui.dialogs import Dialogs
+from tgit.ui.startup_screen import StartupScreen
+from tgit.ui.isni_lookup_dialog import ISNILookupDialog
+from tgit.ui.new_album_page import NewAlbumPage
+from tgit.ui.performer_dialog import PerformerDialog
+from tgit.ui.track_list_page import make_track_list_page
 from tgit.ui.album_edition_page import AlbumEditionPage, make_album_edition_page
 from tgit.ui.album_screen import make_album_screen
 from tgit.ui.dialogs import Dialogs
@@ -38,10 +44,8 @@ from tgit.ui.message_boxes import MessageBoxes
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
-from tgit.ui.sign_in_dialog import SignInDialog
-from tgit.ui.startup_screen import StartupScreen
-from tgit.ui.track_edition_page import TrackEditionPage, make_track_edition_page
-from tgit.ui.track_list_page import make_track_list_page
+from tgit.ui.settings_dialog import SettingsDialog
+from tgit.ui.track_edition_page import make_track_edition_page
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.user_preferences_dialog import UserPreferencesDialog
 from tgit.ui.welcome_page import WelcomePage

@@ -638,121 +638,134 @@
     </message>
 </context>
 <context>
-    <name>TrackEditionPage</name>
+    <name>track_edition_page</name>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="246"/>
-        <source>Various Artists</source>
-        <translation>Multi-interprètes</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" line="251"/>
-        <source>Track %d of %d</source>
-        <translation>Piste %d de %d</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" line="280"/>
-        <source>Tagged with %s on %s at %s</source>
-        <translation>Indexé avec %s le %s à %s</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" line="149"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>TRACK</source>
         <translation>PISTE</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="153"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Track Title: </source>
         <translation>Titre de la piste :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="156"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Lead Performer: </source>
         <translation>Artiste principal :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="159"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Version Information: </source>
         <translation>Infos sur la version :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="165"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>CONTRIBUTORS</source>
         <translation>COLLABORATEURS</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="169"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Featured Guest: </source>
         <translation>Invité spécial :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="172"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Lyricist: </source>
         <translation>Auteur :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="175"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Composer: </source>
         <translation>Compositeur :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="178"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Publisher: </source>
         <translation>Éditeur :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="184"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>IDENTIFICATION</source>
         <translation>IDENTIFICATION</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="192"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>ISWC: </source>
         <translation>ISWC :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="196"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Tags: </source>
         <translation>Tags :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="195"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>tag1, tag2, tag3 ...</source>
         <translation>tag1, tag2, tag3...</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="211"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>CONTENT</source>
         <translation>CONTENU</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="215"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Lyrics: </source>
         <translation>Paroles :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="220"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Language: </source>
         <translation>Langue :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="222"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Preview Time: </source>
         <translation>Pré-écoute :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="224"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Duration: </source>
         <translation>Durée :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="226"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Bitrate: </source>
         <translation>Débit :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" line="189"/>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>ISRC: </source>
         <translation>ISRC :</translation>
+    </message>
+</context>
+<context>
+    <name>TrackEditionPage</name>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Various Artists</source>
+        <translation>Multi-interprètes</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Track {0} of {1}</source>
+        <translation>Piste {0} de {1}</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Tagged</source>
+        <translation>Indexé</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source> with {0} v{1}</source>
+        <translation> avec {0} v{1}</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source> on {0} at {1}</source>
+        <translation> le {0} à {1}</translation>
     </message>
 </context>
 <context>

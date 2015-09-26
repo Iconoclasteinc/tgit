@@ -3,20 +3,20 @@
         <file>qtbase_fr.qm</file>
         <file>tgit_fr.qm</file>
         <file alias="tgit.ico">tgit.ico</file>
-        <file alias="nothing.png">images/nothing.png</file>
-        <file alias="previous.png">images/previous.png</file>
-        <file alias="next.png">images/next.png</file>
-        <file alias="logo.png">images/logo.png</file>
+        <file>images/nothing.png</file>
+        <file>images/previous.png</file>
+        <file>images/next.png</file>
+        <file>images/logo.png</file>
         <file alias="activity-indicator.gif">images/loader_gray_512.gif</file>
-        <file alias="add-picture.png">images/add-picture.png</file>
-        <file alias="down-arrow.png">images/down-arrow.png</file>
-        <file alias="down-arrow-on.png">images/down-arrow-on.png</file>
-        <file alias="checkbox.png">images/checkbox.png</file>
-        <file alias="checkbox-hover.png">images/checkbox-focus.png</file>
-        <file alias="checkbox-pressed.png">images/checkbox-pressed.png</file>
-        <file alias="checkbox-checked.png">images/checkbox-checked.png</file>
-        <file alias="checkbox-checked-hover.png">images/checkbox-checked-focus.png</file>
-        <file alias="checkbox-checked-pressed.png">images/checkbox-checked-pressed.png</file>
+        <file>images/add-picture.png</file>
+        <file>images/down-arrow.png</file>
+        <file>images/down-arrow-on.png</file>
+        <file>images/checkbox.png</file>
+        <file>images/checkbox-focus.png</file>
+        <file>images/checkbox-pressed.png</file>
+        <file>images/checkbox-checked.png</file>
+        <file>images/checkbox-checked-focus.png</file>
+        <file>images/checkbox-checked-pressed.png</file>
         <file>images/drag-handle.gif</file>
         <file alias="playing">images/volume-up-16-dark.png</file>
         <file>images/chevron-right-white-12.png</file>
@@ -31,6 +31,7 @@
         <file>ui/main_window.ui</file>
         <file>ui/album_screen.ui</file>
         <file>ui/album_page.ui</file>
+        <file>ui/track_page.ui</file>
         <file>ui/new_album_page.ui</file>
         <file>ui/track_list_page.ui</file>
         <file>ui/performers_dialog.ui</file>

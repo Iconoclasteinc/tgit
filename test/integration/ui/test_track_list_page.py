@@ -38,10 +38,10 @@ def test_displays_column_headings(driver):
 
 def test_displays_track_details_in_columns(driver):
     _ = show_track_list(make_album(release_name='Honeycomb',
-                         lead_performer='Joel Miller',
-                         tracks=[make_track(track_title='Chevere!',
-                                            bitrate=192000,
-                                            duration=timedelta(minutes=4, seconds=12).total_seconds())]))
+                                   lead_performer='Joel Miller',
+                                   tracks=[make_track(track_title='Chevere!',
+                                                      bitrate=192000,
+                                                      duration=timedelta(minutes=4, seconds=12).total_seconds())]))
 
     driver.shows_track_details('1', 'Chevere!', 'Joel Miller', 'Honeycomb', '192 kbps', '04:12')
 
@@ -157,7 +157,7 @@ def test_makes_stop_track_request_when_stop_context_menu_item_selected(driver):
 
 def test_shows_selected_track_title_in_context_menu(driver):
     show_track_list(make_album(tracks=[make_track(track_title="Partways"),
-                                 make_track(track_title="Rebop")]))
+                                       make_track(track_title="Rebop")]))
 
     driver.select_track("Partways")
     driver.has_context_menu_item(with_text(contains_string("Partways")))
@@ -190,8 +190,8 @@ def test_makes_add_tracks_request_when_add_button_clicked(driver):
 
 def test_makes_move_track_requests_when_track_row_moved(driver):
     page = show_track_list(make_album(tracks=[make_track(track_title='Chaconne'),
-                                        make_track(track_title='Choices'),
-                                        make_track(track_title='Place St-Henri')]))
+                                              make_track(track_title='Choices'),
+                                              make_track(track_title='Place St-Henri')]))
 
     track_moved_signal = ValueMatcherProbe('track moved', contains(2, 1))
     page.on_move_track(lambda track, to_position: track_moved_signal.received((track, to_position)))
