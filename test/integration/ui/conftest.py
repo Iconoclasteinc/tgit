@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
+# noinspection PyPackageRequirements
 import sip
 
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication
 import pytest
 
 from cute.animatron import Animatron
-from cute.matchers import named
 from cute.prober import EventProcessingProber
 from cute.robot import Robot
-from cute.widgets import window, WidgetDriver
-from test.drivers import TrackEditionPageDriver
-from tgit.ui.track_edition_page import TrackEditionPage
 
 
 @pytest.yield_fixture()
@@ -41,15 +38,3 @@ def robot():
 @pytest.fixture()
 def animaton():
     return Animatron()
-
-
-@pytest.fixture()
-def widget_driver(qt, prober, automaton):
-    return WidgetDriver(window(QWidget), prober, automaton)
-
-
-@pytest.yield_fixture()
-def track_edition_page_driver(qt, prober, automaton):
-    page_driver = TrackEditionPageDriver(window(TrackEditionPage, named("track_edition_page")), prober, automaton)
-    yield page_driver
-    page_driver.close()
