@@ -899,5 +899,9 @@
         <source>Password</source>
         <translation>Mot de passe</translation>
     </message>
+    <message>
+        <source>Incorrect username and/or password.</source>
+        <translation>Nom d'utilisateur et/ou mot de passe incorrect</translation>
+    </message>
 </context>
 </TS>
