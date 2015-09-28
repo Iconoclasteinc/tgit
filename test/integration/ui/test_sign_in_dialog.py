@@ -3,11 +3,11 @@ from PyQt5.QtCore import Qt
 from hamcrest import contains
 import pytest
 
-from tgit.authentication_error import AuthenticationError
 from cute.matchers import named
 from cute.probes import MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers.sign_in_dialog_driver import SignInDialogDriver
+from tgit.authentication_error import AuthenticationError
 from tgit.ui.sign_in_dialog import SignInDialog
 
 ignore = lambda *_: None
@@ -42,5 +42,6 @@ def test_displays_error_message_when_authentication_is_not_successful(driver):
 
     _ = show_dialog(on_sign_in=authenticate)
 
+    driver.is_active()
     driver.enter_credentials("jfalardeau@pyxis-tech.com", "passw0rd")
     driver.shows_authentication_failed_message()

@@ -19,7 +19,6 @@
 from PyQt5.QtWidgets import QFileDialog
 
 from tgit.ui import locations
-
 from tgit.util import fs
 
 
@@ -30,6 +29,7 @@ class TrackSelectionDialog(QFileDialog):
         super().__init__(parent)
         self.setObjectName("track-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
+        self.finished.connect(self.filesSelected.disconnect)
         self.setDirectory(locations.Music)
 
     def select_files_in_folder(self, file_type, on_select):
@@ -52,10 +52,6 @@ class TrackSelectionDialog(QFileDialog):
 
     def _filter_for(self, type_):
         return "{0} {1}".format(self.tr(self._FILTERS[type_]), "*.{}".format(type_))
-
-    def done(self, result):
-        self.filesSelected.disconnect()
-        return super().done(result)
 
     def _list_files(self, folder, file_type):
         return [filename for filename in fs.list_dir(folder) if filename.endswith("." + file_type)]

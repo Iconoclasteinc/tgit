@@ -17,15 +17,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QMessageBox
+from PyQt5.QtWidgets import QDialog
 
-from tgit.authentication_error import AuthenticationError
 from tgit.ui.helpers.ui_file import UIFile
+from tgit.ui.rescue import rescue
 
 
 class SignInDialog(QDialog, UIFile):
-    _on_sign_in = lambda: None
-
     def __init__(self, parent=None):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
         self._setup_ui()
@@ -33,20 +31,17 @@ class SignInDialog(QDialog, UIFile):
     def _setup_ui(self):
         self._load(":ui/sign_in_dialog.ui")
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self._action_buttons.clicked.connect(self._button_clicked)
         self._authentication_error.setVisible(False)
         self.adjustSize()
 
     def sign_in(self, on_sign_in):
-        self._on_sign_in = on_sign_in
+        def attempt_sign_in():
+            with(rescue(on_error=self._show_authentication_failed)):
+                on_sign_in(self._email.text(), self._password.text())
+                self.accept()
+
+        self._action_buttons.accepted.connect(attempt_sign_in)
         self.open()
 
-    def _button_clicked(self, button):
-        role = self._action_buttons.buttonRole(button)
-
-        if role == QMessageBox.AcceptRole:
-            try:
-                self._on_sign_in(self._email.text(), self._password.text())
-                self.accept()
-            except AuthenticationError:
-                self._authentication_error.setVisible(True)
+    def _show_authentication_failed(self, error):
+        return self._authentication_error.setVisible(True)

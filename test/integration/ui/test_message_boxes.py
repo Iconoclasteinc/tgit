@@ -19,18 +19,16 @@
 from PyQt5.QtWidgets import QMessageBox
 from hamcrest import contains_string
 import pytest
-import sys
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import QMessageBoxDriver, window
 from test.drivers.about_dialog_driver import AboutDialogDriver
+from tgit import platforms
 from tgit.ui import AboutDialog
 from tgit.ui.message_boxes import MessageBoxes
 
-mac = sys.platform == "darwin"
-
-DISPLAY_DELAY = 200 if mac else 0
+DISPLAY_DELAY = 200 if platforms.mac else 0
 
 
 @pytest.yield_fixture()
