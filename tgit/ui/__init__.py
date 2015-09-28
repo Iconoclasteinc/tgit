@@ -55,7 +55,7 @@ from tgit.util import browser, async_task_runner as task_runner
 
 def ISNILookupDialogController(parent, album, identities):
     dialog = ISNILookupDialog(parent, identities)
-    dialog.accepted.connect(lambda: director.selectISNI(dialog.selectedIdentity, album))
+    dialog.accepted.connect(lambda: director.select_isni(dialog.selectedIdentity, album))
     dialog.open()
     return dialog
 
@@ -76,7 +76,7 @@ def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_d
     def lookup_isni():
         activity_dialog = make_activity_indicator_dialog()
         activity_dialog.show()
-        task_runner.runAsync(lambda: director.lookupISNI(name_registry, album.lead_performer)).andPutResultInto(
+        task_runner.runAsync(lambda: director.lookup_isni(name_registry, album.lead_performer)).andPutResultInto(
             queue).run()
 
         identities = poll_queue()
@@ -97,11 +97,11 @@ def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_d
 
     queue = Queue()
     page = make_album_edition_page(album, session, edit_performers, select_picture, **handlers)
-    page.metadata_changed.connect(lambda metadata: director.updateAlbum(album, **metadata))
-    page.remove_picture.connect(lambda: director.removeAlbumCover(album))
+    page.metadata_changed.connect(lambda metadata: director.update_album(album, **metadata))
+    page.remove_picture.connect(lambda: director.remove_album_cover(album))
     page.lookup_isni.connect(lookup_isni)
     page.assign_isni.connect(assign_isni)
-    page.clear_isni.connect(lambda: director.clearISNI(album))
+    page.clear_isni.connect(lambda: director.clear_isni(album))
     return page
 
 

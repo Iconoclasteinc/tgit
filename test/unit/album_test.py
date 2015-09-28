@@ -172,7 +172,7 @@ class AlbumTest(unittest.TestCase):
             build.track(track_title='Track 3')])
 
         first = album.removeTrack(0)
-        album.insertTrack(first, 1)
+        album.insert_track(first, 1)
 
         assert_that(album.tracks, contains(
             has_property('track_title', 'Track 2'),
@@ -181,11 +181,11 @@ class AlbumTest(unittest.TestCase):
 
     def testUsesFirstFrontCoverOrFirstImageAsMainCover(self):
         album = build.album()
-        assert_that(album.mainCover, is_(None))
+        assert_that(album.main_cover, is_(None))
         album.addImage('image/jepg', 'back cover image')
-        assert_that(album.mainCover, has_property('data', 'back cover image'))
-        album.addFrontCover('image/jpeg', 'front cover image')
-        assert_that(album.mainCover, has_property('data', 'front cover image'))
+        assert_that(album.main_cover, has_property('data', 'back cover image'))
+        album.add_front_cover('image/jpeg', 'front cover image')
+        assert_that(album.main_cover, has_property('data', 'front cover image'))
 
     def testHasInitiallyNoMetadataOrImages(self):
         album = Album()
@@ -221,7 +221,7 @@ class AlbumTest(unittest.TestCase):
 
         middle = build.track()
         listener.should_receive('trackAdded').with_args(middle, 1).once()
-        album.insertTrack(middle, 1)
+        album.insert_track(middle, 1)
 
     def testSignalsTrackRemovalToListeners(self):
         album = build.album(tracks=[build.track(), build.track()])

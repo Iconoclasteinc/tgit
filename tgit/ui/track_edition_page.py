@@ -86,7 +86,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             self.display_track(track)
 
     def _display_album(self, album):
-        self._display_album_cover(album.mainCover)
+        self._display_album_cover(album.main_cover)
         self._album_title.setText(album.release_name)
         self._album_lead_performer.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
         self._lead_performer.setEnabled(album.compilation is True)

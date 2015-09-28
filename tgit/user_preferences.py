@@ -24,7 +24,7 @@ class UserPreferences(metaclass=Observable):
     preferences_changed = signal(object)
 
     def __init__(self):
-        super().__setattr__('_data', {})
+        super().__setattr__("_data", {})
 
     def __getattr__(self, name):
         try:

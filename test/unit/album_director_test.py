@@ -169,7 +169,7 @@ def test_exports_album_as_csv_encoded_file(workspace):
 
 def test_changes_main_album_cover_to_specified_image_file():
     album = build.album()
-    album.addFrontCover(mime='image/gif', data='old cover')
+    album.add_front_cover(mime='image/gif', data='old cover')
 
     cover_file = resources.path('front-cover.jpg')
     director.change_cover_of(album)(cover_file)
@@ -225,7 +225,7 @@ def test_signs_user_out():
 class AlbumDirectorTest(unittest.TestCase):
     def testUpdatesAlbumMetadata(self):
         album = build.album()
-        director.updateAlbum(album,
+        director.update_album(album,
                              release_name='Title', compilation=True, lead_performer='Artist', isni='0000123456789',
                              guestPerformers=[('Guitar', 'Guitarist')], label_name='Label',
                              catalogNumber='XXX123456789', upc='123456789999', comments='Comments\n...',
@@ -250,14 +250,14 @@ class AlbumDirectorTest(unittest.TestCase):
 
     def testUpdatesTracksLeadPerformerWhenAlbumIsNotACompilation(self):
         album = build.album(tracks=[build.track(), build.track(), build.track()])
-        director.updateAlbum(album, compilation=False, lead_performer='Album Artist')
+        director.update_album(album, compilation=False, lead_performer='Album Artist')
 
         for track in album.tracks:
             assert_that(track.lead_performer, equal_to('Album Artist'), 'track artist')
 
     def testClearsAlbumImages(self):
         album = build.album(images=[build.image('image/jpeg', 'image data')])
-        director.removeAlbumCover(album)
+        director.remove_album_cover(album)
         assert_that(album.images, equal_to([]), 'images')
 
     def testReturnsListOfIdentitiesWhenISNIFoundInRegistry(self):
@@ -267,7 +267,7 @@ class AlbumDirectorTest(unittest.TestCase):
                     return '1', [('0000000115677274', 'Rebecca Ann Maloy')]
                 return '0', []
 
-        _, identities = director.lookupISNI(NameRegistry(), 'Rebecca Ann Maloy')
+        _, identities = director.lookup_isni(NameRegistry(), 'Rebecca Ann Maloy')
         assert_that(identities, has_item(('0000000115677274', 'Rebecca Ann Maloy')), 'isni')
 
     def testReturnsEmptyListWhenISNIIsNotFoundInRegistry(self):
@@ -275,14 +275,14 @@ class AlbumDirectorTest(unittest.TestCase):
             def search_by_keywords(self, *keywords):
                 return '0', []
 
-        _, identities = director.lookupISNI(NameRegistry(), 'Rebecca Ann Maloy')
+        _, identities = director.lookup_isni(NameRegistry(), 'Rebecca Ann Maloy')
         assert_that(identities, empty(), 'isni')
 
     def testUpdatesISNIFromSelectedIdentity(self):
         identity = '0000000115677274', ('_', '_', '_')
         album = build.album(compilation=False)
 
-        director.selectISNI(identity, album)
+        director.select_isni(identity, album)
         assert_that(album.isni, equal_to(identity[0]), 'isni')
 
     def testUpdatesLeadPerformerFromSelectedIdentity(self):
@@ -291,13 +291,13 @@ class AlbumDirectorTest(unittest.TestCase):
         track = build.track(lead_performer='artist')
         album = build.album(tracks=[track], compilation=False)
 
-        director.selectISNI(identity, album)
+        director.select_isni(identity, album)
         assert_that(album.lead_performer, equal_to(name), 'lead performer')
         assert_that(track.lead_performer, equal_to(name), 'lead performer')
 
     def testClearsLeadPerformerISNIFromAlbum(self):
         album = build.album(isni='0000123456789')
-        director.clearISNI(album)
+        director.clear_isni(album)
         assert_that(album.isni, none(), 'isni')
 
     def testAssignsISNIToLeadPerformerUsingTheAlbumTitle(self):

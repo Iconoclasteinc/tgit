@@ -88,8 +88,8 @@ def add_tracks(album, *filenames, from_catalog=tagging):
         except Exception:
             pass
 
-    for filename in filenames:
-        add_track(filename)
+    for current_filename in filenames:
+        add_track(current_filename)
 
 
 def add_tracks_to(album, from_catalog=tagging):
@@ -104,25 +104,25 @@ def update_track(track):
     return update_track_metadata
 
 
-def updateAlbum(album, **metadata):
+def update_album(album, **metadata):
     for key, value in metadata.items():
         setattr(album, key, value)
 
-    if not metadata.get('compilation'):
+    if not metadata.get("compilation"):
         for track in album.tracks:
-            track.lead_performer = metadata.get('lead_performer')
+            track.lead_performer = metadata.get("lead_performer")
 
 
 def change_cover_of(album):
     def change_album_cover(filename):
         album.removeImages()
         mime, data = fs.guess_mime_type(filename), fs.read(filename)
-        album.addFrontCover(mime, data)
+        album.add_front_cover(mime, data)
 
     return change_album_cover
 
 
-def removeAlbumCover(album):
+def remove_album_cover(album):
     album.removeImages()
 
 
@@ -139,34 +139,34 @@ def export_as_csv(album, destination):
         CsvFormat().write(album, out)
 
 
-def lookupISNI(registry, leadPerformer):
-    lastSpaceIndex = leadPerformer.rfind(' ')
-    lastName = leadPerformer[lastSpaceIndex + 1:]
-    restOfName = leadPerformer[:lastSpaceIndex]
-    firstName = restOfName.split(' ')
+def lookup_isni(registry, lead_performer):
+    last_space_index = lead_performer.rfind(" ")
+    last_name = lead_performer[last_space_index + 1:]
+    rest_of_name = lead_performer[:last_space_index]
+    first_name = rest_of_name.split(" ")
 
     try:
-        return registry.search_by_keywords(lastName, *firstName)
+        return registry.search_by_keywords(last_name, *first_name)
     except requests.exceptions.ConnectionError as e:
         return e
 
 
-def selectISNI(identity, album):
-    isni, personalInformations = identity
-    leadPerformer, _, _ = personalInformations
-    metadata = dict(lead_performer=leadPerformer, isni=isni, compilation=album.compilation)
-    updateAlbum(album, **metadata)
+def select_isni(identity, album):
+    isni, personal_informations = identity
+    lead_performer, _, _ = personal_informations
+    metadata = dict(lead_performer=lead_performer, isni=isni, compilation=album.compilation)
+    update_album(album, **metadata)
 
 
-def clearISNI(album):
+def clear_isni(album):
     metadata = dict(isni=None)
-    updateAlbum(album, **metadata)
+    update_album(album, **metadata)
 
 
 def assign_isni(registry, album):
-    lastSpaceIndex = album.lead_performer.rfind(' ')
-    surname = album.lead_performer[lastSpaceIndex + 1:]
-    forename = album.lead_performer[:lastSpaceIndex]
+    last_space_index = album.lead_performer.rfind(" ")
+    surname = album.lead_performer[last_space_index + 1:]
+    forename = album.lead_performer[:last_space_index]
 
     return registry.assign(forename, surname, [album.release_name])
 

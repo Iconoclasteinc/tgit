@@ -80,30 +80,30 @@ class Album(metaclass=tag.Taggable):
     def images(self):
         return self.metadata.images
 
-    def imagesOfType(self, type_):
+    def images_of_type(self, type_):
         return self.metadata.imagesOfType(type_)
 
     @property
-    def mainCover(self):
+    def main_cover(self):
         if not self.images:
             return None
 
-        if self.frontCovers:
-            return self.frontCovers[0]
+        if self.front_covers:
+            return self.front_covers[0]
 
         return self.images[0]
 
     @property
-    def frontCovers(self):
-        return self.imagesOfType(Image.FRONT_COVER)
+    def front_covers(self):
+        return self.images_of_type(Image.FRONT_COVER)
 
-    def add_image(self, mime, data, type_=Image.OTHER, desc=''):
+    def add_image(self, mime, data, type_=Image.OTHER, desc=""):
         self.metadata.addImage(mime, data, type_, desc)
         self.metadataChanged()
 
     addImage = add_image
 
-    def addFrontCover(self, mime, data, desc='Front Cover'):
+    def add_front_cover(self, mime, data, desc="Front Cover"):
         self.addImage(mime, data, Image.FRONT_COVER, desc)
 
     def remove_images(self):
@@ -119,14 +119,14 @@ class Album(metaclass=tag.Taggable):
         return len(self) == 0
 
     def add_track(self, track):
-        self.insert_track(len(self.tracks), track)
+        self._insert_track(len(self.tracks), track)
 
     addTrack = add_track
 
-    def insertTrack(self, track, position):
-        self.insert_track(position, track)
+    def insert_track(self, track, position):
+        self._insert_track(position, track)
 
-    def insert_track(self, position, track):
+    def _insert_track(self, position, track):
         track.album = self
         # todo move to Track
         if not self.compilation:

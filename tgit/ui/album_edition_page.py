@@ -133,9 +133,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._update_isni_lookup_button()
 
     def display(self, album):
-        if album.mainCover is not self._picture or album.mainCover is None:
-            self.front_cover.setPixmap(image.scale(album.mainCover, *self.FRONT_COVER_SIZE))
-            self._picture = album.mainCover
+        if album.main_cover is not self._picture or album.main_cover is None:
+            self.front_cover.setPixmap(image.scale(album.main_cover, *self.FRONT_COVER_SIZE))
+            self._picture = album.main_cover
         self.release_name.setText(album.release_name)
         self.compilation.setChecked(album.compilation is True)
         self._display_lead_performer(album)

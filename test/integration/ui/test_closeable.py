@@ -9,7 +9,7 @@ from tgit.ui.closeable import Closeable
 
 
 @pytest.fixture()
-def widget_driver(qt, prober, automaton):
+def driver(qt, prober, automaton):
     return WidgetDriver(window(QWidget), prober, automaton)
 
 
