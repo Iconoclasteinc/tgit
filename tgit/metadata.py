@@ -50,11 +50,8 @@ class Metadata:
         self._images = []
         self._tags = dict(dict_ or {}, **meta)
 
-    def __getattribute__(self, name):
-        try:
-            return super().__getattribute__(name)
-        except AttributeError:
-            return self[name]
+    def __getattr__(self, name):
+        return self[name]
 
     def __getitem__(self, key):
         return self._tags.get(key, None)
