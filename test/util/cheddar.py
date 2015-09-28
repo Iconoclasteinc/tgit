@@ -26,6 +26,8 @@ import requests
 
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
 token_queue = iter([])
+allowed_bearer_token = ""
+identities = {}
 
 _app = Flask(__name__)
 _name_server_uri = ""
@@ -42,11 +44,13 @@ def host():
 def _check_auth(username, password):
     return username == "test@example.com" and password == "passw0rd"
 
+
 def _please_authenticate():
     return Response(
         "Could not verify your access level for that URL.\n"
         "You have to login with proper credentials", 401,
         {"WWW-Authenticate": "Basic realm=\"Login Required\""})
+
 
 def _requires_auth(f):
     @wraps(f)
@@ -58,8 +62,44 @@ def _requires_auth(f):
     return decorated
 
 
-@_app.route("/isni/lookup")
+def _check_bearer(auth):
+    if not auth.startswith("Bearer"):
+        return False
+
+    if auth.split(" ")[-1] != allowed_bearer_token:
+        return False
+
+    return True
+
+
+def _requires_bearer_token(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not ("Authorization" in request.headers):
+            return _please_authenticate()
+
+        auth = request.headers["Authorization"]
+        if not _check_bearer(auth):
+            return _please_authenticate()
+
+        return f(*args, **kwargs)
+    return decorated
+
+
+@_app.route("/api/identities")
+@_requires_bearer_token
 def _lookup():
+    phrase = request.args.get("q")
+
+    identities_to_return = []
+    if phrase in identities:
+        identities_to_return.append(identities[phrase])
+
+    return json.dumps(identities_to_return)
+
+
+@_app.route("/isni/lookup")
+def _lookup_deprecated():
     response = requests.get(_name_server_uri + "/sru/DB=1.2?" + request.query_string.decode(), verify=False)
     return response.content
 

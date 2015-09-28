@@ -48,3 +48,14 @@ class Cheddar:
         deserialized["email"] = email
 
         return deserialized
+
+    def get_identities(self, phrase, token):
+        headers = {
+            "Authorization": "Bearer {}".format(token)
+        }
+
+        response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase), headers=headers)
+        if response.status_code == 401:
+            raise AuthenticationError()
+
+        return json.loads(response.content.decode("utf-8"))

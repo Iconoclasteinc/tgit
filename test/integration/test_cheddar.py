@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hamcrest import assert_that
+from hamcrest import assert_that, empty, contains, has_entries
 import pytest
 
 from tgit.authentication_error import AuthenticationError
@@ -29,3 +29,40 @@ def test_authenticates_by_returning_the_token(cheddar, platform):
 def test_raises_authentication_error(cheddar):
     with pytest.raises(AuthenticationError):
         cheddar.authenticate("test@example.com", "wrong_password")
+
+
+def test_returns_unauthorized_when_sending_invalid_token(cheddar, platform):
+    platform.allowed_bearer_token = "token"
+    with pytest.raises(AuthenticationError):
+        cheddar.get_identities("reb an mal", "...")
+
+
+def test_returns_empty_array_of_identities(cheddar, platform):
+    platform.allowed_bearer_token = "token"
+    identities = cheddar.get_identities("reb an mal", "token")
+    assert_that(identities, empty())
+
+
+def test_returns_array_of_identities(cheddar, platform):
+    platform.allowed_bearer_token = "token"
+    platform.identities["reb an mal"] = {
+        "id": "0000000115677274",
+        "first_name": "Rebecca Ann",
+        "last_name": "Maloy",
+        "date_of_birth": "1980",
+        "date_of_death": "",
+        "works": [
+            {"title": "Music and meaning in old Hispanic lenten chants psalmi, threni and the Easter vigil canticles"}
+        ]
+    }
+
+    identities = cheddar.get_identities("reb an mal", "token")
+    assert_that(identities, contains(
+        has_entries(id="0000000115677274",
+                    first_name="Rebecca Ann",
+                    last_name="Maloy",
+                    date_of_birth="1980",
+                    date_of_death="",
+                    works=contains(has_entries(
+                        title="Music and meaning in old Hispanic lenten chants psalmi, "
+                              "threni and the Easter vigil canticles")))))
