@@ -7,7 +7,7 @@ from test.util.builders import make_anonymous_user, make_registered_user, make_a
 from tgit.auth import Permission
 
 
-class SessionSubscriber:
+class SessionChangedSubscriber:
     user = None
 
     def user_changed(self, user):
@@ -34,7 +34,7 @@ def test_session_signals_when_user_signs_in():
     session = make_anonymous_session()
     assert_that(session.current_user, has_property("registered", is_(False)))
 
-    subscriber = SessionSubscriber()
+    subscriber = SessionChangedSubscriber()
     session.user_signed_in.subscribe(subscriber.user_changed)
 
     session.login_as("test@example.com", "api-key")
@@ -45,7 +45,7 @@ def test_session_signals_when_user_signs_out():
     session = make_registered_session("test@example.com", "api-key")
     assert_that(session.current_user, has_property("registered", is_(True)))
 
-    subscriber = SessionSubscriber()
+    subscriber = SessionChangedSubscriber()
     session.user_signed_out.subscribe(subscriber.user_changed)
 
     session.logout()
