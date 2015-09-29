@@ -22,6 +22,12 @@ from PyQt5.QtGui import QMovie
 from PyQt5.QtWidgets import QDialog, QLabel, QHBoxLayout, QLayout, QFrame
 
 
+def make_activity_indicator_dialog(parent):
+    dialog = ActivityIndicatorDialog(parent)
+    dialog.open()
+    return dialog
+
+
 class ActivityIndicatorDialog(QDialog):
     def __init__(self, parent):
         super().__init__(parent)

@@ -27,7 +27,7 @@ from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
 from tgit.ui.startup_screen import StartupScreen
-from tgit.ui.isni_lookup_dialog import ISNILookupDialog
+from tgit.ui.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.track_list_page import make_track_list_page
@@ -47,35 +47,6 @@ from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.user_preferences_dialog import UserPreferencesDialog
 from tgit.ui.welcome_page import WelcomePage
 from tgit.util import browser
-
-
-def ISNILookupDialogController(parent, identities, **handlers):
-    dialog = ISNILookupDialog(parent, identities)
-    for name, handler in handlers.items():
-        getattr(dialog, name)(handler)
-
-    dialog.open()
-    return dialog
-
-
-def ActivityIndicatorDialogController(parent):
-    dialog = ActivityIndicatorDialog(parent)
-    dialog.open()
-    return dialog
-
-
-def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_dialog, make_activity_indicator_dialog,
-                               show_isni_assignation_failed, edit_performers, select_picture, on_isni_lookup,
-                               on_remove_picture, on_clear_isni, on_metadata_changed, on_isni_assign, **handlers):
-
-    page = make_album_edition_page(album, session, edit_performers, select_picture, make_lookup_isni_dialog,
-                                   show_isni_assignation_failed, **handlers)
-    page.on_isni_lookup(on_isni_lookup)
-    page.on_isni_assign(on_isni_assign)
-    page.on_remove_picture(on_remove_picture)
-    page.on_clear_isni(on_clear_isni)
-    page.on_metadata_changed(on_metadata_changed)
-    return page
 
 
 def UserPreferencesDialogController(notify_restart_required, preferences, parent):
@@ -128,29 +99,24 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                                     on_add_tracks=director.add_tracks_to(album))
 
     def create_album_page(album):
-        return AlbumEditionPageController(session,
-                                          album,
-                                          name_registry,
-                                          show_isni_lookup_dialog,
-                                          show_activity_indicator_dialog,
-                                          messages.isni_assignation_failed,
-                                          edit_performers=show_performers_dialog(album),
-                                          select_picture=application_dialogs.select_cover,
-                                          on_select_picture=director.change_cover_of(album),
-                                          on_isni_lookup=director.lookup_isni_using(name_registry),
-                                          on_isni_assign=director.assign_isni_using(name_registry),
-                                          on_remove_picture=director.remove_album_cover_from(album),
-                                          on_clear_isni=director.clear_isni_from(album),
-                                          on_metadata_changed=director.update_album_from(album))
+        return make_album_edition_page(album,
+                                       session,
+                                       select_identity=show_isni_lookup_dialog,
+                                       show_isni_assignation_failed=messages.isni_assignation_failed,
+                                       edit_performers=show_performers_dialog(album),
+                                       select_picture=application_dialogs.select_cover,
+                                       on_select_picture=director.change_cover_of(album),
+                                       on_isni_lookup=director.lookup_isni_using(name_registry),
+                                       on_isni_assign=director.assign_isni_using(name_registry),
+                                       on_remove_picture=director.remove_album_cover_from(album),
+                                       on_clear_isni=director.clear_isni_from(album),
+                                       on_metadata_changed=director.update_album_from(album))
 
     def create_track_page_for(album):
         return lambda track: make_track_edition_page(album, track, on_track_changed=director.update_track(track))
 
     def show_isni_lookup_dialog(identities):
-        return ISNILookupDialogController(window, identities, on_isni_selected=director.select_isni_in(portfolio[0]))
-
-    def show_activity_indicator_dialog():
-        return ActivityIndicatorDialogController(window)
+        return make_isni_lookup_dialog(window, identities, on_isni_selected=director.select_isni_in(portfolio[0]))
 
     def create_album_screen(album):
         return make_album_screen(album, create_track_list_page, create_album_page, create_track_page_for(album))

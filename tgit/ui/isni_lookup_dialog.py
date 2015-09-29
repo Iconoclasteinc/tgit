@@ -23,6 +23,15 @@ from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout, QLabel, QRad
 import requests
 
 
+def make_isni_lookup_dialog(parent, identities, **handlers):
+    dialog = ISNILookupDialog(parent, identities)
+    for name, handler in handlers.items():
+        getattr(dialog, name)(handler)
+
+    dialog.open()
+    return dialog
+
+
 class ISNILookupDialog(QDialog):
     def __init__(self, parent, identities):
         super().__init__(parent)
