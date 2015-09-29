@@ -272,12 +272,12 @@ def test_updates_lead_performer_from_selected_identity():
 
 def test_updates_album_metadata():
     album = build.album()
-    director.update_album(album,
-                          release_name="Title", compilation=True, lead_performer="Artist", isni="0000123456789",
-                          guestPerformers=[("Guitar", "Guitarist")], label_name="Label",
-                          catalogNumber="XXX123456789", upc="123456789999", comments="Comments\n...",
-                          releaseTime="2009-01-01", recording_time="2008-09-15", recordingStudios="Studios",
-                          producer="Producer", mixer="Engineer", primary_style="Style")
+    director.update_album_from(album)(release_name="Title", compilation=True, lead_performer="Artist",
+                                      isni="0000123456789", guestPerformers=[("Guitar", "Guitarist")],
+                                      label_name="Label", catalogNumber="XXX123456789", upc="123456789999",
+                                      comments="Comments\n...", releaseTime="2009-01-01", recording_time="2008-09-15",
+                                      recordingStudios="Studios", producer="Producer", mixer="Engineer",
+                                      primary_style="Style")
 
     assert_that(album.release_name, equal_to("Title"), "release name")
     assert_that(album.compilation, is_(True), "compilation")
@@ -298,7 +298,7 @@ def test_updates_album_metadata():
 
 def test_updates_tracks_lead_performer_when_album_is_not_a_compilation():
     album = build.album(tracks=[build.track(), build.track(), build.track()])
-    director.update_album(album, compilation=False, lead_performer="Album Artist")
+    director.update_album_from(album)(compilation=False, lead_performer="Album Artist")
 
     for track in album.tracks:
         assert_that(track.lead_performer, equal_to("Album Artist"), "track artist")
@@ -306,13 +306,13 @@ def test_updates_tracks_lead_performer_when_album_is_not_a_compilation():
 
 def test_clears_album_images():
     album = build.album(images=[build.image("image/jpeg", "image data")])
-    director.remove_album_cover(album)
+    director.remove_album_cover_from(album)()
     assert_that(album.images, equal_to([]), "images")
 
 
 def test_clears_lead_performer_isni_from_album():
     album = build.album(isni="0000123456789")
-    director.clear_isni(album)
+    director.clear_isni_from(album)()
     assert_that(album.isni, none(), "isni")
 
 

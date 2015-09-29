@@ -3,11 +3,12 @@ import timeit
 import types
 
 from PyQt5.QtCore import QByteArray
-from hamcrest import has_entries, assert_that, less_than, instance_of
+
+from hamcrest import has_entries, assert_that, less_than, instance_of, contains
 import pytest
 
 from cute.matchers import named
-from cute.probes import ValueMatcherProbe
+from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers import AlbumEditionPageDriver
 from test.integration.ui import show_widget
@@ -183,17 +184,15 @@ def test_efficiently_displays_image_cover_when_it_does_not_change(driver):
 
 
 def test_signals_when_remove_picture_button_clicked(driver):
-    page = show_track_page(build.album())
-
     remove_picture_signal = ValueMatcherProbe("remove picture")
-    page.remove_picture.connect(remove_picture_signal.received)
+    _ = show_track_page(build.album(), on_remove_picture=remove_picture_signal.received)
 
     driver.removePicture()
     driver.check(remove_picture_signal)
 
 
 def test_signals_when_lookup_isni_button_clicked(driver):
-    lookup_isni_signal = ValueMatcherProbe("lookup ISNI", instance_of(types.FunctionType))
+    lookup_isni_signal = MultiValueMatcherProbe("lookup ISNI", contains("performer", instance_of(types.FunctionType)))
     _ = show_track_page(make_album(lead_performer="performer"), make_registered_session(),
                         on_isni_lookup=lookup_isni_signal.received)
 
@@ -202,10 +201,8 @@ def test_signals_when_lookup_isni_button_clicked(driver):
 
 
 def test_signals_when_clear_isni_button_clicked(driver):
-    page = show_track_page(build.album(isni="0000123456789"))
-
     clear_isni_signal = ValueMatcherProbe("clear ISNI")
-    page.clear_isni.connect(clear_isni_signal.received)
+    _ = show_track_page(build.album(isni="0000123456789"), on_clear_isni=clear_isni_signal.received)
 
     driver.clear_isni()
     driver.check(clear_isni_signal)
@@ -222,10 +219,8 @@ def test_signals_when_assign_isni_button_clicked(driver):
 
 
 def test_signals_when_album_metadata_edited(driver):
-    page = show_track_page(build.album())
-
     metadata_changed_signal = ValueMatcherProbe("metadata changed")
-    page.metadata_changed.connect(metadata_changed_signal.received)
+    page = show_track_page(build.album(), on_metadata_changed=metadata_changed_signal.received)
 
     metadata_changed_signal.expect(has_entries(release_name="Title"))
     driver.changeReleaseName("Title")

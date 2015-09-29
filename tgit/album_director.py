@@ -21,8 +21,8 @@ from queue import Queue
 import threading
 
 from PyQt5.QtCore import QEventLoop
-from PyQt5.QtWidgets import QApplication
 
+from PyQt5.QtWidgets import QApplication
 import requests
 
 from tgit import local_storage
@@ -109,13 +109,15 @@ def update_track(track):
     return update_track_metadata
 
 
-def update_album(album, **metadata):
-    for key, value in metadata.items():
-        setattr(album, key, value)
+def update_album_from(album):
+    def update_album(**metadata):
+        for key, value in metadata.items():
+            setattr(album, key, value)
 
-    if not metadata.get("compilation"):
-        for track in album.tracks:
-            track.lead_performer = metadata.get("lead_performer")
+        if not metadata.get("compilation"):
+            for track in album.tracks:
+                track.lead_performer = metadata.get("lead_performer")
+    return update_album
 
 
 def change_cover_of(album):
@@ -127,8 +129,10 @@ def change_cover_of(album):
     return change_album_cover
 
 
-def remove_album_cover(album):
-    album.removeImages()
+def remove_album_cover_from(album):
+    def remove_album_cover():
+        album.removeImages()
+    return remove_album_cover
 
 
 def move_track_of(album):
@@ -171,13 +175,15 @@ def select_isni_in(album):
         isni, personal_informations = identity
         lead_performer, _, _ = personal_informations
         metadata = dict(lead_performer=lead_performer, isni=isni, compilation=album.compilation)
-        update_album(album, **metadata)
+        update_album_from(album)(**metadata)
     return select_isni
 
 
-def clear_isni(album):
-    metadata = dict(isni=None)
-    update_album(album, **metadata)
+def clear_isni_from(album):
+    def clear_isni():
+        metadata = dict(isni=None)
+        update_album_from(album)(**metadata)
+    return clear_isni
 
 
 def assign_isni(registry, album):

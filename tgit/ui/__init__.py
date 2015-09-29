@@ -69,7 +69,7 @@ def ActivityIndicatorDialogController(parent):
 
 def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_dialog, make_activity_indicator_dialog,
                                show_isni_assignation_failed, edit_performers, select_picture, on_isni_lookup,
-                               **handlers):
+                               on_remove_picture, on_clear_isni, on_metadata_changed, **handlers):
     def poll_queue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -88,11 +88,12 @@ def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_d
 
     queue = Queue()
     page = make_album_edition_page(album, session, edit_performers, select_picture, make_lookup_isni_dialog, **handlers)
-    page.on_isni_lookup(lambda on_lookup_success: on_isni_lookup(album.lead_performer, on_lookup_success))
-    page.metadata_changed.connect(lambda metadata: director.update_album(album, **metadata))
-    page.remove_picture.connect(lambda: director.remove_album_cover(album))
+    page.on_isni_lookup(on_isni_lookup)
+    page.on_remove_picture(on_remove_picture)
+    page.on_clear_isni(on_clear_isni)
+    page.on_metadata_changed(on_metadata_changed)
+
     page.assign_isni.connect(assign_isni)
-    page.clear_isni.connect(lambda: director.clear_isni(album))
     return page
 
 
@@ -155,7 +156,10 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                                           edit_performers=show_performers_dialog(album),
                                           select_picture=application_dialogs.select_cover,
                                           on_select_picture=director.change_cover_of(album),
-                                          on_isni_lookup=director.lookup_isni_using(name_registry))
+                                          on_isni_lookup=director.lookup_isni_using(name_registry),
+                                          on_remove_picture=director.remove_album_cover_from(album),
+                                          on_clear_isni=director.clear_isni_from(album),
+                                          on_metadata_changed=director.update_album_from(album))
 
     def create_track_page_for(album):
         return lambda track: make_track_edition_page(album, track, on_track_changed=director.update_track(track))

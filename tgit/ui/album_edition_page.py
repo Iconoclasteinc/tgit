@@ -32,7 +32,8 @@ ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
 def make_album_edition_page(album, session, edit_performers, select_picture, select_identity, **handlers):
-    page = AlbumEditionPage(select_picture=select_picture, edit_performers=edit_performers, select_identity=select_identity)
+    page = AlbumEditionPage(select_picture=select_picture, edit_performers=edit_performers,
+                            select_identity=select_identity)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -51,8 +52,6 @@ def make_album_edition_page(album, session, edit_performers, select_picture, sel
 @Closeable
 class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
-    remove_picture = pyqtSignal()
-    clear_isni = pyqtSignal()
     assign_isni = pyqtSignal()
     metadata_changed = pyqtSignal(dict)
 
@@ -72,47 +71,14 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._load(":/ui/album_page.ui")
         self._disable_mac_focus_frame()
 
-        # picture box
         self.front_cover.setFixedSize(*self.FRONT_COVER_SIZE)
-        self.remove_picture_button.clicked.connect(lambda pressed: self.remove_picture.emit())
+        self.genre.addItems(sorted(GENRES))
 
-        # date box
-        self.release_time.dateChanged.connect(lambda: self.metadata_changed.emit(self.metadata("release_time")))
-        self.digital_release_time.dateChanged.connect(
-            lambda: self.metadata_changed.emit(self.metadata("digital_release_time")))
-        self.original_release_time.dateChanged.connect(
-            lambda: self.metadata_changed.emit(self.metadata("original_release_time")))
-        self.recording_time.dateChanged.connect(lambda: self.metadata_changed.emit(self.metadata("recording_time")))
-
-        # album box
-        self.release_name.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("release_name")))
         self.assign_isni_button.clicked.connect(lambda: self.assign_isni.emit())
-        self.compilation.clicked.connect(lambda: self.metadata_changed.emit(self.metadata("compilation")))
         self.compilation.clicked.connect(self._update_isni_lookup_button)
-        self.lead_performer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("lead_performer")))
         self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
-        self.clear_isni_button.clicked.connect(lambda: self.clear_isni.emit())
         self.clear_isni_button.clicked.connect(lambda: self.release_time.calendarWidget().show())
         self.add_guest_performers_button.clicked.connect(lambda: self._edit_performers(self._update_guest_performers))
-        self.guest_performers.textChanged.connect(lambda: self.metadata_changed.emit(self.metadata("guest_performers")))
-
-        # record
-        self.label_name.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("label_name")))
-        self.catalog_number.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("catalog_number")))
-        self.barcode.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("upc")))
-        self.media_type.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("media_type")))
-        self.release_type.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("release_type")))
-        self.comments.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("comments")))
-
-        # recording
-        self.recording_studios.editingFinished.connect(
-            lambda: self.metadata_changed.emit(self.metadata("recording_studios")))
-        self.producer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("producer")))
-        self.mixer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("mixer")))
-        self.genre.addItems(sorted(GENRES))
-        self.genre.activated.connect(lambda: self.metadata_changed.emit(self.metadata("primary_style")))
-        self.genre.lineEdit().textEdited.connect(
-            lambda: self.metadata_changed.emit(self.metadata("primary_style")))
 
     def on_select_picture(self, on_select_picture):
         self.select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
@@ -120,13 +86,40 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def on_isni_lookup(self, on_isni_lookup):
         def start_waiting():
             QApplication.setOverrideCursor(Qt.WaitCursor)
-            on_isni_lookup(on_lookup_success)
+            on_isni_lookup(self.lead_performer.text(), on_lookup_success)
 
         def on_lookup_success(identities):
             self._select_identity(identities)
             QApplication.restoreOverrideCursor()
 
         self.lookup_isni_button.clicked.connect(lambda _: start_waiting())
+
+    def on_remove_picture(self, on_remove_picture):
+        self.remove_picture_button.clicked.connect(lambda _: on_remove_picture())
+
+    def on_clear_isni(self, on_clear_isni):
+        self.clear_isni_button.clicked.connect(lambda _: on_clear_isni())
+
+    def on_metadata_changed(self, handler):
+        self.release_time.dateChanged.connect(lambda: handler(self.metadata("release_time")))
+        self.digital_release_time.dateChanged.connect(lambda: handler(self.metadata("digital_release_time")))
+        self.original_release_time.dateChanged.connect(lambda: handler(self.metadata("original_release_time")))
+        self.recording_time.dateChanged.connect(lambda: handler(self.metadata("recording_time")))
+        self.release_name.editingFinished.connect(lambda: handler(self.metadata("release_name")))
+        self.compilation.clicked.connect(lambda: handler(self.metadata("compilation")))
+        self.lead_performer.editingFinished.connect(lambda: handler(self.metadata("lead_performer")))
+        self.guest_performers.textChanged.connect(lambda: handler(self.metadata("guest_performers")))
+        self.label_name.editingFinished.connect(lambda: handler(self.metadata("label_name")))
+        self.catalog_number.editingFinished.connect(lambda: handler(self.metadata("catalog_number")))
+        self.barcode.editingFinished.connect(lambda: handler(self.metadata("upc")))
+        self.media_type.editingFinished.connect(lambda: handler(self.metadata("media_type")))
+        self.release_type.editingFinished.connect(lambda: handler(self.metadata("release_type")))
+        self.comments.editingFinished.connect(lambda: handler(self.metadata("comments")))
+        self.recording_studios.editingFinished.connect(lambda: handler(self.metadata("recording_studios")))
+        self.producer.editingFinished.connect(lambda: handler(self.metadata("producer")))
+        self.mixer.editingFinished.connect(lambda: handler(self.metadata("mixer")))
+        self.genre.activated.connect(lambda: handler(self.metadata("primary_style")))
+        self.genre.lineEdit().textEdited.connect(lambda: handler(self.metadata("primary_style")))
 
     def _update_guest_performers(self, performers):
         self.guest_performers.setText(formatting.toPeopleList(performers))
