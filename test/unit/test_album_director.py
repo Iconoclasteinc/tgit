@@ -223,7 +223,8 @@ def test_signs_user_out():
 
 def test_returns_list_of_identities_when_isni_found_in_registry():
     class NameRegistry:
-        def search_by_keywords(self, *keywords):
+        @staticmethod
+        def search_by_keywords(*keywords):
             if keywords[0] == "Maloy" and keywords[1] == "Rebecca" and keywords[2] == "Ann":
                 return "1", [("0000000115677274", "Rebecca Ann Maloy")]
             return "0", []
@@ -239,7 +240,8 @@ def test_returns_list_of_identities_when_isni_found_in_registry():
 
 def test_returns_empty_list_when_isni_is_not_found_in_registry():
     class NameRegistry:
-        def search_by_keywords(self, *keywords):
+        @staticmethod
+        def search_by_keywords(*keywords):
             return "0", []
 
     def success_callback(response):
@@ -318,10 +320,16 @@ def test_clears_lead_performer_isni_from_album():
 
 def test_assigns_isni_to_lead_performer_using_the_album_title():
     class NameRegistry:
-        def assign(self, forename, surname, title_of_works):
+        @staticmethod
+        def assign(forename, surname, title_of_works):
             if forename == "Paul" and surname == "McCartney" and title_of_works[0] == "Memory Almost Full":
                 return "0000123456789"
             return None
 
-    album = build.album(lead_performer="Paul McCartney", release_name="Memory Almost Full")
-    assert_that(director.assign_isni(NameRegistry(), album), equal_to("0000123456789"), "isni assigned")
+    def success_callback(response):
+        nonlocal isni
+        isni = response
+
+    isni = None
+    director.assign_isni_using(NameRegistry())("Paul McCartney", "Memory Almost Full", success_callback)
+    assert_that(isni, equal_to("0000123456789"), "isni assigned")

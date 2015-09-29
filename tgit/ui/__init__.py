@@ -18,13 +18,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 import functools as func
-from queue import Queue
 
-from PyQt5.QtCore import QEventLoop, QLocale
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QLocale
 
 from tgit import album_director as director
-from tgit.isni.name_registry import NameRegistry
 from tgit.ui import resources
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
@@ -49,7 +46,7 @@ from tgit.ui.track_edition_page import make_track_edition_page
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.user_preferences_dialog import UserPreferencesDialog
 from tgit.ui.welcome_page import WelcomePage
-from tgit.util import browser, async_task_runner as task_runner
+from tgit.util import browser
 
 
 def ISNILookupDialogController(parent, identities, **handlers):
@@ -69,31 +66,15 @@ def ActivityIndicatorDialogController(parent):
 
 def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_dialog, make_activity_indicator_dialog,
                                show_isni_assignation_failed, edit_performers, select_picture, on_isni_lookup,
-                               on_remove_picture, on_clear_isni, on_metadata_changed, **handlers):
-    def poll_queue():
-        while queue.empty():
-            QApplication.processEvents(QEventLoop.AllEvents, 100)
-        return queue.get(True)
+                               on_remove_picture, on_clear_isni, on_metadata_changed, on_isni_assign, **handlers):
 
-    def assign_isni():
-        activity_dialog = make_activity_indicator_dialog()
-        activity_dialog.show()
-        task_runner.runAsync(lambda: director.assign_isni(name_registry, album)).andPutResultInto(queue).run()
-        code, payload = poll_queue()
-        activity_dialog.close()
-        if code == NameRegistry.Codes.SUCCESS:
-            album.isni = payload
-        else:
-            show_isni_assignation_failed(payload)
-
-    queue = Queue()
-    page = make_album_edition_page(album, session, edit_performers, select_picture, make_lookup_isni_dialog, **handlers)
+    page = make_album_edition_page(album, session, edit_performers, select_picture, make_lookup_isni_dialog,
+                                   show_isni_assignation_failed, **handlers)
     page.on_isni_lookup(on_isni_lookup)
+    page.on_isni_assign(on_isni_assign)
     page.on_remove_picture(on_remove_picture)
     page.on_clear_isni(on_clear_isni)
     page.on_metadata_changed(on_metadata_changed)
-
-    page.assign_isni.connect(assign_isni)
     return page
 
 
@@ -157,6 +138,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                                           select_picture=application_dialogs.select_cover,
                                           on_select_picture=director.change_cover_of(album),
                                           on_isni_lookup=director.lookup_isni_using(name_registry),
+                                          on_isni_assign=director.assign_isni_using(name_registry),
                                           on_remove_picture=director.remove_album_cover_from(album),
                                           on_clear_isni=director.clear_isni_from(album),
                                           on_metadata_changed=director.update_album_from(album))

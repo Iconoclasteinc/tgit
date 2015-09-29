@@ -59,6 +59,7 @@ def _requires_auth(f):
         if not auth or not _check_auth(auth.username, auth.password):
             return _please_authenticate()
         return f(*args, **kwargs)
+
     return decorated
 
 
@@ -83,6 +84,7 @@ def _requires_bearer_token(f):
             return _please_authenticate()
 
         return f(*args, **kwargs)
+
     return decorated
 
 
@@ -108,6 +110,8 @@ def _lookup_deprecated():
 def _assign():
     headers = {"content-type": "application/atom+xml"}
     response = requests.post(_name_server_uri + "/ATOM/isni", data=request.data.decode(), headers=headers, verify=False)
+    # response = requests.post("https://isni-m-acc.oclc.nl/ATOM/isni", data=request.data.decode(), headers=headers,
+    #                          verify=False)
     return response.content
 
 

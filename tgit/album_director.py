@@ -25,6 +25,7 @@ from PyQt5.QtCore import QEventLoop
 from PyQt5.QtWidgets import QApplication
 import requests
 
+from isni.name_registry import NameRegistry
 from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
@@ -186,12 +187,25 @@ def clear_isni_from(album):
     return clear_isni
 
 
-def assign_isni(registry, album):
-    last_space_index = album.lead_performer.rfind(" ")
-    surname = album.lead_performer[last_space_index + 1:]
-    forename = album.lead_performer[:last_space_index]
+def assign_isni_using(registry):
+    def assign_isni(lead_performer, release_name, on_successful_lookup):
+        last_space_index = lead_performer.rfind(" ")
+        surname = lead_performer[last_space_index + 1:]
+        forename = lead_performer[:last_space_index]
 
-    return registry.assign(forename, surname, [album.release_name])
+        def poll_queue():
+            while queue.empty():
+                QApplication.processEvents(QEventLoop.AllEvents, 100)
+            return queue.get(True)
+
+        queue = Queue()
+
+        try:
+            threading.Thread(target=lambda: queue.put(registry.assign(forename, surname, [release_name]))).start()
+            on_successful_lookup(poll_queue())
+        except requests.exceptions.ConnectionError as e:
+            return on_successful_lookup((NameRegistry.Codes.ERROR, str(e)))
+    return assign_isni
 
 
 def sign_in_using(authenticate, session):
