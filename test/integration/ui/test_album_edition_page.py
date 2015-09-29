@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import timeit
+import types
 
 from PyQt5.QtCore import QByteArray
-from hamcrest import has_entries, assert_that, less_than
+from hamcrest import has_entries, assert_that, less_than, instance_of
 import pytest
 
 from cute.matchers import named
@@ -27,8 +28,9 @@ def driver(qt, prober, automaton):
 ignore = lambda *_, **__: None
 
 
-def show_track_page(album, session=make_anonymous_session(), select_picture=ignore, edit_performers=ignore, **handlers):
-    page = make_album_edition_page(album, session, edit_performers, select_picture, **handlers)
+def show_track_page(album, session=make_anonymous_session(), select_picture=ignore, select_identity=ignore,
+                    edit_performers=ignore, **handlers):
+    page = make_album_edition_page(album, session, edit_performers, select_picture, select_identity, **handlers)
     show_widget(page)
     return page
 
@@ -191,10 +193,9 @@ def test_signals_when_remove_picture_button_clicked(driver):
 
 
 def test_signals_when_lookup_isni_button_clicked(driver):
-    page = show_track_page(make_album(lead_performer="performer"), make_registered_session())
-
-    lookup_isni_signal = ValueMatcherProbe("lookup ISNI")
-    page.lookup_isni.connect(lookup_isni_signal.received)
+    lookup_isni_signal = ValueMatcherProbe("lookup ISNI", instance_of(types.FunctionType))
+    _ = show_track_page(make_album(lead_performer="performer"), make_registered_session(),
+                        on_isni_lookup=lookup_isni_signal.received)
 
     driver.lookup_isni_of_lead_performer()
     driver.check(lookup_isni_signal)

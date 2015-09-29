@@ -27,7 +27,7 @@ class ISNILookupDialog(QDialog):
     def __init__(self, parent, identities):
         super().__init__(parent)
         self.connectionError = type(identities) is requests.exceptions.ConnectionError
-        number_of_results = '0'
+        number_of_results = "0"
         matches = []
 
         if not self.connectionError:
@@ -36,6 +36,9 @@ class ISNILookupDialog(QDialog):
         self.okButton = None
         self.selectedIdentity = None
         self._build(int(number_of_results), matches)
+
+    def on_isni_selected(self, handler):
+        self.accepted.connect(lambda: handler(self.selectedIdentity))
 
     def _build(self, number_of_results, matches):
         self.setObjectName("isni-lookup-dialog")

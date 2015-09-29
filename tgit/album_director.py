@@ -17,6 +17,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
+from queue import Queue
+import threading
+
+from PyQt5.QtCore import QEventLoop
+from PyQt5.QtWidgets import QApplication
 
 import requests
 
@@ -139,23 +144,35 @@ def export_as_csv(album, destination):
         CsvFormat().write(album, out)
 
 
-def lookup_isni(registry, lead_performer):
-    last_space_index = lead_performer.rfind(" ")
-    last_name = lead_performer[last_space_index + 1:]
-    rest_of_name = lead_performer[:last_space_index]
-    first_name = rest_of_name.split(" ")
+def lookup_isni_using(registry):
+    def lookup_isni(lead_performer, on_successful_lookup):
+        last_space_index = lead_performer.rfind(" ")
+        last_name = lead_performer[last_space_index + 1:]
+        rest_of_name = lead_performer[:last_space_index]
+        first_name = rest_of_name.split(" ")
 
-    try:
-        return registry.search_by_keywords(last_name, *first_name)
-    except requests.exceptions.ConnectionError as e:
-        return e
+        def poll_queue():
+            while queue.empty():
+                QApplication.processEvents(QEventLoop.AllEvents, 100)
+            return queue.get(True)
+
+        queue = Queue()
+
+        try:
+            threading.Thread(target=lambda: queue.put(registry.search_by_keywords(last_name, *first_name))).start()
+            on_successful_lookup(poll_queue())
+        except requests.exceptions.ConnectionError as e:
+            return on_successful_lookup(e)
+    return lookup_isni
 
 
-def select_isni(identity, album):
-    isni, personal_informations = identity
-    lead_performer, _, _ = personal_informations
-    metadata = dict(lead_performer=lead_performer, isni=isni, compilation=album.compilation)
-    update_album(album, **metadata)
+def select_isni_in(album):
+    def select_isni(identity):
+        isni, personal_informations = identity
+        lead_performer, _, _ = personal_informations
+        metadata = dict(lead_performer=lead_performer, isni=isni, compilation=album.compilation)
+        update_album(album, **metadata)
+    return select_isni
 
 
 def clear_isni(album):

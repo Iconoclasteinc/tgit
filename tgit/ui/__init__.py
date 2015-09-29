@@ -21,7 +21,6 @@ import functools as func
 from queue import Queue
 
 from PyQt5.QtCore import QEventLoop, QLocale
-
 from PyQt5.QtWidgets import QApplication
 
 from tgit import album_director as director
@@ -53,9 +52,11 @@ from tgit.ui.welcome_page import WelcomePage
 from tgit.util import browser, async_task_runner as task_runner
 
 
-def ISNILookupDialogController(parent, album, identities):
+def ISNILookupDialogController(parent, identities, **handlers):
     dialog = ISNILookupDialog(parent, identities)
-    dialog.accepted.connect(lambda: director.select_isni(dialog.selectedIdentity, album))
+    for name, handler in handlers.items():
+        getattr(dialog, name)(handler)
+
     dialog.open()
     return dialog
 
@@ -67,22 +68,12 @@ def ActivityIndicatorDialogController(parent):
 
 
 def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_dialog, make_activity_indicator_dialog,
-                               show_isni_assignation_failed, edit_performers, select_picture, **handlers):
+                               show_isni_assignation_failed, edit_performers, select_picture, on_isni_lookup,
+                               **handlers):
     def poll_queue():
         while queue.empty():
             QApplication.processEvents(QEventLoop.AllEvents, 100)
         return queue.get(True)
-
-    def lookup_isni():
-        activity_dialog = make_activity_indicator_dialog()
-        activity_dialog.show()
-        task_runner.runAsync(lambda: director.lookup_isni(name_registry, album.lead_performer)).andPutResultInto(
-            queue).run()
-
-        identities = poll_queue()
-        activity_dialog.close()
-        dialog = make_lookup_isni_dialog(album, identities)
-        dialog.show()
 
     def assign_isni():
         activity_dialog = make_activity_indicator_dialog()
@@ -96,10 +87,10 @@ def AlbumEditionPageController(session, album, name_registry, make_lookup_isni_d
             show_isni_assignation_failed(payload)
 
     queue = Queue()
-    page = make_album_edition_page(album, session, edit_performers, select_picture, **handlers)
+    page = make_album_edition_page(album, session, edit_performers, select_picture, make_lookup_isni_dialog, **handlers)
+    page.on_isni_lookup(lambda on_lookup_success: on_isni_lookup(album.lead_performer, on_lookup_success))
     page.metadata_changed.connect(lambda metadata: director.update_album(album, **metadata))
     page.remove_picture.connect(lambda: director.remove_album_cover(album))
-    page.lookup_isni.connect(lookup_isni)
     page.assign_isni.connect(assign_isni)
     page.clear_isni.connect(lambda: director.clear_isni(album))
     return page
@@ -163,13 +154,14 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                                           messages.isni_assignation_failed,
                                           edit_performers=show_performers_dialog(album),
                                           select_picture=application_dialogs.select_cover,
-                                          on_select_picture=director.change_cover_of(album))
+                                          on_select_picture=director.change_cover_of(album),
+                                          on_isni_lookup=director.lookup_isni_using(name_registry))
 
     def create_track_page_for(album):
         return lambda track: make_track_edition_page(album, track, on_track_changed=director.update_track(track))
 
-    def show_isni_lookup_dialog(album, identities):
-        return ISNILookupDialogController(window, album, identities)
+    def show_isni_lookup_dialog(identities):
+        return ISNILookupDialogController(window, identities, on_isni_selected=director.select_isni_in(portfolio[0]))
 
     def show_activity_indicator_dialog():
         return ActivityIndicatorDialogController(window)

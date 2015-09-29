@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QApplication
 
 from .helpers import image, formatting
 from tgit.album import AlbumListener
@@ -31,8 +31,8 @@ from tgit.ui.helpers.ui_file import UIFile
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_album_edition_page(album, session, edit_performers, select_picture, **handlers):
-    page = AlbumEditionPage(select_picture=select_picture, edit_performers=edit_performers)
+def make_album_edition_page(album, session, edit_performers, select_picture, select_identity, **handlers):
+    page = AlbumEditionPage(select_picture=select_picture, edit_performers=edit_performers, select_identity=select_identity)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -52,7 +52,6 @@ def make_album_edition_page(album, session, edit_performers, select_picture, **h
 class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
     remove_picture = pyqtSignal()
-    lookup_isni = pyqtSignal()
     clear_isni = pyqtSignal()
     assign_isni = pyqtSignal()
     metadata_changed = pyqtSignal(dict)
@@ -62,8 +61,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, edit_performers, select_picture):
+    def __init__(self, edit_performers, select_picture, select_identity):
         super().__init__()
+        self._select_identity = select_identity
         self._select_picture = select_picture
         self._edit_performers = edit_performers
         self._setup_ui()
@@ -86,7 +86,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
         # album box
         self.release_name.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata("release_name")))
-        self.lookup_isni_button.clicked.connect(lambda pressed: self.lookup_isni.emit())
         self.assign_isni_button.clicked.connect(lambda: self.assign_isni.emit())
         self.compilation.clicked.connect(lambda: self.metadata_changed.emit(self.metadata("compilation")))
         self.compilation.clicked.connect(self._update_isni_lookup_button)
@@ -117,6 +116,17 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def on_select_picture(self, on_select_picture):
         self.select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
+
+    def on_isni_lookup(self, on_isni_lookup):
+        def start_waiting():
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+            on_isni_lookup(on_lookup_success)
+
+        def on_lookup_success(identities):
+            self._select_identity(identities)
+            QApplication.restoreOverrideCursor()
+
+        self.lookup_isni_button.clicked.connect(lambda _: start_waiting())
 
     def _update_guest_performers(self, performers):
         self.guest_performers.setText(formatting.toPeopleList(performers))
