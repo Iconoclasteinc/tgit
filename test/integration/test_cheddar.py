@@ -47,10 +47,11 @@ def test_returns_array_of_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
     platform.identities["reb an mal"] = {
         "id": "0000000115677274",
-        "first_name": "Rebecca Ann",
-        "last_name": "Maloy",
-        "date_of_birth": "1980",
-        "date_of_death": "",
+        "type": "individual",
+        "firstName": "Rebecca Ann",
+        "lastName": "Maloy",
+        "dateOfBirth": "1980",
+        "dateOfDeath": "",
         "works": [
             {"title": "Music and meaning in old Hispanic lenten chants psalmi, threni and the Easter vigil canticles"}
         ]
@@ -59,10 +60,10 @@ def test_returns_array_of_identities(cheddar, platform):
     identities = cheddar.get_identities("reb an mal", "token")
     assert_that(identities, contains(
         has_entries(id="0000000115677274",
-                    first_name="Rebecca Ann",
-                    last_name="Maloy",
-                    date_of_birth="1980",
-                    date_of_death="",
+                    firstName="Rebecca Ann",
+                    lastName="Maloy",
+                    dateOfBirth="1980",
+                    dateOfDeath="",
                     works=contains(has_entries(
                         title="Music and meaning in old Hispanic lenten chants psalmi, "
                               "threni and the Easter vigil canticles")))))

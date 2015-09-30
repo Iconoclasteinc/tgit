@@ -13,6 +13,7 @@ def test_changing_the_application_language(app, settings):
 
 
 def test_remembering_logging_information(app, platform, settings):
+    platform.token_queue = iter(["token12345"])
     app.is_signed_out()
     app.sign_in_as("test@example.com")
 

@@ -35,19 +35,15 @@ def make_isni_lookup_dialog(parent, identities, **handlers):
 class ISNILookupDialog(QDialog):
     def __init__(self, parent, identities):
         super().__init__(parent)
-        self.connectionError = type(identities) is requests.exceptions.ConnectionError
-        number_of_results = "0"
-        matches = []
+        self.ok_button = None
+        self.selected_identity = None
 
-        if not self.connectionError:
-            number_of_results, matches = identities
-
-        self.okButton = None
-        self.selectedIdentity = None
-        self._build(int(number_of_results), matches)
+        self.connection_error = type(identities) is requests.exceptions.ConnectionError
+        matches = identities if not self.connection_error else []
+        self._build(len(matches), matches)
 
     def on_isni_selected(self, handler):
-        self.accepted.connect(lambda: handler(self.selectedIdentity))
+        self.accepted.connect(lambda: handler(self.selected_identity))
 
     def _build(self, number_of_results, matches):
         self.setObjectName("isni-lookup-dialog")
@@ -68,7 +64,7 @@ class ISNILookupDialog(QDialog):
         results.setObjectName("lookup-results")
         results.setLayout(results_layout)
 
-        if self.connectionError:
+        if self.connection_error:
             results_layout.addWidget(self._build_connection_error_message())
             return results
 
@@ -81,16 +77,16 @@ class ISNILookupDialog(QDialog):
         return results
 
     def _build_buttons(self):
-        self.okButton = QPushButton(self.tr('&OK'))
-        self.okButton.setObjectName("ok-button")
-        self.okButton.setDefault(True)
-        self.okButton.setDisabled(True)
-        cancel_button = QPushButton(self.tr('&Cancel'))
+        self.ok_button = QPushButton(self.tr("&OK"))
+        self.ok_button.setObjectName("ok-button")
+        self.ok_button.setDefault(True)
+        self.ok_button.setDisabled(True)
+        cancel_button = QPushButton(self.tr("&Cancel"))
         cancel_button.setObjectName("cancel-button")
         cancel_button.setEnabled(True)
         buttons = QDialogButtonBox(Qt.Horizontal)
         buttons.setObjectName("action-buttons")
-        buttons.addButton(self.okButton, QDialogButtonBox.AcceptRole)
+        buttons.addButton(self.ok_button, QDialogButtonBox.AcceptRole)
         buttons.addButton(cancel_button, QDialogButtonBox.RejectRole)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
@@ -118,27 +114,27 @@ class ISNILookupDialog(QDialog):
 
     def _build_row(self, index, identity):
         def select_isni():
-            self.okButton.setEnabled(True)
-            self.selectedIdentity = identity
+            self.ok_button.setEnabled(True)
+            self.selected_identity = identity
 
         radio = QRadioButton()
         radio.setObjectName("identity_radio_" + str(index))
         radio.clicked.connect(select_isni)
-        radio.setText(self.build_identity_caption(identity))
+        radio.setText(self._build_identity_caption(identity))
         return radio
 
-    def build_identity_caption(self, identity):
-        _, personal_informations = identity
-        name, date, title = personal_informations
-
-        label = [name]
-        if date != '':
-            label.append(' (')
-            label.append(date)
-            label.append(')')
-        label.append(' - ')
-        label.append(title)
-        text = ''.join(label)
+    @staticmethod
+    def _build_identity_caption(identity):
+        label = [identity.full_name]
+        if identity.date_of_birth:
+            label.append(" (")
+            label.append(identity.date_of_birth)
+            if identity.date_of_death:
+                label.append(identity.date_of_death)
+            label.append(")")
+        label.append(" - ")
+        label.append(identity.longest_title)
+        text = "".join(label)
         if len(text) > 100:
-            text = text[:100] + '...'
+            text = text[:100] + "..."
         return text

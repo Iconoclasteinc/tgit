@@ -16,26 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import pytest
 
 
-@pytest.yield_fixture()
-def name_server():
-    from test.util import isni_database
-    database_thread = isni_database.start()
-    yield isni_database
-    isni_database.stop(database_thread)
-
-
-@pytest.fixture(autouse=True)
-def platform(name_server, request):
-    from test.util import cheddar
-
-    server_thread = cheddar.start(name_server.host(), name_server.port())
-    request.addfinalizer(lambda: cheddar.stop(server_thread))
-
-
-def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, name_server):
+def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, name_server, platform):
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
     name_server.assignation_generator = iter(["0000000121707484"])
 
@@ -53,7 +36,7 @@ def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, nam
                              track_title="Salsa Coltrane")
 
 
-def test_failing_to_assign_isni_to_lead_performer_when_data_is_invalid(app, recordings, name_server):
+def test_failing_to_assign_isni_to_lead_performer_when_data_is_invalid(app, recordings, name_server, platform):
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
     name_server.assignation_generator = iter(["invalid data"])
 

@@ -18,9 +18,19 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 
-def test_finding_the_isni_of_the_lead_performer(app, platform, recordings, workspace, name_server):
+def test_finding_the_isni_of_the_lead_performer(app, platform, recordings, workspace):
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
-    name_server.persons["0000000121707484"] = [{"names": [("Joel", "Miller", "1969-")], "titles": ["Honeycombs"]}]
+    platform.token_queue = iter(["TheSuperToken"])
+    platform.allowed_bearer_token = "TheSuperToken"
+    platform.identities["Joel Miller"] = {
+        "id": "0000000121707484",
+        "type": "individual",
+        "firstName": "Joel",
+        "lastName": "Miller",
+        "works": [
+            {"title": "Honeycombs"}
+        ]
+    }
 
     app.sign_in()
     app.import_album("Honeycomb", track)

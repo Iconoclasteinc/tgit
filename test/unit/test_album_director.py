@@ -6,13 +6,17 @@ from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
+from cute.prober import PollingProber
+from cute.probes import ValueMatcherProbe
+from identity import Identity
+
 from test.util import builders as build, resources, doubles
 from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
 from tgit import album_director as director
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.auth import Session
+from tgit.auth import Session, User
 from tgit.metadata import Image, Metadata
 from tgit.util import fs
 
@@ -78,6 +82,11 @@ def album_catalog():
 @pytest.fixture
 def portfolio():
     return AlbumPortfolio()
+
+
+@pytest.fixture()
+def prober():
+    return PollingProber()
 
 
 def make_filename(location, name):
@@ -221,55 +230,47 @@ def test_signs_user_out():
     assert_that(session.current_user.email, none())
 
 
-def test_returns_list_of_identities_when_isni_found_in_registry():
-    class NameRegistry:
+def test_returns_list_of_identities_when_isni_found_in_registry(prober):
+    class FakeCheddar:
         @staticmethod
-        def search_by_keywords(*keywords):
-            if keywords[0] == "Maloy" and keywords[1] == "Rebecca" and keywords[2] == "Ann":
-                return "1", [("0000000115677274", "Rebecca Ann Maloy")]
-            return "0", []
+        def get_identities(phrase, token):
+            if token == "the token" and phrase == "Rebecca Ann Maloy":
+                return [{"id": "0000000115677274", "type": "individual", "works": []}]
+            else:
+                return []
 
-    def success_callback(response):
-        nonlocal identities
-        _, identities = response
-
-    identities = None
-    director.lookup_isni_using(NameRegistry())("Rebecca Ann Maloy", success_callback)
-    assert_that(identities, has_item(("0000000115677274", "Rebecca Ann Maloy")), "isni")
+    success_signal = ValueMatcherProbe("The identities", contains(has_property("id", "0000000115677274")))
+    director.lookup_isni_using(FakeCheddar(), User(api_key="the token"))("Rebecca Ann Maloy", success_signal.received)
+    prober.check(success_signal)
 
 
-def test_returns_empty_list_when_isni_is_not_found_in_registry():
-    class NameRegistry:
+def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
+    class FakeCheddar:
         @staticmethod
-        def search_by_keywords(*keywords):
-            return "0", []
+        def get_identities(phrase, token):
+            return []
 
-    def success_callback(response):
-        nonlocal identities
-        _, identities = response
-
-    identities = None
-    director.lookup_isni_using(NameRegistry())("Rebecca Ann Maloy", success_callback)
-    assert_that(identities, empty(), "isni")
+    success_signal = ValueMatcherProbe("The identities", empty())
+    director.lookup_isni_using(FakeCheddar(), User(api_key="the token"))("Rebecca Ann Maloy", success_signal.received)
+    prober.check(success_signal)
 
 
 def test_updates_isni_from_selected_identity():
-    identity = "0000000115677274", ("_", "_", "_")
+    identity = Identity(id="0000000115677274", type="individual", works=[])
     album = build.album(compilation=False)
 
     director.select_isni_in(album)(identity)
-    assert_that(album.isni, equal_to(identity[0]), "isni")
+    assert_that(album.isni, equal_to(identity.id), "isni")
 
 
 def test_updates_lead_performer_from_selected_identity():
-    name = "Paul McCartney"
-    identity = "_", (name, "_", "_")
+    identity = Identity(id="0000000115677274", firstName="Paul", lastName="McCartney", type="individual", works=[])
     track = build.track(lead_performer="artist")
     album = build.album(tracks=[track], compilation=False)
 
     director.select_isni_in(album)(identity)
-    assert_that(album.lead_performer, equal_to(name), "lead performer")
-    assert_that(track.lead_performer, equal_to(name), "lead performer")
+    assert_that(album.lead_performer, equal_to("Paul McCartney"), "lead performer")
+    assert_that(track.lead_performer, equal_to("Paul McCartney"), "lead performer")
 
 
 def test_updates_album_metadata():

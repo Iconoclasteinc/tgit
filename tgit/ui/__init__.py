@@ -106,7 +106,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                                        edit_performers=show_performers_dialog(album),
                                        select_picture=application_dialogs.select_cover,
                                        on_select_picture=director.change_cover_of(album),
-                                       on_isni_lookup=director.lookup_isni_using(name_registry),
+                                       on_isni_lookup=director.lookup_isni_using(cheddar, session.current_user),
                                        on_isni_assign=director.assign_isni_using(name_registry),
                                        on_remove_picture=director.remove_album_cover_from(album),
                                        on_clear_isni=director.clear_isni_from(album),

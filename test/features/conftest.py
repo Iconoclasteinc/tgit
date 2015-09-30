@@ -65,10 +65,9 @@ def name_server():
     isni_database.stop(database_thread)
 
 
-@pytest.fixture
-def platform(name_server, request):
+@pytest.yield_fixture()
+def platform(name_server):
     from test.util import cheddar
-
     server_thread = cheddar.start(name_server.host(), name_server.port())
-    cheddar.token_queue = iter(["token12345"])
-    request.addfinalizer(lambda: cheddar.stop(server_thread))
+    yield cheddar
+    cheddar.stop(server_thread)
