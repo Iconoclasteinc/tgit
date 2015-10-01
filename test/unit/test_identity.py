@@ -41,3 +41,8 @@ def test_returns_the_longest_work_title():
                                {"title": "title 12", "subtitle": "with subtitle"}])
 
     assert_that(identity.longest_title, equal_to("title 12 with subtitle"))
+
+
+def test_returns_empty_string_when_works_is_empty():
+    identity = Identity(id="...", type="individual", works=[])
+    assert_that(identity.longest_title, equal_to(""))

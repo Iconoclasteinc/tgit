@@ -41,6 +41,9 @@ class Identity:
 
     @property
     def longest_title(self):
+        if len(self.works) == 0:
+            return ""
+
         return max(
             ["{0} {1}".format(work.title, work.subtitle) if work.subtitle else work.title for work in self.works],
             key=len)
