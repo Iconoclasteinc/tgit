@@ -21,10 +21,10 @@ from PyQt5.QtCore import Qt, pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget, QApplication
 
 from .helpers import image, formatting
-from isni.name_registry import NameRegistry
 from tgit.album import AlbumListener
 from tgit.auth import Permission
 from tgit.genres import GENRES
+from tgit.isni.name_registry import NameRegistry
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile

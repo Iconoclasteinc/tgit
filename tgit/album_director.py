@@ -21,15 +21,14 @@ from queue import Queue
 import threading
 
 from PyQt5.QtCore import QEventLoop
-
 from PyQt5.QtWidgets import QApplication
 import requests
 
-from identity import Identity
-from isni.name_registry import NameRegistry
 from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
+from tgit.identity import Identity
+from tgit.isni.name_registry import NameRegistry
 from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
