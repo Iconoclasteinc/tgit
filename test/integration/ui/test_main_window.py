@@ -260,6 +260,19 @@ def test_updates_track_menu_item_when_track_name_changes(driver):
     driver.shows_track_menu_item(title="Zumbar", track_number=1)
 
 
+def test_updates_track_menu_item_when_tracks_change_order(driver):
+    main_window = show_page()
+    album = build.album()
+    main_window.display_album_screen(album)
+    album.add_track(build.track(track_title="Chevere!"))
+    album.add_track(build.track(track_title="Zumbar"))
+
+    album.move_track(1, 0)
+
+    driver.shows_track_menu_item(title="Zumbar", track_number=1)
+    driver.shows_track_menu_item(title="Chevere!", track_number=2)
+
+
 def test_removes_track_menu_item_when_removing_a_track_from_the_album(driver):
     main_window = show_page()
     album = build.album()

@@ -621,10 +621,10 @@ class MenuDriver(WidgetDriver):
         menu_item.click()
         self.pause(self.DISMISS_DELAY)
 
-    def has_menu_item(self, matching):
+    def has_menu_item(self, matching, track_index=None):
         class ContainingMatchingMenuItem(BaseMatcher):
             def _matches(self, menu):
-                for action in menu.actions():
+                for index, action in enumerate(menu.actions()):
                     if matching.matches(action):
                         self.action = action
                         return True
@@ -638,8 +638,27 @@ class MenuDriver(WidgetDriver):
                 mismatch_description.append_text("contained no item ")
                 matching.describe_to(mismatch_description)
 
+        class MenuItemPositionedAt(BaseMatcher):
+            _index = None
+
+            def _matches(self, menu):
+                for index, action in enumerate(menu.actions()):
+                    if matching.matches(action):
+                        self._index = index
+                        if index == track_index:
+                            return True
+                return False
+
+            def describe_to(self, description):
+                description.append_text("positioned at index " + str(track_index))
+
+            def describe_mismatch(self, item, mismatch_description):
+                mismatch_description.append_text("positioned at index " + str(self._index))
+
         containing_menu_item = ContainingMatchingMenuItem()
         self.is_(containing_menu_item)
+        if track_index is not None:
+            self.is_(MenuItemPositionedAt())
         return containing_menu_item.action
 
 

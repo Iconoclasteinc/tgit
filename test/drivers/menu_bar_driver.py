@@ -69,6 +69,8 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.menu_item(matchers.named("exit_action")).click()
 
     class NavigateMenuDriver:
+        BASE_TRACKS_INDEX = 2
+
         def __init__(self, menu_driver):
             self._menu_driver = menu_driver
 
@@ -82,7 +84,8 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.select_menu_item(matchers.with_text(track_menu_item(title, track_number)))
 
         def shows_track_action(self, title, track_number):
-            self._menu_driver.has_menu_item(matchers.with_text(track_menu_item(title, track_number)))
+            track_index = self.BASE_TRACKS_INDEX + track_number
+            self._menu_driver.has_menu_item(matchers.with_text(track_menu_item(title, track_number)), track_index)
 
         def does_not_show_action(self, title, track_number):
             self._menu_driver.has_menu_item(without_item(track_menu_item(title, track_number)))

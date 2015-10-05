@@ -104,6 +104,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
         self.subscribe(album.track_inserted, self._rebuild_track_actions)
         self.subscribe(album.track_removed, self._rebuild_track_actions)
+        self.subscribe(album.track_moved, self._rebuild_track_actions)
 
     def user_signed_in(self, user):
         self._sign_in_action.setVisible(False)
