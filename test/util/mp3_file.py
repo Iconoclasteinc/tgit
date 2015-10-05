@@ -99,6 +99,8 @@ class Mp3Audio(object):
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='Tags', text=value))
             elif tag == 'isni' or tag == 'TXXX_ISNI':
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc='ISNI', text=value))
+            elif tag == "iswc" or tag == "TXXX_ISWC":
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc="ISWC", text=value))
             elif tag == 'lyrics' or tag == 'USLT':
                 text, lang = value
                 self._add_tag(id3.USLT(encoding=UTF_8, text=text, desc='', lang=lang))

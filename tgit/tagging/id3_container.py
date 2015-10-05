@@ -253,6 +253,7 @@ class ID3Container:
                      'TXXX:TAGGER_VERSION': 'tagger_version',
                      'TXXX:TAGGING_TIME': 'tagging_time',
                      'TXXX:ISNI': 'isni',
+                     "TXXX:ISWC": "iswc",
                      "COMM::fra": 'comments',
                      "USLT::fra": 'lyrics',
                      'TCON': 'primary_style'

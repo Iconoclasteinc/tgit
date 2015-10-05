@@ -158,6 +158,11 @@ def test_reads_isni_from_custom_frame(mp3):
     assert_that(metadata, has_entry('isni', '00000123456789'), 'metadata')
 
 
+def test_reads_iswc_from_custom_frame(mp3):
+    metadata = container.load(mp3(TXXX_ISWC="T-345246800-1"))
+    assert_that(metadata, has_entry("iswc", "T-345246800-1"), "metadata")
+
+
 def test_reads_lyrics_from_u_s_l_t_french_frame(mp3):
     metadata = container.load(mp3(USLT=('Lyrics', 'fra')))
     assert_that(metadata, has_entry('lyrics', 'Lyrics'), 'metadata')
@@ -237,6 +242,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata['compilation'] = True
     metadata['lead_performer'] = 'Lead Performer'
     metadata['isni'] = '0000123456789'
+    metadata["iswc"] = "T-345246800-1"
     metadata['guest_performers'] = [('Guitar', 'Guitarist'), ('Guitar', 'Bassist'), ('Piano', 'Pianist')]
     metadata['label_name'] = 'Label Name'
     metadata['catalog_number'] = '123 456-1'

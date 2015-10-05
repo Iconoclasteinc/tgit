@@ -62,6 +62,7 @@ def test_displays_track_metadata(driver):
                         composer="Composer",
                         publisher="Publisher",
                         isrc="Code",
+                        iswc="T-345246800-1",
                         labels="Tag1 Tag2 Tag3",
                         lyrics="Lyrics\n...\n...",
                         language="eng")
@@ -79,7 +80,7 @@ def test_displays_track_metadata(driver):
     driver.shows_composer("Composer")
     driver.shows_publisher("Publisher")
     driver.shows_isrc("Code")
-    driver.shows_iswc("")
+    driver.shows_iswc("T-345246800-1")
     driver.shows_tags("Tag1 Tag2 Tag3")
     driver.shows_lyrics("Lyrics\n...\n...")
     driver.shows_language("eng")
@@ -134,6 +135,10 @@ def test_signals_when_track_metadata_change(driver):
 
     metadata_changed_signal.expect(has_entries(isrc="ZZZ123456789"))
     driver.change_isrc("ZZZ123456789")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(iswc="T-345246800-1"))
+    driver.change_iswc("T-345246800-1")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(labels="Tag1 Tag2 Tag3"))
