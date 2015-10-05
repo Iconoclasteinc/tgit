@@ -38,7 +38,7 @@ class ISNILookupDialog(QDialog):
         self.ok_button = None
         self.selected_identity = None
 
-        self.connection_error = type(identities) is requests.exceptions.ConnectionError
+        self.connection_error = type(identities) is requests.ConnectionError
         matches = identities if not self.connection_error else []
         self._build(len(matches), matches)
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from hamcrest import assert_that, empty, contains, has_entries
 import pytest
+import requests
 
 from tgit.authentication_error import AuthenticationError
 from tgit.cheddar import Cheddar
@@ -35,6 +36,13 @@ def test_returns_unauthorized_when_sending_invalid_token(cheddar, platform):
     platform.allowed_bearer_token = "token"
     with pytest.raises(AuthenticationError):
         cheddar.get_identities("reb an mal", "...")
+
+
+def test_raises_system_error_on_remote_server_error(cheddar, platform):
+    platform.response_code_queue = [503]
+    platform.allowed_bearer_token = "token"
+    with pytest.raises(requests.exceptions.ConnectionError):
+        cheddar.get_identities("...", "token")
 
 
 def test_returns_empty_array_of_identities(cheddar, platform):

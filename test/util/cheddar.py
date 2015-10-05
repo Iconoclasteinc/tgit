@@ -26,6 +26,7 @@ import requests
 
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
 token_queue = iter([])
+response_code_queue = []
 allowed_bearer_token = ""
 identities = {}
 
@@ -91,6 +92,9 @@ def _requires_bearer_token(f):
 @_app.route("/api/identities")
 @_requires_bearer_token
 def _lookup():
+    if len(response_code_queue):
+        return Response(status=response_code_queue.pop(0))
+
     phrase = request.args.get("q")
 
     identities_to_return = []

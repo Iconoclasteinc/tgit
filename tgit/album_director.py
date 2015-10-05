@@ -157,13 +157,20 @@ def lookup_isni_using(cheddar, user):
                 QApplication.processEvents(QEventLoop.AllEvents, 100)
             return queue.get(True)
 
-        queue = Queue()
+        def get_identities():
+            try:
+                queue.put(cheddar.get_identities(lead_performer, user.api_key))
+            except requests.ConnectionError as e:
+                return queue.put(e)
 
-        try:
-            threading.Thread(target=lambda: queue.put(cheddar.get_identities(lead_performer, user.api_key))).start()
-            on_successful_lookup([Identity(**identity) for identity in poll_queue()])
-        except requests.exceptions.ConnectionError as e:
-            return on_successful_lookup(e)
+        queue = Queue()
+        threading.Thread(target=get_identities).start()
+        identities = poll_queue()
+        if type(identities) is requests.ConnectionError:
+            on_successful_lookup(identities)
+        else:
+            on_successful_lookup([Identity(**identity) for identity in identities])
+
     return lookup_isni
 
 
@@ -192,13 +199,19 @@ def assign_isni_using(registry):
                 QApplication.processEvents(QEventLoop.AllEvents, 100)
             return queue.get(True)
 
-        queue = Queue()
+        def assign():
+            try:
+                queue.put(registry.assign(forename, surname, [release_name]))
+            except requests.ConnectionError as e:
+                return queue.put(e)
 
-        try:
-            threading.Thread(target=lambda: queue.put(registry.assign(forename, surname, [release_name]))).start()
-            on_successful_lookup(poll_queue())
-        except requests.exceptions.ConnectionError as e:
-            return on_successful_lookup((NameRegistry.Codes.ERROR, str(e)))
+        queue = Queue()
+        threading.Thread(target=assign).start()
+        response = poll_queue()
+        if type(response) is requests.ConnectionError:
+            on_successful_lookup((NameRegistry.Codes.ERROR, str(response)))
+        else:
+            on_successful_lookup(response)
     return assign_isni
 
 
