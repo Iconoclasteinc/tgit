@@ -109,6 +109,7 @@ class FlacContainer:
         "DATE": "recording_time",
         "TITLE": "track_title",
         "ISRC": "isrc",
+        "ISWC": "iswc",
         "TAGGER": "tagger",
         "TAGGER_VERSION": "tagger_version",
         "TAGGING_TIME": "tagging_time",
