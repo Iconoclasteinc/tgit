@@ -15,14 +15,14 @@ def load_track(filename):
 def save_track(track, at_time=None):
     track.tagger = __app_name__
     track.tagger_version = __version__
-    track.tagging_time = (at_time or datetime.now(tz.tzlocal())).strftime('%Y-%m-%d %H:%M:%S %z')
+    track.tagging_time = (at_time or datetime.now(tz.tzlocal())).strftime("%Y-%m-%d %H:%M:%S %z")
     containers.save_metadata(track.filename, _all_metadata(track))
 
 
 def _all_metadata(track):
     album_metadata = track.album.metadata.copy()
     if track.album.compilation:
-        del album_metadata['lead_performer']
+        del album_metadata["lead_performer"]
     track_metadata = track.metadata.copy()
     track_metadata.update(album_metadata)
     return track_metadata

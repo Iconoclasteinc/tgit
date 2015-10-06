@@ -55,9 +55,14 @@ def test_reads_primary_style_from_genre_field(flac):
     assert_that(metadata, has_entry('primary_style', "Modern Jazz"), "metadata")
 
 
-def test_reads_track_i_s_r_c_from_i_s_r_c_field(flac):
+def test_reads_track_isrc_from_isrc_field(flac):
     metadata = container.load(flac(ISRC="CABL31201254"))
     assert_that(metadata, has_entry('isrc', "CABL31201254"), "metadata")
+
+
+def test_reads_track_iswc_from_iswc_field(flac):
+    metadata = container.load(flac(ISWC="T-345246800-1"))
+    assert_that(metadata, has_entry('iswc', "T-345246800-1"), "metadata")
 
 
 def test_reads_recording_time_from_date_field(flac):
@@ -116,19 +121,20 @@ def test_round_trips_metadata_to_file(flac):
     metadata['recording_time'] = "2007-11-02"
     metadata['track_title'] = "Salsa Coltrane"
     metadata['isrc'] = "CABL31201254"
+    metadata['iswc'] = "T-345246800-1"
     metadata['tagger'] = "TGiT"
     metadata['tagger_version'] = "1.0"
     metadata['tagging_time'] = "2014-03-26 14:18:55 EDT-0400"
     metadata['track_number'] = 3
     metadata['total_tracks'] = 5
 
-    assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
+    _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
 
 def test_removes_comment_field_when_tag_not_in_metadata(flac):
     filename = flac(ARTIST="Joel Miller")
     container.save(filename, Metadata())
-    assert_contains_metadata(filename, Metadata())
+    _assert_contains_metadata(filename, Metadata())
 
 
 def test_stores_several_pictures(flac):
@@ -161,13 +167,13 @@ def test_overwrites_existing_attached_pictures(flac):
     assert_that(container.load(filename).images, has_length(1), 'updated images')
 
 
-def assert_can_be_saved_and_reloaded_with_same_state(flac, metadata):
+def _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata):
     filename = flac()
     container.save(filename, metadata.copy())
-    assert_contains_metadata(filename, metadata)
+    _assert_contains_metadata(filename, metadata)
 
 
-def assert_contains_metadata(filename, metadata):
+def _assert_contains_metadata(filename, metadata):
     expected_metadata = metadata.copy()
     expected_metadata['bitrate'] = BITRATE
     expected_metadata['duration'] = DURATION

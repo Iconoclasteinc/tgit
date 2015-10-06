@@ -137,10 +137,12 @@ class TrackEditionPageDriver(ScreenDriver):
     def change_isrc(self, code):
         self.lineEdit(named("_isrc")).change_text(code)
 
+    def change_iswc(self, code):
+        self.lineEdit(named("_iswc")).change_text(code)
+
     def shows_iswc(self, code):
         self.label(with_buddy(named("_iswc"))).is_showing_on_screen()
         edit = self.lineEdit(named("_iswc"))
-        edit.is_disabled()
         edit.has_text(code)
 
     def shows_tags(self, tags):

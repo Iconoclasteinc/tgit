@@ -11,7 +11,7 @@ from cute.widgets import window
 from test.drivers import AlbumScreenDriver
 from test.integration.ui import show_widget
 from test.util.builders import make_track, make_album
-from tgit.ui import TrackEditionPage
+from tgit.ui.track_edition_page import TrackEditionPage
 from tgit.ui.album_edition_page import AlbumEditionPage
 from tgit.ui.album_screen import AlbumScreen, make_album_screen
 from tgit.ui.track_list_page import TrackListPage
@@ -24,7 +24,7 @@ def create_track_list_page(album):
 
 
 def create_album_page(album):
-    return AlbumEditionPage(ignore, ignore)
+    return AlbumEditionPage(ignore, ignore, ignore, ignore)
 
 
 def create_track_page(track):
@@ -150,7 +150,7 @@ def test_closes_children_pages_on_close(driver):
         @wraps(create_page)
         def wrapper(*args, **kwargs):
             page = create_page(*args, **kwargs)
-            page.on_close(lambda: closed_signals.received(page.objectName()))
+            page.closed.connect(lambda: closed_signals.received(page.objectName()))
             return page
 
         return wrapper

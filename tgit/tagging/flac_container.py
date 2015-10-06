@@ -21,8 +21,7 @@ from collections import Counter
 import mutagen.flac
 
 from tgit.metadata import Metadata, Image
-from tgit.tagging._pictures import PictureType
-
+from ._pictures import PictureType
 
 LAST = -1
 
@@ -70,7 +69,8 @@ class PictureField:
 
     def read(self, flac, metadata):
         for picture in flac.pictures:
-            metadata.addImage(picture.mime, picture.data, self._image_types.get(picture.type, Image.OTHER), picture.desc)
+            metadata.addImage(picture.mime, picture.data, self._image_types.get(picture.type, Image.OTHER),
+                              picture.desc)
 
     def _pictures_in(self, metadata):
         image_count = Counter()
@@ -82,7 +82,7 @@ class PictureField:
             picture.mime = image.mime
             image_count[image.desc] += 1
             if image_count[image.desc] > 1:
-                picture.desc = image.desc + ' ({0})'.format(image_count[image.desc])
+                picture.desc = image.desc + " ({0})".format(image_count[image.desc])
             else:
                 picture.desc = image.desc
 
@@ -95,29 +95,30 @@ class PictureField:
 
 
 class FlacContainer:
-    fields = [PictureField('PICTURES', {
+    fields = [PictureField("PICTURES", {
         PictureType.OTHER: Image.OTHER,
         PictureType.FRONT_COVER: Image.FRONT_COVER,
         PictureType.BACK_COVER: Image.BACK_COVER,
     })]
 
     for field_name, tag_name in {
-        'ALBUM': 'release_name',
-        'ARTIST': 'lead_performer',
-        'ORGANIZATION': 'label_name',
-        'GENRE': 'primary_style',
-        'DATE': 'recording_time',
-        'TITLE': 'track_title',
-        'ISRC': 'isrc',
-        'TAGGER': 'tagger',
-        'TAGGER_VERSION': 'tagger_version',
-        'TAGGING_TIME': 'tagging_time',
+        "ALBUM": "release_name",
+        "ARTIST": "lead_performer",
+        "ORGANIZATION": "label_name",
+        "GENRE": "primary_style",
+        "DATE": "recording_time",
+        "TITLE": "track_title",
+        "ISRC": "isrc",
+        "ISWC": "iswc",
+        "TAGGER": "tagger",
+        "TAGGER_VERSION": "tagger_version",
+        "TAGGING_TIME": "tagging_time",
     }.items():
         fields.append(TextField(field_name, tag_name))
 
     for field_name, tag_name in {
-        'TRACKNUMBER': 'track_number',
-        'TRACKTOTAL': 'total_tracks',
+        "TRACKNUMBER": "track_number",
+        "TRACKTOTAL": "total_tracks",
     }.items():
         fields.append(NumericField(field_name, tag_name))
 
@@ -125,8 +126,8 @@ class FlacContainer:
         flac_file = mutagen.flac.FLAC(filename)
 
         metadata = Metadata()
-        metadata['duration'] = flac_file.info.length
-        metadata['bitrate'] = flac_file.info.sample_rate * flac_file.info.bits_per_sample
+        metadata["duration"] = flac_file.info.length
+        metadata["bitrate"] = flac_file.info.sample_rate * flac_file.info.bits_per_sample
 
         for field in self.fields:
             field.read(flac_file, metadata)
@@ -140,7 +141,6 @@ class FlacContainer:
             field.write(metadata, flac_file)
 
         flac_file.save(filename)
-
 
     @staticmethod
     def _load_file(filename):

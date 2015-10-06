@@ -22,44 +22,49 @@ import csv
 from PyQt5.QtCore import QObject
 
 
-def toBoolean(value):
-    return value and 'True' or 'False'
+def to_boolean(value):
+    return value and "True" or "False"
 
 
-def toPeopleList(people):
-    return people and '; '.join(['%s: %s' % (role, name) for role, name in people]) or ''
+def _to_people_list(people):
+    return people and "; ".join(["{0}: {1}".format(role, name) for role, name in people]) or ""
 
 
 class CsvFormat(QObject):
-    Headers = 'Release Name', 'Compilation', 'Lead Performer', 'Lead Performer ISNI', 'Guest Performers', \
-              'Label Name', 'Catalog Number', 'UPC/EAN', 'Comments', 'Release Date', 'Recording Date', \
-              'Recording Studios', 'Producer', 'Mixer', 'Primary Style', 'Track Title', 'Version Information', \
-              'Track Number', 'Total Tracks', 'Featured Guest', 'Lyrics', 'Language', 'Publisher', 'Lyricist', \
-              'Composer', 'ISRC', 'Tags'
+    Headers = "Release Name", "Compilation", "Lead Performer", "Lead Performer ISNI", "Guest Performers", \
+              "Label Name", "Catalog Number", "UPC/EAN", "Comments", "Release Date", "Recording Date", \
+              "Recording Studios", "Producer", "Mixer", "Primary Style", "Track Title", "Version Information", \
+              "Track Number", "Total Tracks", "Featured Guest", "Lyrics", "Language", "Publisher", "Lyricist", \
+              "Composer", "ISRC", "Tags"
 
     def __init__(self):
-        QObject.__init__(self)
+        super().__init__()
 
     def write(self, album, out):
         writer = csv.writer(out)
-        self.writeHeader(writer)
+        self._write_header(writer)
         for track in album.tracks:
-            self.writeRecord(writer, album, track)
+            self._write_record(writer, album, track)
 
-    def writeHeader(self, writer):
+    def _write_header(self, writer):
         writer.writerow(self._encode_row(self._translate_texts(CsvFormat.Headers)))
 
-    def writeRecord(self, writer, album, track):
-        row = album.release_name, toBoolean(album.compilation), track.lead_performer, album.isni, \
-              toPeopleList(album.guest_performers), album.label_name, album.catalog_number, album.upc, album.comments, \
-              album.release_time, album.recording_time, album.recording_studios, album.producer, \
-              album.mixer, album.primary_style, track.track_title, track.versionInfo, str(track.track_number), \
-              str(track.total_tracks), track.featuredGuest, track.lyrics, track.language, track.publisher, \
-              track.lyricist, track.composer, track.isrc, track.labels
+    def _write_record(self, writer, album, track):
+        guest_performers = _to_people_list(album.guest_performers)
+        compilation = to_boolean(album.compilation)
+        track_number = str(track.track_number)
+        total_tracks = str(track.total_tracks)
+
+        row = (album.release_name, compilation, track.lead_performer, album.isni, guest_performers, album.label_name,
+               album.catalog_number, album.upc, album.comments, album.release_time, album.recording_time,
+               album.recording_studios, album.producer, album.mixer, album.primary_style, track.track_title,
+               track.versionInfo, track_number, total_tracks, track.featuredGuest, track.lyrics, track.language,
+               track.publisher, track.lyricist, track.composer, track.isrc, track.labels)
+
         writer.writerow(self._encode_row(row))
 
     def _translate(self, text):
-        return text and self.tr(text) or ''
+        return text and self.tr(text) or ""
 
     def _translate_texts(self, texts):
         return map(self._translate, texts)
@@ -69,4 +74,4 @@ class CsvFormat(QObject):
 
     @staticmethod
     def to_excel_new_lines(text):
-        return text and text.replace('\n', '\r') or ''
+        return text and text.replace("\n", "\r") or ""

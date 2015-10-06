@@ -535,9 +535,6 @@ QLabel:disabled {
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="_iswc_caption">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
               <property name="text">
                <string>ISWC:</string>
               </property>
@@ -570,11 +567,7 @@ QLabel:disabled {
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QLineEdit" name="_iswc">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-             </widget>
+             <widget class="QLineEdit" name="_iswc"/>
             </item>
             <item row="2" column="1">
              <widget class="QLineEdit" name="_tags">
@@ -790,28 +783,18 @@ QLabel:disabled {
              <number>0</number>
             </property>
             <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>400</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
              <widget class="QLabel" name="_software_notice">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
               <property name="text">
-               <string/>
+               <string>Indexé avec TGiT v1.9 le 10-05-2010</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>

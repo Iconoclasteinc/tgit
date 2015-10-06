@@ -44,7 +44,7 @@ class Cheddar:
         if response.status_code == 401:
             raise AuthenticationError()
 
-        deserialized = json.loads(response.content.decode("utf-8"))
+        deserialized = json.loads(response.content.decode())
         deserialized["email"] = email
 
         return deserialized
@@ -56,4 +56,7 @@ class Cheddar:
         if response.status_code == 401:
             raise AuthenticationError()
 
-        return json.loads(response.content.decode("windows-1252"))
+        if response.status_code >= 500:
+            raise requests.ConnectionError()
+
+        return json.loads(response.content.decode())

@@ -35,6 +35,7 @@ class Track(object, metaclass=tag.Taggable):
     lyricist = tag.text()
     composer = tag.text()
     isrc = tag.text()
+    iswc = tag.text()
     labels = tag.text()
     lyrics = tag.text()
     language = tag.text()

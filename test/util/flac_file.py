@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+
 from mutagen.flac import FLAC, Picture
 
 from test.util import resources
@@ -54,6 +55,8 @@ class FlacAudio(object):
                 self._add_tag("TITLE", value)
             elif tag == 'isrc' or tag == 'ISRC':
                 self._add_tag("ISRC", value)
+            elif tag == 'iswc' or tag == 'ISWC':
+                self._add_tag("ISWC", value)
             elif tag == 'TAGGER':
                 self._add_tag("TAGGER", value)
             elif tag == 'TAGGER_VERSION':

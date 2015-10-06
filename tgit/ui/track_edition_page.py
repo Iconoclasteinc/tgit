@@ -104,6 +104,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._composer.setText(track.composer)
         self._publisher.setText(track.publisher)
         self._isrc.setText(track.isrc)
+        self._iswc.setText(track.iswc)
         self._tags.setText(track.labels)
         self._lyrics.setPlainText(track.lyrics)
         self._language.setEditText(track.language)
@@ -142,6 +143,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                     composer=self._composer.text(),
                     publisher=self._publisher.text(),
                     isrc=self._isrc.text(),
+                    iswc=self._iswc.text(),
                     labels=self._tags.text(),
                     lyrics=self._lyrics.toPlainText(),
                     language=self._language.currentText())
@@ -151,7 +153,5 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
     def _disable_teaser_fields(self):
-        self._iswc.setDisabled(True)
-        self._iswc_caption.setDisabled(True)
         self._preview_time.setDisabled(True)
         self._preview_time_caption.setDisabled(True)

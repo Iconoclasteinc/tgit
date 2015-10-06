@@ -26,11 +26,11 @@ import unicodedata
 
 
 def read(filename):
-    return open(filename, 'rb').read()
+    return open(filename, "rb").read()
 
 
 def write(filename, data):
-    with open(filename, 'wb') as file:
+    with open(filename, "wb") as file:
         file.write(data)
 
 
@@ -54,7 +54,7 @@ def make_temp_dir():
 
 
 def sanitize(filename):
-    return re.sub(r'[/<>?*\\:|"]', '_', filename).strip()
+    return re.sub(r'[/<>?*\\:|"]', "_", filename).strip()
 
 
 def ext(filename):
