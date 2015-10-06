@@ -24,7 +24,6 @@ from PyQt5.QtCore import QLocale
 from tgit import album_director as director
 from tgit.ui import resources
 from tgit.ui.about_dialog import AboutDialog
-from tgit.ui.activity_indicator_dialog import ActivityIndicatorDialog
 from tgit.ui.dialogs import Dialogs
 from tgit.ui.startup_screen import StartupScreen
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog

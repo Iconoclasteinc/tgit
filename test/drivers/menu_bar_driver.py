@@ -81,14 +81,14 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.select_menu_item(matchers.named("to_track_list_action"))
 
         def to_track_page(self, title, track_number):
-            self._menu_driver.select_menu_item(matchers.with_text(track_menu_item(title, track_number)))
+            self._menu_driver.select_menu_item(matchers.with_text(_track_menu_item(title, track_number)))
 
         def shows_track_action(self, title, track_number):
             track_index = self.BASE_TRACKS_INDEX + track_number
-            self._menu_driver.has_menu_item(matchers.with_text(track_menu_item(title, track_number)), track_index)
+            self._menu_driver.has_menu_item(matchers.with_text(_track_menu_item(title, track_number)), track_index)
 
         def does_not_show_action(self, title, track_number):
-            self._menu_driver.has_menu_item(without_item(track_menu_item(title, track_number)))
+            self._menu_driver.has_menu_item(_without_item(_track_menu_item(title, track_number)))
 
         def is_disabled(self):
             self._menu_driver.is_disabled()
@@ -140,9 +140,9 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.close()
 
 
-def without_item(title):
+def _without_item(title):
     return is_not(has_item(title))
 
 
-def track_menu_item(title, track_number):
+def _track_menu_item(title, track_number):
     return "{0} - {1}".format(track_number, title)

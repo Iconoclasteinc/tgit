@@ -92,7 +92,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             self._select_identity(identities)
             QApplication.restoreOverrideCursor()
 
-        self.lookup_isni_button.clicked.connect(lambda _: start_waiting())
+        self.lookup_isni_button.clicked.connect(start_waiting)
 
     def on_isni_assign(self, on_isni_assign):
         def start_waiting():
@@ -107,7 +107,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                 self._show_isni_assignation_failed(payload)
             QApplication.restoreOverrideCursor()
 
-        self.assign_isni_button.clicked.connect(lambda _: start_waiting())
+        self.assign_isni_button.clicked.connect(start_waiting)
 
     def on_remove_picture(self, on_remove_picture):
         self.remove_picture_button.clicked.connect(lambda _: on_remove_picture())
