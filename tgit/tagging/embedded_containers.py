@@ -24,7 +24,8 @@ from .flac_container import FlacContainer
 from .id3_container import ID3Container
 
 
-class EmptyContainer():
+class EmptyContainer:
+    # noinspection PyUnusedLocal
     @staticmethod
     def load(filename):
         return Metadata()

@@ -14,6 +14,7 @@ from tgit.util import fs
 sample_front_cover = "image/jpeg", fs.read(resources.path("front-cover.jpg")), Image.FRONT_COVER, "Front Cover"
 simple_naming = lambda track: track.track_title + ".mp3"
 
+
 @pytest.yield_fixture
 def project_file(tmpdir):
     folder = tmpdir.join("album")

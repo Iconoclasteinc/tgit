@@ -4,12 +4,11 @@ from io import StringIO
 import csv
 
 from hamcrest import assert_that, contains, has_item
-
 from hamcrest.core.core.isequal import equal_to
 import pytest
 
 from test.util import builders as build
-from tgit.local_storage.csv_format import CsvFormat, toBoolean
+from tgit.local_storage.csv_format import CsvFormat, to_boolean
 
 
 @pytest.fixture
@@ -125,9 +124,9 @@ def test_writes_track_metadata_in_columns(formatter, out):
 
 
 def test_converts_booleans_to_text():
-    assert_that(toBoolean(None), equal_to("False"), "boolean(None)")
-    assert_that(toBoolean(False), equal_to("False"), "boolean(False)")
-    assert_that(toBoolean(True), equal_to("True"), "boolean(True)")
+    assert_that(to_boolean(None), equal_to("False"), "boolean(None)")
+    assert_that(to_boolean(False), equal_to("False"), "boolean(False)")
+    assert_that(to_boolean(True), equal_to("True"), "boolean(True)")
 
 
 def test_writes_one_record_per_track_in_album(formatter, out):

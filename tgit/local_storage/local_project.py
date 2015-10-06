@@ -79,11 +79,11 @@ def save_album(album, track_name=naming.track_scheme, track_catalog=tagging, art
     def save_tracks():
         fs.mkdirs(tracks_folder)
 
-        for track in album.tracks:
-            track_file = join(tracks_folder, track_name(track))
-            fs.copy(track.filename, track_file)
-            track.filename = track_file
-            track_catalog.save_track(track)
+        for current_track in album.tracks:
+            track_file = join(tracks_folder, track_name(current_track))
+            fs.copy(current_track.filename, track_file)
+            current_track.filename = track_file
+            track_catalog.save_track(current_track)
 
         def not_in_album(filename):
             return fs.abspath(filename) not in (fs.abspath(track.filename) for track in album.tracks)
