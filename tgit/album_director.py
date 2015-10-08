@@ -28,7 +28,7 @@ from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
 from tgit.identity import Identity
-from tgit.isni.name_registry import NameRegistry
+from name_registry import NameRegistry
 from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 

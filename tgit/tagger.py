@@ -26,7 +26,7 @@ from tgit import ui
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import MediaPlayer, create_media_library
 from tgit.cheddar import Cheddar
-from tgit.isni.name_registry import NameRegistry
+from tgit.name_registry import NameRegistry
 from tgit.settings_backend import SettingsBackend
 
 

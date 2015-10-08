@@ -11,7 +11,7 @@ from test.drivers import track_selection_dialog, message_box
 from test.util.doubles import fake_audio_player
 from tgit import platforms
 from tgit.cheddar import Cheddar
-from tgit.isni.name_registry import NameRegistry
+from tgit.name_registry import NameRegistry
 from tgit.tagger import TGiT
 
 

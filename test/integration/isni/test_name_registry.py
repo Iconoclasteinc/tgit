@@ -20,7 +20,7 @@ from _pytest.runner import fail
 from hamcrest import assert_that, contains, has_item, anything, equal_to
 import pytest
 
-from tgit.isni.name_registry import NameRegistry
+from tgit.name_registry import NameRegistry
 
 
 @pytest.yield_fixture
