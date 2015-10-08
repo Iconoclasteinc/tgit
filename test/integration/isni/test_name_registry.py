@@ -52,28 +52,6 @@ def has_identity(isni_number=anything(), name=anything(), birth_date=anything(),
     return has_item(contains(isni_number, contains(name, birth_date, title)))
 
 
-def test_finds_person(name_server, registry):
-    name_server.persons.clear()
-    name_server.persons["00000001"] = [{"names": [
-        ("Joel", "Miller", "1969-"), ("Joel E.", "Miller", ""), ("joel", "miller", "")], "titles": ["Honeycombs"]}]
-
-    identities = registry.search_by_keywords("joel", "miller")
-    assert_that(identities[0], equal_to("1"))
-    assert_that(identities[1], has_identity("00000001", "Joel E. Miller", "1969-", "Honeycombs"))
-
-
-def test_finds_organisation(name_server, registry):
-    name_server.organisations["0000000121707484"] = [{"names": [
-        "The Beatles", "Beatles, The"], "titles": [
-        "The fool on the hill from The Beatles' T.V. film Magical mystery tour"]}]
-
-    identities = registry.search_by_keywords("The", "Beatles")
-
-    assert_that(identities[0], equal_to("1"))
-    assert_that(identities[1], has_identity("0000000121707484", "Beatles, The",
-                title="The fool on the hill from The Beatles' T.V. film Magical mystery tour"))
-
-
 def test_assigns_isni_to_person(name_server, registry):
     name_server.assignation_generator = (response for response in ["0000000121707484"])
     code, message = registry.assign("Joel", "Miller", ["Zumbar", "Salsa Coltrane", "Big Ideas"])
