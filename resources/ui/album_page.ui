@@ -37,6 +37,10 @@ QSpinBox {
 	selection-color: #222222;
 }
 
+QComboBox QAbstractItemView {
+   selection-background-color:#F08450;
+}
+
 QCalendarWidget QAbstractItemView {
     selection-background-color: #F08450;
 }

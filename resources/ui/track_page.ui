@@ -75,6 +75,10 @@ QComboBox::down-arrow:focus {
 	image: url(:/images/down-arrow-on.png);
 }
 
+QComboBox QAbstractItemView {
+   selection-background-color:#F08450;
+}
+
 #_software_notice {
 	font-size: 10px;
 	margin-right: 8px;
