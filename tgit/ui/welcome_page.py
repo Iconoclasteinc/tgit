@@ -38,7 +38,7 @@ class WelcomePage(QFrame, UIFile):
 
     def _setup_ui(self):
         self._load(":/ui/welcome_page.ui")
-        self._version_label.setText("v{0}".format(tgit.__version__))
+        self._version_label.setText(tgit.__version__)
 
     def on_create_album(self, on_create_album):
         self._new_album_button.clicked.connect(on_create_album)
