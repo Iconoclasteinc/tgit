@@ -60,3 +60,6 @@ class Cheddar:
             raise requests.ConnectionError()
 
         return json.loads(response.content.decode())
+
+    def assign_isni(self, name, works):
+        pass

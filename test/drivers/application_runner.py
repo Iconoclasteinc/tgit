@@ -11,7 +11,6 @@ from test.drivers import track_selection_dialog, message_box
 from test.util.doubles import fake_audio_player
 from tgit import platforms
 from tgit.cheddar import Cheddar
-from tgit.name_registry import NameRegistry
 from tgit.tagger import TGiT
 
 
@@ -33,8 +32,7 @@ class ApplicationRunner:
         self._settings = settings
 
     def start(self):
-        self.app = TGiT(fake_audio_player, NameRegistry(host="localhost", port=5001),
-                        Cheddar(host="localhost", port=5001, secure=False),
+        self.app = TGiT(fake_audio_player, Cheddar(host="localhost", port=5001, secure=False),
                         self._settings, native=False, confirm_exit=False)
         self.app.show()
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
