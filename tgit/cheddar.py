@@ -40,7 +40,7 @@ class Cheddar:
         return "".join(fragments)
 
     def authenticate(self, email, password):
-        response = requests.post(self._hostname + "/api/authentications", auth=(email, password))
+        response = requests.post(self._hostname + "/api/authentications", auth=(email, password), verify=False)
         if response.status_code == 401:
             raise AuthenticationError()
 
@@ -52,7 +52,7 @@ class Cheddar:
     def get_identities(self, phrase, token):
         headers = {"Authorization": "Bearer {}".format(token)}
 
-        response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase), headers=headers)
+        response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase), headers=headers, verify=False)
         if response.status_code == 401:
             raise AuthenticationError()
 
