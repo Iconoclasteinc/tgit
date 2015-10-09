@@ -11,7 +11,8 @@
    </rect>
   </property>
   <property name="styleSheet">
-   <string notr="true">QGroupBox {
+   <string notr="true">
+QGroupBox {
 	border: 1px solid #DDDDDD;
 	border-bottom: 2px solid rgba(0, 0, 0, 20%);
 	background-color: white;
@@ -39,6 +40,14 @@ QComboBox QAbstractItemView {
 	border: 1px solid #B1B1B1;
 	color: #222222;
 	min-height: 20px;
+}
+
+QLineEdit,
+QPlainTextEdit,
+QComboBox,
+QSpinBox {
+  selection-background-color: #F2C1A7;
+  selection-color: #222222;
 }
 
 QLineEdit:focus,
