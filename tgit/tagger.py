@@ -26,13 +26,11 @@ from tgit import ui
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import MediaPlayer, create_media_library
 from tgit.cheddar import Cheddar
-from tgit.isni.name_registry import NameRegistry
 from tgit.settings_backend import SettingsBackend
 
 
 class TGiT(QApplication):
-    def __init__(self, create_player, name_registry, cheddar,
-                 settings_file=None, native=True, confirm_exit=True, on_exit=None):
+    def __init__(self, create_player, cheddar, settings_file=None, native=True, confirm_exit=True, on_exit=None):
         super().__init__([])
 
         self.setApplicationName("TGiT")
@@ -45,7 +43,6 @@ class TGiT(QApplication):
         self._on_exit = on_exit
         self._confirm_exit = confirm_exit
         self._native = native
-        self._name_registry = name_registry
         self._media_library = create_media_library()
         self._player = create_player(self._media_library)
         self._album_portfolio = AlbumPortfolio()
@@ -68,7 +65,7 @@ class TGiT(QApplication):
         self._set_locale(preferences.locale)
         session = self._settings_backend.load_session()
         main_window = ui.create_main_window(session, self._album_portfolio, self._player, preferences,
-                                            self._name_registry, self._cheddar, self._native, self._confirm_exit)
+                                            self._cheddar, self._native, self._confirm_exit)
         main_window.show()
 
     def launch(self):
@@ -88,14 +85,7 @@ def main():
     from requests.packages import urllib3
     urllib3.disable_warnings()
 
-    from test.util import cheddar as fake_cheddar
-    server_thread = fake_cheddar.start("isni.oclc.nl", 80)
-
-    def shutdown_isni_api():
-        fake_cheddar.stop(server_thread)
-
-    name_registry = NameRegistry(host="localhost", port=5001, secure=False)
     cheddar = Cheddar(host="tagyourmusic.herokuapp.com", port=443, secure=True)
 
-    tagger = TGiT(MediaPlayer, name_registry, cheddar, on_exit=shutdown_isni_api)
+    tagger = TGiT(MediaPlayer, cheddar)
     tagger.launch()
