@@ -42,6 +42,8 @@ if windows:
 includes = [
     "lxml._elementpath",
     "PyQt5.QtNetwork",
+    "tgit.ui.date_picker",
+    "tgit.ui.helpers.text_area"
 ]
 
 
