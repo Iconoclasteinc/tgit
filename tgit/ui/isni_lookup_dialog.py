@@ -183,6 +183,7 @@ class ISNILookupDialog(QDialog):
             label.append(" (")
             label.append(identity.date_of_birth)
             if identity.date_of_death:
+                label.append("-")
                 label.append(identity.date_of_death)
             label.append(")")
         label.append(" - ")
