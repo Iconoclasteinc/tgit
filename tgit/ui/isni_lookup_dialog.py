@@ -33,53 +33,53 @@ def make_isni_lookup_dialog(parent, identities, **handlers):
 
 
 STYLESHEET = """
-QGroupBox {
-	border: 1px solid #DDDDDD;
-	border-bottom: 2px solid rgba(0, 0, 0, 20%);
-	background-color: white;
-	padding: 17px 14px 14px 0px;
-	margin: 5px 8px;
-	font-size: 10px;
-}
+    QGroupBox {
+        border: 1px solid #DDDDDD;
+        border-bottom: 2px solid rgba(0, 0, 0, 20%);
+        background-color: white;
+        padding: 17px 14px 14px 0px;
+        margin: 5px 8px;
+        font-size: 10px;
+    }
 
-QGroupBox::title {
-	subcontrol-origin: margin;
-	subcontrol-position: top left;
-	left: 1px;
-	padding: 0 3px;
-	color: #777777;
-	border: 1px solid #DFDFDF;
-	background-color: #F7F7F7;
- }
+    QGroupBox::title {
+        subcontrol-origin: margin;
+        subcontrol-position: top left;
+        left: 1px;
+        padding: 0 3px;
+        color: #777777;
+        border: 1px solid #DFDFDF;
+        background-color: #F7F7F7;
+    }
 
-QRadioButton::indicator {
-    width: 22px;
-    height: 22px;
-}
+    QRadioButton::indicator {
+        width: 22px;
+        height: 22px;
+    }
 
-QRadioButton::indicator::unchecked {
-	image: url(:/images/radio-unchecked.png);
-}
+    QRadioButton::indicator::unchecked {
+        image: url(:/images/radio-unchecked.png);
+    }
 
-QRadioButton::indicator:unchecked:focus {
-	image: url(:/images/radio-unchecked-focus.png);
-}
+    QRadioButton::indicator:unchecked:focus {
+        image: url(:/images/radio-unchecked-focus.png);
+    }
 
-QRadioButton::indicator:unchecked:pressed {
-    image: url(:/images/radio-unchecked-pressed.png)
-}
+    QRadioButton::indicator:unchecked:pressed {
+        image: url(:/images/radio-unchecked-pressed.png)
+    }
 
-QRadioButton::indicator::checked {
-    image: url(:/images/radio-checked.png)
-}
+    QRadioButton::indicator::checked {
+        image: url(:/images/radio-checked.png)
+    }
 
-QRadioButton::indicator:checked:focus {
-    image: url(:/images/radio-checked-focus.png)
-}
+    QRadioButton::indicator:checked:focus {
+        image: url(:/images/radio-checked-focus.png)
+    }
 
-QRadioButton::indicator:checked:pressed {
-    image: url(:/images/radio-checked-pressed.png)
-}
+    QRadioButton::indicator:checked:pressed {
+        image: url(:/images/radio-checked-pressed.png)
+    }
 """
 
 
