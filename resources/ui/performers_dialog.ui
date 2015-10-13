@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>348</width>
-    <height>123</height>
+    <height>138</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -100,12 +100,12 @@ QGroupBox::title {
        <widget class="QWidget" name="_performers_table" native="true">
         <property name="styleSheet">
          <string notr="true">QPushButton {
-	background: transparent url(&quot;:/images/remove-20.png&quot;) no-repeat;
+	background: transparent url(&quot;:/images/minus-circle-a1a1a1_20x20.png&quot;) center no-repeat;
 }
 
 QPushButton:hover,
-QPushButton:focus {
-	background: transparent url(&quot;:/images/remove-hover-20.png&quot;) no-repeat;
+QPushButton:pressed {
+	background: transparent url(&quot;:/images/minus-circle-828282_20x20.png&quot;) center no-repeat;
 }
 
 </string>
@@ -126,7 +126,10 @@ QPushButton:focus {
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <property name="spacing">
+         <property name="horizontalSpacing">
+          <number>10</number>
+         </property>
+         <property name="verticalSpacing">
           <number>5</number>
          </property>
          <item row="0" column="1">
@@ -258,9 +261,7 @@ QPushButton:focus {
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>_action_buttons</sender>

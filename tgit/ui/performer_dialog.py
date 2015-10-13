@@ -34,7 +34,9 @@ FIRST_PERFORMER_ROW_INDEX = 1
 
 def _build_line_edit(content, name):
     edit = QLineEdit(content)
+    edit.setMinimumWidth(200)
     edit.setObjectName(name)
+    edit.setAttribute(Qt.WA_MacShowFocusRect, False)
     return edit
 
 
