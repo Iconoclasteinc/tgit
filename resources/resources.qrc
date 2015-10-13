@@ -55,9 +55,10 @@
         <file>images/warning.png</file>
         <file alias="playback-error">images/exclamation-16-dark.png</file>
         <file>images/add-performer-20.png</file>
-        <file>images/edit-20.png</file>
-        <file>images/edit-hover-20.png</file>
         <file>images/remove-20.png</file>
         <file>images/remove-hover-20.png</file>
+        <file alias="edit">images/pencil-square-o-a1a1a1_24x24.png</file>
+        <file alias="edit-hover">images/pencil-square-o-828282_24x24.png</file>
+        <file alias="edit-pressed">images/pencil-square-o-shifted-828282_24x24.png</file>
     </qresource>
 </RCC>

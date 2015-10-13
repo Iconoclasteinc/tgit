@@ -903,17 +903,17 @@ QPushButton:focus {
               </property>
               <property name="styleSheet">
                <string notr="true">QPushButton {
-    background: transparent url(':/images/edit-20.png') no-repeat;
+    background: transparent url(':/edit') center no-repeat;
     border: none;
     border-radius: 0;
 }
 
 QPushButton:hover, QPushButton:focus {
-    background: transparent url(':/images/edit-hover-20.png') no-repeat;
+    background: transparent url(':/edit-hover') center no-repeat;
 }
 
 QPushButton:pressed {
-	border: none;
+    background: transparent url(':/edit-pressed') center no-repeat;
 }</string>
               </property>
               <property name="text">
