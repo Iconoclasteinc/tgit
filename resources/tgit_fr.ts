@@ -29,7 +29,7 @@
     </message>
     <message>
         <source>Organize the release's tracks. Press [space] to play a track. Press [delete] to remove the track from the list.</source>
-        <translation>Organisez les pistes qui composent l'album.  Appuyez sur [espace] pour jouer la piste.  Appuyer du [supprimer] pour retirer la piste de la liste.</translation>
+        <translation>Organisez les pistes qui composent l'album.  Appuyez sur [espace] pour jouer la piste.  Appuyer sur [supprimer] pour retirer la piste de la liste.</translation>
     </message>
     <message>
         <source>Remove</source>
