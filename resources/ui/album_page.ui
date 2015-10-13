@@ -218,7 +218,7 @@ QCheckBox::indicator:unchecked {
 }
 
 QCheckBox::indicator:unchecked:focus {
-	image: url(:/images/checkbox-hover.png);
+	image: url(:/images/checkbox-focus.png);
 }
 
 QCheckBox::indicator:unchecked:pressed {
@@ -226,11 +226,11 @@ QCheckBox::indicator:unchecked:pressed {
 }
 
 QCheckBox::indicator:checked {
-	image: url(:/imagescheckbox-checked.png);
+	image: url(:/images/checkbox-checked.png);
 }
 
 QCheckBox::indicator:checked:focus {
-	image: url(:/images/checkbox-checked-hover.png);
+	image: url(:/images/checkbox-checked-focus.png);
 }
 
 QCheckBox::indicator:checked:pressed {
