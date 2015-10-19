@@ -8,8 +8,7 @@ import pytest
 
 from cute.prober import PollingProber
 from cute.probes import ValueMatcherProbe
-from identity import Identity
-
+from tgit.identity import Identity
 from test.util import builders as build, resources, doubles
 from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
@@ -320,10 +319,10 @@ def test_clears_lead_performer_isni_from_album():
 
 
 def test_assigns_isni_to_lead_performer_using_the_album_title():
-    class NameRegistry:
+    class FakeCheddar:
         @staticmethod
-        def assign(forename, surname, title_of_works):
-            if forename == "Paul" and surname == "McCartney" and title_of_works[0] == "Memory Almost Full":
+        def assign_isni(name, title_of_works):
+            if name == "Paul McCartney" and title_of_works[0] == "Memory Almost Full":
                 return "0000123456789"
             return None
 
@@ -332,5 +331,5 @@ def test_assigns_isni_to_lead_performer_using_the_album_title():
         isni = response
 
     isni = None
-    director.assign_isni_using(NameRegistry())("Paul McCartney", "Memory Almost Full", success_callback)
+    director.assign_isni_using(FakeCheddar())("Paul McCartney", "Memory Almost Full", success_callback)
     assert_that(isni, equal_to("0000123456789"), "isni assigned")

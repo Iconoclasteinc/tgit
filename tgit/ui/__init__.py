@@ -59,7 +59,7 @@ def UserPreferencesDialogController(notify_restart_required, preferences, parent
     return dialog
 
 
-def create_main_window(session, portfolio, player, preferences, name_registry, cheddar, native, confirm_exit):
+def create_main_window(session, portfolio, player, preferences, cheddar, native, confirm_exit):
     application_dialogs = Dialogs(native)
     messages = MessageBoxes(confirm_exit)
 
@@ -106,7 +106,7 @@ def create_main_window(session, portfolio, player, preferences, name_registry, c
                                        select_picture=application_dialogs.select_cover,
                                        on_select_picture=director.change_cover_of(album),
                                        on_isni_lookup=director.lookup_isni_using(cheddar, session.current_user),
-                                       on_isni_assign=director.assign_isni_using(name_registry),
+                                       on_isni_assign=director.assign_isni_using(cheddar),
                                        on_remove_picture=director.remove_album_cover_from(album),
                                        on_clear_isni=director.clear_isni_from(album),
                                        on_metadata_changed=director.update_album_from(album))

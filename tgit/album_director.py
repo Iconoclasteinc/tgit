@@ -28,7 +28,6 @@ from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
 from tgit.identity import Identity
-from tgit.isni.name_registry import NameRegistry
 from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
@@ -187,12 +186,8 @@ def clear_isni_from(album):
     return clear_isni
 
 
-def assign_isni_using(registry):
+def assign_isni_using(cheddar):
     def assign_isni(lead_performer, release_name, on_successful_lookup):
-        last_space_index = lead_performer.rfind(" ")
-        surname = lead_performer[last_space_index + 1:]
-        forename = lead_performer[:last_space_index]
-
         def poll_queue():
             while queue.empty():
                 QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -200,7 +195,7 @@ def assign_isni_using(registry):
 
         def assign():
             try:
-                queue.put(registry.assign(forename, surname, [release_name]))
+                queue.put(cheddar.assign_isni(lead_performer, [release_name]))
             except requests.ConnectionError as e:
                 return queue.put(e)
 
@@ -208,7 +203,7 @@ def assign_isni_using(registry):
         threading.Thread(target=assign).start()
         response = poll_queue()
         if type(response) is requests.ConnectionError:
-            on_successful_lookup((NameRegistry.Codes.ERROR, str(response)))
+            on_successful_lookup(("ERROR", str(response)))
         else:
             on_successful_lookup(response)
     return assign_isni

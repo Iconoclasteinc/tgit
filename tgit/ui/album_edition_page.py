@@ -24,7 +24,6 @@ from .helpers import image, formatting
 from tgit.album import AlbumListener
 from tgit.auth import Permission
 from tgit.genres import GENRES
-from tgit.isni.name_registry import NameRegistry
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
@@ -101,10 +100,10 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
         def on_assign_success(response):
             code, payload = response
-            if code == NameRegistry.Codes.SUCCESS:
-                self.isni.setText(payload)
-            else:
+            if code == "ERROR":
                 self._show_isni_assignation_failed(payload)
+            else:
+                self.isni.setText(payload)
             QApplication.restoreOverrideCursor()
 
         self.assign_isni_button.clicked.connect(start_waiting)

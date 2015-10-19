@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from hamcrest import assert_that, contains, has_properties, equal_to
 
-from identity import Identity
+from tgit.identity import Identity
 
 
 def test_creates_identity():
