@@ -511,7 +511,7 @@
     </message>
 </context>
 <context>
-    <name>PerformerDialog</name>
+    <name>performers_dialog</name>
     <message>
         <location filename="tgit/ui/performer_dialog.py" line="33"/>
         <source>Please enter the name of the performer</source>
@@ -646,17 +646,17 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Track Title: </source>
+        <source>Track Title:</source>
         <translation>Titre de la piste :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Lead Performer: </source>
+        <source>Lead Performer:</source>
         <translation>Artiste principal :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Version Information: </source>
+        <source>Version Information:</source>
         <translation>Infos sur la version :</translation>
     </message>
     <message>
@@ -666,22 +666,22 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Featured Guest: </source>
+        <source>Featured Guest:</source>
         <translation>Invité spécial :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Lyricist: </source>
+        <source>Lyricist:</source>
         <translation>Auteur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Composer: </source>
+        <source>Composer:</source>
         <translation>Compositeur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Publisher: </source>
+        <source>Publisher:</source>
         <translation>Éditeur :</translation>
     </message>
     <message>
@@ -691,12 +691,12 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>ISWC: </source>
+        <source>ISWC:</source>
         <translation>ISWC :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Tags: </source>
+        <source>Tags:</source>
         <translation>Tags :</translation>
     </message>
     <message>
@@ -711,32 +711,32 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Lyrics: </source>
+        <source>Lyrics:</source>
         <translation>Paroles :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Language: </source>
+        <source>Language:</source>
         <translation>Langue :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Preview Time: </source>
+        <source>Preview Time:</source>
         <translation>Pré-écoute :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Duration: </source>
+        <source>Duration:</source>
         <translation>Durée :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Bitrate: </source>
+        <source>Bitrate:</source>
         <translation>Débit :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>ISRC: </source>
+        <source>ISRC:</source>
         <translation>ISRC :</translation>
     </message>
 </context>
