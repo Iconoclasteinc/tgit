@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import pytest
 from PyQt5.QtCore import Qt
 from hamcrest import contains
-import pytest
 
 from cute.matchers import named
 from cute.probes import MultiValueMatcherProbe
@@ -31,6 +31,7 @@ def test_calls_authenticate_with_credentials(driver):
     sign_in_signal = MultiValueMatcherProbe("authentication", contains("jfalardeau@pyxis-tech.com", "passw0rd"))
 
     _ = show_dialog(on_sign_in=sign_in_signal.received)
+    driver.is_active()
 
     driver.enter_credentials("jfalardeau@pyxis-tech.com", "passw0rd")
     driver.check(sign_in_signal)
