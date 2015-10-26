@@ -8,7 +8,7 @@ import pytest
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from drivers import TrackEditionPageDriver
+from test.drivers import TrackEditionPageDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
 from tgit.ui.track_edition_page import make_track_edition_page, TrackEditionPage
