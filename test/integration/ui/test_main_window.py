@@ -5,7 +5,7 @@ from hamcrest import contains, instance_of
 import pytest
 
 from cute.matchers import named
-from cute.probes import ValueMatcherProbe
+from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers import MainWindowDriver
 from test.drivers.fake_drivers import no_startup_screen, no_album_screen, album_screen, startup_screen
@@ -36,6 +36,7 @@ def show_page(session=build.make_anonymous_session(),
               show_save_error=ignore,
               show_export_error=ignore,
               select_export_destination=ignore,
+              select_save_as_destination=ignore,
               select_tracks=ignore,
               select_tracks_in_folder=ignore,
               confirm_exit=yes,
@@ -50,6 +51,7 @@ def show_page(session=build.make_anonymous_session(),
                              show_save_error=show_save_error,
                              show_export_error=show_export_error,
                              select_export_destination=select_export_destination,
+                             select_save_as_destination=select_save_as_destination,
                              select_tracks=select_tracks,
                              select_tracks_in_folder=select_tracks_in_folder,
                              authenticate=authenticate,
@@ -393,3 +395,15 @@ def test_hides_the_logged_user_menu_item(driver):
     page.user_signed_out(None)
 
     driver.is_signed_out()
+
+
+def test_signals_when_transmit_to_soproq_menu_item_clicked(driver):
+    album = build.album(release_name="Honeycomb")
+    transmit_signal = MultiValueMatcherProbe("transmit to soproq", contains(album, "Honeycomb.xlsx"))
+
+    page = show_page(select_save_as_destination=lambda on_select, name: on_select(name + ".xlsx"),
+                     on_transmit_to_soproq=transmit_signal.received)
+    page.display_album_screen(album)
+
+    driver.transmit_to_soproq()
+    driver.check(transmit_signal)

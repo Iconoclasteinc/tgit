@@ -101,6 +101,7 @@ class MainWindowDriver(WidgetDriver):
     def has_disabled_album_actions(self):
         menu_bar(self).file.has_disabled_album_actions()
         menu_bar(self).navigate.is_disabled()
+        menu_bar(self).transmit.is_disabled()
 
     def close_album(self, using_shortcut=False):
         if using_shortcut:
@@ -158,6 +159,9 @@ class MainWindowDriver(WidgetDriver):
     def is_signed_out(self):
         menu_bar(self).account.shows_sign_in_menu()
 
-    def transmit_to_soproq(self, filename):
-        menu_bar(self).transmit.soproq()
+    def declare_album_to_soproq(self, filename):
+        self.transmit_to_soproq()
         save_as_dialog(self).save_as(filename)
+
+    def transmit_to_soproq(self):
+        menu_bar(self).transmit.soproq()

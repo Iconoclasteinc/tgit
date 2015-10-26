@@ -56,8 +56,8 @@ class MainWindow(QMainWindow, HandlerRegistrar):
     TRACK_ACTIONS_START_INDEX = 3
 
     def __init__(self, session, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
-                 create_album_screen, confirm_close, select_export_destination, select_tracks, select_tracks_in_folder,
-                 authenticate, **handlers):
+                 create_album_screen, confirm_close, select_export_destination, select_save_as_destination,
+                 select_tracks, select_tracks_in_folder, authenticate, **handlers):
         super().__init__()
         self._authenticate = authenticate
         self._confirm_exit = confirm_exit
@@ -69,6 +69,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self._select_tracks_in_folder = select_tracks_in_folder
         self._select_tracks = select_tracks
         self._select_export_destination = select_export_destination
+        self._select_save_as_destination = select_save_as_destination
 
         self._setup_ui()
         self._setup_menu_bar()
@@ -89,12 +90,14 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def enable_album_actions(self, album):
         self.navigate_menu.setEnabled(True)
+        self._transmit_menu.setEnabled(True)
         for action in self._album_dependent_action:
             action.setEnabled(True)
             action.setData(album)
 
     def disable_album_actions(self):
         self.navigate_menu.setDisabled(True)
+        self._transmit_menu.setDisabled(True)
         for action in self._album_dependent_action:
             action.setEnabled(False)
             action.setData(None)
@@ -149,6 +152,14 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
         self.export_action.triggered.connect(
             lambda *_: self._select_export_destination(export, self._album.release_name))
+
+    def on_transmit_to_soproq(self, on_transmit_to_soproq):
+        def save_as(destination):
+            with rescue(on_error=self._show_export_error):
+                on_transmit_to_soproq(self._album, destination)
+
+        self._soproq_action.triggered.connect(
+            lambda _: self._select_save_as_destination(save_as, self._album.release_name))
 
     def on_settings(self, on_settings):
         self.settings_action.triggered.connect(on_settings)

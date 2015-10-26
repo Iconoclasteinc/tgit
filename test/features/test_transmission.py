@@ -15,7 +15,7 @@ def test_export_to_soproq_file(app, recordings, workspace):
     app.change_track_metadata(track_title="Rashers",
                               isrc="CA-A01-12-00001")
 
-    app.transmit_to_soproq(filename="soproq.xlsx")
+    app.declare_album_to_soproq(filename="soproq.xlsx")
     workspace.contains_soproq_transmission_file(filename="soproq.xlsx",
                                                 track_title="Rashers",
                                                 lead_performer="Joel Miller",

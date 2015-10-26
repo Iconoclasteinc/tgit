@@ -30,7 +30,7 @@ class MenuBarDriver(QMenuBarDriver):
 
     @property
     def transmit(self):
-        return self.TransmitMenuDriver(self.open_menu(matchers.named("transmit_menu")))
+        return self.TransmitMenuDriver(self.open_menu(matchers.named("_transmit_menu")))
 
     def open_menu(self, matching):
         menu = self.menu(matching)
@@ -144,12 +144,14 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.close()
 
     class TransmitMenuDriver:
-        def __init__(self, menu_driver, menu_bar_driver):
-            self._menu_bar_driver = menu_bar_driver
+        def __init__(self, menu_driver):
             self._menu_driver = menu_driver
 
         def soproq(self):
             self._menu_driver.select_menu_item(matchers.named("_soproq_action"))
+
+        def is_disabled(self):
+            self._menu_driver.is_disabled()
 
 
 def _without_item(title):
