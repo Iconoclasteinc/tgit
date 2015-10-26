@@ -5,6 +5,7 @@ from .album_screen_driver import album_screen
 from .load_album_dialog_driver import load_album_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
+from test.drivers.save_as_dialog_driver import save_as_dialog
 from .user_preferences_dialog_driver import user_preferences_dialog
 from .menu_bar_driver import menu_bar
 from .new_album_page_driver import new_album_page
@@ -156,3 +157,7 @@ class MainWindowDriver(WidgetDriver):
 
     def is_signed_out(self):
         menu_bar(self).account.shows_sign_in_menu()
+
+    def transmit_to_soproq(self, filename):
+        menu_bar(self).transmit.soproq()
+        save_as_dialog(self).save_as(filename)
