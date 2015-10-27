@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from tgit.ui.save_as_dialog import make_save_as_csv_dialog, make_save_as_excel_dialog
 
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
-from tgit.ui.export_as_dialog import make_export_as_dialog
 from tgit.ui.picture_selection_dialog import make_picture_selection_dialog
 from tgit.ui.select_album_destination_dialog import SelectAlbumDestinationDialog
 from tgit.ui.load_album_dialog import LoadAlbumDialog
@@ -27,7 +27,8 @@ from tgit.ui.load_album_dialog import LoadAlbumDialog
 class Dialogs:
     _pictures = None
     _tracks = None
-    _export = None
+    _export_as_csv = None
+    _save_as_excel = None
     _select_album_destination = None
     _select_album_to_load = None
 
@@ -57,11 +58,11 @@ class Dialogs:
     def select_track(self, file_type, on_select):
         return self._select_tracks_dialog().select_file(file_type, on_select)
 
-    def export(self, on_select, default_file_name=""):
-        if not self._export:
-            self._export = make_export_as_dialog(default_file_name, self.parent, self._native)
+    def export_as_csv(self, on_select, default_file_name=""):
+        return make_save_as_csv_dialog(default_file_name, self.parent, self._native).select(on_select)
 
-        return self._export.select(on_select)
+    def save_as_excel(self, on_select, default_file_name=""):
+        return make_save_as_excel_dialog(default_file_name, self.parent, self._native).select(on_select)
 
     def select_album_destination(self, on_select):
         if not self._select_album_destination:
@@ -78,4 +79,4 @@ class Dialogs:
     def clear(self):
         self._pictures = None
         self._tracks = None
-        self._export = None
+        self._export_as_csv = None

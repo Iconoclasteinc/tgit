@@ -22,6 +22,7 @@ import functools as func
 from PyQt5.QtCore import QLocale
 
 from tgit import album_director as director
+from tgit import export
 from tgit.ui import resources
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.dialogs import Dialogs
@@ -33,7 +34,6 @@ from tgit.ui.track_list_page import make_track_list_page
 from tgit.ui.album_edition_page import make_album_edition_page
 from tgit.ui.album_screen import make_album_screen
 from tgit.ui.dialogs import Dialogs
-from tgit.ui.export_as_dialog import ExportAsDialog
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.main_window import MainWindow
 from tgit.ui.message_boxes import MessageBoxes
@@ -126,8 +126,8 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
                         create_startup_screen=create_startup_screen,
                         create_album_screen=create_album_screen,
                         confirm_close=messages.close_album_confirmation,
-                        select_export_destination=application_dialogs.export,
-                        select_save_as_destination=lambda *_: None,
+                        select_export_destination=application_dialogs.export_as_csv,
+                        select_save_as_destination=application_dialogs.save_as_excel,
                         select_tracks=application_dialogs.select_tracks,
                         select_tracks_in_folder=application_dialogs.add_tracks_in_folder,
                         show_save_error=messages.save_album_failed,
@@ -144,7 +144,8 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
                         on_about=messages.about_tgit,
                         on_online_help=browser.open_,
                         on_request_feature=browser.open_,
-                        on_register=browser.open_)
+                        on_register=browser.open_,
+                        on_transmit_to_soproq=export.as_soproq)
     application_dialogs.parent = window
     messages.parent = window
     portfolio.album_removed.subscribe(lambda album: application_dialogs.clear())

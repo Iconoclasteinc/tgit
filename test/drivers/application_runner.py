@@ -143,5 +143,5 @@ class ApplicationRunner:
     def is_signed_out(self):
         self.tagger.is_signed_out()
 
-    def transmit_to_soproq(self, filename):
+    def declare_album_to_soproq(self, filename):
         self.tagger.declare_album_to_soproq(self._workspace.file(filename))

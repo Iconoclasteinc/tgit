@@ -4,10 +4,8 @@ import pytest
 
 from cute.matchers import named
 from cute.widgets import window, FileDialogDriver
-from tgit import album_director
 from tgit.album import Album
 from tgit.ui import Dialogs
-
 
 ignore = lambda *_, **__: None
 
@@ -46,8 +44,8 @@ def select_album_to_load_dialog_driver(prober, automaton):
 
 
 @pytest.yield_fixture()
-def export_dialog_driver(prober, automaton):
-    driver = FileDialogDriver(window(QFileDialog, named("export-as-dialog")), prober, automaton)
+def save_as_dialog_driver(prober, automaton):
+    driver = FileDialogDriver(window(QFileDialog, named("save_as_dialog")), prober, automaton)
     yield driver
     driver.close()
 
@@ -97,13 +95,3 @@ def test_creates_a_single_picture_selection_dialog_for_a_given_album(dialogs, pi
     dialogs.select_cover(ignore)
     picture_selection_dialog_driver.is_showing_on_screen()
     picture_selection_dialog_driver.reject()
-
-
-def test_creates_a_single_export_dialog_for_a_given_album(dialogs, export_dialog_driver):
-    dialogs.export(ignore)
-    export_dialog_driver.is_showing_on_screen()
-    export_dialog_driver.reject()
-
-    dialogs.export(ignore)
-    export_dialog_driver.is_showing_on_screen()
-    export_dialog_driver.reject()
