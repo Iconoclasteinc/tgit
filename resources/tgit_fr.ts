@@ -415,6 +415,11 @@
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
+        <source>&amp;Transmit</source>
+        <translation>&amp;Transmettre</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/main_window.py"/>
         <source>&amp;Help</source>
         <translation>&amp;Aide</translation>
     </message>
