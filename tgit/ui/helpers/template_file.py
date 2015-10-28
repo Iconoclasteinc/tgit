@@ -17,4 +17,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.export.exporter import as_soproq_using
+from PyQt5 import uic
+from PyQt5.QtCore import QFile, QIODevice
+from io import BytesIO
+
+
+def load(path):
+    file = QFile(path)
+    file.open(QIODevice.ReadOnly)
+    template = BytesIO(file.readAll().data())
+    file.close()
+
+    return template

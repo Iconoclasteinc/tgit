@@ -26,6 +26,7 @@ from tgit import export
 from tgit.ui import resources
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.dialogs import Dialogs
+from tgit.ui.helpers import template_file as templates
 from tgit.ui.startup_screen import StartupScreen
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog
 from tgit.ui.new_album_page import NewAlbumPage
@@ -120,6 +121,10 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
     def create_album_screen(album):
         return make_album_screen(album, create_track_list_page, create_album_page, create_track_page_for(album))
 
+    def export_as_soproq():
+        from openpyxl import load_workbook
+        return export.as_soproq_using(lambda: load_workbook(templates.load(":/templates/soproq.xlsx")))
+
     window = MainWindow(session,
                         portfolio,
                         confirm_exit=messages.confirm_exit,
@@ -145,7 +150,7 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
                         on_online_help=browser.open_,
                         on_request_feature=browser.open_,
                         on_register=browser.open_,
-                        on_transmit_to_soproq=export.as_soproq)
+                        on_transmit_to_soproq=export_as_soproq())
     application_dialogs.parent = window
     messages.parent = window
     portfolio.album_removed.subscribe(lambda album: application_dialogs.clear())

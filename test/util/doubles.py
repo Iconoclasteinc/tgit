@@ -61,3 +61,19 @@ class FakeAudioPlayer(metaclass=Observable):
 
     def error(self, error):
         self.error_occurred.emit(self.track, error)
+
+
+class FakeFormat:
+    album = None
+    workbook = None
+
+    def write(self, album, workbook):
+        self.album = album
+        self.workbook = workbook
+
+
+class FakeWorkbook:
+    filename = ""
+
+    def save(self, filename):
+        self.filename = filename

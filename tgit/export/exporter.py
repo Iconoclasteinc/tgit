@@ -17,6 +17,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from tgit.export import soproq_format
 
-def as_soproq(album, filename):
-    pass
+
+def as_soproq_using(load_workbook, formatter=soproq_format):
+    def as_soproq(album, filename):
+        workbook = load_workbook()
+        formatter.write(album, workbook)
+        workbook.save(filename)
+
+    return as_soproq

@@ -61,5 +61,6 @@
         <file alias="edit">images/pencil-square-o-a1a1a1_24x24.png</file>
         <file alias="edit-hover">images/pencil-square-o-828282_24x24.png</file>
         <file alias="edit-pressed">images/pencil-square-o-shifted-828282_24x24.png</file>
+        <file>templates/soproq.xlsx</file>
     </qresource>
 </RCC>
