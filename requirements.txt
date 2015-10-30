@@ -4,7 +4,6 @@ Flask==0.10.1
 flexmock==0.9.7
 itsdangerous==0.24
 Jinja2==2.8
-lxml==3.4.4
 MarkupSafe==0.23
 mutagen==1.31
 openpyxl==2.3.0
