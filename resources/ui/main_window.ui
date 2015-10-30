@@ -229,7 +229,13 @@
   </action>
   <action name="_soproq_action">
    <property name="text">
-    <string>SOPRO&amp;Q</string>
+    <string>SOPRO&amp;Q...</string>
+   </property>
+   <property name="iconText">
+    <string>SOPROQ...</string>
+   </property>
+   <property name="toolTip">
+    <string>SOPROQ...</string>
    </property>
   </action>
  </widget>
