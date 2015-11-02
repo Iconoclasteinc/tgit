@@ -13,7 +13,7 @@ def test_writes_tracks_to_workbook():
         release_name="Release Name",
         lead_performer="Lead Performer",
         isni="0000123456789",
-        compilation=True,
+        compilation=False,
         guest_performers=[("Instrument1", "Performer1"), ("Instrument2", "Performer2")],
         label_name="Label Name",
         catalog_number="Catalog Number",
@@ -68,7 +68,7 @@ def test_writes_tracks_to_workbook():
                       H13="Barcode",
                       I13="2014-05-10",
                       J13="",
-                      K13="O",
+                      K13="N",
                       L13="1",
                       M13="Track Title",
                       N13="Lead Performer",
@@ -97,7 +97,7 @@ def test_writes_tracks_to_workbook():
                       H14="Barcode",
                       I14="2014-05-10",
                       J14="",
-                      K14="O",
+                      K14="N",
                       L14="2",
                       M14="Track Title1",
                       N14="Lead Performer",
@@ -114,6 +114,25 @@ def test_writes_tracks_to_workbook():
                       Y14="",
                       Z14="",
                       AA14="")
+
+
+def test_writes_compilation_tracks_to_workbook():
+    album = build.album(
+        release_name="Release Name",
+        lead_performer="Various Artists",
+        compilation=True)
+
+    album.add_track(build.track(lead_performer="performer"))
+
+    workbook = Workbook()
+
+    write(album, workbook)
+
+    has_line_metadata(workbook.active,
+                      A13="Release Name",
+                      B13="Artistes Variés",
+                      N13="performer",
+                      K13="O")
 
 
 def has_rights_holder(worksheet, name, datetime):

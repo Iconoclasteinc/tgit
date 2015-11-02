@@ -24,12 +24,13 @@ def _to_duration(seconds):
 
 
 def _write_line(album, track, line_number, sheet):
-    lead_performer = track.lead_performer if track.lead_performer else album.lead_performer
+    album_lead_performer = album.lead_performer if not album.compilation else "Artistes Variés"
+    track_lead_performer = track.lead_performer if track.lead_performer else album_lead_performer
     recording_time = album.recording_time.split("-")[0] if album.recording_time else ""
     compilation = "O" if album.compilation else "N"
 
     sheet["A"+str(line_number)] = album.release_name    # TITRE ALBUM
-    sheet["B"+str(line_number)] = lead_performer        # INTERPRÈTE ALBUM
+    sheet["B"+str(line_number)] = album_lead_performer  # INTERPRÈTE ALBUM
     sheet["C"+str(line_number)] = ""                    # NATIONALITÉ INTERPRÈTE ALBUM
     sheet["D"+str(line_number)] = album.label_name      # MAISON DE DISQUES
     sheet["E"+str(line_number)] = album.label_name      # ÉTIQUETTE
@@ -41,7 +42,7 @@ def _write_line(album, track, line_number, sheet):
     sheet["K"+str(line_number)] = compilation           # COMPILATION
     sheet["L"+str(line_number)] = str(track.track_number)  # NO. PLAGE
     sheet["M"+str(line_number)] = track.track_title     # * TITRE ENREGISTREMENT SONORE
-    sheet["N"+str(line_number)] = lead_performer        # * INTERPRÈTE ENREGISTREMENT SONORE
+    sheet["N"+str(line_number)] = track_lead_performer  # * INTERPRÈTE ENREGISTREMENT SONORE
     sheet["O"+str(line_number)] = ""                    # * NATIONALITÉ INTERPRÈTE
     sheet["P"+str(line_number)] = track.isrc            # * ISRC
     sheet["Q"+str(line_number)] = _to_duration(track.duration)  # DURÉE
