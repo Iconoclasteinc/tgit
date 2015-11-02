@@ -1,3 +1,5 @@
+from datetime import date
+
 from hamcrest import assert_that, equal_to
 
 from openpyxl import Workbook
@@ -54,6 +56,7 @@ def test_writes_tracks_to_workbook():
 
     write(album, workbook)
 
+    has_rights_holder(workbook.active, "Label Name", str(date.today()))
     has_line_metadata(workbook.active,
                       A13="Release Name",
                       B13="Lead Performer",
@@ -111,6 +114,11 @@ def test_writes_tracks_to_workbook():
                       Y14="",
                       Z14="",
                       AA14="")
+
+
+def has_rights_holder(worksheet, name, datetime):
+    assert_that(worksheet["B6"].value, equal_to(name), "Rights holder name")
+    assert_that(worksheet["C6"].value, equal_to(datetime), "Declaration date")
 
 
 def has_line_metadata(worksheet, **cells):

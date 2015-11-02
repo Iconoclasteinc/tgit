@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from datetime import date
 
 
 def _to_duration(seconds):
@@ -56,8 +57,15 @@ def _write_line(album, track, line_number, sheet):
     sheet["AA"+str(line_number)] = ""                   # DATE FIN DE DROIT
 
 
+def _write_rights_holder_section(album, sheet):
+    sheet["B6"] = album.label_name      # AYANT DROIT
+    sheet["C6"] = str(date.today())     # DATE
+
+
 def write(album, workbook):
     sheet = workbook.active
+    _write_rights_holder_section(album, sheet)
+
     line_number = 13
     for track in album.tracks:
         _write_line(album, track, line_number, sheet)
