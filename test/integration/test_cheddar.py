@@ -11,7 +11,7 @@ from tgit.cheddar import Cheddar
 def platform():
     from test.util import cheddar
 
-    server_thread = cheddar.start("", 0)
+    server_thread = cheddar.start()
     yield cheddar
     cheddar.stop(server_thread)
 

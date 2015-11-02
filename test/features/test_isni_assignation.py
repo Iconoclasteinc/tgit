@@ -20,9 +20,9 @@ import pytest
 
 
 @pytest.mark.skipif(True, reason="Assignation through Cheddar is not implemented")
-def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, name_server, platform):
+def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, platform):
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
-    name_server.assignation_generator = iter(["0000000121707484"])
+    # name_server.assignation_generator = iter(["0000000121707484"])
 
     app.import_album("Honeycomb", from_track=track)
     app.shows_track_list(["Salsa Coltrane"])
@@ -36,14 +36,3 @@ def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, nam
                              isni="0000000121707484",
                              lead_performer="Joel Miller",
                              track_title="Salsa Coltrane")
-
-
-@pytest.mark.skipif(True, reason="Assignation through Cheddar is not implemented")
-def test_failing_to_assign_isni_to_lead_performer_when_data_is_invalid(app, recordings, name_server, platform):
-    track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
-    name_server.assignation_generator = iter(["invalid data"])
-
-    app.import_album("Honeycomb", from_track=track)
-    app.shows_track_list(["Salsa Coltrane"])
-    app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
-    app.fails_to_assign_isni_to_lead_performer()

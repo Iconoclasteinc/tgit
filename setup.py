@@ -40,7 +40,6 @@ if windows:
     include_files.append((os.path.join(qt_path, "libEGL.dll"), "libEGL.dll"))
 
 includes = [
-    "lxml._elementpath",
     "PyQt5.QtNetwork",
     "tgit.ui.date_picker",
     "tgit.ui.helpers.text_area"

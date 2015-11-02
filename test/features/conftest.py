@@ -58,16 +58,8 @@ def app(workspace, settings_file):
 
 
 @pytest.yield_fixture()
-def name_server():
-    from test.util import isni_database
-    database_thread = isni_database.start()
-    yield isni_database
-    isni_database.stop(database_thread)
-
-
-@pytest.yield_fixture()
-def platform(name_server):
+def platform():
     from test.util import cheddar
-    server_thread = cheddar.start(name_server.host(), name_server.port())
+    server_thread = cheddar.start()
     yield cheddar
     cheddar.stop(server_thread)

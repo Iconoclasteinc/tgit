@@ -31,7 +31,6 @@ allowed_bearer_token = ""
 identities = {}
 
 _app = Flask(__name__)
-_name_server_uri = ""
 
 
 def port():
@@ -104,21 +103,6 @@ def _lookup():
     return json.dumps(identities_to_return)
 
 
-@_app.route("/isni/lookup")
-def _lookup_deprecated():
-    response = requests.get(_name_server_uri + "/sru/DB=1.2?" + request.query_string.decode(), verify=False)
-    return response.content
-
-
-@_app.route("/isni/assign", methods=["POST"])
-def _assign():
-    headers = {"content-type": "application/atom+xml"}
-    response = requests.post(_name_server_uri + "/ATOM/isni", data=request.data.decode(), headers=headers, verify=False)
-    # response = requests.post("https://isni-m-acc.oclc.nl/ATOM/isni", data=request.data.decode(), headers=headers,
-    #                          verify=False)
-    return response.content
-
-
 @_app.route("/api/authentications", methods=["POST"])
 @_requires_auth
 def _authenticate():
@@ -135,10 +119,7 @@ def _shutdown():
     return "Server shutting down..."
 
 
-def start(name_server_host, name_server_port):
-    global _name_server_uri
-    _name_server_uri = "http://" + name_server_host + ":" + str(name_server_port)
-
+def start():
     server_thread = Thread(target=lambda: _app.run(port=port()))
     server_thread.start()
     return server_thread
