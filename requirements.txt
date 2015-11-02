@@ -6,7 +6,7 @@ itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
 mutagen==1.31
-openpyxl==2.3.0
+openpyxl==2.2.6
 pbr==1.8.0
 Pillow==2.9.0
 py==1.4.30
