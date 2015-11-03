@@ -16,8 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from datetime import timezone
 
-from dateutil import tz, parser as dateparser
+from dateutil import parser as dateparser
 
 
 def in_kbps(bps):
@@ -46,6 +47,6 @@ def fromPeopleList(text):
     return people
 
 
-def asLocalDateTime(instant):
-    localTime = dateparser.parse(instant).astimezone(tz.tzlocal())
+def as_local_date_time(instant):
+    localTime = dateparser.parse(instant).replace(tzinfo=timezone.utc).astimezone()
     return localTime.strftime('%Y-%m-%d'), localTime.strftime('%H:%M:%S')

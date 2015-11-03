@@ -18,7 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from collections import Counter
+from datetime import timezone
 
+from dateutil import parser as dateparser
 from mutagen import mp3, id3
 
 from tgit.metadata import Metadata, Image
@@ -169,7 +171,7 @@ class PairProcessor:
         return [[role, name] for role, name in metadata[self._tag]]
 
 
-class TaggerAndVersionProcessor:
+class TaggerAndVersionConverter:
     def __init__(self, old_frame_key, tagger_frame, version_frame):
         self._old_frame_key = old_frame_key
         self._tagger_frame = tagger_frame
@@ -193,7 +195,7 @@ class TaggerAndVersionProcessor:
         frames.delall(self._old_frame_key)
 
 
-class UpgradeProcessor:
+class TextConverter:
     def __init__(self, old_key, new_key):
         self._old_key = old_key
         self._new_key = new_key
@@ -210,13 +212,36 @@ class UpgradeProcessor:
         frames.delall(self._old_key)
 
 
+class LocalDateTimeConverter:
+    def __init__(self, old_key, new_key):
+        self._old_key = old_key
+        self._new_key = new_key
+
+    # noinspection PyUnusedLocal
+    def process_frames(self, metadata, frames):
+        if self._old_key in frames:
+            old = frames.pop(self._old_key)
+            frame, desc, lang = _decompose(self._new_key)
+            frames.add(getattr(id3, frame)(encoding=old.encoding, desc=desc, lang=lang,
+                                           text=[self._to_timestamp(instant) for instant in old.text]))
+
+    def _to_timestamp(self, value):
+        instant = dateparser.parse(value).astimezone(timezone.utc)
+        return instant.strftime('%Y-%m-%d %H:%M:%S')
+
+    # noinspection PyUnusedLocal
+    def process_metadata(self, frames, encoding, metadata):
+        frames.delall(self._old_key)
+
+
 class ID3Container:
     UTF_8 = 3
 
     _upgraders = [
-        TaggerAndVersionProcessor("TXXX:Tagger", "TXXX:TAGGER", "TXXX:TAGGER_VERSION"),
-        UpgradeProcessor("TXXX:UPC", "TXXX:BARCODE"),
-        UpgradeProcessor("TXXX:Tagging Time", "TXXX:TAGGING_TIME")
+        TaggerAndVersionConverter("TXXX:Tagger", "TXXX:TAGGER", "TXXX:TAGGER_VERSION"),
+        TextConverter("TXXX:UPC", "TXXX:BARCODE"),
+        LocalDateTimeConverter("TXXX:Tagging Time", "TDTG"),
+        LocalDateTimeConverter("TXXX:TAGGING_TIME", "TDTG")
     ]
 
     _processors = [
@@ -243,6 +268,7 @@ class ID3Container:
         "TDRC": "recording_time",
         "TDRL": "release_time",
         "TDOR": "original_release_time",
+        "TDTG": "tagging_time",
         "TIT2": "track_title",
         "TPE4": "versionInfo",
         "TEXT": "lyricist",
@@ -257,7 +283,6 @@ class ID3Container:
         "TXXX:Tags": "labels",
         "TXXX:TAGGER": "tagger",
         "TXXX:TAGGER_VERSION": "tagger_version",
-        "TXXX:TAGGING_TIME": "tagging_time",
         "TXXX:ISNI": "isni",
         "TXXX:ISWC": "iswc",
         "COMM::fra": "comments",

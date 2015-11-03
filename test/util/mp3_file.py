@@ -74,6 +74,8 @@ class Mp3Audio(object):
                 self._add_tag(id3.TDRL(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
             elif tag == "originalReleaseTime" or tag == "TDOR":
                 self._add_tag(id3.TDOR(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
+            elif tag == "tagging_time" or tag == "TDTG":
+                self._add_tag(id3.TDTG(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
             elif tag == "recordingStudios" or tag == "TXXX_RECORDING_STUDIOS":
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="Recording Studios", text=value))
             elif tag == "TIPL":
@@ -120,7 +122,8 @@ class Mp3Audio(object):
             elif tag == "TXXX_Tagging_Time":
                 """ Deprecated and replaced with TAGGING_TIME """
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="Tagging Time", text=value))
-            elif tag == "tagging_time" or tag == "TXXX_TAGGING_TIME":
+            elif tag == "TXXX_TAGGING_TIME":
+                """ Deprecated and replaced with TDTG """
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="TAGGING_TIME", text=value))
             elif tag == "TRCK":
                 self._add_tag(id3.TRCK(encoding=UTF_8, text=value))

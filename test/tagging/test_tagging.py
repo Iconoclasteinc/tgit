@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
-from dateutil import tz
-from hamcrest import has_properties, has_entries, contains, equal_to, assert_that
 import pytest
+from hamcrest import has_properties, has_entries, contains, equal_to, assert_that
 
 import tgit
+from test.util import builders as build, mp3_file
 from tgit.metadata import Image
 from tgit.tagging import tagging
-from test.util import builders as build, mp3_file
 
-NOW = datetime(2014, 3, 23, 16, 44, 33, tzinfo=tz.tzutc())
+NOW = datetime(2014, 3, 23, 16, 44, 33, tzinfo=timezone(-timedelta(hours=4)))
 
 
 @pytest.yield_fixture
@@ -60,4 +59,4 @@ def test_adds_version_information_to_tags(mp3):
     track = tagging.load_track(track.filename)
     assert_that(track, has_properties(tagger='TGiT',
                                       tagger_version=tgit.__version__,
-                                      tagging_time="2014-03-23 16:44:33 +0000"))
+                                      tagging_time="2014-03-23 20:44:33"))

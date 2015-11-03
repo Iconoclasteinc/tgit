@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import pytest
 from hamcrest import (assert_that, has_entry, has_key, has_length, contains, is_not, contains_inanyorder, has_entries,
                       not_, all_of)
 from mutagen.mp3 import MP3
-import pytest
 
 from test.util import mp3_file
-from tgit.tagging.id3_container import ID3Container
 from tgit.metadata import Metadata, Image
+from tgit.tagging.id3_container import ID3Container
 
 BITRATE = mp3_file.Base.bitrate
 DURATION = mp3_file.Base.duration
 
 container = ID3Container()
+
+pytestmark = pytest.mark.unit
 
 
 @pytest.yield_fixture
@@ -216,9 +218,9 @@ def test_reads_tagger_version_from_custom_frame(mp3):
     assert_that(metadata, has_entry("tagger_version", "1.0"), "metadata")
 
 
-def test_reads_tagging_time_from_custom_frame(mp3):
-    metadata = container.load(mp3(TXXX_TAGGING_TIME="2014-03-26 14:18:55 EDT-0400"))
-    assert_that(metadata, has_entry("tagging_time", "2014-03-26 14:18:55 EDT-0400"), "metadata")
+def test_reads_tagging_time_from_tdtg_frame(mp3):
+    metadata = container.load(mp3(TDTG="2014-03-26T18:18:55"))
+    assert_that(metadata, has_entry("tagging_time", "2014-03-26 18:18:55"), "metadata")
 
 
 def test_reads_track_number_from_trck_frame(mp3):
@@ -270,7 +272,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["language"] = "fra"
     metadata["tagger"] = "TGiT"
     metadata["tagger_version"] = "1.0"
-    metadata["tagging_time"] = "2014-03-26 14:18:55 EDT-0400"
+    metadata["tagging_time"] = "2014-03-26 18:18:55"
     metadata["track_number"] = 3
     metadata["total_tracks"] = 5
 
@@ -332,22 +334,22 @@ def test_transforms_deprecated_tagger_frame_into_tagger_and_version(mp3):
 
 
 def test_upgrades_deprecated_frames_to_their_new_form(mp3):
-    metadata = container.load(mp3(TXXX_UPC="987654321111", TXXX_Tagging_Time="2014-03-26 14:18:55 EDT-0400"))
+    metadata = container.load(mp3(TXXX_UPC="987654321111",
+                                  TXXX_TAGGING_TIME="2014-03-26 14:18:55 EDT-0400"))
 
-    assert_that(metadata, has_entries(upc="987654321111", tagging_time="2014-03-26 14:18:55 EDT-0400"), "metadata")
+    assert_that(metadata, has_entries(upc="987654321111", tagging_time="2014-03-26 18:18:55"), "metadata")
 
 
 def test_removes_deprecated_frames_on_save(mp3):
     filename = mp3(TXXX_Tagger="TGiT v1.1",
-                   TXXX_Tagging_Time="2014-03-26 14:18:55 EDT-0400",
+                   TXXX_TAGGING_TIME="2014-03-26 14:18:55 EDT-0400",
                    TXXX_UPC="987654321111")
     container.save(filename, Metadata())
 
     tags = MP3(filename)
     assert_that(tags, all_of(not_(has_key("TXXX:Tagger")),
-                             not_(has_key("TXXX:Tagging Time")),
-                             not_(has_key("TXXX:UPC"))
-                             ), "tags in file")
+                             not_(has_key("TXXX:TAGGING_TIME")),
+                             not_(has_key("TXXX:UPC"))), "tags in file")
 
 
 def assert_can_be_saved_and_reloaded_with_same_state(mp3, metadata):

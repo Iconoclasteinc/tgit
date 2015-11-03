@@ -118,7 +118,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     def _compose_software_notice(self, track):
         try:
-            date, time = formatting.asLocalDateTime(track.tagging_time)
+            date, time = formatting.as_local_date_time(track.tagging_time)
         except Exception:
             date, time = None, None
 
