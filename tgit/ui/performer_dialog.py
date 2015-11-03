@@ -17,14 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import sys
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QPushButton, QLineEdit
 
 from tgit.ui.helpers.ui_file import UIFile
-
-mac = sys.platform == "darwin"
 
 INSTRUMENT_COLUMN_INDEX = 0
 PERFORMER_COLUMN_INDEX = 1

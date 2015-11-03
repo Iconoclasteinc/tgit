@@ -15,6 +15,7 @@ from test.util import builders as build
 from test.util.builders import make_album
 from tgit.album import Album
 from tgit.auth import User
+from tgit.platforms import mac
 from tgit.ui.main_window import MainWindow
 
 ignore = lambda *_, **__: None
@@ -174,7 +175,7 @@ def test_signals_when_register_menu_item_clicked(driver):
     driver.check(register_signal)
 
 
-@pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")
+@pytest.mark.skipif(mac, reason="still unstable on Mac")
 def test_signals_when_save_album_keyboard_shortcut_is_activated(driver):
     album = make_album()
     save_album_signal = ValueMatcherProbe("save", album)
@@ -208,7 +209,7 @@ def test_signals_when_album_closed(driver):
     driver.check(close_album_signal)
 
 
-@pytest.mark.skipif(sys.platform.startswith("darwin"), reason="still unstable on Mac")
+@pytest.mark.skipif(mac, reason="still unstable on Mac")
 def test_shows_confirmation_when_close_album_keyboard_shortcut_is_activated(driver):
     main_window = show_page()
     main_window.enable_album_actions(build.album())

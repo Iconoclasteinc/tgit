@@ -11,6 +11,7 @@ from cute.widgets import window
 from cute.probes import ValueMatcherProbe
 from test.drivers import TrackSelectionDialogDriver
 from test.util import resources
+from tgit.platforms import windows
 from tgit.ui.track_selection_dialog import TrackSelectionDialog
 
 
@@ -77,8 +78,8 @@ def test_restricts_selection_based_on_file_type(driver, dialog):
     driver.check(tracks_selection_signal)
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="not supported on Windows")
-def test_rejects_non_audio_files(driver, dialog):
+@pytest.mark.skipif(windows, reason="not supported on Windows")
+def test_only_accept_audio_files(driver, dialog):
     unsupported_file = resources.path('front-cover.jpg')
 
     dialog.select_files('mp3', on_select=None)

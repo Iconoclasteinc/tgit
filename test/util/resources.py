@@ -3,6 +3,7 @@
 import os
 import sys
 import tempfile
+from tgit.platforms import windows
 
 __all__ = ['path', 'make_temp_dir']
 
@@ -27,7 +28,7 @@ def path(filepath, *more):
 def make_temp_dir():
     dirpath = tempfile.mkdtemp()
 
-    if sys.platform.startswith("win"):
+    if windows:
         from ctypes import create_unicode_buffer, windll
 
         longname = create_unicode_buffer(MAXIMUM_WINDOWS_DIR_PATH_LENGTH)

@@ -12,6 +12,7 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import PictureSelectionDialogDriver
 from test.util import resources
+from tgit.platforms import windows
 from tgit.ui.picture_selection_dialog import PictureSelectionDialog
 
 
@@ -36,7 +37,7 @@ def test_signals_when_picture_selected(driver):
     driver.check(signal)
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="not supported on Windows")
+@pytest.mark.skipif(windows, reason="not supported on Windows")
 def test_only_accepts_picture_files(driver):
     _ = show_dialog()
     driver.rejects_selection_of(resources.path("base.mp3"))

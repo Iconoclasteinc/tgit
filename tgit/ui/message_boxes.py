@@ -17,8 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import sys
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox
 
@@ -72,8 +70,8 @@ class MessageBoxes:
     def overwrite_album_confirmation(self, **handlers):
         return self._open(ConfirmationBox.warn(self.parent,
                                                "This album already exists. Do you want to replace it?",
-                                               "A file with the same name already exists at the location you specified. "
-                                               "Replacing it will overwrite its current contents.",
+                                               "A file with the same name already exists at the location you specified."
+                                               " Replacing it will overwrite its current contents.",
                                                yes_button_text="Replace",
                                                **handlers))
 
@@ -90,12 +88,10 @@ class MessageBoxes:
         return box.exec() == QMessageBox.Yes
 
     def about_qt(self):
-        QMessageBox.aboutQt(self.parent)
+        QMessageBox().aboutQt(self.parent)
 
     def about_tgit(self):
         return self._show(AboutDialog(self.parent))
-
-mac = sys.platform == "darwin"
 
 
 class MessageBox(QMessageBox):
