@@ -233,6 +233,11 @@ def test_reads_total_tracks_from_trck_frame(mp3):
     assert_that(metadata, has_entry("total_tracks", 5), "metadata")
 
 
+def test_reads_lead_performer_region_from_custom_frame(mp3):
+    metadata = container.load(mp3(TXXX_LEAD_PERFORMER_REGION="CA-QC"))
+    assert_that(metadata, has_entry("lead_performer_region", ("CA", "QC")), "metadata")
+
+
 def test_round_trips_empty_metadata_to_file(mp3):
     assert_can_be_saved_and_reloaded_with_same_state(mp3, Metadata())
 
@@ -243,6 +248,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["release_name"] = "Album"
     metadata["compilation"] = True
     metadata["lead_performer"] = "Lead Performer"
+    metadata["lead_performer_region"] = ("CA", "QC")
     metadata["isni"] = "0000123456789"
     metadata["iswc"] = "T-345246800-1"
     metadata["guest_performers"] = [("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]

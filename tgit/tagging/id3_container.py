@@ -63,8 +63,8 @@ class UnicodeProcessor(TextProcessor):
 
 class BooleanProcessor(TextProcessor):
     @staticmethod
-    def to_boolean(text):
-        return text == "1"
+    def to_boolean(frame):
+        return str(frame) == "1"
 
     @staticmethod
     def to_text(value):
@@ -72,6 +72,19 @@ class BooleanProcessor(TextProcessor):
 
     def __init__(self, key, tag):
         super().__init__(key, tag, self.to_boolean, self.to_text)
+
+
+class RegionProcessor(TextProcessor):
+    @staticmethod
+    def to_region(frame):
+        return tuple(str(frame).split("-"))
+
+    @staticmethod
+    def to_text(value):
+        return "-".join(value)
+
+    def __init__(self, key, tag):
+        super().__init__(key, tag, self.to_region, self.to_text)
 
 
 class MultiValueNumericProcessor:
@@ -258,7 +271,9 @@ class ID3Container:
         MultiValueNumericProcessor("TRCK", "track_number", "total_tracks")
     ]
 
-    for key, tag in {"TCMP": "compilation"}.items():
+    for key, tag in {
+        "TCMP": "compilation"
+    }.items():
         _processors.append(BooleanProcessor(key, tag))
 
     for key, tag in {
@@ -276,20 +291,25 @@ class ID3Container:
         "TPUB": "publisher",
         "TSRC": "isrc",
         "TLAN": "language",
-        "TXXX:Catalog Number": "catalog_number",
         "TXXX:BARCODE": "upc",
-        "TXXX:Recording Studios": "recording_studios",
+        "TXXX:Catalog Number": "catalog_number",
         "TXXX:Featured Guest": "featuredGuest",
-        "TXXX:Tags": "labels",
-        "TXXX:TAGGER": "tagger",
-        "TXXX:TAGGER_VERSION": "tagger_version",
         "TXXX:ISNI": "isni",
         "TXXX:ISWC": "iswc",
+        "TXXX:Recording Studios": "recording_studios",
+        "TXXX:TAGGER": "tagger",
+        "TXXX:TAGGER_VERSION": "tagger_version",
+        "TXXX:Tags": "labels",
         "COMM::fra": "comments",
         "USLT::fra": "lyrics",
         "TCON": "primary_style"
     }.items():
         _processors.append(UnicodeProcessor(key, tag))
+
+    for key, tag in {
+        "TXXX:LEAD_PERFORMER_REGION": "lead_performer_region"
+    }.items():
+        _processors.append(RegionProcessor(key, tag))
 
     _all_processors = _upgraders + _processors
 
