@@ -2,10 +2,9 @@
 import timeit
 import types
 
-from PyQt5.QtCore import QByteArray
-
-from hamcrest import has_entries, assert_that, less_than, instance_of, contains
 import pytest
+from PyQt5.QtCore import QByteArray
+from hamcrest import has_entries, assert_that, less_than, instance_of, contains
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
@@ -65,11 +64,11 @@ def test_displays_album_metadata(driver):
         upc="123456789999",
         recording_time="2008-09-15",
         release_time="2009-01-01",
-        initial_producer="Initial Producer",
-        initial_producer_region=("CA",),
+        production_company="Production Company",
+        production_company_region=("CA",),
         recording_studios="Studio A, Studio B",
         recording_studio_region=("CA",),
-        artistic_producer="Artistic Producer",
+        music_producer="Music Producer",
         mixer="Mixing Engineer",
         comments="Comments\n...",
         primary_style="Style"))
@@ -88,9 +87,9 @@ def test_displays_album_metadata(driver):
     driver.shows_digital_release_time("2000-01-01")
     driver.shows_recording_studios("Studio A, Studio B")
     driver.shows_recording_studio_region("Canada")
-    driver.shows_initial_producer("Initial Producer")
-    driver.shows_initial_producer_region("Canada")
-    driver.shows_artistic_producer("Artistic Producer")
+    driver.shows_production_company("Production Company")
+    driver.shows_production_company_region("Canada")
+    driver.shows_music_producer("Music Producer")
     driver.shows_mixer("Mixing Engineer")
     driver.shows_comments("Comments\n...")
     driver.shows_primary_style("Style")
@@ -246,8 +245,8 @@ def test_signals_when_album_metadata_edited(driver):
     driver.change_lead_performer("Artist")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(lead_performer_region=("US",)))
-    driver.change_lead_performer_region("United States of America")
+    metadata_changed_signal.expect(has_entries(lead_performer_region=("CA",)))
+    driver.change_lead_performer_region("Canada")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(
@@ -280,24 +279,24 @@ def test_signals_when_album_metadata_edited(driver):
     driver.change_recording_time(2008, 9, 15)
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(initial_producer="Producer"))
-    driver.change_initial_producer("Producer")
+    metadata_changed_signal.expect(has_entries(production_company="Production Company"))
+    driver.change_production_company("Production Company")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(initial_producer_region=("US",)))
-    driver.change_initial_producer_region("United States of America")
+    metadata_changed_signal.expect(has_entries(production_company_region=("CA",)))
+    driver.change_production_company_region("Canada")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(recording_studios="Studios"))
     driver.change_recording_studios("Studios")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(recording_studio_region=("US",)))
-    driver.change_recording_studio_region("United States of America")
+    metadata_changed_signal.expect(has_entries(recording_studio_region=("CA",)))
+    driver.change_recording_studio_region("Canada")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(artistic_producer="Producer"))
-    driver.change_artistic_producer("Producer")
+    metadata_changed_signal.expect(has_entries(music_producer="Producer"))
+    driver.change_music_producer("Producer")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(mixer="Mixer"))

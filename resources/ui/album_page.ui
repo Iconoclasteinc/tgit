@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1118</width>
-    <height>656</height>
+    <height>690</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -38,7 +38,7 @@ QSpinBox {
 }
 
 QComboBox QAbstractItemView {
-   selection-background-color:#F08450;
+   selection-background-color: #F08450;
 }
 
 QCalendarWidget QAbstractItemView {
@@ -932,9 +932,6 @@ QPushButton:pressed {
            <property name="focusPolicy">
             <enum>Qt::StrongFocus</enum>
            </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
         </layout>
@@ -1131,21 +1128,41 @@ QPushButton:pressed {
          <item row="2" column="1">
           <widget class="QLineEdit" name="recording_studios"/>
          </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="_artistic_producer_caption">
+         <item row="3" column="0">
+          <widget class="QLabel" name="_recording_studio_region_caption">
            <property name="text">
-            <string>Artistic Producer:</string>
+            <string>Recording Studio Region:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="buddy">
-            <cstring>_artistic_producer</cstring>
+            <cstring>_recording_studio_region</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="_recording_studio_region">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="_music_producer_caption">
+           <property name="text">
+            <string>Music Producer:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>_music_producer</cstring>
            </property>
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="_artistic_producer"/>
+          <widget class="QLineEdit" name="_music_producer"/>
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="mixer_caption">
@@ -1219,56 +1236,36 @@ QPushButton:pressed {
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QLabel" name="_initial_producer_caption">
+          <widget class="QLabel" name="_production_company_caption">
            <property name="text">
-            <string>Initial Producer:</string>
+            <string>Production Company:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="buddy">
-            <cstring>_initial_producer</cstring>
+            <cstring>_production_company</cstring>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="_initial_producer"/>
+          <widget class="QLineEdit" name="_production_company"/>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="_initial_producer_region_caption">
+          <widget class="QLabel" name="_production_company_region_caption">
            <property name="text">
-            <string>Initial Producer Region:</string>
+            <string>Production Company Region:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="buddy">
-            <cstring>_initial_producer_region</cstring>
+            <cstring>_production_company_region</cstring>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QComboBox" name="_initial_producer_region">
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="_recording_studio_region_caption">
-           <property name="text">
-            <string>Recording Studio Region:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>_recording_studio_region</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QComboBox" name="_recording_studio_region">
+          <widget class="QComboBox" name="_production_company_region">
            <property name="focusPolicy">
             <enum>Qt::StrongFocus</enum>
            </property>
@@ -1324,7 +1321,7 @@ QPushButton:pressed {
   <tabstop>release_type</tabstop>
   <tabstop>comments</tabstop>
   <tabstop>recording_studios</tabstop>
-  <tabstop>_artistic_producer</tabstop>
+  <tabstop>_music_producer</tabstop>
   <tabstop>mixer</tabstop>
   <tabstop>genre</tabstop>
   <tabstop>select_picture_button</tabstop>
@@ -1334,8 +1331,6 @@ QPushButton:pressed {
   <tabstop>original_release_time</tabstop>
   <tabstop>recording_time</tabstop>
  </tabstops>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

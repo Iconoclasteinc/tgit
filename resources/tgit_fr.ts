@@ -65,6 +65,10 @@
         <translation>Artiste principal</translation>
     </message>
     <message>
+        <source>Lead Performer Region</source>
+        <translation>Région de l'artiste principal</translation>
+    </message>
+    <message>
         <source>Guest Performers</source>
         <translation>Musiciens de l&apos;album</translation>
     </message>
@@ -93,8 +97,20 @@
         <translation>Studio d&apos;enregistrement</translation>
     </message>
     <message>
-        <source>Producer</source>
-        <translation>Réalisateur</translation>
+        <source>Recording Studios Region</source>
+        <translation>Région du studio d&apos;enregistrement</translation>
+    </message>
+    <message>
+        <source>Production Company</source>
+        <translation>Cie. de production</translation>
+    </message>
+    <message>
+        <source>Production Company Region</source>
+        <translation>Région de la cie. de production</translation>
+    </message>
+    <message>
+        <source>Music Producer</source>
+        <translation>Réalisateur artistique</translation>
     </message>
     <message>
         <source>Mixer</source>
@@ -284,18 +300,18 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Initial Producer:</source>
-        <translation>Producteur initial :</translation>
+        <source>Production Company:</source>
+        <translation>Cie. de production :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Initial Producer Region:</source>
-        <translation>Région du producteur initial :</translation>
+        <source>Production Company Region:</source>
+        <translation>Région de la cie. de production :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="227"/>
-        <source>Artistic Producer:</source>
-        <translation>Réalisateur :</translation>
+        <source>Music Producer:</source>
+        <translation>Réalisateur artistique :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="230"/>

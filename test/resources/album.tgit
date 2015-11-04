@@ -17,7 +17,8 @@ label_name: Label
 lead_performer: Artist
 mixer: Engineer
 primary_style: Style
-artistic_producer: Producer
+production_company: Production Company
+music_producer: Music Producer
 recordingStudios: Studios
 recording_time: '2008-09-15'
 releaseTime: '2009-01-01'

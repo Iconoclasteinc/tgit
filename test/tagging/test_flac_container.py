@@ -116,9 +116,14 @@ def test_reads_lead_performer_region_from_lead_performer_region_field(flac):
     assert_that(metadata, has_entry('lead_performer_region', ("CA", "QC")), 'metadata')
 
 
-def test_reads_initial_producer_from_initial_producer_field(flac):
-    metadata = container.load(flac(INITIAL_PRODUCER="Effendi Records Inc."))
-    assert_that(metadata, has_entry('initial_producer', "Effendi Records Inc."), 'metadata')
+def test_reads_production_company_from_producer_field(flac):
+    metadata = container.load(flac(PRODUCER="Effendi Records Inc."))
+    assert_that(metadata, has_entry('production_company', "Effendi Records Inc."), 'metadata')
+
+
+def test_reads_music_producer_from_music_producer_field(flac):
+    metadata = container.load(flac(MUSIC_PRODUCER="Joel Miller & Paul Johnston"))
+    assert_that(metadata, has_entry('music_producer', "Joel Miller & Paul Johnston"), 'metadata')
 
 
 def test_round_trips_metadata_to_file(flac):
@@ -138,7 +143,8 @@ def test_round_trips_metadata_to_file(flac):
     metadata['track_number'] = 3
     metadata['total_tracks'] = 5
     metadata['lead_performer_region'] = ("CA", "QC")
-    metadata['initial_producer'] = "Effendi Records Inc."
+    metadata['production_company'] = "Effendi Records Inc."
+    metadata['music_producer'] = "Joel Miller & Paul Johnston"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

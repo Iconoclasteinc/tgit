@@ -20,8 +20,6 @@ import operator
 
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget, QApplication
-
-from .helpers import image, formatting
 from tgit.album import AlbumListener
 from tgit.auth import Permission
 from tgit.countries import COUNTRIES
@@ -29,6 +27,7 @@ from tgit.genres import GENRES
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
+from .helpers import image, formatting
 
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
@@ -76,8 +75,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.front_cover.setFixedSize(*self.FRONT_COVER_SIZE)
         self.genre.addItems(sorted(GENRES))
         self._fill_with_countries(self._lead_performer_region)
-        self._fill_with_countries(self._initial_producer_region)
         self._fill_with_countries(self._recording_studio_region)
+        self._fill_with_countries(self._production_company_region)
 
         self.compilation.clicked.connect(self._update_isni_lookup_button)
         self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
@@ -146,9 +145,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.comments.editingFinished.connect(lambda: handle("comments"))
         self.recording_studios.editingFinished.connect(lambda: handle("recording_studios"))
         self._recording_studio_region.activated.connect(lambda: handle("recording_studio_region"))
-        self._artistic_producer.editingFinished.connect(lambda: handle("artistic_producer"))
-        self._initial_producer.editingFinished.connect(lambda: handle("initial_producer"))
-        self._initial_producer_region.activated.connect(lambda: handle("initial_producer_region"))
+        self._music_producer.editingFinished.connect(lambda: handle("music_producer"))
+        self._production_company.editingFinished.connect(lambda: handle("production_company"))
+        self._production_company_region.activated.connect(lambda: handle("production_company_region"))
         self.mixer.editingFinished.connect(lambda: handle("mixer"))
         self.genre.activated.connect(lambda: handle("primary_style"))
         self.genre.lineEdit().textEdited.connect(lambda: handle("primary_style"))
@@ -185,9 +184,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
         self.recording_studios.setText(album.recording_studios)
         self._display_region(album.recording_studio_region, self._recording_studio_region)
-        self._artistic_producer.setText(album.artistic_producer)
-        self._initial_producer.setText(album.initial_producer)
-        self._display_region(album.initial_producer_region, self._initial_producer_region)
+        self._music_producer.setText(album.music_producer)
+        self._production_company.setText(album.production_company)
+        self._display_region(album.production_company_region, self._production_company_region)
         self.mixer.setText(album.mixer)
         self.genre.setEditText(album.primary_style)
 
@@ -216,9 +215,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           release_time=self.release_time.date().toString(ISO_8601_FORMAT),
                           recording_studios=self.recording_studios.text(),
                           recording_studio_region=(self._recording_studio_region.currentData(),),
-                          artistic_producer=self._artistic_producer.text(),
-                          initial_producer=self._initial_producer.text(),
-                          initial_producer_region=(self._initial_producer_region.currentData(),),
+                          music_producer=self._music_producer.text(),
+                          production_company=self._production_company.text(),
+                          production_company_region=(self._production_company_region.currentData(),),
                           mixer=self.mixer.text(),
                           primary_style=self.genre.currentText())
 

@@ -90,14 +90,14 @@ def test_reads_recording_studios_from_custom_frame(mp3):
     assert_that(metadata, has_entry("recording_studios", "Studio Name"), "metadata")
 
 
-def test_reads_artistic_producer_from_tipl_frame(mp3):
-    metadata = container.load(mp3(TIPL=[["producer", "Artistic Producer"]]))
-    assert_that(metadata, has_entry("producer", "Artistic Producer"), "metadata")
+def test_reads_music_producer_from_tipl_frame(mp3):
+    metadata = container.load(mp3(TIPL=[["producer", "Music Producer"]]))
+    assert_that(metadata, has_entry("music_producer", "Music Producer"), "metadata")
 
 
 def test_takes_into_account_last_of_multiple_role_definitions(mp3):
     metadata = container.load(mp3(TIPL=[["producer", "first"], ["producer", "last"]]))
-    assert_that(metadata, has_entry("producer", "last"), "metadata")
+    assert_that(metadata, has_entry("music_producer", "last"), "metadata")
 
 
 def test_ignores_tpil_entries_with_blank_names(mp3):
@@ -238,9 +238,9 @@ def test_reads_lead_performer_region_from_custom_frame(mp3):
     assert_that(metadata, has_entry("lead_performer_region", ("CA", "QC")), "metadata")
 
 
-def test_reads_initial_producerfrom_custom_frame(mp3):
-    metadata = container.load(mp3(TXXX_INITIAL_PRODUCER="Effendi Records Inc."))
-    assert_that(metadata, has_entry("initial_producer", "Effendi Records Inc."), "metadata")
+def test_reads_production_company_from_custom_frame(mp3):
+    metadata = container.load(mp3(TXXX_PRODUCTION_COMPANY="Effendi Records Inc."))
+    assert_that(metadata, has_entry("production_company", "Effendi Records Inc."), "metadata")
 
 
 def test_round_trips_empty_metadata_to_file(mp3):
@@ -258,14 +258,14 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["iswc"] = "T-345246800-1"
     metadata["guest_performers"] = [("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]
     metadata["label_name"] = "Label Name"
-    metadata["initial_producer"] = "Initial Producer"
+    metadata["production_company"] = "Production Company"
     metadata["catalog_number"] = "123 456-1"
     metadata["upc"] = "987654321111"
     metadata["recording_time"] = "2012-07-01"
     metadata["release_time"] = "2013-12-01"
     metadata["original_release_time"] = "1999-01-01"
     metadata["recording_studios"] = "Studio Name"
-    metadata["producer"] = "Artistic Producer"
+    metadata["music_producer"] = "Music Producer"
     metadata["mixer"] = "Mixing Engineer"
     metadata["contributors"] = [("recording", "Recording Eng."),
                                 ("mastering", "Mastering Eng."),

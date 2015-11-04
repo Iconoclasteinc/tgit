@@ -24,4 +24,6 @@ def rescue(on_error):
     try:
         yield
     except Exception as error:
+        # import traceback
+        # traceback.print_exc()
         on_error(error)

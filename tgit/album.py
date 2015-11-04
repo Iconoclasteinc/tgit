@@ -17,9 +17,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from tgit import tag
 from tgit.announcer import Announcer
 from tgit.metadata import Image, Metadata
-from tgit import tag
 from tgit.signal import signal
 from tgit.track import Track
 
@@ -59,9 +59,9 @@ class Album(metaclass=tag.Taggable):
     original_release_time = tag.text()
     recording_studios = tag.text()
     recording_studio_region = tag.pairs()
-    initial_producer = tag.text()
-    initial_producer_region = tag.pairs()
-    artistic_producer = tag.text()
+    production_company = tag.text()
+    production_company_region = tag.pairs()
+    music_producer = tag.text()
     mixer = tag.text()
     contributors = tag.pairs()
     comments = tag.text()

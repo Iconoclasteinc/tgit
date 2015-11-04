@@ -1,7 +1,6 @@
 from datetime import date
 
 from hamcrest import assert_that, equal_to
-
 from openpyxl import Workbook
 
 from test.util import builders as build
@@ -21,8 +20,8 @@ def test_writes_tracks_to_workbook():
         recording_time="2013-05-10",
         recording_studios="Studios",
         recording_studio_region=("CA",),
-        initial_producer="Initial Producer",
-        initial_producer_region=("US",))
+        production_company="Production Company",
+        production_company_region=("US",))
 
     album.add_track(build.track(track_title="Track Title", isrc="ISRC", duration=60))
     album.add_track(build.track(track_title="Track Title1", isrc="ISRC1", duration=120))
@@ -52,7 +51,7 @@ def test_writes_tracks_to_workbook():
                       Q13="00:01:00",
                       R13="CAN",
                       S13="2013",
-                      T13="Initial Producer",
+                      T13="Production Company",
                       U13="USA",
                       V13="RE",
                       W13="100",
@@ -81,7 +80,7 @@ def test_writes_tracks_to_workbook():
                       Q14="00:02:00",
                       R14="CAN",
                       S14="2013",
-                      T14="Initial Producer",
+                      T14="Production Company",
                       U14="USA",
                       V14="RE",
                       W14="100",

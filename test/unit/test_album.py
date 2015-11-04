@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 
+from flexmock import flexmock
 from hamcrest import (assert_that, equal_to, is_, contains, has_property, none, has_length, has_item, is_not,
                       match_equality as matching, contains_inanyorder, not_, has_key, all_of)
 from hamcrest.library.collection.is_empty import empty
-from flexmock import flexmock
 
 from test.test_signal import Subscriber, event
 from test.util import builders as build
 from test.util.builders import make_album, make_track
-from tgit.metadata import Image
 from tgit.album import Album, AlbumListener
+from tgit.metadata import Image
 
 
 def test_defines_metadata_tags():
     assert_that(tuple(Album.tags()), contains_inanyorder(
         "release_name", "compilation", "lead_performer", "lead_performer_region", "isni", "guest_performers",
         "label_name", "upc", "catalog_number", "recording_time", "release_time", "original_release_time",
-        "recording_studios", "initial_producer", "initial_producer_region", "recording_studio_region",
-        "artistic_producer", "mixer", "contributors", "comments", "primary_style"))
+        "recording_studios", "recording_studio_region", "production_company", "production_company_region", "music_producer", "mixer", "contributors", "comments",
+        "primary_style"))
 
 
 def test_initializes_with_album_only_metadata():

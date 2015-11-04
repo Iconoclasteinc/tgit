@@ -265,7 +265,7 @@ class ID3Container:
         }),
         PairProcessor("TMCL", "guest_performers", {}),
         PairProcessor("TIPL", "contributors", {
-            "producer": "producer",
+            "producer": "music_producer",
             "mix": "mixer"
         }),
         MultiValueNumericProcessor("TRCK", "track_number", "total_tracks")
@@ -294,7 +294,7 @@ class ID3Container:
         "TXXX:BARCODE": "upc",
         "TXXX:Catalog Number": "catalog_number",
         "TXXX:Featured Guest": "featuredGuest",
-        "TXXX:INITIAL-PRODUCER": "initial_producer",
+        "TXXX:PRODUCTION-COMPANY": "production_company",
         "TXXX:ISNI": "isni",
         "TXXX:ISWC": "iswc",
         "TXXX:Recording Studios": "recording_studios",
