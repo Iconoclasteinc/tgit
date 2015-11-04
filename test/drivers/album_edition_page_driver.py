@@ -40,7 +40,7 @@ class AlbumEditionPageDriver(ScreenDriver):
             elif tag == "recording_studios":
                 self.shows_recording_studios(value)
             elif tag == "producer":
-                self.shows_producer(value)
+                self.shows_artistic_producer(value)
             elif tag == "mixer":
                 self.shows_mixer(value)
             elif tag == "primary_style":
@@ -77,7 +77,7 @@ class AlbumEditionPageDriver(ScreenDriver):
             elif tag == "recording_studios":
                 self.change_recording_studios(value)
             elif tag == "producer":
-                self.change_producer(value)
+                self.change_artistic_producer(value)
             elif tag == "mixer":
                 self.change_mixer(value)
             elif tag == "primary_style":
@@ -244,12 +244,19 @@ class AlbumEditionPageDriver(ScreenDriver):
     def change_recording_studios(self, studios):
         self.lineEdit(named("recording_studios")).change_text(studios)
 
-    def shows_producer(self, producer):
-        self.label(with_buddy(named("producer"))).is_showing_on_screen()
-        self.lineEdit(named("producer")).has_text(producer)
+    def shows_initial_producer(self, producer):
+        self.label(with_buddy(named("_initial_producer"))).is_showing_on_screen()
+        self.lineEdit(named("_initial_producer")).has_text(producer)
 
-    def change_producer(self, producer):
-        self.lineEdit(named("producer")).change_text(producer)
+    def change_initial_producer(self, producer):
+        self.lineEdit(named("_initial_producer")).change_text(producer)
+
+    def shows_artistic_producer(self, producer):
+        self.label(with_buddy(named("_artistic_producer"))).is_showing_on_screen()
+        self.lineEdit(named("_artistic_producer")).has_text(producer)
+
+    def change_artistic_producer(self, producer):
+        self.lineEdit(named("_artistic_producer")).change_text(producer)
 
     def shows_mixer(self, mixer):
         self.label(with_buddy(named("mixer"))).is_showing_on_screen()

@@ -48,7 +48,7 @@ def _write_line(album, track, line_number, sheet):
     sheet["Q"+str(line_number)] = _to_duration(track.duration)  # DURÉE
     sheet["R"+str(line_number)] = ""                    # * PAYS DE FIXATION
     sheet["S"+str(line_number)] = recording_time        # * ANNÉE DE FIXATION
-    sheet["T"+str(line_number)] = album.producer        # * PRODUCTEUR INITIAL
+    sheet["T"+str(line_number)] = album.artistic_producer  # * PRODUCTEUR INITIAL
     sheet["U"+str(line_number)] = ""                    # * NATIONALITÉ PRODUCTEUR
     sheet["V"+str(line_number)] = ""                    # * TYPE DE DROIT
     sheet["W"+str(line_number)] = ""                    # * POURCENTAGE

@@ -36,7 +36,7 @@ def test_saves_data_to_yaml_file(project_file):
                 upc="123456789999",
                 comments="Comments\n...",
                 releaseTime="2009-01-01", recording_time="2008-09-15", recordingStudios="Studios",
-                producer="Producer", mixer="Engineer", primary_style="Style",
+                artistic_producer="Producer", mixer="Engineer", primary_style="Style",
                 images=[("image/jpeg", "Front.jpeg", Image.FRONT_COVER, "Front")],
                 tracks=("1st", "2nd", "3rd"))
 
@@ -55,7 +55,7 @@ def test_saves_data_to_yaml_file(project_file):
     assert_that(lines, has_item(contains_string("releaseTime: '2009-01-01'")), "release time")
     assert_that(lines, has_item(contains_string("recording_time: '2008-09-15'")), "recording time")
     assert_that(lines, has_item(contains_string("recordingStudios: Studios")), "recording studios")
-    assert_that(lines, has_item(contains_string("producer: Producer")), "producer")
+    assert_that(lines, has_item(contains_string("artistic_producer: Producer")), "artistic producer")
     assert_that(lines, has_item(contains_string("mixer: Engineer")), "mixer")
     assert_that(lines, has_item(contains_string("primary_style: Style")), "primary style")
     assert_that(lines, has_item(contains_string("guestPerformers:")), "guest performers")
@@ -91,7 +91,7 @@ def test_reads_data_from_yaml_file():
     assert_that(data, has_entry("releaseTime", "2009-01-01"), "release time")
     assert_that(data, has_entry("recording_time", "2008-09-15"), "recording time")
     assert_that(data, has_entry("recordingStudios", "Studios"), "recording studios")
-    assert_that(data, has_entry("producer", "Producer"), "producer")
+    assert_that(data, has_entry("artistic_producer", "Producer"), "artistic producer")
     assert_that(data, has_entry("mixer", "Engineer"), "mixer")
     assert_that(data, has_entry("primary_style", "Style"), "primary style")
     assert_that(data, has_entry("images", contains(("image/jpeg", "Front.jpeg", Image.FRONT_COVER, "Front"))),

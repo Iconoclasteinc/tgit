@@ -57,7 +57,7 @@ class CsvFormat(QObject):
 
         row = (album.release_name, compilation, track.lead_performer, album.isni, guest_performers, album.label_name,
                album.catalog_number, album.upc, album.comments, album.release_time, album.recording_time,
-               album.recording_studios, album.producer, album.mixer, album.primary_style, track.track_title,
+               album.recording_studios, album.artistic_producer, album.mixer, album.primary_style, track.track_title,
                track.versionInfo, track_number, total_tracks, track.featuredGuest, track.lyrics, track.language,
                track.publisher, track.lyricist, track.composer, track.isrc, track.labels)
 

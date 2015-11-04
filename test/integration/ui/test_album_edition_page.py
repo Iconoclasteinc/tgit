@@ -65,8 +65,9 @@ def test_displays_album_metadata(driver):
         upc="123456789999",
         recording_time="2008-09-15",
         release_time="2009-01-01",
+        initial_producer="Initial Producer",
         recording_studios="Studio A, Studio B",
-        producer="Artistic Producer",
+        artistic_producer="Artistic Producer",
         mixer="Mixing Engineer",
         comments="Comments\n...",
         primary_style="Style"))
@@ -84,7 +85,8 @@ def test_displays_album_metadata(driver):
     driver.shows_release_time("2009-01-01")
     driver.shows_digital_release_time("2000-01-01")
     driver.shows_recording_studios("Studio A, Studio B")
-    driver.shows_producer("Artistic Producer")
+    driver.shows_initial_producer("Initial Producer")
+    driver.shows_artistic_producer("Artistic Producer")
     driver.shows_mixer("Mixing Engineer")
     driver.shows_comments("Comments\n...")
     driver.shows_primary_style("Style")
@@ -274,12 +276,16 @@ def test_signals_when_album_metadata_edited(driver):
     driver.change_recording_time(2008, 9, 15)
     driver.check(metadata_changed_signal)
 
+    metadata_changed_signal.expect(has_entries(initial_producer="Producer"))
+    driver.change_initial_producer("Producer")
+    driver.check(metadata_changed_signal)
+
     metadata_changed_signal.expect(has_entries(recording_studios="Studios"))
     driver.change_recording_studios("Studios")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(producer="Producer"))
-    driver.change_producer("Producer")
+    metadata_changed_signal.expect(has_entries(artistic_producer="Producer"))
+    driver.change_artistic_producer("Producer")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(mixer="Mixer"))

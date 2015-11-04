@@ -278,7 +278,7 @@ def test_updates_album_metadata():
                                       isni="0000123456789", guestPerformers=[("Guitar", "Guitarist")],
                                       label_name="Label", catalogNumber="XXX123456789", upc="123456789999",
                                       comments="Comments\n...", releaseTime="2009-01-01", recording_time="2008-09-15",
-                                      recordingStudios="Studios", producer="Producer", mixer="Engineer",
+                                      recordingStudios="Studios", artistic_producer="Producer", mixer="Engineer",
                                       primary_style="Style")
 
     assert_that(album.release_name, equal_to("Title"), "release name")
@@ -293,7 +293,7 @@ def test_updates_album_metadata():
     assert_that(album.releaseTime, equal_to("2009-01-01"), "release time")
     assert_that(album.recording_time, equal_to("2008-09-15"), "recording time")
     assert_that(album.recordingStudios, equal_to("Studios"), "recording studios")
-    assert_that(album.producer, equal_to("Producer"), "producer")
+    assert_that(album.artistic_producer, equal_to("Producer"), "producer")
     assert_that(album.mixer, equal_to("Engineer"), "mixer")
     assert_that(album.primary_style, equal_to("Style"), "primary style")
 

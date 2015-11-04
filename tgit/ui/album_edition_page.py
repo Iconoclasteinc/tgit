@@ -139,7 +139,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.release_type.editingFinished.connect(lambda: handle("release_type"))
         self.comments.editingFinished.connect(lambda: handle("comments"))
         self.recording_studios.editingFinished.connect(lambda: handle("recording_studios"))
-        self.producer.editingFinished.connect(lambda: handle("producer"))
+        self._artistic_producer.editingFinished.connect(lambda: handle("artistic_producer"))
+        self._initial_producer.editingFinished.connect(lambda: handle("initial_producer"))
         self.mixer.editingFinished.connect(lambda: handle("mixer"))
         self.genre.activated.connect(lambda: handle("primary_style"))
         self.genre.lineEdit().textEdited.connect(lambda: handle("primary_style"))
@@ -176,7 +177,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self.recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
         self.recording_studios.setText(album.recording_studios)
-        self.producer.setText(album.producer)
+        self._artistic_producer.setText(album.artistic_producer)
+        self._initial_producer.setText(album.initial_producer)
         self.mixer.setText(album.mixer)
         self.genre.setEditText(album.primary_style)
 
@@ -199,7 +201,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           recording_time=self.recording_time.date().toString(ISO_8601_FORMAT),
                           release_time=self.release_time.date().toString(ISO_8601_FORMAT),
                           recording_studios=self.recording_studios.text(),
-                          producer=self.producer.text(),
+                          artistic_producer=self._artistic_producer.text(),
+                          initial_producer=self._initial_producer.text(),
                           mixer=self.mixer.text(),
                           primary_style=self.genre.currentText())
 

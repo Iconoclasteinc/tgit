@@ -69,7 +69,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
         release_time="2014",
         recording_time="2013",
         recording_studios="Studios",
-        producer="Artistic Producer",
+        artistic_producer="Artistic Producer",
         mixer="Mixing Engineer",
         primary_style="Genre")
 

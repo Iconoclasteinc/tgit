@@ -1115,7 +1115,7 @@ QPushButton:pressed {
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="0" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="recording_studios_caption">
            <property name="text">
             <string>Recording Studios:</string>
@@ -1128,26 +1128,26 @@ QPushButton:pressed {
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
+         <item row="1" column="1">
           <widget class="QLineEdit" name="recording_studios"/>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="producer_caption">
+         <item row="2" column="0">
+          <widget class="QLabel" name="_artistic_producer_caption">
            <property name="text">
-            <string>Producer:</string>
+            <string>Artistic Producer:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="buddy">
-            <cstring>producer</cstring>
+            <cstring>_artistic_producer</cstring>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="producer"/>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="_artistic_producer"/>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="mixer_caption">
            <property name="text">
             <string>Mixer:</string>
@@ -1160,10 +1160,10 @@ QPushButton:pressed {
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QLineEdit" name="mixer"/>
          </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="genre_caption">
            <property name="text">
             <string>Primary Style:</string>
@@ -1176,7 +1176,7 @@ QPushButton:pressed {
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <widget class="QComboBox" name="genre">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -1217,6 +1217,22 @@ QPushButton:pressed {
             </property>
            </item>
           </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="_initial_producer_caption">
+           <property name="text">
+            <string>Initial Producer:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>_initial_producer</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="_initial_producer"/>
          </item>
         </layout>
        </widget>
@@ -1268,7 +1284,7 @@ QPushButton:pressed {
   <tabstop>release_type</tabstop>
   <tabstop>comments</tabstop>
   <tabstop>recording_studios</tabstop>
-  <tabstop>producer</tabstop>
+  <tabstop>_artistic_producer</tabstop>
   <tabstop>mixer</tabstop>
   <tabstop>genre</tabstop>
   <tabstop>select_picture_button</tabstop>

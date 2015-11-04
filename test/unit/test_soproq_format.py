@@ -22,7 +22,7 @@ def test_writes_tracks_to_workbook():
         release_time="2014-05-10",
         recording_time="2013-05-10",
         recording_studios="Studios",
-        producer="Artistic Producer",
+        artistic_producer="Artistic Producer",
         mixer="Mixing Engineer",
         primary_style="Genre")
 
