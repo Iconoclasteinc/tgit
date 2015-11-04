@@ -2,13 +2,13 @@
 
 import shutil
 
-from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, has_entries
 import pytest
+from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, has_entries
 
 from test.util import flac_file
+from tgit.metadata import Metadata, Image
 from tgit.tagging._pictures import PictureType
 from tgit.tagging.flac_container import FlacContainer
-from tgit.metadata import Metadata, Image
 
 DURATION = flac_file.base.duration
 BITRATE = flac_file.base.bitrate
@@ -97,8 +97,8 @@ def test_reads_tagger_version_from_tagger_version_field(flac):
 
 
 def test_reads_tagging_time_from_tagging_time_field(flac):
-    metadata = container.load(flac(TAGGING_TIME='2014-03-26 14:18:55 EDT-0400'))
-    assert_that(metadata, has_entry('tagging_time', '2014-03-26 14:18:55 EDT-0400'), 'metadata')
+    metadata = container.load(flac(TAGGING_TIME='2014-03-26 18:18:55'))
+    assert_that(metadata, has_entry('tagging_time', '2014-03-26 18:18:55'), 'metadata')
 
 
 def test_reads_track_number_from_track_number_field(flac):
@@ -124,7 +124,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata['iswc'] = "T-345246800-1"
     metadata['tagger'] = "TGiT"
     metadata['tagger_version'] = "1.0"
-    metadata['tagging_time'] = "2014-03-26 14:18:55 EDT-0400"
+    metadata['tagging_time'] = "2014-03-26 18:18:55"
     metadata['track_number'] = 3
     metadata['total_tracks'] = 5
 

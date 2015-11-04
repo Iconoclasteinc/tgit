@@ -60,9 +60,9 @@ class FlacAudio(object):
             elif tag == 'TAGGER':
                 self._add_tag("TAGGER", value)
             elif tag == 'TAGGER_VERSION':
-                self._add_tag("TAGGER_VERSION", value)
+                self._add_tag("TAGGER-VERSION", value)
             elif tag == 'TAGGING_TIME':
-                self._add_tag("TAGGING_TIME", value)
+                self._add_tag("TAGGING-TIME", value)
             elif tag == 'TRACKNUMBER':
                 self._add_tag("TRACKNUMBER", value)
             elif tag == 'TRACKTOTAL':

@@ -111,8 +111,8 @@ class FlacContainer:
         "ISRC": "isrc",
         "ISWC": "iswc",
         "TAGGER": "tagger",
-        "TAGGER_VERSION": "tagger_version",
-        "TAGGING_TIME": "tagging_time",
+        "TAGGER-VERSION": "tagger_version",
+        "TAGGING-TIME": "tagging_time",
     }.items():
         fields.append(TextField(field_name, tag_name))
 
