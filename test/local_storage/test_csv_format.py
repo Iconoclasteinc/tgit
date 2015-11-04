@@ -41,6 +41,7 @@ def test_includes_header_row(formatter, out):
                                   "Recording Date",
                                   "Recording Studios",
                                   "Initial Producer",
+                                  "Initial Producer Region",
                                   "Artistic Producer",
                                   "Mixer",
                                   "Primary Style",
@@ -73,6 +74,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
         recording_time="2013",
         recording_studios="Studios",
         initial_producer="Initial Producer",
+        initial_producer_region=("CA",),
         artistic_producer="Artistic Producer",
         mixer="Mixing Engineer",
         primary_style="Genre")
@@ -112,6 +114,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
                                "2013",
                                "Studios",
                                "Initial Producer",
+                               "CA",
                                "Artistic Producer",
                                "Mixing Engineer",
                                "Genre",

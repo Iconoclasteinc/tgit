@@ -59,6 +59,7 @@ class Album(metaclass=tag.Taggable):
     original_release_time = tag.text()
     recording_studios = tag.text()
     initial_producer = tag.text()
+    initial_producer_region = tag.pairs()
     artistic_producer = tag.text()
     mixer = tag.text()
     contributors = tag.pairs()

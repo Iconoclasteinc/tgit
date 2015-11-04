@@ -30,16 +30,16 @@ def _to_people_list(people):
     return people and "; ".join(["{0}: {1}".format(role, name) for role, name in people]) or ""
 
 
-def _to_standard_region_code(album):
-    return "-".join(album.lead_performer_region) if album.lead_performer_region else ""
+def _to_standard_region_code(region):
+    return "-".join(region) if region else ""
 
 
 class CsvFormat(QObject):
-    Headers = "Release Name", "Compilation", "Lead Performer", "Lead Performer ISNI", "Lead Performer Region", \
-              "Guest Performers", "Label Name", "Catalog Number", "UPC/EAN", "Comments", "Release Date", \
-              "Recording Date", "Recording Studios", "Initial Producer", "Artistic Producer", "Mixer", "Primary Style", \
-              "Track Title", "Version Information", "Track Number", "Total Tracks", "Featured Guest", "Lyrics", \
-              "Language", "Publisher", "Lyricist", "Composer", "ISRC", "Tags"
+    Headers = "Release Name", "Compilation", "Lead Performer", "Lead Performer ISNI", "Lead Performer Region",\
+              "Guest Performers", "Label Name", "Catalog Number", "UPC/EAN", "Comments", "Release Date",\
+              "Recording Date", "Recording Studios", "Initial Producer", "Initial Producer Region", "Artistic Producer",\
+              "Mixer", "Primary Style", "Track Title", "Version Information", "Track Number", "Total Tracks",\
+              "Featured Guest", "Lyrics", "Language", "Publisher", "Lyricist", "Composer", "ISRC", "Tags"
 
     def __init__(self):
         super().__init__()
@@ -54,7 +54,8 @@ class CsvFormat(QObject):
         writer.writerow(self._encode_row(self._translate_texts(CsvFormat.Headers)))
 
     def _write_record(self, writer, album, track):
-        lead_performer_region = _to_standard_region_code(album)
+        lead_performer_region = _to_standard_region_code(album.lead_performer_region)
+        initial_producer_region = _to_standard_region_code(album.initial_producer_region)
         guest_performers = _to_people_list(album.guest_performers)
         compilation = to_boolean(album.compilation)
         track_number = str(track.track_number)
@@ -62,10 +63,10 @@ class CsvFormat(QObject):
 
         row = (album.release_name, compilation, track.lead_performer, album.isni, lead_performer_region,
                guest_performers, album.label_name, album.catalog_number, album.upc, album.comments, album.release_time,
-               album.recording_time, album.recording_studios, album.initial_producer, album.artistic_producer,
-               album.mixer, album.primary_style, track.track_title, track.versionInfo, track_number, total_tracks,
-               track.featuredGuest, track.lyrics, track.language, track.publisher, track.lyricist, track.composer,
-               track.isrc, track.labels)
+               album.recording_time, album.recording_studios, album.initial_producer, initial_producer_region,
+               album.artistic_producer, album.mixer, album.primary_style, track.track_title, track.versionInfo,
+               track_number, total_tracks, track.featuredGuest, track.lyrics, track.language, track.publisher,
+               track.lyricist, track.composer, track.isrc, track.labels)
 
         writer.writerow(self._encode_row(row))
 

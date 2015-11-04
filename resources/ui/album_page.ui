@@ -1115,7 +1115,7 @@ QPushButton:pressed {
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="recording_studios_caption">
            <property name="text">
             <string>Recording Studios:</string>
@@ -1128,10 +1128,10 @@ QPushButton:pressed {
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="2" column="1">
           <widget class="QLineEdit" name="recording_studios"/>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="_artistic_producer_caption">
            <property name="text">
             <string>Artistic Producer:</string>
@@ -1144,10 +1144,10 @@ QPushButton:pressed {
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QLineEdit" name="_artistic_producer"/>
          </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="mixer_caption">
            <property name="text">
             <string>Mixer:</string>
@@ -1160,10 +1160,10 @@ QPushButton:pressed {
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <widget class="QLineEdit" name="mixer"/>
          </item>
-         <item row="4" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="genre_caption">
            <property name="text">
             <string>Primary Style:</string>
@@ -1176,7 +1176,7 @@ QPushButton:pressed {
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="5" column="1">
           <widget class="QComboBox" name="genre">
            <property name="sizePolicy">
             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -1233,6 +1233,26 @@ QPushButton:pressed {
          </item>
          <item row="0" column="1">
           <widget class="QLineEdit" name="_initial_producer"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="_initial_producer_region_caption">
+           <property name="text">
+            <string>Initial Producer Region:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>_initial_producer_region</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="_initial_producer_region">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

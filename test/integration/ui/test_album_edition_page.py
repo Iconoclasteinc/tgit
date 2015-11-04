@@ -66,6 +66,7 @@ def test_displays_album_metadata(driver):
         recording_time="2008-09-15",
         release_time="2009-01-01",
         initial_producer="Initial Producer",
+        initial_producer_region=("CA",),
         recording_studios="Studio A, Studio B",
         artistic_producer="Artistic Producer",
         mixer="Mixing Engineer",
@@ -86,6 +87,7 @@ def test_displays_album_metadata(driver):
     driver.shows_digital_release_time("2000-01-01")
     driver.shows_recording_studios("Studio A, Studio B")
     driver.shows_initial_producer("Initial Producer")
+    driver.shows_initial_producer_region("Canada")
     driver.shows_artistic_producer("Artistic Producer")
     driver.shows_mixer("Mixing Engineer")
     driver.shows_comments("Comments\n...")
@@ -278,6 +280,10 @@ def test_signals_when_album_metadata_edited(driver):
 
     metadata_changed_signal.expect(has_entries(initial_producer="Producer"))
     driver.change_initial_producer("Producer")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(initial_producer_region=("US",)))
+    driver.change_initial_producer_region("United States of America")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(recording_studios="Studios"))

@@ -148,8 +148,7 @@ class AlbumEditionPageDriver(ScreenDriver):
         edit.is_disabled(disabled)
 
     def shows_lead_performer_region(self, name):
-        label = self.label(with_buddy(named("_lead_performer_region")))
-        label.is_showing_on_screen()
+        self.label(with_buddy(named("_lead_performer_region"))).is_showing_on_screen()
         edit = self.combobox(named("_lead_performer_region"))
         edit.has_current_text(name)
 
@@ -250,6 +249,14 @@ class AlbumEditionPageDriver(ScreenDriver):
 
     def change_initial_producer(self, producer):
         self.lineEdit(named("_initial_producer")).change_text(producer)
+
+    def shows_initial_producer_region(self, name):
+        self.label(with_buddy(named("_initial_producer_region"))).is_showing_on_screen()
+        edit = self.combobox(named("_initial_producer_region"))
+        edit.has_current_text(name)
+
+    def change_initial_producer_region(self, name):
+        self.combobox(named("_initial_producer_region")).select_option(name)
 
     def shows_artistic_producer(self, producer):
         self.label(with_buddy(named("_artistic_producer"))).is_showing_on_screen()

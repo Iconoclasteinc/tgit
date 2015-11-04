@@ -283,6 +283,11 @@
         <translation>Producteur initial :</translation>
     </message>
     <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Initial Producer Region:</source>
+        <translation>Région du producteur initial :</translation>
+    </message>
+    <message>
         <location filename="tgit/ui/album_edition_page.py" line="227"/>
         <source>Artistic Producer:</source>
         <translation>Réalisateur :</translation>

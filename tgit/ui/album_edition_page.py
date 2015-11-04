@@ -75,13 +75,18 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
         self.front_cover.setFixedSize(*self.FRONT_COVER_SIZE)
         self.genre.addItems(sorted(GENRES))
-        for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
-            self._lead_performer_region.addItem(name, code)
+        self._fill_with_countries(self._lead_performer_region)
+        self._fill_with_countries(self._initial_producer_region)
 
         self.compilation.clicked.connect(self._update_isni_lookup_button)
         self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
         self.clear_isni_button.clicked.connect(lambda: self.release_time.calendarWidget().show())
         self.add_guest_performers_button.clicked.connect(lambda: self._edit_performers(self._update_guest_performers))
+
+    @staticmethod
+    def _fill_with_countries(combobox):
+        for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
+            combobox.addItem(name, code)
 
     def on_select_picture(self, on_select_picture):
         self.select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
@@ -141,6 +146,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.recording_studios.editingFinished.connect(lambda: handle("recording_studios"))
         self._artistic_producer.editingFinished.connect(lambda: handle("artistic_producer"))
         self._initial_producer.editingFinished.connect(lambda: handle("initial_producer"))
+        self._initial_producer_region.activated.connect(lambda: handle("initial_producer_region"))
         self.mixer.editingFinished.connect(lambda: handle("mixer"))
         self.genre.activated.connect(lambda: handle("primary_style"))
         self.genre.lineEdit().textEdited.connect(lambda: handle("primary_style"))
@@ -166,8 +172,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.release_name.setText(album.release_name)
         self.compilation.setChecked(album.compilation is True)
         self._display_lead_performer(album)
-        if album.lead_performer_region:
-            self._lead_performer_region.setCurrentText(COUNTRIES[album.lead_performer_region[0]])
+        self._display_region(album.lead_performer_region, self._lead_performer_region)
         self.isni.setText(album.isni)
         self.guest_performers.setText(formatting.toPeopleList(album.guest_performers))
         self.label_name.setText(album.label_name)
@@ -179,8 +184,14 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.recording_studios.setText(album.recording_studios)
         self._artistic_producer.setText(album.artistic_producer)
         self._initial_producer.setText(album.initial_producer)
+        self._display_region(album.initial_producer_region, self._initial_producer_region)
         self.mixer.setText(album.mixer)
         self.genre.setEditText(album.primary_style)
+
+    @staticmethod
+    def _display_region(region, combobox):
+        if region:
+            combobox.setCurrentText(COUNTRIES[region[0]])
 
     def _display_lead_performer(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
@@ -203,6 +214,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           recording_studios=self.recording_studios.text(),
                           artistic_producer=self._artistic_producer.text(),
                           initial_producer=self._initial_producer.text(),
+                          initial_producer_region=(self._initial_producer_region.currentData(),),
                           mixer=self.mixer.text(),
                           primary_style=self.genre.currentText())
 
