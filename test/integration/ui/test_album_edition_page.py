@@ -3,6 +3,7 @@ import timeit
 import types
 
 from PyQt5.QtCore import QByteArray
+
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains
 import pytest
 
@@ -49,13 +50,14 @@ def test_displays_no_image_placeholder_when_album_has_no_cover(driver):
 def test_displays_main_album_cover_when_existing(driver):
     _ = show_track_page(build.album(
         images=[build.image("image/jpeg", load_test_image("front-cover.jpg"), Image.FRONT_COVER)]))
-    driver.showsPicture()
+    driver.shows_picture()
 
 
 def test_displays_album_metadata(driver):
     _ = show_track_page(build.album(
         release_name="Album",
         lead_performer="Artist",
+        lead_performer_region=("CA",),
         isni="123456789",
         guest_performers=[("Guitar", "Guitarist"), ("Piano", "Pianist")],
         label_name="Label",
@@ -69,25 +71,25 @@ def test_displays_album_metadata(driver):
         comments="Comments\n...",
         primary_style="Style"))
 
-    driver.showsReleaseName("Album")
+    driver.shows_release_name("Album")
     driver.shows_compilation(False)
     driver.shows_lead_performer("Artist")
+    driver.shows_lead_performer_region("Canada")
     driver.shows_isni("123456789", True)
-    driver.showsArea("")
     driver.shows_guest_performers("Guitar: Guitarist; Piano: Pianist")
-    driver.showsLabelName("Label")
-    driver.showsCatalogNumber("XXX123456789")
-    driver.showsUpc("123456789999")
+    driver.shows_label_name("Label")
+    driver.shows_catalog_number("XXX123456789")
+    driver.shows_upc("123456789999")
     driver.shows_recording_time("2008-09-15")
-    driver.showsReleaseTime("2009-01-01")
-    driver.showsDigitalReleaseTime("2000-01-01")
-    driver.showsRecordingStudios("Studio A, Studio B")
-    driver.showsProducer("Artistic Producer")
-    driver.showsMixer("Mixing Engineer")
-    driver.showsComments("Comments\n...")
+    driver.shows_release_time("2009-01-01")
+    driver.shows_digital_release_time("2000-01-01")
+    driver.shows_recording_studios("Studio A, Studio B")
+    driver.shows_producer("Artistic Producer")
+    driver.shows_mixer("Mixing Engineer")
+    driver.shows_comments("Comments\n...")
     driver.shows_primary_style("Style")
-    driver.showsMediaType("")
-    # self.driver.showsReleaseType("")
+    driver.shows_media_type("")
+    # self.driver.shows_release_type("")
 
 
 def test_indicates_whether_album_is_a_compilation(driver):
@@ -164,7 +166,7 @@ def test_signals_when_picture_selected(driver):
     _ = show_track_page(album, select_picture=lambda callback: callback("front-cover.jpg"),
                         on_select_picture=signal.received)
 
-    driver.addPicture()
+    driver.add_picture()
     driver.check(signal)
 
 
@@ -187,7 +189,7 @@ def test_signals_when_remove_picture_button_clicked(driver):
     remove_picture_signal = ValueMatcherProbe("remove picture")
     _ = show_track_page(build.album(), on_remove_picture=remove_picture_signal.received)
 
-    driver.removePicture()
+    driver.remove_picture()
     driver.check(remove_picture_signal)
 
 
@@ -223,7 +225,7 @@ def test_signals_when_album_metadata_edited(driver):
     _ = show_track_page(build.album(), on_metadata_changed=metadata_changed_signal.received)
 
     metadata_changed_signal.expect(has_entries(release_name="Title"))
-    driver.changeReleaseName("Title")
+    driver.change_release_name("Title")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(compilation=True))
@@ -235,33 +237,37 @@ def test_signals_when_album_metadata_edited(driver):
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(lead_performer="Artist"))
-    driver.changeLeadPerformer("Artist")
+    driver.change_lead_performer("Artist")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(lead_performer_region=("US",)))
+    driver.change_lead_performer_region("United States of America")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(
         guest_performers=[("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]))
-    driver.changeGuestPerformers("Guitar: Guitarist; Guitar: Bassist; Piano: Pianist")
+    driver.change_guest_performers("Guitar: Guitarist; Guitar: Bassist; Piano: Pianist")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(label_name="Label"))
-    driver.changeLabelName("Label")
+    driver.change_label_name("Label")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(catalog_number="XXX12345678"))
-    driver.changeCatalogNumber("XXX12345678")
+    driver.change_catalog_number("XXX12345678")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(upc="123456789999"))
-    driver.changeUpc("123456789999")
+    driver.change_upc("123456789999")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(comments="Comments\n...\n"))
-    driver.addComments("Comments")
-    driver.addComments("...")
+    driver.add_comments("Comments")
+    driver.add_comments("...")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(release_time="2009-01-01"))
-    driver.changeReleaseTime(2009, 1, 1)
+    driver.change_release_time(2009, 1, 1)
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(recording_time="2008-09-15"))
@@ -269,15 +275,15 @@ def test_signals_when_album_metadata_edited(driver):
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(recording_studios="Studios"))
-    driver.changeRecordingStudios("Studios")
+    driver.change_recording_studios("Studios")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(producer="Producer"))
-    driver.changeProducer("Producer")
+    driver.change_producer("Producer")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(mixer="Mixer"))
-    driver.changeMixer("Mixer")
+    driver.change_mixer("Mixer")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(primary_style="Jazz"))
@@ -285,7 +291,7 @@ def test_signals_when_album_metadata_edited(driver):
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(primary_style="Custom"))
-    driver.changePrimaryStyle("Custom")
+    driver.change_primary_style("Custom")
     driver.check(metadata_changed_signal)
 
 

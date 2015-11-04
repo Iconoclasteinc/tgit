@@ -39,7 +39,7 @@ def test_writes_tracks_to_workbook():
         labels="Tag1 Tag2 Tag3",
         duration=60))
 
-    album.addTrack(build.track(
+    album.add_track(build.track(
         track_title="Track Title1",
         versionInfo="Version Info1",
         featuredGuest="Featuring1",

@@ -85,7 +85,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
         isrc="ISRC",
         labels="Tag1 Tag2 Tag3")
 
-    album.addTrack(track)
+    album.add_track(track)
     track.track_number = 3
     track.total_tracks = 9
 

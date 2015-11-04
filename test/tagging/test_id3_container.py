@@ -341,7 +341,7 @@ def test_transforms_deprecated_tagger_frame_into_tagger_and_version(mp3):
 
 def test_upgrades_deprecated_frames_to_their_new_form(mp3):
     metadata = container.load(mp3(TXXX_UPC="987654321111",
-                                  TXXX_TAGGING_TIME="2014-03-26 14:18:55 EDT-0400"))
+                                  TXXX_TAGGING_TIME="2014-03-26 14:18:55 -0400"))
 
     assert_that(metadata, has_entries(upc="987654321111", tagging_time="2014-03-26 18:18:55"), "metadata")
 

@@ -48,6 +48,7 @@ class Album(metaclass=tag.Taggable):
     release_name = tag.text()
     compilation = tag.flag()
     lead_performer = tag.text()
+    lead_performer_region = tag.pairs()
     isni = tag.text()
     guest_performers = tag.pairs()
     label_name = tag.text()
@@ -101,16 +102,12 @@ class Album(metaclass=tag.Taggable):
         self.metadata.addImage(mime, data, type_, desc)
         self.metadataChanged()
 
-    addImage = add_image
-
     def add_front_cover(self, mime, data, desc="Front Cover"):
-        self.addImage(mime, data, Image.FRONT_COVER, desc)
+        self.add_image(mime, data, Image.FRONT_COVER, desc)
 
     def remove_images(self):
         self.metadata.removeImages()
         self.metadataChanged()
-
-    removeImages = remove_images
 
     def __len__(self):
         return len(self.tracks)
@@ -120,8 +117,6 @@ class Album(metaclass=tag.Taggable):
 
     def add_track(self, track):
         self._insert_track(len(self.tracks), track)
-
-    addTrack = add_track
 
     def insert_track(self, track, position):
         self._insert_track(position, track)
@@ -145,8 +140,6 @@ class Album(metaclass=tag.Taggable):
         self.listeners.trackRemoved(track, position)
         self.track_removed.emit(position, track)
         return track
-
-    removeTrack = remove_track
 
     def move_track(self, from_position, to_position):
         track = self.tracks.pop(from_position)

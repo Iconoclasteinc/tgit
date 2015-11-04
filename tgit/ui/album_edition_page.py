@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import operator
 
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget, QApplication
@@ -23,6 +24,7 @@ from PyQt5.QtWidgets import QWidget, QApplication
 from .helpers import image, formatting
 from tgit.album import AlbumListener
 from tgit.auth import Permission
+from tgit.countries import COUNTRIES
 from tgit.genres import GENRES
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
@@ -73,6 +75,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
         self.front_cover.setFixedSize(*self.FRONT_COVER_SIZE)
         self.genre.addItems(sorted(GENRES))
+        for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
+            self._lead_performer_region.addItem(name, code)
 
         self.compilation.clicked.connect(self._update_isni_lookup_button)
         self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
@@ -125,6 +129,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.release_name.editingFinished.connect(lambda: handle("release_name"))
         self.compilation.clicked.connect(lambda: handle("compilation"))
         self.lead_performer.editingFinished.connect(lambda: handle("lead_performer"))
+        self._lead_performer_region.activated.connect(lambda: handle("lead_performer_region"))
         self.isni.textChanged.connect(lambda _: handle("isni"))
         self.guest_performers.textChanged.connect(lambda: handle("guest_performers"))
         self.label_name.editingFinished.connect(lambda: handle("label_name"))
@@ -160,6 +165,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.release_name.setText(album.release_name)
         self.compilation.setChecked(album.compilation is True)
         self._display_lead_performer(album)
+        if album.lead_performer_region:
+            self._lead_performer_region.setCurrentText(COUNTRIES[album.lead_performer_region[0]])
         self.isni.setText(album.isni)
         self.guest_performers.setText(formatting.toPeopleList(album.guest_performers))
         self.label_name.setText(album.label_name)
@@ -182,6 +189,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         all_values = dict(release_name=self.release_name.text(),
                           compilation=self.compilation.isChecked(),
                           lead_performer=self.lead_performer.text(),
+                          lead_performer_region=(self._lead_performer_region.currentData(),),
                           isni=self.isni.text(),
                           guest_performers=formatting.fromPeopleList(self.guest_performers.text()),
                           label_name=self.label_name.text(),

@@ -14,9 +14,9 @@ from tgit.album import Album, AlbumListener
 
 def test_defines_metadata_tags():
     assert_that(tuple(Album.tags()), contains_inanyorder(
-        "release_name", "compilation", "lead_performer", "isni", "guest_performers", "label_name", "upc",
-        "catalog_number", "recording_time", "release_time", "original_release_time", "recording_studios", "producer",
-        "mixer", "contributors", "comments", "primary_style"))
+        "release_name", "compilation", "lead_performer", "lead_performer_region", "isni", "guest_performers",
+        "label_name", "upc", "catalog_number", "recording_time", "release_time", "original_release_time",
+        "recording_studios", "producer", "mixer", "contributors", "comments", "primary_style"))
 
 
 def test_initializes_with_album_only_metadata():
@@ -37,7 +37,7 @@ def test_contained_tracks_have_lead_performer_of_album_when_album_is_not_a_compi
     track = build.track(lead_performer="???")
     album = build.album(lead_performer="Joel Miller")
 
-    album.addTrack(track)
+    album.add_track(track)
 
     assert_that(track.lead_performer, equal_to("Joel Miller"), "track lead performer")
 
@@ -46,7 +46,7 @@ def test_contained_tracks_have_various_lead_performers_when_album_is_a_compilati
     track = build.track(lead_performer="Joel Miller")
     compilation = build.album(lead_performer="Various Artists", compilation=True)
 
-    compilation.addTrack(track)
+    compilation.add_track(track)
 
     assert_that(track.lead_performer, equal_to("Joel Miller"), "track lead performer")
 
@@ -78,7 +78,7 @@ def test_signals_track_insertion_events():
 
     album.track_inserted.subscribe(subscriber)
     for track in tracks:
-        album.addTrack(track)
+        album.add_track(track)
 
     for index, track in enumerate(tracks):
         assert_that(subscriber.events, has_item(event(index, track)), "track {0} insertion event".format(index))
@@ -130,22 +130,22 @@ def test_is_initially_empty():
 
 def test_is_no_longer_empty_when_holding_tracks():
     album = Album()
-    album.addTrack(build.track())
+    album.add_track(build.track())
     assert_that(album.empty(), is_(False), "emptiness")
 
 
 def test_associates_track_to_album():
     album = Album()
     track = build.track()
-    album.addTrack(track)
+    album.add_track(track)
     assert_that(track.album, is_(album), "album of track")
 
 
 def test_holds_a_list_of_tracks_in_order():
     album = Album()
-    album.addTrack(build.track(track_title="Track 1"))
-    album.addTrack(build.track(track_title="Track 2"))
-    album.addTrack(build.track(track_title="Track 3"))
+    album.add_track(build.track(track_title="Track 1"))
+    album.add_track(build.track(track_title="Track 2"))
+    album.add_track(build.track(track_title="Track 3"))
 
     assert_that(album.tracks, contains(
         has_property("track_title", "Track 1"),
@@ -171,7 +171,7 @@ def test_supports_inserting_tracks_at_a_specific_positions():
         build.track(track_title="Track 2"),
         build.track(track_title="Track 3")])
 
-    first = album.removeTrack(0)
+    first = album.remove_track(0)
     album.insert_track(first, 1)
 
     assert_that(album.tracks, contains(
@@ -183,7 +183,7 @@ def test_supports_inserting_tracks_at_a_specific_positions():
 def test_uses_first_front_cover_or_first_image_as_main_cover():
     album = build.album()
     assert_that(album.main_cover, is_(None))
-    album.addImage("image/jepg", "back cover image")
+    album.add_image("image/jepg", "back cover image")
     assert_that(album.main_cover, has_property("data", "back cover image"))
     album.add_front_cover("image/jpeg", "front cover image")
     assert_that(album.main_cover, has_property("data", "front cover image"))
@@ -217,11 +217,11 @@ def test_signals_track_insertion_to_listeners():
 
     first = build.track()
     listener.should_receive("trackAdded").with_args(first, 0).once()
-    album.addTrack(first)
+    album.add_track(first)
 
     last = build.track()
     listener.should_receive("trackAdded").with_args(last, 1).once()
-    album.addTrack(last)
+    album.add_track(last)
 
     middle = build.track()
     listener.should_receive("trackAdded").with_args(middle, 1).once()
@@ -262,10 +262,10 @@ def _assert_notifies_listener_on_images_change(*images):
 def _assert_notifies_listener_when_images_removed():
     album = Album()
     album.addAlbumListener(_listener_expecting_notification("images", empty()))
-    album.removeImages()
+    album.remove_images()
 
 
 def _assert_notifies_listeners_when_image_added(image):
     album = Album()
     album.addAlbumListener(_listener_expecting_notification("images", has_item(image)))
-    album.addImage(image.mime, image.data, image.type, image.desc)
+    album.add_image(image.mime, image.data, image.type, image.desc)

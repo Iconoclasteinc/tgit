@@ -818,25 +818,15 @@ QPushButton:focus {
           </widget>
          </item>
          <item row="4" column="0">
-          <widget class="QLabel" name="area_caption">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
+          <widget class="QLabel" name="_lead_performer_region_caption">
            <property name="text">
-            <string>Area:</string>
+            <string>Lead Performer Region:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="buddy">
-            <cstring>area</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="area">
-           <property name="enabled">
-            <bool>false</bool>
+            <cstring>_lead_performer_region</cstring>
            </property>
           </widget>
          </item>
@@ -934,6 +924,16 @@ QPushButton:pressed {
            </property>
            <property name="buddy">
             <cstring>lead_performer</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QComboBox" name="_lead_performer_region">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -1259,7 +1259,6 @@ QPushButton:pressed {
   <tabstop>assign_isni_button</tabstop>
   <tabstop>isni</tabstop>
   <tabstop>clear_isni_button</tabstop>
-  <tabstop>area</tabstop>
   <tabstop>guest_performers</tabstop>
   <tabstop>add_guest_performers_button</tabstop>
   <tabstop>label_name</tabstop>

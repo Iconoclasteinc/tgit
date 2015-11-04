@@ -18,7 +18,7 @@ class AlbumEditionPageDriver(ScreenDriver):
     def shows_metadata(self, **meta):
         for tag, value in meta.items():
             if tag == "release_name":
-                self.showsReleaseName(value)
+                self.shows_release_name(value)
             elif tag == "lead_performer":
                 self.shows_lead_performer(value)
             elif tag == "compilation":
@@ -26,23 +26,23 @@ class AlbumEditionPageDriver(ScreenDriver):
             elif tag == "guest_performers":
                 self.shows_guest_performers(value)
             elif tag == "label_name":
-                self.showsLabelName(value)
+                self.shows_label_name(value)
             elif tag == "catalog_number":
-                self.showsCatalogNumber(value)
+                self.shows_catalog_number(value)
             elif tag == "upc":
-                self.showsUpc(value)
+                self.shows_upc(value)
             elif tag == "recording_time":
                 self.shows_recording_time(value)
             elif tag == "release_time":
-                self.showsReleaseTime(value)
+                self.shows_release_time(value)
             elif tag == "original_release_time":
-                self.showsOriginalReleaseTime(value)
+                self.shows_original_release_time(value)
             elif tag == "recording_studios":
-                self.showsRecordingStudios(value)
+                self.shows_recording_studios(value)
             elif tag == "producer":
-                self.showsProducer(value)
+                self.shows_producer(value)
             elif tag == "mixer":
-                self.showsMixer(value)
+                self.shows_mixer(value)
             elif tag == "primary_style":
                 self.shows_primary_style(value)
             elif tag == "isni":
@@ -55,57 +55,57 @@ class AlbumEditionPageDriver(ScreenDriver):
             if tag == "front_cover":
                 self.select_picture(value)
             elif tag == "release_name":
-                self.changeReleaseName(value)
+                self.change_release_name(value)
             elif tag == "toggle_compilation" and value:
                 self.toggle_compilation()
             elif tag == "lead_performer":
-                self.changeLeadPerformer(value)
+                self.change_lead_performer(value)
             elif tag == "guestPerformers":
-                self.changeGuestPerformers(value)
+                self.change_guest_performers(value)
             elif tag == "label_name":
-                self.changeLabelName(value)
+                self.change_label_name(value)
             elif tag == "catalog_number":
-                self.changeCatalogNumber(value)
+                self.change_catalog_number(value)
             elif tag == "upc":
-                self.changeUpc(value)
+                self.change_upc(value)
             elif tag == "recording_time":
                 self.change_recording_time(value)
             elif tag == "releaseTime":
-                self.changeReleaseTime(value)
+                self.change_release_time(value)
             elif tag == "original_release_time":
-                self.changeOriginalReleaseTime(value)
+                self.change_original_release_time(value)
             elif tag == "recording_studios":
-                self.changeRecordingStudios(value)
+                self.change_recording_studios(value)
             elif tag == "producer":
-                self.changeProducer(value)
+                self.change_producer(value)
             elif tag == "mixer":
-                self.changeMixer(value)
+                self.change_mixer(value)
             elif tag == "primary_style":
                 self.select_primary_style(value)
             else:
                 raise AssertionError("Don't know how to edit '{0}'".format(tag))
 
-    def displaysPictureWithSize(self, width, height):
+    def _displays_picture_with_size(self, width, height):
         label = self.label(named("front_cover"))
         label.is_showing_on_screen()
         label.has_pixmap(with_pixmap_height(height))
         label.has_pixmap(with_pixmap_width(width))
 
-    def showsPicture(self):
-        self.displaysPictureWithSize(*AlbumEditionPage.FRONT_COVER_SIZE)
+    def shows_picture(self):
+        self._displays_picture_with_size(*AlbumEditionPage.FRONT_COVER_SIZE)
 
     def shows_picture_placeholder(self):
-        self.displaysPictureWithSize(*AlbumEditionPage.FRONT_COVER_SIZE)
+        self._displays_picture_with_size(*AlbumEditionPage.FRONT_COVER_SIZE)
 
     def select_picture(self, filename):
-        self.addPicture()
+        self.add_picture()
         picture_selection_dialog(self).select_picture(filename)
-        self.showsPicture()
+        self.shows_picture()
 
-    def addPicture(self):
+    def add_picture(self):
         self.button(named("select_picture_button")).click()
 
-    def removePicture(self):
+    def remove_picture(self):
         self.button(named("remove_picture_button")).click()
 
     def clear_isni(self):
@@ -124,11 +124,11 @@ class AlbumEditionPageDriver(ScreenDriver):
     def edit_performers(self):
         self.button(named("add_guest_performers_button")).click()
 
-    def showsReleaseName(self, name):
+    def shows_release_name(self, name):
         self.label(with_buddy(named("release_name"))).is_showing_on_screen()
         self.lineEdit(named("release_name")).has_text(name)
 
-    def changeReleaseName(self, name):
+    def change_release_name(self, name):
         self.lineEdit(named("release_name")).change_text(name)
 
     def shows_compilation(self, value):
@@ -146,6 +146,12 @@ class AlbumEditionPageDriver(ScreenDriver):
         edit = self.lineEdit(named("lead_performer"))
         edit.has_text(name)
         edit.is_disabled(disabled)
+
+    def shows_lead_performer_region(self, name):
+        label = self.label(with_buddy(named("_lead_performer_region")))
+        label.is_showing_on_screen()
+        edit = self.combobox(named("_lead_performer_region"))
+        edit.has_current_text(name)
 
     def shows_isni(self, name, disabled=False):
         label = self.label(with_buddy(named("isni")))
@@ -170,41 +176,38 @@ class AlbumEditionPageDriver(ScreenDriver):
     def isni_lookup_has_tooltip(self, text):
         self.button(named("lookup_isni_button")).has_tooltip(text)
 
-    def changeLeadPerformer(self, name):
+    def change_lead_performer(self, name):
         self.lineEdit(named("lead_performer")).change_text(name)
+
+    def change_lead_performer_region(self, name):
+        self.combobox(named("_lead_performer_region")).select_option(name)
 
     def shows_guest_performers(self, names):
         self.label(with_buddy(named("guest_performers"))).is_showing_on_screen()
         self.lineEdit(named("guest_performers")).has_text(names)
 
-    def changeGuestPerformers(self, names):
+    def change_guest_performers(self, names):
         self.lineEdit(named("guest_performers")).change_text(names)
 
-    def showsLabelName(self, name):
+    def shows_label_name(self, name):
         self.label(with_buddy(named("label_name"))).is_showing_on_screen()
         self.lineEdit(named("label_name")).has_text(name)
 
-    def changeLabelName(self, name):
+    def change_label_name(self, name):
         self.lineEdit(named("label_name")).change_text(name)
 
-    def showsArea(self, area):
-        self.label(with_buddy(named("area"))).is_showing_on_screen()
-        edit = self.lineEdit(named("area"))
-        edit.is_disabled()
-        edit.has_text(area)
-
-    def showsCatalogNumber(self, number):
+    def shows_catalog_number(self, number):
         self.label(with_buddy(named("catalog_number"))).is_showing_on_screen()
         self.lineEdit(named("catalog_number")).has_text(number)
 
-    def changeCatalogNumber(self, number):
+    def change_catalog_number(self, number):
         self.lineEdit(named("catalog_number")).change_text(number)
 
-    def showsUpc(self, code):
+    def shows_upc(self, code):
         self.label(with_buddy(named("barcode"))).is_showing_on_screen()
         self.lineEdit(named("barcode")).has_text(code)
 
-    def changeUpc(self, code):
+    def change_upc(self, code):
         self.lineEdit(named("barcode")).change_text(code)
 
     def shows_recording_time(self, time):
@@ -214,52 +217,52 @@ class AlbumEditionPageDriver(ScreenDriver):
     def change_recording_time(self, year, month, day):
         self.dateEdit(named("recording_time")).change_date(year, month, day)
 
-    def showsReleaseTime(self, time):
+    def shows_release_time(self, time):
         self.label(with_buddy(named("release_time"))).is_showing_on_screen()
         self.dateEdit(named("release_time")).has_date(time)
 
-    def changeReleaseTime(self, year, month, day):
+    def change_release_time(self, year, month, day):
         self.dateEdit(named("release_time")).change_date(year, month, day)
 
-    def showsDigitalReleaseTime(self, time):
+    def shows_digital_release_time(self, time):
         self.label(with_buddy(named("digital_release_time"))).is_showing_on_screen()
         edit = self.dateEdit(named("digital_release_time"))
         edit.is_disabled()
         edit.has_date(time)
 
-    def showsOriginalReleaseTime(self, time):
+    def shows_original_release_time(self, time):
         self.label(with_buddy(named("original_release_time"))).is_showing_on_screen()
         self.dateEdit(named("original_release_time")).has_date(time)
 
-    def changeOriginalReleaseTime(self, time):
+    def change_original_release_time(self, time):
         self.label(named("original_release_time")).change_date(time)
 
-    def showsRecordingStudios(self, studios):
+    def shows_recording_studios(self, studios):
         self.label(with_buddy(named("recording_studios"))).is_showing_on_screen()
         self.lineEdit(named("recording_studios")).has_text(studios)
 
-    def changeRecordingStudios(self, studios):
+    def change_recording_studios(self, studios):
         self.lineEdit(named("recording_studios")).change_text(studios)
 
-    def showsProducer(self, producer):
+    def shows_producer(self, producer):
         self.label(with_buddy(named("producer"))).is_showing_on_screen()
         self.lineEdit(named("producer")).has_text(producer)
 
-    def changeProducer(self, producer):
+    def change_producer(self, producer):
         self.lineEdit(named("producer")).change_text(producer)
 
-    def showsMixer(self, mixer):
+    def shows_mixer(self, mixer):
         self.label(with_buddy(named("mixer"))).is_showing_on_screen()
         self.lineEdit(named("mixer")).has_text(mixer)
 
-    def changeMixer(self, mixer):
+    def change_mixer(self, mixer):
         self.lineEdit(named("mixer")).change_text(mixer)
 
-    def showsComments(self, comments):
+    def shows_comments(self, comments):
         self.label(with_buddy(named("comments"))).is_showing_on_screen()
         self.textEdit(named("comments")).has_plain_text(comments)
 
-    def addComments(self, *comments):
+    def add_comments(self, *comments):
         edit = self.textEdit(named("comments"))
         for comment in comments:
             edit.add_line(comment)
@@ -269,19 +272,19 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.label(with_buddy(named("genre"))).is_showing_on_screen()
         self.combobox(named("genre")).has_current_text(style)
 
-    def changePrimaryStyle(self, style):
+    def change_primary_style(self, style):
         self.combobox(named("genre")).change_text(style)
 
     def select_primary_style(self, style):
         self.combobox(named("genre")).select_option(style)
 
-    def showsMediaType(self, type_):
+    def shows_media_type(self, type_):
         self.label(with_buddy(named("media_type"))).is_showing_on_screen()
         edit = self.lineEdit(named("media_type"))
         edit.is_disabled()
         edit.has_text(type_)
 
-    def showsReleaseType(self, type_):
+    def shows_release_type(self, type_):
         self.label(with_buddy(named("release_type"))).is_showing_on_screen()
         edit = self.lineEdit(named("release_type"))
         edit.is_disabled()

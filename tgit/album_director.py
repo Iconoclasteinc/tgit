@@ -122,7 +122,7 @@ def update_album_from(album):
 
 def change_cover_of(album):
     def change_album_cover(filename):
-        album.removeImages()
+        album.remove_images()
         mime, data = fs.guess_mime_type(filename), fs.read(filename)
         album.add_front_cover(mime, data)
 
@@ -131,7 +131,7 @@ def change_cover_of(album):
 
 def remove_album_cover_from(album):
     def remove_album_cover():
-        album.removeImages()
+        album.remove_images()
     return remove_album_cover
 
 

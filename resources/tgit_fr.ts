@@ -204,8 +204,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="173"/>
-        <source>Area:</source>
-        <translation>Lieu d&apos;origine :</translation>
+        <source>Lead Performer Region:</source>
+        <translation>Lieu d&apos;origine de l&apos;artiste principal :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="186"/>
