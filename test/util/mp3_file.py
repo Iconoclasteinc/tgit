@@ -127,6 +127,8 @@ class Mp3Audio(object):
             elif tag == "TXXX_TAGGING_TIME":
                 """ Deprecated and replaced with TDTG """
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="TAGGING_TIME", text=value))
+            elif tag == "TXXX_INITIAL_PRODUCER":
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc="INITIAL-PRODUCER", text=value))
             elif tag == "TRCK":
                 self._add_tag(id3.TRCK(encoding=UTF_8, text=value))
             else:

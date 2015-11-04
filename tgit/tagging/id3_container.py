@@ -294,6 +294,7 @@ class ID3Container:
         "TXXX:BARCODE": "upc",
         "TXXX:Catalog Number": "catalog_number",
         "TXXX:Featured Guest": "featuredGuest",
+        "TXXX:INITIAL-PRODUCER": "initial_producer",
         "TXXX:ISNI": "isni",
         "TXXX:ISWC": "iswc",
         "TXXX:Recording Studios": "recording_studios",
