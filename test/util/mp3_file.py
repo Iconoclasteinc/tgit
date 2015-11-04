@@ -58,7 +58,7 @@ class Mp3Audio(object):
             elif tag == "lead_performer" or tag == "TPE1":
                 self._add_tag(id3.TPE1(encoding=UTF_8, text=value))
             elif tag == "lead_performer_region" or tag == "TXXX_LEAD_PERFORMER_REGION":
-                self._add_tag(id3.TXXX(encoding=UTF_8, desc="LEAD_PERFORMER_REGION", text=value))
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc="LEAD-PERFORMER-REGION", text=value))
             elif tag == "guestPerformers" or tag == "TMCL":
                 self._add_tag(id3.TMCL(encoding=UTF_8, people=value))
             elif tag == "label_name" or tag == "TOWN":

@@ -308,7 +308,7 @@ class ID3Container:
         _processors.append(UnicodeProcessor(key, tag))
 
     for key, tag in {
-        "TXXX:LEAD_PERFORMER_REGION": "lead_performer_region"
+        "TXXX:LEAD-PERFORMER-REGION": "lead_performer_region"
     }.items():
         _processors.append(RegionProcessor(key, tag))
 
