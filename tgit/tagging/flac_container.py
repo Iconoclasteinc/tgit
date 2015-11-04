@@ -126,6 +126,7 @@ class FlacContainer:
         "TAGGER": "tagger",
         "TAGGER-VERSION": "tagger_version",
         "TAGGING-TIME": "tagging_time",
+        "INITIAL-PRODUCER": "initial_producer",
     }.items():
         fields.append(TextField(field_name, tag_name))
 

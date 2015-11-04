@@ -72,6 +72,8 @@ class FlacAudio(object):
                     self._add_picture(mime, type_, desc, data)
             elif tag == 'LEAD_PERFORMER_REGION':
                 self._add_tag("LEAD-PERFORMER-REGION", value)
+            elif tag == 'INITIAL_PRODUCER':
+                self._add_tag("INITIAL-PRODUCER", value)
             else:
                 raise AssertionError("Unsupported tag '%s'" % tag)
 
