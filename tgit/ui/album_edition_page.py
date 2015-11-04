@@ -77,6 +77,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.genre.addItems(sorted(GENRES))
         self._fill_with_countries(self._lead_performer_region)
         self._fill_with_countries(self._initial_producer_region)
+        self._fill_with_countries(self._recording_studio_region)
 
         self.compilation.clicked.connect(self._update_isni_lookup_button)
         self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
@@ -144,6 +145,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.release_type.editingFinished.connect(lambda: handle("release_type"))
         self.comments.editingFinished.connect(lambda: handle("comments"))
         self.recording_studios.editingFinished.connect(lambda: handle("recording_studios"))
+        self._recording_studio_region.activated.connect(lambda: handle("recording_studio_region"))
         self._artistic_producer.editingFinished.connect(lambda: handle("artistic_producer"))
         self._initial_producer.editingFinished.connect(lambda: handle("initial_producer"))
         self._initial_producer_region.activated.connect(lambda: handle("initial_producer_region"))
@@ -182,6 +184,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self.recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
         self.recording_studios.setText(album.recording_studios)
+        self._display_region(album.recording_studio_region, self._recording_studio_region)
         self._artistic_producer.setText(album.artistic_producer)
         self._initial_producer.setText(album.initial_producer)
         self._display_region(album.initial_producer_region, self._initial_producer_region)
@@ -212,6 +215,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           recording_time=self.recording_time.date().toString(ISO_8601_FORMAT),
                           release_time=self.release_time.date().toString(ISO_8601_FORMAT),
                           recording_studios=self.recording_studios.text(),
+                          recording_studio_region=(self._recording_studio_region.currentData(),),
                           artistic_producer=self._artistic_producer.text(),
                           initial_producer=self._initial_producer.text(),
                           initial_producer_region=(self._initial_producer_region.currentData(),),

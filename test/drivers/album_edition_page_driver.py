@@ -243,6 +243,14 @@ class AlbumEditionPageDriver(ScreenDriver):
     def change_recording_studios(self, studios):
         self.lineEdit(named("recording_studios")).change_text(studios)
 
+    def shows_recording_studio_region(self, name):
+        self.label(with_buddy(named("_recording_studio_region"))).is_showing_on_screen()
+        edit = self.combobox(named("_recording_studio_region"))
+        edit.has_current_text(name)
+
+    def change_recording_studio_region(self, name):
+        self.combobox(named("_recording_studio_region")).select_option(name)
+
     def shows_initial_producer(self, producer):
         self.label(with_buddy(named("_initial_producer"))).is_showing_on_screen()
         self.lineEdit(named("_initial_producer")).has_text(producer)

@@ -278,6 +278,11 @@
         <translation>Studios d&apos;enregistrement :</translation>
     </message>
     <message>
+        <location filename="tgit/ui/album_edition_page.py" line="224"/>
+        <source>Recording Studio Region:</source>
+        <translation>Région du studio d&apos;enregistrement :</translation>
+    </message>
+    <message>
         <location filename="tgit/ui/album_edition_page.py" />
         <source>Initial Producer:</source>
         <translation>Producteur initial :</translation>
