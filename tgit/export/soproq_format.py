@@ -58,9 +58,9 @@ def _write_line(album, track, line_number, sheet):
     sheet["S"+str(line_number)] = recording_time        # * ANNÉE DE FIXATION
     sheet["T"+str(line_number)] = album.initial_producer  # * PRODUCTEUR INITIAL
     sheet["U"+str(line_number)] = initial_producer_region  # * NATIONALITÉ PRODUCTEUR
-    sheet["V"+str(line_number)] = ""                    # * TYPE DE DROIT
-    sheet["W"+str(line_number)] = ""                    # * POURCENTAGE
-    sheet["X"+str(line_number)] = ""                    # * TYPE TERRITOIRE
+    sheet["V"+str(line_number)] = "RE"                  # * TYPE DE DROIT
+    sheet["W"+str(line_number)] = "100"                 # * POURCENTAGE
+    sheet["X"+str(line_number)] = "WW"                  # * TYPE TERRITOIRE
     sheet["Y"+str(line_number)] = ""                    # * TERRITOIRE
     sheet["Z"+str(line_number)] = ""                    # DATE DÉBUT DE DROIT
     sheet["AA"+str(line_number)] = ""                   # DATE FIN DE DROIT

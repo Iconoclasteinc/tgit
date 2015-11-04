@@ -13,48 +13,19 @@ def test_writes_tracks_to_workbook():
         release_name="Release Name",
         lead_performer="Lead Performer",
         lead_performer_region=("CA",),
-        isni="0000123456789",
         compilation=False,
-        guest_performers=[("Instrument1", "Performer1"), ("Instrument2", "Performer2")],
         label_name="Label Name",
         catalog_number="Catalog Number",
         upc="Barcode",
-        comments="Comments\n...\n...",
         release_time="2014-05-10",
         recording_time="2013-05-10",
         recording_studios="Studios",
         recording_studio_region=("CA",),
         initial_producer="Initial Producer",
-        initial_producer_region=("US",),
-        artistic_producer="Artistic Producer",
-        mixer="Mixing Engineer",
-        primary_style="Genre")
+        initial_producer_region=("US",))
 
-    album.add_track(build.track(
-        track_title="Track Title",
-        versionInfo="Version Info",
-        featuredGuest="Featuring",
-        lyrics="Lyrics\n...\...\n...",
-        language="eng",
-        publisher="Publisher",
-        lyricist="Lyricist",
-        composer="Composer",
-        isrc="ISRC",
-        labels="Tag1 Tag2 Tag3",
-        duration=60))
-
-    album.add_track(build.track(
-        track_title="Track Title1",
-        versionInfo="Version Info1",
-        featuredGuest="Featuring1",
-        lyrics="Lyrics\n...\...\n...1",
-        language="eng1",
-        publisher="Publisher1",
-        lyricist="Lyricist1",
-        composer="Composer1",
-        isrc="ISRC1",
-        labels="Tag1 Tag2 Tag31",
-        duration=120))
+    album.add_track(build.track(track_title="Track Title", isrc="ISRC", duration=60))
+    album.add_track(build.track(track_title="Track Title1", isrc="ISRC1", duration=120))
 
     workbook = Workbook()
 
@@ -83,9 +54,9 @@ def test_writes_tracks_to_workbook():
                       S13="2013",
                       T13="Initial Producer",
                       U13="USA",
-                      V13="",
-                      W13="",
-                      X13="",
+                      V13="RE",
+                      W13="100",
+                      X13="WW",
                       Y13="",
                       Z13="",
                       AA13="")
@@ -112,9 +83,9 @@ def test_writes_tracks_to_workbook():
                       S14="2013",
                       T14="Initial Producer",
                       U14="USA",
-                      V14="",
-                      W14="",
-                      X14="",
+                      V14="RE",
+                      W14="100",
+                      X14="WW",
                       Y14="",
                       Z14="",
                       AA14="")
