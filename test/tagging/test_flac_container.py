@@ -111,6 +111,11 @@ def test_reads_total_tracks_from_track_total_field(flac):
     assert_that(metadata, has_entry('total_tracks', 5), 'metadata')
 
 
+def test_reads_lead_performer_region_from_lead_performer_region_field(flac):
+    metadata = container.load(flac(LEAD_PERFORMER_REGION="CA-QC"))
+    assert_that(metadata, has_entry('lead_performer_region', ("CA", "QC")), 'metadata')
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage('image/jpeg', b'honeycomb.jpg', Image.FRONT_COVER)
@@ -127,6 +132,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata['tagging_time'] = "2014-03-26 18:18:55"
     metadata['track_number'] = 3
     metadata['total_tracks'] = 5
+    metadata['lead_performer_region'] = ("CA", "QC")
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

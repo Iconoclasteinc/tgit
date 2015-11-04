@@ -55,6 +55,19 @@ class TextField(ValueField):
         super().__init__(field_name, tag_name, str, str)
 
 
+class RegionField(ValueField):
+    @staticmethod
+    def to_region(value):
+        return tuple(value.split("-"))
+
+    @staticmethod
+    def to_value(region):
+        return "-".join(region)
+
+    def __init__(self, field_name, tag_name):
+        super().__init__(field_name, tag_name, self.to_region, self.to_value)
+
+
 class NumericField(ValueField):
     def __init__(self, field_name, tag_name):
         super().__init__(field_name, tag_name, int, str)
@@ -121,6 +134,11 @@ class FlacContainer:
         "TRACKTOTAL": "total_tracks",
     }.items():
         fields.append(NumericField(field_name, tag_name))
+
+    for field_name, tag_name in {
+        "LEAD-PERFORMER-REGION": "lead_performer_region"
+    }.items():
+        fields.append(RegionField(field_name, tag_name))
 
     def load(self, filename):
         flac_file = mutagen.flac.FLAC(filename)
