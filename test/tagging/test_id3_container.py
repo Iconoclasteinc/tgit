@@ -243,6 +243,11 @@ def test_reads_production_company_from_custom_frame(mp3):
     assert_that(metadata, has_entry("production_company", "Effendi Records Inc."), "metadata")
 
 
+def test_reads_production_company_region_from_custom_frame(mp3):
+    metadata = container.load(mp3(TXXX_PRODUCTION_COMPANY_REGION="CA-QC"))
+    assert_that(metadata, has_entry("production_company_region", ("CA", "QC")), "metadata")
+
+
 def test_round_trips_empty_metadata_to_file(mp3):
     assert_can_be_saved_and_reloaded_with_same_state(mp3, Metadata())
 
@@ -259,6 +264,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["guest_performers"] = [("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]
     metadata["label_name"] = "Label Name"
     metadata["production_company"] = "Production Company"
+    metadata["production_company_region"] = ("CA", "QC")
     metadata["catalog_number"] = "123 456-1"
     metadata["upc"] = "987654321111"
     metadata["recording_time"] = "2012-07-01"

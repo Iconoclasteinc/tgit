@@ -121,6 +121,11 @@ def test_reads_production_company_from_producer_field(flac):
     assert_that(metadata, has_entry('production_company', "Effendi Records Inc."), 'metadata')
 
 
+def test_reads_production_company_region_from_producer_region_field(flac):
+    metadata = container.load(flac(PRODUCER_REGION="CA-QC"))
+    assert_that(metadata, has_entry('production_company_region', ("CA", "QC")), 'metadata')
+
+
 def test_reads_music_producer_from_music_producer_field(flac):
     metadata = container.load(flac(MUSIC_PRODUCER="Joel Miller & Paul Johnston"))
     assert_that(metadata, has_entry('music_producer', "Joel Miller & Paul Johnston"), 'metadata')

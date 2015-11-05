@@ -138,7 +138,8 @@ class FlacContainer:
         fields.append(NumericField(field_name, tag_name))
 
     for field_name, tag_name in {
-        "LEAD-PERFORMER-REGION": "lead_performer_region"
+        "LEAD-PERFORMER-REGION": "lead_performer_region",
+        "PRODUCER-REGION": "production_company_region",
     }.items():
         fields.append(RegionField(field_name, tag_name))
 
