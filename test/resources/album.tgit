@@ -1,11 +1,11 @@
 version: 1.6.0
 type: mp3
-catalogNumber: XXX123456789
+catalog_number: XXX123456789
 comments: 'Comments
 
   ...'
 compilation: true
-guestPerformers:
+guest_performers:
 - !!python/tuple
   - Guitar
   - Guitarist
@@ -15,15 +15,29 @@ guestPerformers:
 isni: 0000123456789
 label_name: Label
 lead_performer: Artist
+lead_performer_region: !!python/tuple
+- FR
 mixer: Engineer
 primary_style: Style
 production_company: Production Company
+production_company_region: !!python/tuple
+- US
 music_producer: Music Producer
-recordingStudios: Studios
+recording_studios: Studios
+recording_studios_region: !!python/tuple
+- CA
 recording_time: '2008-09-15'
-releaseTime: '2009-01-01'
+release_time: '2009-01-01'
+original_release_time: '2009-01-15'
 release_name: Title
 upc: '123456789999'
+contributors:
+- !!python/tuple
+  - Sound
+  - Sound Engineer
+- !!python/tuple
+  - Effects
+  - Effects Engineer
 images:
 - !!python/tuple
   - image/jpeg
