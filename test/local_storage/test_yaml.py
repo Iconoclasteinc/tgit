@@ -37,11 +37,7 @@ def test_saves_data_to_yaml_file(project_file):
                 upc="123456789999",
                 comments="Comments\n...",
                 release_time="2009-01-01", recording_time="2008-09-15", original_release_time="2009-01-15",
-                recording_studio="Studios", recording_studio_region=("CA",),
-                production_company="Production Company", production_company_region=("US",),
-                music_producer="Music Producer", mixer="Engineer",
                 contributors=[("Sound", "Sound Engineer"), ("Effects", "Effects Engineer")],
-                primary_style="Style",
                 images=[("image/jpeg", "Front.jpeg", Image.FRONT_COVER, "Front")],
                 tracks=("1st", "2nd", "3rd"))
 
@@ -63,15 +59,6 @@ def test_saves_data_to_yaml_file(project_file):
     assert_that(lines, has_item(contains_string("release_time: '2009-01-01'")), "release time")
     assert_that(lines, has_item(contains_string("recording_time: '2008-09-15'")), "recording time")
     assert_that(lines, has_item(contains_string("original_release_time: '2009-01-15'")), "original release time")
-    assert_that(lines, has_item(contains_string("recording_studio: Studios")), "recording studio")
-    assert_that(lines, has_item(contains_string("recording_studio_region:")), "recording studio region")
-    assert_that(lines, has_item(contains_string("- CA")), "recording studio region")
-    assert_that(lines, has_item(contains_string("production_company: Production Company")), "production company")
-    assert_that(lines, has_item(contains_string("production_company_region:")), "production company region")
-    assert_that(lines, has_item(contains_string("- US")), "production company region")
-    assert_that(lines, has_item(contains_string("music_producer: Music Producer")), "music producer")
-    assert_that(lines, has_item(contains_string("mixer: Engineer")), "mixer")
-    assert_that(lines, has_item(contains_string("primary_style: Style")), "primary style")
     assert_that(lines, has_item(contains_string("guest_performers:")), "guest performers")
     assert_that(lines, has_item(contains_string("  - Guitar")), "guest performers")
     assert_that(lines, has_item(contains_string("  - Guitarist")), "guest performers")
@@ -113,15 +100,8 @@ def test_reads_data_from_yaml_file():
     assert_that(data, has_entry("release_time", "2009-01-01"), "release time")
     assert_that(data, has_entry("recording_time", "2008-09-15"), "recording time")
     assert_that(data, has_entry("original_release_time", "2009-01-15"), "original_release time")
-    assert_that(data, has_entry("recording_studio", "Studios"), "recording studio")
-    assert_that(data, has_entry("recording_studio_region", ("CA",)), "recording studio region")
-    assert_that(data, has_entry("production_company", "Production Company"), "production company")
-    assert_that(data, has_entry("production_company_region", ("US",)), "production company region")
-    assert_that(data, has_entry("music_producer", "Music Producer"), "music producer")
-    assert_that(data, has_entry("mixer", "Engineer"), "mixer")
     assert_that(data, has_entry("contributors", contains(("Sound", "Sound Engineer"), ("Effects", "Effects Engineer"))),
                 "contributors")
-    assert_that(data, has_entry("primary_style", "Style"), "primary style")
     assert_that(data, has_entry("images", contains(("image/jpeg", "Front.jpeg", Image.FRONT_COVER, "Front"))),
                 "attached pictures")
     assert_that(data, has_entry("tracks", contains("1st", "2nd", "3rd")))

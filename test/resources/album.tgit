@@ -17,15 +17,6 @@ label_name: Label
 lead_performer: Artist
 lead_performer_region: !!python/tuple
 - FR
-mixer: Engineer
-primary_style: Style
-production_company: Production Company
-production_company_region: !!python/tuple
-- US
-music_producer: Music Producer
-recording_studio: Studios
-recording_studio_region: !!python/tuple
-- CA
 recording_time: '2008-09-15'
 release_time: '2009-01-01'
 original_release_time: '2009-01-15'
