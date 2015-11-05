@@ -38,7 +38,7 @@ class AlbumEditionPageDriver(ScreenDriver):
             elif tag == "original_release_time":
                 self.shows_original_release_time(value)
             elif tag == "recording_studios":
-                self.shows_recording_studios(value)
+                self.shows_recording_studio(value)
             elif tag == "producer":
                 self.shows_artistic_producer(value)
             elif tag == "mixer":
@@ -236,50 +236,6 @@ class AlbumEditionPageDriver(ScreenDriver):
     def change_original_release_time(self, time):
         self.label(named("original_release_time")).change_date(time)
 
-    def shows_recording_studios(self, studios):
-        self.label(with_buddy(named("recording_studios"))).is_showing_on_screen()
-        self.lineEdit(named("recording_studios")).has_text(studios)
-
-    def change_recording_studios(self, studios):
-        self.lineEdit(named("recording_studios")).change_text(studios)
-
-    def shows_recording_studio_region(self, name):
-        self.label(with_buddy(named("_recording_studio_region"))).is_showing_on_screen()
-        edit = self.combobox(named("_recording_studio_region"))
-        edit.has_current_text(name)
-
-    def change_recording_studio_region(self, name):
-        self.combobox(named("_recording_studio_region")).select_option(name)
-
-    def shows_initial_producer(self, producer):
-        self.label(with_buddy(named("_initial_producer"))).is_showing_on_screen()
-        self.lineEdit(named("_initial_producer")).has_text(producer)
-
-    def change_initial_producer(self, producer):
-        self.lineEdit(named("_initial_producer")).change_text(producer)
-
-    def shows_initial_producer_region(self, name):
-        self.label(with_buddy(named("_initial_producer_region"))).is_showing_on_screen()
-        edit = self.combobox(named("_initial_producer_region"))
-        edit.has_current_text(name)
-
-    def change_initial_producer_region(self, name):
-        self.combobox(named("_initial_producer_region")).select_option(name)
-
-    def shows_artistic_producer(self, producer):
-        self.label(with_buddy(named("_artistic_producer"))).is_showing_on_screen()
-        self.lineEdit(named("_artistic_producer")).has_text(producer)
-
-    def change_artistic_producer(self, producer):
-        self.lineEdit(named("_artistic_producer")).change_text(producer)
-
-    def shows_mixer(self, mixer):
-        self.label(with_buddy(named("mixer"))).is_showing_on_screen()
-        self.lineEdit(named("mixer")).has_text(mixer)
-
-    def change_mixer(self, mixer):
-        self.lineEdit(named("mixer")).change_text(mixer)
-
     def shows_comments(self, comments):
         self.label(with_buddy(named("comments"))).is_showing_on_screen()
         self.textEdit(named("comments")).has_plain_text(comments)
@@ -289,16 +245,6 @@ class AlbumEditionPageDriver(ScreenDriver):
         for comment in comments:
             edit.add_line(comment)
         edit.clear_focus()
-
-    def shows_primary_style(self, style):
-        self.label(with_buddy(named("genre"))).is_showing_on_screen()
-        self.combobox(named("genre")).has_current_text(style)
-
-    def change_primary_style(self, style):
-        self.combobox(named("genre")).change_text(style)
-
-    def select_primary_style(self, style):
-        self.combobox(named("genre")).select_option(style)
 
     def shows_media_type(self, type_):
         self.label(with_buddy(named("media_type"))).is_showing_on_screen()

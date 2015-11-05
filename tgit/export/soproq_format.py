@@ -32,8 +32,8 @@ def _write_line(album, track, line_number, sheet):
     album_lead_performer = album.lead_performer if not album.compilation else "Artistes Variés"
     track_lead_performer = track.lead_performer if track.lead_performer else album_lead_performer
     lead_performer_region = _to_iso_3_letters_code(album.lead_performer_region)
-    recording_studio_region = _to_iso_3_letters_code(album.recording_studio_region)
-    initial_producer_region = _to_iso_3_letters_code(album.initial_producer_region)
+    recording_studio_region = _to_iso_3_letters_code(track.recording_studio_region)
+    initial_producer_region = _to_iso_3_letters_code(track.initial_producer_region)
     recording_time = album.recording_time.split("-")[0] if album.recording_time else ""
     compilation = "O" if album.compilation else "N"
 
@@ -56,7 +56,7 @@ def _write_line(album, track, line_number, sheet):
     sheet["Q"+str(line_number)] = _to_duration(track.duration)  # DURÉE
     sheet["R"+str(line_number)] = recording_studio_region  # * PAYS DE FIXATION
     sheet["S"+str(line_number)] = recording_time        # * ANNÉE DE FIXATION
-    sheet["T"+str(line_number)] = album.initial_producer  # * PRODUCTEUR INITIAL
+    sheet["T"+str(line_number)] = track.initial_producer  # * PRODUCTEUR INITIAL
     sheet["U"+str(line_number)] = initial_producer_region  # * NATIONALITÉ PRODUCTEUR
     sheet["V"+str(line_number)] = "RE"                  # * TYPE DE DROIT
     sheet["W"+str(line_number)] = "100"                 # * POURCENTAGE

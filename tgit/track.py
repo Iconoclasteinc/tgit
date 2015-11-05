@@ -45,6 +45,14 @@ class Track(object, metaclass=tag.Taggable):
     track_number = tag.numeric()
     total_tracks = tag.numeric()
 
+    recording_studio = tag.text()
+    recording_studio_region = tag.pairs()
+    initial_producer = tag.text()
+    initial_producer_region = tag.pairs()
+    artistic_producer = tag.text()
+    mixer = tag.text()
+    primary_style = tag.text()
+
     # todo Introduce Recording
     bitrate = tag.numeric()
     duration = tag.decimal()

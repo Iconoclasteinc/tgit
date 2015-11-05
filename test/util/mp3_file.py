@@ -78,8 +78,8 @@ class Mp3Audio(object):
                 self._add_tag(id3.TDOR(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
             elif tag == "tagging_time" or tag == "TDTG":
                 self._add_tag(id3.TDTG(encoding=UTF_8, text=[id3.ID3TimeStamp(value)]))
-            elif tag == "recordingStudios" or tag == "TXXX_RECORDING_STUDIOS":
-                self._add_tag(id3.TXXX(encoding=UTF_8, desc="Recording Studios", text=value))
+            elif tag == "recordingStudios" or tag == "TXXX_RECORDING_STUDIO":
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc="Recording Studio", text=value))
             elif tag == "TIPL":
                 self._add_tag(id3.TIPL(encoding=UTF_8, people=value))
             elif tag == "comments" or tag == "COMM":

@@ -268,46 +268,6 @@
         <translation>Sortie originale :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" line="219"/>
-        <source>RECORDING</source>
-        <translation>ENREGISTREMENT</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" line="224"/>
-        <source>Recording Studios:</source>
-        <translation>Studios d&apos;enregistrement :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" line="224"/>
-        <source>Recording Studio Region:</source>
-        <translation>Région du studio d&apos;enregistrement :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
-        <source>Initial Producer:</source>
-        <translation>Producteur initial :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
-        <source>Initial Producer Region:</source>
-        <translation>Région du producteur initial :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" line="227"/>
-        <source>Artistic Producer:</source>
-        <translation>Réalisateur :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" line="230"/>
-        <source>Mixer:</source>
-        <translation>Mixeur :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" line="236"/>
-        <source>Primary Style:</source>
-        <translation>Genre de l&apos;album :</translation>
-    </message>
-    <message>
         <location filename="tgit/ui/album_edition_page.py" line="119"/>
         <source>Recording Time:</source>
         <translation>Enregistrement :</translation>
@@ -758,6 +718,46 @@
         <location filename="tgit/ui/track_edition_page.py" />
         <source>ISRC:</source>
         <translation>ISRC :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" line="219"/>
+        <source>RECORDING</source>
+        <translation>ENREGISTREMENT</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" line="224"/>
+        <source>Recording Studio:</source>
+        <translation>Studio d&apos;enregistrement :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" line="224"/>
+        <source>Recording Studio Region:</source>
+        <translation>Région du studio d&apos;enregistrement :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Initial Producer:</source>
+        <translation>Producteur initial :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Initial Producer Region:</source>
+        <translation>Région du producteur initial :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" line="227"/>
+        <source>Artistic Producer:</source>
+        <translation>Réalisateur :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" line="230"/>
+        <source>Mixer:</source>
+        <translation>Mixeur :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" line="236"/>
+        <source>Primary Style:</source>
+        <translation>Genre de l&apos;album :</translation>
     </message>
 </context>
 <context>

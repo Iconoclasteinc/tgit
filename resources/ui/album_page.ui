@@ -108,7 +108,7 @@ QGroupBox {
 	border: 1px solid #DDDDDD;
 	border-bottom: 2px solid rgba(0, 0, 0, 20%);
 	background-color: white;
-	padding: 17px 14px 14px 0px;
+	padding: 17px 14px 14px 10px;
 	margin: 5px 8px;
 	font-size: 10px;
 }
@@ -239,7 +239,7 @@ QCheckBox::indicator:checked:pressed {
 
 QLabel {
 	color: #444444;
-	min-width: 175px;
+	min-width: 125px;
 }
 
 QLabel:disabled {
@@ -322,6 +322,9 @@ QDateEdit::down-arrow:disabled  {
          <string>PICTURE</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>5</number>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -466,8 +469,14 @@ QPushButton:focus {
          <property name="fieldGrowthPolicy">
           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
          </property>
+         <property name="labelAlignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
          <property name="horizontalSpacing">
-          <number>6</number>
+          <number>5</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>5</number>
          </property>
          <property name="leftMargin">
           <number>0</number>
@@ -648,6 +657,15 @@ QPushButton:focus {
         <layout class="QFormLayout" name="formLayout_2">
          <property name="fieldGrowthPolicy">
           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
+         <property name="labelAlignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="horizontalSpacing">
+          <number>5</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>5</number>
          </property>
          <property name="leftMargin">
           <number>0</number>
@@ -949,6 +967,15 @@ QPushButton:pressed {
          <property name="fieldGrowthPolicy">
           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
          </property>
+         <property name="labelAlignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="horizontalSpacing">
+          <number>5</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>5</number>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -1094,202 +1121,6 @@ QPushButton:pressed {
         </layout>
        </widget>
       </item>
-      <item>
-       <widget class="QGroupBox" name="recording_box">
-        <property name="title">
-         <string>RECORDING</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout_4">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item row="2" column="0">
-          <widget class="QLabel" name="recording_studios_caption">
-           <property name="text">
-            <string>Recording Studios:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>recording_studios</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="recording_studios"/>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="_artistic_producer_caption">
-           <property name="text">
-            <string>Artistic Producer:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>_artistic_producer</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="_artistic_producer"/>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="mixer_caption">
-           <property name="text">
-            <string>Mixer:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>mixer</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="mixer"/>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="genre_caption">
-           <property name="text">
-            <string>Primary Style:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>genre</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QComboBox" name="genre">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>1</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-           <property name="insertPolicy">
-            <enum>QComboBox::NoInsert</enum>
-           </property>
-           <item>
-            <property name="text">
-             <string>Blues</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Country</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Dance</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Hip-Hop</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="_initial_producer_caption">
-           <property name="text">
-            <string>Initial Producer:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>_initial_producer</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="_initial_producer"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="_initial_producer_region_caption">
-           <property name="text">
-            <string>Initial Producer Region:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>_initial_producer_region</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="_initial_producer_region">
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="_recording_studio_region_caption">
-           <property name="text">
-            <string>Recording Studio Region:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>_recording_studio_region</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QComboBox" name="_recording_studio_region">
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
      </layout>
     </widget>
    </item>
@@ -1323,10 +1154,6 @@ QPushButton:pressed {
   <tabstop>media_type</tabstop>
   <tabstop>release_type</tabstop>
   <tabstop>comments</tabstop>
-  <tabstop>recording_studios</tabstop>
-  <tabstop>_artistic_producer</tabstop>
-  <tabstop>mixer</tabstop>
-  <tabstop>genre</tabstop>
   <tabstop>select_picture_button</tabstop>
   <tabstop>remove_picture_button</tabstop>
   <tabstop>release_time</tabstop>

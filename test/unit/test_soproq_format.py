@@ -18,14 +18,20 @@ def test_writes_tracks_to_workbook():
         catalog_number="Catalog Number",
         upc="Barcode",
         release_time="2014-05-10",
-        recording_time="2013-05-10",
-        recording_studios="Studios",
-        recording_studio_region=("CA",),
-        initial_producer="Initial Producer",
-        initial_producer_region=("US",))
+        recording_time="2013-05-10")
 
-    album.add_track(build.track(track_title="Track Title", isrc="ISRC", duration=60))
-    album.add_track(build.track(track_title="Track Title1", isrc="ISRC1", duration=120))
+    album.add_track(build.track(track_title="Track Title",
+                                isrc="ISRC",
+                                duration=60,
+                                recording_studio_region=("CA",),
+                                initial_producer="Initial Producer",
+                                initial_producer_region=("US",)))
+    album.add_track(build.track(track_title="Track Title1",
+                                isrc="ISRC1",
+                                duration=120,
+                                recording_studio_region=("CA",),
+                                initial_producer="Initial Producer",
+                                initial_producer_region=("US",)))
 
     workbook = Workbook()
 

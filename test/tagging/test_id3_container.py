@@ -86,8 +86,8 @@ def test_reads_original_release_time_from_tdor_frame(mp3):
 
 
 def test_reads_recording_studios_from_custom_frame(mp3):
-    metadata = container.load(mp3(TXXX_RECORDING_STUDIOS="Studio Name"))
-    assert_that(metadata, has_entry("recording_studios", "Studio Name"), "metadata")
+    metadata = container.load(mp3(TXXX_RECORDING_STUDIO="Studio Name"))
+    assert_that(metadata, has_entry("recording_studio", "Studio Name"), "metadata")
 
 
 def test_reads_artistic_producer_from_tipl_frame(mp3):
@@ -264,7 +264,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["recording_time"] = "2012-07-01"
     metadata["release_time"] = "2013-12-01"
     metadata["original_release_time"] = "1999-01-01"
-    metadata["recording_studios"] = "Studio Name"
+    metadata["recording_studio"] = "Studio Name"
     metadata["producer"] = "Artistic Producer"
     metadata["mixer"] = "Mixing Engineer"
     metadata["contributors"] = [("recording", "Recording Eng."),

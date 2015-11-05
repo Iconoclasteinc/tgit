@@ -297,7 +297,7 @@ class ID3Container:
         "TXXX:INITIAL-PRODUCER": "initial_producer",
         "TXXX:ISNI": "isni",
         "TXXX:ISWC": "iswc",
-        "TXXX:Recording Studios": "recording_studios",
+        "TXXX:Recording Studio": "recording_studio",
         "TXXX:TAGGER": "tagger",
         "TXXX:TAGGER_VERSION": "tagger_version",
         "TXXX:Tags": "labels",
