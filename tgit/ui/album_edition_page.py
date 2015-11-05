@@ -73,10 +73,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._disable_mac_focus_frame()
 
         self.front_cover.setFixedSize(*self.FRONT_COVER_SIZE)
-        self.genre.addItems(sorted(GENRES))
         self._fill_with_countries(self._lead_performer_region)
-        self._fill_with_countries(self._recording_studio_region)
-        self._fill_with_countries(self._production_company_region)
 
         self.compilation.clicked.connect(self._update_isni_lookup_button)
         self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
@@ -143,14 +140,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.media_type.editingFinished.connect(lambda: handle("media_type"))
         self.release_type.editingFinished.connect(lambda: handle("release_type"))
         self.comments.editingFinished.connect(lambda: handle("comments"))
-        self.recording_studios.editingFinished.connect(lambda: handle("recording_studios"))
-        self._recording_studio_region.activated.connect(lambda: handle("recording_studio_region"))
-        self._music_producer.editingFinished.connect(lambda: handle("music_producer"))
-        self._production_company.editingFinished.connect(lambda: handle("production_company"))
-        self._production_company_region.activated.connect(lambda: handle("production_company_region"))
-        self.mixer.editingFinished.connect(lambda: handle("mixer"))
-        self.genre.activated.connect(lambda: handle("primary_style"))
-        self.genre.lineEdit().textEdited.connect(lambda: handle("primary_style"))
 
     def _update_guest_performers(self, performers):
         self.guest_performers.setText(formatting.toPeopleList(performers))
@@ -182,13 +171,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.comments.setPlainText(album.comments)
         self.release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self.recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
-        self.recording_studios.setText(album.recording_studios)
-        self._display_region(album.recording_studio_region, self._recording_studio_region)
-        self._music_producer.setText(album.music_producer)
-        self._production_company.setText(album.production_company)
-        self._display_region(album.production_company_region, self._production_company_region)
-        self.mixer.setText(album.mixer)
-        self.genre.setEditText(album.primary_style)
 
     @staticmethod
     def _display_region(region, combobox):
@@ -212,14 +194,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           upc=self.barcode.text(),
                           comments=self.comments.toPlainText(),
                           recording_time=self.recording_time.date().toString(ISO_8601_FORMAT),
-                          release_time=self.release_time.date().toString(ISO_8601_FORMAT),
-                          recording_studios=self.recording_studios.text(),
-                          recording_studio_region=(self._recording_studio_region.currentData(),),
-                          music_producer=self._music_producer.text(),
-                          production_company=self._production_company.text(),
-                          production_company_region=(self._production_company_region.currentData(),),
-                          mixer=self.mixer.text(),
-                          primary_style=self.genre.currentText())
+                          release_time=self.release_time.date().toString(ISO_8601_FORMAT))
 
         if len(keys) == 0:
             return all_values
@@ -238,9 +213,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
     def _update_isni_lookup_button(self):
+        def _is_blank(text):
+            return not text or text.strip() == ""
+
         self.lookup_isni_button.setEnabled(
-            self._isni_lookup and not self.compilation.isChecked() and not is_blank(self.lead_performer.text()))
-
-
-def is_blank(text):
-    return not text or text.strip() == ""
+            self._isni_lookup and not self.compilation.isChecked() and not _is_blank(self.lead_performer.text()))

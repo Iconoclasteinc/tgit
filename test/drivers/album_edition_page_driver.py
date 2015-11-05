@@ -37,14 +37,6 @@ class AlbumEditionPageDriver(ScreenDriver):
                 self.shows_release_time(value)
             elif tag == "original_release_time":
                 self.shows_original_release_time(value)
-            elif tag == "recording_studios":
-                self.shows_recording_studios(value)
-            elif tag == "music_producer":
-                self.shows_music_producer(value)
-            elif tag == "mixer":
-                self.shows_mixer(value)
-            elif tag == "primary_style":
-                self.shows_primary_style(value)
             elif tag == "isni":
                 self.shows_isni(value, disabled=True)
             else:
@@ -74,14 +66,6 @@ class AlbumEditionPageDriver(ScreenDriver):
                 self.change_release_time(value)
             elif tag == "original_release_time":
                 self.change_original_release_time(value)
-            elif tag == "recording_studios":
-                self.change_recording_studios(value)
-            elif tag == "music_producer":
-                self.change_music_producer(value)
-            elif tag == "mixer":
-                self.change_mixer(value)
-            elif tag == "primary_style":
-                self.select_primary_style(value)
             else:
                 raise AssertionError("Don't know how to edit '{0}'".format(tag))
 
@@ -236,50 +220,6 @@ class AlbumEditionPageDriver(ScreenDriver):
     def change_original_release_time(self, time):
         self.label(named("original_release_time")).change_date(time)
 
-    def shows_recording_studios(self, studios):
-        self.label(with_buddy(named("recording_studios"))).is_showing_on_screen()
-        self.lineEdit(named("recording_studios")).has_text(studios)
-
-    def change_recording_studios(self, studios):
-        self.lineEdit(named("recording_studios")).change_text(studios)
-
-    def shows_recording_studio_region(self, name):
-        self.label(with_buddy(named("_recording_studio_region"))).is_showing_on_screen()
-        edit = self.combobox(named("_recording_studio_region"))
-        edit.has_current_text(name)
-
-    def change_recording_studio_region(self, name):
-        self.combobox(named("_recording_studio_region")).select_option(name)
-
-    def shows_production_company(self, name):
-        self.label(with_buddy(named("_production_company"))).is_showing_on_screen()
-        self.lineEdit(named("_production_company")).has_text(name)
-
-    def change_production_company(self, name):
-        self.lineEdit(named("_production_company")).change_text(name)
-
-    def shows_production_company_region(self, name):
-        self.label(with_buddy(named("_production_company_region"))).is_showing_on_screen()
-        edit = self.combobox(named("_production_company_region"))
-        edit.has_current_text(name)
-
-    def change_production_company_region(self, name):
-        self.combobox(named("_production_company_region")).select_option(name)
-
-    def shows_music_producer(self, producer):
-        self.label(with_buddy(named("_music_producer"))).is_showing_on_screen()
-        self.lineEdit(named("_music_producer")).has_text(producer)
-
-    def change_music_producer(self, producer):
-        self.lineEdit(named("_music_producer")).change_text(producer)
-
-    def shows_mixer(self, mixer):
-        self.label(with_buddy(named("mixer"))).is_showing_on_screen()
-        self.lineEdit(named("mixer")).has_text(mixer)
-
-    def change_mixer(self, mixer):
-        self.lineEdit(named("mixer")).change_text(mixer)
-
     def shows_comments(self, comments):
         self.label(with_buddy(named("comments"))).is_showing_on_screen()
         self.textEdit(named("comments")).has_plain_text(comments)
@@ -289,16 +229,6 @@ class AlbumEditionPageDriver(ScreenDriver):
         for comment in comments:
             edit.add_line(comment)
         edit.clear_focus()
-
-    def shows_primary_style(self, style):
-        self.label(with_buddy(named("genre"))).is_showing_on_screen()
-        self.combobox(named("genre")).has_current_text(style)
-
-    def change_primary_style(self, style):
-        self.combobox(named("genre")).change_text(style)
-
-    def select_primary_style(self, style):
-        self.combobox(named("genre")).select_option(style)
 
     def shows_media_type(self, type_):
         self.label(with_buddy(named("media_type"))).is_showing_on_screen()

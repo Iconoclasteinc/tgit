@@ -40,6 +40,14 @@ class TrackEditionPageDriver(ScreenDriver):
                 self.shows_duration(value)
             elif tag == "track_number":
                 self.shows_track_number(value)
+            elif tag == "recording_studio":
+                self.shows_recording_studio(value)
+            elif tag == "music_producer":
+                self.shows_music_producer(value)
+            elif tag == "mixer":
+                self.shows_mixer(value)
+            elif tag == "primary_style":
+                self.shows_primary_style(value)
             else:
                 raise AssertionError("Don't know how to verify {0}".format(tag))
 
@@ -61,6 +69,14 @@ class TrackEditionPageDriver(ScreenDriver):
                 self.change_publisher(value)
             elif tag == "isrc":
                 self.change_isrc(value)
+            elif tag == "recording_studio":
+                self.change_recording_studio(value)
+            elif tag == "music_producer":
+                self.change_music_producer(value)
+            elif tag == "mixer":
+                self.change_mixer(value)
+            elif tag == "primary_style":
+                self.select_primary_style(value)
             else:
                 raise AssertionError("Don't know how to edit <{0}>".format(tag))
 
@@ -187,3 +203,57 @@ class TrackEditionPageDriver(ScreenDriver):
         label = self.label(named("_software_notice"))
         label.is_showing_on_screen()
         label.has_text(notice)
+
+    def shows_recording_studio(self, studios):
+        self.label(with_buddy(named("_recording_studio"))).is_showing_on_screen()
+        self.lineEdit(named("_recording_studio")).has_text(studios)
+
+    def change_recording_studio(self, studios):
+        self.lineEdit(named("_recording_studio")).change_text(studios)
+
+    def shows_recording_studio_region(self, name):
+        self.label(with_buddy(named("_recording_studio_region"))).is_showing_on_screen()
+        edit = self.combobox(named("_recording_studio_region"))
+        edit.has_current_text(name)
+
+    def change_recording_studio_region(self, name):
+        self.combobox(named("_recording_studio_region")).select_option(name)
+
+    def shows_production_company(self, producer):
+        self.label(with_buddy(named("_production_company"))).is_showing_on_screen()
+        self.lineEdit(named("_production_company")).has_text(producer)
+
+    def change_production_company(self, producer):
+        self.lineEdit(named("_production_company")).change_text(producer)
+
+    def shows_production_company_region(self, name):
+        self.label(with_buddy(named("_production_company_region"))).is_showing_on_screen()
+        edit = self.combobox(named("_production_company_region"))
+        edit.has_current_text(name)
+
+    def change_production_company_region(self, name):
+        self.combobox(named("_production_company_region")).select_option(name)
+
+    def shows_music_producer(self, producer):
+        self.label(with_buddy(named("_music_producer"))).is_showing_on_screen()
+        self.lineEdit(named("_music_producer")).has_text(producer)
+
+    def change_music_producer(self, producer):
+        self.lineEdit(named("_music_producer")).change_text(producer)
+
+    def shows_mixer(self, mixer):
+        self.label(with_buddy(named("_mixer"))).is_showing_on_screen()
+        self.lineEdit(named("_mixer")).has_text(mixer)
+
+    def change_mixer(self, mixer):
+        self.lineEdit(named("_mixer")).change_text(mixer)
+
+    def shows_primary_style(self, style):
+        self.label(with_buddy(named("_genre"))).is_showing_on_screen()
+        self.combobox(named("_genre")).has_current_text(style)
+
+    def change_primary_style(self, style):
+        self.combobox(named("_genre")).change_text(style)
+
+    def select_primary_style(self, style):
+        self.combobox(named("_genre")).select_option(style)

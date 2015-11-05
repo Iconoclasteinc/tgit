@@ -297,7 +297,7 @@ class ID3Container:
         "TXXX:PRODUCTION-COMPANY": "production_company",
         "TXXX:ISNI": "isni",
         "TXXX:ISWC": "iswc",
-        "TXXX:Recording Studios": "recording_studios",
+        "TXXX:Recording Studio": "recording_studio",
         "TXXX:TAGGER": "tagger",
         "TXXX:TAGGER_VERSION": "tagger_version",
         "TXXX:Tags": "labels",
@@ -310,7 +310,7 @@ class ID3Container:
     for key, tag in {
         "TXXX:LEAD-PERFORMER-REGION": "lead_performer_region",
         "TXXX:PRODUCTION-COMPANY-REGION": "production_company_region",
-        "TXXX:RECORDING-STUDIOS-REGION": "recording_studios_region",
+        "TXXX:RECORDING-STUDIO-REGION": "recording_studio_region",
     }.items():
         _processors.append(RegionProcessor(key, tag))
 

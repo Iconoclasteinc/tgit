@@ -16,11 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import operator
 
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
+from tgit.countries import COUNTRIES
+from tgit.genres import GENRES
 from tgit.languages import LANGUAGES
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image, formatting
@@ -44,6 +47,8 @@ def make_track_edition_page(album, track, on_track_changed):
 @Closeable
 class TrackEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
+
+    # TODO move from signal to on_metadata_changed handler
     metadata_changed = pyqtSignal(dict)
 
     ALBUM_COVER_SIZE = 50, 50
@@ -60,21 +65,37 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._disable_mac_focus_frame()
         self._disable_teaser_fields()
 
-        self._track_title.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._lead_performer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._version.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._featured_guest.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._lyricist.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._composer.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._publisher.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._isrc.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._iswc.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._tags.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
-
-        self._lyrics.editingFinished.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._genre.addItems(sorted(GENRES))
         self._language.addItems(sorted(LANGUAGES))
-        self._language.activated.connect(lambda: self.metadata_changed.emit(self.metadata))
-        self._language.lineEdit().textEdited.connect(lambda: self.metadata_changed.emit(self.metadata))
+        self._fill_with_countries(self._production_company_region)
+        self._fill_with_countries(self._recording_studio_region)
+
+        def emit_metadata_changed():
+            self.metadata_changed.emit(self.metadata)
+
+        self._track_title.editingFinished.connect(emit_metadata_changed)
+        self._lead_performer.editingFinished.connect(emit_metadata_changed)
+        self._version.editingFinished.connect(emit_metadata_changed)
+        self._featured_guest.editingFinished.connect(emit_metadata_changed)
+        self._lyricist.editingFinished.connect(emit_metadata_changed)
+        self._composer.editingFinished.connect(emit_metadata_changed)
+        self._publisher.editingFinished.connect(emit_metadata_changed)
+        self._isrc.editingFinished.connect(emit_metadata_changed)
+        self._iswc.editingFinished.connect(emit_metadata_changed)
+        self._tags.editingFinished.connect(emit_metadata_changed)
+
+        self._lyrics.editingFinished.connect(emit_metadata_changed)
+        self._language.activated.connect(emit_metadata_changed)
+        self._language.lineEdit().textEdited.connect(emit_metadata_changed)
+
+        self._recording_studio.editingFinished.connect(emit_metadata_changed)
+        self._recording_studio_region.activated.connect(emit_metadata_changed)
+        self._music_producer.editingFinished.connect(emit_metadata_changed)
+        self._production_company.editingFinished.connect(emit_metadata_changed)
+        self._production_company_region.activated.connect(emit_metadata_changed)
+        self._mixer.editingFinished.connect(emit_metadata_changed)
+        self._genre.activated.connect(emit_metadata_changed)
+        self._genre.lineEdit().textEdited.connect(emit_metadata_changed)
 
     def albumStateChanged(self, album):
         self.display(album=album)
@@ -110,6 +131,19 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._language.setEditText(track.language)
         self._software_notice.setText(self._compose_software_notice(track))
 
+        self._recording_studio.setText(track.recording_studio)
+        self._display_region(track.recording_studio_region, self._recording_studio_region)
+        self._music_producer.setText(track.music_producer)
+        self._production_company.setText(track.production_company)
+        self._display_region(track.production_company_region, self._production_company_region)
+        self._mixer.setText(track.mixer)
+        self._genre.setEditText(track.primary_style)
+
+    @staticmethod
+    def _display_region(region, combobox):
+        if region:
+            combobox.setCurrentText(COUNTRIES[region[0]])
+
     def _display_album_cover(self, picture):
         # Cache the cover image to avoid recomputing the image each time the screen updates
         if self._cover is not picture:
@@ -119,7 +153,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def _compose_software_notice(self, track):
         try:
             date, time = formatting.as_local_date_time(track.tagging_time)
-        except Exception:
+        except:
             date, time = None, None
 
         notice = ""
@@ -146,7 +180,14 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                     iswc=self._iswc.text(),
                     labels=self._tags.text(),
                     lyrics=self._lyrics.toPlainText(),
-                    language=self._language.currentText())
+                    language=self._language.currentText(),
+                    recording_studio=self._recording_studio.text(),
+                    recording_studio_region=(self._recording_studio_region.currentData(),),
+                    music_producer=self._music_producer.text(),
+                    production_company=self._production_company.text(),
+                    production_company_region=(self._production_company_region.currentData(),),
+                    mixer=self._mixer.text(),
+                    primary_style=self._genre.currentText())
 
     def _disable_mac_focus_frame(self):
         for child in self.findChildren(QWidget):
@@ -155,3 +196,8 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def _disable_teaser_fields(self):
         self._preview_time.setDisabled(True)
         self._preview_time_caption.setDisabled(True)
+
+    @staticmethod
+    def _fill_with_countries(combobox):
+        for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
+            combobox.addItem(name, code)

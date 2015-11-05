@@ -126,7 +126,7 @@ class FlacContainer:
         "TAGGER": "tagger",
         "TAGGER-VERSION": "tagger_version",
         "TAGGING-TIME": "tagging_time",
-        "RECORDING-STUDIOS": "recording_studios",
+        "RECORDING-STUDIO": "recording_studio",
         "PRODUCER": "production_company",
         "MUSIC-PRODUCER": "music_producer",
     }.items():
@@ -140,7 +140,7 @@ class FlacContainer:
 
     for field_name, tag_name in {
         "LEAD-PERFORMER-REGION": "lead_performer_region",
-        "RECORDING-STUDIOS-REGION": "recording_studios_region",
+        "RECORDING-STUDIO-REGION": "recording_studio_region",
         "PRODUCER-REGION": "production_company_region",
     }.items():
         fields.append(RegionField(field_name, tag_name))

@@ -37,7 +37,7 @@ def test_saves_data_to_yaml_file(project_file):
                 upc="123456789999",
                 comments="Comments\n...",
                 release_time="2009-01-01", recording_time="2008-09-15", original_release_time="2009-01-15",
-                recording_studios="Studios", recording_studios_region=("CA",),
+                recording_studio="Studios", recording_studio_region=("CA",),
                 production_company="Production Company", production_company_region=("US",),
                 music_producer="Music Producer", mixer="Engineer",
                 contributors=[("Sound", "Sound Engineer"), ("Effects", "Effects Engineer")],
@@ -63,9 +63,9 @@ def test_saves_data_to_yaml_file(project_file):
     assert_that(lines, has_item(contains_string("release_time: '2009-01-01'")), "release time")
     assert_that(lines, has_item(contains_string("recording_time: '2008-09-15'")), "recording time")
     assert_that(lines, has_item(contains_string("original_release_time: '2009-01-15'")), "original release time")
-    assert_that(lines, has_item(contains_string("recording_studios: Studios")), "recording studios")
-    assert_that(lines, has_item(contains_string("recording_studios_region:")), "recording studios region")
-    assert_that(lines, has_item(contains_string("- CA")), "recording studios region")
+    assert_that(lines, has_item(contains_string("recording_studio: Studios")), "recording studio")
+    assert_that(lines, has_item(contains_string("recording_studio_region:")), "recording studio region")
+    assert_that(lines, has_item(contains_string("- CA")), "recording studio region")
     assert_that(lines, has_item(contains_string("production_company: Production Company")), "production company")
     assert_that(lines, has_item(contains_string("production_company_region:")), "production company region")
     assert_that(lines, has_item(contains_string("- US")), "production company region")
@@ -113,8 +113,8 @@ def test_reads_data_from_yaml_file():
     assert_that(data, has_entry("release_time", "2009-01-01"), "release time")
     assert_that(data, has_entry("recording_time", "2008-09-15"), "recording time")
     assert_that(data, has_entry("original_release_time", "2009-01-15"), "original_release time")
-    assert_that(data, has_entry("recording_studios", "Studios"), "recording studios")
-    assert_that(data, has_entry("recording_studios_region", ("CA",)), "recording studios region")
+    assert_that(data, has_entry("recording_studio", "Studios"), "recording studio")
+    assert_that(data, has_entry("recording_studio_region", ("CA",)), "recording studio region")
     assert_that(data, has_entry("production_company", "Production Company"), "production company")
     assert_that(data, has_entry("production_company_region", ("US",)), "production company region")
     assert_that(data, has_entry("music_producer", "Music Producer"), "music producer")

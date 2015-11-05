@@ -57,15 +57,8 @@ class Album(metaclass=tag.Taggable):
     recording_time = tag.text()
     release_time = tag.text()
     original_release_time = tag.text()
-    recording_studios = tag.text()
-    recording_studio_region = tag.pairs()
-    production_company = tag.text()
-    production_company_region = tag.pairs()
-    music_producer = tag.text()
-    mixer = tag.text()
     contributors = tag.pairs()
     comments = tag.text()
-    primary_style = tag.text()
 
     def __init__(self, metadata=None, of_type=Type.FLAC, filename=None):
         self.metadata = metadata.copy(*Album.tags()) if metadata is not None else Metadata()

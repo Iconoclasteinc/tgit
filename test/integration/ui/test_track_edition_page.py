@@ -65,7 +65,14 @@ def test_displays_track_metadata(driver):
                         iswc="T-345246800-1",
                         labels="Tag1 Tag2 Tag3",
                         lyrics="Lyrics\n...\n...",
-                        language="eng")
+                        language="eng",
+                        production_company="Initial Producer",
+                        production_company_region=("CA",),
+                        recording_studio="Studio A, Studio B",
+                        recording_studio_region=("CA",),
+                        music_producer="Artistic Producer",
+                        mixer="Mixing Engineer",
+                        primary_style="Style")
     album = build.album(compilation=True, tracks=[track])
 
     _ = show_track_page(album, track)
@@ -85,6 +92,13 @@ def test_displays_track_metadata(driver):
     driver.shows_lyrics("Lyrics\n...\n...")
     driver.shows_language("eng")
     driver.shows_preview_time("00:00")
+    driver.shows_recording_studio("Studio A, Studio B")
+    driver.shows_recording_studio_region("Canada")
+    driver.shows_production_company("Initial Producer")
+    driver.shows_production_company_region("Canada")
+    driver.shows_music_producer("Artistic Producer")
+    driver.shows_mixer("Mixing Engineer")
+    driver.shows_primary_style("Style")
 
 
 def test_disables_lead_performer_edition_when_album_is_not_a_compilation(driver):
@@ -156,6 +170,38 @@ def test_signals_when_track_metadata_change(driver):
 
     metadata_changed_signal.expect(has_entries(language="eng"))
     driver.change_language("eng")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(production_company="Producer"))
+    driver.change_production_company("Producer")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(production_company_region=("US",)))
+    driver.change_production_company_region("United States of America")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(recording_studio="Studios"))
+    driver.change_recording_studio("Studios")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(recording_studio_region=("US",)))
+    driver.change_recording_studio_region("United States of America")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(music_producer="Producer"))
+    driver.change_music_producer("Producer")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(mixer="Mixer"))
+    driver.change_mixer("Mixer")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(primary_style="Jazz"))
+    driver.select_primary_style("Jazz")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(primary_style="Custom"))
+    driver.change_primary_style("Custom")
     driver.check(metadata_changed_signal)
 
 

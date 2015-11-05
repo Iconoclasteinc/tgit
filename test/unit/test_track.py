@@ -10,9 +10,10 @@ from tgit.track import Track
 
 def test_defines_metadata_tags():
     assert_that(tuple(Track.tags()), contains_inanyorder(
-        "track_title", "lead_performer", "versionInfo", "featuredGuest", "publisher",
-        "lyricist", "composer", "isrc", "iswc", "labels", "lyrics", "language", "tagger",
-        "tagger_version", "tagging_time", "bitrate", "duration", "track_number", "total_tracks"))
+        "track_title", "lead_performer", "versionInfo", "featuredGuest", "publisher", "lyricist", "composer", "isrc",
+        "iswc", "labels", "lyrics", "language", "tagger", "tagger_version", "tagging_time", "bitrate", "duration",
+        "track_number", "total_tracks", "recording_studio", "production_company", "production_company_region",
+        "recording_studio_region", "music_producer", "mixer", "primary_style"))
 
 
 def test_announces_metadata_changes_to_listeners():

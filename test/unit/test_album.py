@@ -16,8 +16,7 @@ def test_defines_metadata_tags():
     assert_that(tuple(Album.tags()), contains_inanyorder(
         "release_name", "compilation", "lead_performer", "lead_performer_region", "isni", "guest_performers",
         "label_name", "upc", "catalog_number", "recording_time", "release_time", "original_release_time",
-        "recording_studios", "recording_studio_region", "production_company", "production_company_region", "music_producer", "mixer", "contributors", "comments",
-        "primary_style"))
+        "contributors", "comments"))
 
 
 def test_initializes_with_album_only_metadata():

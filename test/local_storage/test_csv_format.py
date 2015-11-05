@@ -72,14 +72,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
         upc="Barcode",
         comments="Comments\n...\n...",
         release_time="2014",
-        recording_time="2013",
-        recording_studios="Studios",
-        recording_studio_region=("CA",),
-        production_company="Production Company",
-        production_company_region=("CA",),
-        music_producer="Music Producer",
-        mixer="Mixing Engineer",
-        primary_style="Genre")
+        recording_time="2013")
 
     track = build.track(
         track_title="Track Title",
@@ -91,7 +84,14 @@ def test_writes_track_metadata_in_columns(formatter, out):
         lyricist="Lyricist",
         composer="Composer",
         isrc="ISRC",
-        labels="Tag1 Tag2 Tag3")
+        labels="Tag1 Tag2 Tag3",
+        recording_studio="Studios",
+        recording_studio_region=("CA",),
+        production_company="Production Company",
+        production_company_region=("CA",),
+        music_producer="Music Producer",
+        mixer="Mixing Engineer",
+        primary_style="Genre")
 
     album.add_track(track)
     track.track_number = 3
