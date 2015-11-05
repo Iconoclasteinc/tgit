@@ -61,7 +61,7 @@ class flag(typed):
 
 
 class pairs(typed):
-    expectedType = (list, tuple)
+    expectedType = (list, tuple, type(None))
 
 
 class Taggable(Observable):

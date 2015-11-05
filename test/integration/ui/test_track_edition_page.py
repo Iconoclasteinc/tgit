@@ -180,12 +180,20 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_production_company_region("United States of America")
     driver.check(metadata_changed_signal)
 
+    metadata_changed_signal.expect(has_entries(production_company_region=None))
+    driver.change_production_company_region("")
+    driver.check(metadata_changed_signal)
+
     metadata_changed_signal.expect(has_entries(recording_studio="Studios"))
     driver.change_recording_studio("Studios")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(recording_studio_region=("US",)))
     driver.change_recording_studio_region("United States of America")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(recording_studio_region=None))
+    driver.change_recording_studio_region("")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(music_producer="Producer"))

@@ -235,6 +235,10 @@ def test_signals_when_album_metadata_edited(driver):
     driver.change_lead_performer_region("Canada")
     driver.check(metadata_changed_signal)
 
+    metadata_changed_signal.expect(has_entries(lead_performer_region=None))
+    driver.change_lead_performer_region("")
+    driver.check(metadata_changed_signal)
+
     metadata_changed_signal.expect(has_entries(
         guest_performers=[("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]))
     driver.change_guest_performers("Guitar: Guitarist; Guitar: Bassist; Piano: Pianist")

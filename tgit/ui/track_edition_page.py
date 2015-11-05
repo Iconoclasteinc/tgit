@@ -182,10 +182,10 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                     lyrics=self._lyrics.toPlainText(),
                     language=self._language.currentText(),
                     recording_studio=self._recording_studio.text(),
-                    recording_studio_region=(self._recording_studio_region.currentData(),),
+                    recording_studio_region=self._get_country_code_from_combo(self._recording_studio_region),
                     music_producer=self._music_producer.text(),
                     production_company=self._production_company.text(),
-                    production_company_region=(self._production_company_region.currentData(),),
+                    production_company_region=self._get_country_code_from_combo(self._production_company_region),
                     mixer=self._mixer.text(),
                     primary_style=self._genre.currentText())
 
@@ -201,3 +201,9 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def _fill_with_countries(combobox):
         for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
             combobox.addItem(name, code)
+        combobox.insertItem(0, "")
+        combobox.setCurrentIndex(0)
+
+    @staticmethod
+    def _get_country_code_from_combo(combo):
+        return (combo.currentData(),) if combo.currentIndex() > 0 else None

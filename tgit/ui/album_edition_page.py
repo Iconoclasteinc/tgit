@@ -84,6 +84,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def _fill_with_countries(combobox):
         for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
             combobox.addItem(name, code)
+        combobox.insertItem(0, "")
+        combobox.setCurrentIndex(0)
 
     def on_select_picture(self, on_select_picture):
         self.select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
@@ -174,8 +176,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     @staticmethod
     def _display_region(region, combobox):
-        if region:
-            combobox.setCurrentText(COUNTRIES[region[0]])
+        combobox.setCurrentText(COUNTRIES[region[0]]) if region else combobox.setCurrentIndex(0)
 
     def _display_lead_performer(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
@@ -186,7 +187,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         all_values = dict(release_name=self.release_name.text(),
                           compilation=self.compilation.isChecked(),
                           lead_performer=self.lead_performer.text(),
-                          lead_performer_region=(self._lead_performer_region.currentData(),),
+                          lead_performer_region=self._get_country_code_from_combo(self._lead_performer_region),
                           isni=self.isni.text(),
                           guest_performers=formatting.fromPeopleList(self.guest_performers.text()),
                           label_name=self.label_name.text(),
@@ -207,6 +208,10 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             keys_to_retrieve.append("lead_performer")
 
         return {k: all_values.get(k, None) for k in keys_to_retrieve}
+
+    @staticmethod
+    def _get_country_code_from_combo(combo):
+        return (combo.currentData(),) if combo.currentIndex() > 0 else None
 
     def _disable_mac_focus_frame(self):
         for child in self.findChildren(QWidget):
