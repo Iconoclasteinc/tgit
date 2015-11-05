@@ -76,6 +76,10 @@ class FlacAudio(object):
                 self._add_tag("PRODUCER", value)
             elif tag == 'PRODUCER_REGION':
                 self._add_tag("PRODUCER-REGION", value)
+            elif tag == 'RECORDING_STUDIOS':
+                self._add_tag("RECORDING-STUDIOS", value)
+            elif tag == 'RECORDING_STUDIOS_REGION':
+                self._add_tag("RECORDING-STUDIOS-REGION", value)
             elif tag == 'MUSIC_PRODUCER':
                 self._add_tag("MUSIC-PRODUCER", value)
             else:

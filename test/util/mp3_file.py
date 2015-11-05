@@ -131,6 +131,8 @@ class Mp3Audio(object):
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="PRODUCTION-COMPANY", text=value))
             elif tag == "TXXX_PRODUCTION_COMPANY_REGION":
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="PRODUCTION-COMPANY-REGION", text=value))
+            elif tag == "TXXX_RECORDING_STUDIOS_REGION":
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc="RECORDING-STUDIOS-REGION", text=value))
             elif tag == "TRCK":
                 self._add_tag(id3.TRCK(encoding=UTF_8, text=value))
             else:

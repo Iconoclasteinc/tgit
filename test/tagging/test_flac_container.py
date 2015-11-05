@@ -131,11 +131,22 @@ def test_reads_music_producer_from_music_producer_field(flac):
     assert_that(metadata, has_entry('music_producer', "Joel Miller & Paul Johnston"), 'metadata')
 
 
+def test_reads_recording_studios_from_recording_studios_field(flac):
+    metadata = container.load(flac(RECORDING_STUDIOS="Effendi Records Inc."))
+    assert_that(metadata, has_entry('recording_studios', "Effendi Records Inc."), 'metadata')
+
+
+def test_reads_recording_studios_region_from_recording_studios_region_field(flac):
+    metadata = container.load(flac(RECORDING_STUDIOS_REGION="CA-QC"))
+    assert_that(metadata, has_entry('recording_studios_region', ("CA", "QC")), 'metadata')
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage('image/jpeg', b'honeycomb.jpg', Image.FRONT_COVER)
     metadata['release_name'] = "St-Henri"
     metadata['lead_performer'] = "Joel Miller"
+    metadata['lead_performer_region'] = ("CA", "QC")
     metadata['label_name'] = "Effendi Records Inc."
     metadata['primary_style'] = "Modern Jazz"
     metadata['recording_time'] = "2007-11-02"
@@ -147,8 +158,10 @@ def test_round_trips_metadata_to_file(flac):
     metadata['tagging_time'] = "2014-03-26 18:18:55"
     metadata['track_number'] = 3
     metadata['total_tracks'] = 5
-    metadata['lead_performer_region'] = ("CA", "QC")
+    metadata['recording_studios'] = "Effendi Records Inc."
+    metadata['recording_studios_region'] = ("CA", "QC")
     metadata['production_company'] = "Effendi Records Inc."
+    metadata['production_company_region'] = ("CA", "QC")
     metadata['music_producer'] = "Joel Miller & Paul Johnston"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)

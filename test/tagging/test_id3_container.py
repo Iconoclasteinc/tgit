@@ -248,6 +248,11 @@ def test_reads_production_company_region_from_custom_frame(mp3):
     assert_that(metadata, has_entry("production_company_region", ("CA", "QC")), "metadata")
 
 
+def test_reads_recording_studios_region_from_custom_frame(mp3):
+    metadata = container.load(mp3(TXXX_RECORDING_STUDIOS_REGION="CA-QC"))
+    assert_that(metadata, has_entry("recording_studios_region", ("CA", "QC")), "metadata")
+
+
 def test_round_trips_empty_metadata_to_file(mp3):
     assert_can_be_saved_and_reloaded_with_same_state(mp3, Metadata())
 
@@ -271,6 +276,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["release_time"] = "2013-12-01"
     metadata["original_release_time"] = "1999-01-01"
     metadata["recording_studios"] = "Studio Name"
+    metadata["recording_studios_region"] = ("CA", "QC")
     metadata["music_producer"] = "Music Producer"
     metadata["mixer"] = "Mixing Engineer"
     metadata["contributors"] = [("recording", "Recording Eng."),

@@ -310,6 +310,7 @@ class ID3Container:
     for key, tag in {
         "TXXX:LEAD-PERFORMER-REGION": "lead_performer_region",
         "TXXX:PRODUCTION-COMPANY-REGION": "production_company_region",
+        "TXXX:RECORDING-STUDIOS-REGION": "recording_studios_region",
     }.items():
         _processors.append(RegionProcessor(key, tag))
 
