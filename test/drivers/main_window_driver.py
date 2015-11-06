@@ -162,6 +162,7 @@ class MainWindowDriver(WidgetDriver):
     def declare_album_to_soproq(self, filename):
         self.transmit_to_soproq()
         save_as_dialog(self).save_as(filename)
+        message_box(self).ok()
 
     def transmit_to_soproq(self):
         menu_bar(self).transmit.soproq()

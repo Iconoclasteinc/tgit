@@ -1,7 +1,3 @@
-import pytest
-
-
-@pytest.mark.wip
 def test_export_to_soproq_file(app, recordings, workspace):
     app.new_album("Honeycomb", of_type="mp3")
 
