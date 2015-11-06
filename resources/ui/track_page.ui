@@ -413,7 +413,7 @@ QLabel:disabled {
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
+            <item row="3" column="0">
              <widget class="QLabel" name="_version_caption">
               <property name="text">
                <string>Version Information:</string>
@@ -426,10 +426,10 @@ QLabel:disabled {
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="3" column="1">
              <widget class="QLineEdit" name="_version"/>
             </item>
-            <item row="3" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="_duration_caption">
               <property name="text">
                <string>Duration:</string>
@@ -442,14 +442,14 @@ QLabel:disabled {
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="4" column="1">
              <widget class="QLabel" name="_duration">
               <property name="text">
                <string/>
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
+            <item row="5" column="0">
              <widget class="QLabel" name="_bitrate_caption">
               <property name="text">
                <string>Bitrate:</string>
@@ -462,12 +462,28 @@ QLabel:disabled {
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="5" column="1">
              <widget class="QLabel" name="_bitrate">
               <property name="text">
                <string/>
               </property>
              </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="_featured_guest_caption">
+              <property name="text">
+               <string>Featured Guest:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>_featured_guest</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="_featured_guest"/>
             </item>
            </layout>
           </widget>
@@ -502,19 +518,6 @@ QLabel:disabled {
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="_featured_guest_caption">
-              <property name="text">
-               <string>Featured Guest:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="buddy">
-               <cstring>_featured_guest</cstring>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="0">
              <widget class="QLabel" name="_lyricist_caption">
               <property name="text">
@@ -553,9 +556,6 @@ QLabel:disabled {
                <cstring>_publisher</cstring>
               </property>
              </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="_featured_guest"/>
             </item>
             <item row="1" column="1">
              <widget class="QLineEdit" name="_lyricist"/>
