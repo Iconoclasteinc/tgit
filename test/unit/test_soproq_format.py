@@ -59,7 +59,7 @@ def test_writes_tracks_to_workbook():
                       S13="2013",
                       T13="Production Company",
                       U13="USA",
-                      V13="RE",
+                      V13="RE/CP/Repro",
                       W13="100",
                       X13="WW",
                       Y13="",
@@ -88,7 +88,7 @@ def test_writes_tracks_to_workbook():
                       S14="2013",
                       T14="Production Company",
                       U14="USA",
-                      V14="RE",
+                      V14="RE/CP/Repro",
                       W14="100",
                       X14="WW",
                       Y14="",
@@ -116,7 +116,7 @@ def test_writes_compilation_tracks_to_workbook():
 
 
 def has_rights_holder(worksheet, name, datetime):
-    assert_that(worksheet["B6"].value, equal_to(name), "Rights holder name")
+    assert_that(worksheet["A6"].value, equal_to(name), "Rights holder name")
     assert_that(worksheet["C6"].value, equal_to(datetime), "Declaration date")
 
 
