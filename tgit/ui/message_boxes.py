@@ -87,6 +87,11 @@ class MessageBoxes:
         box.setWindowModality(Qt.WindowModal)
         return box.exec() == QMessageBox.Yes
 
+    def warn_soproq_default_values(self):
+        return self._open(MessageBox.warn(self.parent,
+                                          "SOPROQ declaration file was generated with pre-filled values.",
+                                          "Default values used are:\n\tRight type: 'RE'\n\tPercentage: '100'\n\tTerritory type: 'WW'\n\nPlease review those values before sending the file to the SOPROQ."))
+
     def about_qt(self):
         QMessageBox().aboutQt(self.parent)
 

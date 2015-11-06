@@ -20,10 +20,11 @@
 from tgit.export import soproq_format
 
 
-def as_soproq_using(load_workbook, formatter=soproq_format):
+def as_soproq_using(load_workbook, show_confirmation_message, formatter=soproq_format):
     def as_soproq(album, filename):
         workbook = load_workbook()
         formatter.write(album, workbook)
         workbook.save(filename)
+        show_confirmation_message()
 
     return as_soproq

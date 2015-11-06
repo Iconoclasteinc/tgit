@@ -109,6 +109,13 @@ def test_shows_export_failed_message(driver):
     driver.shows_message("Could not export your album.")
 
 
+def test_shows_soproq_default_values_message(driver):
+    _ = messages().warn_soproq_default_values()
+
+    driver.is_active()
+    driver.shows_message("SOPROQ declaration file was generated with pre-filled values.")
+
+
 def test_shows_about_message(about_tgit_driver):
     _ = messages().about_tgit()
 

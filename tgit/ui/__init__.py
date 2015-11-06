@@ -123,7 +123,8 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
 
     def export_as_soproq():
         from openpyxl import load_workbook
-        return export.as_soproq_using(lambda: load_workbook(templates.load(":/templates/soproq.xlsx")))
+        return export.as_soproq_using(lambda: load_workbook(templates.load(":/templates/soproq.xlsx")),
+                                      messages.warn_soproq_default_values)
 
     window = MainWindow(session,
                         portfolio,

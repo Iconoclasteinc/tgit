@@ -570,6 +570,16 @@
         <source>Could not export your album.</source>
         <translation>Impossible d'exporter votre album.</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>SOPROQ declaration file was generated with pre-filled values.</source>
+        <translation>Le fichier de déclaration SOPROQ a été généré avec des valeurs pré-remplies.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Default values used are:&#10;&#09;Right type: 'RE'&#10;&#09;Percentage: '100'&#10;&#09;Territory type: 'WW'&#10;&#10;Please review those values before sending the file to the SOPROQ.</source>
+        <translation>Les valeurs par défaut utilisées sont :&#10;&#09;Type de droit: 'RE'&#10;&#09;Pourcentage: '100'&#10;&#09;Type de territoire: 'WW'&#10;&#10;Svp réviser ces valeurs avant d'envoyer le fichier à la SOPROQ.</translation>
+    </message>
 </context>
 <context>
     <name>ConfirmationBox</name>
