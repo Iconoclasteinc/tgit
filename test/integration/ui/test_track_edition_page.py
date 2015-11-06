@@ -2,8 +2,8 @@
 
 from datetime import timedelta
 
-from hamcrest import has_entries
 import pytest
+from hamcrest import has_entries
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
@@ -176,8 +176,8 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_production_company("Producer")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(production_company_region=("US",)))
-    driver.change_production_company_region("United States of America")
+    metadata_changed_signal.expect(has_entries(production_company_region=("CA",)))
+    driver.change_production_company_region("Canada")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(production_company_region=None))
@@ -188,8 +188,8 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_recording_studio("Studios")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(recording_studio_region=("US",)))
-    driver.change_recording_studio_region("United States of America")
+    metadata_changed_signal.expect(has_entries(recording_studio_region=("CA",)))
+    driver.change_recording_studio_region("Canada")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(recording_studio_region=None))

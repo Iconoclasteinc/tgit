@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from io import StringIO
 import csv
+from io import StringIO
 
+import pytest
 from hamcrest import assert_that, contains, has_item
 from hamcrest.core.core.isequal import equal_to
-import pytest
 
 from test.util import builders as build
 from tgit.local_storage.csv_format import CsvFormat, to_boolean
@@ -31,7 +31,7 @@ def test_includes_header_row(formatter, out):
                                   "Compilation",
                                   "Lead Performer",
                                   "Lead Performer ISNI",
-                                  "Lead Performer Region",
+                                  "Lead Performer Origin",
                                   "Guest Performers",
                                   "Label Name",
                                   "Catalog Number",
@@ -39,10 +39,10 @@ def test_includes_header_row(formatter, out):
                                   "Comments",
                                   "Release Date",
                                   "Recording Date",
-                                  "Recording Studios",
-                                  "Recording Studio Region",
+                                  "Recording Studio",
+                                  "Recording Location",
                                   "Production Company",
-                                  "Production Company Region",
+                                  "Production Location",
                                   "Music Producer",
                                   "Mixer",
                                   "Primary Style",
@@ -85,7 +85,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
         composer="Composer",
         isrc="ISRC",
         labels="Tag1 Tag2 Tag3",
-        recording_studio="Studios",
+        recording_studio="Studio",
         recording_studio_region=("CA",),
         production_company="Production Company",
         production_company_region=("CA",),
@@ -114,7 +114,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
                                "Comments\r...\r...",
                                "2014",
                                "2013",
-                               "Studios",
+                               "Studio",
                                "CA",
                                "Production Company",
                                "CA",

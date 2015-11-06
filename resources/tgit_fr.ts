@@ -65,8 +65,12 @@
         <translation>Artiste principal</translation>
     </message>
     <message>
-        <source>Lead Performer Region</source>
-        <translation>Région de l'artiste principal</translation>
+        <source>Lead Performer ISNI</source>
+        <translation>ISNI de l'artiste principal</translation>
+    </message>
+    <message>
+        <source>Lead Performer Origin</source>
+        <translation>Origine de l'artiste principal</translation>
     </message>
     <message>
         <source>Guest Performers</source>
@@ -93,20 +97,20 @@
         <translation>Date de l&apos;enregistrement</translation>
     </message>
     <message>
-        <source>Recording Studios</source>
+        <source>Recording Studio</source>
         <translation>Studio d&apos;enregistrement</translation>
     </message>
     <message>
-        <source>Recording Studios Region</source>
-        <translation>Région du studio d&apos;enregistrement</translation>
+        <source>Recording Location</source>
+        <translation>Lieu d&apos;enregistrement</translation>
     </message>
     <message>
         <source>Production Company</source>
         <translation>Cie. de production</translation>
     </message>
     <message>
-        <source>Production Company Region</source>
-        <translation>Région de la cie. de production</translation>
+        <source>Production Location</source>
+        <translation>Lieu de production</translation>
     </message>
     <message>
         <source>Music Producer</source>
@@ -220,8 +224,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="173"/>
-        <source>Lead Performer Region:</source>
-        <translation>Lieu d&apos;origine de l&apos;artiste principal :</translation>
+        <source>Lead Performer Origin:</source>
+        <translation>Origine de l&apos;artiste principal :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="186"/>
@@ -653,7 +657,7 @@
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
         <source>Version Information:</source>
-        <translation>Infos sur la version :</translation>
+        <translation>Commentaires :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -747,8 +751,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="224"/>
-        <source>Recording Studio Region:</source>
-        <translation>Région du studio d&apos;enregistrement :</translation>
+        <source>Recording Location:</source>
+        <translation>Lieu d&apos;enregistrement :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -757,8 +761,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Production Company Region:</source>
-        <translation>Région de la cie. de production :</translation>
+        <source>Production Location:</source>
+        <translation>Lieu de production :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="227"/>

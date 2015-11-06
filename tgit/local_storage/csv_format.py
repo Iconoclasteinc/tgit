@@ -35,9 +35,9 @@ def _to_standard_region_code(region):
 
 
 class CsvFormat(QObject):
-    Headers = "Release Name", "Compilation", "Lead Performer", "Lead Performer ISNI", "Lead Performer Region", \
+    Headers = "Release Name", "Compilation", "Lead Performer", "Lead Performer ISNI", "Lead Performer Origin", \
               "Guest Performers", "Label Name", "Catalog Number", "UPC/EAN", "Comments", "Release Date", \
-              "Recording Date", "Recording Studios", "Recording Studio Region", "Production Company", "Production Company Region", \
+              "Recording Date", "Recording Studio", "Recording Location", "Production Company", "Production Location", \
               "Music Producer", "Mixer", "Primary Style", "Track Title", "Version Information", "Track Number", \
               "Total Tracks", "Featured Guest", "Lyrics", "Language", "Publisher", "Lyricist", "Composer", "ISRC", \
               "Tags"

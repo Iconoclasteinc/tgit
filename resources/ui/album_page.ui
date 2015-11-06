@@ -239,7 +239,7 @@ QCheckBox::indicator:checked:pressed {
 
 QLabel {
 	color: #444444;
-	min-width: 125px;
+	min-width: 175px;
 }
 
 QLabel:disabled {
@@ -838,7 +838,7 @@ QPushButton:focus {
          <item row="4" column="0">
           <widget class="QLabel" name="_lead_performer_region_caption">
            <property name="text">
-            <string>Lead Performer Region:</string>
+            <string>Lead Performer Origin:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
