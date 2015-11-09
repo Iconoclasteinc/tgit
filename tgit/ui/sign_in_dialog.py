@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QApplication
 
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.rescue import rescue
@@ -38,12 +38,15 @@ class SignInDialog(QDialog, UIFile):
 
     def sign_in(self, on_sign_in):
         def attempt_sign_in():
+            QApplication.setOverrideCursor(Qt.WaitCursor)
             with(rescue(on_error=self._show_authentication_failed)):
                 on_sign_in(self._email.text(), self._password.text())
+                QApplication.restoreOverrideCursor()
                 self.accept()
 
         self._action_buttons.accepted.connect(attempt_sign_in)
         self.open()
 
     def _show_authentication_failed(self, error):
+        QApplication.restoreOverrideCursor()
         return self._authentication_error.setVisible(True)
