@@ -93,7 +93,7 @@ def mouse_release(button=LEFT_BUTTON):
 
 
 def mouse_click(button=LEFT_BUTTON):
-    return sequence(mouse_press(button), pause(MOUSE_CLICK_DELAY), mouse_release(button))
+    return sequence(mouse_press(button), pause(MOUSE_CLICK_DELAY), mouse_release(button), pause(MOUSE_CLICK_DELAY))
 
 
 def mouse_right_click():
