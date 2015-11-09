@@ -21,6 +21,7 @@ from queue import Queue
 import threading
 
 from PyQt5.QtCore import QEventLoop
+
 from PyQt5.QtWidgets import QApplication
 import requests
 
@@ -117,6 +118,7 @@ def update_album_from(album):
         if not metadata.get("compilation"):
             for track in album.tracks:
                 track.lead_performer = metadata.get("lead_performer")
+
     return update_album
 
 
@@ -132,6 +134,7 @@ def change_cover_of(album):
 def remove_album_cover_from(album):
     def remove_album_cover():
         album.remove_images()
+
     return remove_album_cover
 
 
@@ -176,6 +179,7 @@ def select_isni_in(album):
     def select_isni(identity):
         metadata = dict(lead_performer=identity.full_name, isni=identity.id, compilation=album.compilation)
         update_album_from(album)(**metadata)
+
     return select_isni
 
 
@@ -183,11 +187,12 @@ def clear_isni_from(album):
     def clear_isni():
         metadata = dict(isni=None)
         update_album_from(album)(**metadata)
+
     return clear_isni
 
 
-def assign_isni_using(cheddar):
-    def assign_isni(lead_performer, release_name, on_successful_lookup):
+def assign_isni_using(cheddar, user):
+    def assign_isni(album, on_successful_assignation):
         def poll_queue():
             while queue.empty():
                 QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -195,17 +200,19 @@ def assign_isni_using(cheddar):
 
         def assign():
             try:
-                queue.put(cheddar.assign_isni(lead_performer, [release_name]))
+                queue.put(cheddar.assign_identifier(album.lead_performer, "individual",
+                                                    [track.track_title for track in album.tracks], user.api_key))
             except requests.ConnectionError as e:
                 return queue.put(e)
 
         queue = Queue()
         threading.Thread(target=assign).start()
-        response = poll_queue()
-        if type(response) is requests.ConnectionError:
-            on_successful_lookup(("ERROR", str(response)))
+        identity = poll_queue()
+        if type(identity) is requests.ConnectionError:
+            on_successful_assignation(("ERROR", str(identity)))
         else:
-            on_successful_lookup(response)
+            on_successful_assignation(("SUCCESS", Identity(**identity)))
+
     return assign_isni
 
 

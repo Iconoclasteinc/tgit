@@ -202,10 +202,9 @@ def test_signals_when_clear_isni_button_clicked(driver):
 
 
 def test_signals_when_assign_isni_button_clicked(driver):
-    assign_isni_signal = MultiValueMatcherProbe("assign ISNI",
-                                                contains("performer", "release", instance_of(types.FunctionType)))
-    _ = show_track_page(build.album(lead_performer="performer", release_name="release"),
-                        on_isni_assign=assign_isni_signal.received)
+    assign_isni_signal = MultiValueMatcherProbe("assign ISNI", contains(instance_of(types.FunctionType)))
+
+    _ = show_track_page(build.album(), on_isni_assign=assign_isni_signal.received)
 
     driver.assign_isni_to_lead_performer()
     driver.check(assign_isni_signal)

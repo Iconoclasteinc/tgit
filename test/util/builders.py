@@ -9,43 +9,43 @@ from tgit.track import Track
 from tgit.user_preferences import UserPreferences
 
 
-def image(mime='image/jpeg', data='...', type_=Image.OTHER, desc=''):
+def image(mime="image/jpeg", data="...", type_=Image.OTHER, desc=""):
     return mime, data, type_, desc
 
 
 def metadata(images=(), **meta):
-    metadata = Metadata(**meta)
+    new_metadata = Metadata(**meta)
 
-    for image in images:
-        metadata.addImage(*image)
+    for current_image in images:
+        new_metadata.addImage(*current_image)
 
-    return metadata
+    return new_metadata
 
 
-def track(filename='track.mp3', metadata=None, **meta):
-    track = Track(filename, metadata)
+def track(filename="track.mp3", metadata_from=None, **meta):
+    new_track = Track(filename, metadata_from)
 
     for tag, value in meta.items():
-        setattr(track, tag, value)
+        setattr(new_track, tag, value)
 
-    return track
+    return new_track
 
 make_track = track
 
 
-def album(filename='album.tgit', of_type=Album.Type.FLAC, images=(), tracks=(), **meta):
-    album = Album(filename=filename, of_type=of_type)
+def album(filename="album.tgit", of_type=Album.Type.FLAC, images=(), tracks=(), **meta):
+    new_album = Album(filename=filename, of_type=of_type)
 
     for tag, value in meta.items():
-        setattr(album, tag, value)
+        setattr(new_album, tag, value)
 
-    for image in images:
-        album.add_image(*image)
+    for current_image in images:
+        new_album.add_image(*current_image)
 
-    for track in tracks:
-        album.add_track(track)
+    for current_track in tracks:
+        new_album.add_track(current_track)
 
-    return album
+    return new_album
 
 make_album = album
 

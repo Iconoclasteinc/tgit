@@ -318,18 +318,37 @@ def test_clears_lead_performer_isni_from_album():
     assert_that(album.isni, none(), "isni")
 
 
-def test_assigns_isni_to_lead_performer_using_the_album_title():
+def test_assigns_isni_to_lead_performer_using_the_album_title(prober):
     class FakeCheddar:
         @staticmethod
-        def assign_isni(name, title_of_works):
-            if name == "Paul McCartney" and title_of_works[0] == "Memory Almost Full":
-                return "0000123456789"
-            return None
+        def assign_identifier(name, type_, works, token):
+            if token == "the token" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
+                return {
+                    "id": "0000000121707484",
+                    "type": "individual",
+                    "firstName": "Joel",
+                    "lastName": "Miller",
+                    "works": [
+                        {"title": "Chevere!"},
+                        {"title": "That is that"}
+                    ]
+                }
+            else:
+                return None
 
-    def success_callback(response):
-        nonlocal isni
-        isni = response
+    album = build.album(lead_performer="Joel Miller")
+    album.add_track(build.track(track_title="Chevere!"))
+    album.add_track(build.track(track_title="That is that"))
 
-    isni = None
-    director.assign_isni_using(FakeCheddar())("Paul McCartney", "Memory Almost Full", success_callback)
-    assert_that(isni, equal_to("0000123456789"), "isni assigned")
+    success_signal = ValueMatcherProbe("An identity",
+                                       contains(
+                                           equal_to("SUCCESS"),
+                                           has_properties(id="0000000121707484",
+                                                          type="individual",
+                                                          first_name="Joel",
+                                                          last_name="Miller",
+                                                          works=contains(has_property("title", "Chevere!"),
+                                                                         has_property("title", "That is that")))))
+
+    director.assign_isni_using(FakeCheddar(), User(api_key="the token"))(album, success_signal.received)
+    prober.check(success_signal)

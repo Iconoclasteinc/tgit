@@ -24,6 +24,22 @@ import requests
 from tgit.authentication_error import AuthenticationError
 
 
+def _check_response_code(response):
+    if response.status_code == 401:
+        raise AuthenticationError()
+    if response.status_code >= 500:
+        raise requests.ConnectionError()
+
+
+def _decode_response(response):
+    _check_response_code(response)
+    return json.loads(response.content.decode())
+
+
+def _build_authorization_header(token):
+    return {"Authorization": "Bearer {}".format(token)}
+
+
 class Cheddar:
     def __init__(self, host, port=443, secure=True):
         self._secure = secure
@@ -50,16 +66,23 @@ class Cheddar:
         return deserialized
 
     def get_identities(self, phrase, token):
-        headers = {"Authorization": "Bearer {}".format(token)}
+        headers = _build_authorization_header(token)
 
-        response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase), headers=headers, verify=False)
-        if response.status_code == 401:
-            raise AuthenticationError()
+        response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase), headers=headers,
+                                verify=False)
 
-        if response.status_code >= 500:
-            raise requests.ConnectionError()
+        return _decode_response(response)
 
-        return json.loads(response.content.decode())
+    def assign_identifier(self, name, type_, works, token):
+        headers = _build_authorization_header(token)
 
-    def assign_isni(self, name, works):
-        pass
+        data = {
+            "type": type_,
+            "name": name,
+            "works": [{"title": work} for work in works]
+        }
+
+        response = requests.post("{0}/api/identities".format(self._hostname), data=json.dumps(data), headers=headers,
+                                 verify=False)
+
+        return _decode_response(response)

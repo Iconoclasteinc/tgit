@@ -31,11 +31,9 @@ from tgit.ui.message_boxes import MessageBoxes
 DISPLAY_DELAY = 200 if platforms.mac else 0
 
 
-@pytest.yield_fixture()
+@pytest.fixture()
 def driver(qt, prober, automaton):
-    message_box_driver = QMessageBoxDriver(window(QMessageBox, named("message_box")), prober, automaton)
-    yield message_box_driver
-    message_box_driver.close()
+    return QMessageBoxDriver(window(QMessageBox, named("message_box")), prober, automaton)
 
 
 @pytest.yield_fixture()

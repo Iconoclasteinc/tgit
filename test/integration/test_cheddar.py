@@ -5,6 +5,7 @@ import requests
 
 from tgit.authentication_error import AuthenticationError
 from tgit.cheddar import Cheddar
+from test.util import builders as build
 
 
 @pytest.yield_fixture
@@ -32,13 +33,13 @@ def test_raises_authentication_error(cheddar):
         cheddar.authenticate("test@example.com", "wrong_password")
 
 
-def test_returns_unauthorized_when_sending_invalid_token(cheddar, platform):
+def test_returns_unauthorized_when_getting_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
     with pytest.raises(AuthenticationError):
         cheddar.get_identities("reb an mal", "...")
 
 
-def test_raises_system_error_on_remote_server_error(cheddar, platform):
+def test_raises_system_error_on_remote_server_error_when_getting_identities(cheddar, platform):
     platform.response_code_queue = [503]
     platform.allowed_bearer_token = "token"
     with pytest.raises(requests.exceptions.ConnectionError):
@@ -75,3 +76,46 @@ def test_returns_array_of_identities(cheddar, platform):
                     works=contains(has_entries(
                         title="Music and meaning in old Hispanic lenten chants psalmi, "
                               "threni and the Easter vigil canticles")))))
+
+
+def test_returns_unauthorized_when_assigning_an_identifier(cheddar):
+    with pytest.raises(AuthenticationError):
+        cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
+
+
+def test_raises_system_error_on_remote_server_error_when_assigning_an_identifier(cheddar, platform):
+    platform.response_code_queue = [503]
+    platform.allowed_bearer_token = "token"
+    with pytest.raises(requests.exceptions.ConnectionError):
+        cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
+
+
+def test_returns_empty_identity(cheddar, platform):
+    platform.allowed_bearer_token = "token"
+    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
+    assert_that(identity, empty())
+
+
+def test_returns_identity_of_newly_assigned_identifier(cheddar, platform):
+    platform.allowed_bearer_token = "token"
+    platform.identities["Joel Miller"] = {
+        "id": "0000000121707484",
+        "type": "individual",
+        "firstName": "Joel",
+        "lastName": "Miller",
+        "dateOfBirth": "1969",
+        "dateOfDeath": "",
+        "works": [
+            {"title": "Chevere!"},
+            {"title": "That is that"}
+        ]
+    }
+
+    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
+    assert_that(identity, has_entries(
+        id="0000000121707484",
+        firstName="Joel",
+        lastName="Miller",
+        dateOfBirth="1969",
+        dateOfDeath="",
+        works=contains(has_entries(title="Chevere!"), has_entries(title="That is that"))))

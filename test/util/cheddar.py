@@ -103,6 +103,20 @@ def _lookup():
     return json.dumps(identities_to_return)
 
 
+@_app.route("/api/identities", methods=["POST"])
+@_requires_bearer_token
+def _assign():
+    if len(response_code_queue):
+        return Response(status=response_code_queue.pop(0))
+
+    name = json.loads(request.data.decode())["name"]
+
+    if name in identities:
+        return json.dumps(identities[name])
+
+    return json.dumps({})
+
+
 @_app.route("/api/authentications", methods=["POST"])
 @_requires_auth
 def _authenticate():
@@ -120,6 +134,12 @@ def _shutdown():
 
 
 def start():
+    global token_queue, response_code_queue, allowed_bearer_token, identities
+    token_queue = iter([])
+    response_code_queue = []
+    allowed_bearer_token = ""
+    identities = {}
+
     server_thread = Thread(target=lambda: _app.run(port=port()))
     server_thread.start()
     return server_thread

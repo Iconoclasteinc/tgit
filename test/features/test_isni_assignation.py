@@ -16,14 +16,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import pytest
 
 
-@pytest.mark.skipif(True, reason="Assignation through Cheddar is not implemented")
 def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, platform):
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
-    # name_server.assignation_generator = iter(["0000000121707484"])
+    platform.token_queue = iter(["TheSuperToken"])
+    platform.allowed_bearer_token = "TheSuperToken"
+    platform.identities["Joel Miller"] = {
+        "id": "0000000121707484",
+        "type": "individual",
+        "firstName": "Joel",
+        "lastName": "Miller",
+        "works": [
+            {"title": "Honeycombs"}
+        ]
+    }
 
+    app.sign_in()
     app.import_album("Honeycomb", from_track=track)
     app.shows_track_list(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")

@@ -20,10 +20,10 @@ import operator
 
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget, QApplication
+
 from tgit.album import AlbumListener
 from tgit.auth import Permission
 from tgit.countries import COUNTRIES
-from tgit.genres import GENRES
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
@@ -104,14 +104,14 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def on_isni_assign(self, on_isni_assign):
         def start_waiting():
             QApplication.setOverrideCursor(Qt.WaitCursor)
-            on_isni_assign(self.lead_performer.text(), self.release_name.text(), on_assign_success)
+            on_isni_assign(on_assign_success)
 
         def on_assign_success(response):
-            code, payload = response
+            code, identity = response
             if code == "ERROR":
-                self._show_isni_assignation_failed(payload)
+                self._show_isni_assignation_failed(identity)
             else:
-                self.isni.setText(payload)
+                self.isni.setText(identity.id)
             QApplication.restoreOverrideCursor()
 
         self.assign_isni_button.clicked.connect(start_waiting)
