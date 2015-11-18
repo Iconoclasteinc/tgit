@@ -29,6 +29,7 @@ from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
 from tgit.identity import Identity
+from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
@@ -204,14 +205,16 @@ def assign_isni_using(cheddar, user):
                                                     [track.track_title for track in album.tracks], user.api_key))
             except requests.ConnectionError as e:
                 return queue.put(e)
+            except InsufficientInformationError as e:
+                return queue.put(e)
 
         queue = Queue()
         threading.Thread(target=assign).start()
         identity = poll_queue()
-        if type(identity) is requests.ConnectionError:
-            on_successful_assignation(("ERROR", str(identity)))
+        if type(identity) is dict:
+            on_successful_assignation(Identity(**identity))
         else:
-            on_successful_assignation(("SUCCESS", Identity(**identity)))
+            raise identity
 
     return assign_isni
 

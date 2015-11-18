@@ -577,6 +577,16 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
+        <source>Unable to connect to TGiT remote server.</source>
+        <translation>Impossible de se connecter au serveur TGiT.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Please try again later.</source>
+        <translation>Svp essayer ultérieurement.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
         <source>Default values used are:&#10;&#09;Right type: 'RE'&#10;&#09;Percentage: '100'&#10;&#09;Territory type: 'WW'&#10;&#10;Please review those values before sending the file to the SOPROQ.</source>
         <translation>Les valeurs par défaut utilisées sont :&#10;&#09;Type de droit: 'RE'&#10;&#09;Pourcentage: '100'&#10;&#09;Type de territoire: 'WW'&#10;&#10;Svp réviser ces valeurs avant d'envoyer le fichier à la SOPROQ.</translation>
     </message>

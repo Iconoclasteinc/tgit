@@ -53,6 +53,11 @@ class MessageBoxes:
     def isni_assignation_failed(self, details=None):
         return self._open(MessageBox.warn(self.parent, "Could not assign an ISNI", details=details))
 
+    def cheddar_connection_failed(self):
+        return self._open(MessageBox.warn(self.parent,
+                                          "Unable to connect to TGiT remote server.",
+                                          "Please try again later."))
+
     def export_failed(self, error):
         return self._open(MessageBox.warn(self.parent,
                                           "Could not export your album.",

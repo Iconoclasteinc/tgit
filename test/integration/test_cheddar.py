@@ -6,6 +6,7 @@ import requests
 from tgit.authentication_error import AuthenticationError
 from tgit.cheddar import Cheddar
 from test.util import builders as build
+from tgit.insufficient_information_error import InsufficientInformationError
 
 
 @pytest.yield_fixture
@@ -43,6 +44,13 @@ def test_raises_system_error_on_remote_server_error_when_getting_identities(ched
     platform.response_code_queue = [503]
     platform.allowed_bearer_token = "token"
     with pytest.raises(requests.exceptions.ConnectionError):
+        cheddar.get_identities("...", "token")
+
+
+def test_raises_insufficient_information_error_when_getting_identities(cheddar, platform):
+    platform.response_code_queue = [422]
+    platform.allowed_bearer_token = "token"
+    with pytest.raises(InsufficientInformationError):
         cheddar.get_identities("...", "token")
 
 

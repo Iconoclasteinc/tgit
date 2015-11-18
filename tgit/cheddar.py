@@ -22,11 +22,14 @@ import json
 import requests
 
 from tgit.authentication_error import AuthenticationError
+from tgit.insufficient_information_error import InsufficientInformationError
 
 
 def _check_response_code(response):
     if response.status_code == 401:
         raise AuthenticationError()
+    if response.status_code == 422:
+        raise InsufficientInformationError()
     if response.status_code >= 500:
         raise requests.ConnectionError()
 

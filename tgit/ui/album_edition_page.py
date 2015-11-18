@@ -20,10 +20,12 @@ import operator
 
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget, QApplication
+import requests
 
 from tgit.album import AlbumListener
 from tgit.auth import Permission
 from tgit.countries import COUNTRIES
+from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
@@ -33,9 +35,10 @@ ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
 def make_album_edition_page(album, session, edit_performers, select_picture, select_identity,
-                            show_isni_assignation_failed, **handlers):
+                            show_isni_assignation_failed, show_cheddar_connection_failed, **handlers):
     page = AlbumEditionPage(select_picture=select_picture, edit_performers=edit_performers,
-                            select_identity=select_identity, show_isni_assignation_failed=show_isni_assignation_failed)
+                            select_identity=select_identity, show_isni_assignation_failed=show_isni_assignation_failed,
+                            show_cheddar_connection_failed=show_cheddar_connection_failed)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -60,8 +63,10 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, edit_performers, select_picture, select_identity, show_isni_assignation_failed):
+    def __init__(self, edit_performers, select_picture, select_identity, show_isni_assignation_failed,
+                 show_cheddar_connection_failed):
         super().__init__()
+        self._show_cheddar_connection_failed = show_cheddar_connection_failed
         self._show_isni_assignation_failed = show_isni_assignation_failed
         self._select_identity = select_identity
         self._select_picture = select_picture
@@ -104,14 +109,17 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def on_isni_assign(self, on_isni_assign):
         def start_waiting():
             QApplication.setOverrideCursor(Qt.WaitCursor)
-            on_isni_assign(on_assign_success)
+            try:
+                on_isni_assign(on_assign_success)
+            except requests.ConnectionError:
+                self._show_cheddar_connection_failed()
+            except InsufficientInformationError as e:
+                self._show_isni_assignation_failed(str(e))
+            finally:
+                QApplication.restoreOverrideCursor()
 
-        def on_assign_success(response):
-            code, identity = response
-            if code == "ERROR":
-                self._show_isni_assignation_failed(identity)
-            else:
-                self.isni.setText(identity.id)
+        def on_assign_success(identity):
+            self.isni.setText(identity.id)
             QApplication.restoreOverrideCursor()
 
         self.assign_isni_button.clicked.connect(start_waiting)

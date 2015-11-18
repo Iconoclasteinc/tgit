@@ -341,14 +341,12 @@ def test_assigns_isni_to_lead_performer_using_the_album_title(prober):
     album.add_track(build.track(track_title="That is that"))
 
     success_signal = ValueMatcherProbe("An identity",
-                                       contains(
-                                           equal_to("SUCCESS"),
                                            has_properties(id="0000000121707484",
                                                           type="individual",
                                                           first_name="Joel",
                                                           last_name="Miller",
                                                           works=contains(has_property("title", "Chevere!"),
-                                                                         has_property("title", "That is that")))))
+                                                                         has_property("title", "That is that"))))
 
     director.assign_isni_using(FakeCheddar(), User(api_key="the token"))(album, success_signal.received)
     prober.check(success_signal)
