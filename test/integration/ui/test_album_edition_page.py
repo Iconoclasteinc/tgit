@@ -4,7 +4,7 @@ import types
 
 import pytest
 from PyQt5.QtCore import QByteArray
-from hamcrest import has_entries, assert_that, less_than, instance_of, contains
+from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
@@ -28,11 +28,22 @@ def driver(qt, prober, automaton):
 ignore = lambda *_, **__: None
 
 
-def show_track_page(album, session=make_anonymous_session(), select_picture=ignore, select_identity=ignore,
-                    edit_performers=ignore, show_isni_assignation_failed=ignore,
-                    show_cheddar_connection_failed=ignore, **handlers):
-    page = make_album_edition_page(album, session, edit_performers, select_picture, select_identity,
-                                   show_isni_assignation_failed, show_cheddar_connection_failed, **handlers)
+def show_track_page(album, session=make_anonymous_session(),
+                    select_picture=ignore,
+                    select_identity=ignore,
+                    review_assignation=ignore,
+                    edit_performers=ignore,
+                    show_isni_assignation_failed=ignore,
+                    show_cheddar_connection_failed=ignore,
+                    **handlers):
+    page = make_album_edition_page(album, session,
+                                   edit_performers=edit_performers,
+                                   select_picture=select_picture,
+                                   select_identity=select_identity,
+                                   show_isni_assignation_failed=show_isni_assignation_failed,
+                                   show_cheddar_connection_failed=show_cheddar_connection_failed,
+                                   review_assignation=review_assignation,
+                                   **handlers)
     show_widget(page)
     return page
 
@@ -203,9 +214,13 @@ def test_signals_when_clear_isni_button_clicked(driver):
 
 
 def test_signals_when_assign_isni_button_clicked(driver):
-    assign_isni_signal = MultiValueMatcherProbe("assign ISNI", contains(instance_of(types.FunctionType)))
+    assign_isni_signal = MultiValueMatcherProbe("assign ISNI", contains(
+        equal_to("individual"),
+        instance_of(types.FunctionType)))
 
-    _ = show_track_page(build.album(), on_isni_assign=assign_isni_signal.received)
+    _ = show_track_page(build.album(),
+                        review_assignation=lambda on_review: on_review("individual"),
+                        on_isni_assign=assign_isni_signal.received)
 
     driver.assign_isni_to_lead_performer()
     driver.check(assign_isni_signal)

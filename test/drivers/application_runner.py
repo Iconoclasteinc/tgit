@@ -85,7 +85,7 @@ class ApplicationRunner:
         self.tagger.shows_track_metadata(track_number=track_number, track_title=track_title, **tags)
 
     def change_track_metadata(self, **tags):
-        self.tagger.editTrackMetadata(**tags)
+        self.tagger.edit_track_metadata(**tags)
 
     def change_track_position(self, title, to_position):
         self.tagger.move_track(title, to_position - 1)

@@ -25,6 +25,9 @@ class Work:
 
 
 class Identity:
+    INDIVIDUAL = "individual"
+    ORGANIZATION = "organization"
+
     def __init__(self, **kwargs):
         self.id = kwargs["id"]
         self.type = kwargs["type"]

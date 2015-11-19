@@ -518,6 +518,9 @@ class ListViewDriver(WidgetDriver):
     def select_items(self, *matchers):
         self._select_items([self._index_of_first_item(matching) for matching in matchers])
 
+    def has_item(self, matching):
+        self._index_of_first_item(matching)
+
     def _select_items(self, indexes):
         self._select_item(indexes.pop(0))
         for index in indexes:

@@ -583,7 +583,7 @@
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>Please try again later.</source>
-        <translation>Svp essayer ultérieurement.</translation>
+        <translation>Svp essayez ultérieurement.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />

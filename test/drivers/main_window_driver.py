@@ -4,6 +4,7 @@ from cute.widgets import WidgetDriver
 from .album_screen_driver import album_screen
 from .load_album_dialog_driver import load_album_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
+from .isni_assignation_review_dialog_driver import isni_assignation_review_dialog
 from .message_box_driver import message_box
 from test.drivers.save_as_dialog_driver import save_as_dialog
 from .user_preferences_dialog_driver import user_preferences_dialog
@@ -62,7 +63,7 @@ class MainWindowDriver(WidgetDriver):
     def shows_track_metadata(self, **tags):
         album_screen(self).shows_track_metadata(**tags)
 
-    def editTrackMetadata(self, **tags):
+    def edit_track_metadata(self, **tags):
         album_screen(self).edit_track_metadata(**tags)
 
     def change_settings(self, **settings):
@@ -79,6 +80,8 @@ class MainWindowDriver(WidgetDriver):
 
     def assign_isni_to_lead_performer(self):
         album_screen(self).assign_isni_to_lead_performer()
+        isni_assignation_review_dialog(self).select_individual()
+        isni_assignation_review_dialog(self).ok()
 
     def shows_assignation_failed(self):
         message_box(self).is_active()

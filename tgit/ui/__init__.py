@@ -27,6 +27,7 @@ from tgit.ui import resources
 from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.dialogs import Dialogs
 from tgit.ui.helpers import template_file as templates
+from tgit.ui.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 from tgit.ui.startup_screen import StartupScreen
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog
 from tgit.ui.new_album_page import NewAlbumPage
@@ -70,8 +71,11 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
     def show_performers_dialog(album):
         return lambda on_edit: PerformerDialog(album=album, parent=window).edit(on_edit)
 
+    def show_isni_assignation_review_dialog(album, on_review):
+        ISNIAssignationReviewDialog(parent=window).review(on_review, *album.tracks)
+
     def show_sign_in_dialog(on_sign_in):
-        return SignInDialog(parent=window).sign_in(on_sign_in)
+        SignInDialog(parent=window).sign_in(on_sign_in)
 
     def create_new_album_page():
         return NewAlbumPage(select_album_location=application_dialogs.select_album_destination,
@@ -102,6 +106,7 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
         return make_album_edition_page(album,
                                        session,
                                        select_identity=show_isni_lookup_dialog,
+                                       review_assignation=func.partial(show_isni_assignation_review_dialog, album),
                                        show_isni_assignation_failed=messages.isni_assignation_failed,
                                        show_cheddar_connection_failed=messages.cheddar_connection_failed,
                                        edit_performers=show_performers_dialog(album),

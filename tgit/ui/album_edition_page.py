@@ -34,10 +34,13 @@ from .helpers import image, formatting
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_album_edition_page(album, session, edit_performers, select_picture, select_identity,
+def make_album_edition_page(album, session, edit_performers, select_picture, select_identity, review_assignation,
                             show_isni_assignation_failed, show_cheddar_connection_failed, **handlers):
-    page = AlbumEditionPage(select_picture=select_picture, edit_performers=edit_performers,
-                            select_identity=select_identity, show_isni_assignation_failed=show_isni_assignation_failed,
+    page = AlbumEditionPage(select_picture=select_picture,
+                            edit_performers=edit_performers,
+                            select_identity=select_identity,
+                            review_assignation=review_assignation,
+                            show_isni_assignation_failed=show_isni_assignation_failed,
                             show_cheddar_connection_failed=show_cheddar_connection_failed)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
@@ -63,9 +66,10 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 350, 350
 
-    def __init__(self, edit_performers, select_picture, select_identity, show_isni_assignation_failed,
-                 show_cheddar_connection_failed):
+    def __init__(self, edit_performers, select_picture, select_identity, review_assignation,
+                 show_isni_assignation_failed, show_cheddar_connection_failed):
         super().__init__()
+        self._review_assignation = review_assignation
         self._show_cheddar_connection_failed = show_cheddar_connection_failed
         self._show_isni_assignation_failed = show_isni_assignation_failed
         self._select_identity = select_identity
@@ -107,10 +111,10 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.lookup_isni_button.clicked.connect(start_waiting)
 
     def on_isni_assign(self, on_isni_assign):
-        def start_waiting():
+        def start_waiting(main_artist_type):
             QApplication.setOverrideCursor(Qt.WaitCursor)
             try:
-                on_isni_assign(on_assign_success)
+                on_isni_assign(main_artist_type, on_assign_success)
             except requests.ConnectionError:
                 self._show_cheddar_connection_failed()
             except InsufficientInformationError as e:
@@ -122,7 +126,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             self.isni.setText(identity.id)
             QApplication.restoreOverrideCursor()
 
-        self.assign_isni_button.clicked.connect(start_waiting)
+        self.assign_isni_button.clicked.connect(lambda _: self._review_assignation(start_waiting))
 
     def on_remove_picture(self, on_remove_picture):
         self.remove_picture_button.clicked.connect(lambda _: on_remove_picture())

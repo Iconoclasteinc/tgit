@@ -21,7 +21,6 @@ from queue import Queue
 import threading
 
 from PyQt5.QtCore import QEventLoop
-
 from PyQt5.QtWidgets import QApplication
 import requests
 
@@ -193,7 +192,7 @@ def clear_isni_from(album):
 
 
 def assign_isni_using(cheddar, user):
-    def assign_isni(album, on_successful_assignation):
+    def assign_isni(album, main_artist_type, on_successful_assignation):
         def poll_queue():
             while queue.empty():
                 QApplication.processEvents(QEventLoop.AllEvents, 100)
@@ -201,7 +200,7 @@ def assign_isni_using(cheddar, user):
 
         def assign():
             try:
-                queue.put(cheddar.assign_identifier(album.lead_performer, "individual",
+                queue.put(cheddar.assign_identifier(album.lead_performer, main_artist_type,
                                                     [track.track_title for track in album.tracks], user.api_key))
             except requests.ConnectionError as e:
                 return queue.put(e)
