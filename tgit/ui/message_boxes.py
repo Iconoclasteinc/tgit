@@ -94,8 +94,8 @@ class MessageBoxes:
 
     def warn_soproq_default_values(self):
         return self._open(MessageBox.warn(self.parent,
-                                          "SOPROQ declaration file was generated with pre-filled values.",
-                                          "Default values used are:\n\tRight type: 'RE'\n\tPercentage: '100'\n\tTerritory type: 'WW'\n\nPlease review those values before sending the file to the SOPROQ."))
+                                          "SOPROQ declaration file was generated with default values.",
+                                          "The form was filled with default values assuming you own the rights of the recordings covered by this declaration, forever and throughout the world.\n\nIf this is not the case, please manually review the declaration file."))
 
     def about_qt(self):
         QMessageBox().aboutQt(self.parent)

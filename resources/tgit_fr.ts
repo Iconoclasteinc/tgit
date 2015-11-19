@@ -572,8 +572,8 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>SOPROQ declaration file was generated with pre-filled values.</source>
-        <translation>Le fichier de déclaration SOPROQ a été généré avec des valeurs pré-remplies.</translation>
+        <source>SOPROQ declaration file was generated with default values.</source>
+        <translation>Le fichier de déclaration SOPROQ a été généré avec des valeurs par défaut.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
@@ -587,8 +587,8 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Default values used are:&#10;&#09;Right type: 'RE'&#10;&#09;Percentage: '100'&#10;&#09;Territory type: 'WW'&#10;&#10;Please review those values before sending the file to the SOPROQ.</source>
-        <translation>Les valeurs par défaut utilisées sont :&#10;&#09;Type de droit: 'RE'&#10;&#09;Pourcentage: '100'&#10;&#09;Type de territoire: 'WW'&#10;&#10;Svp réviser ces valeurs avant d'envoyer le fichier à la SOPROQ.</translation>
+        <source>The form was filled with default values assuming you own the rights of the recordings covered by this declaration, forever and throughout the world.&#10;&#10;If this is not the case, please manually review the declaration file.</source>
+        <translation>Le formulaire a été rempli avec des valeurs par défaut en tenant pour acquis que vous possédez tous les droits sur les enregistrements sonores faisant l'objet de cette déclaration à perpétuité et pour le monde entier.&#10;&#10;Si tel n'est pas le cas veuillez réviser manuellement le fichier produit.</translation>
     </message>
 </context>
 <context>
