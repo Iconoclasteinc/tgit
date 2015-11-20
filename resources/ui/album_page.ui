@@ -136,7 +136,7 @@ QPushButton:disabled {
     background-color: #CCCCCC;
 }
 
-QPushButton:hover, QPushButton:focus {
+QPushButton:hover, QPushButton:focus  {
     background-color: #A6A6A6;
     border-color: #A6A6A6;
 }
@@ -724,6 +724,19 @@ QPushButton:focus {
            </property>
           </widget>
          </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="lead_performer_caption">
+           <property name="text">
+            <string>Lead Performer:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>lead_performer</cstring>
+           </property>
+          </widget>
+         </item>
          <item row="2" column="1">
           <widget class="QWidget" name="lead_performer_container" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -747,34 +760,78 @@ QPushButton:focus {
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="lookup_isni_button">
-              <property name="enabled">
-               <bool>false</bool>
+             <widget class="QToolButton" name="_isni_actions_button">
+              <property name="minimumSize">
+               <size>
+                <width>50</width>
+                <height>22</height>
+               </size>
               </property>
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
+              <property name="styleSheet">
+               <string notr="true">QToolButton {
+    background-color: #BFBFBF;
+    border: 2px solid #BFBFBF;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+}
+
+QToolButton:disabled {
+    border-color: #CCCCCC;
+    background-color: #CCCCCC;
+}
+
+QToolButton:hover, QToolButton:focus {
+    background-color: #A6A6A6;
+    border-color: #A6A6A6;
+}
+
+QToolButton:pressed {
+	border: 2px solid transparent;
+}
+
+QToolButton::menu-indicator {
+    subcontrol-position: right center;
+	image: url(:/images/chevron-down-white-8.png);
+    top: 2px;
+    right: 2px;
+}
+
+QToolButton::menu-indicator:open {
+    top: 3px; 
+	right: 1px;
+}</string>
               </property>
               <property name="text">
-               <string>LOOKUP ISNI</string>
+               <string>ISNI </string>
+              </property>
+              <property name="popupMode">
+               <enum>QToolButton::InstantPopup</enum>
+              </property>
+              <property name="toolButtonStyle">
+               <enum>Qt::ToolButtonTextOnly</enum>
+              </property>
+              <property name="autoRaise">
+               <bool>true</bool>
+              </property>
+              <property name="arrowType">
+               <enum>Qt::DownArrow</enum>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="assign_isni_button">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
+             <widget class="QLineEdit" name="_isni">
+              <property name="maximumSize">
+               <size>
+                <width>105</width>
+                <height>16777215</height>
+               </size>
               </property>
               <property name="text">
-               <string>ASSIGN ISNI</string>
+               <string/>
+              </property>
+              <property name="placeholderText">
+               <string>ISNI</string>
               </property>
              </widget>
             </item>
@@ -782,60 +839,6 @@ QPushButton:focus {
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="isni_caption">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>ISNI:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>isni</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QWidget" name="isni_container" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="isni">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="clear_isni_button">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="text">
-               <string>CLEAR ISNI</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="4" column="0">
           <widget class="QLabel" name="_lead_performer_region_caption">
            <property name="text">
             <string>Lead Performer Origin:</string>
@@ -848,7 +851,14 @@ QPushButton:focus {
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="3" column="1">
+          <widget class="QComboBox" name="_lead_performer_region">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
           <widget class="QLabel" name="guest_performers_caption">
            <property name="text">
             <string>Guest Performers:</string>
@@ -861,7 +871,7 @@ QPushButton:focus {
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
+         <item row="4" column="1">
           <widget class="QWidget" name="guest_performers_container" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <property name="leftMargin">
@@ -930,26 +940,6 @@ QPushButton:pressed {
              </widget>
             </item>
            </layout>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="lead_performer_caption">
-           <property name="text">
-            <string>Lead Performer:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>lead_performer</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QComboBox" name="_lead_performer_region">
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
           </widget>
          </item>
         </layout>
@@ -1122,6 +1112,19 @@ QPushButton:pressed {
     </widget>
    </item>
   </layout>
+  <action name="_main_artist_isni_lookup_action">
+   <property name="text">
+    <string>Lookup</string>
+   </property>
+  </action>
+  <action name="_main_artist_isni_assign_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Assign</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -1139,10 +1142,6 @@ QPushButton:pressed {
   <tabstop>release_name</tabstop>
   <tabstop>compilation</tabstop>
   <tabstop>lead_performer</tabstop>
-  <tabstop>lookup_isni_button</tabstop>
-  <tabstop>assign_isni_button</tabstop>
-  <tabstop>isni</tabstop>
-  <tabstop>clear_isni_button</tabstop>
   <tabstop>guest_performers</tabstop>
   <tabstop>add_guest_performers_button</tabstop>
   <tabstop>label_name</tabstop>
@@ -1158,6 +1157,8 @@ QPushButton:pressed {
   <tabstop>original_release_time</tabstop>
   <tabstop>recording_time</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -164,14 +164,6 @@ def select_isni_in(album):
     return select_isni
 
 
-def clear_isni_from(album):
-    def clear_isni():
-        metadata = dict(isni=None)
-        update_album_from(album)(**metadata)
-
-    return clear_isni
-
-
 def assign_isni_using(cheddar, user):
     def assign_isni(album, main_artist_type, on_assign_success):
         @_unwrap_future

@@ -116,7 +116,6 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
                                        on_isni_assign=func.partial(
                                            director.assign_isni_using(cheddar, session.current_user), album),
                                        on_remove_picture=director.remove_album_cover_from(album),
-                                       on_clear_isni=director.clear_isni_from(album),
                                        on_metadata_changed=director.update_album_from(album))
 
     def create_track_page_for(album):

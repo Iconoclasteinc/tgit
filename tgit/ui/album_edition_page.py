@@ -19,7 +19,7 @@
 import operator
 
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
-from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtWidgets import QWidget, QApplication, QMenu
 import requests
 
 from tgit.album import AlbumListener
@@ -32,6 +32,16 @@ from tgit.ui.helpers.ui_file import UIFile
 from .helpers import image, formatting
 
 ISO_8601_FORMAT = "yyyy-MM-dd"
+QMENU_STYLESHEET = """
+    QMenu {
+        background-color: white;
+    }
+
+    QMenu::item::selected {
+      color: black;
+      background-color:#DDDDDD;
+    }
+"""
 
 
 def make_album_edition_page(album, session, edit_performers, select_picture, select_identity, review_assignation,
@@ -81,12 +91,16 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._load(":/ui/album_page.ui")
         self._disable_mac_focus_frame()
 
-        self.front_cover.setFixedSize(*self.FRONT_COVER_SIZE)
         self._fill_with_countries(self._lead_performer_region)
+
+        menu = QMenu()
+        menu.setStyleSheet(QMENU_STYLESHEET)
+        menu.addAction(self._main_artist_isni_lookup_action)
+        menu.addAction(self._main_artist_isni_assign_action)
+        self._isni_actions_button.setMenu(menu)
 
         self.compilation.clicked.connect(self._update_isni_lookup_button)
         self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
-        self.clear_isni_button.clicked.connect(lambda: self.release_time.calendarWidget().show())
         self.add_guest_performers_button.clicked.connect(lambda: self._edit_performers(self._update_guest_performers))
 
     @staticmethod
@@ -108,7 +122,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             self._select_identity(identities)
             QApplication.restoreOverrideCursor()
 
-        self.lookup_isni_button.clicked.connect(start_waiting)
+        self._main_artist_isni_lookup_action.triggered.connect(start_waiting)
 
     def on_isni_assign(self, on_isni_assign):
         def start_waiting(main_artist_type):
@@ -123,16 +137,13 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                 QApplication.restoreOverrideCursor()
 
         def on_assign_success(identity):
-            self.isni.setText(identity.id)
+            self._isni.setText(identity.id)
             QApplication.restoreOverrideCursor()
 
-        self.assign_isni_button.clicked.connect(lambda _: self._review_assignation(start_waiting))
+        self._main_artist_isni_assign_action.triggered.connect(lambda _: self._review_assignation(start_waiting))
 
     def on_remove_picture(self, on_remove_picture):
         self.remove_picture_button.clicked.connect(lambda _: on_remove_picture())
-
-    def on_clear_isni(self, on_clear_isni):
-        self.clear_isni_button.clicked.connect(lambda _: on_clear_isni())
 
     def on_metadata_changed(self, handler):
         def handle(entry):
@@ -146,7 +157,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.compilation.clicked.connect(lambda: handle("compilation"))
         self.lead_performer.editingFinished.connect(lambda: handle("lead_performer"))
         self._lead_performer_region.activated.connect(lambda: handle("lead_performer_region"))
-        self.isni.textChanged.connect(lambda _: handle("isni"))
+        self._isni.textChanged.connect(lambda _: handle("isni"))
         self.guest_performers.textChanged.connect(lambda: handle("guest_performers"))
         self.label_name.editingFinished.connect(lambda: handle("label_name"))
         self.catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
@@ -164,9 +175,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def user_changed(self, user):
         self._isni_lookup = user.has_permission(Permission.isni_lookup)
         if not self._isni_lookup:
-            self.lookup_isni_button.setToolTip(self.tr("Please sign-in to activate ISNI lookup"))
+            self._main_artist_isni_lookup_action.setToolTip(self.tr("Please sign-in to activate ISNI lookup"))
         else:
-            self.lookup_isni_button.setToolTip(None)
+            self._main_artist_isni_lookup_action.setToolTip(None)
         self._update_isni_lookup_button()
 
     def display(self, album):
@@ -177,7 +188,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.compilation.setChecked(album.compilation is True)
         self._display_lead_performer(album)
         self._display_region(album.lead_performer_region, self._lead_performer_region)
-        self.isni.setText(album.isni)
+        self._isni.setText(album.isni)
         self.guest_performers.setText(formatting.toPeopleList(album.guest_performers))
         self.label_name.setText(album.label_name)
         self.catalog_number.setText(album.catalog_number)
@@ -200,7 +211,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           compilation=self.compilation.isChecked(),
                           lead_performer=self.lead_performer.text(),
                           lead_performer_region=self._get_country_code_from_combo(self._lead_performer_region),
-                          isni=self.isni.text(),
+                          isni=self._isni.text(),
                           guest_performers=formatting.fromPeopleList(self.guest_performers.text()),
                           label_name=self.label_name.text(),
                           catalog_number=self.catalog_number.text(),
@@ -233,5 +244,5 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         def _is_blank(text):
             return not text or text.strip() == ""
 
-        self.lookup_isni_button.setEnabled(
+        self._main_artist_isni_lookup_action.setEnabled(
             self._isni_lookup and not self.compilation.isChecked() and not _is_blank(self.lead_performer.text()))

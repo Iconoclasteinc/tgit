@@ -294,23 +294,18 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="133"/>
-        <source>LOOKUP ISNI</source>
-        <translation>RÉCUPÉRER ISNI</translation>
+        <source>Lookup</source>
+        <translation>Récupérer</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="170"/>
-        <source>ISNI:</source>
-        <translation>ISNI :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" line="162"/>
-        <source>CLEAR ISNI</source>
-        <translation>EFFACER ISNI</translation>
+        <source>ISNI: </source>
+        <translation>ISNI : </translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="138"/>
-        <source>ASSIGN ISNI</source>
-        <translation>ASSIGNER ISNI</translation>
+        <source>Assign</source>
+        <translation>Assigner</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" line="175"/>

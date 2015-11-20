@@ -38,7 +38,7 @@ class AlbumEditionPageDriver(ScreenDriver):
             elif tag == "original_release_time":
                 self.shows_original_release_time(value)
             elif tag == "isni":
-                self.shows_isni(value, disabled=True)
+                self.shows_isni(value)
             else:
                 raise AssertionError("Don't know how to verify '{0}'".format(tag))
 
@@ -92,15 +92,14 @@ class AlbumEditionPageDriver(ScreenDriver):
     def remove_picture(self):
         self.button(named("remove_picture_button")).click()
 
-    def clear_isni(self):
-        self.button(named("clear_isni_button")).click()
-
     def assign_isni_to_lead_performer(self):
-        self.button(named("assign_isni_button")).manipulate("enable", lambda button: button.setEnabled(True))
-        self.button(named("assign_isni_button")).click()
+        menu = self.tool_button(named("_isni_actions_button")).open_menu()
+        menu.menu_item(named("_main_artist_isni_assign_action")).manipulate("enable", lambda b: b.setEnabled(True))
+        menu.select_menu_item(named("_main_artist_isni_assign_action"))
 
     def lookup_isni_of_lead_performer(self):
-        self.button(named("lookup_isni_button")).click()
+        menu = self.tool_button(named("_isni_actions_button")).open_menu()
+        menu.select_menu_item(named("_main_artist_isni_lookup_action"))
 
     def edit_performers(self):
         self.button(named("add_guest_performers_button")).click()
@@ -133,25 +132,20 @@ class AlbumEditionPageDriver(ScreenDriver):
         edit = self.combobox(named("_lead_performer_region"))
         edit.has_current_text(name)
 
-    def shows_isni(self, name, disabled=False):
-        label = self.label(with_buddy(named("isni")))
-        label.is_showing_on_screen()
-        label.is_disabled(disabled)
-        edit = self.lineEdit(named("isni"))
-        edit.has_text(name)
-        edit.is_disabled(disabled)
+    def shows_isni(self, name):
+        self.tool_button(named("_isni_actions_button")).is_showing_on_screen()
+        self.lineEdit(named("_isni")).has_text(name)
 
     def enables_isni_lookup(self, enabled=True):
-        button = self.button(named("lookup_isni_button"))
-        button.is_enabled(enabled)
+        menu = self.tool_button(named("_isni_actions_button")).open_menu()
+        menu.menu_item(named("_main_artist_isni_lookup_action")).is_enabled(enabled)
 
     def disables_isni_assign(self):
-        button = self.button(named("assign_isni_button"))
-        button.is_disabled(True)
+        menu = self.tool_button(named("_isni_actions_button")).open_menu()
+        menu.menu_item(named("_main_artist_isni_lookup_action")).is_disabled(True)
 
     def enables_isni_assign(self):
-        button = self.button(named("assign_isni_button"))
-        button.is_enabled(True)
+        self.button(named("assign_isni_button")).is_enabled(True)
 
     def isni_lookup_has_tooltip(self, text):
         self.button(named("lookup_isni_button")).has_tooltip(text)

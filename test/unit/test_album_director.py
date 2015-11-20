@@ -317,12 +317,6 @@ def test_clears_album_images():
     assert_that(album.images, equal_to([]), "images")
 
 
-def test_clears_lead_performer_isni_from_album():
-    album = build.album(isni="0000123456789")
-    director.clear_isni_from(album)()
-    assert_that(album.isni, none(), "isni")
-
-
 def test_assigns_isni_to_lead_performer_using_the_album_title(prober):
     class FakeCheddar:
         @staticmethod

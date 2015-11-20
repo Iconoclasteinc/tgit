@@ -170,6 +170,15 @@ class ButtonDriver(WidgetDriver):
         self.is_(checked and match.checked() or match.unchecked())
 
 
+class QToolButtonDriver(ButtonDriver):
+    def open_menu(self):
+        bottom_left = self.widget_bounds().bottomLeft()
+        menu = self.query("selector menu", lambda button: button.menu())
+        driver = MenuDriver(WidgetIdentity(menu), self.prober, self.gesture_performer)
+        driver.popup_manually_at(bottom_left.x(), bottom_left.y())
+        return driver
+
+
 class LabelDriver(WidgetDriver):
     def has_text(self, matcher):
         self.has(properties.text(), matcher)

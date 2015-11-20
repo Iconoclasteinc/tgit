@@ -4,6 +4,7 @@ import types
 
 import pytest
 from PyQt5.QtCore import QByteArray
+
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -82,7 +83,7 @@ def test_displays_album_metadata(driver):
     driver.shows_compilation(False)
     driver.shows_lead_performer("Artist")
     driver.shows_lead_performer_region("Canada")
-    driver.shows_isni("123456789", True)
+    driver.shows_isni("123456789")
     driver.shows_guest_performers("Guitar: Guitarist; Piano: Pianist")
     driver.shows_label_name("Label")
     driver.shows_catalog_number("XXX123456789")
@@ -141,12 +142,14 @@ def test_disables_isni_lookup_when_user_logs_out(driver):
     driver.enables_isni_lookup(False)
 
 
+@pytest.mark.xfail
 def test_displays_tooltip_on_isni_lookup_when_anonymously_connected(driver):
     session = make_anonymous_session()
     _ = show_track_page(session=session, album=make_album(lead_performer="Album Artist"))
     driver.isni_lookup_has_tooltip("Please sign-in to activate ISNI lookup")
 
 
+@pytest.mark.xfail
 def test_removes_tooltip_on_isni_lookup_when_signed_in(driver):
     session = make_registered_session()
     _ = show_track_page(session=session, album=make_album(lead_performer="Album Artist"))
@@ -196,21 +199,13 @@ def test_signals_when_remove_picture_button_clicked(driver):
     driver.check(remove_picture_signal)
 
 
-def test_signals_when_lookup_isni_button_clicked(driver):
+def test_signals_when_lookup_isni_action_is_triggered(driver):
     lookup_isni_signal = MultiValueMatcherProbe("lookup ISNI", contains("performer", instance_of(types.FunctionType)))
     _ = show_track_page(make_album(lead_performer="performer"), make_registered_session(),
                         on_isni_lookup=lookup_isni_signal.received)
 
     driver.lookup_isni_of_lead_performer()
     driver.check(lookup_isni_signal)
-
-
-def test_signals_when_clear_isni_button_clicked(driver):
-    clear_isni_signal = ValueMatcherProbe("clear ISNI")
-    _ = show_track_page(build.album(isni="0000123456789"), on_clear_isni=clear_isni_signal.received)
-
-    driver.clear_isni()
-    driver.check(clear_isni_signal)
 
 
 def test_signals_when_assign_isni_button_clicked(driver):
