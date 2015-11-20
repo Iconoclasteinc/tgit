@@ -5,7 +5,6 @@ import requests
 
 from tgit.authentication_error import AuthenticationError
 from tgit.cheddar import Cheddar
-from test.util import builders as build
 from tgit.insufficient_information_error import InsufficientInformationError
 
 
@@ -37,26 +36,26 @@ def test_raises_authentication_error(cheddar):
 def test_returns_unauthorized_when_getting_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
     with pytest.raises(AuthenticationError):
-        cheddar.get_identities("reb an mal", "...")
+        raise cheddar.get_identities("reb an mal", "...").exception()
 
 
 def test_raises_system_error_on_remote_server_error_when_getting_identities(cheddar, platform):
     platform.response_code_queue = [503]
     platform.allowed_bearer_token = "token"
     with pytest.raises(requests.exceptions.ConnectionError):
-        cheddar.get_identities("...", "token")
+        raise cheddar.get_identities("...", "token").exception()
 
 
 def test_raises_insufficient_information_error_when_getting_identities(cheddar, platform):
     platform.response_code_queue = [422]
     platform.allowed_bearer_token = "token"
     with pytest.raises(InsufficientInformationError):
-        cheddar.get_identities("...", "token")
+        raise cheddar.get_identities("...", "token").exception()
 
 
 def test_returns_empty_array_of_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    identities = cheddar.get_identities("reb an mal", "token")
+    identities = cheddar.get_identities("reb an mal", "token").result()
     assert_that(identities, empty())
 
 
@@ -74,7 +73,7 @@ def test_returns_array_of_identities(cheddar, platform):
         ]
     }
 
-    identities = cheddar.get_identities("reb an mal", "token")
+    identities = cheddar.get_identities("reb an mal", "token").result()
     assert_that(identities, contains(
         has_entries(id="0000000115677274",
                     firstName="Rebecca Ann",
@@ -88,19 +87,19 @@ def test_returns_array_of_identities(cheddar, platform):
 
 def test_returns_unauthorized_when_assigning_an_identifier(cheddar):
     with pytest.raises(AuthenticationError):
-        cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
+        raise cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token").exception()
 
 
 def test_raises_system_error_on_remote_server_error_when_assigning_an_identifier(cheddar, platform):
     platform.response_code_queue = [503]
     platform.allowed_bearer_token = "token"
     with pytest.raises(requests.exceptions.ConnectionError):
-        cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
+        raise cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token").exception()
 
 
 def test_returns_empty_identity(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
+    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token").result()
     assert_that(identity, empty())
 
 
@@ -119,7 +118,7 @@ def test_returns_identity_of_newly_assigned_identifier(cheddar, platform):
         ]
     }
 
-    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
+    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token").result()
     assert_that(identity, has_entries(
         id="0000000121707484",
         firstName="Joel",

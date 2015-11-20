@@ -16,19 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from functools import wraps
 import os
-from queue import Queue
-import threading
-
-from PyQt5.QtCore import QEventLoop
-from PyQt5.QtWidgets import QApplication
-import requests
 
 from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
 from tgit.identity import Identity
-from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
@@ -152,25 +146,12 @@ def export_as_csv(album, destination):
 
 
 def lookup_isni_using(cheddar, user):
-    def lookup_isni(lead_performer, on_successful_lookup):
-        def poll_queue():
-            while queue.empty():
-                QApplication.processEvents(QEventLoop.AllEvents, 100)
-            return queue.get(True)
+    def lookup_isni(lead_performer, on_lookup_success):
+        @_unwrap_future
+        def on_lookup_done(identities):
+            on_lookup_success([Identity(**identity) for identity in identities])
 
-        def get_identities():
-            try:
-                queue.put(cheddar.get_identities(lead_performer, user.api_key))
-            except requests.ConnectionError as e:
-                return queue.put(e)
-
-        queue = Queue()
-        threading.Thread(target=get_identities).start()
-        identities = poll_queue()
-        if type(identities) is requests.ConnectionError:
-            on_successful_lookup(identities)
-        else:
-            on_successful_lookup([Identity(**identity) for identity in identities])
+        cheddar.get_identities(lead_performer, user.api_key).add_done_callback(on_lookup_done)
 
     return lookup_isni
 
@@ -192,28 +173,15 @@ def clear_isni_from(album):
 
 
 def assign_isni_using(cheddar, user):
-    def assign_isni(album, main_artist_type, on_successful_assignation):
-        def poll_queue():
-            while queue.empty():
-                QApplication.processEvents(QEventLoop.AllEvents, 100)
-            return queue.get(True)
+    def assign_isni(album, main_artist_type, on_assign_success):
+        @_unwrap_future
+        def on_assign_done(identity_details):
+            on_assign_success(Identity(**identity_details))
 
-        def assign():
-            try:
-                queue.put(cheddar.assign_identifier(album.lead_performer, main_artist_type,
-                                                    [track.track_title for track in album.tracks], user.api_key))
-            except requests.ConnectionError as e:
-                return queue.put(e)
-            except InsufficientInformationError as e:
-                return queue.put(e)
-
-        queue = Queue()
-        threading.Thread(target=assign).start()
-        identity = poll_queue()
-        if type(identity) is dict:
-            on_successful_assignation(Identity(**identity))
-        else:
-            raise identity
+        cheddar.assign_identifier(album.lead_performer,
+                                  main_artist_type,
+                                  [track.track_title for track in album.tracks],
+                                  user.api_key).add_done_callback(on_assign_done)
 
     return assign_isni
 
@@ -231,3 +199,14 @@ def sign_out_using(session):
         session.logout()
 
     return sign_out
+
+
+def _unwrap_future(f):
+    @wraps(f)
+    def decorated(future):
+        exception = future.exception()
+        if exception:
+            raise exception
+        return f(future.result())
+
+    return decorated

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+from concurrent.futures import ThreadPoolExecutor
 import json
 
 import requests
@@ -69,23 +69,30 @@ class Cheddar:
         return deserialized
 
     def get_identities(self, phrase, token):
-        headers = _build_authorization_header(token)
+        def request_identities():
+            response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase),
+                                    headers=(_build_authorization_header(token)),
+                                    verify=False)
 
-        response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase), headers=headers,
-                                verify=False)
+            return _decode_response(response)
 
-        return _decode_response(response)
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            return executor.submit(request_identities)
 
     def assign_identifier(self, name, type_, works, token):
-        headers = _build_authorization_header(token)
+        def assign_identifier():
+            data = {
+                "type": type_,
+                "name": name,
+                "works": [{"title": work} for work in works]
+            }
 
-        data = {
-            "type": type_,
-            "name": name,
-            "works": [{"title": work} for work in works]
-        }
+            response = requests.post("{0}/api/identities".format(self._hostname),
+                                     data=json.dumps(data),
+                                     headers=(_build_authorization_header(token)),
+                                     verify=False)
 
-        response = requests.post("{0}/api/identities".format(self._hostname), data=json.dumps(data), headers=headers,
-                                 verify=False)
+            return _decode_response(response)
 
-        return _decode_response(response)
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            return executor.submit(assign_identifier)

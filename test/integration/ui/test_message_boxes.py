@@ -118,7 +118,7 @@ def test_shows_soproq_default_values_message(driver):
     _ = messages().warn_soproq_default_values()
 
     driver.is_active()
-    driver.shows_message("SOPROQ declaration file was generated with pre-filled values.")
+    driver.shows_message("SOPROQ declaration file was generated with default values.")
 
 
 def test_shows_about_message(about_tgit_driver):

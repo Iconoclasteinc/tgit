@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from concurrent.futures import Future
 import os
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
@@ -233,10 +234,12 @@ def test_returns_list_of_identities_when_isni_found_in_registry(prober):
     class FakeCheddar:
         @staticmethod
         def get_identities(phrase, token):
+            future = Future()
             if token == "the token" and phrase == "Rebecca Ann Maloy":
-                return [{"id": "0000000115677274", "type": "individual", "works": []}]
+                future.set_result([{"id": "0000000115677274", "type": "individual", "works": []}])
             else:
-                return []
+                future.set_result([])
+            return future
 
     success_signal = ValueMatcherProbe("The identities", contains(has_property("id", "0000000115677274")))
     director.lookup_isni_using(FakeCheddar(), User(api_key="the token"))("Rebecca Ann Maloy", success_signal.received)
@@ -246,8 +249,10 @@ def test_returns_list_of_identities_when_isni_found_in_registry(prober):
 def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
     class FakeCheddar:
         @staticmethod
-        def get_identities(phrase, token):
-            return []
+        def get_identities(*_):
+            future = Future()
+            future.set_result([])
+            return future
 
     success_signal = ValueMatcherProbe("The identities", empty())
     director.lookup_isni_using(FakeCheddar(), User(api_key="the token"))("Rebecca Ann Maloy", success_signal.received)
@@ -322,31 +327,40 @@ def test_assigns_isni_to_lead_performer_using_the_album_title(prober):
     class FakeCheddar:
         @staticmethod
         def assign_identifier(name, type_, works, token):
+            future = Future()
             if token == "the token" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
-                return {
-                    "id": "0000000121707484",
-                    "type": "individual",
-                    "firstName": "Joel",
-                    "lastName": "Miller",
-                    "works": [
-                        {"title": "Chevere!"},
-                        {"title": "That is that"}
-                    ]
-                }
+                future.set_result(_joel_miller_identity())
             else:
-                return None
+                future.set_result(None)
+            return future
 
     album = build.album(lead_performer="Joel Miller")
     album.add_track(build.track(track_title="Chevere!"))
     album.add_track(build.track(track_title="That is that"))
 
-    success_signal = ValueMatcherProbe("An identity",
-                                       has_properties(id="0000000121707484",
-                                                      type="individual",
-                                                      first_name="Joel",
-                                                      last_name="Miller",
-                                                      works=contains(has_property("title", "Chevere!"),
-                                                                     has_property("title", "That is that"))))
+    success_signal = ValueMatcherProbe("An identity", _is_joel_miller())
 
     director.assign_isni_using(FakeCheddar(), User(api_key="the token"))(album, "individual", success_signal.received)
     prober.check(success_signal)
+
+
+def _joel_miller_identity():
+    return {
+        "id": "0000000121707484",
+        "type": "individual",
+        "firstName": "Joel",
+        "lastName": "Miller",
+        "works": [
+            {"title": "Chevere!"},
+            {"title": "That is that"}
+        ]
+    }
+
+
+def _is_joel_miller():
+    return has_properties(id="0000000121707484",
+                          type="individual",
+                          first_name="Joel",
+                          last_name="Miller",
+                          works=contains(has_property("title", "Chevere!"),
+                                         has_property("title", "That is that")))
