@@ -763,9 +763,12 @@ QPushButton:focus {
              <widget class="QToolButton" name="_isni_actions_button">
               <property name="minimumSize">
                <size>
-                <width>50</width>
+                <width>60</width>
                 <height>22</height>
                </size>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
               </property>
               <property name="styleSheet">
                <string notr="true">QToolButton {
@@ -823,7 +826,7 @@ QToolButton::menu-indicator:open {
              <widget class="QLineEdit" name="_isni">
               <property name="maximumSize">
                <size>
-                <width>105</width>
+                <width>135</width>
                 <height>16777215</height>
                </size>
               </property>
