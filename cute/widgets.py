@@ -3,7 +3,7 @@
 from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QComboBox, QTextEdit, QLabel,
-                             QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
+                             QAbstractButton, QSpinBox, QTableView, QDialogButtonBox, QTabBar)
 from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
 
@@ -881,3 +881,25 @@ class TableViewDriver(WidgetDriver):
         drop_target = rect.bottom_center(to_header.bounds) if (from_position < to_position) \
             else rect.top_center(to_header.bounds)
         self.perform(gestures.mouse_drag(from_header.bounds.center(), drop_target))
+
+
+class QTabWidgetDriver(WidgetDriver):
+    def select(self, text):
+        tab_bar = self.query("tab bar", lambda t: t.tabBar())
+        QTabBarDriver(WidgetIdentity(tab_bar), self.prober, self.gesture_performer).select(text)
+
+
+class QTabBarDriver(WidgetDriver):
+    def select(self, text):
+        class CalculateCenterOfItem:
+            center = None
+
+            def __call__(self, item):
+                for i in range(0, item.count()):
+                    if item.tabText(i) == text:
+                        self.center = item.mapToGlobal(item.tabRect(i).center())
+                        break
+
+        calculate_center = CalculateCenterOfItem()
+        self.manipulate("calculate center of item", calculate_center)
+        self.perform(gestures.mouse_click_at(calculate_center.center))

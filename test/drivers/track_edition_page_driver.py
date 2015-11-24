@@ -169,20 +169,24 @@ class TrackEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_tags")).change_text(tags)
 
     def shows_lyrics(self, lyrics):
+        self.tabs(named("_tabs")).select("Content")
         self.label(with_buddy(named("_lyrics"))).is_showing_on_screen()
         self.textEdit(named("_lyrics")).has_plain_text(lyrics)
 
     def add_lyrics(self, *lyrics):
+        self.tabs(named("_tabs")).select("Content")
         edit = self.textEdit(named("_lyrics"))
         for lyric in lyrics:
             edit.add_line(lyric)
         edit.clear_focus()
 
     def shows_language(self, lang):
+        self.tabs(named("_tabs")).select("Content")
         self.label(with_buddy(named("_language"))).is_showing_on_screen()
         self.combobox(named("_language")).has_current_text(lang)
 
     def change_language(self, lang):
+        self.tabs(named("_tabs")).select("Content")
         self.combobox(named("_language")).change_text(lang)
 
     def select_language(self, lang):
@@ -192,11 +196,9 @@ class TrackEditionPageDriver(ScreenDriver):
         self.dateTimeEdit(named("_preview_time")).has_time(time)
 
     def shows_bitrate(self, text):
-        self.label(with_buddy(named("_bitrate"))).is_showing_on_screen()
         self.label(named("_bitrate")).has_text(text)
 
     def shows_duration(self, text):
-        self.label(with_buddy(named("_duration"))).is_showing_on_screen()
         self.label(named("_duration")).has_text(text)
 
     def shows_software_notice(self, notice):
@@ -205,55 +207,70 @@ class TrackEditionPageDriver(ScreenDriver):
         label.has_text(notice)
 
     def shows_recording_studio(self, studios):
+        self.tabs(named("_tabs")).select("Recording")
         self.label(with_buddy(named("_recording_studio"))).is_showing_on_screen()
         self.lineEdit(named("_recording_studio")).has_text(studios)
 
     def change_recording_studio(self, studios):
+        self.tabs(named("_tabs")).select("Recording")
         self.lineEdit(named("_recording_studio")).change_text(studios)
 
     def shows_recording_studio_region(self, name):
+        self.tabs(named("_tabs")).select("Recording")
         self.label(with_buddy(named("_recording_studio_region"))).is_showing_on_screen()
         edit = self.combobox(named("_recording_studio_region"))
         edit.has_current_text(name)
 
     def change_recording_studio_region(self, name):
+        self.tabs(named("_tabs")).select("Recording")
         self.combobox(named("_recording_studio_region")).select_option(name)
 
     def shows_production_company(self, producer):
+        self.tabs(named("_tabs")).select("Recording")
         self.label(with_buddy(named("_production_company"))).is_showing_on_screen()
         self.lineEdit(named("_production_company")).has_text(producer)
 
     def change_production_company(self, producer):
+        self.tabs(named("_tabs")).select("Recording")
         self.lineEdit(named("_production_company")).change_text(producer)
 
     def shows_production_company_region(self, name):
+        self.tabs(named("_tabs")).select("Recording")
         self.label(with_buddy(named("_production_company_region"))).is_showing_on_screen()
         edit = self.combobox(named("_production_company_region"))
         edit.has_current_text(name)
 
     def change_production_company_region(self, name):
+        self.tabs(named("_tabs")).select("Recording")
         self.combobox(named("_production_company_region")).select_option(name)
 
     def shows_music_producer(self, producer):
+        self.tabs(named("_tabs")).select("Recording")
         self.label(with_buddy(named("_music_producer"))).is_showing_on_screen()
         self.lineEdit(named("_music_producer")).has_text(producer)
 
     def change_music_producer(self, producer):
+        self.tabs(named("_tabs")).select("Recording")
         self.lineEdit(named("_music_producer")).change_text(producer)
 
     def shows_mixer(self, mixer):
+        self.tabs(named("_tabs")).select("Recording")
         self.label(with_buddy(named("_mixer"))).is_showing_on_screen()
         self.lineEdit(named("_mixer")).has_text(mixer)
 
     def change_mixer(self, mixer):
+        self.tabs(named("_tabs")).select("Recording")
         self.lineEdit(named("_mixer")).change_text(mixer)
 
     def shows_primary_style(self, style):
+        self.tabs(named("_tabs")).select("Recording")
         self.label(with_buddy(named("_genre"))).is_showing_on_screen()
         self.combobox(named("_genre")).has_current_text(style)
 
     def change_primary_style(self, style):
+        self.tabs(named("_tabs")).select("Recording")
         self.combobox(named("_genre")).change_text(style)
 
     def select_primary_style(self, style):
+        self.tabs(named("_tabs")).select("Recording")
         self.combobox(named("_genre")).select_option(style)
