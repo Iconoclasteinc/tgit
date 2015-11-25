@@ -4,6 +4,7 @@ import os
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
                       has_key, has_property)
+
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
@@ -317,44 +318,60 @@ def test_clears_album_images():
     assert_that(album.images, equal_to([]), "images")
 
 
-def test_assigns_isni_to_lead_performer_using_the_album_title(prober):
+def test_assigns_isni_to_main_artist(prober):
     class FakeCheddar:
         @staticmethod
         def assign_identifier(name, type_, works, token):
             future = Future()
             if token == "the token" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
-                future.set_result(_joel_miller_identity())
+                future.set_result(_to_joel_miller())
             else:
                 future.set_result(None)
             return future
 
     album = build.album(lead_performer="Joel Miller")
     album.add_track(build.track(track_title="Chevere!"))
-    album.add_track(build.track(track_title="That is that"))
 
-    success_signal = ValueMatcherProbe("An identity", _is_joel_miller())
+    success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
 
-    director.assign_isni_using(FakeCheddar(), User(api_key="the token"))(album, "individual", success_signal.received)
+    director.assign_isni_to_main_artist_using(FakeCheddar(), User(api_key="the token"))(album, "individual",
+                                                                                        success_signal.received)
     prober.check(success_signal)
 
 
-def _joel_miller_identity():
+def test_assigns_isni_to_lyricist(prober):
+    class FakeCheddar:
+        @staticmethod
+        def assign_identifier(name, type_, works, token):
+            future = Future()
+            if token == "the token" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
+                future.set_result(_to_joel_miller())
+            else:
+                future.set_result(None)
+            return future
+
+    track = build.track(track_title="Chevere!", lyricist="Joel Miller")
+    success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
+
+    director.assign_isni_to_lyricist_using(FakeCheddar(), User(api_key="the token"))(track, success_signal.received)
+    prober.check(success_signal)
+
+
+def _to_joel_miller():
     return {
         "id": "0000000121707484",
         "type": "individual",
         "firstName": "Joel",
         "lastName": "Miller",
         "works": [
-            {"title": "Chevere!"},
-            {"title": "That is that"}
+            {"title": "Chevere!"}
         ]
     }
 
 
-def _is_joel_miller():
+def _that_is_joel_miller():
     return has_properties(id="0000000121707484",
                           type="individual",
                           first_name="Joel",
                           last_name="Miller",
-                          works=contains(has_property("title", "Chevere!"),
-                                         has_property("title", "That is that")))
+                          works=contains(has_property("title", "Chevere!")))

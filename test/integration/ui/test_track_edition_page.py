@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
+import types
 
 import pytest
-from hamcrest import has_entries
+
+from hamcrest import has_entries, contains, equal_to, instance_of
 
 from cute.matchers import named
-from cute.probes import ValueMatcherProbe
+from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers import TrackEditionPageDriver
 from test.integration.ui import show_widget
@@ -24,8 +26,10 @@ def driver(qt, prober, automaton):
 ignore = lambda *_, **__: None
 
 
-def show_track_page(album, track, on_track_changed=ignore):
-    page = make_track_edition_page(album, track, on_track_changed)
+def show_track_page(album, track, on_track_changed=ignore, review_assignation=ignore,
+                    show_isni_assignation_failed=ignore, show_cheddar_connection_failed=ignore, **handlers):
+    page = make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
+                                   show_cheddar_connection_failed, **handlers)
     show_widget(page)
     return page
 
@@ -245,3 +249,18 @@ def test_omits_software_notice_if_tagging_date_malformed(driver):
     album = build.album(tracks=[track])
     _ = show_track_page(album, track)
     driver.shows_software_notice("Tagged with TGiT v1.0")
+
+
+def test_signals_when_assign_isni_button_clicked(driver):
+    assign_isni_signal = ValueMatcherProbe("assign ISNI", instance_of(types.FunctionType))
+
+    track = build.track()
+    album = build.album(tracks=[track])
+
+    _ = show_track_page(album,
+                        track,
+                        review_assignation=lambda on_review: on_review(),
+                        on_lyricist_isni_assign=assign_isni_signal.received)
+
+    driver.assign_isni_to_lyricist()
+    driver.check(assign_isni_signal)

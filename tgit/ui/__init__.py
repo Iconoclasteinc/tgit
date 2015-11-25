@@ -71,8 +71,8 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
     def show_performers_dialog(album):
         return lambda on_edit: PerformerDialog(album=album, parent=window).edit(on_edit)
 
-    def show_isni_assignation_review_dialog(album, on_review):
-        ISNIAssignationReviewDialog(parent=window).review(on_review, *album.tracks)
+    def show_isni_review_dialog(main_artist_visible, tracks, on_review):
+        ISNIAssignationReviewDialog(window, main_artist_visible).review(on_review, *tracks)
 
     def show_sign_in_dialog(on_sign_in):
         SignInDialog(parent=window).sign_in(on_sign_in)
@@ -106,7 +106,7 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
         return make_album_edition_page(album,
                                        session,
                                        select_identity=show_isni_lookup_dialog,
-                                       review_assignation=func.partial(show_isni_assignation_review_dialog, album),
+                                       review_assignation=func.partial(show_isni_review_dialog, True, album.tracks),
                                        show_isni_assignation_failed=messages.isni_assignation_failed,
                                        show_cheddar_connection_failed=messages.cheddar_connection_failed,
                                        edit_performers=show_performers_dialog(album),
@@ -114,12 +114,20 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
                                        on_select_picture=director.change_cover_of(album),
                                        on_isni_lookup=director.lookup_isni_using(cheddar, session.current_user),
                                        on_isni_assign=func.partial(
-                                           director.assign_isni_using(cheddar, session.current_user), album),
+                                           director.assign_isni_to_main_artist_using(cheddar, session.current_user),
+                                           album),
                                        on_remove_picture=director.remove_album_cover_from(album),
                                        on_metadata_changed=director.update_album_from(album))
 
     def create_track_page_for(album):
-        return lambda track: make_track_edition_page(album, track, on_track_changed=director.update_track(track))
+        return lambda track: \
+            make_track_edition_page(album, track,
+                                    show_isni_assignation_failed=messages.isni_assignation_failed,
+                                    show_cheddar_connection_failed=messages.cheddar_connection_failed,
+                                    on_track_changed=director.update_track(track),
+                                    review_assignation=func.partial(show_isni_review_dialog, False, [track]),
+                                    on_lyricist_isni_assign=func.partial(
+                                        director.assign_isni_to_lyricist_using(cheddar, session.current_user), track))
 
     def show_isni_lookup_dialog(identities):
         return make_isni_lookup_dialog(window, identities, on_isni_selected=director.select_isni_in(portfolio[0]))

@@ -19,19 +19,25 @@
 import operator
 
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QMenu, QApplication
+import requests
 
 from tgit.album import AlbumListener
 from tgit.countries import COUNTRIES
 from tgit.genres import GENRES
+from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.languages import LANGUAGES
+from tgit.ui.album_edition_page import QMENU_STYLESHEET
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image, formatting
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_track_edition_page(album, track, on_track_changed):
-    page = TrackEditionPage()
+def make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
+                            show_cheddar_connection_failed, **handlers):
+    page = TrackEditionPage(review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed)
+    for name, handler in handlers.items():
+        getattr(page, name)(handler)
 
     page.metadata_changed.connect(lambda metadata: on_track_changed(**metadata))
 
@@ -56,14 +62,22 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     _cover = None
 
-    def __init__(self):
+    def __init__(self, review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed):
         super().__init__()
+        self._show_cheddar_connection_failed = show_cheddar_connection_failed
+        self._show_isni_assignation_failed = show_isni_assignation_failed
+        self._review_assignation = review_assignation
         self._setup_ui()
 
     def _setup_ui(self):
         self._load(":/ui/track_page.ui")
         self._disable_mac_focus_frame()
         self._disable_teaser_fields()
+
+        lyricist_menu = QMenu()
+        lyricist_menu.setStyleSheet(QMENU_STYLESHEET)
+        lyricist_menu.addAction(self._lyricist_isni_assign_action)
+        self._lyricist_isni_actions_button.setMenu(lyricist_menu)
 
         self._genre.addItems(sorted(GENRES))
         self._language.addItems(sorted(LANGUAGES))
@@ -99,6 +113,24 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     def albumStateChanged(self, album):
         self.display(album=album)
+
+    def on_lyricist_isni_assign(self, handler):
+        def start_waiting():
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+            try:
+                handler(on_assign_success)
+            except requests.ConnectionError:
+                self._show_cheddar_connection_failed()
+            except InsufficientInformationError as e:
+                self._show_isni_assignation_failed(str(e))
+            finally:
+                QApplication.restoreOverrideCursor()
+
+        def on_assign_success(identity):
+            self._isni.setText(identity.id)
+            QApplication.restoreOverrideCursor()
+
+        self._lyricist_isni_assign_action.triggered.connect(lambda _: self._review_assignation(start_waiting))
 
     def display(self, album=None, track=None):
         if album:

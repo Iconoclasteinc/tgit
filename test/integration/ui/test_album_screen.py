@@ -27,8 +27,9 @@ def create_album_page(album):
     return AlbumEditionPage(ignore, ignore, ignore, ignore, ignore, ignore)
 
 
-def create_track_page(track):
-    page = TrackEditionPage()
+def create_track_page(track, review_assignation=ignore, show_isni_assignation_failed=ignore,
+                      show_cheddar_connection_failed=ignore):
+    page = TrackEditionPage(review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed)
     page.setObjectName("track_edition_page_" + str(track.track_number))
     return page
 

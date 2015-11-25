@@ -274,3 +274,8 @@ class TrackEditionPageDriver(ScreenDriver):
     def select_primary_style(self, style):
         self.tabs(named("_tabs")).select("Recording")
         self.combobox(named("_genre")).select_option(style)
+
+    def assign_isni_to_lyricist(self):
+        menu = self.tool_button(named("_lyricist_isni_actions_button")).open_menu()
+        menu.menu_item(named("_lyricist_isni_assign_action")).manipulate("enable", lambda b: b.setEnabled(True))
+        menu.select_menu_item(named("_lyricist_isni_assign_action"))

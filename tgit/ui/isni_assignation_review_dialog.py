@@ -25,13 +25,15 @@ from tgit.identity import Identity
 
 
 class ISNIAssignationReviewDialog(QDialog, UIFile):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, main_artist_section_visible=False):
         super().__init__(parent)
+        self._main_artist_section_visible = main_artist_section_visible
         self._setup_ui()
 
     def _setup_ui(self):
         self._load(":ui/isni_assignation_review_dialog.ui")
         self.setAttribute(Qt.WA_DeleteOnClose)
+        self._lead_performer_box.setVisible(self._main_artist_section_visible )
         self._individual_button.setAttribute(Qt.WA_MacShowFocusRect, False)
         self._organization_button.setAttribute(Qt.WA_MacShowFocusRect, False)
 
@@ -40,6 +42,12 @@ class ISNIAssignationReviewDialog(QDialog, UIFile):
         return Identity.INDIVIDUAL if self._individual_button.isChecked() else Identity.ORGANIZATION
 
     def review(self, on_review, *works):
+        def on_accept():
+            if self._main_artist_section_visible:
+                on_review(self._type)
+            else:
+                on_review()
+
         self._works.addItems([work.track_title for work in works])
-        self.accepted.connect(lambda: on_review(self._type))
+        self.accepted.connect(on_accept)
         self.open()

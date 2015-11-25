@@ -164,18 +164,29 @@ def select_isni_in(album):
     return select_isni
 
 
-def assign_isni_using(cheddar, user):
-    def assign_isni(album, main_artist_type, on_assign_success):
-        @_unwrap_future
-        def on_assign_done(identity_details):
-            on_assign_success(Identity(**identity_details))
-
-        cheddar.assign_identifier(album.lead_performer,
-                                  main_artist_type,
-                                  [track.track_title for track in album.tracks],
-                                  user.api_key).add_done_callback(on_assign_done)
+def assign_isni_to_main_artist_using(cheddar, user):
+    def assign_isni(album, type_, on_assign_success):
+        titles = [track.track_title for track in album.tracks]
+        _assign_isni(album.lead_performer, type_, titles, on_assign_success, cheddar, user)
 
     return assign_isni
+
+
+def assign_isni_to_lyricist_using(cheddar, user):
+    def assign_isni(track, on_assign_success):
+        _assign_isni(track.lyricist, "individual", [track.track_title], on_assign_success, cheddar, user)
+
+    return assign_isni
+
+
+def _assign_isni(full_name, type_, titles, on_success, cheddar, user):
+    @_unwrap_future
+    def on_assign_done(identity_details):
+        on_success(Identity(**identity_details))
+
+    cheddar \
+        .assign_identifier(full_name, type_, titles, user.api_key) \
+        .add_done_callback(on_assign_done)
 
 
 def sign_in_using(authenticate, session):
