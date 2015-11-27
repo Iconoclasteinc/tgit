@@ -812,8 +812,8 @@
     </message>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
-        <source>No</source>
-        <translation>Non</translation>
+        <source>No, it's a person</source>
+        <translation>Non, il s'agit d'un individu</translation>
     </message>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
