@@ -556,10 +556,27 @@ color: #666666;</string>
      </item>
      <item>
       <widget class="QTabWidget" name="_tabs">
+       <property name="styleSheet">
+        <string notr="true">#_contributors_tab {
+	background-color: white;
+}
+
+#_recording_tab {
+	background-color: white;
+}
+
+#_content_tab {
+	background-color: white;
+}
+</string>
+       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
        <widget class="QWidget" name="_contributors_tab">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <attribute name="title">
          <string>Contributors</string>
         </attribute>

@@ -794,6 +794,44 @@
     </message>
 </context>
 <context>
+    <name>isni_assignation_review_dialog</name>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Lead Performer</source>
+        <translation>Artiste principal</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Is the main artist a band, collective or ensemble?</source>
+        <translation>L'artiste principal est-il un groupe, collectif ou un ensemble ?</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Yes</source>
+        <translation>Oui</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>No</source>
+        <translation>Non</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Works</source>
+        <translation>Oeuvres</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>At least one title is mandatory to assign an ISNI. The following titles will be used:</source>
+        <translation>Au moin un titre est requis pour l'assignation d'un ISNI.  Les titres suivants seront utilisés :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
+    </message>
+</context>
+<context>
     <name>welcome_page</name>
     <message>
         <location filename="tgit/ui/welcome_page.py"/>
