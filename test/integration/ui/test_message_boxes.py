@@ -62,6 +62,13 @@ def test_shows_cheddar_connection_failed_message(driver):
     driver.ok()
 
 
+def test_shows_cheddar_authentication_failed_message(driver):
+    _ = messages().cheddar_authentication_failed()
+    driver.is_active()
+    driver.shows_message("Could not authenticate you to the TGiT remote server.")
+    driver.ok()
+
+
 def test_shows_close_album_message(driver):
     _ = messages().close_album_confirmation()
 

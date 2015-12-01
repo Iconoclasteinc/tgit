@@ -24,6 +24,7 @@ import requests
 
 from tgit.album import AlbumListener
 from tgit.auth import Permission
+from tgit.authentication_error import AuthenticationError
 from tgit.countries import COUNTRIES
 from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.signal import MultiSubscription
@@ -45,13 +46,15 @@ QMENU_STYLESHEET = """
 
 
 def make_album_edition_page(album, session, edit_performers, select_picture, select_identity, review_assignation,
-                            show_isni_assignation_failed, show_cheddar_connection_failed, **handlers):
+                            show_isni_assignation_failed, show_cheddar_connection_failed,
+                            show_cheddar_authentication_failed, **handlers):
     page = AlbumEditionPage(select_picture=select_picture,
                             edit_performers=edit_performers,
                             select_identity=select_identity,
                             review_assignation=review_assignation,
                             show_isni_assignation_failed=show_isni_assignation_failed,
-                            show_cheddar_connection_failed=show_cheddar_connection_failed)
+                            show_cheddar_connection_failed=show_cheddar_connection_failed,
+                            show_cheddar_authentication_failed=show_cheddar_authentication_failed)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -77,8 +80,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     FRONT_COVER_SIZE = 350, 350
 
     def __init__(self, edit_performers, select_picture, select_identity, review_assignation,
-                 show_isni_assignation_failed, show_cheddar_connection_failed):
+                 show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed):
         super().__init__()
+        self._show_cheddar_authentication_failed = show_cheddar_authentication_failed
         self._review_assignation = review_assignation
         self._show_cheddar_connection_failed = show_cheddar_connection_failed
         self._show_isni_assignation_failed = show_isni_assignation_failed
@@ -116,7 +120,14 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def on_isni_lookup(self, on_isni_lookup):
         def start_waiting():
             QApplication.setOverrideCursor(Qt.WaitCursor)
-            on_isni_lookup(self.lead_performer.text(), on_lookup_success)
+            try:
+                on_isni_lookup(self.lead_performer.text(), on_lookup_success)
+            except requests.ConnectionError:
+                self._show_cheddar_connection_failed()
+            except AuthenticationError:
+                self._show_cheddar_authentication_failed()
+            finally:
+                QApplication.restoreOverrideCursor()
 
         def on_lookup_success(identities):
             self._select_identity(identities)
@@ -131,6 +142,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                 on_isni_assign(main_artist_type, on_assign_success)
             except requests.ConnectionError:
                 self._show_cheddar_connection_failed()
+            except AuthenticationError:
+                self._show_cheddar_authentication_failed()
             except InsufficientInformationError as e:
                 self._show_isni_assignation_failed(str(e))
             finally:

@@ -582,6 +582,16 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
+        <source>Could not authenticate you to the TGiT remote server.</source>
+        <translation>Impossible de s'authentifier au serveur TGiT.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Please sign out and sign back in to fix this issue.</source>
+        <translation>Svp déconnectez-vous et reconnectez-vous pour régler ce problème.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
         <source>The form was filled with default values assuming you own the rights of the recordings covered by this declaration, forever and throughout the world.&#10;&#10;If this is not the case, please manually review the declaration file.</source>
         <translation>Le formulaire a été rempli avec des valeurs par défaut en tenant pour acquis que vous possédez tous les droits sur les enregistrements sonores faisant l'objet de cette déclaration à perpétuité et pour le monde entier.&#10;&#10;Si tel n'est pas le cas veuillez réviser manuellement le fichier produit.</translation>
     </message>

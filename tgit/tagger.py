@@ -85,7 +85,7 @@ def main():
     from requests.packages import urllib3
     urllib3.disable_warnings()
 
-    cheddar = Cheddar(host="localhost", port=5000, secure=False)
+    cheddar = Cheddar(host="tagyourmusic.herokuapp.com", port=443, secure=True)
 
     tagger = TGiT(MediaPlayer, cheddar)
     tagger.launch()

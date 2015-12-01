@@ -1121,9 +1121,6 @@ QPushButton:pressed {
    </property>
   </action>
   <action name="_main_artist_isni_assign_action">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Assign</string>
    </property>
