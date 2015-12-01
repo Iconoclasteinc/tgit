@@ -30,10 +30,11 @@ def driver(qt, prober, automaton):
     page_driver.close()
 
 
-def raise_(e): raise e
-
-
 ignore = lambda *_, **__: None
+
+
+def raise_(e):
+    raise e
 
 
 def show_page(album, session=make_anonymous_session(),

@@ -125,6 +125,7 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
             make_track_edition_page(album, track,
                                     show_isni_assignation_failed=messages.isni_assignation_failed,
                                     show_cheddar_connection_failed=messages.cheddar_connection_failed,
+                                    show_cheddar_authentication_failed=messages.cheddar_authentication_failed,
                                     on_track_changed=director.update_track(track),
                                     review_assignation=func.partial(show_isni_review_dialog, False, [track]),
                                     on_lyricist_isni_assign=func.partial(

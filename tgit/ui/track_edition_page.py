@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import QWidget, QMenu, QApplication
 import requests
 
 from tgit.album import AlbumListener
+from tgit.authentication_error import AuthenticationError
 from tgit.countries import COUNTRIES
 from tgit.genres import GENRES
 from tgit.insufficient_information_error import InsufficientInformationError
@@ -34,8 +35,9 @@ from tgit.ui.helpers.ui_file import UIFile
 
 
 def make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
-                            show_cheddar_connection_failed, **handlers):
-    page = TrackEditionPage(review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed)
+                            show_cheddar_connection_failed, show_cheddar_authentication_failed, **handlers):
+    page = TrackEditionPage(review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed,
+                            show_cheddar_authentication_failed)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -62,8 +64,10 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     _cover = None
 
-    def __init__(self, review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed):
+    def __init__(self, review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed,
+                 show_cheddar_authentication_failed):
         super().__init__()
+        self._show_cheddar_authentication_failed = show_cheddar_authentication_failed
         self._show_cheddar_connection_failed = show_cheddar_connection_failed
         self._show_isni_assignation_failed = show_isni_assignation_failed
         self._review_assignation = review_assignation
@@ -121,13 +125,15 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                 handler(on_assign_success)
             except requests.ConnectionError:
                 self._show_cheddar_connection_failed()
+            except AuthenticationError:
+                self._show_cheddar_authentication_failed()
             except InsufficientInformationError as e:
                 self._show_isni_assignation_failed(str(e))
             finally:
                 QApplication.restoreOverrideCursor()
 
         def on_assign_success(identity):
-            self._isni.setText(identity.id)
+            self._lyricist_isni.setText(identity.id)
             QApplication.restoreOverrideCursor()
 
         self._lyricist_isni_assign_action.triggered.connect(lambda _: self._review_assignation(start_waiting))
