@@ -78,9 +78,8 @@ def test_displays_main_album_cover_when_existing(driver):
 def test_displays_album_metadata(driver):
     _ = show_page(build.album(
         release_name="Album",
-        lead_performer="Artist",
+        lead_performer=("Artist", "0000000123456789"),
         lead_performer_region=("CA",),
-        isni="123456789",
         guest_performers=[("Guitar", "Guitarist"), ("Piano", "Pianist")],
         label_name="Label",
         catalog_number="XXX123456789",
@@ -93,7 +92,7 @@ def test_displays_album_metadata(driver):
     driver.shows_compilation(False)
     driver.shows_lead_performer("Artist")
     driver.shows_lead_performer_region("Canada")
-    driver.shows_isni("123456789")
+    driver.shows_isni("0000000123456789")
     driver.shows_guest_performers("Guitar: Guitarist; Piano: Pianist")
     driver.shows_label_name("Label")
     driver.shows_catalog_number("XXX123456789")
@@ -116,12 +115,12 @@ def test_indicates_whether_album_is_a_compilation(driver):
 
 
 def test_disables_lead_performer_edition_when_album_is_a_compilation(driver):
-    _ = show_page(build.album(compilation=True, lead_performer="Album Artist"))
+    _ = show_page(build.album(compilation=True, lead_performer=("Album Artist",)))
     driver.shows_lead_performer("Various Artists", disabled=True)
 
 
 def test_enables_isni_lookup_when_album_is_no_longer_a_compilation(driver):
-    album = make_album(compilation=True, lead_performer="Album Artist")
+    album = make_album(compilation=True, lead_performer=("Album Artist",))
     _ = show_page(album, make_registered_session())
     driver.enables_isni_lookup(False)
 
@@ -130,13 +129,13 @@ def test_enables_isni_lookup_when_album_is_no_longer_a_compilation(driver):
 
 
 def test_disables_isni_lookup_when_lead_performer_is_empty(driver):
-    _ = show_page(make_album(lead_performer=""), make_registered_session())
+    _ = show_page(make_album(), make_registered_session())
     driver.enables_isni_lookup(False)
 
 
 def test_enables_isni_lookup_when_user_logs_in(driver):
     session = make_anonymous_session()
-    _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
+    _ = show_page(session=session, album=make_album(lead_performer=("Album Artist",)))
     driver.enables_isni_lookup(False)
 
     session.login_as("somebody@mgail.com", "api-key")
@@ -145,7 +144,7 @@ def test_enables_isni_lookup_when_user_logs_in(driver):
 
 def test_disables_isni_lookup_when_user_logs_out(driver):
     session = make_registered_session()
-    _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
+    _ = show_page(session=session, album=make_album(lead_performer=("Album Artist",)))
     driver.enables_isni_lookup(True)
 
     session.logout()
@@ -167,12 +166,12 @@ def test_removes_tooltip_on_isni_lookup_when_signed_in(driver):
 
 
 def test_disables_isni_lookup_when_lead_performer_is_blank(driver):
-    _ = show_page(make_album(lead_performer="     "))
+    _ = show_page(make_album(lead_performer=("     ",)))
     driver.enables_isni_lookup(False)
 
 
 def test_disables_isni_assign_by_default(driver):
-    _ = show_page(make_album(lead_performer="     "))
+    _ = show_page(make_album(lead_performer=("     ",)))
     driver.disables_isni_assign()
 
 
@@ -211,7 +210,7 @@ def test_signals_when_remove_picture_button_clicked(driver):
 
 def test_signals_when_lookup_isni_action_is_triggered(driver):
     lookup_isni_signal = MultiValueMatcherProbe("lookup ISNI", contains("performer", instance_of(types.FunctionType)))
-    _ = show_page(make_album(lead_performer="performer"), make_registered_session(),
+    _ = show_page(make_album(lead_performer=("performer",)), make_registered_session(),
                   on_isni_lookup=lookup_isni_signal.received)
 
     driver.lookup_isni_of_lead_performer()
@@ -221,7 +220,7 @@ def test_signals_when_lookup_isni_action_is_triggered(driver):
 def test_shows_connection_failed_error_on_isni_lookup(driver):
     show_error_signal = ValueMatcherProbe("ISNI lookup exception")
 
-    _ = show_page(make_album(lead_performer="performer"), make_registered_session(),
+    _ = show_page(make_album(lead_performer=("performer",)), make_registered_session(),
                   show_cheddar_connection_failed=show_error_signal.received,
                   on_isni_lookup=lambda *_: raise_(requests.ConnectionError()))
 
@@ -232,7 +231,7 @@ def test_shows_connection_failed_error_on_isni_lookup(driver):
 def test_shows_authentication_failed_error_on_isni_lookup(driver):
     show_error_signal = ValueMatcherProbe("ISNI authentication")
 
-    _ = show_page(make_album(lead_performer="performer"), make_registered_session(),
+    _ = show_page(make_album(lead_performer=("performer",)), make_registered_session(),
                   show_cheddar_authentication_failed=show_error_signal.received,
                   on_isni_lookup=lambda *_: raise_(AuthenticationError()))
 
@@ -243,7 +242,7 @@ def test_shows_authentication_failed_error_on_isni_lookup(driver):
 def test_selects_identities_on_isni_lookup(driver):
     select_identity_signal = ValueMatcherProbe("select identity", "identities")
 
-    _ = show_page(make_album(lead_performer="performer"), make_registered_session(),
+    _ = show_page(make_album(lead_performer=("performer",)), make_registered_session(),
                   select_identity=select_identity_signal.received,
                   on_isni_lookup=lambda _, callback: callback("identities"))
 
@@ -309,6 +308,20 @@ def test_shows_assigned_isni_on_isni_assignation(driver):
     assert_that(page._isni.text(), equal_to("0000000123456789"))
 
 
+def test_signals_assigned_isni_on_isni_assignation(driver):
+    metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
+    _ = show_page(make_album(),
+                  on_metadata_changed=metadata_changed_signal.received,
+                  review_assignation=lambda on_review: on_review(""),
+                  on_isni_assign=lambda _, callback: callback(Identity(id="0000000123456789", type="", works=[])))
+
+    metadata_changed_signal.expect(has_entries(lead_performer=("Joel Miller", "0000000123456789")))
+    driver.change_lead_performer("Joel Miller")
+    driver.assign_isni_to_lead_performer()
+    driver.confirm_isni()
+    driver.check(metadata_changed_signal)
+
+
 def test_signals_when_album_metadata_edited(driver):
     metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
     _ = show_page(make_album(), on_metadata_changed=metadata_changed_signal.received)
@@ -325,8 +338,9 @@ def test_signals_when_album_metadata_edited(driver):
     driver.toggle_compilation()
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(lead_performer="Artist"))
-    driver.change_lead_performer("Artist")
+    metadata_changed_signal.expect(has_entries(lead_performer=("Joel Miller", "0000000123456789")))
+    driver.change_lead_performer("Joel Miller")
+    driver.change_lead_performer_isni("0000000123456789")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(lead_performer_region=("CA",)))

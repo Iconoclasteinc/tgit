@@ -101,7 +101,9 @@ class Mp3Audio(object):
                 self._add_tag(id3.TSRC(encoding=UTF_8, text=value))
             elif tag == "labels" or tag == "TXXX_TAGS":
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="Tags", text=value))
-            elif tag == "isni" or tag == "TXXX_ISNI":
+            elif tag == "isni" or tag == "TXXX_ISNI_Joel_Miller":
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc="ISNI:Joel Miller", text=value))
+            elif tag == "TXXX_ISNI":
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="ISNI", text=value))
             elif tag == "iswc" or tag == "TXXX_ISWC":
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="ISWC", text=value))

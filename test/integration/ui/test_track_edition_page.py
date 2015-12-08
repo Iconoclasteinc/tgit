@@ -5,7 +5,7 @@ import types
 
 import pytest
 
-from hamcrest import has_entries, equal_to, instance_of, assert_that
+from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not
 import requests
 
 from cute.matchers import named
@@ -21,6 +21,7 @@ from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.ui.track_edition_page import make_track_edition_page, TrackEditionPage
 
 
+# noinspection PyUnusedLocal
 @pytest.yield_fixture()
 def driver(qt, prober, automaton):
     page_driver = TrackEditionPageDriver(window(TrackEditionPage, named("track_edition_page")), prober, automaton)
@@ -46,7 +47,7 @@ def show_page(album, track, on_track_changed=ignore, review_assignation=ignore,
 
 def test_displays_album_summary_in_banner(driver):
     track = build.track()
-    album = build.album(release_name="Album Title", lead_performer="Artist", label_name="Record Label",
+    album = build.album(release_name="Album Title", lead_performer=("Artist",), label_name="Record Label",
                         tracks=[build.track(), track, build.track()])
 
     _ = show_page(album, track)
@@ -68,11 +69,11 @@ def test_indicates_when_album_performed_by_various_artists(driver):
 def test_displays_track_metadata(driver):
     track = build.track(bitrate=192000,
                         duration=timedelta(minutes=4, seconds=35).total_seconds(),
-                        lead_performer="Artist",
+                        lead_performer=("Artist",),
                         track_title="Song",
                         versionInfo="Remix",
                         featuredGuest="Featuring",
-                        lyricist="Lyricist",
+                        lyricist=("Lyricist", "0000000123456789"),
                         composer="Composer",
                         publisher="Publisher",
                         isrc="Code",
@@ -100,6 +101,7 @@ def test_displays_track_metadata(driver):
     driver.shows_lyricist("Lyricist")
     driver.shows_composer("Composer")
     driver.shows_publisher("Publisher")
+    driver.shows_lyricist_isni("0000000123456789")
     driver.shows_isrc("Code")
     driver.shows_iswc("T-345246800-1")
     driver.shows_tags("Tag1 Tag2 Tag3")
@@ -117,7 +119,7 @@ def test_displays_track_metadata(driver):
 
 def test_disables_lead_performer_edition_when_album_is_not_a_compilation(driver):
     track = build.track()
-    album = build.album(lead_performer="Album Artist", compilation=False, tracks=[track])
+    album = build.album(lead_performer=("Album Artist",), compilation=False, tracks=[track])
 
     _ = show_page(album, track)
 
@@ -137,7 +139,7 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_track_title("Title")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(lead_performer="Artist"))
+    metadata_changed_signal.expect(has_entries(lead_performer=("Artist",)))
     driver.change_lead_performer("Artist")
     driver.check(metadata_changed_signal)
 
@@ -149,8 +151,13 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_featured_guest("Featuring")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(lyricist="Lyricist"))
+    metadata_changed_signal.expect(has_entries(lyricist=("Lyricist",)))
     driver.change_lyricist("Lyricist")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(lyricist=("Joel Miller", "0000000123456789")))
+    driver.change_lyricist("Joel Miller")
+    driver.change_lyricist_isni("0000000123456789")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(composer="Composer"))
@@ -224,6 +231,20 @@ def test_signals_when_track_metadata_change(driver):
 
     metadata_changed_signal.expect(has_entries(primary_style="Custom"))
     driver.change_primary_style("Custom")
+    driver.check(metadata_changed_signal)
+
+
+def test_signals_lead_performer_only_when_album_is_compilation(driver):
+    track = build.track()
+    album = build.album(compilation=False, tracks=[track])
+
+    page = show_page(album, track)
+
+    metadata_changed_signal = ValueMatcherProbe("metadata changed")
+    page.metadata_changed.connect(metadata_changed_signal.received)
+
+    metadata_changed_signal.expect(is_not(has_key("lead_performer")))
+    driver.change_track_title("Title")
     driver.check(metadata_changed_signal)
 
 
@@ -332,3 +353,23 @@ def test_shows_assigned_isni_on_lyricist_isni_assignation(driver):
 
     driver.assign_isni_to_lyricist()
     assert_that(page._lyricist_isni.text(), equal_to("0000000123456789"))
+
+
+def test_signals_assigned_isni_on_isni_assignation(driver):
+    metadata_changed_signal = ValueMatcherProbe("metadata changed")
+
+    track = build.track()
+    album = make_album(tracks=[track])
+
+    page = show_page(album, track,
+                     review_assignation=lambda on_review: on_review(),
+                     on_lyricist_isni_assign=lambda callback: callback(
+                         Identity(id="0000000123456789", type="", works=[])))
+
+    page.metadata_changed.connect(metadata_changed_signal.received)
+
+    metadata_changed_signal.expect(has_entries(lyricist=("Joel Miller", "0000000123456789")))
+    driver.change_lyricist("Joel Miller")
+    driver.assign_isni_to_lyricist()
+    driver.confirm_lyricist_isni()
+    driver.check(metadata_changed_signal)

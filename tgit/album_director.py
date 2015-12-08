@@ -158,7 +158,7 @@ def lookup_isni_using(cheddar, user):
 
 def select_isni_in(album):
     def select_isni(identity):
-        metadata = dict(lead_performer=identity.full_name, isni=identity.id, compilation=album.compilation)
+        metadata = dict(lead_performer=(identity.full_name, identity.id), compilation=album.compilation)
         update_album_from(album)(**metadata)
 
     return select_isni
@@ -179,13 +179,13 @@ def assign_isni_to_lyricist_using(cheddar, user):
     return assign_isni
 
 
-def _assign_isni(full_name, type_, titles, on_success, cheddar, user):
+def _assign_isni(identity, type_, titles, on_success, cheddar, user):
     @_unwrap_future
     def on_assign_done(identity_details):
         on_success(Identity(**identity_details))
 
     cheddar \
-        .assign_identifier(full_name, type_, titles, user.api_key) \
+        .assign_identifier(identity[0] if identity else "", type_, titles, user.api_key) \
         .add_done_callback(on_assign_done)
 
 

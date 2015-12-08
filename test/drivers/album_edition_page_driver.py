@@ -66,6 +66,8 @@ class AlbumEditionPageDriver(ScreenDriver):
                 self.change_release_time(value)
             elif tag == "original_release_time":
                 self.change_original_release_time(value)
+            elif tag == "isni":
+                self.change_lead_performer_isni(value)
             else:
                 raise AssertionError("Don't know how to edit '{0}'".format(tag))
 
@@ -96,6 +98,9 @@ class AlbumEditionPageDriver(ScreenDriver):
         menu = self.tool_button(named("_isni_actions_button")).open_menu()
         menu.menu_item(named("_main_artist_isni_assign_action")).manipulate("enable", lambda b: b.setEnabled(True))
         menu.select_menu_item(named("_main_artist_isni_assign_action"))
+
+    def confirm_isni(self):
+        self.lineEdit(named("_isni")).enter()
 
     def lookup_isni_of_lead_performer(self):
         menu = self.tool_button(named("_isni_actions_button")).open_menu()
@@ -152,6 +157,9 @@ class AlbumEditionPageDriver(ScreenDriver):
 
     def change_lead_performer(self, name):
         self.lineEdit(named("lead_performer")).change_text(name)
+
+    def change_lead_performer_isni(self, isni):
+        self.lineEdit(named("_isni")).change_text(isni)
 
     def change_lead_performer_region(self, name):
         self.combobox(named("_lead_performer_region")).select_option(name)

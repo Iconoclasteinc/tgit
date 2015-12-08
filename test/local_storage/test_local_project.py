@@ -46,8 +46,9 @@ def test_round_trips_album_metadata_and_tracks_to_disk(project_file, mp3):
     original_tracks = (build.track(mp3(), track_title=title) for title in ("1st", "2nd", "3rd"))
 
     original_album = build.album(filename=album_file,
+                                 version="1.10.0",
                                  type=Album.Type.FLAC,
-                                 lead_performer="Artist",
+                                 lead_performer=("Artist",),
                                  images=[sample_front_cover],
                                  tracks=original_tracks)
 
@@ -56,7 +57,7 @@ def test_round_trips_album_metadata_and_tracks_to_disk(project_file, mp3):
     stored_album = local_project.load_album(album_file)
 
     assert_that(stored_album.type, equal_to(Album.Type.FLAC), "type")
-    assert_that(stored_album.lead_performer, equal_to("Artist"), "lead performer")
+    assert_that(stored_album.lead_performer, equal_to(("Artist",)), "lead performer")
     assert_that(stored_album.images, contains(Image(*sample_front_cover)), "images")
     assert_that(stored_album.tracks, contains(has_filename(project_file(TRACKS_FOLDER_NAME, "1st.mp3")),
                                               has_filename(project_file(TRACKS_FOLDER_NAME, "2nd.mp3")),
@@ -81,6 +82,12 @@ def test_remove_previous_artwork_and_tracks(project_file, mp3):
 
     assert_that(fs.list_dir(project_file(TRACKS_FOLDER_NAME)), empty(), "track files left")
     assert_that(fs.list_dir(project_file(ARTWORK_FOLDER_NAME)), empty(), "artwork files left")
+
+
+def test_migrates_from_v1_9_to_v1_10():
+    stored_album = local_project.load_album(resources.path("album-v1.9.tgit"))
+
+    assert_that(stored_album.lead_performer, equal_to(("Artist", "0000000123456789")), "lead performer identity")
 
 
 def test_checks_if_album_exists_in_catalog(project_file):

@@ -30,6 +30,11 @@ def test_reads_lead_performer_from_artists_field(flac):
     assert_that(metadata, has_entry('lead_performer', "Joel Miller"), "metadata")
 
 
+def test_reads_lead_performer_isni(flac):
+    metadata = container.load(flac(ISNI="0000000123456789:Joel Miller"))
+    assert_that(metadata, has_entry("isni", has_entry("Joel Miller", "0000000123456789")), "metadata")
+
+
 def test_reads_bitrate_from_audio_stream_information(flac):
     metadata = container.load(flac())
     assert_that(metadata, has_entry('bitrate', BITRATE), "bitrate")
@@ -116,6 +121,11 @@ def test_reads_lead_performer_region_from_lead_performer_region_field(flac):
     assert_that(metadata, has_entry('lead_performer_region', ("CA", "QC")), 'metadata')
 
 
+def test_reads_lyricist(flac):
+    metadata = container.load(flac(LYRICIST="Joel Miller"))
+    assert_that(metadata, has_entry("lyricist", "Joel Miller"), "metadata")
+
+
 def test_reads_production_company_from_producer_field(flac):
     metadata = container.load(flac(PRODUCER="Effendi Records Inc."))
     assert_that(metadata, has_entry('production_company', "Effendi Records Inc."), 'metadata')
@@ -143,26 +153,28 @@ def test_reads_recording_studio_region_from_recording_studio_region_field(flac):
 
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
-    metadata.addImage('image/jpeg', b'honeycomb.jpg', Image.FRONT_COVER)
-    metadata['release_name'] = "St-Henri"
-    metadata['lead_performer'] = "Joel Miller"
-    metadata['lead_performer_region'] = ("CA", "QC")
-    metadata['label_name'] = "Effendi Records Inc."
-    metadata['primary_style'] = "Modern Jazz"
-    metadata['recording_time'] = "2007-11-02"
-    metadata['track_title'] = "Salsa Coltrane"
-    metadata['isrc'] = "CABL31201254"
-    metadata['iswc'] = "T-345246800-1"
-    metadata['tagger'] = "TGiT"
-    metadata['tagger_version'] = "1.0"
-    metadata['tagging_time'] = "2014-03-26 18:18:55"
-    metadata['track_number'] = 3
-    metadata['total_tracks'] = 5
-    metadata['recording_studio'] = "Effendi Records Inc."
-    metadata['recording_studio_region'] = ("CA", "QC")
-    metadata['production_company'] = "Effendi Records Inc."
-    metadata['production_company_region'] = ("CA", "QC")
-    metadata['music_producer'] = "Joel Miller & Paul Johnston"
+    metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
+    metadata["release_name"] = "St-Henri"
+    metadata["lead_performer"] = "Joel Miller"
+    metadata["lead_performer_region"] = ("CA", "QC")
+    metadata["isni"] = {"Joel Miller": "0000000123456789", "Rebecca Ann Maloy": "9876543210000000"}
+    metadata["label_name"] = "Effendi Records Inc."
+    metadata["primary_style"] = "Modern Jazz"
+    metadata["recording_time"] = "2007-11-02"
+    metadata["track_title"] = "Salsa Coltrane"
+    metadata["isrc"] = "CABL31201254"
+    metadata["iswc"] = "T-345246800-1"
+    metadata["tagger"] = "TGiT"
+    metadata["tagger_version"] = "1.0"
+    metadata["tagging_time"] = "2014-03-26 18:18:55"
+    metadata["track_number"] = 3
+    metadata["total_tracks"] = 5
+    metadata["recording_studio"] = "Effendi Records Inc."
+    metadata["recording_studio_region"] = ("CA", "QC")
+    metadata["production_company"] = "Effendi Records Inc."
+    metadata["production_company_region"] = ("CA", "QC")
+    metadata["music_producer"] = "Joel Miller & Paul Johnston"
+    metadata["lyricist"] = "Joel Miller"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

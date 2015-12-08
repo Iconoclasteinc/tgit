@@ -28,11 +28,11 @@ class Track(object, metaclass=tag.Taggable):
     album = None
 
     track_title = tag.text()
-    lead_performer = tag.text()
+    lead_performer = tag.identity()
     versionInfo = tag.text()
     featuredGuest = tag.text()
     publisher = tag.text()
-    lyricist = tag.text()
+    lyricist = tag.identity()
     composer = tag.text()
     isrc = tag.text()
     iswc = tag.text()
@@ -67,6 +67,17 @@ class Track(object, metaclass=tag.Taggable):
 
     def metadataChanged(self):
         self.metadata_changed.emit(self.metadata)
+
+    def isni_for(self, role):
+        if not self.isni:
+            return ""
+
+        # noinspection PyTypeChecker
+        for current_role, _, isni in self.isni:
+            if role == current_role:
+                return isni
+
+        return ""
 
     def __repr__(self):
         return "Track(filename={0}, metadata={1})".format(self.filename, self.metadata)

@@ -150,6 +150,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                 QApplication.restoreOverrideCursor()
 
         def on_assign_success(identity):
+            self._isni.setFocus(Qt.OtherFocusReason)
             self._isni.setText(identity.id)
             QApplication.restoreOverrideCursor()
 
@@ -170,7 +171,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.compilation.clicked.connect(lambda: handle("compilation"))
         self.lead_performer.editingFinished.connect(lambda: handle("lead_performer"))
         self._lead_performer_region.activated.connect(lambda: handle("lead_performer_region"))
-        self._isni.textChanged.connect(lambda _: handle("isni"))
+        self._isni.editingFinished.connect(lambda: handle("isni"))
         self.guest_performers.textChanged.connect(lambda: handle("guest_performers"))
         self.label_name.editingFinished.connect(lambda: handle("label_name"))
         self.catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
@@ -201,7 +202,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.compilation.setChecked(album.compilation is True)
         self._display_lead_performer(album)
         self._display_region(album.lead_performer_region, self._lead_performer_region)
-        self._isni.setText(album.isni)
+        self._isni.setText(album.lead_performer[1] if album.lead_performer and len(album.lead_performer) > 1 else "")
         self.guest_performers.setText(formatting.toPeopleList(album.guest_performers))
         self.label_name.setText(album.label_name)
         self.catalog_number.setText(album.catalog_number)
@@ -216,15 +217,14 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def _display_lead_performer(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
-        self.lead_performer.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
+        self.lead_performer.setText(
+            album.compilation and self.tr("Various Artists") or album.lead_performer[0] if album.lead_performer else "")
         self.lead_performer.setDisabled(album.compilation is True)
 
     def metadata(self, *keys):
         all_values = dict(release_name=self.release_name.text(),
                           compilation=self.compilation.isChecked(),
-                          lead_performer=self.lead_performer.text(),
                           lead_performer_region=self._get_country_code_from_combo(self._lead_performer_region),
-                          isni=self._isni.text(),
                           guest_performers=formatting.fromPeopleList(self.guest_performers.text()),
                           label_name=self.label_name.text(),
                           catalog_number=self.catalog_number.text(),
@@ -232,6 +232,11 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           comments=self.comments.toPlainText(),
                           recording_time=self.recording_time.date().toString(ISO_8601_FORMAT),
                           release_time=self.release_time.date().toString(ISO_8601_FORMAT))
+
+        if self._isni.text():
+            all_values["lead_performer"] = (self.lead_performer.text(), self._isni.text())
+        else:
+            all_values["lead_performer"] = (self.lead_performer.text(),)
 
         if len(keys) == 0:
             return all_values
