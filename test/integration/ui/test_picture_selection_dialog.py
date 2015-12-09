@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-import sys
-
 from PyQt5.QtWidgets import QFileDialog
 from hamcrest import ends_with
 import pytest
@@ -13,7 +11,7 @@ from cute.widgets import window
 from test.drivers import PictureSelectionDialogDriver
 from test.util import resources
 from tgit.platforms import windows
-from tgit.ui.picture_selection_dialog import PictureSelectionDialog
+from tgit.ui.dialogs.picture_selection_dialog import PictureSelectionDialog
 
 
 def show_dialog(on_select=lambda: None):

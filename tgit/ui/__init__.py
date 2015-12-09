@@ -24,8 +24,8 @@ from PyQt5.QtCore import QLocale
 from tgit import album_director as director
 from tgit import export
 from tgit.ui import resources
-from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.dialogs import Dialogs
+from tgit.ui.about_dialog import AboutDialog
 from tgit.ui.helpers import template_file as templates
 from tgit.ui.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 from tgit.ui.startup_screen import StartupScreen
@@ -35,16 +35,15 @@ from tgit.ui.performer_dialog import PerformerDialog
 from tgit.ui.track_list_page import make_track_list_page
 from tgit.ui.album_edition_page import make_album_edition_page
 from tgit.ui.album_screen import make_album_screen
-from tgit.ui.dialogs import Dialogs
 from tgit.ui.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.main_window import MainWindow
 from tgit.ui.message_boxes import MessageBoxes
 from tgit.ui.new_album_page import NewAlbumPage
 from tgit.ui.performer_dialog import PerformerDialog
-from tgit.ui.picture_selection_dialog import PictureSelectionDialog
+from tgit.ui.dialogs.picture_selection_dialog import PictureSelectionDialog
 from tgit.ui.sign_in_dialog import SignInDialog
 from tgit.ui.track_edition_page import make_track_edition_page
-from tgit.ui.track_selection_dialog import TrackSelectionDialog
+from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.user_preferences_dialog import UserPreferencesDialog
 from tgit.ui.welcome_page import WelcomePage
 from tgit.util import browser
@@ -62,7 +61,7 @@ def UserPreferencesDialogController(notify_restart_required, preferences, parent
 
 
 def create_main_window(session, portfolio, player, preferences, cheddar, native, confirm_exit):
-    application_dialogs = Dialogs(native)
+    application_dialogs = Dialogs(native, lambda: window)
     messages = MessageBoxes(confirm_exit)
 
     def show_settings_dialog():
@@ -158,8 +157,6 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
                         on_request_feature=browser.open_,
                         on_register=browser.open_,
                         on_transmit_to_soproq=export_as_soproq())
-    application_dialogs.parent = window
     messages.parent = window
-    portfolio.album_removed.subscribe(lambda album: application_dialogs.clear())
 
     return window

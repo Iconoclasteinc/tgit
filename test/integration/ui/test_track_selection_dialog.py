@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 
 from hamcrest import contains, contains_inanyorder, ends_with
 from PyQt5.QtWidgets import QFileDialog
@@ -12,7 +11,7 @@ from cute.probes import ValueMatcherProbe
 from test.drivers import TrackSelectionDialogDriver
 from test.util import resources
 from tgit.platforms import windows
-from tgit.ui.track_selection_dialog import TrackSelectionDialog
+from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
 
 
 @pytest.fixture()

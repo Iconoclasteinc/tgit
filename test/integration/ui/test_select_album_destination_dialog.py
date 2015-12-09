@@ -26,7 +26,7 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.select_album_destination_dialog_driver import SelectAlbumDestinationDialogDriver
-from tgit.ui.select_album_destination_dialog import SelectAlbumDestinationDialog
+from tgit.ui.dialogs.select_album_destination_dialog import SelectAlbumDestinationDialog
 
 
 @pytest.fixture()

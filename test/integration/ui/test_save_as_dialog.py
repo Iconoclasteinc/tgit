@@ -12,7 +12,7 @@ from cute.widgets import window
 from tgit import platforms
 from test.drivers.save_as_dialog_driver import SaveAsDialogDriver
 from test.util import resources
-from tgit.ui.save_as_dialog import SaveAsDialog, make_save_as_excel_dialog, make_save_as_csv_dialog
+from tgit.ui.dialogs.save_as_dialog import SaveAsDialog, make_save_as_excel_dialog, make_save_as_csv_dialog
 
 ignore = lambda *_: None
 

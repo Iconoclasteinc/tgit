@@ -17,7 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
-import sys
 
 from PyQt5.QtWidgets import QFileDialog
 from hamcrest import ends_with
@@ -29,7 +28,7 @@ from cute.widgets import window
 from test.drivers.load_album_dialog_driver import LoadAlbumDialogDriver
 from test.util import resources
 from tgit.platforms import windows
-from tgit.ui.load_album_dialog import LoadAlbumDialog
+from tgit.ui.dialogs.load_album_dialog import LoadAlbumDialog
 
 do_nothing = lambda *_: None
 
