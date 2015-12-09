@@ -4,6 +4,7 @@ import os
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
                       has_key, has_property)
+
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
 
@@ -160,19 +161,6 @@ def test_ignores_invalid_tracks(track_catalog):
     director.add_tracks(album, "invalid.mp3", "valid.mp3", from_catalog=track_catalog)
 
     assert_that(album.tracks, contains(valid_track), "valid tracks in album")
-
-
-def test_exports_album_as_csv_encoded_file(workspace):
-    album = build.album(tracks=[build.track(track_title="Les Comédiens")])
-    destination_file = workspace.file("french.csv")
-
-    director.export_as_csv(album, destination_file)
-
-    def read_lines(file):
-        content = open(file, "r", encoding="windows-1252").read()
-        return content.split("\n")
-
-    assert_that(read_lines(destination_file), has_item(contains_string("Les Comédiens")))
 
 
 def test_changes_main_album_cover_to_specified_image_file():

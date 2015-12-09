@@ -8,7 +8,7 @@ from hamcrest import assert_that, contains, has_item
 from hamcrest.core.core.isequal import equal_to
 
 from test.util import builders as build
-from tgit.local_storage.csv_format import CsvFormat, to_boolean
+from tgit.export.csv_format import CsvFormat, to_boolean
 
 
 @pytest.fixture

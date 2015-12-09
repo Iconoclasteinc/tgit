@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit.export import soproq_format
+from tgit.export.csv_format import CsvFormat
 
 
 def as_soproq_using(load_workbook, show_confirmation_message, formatter=soproq_format):
@@ -28,3 +29,8 @@ def as_soproq_using(load_workbook, show_confirmation_message, formatter=soproq_f
         show_confirmation_message()
 
     return as_soproq
+
+
+def as_csv(album, destination):
+    with open(destination, "w", encoding="windows-1252") as out:
+        CsvFormat().write(album, out)

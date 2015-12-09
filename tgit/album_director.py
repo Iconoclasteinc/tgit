@@ -23,7 +23,6 @@ from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
 from tgit.identity import Identity
-from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
 
@@ -138,11 +137,6 @@ def move_track_of(album):
 
 def remove_track_from(album):
     return album.remove_track
-
-
-def export_as_csv(album, destination):
-    with open(destination, "w", encoding="windows-1252") as out:
-        CsvFormat().write(album, out)
 
 
 def lookup_isni_using(cheddar, user):
