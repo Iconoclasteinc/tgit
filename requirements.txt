@@ -2,10 +2,10 @@ cx-Freeze==4.3.4
 Flask==0.10.1
 flexmock==0.9.7
 mutagen==1.31
-openpyxl==2.2.6
+openpyxl==2.3.2
 PyAutoGUI==0.9.31
 PyHamcrest==1.8.5
 pytest==2.7.3
 python-dateutil==2.4.2
 PyYAML==3.11
-requests==2.7.0
+requests==2.8.1
