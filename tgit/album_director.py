@@ -22,7 +22,7 @@ import os
 from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
-from tgit.identity import Identity
+from tgit.identity import IdentityCard
 from tgit.local_storage.csv_format import CsvFormat
 from tgit.util import fs
 
@@ -149,7 +149,7 @@ def lookup_isni_using(cheddar, user):
     def lookup_isni(lead_performer, on_lookup_success):
         @_unwrap_future
         def on_lookup_done(identities):
-            on_lookup_success([Identity(**identity) for identity in identities])
+            on_lookup_success([IdentityCard(**identity) for identity in identities])
 
         cheddar.get_identities(lead_performer, user.api_key).add_done_callback(on_lookup_done)
 
@@ -182,7 +182,7 @@ def assign_isni_to_lyricist_using(cheddar, user):
 def _assign_isni(identity, type_, titles, on_success, cheddar, user):
     @_unwrap_future
     def on_assign_done(identity_details):
-        on_success(Identity(**identity_details))
+        on_success(IdentityCard(**identity_details))
 
     cheddar \
         .assign_identifier(identity[0] if identity else "", type_, titles, user.api_key) \

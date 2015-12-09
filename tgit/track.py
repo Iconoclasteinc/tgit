@@ -28,11 +28,11 @@ class Track(object, metaclass=tag.Taggable):
     album = None
 
     track_title = tag.text()
-    lead_performer = tag.identity()
+    lead_performer = tag.name()
     versionInfo = tag.text()
     featuredGuest = tag.text()
     publisher = tag.text()
-    lyricist = tag.identity()
+    lyricist = tag.name()
     composer = tag.text()
     isrc = tag.text()
     iswc = tag.text()

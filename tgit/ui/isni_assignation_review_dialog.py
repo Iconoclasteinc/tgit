@@ -21,7 +21,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 
 from tgit.ui.helpers.ui_file import UIFile
-from tgit.identity import Identity
+from tgit.identity import IdentityCard
 
 
 class ISNIAssignationReviewDialog(QDialog, UIFile):
@@ -39,7 +39,7 @@ class ISNIAssignationReviewDialog(QDialog, UIFile):
 
     @property
     def _type(self):
-        return Identity.INDIVIDUAL if self._individual_button.isChecked() else Identity.ORGANIZATION
+        return IdentityCard.INDIVIDUAL if self._individual_button.isChecked() else IdentityCard.ORGANIZATION
 
     def review(self, on_review, *works):
         def on_accept():

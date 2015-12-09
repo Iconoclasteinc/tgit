@@ -10,7 +10,7 @@ import pytest
 
 from cute.prober import PollingProber
 from cute.probes import ValueMatcherProbe
-from tgit.identity import Identity
+from tgit.identity import IdentityCard
 from test.util import builders as build, resources, doubles
 from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
@@ -260,7 +260,7 @@ def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
 
 
 def test_updates_isni_from_selected_identity():
-    identity = Identity(id="0000000115677274", firstName="Joel", lastName="Miller", type="individual", works=[])
+    identity = IdentityCard(id="0000000115677274", firstName="Joel", lastName="Miller", type=IdentityCard.INDIVIDUAL)
     album = build.album(compilation=False)
 
     director.select_isni_in(album)(identity)
@@ -268,7 +268,7 @@ def test_updates_isni_from_selected_identity():
 
 
 def test_updates_lead_performer_from_selected_identity():
-    identity = Identity(id="0000000115677274", firstName="Paul", lastName="McCartney", type="individual", works=[])
+    identity = IdentityCard(id="0000000115677274", firstName="Paul", lastName="McCartney", type=IdentityCard.INDIVIDUAL)
     track = build.track(lead_performer=("artist",))
     album = build.album(tracks=[track], compilation=False)
 

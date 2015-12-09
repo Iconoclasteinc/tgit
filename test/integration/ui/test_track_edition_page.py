@@ -16,7 +16,7 @@ from test.integration.ui import show_widget
 from test.util import builders as build
 from test.util.builders import make_album
 from tgit.authentication_error import AuthenticationError
-from tgit.identity import Identity
+from tgit.identity import IdentityCard
 from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.ui.track_edition_page import make_track_edition_page, TrackEditionPage
 
@@ -349,7 +349,7 @@ def test_shows_assigned_isni_on_lyricist_isni_assignation(driver):
     page = show_page(album, track,
                      review_assignation=lambda on_review: on_review(),
                      on_lyricist_isni_assign=lambda callback: callback(
-                         Identity(id="0000000123456789", type="", works=[])))
+                         IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
 
     driver.assign_isni_to_lyricist()
     assert_that(page._lyricist_isni.text(), equal_to("0000000123456789"))
@@ -364,7 +364,7 @@ def test_signals_assigned_isni_on_isni_assignation(driver):
     page = show_page(album, track,
                      review_assignation=lambda on_review: on_review(),
                      on_lyricist_isni_assign=lambda callback: callback(
-                         Identity(id="0000000123456789", type="", works=[])))
+                         IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
 
     page.metadata_changed.connect(metadata_changed_signal.received)
 
