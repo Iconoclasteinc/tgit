@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
 
 from hamcrest import contains, instance_of
 import pytest
@@ -22,7 +21,7 @@ ignore = lambda *_, **__: None
 yes = lambda: True
 
 
-def raise_os_error(message):
+def _raise_os_error(message):
     def raise_error(*_):
         raise OSError(message)
 
@@ -341,7 +340,7 @@ def test_warn_user_if_save_fails(driver):
     save_failed_signal = ValueMatcherProbe("save album failed", instance_of(OSError))
     album = make_album()
 
-    page = show_page(on_save_album=raise_os_error("Save failed"), show_save_error=save_failed_signal.received)
+    page = show_page(on_save_album=_raise_os_error("Save failed"), show_save_error=save_failed_signal.received)
     page.display_album_screen(album)
 
     driver.save()
@@ -355,7 +354,7 @@ def test_warn_user_if_export_fails(driver):
     export_failed_signal = ValueMatcherProbe("export failed", instance_of(OSError))
     album = make_album()
 
-    page = show_page(on_export=raise_os_error("Export failed"), show_export_error=export_failed_signal.received,
+    page = show_page(on_export=_raise_os_error("Export failed"), show_export_error=export_failed_signal.received,
                      select_export_destination=on_export)
     page.display_album_screen(album)
 
