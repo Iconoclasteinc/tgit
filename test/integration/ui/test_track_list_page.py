@@ -37,13 +37,13 @@ def test_displays_column_headings(driver):
 
 
 def test_displays_track_details_in_columns(driver):
-    _ = show_track_list(make_album(release_name='Honeycomb',
-                                   lead_performer='Joel Miller',
-                                   tracks=[make_track(track_title='Chevere!',
+    _ = show_track_list(make_album(release_name="Honeycomb",
+                                   lead_performer=("Joel Miller",),
+                                   tracks={make_track(track_title='Chevere!',
                                                       bitrate=192000,
-                                                      duration=timedelta(minutes=4, seconds=12).total_seconds())]))
+                                                      duration=timedelta(minutes=4, seconds=12).total_seconds())}))
 
-    driver.shows_track_details('1', 'Chevere!', 'Joel Miller', 'Honeycomb', '192 kbps', '04:12')
+    driver.shows_track_details("1", "Chevere!", "Joel Miller", "Honeycomb", "192 kbps", "04:12")
 
 
 def test_displays_all_tracks_in_rows(driver):
@@ -69,9 +69,9 @@ def test_updates_track_row_when_track_metadata_change(driver):
     _ = show_track_list(make_album(tracks=[track]))
 
     track.track_title = "Chevere!"
-    track.lead_performer = 'Joel Miller'
+    track.lead_performer = ("Joel Miller",)
 
-    driver.shows_track_details('Chevere!', 'Joel Miller')
+    driver.shows_track_details("Chevere!", "Joel Miller")
 
 
 def test_adds_row_to_table_when_track_added_to_album(driver):
@@ -125,11 +125,11 @@ def test_makes_stop_track_request_when_remove_menu_item_selected_and_track_is_pl
     spain = make_track(track_title="Spain")
     stop_request = ValueMatcherProbe("stop track request")
 
-    page = show_track_list(make_album(type='mp3', tracks=[spain]))
+    page = show_track_list(make_album(type="mp3", tracks=[spain]))
     page.on_stop_track(stop_request.received)
 
     page.playback_started(spain)
-    driver.remove_track('Spain')
+    driver.remove_track("Spain")
     driver.check(stop_request)
 
 

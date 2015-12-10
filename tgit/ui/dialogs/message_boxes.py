@@ -58,6 +58,11 @@ class MessageBoxes:
                                           "Unable to connect to TGiT remote server.",
                                           "Please try again later."))
 
+    def cheddar_authentication_failed(self):
+        return self._open(MessageBox.warn(self._parent,
+                                          "Could not authenticate you to the TGiT remote server.",
+                                          "Please sign out and sign back in to fix this issue."))
+
     def export_failed(self, error):
         return self._open(MessageBox.warn(self._parent,
                                           "Could not export your album.",

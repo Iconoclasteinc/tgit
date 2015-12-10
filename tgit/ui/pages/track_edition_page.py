@@ -19,19 +19,27 @@
 import operator
 
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QMenu, QApplication
+import requests
 
 from tgit.album import AlbumListener
+from tgit.authentication_error import AuthenticationError
 from tgit.countries import COUNTRIES
 from tgit.genres import GENRES
+from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.languages import LANGUAGES
+from tgit.ui.pages.album_edition_page import QMENU_STYLESHEET
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image, formatting
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_track_edition_page(album, track, on_track_changed):
-    page = TrackEditionPage()
+def make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
+                            show_cheddar_connection_failed, show_cheddar_authentication_failed, **handlers):
+    page = TrackEditionPage(review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed,
+                            show_cheddar_authentication_failed)
+    for name, handler in handlers.items():
+        getattr(page, name)(handler)
 
     page.metadata_changed.connect(lambda metadata: on_track_changed(**metadata))
 
@@ -56,14 +64,24 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     _cover = None
 
-    def __init__(self):
+    def __init__(self, review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed,
+                 show_cheddar_authentication_failed):
         super().__init__()
+        self._show_cheddar_authentication_failed = show_cheddar_authentication_failed
+        self._show_cheddar_connection_failed = show_cheddar_connection_failed
+        self._show_isni_assignation_failed = show_isni_assignation_failed
+        self._review_assignation = review_assignation
         self._setup_ui()
 
     def _setup_ui(self):
         self._load(":/ui/track_page.ui")
         self._disable_mac_focus_frame()
         self._disable_teaser_fields()
+
+        lyricist_menu = QMenu()
+        lyricist_menu.setStyleSheet(QMENU_STYLESHEET)
+        lyricist_menu.addAction(self._lyricist_isni_assign_action)
+        self._lyricist_isni_actions_button.setMenu(lyricist_menu)
 
         self._genre.addItems(sorted(GENRES))
         self._language.addItems(sorted(LANGUAGES))
@@ -78,6 +96,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._version.editingFinished.connect(emit_metadata_changed)
         self._featured_guest.editingFinished.connect(emit_metadata_changed)
         self._lyricist.editingFinished.connect(emit_metadata_changed)
+        self._lyricist_isni.editingFinished.connect(emit_metadata_changed)
         self._composer.editingFinished.connect(emit_metadata_changed)
         self._publisher.editingFinished.connect(emit_metadata_changed)
         self._isrc.editingFinished.connect(emit_metadata_changed)
@@ -100,6 +119,27 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def albumStateChanged(self, album):
         self.display(album=album)
 
+    def on_lyricist_isni_assign(self, handler):
+        def start_waiting():
+            QApplication.setOverrideCursor(Qt.WaitCursor)
+            try:
+                handler(on_assign_success)
+            except requests.ConnectionError:
+                self._show_cheddar_connection_failed()
+            except AuthenticationError:
+                self._show_cheddar_authentication_failed()
+            except InsufficientInformationError as e:
+                self._show_isni_assignation_failed(str(e))
+            finally:
+                QApplication.restoreOverrideCursor()
+
+        def on_assign_success(identity):
+            self._lyricist_isni.setFocus(Qt.OtherFocusReason)
+            self._lyricist_isni.setText(identity.id)
+            QApplication.restoreOverrideCursor()
+
+        self._lyricist_isni_assign_action.triggered.connect(lambda _: self._review_assignation(start_waiting))
+
     def display(self, album=None, track=None):
         if album:
             self._display_album(album)
@@ -109,19 +149,23 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def _display_album(self, album):
         self._display_album_cover(album.main_cover)
         self._album_title.setText(album.release_name)
-        self._album_lead_performer.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
+        if album.compilation:
+            self._album_lead_performer.setText(self.tr("Various Artists"))
+        else:
+            self._album_lead_performer.setText(album.lead_performer[0] if album.lead_performer else "")
         self._lead_performer.setEnabled(album.compilation is True)
         self._lead_performer_caption.setEnabled(album.compilation is True)
 
     def display_track(self, track):
         self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
         self._track_title.setText(track.track_title)
-        self._lead_performer.setText(track.lead_performer)
+        self._lead_performer.setText(track.lead_performer[0] if track.lead_performer else "")
         self._version.setText(track.versionInfo)
         self._duration.setText(formatting.to_duration(track.duration))
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
         self._featured_guest.setText(track.featuredGuest)
-        self._lyricist.setText(track.lyricist)
+        self._lyricist.setText(track.lyricist[0] if track.lyricist else "")
+        self._lyricist_isni.setText(track.lyricist[1] if track.lyricist and len(track.lyricist) > 1 else "")
         self._composer.setText(track.composer)
         self._publisher.setText(track.publisher)
         self._isrc.setText(track.isrc)
@@ -169,25 +213,35 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     @property
     def metadata(self):
-        return dict(track_title=self._track_title.text(),
-                    lead_performer=self._lead_performer.text(),
-                    versionInfo=self._version.text(),
-                    featuredGuest=self._featured_guest.text(),
-                    lyricist=self._lyricist.text(),
-                    composer=self._composer.text(),
-                    publisher=self._publisher.text(),
-                    isrc=self._isrc.text(),
-                    iswc=self._iswc.text(),
-                    labels=self._tags.text(),
-                    lyrics=self._lyrics.toPlainText(),
-                    language=self._language.currentText(),
-                    recording_studio=self._recording_studio.text(),
-                    recording_studio_region=self._get_country_code_from_combo(self._recording_studio_region),
-                    music_producer=self._music_producer.text(),
-                    production_company=self._production_company.text(),
-                    production_company_region=self._get_country_code_from_combo(self._production_company_region),
-                    mixer=self._mixer.text(),
-                    primary_style=self._genre.currentText())
+        metadata = dict(track_title=self._track_title.text(),
+                        versionInfo=self._version.text(),
+                        featuredGuest=self._featured_guest.text(),
+                        composer=self._composer.text(),
+                        publisher=self._publisher.text(),
+                        isrc=self._isrc.text(),
+                        iswc=self._iswc.text(),
+                        labels=self._tags.text(),
+                        lyrics=self._lyrics.toPlainText(),
+                        language=self._language.currentText(),
+                        recording_studio=self._recording_studio.text(),
+                        recording_studio_region=self._get_country_code_from_combo(self._recording_studio_region),
+                        music_producer=self._music_producer.text(),
+                        production_company=self._production_company.text(),
+                        production_company_region=self._get_country_code_from_combo(self._production_company_region),
+                        mixer=self._mixer.text(),
+                        primary_style=self._genre.currentText())
+
+        if self._lyricist.text():
+            lyricist_isni = self._lyricist_isni.text()
+            if lyricist_isni:
+                metadata["lyricist"] = (self._lyricist.text(), lyricist_isni)
+            else:
+                metadata["lyricist"] = (self._lyricist.text(),)
+
+        if self._lead_performer.isEnabled():
+            metadata["lead_performer"] = (self._lead_performer.text(),)
+
+        return metadata
 
     def _disable_mac_focus_frame(self):
         for child in self.findChildren(QWidget):

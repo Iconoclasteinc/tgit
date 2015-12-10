@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
-from hamcrest import assert_that, has_item, contains_string, contains, has_entry
+from hamcrest import assert_that, has_item, contains_string, contains, has_entry, equal_to
 
 from test.util import resources
 from tgit.local_storage import yaml
@@ -84,13 +84,12 @@ def test_saves_data_to_yaml_file(project_file):
 def test_reads_data_from_yaml_file():
     data = yaml.read_data(resources.path("album.tgit"))
 
-    assert_that(data, has_entry("version", "1.6.0"), "version")
+    assert_that(data, has_entry("version", "1.10.0"), "version")
     assert_that(data, has_entry("type", "mp3"), "album type")
     assert_that(data, has_entry("release_name", "Title"), "release name")
     assert_that(data, has_entry("compilation", True), "compilation")
-    assert_that(data, has_entry("lead_performer", "Artist"), "lead performer")
+    assert_that(data, has_entry("lead_performer", equal_to(("Artist", "0000000123456789"))), "lead performer")
     assert_that(data, has_entry("lead_performer_region", ("FR",)), "lead performer region")
-    assert_that(data, has_entry("isni", "0000123456789"), "isni")
     assert_that(data, has_entry("guest_performers", contains(("Guitar", "Guitarist"), ("Piano", "Pianist"))),
                 "guest performers")
     assert_that(data, has_entry("label_name", "Label"), "label name")

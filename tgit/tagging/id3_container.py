@@ -21,6 +21,7 @@ from collections import Counter
 from datetime import timezone
 
 from dateutil import parser as dateparser
+
 from mutagen import mp3, id3
 
 from tgit.metadata import Metadata, Image
@@ -184,6 +185,37 @@ class PairProcessor:
         return [[role, name] for role, name in metadata[self._tag]]
 
 
+class ISNIProcessor:
+    def process_frames(self, metadata, frames):
+        isni_map = {}
+        for _, frame in frames.items():
+            isni_map = self._add_isni_to_map(frame, isni_map)
+
+        if len(isni_map) > 0:
+            metadata["isni"] = isni_map
+
+    @staticmethod
+    def process_metadata(frames, encoding, metadata):
+        if "isni" not in metadata:
+            return
+
+        for name, isni in metadata["isni"].items():
+            frames.add(getattr(id3, "TXXX")(encoding=encoding, desc="ISNI:{}".format(name), text=isni))
+
+    @staticmethod
+    def _add_isni_to_map(frame, isni_map):
+        def is_isni_frame():
+            return frame.FrameID == "TXXX" and frame.desc.startswith("ISNI")
+
+        def frame_is_not_empty():
+            return len(frame.text) > 0
+
+        if is_isni_frame() and frame_is_not_empty():
+            isni_map[frame.desc.split(":")[1]] = frame.text[0]
+
+        return isni_map
+
+
 class TaggerAndVersionConverter:
     def __init__(self, old_frame_key, tagger_frame, version_frame):
         self._old_frame_key = old_frame_key
@@ -238,13 +270,33 @@ class LocalDateTimeConverter:
             frames.add(getattr(id3, frame)(encoding=old.encoding, desc=desc, lang=lang,
                                            text=[self._to_timestamp(instant) for instant in old.text]))
 
-    def _to_timestamp(self, value):
+    @staticmethod
+    def _to_timestamp(value):
         instant = dateparser.parse(value).astimezone(timezone.utc)
         return instant.strftime('%Y-%m-%d %H:%M:%S')
 
     # noinspection PyUnusedLocal
     def process_metadata(self, frames, encoding, metadata):
         frames.delall(self._old_key)
+
+
+class ISNIConverter:
+    # noinspection PyUnusedLocal
+    @staticmethod
+    def process_frames(metadata, frames):
+        if "TXXX:ISNI" not in frames:
+            return
+
+        isni = frames.pop("TXXX:ISNI")
+        lead_performer = frames["TPE1"]
+        frames.add(getattr(id3, "TXXX")(encoding=isni.encoding,
+                                        desc="ISNI:{}".format(lead_performer.text[0]),
+                                        text=isni.text[0]))
+
+    # noinspection PyUnusedLocal
+    @staticmethod
+    def process_metadata(frames, encoding, metadata):
+        frames.delall("ISNI:TXXX")
 
 
 class ID3Container:
@@ -254,7 +306,8 @@ class ID3Container:
         TaggerAndVersionConverter("TXXX:Tagger", "TXXX:TAGGER", "TXXX:TAGGER_VERSION"),
         TextConverter("TXXX:UPC", "TXXX:BARCODE"),
         LocalDateTimeConverter("TXXX:Tagging Time", "TDTG"),
-        LocalDateTimeConverter("TXXX:TAGGING_TIME", "TDTG")
+        LocalDateTimeConverter("TXXX:TAGGING_TIME", "TDTG"),
+        ISNIConverter()
     ]
 
     _processors = [
@@ -263,6 +316,7 @@ class ID3Container:
             PictureType.FRONT_COVER: Image.FRONT_COVER,
             PictureType.BACK_COVER: Image.BACK_COVER,
         }),
+        ISNIProcessor(),
         PairProcessor("TMCL", "guest_performers", {}),
         PairProcessor("TIPL", "contributors", {
             "producer": "music_producer",
@@ -295,7 +349,6 @@ class ID3Container:
         "TXXX:Catalog Number": "catalog_number",
         "TXXX:Featured Guest": "featuredGuest",
         "TXXX:PRODUCTION-COMPANY": "production_company",
-        "TXXX:ISNI": "isni",
         "TXXX:ISWC": "iswc",
         "TXXX:Recording Studio": "recording_studio",
         "TXXX:TAGGER": "tagger",

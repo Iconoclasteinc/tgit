@@ -42,6 +42,5 @@ def test_finding_the_isni_of_the_lead_performer(app, platform, recordings, works
     workspace.contains_track(album="Honeycomb",
                              filename="Joel Miller - 01 - Salsa Coltrane.mp3",
                              release_name="Honeycomb",
-                             isni="0000000121707484",
-                             lead_performer="Joel Miller",
+                             lead_performer=("Joel Miller", "0000000121707484"),
                              track_title="Salsa Coltrane")

@@ -72,22 +72,29 @@ class Pages:
         return make_album_edition_page(album,
                                        self._session,
                                        select_identity=self._dialogs.select_identities_in(album),
-                                       review_assignation=self._dialogs.review_isni_assignation_in(album),
+                                       review_assignation=self._dialogs.review_isni_assignation_in(album, True),
                                        show_isni_assignation_failed=self._messages.isni_assignation_failed,
                                        show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
+                                       show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed,
                                        edit_performers=self._dialogs.edit_performers_in(album),
                                        select_picture=self._dialogs.select_cover,
                                        on_select_picture=director.change_cover_of(album),
                                        on_isni_lookup=director.lookup_isni_using(self._cheddar,
                                                                                  self._session.current_user),
-                                       on_isni_assign=director.assign_isni_using(self._cheddar,
-                                                                                 self._session.current_user, album),
+                                       on_isni_assign=director.assign_isni_to_main_artist_using(self._cheddar,
+                                                                                                self._session.current_user,
+                                                                                                album),
                                        on_remove_picture=director.remove_album_cover_from(album),
                                        on_metadata_changed=director.update_album_from(album))
 
-    @staticmethod
-    def _track_page_for(album):
+    def _track_page_for(self, album):
         def track_page(track):
-            return make_track_edition_page(album, track, on_track_changed=director.update_track(track))
+            return \
+                make_track_edition_page(album, track,
+                                        on_track_changed=director.update_track(track),
+                                        review_assignation=self._dialogs.review_isni_assignation_in(album),
+                                        show_isni_assignation_failed=self._messages.isni_assignation_failed,
+                                        show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
+                                        show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed)
 
         return track_page

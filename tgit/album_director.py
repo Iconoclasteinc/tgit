@@ -22,7 +22,7 @@ import os
 from tgit import local_storage, fs
 from tgit import tagging
 from tgit.album import Album
-from tgit.identity import Identity
+from tgit.identity import IdentityCard
 
 
 def _build_filename(name, location):
@@ -142,7 +142,7 @@ def lookup_isni_using(cheddar, user):
     def lookup_isni(lead_performer, on_lookup_success):
         @_unwrap_future
         def on_lookup_done(identities):
-            on_lookup_success([Identity(**identity) for identity in identities])
+            on_lookup_success([IdentityCard(**identity) for identity in identities])
 
         cheddar.get_identities(lead_performer, user.api_key).add_done_callback(on_lookup_done)
 
@@ -151,24 +151,35 @@ def lookup_isni_using(cheddar, user):
 
 def select_isni_in(album):
     def select_isni(identity):
-        metadata = dict(lead_performer=identity.full_name, isni=identity.id, compilation=album.compilation)
+        metadata = dict(lead_performer=(identity.full_name, identity.id), compilation=album.compilation)
         update_album_from(album)(**metadata)
 
     return select_isni
 
 
-def assign_isni_using(cheddar, user, album):
-    def assign_isni(main_artist_type, on_assign_success):
-        @_unwrap_future
-        def on_assign_done(identity_details):
-            on_assign_success(Identity(**identity_details))
-
-        cheddar.assign_identifier(album.lead_performer,
-                                  main_artist_type,
-                                  [track.track_title for track in album.tracks],
-                                  user.api_key).add_done_callback(on_assign_done)
+def assign_isni_to_main_artist_using(cheddar, user, album):
+    def assign_isni(type_, on_assign_success):
+        titles = [track.track_title for track in album.tracks]
+        _assign_isni(album.lead_performer, type_, titles, on_assign_success, cheddar, user)
 
     return assign_isni
+
+
+def assign_isni_to_lyricist_using(cheddar, user):
+    def assign_isni(track, on_assign_success):
+        _assign_isni(track.lyricist, "individual", [track.track_title], on_assign_success, cheddar, user)
+
+    return assign_isni
+
+
+def _assign_isni(identity, type_, titles, on_success, cheddar, user):
+    @_unwrap_future
+    def on_assign_done(identity_details):
+        on_success(IdentityCard(**identity_details))
+
+    cheddar \
+        .assign_identifier(identity[0] if identity else "", type_, titles, user.api_key) \
+        .add_done_callback(on_assign_done)
 
 
 def sign_in_using(authenticate, session):

@@ -19,34 +19,36 @@
 
 
 class Work:
-    def __init__(self, **kwargs):
-        self.title = kwargs["title"]
-        self.subtitle = kwargs["subtitle"] if "subtitle" in kwargs else None
+    def __init__(self, title, **data):
+        self.title = title
+        self.subtitle = data.get("subtitle", None)
+
+    @property
+    def full_title(self):
+        return "{0} {1}".format(self.title, self.subtitle) if self.subtitle else self.title
 
 
-class Identity:
+class IdentityCard:
     INDIVIDUAL = "individual"
     ORGANIZATION = "organization"
 
-    def __init__(self, **kwargs):
-        self.id = kwargs["id"]
-        self.type = kwargs["type"]
-        self.first_name = kwargs["firstName"] if "firstName" in kwargs else None
-        self.last_name = kwargs["lastName"] if "lastName" in kwargs else None
-        self.main_name = kwargs["mainName"] if "mainName" in kwargs else None
-        self.date_of_birth = kwargs["dateOfBirth"] if "dateOfBirth" in kwargs else None
-        self.date_of_death = kwargs["dateOfDeath"] if "dateOfDeath" in kwargs else None
-        self.works = [Work(**work) for work in kwargs["works"]]
+    def __init__(self, **data):
+        self.id = data.get("id")
+        self.type = data.get("type")
+        self.first_name = data.get("firstName", None)
+        self.last_name = data.get("lastName", None)
+        self.main_name = data.get("mainName", None)
+        self.date_of_birth = data.get("dateOfBirth", None)
+        self.date_of_death = data.get("dateOfDeath", None)
+        self.works = [Work(**work) for work in data.get("works", [])]
 
     @property
     def full_name(self):
-        return "{0} {1}".format(self.first_name, self.last_name) if self.type == "individual" else self.main_name
+        return "{0} {1}".format(self.first_name, self.last_name) if self.type == self.INDIVIDUAL else self.main_name
 
     @property
     def longest_title(self):
         if len(self.works) == 0:
             return ""
 
-        return max(
-            ["{0} {1}".format(work.title, work.subtitle) if work.subtitle else work.title for work in self.works],
-            key=len)
+        return max([work.full_title for work in self.works], key=len)

@@ -34,12 +34,31 @@ def album_exists(filename):
     return os.path.exists(filename)
 
 
+def _should_migrate(from_version, to_version):
+    from distutils.version import LooseVersion
+    return LooseVersion(from_version) < LooseVersion(to_version)
+
+
+def _from_1_9_to_1_10(data):
+    # Lead performer and ISNI moved from being strings to a tuple
+    if "lead_performer" in data:
+        if "isni" in data:
+            data["lead_performer"] = (data["lead_performer"], data["isni"])
+            del data["isni"]
+        else:
+            data["lead_performer"] = (data["lead_performer"],)
+
+    return data
+
+
 def load_album(filename):
     album_folder = dirname(filename)
     tracks_folder = join(album_folder, TRACKS_FOLDER_NAME)
     artwork_folder = join(album_folder, ARTWORK_FOLDER_NAME)
 
     data = yaml.read_data(filename)
+    if _should_migrate(data["version"], "1.10.0"):
+        data = _from_1_9_to_1_10(data)
     album = Album(Metadata(data), of_type=data["type"], filename=filename)
 
     for image in data["images"]:

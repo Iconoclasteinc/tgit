@@ -42,14 +42,14 @@ def test_signals_when_load_album_button_clicked(driver):
     driver.check(load_album_signal)
 
 
-def load_fails(_):
-    raise OSError("Load failed")
-
-
 def test_warn_user_if_load_failed(driver):
+    def load_fails(_):
+        raise OSError("Load failed")
+
     load_failed_signal = ValueMatcherProbe("load album failed", instance_of(OSError))
 
-    _ = show_page(select_album=lambda load: load("album.tgit"), show_load_error=load_failed_signal.received,
+    _ = show_page(select_album=lambda load: load("album.tgit"),
+                  show_load_error=load_failed_signal.received,
                   on_load_album=load_fails)
 
     driver.load()

@@ -1,4 +1,4 @@
-version: 1.10.0
+version: 1.9.0
 type: mp3
 catalog_number: XXX123456789
 comments: 'Comments
@@ -12,10 +12,9 @@ guest_performers:
 - !!python/tuple
   - Piano
   - Pianist
+isni: 0000000123456789
 label_name: Label
-lead_performer: !!python/tuple
-- Artist
-- 0000000123456789
+lead_performer: Artist
 lead_performer_region: !!python/tuple
 - FR
 recording_time: '2008-09-15'
@@ -30,13 +29,5 @@ contributors:
 - !!python/tuple
   - Effects
   - Effects Engineer
-images:
-- !!python/tuple
-  - image/jpeg
-  - Front.jpeg
-  - 1
-  - Front
-tracks:
-- 1st
-- 2nd
-- 3rd
+images: []
+tracks: []

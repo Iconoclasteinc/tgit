@@ -132,6 +132,20 @@ class TrackEditionPageDriver(ScreenDriver):
     def change_lyricist(self, name):
         self.lineEdit(named("_lyricist")).change_text(name)
 
+    def shows_lyricist_isni(self, isni):
+        self.lineEdit(named("_lyricist_isni")).has_text(isni)
+
+    def change_lyricist_isni(self, isni):
+        self.lineEdit(named("_lyricist_isni")).change_text(isni)
+
+    def assign_isni_to_lyricist(self):
+        menu = self.tool_button(named("_lyricist_isni_actions_button")).open_menu()
+        menu.menu_item(named("_lyricist_isni_assign_action")).manipulate("enable", lambda b: b.setEnabled(True))
+        menu.select_menu_item(named("_lyricist_isni_assign_action"))
+
+    def confirm_lyricist_isni(self):
+        self.lineEdit(named("_lyricist_isni")).enter()
+
     def shows_composer(self, name):
         self.label(with_buddy(named("_composer"))).is_showing_on_screen()
         self.lineEdit(named("_composer")).has_text(name)
@@ -274,3 +288,8 @@ class TrackEditionPageDriver(ScreenDriver):
     def select_primary_style(self, style):
         self.tabs(named("_tabs")).select("Recording")
         self.combobox(named("_genre")).select_option(style)
+
+    def assign_isni_to_lyricist(self):
+        menu = self.tool_button(named("_lyricist_isni_actions_button")).open_menu()
+        menu.menu_item(named("_lyricist_isni_assign_action")).manipulate("enable", lambda b: b.setEnabled(True))
+        menu.select_menu_item(named("_lyricist_isni_assign_action"))

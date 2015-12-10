@@ -14,7 +14,7 @@ from tgit.metadata import Image
 
 def test_defines_metadata_tags():
     assert_that(tuple(Album.tags()), contains_inanyorder(
-        "release_name", "compilation", "lead_performer", "lead_performer_region", "isni", "guest_performers",
+        "release_name", "compilation", "lead_performer", "lead_performer_region", "guest_performers",
         "label_name", "upc", "catalog_number", "recording_time", "release_time", "original_release_time",
         "contributors", "comments"))
 
@@ -34,21 +34,21 @@ def test_initializes_with_album_only_metadata():
 
 
 def test_contained_tracks_have_lead_performer_of_album_when_album_is_not_a_compilation():
-    track = build.track(lead_performer="???")
-    album = build.album(lead_performer="Joel Miller")
+    track = build.track(lead_performer=("???",))
+    album = build.album(lead_performer=("Joel Miller",))
 
     album.add_track(track)
 
-    assert_that(track.lead_performer, equal_to("Joel Miller"), "track lead performer")
+    assert_that(track.lead_performer, equal_to(("Joel Miller",)), "track lead performer")
 
 
 def test_contained_tracks_have_various_lead_performers_when_album_is_a_compilation():
-    track = build.track(lead_performer="Joel Miller")
-    compilation = build.album(lead_performer="Various Artists", compilation=True)
+    track = build.track(lead_performer=("Joel Miller",))
+    compilation = build.album(lead_performer=("Various Artists",), compilation=True)
 
     compilation.add_track(track)
 
-    assert_that(track.lead_performer, equal_to("Joel Miller"), "track lead performer")
+    assert_that(track.lead_performer, equal_to(("Joel Miller",)), "track lead performer")
 
 
 def assert_has_numbered_tracks(album):
@@ -199,8 +199,7 @@ def test_has_initially_no_metadata_or_images():
 
 def test_signals_state_changes_to_listener():
     _assert_notifies_listener_on_property_change("release_name", "Album")
-    _assert_notifies_listener_on_property_change("lead_performer", "Artist")
-    _assert_notifies_listener_on_property_change("isni", "123456789")
+    _assert_notifies_listener_on_property_change("lead_performer", ("Artist", "123456789"))
     _assert_notifies_listener_on_property_change("guest_performers", [("Musician", "Instrument")])
     _assert_notifies_listener_on_property_change("label_name", "Label")
     _assert_notifies_listener_on_property_change("recording_time", "Recorded")

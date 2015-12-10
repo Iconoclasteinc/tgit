@@ -111,7 +111,7 @@ QGroupBox::title {
          <item>
           <widget class="QRadioButton" name="_individual_button">
            <property name="text">
-            <string>No</string>
+            <string>No, it's a person</string>
            </property>
           </widget>
          </item>

@@ -156,8 +156,9 @@ def test_reads_tags_from_custom_frame(mp3):
 
 
 def test_reads_isni_from_custom_frame(mp3):
-    metadata = container.load(mp3(TXXX_ISNI="00000123456789"))
-    assert_that(metadata, has_entry("isni", "00000123456789"), "metadata")
+    metadata = container.load(mp3(TPE1="Joel Miller", TXXX_ISNI_Joel_Miller="00000123456789"))
+    assert_that(metadata, has_entry("lead_performer", "Joel Miller"), "metadata")
+    assert_that(metadata, has_entry("isni", has_entry("Joel Miller", "00000123456789")), "metadata")
 
 
 def test_reads_iswc_from_custom_frame(mp3):
@@ -264,7 +265,8 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["compilation"] = True
     metadata["lead_performer"] = "Lead Performer"
     metadata["lead_performer_region"] = ("CA", "QC")
-    metadata["isni"] = "0000123456789"
+    metadata["isni"] = {"Lead Performer": "0000123456789",
+                        "Lyricist": "0000123456789"}
     metadata["iswc"] = "T-345246800-1"
     metadata["guest_performers"] = [("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]
     metadata["label_name"] = "Label Name"
@@ -362,6 +364,14 @@ def test_upgrades_deprecated_frames_to_their_new_form(mp3):
                                   TXXX_TAGGING_TIME="2014-03-26 14:18:55 -0400"))
 
     assert_that(metadata, has_entries(upc="987654321111", tagging_time="2014-03-26 18:18:55"), "metadata")
+
+
+def test_upgrades_deprecated_isni_frames_to_its_new_form(mp3):
+    metadata = container.load(mp3(TPE1="Joel Miller",
+                                  TXXX_ISNI="0000000123456789"))
+
+    assert_that(metadata, has_entries(lead_performer="Joel Miller",
+                                      isni=has_entry("Joel Miller", "0000000123456789")), "metadata")
 
 
 def test_removes_deprecated_frames_on_save(mp3):

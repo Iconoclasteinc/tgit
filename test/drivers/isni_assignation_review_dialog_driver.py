@@ -40,3 +40,9 @@ class IsniAssignationReviewDialogDriver(QDialogDriver, ScreenDriver):
 
     def has_work(self, work):
         ListViewDriver.find_single(self, QListView).has_item(with_list_item_text(work))
+
+    def shows_main_artist_section(self):
+        self.widget(named("_lead_performer_box")).is_showing_on_screen()
+
+    def hides_main_artist_section(self):
+        self.widget(named("_lead_performer_box")).is_hidden()

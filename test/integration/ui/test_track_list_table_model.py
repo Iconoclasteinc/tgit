@@ -9,11 +9,11 @@ from tgit.ui.pages.track_list_table_model import RowItem, Column
 
 def test_retrieves_values_from_track_list_item():
     item = RowItem(make_track(album=make_album(release_name="Honeycomb"),
-                                track_title="Chevere!",
-                                lead_performer="Joel Miller",
-                                track_number=3,
-                                bitrate=192000,
-                                duration=in_seconds(minutes=4, seconds=12)))
+                              track_title="Chevere!",
+                              lead_performer=("Joel Miller",),
+                              track_number=3,
+                              bitrate=192000,
+                              duration=in_seconds(minutes=4, seconds=12)))
 
     assert_that(Column.track_number.value(item).text(), is_("3"), "track number text")
     assert_that(Column.track_title.value(item).text(), is_("Chevere!"), "track title text")

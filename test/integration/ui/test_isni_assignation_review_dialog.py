@@ -12,8 +12,8 @@ from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReview
 ignore = lambda *_: None
 
 
-def show_dialog(*titles, on_review=ignore):
-    dialog = ISNIAssignationReviewDialog()
+def show_dialog(*titles, main_artist_section_visible=True, on_review=ignore):
+    dialog = ISNIAssignationReviewDialog(main_artist_section_visible=main_artist_section_visible)
     dialog.setAttribute(Qt.WA_DeleteOnClose, False)
     dialog.review(on_review, *titles)
     return dialog
@@ -50,3 +50,13 @@ def test_signals_individual_type_on_accept(driver):
 def test_displays_works(driver):
     _ = show_dialog(build.track(track_title="My title"), on_review=ignore)
     driver.has_work("My title")
+
+
+def test_shows_main_artist_section(driver):
+    _ = show_dialog(main_artist_section_visible=True)
+    driver.shows_main_artist_section()
+
+
+def test_hides_main_artist_section(driver):
+    _ = show_dialog(main_artist_section_visible=False)
+    driver.hides_main_artist_section()

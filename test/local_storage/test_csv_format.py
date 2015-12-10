@@ -55,6 +55,7 @@ def test_includes_header_row(formatter, out):
                                   "Language",
                                   "Publisher",
                                   "Lyricist",
+                                  "Lyricist ISNI",
                                   "Composer",
                                   "ISRC",
                                   "Tags"), "header")
@@ -63,9 +64,8 @@ def test_includes_header_row(formatter, out):
 def test_writes_track_metadata_in_columns(formatter, out):
     album = build.album(
         release_name="Release Name",
-        lead_performer="Lead Performer",
+        lead_performer=("Lead Performer", "0000123456789"),
         lead_performer_region=("CA",),
-        isni="0000123456789",
         guest_performers=[("Instrument1", "Performer1"), ("Instrument2", "Performer2")],
         label_name="Label Name",
         catalog_number="Catalog Number",
@@ -81,7 +81,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
         lyrics="Lyrics\n...\...\n...",
         language="eng",
         publisher="Publisher",
-        lyricist="Lyricist",
+        lyricist=("Lyricist", "9876543210000000"),
         composer="Composer",
         isrc="ISRC",
         labels="Tag1 Tag2 Tag3",
@@ -130,6 +130,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
                                "eng",
                                "Publisher",
                                "Lyricist",
+                               "9876543210000000",
                                "Composer",
                                "ISRC",
                                "Tag1 Tag2 Tag3"), "row")

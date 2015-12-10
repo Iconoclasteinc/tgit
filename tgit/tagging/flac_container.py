@@ -107,12 +107,40 @@ class PictureField:
             flac.add_picture(picture)
 
 
+class ISNIField:
+    def __init__(self, field_name, tag_name):
+        self._tag_name = tag_name
+        self._field_name = field_name
+
+    def read(self, flac, metadata):
+        if self._field_name not in flac:
+            return
+
+        metadata[self._tag_name] = {}
+        isnis = flac[self._field_name]
+        for isni_value in isnis:
+            isni, name = isni_value.split(":")
+            metadata[self._tag_name][name] = isni
+
+    def write(self, metadata, flac):
+        if self._tag_name not in metadata:
+            return
+
+        isni_list = []
+        for name, isni in metadata[self._tag_name].items():
+            isni_list += ["{}:{}".format(isni, name)]
+
+        if len(isni_list) > 0:
+            flac[self._field_name] = isni_list
+
+
 class FlacContainer:
-    fields = [PictureField("PICTURES", {
-        PictureType.OTHER: Image.OTHER,
-        PictureType.FRONT_COVER: Image.FRONT_COVER,
-        PictureType.BACK_COVER: Image.BACK_COVER,
-    })]
+    fields = [ISNIField("ISNI", "isni"),
+              PictureField("PICTURES", {
+                  PictureType.OTHER: Image.OTHER,
+                  PictureType.FRONT_COVER: Image.FRONT_COVER,
+                  PictureType.BACK_COVER: Image.BACK_COVER,
+              })]
 
     for field_name, tag_name in {
         "ALBUM": "release_name",
@@ -129,6 +157,7 @@ class FlacContainer:
         "RECORDING-STUDIO": "recording_studio",
         "PRODUCER": "production_company",
         "MUSIC-PRODUCER": "music_producer",
+        "LYRICIST": "lyricist",
     }.items():
         fields.append(TextField(field_name, tag_name))
 

@@ -29,8 +29,16 @@ def _to_iso_3_letters_code(region):
 
 
 def _write_line(album, track, line_number, sheet):
-    album_lead_performer = album.lead_performer if not album.compilation else "Artistes Variés"
-    track_lead_performer = track.lead_performer if track.lead_performer else album_lead_performer
+    album_lead_performer = ""
+    if album.compilation:
+        album_lead_performer = "Artistes Variés"
+    elif album.lead_performer:
+        album_lead_performer = album.lead_performer[0]
+
+    track_lead_performer = album_lead_performer
+    if track.lead_performer:
+        track_lead_performer = track.lead_performer[0]
+
     lead_performer_region = _to_iso_3_letters_code(album.lead_performer_region)
     recording_studio_region = _to_iso_3_letters_code(track.recording_studio_region)
     production_company_region = _to_iso_3_letters_code(track.production_company_region)

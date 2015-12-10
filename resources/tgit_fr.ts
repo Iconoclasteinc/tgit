@@ -582,6 +582,16 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
+        <source>Could not authenticate you to the TGiT remote server.</source>
+        <translation>Impossible de s'authentifier au serveur TGiT.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
+        <source>Please sign out and sign back in to fix this issue.</source>
+        <translation>Svp déconnectez-vous et reconnectez-vous pour régler ce problème.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/message_box.py" />
         <source>The form was filled with default values assuming you own the rights of the recordings covered by this declaration, forever and throughout the world.&#10;&#10;If this is not the case, please manually review the declaration file.</source>
         <translation>Le formulaire a été rempli avec des valeurs par défaut en tenant pour acquis que vous possédez tous les droits sur les enregistrements sonores faisant l'objet de cette déclaration à perpétuité et pour le monde entier.&#10;&#10;Si tel n'est pas le cas veuillez réviser manuellement le fichier produit.</translation>
     </message>
@@ -791,6 +801,44 @@
         <location filename="tgit/ui/track_edition_page.py" />
         <source> on {0} at {1}</source>
         <translation> le {0} à {1}</translation>
+    </message>
+</context>
+<context>
+    <name>isni_assignation_review_dialog</name>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Lead Performer</source>
+        <translation>Artiste principal</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Is the main artist a band, collective or ensemble?</source>
+        <translation>L'artiste principal est-il un groupe, collectif ou un ensemble ?</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Yes</source>
+        <translation>Oui</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>No, it's a person</source>
+        <translation>Non, il s'agit d'un individu</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Works</source>
+        <translation>Oeuvres</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>At least one title is mandatory to assign an ISNI. The following titles will be used:</source>
+        <translation>Au moin un titre est requis pour l'assignation d'un ISNI.  Les titres suivants seront utilisés :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>

@@ -136,7 +136,7 @@ class Column(Enum):
 
         def __init__(self, track):
             super().__init__()
-            self.setText(track.lead_performer)
+            self.setText(track.lead_performer[0] if track.lead_performer else "")
             self.setTextAlignment(LEFT_ALIGNED)
 
     class release_name(Cell):

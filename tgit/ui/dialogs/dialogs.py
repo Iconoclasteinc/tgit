@@ -68,9 +68,9 @@ class Dialogs:
     def sign_in(self, on_sign_in):
         SignInDialog(self._parent).sign_in(on_sign_in)
 
-    def review_isni_assignation_in(self, album):
+    def review_isni_assignation_in(self, album, main_artist_section_visible=False):
         def review_isni_assignation(on_review):
-            ISNIAssignationReviewDialog(self._parent).review(on_review, *album.tracks)
+            ISNIAssignationReviewDialog(self._parent, main_artist_section_visible).review(on_review, *album.tracks)
 
         return review_isni_assignation
 
