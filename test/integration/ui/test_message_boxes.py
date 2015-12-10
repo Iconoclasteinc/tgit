@@ -26,7 +26,7 @@ from cute.widgets import QMessageBoxDriver, window
 from test.drivers.about_dialog_driver import AboutDialogDriver
 from tgit import platforms
 from tgit.ui import AboutDialog
-from tgit.ui.message_boxes import MessageBoxes
+from tgit.ui.dialogs.message_boxes import MessageBoxes
 
 DISPLAY_DELAY = 200 if platforms.mac else 0
 
@@ -43,8 +43,8 @@ def about_tgit_driver(qt, prober, automaton):
     message_box_driver.close()
 
 
-def messages():
-    return MessageBoxes()
+def messages(confirm_before_exiting=False):
+    return MessageBoxes(confirm_before_exiting, lambda: None)
 
 
 def test_shows_isni_assignation_failed_message_with_details(driver):

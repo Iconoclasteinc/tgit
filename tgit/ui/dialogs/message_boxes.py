@@ -20,52 +20,52 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMessageBox
 
-from tgit.ui import AboutDialog
+from tgit.ui.dialogs.about_dialog import AboutDialog
 
 
 class MessageBoxes:
-    parent = None
-
-    def __init__(self, confirm_before_exiting=False):
+    def __init__(self, confirm_before_exiting, get_parent):
+        self._get_parent = get_parent
         self._confirm_before_exiting = confirm_before_exiting
 
-    def _open(self, message):
+    @property
+    def _parent(self):
+        return self._get_parent()
+
+    @staticmethod
+    def _open(message):
         message.open()
         return message
 
-    def _show(self, message):
-        message.show()
-        return message
-
     def load_album_failed(self, error):
-        return self._open(MessageBox.warn(self.parent,
+        return self._open(MessageBox.warn(self._parent,
                                           "The album file you selected cannot be loaded.",
                                           "The file might be corrupted or part of the album content cannot be found."))
 
     def save_album_failed(self, error):
-        return self._open(MessageBox.warn(self.parent,
+        return self._open(MessageBox.warn(self._parent,
                                           "Your album file could not be saved.",
                                           "Please check that you have permission to write to the album's location."))
 
     def restart_required(self):
-        return self._open(MessageBox.inform(self.parent, "You need to restart TGiT for changes to take effect."))
+        return self._open(MessageBox.inform(self._parent, "You need to restart TGiT for changes to take effect."))
 
     def isni_assignation_failed(self, details=None):
-        return self._open(MessageBox.warn(self.parent, "Could not assign an ISNI", details=details))
+        return self._open(MessageBox.warn(self._parent, "Could not assign an ISNI", details=details))
 
     def cheddar_connection_failed(self):
-        return self._open(MessageBox.warn(self.parent,
+        return self._open(MessageBox.warn(self._parent,
                                           "Unable to connect to TGiT remote server.",
                                           "Please try again later."))
 
     def export_failed(self, error):
-        return self._open(MessageBox.warn(self.parent,
+        return self._open(MessageBox.warn(self._parent,
                                           "Could not export your album.",
                                           "Please check that you have permission to write to the album's location."))
 
     def close_album_confirmation(self, **handlers):
         return self._open(
-            ConfirmationBox.warn(self.parent,
+            ConfirmationBox.warn(self._parent,
                                  "You are about to close the current album. Are you sure you want to continue?",
                                  "Make sure to save your work before closing the album. "
                                  "Any unsaved work will be lost.",
@@ -73,7 +73,7 @@ class MessageBoxes:
                                  **handlers))
 
     def overwrite_album_confirmation(self, **handlers):
-        return self._open(ConfirmationBox.warn(self.parent,
+        return self._open(ConfirmationBox.warn(self._parent,
                                                "This album already exists. Do you want to replace it?",
                                                "A file with the same name already exists at the location you specified."
                                                " Replacing it will overwrite its current contents.",
@@ -84,7 +84,7 @@ class MessageBoxes:
         if not self._confirm_before_exiting:
             return True
 
-        box = ConfirmationBox.warn(self.parent,
+        box = ConfirmationBox.warn(self._parent,
                                    "You are about to quit TGiT. Are you sure you want to continue?",
                                    "Make sure to save your work before you quit TGiT. "
                                    "Any unsaved work will be lost.",
@@ -93,15 +93,18 @@ class MessageBoxes:
         return box.exec() == QMessageBox.Yes
 
     def warn_soproq_default_values(self):
-        return self._open(MessageBox.warn(self.parent,
+        return self._open(MessageBox.warn(self._parent,
                                           "SOPROQ declaration file was generated with default values.",
-                                          "The form was filled with default values assuming you own the rights of the recordings covered by this declaration, forever and throughout the world.\n\nIf this is not the case, please manually review the declaration file."))
+                                          "The form was filled with default values assuming you own the rights of the"
+                                          " recordings covered by this declaration, forever and throughout the "
+                                          "world.\n\nIf this is not the case, please manually review the declaration "
+                                          "file."))
 
     def about_qt(self):
-        QMessageBox().aboutQt(self.parent)
+        QMessageBox().aboutQt(self._parent)
 
     def about_tgit(self):
-        return self._show(AboutDialog(self.parent))
+        return self._open(AboutDialog(self._parent))
 
 
 class MessageBox(QMessageBox):
