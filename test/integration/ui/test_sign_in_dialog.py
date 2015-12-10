@@ -8,7 +8,7 @@ from cute.probes import MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers.sign_in_dialog_driver import SignInDialogDriver
 from tgit.authentication_error import AuthenticationError
-from tgit.ui.sign_in_dialog import SignInDialog
+from tgit.ui.dialogs.sign_in_dialog import SignInDialog
 
 ignore = lambda *_: None
 

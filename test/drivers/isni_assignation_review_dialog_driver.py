@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QListView
 from ._screen_driver import ScreenDriver
 from cute.matchers import named, with_list_item_text
 from cute.widgets import window, QDialogDriver, ListViewDriver
-from tgit.ui.isni_assignation_review_dialog import ISNIAssignationReviewDialog
+from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 
 
 def isni_assignation_review_dialog(parent):

@@ -2,7 +2,7 @@
 from cute.matchers import named, with_text
 from ._screen_driver import ScreenDriver
 from cute.widgets import QDialogDriver
-from tgit.ui.performer_dialog import FIRST_PERFORMER_ROW_INDEX
+from tgit.ui.dialogs.performer_dialog import FIRST_PERFORMER_ROW_INDEX
 
 
 class PerformerDialogDriver(QDialogDriver, ScreenDriver):

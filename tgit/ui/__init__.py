@@ -27,20 +27,20 @@ from tgit.ui import resources
 from tgit.ui.dialogs import Dialogs, MessageBoxes
 from tgit.ui.dialogs.about_dialog import AboutDialog
 from tgit.ui.helpers import template_file as templates
-from tgit.ui.isni_assignation_review_dialog import ISNIAssignationReviewDialog
+from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 from tgit.ui.startup_screen import StartupScreen
-from tgit.ui.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog
+from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog
 from tgit.ui.new_album_page import NewAlbumPage
-from tgit.ui.performer_dialog import PerformerDialog
+from tgit.ui.dialogs.performer_dialog import PerformerDialog
 from tgit.ui.track_list_page import make_track_list_page
 from tgit.ui.album_edition_page import make_album_edition_page
 from tgit.ui.album_screen import make_album_screen
-from tgit.ui.isni_lookup_dialog import ISNILookupDialog
+from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog
 from tgit.ui.main_window import MainWindow
 from tgit.ui.new_album_page import NewAlbumPage
-from tgit.ui.performer_dialog import PerformerDialog
+from tgit.ui.dialogs.performer_dialog import PerformerDialog
 from tgit.ui.dialogs.picture_selection_dialog import PictureSelectionDialog
-from tgit.ui.sign_in_dialog import SignInDialog
+from tgit.ui.dialogs.sign_in_dialog import SignInDialog
 from tgit.ui.track_edition_page import make_track_edition_page
 from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
 from tgit.ui.user_preferences_dialog import UserPreferencesDialog
@@ -65,15 +65,6 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
 
     def show_settings_dialog():
         return UserPreferencesDialogController(messages.restart_required, preferences, window)
-
-    def show_performers_dialog(album):
-        return lambda on_edit: PerformerDialog(album=album, parent=window).edit(on_edit)
-
-    def show_isni_assignation_review_dialog(album, on_review):
-        ISNIAssignationReviewDialog(parent=window).review(on_review, *album.tracks)
-
-    def show_sign_in_dialog(on_sign_in):
-        SignInDialog(parent=window).sign_in(on_sign_in)
 
     def create_new_album_page():
         return NewAlbumPage(select_album_location=application_dialogs.select_album_destination,
@@ -103,24 +94,20 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
     def create_album_page(album):
         return make_album_edition_page(album,
                                        session,
-                                       select_identity=show_isni_lookup_dialog,
-                                       review_assignation=func.partial(show_isni_assignation_review_dialog, album),
+                                       select_identity=application_dialogs.select_identities_in(album),
+                                       review_assignation=application_dialogs.review_isni_assignation_in(album),
                                        show_isni_assignation_failed=messages.isni_assignation_failed,
                                        show_cheddar_connection_failed=messages.cheddar_connection_failed,
-                                       edit_performers=show_performers_dialog(album),
+                                       edit_performers=application_dialogs.edit_performers_in(album),
                                        select_picture=application_dialogs.select_cover,
                                        on_select_picture=director.change_cover_of(album),
                                        on_isni_lookup=director.lookup_isni_using(cheddar, session.current_user),
-                                       on_isni_assign=func.partial(
-                                           director.assign_isni_using(cheddar, session.current_user), album),
+                                       on_isni_assign=director.assign_isni_using(cheddar, session.current_user, album),
                                        on_remove_picture=director.remove_album_cover_from(album),
                                        on_metadata_changed=director.update_album_from(album))
 
     def create_track_page_for(album):
         return lambda track: make_track_edition_page(album, track, on_track_changed=director.update_track(track))
-
-    def show_isni_lookup_dialog(identities):
-        return make_isni_lookup_dialog(window, identities, on_isni_selected=director.select_isni_in(portfolio[0]))
 
     def create_album_screen(album):
         return make_album_screen(album, create_track_list_page, create_album_page, create_track_page_for(album))
@@ -142,7 +129,7 @@ def create_main_window(session, portfolio, player, preferences, cheddar, native,
                         select_tracks_in_folder=application_dialogs.add_tracks_in_folder,
                         show_save_error=messages.save_album_failed,
                         show_export_error=messages.export_failed,
-                        authenticate=show_sign_in_dialog,
+                        authenticate=application_dialogs.sign_in,
                         on_close_album=director.remove_album_from(portfolio),
                         on_save_album=director.save_album(),
                         on_add_files=director.add_tracks,

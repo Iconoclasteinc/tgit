@@ -2,8 +2,7 @@
 from concurrent.futures import Future
 import os
 
-from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
-                      has_key, has_property)
+from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, empty, has_key, has_property)
 
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
@@ -322,7 +321,7 @@ def test_assigns_isni_to_lead_performer_using_the_album_title(prober):
 
     success_signal = ValueMatcherProbe("An identity", _is_joel_miller())
 
-    director.assign_isni_using(FakeCheddar(), User(api_key="the token"))(album, "individual", success_signal.received)
+    director.assign_isni_using(FakeCheddar(), User(api_key="the token"), album)("individual", success_signal.received)
     prober.check(success_signal)
 
 

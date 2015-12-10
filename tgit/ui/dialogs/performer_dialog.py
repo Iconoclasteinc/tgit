@@ -48,7 +48,7 @@ class PerformerDialog(QDialog, UIFile):
         self._build_performers_table(performers)
 
     def _build_performers_table(self, performers):
-        if len(performers) > 0:
+        if performers and len(performers) > 0:
             for performer in performers:
                 self._build_performer_row(performer)
         else:

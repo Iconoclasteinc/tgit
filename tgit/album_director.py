@@ -158,8 +158,8 @@ def select_isni_in(album):
     return select_isni
 
 
-def assign_isni_using(cheddar, user):
-    def assign_isni(album, main_artist_type, on_assign_success):
+def assign_isni_using(cheddar, user, album):
+    def assign_isni(main_artist_type, on_assign_success):
         @_unwrap_future
         def on_assign_done(identity_details):
             on_assign_success(Identity(**identity_details))

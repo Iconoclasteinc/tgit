@@ -19,7 +19,7 @@
 from cute.matchers import named
 from cute.widgets import window, QDialogDriver
 from ._screen_driver import ScreenDriver
-from tgit.ui.sign_in_dialog import SignInDialog
+from tgit.ui.dialogs.sign_in_dialog import SignInDialog
 
 
 def sign_in_dialog(parent):
