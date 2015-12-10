@@ -19,7 +19,7 @@
 from collections import defaultdict
 
 from tgit.metadata import Metadata
-from tgit.util import fs
+from tgit import fs
 from .flac_container import FlacContainer
 from .id3_container import ID3Container
 

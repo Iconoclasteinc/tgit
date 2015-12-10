@@ -9,7 +9,7 @@ from tgit.album import Album
 from tgit.local_storage import local_project
 from tgit.local_storage.local_project import TRACKS_FOLDER_NAME, ARTWORK_FOLDER_NAME
 from tgit.metadata import Image
-from tgit.util import fs
+from tgit import fs
 
 sample_front_cover = "image/jpeg", fs.read(resources.path("front-cover.jpg")), Image.FRONT_COVER, "Front Cover"
 simple_naming = lambda track: track.track_title + ".mp3"

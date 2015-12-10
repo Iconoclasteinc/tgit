@@ -19,11 +19,10 @@
 from functools import wraps
 import os
 
-from tgit import local_storage
+from tgit import local_storage, fs
 from tgit import tagging
 from tgit.album import Album
 from tgit.identity import Identity
-from tgit.util import fs
 
 
 def _build_filename(name, location):

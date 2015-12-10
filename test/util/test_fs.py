@@ -4,7 +4,7 @@ import os
 from hamcrest import assert_that, equal_to, contains, empty, ends_with
 
 from test.util import resources
-from tgit.util import fs
+from tgit import fs
 
 
 def test_sanitization_replaces_invalid_characters_in_filename_with_underscores():

@@ -1062,7 +1062,7 @@ color: #666666;</string>
   <customwidget>
    <class>TextArea</class>
    <extends>QPlainTextEdit</extends>
-   <header>tgit.ui.helpers.text_area</header>
+   <header>tgit.ui.widgets.text_area</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -9,6 +9,7 @@ import pytest
 
 from cute.prober import PollingProber
 from cute.probes import ValueMatcherProbe
+from tgit import fs
 from tgit.identity import Identity
 from test.util import builders as build, resources, doubles
 from test.util.builders import make_album, make_track
@@ -18,7 +19,6 @@ from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session, User
 from tgit.metadata import Image, Metadata
-from tgit.util import fs
 
 
 @pytest.yield_fixture

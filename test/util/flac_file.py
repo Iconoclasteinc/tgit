@@ -5,7 +5,7 @@ import os
 from mutagen.flac import FLAC, Picture
 
 from test.util import resources
-from tgit.util import fs
+from tgit import fs
 
 
 class base(object):

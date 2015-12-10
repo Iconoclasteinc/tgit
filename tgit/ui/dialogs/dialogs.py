@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 from tgit import album_director as director
 from tgit.ui.dialogs.performer_dialog import PerformerDialog
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
@@ -70,6 +71,7 @@ class Dialogs:
     def review_isni_assignation_in(self, album):
         def review_isni_assignation(on_review):
             ISNIAssignationReviewDialog(self._parent).review(on_review, *album.tracks)
+
         return review_isni_assignation
 
     def select_identities_in(self, album):
@@ -81,4 +83,5 @@ class Dialogs:
     def edit_performers_in(self, album):
         def edit_performers(on_edit):
             PerformerDialog(album, self._parent).edit(on_edit)
+
         return edit_performers

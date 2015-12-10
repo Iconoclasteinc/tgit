@@ -4,10 +4,9 @@ from os.path import exists
 from hamcrest import assert_that, has_entries, contains_inanyorder as contains
 from openpyxl import load_workbook
 
-from tgit import tagging
+from tgit import tagging, fs
 from tgit.local_storage.local_project import TRACKS_FOLDER_NAME
 from tgit.metadata import Image
-from tgit.util import fs
 
 
 class AlbumWorkspace(object):

@@ -15,7 +15,7 @@ from test.util import resources, builders as build
 from test.util.builders import make_album, make_anonymous_session, make_registered_session
 from tgit.metadata import Image
 from tgit.ui.pages.album_edition_page import make_album_edition_page, AlbumEditionPage
-from tgit.util import fs
+from tgit import fs
 
 
 @pytest.yield_fixture()

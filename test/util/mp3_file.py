@@ -6,7 +6,7 @@ from mutagen import id3
 from mutagen.mp3 import MP3
 
 from test.util import resources as test_resources
-from tgit.util import fs
+from tgit import fs
 
 
 class Base(object):

@@ -19,7 +19,7 @@
 from PyQt5.QtWidgets import QFileDialog
 
 from tgit.ui import locations
-from tgit.util import fs
+from tgit import fs
 
 
 class TrackSelectionDialog(QFileDialog):

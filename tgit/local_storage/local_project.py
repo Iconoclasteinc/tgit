@@ -23,7 +23,7 @@ import tgit
 from tgit.album import Album
 from tgit.metadata import Metadata
 from tgit.tagging import tagging
-from tgit.util import fs
+from tgit import fs
 from . import naming, yaml
 
 ARTWORK_FOLDER_NAME = "Artwork"

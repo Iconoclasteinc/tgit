@@ -21,13 +21,12 @@ from PyQt5.QtCore import QLocale
 
 from tgit import album_director as director
 from tgit import export
-from tgit.ui import resources
+from tgit.ui import resources, browser
 from tgit.ui.pages import Pages
 from tgit.ui.dialogs import Dialogs, MessageBoxes
 from tgit.ui.helpers import template_file as templates
 from tgit.ui.main_window import MainWindow
 from tgit.ui.user_preferences_dialog import UserPreferencesDialog
-from tgit.util import browser
 
 
 def UserPreferencesDialogController(notify_restart_required, preferences, parent):
