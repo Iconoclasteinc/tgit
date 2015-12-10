@@ -11,10 +11,10 @@ from cute.widgets import window
 from test.drivers import AlbumScreenDriver
 from test.integration.ui import show_widget
 from test.util.builders import make_track, make_album
-from tgit.ui.track_edition_page import TrackEditionPage
-from tgit.ui.album_edition_page import AlbumEditionPage
-from tgit.ui.album_screen import AlbumScreen, make_album_screen
-from tgit.ui.track_list_page import TrackListPage
+from tgit.ui.pages.track_edition_page import TrackEditionPage
+from tgit.ui.pages.album_edition_page import AlbumEditionPage
+from tgit.ui.pages.album_screen import AlbumScreen, make_album_screen
+from tgit.ui.pages.track_list_page import TrackListPage
 
 ignore = lambda *_: None
 

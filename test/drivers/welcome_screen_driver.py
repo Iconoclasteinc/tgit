@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named
-from tgit.ui.welcome_page import WelcomePage
+from tgit.ui.pages.welcome_page import WelcomePage
 from ._screen_driver import ScreenDriver
 
 

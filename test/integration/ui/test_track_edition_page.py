@@ -11,7 +11,7 @@ from cute.widgets import window
 from test.drivers import TrackEditionPageDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
-from tgit.ui.track_edition_page import make_track_edition_page, TrackEditionPage
+from tgit.ui.pages.track_edition_page import make_track_edition_page, TrackEditionPage
 
 
 @pytest.yield_fixture()

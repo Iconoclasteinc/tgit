@@ -28,8 +28,8 @@ from cute.widgets import window
 from test.drivers.about_dialog_driver import AboutDialogDriver
 from test.integration.ui import show_widget
 from tgit.platforms import mac
-from tgit.ui import AboutDialog
 from tgit import __version__
+from tgit.ui.dialogs.about_dialog import AboutDialog
 
 DISPLAY_DELAY = 200 if mac else 0
 

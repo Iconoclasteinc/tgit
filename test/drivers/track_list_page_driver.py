@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QMenu, QTableWidget
 from cute import gestures
 from cute.widgets import MenuDriver, TableViewDriver
 from cute.matchers import named
-from tgit.ui.track_list_page import TrackListPage
+from tgit.ui.pages.track_list_page import TrackListPage
 from ._screen_driver import ScreenDriver
 
 

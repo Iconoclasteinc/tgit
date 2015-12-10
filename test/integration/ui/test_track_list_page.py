@@ -12,7 +12,7 @@ from test.drivers import TrackListPageDriver
 from test.integration.ui import show_widget
 from test.util import doubles
 from test.util.builders import make_album, make_track
-from tgit.ui.track_list_page import TrackListPage, make_track_list_page
+from tgit.ui.pages.track_list_page import TrackListPage, make_track_list_page
 
 ignore = lambda *_: None
 

@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem
 from tgit.album import AlbumListener
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
-from tgit.ui.track_list_table_model import Column, RowItem
+from tgit.ui.pages.track_list_table_model import Column, RowItem
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.observer import Observer
 from tgit.ui.event_filters import MovableSectionsCursor

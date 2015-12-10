@@ -22,9 +22,9 @@ import pytest
 from cute.finders import WidgetIdentity
 from test.drivers.startup_screen_driver import StartupScreenDriver
 from test.integration.ui import show_widget
-from tgit.ui import StartupScreen
-from tgit.ui.new_album_page import NewAlbumPage
-from tgit.ui.welcome_page import WelcomePage
+from tgit.ui.pages.new_album_page import NewAlbumPage
+from tgit.ui.pages.startup_screen import StartupScreen
+from tgit.ui.pages.welcome_page import WelcomePage
 
 
 ignore = lambda: None

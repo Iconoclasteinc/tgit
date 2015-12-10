@@ -25,7 +25,7 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import QMessageBoxDriver, window
 from test.drivers.about_dialog_driver import AboutDialogDriver
 from tgit import platforms
-from tgit.ui import AboutDialog
+from tgit.ui.dialogs.about_dialog import AboutDialog
 from tgit.ui.dialogs.message_boxes import MessageBoxes
 
 DISPLAY_DELAY = 200 if platforms.mac else 0

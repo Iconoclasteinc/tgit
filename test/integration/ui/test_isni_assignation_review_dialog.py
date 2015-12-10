@@ -7,7 +7,7 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.isni_assignation_review_dialog_driver import IsniAssignationReviewDialogDriver
 from test.util import builders as build
-from tgit.ui import ISNIAssignationReviewDialog
+from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 
 ignore = lambda *_: None
 

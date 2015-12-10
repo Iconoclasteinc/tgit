@@ -2,7 +2,7 @@
 from hamcrest.library.text import contains_string
 
 from cute.matchers import named
-from tgit.ui.album_screen import AlbumScreen
+from tgit.ui.pages.album_screen import AlbumScreen
 from ._screen_driver import ScreenDriver
 from .album_edition_page_driver import album_edition_page, no_album_edition_page
 from .track_list_page_driver import track_list_page, no_track_list_page

@@ -2,7 +2,7 @@
 from hamcrest import starts_with, any_of
 
 from cute.matchers import named, with_buddy, showing_on_screen
-from tgit.ui.track_edition_page import TrackEditionPage
+from tgit.ui.pages.track_edition_page import TrackEditionPage
 from ._screen_driver import ScreenDriver
 
 

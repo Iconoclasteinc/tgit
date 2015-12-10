@@ -11,7 +11,7 @@ from cute.widgets import window
 from test.drivers import PerformerDialogDriver
 from test.util import builders as build
 from tgit.platforms import mac
-from tgit.ui import PerformerDialog
+from tgit.ui.dialogs.performer_dialog import PerformerDialog
 
 ignore = lambda *_: None
 

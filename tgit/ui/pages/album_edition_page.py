@@ -29,7 +29,7 @@ from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
-from .helpers import image, formatting
+from tgit.ui.helpers import image, formatting
 
 ISO_8601_FORMAT = "yyyy-MM-dd"
 QMENU_STYLESHEET = """

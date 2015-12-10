@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from hamcrest import instance_of
-
 import pytest
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import WelcomePageDriver
-from tgit.ui.welcome_page import WelcomePage
+from tgit.ui.pages.welcome_page import WelcomePage
 
 ignore = lambda: None
 

@@ -21,7 +21,7 @@ from hamcrest import ends_with
 
 from cute import gestures
 from cute.matchers import named
-from tgit.ui.new_album_page import NewAlbumPage
+from tgit.ui.pages.new_album_page import NewAlbumPage
 from ._screen_driver import ScreenDriver
 
 

@@ -4,7 +4,7 @@ from datetime import timedelta
 from hamcrest import assert_that, is_, not_none
 
 from test.util.builders import make_track, make_album
-from tgit.ui.track_list_table_model import RowItem, Column
+from tgit.ui.pages.track_list_table_model import RowItem, Column
 
 
 def test_retrieves_values_from_track_list_item():
