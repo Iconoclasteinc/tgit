@@ -41,8 +41,8 @@ if windows:
 
 includes = [
     "PyQt5.QtNetwork",
-    "tgit.ui.date_picker",
-    "tgit.ui.helpers.text_area"
+    "tgit.ui.widgets.date_picker",
+    "tgit.ui.widgets.text_area"
 ]
 
 
