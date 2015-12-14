@@ -557,7 +557,11 @@ color: #666666;</string>
      <item>
       <widget class="QTabWidget" name="_tabs">
        <property name="styleSheet">
-        <string notr="true">#_contributors_tab {
+        <string notr="true">#_tabs {
+	background-color: white;
+}
+
+#_contributors_tab {
 	background-color: white;
 }
 
@@ -574,9 +578,6 @@ color: #666666;</string>
         <number>0</number>
        </property>
        <widget class="QWidget" name="_contributors_tab">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
         <attribute name="title">
          <string>Contributors</string>
         </attribute>
