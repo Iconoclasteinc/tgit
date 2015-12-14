@@ -556,24 +556,6 @@ color: #666666;</string>
      </item>
      <item>
       <widget class="QTabWidget" name="_tabs">
-       <property name="styleSheet">
-        <string notr="true">#_tabs {
-	background-color: white;
-}
-
-#_contributors_tab {
-	background-color: white;
-}
-
-#_recording_tab {
-	background-color: white;
-}
-
-#_content_tab {
-	background-color: white;
-}
-</string>
-       </property>
        <property name="currentIndex">
         <number>0</number>
        </property>
