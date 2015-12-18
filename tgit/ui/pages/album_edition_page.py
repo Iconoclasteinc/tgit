@@ -240,6 +240,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def metadata(self, *keys):
         all_values = dict(release_name=self.release_name.text(),
                           compilation=self.compilation.isChecked(),
+                          lead_performer=(self.lead_performer.text(),),
                           lead_performer_region=self._get_country_code_from_combo(self._lead_performer_region),
                           guest_performers=formatting.fromPeopleList(self.guest_performers.text()),
                           label_name=self.label_name.text(),
@@ -248,11 +249,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           comments=self.comments.toPlainText(),
                           recording_time=self.recording_time.date().toString(ISO_8601_FORMAT),
                           release_time=self.release_time.date().toString(ISO_8601_FORMAT))
-
-        if self._isni.text():
-            all_values["lead_performer"] = (self.lead_performer.text(), self._isni.text())
-        else:
-            all_values["lead_performer"] = (self.lead_performer.text(),)
 
         if len(keys) == 0:
             return all_values

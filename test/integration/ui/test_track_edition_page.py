@@ -14,7 +14,7 @@ from cute.widgets import window
 from test.drivers import TrackEditionPageDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
-from test.util.builders import make_album
+from test.util.builders import make_album, make_track
 from tgit.authentication_error import AuthenticationError
 from tgit.identity import IdentityCard
 from tgit.insufficient_information_error import InsufficientInformationError
@@ -73,7 +73,7 @@ def test_displays_track_metadata(driver):
                         track_title="Song",
                         versionInfo="Remix",
                         featuredGuest="Featuring",
-                        lyricist=("Lyricist", "0000000123456789"),
+                        lyricist=("Lyricist",),
                         composer="Composer",
                         publisher="Publisher",
                         isrc="Code",
@@ -88,7 +88,7 @@ def test_displays_track_metadata(driver):
                         music_producer="Artistic Producer",
                         mixer="Mixing Engineer",
                         primary_style="Style")
-    album = build.album(compilation=True, tracks=[track])
+    album = build.album(compilation=True, tracks=[track], isnis={"Lyricist": "0000000123456789"})
 
     _ = show_page(album, track)
 
@@ -368,3 +368,28 @@ def test_signals_assigned_isni_on_isni_assignation(driver):
     driver.assign_isni_to_lyricist()
     driver.confirm_lyricist_isni()
     driver.check(metadata_changed_signal)
+
+
+def test_updates_isni_when_lyricist_text_change(driver):
+    def lookup(text):
+        return "0000000123456789" if text == "Joel Miller" else None
+
+    track = make_track()
+    album = make_album(tracks=[track])
+
+    _ = show_page(album, track, on_isni_local_lookup=lookup)
+
+    driver.change_lyricist("Joel Miller")
+    driver.shows_lyricist_isni("0000000123456789")
+
+
+def test_clears_isni_when_lyricist_not_found(driver):
+    def lookup(text):
+        return "0000000123456789" if text == "Joel Miller" else None
+
+    track = make_track(lyricist=("Joel Miller",))
+    album = make_album(tracks=[track], isnis={"Joel Miller": "00000000123456789"})
+    _ = show_page(album, track, on_isni_local_lookup=lookup)
+
+    driver.change_lyricist("Rebecca Ann Maloy")
+    driver.shows_lyricist_isni("")

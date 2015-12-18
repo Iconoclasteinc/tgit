@@ -17,6 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import sys
+from traceback import format_exception
 
 from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtGui import QIcon
@@ -73,7 +74,9 @@ class TGiT(QApplication):
         self.run()
 
     def run(self):
-        exit_value = self.exec_()
+        self.clean_exit(self.exec_())
+
+    def clean_exit(self, exit_value):
         self._player.close()
         self._media_library.close()
         if self._on_exit is not None:
@@ -84,8 +87,17 @@ class TGiT(QApplication):
 def main():
     from requests.packages import urllib3
     urllib3.disable_warnings()
+    # _print_unhandled_exceptions()
 
     cheddar = Cheddar(host="tagyourmusic.herokuapp.com", port=443, secure=True)
 
     tagger = TGiT(MediaPlayer, cheddar)
     tagger.launch()
+
+
+def _print_unhandled_exceptions():
+    def exception_hook(exctype, value, traceback):
+        for line in format_exception(exctype, value, traceback):
+            print(line, file=sys.stderr)
+
+    sys.excepthook = exception_hook

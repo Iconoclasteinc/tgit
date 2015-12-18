@@ -42,7 +42,7 @@ class Pages:
                              create_new_album_page=self._new_album_page)
 
     def album_screen(self, album):
-        return make_album_screen(album,
+        return make_album_screen(album=album,
                                  track_list_page=self._track_list_page,
                                  album_page=self._album_edition_page,
                                  track_page=self._track_page_for(album))
@@ -60,7 +60,7 @@ class Pages:
                            on_load_album=director.load_album_into(self._portfolio))
 
     def _track_list_page(self, album):
-        return make_track_list_page(album, self._player,
+        return make_track_list_page(album=album, player=self._player,
                                     select_tracks=functools.partial(self._dialogs.select_tracks, album.type),
                                     on_move_track=director.move_track_of(album),
                                     on_remove_track=director.remove_track_from(album),
@@ -69,34 +69,34 @@ class Pages:
                                     on_add_tracks=director.add_tracks_to(album))
 
     def _album_edition_page(self, album):
-        return make_album_edition_page(album,
-                                       self._session,
-                                       select_identity=self._dialogs.select_identities,
-                                       review_assignation=self._dialogs.review_isni_assignation_in(album, True),
-                                       show_isni_assignation_failed=self._messages.isni_assignation_failed,
-                                       show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
-                                       show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed,
-                                       edit_performers=self._dialogs.edit_performers_in(album),
-                                       select_picture=self._dialogs.select_cover,
-                                       on_select_picture=director.change_cover_of(album),
-                                       on_isni_changed=director.add_isni_to(album),
-                                       on_isni_local_lookup=director.lookup_isni_in(album),
-                                       on_isni_lookup=director.lookup_isni_using(self._cheddar,
-                                                                                 self._session.current_user),
-                                       on_isni_assign=director.assign_isni_to_main_artist_using(self._cheddar,
-                                                                                                self._session.current_user,
-                                                                                                album),
-                                       on_remove_picture=director.remove_album_cover_from(album),
-                                       on_metadata_changed=director.update_album_from(album))
+        return make_album_edition_page(
+            album=album,
+            session=self._session,
+            select_identity=self._dialogs.select_identities,
+            review_assignation=self._dialogs.review_isni_assignation_in(album, True),
+            show_isni_assignation_failed=self._messages.isni_assignation_failed,
+            show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
+            show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed,
+            edit_performers=self._dialogs.edit_performers_in(album),
+            select_picture=self._dialogs.select_cover,
+            on_select_picture=director.change_cover_of(album),
+            on_isni_changed=director.add_isni_to(album),
+            on_isni_local_lookup=director.lookup_isni_in(album),
+            on_isni_lookup=director.lookup_isni_using(self._cheddar, self._session.current_user),
+            on_isni_assign=director.assign_isni_to_main_artist_using(self._cheddar, self._session.current_user, album),
+            on_remove_picture=director.remove_album_cover_from(album),
+            on_metadata_changed=director.update_album_from(album))
 
     def _track_page_for(self, album):
         def track_page(track):
-            return \
-                make_track_edition_page(album, track,
-                                        on_track_changed=director.update_track(track),
-                                        review_assignation=self._dialogs.review_isni_assignation_in(album),
-                                        show_isni_assignation_failed=self._messages.isni_assignation_failed,
-                                        show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
-                                        show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed)
+            return make_track_edition_page(
+                album=album,
+                track=track,
+                on_track_changed=director.update_track(track),
+                on_isni_local_lookup=director.lookup_isni_in(album),
+                review_assignation=self._dialogs.review_isni_assignation_in(album),
+                show_isni_assignation_failed=self._messages.isni_assignation_failed,
+                show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
+                show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed)
 
         return track_page

@@ -96,7 +96,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._version.editingFinished.connect(emit_metadata_changed)
         self._featured_guest.editingFinished.connect(emit_metadata_changed)
         self._lyricist.editingFinished.connect(emit_metadata_changed)
-        self._lyricist_isni.editingFinished.connect(emit_metadata_changed)
         self._composer.editingFinished.connect(emit_metadata_changed)
         self._publisher.editingFinished.connect(emit_metadata_changed)
         self._isrc.editingFinished.connect(emit_metadata_changed)
@@ -140,11 +139,17 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
         self._lyricist_isni_assign_action.triggered.connect(lambda _: self._review_assignation(start_waiting))
 
+    def on_isni_local_lookup(self, on_isni_local_lookup):
+        def update_lyricist_isni(lyricist):
+            self._lyricist_isni.setText(on_isni_local_lookup(lyricist))
+
+        self._lyricist.textEdited.connect(update_lyricist_isni)
+
     def display(self, album=None, track=None):
-        if album:
-            self._display_album(album)
         if track:
             self.display_track(track)
+        if album:
+            self._display_album(album)
 
     def _display_album(self, album):
         self._display_album_cover(album.main_cover)
@@ -156,6 +161,9 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._lead_performer.setEnabled(album.compilation is True)
         self._lead_performer_caption.setEnabled(album.compilation is True)
 
+        identities = album.isnis or {}
+        self._lyricist_isni.setText(identities[self._lyricist.text()] if self._lyricist.text() in identities else "")
+
     def display_track(self, track):
         self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
         self._track_title.setText(track.track_title)
@@ -165,7 +173,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
         self._featured_guest.setText(track.featuredGuest)
         self._lyricist.setText(track.lyricist[0] if track.lyricist else "")
-        self._lyricist_isni.setText(track.lyricist[1] if track.lyricist and len(track.lyricist) > 1 else "")
         self._composer.setText(track.composer)
         self._publisher.setText(track.publisher)
         self._isrc.setText(track.isrc)
@@ -182,6 +189,9 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._display_region(track.production_company_region, self._production_company_region)
         self._mixer.setText(track.mixer)
         self._genre.setEditText(track.primary_style)
+
+        identities = track.album.isnis or {}
+        self._lyricist_isni.setText(identities[track.lyricist[0]] if track.lyricist[0] in identities else "")
 
     @staticmethod
     def _display_region(region, combobox):

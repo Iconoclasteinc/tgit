@@ -19,12 +19,10 @@
 
 from tgit import tag
 from tgit.metadata import Metadata
-from tgit.signal import signal
+from tgit.signal import Signal
 
 
 class Track(object, metaclass=tag.Taggable):
-    metadata_changed = signal(Metadata)
-
     album = None
 
     track_title = tag.text()
@@ -58,6 +56,7 @@ class Track(object, metaclass=tag.Taggable):
     duration = tag.decimal()
 
     def __init__(self, filename, metadata=None):
+        self.metadata_changed = Signal("metadata_changed", Track)
         self.filename = filename
         self.metadata = metadata or Metadata()
 
@@ -66,7 +65,7 @@ class Track(object, metaclass=tag.Taggable):
         return self.album.type if self.album is not None else None
 
     def metadataChanged(self):
-        self.metadata_changed.emit(self.metadata)
+        self.metadata_changed.emit(self)
 
     def isni_for(self, role):
         if not self.isni:
