@@ -71,7 +71,7 @@ class Pages:
     def _album_edition_page(self, album):
         return make_album_edition_page(album,
                                        self._session,
-                                       select_identity=self._dialogs.select_identities_in(album),
+                                       select_identity=self._dialogs.select_identities,
                                        review_assignation=self._dialogs.review_isni_assignation_in(album, True),
                                        show_isni_assignation_failed=self._messages.isni_assignation_failed,
                                        show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
@@ -79,6 +79,8 @@ class Pages:
                                        edit_performers=self._dialogs.edit_performers_in(album),
                                        select_picture=self._dialogs.select_cover,
                                        on_select_picture=director.change_cover_of(album),
+                                       on_isni_changed=director.add_isni_to(album),
+                                       on_isni_local_lookup=director.lookup_isni_in(album),
                                        on_isni_lookup=director.lookup_isni_using(self._cheddar,
                                                                                  self._session.current_user),
                                        on_isni_assign=director.assign_isni_to_main_artist_using(self._cheddar,

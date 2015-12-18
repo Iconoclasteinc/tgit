@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from concurrent.futures import Future
 import os
+from flexmock import flexmock
 
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
-                      has_key, has_property)
+                      has_key, has_property, has_entry, match_equality)
 
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
@@ -15,7 +16,7 @@ from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
 from tgit import fs, album_director as director
 from tgit.identity import IdentityCard
-from tgit.album import Album
+from tgit.album import Album, AlbumListener
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session, User
 from tgit.metadata import Image, Metadata
@@ -245,24 +246,6 @@ def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
     prober.check(success_signal)
 
 
-def test_updates_isni_from_selected_identity():
-    identity = IdentityCard(id="0000000115677274", firstName="Joel", lastName="Miller", type=IdentityCard.INDIVIDUAL)
-    album = build.album(compilation=False)
-
-    director.select_isni_in(album)(identity)
-    assert_that(album.lead_performer, equal_to(("Joel Miller", "0000000115677274")), "lead performer")
-
-
-def test_updates_lead_performer_from_selected_identity():
-    identity = IdentityCard(id="0000000115677274", firstName="Paul", lastName="McCartney", type=IdentityCard.INDIVIDUAL)
-    track = build.track(lead_performer=("artist",))
-    album = build.album(tracks=[track], compilation=False)
-
-    director.select_isni_in(album)(identity)
-    assert_that(album.lead_performer, equal_to(("Paul McCartney", "0000000115677274")), "lead performer")
-    assert_that(track.lead_performer, equal_to(("Paul McCartney", "0000000115677274")), "lead performer")
-
-
 def test_updates_album_metadata():
     album = build.album()
     director.update_album_from(album)(release_name="Title", compilation=True, lead_performer=("Artist", "000123456789"),
@@ -338,6 +321,31 @@ def test_assigns_isni_to_lyricist(prober):
 
     director.assign_isni_to_lyricist_using(FakeCheddar(), User(api_key="the token"))(track, success_signal.received)
     prober.check(success_signal)
+
+
+def test_returns_isni_from_local_map():
+    album = make_album(isnis={"Joel Miller": "00000000123456789"})
+
+    assert_that(director.lookup_isni_in(album)("Joel Miller"), equal_to("00000000123456789"), "isni")
+
+
+def test_returns_none_when_name_not_found_in_local_map():
+    album = make_album(isnis={"Joel Miller": "00000000123456789"})
+
+    assert_that(director.lookup_isni_in(album)("Rebecca Ann Maloy"), none(), "isni")
+
+
+def test_signals_when_adding_isni_to_local_map():
+    album = make_album()
+    album.addAlbumListener(_listener_expecting_notification("isnis", {"Joel Miller": "0000000123456789"}))
+
+    director.add_isni_to(album)("Joel Miller", "0000000123456789")
+
+
+def _listener_expecting_notification(prop, value):
+    listener = flexmock(AlbumListener())
+    listener.should_receive("albumStateChanged").with_args(match_equality(has_property(prop, value))).once()
+    return listener
 
 
 def _to_joel_miller():

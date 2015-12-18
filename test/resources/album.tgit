@@ -15,9 +15,10 @@ guest_performers:
 label_name: Label
 lead_performer: !!python/tuple
 - Artist
-- 0000000123456789
 lead_performer_region: !!python/tuple
 - FR
+isnis:
+  Artist: 0000000123456789
 recording_time: '2008-09-15'
 release_time: '2009-01-01'
 original_release_time: '2009-01-15'

@@ -74,11 +74,8 @@ class Dialogs:
 
         return review_isni_assignation
 
-    def select_identities_in(self, album):
-        def select_identities(identities):
-            return make_isni_lookup_dialog(self._parent, identities, on_isni_selected=director.select_isni_in(album))
-
-        return select_identities
+    def select_identities(self, identities, on_identity_selected):
+        return make_isni_lookup_dialog(self._parent, identities, on_isni_selected=on_identity_selected)
 
     def edit_performers_in(self, album):
         def edit_performers(on_edit):

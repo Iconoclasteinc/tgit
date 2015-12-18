@@ -42,5 +42,6 @@ def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, pla
     workspace.contains_track(album="Honeycomb",
                              filename="Joel Miller - 01 - Salsa Coltrane.mp3",
                              release_name="Honeycomb",
-                             lead_performer=("Joel Miller", "0000000121707484"),
+                             lead_performer=("Joel Miller",),
+                             isnis={"Joel Miller": "0000000121707484"},
                              track_title="Salsa Coltrane")

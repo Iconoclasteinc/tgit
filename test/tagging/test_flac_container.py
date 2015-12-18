@@ -32,7 +32,7 @@ def test_reads_lead_performer_from_artists_field(flac):
 
 def test_reads_lead_performer_isni(flac):
     metadata = container.load(flac(ISNI="0000000123456789:Joel Miller"))
-    assert_that(metadata, has_entry("isni", has_entry("Joel Miller", "0000000123456789")), "metadata")
+    assert_that(metadata, has_entry("isnis", has_entry("Joel Miller", "0000000123456789")), "metadata")
 
 
 def test_reads_bitrate_from_audio_stream_information(flac):
@@ -157,7 +157,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["release_name"] = "St-Henri"
     metadata["lead_performer"] = "Joel Miller"
     metadata["lead_performer_region"] = ("CA", "QC")
-    metadata["isni"] = {"Joel Miller": "0000000123456789", "Rebecca Ann Maloy": "9876543210000000"}
+    metadata["isnis"] = {"Joel Miller": "0000000123456789", "Rebecca Ann Maloy": "9876543210000000"}
     metadata["label_name"] = "Effendi Records Inc."
     metadata["primary_style"] = "Modern Jazz"
     metadata["recording_time"] = "2007-11-02"

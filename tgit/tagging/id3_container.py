@@ -192,14 +192,14 @@ class ISNIProcessor:
             isni_map = self._add_isni_to_map(frame, isni_map)
 
         if len(isni_map) > 0:
-            metadata["isni"] = isni_map
+            metadata["isnis"] = isni_map
 
     @staticmethod
     def process_metadata(frames, encoding, metadata):
-        if "isni" not in metadata:
+        if "isnis" not in metadata:
             return
 
-        for name, isni in metadata["isni"].items():
+        for name, isni in metadata["isnis"].items():
             frames.add(getattr(id3, "TXXX")(encoding=encoding, desc="ISNI:{}".format(name), text=isni))
 
     @staticmethod

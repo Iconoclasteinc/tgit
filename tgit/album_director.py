@@ -149,12 +149,22 @@ def lookup_isni_using(cheddar, user):
     return lookup_isni
 
 
-def select_isni_in(album):
-    def select_isni(identity):
-        metadata = dict(lead_performer=(identity.full_name, identity.id), compilation=album.compilation)
-        update_album_from(album)(**metadata)
+def add_isni_to(album):
+    def add_isni(name, isni):
+        isnis = album.isnis
+        if not isnis:
+            isnis = {}
+        isnis[name] = isni
+        album.isnis = isnis
 
-    return select_isni
+    return add_isni
+
+
+def lookup_isni_in(album):
+    def lookup_isni(name):
+        return album.isnis[name] if album.isnis and name in album.isnis else None
+
+    return lookup_isni
 
 
 def assign_isni_to_main_artist_using(cheddar, user, album):

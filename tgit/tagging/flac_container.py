@@ -135,7 +135,7 @@ class ISNIField:
 
 
 class FlacContainer:
-    fields = [ISNIField("ISNI", "isni"),
+    fields = [ISNIField("ISNI", "isnis"),
               PictureField("PICTURES", {
                   PictureType.OTHER: Image.OTHER,
                   PictureType.FRONT_COVER: Image.FRONT_COVER,

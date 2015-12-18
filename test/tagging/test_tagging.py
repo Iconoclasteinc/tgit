@@ -28,7 +28,8 @@ def test_loads_track_from_metadata_embedded_in_file(mp3):
 
 
 def test_round_trips_track_and_album_metadata(mp3):
-    album = build.album(release_name="Album Title", lead_performer=("Album Artist", "0000000123456789"),
+    album = build.album(release_name="Album Title", lead_performer=("Album Artist",),
+                        isnis={"Album Artist": "0000000123456789"},
                         images=[build.image(mime="image/jpeg", data=b"<image data>")])
     track = build.track(filename=mp3(), track_title="Track Title", album=album)
 
@@ -36,7 +37,8 @@ def test_round_trips_track_and_album_metadata(mp3):
 
     track = tagging.load_track(track.filename)
     assert_that(track.metadata, has_entries(release_name="Album Title",
-                                            lead_performer=("Album Artist", "0000000123456789"),
+                                            lead_performer=("Album Artist",),
+                                            isnis={"Album Artist": "0000000123456789"},
                                             track_title="Track Title"), "metadata tags")
     assert_that(track.metadata, is_not(has_key("isni")), "metadata tags")
     assert_that(track.metadata.images, contains(Image(mime="image/jpeg", data=b"<image data>")), "attached pictures")

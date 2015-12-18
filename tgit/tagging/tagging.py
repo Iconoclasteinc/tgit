@@ -37,7 +37,6 @@ def _all_metadata(track):
 
 
 def _create_isni_map(track_metadata):
-    track_metadata["isni"] = {}
     if "lead_performer" in track_metadata:
         _unroll_identity_tuple("lead_performer", track_metadata)
     if "lyricist" in track_metadata:
@@ -49,8 +48,6 @@ def _unroll_isni_map(metadata):
         metadata = _transform_identity_to_tuple("lead_performer", metadata)
     if "lyricist" in metadata:
         metadata = _transform_identity_to_tuple("lyricist", metadata)
-    if "isni" in metadata:
-        del metadata["isni"]
     return metadata
 
 
@@ -61,18 +58,9 @@ def _unroll_identity_tuple(field, metadata):
 
     name = identity[0]
     metadata[field] = name
-    if len(identity) > 1:
-        metadata["isni"][name] = identity[1]
 
 
 def _transform_identity_to_tuple(field, metadata):
-    def isni_for(full_name, isni_map):
-        return isni_map[full_name] if full_name in isni_map else ""
-
-    if "isni" in metadata:
-        isni = isni_for(metadata[field], metadata["isni"])
-        metadata[field] = (metadata[field], isni)
-    else:
-        metadata[field] = (metadata[field],)
+    metadata[field] = (metadata[field],)
 
     return metadata

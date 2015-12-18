@@ -67,9 +67,12 @@ class AlbumEditionPageDriver(ScreenDriver):
             elif tag == "original_release_time":
                 self.change_original_release_time(value)
             elif tag == "isni":
-                self.change_lead_performer_isni(value)
+                pass
             else:
                 raise AssertionError("Don't know how to edit '{0}'".format(tag))
+
+        if "isni" in meta:
+            self.change_lead_performer_isni(meta["isni"])
 
     def _displays_picture_with_size(self, width, height):
         label = self.label(named("front_cover"))
@@ -157,6 +160,9 @@ class AlbumEditionPageDriver(ScreenDriver):
 
     def change_lead_performer(self, name):
         self.lineEdit(named("lead_performer")).change_text(name)
+
+    def write_lead_performer(self, name):
+        self.lineEdit(named("lead_performer")).type(name)
 
     def change_lead_performer_isni(self, isni):
         self.lineEdit(named("_isni")).change_text(isni)

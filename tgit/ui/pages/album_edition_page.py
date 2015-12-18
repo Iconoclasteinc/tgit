@@ -117,6 +117,18 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def on_select_picture(self, on_select_picture):
         self.select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
 
+    def on_isni_changed(self, on_isni_changed):
+        def lead_performer_isni_changed():
+            on_isni_changed(self.lead_performer.text(), self._isni.text())
+
+        self._isni.editingFinished.connect(lead_performer_isni_changed)
+
+    def on_isni_local_lookup(self, on_isni_local_lookup):
+        def update_lead_performer_isni(lead_performer):
+            self._isni.setText(on_isni_local_lookup(lead_performer))
+
+        self.lead_performer.textEdited.connect(update_lead_performer_isni)
+
     def on_isni_lookup(self, on_isni_lookup):
         def start_waiting():
             QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -130,8 +142,12 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                 QApplication.restoreOverrideCursor()
 
         def on_lookup_success(identities):
-            self._select_identity(identities)
+            self._select_identity(identities, on_identity_selected)
             QApplication.restoreOverrideCursor()
+
+        def on_identity_selected(identity):
+            self._isni.setFocus(Qt.OtherFocusReason)
+            self._isni.setText(identity.id)
 
         self._main_artist_isni_lookup_action.triggered.connect(start_waiting)
 
@@ -171,7 +187,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.compilation.clicked.connect(lambda: handle("compilation"))
         self.lead_performer.editingFinished.connect(lambda: handle("lead_performer"))
         self._lead_performer_region.activated.connect(lambda: handle("lead_performer_region"))
-        self._isni.editingFinished.connect(lambda: handle("isni"))
         self.guest_performers.textChanged.connect(lambda: handle("guest_performers"))
         self.label_name.editingFinished.connect(lambda: handle("label_name"))
         self.catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
@@ -202,7 +217,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.compilation.setChecked(album.compilation is True)
         self._display_lead_performer(album)
         self._display_region(album.lead_performer_region, self._lead_performer_region)
-        self._isni.setText(album.lead_performer[1] if album.lead_performer and len(album.lead_performer) > 1 else "")
+        self._isni.setText(
+            album.isnis[album.lead_performer[0]] if album.isnis and album.lead_performer[0] in album.isnis else None)
         self.guest_performers.setText(formatting.toPeopleList(album.guest_performers))
         self.label_name.setText(album.label_name)
         self.catalog_number.setText(album.catalog_number)

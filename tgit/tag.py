@@ -20,8 +20,7 @@
 from tgit.signal import Observable
 
 
-# Descriptor class for tags
-class tag:
+class Tag:
     name = None
 
     def __get__(self, instance, owner):
@@ -32,46 +31,50 @@ class tag:
         instance.metadataChanged()
 
 
-class typed(tag):
+class Typed(Tag):
     _expected_type = type(None)
 
     def __set__(self, instance, value):
         if not isinstance(value, self._expected_type):
             raise TypeError("expected {0}, not {1}".format(self._expected_type, type(value)))
-        super(typed, self).__set__(instance, value)
+        super(Typed, self).__set__(instance, value)
 
 
-class numeric(typed):
+class numeric(Typed):
     _expected_type = int
 
 
-class text(typed):
+class text(Typed):
     _expected_type = (str, type(None))
 
 
-class decimal(typed):
+class decimal(Typed):
     _expected_type = (int, float)
 
 
-class flag(typed):
+class flag(Typed):
     _expected_type = (bool, type(None))
 
 
-class pairs(typed):
+class pairs(Typed):
     _expected_type = (list, tuple, type(None))
 
 
-class name(typed):
+class name(Typed):
     _expected_type = (tuple, type(None))
+
+
+class map(Typed):
+    _expected_type = (dict, type(None))
 
 
 class Taggable(Observable):
     def __new__(mcs, clsname, bases, methods):
         # Attach attribute names to the tags
         for key, value in methods.items():
-            if isinstance(value, tag):
+            if isinstance(value, Tag):
                 value.name = key
         return super().__new__(mcs, clsname, bases, methods)
 
     def tags(cls):
-        return (value.name for value in cls.__dict__.values() if isinstance(value, tag))
+        return (value.name for value in cls.__dict__.values() if isinstance(value, Tag))

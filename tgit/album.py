@@ -58,6 +58,7 @@ class Album(metaclass=tag.Taggable):
     original_release_time = tag.text()
     contributors = tag.pairs()
     comments = tag.text()
+    isnis = tag.map()
 
     def __init__(self, metadata=None, of_type=Type.FLAC, filename=None):
         self.metadata = metadata.copy(*Album.tags()) if metadata is not None else Metadata()

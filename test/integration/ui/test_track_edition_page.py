@@ -155,11 +155,6 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_lyricist("Lyricist")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(lyricist=("Joel Miller", "0000000123456789")))
-    driver.change_lyricist("Joel Miller")
-    driver.change_lyricist_isni("0000000123456789")
-    driver.check(metadata_changed_signal)
-
     metadata_changed_signal.expect(has_entries(composer="Composer"))
     driver.change_composer("Composer")
     driver.check(metadata_changed_signal)

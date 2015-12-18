@@ -667,6 +667,9 @@ QToolButton::menu-indicator:open {
              </item>
              <item>
               <widget class="QLineEdit" name="_lyricist_isni">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>135</width>

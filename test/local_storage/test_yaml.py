@@ -28,9 +28,9 @@ def test_saves_data_to_yaml_file(project_file):
     data = dict(version="1.6.0",
                 release_name="Title",
                 compilation=True,
-                lead_performer="Artist",
+                lead_performer=("Artist",),
                 lead_performer_region=("FR",),
-                isni="0000123456789",
+                isnis={"Artist": "0000123456789"},
                 guest_performers=[("Guitar", "Guitarist"), ("Piano", "Pianist")],
                 label_name="Label",
                 catalog_number="XXX123456789",
@@ -48,10 +48,12 @@ def test_saves_data_to_yaml_file(project_file):
     assert_that(lines, has_item(contains_string("version: 1.6.0")), "version")
     assert_that(lines, has_item(contains_string("release_name: Title")), "release name")
     assert_that(lines, has_item(contains_string("compilation: true")), "compilation")
-    assert_that(lines, has_item(contains_string("lead_performer: Artist")), "lead performer")
+    assert_that(lines, has_item(contains_string("lead_performer: !!python/tuple")), "lead performer")
+    assert_that(lines, has_item(contains_string("- Artist")), "lead performer")
     assert_that(lines, has_item(contains_string("lead_performer_region:")), "lead performer region")
     assert_that(lines, has_item(contains_string("- FR")), "lead performer region")
-    assert_that(lines, has_item(contains_string("isni: 0000123456789")), "isni")
+    assert_that(lines, has_item(contains_string("isnis:")), "isnis")
+    assert_that(lines, has_item(contains_string("  Artist: 0000123456789")), "isnis")
     assert_that(lines, has_item(contains_string("label_name: Label")), "label name")
     assert_that(lines, has_item(contains_string("upc: '123456789999'")), "upc")
     assert_that(lines, has_item(contains_string("comments: 'Comments")), "comments")
@@ -88,8 +90,9 @@ def test_reads_data_from_yaml_file():
     assert_that(data, has_entry("type", "mp3"), "album type")
     assert_that(data, has_entry("release_name", "Title"), "release name")
     assert_that(data, has_entry("compilation", True), "compilation")
-    assert_that(data, has_entry("lead_performer", equal_to(("Artist", "0000000123456789"))), "lead performer")
+    assert_that(data, has_entry("lead_performer", equal_to(("Artist",))), "lead performer")
     assert_that(data, has_entry("lead_performer_region", ("FR",)), "lead performer region")
+    assert_that(data, has_entry("isnis", has_entry("Artist", "0000000123456789")), "isnis")
     assert_that(data, has_entry("guest_performers", contains(("Guitar", "Guitarist"), ("Piano", "Pianist"))),
                 "guest performers")
     assert_that(data, has_entry("label_name", "Label"), "label name")
