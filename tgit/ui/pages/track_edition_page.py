@@ -157,7 +157,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         if album.compilation:
             self._album_lead_performer.setText(self.tr("Various Artists"))
         else:
-            self._album_lead_performer.setText(album.lead_performer[0] if album.lead_performer else "")
+            self._album_lead_performer.setText(album.lead_performer)
         self._lead_performer.setEnabled(album.compilation is True)
         self._lead_performer_caption.setEnabled(album.compilation is True)
 
@@ -167,12 +167,12 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def display_track(self, track):
         self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
         self._track_title.setText(track.track_title)
-        self._lead_performer.setText(track.lead_performer[0] if track.lead_performer else "")
+        self._lead_performer.setText(track.lead_performer)
         self._version.setText(track.versionInfo)
         self._duration.setText(formatting.to_duration(track.duration))
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
         self._featured_guest.setText(track.featuredGuest)
-        self._lyricist.setText(track.lyricist[0] if track.lyricist else "")
+        self._lyricist.setText(track.lyricist)
         self._composer.setText(track.composer)
         self._publisher.setText(track.publisher)
         self._isrc.setText(track.isrc)
@@ -191,7 +191,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._genre.setEditText(track.primary_style)
 
         identities = track.album.isnis or {}
-        self._lyricist_isni.setText(identities[track.lyricist[0]] if track.lyricist[0] in identities else "")
+        self._lyricist_isni.setText(identities[track.lyricist] if track.lyricist in identities else "")
 
     @staticmethod
     def _display_region(region, combobox):
@@ -232,6 +232,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         iswc=self._iswc.text(),
                         labels=self._tags.text(),
                         lyrics=self._lyrics.toPlainText(),
+                        lyricist=self._lyricist.text(),
                         language=self._language.currentText(),
                         recording_studio=self._recording_studio.text(),
                         recording_studio_region=self._get_country_code_from_combo(self._recording_studio_region),
@@ -241,15 +242,8 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         mixer=self._mixer.text(),
                         primary_style=self._genre.currentText())
 
-        if self._lyricist.text():
-            lyricist_isni = self._lyricist_isni.text()
-            if lyricist_isni:
-                metadata["lyricist"] = (self._lyricist.text(), lyricist_isni)
-            else:
-                metadata["lyricist"] = (self._lyricist.text(),)
-
         if self._lead_performer.isEnabled():
-            metadata["lead_performer"] = (self._lead_performer.text(),)
+            metadata["lead_performer"] = self._lead_performer.text()
 
         return metadata
 

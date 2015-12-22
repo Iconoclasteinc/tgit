@@ -10,7 +10,7 @@ from tgit.ui.pages.track_list_table_model import RowItem, Column
 def test_retrieves_values_from_track_list_item():
     item = RowItem(make_track(album=make_album(release_name="Honeycomb"),
                               track_title="Chevere!",
-                              lead_performer=("Joel Miller",),
+                              lead_performer="Joel Miller",
                               track_number=3,
                               bitrate=192000,
                               duration=in_seconds(minutes=4, seconds=12)))

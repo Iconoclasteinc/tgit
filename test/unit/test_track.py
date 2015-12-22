@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from hamcrest import contains_inanyorder, contains, has_entry, equal_to, empty
+from hamcrest import contains_inanyorder, contains, has_property
 from hamcrest import assert_that
 
 from test.test_signal import Subscriber
 from test.util import builders as build
-from test.util.builders import make_track
 from tgit.track import Track
 
 
@@ -21,7 +20,7 @@ def test_announces_metadata_changes_to_listeners():
     _assert_notifies_of_metadata_change("track_title", "Title")
     _assert_notifies_of_metadata_change("versionInfo", "Remix")
     _assert_notifies_of_metadata_change("featuredGuest", "Featuring")
-    _assert_notifies_of_metadata_change("lyricist", ("Joel Miller", "123456789"))
+    _assert_notifies_of_metadata_change("lyricist", "Joel Miller")
     _assert_notifies_of_metadata_change("isrc", "Code")
     _assert_notifies_of_metadata_change("iswc", "T-345246800-1")
     _assert_notifies_of_metadata_change("track_number", 1)
@@ -35,4 +34,4 @@ def _assert_notifies_of_metadata_change(prop, value):
 
     setattr(track, prop, value)
 
-    assert_that(subscriber.events, contains(contains(has_entry(prop, value))), "track changed events")
+    assert_that(subscriber.events, contains(contains(has_property(prop, value))), "track changed events")

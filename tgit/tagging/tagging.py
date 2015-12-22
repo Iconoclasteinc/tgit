@@ -7,10 +7,7 @@ from . import embedded_containers as containers
 
 
 def load_track(filename):
-    metadata = containers.load_metadata(filename)
-    metadata = _unroll_isni_map(metadata)
-
-    return Track(filename, metadata)
+    return Track(filename, containers.load_metadata(filename))
 
 
 def save_track(track, at_time=None):
@@ -30,37 +27,18 @@ def _all_metadata(track):
         del album_metadata["lead_performer"]
     track_metadata = track.metadata.copy()
     track_metadata.update(album_metadata)
-
-    _create_isni_map(track_metadata)
+    track_metadata["isnis"] = clean_isnis(track_metadata)
 
     return track_metadata
 
 
-def _create_isni_map(track_metadata):
-    if "lead_performer" in track_metadata:
-        _unroll_identity_tuple("lead_performer", track_metadata)
-    if "lyricist" in track_metadata:
-        _unroll_identity_tuple("lyricist", track_metadata)
-
-
-def _unroll_isni_map(metadata):
-    if "lead_performer" in metadata:
-        metadata = _transform_identity_to_tuple("lead_performer", metadata)
-    if "lyricist" in metadata:
-        metadata = _transform_identity_to_tuple("lyricist", metadata)
-    return metadata
-
-
-def _unroll_identity_tuple(field, metadata):
-    identity = metadata[field]
-    if not identity:
-        return
-
-    name = identity[0]
-    metadata[field] = name
-
-
-def _transform_identity_to_tuple(field, metadata):
-    metadata[field] = (metadata[field],)
-
-    return metadata
+def clean_isnis(track_metadata):
+    new_isni_map = {}
+    isnis = track_metadata["isnis"] or {}
+    lead_performer = track_metadata["lead_performer"]
+    lyricist = track_metadata["lyricist"]
+    if lead_performer in isnis:
+        new_isni_map[lead_performer] = isnis[lead_performer]
+    if lyricist in isnis:
+        new_isni_map[lyricist] = isnis[lyricist]
+    return new_isni_map

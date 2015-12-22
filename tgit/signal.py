@@ -26,12 +26,14 @@ class signal:
 
     def __get__(self, instance, owner):
         if self.name not in instance.__dict__:
-            instance.__dict__[self.name] = Signal(self.name, *self._types)
+            types = [type(instance) if type_ == Signal.SELF else type_ for type_ in self._types]
+            instance.__dict__[self.name] = Signal(self.name, *types)
         return instance.__dict__[self.name]
 
 
 class Subscription:
     """Subscription are returned from `Signal.subscribe` to allow unsubscribing"""
+
     def __init__(self, observable, subscriber):
         self._observable = observable
         self._subscriber = subscriber
@@ -46,6 +48,7 @@ class Subscription:
 
 class MultiSubscription:
     """Groups multiple Subscriptions together and unsubscribes from all of them together"""
+
     def __init__(self):
         self._subscriptions = []
 
@@ -77,6 +80,7 @@ class MultiSubscription:
 
 class Observable(type):
     """Metaclass for Observable types that have signals"""
+
     def __new__(mcs, clsname, bases, methods):
         # Attach names to the signals
         for key, value in methods.items():
@@ -87,6 +91,9 @@ class Observable(type):
 
 class Signal:
     """A signal emits events and allows subscribing and unsubscribing"""
+
+    SELF = "self"
+
     def __init__(self, name, *types):
         self._name = name
         self._types = types

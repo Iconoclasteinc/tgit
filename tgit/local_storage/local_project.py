@@ -35,18 +35,11 @@ def album_exists(filename):
     return os.path.exists(filename)
 
 
-def _should_migrate(from_version, to_version):
-    return
-
-
-def _from_1_9_to_1_10(data):
-    # Lead performer and ISNI moved from being strings to a tuple
-    if "lead_performer" in data:
-        if "isni" in data:
-            data["lead_performer"] = (data["lead_performer"], data["isni"])
-            del data["isni"]
-        else:
-            data["lead_performer"] = (data["lead_performer"],)
+def _from_1_9_to_1_11(data):
+    # ISNI moved from being a single text field to being a dictionary
+    if "isni" in data:
+        data["isnis"] = {data["lead_performer"]: data["isni"]}
+        del data["isni"]
 
     return data
 
@@ -58,7 +51,7 @@ def load_album(filename):
 
     data = yaml.read_data(filename)
     if Version(data["version"]) < "1.10.0":
-        data = _from_1_9_to_1_10(data)
+        data = _from_1_9_to_1_11(data)
     album = Album(Metadata(data), of_type=data["type"], filename=filename)
 
     for image in data["images"]:

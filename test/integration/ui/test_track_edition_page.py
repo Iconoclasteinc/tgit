@@ -47,7 +47,7 @@ def show_page(album, track, on_track_changed=ignore, review_assignation=ignore,
 
 def test_displays_album_summary_in_banner(driver):
     track = build.track()
-    album = build.album(release_name="Album Title", lead_performer=("Artist",), label_name="Record Label",
+    album = build.album(release_name="Album Title", lead_performer="Artist", label_name="Record Label",
                         tracks=[build.track(), track, build.track()])
 
     _ = show_page(album, track)
@@ -69,11 +69,11 @@ def test_indicates_when_album_performed_by_various_artists(driver):
 def test_displays_track_metadata(driver):
     track = build.track(bitrate=192000,
                         duration=timedelta(minutes=4, seconds=35).total_seconds(),
-                        lead_performer=("Artist",),
+                        lead_performer="Artist",
                         track_title="Song",
                         versionInfo="Remix",
                         featuredGuest="Featuring",
-                        lyricist=("Lyricist",),
+                        lyricist="Lyricist",
                         composer="Composer",
                         publisher="Publisher",
                         isrc="Code",
@@ -119,7 +119,7 @@ def test_displays_track_metadata(driver):
 
 def test_disables_lead_performer_edition_when_album_is_not_a_compilation(driver):
     track = build.track()
-    album = build.album(lead_performer=("Album Artist",), compilation=False, tracks=[track])
+    album = build.album(lead_performer="Album Artist", compilation=False, tracks=[track])
 
     _ = show_page(album, track)
 
@@ -139,7 +139,7 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_track_title("Title")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(lead_performer=("Artist",)))
+    metadata_changed_signal.expect(has_entries(lead_performer="Artist"))
     driver.change_lead_performer("Artist")
     driver.check(metadata_changed_signal)
 
@@ -151,7 +151,7 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_featured_guest("Featuring")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(lyricist=("Lyricist",)))
+    metadata_changed_signal.expect(has_entries(lyricist="Lyricist"))
     driver.change_lyricist("Lyricist")
     driver.check(metadata_changed_signal)
 
@@ -363,7 +363,7 @@ def test_signals_assigned_isni_on_isni_assignation(driver):
 
     page.metadata_changed.connect(metadata_changed_signal.received)
 
-    metadata_changed_signal.expect(has_entries(lyricist=("Joel Miller", "0000000123456789")))
+    metadata_changed_signal.expect(has_entries(lyricist="Joel Miller"))
     driver.change_lyricist("Joel Miller")
     driver.assign_isni_to_lyricist()
     driver.confirm_lyricist_isni()
@@ -387,7 +387,7 @@ def test_clears_isni_when_lyricist_not_found(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
 
-    track = make_track(lyricist=("Joel Miller",))
+    track = make_track(lyricist="Joel Miller")
     album = make_album(tracks=[track], isnis={"Joel Miller": "00000000123456789"})
     _ = show_page(album, track, on_isni_local_lookup=lookup)
 

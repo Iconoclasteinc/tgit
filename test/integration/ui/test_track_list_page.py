@@ -38,7 +38,7 @@ def test_displays_column_headings(driver):
 
 def test_displays_track_details_in_columns(driver):
     _ = show_track_list(make_album(release_name="Honeycomb",
-                                   lead_performer=("Joel Miller",),
+                                   lead_performer="Joel Miller",
                                    tracks={make_track(track_title='Chevere!',
                                                       bitrate=192000,
                                                       duration=timedelta(minutes=4, seconds=12).total_seconds())}))
@@ -69,7 +69,7 @@ def test_updates_track_row_when_track_metadata_change(driver):
     _ = show_track_list(make_album(tracks=[track]))
 
     track.track_title = "Chevere!"
-    track.lead_performer = ("Joel Miller",)
+    track.lead_performer = "Joel Miller"
 
     driver.shows_track_details("Chevere!", "Joel Miller")
 

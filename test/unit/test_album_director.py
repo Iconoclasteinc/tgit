@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from concurrent.futures import Future
 import os
-from flexmock import flexmock
 
-from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_item, empty, contains_string,
-                      has_key, has_property, has_entry, match_equality)
+from flexmock import flexmock
+from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, empty, has_key, has_property,
+                      match_equality)
 
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 import pytest
@@ -15,7 +15,6 @@ from test.util import builders as build, resources, doubles
 from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
 from tgit import fs, album_director as director
-from tgit.identity import IdentityCard
 from tgit.album import Album, AlbumListener
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session, User
@@ -88,6 +87,11 @@ def portfolio():
 @pytest.fixture()
 def prober():
     return PollingProber()
+
+
+@pytest.fixture
+def user():
+    return User(api_key="the token")
 
 
 def make_filename(location, name):
@@ -187,16 +191,16 @@ def test_moves_track_of_album():
 
 def test_updates_track_metadata():
     track = make_track()
-    director.update_track(track)(track_title="Title", lead_performer=("Artist",), versionInfo="Version",
-                                 featuredGuest="Featuring", lyricist=("Lyricist", "0000123456"), composer="Composer",
+    director.update_track(track)(track_title="Title", lead_performer="Artist", versionInfo="Version",
+                                 featuredGuest="Featuring", lyricist="Lyricist", composer="Composer",
                                  publisher="Publisher", isrc="ZZZ123456789", labels="Tags",
                                  lyrics="Lyrics\nLyrics\n...", language="und")
 
     assert_that(track.track_title, equal_to("Title"), "track title")
-    assert_that(track.lead_performer, equal_to(("Artist",)), "lead performer")
+    assert_that(track.lead_performer, equal_to("Artist"), "lead performer")
     assert_that(track.versionInfo, equal_to("Version"), "version info")
     assert_that(track.featuredGuest, equal_to("Featuring"), "featured guest")
-    assert_that(track.lyricist, equal_to(("Lyricist", "0000123456")), "lyricist")
+    assert_that(track.lyricist, equal_to("Lyricist"), "lyricist")
     assert_that(track.composer, equal_to("Composer"), "composer")
     assert_that(track.publisher, equal_to("Publisher"), "publisher")
     assert_that(track.isrc, equal_to("ZZZ123456789"), "isrc")
@@ -217,7 +221,7 @@ def test_signs_user_out():
     assert_that(session.current_user.email, none())
 
 
-def test_returns_list_of_identities_when_isni_found_in_registry(prober):
+def test_returns_list_of_identities_when_isni_found_in_registry(prober, user):
     class FakeCheddar:
         @staticmethod
         def get_identities(phrase, token):
@@ -229,11 +233,11 @@ def test_returns_list_of_identities_when_isni_found_in_registry(prober):
             return future
 
     success_signal = ValueMatcherProbe("The identities", contains(has_property("id", "0000000115677274")))
-    director.lookup_isni_using(FakeCheddar(), User(api_key="the token"))("Rebecca Ann Maloy", success_signal.received)
+    director.lookup_isni_using(FakeCheddar(), user)("Rebecca Ann Maloy", success_signal.received)
     prober.check(success_signal)
 
 
-def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
+def test_returns_empty_list_when_isni_is_not_found_in_registry(prober, user):
     class FakeCheddar:
         @staticmethod
         def get_identities(*_):
@@ -242,13 +246,13 @@ def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
             return future
 
     success_signal = ValueMatcherProbe("The identities", empty())
-    director.lookup_isni_using(FakeCheddar(), User(api_key="the token"))("Rebecca Ann Maloy", success_signal.received)
+    director.lookup_isni_using(FakeCheddar(), user)("Rebecca Ann Maloy", success_signal.received)
     prober.check(success_signal)
 
 
 def test_updates_album_metadata():
     album = build.album()
-    director.update_album_from(album)(release_name="Title", compilation=True, lead_performer=("Artist", "000123456789"),
+    director.update_album_from(album)(release_name="Title", compilation=True, lead_performer="Artist",
                                       guestPerformers=[("Guitar", "Guitarist")], label_name="Label",
                                       catalogNumber="XXX123456789", upc="123456789999", comments="Comments\n...",
                                       releaseTime="2009-01-01", recording_time="2008-09-15", recordingStudios="Studios",
@@ -256,7 +260,7 @@ def test_updates_album_metadata():
 
     assert_that(album.release_name, equal_to("Title"), "release name")
     assert_that(album.compilation, is_(True), "compilation")
-    assert_that(album.lead_performer, equal_to(("Artist", "000123456789")), "lead performer")
+    assert_that(album.lead_performer, equal_to("Artist"), "lead performer")
     assert_that(album.guestPerformers, equal_to([("Guitar", "Guitarist")]), "guest performers")
     assert_that(album.label_name, equal_to("Label"), "label name")
     assert_that(album.catalogNumber, equal_to("XXX123456789"), "catalog number")
@@ -272,10 +276,10 @@ def test_updates_album_metadata():
 
 def test_updates_tracks_lead_performer_when_album_is_not_a_compilation():
     album = build.album(tracks=[build.track(), build.track(), build.track()])
-    director.update_album_from(album)(compilation=False, lead_performer=("Album Artist",))
+    director.update_album_from(album)(compilation=False, lead_performer="Album Artist")
 
     for track in album.tracks:
-        assert_that(track.lead_performer, equal_to(("Album Artist",)), "track artist")
+        assert_that(track.lead_performer, equal_to("Album Artist"), "track artist")
 
 
 def test_clears_album_images():
@@ -284,7 +288,7 @@ def test_clears_album_images():
     assert_that(album.images, equal_to([]), "images")
 
 
-def test_assigns_isni_to_main_artist(prober):
+def test_assigns_isni_to_main_artist(prober, user):
     class FakeCheddar:
         @staticmethod
         def assign_identifier(name, type_, works, token):
@@ -295,17 +299,16 @@ def test_assigns_isni_to_main_artist(prober):
                 future.set_result(None)
             return future
 
-    album = build.album(lead_performer=("Joel Miller",))
+    album = build.album(lead_performer="Joel Miller")
     album.add_track(build.track(track_title="Chevere!"))
 
     success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
 
-    director.assign_isni_to_main_artist_using(FakeCheddar(), User(api_key="the token"), album)("individual",
-                                                                                               success_signal.received)
+    director.assign_isni_to_main_artist_using(FakeCheddar(), user, album)("individual", success_signal.received)
     prober.check(success_signal)
 
 
-def test_assigns_isni_to_lyricist(prober):
+def test_assigns_isni_to_lyricist(prober, user):
     class FakeCheddar:
         @staticmethod
         def assign_identifier(name, type_, works, token):
@@ -316,10 +319,10 @@ def test_assigns_isni_to_lyricist(prober):
                 future.set_result(None)
             return future
 
-    track = build.track(track_title="Chevere!", lyricist=("Joel Miller",))
+    track = build.track(track_title="Chevere!", lyricist="Joel Miller")
     success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
 
-    director.assign_isni_to_lyricist_using(FakeCheddar(), User(api_key="the token"))(track, success_signal.received)
+    director.assign_isni_to_lyricist_using(FakeCheddar(), user)(track, success_signal.received)
     prober.check(success_signal)
 
 

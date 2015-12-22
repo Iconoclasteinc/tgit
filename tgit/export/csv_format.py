@@ -34,12 +34,8 @@ def _to_standard_region_code(region):
     return "-".join(region) if region else ""
 
 
-def _get_name_of_identity(identity):
-    return identity[0] if identity else ""
-
-
-def _get_isni_of_identity(identity):
-    return identity[1] if identity and len(identity) > 1 else ""
+def _get_isni_of_identity(identity, isnis):
+    return isnis[identity] if isnis and identity in isnis else ""
 
 
 class CsvFormat(QObject):
@@ -63,10 +59,8 @@ class CsvFormat(QObject):
         writer.writerow(self._encode_row(self._translate_texts(CsvFormat.Headers)))
 
     def _write_record(self, writer, album, track):
-        lead_performer = _get_name_of_identity(track.lead_performer)
-        lead_performer_isni = _get_isni_of_identity(track.lead_performer)
-        lyricist = _get_name_of_identity(track.lyricist)
-        lyricist_isni = _get_isni_of_identity(track.lyricist)
+        lead_performer_isni = _get_isni_of_identity(track.lead_performer, album.isnis)
+        lyricist_isni = _get_isni_of_identity(track.lyricist, album.isnis)
         lead_performer_region = _to_standard_region_code(album.lead_performer_region)
         production_company_region = _to_standard_region_code(track.production_company_region)
         recording_studio_region = _to_standard_region_code(track.recording_studio_region)
@@ -75,12 +69,12 @@ class CsvFormat(QObject):
         track_number = str(track.track_number)
         total_tracks = str(track.total_tracks)
 
-        row = (album.release_name, compilation, lead_performer, lead_performer_isni, lead_performer_region,
+        row = (album.release_name, compilation, track.lead_performer, lead_performer_isni, lead_performer_region,
                guest_performers, album.label_name, album.catalog_number, album.upc, album.comments, album.release_time,
                album.recording_time, track.recording_studio, recording_studio_region, track.production_company,
                production_company_region, track.music_producer, track.mixer, track.primary_style, track.track_title,
                track.versionInfo, track_number, total_tracks, track.featuredGuest, track.lyrics, track.language,
-               track.publisher, lyricist, lyricist_isni, track.composer, track.isrc, track.labels)
+               track.publisher, track.lyricist, lyricist_isni, track.composer, track.isrc, track.labels)
 
         writer.writerow(self._encode_row(row))
 

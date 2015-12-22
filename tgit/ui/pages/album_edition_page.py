@@ -217,8 +217,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.compilation.setChecked(album.compilation is True)
         self._display_lead_performer(album)
         self._display_region(album.lead_performer_region, self._lead_performer_region)
-        self._isni.setText(
-            album.isnis[album.lead_performer[0]] if album.isnis and album.lead_performer[0] in album.isnis else None)
         self.guest_performers.setText(formatting.toPeopleList(album.guest_performers))
         self.label_name.setText(album.label_name)
         self.catalog_number.setText(album.catalog_number)
@@ -227,20 +225,22 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self.recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
 
+        identities = album.isnis or {}
+        self._isni.setText(identities[album.lead_performer] if album.lead_performer in identities else None)
+
     @staticmethod
     def _display_region(region, combobox):
         combobox.setCurrentText(COUNTRIES[region[0]]) if region else combobox.setCurrentIndex(0)
 
     def _display_lead_performer(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
-        self.lead_performer.setText(
-            album.compilation and self.tr("Various Artists") or album.lead_performer[0] if album.lead_performer else "")
+        self.lead_performer.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
         self.lead_performer.setDisabled(album.compilation is True)
 
     def metadata(self, *keys):
         all_values = dict(release_name=self.release_name.text(),
                           compilation=self.compilation.isChecked(),
-                          lead_performer=(self.lead_performer.text(),),
+                          lead_performer=self.lead_performer.text(),
                           lead_performer_region=self._get_country_code_from_combo(self._lead_performer_region),
                           guest_performers=formatting.fromPeopleList(self.guest_performers.text()),
                           label_name=self.label_name.text(),

@@ -28,7 +28,7 @@ def test_loads_track_from_metadata_embedded_in_file(mp3):
 
 
 def test_round_trips_track_and_album_metadata(mp3):
-    album = build.album(release_name="Album Title", lead_performer=("Album Artist",),
+    album = build.album(release_name="Album Title", lead_performer="Album Artist",
                         isnis={"Album Artist": "0000000123456789"},
                         images=[build.image(mime="image/jpeg", data=b"<image data>")])
     track = build.track(filename=mp3(), track_title="Track Title", album=album)
@@ -37,21 +37,20 @@ def test_round_trips_track_and_album_metadata(mp3):
 
     track = tagging.load_track(track.filename)
     assert_that(track.metadata, has_entries(release_name="Album Title",
-                                            lead_performer=("Album Artist",),
+                                            lead_performer="Album Artist",
                                             isnis={"Album Artist": "0000000123456789"},
                                             track_title="Track Title"), "metadata tags")
-    assert_that(track.metadata, is_not(has_key("isni")), "metadata tags")
     assert_that(track.metadata.images, contains(Image(mime="image/jpeg", data=b"<image data>")), "attached pictures")
 
 
 def test_does_not_update_track_with_album_lead_performer_when_album_is_a_compilation(mp3):
-    album = build.album(lead_performer=("Various Artists",), compilation=True)
-    track = build.track(filename=mp3(), lead_performer=("Track Artist",), album=album)
+    album = build.album(lead_performer="Various Artists", compilation=True)
+    track = build.track(filename=mp3(), lead_performer="Track Artist", album=album)
 
     tagging.save_track(track)
 
     track = tagging.load_track(track.filename)
-    assert_that(track.lead_performer, equal_to(("Track Artist",)), "lead performer")
+    assert_that(track.lead_performer, equal_to("Track Artist"), "lead performer")
 
 
 def test_adds_version_information_to_tags(mp3):
@@ -63,3 +62,21 @@ def test_adds_version_information_to_tags(mp3):
     assert_that(track, has_properties(tagger='TGiT',
                                       tagger_version=tgit.__version__,
                                       tagging_time="2014-03-23 20:44:33"))
+
+
+def test_cleans_superflous_isnis_before_tagging(mp3):
+    album = build.album(release_name="Album Title", lead_performer="Album Artist",
+                        isnis={"Album Artist": "0000000123456789",
+                               "Album Lyricist": "9876543210000000",
+                               "Previous Album Artist": "1234567890000000",
+                               "Previous Album Lyricist": "0000000987654321"})
+    track = build.track(filename=mp3(), track_title="Track Title", lyricist="Album Lyricist", album=album)
+
+    tagging.save_track(track)
+
+    track = tagging.load_track(track.filename)
+    assert_that(track.metadata, has_entries(release_name="Album Title",
+                                            lead_performer="Album Artist",
+                                            isnis={"Album Artist": "0000000123456789",
+                                                   "Album Lyricist": "9876543210000000"},
+                                            track_title="Track Title"), "metadata tags")

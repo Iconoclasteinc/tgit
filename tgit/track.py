@@ -19,18 +19,20 @@
 
 from tgit import tag
 from tgit.metadata import Metadata
-from tgit.signal import Signal
+from tgit.signal import Signal, signal
 
 
 class Track(object, metaclass=tag.Taggable):
+    metadata_changed = signal(Signal.SELF, int, Metadata)
+
     album = None
 
     track_title = tag.text()
-    lead_performer = tag.name()
+    lead_performer = tag.text()
     versionInfo = tag.text()
     featuredGuest = tag.text()
     publisher = tag.text()
-    lyricist = tag.name()
+    lyricist = tag.text()
     composer = tag.text()
     isrc = tag.text()
     iswc = tag.text()
@@ -56,7 +58,6 @@ class Track(object, metaclass=tag.Taggable):
     duration = tag.decimal()
 
     def __init__(self, filename, metadata=None):
-        self.metadata_changed = Signal("metadata_changed", Track)
         self.filename = filename
         self.metadata = metadata or Metadata()
 

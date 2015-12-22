@@ -10,7 +10,7 @@ from tgit.export.soproq_format import write
 def test_writes_tracks_to_workbook():
     album = build.album(
         release_name="Release Name",
-        lead_performer=("Lead Performer",),
+        lead_performer="Lead Performer",
         lead_performer_region=("CA",),
         compilation=False,
         label_name="Label Name",
@@ -99,10 +99,10 @@ def test_writes_tracks_to_workbook():
 def test_writes_compilation_tracks_to_workbook():
     album = build.album(
         release_name="Release Name",
-        lead_performer=("Various Artists", ),
+        lead_performer="Various Artists",
         compilation=True)
 
-    album.add_track(build.track(lead_performer=("performer",)))
+    album.add_track(build.track(lead_performer="performer"))
 
     workbook = Workbook()
 

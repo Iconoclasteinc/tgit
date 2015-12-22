@@ -1,4 +1,4 @@
-version: 1.10.0
+version: 1.11.0
 type: mp3
 catalog_number: XXX123456789
 comments: 'Comments
@@ -13,8 +13,7 @@ guest_performers:
   - Piano
   - Pianist
 label_name: Label
-lead_performer: !!python/tuple
-- Artist
+lead_performer: Artist
 lead_performer_region: !!python/tuple
 - FR
 isnis:

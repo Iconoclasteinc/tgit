@@ -187,9 +187,7 @@ def _assign_isni(identity, type_, titles, on_success, cheddar, user):
     def on_assign_done(identity_details):
         on_success(IdentityCard(**identity_details))
 
-    cheddar \
-        .assign_identifier(identity[0] if identity else "", type_, titles, user.api_key) \
-        .add_done_callback(on_assign_done)
+    cheddar.assign_identifier(identity, type_, titles, user.api_key).add_done_callback(on_assign_done)
 
 
 def sign_in_using(authenticate, session):
