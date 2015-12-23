@@ -44,7 +44,6 @@ def test_saves_data_to_yaml_file(project_file):
     yaml.write_data(album_file, data)
 
     lines = read_lines(album_file)
-    print(lines)
     assert_that(lines, has_item(contains_string("version: 1.6.0")), "version")
     assert_that(lines, has_item(contains_string("release_name: Title")), "release name")
     assert_that(lines, has_item(contains_string("compilation: true")), "compilation")
