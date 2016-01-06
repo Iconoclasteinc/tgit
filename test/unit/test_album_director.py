@@ -211,8 +211,9 @@ def test_updates_track_metadata():
 
 def test_signs_user_in():
     session = Session()
-    director.sign_in_using(lambda *_: {"email": "the_email", "token": "the_token"}, session)("...", "...")
-    assert_that(session.current_user.email, equal_to("the_email"))
+    authentication = {"email": "the_email", "token": "...", "permissions": []}
+    director.sign_in_using(lambda *_: authentication, session)("...", "...")
+    assert_that(session.current_user.email, equal_to("the_email"), "email")
 
 
 def test_signs_user_out():

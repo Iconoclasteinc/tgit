@@ -76,6 +76,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     _picture = None
     _isni_lookup = False
+    _isni_assign = False
 
     FRONT_COVER_SIZE = 350, 350
 
@@ -103,8 +104,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         menu.addAction(self._main_artist_isni_assign_action)
         self._isni_actions_button.setMenu(menu)
 
-        self.compilation.clicked.connect(self._update_isni_lookup_button)
-        self.lead_performer.textChanged.connect(self._update_isni_lookup_button)
+        self.compilation.clicked.connect(self._update_isni_menu)
+        self.lead_performer.textChanged.connect(self._update_isni_menu)
         self.add_guest_performers_button.clicked.connect(lambda: self._edit_performers(self._update_guest_performers))
 
     @staticmethod
@@ -202,12 +203,13 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.display(album)
 
     def user_changed(self, user):
-        self._isni_lookup = user.has_permission(Permission.isni_lookup)
+        self._isni_lookup = user.has_permission(Permission.lookup_isni)
+        self._isni_assign = user.has_permission(Permission.assign_isni)
         if not self._isni_lookup:
             self._main_artist_isni_lookup_action.setToolTip(self.tr("Please sign-in to activate ISNI lookup"))
         else:
             self._main_artist_isni_lookup_action.setToolTip(None)
-        self._update_isni_lookup_button()
+        self._update_isni_menu()
 
     def display(self, album):
         if album.main_cover is not self._picture or album.main_cover is None:
@@ -270,9 +272,10 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         for child in self.findChildren(QWidget):
             child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
-    def _update_isni_lookup_button(self):
+    def _update_isni_menu(self):
         def _is_blank(text):
             return not text or text.strip() == ""
 
-        self._main_artist_isni_lookup_action.setEnabled(
-            self._isni_lookup and not self.compilation.isChecked() and not _is_blank(self.lead_performer.text()))
+        can_lookup_or_assign = not self.compilation.isChecked() and not _is_blank(self.lead_performer.text())
+        self._main_artist_isni_lookup_action.setEnabled(self._isni_lookup and can_lookup_or_assign)
+        self._main_artist_isni_assign_action.setEnabled(self._isni_assign and can_lookup_or_assign)

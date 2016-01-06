@@ -99,7 +99,6 @@ class AlbumEditionPageDriver(ScreenDriver):
 
     def assign_isni_to_lead_performer(self):
         menu = self.tool_button(named("_isni_actions_button")).open_menu()
-        menu.menu_item(named("_main_artist_isni_assign_action")).manipulate("enable", lambda b: b.setEnabled(True))
         menu.select_menu_item(named("_main_artist_isni_assign_action"))
 
     def confirm_isni(self):

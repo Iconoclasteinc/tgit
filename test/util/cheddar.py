@@ -121,7 +121,7 @@ def _assign():
 @_requires_auth
 def _authenticate():
     token = next(token_queue)
-    return json.dumps({"token": token})
+    return json.dumps({"token": token, "permissions": ["lookup_isni", "assign_isni"]})
 
 
 @_app.route("/shutdown")

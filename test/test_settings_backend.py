@@ -45,29 +45,35 @@ def tests_loads_anonymous_user_if_user_credentials_missing_from_settings_file(se
 def tests_loads_user_information_from_settings_file(settings_backend, settings_driver):
     settings_driver["user.email"] = "user@example.com"
     settings_driver["user.api_key"] = "token"
+    settings_driver["user.permissions"] = "permission1;permission2"
 
     session = settings_backend.load_session()
 
-    assert_that(session.current_user, has_properties(email="user@example.com", api_key="token"))
+    assert_that(session.current_user, has_properties(email="user@example.com",
+                                                     api_key="token",
+                                                     permissions=["permission1", "permission2"]))
 
 
 def tests_removes_user_credentials_from_settings_file_on_sign_out(settings_backend, settings_driver):
     settings_driver["user.email"] = "user@example.com"
     settings_driver["user.api_key"] = "token"
+    settings_driver["user.permissions"] = "permission1;permission2"
 
     session = settings_backend.load_session()
     session.logout()
 
     settings_driver.has_no("user.email")
     settings_driver.has_no("user.api_key")
+    settings_driver.has_no("user.permissions")
 
 
 def tests_stores_user_credentials_in_settings_file_on_sign_in(settings_backend, settings_driver):
     session = settings_backend.load_session()
-    session.login_as("user@example.com", "token")
+    session.login_as("user@example.com", "token", ["permission1", "permission2"])
 
     settings_driver.has_stored("user.email", "user@example.com")
     settings_driver.has_stored("user.api_key", "token")
+    settings_driver.has_stored("user.permissions", "permission1;permission2")
 
 
 def tests_defaults_to_english_locale(settings_backend, settings_driver):

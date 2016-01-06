@@ -139,7 +139,7 @@ def test_enables_isni_lookup_when_user_logs_in(driver):
     _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
     driver.enables_isni_lookup(False)
 
-    session.login_as("somebody@mgail.com", "api-key")
+    session.login_as("somebody@gmail.com", "api-key", ["lookup_isni"])
     driver.enables_isni_lookup(True)
 
 
@@ -152,17 +152,17 @@ def test_disables_isni_lookup_when_user_logs_out(driver):
     driver.enables_isni_lookup(False)
 
 
+# noinspection PyUnresolvedReferences
 @pytest.mark.xfail
 def test_displays_tooltip_on_isni_lookup_when_anonymously_connected(driver):
-    session = make_anonymous_session()
-    _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
+    _ = show_page(session=(make_anonymous_session()), album=make_album(lead_performer="Album Artist"))
     driver.isni_lookup_has_tooltip("Please sign-in to activate ISNI lookup")
 
 
+# noinspection PyUnresolvedReferences
 @pytest.mark.xfail
 def test_removes_tooltip_on_isni_lookup_when_signed_in(driver):
-    session = make_registered_session()
-    _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
+    _ = show_page(session=(make_registered_session()), album=make_album(lead_performer="Album Artist"))
     driver.isni_lookup_has_tooltip("")
 
 
@@ -303,9 +303,11 @@ def test_signals_when_assign_isni_button_clicked(driver):
         instance_of(types.FunctionType)))
 
     _ = show_page(make_album(),
+                  session=(make_registered_session(permissions=["assign_isni"])),
                   review_assignation=lambda on_review: on_review("individual"),
                   on_isni_assign=assign_isni_signal.received)
 
+    driver.change_lead_performer("Joel Miller")
     driver.assign_isni_to_lead_performer()
     driver.check(assign_isni_signal)
 
@@ -314,10 +316,12 @@ def test_shows_connection_failed_error_on_isni_assignation(driver):
     show_error_signal = ValueMatcherProbe("ISNI assignation exception")
 
     _ = show_page(make_album(),
+                  session=(make_registered_session(permissions=["assign_isni"])),
                   show_cheddar_connection_failed=show_error_signal.received,
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda *_: raise_(requests.ConnectionError()))
 
+    driver.change_lead_performer("Joel Miller")
     driver.assign_isni_to_lead_performer()
     driver.check(show_error_signal)
 
@@ -326,10 +330,12 @@ def test_shows_assignation_failed_error_on_isni_assignation(driver):
     show_error_signal = ValueMatcherProbe("ISNI assignation exception", "insufficient information")
 
     _ = show_page(make_album(),
+                  session=(make_registered_session(permissions=["assign_isni"])),
                   show_isni_assignation_failed=show_error_signal.received,
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda *_: raise_(InsufficientInformationError("insufficient information")))
 
+    driver.change_lead_performer("Joel Miller")
     driver.assign_isni_to_lead_performer()
     driver.check(show_error_signal)
 
@@ -338,27 +344,33 @@ def test_shows_authentication_failed_error_on_isni_assignation(driver):
     show_error_signal = ValueMatcherProbe("ISNI authentication")
 
     _ = show_page(make_album(),
+                  session=(make_registered_session(permissions=["assign_isni"])),
                   show_cheddar_authentication_failed=show_error_signal.received,
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda *_: raise_(AuthenticationError()))
 
+    driver.change_lead_performer("Joel Miller")
     driver.assign_isni_to_lead_performer()
     driver.check(show_error_signal)
 
 
 def test_shows_assigned_isni_on_isni_assignation(driver):
-    page = show_page(make_album(),
-                     review_assignation=lambda on_review: on_review(""),
-                     on_isni_assign=lambda _, callback: callback(
-                         IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
+    _ = show_page(make_album(),
+                  session=(make_registered_session(permissions=["assign_isni"])),
+                  review_assignation=lambda on_review: on_review(""),
+                  on_isni_assign=lambda _, callback: callback(
+                      IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
 
+    driver.change_lead_performer("Joel Miller")
     driver.assign_isni_to_lead_performer()
     driver.shows_isni("0000000123456789")
 
 
 def test_signals_assigned_isni_on_isni_assignation(driver):
     isni_changed_signal = MultiValueMatcherProbe("isni changed", contains("Joel Miller", "0000000123456789"))
+
     _ = show_page(make_album(),
+                  session=(make_registered_session(permissions=["assign_isni"])),
                   on_isni_changed=isni_changed_signal.received,
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda _, callback: callback(

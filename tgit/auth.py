@@ -24,7 +24,8 @@ from tgit.signal import signal
 
 
 class Permission(Enum):
-    isni_lookup = range(1)
+    lookup_isni = "lookup_isni"
+    assign_isni = "assign_isni"
 
 
 class User:
@@ -33,12 +34,13 @@ class User:
         return cls()
 
     @classmethod
-    def registered_as(cls, email, api_token):
-        return cls(email, api_token)
+    def registered_as(cls, email, api_token, permissions):
+        return cls(email, api_token, permissions)
 
-    def __init__(self, email=None, api_key=None):
+    def __init__(self, email=None, api_key=None, permissions=None):
         self._email = email
         self._api_key = api_key
+        self._permissions = permissions
 
     @property
     def email(self):
@@ -49,11 +51,15 @@ class User:
         return self._api_key
 
     @property
+    def permissions(self):
+        return self._permissions
+
+    @property
     def registered(self):
         return self._email is not None
 
     def has_permission(self, permission):
-        return self.registered
+        return self.registered and permission.value in self._permissions
 
 
 class Session(metaclass=Observable):
@@ -62,10 +68,12 @@ class Session(metaclass=Observable):
 
     _user = None
 
-    def login_as(self, email, token):
-        self._user = User.registered_as(email, token)
+    # noinspection PyUnresolvedReferences
+    def login_as(self, email, token, permissions):
+        self._user = User.registered_as(email, token, permissions)
         self.user_signed_in.emit(self._user)
 
+    # noinspection PyUnresolvedReferences
     def logout(self):
         logged_out = self._user
         self._user = None

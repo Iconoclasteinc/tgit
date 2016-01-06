@@ -32,10 +32,11 @@ class SettingsBackend:
     def load_session(self):
         user_email = self._storage.value("user.email", None)
         user_api_key = self._storage.value("user.api_key", None)
+        user_permissions = self._storage.value("user.permissions", None)
 
         session = Session()
-        if user_email and user_api_key:
-            session.login_as(user_email, user_api_key)
+        if user_email and user_api_key and user_permissions:
+            session.login_as(user_email, user_api_key, user_permissions.split(";"))
 
         session.user_signed_in.subscribe(self._store_user)
         session.user_signed_out.subscribe(self._remove_user)
@@ -51,10 +52,12 @@ class SettingsBackend:
     def _store_user(self, user):
         self._storage.setValue("user.email", user.email)
         self._storage.setValue("user.api_key", user.api_key)
+        self._storage.setValue("user.permissions", ";".join(user.permissions))
 
     def _remove_user(self, user):
         self._storage.remove("user.email")
         self._storage.remove("user.api_key")
+        self._storage.remove("user.permissions")
 
     def _store_preferences(self, preferences):
         self._storage.setValue("preferences.locale", preferences.locale.name())

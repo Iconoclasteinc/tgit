@@ -193,7 +193,7 @@ def _assign_isni(identity, type_, titles, on_success, cheddar, user):
 def sign_in_using(authenticate, session):
     def sign_in(email, password):
         user = authenticate(email, password)
-        session.login_as(user["email"], user["token"])
+        session.login_as(user["email"], user["token"], user["permissions"])
 
     return sign_in
 

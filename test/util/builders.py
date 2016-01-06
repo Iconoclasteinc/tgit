@@ -58,17 +58,17 @@ def make_anonymous_user():
     return User.anonymous()
 
 
-def make_registered_user(email="test@example.com", token="api-key"):
-    return User.registered_as(email, token)
+def make_registered_user(email="test@example.com", token="api-key", permissions=None):
+    return User.registered_as(email, token, permissions or ["lookup_isni"])
 
 
 def make_anonymous_session():
     return Session()
 
 
-def make_registered_session(email="test@example.com", token="api-key"):
+def make_registered_session(email="test@example.com", token="api-key", permissions=None):
     session = Session()
-    session.login_as(email, token)
+    session.login_as(email, token, permissions or ["lookup_isni"])
     return session
 
 
