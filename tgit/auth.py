@@ -24,8 +24,8 @@ from tgit.signal import signal
 
 
 class Permission(Enum):
-    lookup_isni = "lookup_isni"
-    assign_isni = "assign_isni"
+    lookup_isni = "isni.lookup"
+    assign_isni = "isni.assign"
 
 
 class User:
