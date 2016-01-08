@@ -42,7 +42,7 @@ def test_user_knows_its_permissions():
     anonymous = make_anonymous_user()
     assert_that(anonymous.has_permission(Permission.lookup_isni), is_(False), "anonymous permissions")
 
-    registered = make_registered_user(permissions=["lookup_isni"])
+    registered = make_registered_user(permissions=[Permission.lookup_isni.value])
     assert_that(registered.has_permission(Permission.lookup_isni), is_(True), "test permissions")
     assert_that(registered.has_permission(Permission.assign_isni), is_(False), "test permissions")
 

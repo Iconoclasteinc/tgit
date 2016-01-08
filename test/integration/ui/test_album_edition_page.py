@@ -4,7 +4,6 @@ import types
 
 import pytest
 from PyQt5.QtCore import QByteArray
-
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 import requests
 
@@ -15,6 +14,7 @@ from test.drivers import AlbumEditionPageDriver
 from test.integration.ui import show_widget
 from test.util import resources, builders as build
 from test.util.builders import make_album, make_anonymous_session, make_registered_session
+from tgit.auth import Permission
 from tgit.authentication_error import AuthenticationError
 from tgit.identity import IdentityCard
 from tgit.insufficient_information_error import InsufficientInformationError
@@ -139,7 +139,7 @@ def test_enables_isni_lookup_when_user_logs_in(driver):
     _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
     driver.enables_isni_lookup(False)
 
-    session.login_as("somebody@gmail.com", "api-key", ["lookup_isni"])
+    session.login_as("somebody@gmail.com", "api-key", [Permission.lookup_isni.value])
     driver.enables_isni_lookup(True)
 
 
@@ -303,7 +303,7 @@ def test_signals_when_assign_isni_button_clicked(driver):
         instance_of(types.FunctionType)))
 
     _ = show_page(make_album(),
-                  session=(make_registered_session(permissions=["assign_isni"])),
+                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
                   review_assignation=lambda on_review: on_review("individual"),
                   on_isni_assign=assign_isni_signal.received)
 
@@ -316,7 +316,7 @@ def test_shows_connection_failed_error_on_isni_assignation(driver):
     show_error_signal = ValueMatcherProbe("ISNI assignation exception")
 
     _ = show_page(make_album(),
-                  session=(make_registered_session(permissions=["assign_isni"])),
+                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
                   show_cheddar_connection_failed=show_error_signal.received,
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda *_: raise_(requests.ConnectionError()))
@@ -330,7 +330,7 @@ def test_shows_assignation_failed_error_on_isni_assignation(driver):
     show_error_signal = ValueMatcherProbe("ISNI assignation exception", "insufficient information")
 
     _ = show_page(make_album(),
-                  session=(make_registered_session(permissions=["assign_isni"])),
+                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
                   show_isni_assignation_failed=show_error_signal.received,
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda *_: raise_(InsufficientInformationError("insufficient information")))
@@ -344,7 +344,7 @@ def test_shows_authentication_failed_error_on_isni_assignation(driver):
     show_error_signal = ValueMatcherProbe("ISNI authentication")
 
     _ = show_page(make_album(),
-                  session=(make_registered_session(permissions=["assign_isni"])),
+                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
                   show_cheddar_authentication_failed=show_error_signal.received,
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda *_: raise_(AuthenticationError()))
@@ -356,7 +356,7 @@ def test_shows_authentication_failed_error_on_isni_assignation(driver):
 
 def test_shows_assigned_isni_on_isni_assignation(driver):
     _ = show_page(make_album(),
-                  session=(make_registered_session(permissions=["assign_isni"])),
+                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda _, callback: callback(
                       IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
@@ -370,7 +370,7 @@ def test_signals_assigned_isni_on_isni_assignation(driver):
     isni_changed_signal = MultiValueMatcherProbe("isni changed", contains("Joel Miller", "0000000123456789"))
 
     _ = show_page(make_album(),
-                  session=(make_registered_session(permissions=["assign_isni"])),
+                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
                   on_isni_changed=isni_changed_signal.received,
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda _, callback: callback(

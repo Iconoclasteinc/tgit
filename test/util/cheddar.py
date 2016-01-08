@@ -24,6 +24,8 @@ import logging
 from flask import Flask, request, Response
 import requests
 
+from tgit.auth import Permission
+
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
 token_queue = iter([])
 response_code_queue = []
@@ -121,7 +123,7 @@ def _assign():
 @_requires_auth
 def _authenticate():
     token = next(token_queue)
-    return json.dumps({"token": token, "permissions": ["lookup_isni", "assign_isni"]})
+    return json.dumps({"token": token, "permissions": [Permission.lookup_isni.value, Permission.assign_isni.value]})
 
 
 @_app.route("/shutdown")
