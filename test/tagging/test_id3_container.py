@@ -373,6 +373,16 @@ def test_upgrades_deprecated_isni_frames_to_its_new_form(mp3):
                                       isnis=has_entry("Joel Miller", "0000000123456789")), "metadata")
 
 
+def test_removes_old_isni_frames(mp3):
+    filename = mp3(TXXX_ISNI_Joel_Miller="00000123456789",
+                   TXXX_ISNI_Rebecca_Ann_Maloy="98765432100000")
+    container.save(filename, Metadata(isnis={"Joel Miller": "00000123456789"}))
+
+    tags = MP3(filename)
+    assert_that(tags, all_of(has_key("TXXX:ISNI:Joel Miller"),
+                             not_(has_key("TXXX:ISNI:Rebecca Ann Maloy"))), "tags in file")
+
+
 def test_removes_deprecated_frames_on_save(mp3):
     filename = mp3(TXXX_Tagger="TGiT v1.1",
                    TXXX_TAGGING_TIME="2014-03-26 14:18:55 EDT-0400",

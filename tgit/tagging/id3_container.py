@@ -21,7 +21,6 @@ from collections import Counter
 from datetime import timezone
 
 from dateutil import parser as dateparser
-
 from mutagen import mp3, id3
 
 from tgit.metadata import Metadata, Image
@@ -198,6 +197,10 @@ class ISNIProcessor:
     def process_metadata(frames, encoding, metadata):
         if "isnis" not in metadata:
             return
+
+        for _, frame in frames.items():
+            if frame.FrameID == "TXXX" and frame.desc.startswith("ISNI:"):
+                frames.delall("{}:{}".format(frame.FrameID, frame.desc))
 
         for name, isni in metadata["isnis"].items():
             frames.add(getattr(id3, "TXXX")(encoding=encoding, desc="ISNI:{}".format(name), text=isni))
