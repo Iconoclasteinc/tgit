@@ -63,6 +63,12 @@ class MessageBoxes:
                                           "Could not authenticate you to the TGiT remote server.",
                                           "Please sign out and sign back in to fix this issue."))
 
+    def permission_denied(self):
+        return self._open(MessageBox.warn(self._parent,
+                                          "You don't have the required permission or you might have exceeded the limit "
+                                          "of your plan.",
+                                          "Please upgrade your subscription's plan."))
+
     def export_failed(self, error):
         return self._open(MessageBox.warn(self._parent,
                                           "Could not export your album.",

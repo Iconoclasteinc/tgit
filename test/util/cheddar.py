@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from functools import wraps
 import json
-from threading import Thread
 import logging
+from functools import wraps
+from threading import Thread
 
-from flask import Flask, request, Response
 import requests
+from flask import Flask, request, Response
 
 from tgit.auth import Permission
 
@@ -123,7 +123,7 @@ def _assign():
 @_requires_auth
 def _authenticate():
     token = next(token_queue)
-    return json.dumps({"token": token, "permissions": [Permission.lookup_isni.value, Permission.assign_isni.value]})
+    return json.dumps({"token": token, "permissions": ["isni.lookup", "isni.assign"]})
 
 
 @_app.route("/shutdown")

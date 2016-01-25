@@ -3,7 +3,7 @@ from PyQt5.QtCore import QLocale
 
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.auth import Session, User
+from tgit.auth import Session, User, Permission
 from tgit.metadata import Metadata, Image
 from tgit.track import Track
 from tgit.user_preferences import UserPreferences
@@ -59,7 +59,7 @@ def make_anonymous_user():
 
 
 def make_registered_user(email="test@example.com", token="api-key", permissions=None):
-    return User.registered_as(email, token, permissions or ["isni.lookup"])
+    return User.registered_as(email, token, permissions or [Permission.lookup_isni.value])
 
 
 def make_anonymous_session():
@@ -68,7 +68,7 @@ def make_anonymous_session():
 
 def make_registered_session(email="test@example.com", token="api-key", permissions=None):
     session = Session()
-    session.login_as(email, token, permissions or ["isni.lookup"])
+    session.login_as(email, token, permissions or [Permission.lookup_isni.value])
     return session
 
 

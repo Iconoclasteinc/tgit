@@ -77,6 +77,7 @@ class Pages:
             show_isni_assignation_failed=self._messages.isni_assignation_failed,
             show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
             show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed,
+            show_permission_denied=self._messages.permission_denied,
             edit_performers=self._dialogs.edit_performers_in(album),
             select_picture=self._dialogs.select_cover,
             on_select_picture=director.change_cover_of(album),

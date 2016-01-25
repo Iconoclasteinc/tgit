@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-from hamcrest import assert_that, empty, contains, has_entries
 import pytest
 import requests
+from hamcrest import assert_that, empty, contains, has_entries
 
-from tgit.authentication_error import AuthenticationError
-from tgit.cheddar import Cheddar
-from tgit.insufficient_information_error import InsufficientInformationError
+from tgit.cheddar import Cheddar, PermissionDeniedError, AuthenticationError, InsufficientInformationError
 
 
 @pytest.yield_fixture
@@ -126,3 +124,12 @@ def test_returns_identity_of_newly_assigned_identifier(cheddar, platform):
         dateOfBirth="1969",
         dateOfDeath="",
         works=contains(has_entries(title="Chevere!"), has_entries(title="That is that"))))
+
+
+def test_raises_permission_denied_error_on_402(cheddar, platform):
+    platform.response_code_queue = [402]
+    platform.allowed_bearer_token = "token"
+    with pytest.raises(PermissionDeniedError):
+        raise cheddar.get_identities("...", "token").exception()
+
+

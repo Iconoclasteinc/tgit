@@ -16,18 +16,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from concurrent.futures import ThreadPoolExecutor
 import json
+from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
-from tgit.authentication_error import AuthenticationError
-from tgit.insufficient_information_error import InsufficientInformationError
+
+class AuthenticationError(Exception):
+    pass
+
+
+class InsufficientInformationError(Exception):
+    pass
+
+
+class PermissionDeniedError(Exception):
+    pass
 
 
 def _check_response_code(response):
     if response.status_code == 401:
         raise AuthenticationError()
+    if response.status_code == 402:
+        raise PermissionDeniedError()
     if response.status_code == 422:
         raise InsufficientInformationError()
     if response.status_code >= 500:

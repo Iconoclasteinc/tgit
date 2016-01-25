@@ -89,7 +89,7 @@ def main():
     urllib3.disable_warnings()
     # _print_unhandled_exceptions()
 
-    cheddar = Cheddar(host="tagyourmusic.herokuapp.com", port=443, secure=True)
+    cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
 
     tagger = TGiT(MediaPlayer, cheddar)
     tagger.launch()

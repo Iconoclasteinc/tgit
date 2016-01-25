@@ -18,19 +18,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import operator
 
+import requests
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget, QApplication, QMenu
-import requests
 
 from tgit.album import AlbumListener
 from tgit.auth import Permission
-from tgit.authentication_error import AuthenticationError
+from tgit.cheddar import AuthenticationError, InsufficientInformationError, PermissionDeniedError
 from tgit.countries import COUNTRIES
-from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
-from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.helpers import image, formatting
+from tgit.ui.helpers.ui_file import UIFile
 
 ISO_8601_FORMAT = "yyyy-MM-dd"
 QMENU_STYLESHEET = """
@@ -47,14 +46,15 @@ QMENU_STYLESHEET = """
 
 def make_album_edition_page(album, session, edit_performers, select_picture, select_identity, review_assignation,
                             show_isni_assignation_failed, show_cheddar_connection_failed,
-                            show_cheddar_authentication_failed, **handlers):
+                            show_cheddar_authentication_failed, show_permission_denied, **handlers):
     page = AlbumEditionPage(select_picture=select_picture,
                             edit_performers=edit_performers,
                             select_identity=select_identity,
                             review_assignation=review_assignation,
                             show_isni_assignation_failed=show_isni_assignation_failed,
                             show_cheddar_connection_failed=show_cheddar_connection_failed,
-                            show_cheddar_authentication_failed=show_cheddar_authentication_failed)
+                            show_cheddar_authentication_failed=show_cheddar_authentication_failed,
+                            show_permission_denied=show_permission_denied)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -81,12 +81,14 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     FRONT_COVER_SIZE = 350, 350
 
     def __init__(self, edit_performers, select_picture, select_identity, review_assignation,
-                 show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed):
+                 show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed,
+                 show_permission_denied):
         super().__init__()
         self._show_cheddar_authentication_failed = show_cheddar_authentication_failed
         self._review_assignation = review_assignation
         self._show_cheddar_connection_failed = show_cheddar_connection_failed
         self._show_isni_assignation_failed = show_isni_assignation_failed
+        self._show_permission_denied = show_permission_denied
         self._select_identity = select_identity
         self._select_picture = select_picture
         self._edit_performers = edit_performers
@@ -139,6 +141,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                 self._show_cheddar_connection_failed()
             except AuthenticationError:
                 self._show_cheddar_authentication_failed()
+            except PermissionDeniedError:
+                self._show_permission_denied()
             finally:
                 QApplication.restoreOverrideCursor()
 

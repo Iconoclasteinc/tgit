@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
 
-from hamcrest import contains
 import pytest
+from hamcrest import contains
 
 from cute.matchers import named, with_
 from cute.probes import MultiValueMatcherProbe
@@ -11,9 +11,9 @@ from cute.widgets import window
 from test.drivers import AlbumScreenDriver
 from test.integration.ui import show_widget
 from test.util.builders import make_track, make_album
-from tgit.ui.pages.track_edition_page import TrackEditionPage
 from tgit.ui.pages.album_edition_page import AlbumEditionPage
 from tgit.ui.pages.album_screen import AlbumScreen, make_album_screen
+from tgit.ui.pages.track_edition_page import TrackEditionPage
 from tgit.ui.pages.track_list_page import TrackListPage
 
 ignore = lambda *_: None
@@ -24,7 +24,7 @@ def create_track_list_page(album):
 
 
 def create_album_page(album):
-    return AlbumEditionPage(ignore, ignore, ignore, ignore, ignore, ignore, ignore)
+    return AlbumEditionPage(ignore, ignore, ignore, ignore, ignore, ignore, ignore, ignore)
 
 
 def create_track_page(track, review_assignation=ignore, show_isni_assignation_failed=ignore,

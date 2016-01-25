@@ -3,9 +3,9 @@ import timeit
 import types
 
 import pytest
+import requests
 from PyQt5.QtCore import QByteArray
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
-import requests
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
@@ -14,13 +14,12 @@ from test.drivers import AlbumEditionPageDriver
 from test.integration.ui import show_widget
 from test.util import resources, builders as build
 from test.util.builders import make_album, make_anonymous_session, make_registered_session
+from tgit import fs
 from tgit.auth import Permission
-from tgit.authentication_error import AuthenticationError
+from tgit.cheddar import AuthenticationError, InsufficientInformationError, PermissionDeniedError
 from tgit.identity import IdentityCard
-from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.metadata import Image
 from tgit.ui.pages.album_edition_page import make_album_edition_page, AlbumEditionPage
-from tgit import fs
 
 
 @pytest.yield_fixture()
@@ -45,6 +44,7 @@ def show_page(album, session=make_anonymous_session(),
               show_isni_assignation_failed=ignore,
               show_cheddar_connection_failed=ignore,
               show_cheddar_authentication_failed=ignore,
+              show_permission_denied=ignore,
               **handlers):
     page = make_album_edition_page(album, session,
                                    edit_performers=edit_performers,
@@ -53,6 +53,7 @@ def show_page(album, session=make_anonymous_session(),
                                    show_isni_assignation_failed=show_isni_assignation_failed,
                                    show_cheddar_connection_failed=show_cheddar_connection_failed,
                                    show_cheddar_authentication_failed=show_cheddar_authentication_failed,
+                                   show_permission_denied=show_permission_denied,
                                    review_assignation=review_assignation,
                                    **handlers)
     show_widget(page)
@@ -252,11 +253,23 @@ def test_shows_connection_failed_error_on_isni_lookup(driver):
 
 
 def test_shows_authentication_failed_error_on_isni_lookup(driver):
-    show_error_signal = ValueMatcherProbe("ISNI authentication")
+    show_error_signal = ValueMatcherProbe("show authentication failed")
 
     _ = show_page(make_album(lead_performer="performer"), make_registered_session(),
                   show_cheddar_authentication_failed=show_error_signal.received,
                   on_isni_lookup=lambda *_: raise_(AuthenticationError()))
+
+    driver.lookup_isni_of_lead_performer()
+    driver.check(show_error_signal)
+
+
+def test_shows_permission_denied_error_on_isni_lookup(driver):
+    show_error_signal = ValueMatcherProbe("show permission denied")
+
+    _ = show_page(make_album(lead_performer="..."),
+                  session=make_registered_session(),
+                  show_permission_denied=show_error_signal.received,
+                  on_isni_lookup=lambda *_: raise_(PermissionDeniedError()))
 
     driver.lookup_isni_of_lead_performer()
     driver.check(show_error_signal)
@@ -341,7 +354,7 @@ def test_shows_assignation_failed_error_on_isni_assignation(driver):
 
 
 def test_shows_authentication_failed_error_on_isni_assignation(driver):
-    show_error_signal = ValueMatcherProbe("ISNI authentication")
+    show_error_signal = ValueMatcherProbe("show authentication failed")
 
     _ = show_page(make_album(),
                   session=(make_registered_session(permissions=[Permission.assign_isni.value])),

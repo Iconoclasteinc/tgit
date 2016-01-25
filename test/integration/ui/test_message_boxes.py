@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import pytest
 from PyQt5.QtWidgets import QMessageBox
 from hamcrest import contains_string
-import pytest
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
@@ -66,6 +66,13 @@ def test_shows_cheddar_authentication_failed_message(driver):
     _ = messages().cheddar_authentication_failed()
     driver.is_active()
     driver.shows_message("Could not authenticate you to the TGiT remote server.")
+    driver.ok()
+
+
+def test_shows_permission_denied_message(driver):
+    _ = messages().permission_denied()
+    driver.is_active()
+    driver.shows_message("You don't have the required permission or you might have exceeded the limit of your plan.")
     driver.ok()
 
 

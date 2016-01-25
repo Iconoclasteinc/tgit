@@ -3,16 +3,16 @@
 from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
                              QToolButton, QFileDialog, QMenu, QComboBox, QTextEdit, QLabel,
-                             QAbstractButton, QSpinBox, QTableView, QDialogButtonBox, QTabBar)
+                             QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
 from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
 
 from . import gestures, properties, matchers as match, rect, platforms
-from .table import TableMatcher, TableManipulation, Table
-from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
-                     WidgetScreenBoundsProbe)
 from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector,
                       WidgetIdentity, MissingWidgetFinder)
+from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
+                     WidgetScreenBoundsProbe)
+from .table import TableMatcher, TableManipulation, Table
 
 
 def all_top_level_widgets():
@@ -249,7 +249,6 @@ class ComboBoxDriver(AbstractEditDriver):
         options_list = self._open_options_list()
         self.pause(self.CHOICES_DISPLAY_DELAY)
         options_list.select_item(match.with_list_item_text(matching))
-        self.pause(self.CHOICES_DISPLAY_DELAY)
 
     def _open_options_list(self):
         self.manipulate("pop up", lambda w: w.showPopup())
@@ -521,6 +520,8 @@ class FileDialogDriver(QDialogDriver):
 
 
 class ListViewDriver(WidgetDriver):
+    SCROLL_DELAY = 100 if platforms.mac else 0
+
     def select_item(self, matching):
         self.select_items(matching)
 
@@ -545,6 +546,7 @@ class ListViewDriver(WidgetDriver):
 
     def _scroll_item_to_visible(self, index):
         self.manipulate("scroll item to visible", lambda list_view: list_view.scrollTo(index))
+        self.pause(self.SCROLL_DELAY)
 
     def _center_of_item(self, index):
         class CalculateCenterOfItem:

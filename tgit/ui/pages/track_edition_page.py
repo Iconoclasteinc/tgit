@@ -18,20 +18,20 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import operator
 
+import requests
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QMenu, QApplication
-import requests
 
 from tgit.album import AlbumListener
-from tgit.authentication_error import AuthenticationError
+from tgit.cheddar import AuthenticationError
+from tgit.cheddar import InsufficientInformationError
 from tgit.countries import COUNTRIES
 from tgit.genres import GENRES
-from tgit.insufficient_information_error import InsufficientInformationError
 from tgit.languages import LANGUAGES
-from tgit.ui.pages.album_edition_page import QMENU_STYLESHEET
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image, formatting
 from tgit.ui.helpers.ui_file import UIFile
+from tgit.ui.pages.album_edition_page import QMENU_STYLESHEET
 
 
 def make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
