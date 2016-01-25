@@ -784,6 +784,16 @@
         <source>Primary Style</source>
         <translation>Genre</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" line="133"/>
+        <source>Lookup</source>
+        <translation>Récupérer</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" line="138"/>
+        <source>Assign</source>
+        <translation>Assigner</translation>
+    </message>
 </context>
 <context>
     <name>TrackEditionPage</name>
