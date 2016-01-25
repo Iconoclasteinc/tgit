@@ -51,17 +51,17 @@ class MessageBoxes:
         return self._open(MessageBox.inform(self._parent, "You need to restart TGiT for changes to take effect."))
 
     def isni_assignation_failed(self, details=None):
-        return self._open(MessageBox.warn(self._parent, "Could not assign an ISNI", details=details))
+        return self._open(MessageBox.warn(self._parent, "Could not assign an ISNI.", details=details))
 
     def cheddar_connection_failed(self):
         return self._open(MessageBox.warn(self._parent,
-                                          "Unable to connect to TGiT remote server.",
+                                          "Unable to connect to the TGiT service.",
                                           "Please try again later."))
 
     def cheddar_authentication_failed(self):
         return self._open(MessageBox.warn(self._parent,
-                                          "Could not authenticate you to the TGiT remote server.",
-                                          "Please sign out and sign back in to fix this issue."))
+                                          "Could not authenticate you to the TGiT service.",
+                                          "Your credentials may have changed. Please sign out then sign back in."))
 
     def permission_denied(self):
         return self._open(MessageBox.warn(self._parent,

@@ -537,23 +537,23 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Could not assign an ISNI</source>
-        <translation>Impossible d&apos;assigner un ISNI</translation>
+        <source>Could not assign an ISNI.</source>
+        <translation>L'assignation de l'ISNI a échouée.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>The album file you selected cannot be loaded.</source>
-        <translation>Impossible de charger le fichier d'album sélectionné.</translation>
+        <translation>Le fichier d'album sélectionné ne peut être chargé.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>The file might be corrupted or part of the album content cannot be found.</source>
-        <translation>Le fichier est peut être endommagé ou bien une partie du contenu de l'album ne peut être chargée.</translation>
+        <translation>Le fichier est peut être endommagé ou bien une partie du contenu de l'album est introuvable.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>Your album file could not be saved.</source>
-        <translation>Impossible d'enregistrer votre album.</translation>
+        <translation>L'enregistrement de l'album a échoué.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
@@ -563,7 +563,7 @@
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>Could not export your album.</source>
-        <translation>Impossible d'exporter votre album.</translation>
+        <translation>L'exportation de l'album a échoué.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
@@ -572,23 +572,23 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Unable to connect to TGiT remote server.</source>
-        <translation>Impossible de se connecter au serveur TGiT.</translation>
+        <source>Unable to connect to the TGiT service.</source>
+        <translation>La connexion au service TGiT a échoué.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
         <source>Please try again later.</source>
-        <translation>Svp essayez ultérieurement.</translation>
+        <translation>Veuillez essayez à nouveau ultérieurement.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Could not authenticate you to the TGiT remote server.</source>
-        <translation>Impossible de s'authentifier au serveur TGiT.</translation>
+        <source>Could not authenticate you to the TGiT service.</source>
+        <translation>Nous n'avons pas réussi à vous authentifier auprès du service TGiT.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Please sign out and sign back in to fix this issue.</source>
-        <translation>Svp déconnectez-vous et reconnectez-vous pour régler ce problème.</translation>
+        <source>Your credentials may have changed. Please sign out then sign back in.</source>
+        <translation>Veuillez essayer de vous déconnecter puis de vous reconnecter à nouveau.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />

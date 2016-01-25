@@ -50,7 +50,7 @@ def messages(confirm_before_exiting=False):
 def test_shows_isni_assignation_failed_message_with_details(driver):
     _ = messages().isni_assignation_failed(details="Details")
     driver.is_active()
-    driver.shows_message("Could not assign an ISNI")
+    driver.shows_message("Could not assign an ISNI.")
     driver.shows_details("Details")
     driver.ok()
 
@@ -58,14 +58,14 @@ def test_shows_isni_assignation_failed_message_with_details(driver):
 def test_shows_cheddar_connection_failed_message(driver):
     _ = messages().cheddar_connection_failed()
     driver.is_active()
-    driver.shows_message("Unable to connect to TGiT remote server.")
+    driver.shows_message("Unable to connect to the TGiT service.")
     driver.ok()
 
 
 def test_shows_cheddar_authentication_failed_message(driver):
     _ = messages().cheddar_authentication_failed()
     driver.is_active()
-    driver.shows_message("Could not authenticate you to the TGiT remote server.")
+    driver.shows_message("Could not authenticate you to the TGiT service.")
     driver.ok()
 
 
