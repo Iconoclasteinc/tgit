@@ -7,9 +7,14 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.isni_assignation_review_dialog_driver import IsniAssignationReviewDialogDriver
 from test.util import builders as build
+from tgit import platforms
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 
-ignore = lambda *_: None
+
+def ignore(*_):
+    pass
+
+ANIMATION_DELAY = 200 if platforms.mac else 0
 
 
 def show_dialog(*titles, main_artist_section_visible=True, on_review=ignore):
@@ -28,20 +33,22 @@ def driver(qt, prober, automaton):
 
 
 def test_signals_organization_type_on_accept(driver):
-    review_signal = ValueMatcherProbe("authentication", "organization")
+    review_signal = ValueMatcherProbe("assignation review", "organization")
 
     _ = show_dialog(on_review=review_signal.received)
 
+    driver.pause(ANIMATION_DELAY)
     driver.select_organization()
     driver.ok()
     driver.check(review_signal)
 
 
 def test_signals_individual_type_on_accept(driver):
-    review_signal = ValueMatcherProbe("authentication", "individual")
+    review_signal = ValueMatcherProbe("assignation review", "individual")
 
     _ = show_dialog(on_review=review_signal.received)
 
+    driver.pause(ANIMATION_DELAY)
     driver.select_individual()
     driver.ok()
     driver.check(review_signal)
