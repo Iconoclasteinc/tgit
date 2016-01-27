@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from functools import wraps
 import os
+from functools import wraps
 
 from tgit import local_storage, fs
 from tgit import tagging
@@ -138,13 +138,13 @@ def remove_track_from(album):
     return album.remove_track
 
 
-def lookup_isni_using(cheddar, user):
+def lookup_isni_using(cheddar, session):
     def lookup_isni(lead_performer, on_lookup_success):
         @_unwrap_future
         def on_lookup_done(identities):
             on_lookup_success([IdentityCard(**identity) for identity in identities])
 
-        cheddar.get_identities(lead_performer, user.api_key).add_done_callback(on_lookup_done)
+        cheddar.get_identities(lead_performer, session.current_user.api_key).add_done_callback(on_lookup_done)
 
     return lookup_isni
 
@@ -167,17 +167,17 @@ def lookup_isni_in(album):
     return lookup_isni
 
 
-def assign_isni_to_main_artist_using(cheddar, user, album):
+def assign_isni_to_main_artist_using(cheddar, session, album):
     def assign_isni(type_, on_assign_success):
         titles = [track.track_title for track in album.tracks]
-        _assign_isni(album.lead_performer, type_, titles, on_assign_success, cheddar, user)
+        _assign_isni(album.lead_performer, type_, titles, on_assign_success, cheddar, session.current_user)
 
     return assign_isni
 
 
-def assign_isni_to_lyricist_using(cheddar, user):
+def assign_isni_to_lyricist_using(cheddar, session):
     def assign_isni(track, on_assign_success):
-        _assign_isni(track.lyricist, "individual", [track.track_title], on_assign_success, cheddar, user)
+        _assign_isni(track.lyricist, "individual", [track.track_title], on_assign_success, cheddar, session.current_user)
 
     return assign_isni
 

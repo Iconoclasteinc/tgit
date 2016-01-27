@@ -75,8 +75,7 @@ class Session(metaclass=Observable):
 
     # noinspection PyUnresolvedReferences
     def logout(self):
-        logged_out = self._user
-        self._user = None
+        logged_out, self._user = self._user, None
         self.user_signed_out.emit(logged_out)
 
     @property

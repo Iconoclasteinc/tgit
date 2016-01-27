@@ -83,8 +83,8 @@ class Pages:
             on_select_picture=director.change_cover_of(album),
             on_isni_changed=director.add_isni_to(album),
             on_isni_local_lookup=director.lookup_isni_in(album),
-            on_isni_lookup=director.lookup_isni_using(self._cheddar, self._session.current_user),
-            on_isni_assign=director.assign_isni_to_main_artist_using(self._cheddar, self._session.current_user, album),
+            on_isni_lookup=director.lookup_isni_using(self._cheddar, self._session),
+            on_isni_assign=director.assign_isni_to_main_artist_using(self._cheddar, self._session, album),
             on_remove_picture=director.remove_album_cover_from(album),
             on_metadata_changed=director.update_album_from(album))
 

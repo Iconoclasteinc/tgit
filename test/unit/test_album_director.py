@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
-from concurrent.futures import Future
 import os
+from concurrent.futures import Future
 
+import pytest
 from flexmock import flexmock
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, empty, has_key, has_property,
                       match_equality)
-
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-import pytest
 
 from cute.prober import PollingProber
 from cute.probes import ValueMatcherProbe
 from test.util import builders as build, resources, doubles
-from test.util.builders import make_album, make_track
+from test.util.builders import make_album, make_track, make_registered_session
 from test.util.workspace import AlbumWorkspace
 from tgit import fs, album_director as director
 from tgit.album import Album, AlbumListener
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.auth import Session, User
+from tgit.auth import Session
 from tgit.metadata import Image, Metadata
 
 
@@ -87,11 +86,6 @@ def portfolio():
 @pytest.fixture()
 def prober():
     return PollingProber()
-
-
-@pytest.fixture
-def user():
-    return User(api_key="the token")
 
 
 def make_filename(location, name):
@@ -222,23 +216,23 @@ def test_signs_user_out():
     assert_that(session.current_user.email, none())
 
 
-def test_returns_list_of_identities_when_isni_found_in_registry(prober, user):
+def test_returns_list_of_identities_when_isni_found_in_registry(prober):
     class FakeCheddar:
         @staticmethod
         def get_identities(phrase, token):
             future = Future()
-            if token == "the token" and phrase == "Rebecca Ann Maloy":
+            if token == "secret" and phrase == "Rebecca Ann Maloy":
                 future.set_result([{"id": "0000000115677274", "type": "individual", "works": []}])
             else:
                 future.set_result([])
             return future
 
     success_signal = ValueMatcherProbe("The identities", contains(has_property("id", "0000000115677274")))
-    director.lookup_isni_using(FakeCheddar(), user)("Rebecca Ann Maloy", success_signal.received)
+    director.lookup_isni_using(FakeCheddar(), make_registered_session(token="secret"))("Rebecca Ann Maloy", success_signal.received)
     prober.check(success_signal)
 
 
-def test_returns_empty_list_when_isni_is_not_found_in_registry(prober, user):
+def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
     class FakeCheddar:
         @staticmethod
         def get_identities(*_):
@@ -247,7 +241,7 @@ def test_returns_empty_list_when_isni_is_not_found_in_registry(prober, user):
             return future
 
     success_signal = ValueMatcherProbe("The identities", empty())
-    director.lookup_isni_using(FakeCheddar(), user)("Rebecca Ann Maloy", success_signal.received)
+    director.lookup_isni_using(FakeCheddar(), make_registered_session())("Rebecca Ann Maloy", success_signal.received)
     prober.check(success_signal)
 
 
@@ -289,12 +283,12 @@ def test_clears_album_images():
     assert_that(album.images, equal_to([]), "images")
 
 
-def test_assigns_isni_to_main_artist(prober, user):
+def test_assigns_isni_to_main_artist(prober):
     class FakeCheddar:
         @staticmethod
         def assign_identifier(name, type_, works, token):
             future = Future()
-            if token == "the token" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
+            if token == "secret" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
                 future.set_result(_to_joel_miller())
             else:
                 future.set_result(None)
@@ -305,16 +299,16 @@ def test_assigns_isni_to_main_artist(prober, user):
 
     success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
 
-    director.assign_isni_to_main_artist_using(FakeCheddar(), user, album)("individual", success_signal.received)
+    director.assign_isni_to_main_artist_using(FakeCheddar(), make_registered_session(token="secret"), album)("individual", success_signal.received)
     prober.check(success_signal)
 
 
-def test_assigns_isni_to_lyricist(prober, user):
+def test_assigns_isni_to_lyricist(prober):
     class FakeCheddar:
         @staticmethod
         def assign_identifier(name, type_, works, token):
             future = Future()
-            if token == "the token" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
+            if token == "secret" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
                 future.set_result(_to_joel_miller())
             else:
                 future.set_result(None)
@@ -323,7 +317,7 @@ def test_assigns_isni_to_lyricist(prober, user):
     track = build.track(track_title="Chevere!", lyricist="Joel Miller")
     success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
 
-    director.assign_isni_to_lyricist_using(FakeCheddar(), user)(track, success_signal.received)
+    director.assign_isni_to_lyricist_using(FakeCheddar(), make_registered_session(token="secret"))(track, success_signal.received)
     prober.check(success_signal)
 
 
