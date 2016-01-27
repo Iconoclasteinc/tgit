@@ -491,18 +491,18 @@
     <name>MainWindow</name>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>http://tagyourmusic.com/en/#documentation</source>
-        <translation>http://tagyourmusic.com/fr/#documentation</translation>
+        <source>http://blog.tagyourmusic.com/en</source>
+        <translation>http://blog.tagyourmusic.com/fr</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>http://tagyourmusic.herokuapp.com/en/#register</source>
-        <translation>http://tagyourmusic.herokuapp.com/fr/#register</translation>
+        <source>https://tagyourmusic.com/en</source>
+        <translation>https://tagyourmusic.com/fr</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>mailto:iconoclastejr@gmail.com?subject=[TGiT] I want more!</source>
-        <translation>mailto:iconoclastejr@gmail.com?subject=[TGiT] J'en veux plus !</translation>
+        <source>mailto:support@gmail.com?subject=[TGiT] I want more!</source>
+        <translation>mailto:support@gmail.com?subject=[TGiT] J'en veux plus !</translation>
     </message>
 </context>
 <context>
