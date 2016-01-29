@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
 
-from hamcrest import contains, contains_inanyorder, ends_with
-from PyQt5.QtWidgets import QFileDialog
 import pytest
+from PyQt5.QtWidgets import QFileDialog
+from hamcrest import contains, contains_inanyorder, ends_with
 
 from cute.matchers import named
-from cute.widgets import window
 from cute.probes import ValueMatcherProbe
+from cute.widgets import window
 from test.drivers import TrackSelectionDialogDriver
 from test.util import resources
 from tgit.platforms import windows
@@ -19,11 +19,9 @@ def dialog(qt):
     return TrackSelectionDialog(native=False)
 
 
-@pytest.yield_fixture()
+@pytest.fixture()
 def driver(dialog, prober, automaton):
-    dialog_driver = TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')), prober, automaton)
-    yield dialog_driver
-    dialog_driver.close()
+    return TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')), prober, automaton)
 
 
 def abs_path(selection):

@@ -16,10 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog
 
-from tgit.ui import locations
 from tgit import fs
+from tgit.ui import locations
 
 
 class TrackSelectionDialog(QFileDialog):
@@ -29,26 +30,23 @@ class TrackSelectionDialog(QFileDialog):
         super().__init__(parent)
         self.setObjectName("track-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
-        self.finished.connect(self.filesSelected.disconnect)
+        self.setAttribute(Qt.WA_DeleteOnClose, True)
         self.setDirectory(locations.Music)
 
     def select_files_in_folder(self, file_type, on_select):
         self.setFileMode(QFileDialog.Directory)
         self.setNameFilter(self._filter_for(file_type))
-        self.filesSelected.connect(lambda files: on_select(*self._list_files(folder=files[0], file_type=file_type)))
-        self.open()
+        self.open(lambda: on_select(*self._list_files(folder=self.selectedFiles()[0], file_type=file_type)))
 
     def select_files(self, file_type, on_select):
         self.setFileMode(QFileDialog.ExistingFiles)
         self.setNameFilter(self._filter_for(file_type))
-        self.filesSelected.connect(lambda files: on_select(*files))
-        self.open()
+        self.open(lambda: on_select(*self.selectedFiles()))
 
     def select_file(self, file_type, on_select):
         self.setFileMode(QFileDialog.ExistingFile)
         self.setNameFilter(self._filter_for(file_type))
-        self.filesSelected.connect(lambda files: on_select(files[0]))
-        self.open()
+        self.open(lambda: on_select(self.selectedFiles()[0]))
 
     def _filter_for(self, type_):
         return "{0} {1}".format(self.tr(self._FILTERS[type_]), "*.{}".format(type_))
