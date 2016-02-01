@@ -6,15 +6,15 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import WelcomePageDriver
-from tgit.ui.pages.welcome_page import WelcomePage
+from tgit.ui.pages.welcome_page import WelcomePage, make_welcome_page
 
 ignore = lambda: None
 
 
 def show_page(select_album=ignore, show_load_error=ignore, **handlers):
-    welcome_page = WelcomePage(select_album, show_load_error, **handlers)
-    welcome_page.show()
-    return welcome_page
+    page = make_welcome_page(select_album, show_load_error, **handlers)
+    page.show()
+    return page
 
 
 @pytest.yield_fixture()

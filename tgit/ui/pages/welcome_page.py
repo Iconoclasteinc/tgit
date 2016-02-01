@@ -24,17 +24,21 @@ from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.rescue import rescue
 
 
+def make_welcome_page(select_album, show_load_error, **handlers):
+    page = WelcomePage(select_album=select_album, show_load_error=show_load_error)
+
+    for name, handler in handlers.items():
+        getattr(page, name)(handler)
+
+    return page
+
+
 class WelcomePage(QFrame, UIFile):
-    def __init__(self, select_album, show_load_error, **handlers):
+    def __init__(self, select_album, show_load_error):
         super().__init__()
         self._select_album = select_album
         self._show_load_error = show_load_error
         self._setup_ui()
-        self._register_signal_handlers(handlers)
-
-    def _register_signal_handlers(self, handlers):
-        for name, handler in handlers.items():
-            getattr(self, name)(handler)
 
     def _setup_ui(self):
         self._load(":/ui/welcome_page.ui")

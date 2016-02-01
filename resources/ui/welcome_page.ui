@@ -73,7 +73,7 @@ QPushButton#_load_album_button::hover {
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QWidget" name="welcome_dialog" native="true">
+    <widget class="QWidget" name="_welcome_dialog" native="true">
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
        <number>5</number>
@@ -91,7 +91,7 @@ QPushButton#_load_album_button::hover {
        <number>10</number>
       </property>
       <item>
-       <widget class="QLabel" name="title">
+       <widget class="QLabel" name="_title">
         <property name="styleSheet">
          <string notr="true">QLabel {
     padding-top: 36px;
@@ -137,7 +137,7 @@ QPushButton#_load_album_button::hover {
        </spacer>
       </item>
       <item>
-       <widget class="QWidget" name="widget" native="true">
+       <widget class="QWidget" name="_actions_container" native="true">
         <layout class="QGridLayout" name="gridLayout_2">
          <property name="leftMargin">
           <number>0</number>
@@ -238,7 +238,7 @@ QPushButton#_load_album_button::hover {
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="footnote">
+       <widget class="QLabel" name="_footnote">
         <property name="styleSheet">
          <string notr="true">QLabel {
 	font-size: 10px;

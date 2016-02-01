@@ -25,7 +25,7 @@ from tgit.ui.pages.new_album_page import make_new_album_page
 from tgit.ui.pages.startup_screen import StartupScreen
 from tgit.ui.pages.track_edition_page import make_track_edition_page
 from tgit.ui.pages.track_list_page import make_track_list_page
-from tgit.ui.pages.welcome_page import WelcomePage
+from tgit.ui.pages.welcome_page import make_welcome_page
 
 
 class Pages:
@@ -55,9 +55,9 @@ class Pages:
                                    on_create_album=director.create_album_into(self._portfolio))
 
     def _welcome_page(self):
-        return WelcomePage(select_album=self._dialogs.select_album_to_load,
-                           show_load_error=self._messages.load_album_failed,
-                           on_load_album=director.load_album_into(self._portfolio))
+        return make_welcome_page(select_album=self._dialogs.select_album_to_load,
+                                 show_load_error=self._messages.load_album_failed,
+                                 on_load_album=director.load_album_into(self._portfolio))
 
     def _track_list_page(self, album):
         return make_track_list_page(album=album, player=self._player,
