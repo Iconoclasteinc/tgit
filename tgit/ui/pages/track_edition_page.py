@@ -83,6 +83,16 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         lyricist_menu.addAction(self._lyricist_isni_assign_action)
         self._lyricist_isni_actions_button.setMenu(lyricist_menu)
 
+        composer_menu = QMenu()
+        composer_menu.setStyleSheet(QMENU_STYLESHEET)
+        composer_menu.addAction(self._composer_isni_assign_action)
+        self._composer_isni_actions_button.setMenu(composer_menu)
+
+        publisher_menu = QMenu()
+        publisher_menu.setStyleSheet(QMENU_STYLESHEET)
+        publisher_menu.addAction(self._publisher_isni_assign_action)
+        self._publisher_isni_actions_button.setMenu(publisher_menu)
+
         self._genre.addItems(sorted(GENRES))
         self._language.addItems(sorted(LANGUAGES))
         self._fill_with_countries(self._production_company_region)
@@ -143,7 +153,15 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         def update_lyricist_isni(lyricist):
             self._lyricist_isni.setText(on_isni_local_lookup(lyricist))
 
+        def update_composer_isni(composer):
+            self._composer_isni.setText(on_isni_local_lookup(composer))
+
+        def update_publisher_isni(publisher):
+            self._publisher_isni.setText(on_isni_local_lookup(publisher))
+
         self._lyricist.textEdited.connect(update_lyricist_isni)
+        self._composer.textEdited.connect(update_composer_isni)
+        self._publisher.textEdited.connect(update_publisher_isni)
 
     def display(self, album=None, track=None):
         if track:
@@ -192,6 +210,8 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
         identities = track.album.isnis or {}
         self._lyricist_isni.setText(identities[track.lyricist] if track.lyricist in identities else "")
+        self._composer_isni.setText(identities[track.composer] if track.composer in identities else "")
+        self._publisher_isni.setText(identities[track.publisher] if track.publisher in identities else "")
 
     @staticmethod
     def _display_region(region, combobox):

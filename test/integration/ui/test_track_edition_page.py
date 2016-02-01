@@ -4,6 +4,7 @@ from datetime import timedelta
 import types
 
 import pytest
+
 from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not
 import requests
 
@@ -389,5 +390,58 @@ def test_clears_isni_when_lyricist_not_found(driver):
     album = make_album(tracks=[track], isnis={"Joel Miller": "00000000123456789"})
     _ = show_page(album, track, on_isni_local_lookup=lookup)
 
+    driver.shows_lyricist_isni("00000000123456789")
     driver.change_lyricist("Rebecca Ann Maloy")
     driver.shows_lyricist_isni("")
+
+
+def test_updates_isni_when_composer_text_change(driver):
+    def lookup(text):
+        return "0000000123456789" if text == "Joel Miller" else None
+
+    track = make_track()
+    album = make_album(tracks=[track])
+
+    _ = show_page(album, track, on_isni_local_lookup=lookup)
+
+    driver.change_composer("Joel Miller")
+    driver.shows_composer_isni("0000000123456789")
+
+
+def test_clears_isni_when_composer_not_found(driver):
+    def lookup(text):
+        return "0000000123456789" if text == "Joel Miller" else None
+
+    track = make_track(composer="Joel Miller")
+    album = make_album(tracks=[track], isnis={"Joel Miller": "00000000123456789"})
+    _ = show_page(album, track, on_isni_local_lookup=lookup)
+
+    driver.shows_composer_isni("00000000123456789")
+    driver.change_composer("Rebecca Ann Maloy")
+    driver.shows_composer_isni("")
+
+
+def test_updates_isni_when_publisher_text_change(driver):
+    def lookup(text):
+        return "0000000123456789" if text == "Joel Miller" else None
+
+    track = make_track()
+    album = make_album(tracks=[track])
+
+    _ = show_page(album, track, on_isni_local_lookup=lookup)
+
+    driver.change_publisher("Joel Miller")
+    driver.shows_publisher_isni("0000000123456789")
+
+
+def test_clears_isni_when_publisher_not_found(driver):
+    def lookup(text):
+        return "0000000123456789" if text == "Joel Miller" else None
+
+    track = make_track(publisher="Joel Miller")
+    album = make_album(tracks=[track], isnis={"Joel Miller": "00000000123456789"})
+    _ = show_page(album, track, on_isni_local_lookup=lookup)
+
+    driver.shows_publisher_isni("00000000123456789")
+    driver.change_publisher("Rebecca Ann Maloy")
+    driver.shows_publisher_isni("")

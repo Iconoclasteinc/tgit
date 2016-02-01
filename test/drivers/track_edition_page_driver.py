@@ -153,12 +153,18 @@ class TrackEditionPageDriver(ScreenDriver):
     def change_composer(self, name):
         self.lineEdit(named("_composer")).change_text(name)
 
+    def shows_composer_isni(self, isni):
+        self.lineEdit(named("_composer_isni")).has_text(isni)
+
     def shows_publisher(self, name):
         self.label(with_buddy(named("_publisher"))).is_showing_on_screen()
         self.lineEdit(named("_publisher")).has_text(name)
 
     def change_publisher(self, name):
         self.lineEdit(named("_publisher")).change_text(name)
+
+    def shows_publisher_isni(self, isni):
+        self.lineEdit(named("_publisher_isni")).has_text(isni)
 
     def shows_isrc(self, code):
         self.label(with_buddy(named("_isrc"))).is_showing_on_screen()

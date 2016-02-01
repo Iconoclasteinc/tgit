@@ -576,6 +576,41 @@ color: #666666;</string>
         <number>0</number>
        </property>
        <widget class="QWidget" name="_contributors_tab">
+        <property name="styleSheet">
+         <string notr="true">QToolButton {
+    background-color: #BFBFBF;
+    border: 2px solid #BFBFBF;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+}
+
+QToolButton:disabled {
+    border-color: #CCCCCC;
+    background-color: #CCCCCC;
+}
+
+QToolButton:hover, QToolButton:focus {
+    background-color: #A6A6A6;
+    border-color: #A6A6A6;
+}
+
+QToolButton:pressed {
+	border: 2px solid transparent;
+}
+
+QToolButton::menu-indicator {
+    subcontrol-position: right center;
+	image: url(:/images/chevron-down-white-8.png);
+    top: 2px;
+    right: 2px;
+}
+
+QToolButton::menu-indicator:open {
+    top: 3px; 
+	right: 1px;
+}</string>
+        </property>
         <attribute name="title">
          <string>Contributors</string>
         </attribute>
@@ -628,41 +663,6 @@ color: #666666;</string>
                </property>
                <property name="focusPolicy">
                 <enum>Qt::StrongFocus</enum>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QToolButton {
-    background-color: #BFBFBF;
-    border: 2px solid #BFBFBF;
-    border-radius: 4px;
-    color: white;
-    font-weight: bold;
-}
-
-QToolButton:disabled {
-    border-color: #CCCCCC;
-    background-color: #CCCCCC;
-}
-
-QToolButton:hover, QToolButton:focus {
-    background-color: #A6A6A6;
-    border-color: #A6A6A6;
-}
-
-QToolButton:pressed {
-	border: 2px solid transparent;
-}
-
-QToolButton::menu-indicator {
-    subcontrol-position: right center;
-	image: url(:/images/chevron-down-white-8.png);
-    top: 2px;
-    right: 2px;
-}
-
-QToolButton::menu-indicator:open {
-    top: 3px; 
-	right: 1px;
-}</string>
                </property>
                <property name="text">
                 <string>ISNI</string>
@@ -717,7 +717,58 @@ QToolButton::menu-indicator:open {
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="_composer"/>
+            <layout class="QHBoxLayout" name="_composer_input_container">
+             <item>
+              <widget class="QLineEdit" name="_composer"/>
+             </item>
+             <item>
+              <widget class="QToolButton" name="_composer_isni_actions_button">
+               <property name="minimumSize">
+                <size>
+                 <width>60</width>
+                 <height>22</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::StrongFocus</enum>
+               </property>
+               <property name="text">
+                <string>ISNI</string>
+               </property>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
+               </property>
+               <property name="toolButtonStyle">
+                <enum>Qt::ToolButtonTextOnly</enum>
+               </property>
+               <property name="autoRaise">
+                <bool>true</bool>
+               </property>
+               <property name="arrowType">
+                <enum>Qt::DownArrow</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="_composer_isni">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>135</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="placeholderText">
+                <string>ISNI</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
@@ -737,7 +788,52 @@ QToolButton::menu-indicator:open {
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="_publisher"/>
+            <layout class="QHBoxLayout" name="_publisher_input_container">
+             <item>
+              <widget class="QLineEdit" name="_publisher"/>
+             </item>
+             <item>
+              <widget class="QToolButton" name="_publisher_isni_actions_button">
+               <property name="minimumSize">
+                <size>
+                 <width>60</width>
+                 <height>22</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>ISNI</string>
+               </property>
+               <property name="popupMode">
+                <enum>QToolButton::InstantPopup</enum>
+               </property>
+               <property name="toolButtonStyle">
+                <enum>Qt::ToolButtonTextOnly</enum>
+               </property>
+               <property name="autoRaise">
+                <bool>true</bool>
+               </property>
+               <property name="arrowType">
+                <enum>Qt::DownArrow</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="_publisher_isni">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>135</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="placeholderText">
+                <string>ISNI</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
@@ -1151,6 +1247,22 @@ QToolButton::menu-indicator:open {
    </item>
   </layout>
   <action name="_lyricist_isni_assign_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Assign</string>
+   </property>
+  </action>
+  <action name="_composer_isni_assign_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Assign</string>
+   </property>
+  </action>
+  <action name="_publisher_isni_assign_action">
    <property name="enabled">
     <bool>false</bool>
    </property>

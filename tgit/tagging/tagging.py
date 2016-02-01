@@ -37,8 +37,14 @@ def clean_isnis(track_metadata):
     isnis = track_metadata["isnis"] or {}
     lead_performer = track_metadata["lead_performer"]
     lyricist = track_metadata["lyricist"]
+    composer = track_metadata["composer"]
+    publisher = track_metadata["publisher"]
     if lead_performer in isnis:
         new_isni_map[lead_performer] = isnis[lead_performer]
     if lyricist in isnis:
         new_isni_map[lyricist] = isnis[lyricist]
+    if composer in isnis:
+        new_isni_map[composer] = isnis[composer]
+    if publisher in isnis:
+        new_isni_map[publisher] = isnis[publisher]
     return new_isni_map

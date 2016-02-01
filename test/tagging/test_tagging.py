@@ -2,7 +2,7 @@
 from datetime import datetime, timezone, timedelta
 
 import pytest
-from hamcrest import has_properties, has_entries, contains, equal_to, assert_that, is_not, has_key
+from hamcrest import has_properties, has_entries, contains, equal_to, assert_that
 
 import tgit
 from test.util import builders as build, mp3_file
@@ -68,9 +68,14 @@ def test_cleans_superflous_isnis_before_tagging(mp3):
     album = build.album(release_name="Album Title", lead_performer="Album Artist",
                         isnis={"Album Artist": "0000000123456789",
                                "Album Lyricist": "9876543210000000",
+                               "Album Composer": "1234567890000000",
+                               "Album Publisher": "0000000987654321",
                                "Previous Album Artist": "1234567890000000",
                                "Previous Album Lyricist": "0000000987654321"})
-    track = build.track(filename=mp3(), track_title="Track Title", lyricist="Album Lyricist", album=album)
+    track = build.track(filename=mp3(), track_title="Track Title",
+                        lyricist="Album Lyricist",
+                        composer="Album Composer",
+                        publisher="Album Publisher", album=album)
 
     tagging.save_track(track)
 
@@ -78,5 +83,7 @@ def test_cleans_superflous_isnis_before_tagging(mp3):
     assert_that(track.metadata, has_entries(release_name="Album Title",
                                             lead_performer="Album Artist",
                                             isnis={"Album Artist": "0000000123456789",
-                                                   "Album Lyricist": "9876543210000000"},
+                                                   "Album Lyricist": "9876543210000000",
+                                                   "Album Composer": "1234567890000000",
+                                                   "Album Publisher": "0000000987654321"},
                                             track_title="Track Title"), "metadata tags")

@@ -21,7 +21,7 @@
     background-color: #484848
 }
 
-#welcome_dialog {
+#_welcome_dialog {
 	padding: 20px;
 	min-width: 500px;
 	max-width: 500px;
