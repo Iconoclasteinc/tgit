@@ -39,19 +39,19 @@ class NewAlbumPageDriver(ScreenDriver):
         if using_shortcut:
             self.perform(gestures.enter())
         else:
-            self.button(named("create_button")).click()
+            self.button(named("_create_button")).click()
 
     def select_album_type(self, of_type):
         self.radio(named("_{}_button".format(of_type))).click()
 
     def enter_album_name(self, album_name):
-        self.lineEdit(named("album_name")).replace_all_text(album_name)
+        self.lineEdit(named("_album_name")).replace_all_text(album_name)
 
     def enter_album_location(self, album_location):
-        self.lineEdit(named("album_location")).replace_all_text(album_location)
+        self.lineEdit(named("_album_location")).replace_all_text(album_location)
 
     def enter_track_location(self, import_from):
-        self.lineEdit(named("track_location")).replace_all_text(import_from)
+        self.lineEdit(named("_track_location")).replace_all_text(import_from)
 
     def cancel_creation(self, of_type="flac", album_name="", album_location="", import_from="", using_shortcut=False):
         self.select_album_type(of_type)
@@ -62,31 +62,31 @@ class NewAlbumPageDriver(ScreenDriver):
         if using_shortcut:
             self.perform(gestures.unselect())
         else:
-            self.button(named("cancel_button")).click()
+            self.button(named("_cancel_button")).click()
 
     def select_album(self):
-        self.button(named("browse_album_location_button")).click()
+        self.button(named("_browse_album_location_button")).click()
 
     def select_track(self):
-        self.button(named("browse_track_location_button")).click()
+        self.button(named("_browse_track_location_button")).click()
 
-    def has_selected_flac(self):
-        self.radio(named("_flac_button")).is_checked()
+    def has_selected_mp3(self):
+        self.radio(named("_mp3_button")).is_checked()
 
     def has_album_name(self, name):
-        self.lineEdit(named("album_name")).has_text(name)
+        self.lineEdit(named("_album_name")).has_text(name)
 
     def has_album_location(self, destination):
-        self.lineEdit(named("album_location")).has_text(destination)
+        self.lineEdit(named("_album_location")).has_text(destination)
 
     def has_track_location(self, destination):
-        self.lineEdit(named("track_location")).has_text(destination)
+        self.lineEdit(named("_track_location")).has_text(destination)
 
     def creation_is_disabled(self):
-        self.button(named("create_button")).is_disabled()
+        self.button(named("_create_button")).is_disabled()
 
     def has_reset_form(self):
-        self.has_selected_flac()
+        self.has_selected_mp3()
         self.has_album_name("untitled")
         self.has_album_location(ends_with("Documents"))
         self.has_track_location("")

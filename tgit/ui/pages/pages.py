@@ -21,7 +21,7 @@ import functools
 from tgit import album_director as director
 from tgit.ui.pages.album_edition_page import make_album_edition_page
 from tgit.ui.pages.album_screen import make_album_screen
-from tgit.ui.pages.new_album_page import NewAlbumPage
+from tgit.ui.pages.new_album_page import make_new_album_page
 from tgit.ui.pages.startup_screen import StartupScreen
 from tgit.ui.pages.track_edition_page import make_track_edition_page
 from tgit.ui.pages.track_list_page import make_track_list_page
@@ -48,11 +48,11 @@ class Pages:
                                  track_page=self._track_page_for(album))
 
     def _new_album_page(self):
-        return NewAlbumPage(select_album_location=self._dialogs.select_album_destination,
-                            select_track=self._dialogs.select_track,
-                            check_album_exists=director.album_exists,
-                            confirm_overwrite=self._messages.overwrite_album_confirmation,
-                            on_create_album=director.create_album_into(self._portfolio))
+        return make_new_album_page(select_album_location=self._dialogs.select_album_destination,
+                                   select_track=self._dialogs.select_track,
+                                   check_album_exists=director.album_exists,
+                                   confirm_overwrite=self._messages.overwrite_album_confirmation,
+                                   on_create_album=director.create_album_into(self._portfolio))
 
     def _welcome_page(self):
         return WelcomePage(select_album=self._dialogs.select_album_to_load,

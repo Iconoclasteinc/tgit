@@ -24,7 +24,7 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.new_album_page_driver import NewAlbumPageDriver
 from tgit.album import Album
-from tgit.ui.pages.new_album_page import NewAlbumPage
+from tgit.ui.pages.new_album_page import NewAlbumPage, make_new_album_page
 
 
 @pytest.yield_fixture()
@@ -42,11 +42,11 @@ yes = lambda *_: True
 
 def show_page(select_album=ignore, select_track=ignore, confirm_overwrite=always, album_exists=no,
               on_create_album=ignore):
-    page = NewAlbumPage(select_album_location=select_album,
-                        select_track=select_track,
-                        confirm_overwrite=confirm_overwrite,
-                        check_album_exists=album_exists,
-                        on_create_album=on_create_album)
+    page = make_new_album_page(select_album_location=select_album,
+                               select_track=select_track,
+                               confirm_overwrite=confirm_overwrite,
+                               check_album_exists=album_exists,
+                               on_create_album=on_create_album)
     page.show()
     return page
 
