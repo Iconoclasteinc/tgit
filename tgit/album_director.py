@@ -214,3 +214,11 @@ def _unwrap_future(f):
         return f(future.result())
 
     return decorated
+
+
+def update_preferences(preferences):
+    def update_preferences_with(values):
+        for key, value in values.items():
+            setattr(preferences, key, value)
+
+    return update_preferences_with

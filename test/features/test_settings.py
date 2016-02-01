@@ -5,7 +5,7 @@ def test_changing_the_application_language(app, settings):
     app.has_settings(language="English")
     app.change_settings(language="Français")
 
-    settings.has_stored("preferences.locale", "fr_FR")
+    settings.has_stored("preferences.locale", "fr")
     app.stop()
 
     app.start()

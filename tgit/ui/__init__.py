@@ -17,36 +17,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import QLocale
-
 from tgit import album_director as director
 from tgit import export
 from tgit.ui import resources, browser
-from tgit.ui.pages import Pages
 from tgit.ui.dialogs import Dialogs, MessageBoxes
 from tgit.ui.helpers import template_file as templates
 from tgit.ui.main_window import MainWindow
-from tgit.ui.user_preferences_dialog import UserPreferencesDialog
+from tgit.ui.pages import Pages
+from tgit.ui.user_preferences_dialog import open_user_preferences_dialog
 
 
-def UserPreferencesDialogController(notify_restart_required, preferences, parent):
-    dialog = UserPreferencesDialog(parent)
-
-    def save_preferences(prefs):
-        preferences.locale = QLocale(prefs["locale"])
-        notify_restart_required()
-
-    dialog.display(preferences, save_preferences)
-    return dialog
-
-
-def create_main_window(session, portfolio, player, preferences, cheddar, native, confirm_exit):
+def create_main_window(session, portfolio, player, prefs, cheddar, native, confirm_exit):
     application_dialogs = Dialogs(native, lambda: window)
     messages = MessageBoxes(confirm_exit, lambda: window)
     application_pages = Pages(application_dialogs, messages, session, portfolio, player, cheddar)
 
     def show_settings_dialog():
-        return UserPreferencesDialogController(messages.restart_required, preferences, window)
+        return open_user_preferences_dialog(prefs, messages.restart_required, director.update_preferences(prefs))
 
     def export_as_soproq():
         from openpyxl import load_workbook

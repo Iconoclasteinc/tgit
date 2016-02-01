@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtCore import QLocale
-from hamcrest import equal_to, assert_that, is_, has_property
+from hamcrest import equal_to, assert_that, is_, has_entry
 
 from tgit.user_preferences import UserPreferences
 
@@ -19,14 +18,14 @@ def test_signals_when_preferences_changed():
     subscriber = PreferencesChangedSubscriber()
     preferences.preferences_changed.subscribe(subscriber.preferences_changed)
 
-    preferences.locale = QLocale("fr_CA")
-    assert_that(subscriber.preferences, has_property("locale", equal_to(QLocale("fr_CA"))))
+    preferences.locale = "fr_CA"
+    assert_that(subscriber.preferences, has_entry("locale", "fr_CA"))
 
 
 def test_stores_multiple_preferences():
     preferences = UserPreferences()
-    preferences.locale = QLocale("fr_CA")
+    preferences.locale = "fr_CA"
     preferences.native_dialogs = False
 
-    assert_that(preferences.locale, equal_to(QLocale("fr_CA")), "locale")
+    assert_that(preferences.locale, equal_to("fr_CA"), "locale")
     assert_that(preferences.native_dialogs, is_(False), "native dialogs")

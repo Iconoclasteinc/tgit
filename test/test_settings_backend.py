@@ -2,10 +2,9 @@
 
 import sip
 
-from PyQt5.QtCore import QLocale
+import pytest
 from PyQt5.QtWidgets import QApplication
 from hamcrest import assert_that, has_properties, equal_to
-import pytest
 
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 from tgit.tagger import SettingsBackend
@@ -79,18 +78,18 @@ def tests_stores_user_credentials_in_settings_file_on_sign_in(settings_backend, 
 def tests_defaults_to_english_locale(settings_backend, settings_driver):
     user_preferences = settings_backend.load_user_preferences()
 
-    assert_that(user_preferences.locale, equal_to(QLocale("en")))
+    assert_that(user_preferences.locale, equal_to("en"), "locale")
 
 
 def tests_loads_user_preferences_from_settings_file(settings_backend, settings_driver):
     settings_driver["preferences.locale"] = "fr_CA"
     preferences = settings_backend.load_user_preferences()
 
-    assert_that(preferences.locale, equal_to(QLocale("fr_CA")))
+    assert_that(preferences.locale, equal_to("fr_CA"), "locale")
 
 
 def tests_stores_preferences_in_settings_file_on_change(settings_backend, settings_driver):
     preferences = settings_backend.load_user_preferences()
-    preferences.locale = QLocale("fr_FR")
+    preferences.locale = "fr_FR"
 
     settings_driver.has_stored("preferences.locale", "fr_FR")

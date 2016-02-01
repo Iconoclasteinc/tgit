@@ -18,6 +18,7 @@ from tgit.album import Album, AlbumListener
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session
 from tgit.metadata import Image, Metadata
+from tgit.user_preferences import UserPreferences
 
 
 @pytest.yield_fixture
@@ -338,6 +339,14 @@ def test_signals_when_adding_isni_to_local_map():
     album.addAlbumListener(_listener_expecting_notification("isnis", {"Joel Miller": "0000000123456789"}))
 
     director.add_isni_to(album)("Joel Miller", "0000000123456789")
+
+
+def test_updates_preferences():
+    preferences = UserPreferences()
+
+    director.update_preferences(preferences)({"locale": "fr_CA"})
+
+    assert_that(preferences.locale, equal_to("fr_CA"), "preferred locale")
 
 
 def _listener_expecting_notification(prop, value):

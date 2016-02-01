@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import QLocale, QSettings
+from PyQt5.QtCore import QSettings
 
 from tgit.auth import Session
 from tgit.user_preferences import UserPreferences
@@ -44,7 +44,7 @@ class SettingsBackend:
 
     def load_user_preferences(self):
         preferences = UserPreferences()
-        preferences.locale = QLocale(self._storage.value("preferences.locale") or "en")
+        preferences.locale = self._storage.value("preferences.locale") or "en"
 
         preferences.preferences_changed.subscribe(self._store_preferences)
         return preferences
@@ -60,4 +60,4 @@ class SettingsBackend:
         self._storage.remove("user.permissions")
 
     def _store_preferences(self, preferences):
-        self._storage.setValue("preferences.locale", preferences.locale.name())
+        self._storage.setValue("preferences.locale", preferences["locale"])

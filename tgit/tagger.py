@@ -31,7 +31,7 @@ from tgit.settings_backend import SettingsBackend
 
 
 class TGiT(QApplication):
-    def __init__(self, create_player, cheddar, settings_file=None, native=True, confirm_exit=True, on_exit=None):
+    def __init__(self, create_player, cheddar, settings_file=None, native=True, confirm_exit=True):
         super().__init__([])
 
         self.setApplicationName("TGiT")
@@ -39,9 +39,8 @@ class TGiT(QApplication):
         self.setOrganizationDomain("tagyourmusic.com")
         self.setWindowIcon(QIcon(":/tgit.ico"))
 
-        self._settings_backend = SettingsBackend(settings_file)
+        self._settings = SettingsBackend(settings_file)
         self._cheddar = cheddar
-        self._on_exit = on_exit
         self._confirm_exit = confirm_exit
         self._native = native
         self._media_library = create_media_library()
@@ -51,20 +50,20 @@ class TGiT(QApplication):
         self._translators = []
 
     def _set_locale(self, locale):
-        QLocale.setDefault(locale)
+        QLocale.setDefault(QLocale(locale))
         for resource in ("qtbase", "tgit"):
             self._install_translations(resource, locale)
 
     def _install_translations(self, resource, locale):
         translator = QTranslator()
-        if translator.load("{0}_{1}".format(resource, locale.name()), ":/"):
+        if translator.load("{0}_{1}".format(resource, locale), ":/"):
             self.installTranslator(translator)
             self._translators.append(translator)
 
     def show(self):
-        preferences = self._settings_backend.load_user_preferences()
+        preferences = self._settings.load_user_preferences()
         self._set_locale(preferences.locale)
-        session = self._settings_backend.load_session()
+        session = self._settings.load_session()
         main_window = ui.create_main_window(session, self._album_portfolio, self._player, preferences,
                                             self._cheddar, self._native, self._confirm_exit)
         main_window.show()
@@ -74,14 +73,12 @@ class TGiT(QApplication):
         self.run()
 
     def run(self):
-        self.clean_exit(self.exec_())
+        self.close(self.exec_())
 
-    def clean_exit(self, exit_value):
+    def close(self, exit_value):
         self._player.close()
         self._media_library.close()
-        if self._on_exit is not None:
-            self._on_exit()
-        sys.exit(exit_value)
+        self.exit(exit_value)
 
 
 def main():

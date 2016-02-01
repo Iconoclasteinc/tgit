@@ -21,7 +21,7 @@ from tgit.signal import Observable, signal
 
 
 class UserPreferences(metaclass=Observable):
-    preferences_changed = signal(object)
+    preferences_changed = signal(dict)
 
     def __init__(self):
         super().__setattr__("_data", {})
@@ -34,4 +34,4 @@ class UserPreferences(metaclass=Observable):
 
     def __setattr__(self, name, value):
         self._data[name] = value
-        self.preferences_changed.emit(self)
+        self.preferences_changed.emit(self._data)

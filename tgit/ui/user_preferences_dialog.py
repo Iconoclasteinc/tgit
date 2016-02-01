@@ -17,8 +17,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QLocale
 from PyQt5.QtWidgets import QDialog, QComboBox, QGridLayout, QDialogButtonBox, QLabel
+
+
+def open_user_preferences_dialog(preferences, show_restart_message, on_preferences_changed):
+    dialog = UserPreferencesDialog()
+    dialog.on_preferences_changed(on_preferences_changed)
+    dialog.on_preferences_changed(lambda prefs: show_restart_message())
+    dialog.display(preferences)
+    return dialog
 
 
 class UserPreferencesDialog(QDialog):
@@ -44,7 +52,6 @@ class UserPreferencesDialog(QDialog):
         self.buttons.accepted.connect(lambda: self.preferences_changed.emit(self.preferences))
         self.buttons.accepted.connect(self.accept)
         self.buttons.rejected.connect(self.reject)
-        self.finished.connect(self.preferences_changed.disconnect)
         layout.addWidget(self.buttons, 1, 0, 1, 2)
         self.setLayout(layout)
 
@@ -54,11 +61,13 @@ class UserPreferencesDialog(QDialog):
     def add_language(self, locale, language):
         self.languages.addItem(language, locale)
 
+    def on_preferences_changed(self, handler):
+        self.preferences_changed.connect(handler)
+
     @property
     def preferences(self):
         return {'locale': self.languages.itemData(self.languages.currentIndex())}
 
-    def display(self, user_preferences, on_edit):
-        self.languages.setCurrentText(user_preferences.locale.nativeLanguageName().capitalize())
-        self.preferences_changed.connect(on_edit)
+    def display(self, user_preferences):
+        self.languages.setCurrentText(QLocale(user_preferences.locale).nativeLanguageName().capitalize())
         self.show()
