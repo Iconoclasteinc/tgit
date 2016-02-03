@@ -174,6 +174,9 @@ class TrackEditionPageDriver(ScreenDriver):
     def composer_ipi_enabled(self, enabled=True):
         self.lineEdit(named("_composer_ipi")).is_enabled(enabled=enabled)
 
+    def shows_composer_ipi(self, ipi):
+        self.lineEdit(named("_composer_ipi")).has_text(ipi)
+
     def shows_composer_isni(self, isni):
         self.lineEdit(named("_composer_isni")).has_text(isni)
 
@@ -192,6 +195,9 @@ class TrackEditionPageDriver(ScreenDriver):
 
     def shows_publisher_isni(self, isni):
         self.lineEdit(named("_publisher_isni")).has_text(isni)
+
+    def shows_publisher_ipi(self, ipi):
+        self.lineEdit(named("_publisher_ipi")).has_text(ipi)
 
     def shows_isrc(self, code):
         self.label(with_buddy(named("_isrc"))).is_showing_on_screen()

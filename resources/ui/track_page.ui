@@ -652,9 +652,6 @@ QToolButton::menu-indicator:open {
              </item>
              <item>
               <widget class="QLineEdit" name="_lyricist_ipi">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
                <property name="maximumSize">
                 <size>
                  <width>135</width>
@@ -739,9 +736,6 @@ QToolButton::menu-indicator:open {
              </item>
              <item>
               <widget class="QLineEdit" name="_composer_ipi">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
                <property name="maximumSize">
                 <size>
                  <width>135</width>
@@ -826,9 +820,6 @@ QToolButton::menu-indicator:open {
              </item>
              <item>
               <widget class="QLineEdit" name="_publisher_ipi">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
                <property name="maximumSize">
                 <size>
                  <width>135</width>
@@ -1326,6 +1317,38 @@ QToolButton::menu-indicator:open {
    <header>tgit.ui.widgets.text_area</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>_track_title</tabstop>
+  <tabstop>_lead_performer</tabstop>
+  <tabstop>_featured_guest</tabstop>
+  <tabstop>_version</tabstop>
+  <tabstop>_isrc</tabstop>
+  <tabstop>_iswc</tabstop>
+  <tabstop>_tags</tabstop>
+  <tabstop>_tabs</tabstop>
+  <tabstop>_lyricist</tabstop>
+  <tabstop>_lyricist_ipi</tabstop>
+  <tabstop>_lyricist_isni_actions_button</tabstop>
+  <tabstop>_lyricist_isni</tabstop>
+  <tabstop>_composer</tabstop>
+  <tabstop>_composer_ipi</tabstop>
+  <tabstop>_composer_isni_actions_button</tabstop>
+  <tabstop>_composer_isni</tabstop>
+  <tabstop>_publisher</tabstop>
+  <tabstop>_publisher_ipi</tabstop>
+  <tabstop>_publisher_isni_actions_button</tabstop>
+  <tabstop>_publisher_isni</tabstop>
+  <tabstop>_production_company</tabstop>
+  <tabstop>_production_company_region</tabstop>
+  <tabstop>_recording_studio</tabstop>
+  <tabstop>_recording_studio_region</tabstop>
+  <tabstop>_music_producer</tabstop>
+  <tabstop>_mixer</tabstop>
+  <tabstop>_genre</tabstop>
+  <tabstop>_language</tabstop>
+  <tabstop>_preview_time</tabstop>
+  <tabstop>_lyrics</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
