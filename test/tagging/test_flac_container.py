@@ -191,6 +191,11 @@ def test_lyrics_from_lyrics_field(flac):
     assert_that(metadata, has_entry("lyrics", "lyrics of the track"), "metadata")
 
 
+def test_language_from_language_field(flac):
+    metadata = container.load(flac(LANGUAGE="language of the lyrics"))
+    assert_that(metadata, has_entry("language", "language of the lyrics"), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -223,6 +228,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["composer"] = "Composer of the work"
     metadata["version_info"] = "Specifics about that version of the track"
     metadata["lyrics"] = "Lyrics of the track"
+    metadata["language"] = "Language of the lyrics"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

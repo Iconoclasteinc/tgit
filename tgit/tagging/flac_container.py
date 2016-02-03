@@ -165,6 +165,7 @@ class FlacContainer:
         "COMPOSER": "composer",
         "VERSION": "version_info",
         "LYRICS": "lyrics",
+        "LANGUAGE": "language",
     }.items():
         fields.append(TextField(field_name, tag_name))
 
