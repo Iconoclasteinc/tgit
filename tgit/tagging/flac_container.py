@@ -163,6 +163,7 @@ class FlacContainer:
         "COMMENT": "comments",
         "PUBLISHER": "publisher",
         "COMPOSER": "composer",
+        "VERSION": "version_info",
     }.items():
         fields.append(TextField(field_name, tag_name))
 

@@ -181,6 +181,11 @@ def test_reads_composer_from_composer_field(flac):
     assert_that(metadata, has_entry("composer", "composer of the work"), "metadata")
 
 
+def test_version_information_from_version_field(flac):
+    metadata = container.load(flac(VERSION="to differentiate the track"))
+    assert_that(metadata, has_entry("version_info", "to differentiate the track"), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -211,6 +216,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["comments"] = "Comments of any nature"
     metadata["publisher"] = "Who publishes the disc the track came from"
     metadata["composer"] = "Composer of the work"
+    metadata["version_info"] = "Specifics about that version of the track"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
