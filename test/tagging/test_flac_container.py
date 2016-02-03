@@ -171,9 +171,14 @@ def test_reads_comments_from_comment_field(flac):
     assert_that(metadata, has_entry("comments", "Additional comments..."), "metadata")
 
 
-def test_publisher_from_publisher_field(flac):
+def test_reads_publisher_from_publisher_field(flac):
     metadata = container.load(flac(PUBLISHER="who publishes the disc"))
     assert_that(metadata, has_entry("publisher", "who publishes the disc"), "metadata")
+
+
+def test_reads_composer_from_composer_field(flac):
+    metadata = container.load(flac(COMPOSER="composer of the work"))
+    assert_that(metadata, has_entry("composer", "composer of the work"), "metadata")
 
 
 def test_round_trips_metadata_to_file(flac):
@@ -205,6 +210,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["mixer"] = "Mixing Engineer"
     metadata["comments"] = "Comments of any nature"
     metadata["publisher"] = "Who publishes the disc the track came from"
+    metadata["composer"] = "Composer of the work"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

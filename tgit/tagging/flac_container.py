@@ -162,6 +162,7 @@ class FlacContainer:
         "MIXER": "mixer",
         "COMMENT": "comments",
         "PUBLISHER": "publisher",
+        "COMPOSER": "composer",
     }.items():
         fields.append(TextField(field_name, tag_name))
 
