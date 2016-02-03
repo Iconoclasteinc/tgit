@@ -171,6 +171,11 @@ def test_reads_comments_from_comment_field(flac):
     assert_that(metadata, has_entry("comments", "Additional comments..."), "metadata")
 
 
+def test_publisher_from_publisher_field(flac):
+    metadata = container.load(flac(PUBLISHER="who publishes the disc"))
+    assert_that(metadata, has_entry("publisher", "who publishes the disc"), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -199,6 +204,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["upc"] = "123456789999"
     metadata["mixer"] = "Mixing Engineer"
     metadata["comments"] = "Comments of any nature"
+    metadata["publisher"] = "Who publishes the disc the track came from"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
