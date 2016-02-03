@@ -92,6 +92,8 @@ class FlacAudio(object):
                 self._add_tag("BARCODE", value)
             elif tag == 'MIXER':
                 self._add_tag("MIXER", value)
+            elif tag == 'COMMENT':
+                self._add_tag("COMMENT", value)
             else:
                 raise AssertionError("Unsupported tag '%s'" % tag)
 

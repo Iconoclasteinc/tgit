@@ -160,6 +160,7 @@ class FlacContainer:
         "CATALOGNUMBER": "catalog_number",
         "BARCODE": "upc",
         "MIXER": "mixer",
+        "COMMENT": "comments",
     }.items():
         fields.append(TextField(field_name, tag_name))
 

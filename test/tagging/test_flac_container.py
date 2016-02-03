@@ -166,6 +166,11 @@ def test_reads_mixer_from_mixer_field(flac):
     assert_that(metadata, has_entry("mixer", "mr. mx"), "metadata")
 
 
+def test_reads_comments_from_comment_field(flac):
+    metadata = container.load(flac(COMMENT="Additional comments..."))
+    assert_that(metadata, has_entry("comments", "Additional comments..."), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -193,6 +198,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["catalog_number"] = "001-002-003"
     metadata["upc"] = "123456789999"
     metadata["mixer"] = "Mixing Engineer"
+    metadata["comments"] = "Comments of any nature"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
