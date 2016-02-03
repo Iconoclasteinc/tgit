@@ -21,6 +21,7 @@ from collections import Counter
 from datetime import timezone
 
 from dateutil import parser as dateparser
+
 from mutagen import mp3, id3
 
 from tgit.metadata import Metadata, Image
@@ -184,74 +185,48 @@ class PairProcessor:
         return [[role, name] for role, name in metadata[self._tag]]
 
 
-class ISNIProcessor:
+class IdentifierProcessor:
+    def __init__(self, field_name, tag_name, prefix):
+        self._prefix = prefix
+        self._tag_name = tag_name
+        self._field_name = field_name
+
     def process_frames(self, metadata, frames):
-        isni_map = {}
+        identifier_map = {}
         for _, frame in frames.items():
-            isni_map = self._add_isni_to_map(frame, isni_map)
+            identifier_map = self._add_identifier_to_map(frame, identifier_map)
 
-        if len(isni_map) > 0:
-            metadata["isnis"] = isni_map
+        if self._is_not_empty(identifier_map):
+            metadata[self._tag_name] = identifier_map
 
-    @staticmethod
-    def process_metadata(frames, encoding, metadata):
-        if "isnis" not in metadata:
+    def process_metadata(self, frames, encoding, metadata):
+        if self._tag_name not in metadata:
             return
 
         for _, frame in frames.items():
-            if frame.FrameID == "TXXX" and frame.desc.startswith("ISNI:"):
+            if frame.FrameID == self._field_name and frame.desc.startswith(self._prefix):
                 frames.delall("{}:{}".format(frame.FrameID, frame.desc))
 
-        for name, isni in metadata["isnis"].items():
-            frames.add(getattr(id3, "TXXX")(encoding=encoding, desc="ISNI:{}".format(name), text=isni))
+        for name, identifier in metadata[self._tag_name].items():
+            frames.add(getattr(id3, self._field_name)(encoding=encoding,
+                                                      desc="{}:{}".format(self._prefix, name),
+                                                      text=identifier))
 
     @staticmethod
-    def _add_isni_to_map(frame, isni_map):
-        def is_isni_frame():
-            return frame.FrameID == "TXXX" and frame.desc.startswith("ISNI")
+    def _is_not_empty(identifiers):
+        return len(identifiers) > 0
+
+    def _add_identifier_to_map(self, frame, identifier_map):
+        def is_identifier_frame():
+            return frame.FrameID == self._field_name and frame.desc.startswith(self._prefix)
 
         def frame_is_not_empty():
             return len(frame.text) > 0
 
-        if is_isni_frame() and frame_is_not_empty():
-            isni_map[frame.desc.split(":")[1]] = frame.text[0]
+        if is_identifier_frame() and frame_is_not_empty():
+            identifier_map[frame.desc.split(":")[1]] = frame.text[0]
 
-        return isni_map
-
-
-class IPIProcessor:
-    def process_frames(self, metadata, frames):
-        ipi_map = {}
-        for _, frame in frames.items():
-            ipi_map = self._add_ipi_to_map(frame, ipi_map)
-
-        if len(ipi_map) > 0:
-            metadata["ipis"] = ipi_map
-
-    @staticmethod
-    def process_metadata(frames, encoding, metadata):
-        if "ipis" not in metadata:
-            return
-
-        for _, frame in frames.items():
-            if frame.FrameID == "TXXX" and frame.desc.startswith("IPI:"):
-                frames.delall("{}:{}".format(frame.FrameID, frame.desc))
-
-        for name, ipi in metadata["ipis"].items():
-            frames.add(getattr(id3, "TXXX")(encoding=encoding, desc="IPI:{}".format(name), text=ipi))
-
-    @staticmethod
-    def _add_ipi_to_map(frame, ipi_map):
-        def is_ipi_frame():
-            return frame.FrameID == "TXXX" and frame.desc.startswith("IPI")
-
-        def frame_is_not_empty():
-            return len(frame.text) > 0
-
-        if is_ipi_frame() and frame_is_not_empty():
-            ipi_map[frame.desc.split(":")[1]] = frame.text[0]
-
-        return ipi_map
+        return identifier_map
 
 
 class TaggerAndVersionConverter:
@@ -354,8 +329,8 @@ class ID3Container:
             PictureType.FRONT_COVER: Image.FRONT_COVER,
             PictureType.BACK_COVER: Image.BACK_COVER,
         }),
-        ISNIProcessor(),
-        IPIProcessor(),
+        IdentifierProcessor("TXXX", "isnis", "ISNI"),
+        IdentifierProcessor("TXXX", "ipis", "IPI"),
         PairProcessor("TMCL", "guest_performers", {}),
         PairProcessor("TIPL", "contributors", {
             "producer": "music_producer",
