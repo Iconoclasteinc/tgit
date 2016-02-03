@@ -151,6 +151,11 @@ def test_reads_recording_studio_region_from_recording_studio_region_field(flac):
     assert_that(metadata, has_entry("recording_studio_region", ("CA", "QC")), "metadata")
 
 
+def test_reads_catalognumber_from_catalog_number_field(flac):
+    metadata = container.load(flac(CATALOGNUMBER="001-002-003"))
+    assert_that(metadata, has_entry("catalog_number", "001-002-003"), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -175,6 +180,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["production_company_region"] = ("CA", "QC")
     metadata["music_producer"] = "Joel Miller & Paul Johnston"
     metadata["lyricist"] = "Joel Miller"
+    metadata["catalog_number"] = "001-002-003"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

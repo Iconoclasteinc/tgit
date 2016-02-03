@@ -117,9 +117,8 @@ class ISNIField:
             return
 
         metadata[self._tag_name] = {}
-        isnis = flac[self._field_name]
-        for isni_value in isnis:
-            isni, name = isni_value.split(":")
+        for value in flac[self._field_name]:
+            isni, name = value.split(":")
             metadata[self._tag_name][name] = isni
 
     def write(self, metadata, flac):
@@ -158,6 +157,7 @@ class FlacContainer:
         "PRODUCER": "production_company",
         "MUSIC-PRODUCER": "music_producer",
         "LYRICIST": "lyricist",
+        "CATALOGNUMBER": "catalog_number"
     }.items():
         fields.append(TextField(field_name, tag_name))
 
