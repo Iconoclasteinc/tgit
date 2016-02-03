@@ -156,19 +156,10 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
         self._lyricist_isni_assign_action.triggered.connect(lambda _: self._review_assignation(start_waiting))
 
-    def on_isni_local_lookup(self, on_isni_local_lookup):
-        def update_lyricist_isni(lyricist):
-            self._lyricist_isni.setText(on_isni_local_lookup(lyricist))
-
-        def update_composer_isni(composer):
-            self._composer_isni.setText(on_isni_local_lookup(composer))
-
-        def update_publisher_isni(publisher):
-            self._publisher_isni.setText(on_isni_local_lookup(publisher))
-
-        self._lyricist.textEdited.connect(update_lyricist_isni)
-        self._composer.textEdited.connect(update_composer_isni)
-        self._publisher.textEdited.connect(update_publisher_isni)
+    def on_isni_local_lookup(self, handler):
+        self._lyricist.textEdited.connect(lambda text: self._lyricist_isni.setText(handler(text)))
+        self._composer.textEdited.connect(lambda text: self._composer_isni.setText(handler(text)))
+        self._publisher.textEdited.connect(lambda text: self._publisher_isni.setText(handler(text)))
 
     def on_ipi_changed(self, handler):
         self._lyricist_ipi.editingFinished.connect(lambda: handler(self._lyricist.text(), self._lyricist_ipi.text()))
@@ -191,8 +182,15 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._lead_performer.setEnabled(album.compilation is True)
         self._lead_performer_caption.setEnabled(album.compilation is True)
 
-        identities = album.isnis or {}
-        self._lyricist_isni.setText(identities[self._lyricist.text()] if self._lyricist.text() in identities else "")
+        isnis = album.isnis or {}
+        self._lyricist_isni.setText(isnis.get(self._lyricist.text()))
+        self._composer_isni.setText(isnis.get(self._composer.text()))
+        self._publisher_isni.setText(isnis.get(self._publisher.text()))
+
+        ipis = album.ipis or {}
+        self._lyricist_ipi.setText(ipis.get(self._lyricist.text()))
+        self._composer_ipi.setText(ipis.get(self._composer.text()))
+        self._publisher_ipi.setText(ipis.get(self._publisher.text()))
 
     def display_track(self, track):
         self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
@@ -220,10 +218,15 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._mixer.setText(track.mixer)
         self._genre.setEditText(track.primary_style)
 
-        identities = track.album.isnis or {}
-        self._lyricist_isni.setText(identities[track.lyricist] if track.lyricist in identities else "")
-        self._composer_isni.setText(identities[track.composer] if track.composer in identities else "")
-        self._publisher_isni.setText(identities[track.publisher] if track.publisher in identities else "")
+        isnis = track.album.isnis or {}
+        self._lyricist_isni.setText(isnis.get(track.lyricist))
+        self._composer_isni.setText(isnis.get(track.composer))
+        self._publisher_isni.setText(isnis.get(track.publisher))
+
+        ipis = track.album.ipis or {}
+        self._lyricist_ipi.setText(ipis.get(track.lyricist))
+        self._composer_ipi.setText(ipis.get(track.composer))
+        self._publisher_ipi.setText(ipis.get(track.publisher))
 
     @staticmethod
     def _display_region(region, combobox):
@@ -237,6 +240,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             self._album_cover.setPixmap(image.scale(self._cover, *self.ALBUM_COVER_SIZE))
 
     def _compose_software_notice(self, track):
+        # noinspection PyBroadException
         try:
             date, time = formatting.as_local_date_time(track.tagging_time)
         except:

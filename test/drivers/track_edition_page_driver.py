@@ -147,6 +147,9 @@ class TrackEditionPageDriver(ScreenDriver):
     def shows_lyricist_isni(self, isni):
         self.lineEdit(named("_lyricist_isni")).has_text(isni)
 
+    def shows_lyricist_ipi(self, ipi):
+        self.lineEdit(named("_lyricist_ipi")).has_text(ipi)
+
     def change_lyricist_isni(self, isni):
         self.lineEdit(named("_lyricist_isni")).change_text(isni)
 

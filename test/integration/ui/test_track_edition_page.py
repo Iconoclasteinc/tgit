@@ -4,6 +4,7 @@ from datetime import timedelta
 import types
 
 import pytest
+
 from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
 import requests
 
@@ -86,7 +87,10 @@ def test_displays_track_metadata(driver):
                         music_producer="Artistic Producer",
                         mixer="Mixing Engineer",
                         primary_style="Style")
-    album = build.album(compilation=True, tracks=[track], isnis={"Lyricist": "0000000123456789"})
+    album = build.album(compilation=True,
+                        tracks=[track],
+                        isnis={"Lyricist": "0000000123456789"},
+                        ipis={"Lyricist": "ABCD12345"})
 
     _ = show_page(album, track)
 
@@ -100,6 +104,7 @@ def test_displays_track_metadata(driver):
     driver.shows_composer("Composer")
     driver.shows_publisher("Publisher")
     driver.shows_lyricist_isni("0000000123456789")
+    driver.shows_lyricist_ipi("ABCD12345")
     driver.shows_isrc("Code")
     driver.shows_iswc("T-345246800-1")
     driver.shows_tags("Tag1 Tag2 Tag3")

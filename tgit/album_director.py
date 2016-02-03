@@ -163,6 +163,13 @@ def lookup_isni_in(album):
     return lookup_isni
 
 
+def lookup_ipi_in(album):
+    def lookup_ipi(name):
+        return album.ipis[name] if album.ipis and name in album.ipis else None
+
+    return lookup_ipi
+
+
 def assign_isni_to_main_artist_using(cheddar, session, album):
     def assign_isni(type_, on_assign_success):
         titles = [track.track_title for track in album.tracks]
