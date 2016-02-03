@@ -196,6 +196,14 @@ def test_language_from_language_field(flac):
     assert_that(metadata, has_entry("language", "language of the lyrics"), "metadata")
 
 
+def test_compilation_flag_from_compilation_field(flac):
+    metadata = container.load(flac(COMPILATION="YES"))
+    assert_that(metadata, has_entry("compilation", True), "metadata")
+
+    metadata = container.load(flac(COMPILATION="NO"))
+    assert_that(metadata, has_entry("compilation", False), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -229,6 +237,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["version_info"] = "Specifics about that version of the track"
     metadata["lyrics"] = "Lyrics of the track"
     metadata["language"] = "Language of the lyrics"
+    metadata["compilation"] = False
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

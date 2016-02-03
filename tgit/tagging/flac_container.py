@@ -46,7 +46,7 @@ class ValueField:
             del flac[self._field_name]
 
         value = metadata[self._tag_name]
-        if value:
+        if value is not None:
             flac[self._field_name] = self._to_field(value)
 
 
@@ -71,6 +71,19 @@ class RegionField(ValueField):
 class NumericField(ValueField):
     def __init__(self, field_name, tag_name):
         super().__init__(field_name, tag_name, int, str)
+
+
+class BooleanField(ValueField):
+    @staticmethod
+    def to_boolean(value):
+        return value == "YES"
+
+    @staticmethod
+    def to_value(flag):
+        return "YES" if flag else "NO"
+
+    def __init__(self, field_name, tag_name):
+        super().__init__(field_name, tag_name, self.to_boolean, self.to_value)
 
 
 class PictureField:
@@ -181,6 +194,11 @@ class FlacContainer:
         "PRODUCER-REGION": "production_company_region",
     }.items():
         fields.append(RegionField(field_name, tag_name))
+
+    for field_name, tag_name in {
+        "COMPILATION": "compilation",
+    }.items():
+        fields.append(BooleanField(field_name, tag_name))
 
     def load(self, filename):
         flac_file = mutagen.flac.FLAC(filename)

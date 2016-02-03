@@ -104,6 +104,8 @@ class FlacAudio(object):
                 self._add_tag("LYRICS", value)
             elif tag == 'LANGUAGE':
                 self._add_tag("LANGUAGE", value)
+            elif tag == 'COMPILATION':
+                self._add_tag("COMPILATION", value)
             else:
                 raise AssertionError("Unsupported tag '%s'" % tag)
 
