@@ -95,6 +95,7 @@ class Pages:
                 track=track,
                 on_track_changed=director.update_track(track),
                 on_isni_local_lookup=director.lookup_isni_in(album),
+                on_ipi_changed=director.add_ipi_to(album),
                 review_assignation=self._dialogs.review_isni_assignation_in(album),
                 show_isni_assignation_failed=self._messages.isni_assignation_failed,
                 show_cheddar_connection_failed=self._messages.cheddar_connection_failed,

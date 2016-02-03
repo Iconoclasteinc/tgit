@@ -17,6 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from collections import Counter
+import re
 
 import mutagen.flac
 
@@ -107,7 +108,7 @@ class PictureField:
             flac.add_picture(picture)
 
 
-class ISNIField:
+class IdentifierField:
     def __init__(self, field_name, tag_name):
         self._tag_name = tag_name
         self._field_name = field_name
@@ -117,25 +118,41 @@ class ISNIField:
             return
 
         metadata[self._tag_name] = {}
-        isnis = flac[self._field_name]
-        for isni_value in isnis:
-            isni, name = isni_value.split(":")
-            metadata[self._tag_name][name] = isni
+        identifiers = flac[self._field_name]
+        for identifier_value in identifiers:
+            identifier, name = self._deserialize_identifier(identifier_value)
+            if identifier and name:
+                metadata[self._tag_name][name] = identifier
 
     def write(self, metadata, flac):
         if self._tag_name not in metadata:
             return
 
-        isni_list = []
-        for name, isni in metadata[self._tag_name].items():
-            isni_list += ["{}:{}".format(isni, name)]
+        identifier_list = []
+        for name, identifier in metadata[self._tag_name].items():
+            identifier_list += ["{} ({})".format(identifier, name)]
 
-        if len(isni_list) > 0:
-            flac[self._field_name] = isni_list
+        if len(identifier_list) > 0:
+            flac[self._field_name] = identifier_list
+
+    @staticmethod
+    def _is_structured_representation(identifier):
+        return identifier.rfind(":") >= 0
+
+    def _deserialize_identifier(self, identifier):
+        if self._is_structured_representation(identifier):
+            return identifier.split(":")
+
+        result = re.match("(.*) \((.*)\)", identifier)
+        if result:
+            return result.group(1), result.group(2)
+
+        return "", ""
 
 
 class FlacContainer:
-    fields = [ISNIField("ISNI", "isnis"),
+    fields = [IdentifierField("ISNI", "isnis"),
+              IdentifierField("IPI", "ipis"),
               PictureField("PICTURES", {
                   PictureType.OTHER: Image.OTHER,
                   PictureType.FRONT_COVER: Image.FRONT_COVER,

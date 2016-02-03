@@ -30,8 +30,9 @@ def test_loads_track_from_metadata_embedded_in_file(mp3):
 def test_round_trips_track_and_album_metadata(mp3):
     album = build.album(release_name="Album Title", lead_performer="Album Artist",
                         isnis={"Album Artist": "0000000123456789"},
+                        ipis={"Album Lyricist": "9876543210000000"},
                         images=[build.image(mime="image/jpeg", data=b"<image data>")])
-    track = build.track(filename=mp3(), track_title="Track Title", album=album)
+    track = build.track(filename=mp3(), track_title="Track Title", album=album, lyricist="Album Lyricist")
 
     tagging.save_track(track)
 
@@ -39,6 +40,7 @@ def test_round_trips_track_and_album_metadata(mp3):
     assert_that(track.metadata, has_entries(release_name="Album Title",
                                             lead_performer="Album Artist",
                                             isnis={"Album Artist": "0000000123456789"},
+                                            ipis={"Album Lyricist": "9876543210000000"},
                                             track_title="Track Title"), "metadata tags")
     assert_that(track.metadata.images, contains(Image(mime="image/jpeg", data=b"<image data>")), "attached pictures")
 
@@ -86,4 +88,26 @@ def test_cleans_superflous_isnis_before_tagging(mp3):
                                                    "Album Lyricist": "9876543210000000",
                                                    "Album Composer": "1234567890000000",
                                                    "Album Publisher": "0000000987654321"},
+                                            track_title="Track Title"), "metadata tags")
+
+
+def test_cleans_superflous_ipis_before_tagging(mp3):
+    album = build.album(release_name="Album Title",
+                        ipis={"Album Lyricist": "9876543210000000",
+                              "Album Composer": "1234567890000000",
+                              "Album Publisher": "0000000987654321",
+                              "Previous Album Artist": "1234567890000000",
+                              "Previous Album Lyricist": "0000000987654321"})
+    track = build.track(filename=mp3(), track_title="Track Title",
+                        lyricist="Album Lyricist",
+                        composer="Album Composer",
+                        publisher="Album Publisher", album=album)
+
+    tagging.save_track(track)
+
+    track = tagging.load_track(track.filename)
+    assert_that(track.metadata, has_entries(release_name="Album Title",
+                                            ipis={"Album Lyricist": "9876543210000000",
+                                                  "Album Composer": "1234567890000000",
+                                                  "Album Publisher": "0000000987654321"},
                                             track_title="Track Title"), "metadata tags")

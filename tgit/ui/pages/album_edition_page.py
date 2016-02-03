@@ -121,10 +121,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self.select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
 
     def on_isni_changed(self, on_isni_changed):
-        def lead_performer_isni_changed():
-            on_isni_changed(self.lead_performer.text(), self._isni.text())
-
-        self._isni.editingFinished.connect(lead_performer_isni_changed)
+        self._isni.editingFinished.connect(lambda: on_isni_changed(self.lead_performer.text(), self._isni.text()))
 
     def on_isni_local_lookup(self, on_isni_local_lookup):
         def update_lead_performer_isni(lead_performer):

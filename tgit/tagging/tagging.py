@@ -27,12 +27,13 @@ def _all_metadata(track):
         del album_metadata["lead_performer"]
     track_metadata = track.metadata.copy()
     track_metadata.update(album_metadata)
-    track_metadata["isnis"] = clean_isnis(track_metadata)
+    track_metadata["isnis"] = _clean_isnis(track_metadata)
+    track_metadata["ipis"] = _clean_ipis(track_metadata)
 
     return track_metadata
 
 
-def clean_isnis(track_metadata):
+def _clean_isnis(track_metadata):
     new_isni_map = {}
     isnis = track_metadata["isnis"] or {}
     lead_performer = track_metadata["lead_performer"]
@@ -48,3 +49,18 @@ def clean_isnis(track_metadata):
     if publisher in isnis:
         new_isni_map[publisher] = isnis[publisher]
     return new_isni_map
+
+
+def _clean_ipis(track_metadata):
+    new_ipi_map = {}
+    ipis = track_metadata["ipis"] or {}
+    lyricist = track_metadata["lyricist"]
+    composer = track_metadata["composer"]
+    publisher = track_metadata["publisher"]
+    if lyricist in ipis:
+        new_ipi_map[lyricist] = ipis[lyricist]
+    if composer in ipis:
+        new_ipi_map[composer] = ipis[composer]
+    if publisher in ipis:
+        new_ipi_map[publisher] = ipis[publisher]
+    return new_ipi_map

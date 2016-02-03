@@ -651,6 +651,22 @@ QToolButton::menu-indicator:open {
               <widget class="QLineEdit" name="_lyricist"/>
              </item>
              <item>
+              <widget class="QLineEdit" name="_lyricist_ipi">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>135</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="placeholderText">
+                <string>IPI</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QToolButton" name="_lyricist_isni_actions_button">
                <property name="minimumSize">
                 <size>
@@ -722,6 +738,22 @@ QToolButton::menu-indicator:open {
               <widget class="QLineEdit" name="_composer"/>
              </item>
              <item>
+              <widget class="QLineEdit" name="_composer_ipi">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>135</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="placeholderText">
+                <string>IPI</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QToolButton" name="_composer_isni_actions_button">
                <property name="minimumSize">
                 <size>
@@ -791,6 +823,22 @@ QToolButton::menu-indicator:open {
             <layout class="QHBoxLayout" name="_publisher_input_container">
              <item>
               <widget class="QLineEdit" name="_publisher"/>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="_publisher_ipi">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>135</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="placeholderText">
+                <string>IPI</string>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QToolButton" name="_publisher_isni_actions_button">

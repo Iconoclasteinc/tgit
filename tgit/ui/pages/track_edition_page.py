@@ -125,6 +125,13 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._genre.activated.connect(emit_metadata_changed)
         self._genre.lineEdit().textEdited.connect(emit_metadata_changed)
 
+        def enable_or_disable(field, text):
+            field.setEnabled(len(text) > 0)
+
+        self._lyricist.textChanged.connect(lambda text: enable_or_disable(self._lyricist_ipi, text))
+        self._composer.textChanged.connect(lambda text: enable_or_disable(self._composer_ipi, text))
+        self._publisher.textChanged.connect(lambda text: enable_or_disable(self._publisher_ipi, text))
+
     def albumStateChanged(self, album):
         self.display(album=album)
 
@@ -162,6 +169,11 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._lyricist.textEdited.connect(update_lyricist_isni)
         self._composer.textEdited.connect(update_composer_isni)
         self._publisher.textEdited.connect(update_publisher_isni)
+
+    def on_ipi_changed(self, handler):
+        self._lyricist_ipi.editingFinished.connect(lambda: handler(self._lyricist.text(), self._lyricist_ipi.text()))
+        self._composer_ipi.editingFinished.connect(lambda: handler(self._composer.text(), self._composer_ipi.text()))
+        self._publisher_ipi.editingFinished.connect(lambda: handler(self._publisher.text(), self._publisher_ipi.text()))
 
     def display(self, album=None, track=None):
         if track:

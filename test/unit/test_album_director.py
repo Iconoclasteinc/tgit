@@ -341,6 +341,13 @@ def test_signals_when_adding_isni_to_local_map():
     director.add_isni_to(album)("Joel Miller", "0000000123456789")
 
 
+def test_signals_when_adding_ipi_to_local_map():
+    album = make_album()
+    album.addAlbumListener(_listener_expecting_notification("ipis", {"Joel Miller": "0000000123456789"}))
+
+    director.add_ipi_to(album)("Joel Miller", "0000000123456789")
+
+
 def test_updates_preferences():
     preferences = UserPreferences()
 

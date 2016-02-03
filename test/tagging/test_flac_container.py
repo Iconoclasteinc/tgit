@@ -3,7 +3,7 @@
 import shutil
 
 import pytest
-from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, has_entries
+from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, has_entries, empty
 
 from test.util import flac_file
 from tgit.metadata import Metadata, Image
@@ -30,9 +30,19 @@ def test_reads_lead_performer_from_artists_field(flac):
     assert_that(metadata, has_entry('lead_performer', "Joel Miller"), "metadata")
 
 
-def test_reads_lead_performer_isni(flac):
+def test_reads_isni_under_structured_format(flac):
     metadata = container.load(flac(ISNI="0000000123456789:Joel Miller"))
     assert_that(metadata, has_entry("isnis", has_entry("Joel Miller", "0000000123456789")), "metadata")
+
+
+def test_reads_isni_under_non_structured_format(flac):
+    metadata = container.load(flac(ISNI="0000000123456789 (Joel Miller)"))
+    assert_that(metadata, has_entry("isnis", has_entry("Joel Miller", "0000000123456789")), "metadata")
+
+
+def test_reads_malformed_isni(flac):
+    metadata = container.load(flac(ISNI="0000000123456789"))
+    assert_that(metadata, has_entry("isnis", empty()), "metadata")
 
 
 def test_reads_bitrate_from_audio_stream_information(flac):
@@ -158,6 +168,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["lead_performer"] = "Joel Miller"
     metadata["lead_performer_region"] = ("CA", "QC")
     metadata["isnis"] = {"Joel Miller": "0000000123456789", "Rebecca Ann Maloy": "9876543210000000"}
+    metadata["ipis"] = {"Joel Miller": "0000000123456789", "Rebecca Ann Maloy": "9876543210000000"}
     metadata["label_name"] = "Effendi Records Inc."
     metadata["primary_style"] = "Modern Jazz"
     metadata["recording_time"] = "2007-11-02"

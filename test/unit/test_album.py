@@ -16,7 +16,7 @@ def test_defines_metadata_tags():
     assert_that(tuple(Album.tags()), contains_inanyorder(
         "release_name", "compilation", "lead_performer", "lead_performer_region", "guest_performers",
         "label_name", "upc", "catalog_number", "recording_time", "release_time", "original_release_time",
-        "contributors", "comments", "isnis"))
+        "contributors", "comments", "isnis", "ipis"))
 
 
 def test_initializes_with_album_only_metadata():
@@ -207,6 +207,7 @@ def test_signals_state_changes_to_listener():
     _assert_notifies_listener_on_property_change("original_release_time", "Original Release")
     _assert_notifies_listener_on_property_change("upc", "Barcode")
     _assert_notifies_listener_on_property_change("isnis", {"Joel Miller": "0000000123456789"})
+    _assert_notifies_listener_on_property_change("ipis", {"Joel Miller": "0000000123456789"})
     _assert_notifies_listener_on_images_change(Image("image/jpeg", "front-cover.jpg"))
 
 

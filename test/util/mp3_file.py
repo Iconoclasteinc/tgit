@@ -105,6 +105,10 @@ class Mp3Audio(object):
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="ISNI:Joel Miller", text=value))
             elif tag == "TXXX_ISNI_Rebecca_Ann_Maloy":
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="ISNI:Rebecca Ann Maloy", text=value))
+            elif tag == "TXXX_IPI_Joel_Miller":
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc="IPI:Joel Miller", text=value))
+            elif tag == "TXXX_IPI_Rebecca_Ann_Maloy":
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc="IPI:Rebecca Ann Maloy", text=value))
             elif tag == "TXXX_ISNI":
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="ISNI", text=value))
             elif tag == "iswc" or tag == "TXXX_ISWC":

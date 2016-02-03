@@ -63,6 +63,8 @@ class TrackEditionPageDriver(ScreenDriver):
                 self.change_featured_guest(value)
             elif tag == "lyricist":
                 self.change_lyricist(value)
+            elif tag == "lyricist_ipi":
+                pass
             elif tag == "composer":
                 self.change_composer(value)
             elif tag == "publisher":
@@ -79,6 +81,10 @@ class TrackEditionPageDriver(ScreenDriver):
                 self.select_primary_style(value)
             else:
                 raise AssertionError("Don't know how to edit <{0}>".format(tag))
+
+        # must be done after lyricist to let the application enable the field
+        if "lyricist_ipi" in meta:
+            self.change_lyricist_ipi(meta["lyricist_ipi"])
 
     def shows_album_lead_performer(self, name):
         label = self.label(named("_album_lead_performer"))
@@ -132,6 +138,12 @@ class TrackEditionPageDriver(ScreenDriver):
     def change_lyricist(self, name):
         self.lineEdit(named("_lyricist")).change_text(name)
 
+    def change_lyricist_ipi(self, ipi):
+        self.lineEdit(named("_lyricist_ipi")).change_text(ipi)
+
+    def lyricist_ipi_enabled(self, enabled=True):
+        self.lineEdit(named("_lyricist_ipi")).is_enabled(enabled=enabled)
+
     def shows_lyricist_isni(self, isni):
         self.lineEdit(named("_lyricist_isni")).has_text(isni)
 
@@ -153,6 +165,12 @@ class TrackEditionPageDriver(ScreenDriver):
     def change_composer(self, name):
         self.lineEdit(named("_composer")).change_text(name)
 
+    def change_composer_ipi(self, ipi):
+        self.lineEdit(named("_composer_ipi")).change_text(ipi)
+
+    def composer_ipi_enabled(self, enabled=True):
+        self.lineEdit(named("_composer_ipi")).is_enabled(enabled=enabled)
+
     def shows_composer_isni(self, isni):
         self.lineEdit(named("_composer_isni")).has_text(isni)
 
@@ -162,6 +180,12 @@ class TrackEditionPageDriver(ScreenDriver):
 
     def change_publisher(self, name):
         self.lineEdit(named("_publisher")).change_text(name)
+
+    def change_publisher_ipi(self, ipi):
+        self.lineEdit(named("_publisher_ipi")).change_text(ipi)
+
+    def publisher_ipi_enabled(self, enabled=True):
+        self.lineEdit(named("_publisher_ipi")).is_enabled(enabled=enabled)
 
     def shows_publisher_isni(self, isni):
         self.lineEdit(named("_publisher_isni")).has_text(isni)
@@ -294,8 +318,3 @@ class TrackEditionPageDriver(ScreenDriver):
     def select_primary_style(self, style):
         self.tabs(named("_tabs")).select("Recording")
         self.combobox(named("_genre")).select_option(style)
-
-    def assign_isni_to_lyricist(self):
-        menu = self.tool_button(named("_lyricist_isni_actions_button")).open_menu()
-        menu.menu_item(named("_lyricist_isni_assign_action")).manipulate("enable", lambda b: b.setEnabled(True))
-        menu.select_menu_item(named("_lyricist_isni_assign_action"))

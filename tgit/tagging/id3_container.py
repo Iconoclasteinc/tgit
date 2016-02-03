@@ -219,6 +219,41 @@ class ISNIProcessor:
         return isni_map
 
 
+class IPIProcessor:
+    def process_frames(self, metadata, frames):
+        ipi_map = {}
+        for _, frame in frames.items():
+            ipi_map = self._add_ipi_to_map(frame, ipi_map)
+
+        if len(ipi_map) > 0:
+            metadata["ipis"] = ipi_map
+
+    @staticmethod
+    def process_metadata(frames, encoding, metadata):
+        if "ipis" not in metadata:
+            return
+
+        for _, frame in frames.items():
+            if frame.FrameID == "TXXX" and frame.desc.startswith("IPI:"):
+                frames.delall("{}:{}".format(frame.FrameID, frame.desc))
+
+        for name, ipi in metadata["ipis"].items():
+            frames.add(getattr(id3, "TXXX")(encoding=encoding, desc="IPI:{}".format(name), text=ipi))
+
+    @staticmethod
+    def _add_ipi_to_map(frame, ipi_map):
+        def is_ipi_frame():
+            return frame.FrameID == "TXXX" and frame.desc.startswith("IPI")
+
+        def frame_is_not_empty():
+            return len(frame.text) > 0
+
+        if is_ipi_frame() and frame_is_not_empty():
+            ipi_map[frame.desc.split(":")[1]] = frame.text[0]
+
+        return ipi_map
+
+
 class TaggerAndVersionConverter:
     def __init__(self, old_frame_key, tagger_frame, version_frame):
         self._old_frame_key = old_frame_key
@@ -320,6 +355,7 @@ class ID3Container:
             PictureType.BACK_COVER: Image.BACK_COVER,
         }),
         ISNIProcessor(),
+        IPIProcessor(),
         PairProcessor("TMCL", "guest_performers", {}),
         PairProcessor("TIPL", "contributors", {
             "producer": "music_producer",

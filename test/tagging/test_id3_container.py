@@ -266,6 +266,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["lead_performer_region"] = ("CA", "QC")
     metadata["isnis"] = {"Lead Performer": "0000123456789",
                          "Lyricist": "0000123456789"}
+    metadata["ipis"] = {"Lyricist": "0000123456789"}
     metadata["iswc"] = "T-345246800-1"
     metadata["guest_performers"] = [("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]
     metadata["label_name"] = "Label Name"
@@ -381,6 +382,16 @@ def test_removes_old_isni_frames(mp3):
     tags = MP3(filename)
     assert_that(tags, all_of(has_key("TXXX:ISNI:Joel Miller"),
                              not_(has_key("TXXX:ISNI:Rebecca Ann Maloy"))), "tags in file")
+
+
+def test_removes_old_ipi_frames(mp3):
+    filename = mp3(TXXX_IPI_Joel_Miller="00000123456789",
+                   TXXX_IPI_Rebecca_Ann_Maloy="98765432100000")
+    container.save(filename, Metadata(ipis={"Joel Miller": "00000123456789"}))
+
+    tags = MP3(filename)
+    assert_that(tags, all_of(has_key("TXXX:IPI:Joel Miller"),
+                             not_(has_key("TXXX:IPI:Rebecca Ann Maloy"))), "tags in file")
 
 
 def test_removes_deprecated_frames_on_save(mp3):

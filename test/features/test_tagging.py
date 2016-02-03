@@ -15,7 +15,7 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
                               release_name="Honeycomb", lead_performer="Joel Miller", isni="0000000121707484")
 
     app.shows_next_track_metadata(track_title="???")
-    app.change_track_metadata(track_title="Rashers")
+    app.change_track_metadata(track_title="Rashers", lyricist="Rebecca Ann Maloy", lyricist_ipi="9876543210000000")
 
     app.save_album()
     workspace.contains_track(album="Honeycomb",
@@ -24,6 +24,7 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
                              release_name="Honeycomb",
                              lead_performer="Joel Miller",
                              isnis={"Joel Miller": "0000000121707484"},
+                             ipis={"Rebecca Ann Maloy": "9876543210000000"},
                              track_title="Rashers",
                              track_number=1,
                              tagger_version=tgit.__version__)
@@ -40,7 +41,7 @@ def test_tagging_a_flac_track(app, recordings, workspace):
                               lead_performer="John Roney", isni="0000000121707484")
 
     app.shows_next_track_metadata(track_title="???")
-    app.change_track_metadata(track_title="Squareboy")
+    app.change_track_metadata(track_title="Squareboy", lyricist="Rebecca Ann Maloy", lyricist_ipi="9876543210000000")
 
     app.save_album()
     workspace.contains_track(album="St-Henri",
@@ -49,6 +50,7 @@ def test_tagging_a_flac_track(app, recordings, workspace):
                              release_name="St-Henri",
                              lead_performer="John Roney",
                              isnis={"John Roney": "0000000121707484"},
+                             ipis={"Rebecca Ann Maloy": "9876543210000000"},
                              track_title="Squareboy",
                              track_number=1,
                              tagger_version=tgit.__version__)

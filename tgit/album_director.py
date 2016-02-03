@@ -151,11 +151,7 @@ def lookup_isni_using(cheddar, session):
 
 def add_isni_to(album):
     def add_isni(name, isni):
-        isnis = album.isnis
-        if not isnis:
-            isnis = {}
-        isnis[name] = isni
-        album.isnis = isnis
+        album.isnis = _add_identifier_to_map(album.isnis, isni, name)
 
     return add_isni
 
@@ -188,6 +184,21 @@ def _assign_isni(identity, type_, titles, on_success, cheddar, user):
         on_success(IdentityCard(**identity_details))
 
     cheddar.assign_identifier(identity, type_, titles, user.api_key).add_done_callback(on_assign_done)
+
+
+def add_ipi_to(album):
+    def add_ipi(name, ipi):
+        album.ipis = _add_identifier_to_map(album.ipis, ipi, name)
+
+    return add_ipi
+
+
+def _add_identifier_to_map(identifier_map, identifier, name):
+    if not identifier_map:
+        identifier_map = {}
+    identifier_map[name] = identifier
+
+    return identifier_map
 
 
 def sign_in_using(authenticate, session):

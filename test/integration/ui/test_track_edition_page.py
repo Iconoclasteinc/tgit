@@ -4,12 +4,11 @@ from datetime import timedelta
 import types
 
 import pytest
-
-from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not
+from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
 import requests
 
 from cute.matchers import named
-from cute.probes import ValueMatcherProbe
+from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers import TrackEditionPageDriver
 from test.integration.ui import show_widget
@@ -445,3 +444,78 @@ def test_clears_isni_when_publisher_not_found(driver):
     driver.shows_publisher_isni("00000000123456789")
     driver.change_publisher("Rebecca Ann Maloy")
     driver.shows_publisher_isni("")
+
+
+def test_signals_on_lyricist_ipi_changed(driver):
+    lyricist_ipi_changed_signal = MultiValueMatcherProbe("lyricist ipi changed",
+                                                         contains("Joel Miller", "0000000123456789"))
+
+    track = make_track()
+    album = make_album(tracks=[track])
+    _ = show_page(album, track, on_ipi_changed=lyricist_ipi_changed_signal.received)
+
+    driver.change_lyricist("Joel Miller")
+    driver.change_lyricist_ipi("0000000123456789")
+    driver.check(lyricist_ipi_changed_signal)
+
+
+def test_enables_lyricist_ipi(driver):
+    track = make_track()
+    album = make_album(tracks=[track])
+    _ = show_page(album, track)
+
+    driver.lyricist_ipi_enabled(enabled=False)
+    driver.change_lyricist("Joel Miller")
+    driver.lyricist_ipi_enabled()
+    driver.change_lyricist("")
+    driver.lyricist_ipi_enabled(enabled=False)
+
+
+def test_signals_on_composer_ipi_changed(driver):
+    composer_ipi_changed_signal = MultiValueMatcherProbe("composer ipi changed",
+                                                         contains("Joel Miller", "0000000123456789"))
+
+    track = make_track()
+    album = make_album(tracks=[track])
+    _ = show_page(album, track, on_ipi_changed=composer_ipi_changed_signal.received)
+
+    driver.change_composer("Joel Miller")
+    driver.change_composer_ipi("0000000123456789")
+    driver.check(composer_ipi_changed_signal)
+
+
+def test_enables_composer_ipi(driver):
+    track = make_track()
+    album = make_album(tracks=[track])
+    _ = show_page(album, track)
+
+    driver.composer_ipi_enabled(enabled=False)
+    driver.change_composer("Joel Miller")
+    driver.composer_ipi_enabled()
+    driver.change_composer("")
+    driver.composer_ipi_enabled(enabled=False)
+
+
+def test_signals_on_publisher_ipi_changed(driver):
+    publisher_ipi_changed_signal = MultiValueMatcherProbe("publisher ipi changed",
+                                                          contains("Joel Miller", "0000000123456789"))
+
+    track = make_track()
+    album = make_album(tracks=[track])
+    _ = show_page(album, track, on_ipi_changed=publisher_ipi_changed_signal.received)
+
+    driver.change_publisher("Joel Miller")
+    driver.change_publisher_ipi("0000000123456789")
+    driver.check(publisher_ipi_changed_signal)
+
+
+def test_enables_publisher_ipi(driver):
+    track = make_track()
+    album = make_album(tracks=[track])
+    _ = show_page(album, track)
+
+    driver.publisher_ipi_enabled(enabled=False)
+    driver.change_publisher("Joel Miller")
+    driver.publisher_ipi_enabled()
+    driver.change_publisher("")
+    driver.publisher_ipi_enabled(enabled=False)
