@@ -157,7 +157,8 @@ class FlacContainer:
         "PRODUCER": "production_company",
         "MUSIC-PRODUCER": "music_producer",
         "LYRICIST": "lyricist",
-        "CATALOGNUMBER": "catalog_number"
+        "CATALOGNUMBER": "catalog_number",
+        "BARCODE": "upc",
     }.items():
         fields.append(TextField(field_name, tag_name))
 
