@@ -161,6 +161,11 @@ def test_reads_upc_from_barcode_field(flac):
     assert_that(metadata, has_entry("upc", "123456789999"), "metadata")
 
 
+def test_reads_mixer_from_mixer_field(flac):
+    metadata = container.load(flac(MIXER="mr. mx"))
+    assert_that(metadata, has_entry("mixer", "mr. mx"), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -187,6 +192,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["lyricist"] = "Joel Miller"
     metadata["catalog_number"] = "001-002-003"
     metadata["upc"] = "123456789999"
+    metadata["mixer"] = "Mixing Engineer"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

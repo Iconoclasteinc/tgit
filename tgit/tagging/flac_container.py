@@ -159,6 +159,7 @@ class FlacContainer:
         "LYRICIST": "lyricist",
         "CATALOGNUMBER": "catalog_number",
         "BARCODE": "upc",
+        "MIXER": "mixer",
     }.items():
         fields.append(TextField(field_name, tag_name))
 
