@@ -108,6 +108,8 @@ class FlacAudio(object):
                 self._add_tag("COMPILATION", value)
             elif tag == 'GUEST_ARTIST':
                 self._add_tag("GUEST ARTIST", value)
+            elif tag == 'TAGS':
+                self._add_tag("TAGS", value)
             else:
                 raise AssertionError("Unsupported tag '%s'" % tag)
 

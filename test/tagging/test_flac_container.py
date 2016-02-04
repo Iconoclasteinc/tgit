@@ -209,6 +209,11 @@ def test_reads_guest_performer_from_guest_artist_field(flac):
     assert_that(metadata, has_entry("guest_performer", "collaborating artist"), "metadata")
 
 
+def test_reads_tags_from_tags_field(flac):
+    metadata = container.load(flac(TAGS="arbitrary tags"))
+    assert_that(metadata, has_entry("tags", "arbitrary tags"), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -244,6 +249,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["language"] = "Language of the lyrics"
     metadata["compilation"] = False
     metadata["guest_performer"] = "A collaborating artist"
+    metadata["tags"] = "A list of arbitrary tags"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
