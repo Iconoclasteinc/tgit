@@ -210,8 +210,8 @@ def test_reads_guest_performer_from_guest_artist_field(flac):
 
 
 def test_reads_tags_from_tags_field(flac):
-    metadata = container.load(flac(TAGS="arbitrary tags"))
-    assert_that(metadata, has_entry("labels", "arbitrary tags"), "metadata")
+    metadata = container.load(flac(TAG=["tag1", "tag2", "tag3"]))
+    assert_that(metadata, has_entry("labels", "tag1, tag2, tag3"), "metadata")
 
 
 def test_reads_release_time_from_release_date_field(flac):
@@ -262,7 +262,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["language"] = "Language of the lyrics"
     metadata["compilation"] = False
     metadata["featured_guest"] = "A collaborating artist"
-    metadata["labels"] = "A list of arbitrary tags"
+    metadata["labels"] = "tag1, tag2, tag3"
     metadata["release_time"] = "2008-03-01"
     metadata["guest_performers"] = [("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]
 

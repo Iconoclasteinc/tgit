@@ -40,7 +40,7 @@ class ValueField:
 
     def read(self, flac, metadata):
         if self._field_name in flac:
-            metadata[self._tag_name] = self._to_tag(flac[self._field_name][LAST])
+            metadata[self._tag_name] = self._to_tag(flac[self._field_name])
 
     def write(self, metadata, flac):
         if self._field_name in flac:
@@ -51,12 +51,22 @@ class ValueField:
             flac[self._field_name] = self._to_field(value)
 
 
-class TextField(ValueField):
+class SingleValueField(ValueField):
+    def __init__(self, field_name, tag_name, field_to_tag, tag_to_field):
+        super().__init__(field_name, tag_name, lambda values: field_to_tag(values[LAST]), tag_to_field)
+
+
+class MultiValueTextField(ValueField):
+    def __init__(self, field_name, tag_name):
+        super().__init__(field_name, tag_name, lambda values: ", ".join(values), lambda tag: re.split(",\s*", tag))
+
+
+class TextField(SingleValueField):
     def __init__(self, field_name, tag_name):
         super().__init__(field_name, tag_name, str, str)
 
 
-class RegionField(ValueField):
+class RegionField(SingleValueField):
     @staticmethod
     def to_region(value):
         return tuple(value.split("-"))
@@ -69,12 +79,12 @@ class RegionField(ValueField):
         super().__init__(field_name, tag_name, self.to_region, self.to_value)
 
 
-class NumericField(ValueField):
+class NumericField(SingleValueField):
     def __init__(self, field_name, tag_name):
         super().__init__(field_name, tag_name, int, str)
 
 
-class BooleanField(ValueField):
+class BooleanField(SingleValueField):
     @staticmethod
     def to_boolean(value):
         return value == "YES"
@@ -208,10 +218,15 @@ class FlacContainer:
         "LYRICS": "lyrics",
         "LANGUAGE": "language",
         "GUEST ARTIST": "featured_guest",
-        "TAGS": "labels",
+        "TAG": "labels",
         "RELEASE DATE": "release_time",
     }.items():
         fields.append(TextField(field_name, tag_name))
+
+    for field_name, tag_name in {
+        "TAG": "labels",
+    }.items():
+        fields.append(MultiValueTextField(field_name, tag_name))
 
     for field_name, tag_name in {
         "TRACKNUMBER": "track_number",

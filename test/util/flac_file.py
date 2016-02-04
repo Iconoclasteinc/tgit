@@ -108,8 +108,9 @@ class FlacAudio(object):
                 self._add_tag("COMPILATION", value)
             elif tag == 'GUEST_ARTIST':
                 self._add_tag("GUEST ARTIST", value)
-            elif tag == 'TAGS':
-                self._add_tag("TAGS", value)
+            elif tag == 'TAG':
+                for label in value:
+                    self._add_tag("TAG", label)
             elif tag == 'RELEASE_DATE':
                 self._add_tag("RELEASE DATE", value)
             elif tag == 'PERFORMER':
