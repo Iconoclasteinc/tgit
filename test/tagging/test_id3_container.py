@@ -127,7 +127,7 @@ def test_reads_version_info_from_tpe4_frame(mp3):
 
 def test_reads_featured_guest_from_custom_frame(mp3):
     metadata = container.load(mp3(TXXX_FEATURED_GUEST="Featured Guest"))
-    assert_that(metadata, has_entry("featuredGuest", "Featured Guest"), "metadata")
+    assert_that(metadata, has_entry("featured_guest", "Featured Guest"), "metadata")
 
 
 def test_reads_lyricist_from_text_frame(mp3):
@@ -287,7 +287,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["primary_style"] = "Jazz"
     metadata["track_title"] = "Track Title"
     metadata["version_info"] = "Version Info"
-    metadata["featuredGuest"] = "Featured Guest"
+    metadata["featured_guest"] = "Featured Guest"
     metadata["lyricist"] = "Lyricist"
     metadata["composer"] = "Composer"
     metadata["publisher"] = "Publisher"

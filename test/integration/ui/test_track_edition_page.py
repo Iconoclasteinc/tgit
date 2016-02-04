@@ -71,7 +71,7 @@ def test_displays_track_metadata(driver):
                         lead_performer="Artist",
                         track_title="Song",
                         version_info="Remix",
-                        featuredGuest="Featuring",
+                        featured_guest="Featuring",
                         lyricist="Lyricist",
                         composer="Composer",
                         publisher="Publisher",
@@ -146,7 +146,7 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_version_info("Remix")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(featuredGuest="Featuring"))
+    metadata_changed_signal.expect(has_entries(featured_guest="Featuring"))
     driver.change_featured_guest("Featuring")
     driver.check(metadata_changed_signal)
 

@@ -350,7 +350,7 @@ class ID3Container:
         "TLAN": "language",
         "TXXX:BARCODE": "upc",
         "TXXX:Catalog Number": "catalog_number",
-        "TXXX:Featured Guest": "featuredGuest",
+        "TXXX:Featured Guest": "featured_guest",
         "TXXX:PRODUCTION-COMPANY": "production_company",
         "TXXX:ISWC": "iswc",
         "TXXX:Recording Studio": "recording_studio",

@@ -207,7 +207,7 @@ class FlacContainer:
         "VERSION": "version_info",
         "LYRICS": "lyrics",
         "LANGUAGE": "language",
-        "GUEST ARTIST": "guest_performer",
+        "GUEST ARTIST": "featured_guest",
         "TAGS": "labels",
         "RELEASE DATE": "release_time",
     }.items():

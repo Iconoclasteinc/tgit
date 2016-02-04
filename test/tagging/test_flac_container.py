@@ -206,7 +206,7 @@ def test_reads_compilation_flag_from_compilation_field(flac):
 
 def test_reads_guest_performer_from_guest_artist_field(flac):
     metadata = container.load(flac(GUEST_ARTIST="collaborating artist"))
-    assert_that(metadata, has_entry("guest_performer", "collaborating artist"), "metadata")
+    assert_that(metadata, has_entry("featured_guest", "collaborating artist"), "metadata")
 
 
 def test_reads_tags_from_tags_field(flac):
@@ -261,7 +261,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["lyrics"] = "Lyrics of the track"
     metadata["language"] = "Language of the lyrics"
     metadata["compilation"] = False
-    metadata["guest_performer"] = "A collaborating artist"
+    metadata["featured_guest"] = "A collaborating artist"
     metadata["labels"] = "A list of arbitrary tags"
     metadata["release_time"] = "2008-03-01"
     metadata["guest_performers"] = [("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]
