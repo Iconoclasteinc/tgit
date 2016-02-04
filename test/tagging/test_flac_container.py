@@ -214,6 +214,11 @@ def test_reads_tags_from_tags_field(flac):
     assert_that(metadata, has_entry("tags", "arbitrary tags"), "metadata")
 
 
+def test_reads_release_time_from_release_date_field(flac):
+    metadata = container.load(flac(RELEASE_DATE="2008-03-01"))
+    assert_that(metadata, has_entry("release_time", "2008-03-01"), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -250,6 +255,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["compilation"] = False
     metadata["guest_performer"] = "A collaborating artist"
     metadata["tags"] = "A list of arbitrary tags"
+    metadata["release_time"] = "2008-03-01"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

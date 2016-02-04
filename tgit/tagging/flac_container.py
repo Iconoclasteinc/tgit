@@ -181,6 +181,7 @@ class FlacContainer:
         "LANGUAGE": "language",
         "GUEST ARTIST": "guest_performer",
         "TAGS": "tags",
+        "RELEASE DATE": "release_time",
     }.items():
         fields.append(TextField(field_name, tag_name))
 
