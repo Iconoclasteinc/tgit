@@ -155,20 +155,18 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._publisher.textEdited.connect(lambda text: self._publisher_isni.setText(handler(text)))
 
     def on_ipi_local_lookup(self, handler):
-        def set_(text):
-            self._publisher_ipi.setText(handler(text))
-
         self._lyricist.textEdited.connect(lambda text: self._lyricist_ipi.setText(handler(text)))
         self._composer.textEdited.connect(lambda text: self._composer_ipi.setText(handler(text)))
-        self._publisher.textEdited.connect(set_)
+        self._publisher.textEdited.connect(lambda text: self._publisher_ipi.setText(handler(text)))
 
-    def on_ipi_changed(self, handler):
-        def launch_handler(name, ipi):
-            handler(name, ipi)
+    def on_ipi_changed(self, on_ipi_changed):
+        def handler(name, ipi):
+            if name:
+                on_ipi_changed(name, ipi)
 
-        self._lyricist_ipi.editingFinished.connect(lambda: launch_handler(self._lyricist.text(), self._lyricist_ipi.text()))
-        self._composer_ipi.editingFinished.connect(lambda: launch_handler(self._composer.text(), self._composer_ipi.text()))
-        self._publisher_ipi.editingFinished.connect(lambda: launch_handler(self._publisher.text(), self._publisher_ipi.text()))
+        self._lyricist_ipi.editingFinished.connect(lambda: handler(self._lyricist.text(), self._lyricist_ipi.text()))
+        self._composer_ipi.editingFinished.connect(lambda: handler(self._composer.text(), self._composer_ipi.text()))
+        self._publisher_ipi.editingFinished.connect(lambda: handler(self._publisher.text(), self._publisher_ipi.text()))
 
     def display(self, album=None, track=None):
         if track:
