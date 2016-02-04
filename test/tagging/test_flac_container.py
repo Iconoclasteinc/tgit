@@ -181,27 +181,32 @@ def test_reads_composer_from_composer_field(flac):
     assert_that(metadata, has_entry("composer", "composer of the work"), "metadata")
 
 
-def test_version_information_from_version_field(flac):
+def test_reads_version_information_from_version_field(flac):
     metadata = container.load(flac(VERSION="to differentiate the track"))
     assert_that(metadata, has_entry("version_info", "to differentiate the track"), "metadata")
 
 
-def test_lyrics_from_lyrics_field(flac):
+def test_reads_lyrics_from_lyrics_field(flac):
     metadata = container.load(flac(LYRICS="lyrics of the track"))
     assert_that(metadata, has_entry("lyrics", "lyrics of the track"), "metadata")
 
 
-def test_language_from_language_field(flac):
+def test_reads_language_from_language_field(flac):
     metadata = container.load(flac(LANGUAGE="language of the lyrics"))
     assert_that(metadata, has_entry("language", "language of the lyrics"), "metadata")
 
 
-def test_compilation_flag_from_compilation_field(flac):
+def test_reads_compilation_flag_from_compilation_field(flac):
     metadata = container.load(flac(COMPILATION="YES"))
     assert_that(metadata, has_entry("compilation", True), "metadata")
 
     metadata = container.load(flac(COMPILATION="NO"))
     assert_that(metadata, has_entry("compilation", False), "metadata")
+
+
+def test_reads_guest_performer_from_guest_artist_field(flac):
+    metadata = container.load(flac(GUEST_ARTIST="collaborating artist"))
+    assert_that(metadata, has_entry("guest_performer", "collaborating artist"), "metadata")
 
 
 def test_round_trips_metadata_to_file(flac):
@@ -238,6 +243,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["lyrics"] = "Lyrics of the track"
     metadata["language"] = "Language of the lyrics"
     metadata["compilation"] = False
+    metadata["guest_performer"] = "A collaborating artist"
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 

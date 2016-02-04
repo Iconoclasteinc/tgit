@@ -299,7 +299,7 @@ class ISNIConverter:
     # noinspection PyUnusedLocal
     @staticmethod
     def process_metadata(frames, encoding, metadata):
-        frames.delall("ISNI:TXXX")
+        frames.delall("TXXX:ISNI")
 
 
 class ID3Container:

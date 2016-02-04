@@ -179,6 +179,7 @@ class FlacContainer:
         "VERSION": "version_info",
         "LYRICS": "lyrics",
         "LANGUAGE": "language",
+        "GUEST ARTIST": "guest_performer",
     }.items():
         fields.append(TextField(field_name, tag_name))
 
