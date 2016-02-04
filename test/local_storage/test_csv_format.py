@@ -77,7 +77,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
 
     track = build.track(
         track_title="Track Title",
-        versionInfo="Version Info",
+        version_info="Version Info",
         featuredGuest="Featuring",
         lyrics="Lyrics\n...\...\n...",
         language="eng",

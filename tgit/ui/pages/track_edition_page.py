@@ -168,7 +168,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
         self._track_title.setText(track.track_title)
         self._lead_performer.setText(track.lead_performer)
-        self._version.setText(track.versionInfo)
+        self._version.setText(track.version_info)
         self._duration.setText(formatting.to_duration(track.duration))
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
         self._featured_guest.setText(track.featuredGuest)
@@ -224,7 +224,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     @property
     def metadata(self):
         metadata = dict(track_title=self._track_title.text(),
-                        versionInfo=self._version.text(),
+                        version_info=self._version.text(),
                         featuredGuest=self._featured_guest.text(),
                         composer=self._composer.text(),
                         publisher=self._publisher.text(),

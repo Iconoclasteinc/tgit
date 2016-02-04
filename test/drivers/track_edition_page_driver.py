@@ -22,7 +22,7 @@ class TrackEditionPageDriver(ScreenDriver):
                 self.shows_track_title(value)
             elif tag == "lead_performer":
                 self.shows_lead_performer(value)
-            elif tag == "versionInfo":
+            elif tag == "version_info":
                 self.shows_version_info(value)
             elif tag == "featuredGuest":
                 self.shows_featured_guest(value)
@@ -57,7 +57,7 @@ class TrackEditionPageDriver(ScreenDriver):
                 self.change_track_title(value)
             elif tag == "lead_performer":
                 self.change_lead_performer(value)
-            elif tag == "versionInfo":
+            elif tag == "version_info":
                 self.change_version_info(value)
             elif tag == "featuredGuest":
                 self.change_featured_guest(value)

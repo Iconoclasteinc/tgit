@@ -29,7 +29,7 @@ class Track(object, metaclass=tag.Taggable):
 
     track_title = tag.text()
     lead_performer = tag.text()
-    versionInfo = tag.text()
+    version_info = tag.text()
     featuredGuest = tag.text()
     publisher = tag.text()
     lyricist = tag.text()

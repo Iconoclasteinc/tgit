@@ -73,7 +73,7 @@ class CsvFormat(QObject):
                guest_performers, album.label_name, album.catalog_number, album.upc, album.comments, album.release_time,
                album.recording_time, track.recording_studio, recording_studio_region, track.production_company,
                production_company_region, track.music_producer, track.mixer, track.primary_style, track.track_title,
-               track.versionInfo, track_number, total_tracks, track.featuredGuest, track.lyrics, track.language,
+               track.version_info, track_number, total_tracks, track.featuredGuest, track.lyrics, track.language,
                track.publisher, track.lyricist, lyricist_isni, track.composer, track.isrc, track.labels)
 
         writer.writerow(self._encode_row(row))

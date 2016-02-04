@@ -342,7 +342,7 @@ class ID3Container:
         "TDOR": "original_release_time",
         "TDTG": "tagging_time",
         "TIT2": "track_title",
-        "TPE4": "versionInfo",
+        "TPE4": "version_info",
         "TEXT": "lyricist",
         "TCOM": "composer",
         "TPUB": "publisher",
