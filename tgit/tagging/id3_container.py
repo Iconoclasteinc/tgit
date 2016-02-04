@@ -21,7 +21,6 @@ from collections import Counter
 from datetime import timezone
 
 from dateutil import parser as dateparser
-
 from mutagen import mp3, id3
 
 from tgit.metadata import Metadata, Image
@@ -309,7 +308,7 @@ class ISNIConverter:
     # noinspection PyUnusedLocal
     @staticmethod
     def process_metadata(frames, encoding, metadata):
-        frames.delall("ISNI:TXXX")
+        frames.delall("TXXX:ISNI")
 
 
 class ID3Container:
@@ -353,7 +352,7 @@ class ID3Container:
         "TDOR": "original_release_time",
         "TDTG": "tagging_time",
         "TIT2": "track_title",
-        "TPE4": "versionInfo",
+        "TPE4": "version_info",
         "TEXT": "lyricist",
         "TCOM": "composer",
         "TPUB": "publisher",
@@ -361,7 +360,7 @@ class ID3Container:
         "TLAN": "language",
         "TXXX:BARCODE": "upc",
         "TXXX:Catalog Number": "catalog_number",
-        "TXXX:Featured Guest": "featuredGuest",
+        "TXXX:Featured Guest": "featured_guest",
         "TXXX:PRODUCTION-COMPANY": "production_company",
         "TXXX:ISWC": "iswc",
         "TXXX:Recording Studio": "recording_studio",

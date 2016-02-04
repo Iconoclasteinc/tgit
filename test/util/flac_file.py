@@ -86,6 +86,36 @@ class FlacAudio(object):
                 self._add_tag("ISNI", value)
             elif tag == 'LYRICIST':
                 self._add_tag("LYRICIST", value)
+            elif tag == 'CATALOGNUMBER':
+                self._add_tag("CATALOGNUMBER", value)
+            elif tag == 'BARCODE':
+                self._add_tag("BARCODE", value)
+            elif tag == 'MIXER':
+                self._add_tag("MIXER", value)
+            elif tag == 'COMMENT':
+                self._add_tag("COMMENT", value)
+            elif tag == 'PUBLISHER':
+                self._add_tag("PUBLISHER", value)
+            elif tag == 'COMPOSER':
+                self._add_tag("COMPOSER", value)
+            elif tag == 'VERSION':
+                self._add_tag("VERSION", value)
+            elif tag == 'LYRICS':
+                self._add_tag("LYRICS", value)
+            elif tag == 'LANGUAGE':
+                self._add_tag("LANGUAGE", value)
+            elif tag == 'COMPILATION':
+                self._add_tag("COMPILATION", value)
+            elif tag == 'GUEST_ARTIST':
+                self._add_tag("GUEST ARTIST", value)
+            elif tag == 'TAG':
+                for label in value:
+                    self._add_tag("TAG", label)
+            elif tag == 'RELEASE_DATE':
+                self._add_tag("RELEASE DATE", value)
+            elif tag == 'PERFORMER':
+                for performer in value:
+                    self._add_tag("PERFORMER", performer)
             else:
                 raise AssertionError("Unsupported tag '%s'" % tag)
 
