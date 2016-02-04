@@ -87,11 +87,11 @@ class NumericField(SingleValueField):
 class BooleanField(SingleValueField):
     @staticmethod
     def to_boolean(value):
-        return value == "YES"
+        return value.lower() == "Yes".lower()
 
     @staticmethod
     def to_value(flag):
-        return "YES" if flag else "NO"
+        return "Yes" if flag else "No"
 
     def __init__(self, field_name, tag_name):
         super().__init__(field_name, tag_name, self.to_boolean, self.to_value)
