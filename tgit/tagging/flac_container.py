@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import re
 from collections import Counter
 
 import mutagen.flac
@@ -84,6 +85,33 @@ class BooleanField(ValueField):
 
     def __init__(self, field_name, tag_name):
         super().__init__(field_name, tag_name, self.to_boolean, self.to_value)
+
+
+class PairField:
+    def __init__(self, field_name, tag_name):
+        self._field_name = field_name
+        self._tag_name = tag_name
+
+    def read(self, flac, metadata):
+        if self._field_name not in flac:
+            return
+
+        metadata[self._tag_name] = []
+
+        for entry in flac[self._field_name]:
+            match = re.match(r"(?P<value>[^(]+)\s+\((?P<desc>[^)]+)\)", entry)
+
+            if match:
+                metadata[self._tag_name].append((match.group("desc"), match.group("value")))
+
+    def write(self, metadata, flac):
+        if self._field_name in flac:
+            del flac[self._field_name]
+
+        if self._tag_name not in metadata:
+            return
+
+        flac[self._field_name] = ["{} ({})".format(value, desc) for desc, value in metadata[self._tag_name]]
 
 
 class PictureField:
@@ -202,6 +230,11 @@ class FlacContainer:
         "COMPILATION": "compilation",
     }.items():
         fields.append(BooleanField(field_name, tag_name))
+
+    for field_name, tag_name in {
+        "PERFORMER": "guest_performers",
+    }.items():
+        fields.append(PairField(field_name, tag_name))
 
     def load(self, filename):
         flac_file = mutagen.flac.FLAC(filename)

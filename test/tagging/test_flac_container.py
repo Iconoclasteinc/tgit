@@ -219,6 +219,14 @@ def test_reads_release_time_from_release_date_field(flac):
     assert_that(metadata, has_entry("release_time", "2008-03-01"), "metadata")
 
 
+def test_reads_guest_performers_from_performer_field(flac):
+    metadata = container.load(flac(PERFORMER=["Guitarist (guitar)", "Bassist (guitar)", "Pianist (piano)"]))
+    assert_that(metadata, has_entry("guest_performers", contains_inanyorder(
+            ("guitar", "Guitarist"),
+            ("guitar", "Bassist"),
+            ("piano", "Pianist"))), "metadata")
+
+
 def test_round_trips_metadata_to_file(flac):
     metadata = Metadata()
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
@@ -256,6 +264,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata["guest_performer"] = "A collaborating artist"
     metadata["tags"] = "A list of arbitrary tags"
     metadata["release_time"] = "2008-03-01"
+    metadata["guest_performers"] = [("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]
 
     _assert_can_be_saved_and_reloaded_with_same_state(flac, metadata)
 
