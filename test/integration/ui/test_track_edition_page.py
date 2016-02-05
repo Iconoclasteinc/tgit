@@ -5,9 +5,7 @@ from datetime import timedelta
 
 import pytest
 import requests
-from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not
-from tgit.authentication_error import AuthenticationError
-from tgit.insufficient_information_error import InsufficientInformationError
+from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
@@ -16,6 +14,7 @@ from test.drivers import TrackEditionPageDriver
 from test.integration.ui import show_widget
 from test.util import builders as build
 from test.util.builders import make_album, make_track
+from tgit.cheddar import InsufficientInformationError, AuthenticationError
 from tgit.identity import IdentityCard
 from tgit.ui.pages.track_edition_page import make_track_edition_page, TrackEditionPage
 
