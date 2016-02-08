@@ -104,8 +104,7 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_main_artist_isni")).enter()
 
     def lookup_isni_of_main_artist(self):
-        menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()
-        menu.select_menu_item(named("_main_artist_isni_lookup_action"))
+        self.tool_button(named("_main_artist_isni_actions_button")).click()
 
     def edit_performers(self):
         self.tabs(named("_tabs")).select("Artists")
@@ -143,15 +142,14 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_main_artist_isni")).has_text(name)
 
     def enables_main_artist_isni_lookup(self, enabled=True):
-        menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()
-        menu.menu_item(named("_main_artist_isni_lookup_action")).is_enabled(enabled)
+        self.tool_button(named("_main_artist_isni_actions_button")).is_enabled(enabled)
 
     def disables_main_artist_isni_assign(self):
         menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()
-        menu.menu_item(named("_main_artist_isni_lookup_action")).is_disabled(True)
+        menu.menu_item(named("_main_artist_isni_assign_action")).is_disabled(True)
 
     def main_artist_isni_lookup_has_tooltip(self, text):
-        self.button(named("lookup_isni_button")).has_tooltip(text)
+        self.tool_button(named("_main_artist_isni_actions_button")).has_tooltip(text)
 
     def change_main_artist(self, name):
         self.lineEdit(named("_main_artist")).change_text(name)

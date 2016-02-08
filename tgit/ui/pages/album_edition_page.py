@@ -21,6 +21,7 @@ import operator
 from PyQt5.QtGui import QIcon
 import requests
 from PyQt5.QtCore import Qt, pyqtSignal, QDate, QSize
+
 from PyQt5.QtWidgets import QWidget, QApplication, QMenu
 
 from tgit.album import AlbumListener
@@ -102,7 +103,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._fill_with_countries(self._main_artist_region)
 
         menu = QMenu()
-        menu.addAction(self._main_artist_isni_lookup_action)
         menu.addAction(self._main_artist_isni_assign_action)
         self._main_artist_isni_actions_button.setMenu(menu)
 
@@ -152,7 +152,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             self._main_artist_isni.setFocus(Qt.OtherFocusReason)
             self._main_artist_isni.setText(identity.id)
 
-        self._main_artist_isni_lookup_action.triggered.connect(start_waiting)
+        self._main_artist_isni_actions_button.clicked.connect(start_waiting)
 
     def on_isni_assign(self, on_isni_assign):
         def start_waiting(main_artist_type):
@@ -208,9 +208,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._isni_lookup = user.has_permission(Permission.lookup_isni)
         self._isni_assign = user.has_permission(Permission.assign_isni)
         if not self._isni_lookup:
-            self._main_artist_isni_lookup_action.setToolTip(self.tr("Please sign-in to activate ISNI lookup"))
+            self._main_artist_isni_actions_button.setToolTip(self.tr("Please sign-in to activate ISNI lookup"))
         else:
-            self._main_artist_isni_lookup_action.setToolTip(None)
+            self._main_artist_isni_actions_button.setToolTip(None)
         self._update_isni_menu()
 
     def display(self, album):
@@ -280,5 +280,5 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             return not text or text.strip() == ""
 
         can_lookup_or_assign = not self._compilation.isChecked() and not _is_blank(self._main_artist.text())
-        self._main_artist_isni_lookup_action.setEnabled(self._isni_lookup and can_lookup_or_assign)
+        self._main_artist_isni_actions_button.setEnabled(self._isni_lookup and can_lookup_or_assign)
         self._main_artist_isni_assign_action.setEnabled(self._isni_assign and can_lookup_or_assign)

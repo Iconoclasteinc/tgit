@@ -179,13 +179,13 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>SELECT...</source>
-        <translation>CHOISIR...</translation>
+        <source>Select a picture</source>
+        <translation>Choisir une illustration</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>REMOVE</source>
-        <translation>SUPPRIMER</translation>
+        <source>Remove the picture</source>
+        <translation>Supprimer l&apos;illustration</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />

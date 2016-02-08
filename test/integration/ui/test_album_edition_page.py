@@ -4,6 +4,7 @@ import types
 
 import pytest
 import requests
+
 from PyQt5.QtCore import QByteArray
 
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
@@ -154,15 +155,11 @@ def test_disables_isni_lookup_when_user_logs_out(driver):
     driver.enables_main_artist_isni_lookup(False)
 
 
-# noinspection PyUnresolvedReferences
-@pytest.mark.xfail
 def test_displays_tooltip_on_isni_lookup_when_anonymously_connected(driver):
     _ = show_page(session=(make_anonymous_session()), album=make_album(lead_performer="Album Artist"))
     driver.main_artist_isni_lookup_has_tooltip("Please sign-in to activate ISNI lookup")
 
 
-# noinspection PyUnresolvedReferences
-@pytest.mark.xfail
 def test_removes_tooltip_on_isni_lookup_when_signed_in(driver):
     _ = show_page(session=(make_registered_session()), album=make_album(lead_performer="Album Artist"))
     driver.main_artist_isni_lookup_has_tooltip("")
