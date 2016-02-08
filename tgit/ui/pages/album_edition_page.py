@@ -18,8 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import operator
 
+from PyQt5.QtGui import QIcon
 import requests
-from PyQt5.QtCore import Qt, pyqtSignal, QDate
+from PyQt5.QtCore import Qt, pyqtSignal, QDate, QSize
 from PyQt5.QtWidgets import QWidget, QApplication, QMenu
 
 from tgit.album import AlbumListener
@@ -78,7 +79,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     _isni_lookup = False
     _isni_assign = False
 
-    FRONT_COVER_SIZE = 115, 115
+    FRONT_COVER_SIZE = 138, 138
 
     def __init__(self, edit_artists, select_picture, select_identity, review_assignation,
                  show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed,
@@ -117,7 +118,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         combobox.setCurrentIndex(0)
 
     def on_select_picture(self, on_select_picture):
-        self._select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
+        self._front_cover.clicked.connect(lambda: self._select_picture(on_select_picture))
 
     def on_isni_changed(self, on_isni_changed):
         self._main_artist_isni.editingFinished.connect(
@@ -214,7 +215,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def display(self, album):
         if album.main_cover is not self._picture or album.main_cover is None:
-            self._front_cover.setPixmap(image.scale(album.main_cover, *self.FRONT_COVER_SIZE))
+            self._front_cover.setIcon(QIcon(image.scale(album.main_cover, *self.FRONT_COVER_SIZE)))
+            self._front_cover.setIconSize(QSize(*self.FRONT_COVER_SIZE))
             self._picture = album.main_cover
         self._release_name.setText(album.release_name)
         self._compilation.setChecked(album.compilation is True)

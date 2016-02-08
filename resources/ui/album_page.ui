@@ -27,56 +27,81 @@
     <layout class="QHBoxLayout" name="_top_banner">
      <item>
       <widget class="QGroupBox" name="_picture_box">
+       <property name="minimumSize">
+        <size>
+         <width>170</width>
+         <height>170</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>170</width>
+         <height>170</height>
+        </size>
+       </property>
        <property name="title">
         <string>Picture</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="_front_cover">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>115</width>
-            <height>115</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>115</width>
-            <height>115</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QLabel {
+       <widget class="QPushButton" name="_front_cover">
+        <property name="geometry">
+         <rect>
+          <x>15</x>
+          <y>20</y>
+          <width>140</width>
+          <height>140</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>140</width>
+          <height>140</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>140</width>
+          <height>140</height>
+         </size>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
 	border: 1px solid #ABADB3;
 }
 </string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="buddy">
-           <cstring>_front_cover</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="_picture_box_buttons">
-          <item>
-           <widget class="QPushButton" name="_select_picture_button">
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QPushButton {
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="_remove_picture_button">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>12</y>
+          <width>26</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
 	background-color: transparent;
 	margin: 0;
 	padding: 0;
@@ -85,39 +110,22 @@
 QPushButton:hover {
 	text-decoration: underline
 }</string>
-            </property>
-            <property name="text">
-             <string>SELECT...</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="_remove_picture_button">
-            <property name="cursor">
-             <cursorShape>PointingHandCursor</cursorShape>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QPushButton {
-	background-color: transparent;
-	margin: 0;
-	padding: 0;
-}
-
-QPushButton:hover {
-	text-decoration: underline
-}</string>
-            </property>
-            <property name="text">
-             <string>REMOVE</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/close.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
       </widget>
      </item>
      <item>
@@ -162,7 +170,7 @@ QPushButton:hover {
              <enum>Qt::StrongFocus</enum>
             </property>
             <property name="text">
-             <string>This project  is a multi-artist compilation</string>
+             <string>This project is a multi-artist compilation</string>
             </property>
            </widget>
           </item>
@@ -288,7 +296,7 @@ QPushButton:hover {
    <item row="1" column="0">
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="_record_tab">
       <attribute name="title">
@@ -479,7 +487,7 @@ QPushButton:hover {
          <item>
           <widget class="QLabel" name="_artists_caption">
            <property name="text">
-            <string>Artists</string>
+            <string>Musicians</string>
            </property>
            <property name="buddy">
             <cstring>_artists</cstring>

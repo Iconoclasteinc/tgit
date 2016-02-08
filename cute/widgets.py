@@ -169,6 +169,9 @@ class ButtonDriver(WidgetDriver):
     def is_checked(self, checked=True):
         self.is_(checked and match.checked() or match.unchecked())
 
+    def has_icon_size(self, matcher):
+        self.has(properties.icon_size(), matcher)
+
 
 class QToolButtonDriver(ButtonDriver):
     def open_menu(self):

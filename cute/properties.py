@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import Qt, QObject
+from PyQt5.QtCore import Qt, QObject, QSize
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QLabel, QLineEdit, QDateTimeEdit, QComboBox
+from PyQt5.QtWidgets import QLabel, QLineEdit, QDateTimeEdit, QComboBox, QAbstractButton
 from hamcrest.core.selfdescribing import SelfDescribing
 
 
@@ -17,16 +17,24 @@ def data():
     return PropertyQuery("data", lambda w: w.data())
 
 
+def icon_size():
+    return PropertyQuery("icon size", QAbstractButton.iconSize)
+
+
+def size_height():
+    return PropertyQuery("height", QSize.height)
+
+
+def size_width():
+    return PropertyQuery("width", QSize.width)
+
+
 def label_pixmap():
     return PropertyQuery("pixmap", QLabel.pixmap)
 
 
-def pixmap_height():
-    return PropertyQuery("pixmap height", QPixmap.height)
-
-
-def pixmap_width():
-    return PropertyQuery("pixmap width", QPixmap.width)
+def pixmap_size():
+    return PropertyQuery("pixmap size", QPixmap.size)
 
 
 def label_buddy():

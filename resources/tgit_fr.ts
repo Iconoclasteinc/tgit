@@ -229,7 +229,12 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Artistes</source>
+        <source>Artists</source>
+        <translation>Artistes</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Musicians</source>
         <translation>Musiciens de l&apos;album</translation>
     </message>
     <message>
