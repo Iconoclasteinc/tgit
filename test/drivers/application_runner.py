@@ -96,8 +96,8 @@ class ApplicationRunner:
     def has_settings(self, **settings):
         self.tagger.has_settings(**settings)
 
-    def assign_isni_to_lead_performer(self):
-        self.tagger.assign_isni_to_lead_performer()
+    def assign_isni_to_main_artist(self):
+        self.tagger.assign_isni_to_main_artist()
         # todo remove and verify in test that album metadata shows the isni
         self.tagger.pause(100)
 
@@ -105,12 +105,8 @@ class ApplicationRunner:
         self.tagger.save()
         self.tagger.pause(self.SAVE_DELAY)
 
-    def fails_to_assign_isni_to_lead_performer(self):
-        self.tagger.assign_isni_to_lead_performer()
-        self.tagger.shows_assignation_failed()
-
-    def find_isni_of_lead_performer(self):
-        self.tagger.find_isni_of_lead_performer()
+    def find_isni_of_main_artist(self):
+        self.tagger.find_isni_of_main_artist()
         # todo remove and verify in test that album metadata shows the isni
         self.tagger.pause(100)
 

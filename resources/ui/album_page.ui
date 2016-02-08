@@ -2,9 +2,6 @@
 <ui version="4.0">
  <class>album_edition_page</class>
  <widget class="QWidget" name="album_edition_page">
-  <property name="enabled">
-   <bool>true</bool>
-  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,273 +10,7 @@
     <height>690</height>
    </rect>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QLineEdit,
-QPlainTextEdit,
-QDateEdit,
-QDateEdit::drop-down,
-QDateEdit QAbsractItemView,
-QComboBox,
-QComboBox::drop-down,
-QComboBox QAbstractItemView {
-	background-color: #F9F9F9;
-	border: 1px solid #B1B1B1;
-	color: #222222;
-	min-height: 20px;
-}
-
-QLineEdit,
-QPlainTextEdit,
-QDateEdit,
-QComboBox,
-QSpinBox {
-	selection-background-color: #F2C1A7;
-	selection-color: #222222;
-}
-
-QComboBox QAbstractItemView {
-   selection-background-color: #F08450;
-}
-
-QCalendarWidget QAbstractItemView {
-    selection-background-color: #F08450;
-}
-
-QCalendarWidget QToolButton {
-	color: white;
-    background-color: transparent;
-}
-
-QCalendarWidget QToolButton#qt_calendar_monthbutton {
-	padding-right: 15px;
-}
-
-QCalendarWidget QMenu {
-	background-color: white;
-}
-
-QCalendarWidget QMenu::item::selected {
-  color: black;
-  background-color:#DDDDDD;
-}
-
-QCalendarWidget QToolButton::menu-indicator {
-    subcontrol-position: right center;
-    top: 2px;
-    right: 2px;
-}
-
-QCalendarWidget QToolButton::menu-indicator {
-	image: url(:/images/chevron-down-white-8.png);
-}
-
-QCalendarWidget QToolButton::menu-indicator:open {
-    top: 3px; 
-	right: 1px;
-}
-
-QSpinBox::up-button {
-	background-color: transparent;
-	border: 1px solid #F79D6C;
-    padding: 1px;
-	image: url(:/images/chevron-up-black-8.png);
-}
-
-QSpinBox::up-button:pressed {
-	padding: 0px 1px 2px 2px;
-}
-
-QSpinBox::down-button {
-	background-color: transparent;
-	border: 1px solid #F79D6C;
-    padding: 1px;
-	image: url(:/images/chevron-down-black-8.png);
-}
-
-QSpinBox::down-button:pressed {
-	padding: 2px 1px 0px 2px;
-}
-
-#lead_performer_container, #guest_performers_container, #isni_container {
-    min-height: 22px;
-}
-
-QGroupBox {
-	border: 1px solid #DDDDDD;
-	border-bottom: 2px solid rgba(0, 0, 0, 20%);
-	background-color: white;
-	padding: 17px 14px 14px 10px;
-	margin: 5px 8px;
-	font-size: 10px;
-}
-
-QGroupBox::title {
-	subcontrol-origin: margin;
-	subcontrol-position: top left;
-	left: 1px;
-	padding: 0 3px;
-	color: #777777;
-	border: 1px solid #DFDFDF;
-	background-color: #F7F7F7;
- }
-
-QPushButton {
-    background-color: #BFBFBF;
-    border: 2px solid #BFBFBF;
-    border-radius: 4px;
-    color: white;
-    font-weight: bold;
-}
-
-QPushButton:disabled {
-    border-color: #CCCCCC;
-    background-color: #CCCCCC;
-}
-
-QPushButton:hover, QPushButton:focus  {
-    background-color: #A6A6A6;
-    border-color: #A6A6A6;
-}
-
-QPushButton:pressed {
-	border: 2px solid transparent;
-}
-
-#picture_box {
-	padding: 13px 14px 10px 14px;
- }
-
-#front_cover {
-	min-width: 350px;
-	max-width: 350px;
-	min-height: 350px;
-	max-height: 350px;
-	background-color: #F9F9F9;
-	border: 1px solid #F79D6C;
-}
-
-#album_box QPushButton {
-	font-size: 10px;
-	padding: 3px 10px;
-	margin: 0;
-}
-
-#picture_box QPushButton {
-	font-size: 12px;
-	padding: 10px 10px 7px 10px;
-}
-
-QPushButton#select_picture_button {
-	background-image: url(:/images/add-picture.png);
-	background-repeat: no-repeat;
-	background-position: left center;
-	background-origin: border;
-	padding-left: 34px;
-}
-
-QLineEdit:focus,
-QPlainTextEdit:focus,
-QDateEdit:focus,
-QDateEdit:on,
-QDateEdit::drop-down:focus,
-QDateEdit::drop-down:on,
-QDateEdit QAbstractItemView:focus,
-QComboBox:focus,
-QComboBox:on,
-QComboBox::drop-down:focus,
-QComboBox::drop-down:on,
-QComboBox QAbstractItemView:focus,
-QSpinBox:focus {
-	border: 1px solid #F79D6C;
-}
-
-QLineEdit:disabled,
-QPlainTextEdit:disabled,
-QDateEdit:disabled,
-QDateEdit::drop-down:disabled {
-	background-color: #FCFCFC;
-	border-color: #E7E7E7;
-	color: #C2C2C2;
-}
-
-QCheckBox {
-	min-height: 20px;
-	padding: 1px 2px 2px 2px;
-}
-
-QCheckBox::indicator {
-	width: 14px;
-	height: 14px;
-	subcontrol-position: left center;
-}
-
-QCheckBox::indicator:unchecked {
-	image: url(:/images/checkbox.png);
-}
-
-QCheckBox::indicator:unchecked:focus {
-	image: url(:/images/checkbox-focus.png);
-}
-
-QCheckBox::indicator:unchecked:pressed {
-	image: url(:/images/checkbox-pressed.png);
-}
-
-QCheckBox::indicator:checked {
-	image: url(:/images/checkbox-checked.png);
-}
-
-QCheckBox::indicator:checked:focus {
-	image: url(:/images/checkbox-checked-focus.png);
-}
-
-QCheckBox::indicator:checked:pressed {
-	image: url(:/images/checkbox-checked-pressed.png);
-}
-
-QLabel {
-	color: #444444;
-	min-width: 175px;
-}
-
-QLabel:disabled {
-	color: #C2C2C2;
-}
-
-QDateEdit::drop-down, QComboBox::drop-down {
-	padding: 0;
-	margin: 0;
-	subcontrol-origin: border;
-	subcontrol-position: top right;
-	width: 20px;
-}
-
-QComboBox::down-arrow {
-	image: url(:/images/down-arrow.png);
-}
-
-QComboBox::down-arrow:on,
-QComboBox::down-arrow:focus {
-	image: url(:/images/down-arrow-on.png);
-}
-
-QDateEdit::down-arrow {
-	image: url(:/images/calendar.png);
-}
-
-QDateEdit::down-arrow:on,
-QDateEdit::down-arrow:focus  {
-	image: url(:/images/calendar-focus.png);
-}
-
-QDateEdit::down-arrow:disabled  {
-	image: url(:/images/calendar-disabled.png);
-}</string>
-  </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_7">
-   <property name="spacing">
-    <number>10</number>
-   </property>
+  <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -292,475 +23,196 @@ QDateEdit::down-arrow:disabled  {
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
-    <widget class="QWidget" name="left_column" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="spacing">
-       <number>6</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QGroupBox" name="picture_box">
-        <property name="title">
-         <string>PICTURE</string>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <property name="spacing">
-          <number>5</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="front_cover">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>352</width>
-             <height>352</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>352</width>
-             <height>352</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="buddy">
-            <cstring>front_cover</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QWidget" name="picture_box_buttons" native="true">
-           <property name="styleSheet">
-            <string notr="true">
-QPushButton {
-    background-color: #F25C0A;
-    border: 2px solid #F25C0A;
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="_top_banner">
+     <item>
+      <widget class="QGroupBox" name="_picture_box">
+       <property name="title">
+        <string>Picture</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="_front_cover">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>115</width>
+            <height>115</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>115</width>
+            <height>115</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel {
+	border: 1px solid #ABADB3;
+}
+</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="buddy">
+           <cstring>_front_cover</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="_picture_box_buttons">
+          <item>
+           <widget class="QPushButton" name="_select_picture_button">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+	background-color: transparent;
+	margin: 0;
+	padding: 0;
 }
 
-QPushButton:disabled {
-    border-color: #ED8D58;
-    background-color: #ED8D58;
+QPushButton:hover {
+	text-decoration: underline
+}</string>
+            </property>
+            <property name="text">
+             <string>SELECT...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="_remove_picture_button">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+	background-color: transparent;
+	margin: 0;
+	padding: 0;
 }
 
-QPushButton:hover,
-QPushButton:focus {
-    background-color: #D95109;
-    border-color: #D95109;
-}
-            </string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="leftMargin">
-             <number>0</number>
+QPushButton:hover {
+	text-decoration: underline
+}</string>
             </property>
-            <property name="topMargin">
-             <number>0</number>
+            <property name="text">
+             <string>REMOVE</string>
             </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="select_picture_button">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="text">
-               <string>SELECT...</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="remove_picture_button">
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="text">
-               <string>REMOVE</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="dates_box">
-        <property name="title">
-         <string>DATES</string>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="_project_box">
+       <property name="title">
+        <string>Project</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>10</number>
         </property>
-        <layout class="QFormLayout" name="formLayout">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <property name="labelAlignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="horizontalSpacing">
-          <number>5</number>
-         </property>
-         <property name="verticalSpacing">
-          <number>5</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="release_time_caption">
-           <property name="text">
-            <string>Release Time:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>release_time</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="DatePicker" name="release_time">
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
-           <property name="accelerated">
-            <bool>true</bool>
-           </property>
-           <property name="displayFormat">
-            <string notr="true">yyyy-MM-dd</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="digital_release_time_caption">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Digital Release Time:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>digital_release_time</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="DatePicker" name="digital_release_time">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="accelerated">
-            <bool>true</bool>
-           </property>
-           <property name="displayFormat">
-            <string notr="true">yyyy-MM-dd</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="original_release_time_caption">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Original Release Time:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>original_release_time</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="DatePicker" name="original_release_time">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="accelerated">
-            <bool>true</bool>
-           </property>
-           <property name="displayFormat">
-            <string notr="true">yyyy-MM-dd</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="recording_time_caption">
-           <property name="text">
-            <string>Recording Time:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>recording_time</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="DatePicker" name="recording_time">
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
-           <property name="accelerated">
-            <bool>true</bool>
-           </property>
-           <property name="displayFormat">
-            <string notr="true">yyyy-MM-dd</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="right_column" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <property name="spacing">
-       <number>6</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QGroupBox" name="album_box">
-        <property name="title">
-         <string>ALBUM</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout_2">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <property name="labelAlignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="horizontalSpacing">
-          <number>5</number>
-         </property>
-         <property name="verticalSpacing">
-          <number>5</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="release_name_caption">
-           <property name="text">
-            <string>Release Name:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>release_name</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="release_name"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="compilation_caption">
-           <property name="text">
-            <string>Compilation:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>compilation</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="compilation">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="lead_performer_caption">
-           <property name="text">
-            <string>Lead Performer:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>lead_performer</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QWidget" name="lead_performer_container" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <property name="leftMargin">
-             <number>0</number>
+        <item>
+         <layout class="QGridLayout" name="_line_1">
+          <property name="verticalSpacing">
+           <number>3</number>
+          </property>
+          <item row="1" column="0">
+           <widget class="QLineEdit" name="_release_name"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="_release_name_caption">
+            <property name="text">
+             <string>Release Name</string>
             </property>
-            <property name="topMargin">
-             <number>0</number>
+            <property name="alignment">
+             <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
             </property>
-            <property name="rightMargin">
-             <number>0</number>
+            <property name="buddy">
+             <cstring>_release_name</cstring>
             </property>
-            <property name="bottomMargin">
-             <number>0</number>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="_compilation">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="text">
+             <string>This project  is a multi-artist compilation</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="_line_2" columnstretch="3,2">
+          <property name="verticalSpacing">
+           <number>3</number>
+          </property>
+          <item row="1" column="0">
+           <widget class="QLineEdit" name="_main_artist">
+            <property name="placeholderText">
+             <string>Artist, Band or Various Artists</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="_main_artist_caption">
+            <property name="text">
+             <string>Main Artist</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+            </property>
+            <property name="buddy">
+             <cstring>_main_artist</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="_main_artist_isni_caption">
+            <property name="text">
+             <string>Main Artist ISNI</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+            </property>
+            <property name="buddy">
+             <cstring>_main_artist_isni</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="_main_artist_isni_container">
+            <property name="spacing">
+             <number>6</number>
             </property>
             <item>
-             <widget class="QLineEdit" name="lead_performer">
-              <property name="placeholderText">
-               <string>Artist, Band or Various Artists</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="_isni_actions_button">
+             <widget class="QToolButton" name="_main_artist_isni_actions_button">
               <property name="minimumSize">
                <size>
                 <width>60</width>
@@ -773,41 +225,6 @@ QPushButton:focus {
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
-              <property name="styleSheet">
-               <string notr="true">QToolButton {
-    background-color: #BFBFBF;
-    border: 2px solid #BFBFBF;
-    border-radius: 4px;
-    color: white;
-    font-weight: bold;
-}
-
-QToolButton:disabled {
-    border-color: #CCCCCC;
-    background-color: #CCCCCC;
-}
-
-QToolButton:hover, QToolButton:focus {
-    background-color: #A6A6A6;
-    border-color: #A6A6A6;
-}
-
-QToolButton:pressed {
-	border: 2px solid transparent;
-}
-
-QToolButton::menu-indicator {
-    subcontrol-position: right center;
-	image: url(:/images/chevron-down-white-8.png);
-    top: 2px;
-    right: 2px;
-}
-
-QToolButton::menu-indicator:open {
-    top: 3px; 
-	right: 1px;
-}</string>
-              </property>
               <property name="text">
                <string>ISNI </string>
               </property>
@@ -818,7 +235,7 @@ QToolButton::menu-indicator:open {
                <enum>Qt::ToolButtonTextOnly</enum>
               </property>
               <property name="autoRaise">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="arrowType">
                <enum>Qt::DownArrow</enum>
@@ -826,107 +243,286 @@ QToolButton::menu-indicator:open {
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="_isni">
-              <property name="maximumSize">
-               <size>
-                <width>135</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
+             <widget class="QLineEdit" name="_main_artist_isni">
               <property name="placeholderText">
                <string>ISNI</string>
               </property>
              </widget>
             </item>
            </layout>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="_lead_performer_region_caption">
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="_line_3">
+          <property name="verticalSpacing">
+           <number>3</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="_main_artist_region_caption">
+            <property name="text">
+             <string>Main Artist Origin</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+            </property>
+            <property name="buddy">
+             <cstring>_main_artist_region</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QComboBox" name="_main_artist_region">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QTabWidget" name="_tabs">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="_record_tab">
+      <attribute name="title">
+       <string>Record</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="_label_name_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_label_name_caption">
            <property name="text">
-            <string>Lead Performer Origin:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            <string>Label Name</string>
            </property>
            <property name="buddy">
-            <cstring>_lead_performer_region</cstring>
+            <cstring>_label_name</cstring>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QComboBox" name="_lead_performer_region">
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-          </widget>
+         <item>
+          <widget class="QLineEdit" name="_label_name"/>
          </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="guest_performers_caption">
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="_catalog_number_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_catalog_number_caption">
            <property name="text">
-            <string>Guest Performers:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            <string>Catalog Number</string>
            </property>
            <property name="buddy">
-            <cstring>guest_performers</cstring>
+            <cstring>_catalog_number</cstring>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
-          <widget class="QWidget" name="guest_performers_container" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="guest_performers">
-              <property name="placeholderText">
-               <string>Instrument1: Performer1; Instrument2: Performer2; ...</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="add_guest_performers_button">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>20</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>20</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
+         <item>
+          <widget class="QLineEdit" name="_catalog_number"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="_barcode_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_barcode_caption">
+           <property name="text">
+            <string>UPC/EAN</string>
+           </property>
+           <property name="buddy">
+            <cstring>_barcode</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="_barcode">
+           <property name="placeholderText">
+            <string>1234567899999</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="_media_type_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_media_type_caption">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Media Type</string>
+           </property>
+           <property name="buddy">
+            <cstring>_media_type</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="_media_type">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="_release_type_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_release_type_label">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Release Type</string>
+           </property>
+           <property name="buddy">
+            <cstring>_release_type</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="_release_type">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="_comments_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_comments_caption">
+           <property name="text">
+            <string>Comments</string>
+           </property>
+           <property name="buddy">
+            <cstring>_comments</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="TextArea" name="_comments">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="tabChangesFocus">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="_artists_tab">
+      <attribute name="title">
+       <string>Artists</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="_artists_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_artists_caption">
+           <property name="text">
+            <string>Artists</string>
+           </property>
+           <property name="buddy">
+            <cstring>_artists</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="_artists_value_container">
+           <item>
+            <widget class="QLineEdit" name="_artists">
+             <property name="placeholderText">
+              <string>Instrument1: Performer1; Instrument2: Performer2; ...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="_add_artist_button">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>20</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>20</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
     background: transparent url(':/edit') center no-repeat;
     border: none;
     border-radius: 0;
@@ -939,182 +535,198 @@ QPushButton:hover, QPushButton:focus {
 QPushButton:pressed {
     background: transparent url(':/edit-pressed') center no-repeat;
 }</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="record_box">
-        <property name="title">
-         <string>RECORD</string>
-        </property>
-        <layout class="QFormLayout" name="formLayout_3">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <property name="labelAlignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
          </property>
-         <property name="horizontalSpacing">
-          <number>5</number>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="_dates_tab">
+      <attribute name="title">
+       <string>Dates</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="_release_time_container">
+         <property name="spacing">
+          <number>3</number>
          </property>
-         <property name="verticalSpacing">
-          <number>5</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_name_caption">
+         <item>
+          <widget class="QLabel" name="_release_time_caption">
            <property name="text">
-            <string>Label Name:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            <string>Release Time</string>
            </property>
            <property name="buddy">
-            <cstring>label_name</cstring>
+            <cstring>_release_time</cstring>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="label_name"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="catalog_number_caption">
-           <property name="text">
-            <string>Catalog Number:</string>
+         <item>
+          <widget class="DatePicker" name="_release_time">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
            </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <property name="accelerated">
+            <bool>true</bool>
            </property>
-           <property name="buddy">
-            <cstring>catalog_number</cstring>
+           <property name="displayFormat">
+            <string notr="true">yyyy-MM-dd</string>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="catalog_number"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="barcode_caption">
-           <property name="text">
-            <string>UPC/EAN:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>barcode</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="barcode">
-           <property name="placeholderText">
-            <string>1234567899999</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="media_type_caption">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Media Type:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>media_type</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="media_type">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="release_type_label">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Release Type:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>release_type</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="release_type">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="comments_caption">
-           <property name="text">
-            <string>Comments:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>comments</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="TextArea" name="comments">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>1</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="tabChangesFocus">
+           <property name="calendarPopup">
             <bool>true</bool>
            </property>
           </widget>
          </item>
         </layout>
-       </widget>
-      </item>
-     </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="_digital_release_time_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_digital_release_time_caption">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Digital Release Time</string>
+           </property>
+           <property name="buddy">
+            <cstring>_digital_release_time</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="DatePicker" name="_digital_release_time">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
+           <property name="displayFormat">
+            <string notr="true">yyyy-MM-dd</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="_original_release_time_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_original_release_time_caption">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Original Release Time</string>
+           </property>
+           <property name="buddy">
+            <cstring>_original_release_time</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="DatePicker" name="_original_release_time">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
+           <property name="displayFormat">
+            <string notr="true">yyyy-MM-dd</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="_recording_time_container">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="_recording_time_caption">
+           <property name="text">
+            <string>Recording Time</string>
+           </property>
+           <property name="buddy">
+            <cstring>_recording_time</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="DatePicker" name="_recording_time">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
+           <property name="displayFormat">
+            <string notr="true">yyyy-MM-dd</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -1144,25 +756,6 @@ QPushButton:pressed {
    <header>tgit.ui.widgets.date_picker</header>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>release_name</tabstop>
-  <tabstop>compilation</tabstop>
-  <tabstop>lead_performer</tabstop>
-  <tabstop>guest_performers</tabstop>
-  <tabstop>add_guest_performers_button</tabstop>
-  <tabstop>label_name</tabstop>
-  <tabstop>catalog_number</tabstop>
-  <tabstop>barcode</tabstop>
-  <tabstop>media_type</tabstop>
-  <tabstop>release_type</tabstop>
-  <tabstop>comments</tabstop>
-  <tabstop>select_picture_button</tabstop>
-  <tabstop>remove_picture_button</tabstop>
-  <tabstop>release_time</tabstop>
-  <tabstop>digital_release_time</tabstop>
-  <tabstop>original_release_time</tabstop>
-  <tabstop>recording_time</tabstop>
- </tabstops>
  <resources>
   <include location="../resources.qrc"/>
  </resources>

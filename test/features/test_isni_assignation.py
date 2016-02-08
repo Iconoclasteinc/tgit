@@ -36,7 +36,7 @@ def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, pla
     app.import_album("Honeycomb", from_track=track)
     app.shows_track_list(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
-    app.assign_isni_to_lead_performer()
+    app.assign_isni_to_main_artist()
 
     app.save_album()
     workspace.contains_track(album="Honeycomb",

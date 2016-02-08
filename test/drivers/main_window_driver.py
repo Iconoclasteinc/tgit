@@ -78,8 +78,8 @@ class MainWindowDriver(WidgetDriver):
         finally:
             dialog.close()
 
-    def assign_isni_to_lead_performer(self):
-        album_screen(self).assign_isni_to_lead_performer()
+    def assign_isni_to_main_artist(self):
+        album_screen(self).assign_isni_to_main_artist()
         isni_assignation_review_dialog(self).select_individual()
         isni_assignation_review_dialog(self).ok()
 
@@ -87,8 +87,8 @@ class MainWindowDriver(WidgetDriver):
         message_box(self).is_active()
         message_box(self).ok()
 
-    def find_isni_of_lead_performer(self):
-        album_screen(self).lookup_isni_of_lead_performer()
+    def find_isni_of_main_artist(self):
+        album_screen(self).lookup_isni_of_main_artist()
         isni_lookup_dialog(self).select_first_identity()
         isni_lookup_dialog(self).accept()
 

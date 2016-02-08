@@ -5,6 +5,7 @@ import types
 import pytest
 import requests
 from PyQt5.QtCore import QByteArray
+
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -92,10 +93,10 @@ def test_displays_album_metadata(driver):
 
     driver.shows_release_name("Album")
     driver.shows_compilation(False)
-    driver.shows_lead_performer("Artist")
-    driver.shows_lead_performer_region("Canada")
-    driver.shows_isni("0000000123456789")
-    driver.shows_guest_performers("Guitar: Guitarist; Piano: Pianist")
+    driver.shows_main_artist("Artist")
+    driver.shows_main_artist_region("Canada")
+    driver.shows_main_artist_isni("0000000123456789")
+    driver.shows_artists("Guitar: Guitarist; Piano: Pianist")
     driver.shows_label_name("Label")
     driver.shows_catalog_number("XXX123456789")
     driver.shows_upc("123456789999")
@@ -118,63 +119,63 @@ def test_indicates_whether_album_is_a_compilation(driver):
 
 def test_disables_lead_performer_edition_when_album_is_a_compilation(driver):
     _ = show_page(make_album(compilation=True, lead_performer="Album Artist"))
-    driver.shows_lead_performer("Various Artists", disabled=True)
+    driver.shows_main_artist("Various Artists", disabled=True)
 
 
 def test_enables_isni_lookup_when_album_is_no_longer_a_compilation(driver):
     album = make_album(compilation=True, lead_performer="Album Artist")
     _ = show_page(album, make_registered_session())
-    driver.enables_isni_lookup(False)
+    driver.enables_main_artist_isni_lookup(False)
 
     album.compilation = False
-    driver.enables_isni_lookup()
+    driver.enables_main_artist_isni_lookup()
 
 
 def test_disables_isni_lookup_when_lead_performer_is_empty(driver):
     _ = show_page(make_album(), make_registered_session())
-    driver.enables_isni_lookup(False)
+    driver.enables_main_artist_isni_lookup(False)
 
 
 def test_enables_isni_lookup_when_user_logs_in(driver):
     session = make_anonymous_session()
     _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
-    driver.enables_isni_lookup(False)
+    driver.enables_main_artist_isni_lookup(False)
 
     session.login_as("somebody@gmail.com", "api-key", [Permission.lookup_isni.value])
-    driver.enables_isni_lookup(True)
+    driver.enables_main_artist_isni_lookup(True)
 
 
 def test_disables_isni_lookup_when_user_logs_out(driver):
     session = make_registered_session()
     _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
-    driver.enables_isni_lookup(True)
+    driver.enables_main_artist_isni_lookup(True)
 
     session.logout()
-    driver.enables_isni_lookup(False)
+    driver.enables_main_artist_isni_lookup(False)
 
 
 # noinspection PyUnresolvedReferences
 @pytest.mark.xfail
 def test_displays_tooltip_on_isni_lookup_when_anonymously_connected(driver):
     _ = show_page(session=(make_anonymous_session()), album=make_album(lead_performer="Album Artist"))
-    driver.isni_lookup_has_tooltip("Please sign-in to activate ISNI lookup")
+    driver.main_artist_isni_lookup_has_tooltip("Please sign-in to activate ISNI lookup")
 
 
 # noinspection PyUnresolvedReferences
 @pytest.mark.xfail
 def test_removes_tooltip_on_isni_lookup_when_signed_in(driver):
     _ = show_page(session=(make_registered_session()), album=make_album(lead_performer="Album Artist"))
-    driver.isni_lookup_has_tooltip("")
+    driver.main_artist_isni_lookup_has_tooltip("")
 
 
 def test_disables_isni_lookup_when_lead_performer_is_blank(driver):
     _ = show_page(make_album(lead_performer="     "))
-    driver.enables_isni_lookup(False)
+    driver.enables_main_artist_isni_lookup(False)
 
 
 def test_disables_isni_assign_by_default(driver):
     _ = show_page(make_album(lead_performer="     "))
-    driver.disables_isni_assign()
+    driver.disables_main_artist_isni_assign()
 
 
 def test_signals_when_picture_selected(driver):
@@ -192,7 +193,7 @@ def test_updates_guest_performers_with_edition_dialog_return_value(driver):
     _ = show_page(make_album(), edit_performers=lambda callback: callback(
         [("instrument1", "performer1"), ("instrument2", "performer2")]))
     driver.edit_performers()
-    driver.shows_guest_performers("instrument1: performer1; instrument2: performer2")
+    driver.shows_artists("instrument1: performer1; instrument2: performer2")
 
 
 def test_efficiently_displays_image_cover_when_it_does_not_change(driver):
@@ -217,8 +218,8 @@ def test_updates_isni_when_lead_performer_text_change(driver):
 
     _ = show_page(make_album(), on_isni_local_lookup=lookup)
 
-    driver.change_lead_performer("Joel Miller")
-    driver.shows_isni("0000000123456789")
+    driver.change_main_artist("Joel Miller")
+    driver.shows_main_artist_isni("0000000123456789")
 
 
 def test_clears_isni_when_lead_performer_not_found(driver):
@@ -228,8 +229,8 @@ def test_clears_isni_when_lead_performer_not_found(driver):
     album = make_album(lead_performer="Joel Miller", isnis={"Joel Miller": "00000000123456789"})
     _ = show_page(album, on_isni_local_lookup=lookup)
 
-    driver.change_lead_performer("Rebecca Ann Maloy")
-    driver.shows_isni("")
+    driver.change_main_artist("Rebecca Ann Maloy")
+    driver.shows_main_artist_isni("")
 
 
 def test_signals_when_lookup_isni_action_is_triggered(driver):
@@ -237,7 +238,7 @@ def test_signals_when_lookup_isni_action_is_triggered(driver):
     _ = show_page(make_album(lead_performer="performer"), make_registered_session(),
                   on_isni_lookup=lookup_isni_signal.received)
 
-    driver.lookup_isni_of_lead_performer()
+    driver.lookup_isni_of_main_artist()
     driver.check(lookup_isni_signal)
 
 
@@ -248,7 +249,7 @@ def test_shows_connection_failed_error_on_isni_lookup(driver):
                   show_cheddar_connection_failed=show_error_signal.received,
                   on_isni_lookup=lambda *_: raise_(requests.ConnectionError()))
 
-    driver.lookup_isni_of_lead_performer()
+    driver.lookup_isni_of_main_artist()
     driver.check(show_error_signal)
 
 
@@ -259,7 +260,7 @@ def test_shows_authentication_failed_error_on_isni_lookup(driver):
                   show_cheddar_authentication_failed=show_error_signal.received,
                   on_isni_lookup=lambda *_: raise_(AuthenticationError()))
 
-    driver.lookup_isni_of_lead_performer()
+    driver.lookup_isni_of_main_artist()
     driver.check(show_error_signal)
 
 
@@ -271,7 +272,7 @@ def test_shows_permission_denied_error_on_isni_lookup(driver):
                   show_permission_denied=show_error_signal.received,
                   on_isni_lookup=lambda *_: raise_(PermissionDeniedError()))
 
-    driver.lookup_isni_of_lead_performer()
+    driver.lookup_isni_of_main_artist()
     driver.check(show_error_signal)
 
 
@@ -283,7 +284,7 @@ def test_selects_identities_on_isni_lookup(driver):
                   select_identity=select_identity_signal.received,
                   on_isni_lookup=lambda _, callback: callback("identities"))
 
-    driver.lookup_isni_of_lead_performer()
+    driver.lookup_isni_of_main_artist()
     driver.check(select_identity_signal)
 
 
@@ -293,8 +294,8 @@ def test_updates_lead_performer_isni_on_isni_lookup(driver):
                       IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)),
                   on_isni_lookup=lambda _, callback: callback("identities"))
 
-    driver.lookup_isni_of_lead_performer()
-    driver.shows_isni("0000000123456789")
+    driver.lookup_isni_of_main_artist()
+    driver.shows_main_artist_isni("0000000123456789")
 
 
 def test_signals_found_isni_on_isni_lookup(driver):
@@ -305,7 +306,7 @@ def test_signals_found_isni_on_isni_lookup(driver):
                       IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)),
                   on_isni_lookup=lambda _, callback: callback(""))
 
-    driver.lookup_isni_of_lead_performer()
+    driver.lookup_isni_of_main_artist()
     driver.confirm_isni()
     driver.check(isni_changed_signal)
 
@@ -320,8 +321,8 @@ def test_signals_when_assign_isni_button_clicked(driver):
                   review_assignation=lambda on_review: on_review("individual"),
                   on_isni_assign=assign_isni_signal.received)
 
-    driver.change_lead_performer("Joel Miller")
-    driver.assign_isni_to_lead_performer()
+    driver.change_main_artist("Joel Miller")
+    driver.assign_isni_to_main_artist()
     driver.check(assign_isni_signal)
 
 
@@ -334,8 +335,8 @@ def test_shows_connection_failed_error_on_isni_assignation(driver):
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda *_: raise_(requests.ConnectionError()))
 
-    driver.change_lead_performer("Joel Miller")
-    driver.assign_isni_to_lead_performer()
+    driver.change_main_artist("Joel Miller")
+    driver.assign_isni_to_main_artist()
     driver.check(show_error_signal)
 
 
@@ -348,8 +349,8 @@ def test_shows_assignation_failed_error_on_isni_assignation(driver):
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda *_: raise_(InsufficientInformationError("insufficient information")))
 
-    driver.change_lead_performer("Joel Miller")
-    driver.assign_isni_to_lead_performer()
+    driver.change_main_artist("Joel Miller")
+    driver.assign_isni_to_main_artist()
     driver.check(show_error_signal)
 
 
@@ -362,8 +363,8 @@ def test_shows_authentication_failed_error_on_isni_assignation(driver):
                   review_assignation=lambda on_review: on_review(""),
                   on_isni_assign=lambda *_: raise_(AuthenticationError()))
 
-    driver.change_lead_performer("Joel Miller")
-    driver.assign_isni_to_lead_performer()
+    driver.change_main_artist("Joel Miller")
+    driver.assign_isni_to_main_artist()
     driver.check(show_error_signal)
 
 
@@ -374,9 +375,9 @@ def test_shows_assigned_isni_on_isni_assignation(driver):
                   on_isni_assign=lambda _, callback: callback(
                       IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
 
-    driver.change_lead_performer("Joel Miller")
-    driver.assign_isni_to_lead_performer()
-    driver.shows_isni("0000000123456789")
+    driver.change_main_artist("Joel Miller")
+    driver.assign_isni_to_main_artist()
+    driver.shows_main_artist_isni("0000000123456789")
 
 
 def test_signals_assigned_isni_on_isni_assignation(driver):
@@ -389,8 +390,8 @@ def test_signals_assigned_isni_on_isni_assignation(driver):
                   on_isni_assign=lambda _, callback: callback(
                       IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
 
-    driver.change_lead_performer("Joel Miller")
-    driver.assign_isni_to_lead_performer()
+    driver.change_main_artist("Joel Miller")
+    driver.assign_isni_to_main_artist()
     driver.confirm_isni()
     driver.check(isni_changed_signal)
 
@@ -412,20 +413,20 @@ def test_signals_when_album_metadata_edited(driver):
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(lead_performer="Joel Miller"))
-    driver.change_lead_performer("Joel Miller")
+    driver.change_main_artist("Joel Miller")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(lead_performer_region=("CA",)))
-    driver.change_lead_performer_region("Canada")
+    driver.change_main_artist_region("Canada")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(lead_performer_region=None))
-    driver.change_lead_performer_region("")
+    driver.change_main_artist_region("")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(
         guest_performers=[("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]))
-    driver.change_guest_performers("Guitar: Guitarist; Guitar: Bassist; Piano: Pianist")
+    driver.change_artists("Guitar: Guitarist; Guitar: Bassist; Piano: Pianist")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(label_name="Label"))

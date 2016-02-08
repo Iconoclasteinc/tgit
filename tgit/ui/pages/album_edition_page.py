@@ -48,7 +48,7 @@ def make_album_edition_page(album, session, edit_performers, select_picture, sel
                             show_isni_assignation_failed, show_cheddar_connection_failed,
                             show_cheddar_authentication_failed, show_permission_denied, **handlers):
     page = AlbumEditionPage(select_picture=select_picture,
-                            edit_performers=edit_performers,
+                            edit_artists=edit_performers,
                             select_identity=select_identity,
                             review_assignation=review_assignation,
                             show_isni_assignation_failed=show_isni_assignation_failed,
@@ -78,9 +78,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     _isni_lookup = False
     _isni_assign = False
 
-    FRONT_COVER_SIZE = 350, 350
+    FRONT_COVER_SIZE = 115, 115
 
-    def __init__(self, edit_performers, select_picture, select_identity, review_assignation,
+    def __init__(self, edit_artists, select_picture, select_identity, review_assignation,
                  show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed,
                  show_permission_denied):
         super().__init__()
@@ -91,24 +91,23 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._show_permission_denied = show_permission_denied
         self._select_identity = select_identity
         self._select_picture = select_picture
-        self._edit_performers = edit_performers
+        self._edit_artists = edit_artists
         self._setup_ui()
 
     def _setup_ui(self):
         self._load(":/ui/album_page.ui")
         self._disable_mac_focus_frame()
 
-        self._fill_with_countries(self._lead_performer_region)
+        self._fill_with_countries(self._main_artist_region)
 
         menu = QMenu()
-        menu.setStyleSheet(QMENU_STYLESHEET)
         menu.addAction(self._main_artist_isni_lookup_action)
         menu.addAction(self._main_artist_isni_assign_action)
-        self._isni_actions_button.setMenu(menu)
+        self._main_artist_isni_actions_button.setMenu(menu)
 
-        self.compilation.clicked.connect(self._update_isni_menu)
-        self.lead_performer.textChanged.connect(self._update_isni_menu)
-        self.add_guest_performers_button.clicked.connect(lambda: self._edit_performers(self._update_guest_performers))
+        self._compilation.clicked.connect(self._update_isni_menu)
+        self._main_artist.textChanged.connect(self._update_isni_menu)
+        self._add_artist_button.clicked.connect(lambda: self._edit_artists(self._update_artists))
 
     @staticmethod
     def _fill_with_countries(combobox):
@@ -118,22 +117,23 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         combobox.setCurrentIndex(0)
 
     def on_select_picture(self, on_select_picture):
-        self.select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
+        self._select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
 
     def on_isni_changed(self, on_isni_changed):
-        self._isni.editingFinished.connect(lambda: on_isni_changed(self.lead_performer.text(), self._isni.text()))
+        self._main_artist_isni.editingFinished.connect(
+            lambda: on_isni_changed(self._main_artist.text(), self._main_artist_isni.text()))
 
     def on_isni_local_lookup(self, on_isni_local_lookup):
-        def update_lead_performer_isni(lead_performer):
-            self._isni.setText(on_isni_local_lookup(lead_performer))
+        def update_main_artist_isni(main_artist):
+            self._main_artist_isni.setText(on_isni_local_lookup(main_artist))
 
-        self.lead_performer.textEdited.connect(update_lead_performer_isni)
+        self._main_artist.textEdited.connect(update_main_artist_isni)
 
     def on_isni_lookup(self, on_isni_lookup):
         def start_waiting():
             QApplication.setOverrideCursor(Qt.WaitCursor)
             try:
-                on_isni_lookup(self.lead_performer.text(), on_lookup_success)
+                on_isni_lookup(self._main_artist.text(), on_lookup_success)
             except requests.ConnectionError:
                 self._show_cheddar_connection_failed()
             except AuthenticationError:
@@ -148,8 +148,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             QApplication.restoreOverrideCursor()
 
         def on_identity_selected(identity):
-            self._isni.setFocus(Qt.OtherFocusReason)
-            self._isni.setText(identity.id)
+            self._main_artist_isni.setFocus(Qt.OtherFocusReason)
+            self._main_artist_isni.setText(identity.id)
 
         self._main_artist_isni_lookup_action.triggered.connect(start_waiting)
 
@@ -168,37 +168,37 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                 QApplication.restoreOverrideCursor()
 
         def on_assign_success(identity):
-            self._isni.setFocus(Qt.OtherFocusReason)
-            self._isni.setText(identity.id)
+            self._main_artist_isni.setFocus(Qt.OtherFocusReason)
+            self._main_artist_isni.setText(identity.id)
             QApplication.restoreOverrideCursor()
 
         self._main_artist_isni_assign_action.triggered.connect(lambda _: self._review_assignation(start_waiting))
 
     def on_remove_picture(self, on_remove_picture):
-        self.remove_picture_button.clicked.connect(lambda _: on_remove_picture())
+        self._remove_picture_button.clicked.connect(lambda _: on_remove_picture())
 
     def on_metadata_changed(self, handler):
         def handle(entry):
-            handler(**self.metadata(entry))
+            handler(**self._metadata(entry))
 
-        self.release_time.dateChanged.connect(lambda: handle("release_time"))
-        self.digital_release_time.dateChanged.connect(lambda: handle("digital_release_time"))
-        self.original_release_time.dateChanged.connect(lambda: handle("original_release_time"))
-        self.recording_time.dateChanged.connect(lambda: handle("recording_time"))
-        self.release_name.editingFinished.connect(lambda: handle("release_name"))
-        self.compilation.clicked.connect(lambda: handle("compilation"))
-        self.lead_performer.editingFinished.connect(lambda: handle("lead_performer"))
-        self._lead_performer_region.activated.connect(lambda: handle("lead_performer_region"))
-        self.guest_performers.textChanged.connect(lambda: handle("guest_performers"))
-        self.label_name.editingFinished.connect(lambda: handle("label_name"))
-        self.catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
-        self.barcode.editingFinished.connect(lambda: handle("upc"))
-        self.media_type.editingFinished.connect(lambda: handle("media_type"))
-        self.release_type.editingFinished.connect(lambda: handle("release_type"))
-        self.comments.editingFinished.connect(lambda: handle("comments"))
+        self._release_time.dateChanged.connect(lambda: handle("release_time"))
+        self._digital_release_time.dateChanged.connect(lambda: handle("digital_release_time"))
+        self._original_release_time.dateChanged.connect(lambda: handle("original_release_time"))
+        self._recording_time.dateChanged.connect(lambda: handle("recording_time"))
+        self._release_name.editingFinished.connect(lambda: handle("release_name"))
+        self._compilation.clicked.connect(lambda: handle("compilation"))
+        self._main_artist.editingFinished.connect(lambda: handle("lead_performer"))
+        self._main_artist_region.activated.connect(lambda: handle("lead_performer_region"))
+        self._artists.textChanged.connect(lambda: handle("guest_performers"))
+        self._label_name.editingFinished.connect(lambda: handle("label_name"))
+        self._catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
+        self._barcode.editingFinished.connect(lambda: handle("upc"))
+        self._media_type.editingFinished.connect(lambda: handle("media_type"))
+        self._release_type.editingFinished.connect(lambda: handle("release_type"))
+        self._comments.editingFinished.connect(lambda: handle("comments"))
 
-    def _update_guest_performers(self, performers):
-        self.guest_performers.setText(formatting.toPeopleList(performers))
+    def _update_artists(self, artists):
+        self._artists.setText(formatting.toPeopleList(artists))
 
     def albumStateChanged(self, album):
         self.display(album)
@@ -214,44 +214,44 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def display(self, album):
         if album.main_cover is not self._picture or album.main_cover is None:
-            self.front_cover.setPixmap(image.scale(album.main_cover, *self.FRONT_COVER_SIZE))
+            self._front_cover.setPixmap(image.scale(album.main_cover, *self.FRONT_COVER_SIZE))
             self._picture = album.main_cover
-        self.release_name.setText(album.release_name)
-        self.compilation.setChecked(album.compilation is True)
-        self._display_lead_performer(album)
-        self._display_region(album.lead_performer_region, self._lead_performer_region)
-        self.guest_performers.setText(formatting.toPeopleList(album.guest_performers))
-        self.label_name.setText(album.label_name)
-        self.catalog_number.setText(album.catalog_number)
-        self.barcode.setText(album.upc)
-        self.comments.setPlainText(album.comments)
-        self.release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
-        self.recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
+        self._release_name.setText(album.release_name)
+        self._compilation.setChecked(album.compilation is True)
+        self._display_main_artist(album)
+        self._display_region(album.lead_performer_region, self._main_artist_region)
+        self._artists.setText(formatting.toPeopleList(album.guest_performers))
+        self._label_name.setText(album.label_name)
+        self._catalog_number.setText(album.catalog_number)
+        self._barcode.setText(album.upc)
+        self._comments.setPlainText(album.comments)
+        self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
+        self._recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
 
         identities = album.isnis or {}
-        self._isni.setText(identities[album.lead_performer] if album.lead_performer in identities else None)
+        self._main_artist_isni.setText(identities[album.lead_performer] if album.lead_performer in identities else None)
 
     @staticmethod
     def _display_region(region, combobox):
         combobox.setCurrentText(COUNTRIES[region[0]]) if region else combobox.setCurrentIndex(0)
 
-    def _display_lead_performer(self, album):
+    def _display_main_artist(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
-        self.lead_performer.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
-        self.lead_performer.setDisabled(album.compilation is True)
+        self._main_artist.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
+        self._main_artist.setDisabled(album.compilation is True)
 
-    def metadata(self, *keys):
-        all_values = dict(release_name=self.release_name.text(),
-                          compilation=self.compilation.isChecked(),
-                          lead_performer=self.lead_performer.text(),
-                          lead_performer_region=self._get_country_code_from_combo(self._lead_performer_region),
-                          guest_performers=formatting.fromPeopleList(self.guest_performers.text()),
-                          label_name=self.label_name.text(),
-                          catalog_number=self.catalog_number.text(),
-                          upc=self.barcode.text(),
-                          comments=self.comments.toPlainText(),
-                          recording_time=self.recording_time.date().toString(ISO_8601_FORMAT),
-                          release_time=self.release_time.date().toString(ISO_8601_FORMAT))
+    def _metadata(self, *keys):
+        all_values = dict(release_name=self._release_name.text(),
+                          compilation=self._compilation.isChecked(),
+                          lead_performer=self._main_artist.text(),
+                          lead_performer_region=self._get_country_code_from_combo(self._main_artist_region),
+                          guest_performers=formatting.fromPeopleList(self._artists.text()),
+                          label_name=self._label_name.text(),
+                          catalog_number=self._catalog_number.text(),
+                          upc=self._barcode.text(),
+                          comments=self._comments.toPlainText(),
+                          recording_time=self._recording_time.date().toString(ISO_8601_FORMAT),
+                          release_time=self._release_time.date().toString(ISO_8601_FORMAT))
 
         if len(keys) == 0:
             return all_values
@@ -277,6 +277,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         def _is_blank(text):
             return not text or text.strip() == ""
 
-        can_lookup_or_assign = not self.compilation.isChecked() and not _is_blank(self.lead_performer.text())
+        can_lookup_or_assign = not self._compilation.isChecked() and not _is_blank(self._main_artist.text())
         self._main_artist_isni_lookup_action.setEnabled(self._isni_lookup and can_lookup_or_assign)
         self._main_artist_isni_assign_action.setEnabled(self._isni_assign and can_lookup_or_assign)

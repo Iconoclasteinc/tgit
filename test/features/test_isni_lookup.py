@@ -36,7 +36,7 @@ def test_finding_the_isni_of_the_lead_performer(app, platform, recordings, works
     app.import_album("Honeycomb", track)
     app.shows_track_list(["Salsa Coltrane"])
     app.shows_album_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
-    app.find_isni_of_lead_performer()
+    app.find_isni_of_main_artist()
 
     app.save_album()
     workspace.contains_track(album="Honeycomb",
