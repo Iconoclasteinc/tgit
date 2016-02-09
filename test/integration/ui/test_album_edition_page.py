@@ -4,9 +4,7 @@ import types
 
 import pytest
 import requests
-
 from PyQt5.QtCore import QByteArray
-
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -74,7 +72,7 @@ def test_displays_no_image_placeholder_when_album_has_no_cover(driver):
 
 def test_displays_main_album_cover_when_existing(driver):
     _ = show_page(make_album(
-        images=[build.image("image/jpeg", load_test_image("front-cover.jpg"), Image.FRONT_COVER)]))
+        images=[build.image("image/jpeg", _load_test_image("front-cover.jpg"), Image.FRONT_COVER)]))
     driver.shows_picture()
 
 
@@ -194,7 +192,7 @@ def test_updates_guest_performers_with_edition_dialog_return_value(driver):
 
 
 def test_efficiently_displays_image_cover_when_it_does_not_change(driver):
-    album = make_album(images=[build.image("image/jpeg", load_test_image("big-image.jpg"), Image.FRONT_COVER)])
+    album = make_album(images=[build.image("image/jpeg", _load_test_image("big-image.jpg"), Image.FRONT_COVER)])
     page = show_page(album)
 
     time = timeit.timeit(lambda: page.display(album), number=50)
@@ -452,5 +450,33 @@ def test_signals_when_album_metadata_edited(driver):
     driver.check(metadata_changed_signal)
 
 
-def load_test_image(name):
+def test_shows_performers(driver):
+    _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
+
+    driver.shows_only_artists_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
+
+
+def test_removes_performers(driver):
+    _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
+
+    driver.remove_artist(row=2)
+    driver.shows_only_artists_in_table(("Guitar", "Jimmy Page"))
+
+
+def test_adds_performers(driver):
+    _ = show_page(album=build.album())
+
+    driver.add_artist(instrument="Guitar", name="Jimmy Page", row=1)
+    driver.add_artist(instrument="Vocals", name="Robert Plant", row=2)
+
+
+def test_displays_artists_table_only_once(driver):
+    album = build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")])
+    page = show_page(album=album)
+    page.display(album)
+
+    driver.shows_only_artists_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
+
+
+def _load_test_image(name):
     return fs.read(resources.path(name))

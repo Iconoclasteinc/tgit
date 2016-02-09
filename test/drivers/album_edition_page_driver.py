@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from cute.matchers import named, with_buddy, with_size
+from cute.matchers import named, with_buddy, with_size, with_text
 from tgit.ui.pages.album_edition_page import AlbumEditionPage
 from ._screen_driver import ScreenDriver
 from .picture_selection_dialog_driver import picture_selection_dialog
@@ -168,6 +168,20 @@ class AlbumEditionPageDriver(ScreenDriver):
     def change_artists(self, names):
         self.tabs(named("_tabs")).select("Artists")
         self.lineEdit(named("_artists")).change_text(names)
+
+    def shows_only_artists_in_table(self, *artists):
+        for index, artist in enumerate(artists):
+            instrument, name = artist
+            self.lineEdit(with_text(instrument)).exists()
+            self.lineEdit(with_text(name)).exists()
+
+    def remove_artist(self, row):
+        self.button(named("_remove_artist_{}".format(row - 1))).click()
+
+    def add_artist(self, instrument, name, row):
+        self.button(named("_add_artist_button_2")).click()
+        self.lineEdit(named("_instrument_{}".format(row - 1))).replace_all_text(instrument)
+        self.lineEdit(named("_artist_{}".format(row - 1))).replace_all_text(name)
 
     def shows_label_name(self, name):
         self.tabs(named("_tabs")).select("Record")

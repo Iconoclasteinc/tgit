@@ -315,6 +315,16 @@
         <source>Please sign-in to activate ISNI lookup</source>
         <translation>Veuillez vous connecter pour utiliser la recherche ISNI</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Musician Name</source>
+        <translation>Nom du musicien</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Remove</source>
+        <translation>Retirer</translation>
+    </message>
 </context>
 <context>
     <name>album_screen</name>

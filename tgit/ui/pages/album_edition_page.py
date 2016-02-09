@@ -21,8 +21,7 @@ import operator
 from PyQt5.QtGui import QIcon
 import requests
 from PyQt5.QtCore import Qt, pyqtSignal, QDate, QSize
-
-from PyQt5.QtWidgets import QWidget, QApplication, QMenu
+from PyQt5.QtWidgets import QWidget, QApplication, QMenu, QLineEdit, QPushButton, QGridLayout, QLabel
 
 from tgit.album import AlbumListener
 from tgit.auth import Permission
@@ -33,6 +32,10 @@ from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image, formatting
 from tgit.ui.helpers.ui_file import UIFile
 
+INSTRUMENT_COLUMN_INDEX = 0
+PERFORMER_COLUMN_INDEX = 1
+REMOVE_BUTTON_COLUMN_INDEX = 2
+FIRST_PERFORMER_ROW_INDEX = 1
 ISO_8601_FORMAT = "yyyy-MM-dd"
 QMENU_STYLESHEET = """
     QMenu {
@@ -109,6 +112,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._compilation.clicked.connect(self._update_isni_menu)
         self._main_artist.textChanged.connect(self._update_isni_menu)
         self._add_artist_button.clicked.connect(lambda: self._edit_artists(self._update_artists))
+        self._add_artist_button_2.clicked.connect(lambda _: self._build_artist_row())
 
     @staticmethod
     def _fill_with_countries(combobox):
@@ -230,6 +234,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self._recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
 
+        self._build_artists_table(album.guest_performers or [])
+
         identities = album.isnis or {}
         self._main_artist_isni.setText(identities[album.lead_performer] if album.lead_performer in identities else None)
 
@@ -282,3 +288,67 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         can_lookup_or_assign = not self._compilation.isChecked() and not _is_blank(self._main_artist.text())
         self._main_artist_isni_actions_button.setEnabled(self._isni_lookup and can_lookup_or_assign)
         self._main_artist_isni_assign_action.setEnabled(self._isni_assign and can_lookup_or_assign)
+
+    def _build_artists_table(self, performers):
+        self._clear_artists_table()
+        for performer in performers:
+            self._build_artist_row(performer)
+
+    def _build_artist_row(self, performer=(None, None)):
+        index = self._artists_table_container.count()
+        instrument, name = performer
+
+        row_layout = QGridLayout()
+        row_layout.setContentsMargins(0, 0, 0, 0)
+        row_layout.setVerticalSpacing(3)
+        row_layout.addWidget(QLabel(self.tr("Instrument")), 0, 0)
+        row_layout.addWidget(QLabel(self.tr("Musician Name")), 0, 1)
+        row_layout.addWidget(_build_line_edit(name, "_artist_{}".format(index)), 1, 0)
+        row_layout.addWidget(_build_line_edit(instrument, "_instrument_{}".format(index)), 1, 1)
+        row_layout.addWidget(self._build_remove_line_button(index), 1, 2)
+        row_layout.setColumnStretch(0, 1)
+        row_layout.setColumnStretch(1, 1)
+        row_layout.setColumnStretch(2, 0)
+        row_layout.setColumnStretch(3, 1)
+        row = QWidget()
+        row.setObjectName("_artist_{}".format(index))
+        row.setLayout(row_layout)
+
+        self._artists_table_container.addWidget(row)
+
+    def _build_remove_line_button(self, index):
+        button = QPushButton()
+        button.setObjectName("_remove_artist_{}".format(index))
+        button.setCursor(Qt.PointingHandCursor)
+        button.setMinimumHeight(22)
+        button.setMaximumHeight(22)
+        button.setText(self.tr("Remove"))
+        button.clicked.connect(lambda: self._remove_artist_row(button.parent()))
+        return button
+
+    def _remove_artist_row(self, widget):
+        def is_widget_to_remove(index):
+            return self._artists_table_container.itemAt(index).widget().objectName() == widget.objectName()
+
+        for current_index in range(self._artists_table_container.count()):
+            if is_widget_to_remove(current_index):
+                widget = self._artists_table_container.takeAt(current_index).widget()
+                widget.setParent(None)
+                widget.close()
+                break
+
+    def _clear_artists_table(self):
+        layout_item = self._artists_table_container.takeAt(0)
+        while layout_item:
+            widget = layout_item.widget()
+            widget.setParent(None)
+            widget.close()
+            layout_item = self._artists_table_container.takeAt(0)
+
+
+def _build_line_edit(content, name):
+    edit = QLineEdit(content)
+    edit.setMinimumWidth(200)
+    edit.setObjectName(name)
+    edit.setAttribute(Qt.WA_MacShowFocusRect, False)
+    return edit
