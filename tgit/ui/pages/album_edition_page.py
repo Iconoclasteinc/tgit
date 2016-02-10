@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import operator
 
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPalette, QColor
 import requests
 from PyQt5.QtCore import Qt, pyqtSignal, QDate, QSize
 from PyQt5.QtWidgets import QWidget, QApplication, QMenu, QLineEdit, QPushButton, QGridLayout, QLabel
@@ -101,8 +101,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def _setup_ui(self):
         self._load(":/ui/album_page.ui")
-        self._disable_mac_focus_frame()
-
+        self._make_artist_scroll_area_transparent()
         self._fill_with_countries(self._main_artist_region)
 
         menu = QMenu()
@@ -113,6 +112,14 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist.textChanged.connect(self._update_isni_menu)
         self._add_artist_button.clicked.connect(lambda: self._edit_artists(self._update_artists))
         self._add_artist_button_2.clicked.connect(lambda _: self._build_artist_row())
+
+    def _make_artist_scroll_area_transparent(self):
+        palette = QPalette()
+        palette.setColor(QPalette.Window, QColor(0, 0, 0, 0))
+        self._artists_input_scroll_area.setPalette(palette)
+        self._artists_input_scroll_area.setBackgroundRole(QPalette.Window)
+        self._artists_input_scroll_area.widget().setPalette(palette)
+        self._artists_input_scroll_area.widget().setBackgroundRole(QPalette.Window)
 
     @staticmethod
     def _fill_with_countries(combobox):
@@ -276,10 +283,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     @staticmethod
     def _get_country_code_from_combo(combo):
         return (combo.currentData(),) if combo.currentIndex() > 0 else None
-
-    def _disable_mac_focus_frame(self):
-        for child in self.findChildren(QWidget):
-            child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
     def _update_isni_menu(self):
         def _is_blank(text):

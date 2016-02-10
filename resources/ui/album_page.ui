@@ -357,7 +357,7 @@ QPushButton:hover {
    <item row="1" column="0">
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="_record_tab">
       <attribute name="title">
@@ -541,7 +541,7 @@ QPushButton:hover {
         <number>0</number>
        </property>
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="_musicians_box">
          <property name="title">
           <string>Musicians</string>
          </property>
