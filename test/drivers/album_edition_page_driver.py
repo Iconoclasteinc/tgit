@@ -160,15 +160,6 @@ class AlbumEditionPageDriver(ScreenDriver):
     def change_main_artist_region(self, name):
         self.combobox(named("_main_artist_region")).select_option(name)
 
-    def shows_artists(self, names):
-        self.tabs(named("_tabs")).select("Artists")
-        self.label(with_buddy(named("_artists"))).is_showing_on_screen()
-        self.lineEdit(named("_artists")).has_text(names)
-
-    def change_artists(self, names):
-        self.tabs(named("_tabs")).select("Artists")
-        self.lineEdit(named("_artists")).change_text(names)
-
     def shows_only_artists_in_table(self, *artists):
         for index, artist in enumerate(artists):
             instrument, name = artist
@@ -181,9 +172,17 @@ class AlbumEditionPageDriver(ScreenDriver):
 
     def add_artist(self, instrument, name, row):
         self.tabs(named("_tabs")).select("Artists")
-        self.button(named("_add_artist_button_2")).click()
-        self.lineEdit(named("_instrument_{}".format(row - 1))).replace_all_text(instrument)
-        self.lineEdit(named("_artist_{}".format(row - 1))).replace_all_text(name)
+        self.button(named("_add_artist_button")).click()
+        self.lineEdit(named("_instrument_{}".format(row - 1))).change_text(instrument)
+        self.lineEdit(named("_artist_{}".format(row - 1))).change_text(name)
+
+    def change_instrument_of_row(self, row, text):
+        self.tabs(named("_tabs")).select("Artists")
+        self.lineEdit(named("_instrument_{}".format(row - 1))).change_text(text)
+
+    def change_artist_of_row(self, row, text):
+        self.tabs(named("_tabs")).select("Artists")
+        self.lineEdit(named("_artist_{}".format(row - 1))).change_text(text)
 
     def shows_label_name(self, name):
         self.tabs(named("_tabs")).select("Record")

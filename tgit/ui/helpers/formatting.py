@@ -22,31 +22,13 @@ from dateutil import parser as dateparser
 
 
 def in_kbps(bps):
-    return bps and int(round(bps, -3) / 1000) or ''
+    return bps and int(round(bps, -3) / 1000) or ""
 
 
 def to_duration(seconds):
-    return seconds and '%02d:%02d' % divmod(round(seconds), 60) or ''
-
-
-def toPeopleList(people):
-    return people and '; '.join(['%s: %s' % (role, name) for role, name in people]) or ''
-
-
-def fromPeopleList(text):
-    people = []
-    involvements = text.split(';')
-
-    for involvement in involvements:
-        try:
-            role, name = involvement.split(':')
-            people.append((role.strip(), name.strip()))
-        except ValueError:
-            pass
-
-    return people
+    return seconds and "%02d:%02d" % divmod(round(seconds), 60) or ""
 
 
 def as_local_date_time(instant):
-    localTime = dateparser.parse(instant).replace(tzinfo=timezone.utc).astimezone()
-    return localTime.strftime('%Y-%m-%d'), localTime.strftime('%H:%M:%S')
+    local_time = dateparser.parse(instant).replace(tzinfo=timezone.utc).astimezone()
+    return local_time.strftime("%Y-%m-%d"), local_time.strftime("%H:%M:%S")

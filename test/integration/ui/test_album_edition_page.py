@@ -5,6 +5,7 @@ import types
 import pytest
 import requests
 from PyQt5.QtCore import QByteArray
+
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -95,7 +96,6 @@ def test_displays_album_metadata(driver):
     driver.shows_main_artist("Artist")
     driver.shows_main_artist_region("Canada")
     driver.shows_main_artist_isni("0000000123456789")
-    driver.shows_artists("Guitar: Guitarist; Piano: Pianist")
     driver.shows_label_name("Label")
     driver.shows_catalog_number("XXX123456789")
     driver.shows_upc("123456789999")
@@ -182,13 +182,6 @@ def test_signals_when_picture_selected(driver):
 
     driver.add_picture()
     driver.check(signal)
-
-
-def test_updates_guest_performers_with_edition_dialog_return_value(driver):
-    _ = show_page(make_album(), edit_performers=lambda callback: callback(
-        [("instrument1", "performer1"), ("instrument2", "performer2")]))
-    driver.edit_performers()
-    driver.shows_artists("instrument1: performer1; instrument2: performer2")
 
 
 def test_efficiently_displays_image_cover_when_it_does_not_change(driver):
@@ -419,11 +412,6 @@ def test_signals_when_album_metadata_edited(driver):
     driver.change_main_artist_region("")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(
-        guest_performers=[("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]))
-    driver.change_artists("Guitar: Guitarist; Guitar: Bassist; Piano: Pianist")
-    driver.check(metadata_changed_signal)
-
     metadata_changed_signal.expect(has_entries(label_name="Label"))
     driver.change_label_name("Label")
     driver.check(metadata_changed_signal)
@@ -457,17 +445,27 @@ def test_shows_performers(driver):
 
 
 def test_removes_performers(driver):
-    _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
+    metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
+    _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]),
+                  on_metadata_changed=metadata_changed_signal.received)
 
-    driver.remove_artist(row=2)
-    driver.shows_only_artists_in_table(("Guitar", "Jimmy Page"))
+    metadata_changed_signal.expect(has_entries(guest_performers=[("Vocals", "Robert Plant")]))
+    driver.remove_artist(row=1)
+    driver.shows_only_artists_in_table(("Vocals", "Robert Plant"))
+    driver.check(metadata_changed_signal)
 
 
 def test_adds_performers(driver):
-    _ = show_page(album=build.album())
+    metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
+    _ = show_page(album=build.album(), on_metadata_changed=metadata_changed_signal.received)
 
+    metadata_changed_signal.expect(has_entries(guest_performers=[("Guitar", "Jimmy Page")]))
     driver.add_artist(instrument="Guitar", name="Jimmy Page", row=1)
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
     driver.add_artist(instrument="Vocals", name="Robert Plant", row=2)
+    driver.check(metadata_changed_signal)
 
 
 def test_displays_artists_table_only_once(driver):

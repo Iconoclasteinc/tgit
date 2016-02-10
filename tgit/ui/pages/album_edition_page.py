@@ -29,13 +29,9 @@ from tgit.cheddar import AuthenticationError, InsufficientInformationError, Perm
 from tgit.countries import COUNTRIES
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
-from tgit.ui.helpers import image, formatting
+from tgit.ui.helpers import image
 from tgit.ui.helpers.ui_file import UIFile
 
-INSTRUMENT_COLUMN_INDEX = 0
-PERFORMER_COLUMN_INDEX = 1
-REMOVE_BUTTON_COLUMN_INDEX = 2
-FIRST_PERFORMER_ROW_INDEX = 1
 ISO_8601_FORMAT = "yyyy-MM-dd"
 QMENU_STYLESHEET = """
     QMenu {
@@ -82,6 +78,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     _picture = None
     _isni_lookup = False
     _isni_assign = False
+    _metadata_changed = lambda: None
 
     FRONT_COVER_SIZE = 120, 120
 
@@ -110,8 +107,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
         self._compilation.clicked.connect(self._update_isni_menu)
         self._main_artist.textChanged.connect(self._update_isni_menu)
-        self._add_artist_button.clicked.connect(lambda: self._edit_artists(self._update_artists))
-        self._add_artist_button_2.clicked.connect(lambda _: self._build_artist_row())
+        self._add_artist_button.clicked.connect(lambda _: self._build_artist_row())
 
     def _make_artist_scroll_area_transparent(self):
         palette = QPalette()
@@ -193,6 +189,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         def handle(entry):
             handler(**self._metadata(entry))
 
+        self._metadata_changed = handle
+
         self._release_time.dateChanged.connect(lambda: handle("release_time"))
         self._digital_release_time.dateChanged.connect(lambda: handle("digital_release_time"))
         self._original_release_time.dateChanged.connect(lambda: handle("original_release_time"))
@@ -201,16 +199,12 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._compilation.clicked.connect(lambda: handle("compilation"))
         self._main_artist.editingFinished.connect(lambda: handle("lead_performer"))
         self._main_artist_region.activated.connect(lambda: handle("lead_performer_region"))
-        self._artists.textChanged.connect(lambda: handle("guest_performers"))
         self._label_name.editingFinished.connect(lambda: handle("label_name"))
         self._catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
         self._barcode.editingFinished.connect(lambda: handle("upc"))
         self._media_type.editingFinished.connect(lambda: handle("media_type"))
         self._release_type.editingFinished.connect(lambda: handle("release_type"))
         self._comments.editingFinished.connect(lambda: handle("comments"))
-
-    def _update_artists(self, artists):
-        self._artists.setText(formatting.toPeopleList(artists))
 
     def albumStateChanged(self, album):
         self.display(album)
@@ -232,7 +226,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._compilation.setChecked(album.compilation is True)
         self._display_main_artist(album)
         self._display_region(album.lead_performer_region, self._main_artist_region)
-        self._artists.setText(formatting.toPeopleList(album.guest_performers))
         self._label_name.setText(album.label_name)
         self._catalog_number.setText(album.catalog_number)
         self._barcode.setText(album.upc)
@@ -240,7 +233,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self._recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
 
-        self._build_artists_table(album.guest_performers or [])
+        if self._artists_table_container.count() == 0:
+            self._build_artists_table(album.guest_performers or [])
 
         identities = album.isnis or {}
         self._main_artist_isni.setText(identities[album.lead_performer] if album.lead_performer in identities else None)
@@ -259,7 +253,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           compilation=self._compilation.isChecked(),
                           lead_performer=self._main_artist.text(),
                           lead_performer_region=self._get_country_code_from_combo(self._main_artist_region),
-                          guest_performers=formatting.fromPeopleList(self._artists.text()),
+                          guest_performers=self._get_artists(),
                           label_name=self._label_name.text(),
                           catalog_number=self._catalog_number.text(),
                           upc=self._barcode.text(),
@@ -278,6 +272,34 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             keys_to_retrieve.append("lead_performer")
 
         return {k: all_values.get(k, None) for k in keys_to_retrieve}
+
+    def _get_artists(self):
+        artists = []
+        for row_index in range(self._artists_table_container.count()):
+            artist = self._get_artist_from(row_index)
+            if artist is not None:
+                artists.append(artist)
+
+        return artists
+
+    def _get_artist_from(self, index):
+        if self._row_is_empty(index):
+            return None
+
+        name = ""
+        instrument = ""
+        for widget in self._artists_table_container.itemAt(index).widget().findChildren(QLineEdit):
+            if widget.objectName().startswith("_artist"):
+                name = widget.text()
+            if widget.objectName().startswith("_instrument"):
+                instrument = widget.text()
+
+        if instrument.strip() != "" and name.strip() != "":
+            return instrument, name
+        return None
+
+    def _row_is_empty(self, index):
+        return self._artists_table_container.itemAt(index) is None
 
     @staticmethod
     def _get_country_code_from_combo(combo):
@@ -306,8 +328,8 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         row_layout.setHorizontalSpacing(15)
         row_layout.addWidget(QLabel(self.tr("Instrument")), 0, 0)
         row_layout.addWidget(QLabel(self.tr("Musician Name")), 0, 1)
-        row_layout.addWidget(_build_line_edit(name, "_artist_{}".format(index)), 1, 0)
-        row_layout.addWidget(_build_line_edit(instrument, "_instrument_{}".format(index)), 1, 1)
+        row_layout.addWidget(self._build_line_edit(instrument, "_instrument_{}".format(index)), 1, 0)
+        row_layout.addWidget(self._build_line_edit(name, "_artist_{}".format(index)), 1, 1)
         row_layout.addWidget(self._build_remove_line_button(index), 1, 2)
         row_layout.setColumnStretch(0, 1)
         row_layout.setColumnStretch(1, 1)
@@ -320,11 +342,15 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._artists_table_container.addWidget(row)
 
     def _build_remove_line_button(self, index):
+        def remove():
+            self._remove_artist_row(button.parent())
+            self._metadata_changed("guest_performers")
+
         button = QPushButton()
         button.setObjectName("_remove_artist_{}".format(index))
         button.setCursor(Qt.PointingHandCursor)
         button.setText(self.tr("Remove"))
-        button.clicked.connect(lambda: self._remove_artist_row(button.parent()))
+        button.clicked.connect(remove)
         return button
 
     def _remove_artist_row(self, widget):
@@ -346,10 +372,18 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
             widget.close()
             layout_item = self._artists_table_container.takeAt(0)
 
+    def _build_line_edit(self, content, name):
+        def metadata_changed():
+            line_complete = True
+            for line_edit in edit.parent().findChildren(QLineEdit):
+                if len(line_edit.text()) == 0:
+                    line_complete = False
 
-def _build_line_edit(content, name):
-    edit = QLineEdit(content)
-    edit.setMinimumWidth(200)
-    edit.setObjectName(name)
-    edit.setAttribute(Qt.WA_MacShowFocusRect, False)
-    return edit
+            if line_complete:
+                self._metadata_changed("guest_performers")
+
+        edit = QLineEdit(content)
+        edit.setMinimumWidth(200)
+        edit.setObjectName(name)
+        edit.editingFinished.connect(metadata_changed)
+        return edit

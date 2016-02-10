@@ -84,7 +84,7 @@ class TGiT(QApplication):
 def main():
     from requests.packages import urllib3
     urllib3.disable_warnings()
-    # _print_unhandled_exceptions()
+    _print_unhandled_exceptions()
 
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
 
