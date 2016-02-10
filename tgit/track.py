@@ -23,7 +23,7 @@ from tgit.signal import Signal, signal
 
 
 class Track(object, metaclass=tag.Taggable):
-    metadata_changed = signal(Signal.SELF, int, Metadata)
+    metadata_changed = signal(Signal.SELF)
 
     album = None
 

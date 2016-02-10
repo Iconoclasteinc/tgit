@@ -18,9 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import operator
 
-from PyQt5.QtGui import QIcon, QPalette, QColor
 import requests
 from PyQt5.QtCore import Qt, pyqtSignal, QDate, QSize
+from PyQt5.QtGui import QIcon, QPalette, QColor
 from PyQt5.QtWidgets import QWidget, QApplication, QMenu, QLineEdit, QPushButton, QGridLayout, QLabel
 
 from tgit.album import AlbumListener
@@ -323,8 +323,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         button = QPushButton()
         button.setObjectName("_remove_artist_{}".format(index))
         button.setCursor(Qt.PointingHandCursor)
-        button.setMinimumHeight(22)
-        button.setMaximumHeight(22)
         button.setText(self.tr("Remove"))
         button.clicked.connect(lambda: self._remove_artist_row(button.parent()))
         return button

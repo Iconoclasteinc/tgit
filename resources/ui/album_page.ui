@@ -10,6 +10,32 @@
     <height>690</height>
    </rect>
   </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QCalendarWidget QToolButton {
+        background-color: transparent;
+    }
+
+    QCalendarWidget QToolButton#qt_calendar_monthbutton {
+        padding-right: 15px;
+    }
+
+    QCalendarWidget QToolButton::menu-indicator {
+        subcontrol-position: right center;
+        top: 2px;
+        right: 2px;
+    }
+
+    QCalendarWidget QToolButton::menu-indicator {
+        image: url(:/calendar-menu-indicator);
+    }
+
+    QCalendarWidget QToolButton::menu-indicator:open {
+        top: 3px;
+        right: 1px;
+    }
+   </string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
@@ -252,7 +278,7 @@ QPushButton:hover {
              <number>6</number>
             </property>
             <item>
-             <widget class="QToolButton" name="_main_artist_isni_actions_button">
+             <widget class="QPushButton" name="_main_artist_isni_actions_button">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -270,12 +296,6 @@ QPushButton:hover {
               </property>
               <property name="text">
                <string>Récupérer</string>
-              </property>
-              <property name="popupMode">
-               <enum>QToolButton::MenuButtonPopup</enum>
-              </property>
-              <property name="toolButtonStyle">
-               <enum>Qt::ToolButtonTextOnly</enum>
               </property>
              </widget>
             </item>
@@ -571,8 +591,8 @@ QPushButton:hover {
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1110</width>
-               <height>406</height>
+               <width>1106</width>
+               <height>322</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -900,8 +920,6 @@ QPushButton:pressed {
    <header>tgit.ui.widgets.date_picker</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
