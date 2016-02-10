@@ -19,8 +19,8 @@
 import operator
 
 import requests
-from PyQt5.QtCore import Qt, pyqtSignal, QDate, QSize
-from PyQt5.QtGui import QIcon, QPalette, QColor
+from PyQt5.QtCore import Qt, pyqtSignal, QDate
+from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QWidget, QApplication, QMenu, QLineEdit, QPushButton, QGridLayout, QLabel
 
 from tgit.album import AlbumListener
