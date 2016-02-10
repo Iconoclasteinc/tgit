@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from cute.matchers import named, with_buddy, with_size, with_text
+from cute.matchers import named, with_buddy, with_text, with_pixmap_size
 from tgit.ui.pages.album_edition_page import AlbumEditionPage
 from ._screen_driver import ScreenDriver
 from .picture_selection_dialog_driver import picture_selection_dialog
@@ -75,9 +75,9 @@ class AlbumEditionPageDriver(ScreenDriver):
             self.change_main_artist_isni(meta["isni"])
 
     def _displays_picture_with_size(self, width, height):
-        button = self.button(named("_front_cover"))
-        button.is_showing_on_screen()
-        button.has_icon_size(with_size(width, height))
+        label = self.label(named("_front_cover"))
+        label.is_showing_on_screen()
+        label.has_pixmap(with_pixmap_size(width, height))
 
     def shows_picture(self):
         self._displays_picture_with_size(*AlbumEditionPage.FRONT_COVER_SIZE)
@@ -91,7 +91,7 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.shows_picture()
 
     def add_picture(self):
-        self.button(named("_front_cover")).click()
+        self.button(named("_select_picture_button")).click()
 
     def remove_picture(self):
         self.button(named("_remove_picture_button")).click()
@@ -176,9 +176,11 @@ class AlbumEditionPageDriver(ScreenDriver):
             self.lineEdit(with_text(name)).exists()
 
     def remove_artist(self, row):
+        self.tabs(named("_tabs")).select("Artists")
         self.button(named("_remove_artist_{}".format(row - 1))).click()
 
     def add_artist(self, instrument, name, row):
+        self.tabs(named("_tabs")).select("Artists")
         self.button(named("_add_artist_button_2")).click()
         self.lineEdit(named("_instrument_{}".format(row - 1))).replace_all_text(instrument)
         self.lineEdit(named("_artist_{}".format(row - 1))).replace_all_text(name)

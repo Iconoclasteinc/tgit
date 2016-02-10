@@ -304,6 +304,11 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
+        <source>(+) Add an artist</source>
+        <translation>(+) Ajouter un musicien</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
         <source>This feature will be available soon</source>
         <translation>Cette fonctionnalité sera bientôt disponible</translation>
     </message>

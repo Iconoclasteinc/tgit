@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="styleSheet">
-   <string notr="true">QStackedWidget {
+   <string notr="true">#pages {
 	margin: 5 15px 5px 15px;
 }
 

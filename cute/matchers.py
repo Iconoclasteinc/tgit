@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import QSize
 from hamcrest import anything, all_of
 from hamcrest.core.base_matcher import BaseMatcher
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
@@ -16,7 +15,7 @@ def with_buddy(buddy):
 
 
 def with_pixmap_size(width, height):
-    return with_(properties.pixmap_size(), QSize(width, height))
+    return with_(properties.pixmap_size(), with_size(width, height))
 
 
 def with_size(width, height):
