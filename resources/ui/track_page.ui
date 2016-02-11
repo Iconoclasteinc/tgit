@@ -10,92 +10,7 @@
     <height>672</height>
    </rect>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QGroupBox {
-	border: 1px solid #DDDDDD;
-	border-bottom: 2px solid rgba(0, 0, 0, 20%);
-	background-color: white;
-	padding: 17px 14px 14px 10px;
-	margin: 5px 8px;
-	font-size: 10px;
-}
-
-QGroupBox::title {
-	subcontrol-origin: margin;
-	subcontrol-position: top left;
-	left: 1px;
-	padding: 0 3px;
-	color: #777777;
-	border: 1px solid #DFDFDF;
-	background-color: #F7F7F7;
- }
-
-QLineEdit,
-QPlainTextEdit,
-QComboBox,
-QComboBox::drop-down,
-QComboBox QAbstractItemView {
-	background-color: #F9F9F9;
-	border: 1px solid #B1B1B1;
-	color: #222222;
-	min-height: 20px;
-}
-
-QLineEdit,
-QPlainTextEdit,
-QComboBox,
-QSpinBox {
-  selection-background-color: #F2C1A7;
-  selection-color: #222222;
-}
-
-QLineEdit:focus,
-QPlainTextEdit:focus,
-QComboBox:focus,
-QComboBox:on,
-QComboBox::drop-down:focus,
-QComboBox::drop-down:on,
-QComboBox QAbstractItemView:focus  {
-	border: 1px solid #F79D6C;
-}
-
-QLineEdit:disabled,
-PlainTextEdit:disabled {
-	background-color: #FCFCFC;
-	border-color: #E7E7E7;
-	color: #C2C2C2;
-}
-
-QComboBox::drop-down {
-	padding: 0;
-	margin: 0;
-	subcontrol-origin: border;
-	subcontrol-position: top right;
-	width: 20px;
-}
-
-QComboBox::down-arrow {
-	image: url(:/images/down-arrow.png);
-}
-
-QComboBox::down-arrow:on,
-QComboBox::down-arrow:focus {
-	image: url(:/images/down-arrow-on.png);
-}
-
-QComboBox QAbstractItemView {
-   selection-background-color:#F08450;
-}
-
-#_software_notice {
-	font-size: 10px;
-	margin-right: 8px;
-}</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>5</number>
-   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -110,42 +25,10 @@ QComboBox QAbstractItemView {
    </property>
    <item>
     <widget class="QGroupBox" name="_album_banner">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">#_album_banner {
-	padding-left: 14px;
-}
-
-QLabel {
-	color: #777777;
-	padding: 0;
-	margin: 0;
-}</string>
-     </property>
      <property name="title">
-      <string>ALBUM</string>
+      <string>Project</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
       <item>
        <widget class="QLabel" name="_album_cover">
         <property name="sizePolicy">
@@ -154,14 +37,20 @@ QLabel {
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>50</height>
+         </size>
+        </property>
         <property name="styleSheet">
-         <string notr="true">min-width: 50px;
-max-width: 50px;
-min-height: 50px;
-max-height: 50px;
-background-color: #F9F9F9;
-border: 1px solid #B8B8B8;
-margin-right: 15px;</string>
+         <string notr="true">QLabel {border: 1px solid #ABADB3;}</string>
         </property>
        </widget>
       </item>
@@ -191,67 +80,21 @@ margin-right: 15px;</string>
          </property>
          <item alignment="Qt::AlignLeft">
           <widget class="QLabel" name="_album_title">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="styleSheet">
-            <string notr="true">font-size: 22px;</string>
+            <string notr="true">QLabel{font-size: 22px;}</string>
            </property>
            <property name="text">
-            <string/>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-           <property name="title" stdset="0">
-            <string>h2</string>
+            <string>Honeycomb</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
           <widget class="QLabel" name="_album_lead_performer">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
            <property name="styleSheet">
-            <string notr="true">font-size: 14px;</string>
+            <string notr="true">QLabel{font-size: 14px;color: #666666;}</string>
            </property>
            <property name="text">
-            <string/>
-           </property>
-           <property name="title" stdset="0">
-            <string>h3</string>
+            <string>Joel Miller</string>
            </property>
           </widget>
          </item>
@@ -263,21 +106,6 @@ margin-right: 15px;</string>
    </item>
    <item>
     <layout class="QHBoxLayout" name="_contents" stretch="2,3">
-     <property name="spacing">
-      <number>10</number>
-     </property>
-     <property name="leftMargin">
-      <number>10</number>
-     </property>
-     <property name="topMargin">
-      <number>10</number>
-     </property>
-     <property name="rightMargin">
-      <number>10</number>
-     </property>
-     <property name="bottomMargin">
-      <number>10</number>
-     </property>
      <item>
       <widget class="QFrame" name="_track_informations">
        <property name="styleSheet">
@@ -400,7 +228,7 @@ color: #666666;</string>
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>Lead Performer</string>
+             <string>Main Artist</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -564,41 +392,6 @@ color: #666666;</string>
         <number>0</number>
        </property>
        <widget class="QWidget" name="_contributors_tab">
-        <property name="styleSheet">
-         <string notr="true">QToolButton {
-    background-color: #BFBFBF;
-    border: 2px solid #BFBFBF;
-    border-radius: 4px;
-    color: white;
-    font-weight: bold;
-}
-
-QToolButton:disabled {
-    border-color: #CCCCCC;
-    background-color: #CCCCCC;
-}
-
-QToolButton:hover, QToolButton:focus {
-    background-color: #A6A6A6;
-    border-color: #A6A6A6;
-}
-
-QToolButton:pressed {
-	border: 2px solid transparent;
-}
-
-QToolButton::menu-indicator {
-    subcontrol-position: right center;
-	image: url(:/images/chevron-down-white-8.png);
-    top: 2px;
-    right: 2px;
-}
-
-QToolButton::menu-indicator:open {
-    top: 3px; 
-	right: 1px;
-}</string>
-        </property>
         <attribute name="title">
          <string>Contributors</string>
         </attribute>
@@ -607,11 +400,17 @@ QToolButton::menu-indicator:open {
           <number>10</number>
          </property>
          <item>
-          <layout class="QVBoxLayout" name="_lyricist_container">
-           <property name="spacing">
+          <layout class="QGridLayout" name="_lyricist_container" columnstretch="2,1,2">
+           <property name="verticalSpacing">
             <number>3</number>
            </property>
-           <item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="_lyricist_ipi"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLineEdit" name="_lyricist"/>
+           </item>
+           <item row="0" column="0">
             <widget class="QLabel" name="_lyricist_caption">
              <property name="text">
               <string>Lyricist</string>
@@ -621,24 +420,11 @@ QToolButton::menu-indicator:open {
              </property>
             </widget>
            </item>
-           <item>
+           <item row="1" column="2">
             <layout class="QHBoxLayout" name="_lyricist_input_container">
-             <item>
-              <widget class="QLineEdit" name="_lyricist"/>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="_lyricist_ipi">
-               <property name="maximumSize">
-                <size>
-                 <width>135</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="placeholderText">
-                <string>IPI</string>
-               </property>
-              </widget>
-             </item>
+             <property name="spacing">
+              <number>6</number>
+             </property>
              <item>
               <widget class="QToolButton" name="_lyricist_isni_actions_button">
                <property name="minimumSize">
@@ -662,12 +448,6 @@ QToolButton::menu-indicator:open {
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextOnly</enum>
                </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-               <property name="arrowType">
-                <enum>Qt::DownArrow</enum>
-               </property>
               </widget>
              </item>
              <item>
@@ -675,27 +455,38 @@ QToolButton::menu-indicator:open {
                <property name="enabled">
                 <bool>false</bool>
                </property>
-               <property name="maximumSize">
-                <size>
-                 <width>135</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="placeholderText">
-                <string>ISNI</string>
-               </property>
               </widget>
              </item>
             </layout>
            </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="_lyricist_ipi_caption">
+             <property name="text">
+              <string>Lyricist IPI</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="_lyricist_isni_caption">
+             <property name="text">
+              <string>Lyricist ISNI</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="_composer_container">
-           <property name="spacing">
-            <number>3</number>
+          <layout class="QGridLayout" name="_composer_container" columnstretch="2,1,2">
+           <property name="verticalSpacing">
+            <number>2</number>
            </property>
-           <item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="_composer_ipi"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLineEdit" name="_composer"/>
+           </item>
+           <item row="0" column="0">
             <widget class="QLabel" name="_composer_caption">
              <property name="text">
               <string>Composer</string>
@@ -705,24 +496,11 @@ QToolButton::menu-indicator:open {
              </property>
             </widget>
            </item>
-           <item>
+           <item row="1" column="2">
             <layout class="QHBoxLayout" name="_composer_input_container">
-             <item>
-              <widget class="QLineEdit" name="_composer"/>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="_composer_ipi">
-               <property name="maximumSize">
-                <size>
-                 <width>135</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="placeholderText">
-                <string>IPI</string>
-               </property>
-              </widget>
-             </item>
+             <property name="spacing">
+              <number>6</number>
+             </property>
              <item>
               <widget class="QToolButton" name="_composer_isni_actions_button">
                <property name="minimumSize">
@@ -746,12 +524,6 @@ QToolButton::menu-indicator:open {
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextOnly</enum>
                </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-               <property name="arrowType">
-                <enum>Qt::DownArrow</enum>
-               </property>
               </widget>
              </item>
              <item>
@@ -759,27 +531,35 @@ QToolButton::menu-indicator:open {
                <property name="enabled">
                 <bool>false</bool>
                </property>
-               <property name="maximumSize">
-                <size>
-                 <width>135</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="placeholderText">
-                <string>ISNI</string>
-               </property>
               </widget>
              </item>
             </layout>
            </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="_composer_ipi_caption">
+             <property name="text">
+              <string>Composer IPI</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="_composer_isni_caption">
+             <property name="text">
+              <string>Composer ISNI</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="_publisher_container">
-           <property name="spacing">
+          <layout class="QGridLayout" name="_publisher_container" columnstretch="2,1,2">
+           <property name="verticalSpacing">
             <number>3</number>
            </property>
-           <item>
+           <item row="1" column="0">
+            <widget class="QLineEdit" name="_publisher"/>
+           </item>
+           <item row="0" column="0">
             <widget class="QLabel" name="_publisher_caption">
              <property name="text">
               <string>Publisher</string>
@@ -789,24 +569,14 @@ QToolButton::menu-indicator:open {
              </property>
             </widget>
            </item>
-           <item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="_publisher_ipi"/>
+           </item>
+           <item row="1" column="2">
             <layout class="QHBoxLayout" name="_publisher_input_container">
-             <item>
-              <widget class="QLineEdit" name="_publisher"/>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="_publisher_ipi">
-               <property name="maximumSize">
-                <size>
-                 <width>135</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="placeholderText">
-                <string>IPI</string>
-               </property>
-              </widget>
-             </item>
+             <property name="spacing">
+              <number>6</number>
+             </property>
              <item>
               <widget class="QToolButton" name="_publisher_isni_actions_button">
                <property name="minimumSize">
@@ -824,12 +594,6 @@ QToolButton::menu-indicator:open {
                <property name="toolButtonStyle">
                 <enum>Qt::ToolButtonTextOnly</enum>
                </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-               <property name="arrowType">
-                <enum>Qt::DownArrow</enum>
-               </property>
               </widget>
              </item>
              <item>
@@ -837,18 +601,23 @@ QToolButton::menu-indicator:open {
                <property name="enabled">
                 <bool>false</bool>
                </property>
-               <property name="maximumSize">
-                <size>
-                 <width>135</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="placeholderText">
-                <string>ISNI</string>
-               </property>
               </widget>
              </item>
             </layout>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="_publisher_ipi_caption">
+             <property name="text">
+              <string>Publisher IPI</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="_publisher_isni_caption">
+             <property name="text">
+              <string>Publisher ISNI</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -1200,40 +969,16 @@ QToolButton::menu-indicator:open {
     </layout>
    </item>
    <item>
-    <widget class="QWidget" name="_software_notice_container" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="_software_notice">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Indexé avec TGiT v1.9 le 10-05-2010</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <widget class="QLabel" name="_software_notice">
+     <property name="styleSheet">
+      <string notr="true">QLabel{font-size: 10px;}</string>
+     </property>
+     <property name="text">
+      <string>Indexé avec TGiT v1.9 le 10-05-2010</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
     </widget>
    </item>
   </layout>
@@ -1278,16 +1023,10 @@ QToolButton::menu-indicator:open {
   <tabstop>_iswc</tabstop>
   <tabstop>_tags</tabstop>
   <tabstop>_tabs</tabstop>
-  <tabstop>_lyricist</tabstop>
-  <tabstop>_lyricist_ipi</tabstop>
   <tabstop>_lyricist_isni_actions_button</tabstop>
   <tabstop>_lyricist_isni</tabstop>
-  <tabstop>_composer</tabstop>
-  <tabstop>_composer_ipi</tabstop>
   <tabstop>_composer_isni_actions_button</tabstop>
   <tabstop>_composer_isni</tabstop>
-  <tabstop>_publisher</tabstop>
-  <tabstop>_publisher_ipi</tabstop>
   <tabstop>_publisher_isni_actions_button</tabstop>
   <tabstop>_publisher_isni</tabstop>
   <tabstop>_production_company</tabstop>

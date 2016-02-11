@@ -32,17 +32,6 @@ from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image, formatting
 from tgit.ui.helpers.ui_file import UIFile
 
-QMENU_STYLESHEET = """
-    QMenu {
-        background-color: white;
-    }
-
-    QMenu::item::selected {
-      color: black;
-      background-color:#DDDDDD;
-    }
-"""
-
 
 def make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
                             show_cheddar_connection_failed, show_cheddar_authentication_failed, **handlers):
@@ -85,21 +74,17 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     def _setup_ui(self):
         self._load(":/ui/track_page.ui")
-        self._disable_mac_focus_frame()
         self._disable_teaser_fields()
 
         lyricist_menu = QMenu()
-        lyricist_menu.setStyleSheet(QMENU_STYLESHEET)
         lyricist_menu.addAction(self._lyricist_isni_assign_action)
         self._lyricist_isni_actions_button.setMenu(lyricist_menu)
 
         composer_menu = QMenu()
-        composer_menu.setStyleSheet(QMENU_STYLESHEET)
         composer_menu.addAction(self._composer_isni_assign_action)
         self._composer_isni_actions_button.setMenu(composer_menu)
 
         publisher_menu = QMenu()
-        publisher_menu.setStyleSheet(QMENU_STYLESHEET)
         publisher_menu.addAction(self._publisher_isni_assign_action)
         self._publisher_isni_actions_button.setMenu(publisher_menu)
 
@@ -294,10 +279,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             metadata["lead_performer"] = self._lead_performer.text()
 
         return metadata
-
-    def _disable_mac_focus_frame(self):
-        for child in self.findChildren(QWidget):
-            child.setAttribute(Qt.WA_MacShowFocusRect, False)
 
     def _disable_teaser_fields(self):
         self._preview_time.setDisabled(True)

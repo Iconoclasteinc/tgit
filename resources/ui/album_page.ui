@@ -26,7 +26,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="_record_tab">
       <attribute name="title">
@@ -258,7 +258,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QPushButton" name="_add_artist_button">
+              <widget class="QPushButton" name="_add_artist_button_2">
                <property name="cursor">
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
@@ -297,6 +297,80 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="_artists_container">
+             <property name="spacing">
+              <number>3</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="_artists_caption">
+               <property name="text">
+                <string>Musicians</string>
+               </property>
+               <property name="buddy">
+                <cstring>_artists</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="_artists_value_container">
+               <item>
+                <widget class="QLineEdit" name="_artists">
+                 <property name="placeholderText">
+                  <string>Instrument1: Performer1; Instrument2: Performer2; ...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="_add_artist_button">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>20</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>20</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="cursor">
+                  <cursorShape>PointingHandCursor</cursorShape>
+                 </property>
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QPushButton {
+    background: transparent url(':/edit') center no-repeat;
+    border: none;
+    border-radius: 0;
+}
+
+QPushButton:hover, QPushButton:focus {
+    background: transparent url(':/edit-hover') center no-repeat;
+}
+
+QPushButton:pressed {
+    background: transparent url(':/edit-pressed') center no-repeat;
+}</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -693,12 +767,6 @@
               </property>
               <property name="toolButtonStyle">
                <enum>Qt::ToolButtonTextOnly</enum>
-              </property>
-              <property name="autoRaise">
-               <bool>false</bool>
-              </property>
-              <property name="arrowType">
-               <enum>Qt::NoArrow</enum>
               </property>
              </widget>
             </item>

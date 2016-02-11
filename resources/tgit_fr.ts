@@ -686,7 +686,12 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Lead Performer</source>
+        <source>Project</source>
+        <translation>Projet</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Main Artist</source>
         <translation>Artiste principal</translation>
     </message>
     <message>
@@ -711,13 +716,43 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
+        <source>Lyricist IPI</source>
+        <translation>IPI de l&apos;auteur</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Lyricist ISNI</source>
+        <translation>ISNI de l&apos;auteur</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Composer</source>
         <translation>Compositeur</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
+        <source>Composer IPI</source>
+        <translation>IPI du compositeur</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Composer ISNI</source>
+        <translation>ISNI du compositeur</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Publisher</source>
         <translation>Éditeur</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Publisher IPI</source>
+        <translation>IPI de l&apos;éditeur</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Publisher ISNI</source>
+        <translation>ISNI de l&apos;éditeur</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
