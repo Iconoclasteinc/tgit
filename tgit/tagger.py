@@ -21,6 +21,7 @@ from traceback import format_exception
 
 from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtGui import QIcon
+
 from PyQt5.QtWidgets import QApplication
 
 from tgit import ui
@@ -84,7 +85,7 @@ class TGiT(QApplication):
 def main():
     from requests.packages import urllib3
     urllib3.disable_warnings()
-    _print_unhandled_exceptions()
+    # _print_unhandled_exceptions()
 
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
 

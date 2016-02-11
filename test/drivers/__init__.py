@@ -11,7 +11,6 @@ from .track_list_page_driver import track_list_page, TrackListPageDriver
 from .album_edition_page_driver import album_edition_page, AlbumEditionPageDriver
 from .album_screen_driver import album_screen, AlbumScreenDriver
 from .menu_bar_driver import menu_bar, MenuBarDriver
-from .performer_dialog_driver import PerformerDialogDriver
 from .user_preferences_dialog_driver import user_preferences_dialog, UserPreferencesDialogDriver
 from .track_edition_page_driver import track_edition_page, TrackEditionPageDriver
 from .welcome_screen_driver import welcome_page, WelcomePageDriver

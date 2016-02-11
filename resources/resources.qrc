@@ -35,7 +35,6 @@
         <file>ui/track_page.ui</file>
         <file>ui/new_album_page.ui</file>
         <file>ui/track_list_page.ui</file>
-        <file>ui/performers_dialog.ui</file>
         <file>ui/about_dialog.ui</file>
         <file>ui/sign_in_dialog.ui</file>
         <file>ui/isni_assignation_review_dialog.ui</file>

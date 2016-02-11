@@ -17,8 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit import album_director as director
-from tgit.ui.dialogs.performer_dialog import PerformerDialog
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 from tgit.ui.dialogs.isni_lookup_dialog import make_isni_lookup_dialog
 from tgit.ui.dialogs.sign_in_dialog import SignInDialog
@@ -76,9 +74,3 @@ class Dialogs:
 
     def select_identities(self, identities, on_identity_selected):
         return make_isni_lookup_dialog(self._parent, identities, on_isni_selected=on_identity_selected)
-
-    def edit_performers_in(self, album):
-        def edit_performers(on_edit):
-            PerformerDialog(album, self._parent).edit(on_edit)
-
-        return edit_performers

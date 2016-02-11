@@ -296,18 +296,6 @@ margin-right: 15px;</string>
         <property name="spacing">
          <number>10</number>
         </property>
-        <property name="leftMargin">
-         <number>15</number>
-        </property>
-        <property name="topMargin">
-         <number>10</number>
-        </property>
-        <property name="rightMargin">
-         <number>15</number>
-        </property>
-        <property name="bottomMargin">
-         <number>10</number>
-        </property>
         <item>
          <layout class="QVBoxLayout" name="_track_information_container">
           <property name="spacing">
@@ -618,18 +606,6 @@ QToolButton::menu-indicator:open {
          <property name="spacing">
           <number>10</number>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
          <item>
           <layout class="QVBoxLayout" name="_lyricist_container">
            <property name="spacing">
@@ -899,18 +875,6 @@ QToolButton::menu-indicator:open {
          <property name="spacing">
           <number>10</number>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
          <item>
           <layout class="QVBoxLayout" name="_production_company_container">
            <property name="spacing">
@@ -1132,18 +1096,6 @@ QToolButton::menu-indicator:open {
         <layout class="QVBoxLayout" name="verticalLayout_8">
          <property name="spacing">
           <number>10</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
          </property>
          <item>
           <layout class="QVBoxLayout" name="_language_container">

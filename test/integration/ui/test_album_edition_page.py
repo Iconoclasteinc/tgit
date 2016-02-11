@@ -4,6 +4,7 @@ import types
 
 import pytest
 import requests
+
 from PyQt5.QtCore import QByteArray
 
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
@@ -41,14 +42,12 @@ def show_page(album, session=make_anonymous_session(),
               select_picture=ignore,
               select_identity=ignore,
               review_assignation=ignore,
-              edit_performers=ignore,
               show_isni_assignation_failed=ignore,
               show_cheddar_connection_failed=ignore,
               show_cheddar_authentication_failed=ignore,
               show_permission_denied=ignore,
               **handlers):
     page = make_album_edition_page(album, session,
-                                   edit_performers=edit_performers,
                                    select_picture=select_picture,
                                    select_identity=select_identity,
                                    show_isni_assignation_failed=show_isni_assignation_failed,

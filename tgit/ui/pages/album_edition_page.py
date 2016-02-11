@@ -33,29 +33,19 @@ from tgit.ui.helpers import image
 from tgit.ui.helpers.ui_file import UIFile
 
 ISO_8601_FORMAT = "yyyy-MM-dd"
-QMENU_STYLESHEET = """
-    QMenu {
-        background-color: white;
-    }
-
-    QMenu::item::selected {
-      color: black;
-      background-color:#DDDDDD;
-    }
-"""
 
 
-def make_album_edition_page(album, session, edit_performers, select_picture, select_identity, review_assignation,
+def make_album_edition_page(album, session, select_picture, select_identity, review_assignation,
                             show_isni_assignation_failed, show_cheddar_connection_failed,
                             show_cheddar_authentication_failed, show_permission_denied, **handlers):
     page = AlbumEditionPage(select_picture=select_picture,
-                            edit_artists=edit_performers,
                             select_identity=select_identity,
                             review_assignation=review_assignation,
                             show_isni_assignation_failed=show_isni_assignation_failed,
                             show_cheddar_connection_failed=show_cheddar_connection_failed,
                             show_cheddar_authentication_failed=show_cheddar_authentication_failed,
                             show_permission_denied=show_permission_denied)
+
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -82,7 +72,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 120, 120
 
-    def __init__(self, edit_artists, select_picture, select_identity, review_assignation,
+    def __init__(self, select_picture, select_identity, review_assignation,
                  show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed,
                  show_permission_denied):
         super().__init__()
@@ -93,7 +83,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._show_permission_denied = show_permission_denied
         self._select_identity = select_identity
         self._select_picture = select_picture
-        self._edit_artists = edit_artists
         self._setup_ui()
 
     def _setup_ui(self):
@@ -276,9 +265,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def _get_artists(self):
         artists = []
         for row_index in range(self._artists_table_container.count()):
-            artist = self._get_artist_from(row_index)
-            if artist is not None:
-                artists.append(artist)
+            instrument, name = self._get_artist_from(row_index)
+            if instrument != "" and name != "":
+                artists.append((instrument, name))
 
         return artists
 
@@ -290,13 +279,11 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         instrument = ""
         for widget in self._artists_table_container.itemAt(index).widget().findChildren(QLineEdit):
             if widget.objectName().startswith("_artist"):
-                name = widget.text()
+                name = widget.text().strip()
             if widget.objectName().startswith("_instrument"):
-                instrument = widget.text()
+                instrument = widget.text().strip()
 
-        if instrument.strip() != "" and name.strip() != "":
-            return instrument, name
-        return None
+        return instrument, name
 
     def _row_is_empty(self, index):
         return self._artists_table_container.itemAt(index) is None
@@ -314,7 +301,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_isni_assign_action.setEnabled(self._isni_assign and can_lookup_or_assign)
 
     def _build_artists_table(self, performers):
-        self._clear_artists_table()
         for performer in performers:
             self._build_artist_row(performer)
 
@@ -364,26 +350,22 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                 widget.close()
                 break
 
-    def _clear_artists_table(self):
-        layout_item = self._artists_table_container.takeAt(0)
-        while layout_item:
-            widget = layout_item.widget()
-            widget.setParent(None)
-            widget.close()
-            layout_item = self._artists_table_container.takeAt(0)
-
     def _build_line_edit(self, content, name):
-        def metadata_changed():
-            line_complete = True
-            for line_edit in edit.parent().findChildren(QLineEdit):
-                if len(line_edit.text()) == 0:
-                    line_complete = False
-
-            if line_complete:
-                self._metadata_changed("guest_performers")
-
         edit = QLineEdit(content)
         edit.setMinimumWidth(200)
         edit.setObjectName(name)
-        edit.editingFinished.connect(metadata_changed)
+        edit.editingFinished.connect(lambda: self._artist_line_changed(edit.parent()))
         return edit
+
+    def _artist_line_changed(self, row_widget):
+        if self._is_artist_row_complete(row_widget):
+            self._metadata_changed("guest_performers")
+
+    @staticmethod
+    def _is_artist_row_complete(row):
+        complete = True
+        for widget in row.findChildren(QLineEdit):
+            if not widget.text():
+                complete = False
+
+        return complete

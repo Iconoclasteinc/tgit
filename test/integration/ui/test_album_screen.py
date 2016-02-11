@@ -24,7 +24,7 @@ def create_track_list_page(album):
 
 
 def create_album_page(album):
-    return AlbumEditionPage(ignore, ignore, ignore, ignore, ignore, ignore, ignore, ignore)
+    return AlbumEditionPage(ignore, ignore, ignore, ignore, ignore, ignore, ignore)
 
 
 def create_track_page(track, review_assignation=ignore, show_isni_assignation_failed=ignore,
