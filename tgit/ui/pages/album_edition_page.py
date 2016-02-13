@@ -87,6 +87,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def _setup_ui(self):
         self._load(":/ui/album_page.ui")
+        self._artist_table = ArtistsTable(self._artists_table_container, self._add_artist_button, self.tr)
         self._make_artist_scroll_area_transparent()
         self._fill_with_countries(self._main_artist_region)
 
@@ -96,7 +97,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
         self._compilation.clicked.connect(self._update_isni_menu)
         self._main_artist.textChanged.connect(self._update_isni_menu)
-        self._add_artist_button.clicked.connect(lambda _: self._build_artist_row())
 
     def _make_artist_scroll_area_transparent(self):
         palette = QPalette()
@@ -175,11 +175,10 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._remove_picture_button.clicked.connect(lambda _: on_remove_picture())
 
     def on_metadata_changed(self, handler):
-        def handle(entry):
-            handler(**self._metadata(entry))
+        def handle(entry, artists=None):
+            handler(**self._metadata(artists, entry))
 
-        self._metadata_changed = handle
-
+        self._artist_table.on_artist_changed(lambda artists: handle("guest_performers", artists))
         self._release_time.dateChanged.connect(lambda: handle("release_time"))
         self._digital_release_time.dateChanged.connect(lambda: handle("digital_release_time"))
         self._original_release_time.dateChanged.connect(lambda: handle("original_release_time"))
@@ -222,8 +221,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self._recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
 
-        if self._artists_table_container.count() == 0:
-            self._build_artists_table(album.guest_performers or [])
+        self._artist_table.build(album.guest_performers or [])
 
         identities = album.isnis or {}
         self._main_artist_isni.setText(identities[album.lead_performer] if album.lead_performer in identities else None)
@@ -237,12 +235,12 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
         self._main_artist.setDisabled(album.compilation is True)
 
-    def _metadata(self, *keys):
+    def _metadata(self, artists, *keys):
         all_values = dict(release_name=self._release_name.text(),
                           compilation=self._compilation.isChecked(),
                           lead_performer=self._main_artist.text(),
                           lead_performer_region=self._get_country_code_from_combo(self._main_artist_region),
-                          guest_performers=self._get_artists(),
+                          guest_performers=artists,
                           label_name=self._label_name.text(),
                           catalog_number=self._catalog_number.text(),
                           upc=self._barcode.text(),
@@ -262,32 +260,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
         return {k: all_values.get(k, None) for k in keys_to_retrieve}
 
-    def _get_artists(self):
-        artists = []
-        for row_index in range(self._artists_table_container.count()):
-            instrument, name = self._get_artist_from(row_index)
-            if instrument != "" and name != "":
-                artists.append((instrument, name))
-
-        return artists
-
-    def _get_artist_from(self, index):
-        if self._row_is_empty(index):
-            return None
-
-        name = ""
-        instrument = ""
-        for widget in self._artists_table_container.itemAt(index).widget().findChildren(QLineEdit):
-            if widget.objectName().startswith("_artist"):
-                name = widget.text().strip()
-            if widget.objectName().startswith("_instrument"):
-                instrument = widget.text().strip()
-
-        return instrument, name
-
-    def _row_is_empty(self, index):
-        return self._artists_table_container.itemAt(index) is None
-
     @staticmethod
     def _get_country_code_from_combo(combo):
         return (combo.currentData(),) if combo.currentIndex() > 0 else None
@@ -300,20 +272,40 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_isni_actions_button.setEnabled(self._isni_lookup and can_lookup_or_assign)
         self._main_artist_isni_assign_action.setEnabled(self._isni_assign and can_lookup_or_assign)
 
-    def _build_artists_table(self, performers):
-        for performer in performers:
-            self._build_artist_row(performer)
+
+class ArtistsTable:
+    _on_artist_changed = lambda _: None
+
+    def __init__(self, container, add_artist_button, tr):
+        self._tr = tr
+        self._container = container
+
+        add_artist_button.clicked.connect(lambda _: self._build_artist_row())
+
+    def build(self, artists):
+        if self._is_empty():
+            self._build_artist_table(artists)
+
+    def on_artist_changed(self, on_artist_changed):
+        self._on_artist_changed = on_artist_changed
+
+    def _is_empty(self):
+        return self._container.count() == 0
+
+    def _build_artist_table(self, artists):
+        for artist in artists:
+            self._build_artist_row(artist)
 
     def _build_artist_row(self, performer=(None, None)):
-        index = self._artists_table_container.count()
+        index = self._container.count()
         instrument, name = performer
 
         row_layout = QGridLayout()
         row_layout.setContentsMargins(0, 0, 0, 0)
         row_layout.setVerticalSpacing(3)
         row_layout.setHorizontalSpacing(15)
-        row_layout.addWidget(QLabel(self.tr("Instrument")), 0, 0)
-        row_layout.addWidget(QLabel(self.tr("Musician Name")), 0, 1)
+        row_layout.addWidget(QLabel(self._tr("Instrument")), 0, 0)
+        row_layout.addWidget(QLabel(self._tr("Musician Name")), 0, 1)
         row_layout.addWidget(self._build_line_edit(instrument, "_instrument_{}".format(index)), 1, 0)
         row_layout.addWidget(self._build_line_edit(name, "_artist_{}".format(index)), 1, 1)
         row_layout.addWidget(self._build_remove_line_button(index), 1, 2)
@@ -325,27 +317,27 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         row.setObjectName("_artist_{}".format(index))
         row.setLayout(row_layout)
 
-        self._artists_table_container.addWidget(row)
+        self._container.addWidget(row)
 
     def _build_remove_line_button(self, index):
         def remove():
             self._remove_artist_row(button.parent())
-            self._metadata_changed("guest_performers")
+            self._on_artist_changed(self._artists)
 
         button = QPushButton()
         button.setObjectName("_remove_artist_{}".format(index))
         button.setCursor(Qt.PointingHandCursor)
-        button.setText(self.tr("Remove"))
+        button.setText(self._tr("Remove"))
         button.clicked.connect(remove)
         return button
 
     def _remove_artist_row(self, widget):
         def is_widget_to_remove(index):
-            return self._artists_table_container.itemAt(index).widget().objectName() == widget.objectName()
+            return self._container.itemAt(index).widget().objectName() == widget.objectName()
 
-        for current_index in range(self._artists_table_container.count()):
+        for current_index in range(self._container.count()):
             if is_widget_to_remove(current_index):
-                widget = self._artists_table_container.takeAt(current_index).widget()
+                widget = self._container.takeAt(current_index).widget()
                 widget.setParent(None)
                 widget.close()
                 break
@@ -359,7 +351,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def _artist_line_changed(self, row_widget):
         if self._is_artist_row_complete(row_widget):
-            self._metadata_changed("guest_performers")
+            self._on_artist_changed(self._artists)
 
     @staticmethod
     def _is_artist_row_complete(row):
@@ -369,3 +361,30 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                 complete = False
 
         return complete
+
+    @property
+    def _artists(self):
+        artists = []
+        for row_index in range(self._container.count()):
+            instrument, name = self._get_artist_from(row_index)
+            if instrument != "" and name != "":
+                artists.append((instrument, name))
+
+        return artists
+
+    def _get_artist_from(self, index):
+        if self._row_is_empty(index):
+            return None
+
+        name = ""
+        instrument = ""
+        for widget in self._container.itemAt(index).widget().findChildren(QLineEdit):
+            if widget.objectName().startswith("_artist"):
+                name = widget.text().strip()
+            if widget.objectName().startswith("_instrument"):
+                instrument = widget.text().strip()
+
+        return instrument, name
+
+    def _row_is_empty(self, index):
+        return self._container.itemAt(index) is None
