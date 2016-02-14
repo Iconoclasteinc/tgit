@@ -4,9 +4,7 @@ import types
 
 import pytest
 import requests
-
 from PyQt5.QtCore import QByteArray
-
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -437,13 +435,13 @@ def test_signals_when_album_metadata_edited(driver):
     driver.check(metadata_changed_signal)
 
 
-def test_shows_performers(driver):
+def test_shows_artists(driver):
     _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
 
     driver.shows_only_artists_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
 
 
-def test_removes_performers(driver):
+def test_removes_artists(driver):
     metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
     _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]),
                   on_metadata_changed=metadata_changed_signal.received)
@@ -454,7 +452,7 @@ def test_removes_performers(driver):
     driver.check(metadata_changed_signal)
 
 
-def test_adds_performers(driver):
+def test_adds_artists(driver):
     metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
     _ = show_page(album=build.album(), on_metadata_changed=metadata_changed_signal.received)
 

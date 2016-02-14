@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from cute.matchers import named, with_buddy, with_text, with_pixmap_size
+from cute.matchers import named, with_buddy, with_pixmap_size
+from test.drivers.artist_table_driver import artist_table_driver
 from tgit.ui.pages.album_edition_page import AlbumEditionPage
 from ._screen_driver import ScreenDriver
 from .picture_selection_dialog_driver import picture_selection_dialog
@@ -161,28 +162,25 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.combobox(named("_main_artist_region")).select_option(name)
 
     def shows_only_artists_in_table(self, *artists):
-        for index, artist in enumerate(artists):
-            instrument, name = artist
-            self.lineEdit(with_text(instrument)).exists()
-            self.lineEdit(with_text(name)).exists()
+        self.tabs(named("_tabs")).select("Artists")
+        artist_table_driver(self).shows_only_artists_in_table(*artists)
 
     def remove_artist(self, row):
         self.tabs(named("_tabs")).select("Artists")
-        self.button(named("_remove_artist_{}".format(row - 1))).click()
+        artist_table_driver(self).remove_artist(row)
 
     def add_artist(self, instrument, name, row):
         self.tabs(named("_tabs")).select("Artists")
         self.button(named("_add_artist_button")).click()
-        self.lineEdit(named("_instrument_{}".format(row - 1))).change_text(instrument)
-        self.lineEdit(named("_artist_{}".format(row - 1))).change_text(name)
+        artist_table_driver(self).add_artist(instrument, name, row)
 
     def change_instrument_of_row(self, row, text):
         self.tabs(named("_tabs")).select("Artists")
-        self.lineEdit(named("_instrument_{}".format(row - 1))).change_text(text)
+        artist_table_driver(self).change_instrument_of_row(row, text)
 
     def change_artist_of_row(self, row, text):
         self.tabs(named("_tabs")).select("Artists")
-        self.lineEdit(named("_artist_{}".format(row - 1))).change_text(text)
+        artist_table_driver(self).change_artist_of_row(row, text)
 
     def shows_label_name(self, name):
         self.tabs(named("_tabs")).select("Record")

@@ -234,56 +234,7 @@
             <number>0</number>
            </property>
            <item>
-            <layout class="QVBoxLayout" name="_artists_table_container">
-             <property name="spacing">
-              <number>10</number>
-             </property>
-             <property name="leftMargin">
-              <number>1</number>
-             </property>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="_add_artist_button_container">
-             <property name="spacing">
-              <number>0</number>
-             </property>
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QPushButton" name="_add_artist_button">
-               <property name="cursor">
-                <cursorShape>PointingHandCursor</cursorShape>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::StrongFocus</enum>
-               </property>
-               <property name="text">
-                <string>(+) Add an artist</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
+            <widget class="ArtistsTable" name="_artists_table_container" native="true"/>
            </item>
            <item>
             <spacer name="verticalSpacer_2">
@@ -791,6 +742,12 @@
    <class>DatePicker</class>
    <extends>QDateEdit</extends>
    <header>tgit.ui.widgets.date_picker</header>
+  </customwidget>
+  <customwidget>
+   <class>ArtistsTable</class>
+   <extends>QWidget</extends>
+   <header>tgit.ui.pages.album_edition_page</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
