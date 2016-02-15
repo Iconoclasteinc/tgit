@@ -29,6 +29,7 @@ class DatePicker(QDateEdit):
         self.setCalendarPopup(True)
         self._style_navigation_bar(self.calendarWidget())
         self._style_month_menu(self.calendarWidget())
+        self._style_year_edit(self.calendarWidget())
         self._style_navigation_buttons(self.calendarWidget())
 
     def _style_navigation_bar(self, calendar):
@@ -42,6 +43,12 @@ class DatePicker(QDateEdit):
         palette = calendar.palette()
         palette.setColor(QPalette.HighlightedText, palette.color(QPalette.ButtonText))
         month_menu.setPalette(palette)
+
+    def _style_year_edit(self, calendar):
+        year_edit = calendar.findChild(QWidget, "qt_calendar_yearbutton")
+        palette = calendar.palette()
+        palette.setColor(QPalette.HighlightedText, palette.color(QPalette.ButtonText))
+        year_edit.setPalette(palette)
 
     def _style_navigation_buttons(self, calendar):
         left_arrow = calendar.findChild(QWidget, "qt_calendar_prevmonth")
