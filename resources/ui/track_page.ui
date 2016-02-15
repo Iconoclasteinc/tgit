@@ -389,7 +389,7 @@ color: #666666;</string>
      <item>
       <widget class="QTabWidget" name="_tabs">
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="_contributors_tab">
         <attribute name="title">

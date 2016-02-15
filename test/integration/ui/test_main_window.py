@@ -68,17 +68,17 @@ def driver(qt, prober, automaton):
     main_window_driver.close()
 
 
-def test_album_actions_are_initially_disabled(driver):
+def test_project_actions_are_initially_disabled(driver):
     show_page()
-    driver.has_disabled_album_actions()
+    driver.has_disabled_project_actions()
 
 
-def test_actions_are_disabled_once_album_is_closed(driver):
+def test_actions_are_disabled_once_project_is_closed(driver):
     main_window = show_page()
-    main_window.enable_album_actions(build.album())
+    main_window.enable_project_actions(build.album())
 
-    main_window.disable_album_actions()
-    driver.has_disabled_album_actions()
+    main_window.disable_project_actions()
+    driver.has_disabled_project_actions()
 
 
 def test_signals_when_add_files_menu_item_clicked(driver):
@@ -89,7 +89,7 @@ def test_signals_when_add_files_menu_item_clicked(driver):
     main_window.on_add_files(lambda current_album, *files: add_files_signal.received([album, files]))
     main_window.display_album_screen(album)
 
-    driver.add_tracks_to_album(from_menu=True)
+    driver.add_tracks_to_project(from_menu=True)
     driver.check(add_files_signal)
 
 
@@ -117,7 +117,7 @@ def test_signals_when_export_menu_item_clicked(driver):
     driver.check(export_signal)
 
 
-def test_signals_when_save_album_menu_item_clicked(driver):
+def test_signals_when_save_project_menu_item_clicked(driver):
     album = make_album()
     save_album_signal = ValueMatcherProbe("save", album)
 
@@ -175,7 +175,7 @@ def test_signals_when_register_menu_item_clicked(driver):
 
 
 @pytest.mark.skipif(mac, reason="still unstable on Mac")
-def test_signals_when_save_album_keyboard_shortcut_is_activated(driver):
+def test_signals_when_save_project_keyboard_shortcut_is_activated(driver):
     album = make_album()
     save_album_signal = ValueMatcherProbe("save", album)
 
@@ -186,33 +186,33 @@ def test_signals_when_save_album_keyboard_shortcut_is_activated(driver):
     driver.check(save_album_signal)
 
 
-def test_asks_for_confirmation_before_closing_album(driver):
+def test_asks_for_confirmation_before_closing_project(driver):
     album = make_album()
     confirm_close_query = ValueMatcherProbe("confirm close")
 
     main_window = show_page(confirm_close=lambda **_: confirm_close_query.received(), on_close_album=ignore)
     main_window.display_album_screen(album)
 
-    driver.close_album()
+    driver.close_project()
     driver.check(confirm_close_query)
 
 
-def test_signals_when_album_closed(driver):
+def test_signals_when_project_closed(driver):
     album = make_album()
     close_album_signal = ValueMatcherProbe("close", album)
 
     main_window = show_page(confirm_close=lambda on_accept: on_accept(), on_close_album=close_album_signal.received)
     main_window.display_album_screen(album)
 
-    driver.close_album()
+    driver.close_project()
     driver.check(close_album_signal)
 
 
 @pytest.mark.skipif(mac, reason="still unstable on Mac")
-def test_shows_confirmation_when_close_album_keyboard_shortcut_is_activated(driver):
+def test_shows_confirmation_when_close_project_keyboard_shortcut_is_activated(driver):
     main_window = show_page()
-    main_window.enable_album_actions(build.album())
-    driver.close_album(using_shortcut=True)
+    main_window.enable_project_actions(build.album())
+    driver.close_project(using_shortcut=True)
 
 
 def test_signals_when_settings_menu_item_clicked(driver):
@@ -224,12 +224,12 @@ def test_signals_when_settings_menu_item_clicked(driver):
     driver.check(change_settings_signal)
 
 
-def test_navigates_to_album_edition_page_item_when_menu_item_is_clicked(driver):
+def test_navigates_to_project_edition_page_item_when_menu_item_is_clicked(driver):
     main_window = show_page()
     album = build.album()
     main_window.display_album_screen(album)
 
-    driver.navigate_to_album_page()
+    driver.navigate_to_project_page()
     album_screen(driver).is_showing_album_edition_page()
 
 
@@ -238,12 +238,12 @@ def test_navigates_to_track_list_page_item_when_menu_item_is_clicked(driver):
     album = build.album()
     main_window.display_album_screen(album)
 
-    driver.navigate_to_album_page()
+    driver.navigate_to_project_page()
     driver.navigate_to_track_list_page()
     album_screen(driver).is_showing_track_list_page()
 
 
-def test_adds_track_menu_item_when_adding_a_track_to_the_album(driver):
+def test_adds_track_menu_item_when_adding_a_track_to_the_project(driver):
     main_window = show_page()
     album = build.album()
     main_window.display_album_screen(album)
@@ -275,7 +275,7 @@ def test_updates_track_menu_item_when_tracks_change_order(driver):
     driver.shows_track_menu_item(title="Chevere!", track_number=2)
 
 
-def test_removes_track_menu_item_when_removing_a_track_from_the_album(driver):
+def test_removes_track_menu_item_when_removing_a_track_from_the_project(driver):
     main_window = show_page()
     album = build.album()
     main_window.display_album_screen(album)
@@ -286,7 +286,7 @@ def test_removes_track_menu_item_when_removing_a_track_from_the_album(driver):
     driver.does_not_show_menu_item(title="Chevere!", track_number=1)
 
 
-def test_displays_track_menu_item_when_loading_an_existing_album(driver):
+def test_displays_track_menu_item_when_loading_an_existing_project(driver):
     main_window = show_page()
     album = build.album(tracks=[build.track(track_title="Chevere!"), build.track(track_title="Zumbar")])
     main_window.display_album_screen(album)
@@ -295,7 +295,7 @@ def test_displays_track_menu_item_when_loading_an_existing_album(driver):
     driver.shows_track_menu_item(title="Zumbar", track_number=2)
 
 
-def test_removes_track_menu_item_when_closing_an_album(driver):
+def test_removes_track_menu_item_when_closing_an_project(driver):
     main_window = show_page()
     album = build.album(tracks=[build.track(track_title="Chevere!"), build.track(track_title="Zumbar")])
     main_window.display_album_screen(album)

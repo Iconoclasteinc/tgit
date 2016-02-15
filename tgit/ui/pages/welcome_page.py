@@ -24,8 +24,8 @@ from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.rescue import rescue
 
 
-def make_welcome_page(select_album, show_load_error, **handlers):
-    page = WelcomePage(select_album=select_album, show_load_error=show_load_error)
+def make_welcome_page(select_project, show_load_error, **handlers):
+    page = WelcomePage(select_project=select_project, show_load_error=show_load_error)
 
     for name, handler in handlers.items():
         getattr(page, name)(handler)
@@ -34,9 +34,9 @@ def make_welcome_page(select_album, show_load_error, **handlers):
 
 
 class WelcomePage(QFrame, UIFile):
-    def __init__(self, select_album, show_load_error):
+    def __init__(self, select_project, show_load_error):
         super().__init__()
-        self._select_album = select_album
+        self._select_project = select_project
         self._show_load_error = show_load_error
         self._setup_ui()
 
@@ -44,12 +44,12 @@ class WelcomePage(QFrame, UIFile):
         self._load(":/ui/welcome_page.ui")
         self._version_label.setText(tgit.__version__)
 
-    def on_create_album(self, on_create_album):
-        self._new_album_button.clicked.connect(on_create_album)
+    def on_create_project(self, on_create_project):
+        self._new_project_button.clicked.connect(on_create_project)
 
-    def on_load_album(self, on_load_album):
-        def try_loading_album(filename):
+    def on_load_project(self, on_load_project):
+        def try_loading_project(filename):
             with rescue(on_error=self._show_load_error):
-                on_load_album(filename)
+                on_load_project(filename)
 
-        self._load_album_button.clicked.connect(lambda: self._select_album(try_loading_album))
+        self._load_project_button.clicked.connect(lambda: self._select_project(try_loading_project))

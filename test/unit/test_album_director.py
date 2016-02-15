@@ -6,6 +6,7 @@ import pytest
 from flexmock import flexmock
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, empty, has_key, has_property,
                       match_equality)
+
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from cute.prober import PollingProber
@@ -59,22 +60,22 @@ def track_catalog():
 def album_catalog():
     class Catalog:
         def __init__(self):
-            self._albums = {}
+            self._projects = {}
 
-        def album_exists(self, filename):
-            return filename in self._albums
+        def project_exists(self, filename):
+            return filename in self._projects
 
-        def load_album(self, filename):
-            return self._albums[filename]
+        def load_project(self, filename):
+            return self._projects[filename]
 
-        def save_album(self, album):
-            self._albums[album.filename] = album
+        def save_project(self, album):
+            self._projects[album.filename] = album
 
-        add = save_album
+        add = save_project
 
         def assert_contains(self, album):
-            assert_that(self._albums, has_key(album.filename), "list of albums in catalog")
-            assert_that(self._albums[album.filename], wrap_matcher(album), "album {}".format(album.filename))
+            assert_that(self._projects, has_key(album.filename), "list of albums in catalog")
+            assert_that(self._projects[album.filename], wrap_matcher(album), "album {}".format(album.filename))
 
     return Catalog()
 
@@ -130,7 +131,7 @@ def test_loads_album_from_catalog_into_portfolio(portfolio, album_catalog):
 
 
 def test_checks_if_album_exists_in_catalog(album_catalog):
-    album_catalog.save_album(make_album(make_filename("workspace", "existing")))
+    album_catalog.save_project(make_album(make_filename("workspace", "existing")))
     assert_that(director.album_exists("existing", "workspace", in_catalog=album_catalog), is_(True),
                 "found existing album")
     assert_that(director.album_exists("new", "workspace", in_catalog=album_catalog), is_(False),

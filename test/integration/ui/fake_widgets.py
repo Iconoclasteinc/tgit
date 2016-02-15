@@ -57,7 +57,7 @@ class FakeAlbumScreen(FakeWidget):
     def __init__(self):
         super().__init__(ALBUM_SCREEN_NAME)
 
-    def to_album_edition_page(self):
+    def to_project_edition_page(self):
         self.current_page = ALBUM_EDITION_PAGE_NAME
 
     def to_track_list_page(self):

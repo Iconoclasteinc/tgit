@@ -17,4 +17,4 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from .local_project import album_exists, load_album, save_album
+from .local_project import project_exists, load_project, save_project

@@ -37,7 +37,7 @@
 }
 </string>
   </property>
-  <widget class="QMenuBar" name="menu_bar">
+  <widget class="QMenuBar" name="_menu_bar">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -46,32 +46,32 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="file_menu">
+   <widget class="QMenu" name="_file_menu">
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="add_files_action"/>
-    <addaction name="add_folder_action"/>
-    <addaction name="save_album_action"/>
-    <addaction name="close_album_action"/>
-    <addaction name="export_action"/>
+    <addaction name="_add_files_action"/>
+    <addaction name="_add_folder_action"/>
+    <addaction name="_save_project_action"/>
+    <addaction name="_close_project_action"/>
+    <addaction name="_export_action"/>
     <addaction name="separator"/>
-    <addaction name="settings_action"/>
+    <addaction name="_settings_action"/>
     <addaction name="separator"/>
-    <addaction name="exit_action"/>
+    <addaction name="_exit_action"/>
    </widget>
-   <widget class="QMenu" name="navigate_menu">
+   <widget class="QMenu" name="_navigate_menu">
     <property name="enabled">
      <bool>false</bool>
     </property>
     <property name="title">
      <string>&amp;Navigate</string>
     </property>
-    <addaction name="to_track_list_action"/>
-    <addaction name="to_album_edition_action"/>
+    <addaction name="_to_track_list_action"/>
+    <addaction name="_to_project_edition_action"/>
     <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="help_menu">
+   <widget class="QMenu" name="_help_menu">
     <property name="title">
      <string>&amp;Help</string>
     </property>
@@ -100,13 +100,13 @@
     </property>
     <addaction name="_soproq_action"/>
    </widget>
-   <addaction name="file_menu"/>
-   <addaction name="navigate_menu"/>
+   <addaction name="_file_menu"/>
+   <addaction name="_navigate_menu"/>
    <addaction name="_account_menu"/>
    <addaction name="_transmit_menu"/>
-   <addaction name="help_menu"/>
+   <addaction name="_help_menu"/>
   </widget>
-  <action name="settings_action">
+  <action name="_settings_action">
    <property name="text">
     <string>Se&amp;ttings</string>
    </property>
@@ -114,7 +114,7 @@
     <enum>QAction::PreferencesRole</enum>
    </property>
   </action>
-  <action name="add_files_action">
+  <action name="_add_files_action">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -122,7 +122,7 @@
     <string>Add &amp;Files...</string>
    </property>
   </action>
-  <action name="add_folder_action">
+  <action name="_add_folder_action">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -130,7 +130,7 @@
     <string>Add F&amp;older...</string>
    </property>
   </action>
-  <action name="export_action">
+  <action name="_export_action">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -138,31 +138,31 @@
     <string>&amp;Export...</string>
    </property>
   </action>
-  <action name="close_album_action">
+  <action name="_close_project_action">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>&amp;Close release</string>
+    <string>&amp;Close project</string>
    </property>
   </action>
-  <action name="save_album_action">
+  <action name="_save_project_action">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>&amp;Save release</string>
+    <string>&amp;Save project</string>
    </property>
   </action>
-  <action name="to_album_edition_action">
+  <action name="_to_project_edition_action">
    <property name="text">
-    <string>Album &amp;edition</string>
+    <string>Project &amp;edition</string>
    </property>
    <property name="iconText">
-    <string>Album &amp;edition</string>
+    <string>Project &amp;edition</string>
    </property>
   </action>
-  <action name="to_track_list_action">
+  <action name="_to_track_list_action">
    <property name="text">
     <string>&amp;Track list</string>
    </property>
@@ -170,7 +170,7 @@
     <string>&amp;Track list</string>
    </property>
   </action>
-  <action name="exit_action">
+  <action name="_exit_action">
    <property name="text">
     <string>E&amp;xit</string>
    </property>

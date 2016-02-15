@@ -84,7 +84,7 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         self.pages.insertWidget(self._track_page_index(to_index), page)
         self._update_navigation_controls()
 
-    def to_album_edition_page(self):
+    def to_project_edition_page(self):
         self._to_page(self._ALBUM_PAGE_INDEX)
 
     def to_track_list_page(self):

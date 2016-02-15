@@ -26,7 +26,7 @@ class StartupScreen(QStackedWidget):
         self._welcome_page = create_welcome_page()
         self._new_album_page = create_new_album_page()
 
-        self._welcome_page.on_create_album(self._move_to_new_album_page)
+        self._welcome_page.on_create_project(self._move_to_new_album_page)
         self._new_album_page.on_cancel_creation(self._move_to_welcome_page)
 
         self.addWidget(self._welcome_page)

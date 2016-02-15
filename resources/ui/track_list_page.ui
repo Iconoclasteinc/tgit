@@ -29,7 +29,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Organize the release's tracks. Press [space] to play a track. Press [delete] to remove the track from the list.</string>
+         <string>Organize the project's tracks. Press [space] to play a track. Press [delete] to remove the track from the list.</string>
         </property>
        </widget>
       </item>

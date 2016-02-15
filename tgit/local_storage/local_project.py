@@ -31,7 +31,7 @@ ARTWORK_FOLDER_NAME = "Artwork"
 TRACKS_FOLDER_NAME = "Tracks"
 
 
-def album_exists(filename):
+def project_exists(filename):
     return os.path.exists(filename)
 
 
@@ -44,7 +44,7 @@ def _from_1_9_to_1_11(data):
     return data
 
 
-def load_album(filename):
+def load_project(filename):
     album_folder = dirname(filename)
     tracks_folder = join(album_folder, TRACKS_FOLDER_NAME)
     artwork_folder = join(album_folder, ARTWORK_FOLDER_NAME)
@@ -65,7 +65,7 @@ def load_album(filename):
     return album
 
 
-def save_album(album, track_name=naming.track_scheme, track_catalog=tagging, artwork_name=naming.artwork_scheme):
+def save_project(album, track_name=naming.track_scheme, track_catalog=tagging, artwork_name=naming.artwork_scheme):
     album_folder = dirname(album.filename)
     tracks_folder = join(album_folder, TRACKS_FOLDER_NAME)
     artwork_folder = join(album_folder, ARTWORK_FOLDER_NAME)

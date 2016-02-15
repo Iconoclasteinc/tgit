@@ -22,10 +22,9 @@ import pytest
 from cute.finders import WidgetIdentity
 from test.drivers.startup_screen_driver import StartupScreenDriver
 from test.integration.ui import show_widget
-from tgit.ui.pages.new_album_page import NewAlbumPage
+from tgit.ui.pages.new_album_page import NewProjectPage
 from tgit.ui.pages.startup_screen import StartupScreen
 from tgit.ui.pages.welcome_page import WelcomePage
-
 
 ignore = lambda: None
 no = lambda _: False
@@ -34,11 +33,11 @@ no = lambda _: False
 @pytest.fixture()
 def screen(qt):
     def create_welcome_page():
-        return WelcomePage(select_album=ignore, show_load_error=ignore)
+        return WelcomePage(select_project=ignore, show_load_error=ignore)
 
     def create_new_album_page():
-        return NewAlbumPage(select_album_location=ignore, select_track=ignore, check_album_exists=no,
-                            confirm_overwrite=ignore)
+        return NewProjectPage(select_location=ignore, select_track=ignore, check_project_exists=no,
+                              confirm_overwrite=ignore)
 
     startup_screen = StartupScreen(create_welcome_page=create_welcome_page,
                                    create_new_album_page=create_new_album_page)
@@ -57,9 +56,9 @@ def test_initially_shows_the_welcome_page(driver):
     driver.shows_welcome_page()
 
 
-def test_navigates_to_new_album_page_to_create_an_album(driver):
-    driver.create_album()
+def test_navigates_to_new_album_page_to_create_an_project(driver):
+    driver.create_project()
 
 
-def test_navigates_to_welcome_page_after_cancelling_album_creation(driver):
+def test_navigates_to_welcome_page_after_cancelling_project_creation(driver):
     driver.cancel_creation()
