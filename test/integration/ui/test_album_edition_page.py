@@ -88,7 +88,7 @@ def test_displays_album_metadata(driver):
         release_time="2009-01-01",
         comments="Comments\n..."))
 
-    driver.shows_release_name("Album")
+    driver.shows_title("Album")
     driver.shows_compilation(False)
     driver.shows_main_artist("Artist")
     driver.shows_main_artist_region("Canada")
@@ -386,7 +386,7 @@ def test_signals_when_album_metadata_edited(driver):
     _ = show_page(make_album(), on_metadata_changed=metadata_changed_signal.received)
 
     metadata_changed_signal.expect(has_entries(release_name="Title"))
-    driver.change_release_name("Title")
+    driver.change_title("Title")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(compilation=True))
@@ -435,42 +435,42 @@ def test_signals_when_album_metadata_edited(driver):
     driver.check(metadata_changed_signal)
 
 
-def test_shows_artists(driver):
+def test_shows_musicians(driver):
     _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
 
-    driver.shows_only_artists_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
+    driver.shows_only_musicians_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
 
 
-def test_removes_artists(driver):
+def test_removes_musicians(driver):
     metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
     _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]),
                   on_metadata_changed=metadata_changed_signal.received)
 
     metadata_changed_signal.expect(has_entries(guest_performers=[("Vocals", "Robert Plant")]))
-    driver.remove_artist(row=1)
-    driver.shows_only_artists_in_table(("Vocals", "Robert Plant"))
+    driver.remove_musician(row=1)
+    driver.shows_only_musicians_in_table(("Vocals", "Robert Plant"))
     driver.check(metadata_changed_signal)
 
 
-def test_adds_artists(driver):
+def test_adds_musicians(driver):
     metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
     _ = show_page(album=build.album(), on_metadata_changed=metadata_changed_signal.received)
 
     metadata_changed_signal.expect(has_entries(guest_performers=[("Guitar", "Jimmy Page")]))
-    driver.add_artist(instrument="Guitar", name="Jimmy Page", row=1)
+    driver.add_musician(instrument="Guitar", name="Jimmy Page", row=1)
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
-    driver.add_artist(instrument="Vocals", name="Robert Plant", row=2)
+    driver.add_musician(instrument="Vocals", name="Robert Plant", row=2)
     driver.check(metadata_changed_signal)
 
 
-def test_displays_artists_table_only_once(driver):
+def test_displays_musician_table_only_once(driver):
     album = build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")])
     page = show_page(album=album)
     page.display(album)
 
-    driver.shows_only_artists_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
+    driver.shows_only_musicians_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
 
 
 def _load_test_image(name):

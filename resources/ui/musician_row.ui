@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>_artist_row</class>
- <widget class="QWidget" name="_artist_row">
+ <class>_musician_row</class>
+ <widget class="QWidget" name="_musician_row">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -40,7 +40,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QLineEdit" name="_artist_name">
+    <widget class="QLineEdit" name="_musician_name">
      <property name="minimumSize">
       <size>
        <width>200</width>
@@ -60,14 +60,14 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLabel" name="_artist_name_caption">
+    <widget class="QLabel" name="_musician_name_caption">
      <property name="text">
       <string>Musician Name</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QPushButton" name="_remove_artist_button">
+    <widget class="QPushButton" name="_remove_musician_button">
      <property name="cursor">
       <cursorShape>PointingHandCursor</cursorShape>
      </property>

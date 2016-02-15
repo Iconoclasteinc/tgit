@@ -100,10 +100,10 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def _make_artist_scroll_area_transparent(self):
         palette = QPalette()
         palette.setColor(QPalette.Window, QColor(0, 0, 0, 0))
-        self._artists_input_scroll_area.setPalette(palette)
-        self._artists_input_scroll_area.setBackgroundRole(QPalette.Window)
-        self._artists_input_scroll_area.widget().setPalette(palette)
-        self._artists_input_scroll_area.widget().setBackgroundRole(QPalette.Window)
+        self._musicians_input_scroll_area.setPalette(palette)
+        self._musicians_input_scroll_area.setBackgroundRole(QPalette.Window)
+        self._musicians_input_scroll_area.widget().setPalette(palette)
+        self._musicians_input_scroll_area.widget().setBackgroundRole(QPalette.Window)
 
     @staticmethod
     def _fill_with_countries(combobox):
@@ -174,15 +174,15 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._remove_picture_button.clicked.connect(lambda _: on_remove_picture())
 
     def on_metadata_changed(self, handler):
-        def handle(entry, artists=None):
-            handler(**self._metadata(artists, entry))
+        def handle(entry, musicians=None):
+            handler(**self._metadata(musicians, entry))
 
-        self._artists_table_container.on_artist_changed(lambda artists: handle("guest_performers", artists))
+        self._musician_table_container.on_musician_changed(lambda musicians: handle("guest_performers", musicians))
         self._release_time.dateChanged.connect(lambda: handle("release_time"))
         self._digital_release_time.dateChanged.connect(lambda: handle("digital_release_time"))
         self._original_release_time.dateChanged.connect(lambda: handle("original_release_time"))
         self._recording_time.dateChanged.connect(lambda: handle("recording_time"))
-        self._release_name.editingFinished.connect(lambda: handle("release_name"))
+        self._title.editingFinished.connect(lambda: handle("release_name"))
         self._compilation.clicked.connect(lambda: handle("compilation"))
         self._main_artist.editingFinished.connect(lambda: handle("lead_performer"))
         self._main_artist_region.activated.connect(lambda: handle("lead_performer_region"))
@@ -209,7 +209,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         if album.main_cover is not self._picture or album.main_cover is None:
             self._front_cover.setPixmap(image.scale(album.main_cover, *self.FRONT_COVER_SIZE))
             self._picture = album.main_cover
-        self._release_name.setText(album.release_name)
+        self._title.setText(album.release_name)
         self._compilation.setChecked(album.compilation is True)
         self._display_main_artist(album)
         self._display_region(album.lead_performer_region, self._main_artist_region)
@@ -219,7 +219,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._comments.setPlainText(album.comments)
         self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self._recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
-        self._artists_table_container.display(album.guest_performers or [])
+        self._musician_table_container.display(album.guest_performers or [])
 
         identities = album.isnis or {}
         self._main_artist_isni.setText(identities[album.lead_performer] if album.lead_performer in identities else None)
@@ -233,12 +233,12 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
         self._main_artist.setDisabled(album.compilation is True)
 
-    def _metadata(self, artists, *keys):
-        all_values = dict(release_name=self._release_name.text(),
+    def _metadata(self, musicians, *keys):
+        all_values = dict(release_name=self._title.text(),
                           compilation=self._compilation.isChecked(),
                           lead_performer=self._main_artist.text(),
                           lead_performer_region=self._get_country_code_from_combo(self._main_artist_region),
-                          guest_performers=artists,
+                          guest_performers=musicians,
                           label_name=self._label_name.text(),
                           catalog_number=self._catalog_number.text(),
                           upc=self._barcode.text(),
@@ -271,81 +271,81 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_isni_assign_action.setEnabled(self._isni_assign and can_lookup_or_assign)
 
 
-class ArtistsTable(QWidget, UIFile):
-    _on_artist_changed = lambda _: None
+class MusicianTable(QWidget, UIFile):
+    _on_musician_changed = lambda _: None
 
     def __init__(self, *__args):
         super().__init__(*__args)
-        self._load(":/ui/artists_table.ui")
-        self._add_artist_button.clicked.connect(lambda: self._make_artist_row())
+        self._load(":/ui/musician_table.ui")
+        self._add_musician_button.clicked.connect(lambda: self._make_musician_row())
 
-    def display(self, artists):
+    def display(self, musicians):
         if self._is_empty():
-            for artist in artists:
-                self._artists_table.addWidget(self._make_artist_row(artist))
+            for musician in musicians:
+                self._musician_table.addWidget(self._make_musician_row(musician))
 
-    def on_artist_changed(self, on_artist_changed):
-        self._on_artist_changed = on_artist_changed
+    def on_musician_changed(self, on_musician_changed):
+        self._on_musician_changed = on_musician_changed
 
     def _is_empty(self):
-        return self._artists_table.count() == 0
+        return self._musician_table.count() == 0
 
-    def _make_artist_row(self, artist=(None, None)):
-        self._artists_table.addWidget(
-            make_artist_row(index=self._artists_table.count(),
-                            artist=artist,
-                            on_artist_changed=lambda: self._on_artist_changed(self._artists),
-                            on_artist_removed=lambda: self._on_artist_changed(self._artists)))
+    def _make_musician_row(self, musician=(None, None)):
+        self._musician_table.addWidget(
+            make_musician_row(index=self._musician_table.count(),
+                              musician=musician,
+                              on_musician_changed=lambda: self._on_musician_changed(self._musicians),
+                              on_musician_removed=lambda: self._on_musician_changed(self._musicians)))
 
     @property
-    def _artists(self):
-        artists = []
-        for index in range(self._artists_table.count()):
+    def _musicians(self):
+        musicians = []
+        for index in range(self._musician_table.count()):
             if self._row_is_empty(index):
                 continue
 
-            artists.append(self._artists_table.itemAt(index).widget().artist)
+            musicians.append(self._musician_table.itemAt(index).widget().musician)
 
-        return artists
+        return musicians
 
     def _row_is_empty(self, index):
-        return self._artists_table.itemAt(index) is None
+        return self._musician_table.itemAt(index) is None
 
 
-def make_artist_row(index, on_artist_changed, on_artist_removed, artist):
-    row = ArtistRow(index)
-    row.artist_removed.connect(on_artist_removed)
-    row.artist_changed.connect(on_artist_changed)
-    row.display(*artist)
+def make_musician_row(index, on_musician_changed, on_musician_removed, musician):
+    row = MusicianRow(index)
+    row.musician_removed.connect(on_musician_removed)
+    row.musician_changed.connect(on_musician_changed)
+    row.display(*musician)
 
     return row
 
 
-class ArtistRow(QWidget, UIFile):
-    artist_removed = pyqtSignal()
-    artist_changed = pyqtSignal()
+class MusicianRow(QWidget, UIFile):
+    musician_removed = pyqtSignal()
+    musician_changed = pyqtSignal()
 
     def __init__(self, index):
         super().__init__()
-        self._load(":/ui/artist_row.ui")
+        self._load(":/ui/musician_row.ui")
         self.setObjectName("{}_{}".format(self.objectName(), index))
-        self._remove_artist_button.clicked.connect(self._remove)
-        self._instrument.editingFinished.connect(self._artist_changed)
-        self._artist_name.editingFinished.connect(self._artist_changed)
+        self._remove_musician_button.clicked.connect(self._remove)
+        self._instrument.editingFinished.connect(self._musician_changed)
+        self._musician_name.editingFinished.connect(self._musician_changed)
 
-    def display(self, instrument, artist_name):
+    def display(self, instrument, musician_name):
         self._instrument.setText(instrument)
-        self._artist_name.setText(artist_name)
+        self._musician_name.setText(musician_name)
 
     @property
-    def artist(self):
-        return self._instrument.text(), self._artist_name.text()
+    def musician(self):
+        return self._instrument.text(), self._musician_name.text()
 
     def _remove(self):
         self.setParent(None)
         self.close()
-        self.artist_removed.emit()
+        self.musician_removed.emit()
 
-    def _artist_changed(self):
-        if self._instrument.text() and self._artist_name.text():
-            self.artist_changed.emit()
+    def _musician_changed(self):
+        if self._instrument.text() and self._musician_name.text():
+            self.musician_changed.emit()

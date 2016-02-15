@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named, with_buddy, with_pixmap_size
-from test.drivers.artist_table_driver import artist_table_driver
+from test.drivers.artist_table_driver import musician_table_driver
 from tgit.ui.pages.album_edition_page import AlbumEditionPage
 from ._screen_driver import ScreenDriver
 from .picture_selection_dialog_driver import picture_selection_dialog
@@ -19,7 +19,7 @@ class AlbumEditionPageDriver(ScreenDriver):
     def shows_metadata(self, **meta):
         for tag, value in meta.items():
             if tag == "release_name":
-                self.shows_release_name(value)
+                self.shows_title(value)
             elif tag == "lead_performer":
                 self.shows_main_artist(value)
             elif tag == "compilation":
@@ -48,7 +48,7 @@ class AlbumEditionPageDriver(ScreenDriver):
             if tag == "front_cover":
                 self.select_picture(value)
             elif tag == "release_name":
-                self.change_release_name(value)
+                self.change_title(value)
             elif tag == "toggle_compilation" and value:
                 self.toggle_compilation()
             elif tag == "lead_performer":
@@ -111,12 +111,12 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.tabs(named("_tabs")).select("Artists")
         self.button(named("_add_artist_button")).click()
 
-    def shows_release_name(self, name):
-        self.label(with_buddy(named("_release_name"))).is_showing_on_screen()
-        self.lineEdit(named("_release_name")).has_text(name)
+    def shows_title(self, name):
+        self.label(with_buddy(named("_title"))).is_showing_on_screen()
+        self.lineEdit(named("_title")).has_text(name)
 
-    def change_release_name(self, name):
-        self.lineEdit(named("_release_name")).change_text(name)
+    def change_title(self, name):
+        self.lineEdit(named("_title")).change_text(name)
 
     def shows_compilation(self, value):
         compilation_checkbox = self.checkbox(named("_compilation"))
@@ -161,26 +161,26 @@ class AlbumEditionPageDriver(ScreenDriver):
     def change_main_artist_region(self, name):
         self.combobox(named("_main_artist_region")).select_option(name)
 
-    def shows_only_artists_in_table(self, *artists):
-        self.tabs(named("_tabs")).select("Artists")
-        artist_table_driver(self).shows_only_artists_in_table(*artists)
+    def shows_only_musicians_in_table(self, *musicians):
+        self.tabs(named("_tabs")).select("Musicians")
+        musician_table_driver(self).shows_only_musicians_in_table(*musicians)
 
-    def remove_artist(self, row):
-        self.tabs(named("_tabs")).select("Artists")
-        artist_table_driver(self).remove_artist(row)
+    def remove_musician(self, row):
+        self.tabs(named("_tabs")).select("Musicians")
+        musician_table_driver(self).remove_musician(row)
 
-    def add_artist(self, instrument, name, row):
-        self.tabs(named("_tabs")).select("Artists")
-        self.button(named("_add_artist_button")).click()
-        artist_table_driver(self).add_artist(instrument, name, row)
+    def add_musician(self, instrument, name, row):
+        self.tabs(named("_tabs")).select("Musicians")
+        self.button(named("_add_musician_button")).click()
+        musician_table_driver(self).add_musician(instrument, name, row)
 
     def change_instrument_of_row(self, row, text):
-        self.tabs(named("_tabs")).select("Artists")
-        artist_table_driver(self).change_instrument_of_row(row, text)
+        self.tabs(named("_tabs")).select("Musicians")
+        musician_table_driver(self).change_instrument_of_row(row, text)
 
-    def change_artist_of_row(self, row, text):
-        self.tabs(named("_tabs")).select("Artists")
-        artist_table_driver(self).change_artist_of_row(row, text)
+    def change_musician_of_row(self, row, text):
+        self.tabs(named("_tabs")).select("Musicians")
+        musician_table_driver(self).change_musician_of_row(row, text)
 
     def shows_label_name(self, name):
         self.tabs(named("_tabs")).select("Record")

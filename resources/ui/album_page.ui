@@ -192,9 +192,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="_artists_tab">
+     <widget class="QWidget" name="_mucisians_tab">
       <attribute name="title">
-       <string>Artists</string>
+       <string>Musicians</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <property name="leftMargin">
@@ -210,14 +210,14 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QScrollArea" name="_artists_input_scroll_area">
+        <widget class="QScrollArea" name="_musicians_input_scroll_area">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
-         <widget class="QWidget" name="_artists_input_scroll_container">
+         <widget class="QWidget" name="_musicians_input_scroll_container">
           <property name="geometry">
            <rect>
             <x>0</x>
@@ -231,7 +231,7 @@
             <number>10</number>
            </property>
            <item>
-            <widget class="ArtistsTable" name="_artists_table_container" native="true"/>
+            <widget class="MusicianTable" name="_musician_table_container" native="true"/>
            </item>
            <item>
             <spacer name="verticalSpacer_2">
@@ -530,7 +530,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLineEdit" name="_release_name">
+           <widget class="QLineEdit" name="_title">
             <property name="minimumSize">
              <size>
               <width>500</width>
@@ -540,15 +540,15 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="_release_name_caption">
+           <widget class="QLabel" name="_title_caption">
             <property name="text">
-             <string>Release Name</string>
+             <string>Title</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
             </property>
             <property name="buddy">
-             <cstring>_release_name</cstring>
+             <cstring>_title</cstring>
             </property>
            </widget>
           </item>
@@ -634,7 +634,7 @@
                <enum>Qt::StrongFocus</enum>
               </property>
               <property name="text">
-               <string>Récupérer</string>
+               <string>Find</string>
               </property>
               <property name="popupMode">
                <enum>QToolButton::MenuButtonPopup</enum>
@@ -741,7 +741,7 @@
    <header>tgit.ui.widgets.date_picker</header>
   </customwidget>
   <customwidget>
-   <class>ArtistsTable</class>
+   <class>MusicianTable</class>
    <extends>QWidget</extends>
    <header>tgit.ui.pages.album_edition_page</header>
    <container>1</container>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>_artists_table_widget</class>
- <widget class="QWidget" name="_artists_table_widget">
+ <class>_musician_table_widget</class>
+ <widget class="QWidget" name="_musician_table_widget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -30,10 +30,10 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="_artists_table"/>
+    <layout class="QVBoxLayout" name="_musician_table"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="_add_artist_button_container">
+    <layout class="QHBoxLayout" name="_add_musician_button_container">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -47,7 +47,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="_add_artist_button">
+      <widget class="QPushButton" name="_add_musician_button">
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
@@ -55,7 +55,7 @@
         <enum>Qt::StrongFocus</enum>
        </property>
        <property name="text">
-        <string>(+) Add an artist</string>
+        <string>(+) Add a musician</string>
        </property>
       </widget>
      </item>

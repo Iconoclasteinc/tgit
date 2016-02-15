@@ -12,8 +12,8 @@
         <translation>Artiste principal</translation>
     </message>
     <message>
-        <source>Release Name</source>
-        <translation>Titre de l&apos;album</translation>
+        <source>Title</source>
+        <translation>Titre</translation>
     </message>
     <message>
         <source>Bitrate</source>
@@ -235,7 +235,7 @@
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
         <source>Musicians</source>
-        <translation>Musiciens de l&apos;album</translation>
+        <translation>Musiciens</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -299,6 +299,11 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
+        <source>Find</source>
+        <translation>Récupérer</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
         <source>Assign</source>
         <translation>Assigner</translation>
     </message>
@@ -322,11 +327,32 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
+        <source>Remove</source>
+        <translation>Retirer</translation>
+    </message>
+</context>
+<context>
+    <name>_musician_table_widget</name>
+    <message>
+        <location filename="tgit/ui/musician_table.py" />
+        <source>(+) Add a musician</source>
+        <translation>(+) Ajouter un musicien</translation>
+    </message>
+</context>
+<context>
+    <name>_musician_row</name>
+    <message>
+        <location filename="tgit/ui/musician_row.py" />
+        <source>(+) Add a musician</source>
+        <translation>(+) Ajouter un musicien</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/musician_row.py" />
         <source>Musician Name</source>
         <translation>Nom du musicien</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/musician_row.py" />
         <source>Remove</source>
         <translation>Retirer</translation>
     </message>
