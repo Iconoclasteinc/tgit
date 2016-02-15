@@ -219,7 +219,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._comments.setPlainText(album.comments)
         self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self._recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
-
         self._artists_table_container.display(album.guest_performers or [])
 
         identities = album.isnis or {}
@@ -278,11 +277,12 @@ class ArtistsTable(QWidget, UIFile):
     def __init__(self, *__args):
         super().__init__(*__args)
         self._load(":/ui/artists_table.ui")
-        self._add_artist_button.clicked.connect(lambda _: self._make_empty_artist_row())
+        self._add_artist_button.clicked.connect(lambda: self._make_artist_row())
 
     def display(self, artists):
         if self._is_empty():
-            self._display_artist_table(artists)
+            for artist in artists:
+                self._artists_table.addWidget(self._make_artist_row(artist))
 
     def on_artist_changed(self, on_artist_changed):
         self._on_artist_changed = on_artist_changed
@@ -290,21 +290,12 @@ class ArtistsTable(QWidget, UIFile):
     def _is_empty(self):
         return self._artists_table.count() == 0
 
-    def _display_artist_table(self, artists):
-        for artist in artists:
-            self._display_artist(artist)
-
-    def _display_artist(self, artist):
-        row = self._make_empty_artist_row()
-        row.display(*artist)
-
-    def _make_empty_artist_row(self):
-        row = ArtistRow(self._artists_table.count())
-        row.artist_removed.connect(lambda: self._on_artist_changed(self._artists))
-        row.artist_changed.connect(lambda: self._on_artist_changed(self._artists))
-        self._artists_table.addWidget(row)
-
-        return row
+    def _make_artist_row(self, artist=(None, None)):
+        self._artists_table.addWidget(
+            make_artist_row(index=self._artists_table.count(),
+                            artist=artist,
+                            on_artist_changed=lambda: self._on_artist_changed(self._artists),
+                            on_artist_removed=lambda: self._on_artist_changed(self._artists)))
 
     @property
     def _artists(self):
@@ -319,6 +310,15 @@ class ArtistsTable(QWidget, UIFile):
 
     def _row_is_empty(self, index):
         return self._artists_table.itemAt(index) is None
+
+
+def make_artist_row(index, on_artist_changed, on_artist_removed, artist):
+    row = ArtistRow(index)
+    row.artist_removed.connect(on_artist_removed)
+    row.artist_changed.connect(on_artist_changed)
+    row.display(*artist)
+
+    return row
 
 
 class ArtistRow(QWidget, UIFile):
