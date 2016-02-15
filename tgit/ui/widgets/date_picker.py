@@ -25,16 +25,25 @@ from PyQt5.QtWidgets import QDateEdit, QWidget
 class DatePicker(QDateEdit):
     def __init__(self, *__args):
         super().__init__(*__args)
-        self.setCalendarPopup(True)
-        self._style()
 
-    def _style(self):
-        calendar = self.calendarWidget()
+        self.setCalendarPopup(True)
+        self._style_navigation_bar(self.calendarWidget())
+        self._style_month_menu(self.calendarWidget())
+        self._style_navigation_buttons(self.calendarWidget())
+
+    def _style_navigation_bar(self, calendar):
         navbar = calendar.findChild(QWidget, "qt_calendar_navigationbar")
         palette = calendar.palette()
-        palette.setColor(QPalette.Text, Qt.black)
         palette.setColor(QPalette.Highlight, Qt.white)
         navbar.setPalette(palette)
+
+    def _style_month_menu(self, calendar):
+        month_menu = calendar.findChild(QWidget, "qt_calendar_monthbutton")
+        palette = calendar.palette()
+        palette.setColor(QPalette.HighlightedText, palette.color(QPalette.ButtonText))
+        month_menu.setPalette(palette)
+
+    def _style_navigation_buttons(self, calendar):
         left_arrow = calendar.findChild(QWidget, "qt_calendar_prevmonth")
         left_arrow.setIcon(QIcon(":/calendar-previous"))
         right_arrow = calendar.findChild(QWidget, "qt_calendar_nextmonth")
