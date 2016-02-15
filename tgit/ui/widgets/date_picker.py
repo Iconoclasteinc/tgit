@@ -32,6 +32,7 @@ class DatePicker(QDateEdit):
         calendar = self.calendarWidget()
         navbar = calendar.findChild(QWidget, "qt_calendar_navigationbar")
         palette = calendar.palette()
+        palette.setColor(QPalette.Text, Qt.black)
         palette.setColor(QPalette.Highlight, Qt.white)
         navbar.setPalette(palette)
         left_arrow = calendar.findChild(QWidget, "qt_calendar_prevmonth")

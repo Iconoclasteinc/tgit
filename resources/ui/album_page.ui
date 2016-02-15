@@ -10,6 +10,32 @@
     <height>690</height>
    </rect>
   </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QCalendarWidget QToolButton {
+        background-color: transparent;
+    }
+
+    QCalendarWidget QToolButton#qt_calendar_monthbutton {
+        padding-right: 15px;
+    }
+
+    QCalendarWidget QToolButton::menu-indicator {
+        subcontrol-position: right center;
+        top: 2px;
+        right: 2px;
+    }
+
+    QCalendarWidget QToolButton::menu-indicator {
+        image: url(:/calendar-menu-indicator);
+    }
+
+    QCalendarWidget QToolButton::menu-indicator:open {
+        top: 3px;
+        right: 1px;
+    }
+   </string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
