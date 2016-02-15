@@ -52,9 +52,9 @@ def test_round_trips_album_metadata_and_tracks_to_disk(project_file, mp3):
                                  images=[sample_front_cover],
                                  tracks=original_tracks)
 
-    local_project.save_album(original_album, track_name=lambda track: track.track_title + ".mp3")
+    local_project.save_project(original_album, track_name=lambda track: track.track_title + ".mp3")
     delete_from_disk(*original_tracks)
-    stored_album = local_project.load_album(album_file)
+    stored_album = local_project.load_project(album_file)
 
     assert_that(stored_album.type, equal_to(Album.Type.FLAC), "type")
     assert_that(stored_album.lead_performer, equal_to("Artist"), "lead performer")
@@ -71,21 +71,21 @@ def test_remove_previous_artwork_and_tracks(project_file, mp3):
                         images=[sample_front_cover],
                         tracks=tracks)
 
-    local_project.save_album(album, simple_naming)
+    local_project.save_project(album, simple_naming)
 
     for position in reversed(range(len(album))):
         album.remove_track(position)
 
     album.remove_images()
 
-    local_project.save_album(album, simple_naming)
+    local_project.save_project(album, simple_naming)
 
     assert_that(fs.list_dir(project_file(TRACKS_FOLDER_NAME)), empty(), "track files left")
     assert_that(fs.list_dir(project_file(ARTWORK_FOLDER_NAME)), empty(), "artwork files left")
 
 
 def test_migrates_from_v1_9_to_v1_11():
-    stored_album = local_project.load_album(resources.path("album-v1.9.tgit"))
+    stored_album = local_project.load_project(resources.path("album-v1.9.tgit"))
 
     assert_that(stored_album.isnis, has_entry("Artist", "0000000123456789"), "lead performer identity")
 
@@ -94,8 +94,8 @@ def test_checks_if_album_exists_in_catalog(project_file):
     album_file = project_file("existing.tgit")
     touch(album_file)
 
-    assert_that(local_project.album_exists(album_file), is_(True), "found existing album file on disk")
-    assert_that(local_project.album_exists(project_file("missing.tgit")), is_(False), "found new album file on disk")
+    assert_that(local_project.project_exists(album_file), is_(True), "found existing album file on disk")
+    assert_that(local_project.project_exists(project_file("missing.tgit")), is_(False), "found new album file on disk")
 
 
 def delete_from_disk(*tracks):

@@ -11,8 +11,8 @@ from tgit.ui.pages.welcome_page import WelcomePage, make_welcome_page
 ignore = lambda: None
 
 
-def show_page(select_album=ignore, show_load_error=ignore, **handlers):
-    page = make_welcome_page(select_album, show_load_error, **handlers)
+def show_page(select_project=ignore, show_load_error=ignore, **handlers):
+    page = make_welcome_page(select_project, show_load_error, **handlers)
     page.show()
     return page
 
@@ -27,16 +27,16 @@ def driver(qt, prober, automaton):
 def test_signals_when_new_album_button_clicked(driver):
     new_album_signal = ValueMatcherProbe("new album")
     page = show_page()
-    page.on_create_album(lambda: new_album_signal.received())
+    page.on_create_project(lambda: new_album_signal.received())
 
-    driver.new_album()
+    driver.new_project()
     driver.check(new_album_signal)
 
 
 def test_signals_when_load_album_button_clicked(driver):
     load_album_signal = ValueMatcherProbe("load album", "album.tgit")
-    page = show_page(select_album=lambda on_select: on_select("album.tgit"))
-    page.on_load_album(load_album_signal.received)
+    page = show_page(select_project=lambda on_select: on_select("album.tgit"))
+    page.on_load_project(load_album_signal.received)
 
     driver.load()
     driver.check(load_album_signal)
@@ -48,9 +48,9 @@ def test_warn_user_if_load_failed(driver):
 
     load_failed_signal = ValueMatcherProbe("load album failed", instance_of(OSError))
 
-    _ = show_page(select_album=lambda load: load("album.tgit"),
+    _ = show_page(select_project=lambda load: load("album.tgit"),
                   show_load_error=load_failed_signal.received,
-                  on_load_album=load_fails)
+                  on_load_project=load_fails)
 
     driver.load()
     driver.check(load_failed_signal)

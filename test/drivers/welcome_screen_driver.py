@@ -10,8 +10,8 @@ def welcome_page(parent):
 
 
 class WelcomePageDriver(ScreenDriver):
-    def new_album(self):
-        self.button(named("_new_album_button")).click()
+    def new_project(self):
+        self.button(named("_new_project_button")).click()
 
     def load(self):
-        self.button(named("_load_album_button")).click()
+        self.button(named("_load_project_button")).click()

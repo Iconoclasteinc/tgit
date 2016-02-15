@@ -19,19 +19,19 @@
 
 from ._screen_driver import ScreenDriver
 from test.drivers import welcome_page
-from test.drivers.new_album_page_driver import new_album_page
+from test.drivers.new_album_page_driver import new_project_page
 
 
 class StartupScreenDriver(ScreenDriver):
     def shows_welcome_page(self):
         welcome_page(self).is_showing_on_screen()
 
-    def create_album(self):
-        welcome_page(self).new_album()
-        new_album_page(self).is_showing_on_screen()
-        new_album_page(self).has_reset_form()
+    def create_project(self):
+        welcome_page(self).new_project()
+        new_project_page(self).is_showing_on_screen()
+        new_project_page(self).has_reset_form()
 
     def cancel_creation(self):
-        self.create_album()
-        new_album_page(self).cancel_creation()
+        self.create_project()
+        new_project_page(self).cancel_creation()
         welcome_page(self).is_showing_on_screen()

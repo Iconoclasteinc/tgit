@@ -77,26 +77,26 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self._register(**handlers)
 
         self._album_dependent_action = [
-            self.add_files_action,
-            self.add_folder_action,
-            self.export_action,
-            self.close_album_action,
-            self.save_album_action
+            self._add_files_action,
+            self._add_folder_action,
+            self._export_action,
+            self._close_project_action,
+            self._save_project_action
         ]
 
         self.display_startup_screen()
         if session.opened:
             self.user_signed_in(session.current_user)
 
-    def enable_album_actions(self, album):
-        self.navigate_menu.setEnabled(True)
+    def enable_project_actions(self, album):
+        self._navigate_menu.setEnabled(True)
         self._transmit_menu.setEnabled(True)
         for action in self._album_dependent_action:
             action.setEnabled(True)
             action.setData(album)
 
-    def disable_album_actions(self):
-        self.navigate_menu.setDisabled(True)
+    def disable_project_actions(self):
+        self._navigate_menu.setDisabled(True)
         self._transmit_menu.setDisabled(True)
         for action in self._album_dependent_action:
             action.setEnabled(False)
@@ -104,13 +104,13 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def display_startup_screen(self, *_):
         self._album = None
-        self.disable_album_actions()
+        self.disable_project_actions()
         self._clear_track_actions()
         self._change_screen(self._create_startup_screen())
 
     def display_album_screen(self, album):
         self._album = album
-        self.enable_album_actions(album)
+        self.enable_project_actions(album)
         self._create_track_actions()
         self._change_screen(self._create_album_screen(album))
 
@@ -133,7 +133,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         def confirm_album_close():
             self._confirm_close(on_accept=lambda: on_close_album(self._album))
 
-        self.close_album_action.triggered.connect(confirm_album_close)
+        self._close_project_action.triggered.connect(confirm_album_close)
 
     def on_save_album(self, on_save_album):
         def save_album():
@@ -143,14 +143,14 @@ class MainWindow(QMainWindow, HandlerRegistrar):
             with rescue(on_error=self._show_save_error):
                 on_save_album(self._album)
 
-        self.save_album_action.triggered.connect(save_album)
+        self._save_project_action.triggered.connect(save_album)
 
     def on_export(self, on_export):
         def export(destination):
             with rescue(on_error=self._show_export_error):
                 on_export(self._album, destination)
 
-        self.export_action.triggered.connect(
+        self._export_action.triggered.connect(
             lambda *_: self._select_export_destination(export, self._album.release_name))
 
     def on_transmit_to_soproq(self, on_transmit_to_soproq):
@@ -162,14 +162,14 @@ class MainWindow(QMainWindow, HandlerRegistrar):
             lambda _: self._select_save_as_destination(save_as, self._album.release_name))
 
     def on_settings(self, on_settings):
-        self.settings_action.triggered.connect(on_settings)
+        self._settings_action.triggered.connect(on_settings)
 
     def on_add_files(self, on_add_files):
         def add_files(*files):
             on_add_files(self._album, *files)
 
-        self.add_files_action.triggered.connect(lambda *_: self._select_tracks(self._album.type, add_files))
-        self.add_folder_action.triggered.connect(lambda *_: self._select_tracks_in_folder(self._album.type, add_files))
+        self._add_files_action.triggered.connect(lambda *_: self._select_tracks(self._album.type, add_files))
+        self._add_folder_action.triggered.connect(lambda *_: self._select_tracks_in_folder(self._album.type, add_files))
 
     def on_about(self, handler):
         self._about_action.triggered.connect(handler)
@@ -200,12 +200,12 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self.setStyleSheet(StyleSheet)
 
     def _setup_menu_bar(self):
-        self.to_album_edition_action.triggered.connect(self._to_album_edition_page)
-        self.to_track_list_action.triggered.connect(self._to_track_list_page)
-        self.exit_action.triggered.connect(self.close)
-        self.exit_action.setShortcut(QKeySequence.Quit)
-        self.close_album_action.setShortcut(QKeySequence.Close)
-        self.save_album_action.setShortcut(QKeySequence.Save)
+        self._to_project_edition_action.triggered.connect(self._to_album_edition_page)
+        self._to_track_list_action.triggered.connect(self._to_track_list_page)
+        self._exit_action.triggered.connect(self.close)
+        self._exit_action.setShortcut(QKeySequence.Quit)
+        self._close_project_action.setShortcut(QKeySequence.Close)
+        self._save_project_action.setShortcut(QKeySequence.Save)
 
     def _setup_signals(self, portfolio, session):
         self.subscribe(portfolio.album_removed, self.display_startup_screen)
@@ -228,7 +228,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def _create_track_actions(self):
         for track in self._album.tracks:
-            self.navigate_menu.addAction(self._create_track_action(track))
+            self._navigate_menu.addAction(self._create_track_action(track))
 
     def _create_track_action(self, track):
         def format_name(number, title):
@@ -244,12 +244,12 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         return action
 
     def _clear_track_actions(self):
-        for action in self.navigate_menu.actions()[self.TRACK_ACTIONS_START_INDEX:]:
-            self.navigate_menu.removeAction(action)
+        for action in self._navigate_menu.actions()[self.TRACK_ACTIONS_START_INDEX:]:
+            self._navigate_menu.removeAction(action)
             action.setParent(None)
 
     def _to_album_edition_page(self):
-        self.centralWidget().to_album_edition_page()
+        self.centralWidget().to_project_edition_page()
 
     def _to_track_list_page(self):
         self.centralWidget().to_track_list_page()

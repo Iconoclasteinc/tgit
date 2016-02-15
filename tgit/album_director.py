@@ -58,18 +58,18 @@ def create_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging)
 
 
 def album_exists(name, location, in_catalog=local_storage):
-    return in_catalog.album_exists(_build_filename(name, location))
+    return in_catalog.project_exists(_build_filename(name, location))
 
 
 def load_album_into(portfolio, from_catalog=local_storage):
     def load_album(filename):
-        portfolio.add_album(from_catalog.load_album(filename))
+        portfolio.add_album(from_catalog.load_project(filename))
 
     return load_album
 
 
 def save_album(to_catalog=local_storage):
-    return to_catalog.save_album
+    return to_catalog.save_project
 
 
 def remove_album_from(portfolio):

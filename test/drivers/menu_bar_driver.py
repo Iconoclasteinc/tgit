@@ -8,17 +8,17 @@ from .user_preferences_dialog_driver import user_preferences_dialog
 
 
 def menu_bar(parent):
-    return MenuBarDriver.find_single(parent, QMenuBar, matchers.named("menu_bar"))
+    return MenuBarDriver.find_single(parent, QMenuBar, matchers.named("_menu_bar"))
 
 
 class MenuBarDriver(QMenuBarDriver):
     @property
     def file(self):
-        return self.FileMenuDriver(self.open_menu(matchers.named("file_menu")), self)
+        return self.FileMenuDriver(self.open_menu(matchers.named("_file_menu")), self)
 
     @property
     def navigate(self):
-        return self.NavigateMenuDriver(self.open_menu(matchers.named("navigate_menu")))
+        return self.NavigateMenuDriver(self.open_menu(matchers.named("_navigate_menu")))
 
     @property
     def account(self):
@@ -26,7 +26,7 @@ class MenuBarDriver(QMenuBarDriver):
 
     @property
     def help(self):
-        return self.HelpMenuDriver(self.open_menu(matchers.named("help_menu")))
+        return self.HelpMenuDriver(self.open_menu(matchers.named("_help_menu")))
 
     @property
     def transmit(self):
@@ -42,35 +42,35 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_bar_driver = menu_bar_driver
             self._menu_driver = menu_driver
 
-        def has_disabled_album_actions(self):
-            self._menu_driver.menu_item(matchers.named("add_files_action")).is_disabled()
-            self._menu_driver.menu_item(matchers.named("add_folder_action")).is_disabled()
-            self._menu_driver.menu_item(matchers.named("export_action")).is_disabled()
-            self._menu_driver.menu_item(matchers.named("close_album_action")).is_disabled()
-            self._menu_driver.menu_item(matchers.named("save_album_action")).is_disabled()
+        def has_disabled_project_actions(self):
+            self._menu_driver.menu_item(matchers.named("_add_files_action")).is_disabled()
+            self._menu_driver.menu_item(matchers.named("_add_folder_action")).is_disabled()
+            self._menu_driver.menu_item(matchers.named("_export_action")).is_disabled()
+            self._menu_driver.menu_item(matchers.named("_close_project_action")).is_disabled()
+            self._menu_driver.menu_item(matchers.named("_save_project_action")).is_disabled()
             self._menu_driver.close()
 
         def add_files(self):
-            self._menu_driver.menu_item(matchers.named("add_files_action")).click()
+            self._menu_driver.menu_item(matchers.named("_add_files_action")).click()
 
         def add_folder(self):
-            self._menu_driver.menu_item(matchers.named("add_folder_action")).click()
+            self._menu_driver.menu_item(matchers.named("_add_folder_action")).click()
 
         def export(self):
-            self._menu_driver.menu_item(matchers.named("export_action")).click()
+            self._menu_driver.menu_item(matchers.named("_export_action")).click()
 
         def settings(self):
-            self._menu_driver.select_menu_item(matchers.named("settings_action"))
+            self._menu_driver.select_menu_item(matchers.named("_settings_action"))
             return user_preferences_dialog(self._menu_bar_driver)
 
-        def close_album(self):
-            self._menu_driver.menu_item(matchers.named("close_album_action")).click()
+        def close_project(self):
+            self._menu_driver.menu_item(matchers.named("_close_project_action")).click()
 
         def save(self):
-            self._menu_driver.menu_item(matchers.named("save_album_action")).click()
+            self._menu_driver.menu_item(matchers.named("_save_project_action")).click()
 
         def exit(self):
-            self._menu_driver.menu_item(matchers.named("exit_action")).click()
+            self._menu_driver.menu_item(matchers.named("_exit_action")).click()
 
     class NavigateMenuDriver:
         BASE_TRACKS_INDEX = 2
@@ -78,11 +78,11 @@ class MenuBarDriver(QMenuBarDriver):
         def __init__(self, menu_driver):
             self._menu_driver = menu_driver
 
-        def to_album_page(self):
-            self._menu_driver.select_menu_item(matchers.named("to_album_edition_action"))
+        def to_project_page(self):
+            self._menu_driver.select_menu_item(matchers.named("_to_project_edition_action"))
 
         def to_track_list_page(self):
-            self._menu_driver.select_menu_item(matchers.named("to_track_list_action"))
+            self._menu_driver.select_menu_item(matchers.named("_to_track_list_action"))
 
         def to_track_page(self, title, track_number):
             self._menu_driver.select_menu_item(matchers.with_text(_track_menu_item(title, track_number)))

@@ -28,8 +28,8 @@
         <translation>AJOUTER</translation>
     </message>
     <message>
-        <source>Organize the release's tracks. Press [space] to play a track. Press [delete] to remove the track from the list.</source>
-        <translation>Organisez les pistes qui composent l'album.  Appuyez sur [espace] pour jouer la piste.  Appuyer sur [supprimer] pour retirer la piste de la liste.</translation>
+        <source>Organize the project's tracks. Press [space] to play a track. Press [delete] to remove the track from the list.</source>
+        <translation>Organisez les pistes qui composent le projet.  Appuyez sur [espace] pour jouer la piste.  Appuyer sur [supprimer] pour retirer la piste de la liste.</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -450,12 +450,12 @@
         <translation>Ajouter des &amp;fichiers... </translation>
     </message>
     <message>
-        <source>&amp;Close release</source>
-        <translation>&amp;Fermer l'album (release)</translation>
+        <source>&amp;Close project</source>
+        <translation>&amp;Fermer le projet</translation>
     </message>
     <message>
-        <source>&amp;Save release</source>
-        <translation>&amp;Sauvegarder l'album (release)</translation>
+        <source>&amp;Save project</source>
+        <translation>&amp;Sauvegarder le projet</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
@@ -474,8 +474,8 @@
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
-        <source>Album &amp;edition</source>
-        <translation>É&amp;dition de l'album</translation>
+        <source>Project &amp;edition</source>
+        <translation>É&amp;dition du projet</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
@@ -931,18 +931,13 @@
     <name>welcome_page</name>
     <message>
         <location filename="tgit/ui/welcome_page.py"/>
-        <source>Create New Release*</source>
-        <translation>Créer un nouvel album (release*)</translation>
+        <source>Create New Project</source>
+        <translation>Créer un nouveau projet</translation>
     </message>
     <message>
         <location filename="tgit/ui/welcome_page.py"/>
-        <source>Load Existing Release</source>
-        <translation>Charger un album</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/welcome_page.py"/>
-        <source>*as per MusicBrainz terminology</source>
-        <translation>*terminologie MusicBrainz</translation>
+        <source>Load Existing Project</source>
+        <translation>Charger un projet</translation>
     </message>
 </context>
 <context>

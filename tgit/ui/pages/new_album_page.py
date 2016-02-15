@@ -25,11 +25,11 @@ from tgit.ui import locations
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_new_album_page(select_album_location, select_track, check_album_exists, confirm_overwrite, **handlers):
-    page = NewAlbumPage(select_album_location=select_album_location,
-                        select_track=select_track,
-                        check_album_exists=check_album_exists,
-                        confirm_overwrite=confirm_overwrite)
+def make_new_project_page(select_location, select_track, check_project_exists, confirm_overwrite, **handlers):
+    page = NewProjectPage(select_location=select_location,
+                          select_track=select_track,
+                          check_project_exists=check_project_exists,
+                          confirm_overwrite=confirm_overwrite)
 
     for name, handler in handlers.items():
         getattr(page, name)(handler)
@@ -37,57 +37,57 @@ def make_new_album_page(select_album_location, select_track, check_album_exists,
     return page
 
 
-class NewAlbumPage(QFrame, UIFile):
-    def __init__(self, select_album_location, select_track, check_album_exists, confirm_overwrite):
+class NewProjectPage(QFrame, UIFile):
+    def __init__(self, select_location, select_track, check_project_exists, confirm_overwrite):
         super().__init__()
         self._confirm_overwrite = confirm_overwrite
-        self._album_exists = check_album_exists
-        self._setup_ui(select_album_location, select_track)
+        self._project_exists = check_project_exists
+        self._setup_ui(select_location, select_track)
 
-    def _setup_ui(self, select_album_destination, select_track_location):
+    def _setup_ui(self, select_destination, select_track_location):
         self._load(":/ui/new_album_page.ui")
         self.addAction(self._cancel_creation_action)
-        self.addAction(self._create_album_action)
-        self._album_location.textChanged.connect(self._toggle_create_button)
-        self._album_name.textChanged.connect(self._toggle_create_button)
-        self._browse_album_location_button.clicked.connect(
-            lambda: select_album_destination(self._album_location.setText))
+        self.addAction(self._create_project_action)
+        self._location.textChanged.connect(self._toggle_create_button)
+        self._name.textChanged.connect(self._toggle_create_button)
+        self._browse_location_button.clicked.connect(
+            lambda: select_destination(self._location.setText))
         self._browse_track_location_button.clicked.connect(
-            lambda: select_track_location(self._album_type(), self._track_location.setText))
+            lambda: select_track_location(self._type(), self._track_location.setText))
         self._disable_mac_focus_frame()
 
-    def on_create_album(self, on_create_album):
-        def create_album():
-            on_create_album(self._album_type(), self._album_name.text(), self._album_location.text(),
-                            self._track_location.text())
+    def on_create_project(self, on_create_project):
+        def create_project():
+            on_create_project(self._type(), self._name.text(), self._location.text(),
+                              self._track_location.text())
 
-        def check_album_exists():
-            if self._album_exists(self._album_name.text(), self._album_location.text()):
-                self._confirm_overwrite(on_accept=create_album)
+        def check_project_exists():
+            if self._project_exists(self._name.text(), self._location.text()):
+                self._confirm_overwrite(on_accept=create_project)
             else:
-                create_album()
+                create_project()
 
-        self._create_album_action.triggered.connect(check_album_exists)
+        self._create_project_action.triggered.connect(check_project_exists)
 
     def on_cancel_creation(self, on_cancel_creation):
         self._cancel_creation_action.triggered.connect(on_cancel_creation)
 
     def _toggle_create_button(self):
         self._create_button.setEnabled(self._can_create())
-        self._create_album_action.setEnabled(self._can_create())
+        self._create_project_action.setEnabled(self._can_create())
 
     def _can_create(self):
-        return self._album_location.text() != "" and self._album_name.text() != ""
+        return self._location.text() != "" and self._name.text() != ""
 
-    def _album_type(self):
+    def _type(self):
         return Album.Type.FLAC if self._flac_button.isChecked() else Album.Type.MP3
 
     def showEvent(self, event):
         self._mp3_button.setChecked(True)
-        self._album_name.setText(self.tr("untitled"))
-        self._album_name.setFocus()
-        self._album_name.selectAll()
-        self._album_location.setText(locations.Documents)
+        self._name.setText(self.tr("untitled"))
+        self._name.setFocus()
+        self._name.selectAll()
+        self._location.setText(locations.Documents)
         self._track_location.setText("")
 
     def _disable_mac_focus_frame(self):

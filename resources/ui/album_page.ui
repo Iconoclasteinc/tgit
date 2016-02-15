@@ -26,7 +26,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="_record_tab">
       <attribute name="title">
@@ -223,7 +223,7 @@
             <x>0</x>
             <y>0</y>
             <width>1112</width>
-            <height>438</height>
+            <height>470</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -457,6 +457,9 @@
             </property>
             <item>
              <widget class="QPushButton" name="_select_picture_button">
+              <property name="styleSheet">
+               <string notr="true">margin: 0;</string>
+              </property>
               <property name="text">
                <string>+</string>
               </property>
@@ -472,6 +475,9 @@
               </property>
               <property name="toolTip">
                <string>Remove the picture</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">margin: 0;</string>
               </property>
               <property name="text">
                <string>-</string>

@@ -46,20 +46,20 @@ class ApplicationRunner:
         # Never ever remove this!!
         sip.delete(self.app)
 
-    def new_album(self, name="album", of_type="mp3"):
+    def new_project(self, name="album", of_type="mp3"):
         self.tagger.create_album(of_type, name, self._workspace.root_path)
 
-    def add_tracks_to_album(self, *tracks):
-        self.tagger.add_tracks_to_album()
+    def add_tracks_to_project(self, *tracks):
+        self.tagger.add_tracks_to_project()
         track_selection_dialog(self.tagger).select_tracks(*tracks)
 
-    def import_album(self, name, from_track, of_type="mp3"):
+    def import_project(self, name, from_track, of_type="mp3"):
         self.tagger.create_album(of_type=of_type, name=name, location=self._workspace.root_path,
                                  import_from=from_track)
 
     def shows_track_list(self, *tracks):
         self.tagger.navigate_to_track_list_page()
-        self.tagger.shows_album_contains(*tracks)
+        self.tagger.shows_project_contains(*tracks)
 
     def change_order_of_tracks(self, *tracks):
         for position, track in enumerate(_make_tracks(tracks)):
@@ -69,12 +69,12 @@ class ApplicationRunner:
     def remove_track(self, title):
         self.tagger.remove_track(title)
 
-    def shows_album_metadata(self, **tags):
-        self.tagger.navigate_to_album_page()
-        self.tagger.shows_album_metadata(**tags)
+    def shows_project_metadata(self, **tags):
+        self.tagger.navigate_to_project_page()
+        self.tagger.shows_project_metadata(**tags)
 
-    def change_album_metadata(self, **tags):
-        self.tagger.edit_album_metadata(**tags)
+    def change_project_metadata(self, **tags):
+        self.tagger.edit_project_metadata(**tags)
 
     def shows_next_track_metadata(self, **tags):
         self.tagger.next()
@@ -101,7 +101,7 @@ class ApplicationRunner:
         # todo remove and verify in test that album metadata shows the isni
         self.tagger.pause(100)
 
-    def save_album(self):
+    def save_project(self):
         self.tagger.save()
         self.tagger.pause(self.SAVE_DELAY)
 
@@ -110,14 +110,14 @@ class ApplicationRunner:
         # todo remove and verify in test that album metadata shows the isni
         self.tagger.pause(100)
 
-    def close_album(self):
-        self.tagger.close_album()
+    def close_project(self):
+        self.tagger.close_project()
         self.tagger.pause(100)
         message_box(self.tagger).yes()
         self.tagger.shows_welcome_screen()
 
-    def load_album(self, album_name):
-        self.tagger.load_album(self._workspace.file(album_name, album_name + ".tgit"))
+    def load_project(self, album_name):
+        self.tagger.load_project(self._workspace.file(album_name, album_name + ".tgit"))
 
     def save(self):
         self.tagger.save()
@@ -139,5 +139,5 @@ class ApplicationRunner:
     def is_signed_out(self):
         self.tagger.is_signed_out()
 
-    def declare_album_to_soproq(self, filename):
-        self.tagger.declare_album_to_soproq(self._workspace.file(filename))
+    def declare_project_to_soproq(self, filename):
+        self.tagger.declare_project_to_soproq(self._workspace.file(filename))

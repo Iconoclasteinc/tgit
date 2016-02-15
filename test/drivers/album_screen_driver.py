@@ -20,10 +20,10 @@ class AlbumScreenDriver(ScreenDriver):
     def has_no_track_list_page(self):
         no_track_list_page(self).exists()
 
-    def shows_album_edition_page(self):
+    def shows_project_edition_page(self):
         album_edition_page(self).is_showing_on_screen()
 
-    def has_no_album_edition_page(self):
+    def has_no_project_edition_page(self):
         no_album_edition_page(self).exists()
 
     def shows_track_edition_page(self):
@@ -34,7 +34,7 @@ class AlbumScreenDriver(ScreenDriver):
     def has_no_track_edition_page(self):
         no_track_edition_page(self).exists()
 
-    def add_tracks_to_album(self):
+    def add_tracks_to_project(self):
         track_list_page(self).add_tracks()
 
     def remove_track(self, title):
@@ -55,13 +55,13 @@ class AlbumScreenDriver(ScreenDriver):
     def is_missing_next_page_button(self):
         self.button(named("next")).is_disabled()
 
-    def shows_album_contains(self, *tracks):
+    def shows_project_contains(self, *tracks):
         track_list_page(self).shows_tracks_in_order(*tracks)
 
-    def shows_album_metadata(self, **tags):
+    def shows_project_metadata(self, **tags):
         album_edition_page(self).shows_metadata(**tags)
 
-    def edit_album_metadata(self, **tags):
+    def edit_project_metadata(self, **tags):
         album_edition_page(self).change_metadata(**tags)
 
     def shows_track_metadata(self, **tags):
