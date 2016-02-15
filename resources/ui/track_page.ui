@@ -10,7 +10,7 @@
     <height>672</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -389,7 +389,7 @@ color: #666666;</string>
      <item>
       <widget class="QTabWidget" name="_tabs">
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="_contributors_tab">
         <attribute name="title">
