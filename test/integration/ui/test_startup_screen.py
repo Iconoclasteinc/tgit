@@ -35,12 +35,12 @@ def screen(qt):
     def create_welcome_page():
         return WelcomePage(select_project=ignore, show_load_error=ignore)
 
-    def create_new_album_page():
+    def create_new_project_page():
         return NewProjectPage(select_location=ignore, select_track=ignore, check_project_exists=no,
                               confirm_overwrite=ignore)
 
     startup_screen = StartupScreen(create_welcome_page=create_welcome_page,
-                                   create_new_album_page=create_new_album_page)
+                                   create_new_project_page=create_new_project_page)
     show_widget(startup_screen)
     return startup_screen
 
@@ -56,7 +56,7 @@ def test_initially_shows_the_welcome_page(driver):
     driver.shows_welcome_page()
 
 
-def test_navigates_to_new_album_page_to_create_an_project(driver):
+def test_navigates_to_new_project_page_to_create_an_project(driver):
     driver.create_project()
 
 

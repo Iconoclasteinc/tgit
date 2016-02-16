@@ -21,10 +21,10 @@ from PyQt5.QtWidgets import QFileDialog
 from tgit.ui import locations
 
 
-class SelectAlbumDestinationDialog(QFileDialog):
+class SelectProjectDestinationDialog(QFileDialog):
     def __init__(self, parent=None, native=None):
         super().__init__(parent)
-        self.setObjectName("select_album_destination_dialog")
+        self.setObjectName("select_project_destination_dialog")
         self.setAcceptMode(QFileDialog.AcceptOpen)
         self.setDirectory(locations.Home)
         self.setFileMode(QFileDialog.Directory)

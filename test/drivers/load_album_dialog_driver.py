@@ -25,11 +25,12 @@ from cute.matchers import named, disabled
 from cute.widgets import window, FileDialogDriver
 
 
-def load_album_dialog(parent):
-    return LoadAlbumDialogDriver(window(QFileDialog, named("load_album_dialog")), parent.prober, parent.gesture_performer)
+def load_project_dialog(parent):
+    return LoadProjectDialogDriver(window(QFileDialog, named("load_project_dialog")), parent.prober,
+                                   parent.gesture_performer)
 
 
-class LoadAlbumDialogDriver(FileDialogDriver):
+class LoadProjectDialogDriver(FileDialogDriver):
     def load(self, filename):
         self.is_active()
         self.show_hidden_files()

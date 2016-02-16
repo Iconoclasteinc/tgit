@@ -2,7 +2,7 @@
 from cute import gestures
 from cute.widgets import WidgetDriver
 from .album_screen_driver import album_screen
-from .load_album_dialog_driver import load_album_dialog
+from .load_album_dialog_driver import load_project_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .isni_assignation_review_dialog_driver import isni_assignation_review_dialog
 from .message_box_driver import message_box
@@ -121,7 +121,7 @@ class MainWindowDriver(WidgetDriver):
 
     def load_project(self, filename):
         welcome_page(self).load()
-        load_album_dialog(self).load(filename)
+        load_project_dialog(self).load(filename)
         album_screen(self).is_showing_on_screen()
 
     def save(self, using_shortcut=False):

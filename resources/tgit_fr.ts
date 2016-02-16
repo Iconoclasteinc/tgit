@@ -199,8 +199,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Release Name</source>
-        <translation>Titre de l&apos;album</translation>
+        <source>Title</source>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -229,18 +229,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Artists</source>
-        <translation>Artistes</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
         <source>Musicians</source>
         <translation>Musiciens</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
-        <source>Instrument1: Performer1; Instrument2: Performer2; ...</source>
-        <translation>Instrument1: Personne1; Instrument 2: Personne2;...</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -294,11 +284,6 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Lookup</source>
-        <translation>Récupérer</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
         <source>Find</source>
         <translation>Récupérer</translation>
     </message>
@@ -306,11 +291,6 @@
         <location filename="tgit/ui/album_edition_page.py" />
         <source>Assign</source>
         <translation>Assigner</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
-        <source>(+) Add an artist</source>
-        <translation>(+) Ajouter un musicien</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -343,11 +323,6 @@
     <name>_musician_row</name>
     <message>
         <location filename="tgit/ui/musician_row.py" />
-        <source>(+) Add a musician</source>
-        <translation>(+) Ajouter un musicien</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/musician_row.py" />
         <source>Musician Name</source>
         <translation>Nom du musicien</translation>
     </message>
@@ -363,11 +338,6 @@
         <location filename="tgit/ui/album_screen.py" />
         <source>PREVIOUS</source>
         <translation>ÉTAPE PRÉCÉDENTE</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_screen.py" />
-        <source>SAVE</source>
-        <translation>ENREGISTRER</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_screen.py" />
@@ -537,29 +507,6 @@
     </message>
 </context>
 <context>
-    <name>performers_dialog</name>
-    <message>
-        <location filename="tgit/ui/performer_dialog.py" line="33"/>
-        <source>Please enter the name of the performer</source>
-        <translation>Svp entrer le nom de l&apos;artiste</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/performer_dialog.py" line="57"/>
-        <source>Performer:</source>
-        <translation>Musicien :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/performer_dialog.py" line="60"/>
-        <source>Instrument:</source>
-        <translation>Instrument :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/performer_dialog.py" line="76"/>
-        <source>ADD A PERFORMER</source>
-        <translation>AJOUTER UN MUSICIEN</translation>
-    </message>
-</context>
-<context>
     <name>MessageBox</name>
     <message>
         <location filename="tgit/ui/message_box.py" />
@@ -573,8 +520,8 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>The album file you selected cannot be loaded.</source>
-        <translation>Le fichier d'album sélectionné ne peut être chargé.</translation>
+        <source>The project file you selected cannot be loaded.</source>
+        <translation>Le fichier de project sélectionné ne peut être chargé.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
@@ -811,52 +758,52 @@
         <translation>ISRC</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" line="219"/>
+        <location filename="tgit/ui/track_edition_page.py"/>
         <source>Recording</source>
         <translation>Enregistrement</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" line="224"/>
+        <location filename="tgit/ui/track_edition_page.py"/>
         <source>Recording Studio</source>
         <translation>Studio d&apos;enregistrement</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" line="224"/>
+        <location filename="tgit/ui/track_edition_page.py"/>
         <source>Recording Location</source>
         <translation>Lieu d&apos;enregistrement</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Production Company</source>
         <translation>Cie. de production</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Production Location</source>
         <translation>Lieu de production</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" line="227"/>
+        <location filename="tgit/ui/track_edition_page.py"/>
         <source>Music Producer</source>
         <translation>Réalisateur artistique</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" line="230"/>
+        <location filename="tgit/ui/track_edition_page.py"/>
         <source>Mixer</source>
         <translation>Mixeur</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" line="236"/>
+        <location filename="tgit/ui/track_edition_page.py"/>
         <source>Primary Style</source>
         <translation>Genre</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" line="133"/>
+        <location filename="tgit/ui/track_edition_page.py"/>
         <source>Lookup</source>
         <translation>Récupérer</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" line="138"/>
+        <location filename="tgit/ui/track_edition_page.py"/>
         <source>Assign</source>
         <translation>Assigner</translation>
     </message>
@@ -941,7 +888,7 @@
     </message>
 </context>
 <context>
-    <name>NewAlbumPage</name>
+    <name>NewProjectPage</name>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
         <source>untitled</source>
@@ -949,11 +896,11 @@
     </message>
 </context>
 <context>
-    <name>new_album_page</name>
+    <name>new_project_page</name>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
-        <source>New Release</source>
-        <translation>Nouvel album</translation>
+        <source>New Project</source>
+        <translation>Nouveau projet</translation>
     </message>
     <message>
         <source>Type:</source>
@@ -976,13 +923,13 @@
     </message>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
-        <source>CREATE</source>
-        <translation>CRÉER</translation>
+        <source>Create</source>
+        <translation>Créer</translation>
     </message>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
-        <source>CANCEL</source>
-        <translation>ANNULER</translation>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>
@@ -1056,6 +1003,13 @@
     <message>
         <source>Incorrect username and/or password.</source>
         <translation>Nom d'utilisateur et/ou mot de passe incorrect</translation>
+    </message>
+</context>
+<context>
+    <name>LoadAlbumDialog</name>
+    <message>
+        <source>TGiT project files</source>
+        <translation>Fichiers de projet TGiT</translation>
     </message>
 </context>
 </TS>

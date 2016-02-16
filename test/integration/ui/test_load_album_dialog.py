@@ -25,10 +25,10 @@ import pytest
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from test.drivers.load_album_dialog_driver import LoadAlbumDialogDriver
+from test.drivers.load_album_dialog_driver import LoadProjectDialogDriver
 from test.util import resources
 from tgit.platforms import windows
-from tgit.ui.dialogs.load_album_dialog import LoadAlbumDialog
+from tgit.ui.dialogs.load_album_dialog import LoadProjectDialog
 
 do_nothing = lambda *_: None
 
@@ -38,12 +38,12 @@ DISPLAY_DELAY = 250
 
 @pytest.fixture()
 def dialog(qt):
-    return LoadAlbumDialog(native=False)
+    return LoadProjectDialog(native=False)
 
 
 @pytest.yield_fixture()
 def driver(dialog, prober, automaton):
-    dialog_driver = LoadAlbumDialogDriver(window(QFileDialog, named("load_album_dialog")), prober, automaton)
+    dialog_driver = LoadProjectDialogDriver(window(QFileDialog, named("load_project_dialog")), prober, automaton)
     yield dialog_driver
     dialog_driver.close()
 

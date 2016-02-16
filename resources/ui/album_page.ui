@@ -10,8 +10,8 @@
     <height>690</height>
    </rect>
   </property>
- <property name="styleSheet">
-     <string notr="true">
+  <property name="styleSheet">
+   <string notr="true">
          QCalendarWidget QToolButton {
          background-color: transparent;
          }
@@ -35,7 +35,7 @@
          right: 1px;
          }
      </string>
- </property>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
@@ -257,7 +257,11 @@
             <number>10</number>
            </property>
            <item>
-            <widget class="MusicianTable" name="_musician_table_container" native="true"/>
+            <widget class="MusicianTable" name="_musician_table_container" native="true">
+             <property name="styleSheet">
+              <string notr="true">#_musician_table_container{background-color:transparent;}</string>
+             </property>
+            </widget>
            </item>
            <item>
             <spacer name="verticalSpacer_2">
@@ -483,9 +487,6 @@
             </property>
             <item>
              <widget class="QPushButton" name="_select_picture_button">
-              <property name="styleSheet">
-               <string notr="true">margin: 0;</string>
-              </property>
               <property name="text">
                <string>+</string>
               </property>
@@ -501,9 +502,6 @@
               </property>
               <property name="toolTip">
                <string>Remove the picture</string>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">margin: 0;</string>
               </property>
               <property name="text">
                <string>-</string>

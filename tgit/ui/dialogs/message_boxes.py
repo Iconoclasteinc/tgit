@@ -37,15 +37,16 @@ class MessageBoxes:
         message.open()
         return message
 
-    def load_album_failed(self, error):
-        return self._open(MessageBox.warn(self._parent,
-                                          "The album file you selected cannot be loaded.",
-                                          "The file might be corrupted or part of the album content cannot be found."))
+    def load_project_failed(self, error):
+        return self._open(
+            MessageBox.warn(self._parent,
+                            "The project file you selected cannot be loaded.",
+                            "The file might be corrupted or part of the project content cannot be found."))
 
-    def save_album_failed(self, error):
+    def save_project_failed(self, error):
         return self._open(MessageBox.warn(self._parent,
-                                          "Your album file could not be saved.",
-                                          "Please check that you have permission to write to the album's location."))
+                                          "Your project file could not be saved.",
+                                          "Please check that you have permission to write to the project's location."))
 
     def restart_required(self):
         return self._open(MessageBox.inform(self._parent, "You need to restart TGiT for changes to take effect."))
@@ -71,21 +72,21 @@ class MessageBoxes:
 
     def export_failed(self, error):
         return self._open(MessageBox.warn(self._parent,
-                                          "Could not export your album.",
-                                          "Please check that you have permission to write to the album's location."))
+                                          "Could not export your project.",
+                                          "Please check that you have permission to write to the project's location."))
 
-    def close_album_confirmation(self, **handlers):
+    def close_project_confirmation(self, **handlers):
         return self._open(
             ConfirmationBox.warn(self._parent,
-                                 "You are about to close the current album. Are you sure you want to continue?",
-                                 "Make sure to save your work before closing the album. "
+                                 "You are about to close the current project. Are you sure you want to continue?",
+                                 "Make sure to save your work before closing the project. "
                                  "Any unsaved work will be lost.",
                                  yes_button_text="Close",
                                  **handlers))
 
-    def overwrite_album_confirmation(self, **handlers):
+    def overwrite_project_confirmation(self, **handlers):
         return self._open(ConfirmationBox.warn(self._parent,
-                                               "This album already exists. Do you want to replace it?",
+                                               "This project already exists. Do you want to replace it?",
                                                "A file with the same name already exists at the location you specified."
                                                " Replacing it will overwrite its current contents.",
                                                yes_button_text="Replace",

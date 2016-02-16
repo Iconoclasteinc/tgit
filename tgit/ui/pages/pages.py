@@ -39,7 +39,7 @@ class Pages:
 
     def startup_screen(self):
         return StartupScreen(create_welcome_page=self._welcome_page,
-                             create_new_album_page=self._new_album_page)
+                             create_new_project_page=self._new_project_page)
 
     def album_screen(self, album):
         return make_album_screen(album=album,
@@ -47,16 +47,16 @@ class Pages:
                                  album_page=self._album_edition_page,
                                  track_page=self._track_page_for(album))
 
-    def _new_album_page(self):
-        return make_new_project_page(select_location=self._dialogs.select_album_destination,
+    def _new_project_page(self):
+        return make_new_project_page(select_location=self._dialogs.select_project_destination,
                                      select_track=self._dialogs.select_track,
                                      check_project_exists=director.album_exists,
-                                     confirm_overwrite=self._messages.overwrite_album_confirmation,
+                                     confirm_overwrite=self._messages.overwrite_project_confirmation,
                                      on_create_project=director.create_album_into(self._portfolio))
 
     def _welcome_page(self):
-        return make_welcome_page(select_project=self._dialogs.select_album_to_load,
-                                 show_load_error=self._messages.load_album_failed,
+        return make_welcome_page(select_project=self._dialogs.select_project_to_load,
+                                 show_load_error=self._messages.load_project_failed,
                                  on_load_project=director.load_album_into(self._portfolio))
 
     def _track_list_page(self, album):

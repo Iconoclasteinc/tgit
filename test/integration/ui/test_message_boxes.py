@@ -76,11 +76,11 @@ def test_shows_permission_denied_message(driver):
     driver.ok()
 
 
-def test_shows_close_album_message(driver):
-    _ = messages().close_album_confirmation()
+def test_shows_close_project_message(driver):
+    _ = messages().close_project_confirmation()
 
     driver.is_active()
-    driver.shows_message(contains_string("You are about to close the current album."))
+    driver.shows_message(contains_string("You are about to close the current project."))
 
 
 def test_shows_restart_message(driver):
@@ -90,16 +90,16 @@ def test_shows_restart_message(driver):
     driver.shows_message(contains_string("You need to restart TGiT for changes to take effect."))
 
 
-def test_shows_overwrite_album_confirmation_message(driver):
-    _ = messages().overwrite_album_confirmation()
+def test_shows_overwrite_project_confirmation_message(driver):
+    _ = messages().overwrite_project_confirmation()
 
     driver.is_active()
-    driver.shows_message(contains_string("This album already exists."))
+    driver.shows_message(contains_string("This project already exists."))
 
 
 def test_signals_when_confirmed(driver):
     accept_signal = ValueMatcherProbe("accept confirmation")
-    _ = messages().close_album_confirmation(on_accept=accept_signal.received)
+    _ = messages().close_project_confirmation(on_accept=accept_signal.received)
 
     driver.is_active()
     driver.pause(DISPLAY_DELAY)
@@ -107,25 +107,25 @@ def test_signals_when_confirmed(driver):
     driver.check(accept_signal)
 
 
-def test_shows_load_album_failed_message(driver):
-    _ = messages().load_album_failed(Exception())
+def test_shows_load_project_failed_message(driver):
+    _ = messages().load_project_failed(Exception())
 
     driver.is_active()
-    driver.shows_message(contains_string("The album file you selected cannot be loaded."))
+    driver.shows_message(contains_string("The project file you selected cannot be loaded."))
 
 
-def test_shows_save_album_failed_message(driver):
-    _ = messages().save_album_failed(Exception())
+def test_shows_save_project_failed_message(driver):
+    _ = messages().save_project_failed(Exception())
 
     driver.is_active()
-    driver.shows_message(contains_string("Your album file could not be saved."))
+    driver.shows_message(contains_string("Your project file could not be saved."))
 
 
 def test_shows_export_failed_message(driver):
     _ = messages().export_failed(Exception())
 
     driver.is_active()
-    driver.shows_message("Could not export your album.")
+    driver.shows_message("Could not export your project.")
 
 
 def test_shows_soproq_default_values_message(driver):

@@ -23,12 +23,12 @@ from cute.matchers import named
 from cute.widgets import FileDialogDriver, window
 
 
-def select_album_destination_dialog(parent):
-    return SelectAlbumDestinationDialogDriver(window(QFileDialog, named("select_album_destination_dialog")),
-                                              parent.prober, parent.gesture_performer)
+def select_project_destination_dialog(parent):
+    return SelectProjectDestinationDialogDriver(window(QFileDialog, named("select_project_destination_dialog")),
+                                                parent.prober, parent.gesture_performer)
 
 
-class SelectAlbumDestinationDialogDriver(FileDialogDriver):
+class SelectProjectDestinationDialogDriver(FileDialogDriver):
     def select_destination(self, destination):
         self.is_active()
         self.view_as_list()

@@ -25,18 +25,18 @@ import pytest
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from test.drivers.select_album_destination_dialog_driver import SelectAlbumDestinationDialogDriver
-from tgit.ui.dialogs.select_album_destination_dialog import SelectAlbumDestinationDialog
+from test.drivers.select_album_destination_dialog_driver import SelectProjectDestinationDialogDriver
+from tgit.ui.dialogs.select_album_destination_dialog import SelectProjectDestinationDialog
 
 
 @pytest.fixture()
 def dialog(qt):
-    return SelectAlbumDestinationDialog(native=False)
+    return SelectProjectDestinationDialog(native=False)
 
 
 @pytest.yield_fixture()
 def driver(dialog, prober, automaton):
-    dialog_driver = SelectAlbumDestinationDialogDriver(window(QFileDialog, named("select_album_destination_dialog")),
+    dialog_driver = SelectProjectDestinationDialogDriver(window(QFileDialog, named("select_project_destination_dialog")),
                                                        prober, automaton)
     yield dialog_driver
     dialog_driver.close()

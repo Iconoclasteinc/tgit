@@ -21,14 +21,14 @@ from PyQt5.QtWidgets import QFileDialog
 from tgit.ui import locations, timing
 
 
-class LoadAlbumDialog(QFileDialog):
+class LoadProjectDialog(QFileDialog):
     def __init__(self, parent=None, native=True):
         super().__init__(parent)
-        self.setObjectName("load_album_dialog")
+        self.setObjectName("load_project_dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
         self.setDirectory(locations.Documents)
         self.setFileMode(QFileDialog.ExistingFile)
-        self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT Album files")))
+        self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT project files")))
 
     def select(self, on_select):
         self.fileSelected.connect(timing.after_delay(on_select))
