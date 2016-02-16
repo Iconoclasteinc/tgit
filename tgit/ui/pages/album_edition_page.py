@@ -117,7 +117,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def on_isni_changed(self, on_isni_changed):
         self._main_artist_isni.editingFinished.connect(
-            lambda: on_isni_changed(self._main_artist.text(), self._main_artist_isni.text()))
+                lambda: on_isni_changed(self._main_artist.text(), self._main_artist_isni.text()))
 
     def on_isni_local_lookup(self, on_isni_local_lookup):
         def update_main_artist_isni(main_artist):
@@ -291,11 +291,10 @@ class MusicianTable(QWidget, UIFile):
         return self._musician_table.count() == 0
 
     def _make_musician_row(self, musician=(None, None)):
-        self._musician_table.addWidget(
-            make_musician_row(index=self._musician_table.count(),
-                              musician=musician,
-                              on_musician_changed=lambda: self._on_musician_changed(self._musicians),
-                              on_musician_removed=lambda: self._on_musician_changed(self._musicians)))
+        return make_musician_row(index=self._musician_table.count(),
+                                 musician=musician,
+                                 on_musician_changed=lambda: self._on_musician_changed(self._musicians),
+                                 on_musician_removed=lambda: self._on_musician_changed(self._musicians))
 
     @property
     def _musicians(self):
