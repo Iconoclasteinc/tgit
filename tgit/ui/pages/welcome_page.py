@@ -42,10 +42,11 @@ class WelcomePage(QFrame, UIFile):
 
     def _setup_ui(self):
         self._load(":/ui/welcome_page.ui")
-        self._version_label.setText(tgit.__version__)
+        self._version.setText(tgit.__version__)
 
     def on_create_project(self, on_create_project):
-        self._new_project_button.clicked.connect(on_create_project)
+        self._new_mp3_project_button.clicked.connect(on_create_project)
+        self._new_flac_project_button.clicked.connect(on_create_project)
 
     def on_load_project(self, on_load_project):
         def try_loading_project(filename):
