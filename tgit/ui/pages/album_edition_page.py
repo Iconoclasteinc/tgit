@@ -272,12 +272,12 @@ class MusicianTable(QWidget, UIFile):
     def __init__(self, *__args):
         super().__init__(*__args)
         self._load(":/ui/musician_table.ui")
-        self._add_musician_button.clicked.connect(lambda: self._musician_table.addWidget(self._make_musician_row()))
+        self._add_musician_button.clicked.connect(lambda: self._add_musician_row())
 
     def display(self, musicians):
         if self._is_empty():
             for musician in musicians:
-                self._musician_table.addWidget(self._make_musician_row(musician))
+                self._add_musician_row(musician)
 
     def on_musician_changed(self, on_musician_changed):
         self._on_musician_changed = on_musician_changed
@@ -285,11 +285,12 @@ class MusicianTable(QWidget, UIFile):
     def _is_empty(self):
         return self._musician_table.count() == 0
 
-    def _make_musician_row(self, musician=(None, None)):
-        return make_musician_row(index=self._musician_table.count(),
-                                 musician=musician,
-                                 on_musician_changed=lambda: self._on_musician_changed(self._musicians),
-                                 on_musician_removed=lambda: self._on_musician_changed(self._musicians))
+    def _add_musician_row(self, musician=(None, None)):
+        self._musician_table.addWidget(
+                make_musician_row(index=self._musician_table.count(),
+                                  musician=musician,
+                                  on_musician_changed=lambda: self._on_musician_changed(self._musicians),
+                                  on_musician_removed=lambda: self._on_musician_changed(self._musicians)))
 
     @property
     def _musicians(self):

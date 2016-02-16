@@ -216,7 +216,7 @@ class KeywordsValueMatcherProbe(Probe):
     def describe_failure_to(self, description):
         description.append_text(self._message).append_text(" ")
         if self._has_received_a_value:
-            description.append_text('received ').append_list("values (", ", ", ")", self._received_values)
+            description.append_text('received ').append_list("(", ", ", ")", self._received_values.items())
         else:
             description.append_text('was not received')
 
