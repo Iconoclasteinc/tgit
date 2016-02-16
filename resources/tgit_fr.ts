@@ -205,7 +205,7 @@
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
         <source>This project is a multi-artist compilation</source>
-        <translation>Cet projet est une compilation multi-artistes</translation>
+        <translation>Ce projet est une compilation multi-artistes</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />

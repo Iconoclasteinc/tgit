@@ -26,6 +26,7 @@ from tgit.album import AlbumListener
 from tgit.auth import Permission
 from tgit.cheddar import AuthenticationError, InsufficientInformationError, PermissionDeniedError
 from tgit.countries import COUNTRIES
+from tgit.platforms import windows
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image
@@ -87,6 +88,10 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def _setup_ui(self):
         self._load(":/ui/album_page.ui")
         self._fill_with_countries(self._main_artist_region)
+
+        if windows:
+            self._select_picture_button.setStyleSheet("margin:0;")
+            self._remove_picture_button.setStyleSheet("margin:0;")
 
         menu = QMenu()
         menu.addAction(self._main_artist_isni_assign_action)
@@ -267,7 +272,7 @@ class MusicianTable(QWidget, UIFile):
     def __init__(self, *__args):
         super().__init__(*__args)
         self._load(":/ui/musician_table.ui")
-        self._add_musician_button.clicked.connect(lambda: self._make_musician_row())
+        self._add_musician_button.clicked.connect(lambda: self._musician_table.addWidget(self._make_musician_row()))
 
     def display(self, musicians):
         if self._is_empty():
