@@ -52,7 +52,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="_record_tab">
       <attribute name="title">
@@ -237,6 +237,9 @@
        </property>
        <item>
         <widget class="QScrollArea" name="_musicians_input_scroll_area">
+         <property name="styleSheet">
+          <string notr="true">#_musicians_input_scroll_area {background-color:transparent;}</string>
+         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -252,16 +255,15 @@
             <height>470</height>
            </rect>
           </property>
+          <property name="styleSheet">
+           <string notr="true">#_musicians_input_scroll_container {background-color:transparent;}</string>
+          </property>
           <layout class="QVBoxLayout" name="verticalLayout">
            <property name="spacing">
             <number>10</number>
            </property>
            <item>
-            <widget class="MusicianTable" name="_musician_table_container" native="true">
-             <property name="styleSheet">
-              <string notr="true">#_musician_table_container{background-color:transparent;}</string>
-             </property>
-            </widget>
+            <widget class="MusicianTable" name="_musician_table_container" native="true"/>
            </item>
            <item>
             <spacer name="verticalSpacer_2">

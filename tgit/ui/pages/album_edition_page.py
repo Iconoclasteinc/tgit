@@ -20,7 +20,6 @@ import operator
 
 import requests
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
-from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QWidget, QApplication, QMenu
 
 from tgit.album import AlbumListener
@@ -87,7 +86,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def _setup_ui(self):
         self._load(":/ui/album_page.ui")
-        self._make_artist_scroll_area_transparent()
         self._fill_with_countries(self._main_artist_region)
 
         menu = QMenu()
@@ -96,14 +94,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
         self._compilation.clicked.connect(self._update_isni_menu)
         self._main_artist.textChanged.connect(self._update_isni_menu)
-
-    def _make_artist_scroll_area_transparent(self):
-        palette = QPalette()
-        palette.setColor(QPalette.Window, QColor(0, 0, 0, 0))
-        self._musicians_input_scroll_area.setPalette(palette)
-        self._musicians_input_scroll_area.setBackgroundRole(QPalette.Window)
-        self._musicians_input_scroll_area.widget().setPalette(palette)
-        self._musicians_input_scroll_area.widget().setBackgroundRole(QPalette.Window)
 
     @staticmethod
     def _fill_with_countries(combobox):
