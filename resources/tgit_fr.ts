@@ -1006,7 +1006,7 @@
     </message>
 </context>
 <context>
-    <name>LoadAlbumDialog</name>
+    <name>LoadProjectDialog</name>
     <message>
         <source>TGiT project files</source>
         <translation>Fichiers de projet TGiT</translation>
