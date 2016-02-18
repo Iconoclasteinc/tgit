@@ -17,8 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFrame, QLineEdit
+from PyQt5.QtWidgets import QFrame
 
 from tgit.album import Album
 from tgit.ui import locations
@@ -54,7 +53,6 @@ class NewProjectPage(QFrame, UIFile):
             lambda: select_destination(self._location.setText))
         self._browse_track_location_button.clicked.connect(
             lambda: select_track_location(self._type(), self._track_location.setText))
-        self._disable_mac_focus_frame()
 
     def on_create_project(self, on_create_project):
         def create_project():
@@ -89,7 +87,3 @@ class NewProjectPage(QFrame, UIFile):
         self._name.selectAll()
         self._location.setText(locations.Documents)
         self._track_location.setText("")
-
-    def _disable_mac_focus_frame(self):
-        for child in self.findChildren(QLineEdit):
-            child.setAttribute(Qt.WA_MacShowFocusRect, False)

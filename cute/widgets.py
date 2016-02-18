@@ -261,7 +261,7 @@ class ComboBoxDriver(AbstractEditDriver):
         self.has(properties.current_text(), matching)
 
 
-class DateTimeEditDriver(WidgetDriver):
+class QDateTimeEditDriver(WidgetDriver):
     CALENDAR_DISPLAY_DELAY = 100
 
     def display_format(self):
@@ -273,7 +273,12 @@ class DateTimeEditDriver(WidgetDriver):
     def has_time(self, time):
         self.has(properties.time(), QTime.fromString(time, self.display_format()))
 
-    def change_date(self, year, month, day):
+    def enter_date(self, year, month, day):
+        self.perform(gestures.mouse_double_click_at(rect.center_left(self.widget_bounds(), with_offset=1)))
+        self.perform(gestures.type_text(str(year) + "{0:02d}".format(month) + "{0:02d}".format(day)))
+        self.perform(gestures.enter())
+
+    def select_date(self, year, month, day):
         self._popup_calendar()
         self.pause(self.CALENDAR_DISPLAY_DELAY)
         self._calendar().select_date(year, month, day)

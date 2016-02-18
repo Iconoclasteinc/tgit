@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QLabel, QLineEdit, QTimeEdit, QComboBox, QPushButton, QCheckBox, QPlainTextEdit, \
     QTableView, QWidget, QTextEdit, QRadioButton, QDateEdit, QToolButton, QTabWidget
 
-from cute.widgets import LabelDriver, LineEditDriver, DateTimeEditDriver, ComboBoxDriver, ButtonDriver, \
+from cute.widgets import LabelDriver, LineEditDriver, QDateTimeEditDriver, ComboBoxDriver, ButtonDriver, \
     TextEditDriver, WidgetDriver, TableViewDriver, QToolButtonDriver, QTabWidgetDriver
 
 
@@ -19,10 +19,10 @@ class ScreenDriver(WidgetDriver):
         return TextEditDriver.find_single(self, QTextEdit, *matching)
 
     def dateTimeEdit(self, matching):
-        return DateTimeEditDriver.find_single(self, QTimeEdit, matching)
+        return QDateTimeEditDriver.find_single(self, QTimeEdit, matching)
 
     def dateEdit(self, matching):
-        return DateTimeEditDriver.find_single(self, QDateEdit, matching)
+        return QDateTimeEditDriver.find_single(self, QDateEdit, matching)
 
     def combobox(self, matching):
         return ComboBoxDriver.find_single(self, QComboBox, matching)

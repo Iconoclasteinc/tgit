@@ -216,7 +216,7 @@ class AlbumEditionPageDriver(ScreenDriver):
 
     def change_recording_time(self, year, month, day):
         self.tabs(named("_tabs")).select("Dates")
-        self.dateEdit(named("_recording_time")).change_date(year, month, day)
+        self.dateEdit(named("_recording_time")).enter_date(year, month, day)
 
     def shows_release_time(self, time):
         self.tabs(named("_tabs")).select("Dates")
@@ -225,7 +225,7 @@ class AlbumEditionPageDriver(ScreenDriver):
 
     def change_release_time(self, year, month, day):
         self.tabs(named("_tabs")).select("Dates")
-        self.dateEdit(named("_release_time")).change_date(year, month, day)
+        self.dateEdit(named("_release_time")).enter_date(year, month, day)
 
     def shows_digital_release_time(self, time):
         self.tabs(named("_tabs")).select("Dates")
@@ -241,7 +241,7 @@ class AlbumEditionPageDriver(ScreenDriver):
 
     def change_original_release_time(self, time):
         self.tabs(named("_tabs")).select("Dates")
-        self.label(named("_original_release_time")).change_date(time)
+        self.label(named("_original_release_time")).enter_date(time)
 
     def shows_comments(self, comments):
         self.tabs(named("_tabs")).select("Record")
