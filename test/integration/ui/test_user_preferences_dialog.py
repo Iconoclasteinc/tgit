@@ -42,5 +42,5 @@ def test_signals_when_preferences_edited(driver):
     _ = show_preferences_dialog(on_preferences_changed=language_changed_signal.received)
 
     driver.select_language("Français")
-    driver.ok()
+    driver.click_ok()
     driver.check(language_changed_signal)

@@ -32,7 +32,8 @@ class StartupScreen(QStackedWidget):
         self.addWidget(self._welcome_page)
         self.addWidget(self._new_project_page)
 
-    def _move_to_new_project_page(self):
+    def _move_to_new_project_page(self, project_type):
+        self._new_project_page.project_type = project_type
         self.setCurrentWidget(self._new_project_page)
 
     def _move_to_welcome_page(self):

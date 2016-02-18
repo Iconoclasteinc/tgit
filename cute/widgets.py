@@ -362,19 +362,22 @@ class QCalendarDriver(WidgetDriver):
 
 
 class QDialogButtonBoxDriver(WidgetDriver):
-    def ok(self):
-        self._dialog_button(QDialogButtonBox.Ok).click()
+    def click_ok(self):
+        self.ok_button().click()
 
-    def yes(self):
-        self._dialog_button(QDialogButtonBox.Yes).click()
+    def click_yes(self):
+        self._button(QDialogButtonBox.Yes).click()
 
-    def no(self):
-        self._dialog_button(QDialogButtonBox.No).click()
+    def click_no(self):
+        self._button(QDialogButtonBox.No).click()
 
-    def cancel(self):
-        self._dialog_button(QDialogButtonBox.Cancel).click()
+    def click_cancel(self):
+        self._button(QDialogButtonBox.Cancel).click()
 
-    def _dialog_button(self, role):
+    def ok_button(self):
+        return self._button(QDialogButtonBox.Ok)
+
+    def _button(self, role):
         self.is_showing_on_screen()
         button = self.query("button with role {0}".format(role), lambda button_box: button_box.button(role))
         return ButtonDriver(WidgetIdentity(button), self.prober, self.gesture_performer)
@@ -385,17 +388,17 @@ class QDialogDriver(WidgetDriver):
         self.is_showing_on_screen()
         self.is_(match.active_window())
 
-    def ok(self):
-        self._button_box().ok()
+    def click_ok(self):
+        self._button_box().click_ok()
 
-    def cancel(self):
-        self._button_box().cancel()
+    def click_cancel(self):
+        self._button_box().click_cancel()
 
-    def yes(self):
-        self._button_box().yes()
+    def click_yes(self):
+        self._button_box().click_yes()
 
-    def no(self):
-        self._button_box().no()
+    def click_no(self):
+        self._button_box().click_no()
 
     def _button_box(self):
         self.is_showing_on_screen()

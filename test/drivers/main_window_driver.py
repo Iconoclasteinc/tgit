@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from cute import gestures
 from cute.widgets import WidgetDriver
-from .album_screen_driver import album_screen
-from .load_album_dialog_driver import load_project_dialog
-from .isni_lookup_dialog_driver import isni_lookup_dialog
-from .isni_assignation_review_dialog_driver import isni_assignation_review_dialog
-from .message_box_driver import message_box
 from test.drivers.save_as_dialog_driver import save_as_dialog
-from .user_preferences_dialog_driver import user_preferences_dialog
-from .menu_bar_driver import menu_bar
-from .new_album_page_driver import new_project_page
 from test.drivers.sign_in_dialog_driver import sign_in_dialog
+from .album_screen_driver import album_screen
+from .isni_assignation_review_dialog_driver import isni_assignation_review_dialog
+from .isni_lookup_dialog_driver import isni_lookup_dialog
+from .load_album_dialog_driver import load_project_dialog
+from .menu_bar_driver import menu_bar
+from .message_box_driver import message_box
+from .new_album_page_driver import new_project_page
+from .user_preferences_dialog_driver import user_preferences_dialog
 from .welcome_screen_driver import welcome_page
 
 
@@ -18,9 +18,9 @@ class MainWindowDriver(WidgetDriver):
     def __init__(self, selector, prober, gesture_performer):
         super().__init__(selector, prober, gesture_performer)
 
-    def create_album(self, of_type, name, location, import_from=""):
-        welcome_page(self).new_project()
-        new_project_page(self).create_project(of_type, name, location, import_from=import_from)
+    def create_project(self, of_type, name, location, import_from=""):
+        welcome_page(self).new_project(of_type)
+        new_project_page(self).create_project(name, location, import_from=import_from)
         album_screen(self).is_showing_on_screen()
 
     def add_tracks_in_folder(self):
@@ -69,7 +69,7 @@ class MainWindowDriver(WidgetDriver):
     def change_settings(self, **settings):
         menu_bar(self).file.settings()
         user_preferences_dialog(self).change_preferences(settings)
-        message_box(self).ok()
+        message_box(self).click_ok()
 
     def has_settings(self, **settings):
         dialog = menu_bar(self).file.settings()
@@ -81,11 +81,11 @@ class MainWindowDriver(WidgetDriver):
     def assign_isni_to_main_artist(self):
         album_screen(self).assign_isni_to_main_artist()
         isni_assignation_review_dialog(self).select_individual()
-        isni_assignation_review_dialog(self).ok()
+        isni_assignation_review_dialog(self).click_ok()
 
     def shows_assignation_failed(self):
         message_box(self).is_active()
-        message_box(self).ok()
+        message_box(self).click_ok()
 
     def find_isni_of_main_artist(self):
         album_screen(self).lookup_isni_of_main_artist()
@@ -165,7 +165,7 @@ class MainWindowDriver(WidgetDriver):
     def declare_project_to_soproq(self, filename):
         self.transmit_to_soproq()
         save_as_dialog(self).save_as(filename)
-        message_box(self).ok()
+        message_box(self).click_ok()
 
     def transmit_to_soproq(self):
         menu_bar(self).transmit.soproq()

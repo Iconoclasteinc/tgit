@@ -18,8 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from cute.matchers import named
 from cute.widgets import window, QDialogDriver
-from ._screen_driver import ScreenDriver
 from tgit.ui.dialogs.sign_in_dialog import SignInDialog
+from ._screen_driver import ScreenDriver
 
 
 def sign_in_dialog(parent):
@@ -30,7 +30,7 @@ class SignInDialogDriver(QDialogDriver, ScreenDriver):
     def enter_credentials(self, username, password):
         self.lineEdit(named("_email")).replace_all_text(username)
         self.lineEdit(named("_password")).replace_all_text(password)
-        self.ok()
+        self.click_ok()
 
     def shows_authentication_failed_message(self):
         self.label(named("_authentication_error")).is_showing_on_screen()

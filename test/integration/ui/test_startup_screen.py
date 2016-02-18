@@ -56,9 +56,9 @@ def test_initially_shows_the_welcome_page(driver):
     driver.shows_welcome_page()
 
 
-def test_navigates_to_new_project_page_to_create_an_project(driver):
+def test_opens_new_project_page_to_create_a_project(driver):
     driver.create_project()
 
 
-def test_navigates_to_welcome_page_after_cancelling_project_creation(driver):
+def test_returns_to_welcome_page_after_cancelling_project_creation(driver):
     driver.cancel_creation()

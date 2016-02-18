@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+from PyQt5.QtWidgets import QDialogButtonBox
 from hamcrest import ends_with
 
 from cute import gestures
 from cute.matchers import named
+from cute.widgets import QDialogButtonBoxDriver
 from tgit.ui.pages.new_album_page import NewProjectPage
 from ._screen_driver import ScreenDriver
 
@@ -30,19 +31,15 @@ def new_project_page(parent):
 
 
 class NewProjectPageDriver(ScreenDriver):
-    def create_project(self, of_type, name, location, import_from="", using_shortcut=False):
-        self.select_project_type(of_type)
+    def create_project(self, name, location, import_from="", using_shortcut=False):
         self.enter_name(name)
         self.enter_location(location)
-        self.enter_track_location(import_from)
+        self.enter_reference_track(import_from)
 
         if using_shortcut:
             self.perform(gestures.enter())
         else:
-            self.button(named("_create_button")).click()
-
-    def select_project_type(self, of_type):
-        self.radio(named("_{}_button".format(of_type))).click()
+            self._buttons().click_ok()
 
     def enter_name(self, album_name):
         self.lineEdit(named("_name")).replace_all_text(album_name)
@@ -50,28 +47,24 @@ class NewProjectPageDriver(ScreenDriver):
     def enter_location(self, album_location):
         self.lineEdit(named("_location")).replace_all_text(album_location)
 
-    def enter_track_location(self, import_from):
-        self.lineEdit(named("_track_location")).replace_all_text(import_from)
+    def enter_reference_track(self, import_from):
+        self.lineEdit(named("_reference_track")).replace_all_text(import_from)
 
-    def cancel_creation(self, of_type="flac", name="", location="", import_from="", using_shortcut=False):
-        self.select_project_type(of_type)
+    def cancel_creation(self, name="", location="", import_from="", using_shortcut=False):
         self.enter_name(name)
         self.enter_location(location)
-        self.enter_track_location(import_from)
+        self.enter_reference_track(import_from)
 
         if using_shortcut:
             self.perform(gestures.unselect())
         else:
-            self.button(named("_cancel_button")).click()
+            self._buttons().click_cancel()
 
     def select_project(self):
         self.button(named("_browse_location_button")).click()
 
     def select_track(self):
-        self.button(named("_browse_track_location_button")).click()
-
-    def has_selected_mp3(self):
-        self.radio(named("_mp3_button")).is_checked()
+        self.button(named("_select_reference_track_button")).click()
 
     def has_name(self, name):
         self.lineEdit(named("_name")).has_text(name)
@@ -79,14 +72,17 @@ class NewProjectPageDriver(ScreenDriver):
     def has_location(self, destination):
         self.lineEdit(named("_location")).has_text(destination)
 
-    def has_track_location(self, destination):
-        self.lineEdit(named("_track_location")).has_text(destination)
+    def has_reference_track(self, destination):
+        self.lineEdit(named("_reference_track")).has_text(destination)
 
     def creation_is_disabled(self):
-        self.button(named("_create_button")).is_disabled()
+        self._buttons().ok_button().is_disabled()
 
     def has_reset_form(self):
-        self.has_selected_mp3()
         self.has_name("untitled")
         self.has_location(ends_with("Documents"))
-        self.has_track_location("")
+        self.has_reference_track("")
+
+    def _buttons(self):
+        return QDialogButtonBoxDriver.find_single(self, QDialogButtonBox)
+

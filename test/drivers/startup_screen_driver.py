@@ -17,9 +17,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from ._screen_driver import ScreenDriver
 from test.drivers import welcome_page
 from test.drivers.new_album_page_driver import new_project_page
+from ._screen_driver import ScreenDriver
 
 
 class StartupScreenDriver(ScreenDriver):
@@ -27,7 +27,7 @@ class StartupScreenDriver(ScreenDriver):
         welcome_page(self).is_showing_on_screen()
 
     def create_project(self):
-        welcome_page(self).new_project()
+        welcome_page(self).new_project(of_type="mp3")
         new_project_page(self).is_showing_on_screen()
         new_project_page(self).has_reset_form()
 

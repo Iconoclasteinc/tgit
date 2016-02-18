@@ -10,8 +10,8 @@ def welcome_page(parent):
 
 
 class WelcomePageDriver(ScreenDriver):
-    def new_project(self):
-        self.button(named("_new_mp3_project_button")).click()
+    def new_project(self, of_type="mp3"):
+        self.button(named("_new_{}_project_button".format(of_type))).click()
 
     def load(self):
         self.button(named("_load_project_button")).click()

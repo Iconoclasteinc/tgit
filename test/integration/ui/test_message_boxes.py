@@ -52,28 +52,28 @@ def test_shows_isni_assignation_failed_message_with_details(driver):
     driver.is_active()
     driver.shows_message("Could not assign an ISNI.")
     driver.shows_details("Details")
-    driver.ok()
+    driver.click_ok()
 
 
 def test_shows_cheddar_connection_failed_message(driver):
     _ = messages().cheddar_connection_failed()
     driver.is_active()
     driver.shows_message("Unable to connect to the TGiT service.")
-    driver.ok()
+    driver.click_ok()
 
 
 def test_shows_cheddar_authentication_failed_message(driver):
     _ = messages().cheddar_authentication_failed()
     driver.is_active()
     driver.shows_message("Could not authenticate you to the TGiT service.")
-    driver.ok()
+    driver.click_ok()
 
 
 def test_shows_permission_denied_message(driver):
     _ = messages().permission_denied()
     driver.is_active()
     driver.shows_message("You don't have the required permission or you might have exceeded the limit of your plan.")
-    driver.ok()
+    driver.click_ok()
 
 
 def test_shows_close_project_message(driver):
@@ -103,7 +103,7 @@ def test_signals_when_confirmed(driver):
 
     driver.is_active()
     driver.pause(DISPLAY_DELAY)
-    driver.yes()
+    driver.click_yes()
     driver.check(accept_signal)
 
 

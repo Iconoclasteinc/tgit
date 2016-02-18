@@ -65,20 +65,29 @@
        <number>15</number>
       </property>
       <property name="leftMargin">
-       <number>10</number>
+       <number>20</number>
       </property>
       <property name="topMargin">
        <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>10</number>
+       <number>20</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>20</number>
       </property>
       <item>
        <widget class="QWidget" name="_banner" native="true">
         <layout class="QGridLayout" name="gridLayout_2">
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="horizontalSpacing">
+          <number>25</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>0</number>
+         </property>
          <item row="0" column="0" rowspan="3">
           <widget class="QLabel" name="_logo">
            <property name="maximumSize">
@@ -131,59 +140,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="_main_container" native="true">
-        <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0,0">
-         <property name="leftMargin">
-          <number>20</number>
-         </property>
-         <property name="topMargin">
-          <number>10</number>
-         </property>
-         <property name="rightMargin">
-          <number>20</number>
-         </property>
-         <property name="bottomMargin">
-          <number>20</number>
-         </property>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string/>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
          <property name="horizontalSpacing">
-          <number>40</number>
+          <number>25</number>
          </property>
-         <property name="verticalSpacing">
-          <number>-1</number>
-         </property>
-         <item row="2" column="0" colspan="2">
-          <widget class="QPushButton" name="_new_mp3_project_button">
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
-           <property name="focusPolicy">
-            <enum>Qt::TabFocus</enum>
-           </property>
-           <property name="text">
-            <string>Create a new project in MP3</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0" colspan="2">
-          <widget class="QPushButton" name="_load_project_button">
-           <property name="text">
-            <string>Load an existing project</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="3">
-          <widget class="QPushButton" name="_reopen_recent_project_button">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Open</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="0" colspan="2">
           <widget class="QLabel" name="_new_project_title">
            <property name="font">
@@ -201,6 +165,49 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="2" colspan="3">
+          <widget class="QLabel" name="_recent_projects_title">
+           <property name="font">
+            <font>
+             <pointsize>18</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Recent Projects</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QPushButton" name="_new_flac_project_button">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
+           </property>
+           <property name="text">
+            <string>Create a new FLAC project</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2" rowspan="6" colspan="3">
+          <widget class="QListView" name="_recent_projects_list"/>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QPushButton" name="_new_mp3_project_button">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
+           </property>
+           <property name="text">
+            <string>Create a new MP3 project</string>
+           </property>
+          </widget>
+         </item>
          <item row="4" column="0" colspan="2">
           <widget class="QLabel" name="_open_project_title">
            <property name="font">
@@ -215,70 +222,25 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="2" rowspan="6" colspan="2">
-          <widget class="QListView" name="_recent_projects_list"/>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QPushButton" name="_new_flac_project_button">
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
-           <property name="focusPolicy">
-            <enum>Qt::TabFocus</enum>
-           </property>
+         <item row="5" column="0" colspan="2">
+          <widget class="QPushButton" name="_load_project_button">
            <property name="text">
-            <string>Create a new project in FLAC</string>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
+            <string>Load an existing project</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="2" colspan="2">
-          <widget class="QLabel" name="_recent_projects_title">
-           <property name="font">
-            <font>
-             <pointsize>18</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
+         <item row="7" column="4">
+          <widget class="QPushButton" name="_reopen_recent_project_button">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
            <property name="text">
-            <string>Recent Projects</string>
+            <string>Open</string>
            </property>
           </widget>
-         </item>
-         <item row="6" column="0" colspan="2">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Expanding</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="7" column="2">
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Preferred</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </widget>

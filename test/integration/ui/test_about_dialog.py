@@ -27,8 +27,8 @@ from cute.matchers import named
 from cute.widgets import window
 from test.drivers.about_dialog_driver import AboutDialogDriver
 from test.integration.ui import show_widget
-from tgit.platforms import mac
 from tgit import __version__
+from tgit.platforms import mac
 from tgit.ui.dialogs.about_dialog import AboutDialog
 
 DISPLAY_DELAY = 200 if mac else 0
@@ -76,5 +76,5 @@ def test_shows_pyqt_version(driver):
 def test_closes_dialog(driver):
     _ = show_dialog()
     driver.pause(DISPLAY_DELAY)
-    driver.ok()
+    driver.click_ok()
     driver.is_hidden()

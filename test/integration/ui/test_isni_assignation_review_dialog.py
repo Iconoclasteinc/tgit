@@ -39,7 +39,7 @@ def test_signals_organization_type_on_accept(driver):
 
     driver.pause(ANIMATION_DELAY)
     driver.select_organization()
-    driver.ok()
+    driver.click_ok()
     driver.check(review_signal)
 
 
@@ -50,7 +50,7 @@ def test_signals_individual_type_on_accept(driver):
 
     driver.pause(ANIMATION_DELAY)
     driver.select_individual()
-    driver.ok()
+    driver.click_ok()
     driver.check(review_signal)
 
 

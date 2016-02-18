@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QDialog
 
-from ._screen_driver import ScreenDriver
 from cute.matchers import named, with_buddy, showing_on_screen
 from cute.widgets import window, QDialogDriver
+from ._screen_driver import ScreenDriver
 
 
 def user_preferences_dialog(parent):
@@ -20,7 +20,7 @@ class UserPreferencesDialogDriver(QDialogDriver, ScreenDriver):
         if 'language' in preferences:
             self.select_language(preferences['language'])
 
-        self.ok()
+        self.click_ok()
 
     def shows_language(self, language):
         self.combobox(named('language')).has_current_text(language)

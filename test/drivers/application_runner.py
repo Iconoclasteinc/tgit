@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-from collections import namedtuple
 import sip
+from collections import namedtuple
 
 from cute.animatron import Animatron
 from cute.matchers import named, showing_on_screen
 from cute.prober import EventProcessingProber
 from cute.widgets import main_application_window
-from .main_window_driver import MainWindowDriver
 from test.drivers import track_selection_dialog, message_box
 from test.util.doubles import fake_audio_player
 from tgit import platforms
 from tgit.cheddar import Cheddar
 from tgit.tagger import TGiT
+from .main_window_driver import MainWindowDriver
 
 
 def _make_tracks(tracks):
@@ -47,15 +47,15 @@ class ApplicationRunner:
         sip.delete(self.app)
 
     def new_project(self, name="album", of_type="mp3"):
-        self.tagger.create_album(of_type, name, self._workspace.root_path)
+        self.tagger.create_project(of_type, name, self._workspace.root_path)
 
     def add_tracks_to_project(self, *tracks):
         self.tagger.add_tracks_to_project()
         track_selection_dialog(self.tagger).select_tracks(*tracks)
 
     def import_project(self, name, from_track, of_type="mp3"):
-        self.tagger.create_album(of_type=of_type, name=name, location=self._workspace.root_path,
-                                 import_from=from_track)
+        self.tagger.create_project(of_type=of_type, name=name, location=self._workspace.root_path,
+                                   import_from=from_track)
 
     def shows_track_list(self, *tracks):
         self.tagger.navigate_to_track_list_page()
@@ -113,7 +113,7 @@ class ApplicationRunner:
     def close_project(self):
         self.tagger.close_project()
         self.tagger.pause(100)
-        message_box(self.tagger).yes()
+        message_box(self.tagger).click_yes()
         self.tagger.shows_welcome_screen()
 
     def load_project(self, album_name):
