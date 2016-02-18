@@ -965,7 +965,7 @@
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
         <source>Select...</source>
-        <translation>Sélectionner...</translation>
+        <translation>Choisir...</translation>
     </message>
 </context>
 <context>
