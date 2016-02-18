@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1100</width>
-    <height>744</height>
+    <width>430</width>
+    <height>266</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -31,16 +31,13 @@
    </property>
    <item row="0" column="0">
     <widget class="QWidget" name="_new_project_dialog" native="true">
-     <property name="maximumSize">
-      <size>
-       <width>572</width>
-       <height>360</height>
-      </size>
-     </property>
      <property name="autoFillBackground">
       <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetFixedSize</enum>
+      </property>
       <property name="leftMargin">
        <number>20</number>
       </property>
@@ -54,12 +51,12 @@
        <number>20</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="_title_container">
         <property name="spacing">
          <number>25</number>
         </property>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="_logo">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -110,13 +107,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>100</height>
-         </size>
-        </property>
+       <widget class="QGroupBox" name="_form_box">
         <property name="title">
          <string/>
         </property>
@@ -135,7 +126,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QWidget" name="widget" native="true">
+          <widget class="QWidget" name="_name_container" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <property name="leftMargin">
              <number>0</number>
@@ -165,7 +156,7 @@
                <bool>false</bool>
               </property>
               <property name="text">
-               <string>  </string>
+               <string> </string>
               </property>
               <property name="flat">
                <bool>true</bool>
@@ -186,7 +177,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QWidget" name="widget_2" native="true">
+          <widget class="QWidget" name="_location_container" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <property name="leftMargin">
              <number>0</number>
@@ -231,7 +222,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QWidget" name="widget_4" native="true">
+          <widget class="QWidget" name="_reference_track_container" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <property name="leftMargin">
              <number>0</number>

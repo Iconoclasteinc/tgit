@@ -19,6 +19,7 @@
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
+
 from PyQt5.QtWidgets import QFrame, QDialogButtonBox
 
 from tgit.album import Album
@@ -56,7 +57,7 @@ class NewProjectPage(QFrame, UIFile):
         self._name.textChanged.connect(self._toggle_create_button)
         self._browse_location_button.clicked.connect(lambda: select_destination(self._location.setText))
         self._select_reference_track_button.clicked.connect(
-                lambda: select_track_location(self.project_type, self._reference_track.setText))
+            lambda: select_track_location(self.project_type, self._reference_track.setText))
 
     def _create_button(self):
         return self._action_buttons.button(QDialogButtonBox.Ok)

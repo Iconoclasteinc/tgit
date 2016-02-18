@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import sip
 from collections import namedtuple
+from traceback import format_exception
+import sys
 
 from cute.animatron import Animatron
 from cute.matchers import named, showing_on_screen
@@ -12,6 +14,14 @@ from tgit import platforms
 from tgit.cheddar import Cheddar
 from tgit.tagger import TGiT
 from .main_window_driver import MainWindowDriver
+
+
+def _print_unhandled_exceptions():
+    def exception_hook(exctype, value, traceback):
+        for line in format_exception(exctype, value, traceback):
+            print(line, file=sys.stderr)
+
+    sys.excepthook = exception_hook
 
 
 def _make_tracks(tracks):
@@ -32,8 +42,10 @@ class ApplicationRunner:
         self._settings = settings
 
     def start(self):
+        _print_unhandled_exceptions()
         self.app = TGiT(fake_audio_player, Cheddar(host="localhost", port=5001, secure=False),
                         self._settings, native=False, confirm_exit=False)
+
         self.app.show()
         self.tagger = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                        EventProcessingProber(timeout_in_ms=1000), Animatron())

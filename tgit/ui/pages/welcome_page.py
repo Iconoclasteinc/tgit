@@ -47,8 +47,8 @@ class WelcomePage(QFrame, UIFile):
         self._version.setText(tgit.__version__)
 
     def on_create_project(self, on_create_project):
-        self._new_mp3_project_button.clicked.connect(lambda: on_create_project(Album.Type.MP3))
-        self._new_flac_project_button.clicked.connect(lambda: on_create_project(Album.Type.FLAC))
+        self._new_mp3_project_button.clicked.connect(lambda _: on_create_project(Album.Type.MP3))
+        self._new_flac_project_button.clicked.connect(lambda _: on_create_project(Album.Type.FLAC))
 
     def on_load_project(self, on_load_project):
         def try_loading_project(filename):
