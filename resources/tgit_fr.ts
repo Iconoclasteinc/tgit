@@ -878,13 +878,43 @@
     <name>welcome_page</name>
     <message>
         <location filename="tgit/ui/welcome_page.py"/>
-        <source>Create New Project</source>
-        <translation>Créer un nouveau projet</translation>
+        <source>Welcome to TGiT!</source>
+        <translation>Bienvenue dans TGiT !</translation>
     </message>
     <message>
         <location filename="tgit/ui/welcome_page.py"/>
-        <source>Load Existing Project</source>
-        <translation>Charger un projet</translation>
+        <source>New Project</source>
+        <translation>Nouveau projet</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/welcome_page.py"/>
+        <source>Create a new FLAC project</source>
+        <translation>Créer un nouveau projet FLAC</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/welcome_page.py"/>
+        <source>Create a new MP3 project</source>
+        <translation>Créer un nouveau projet MP3</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/welcome_page.py"/>
+        <source>Open Project</source>
+        <translation>Ouvrir un projet</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/welcome_page.py"/>
+        <source>Load an existing project</source>
+        <translation>Charger un projet existant</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/welcome_page.py"/>
+        <source>Recent Projects</source>
+        <translation>Projets récents</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/welcome_page.py"/>
+        <source>Open</source>
+        <translation>Ouvrir</translation>
     </message>
 </context>
 <context>
@@ -894,18 +924,24 @@
         <source>untitled</source>
         <translation>sans titre</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/new_album_page.py"/>
+        <source>New FLAC Project</source>
+        <translation>Nouveau project FLAC</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/new_album_page.py"/>
+        <source>New MP3 Project</source>
+        <translation>Nouveau project MP3</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/new_album_page.py"/>
+        <source>Create</source>
+        <translation>Créer</translation>
+    </message>
 </context>
 <context>
     <name>new_project_page</name>
-    <message>
-        <location filename="tgit/ui/new_album_page.py"/>
-        <source>New Project</source>
-        <translation>Nouveau projet</translation>
-    </message>
-    <message>
-        <source>Type:</source>
-        <translation>Type :</translation>
-    </message>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
         <source>Name:</source>
@@ -923,13 +959,13 @@
     </message>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
-        <source>Create</source>
-        <translation>Créer</translation>
+        <source>Browse...</source>
+        <translation>Parcourir...</translation>
     </message>
     <message>
         <location filename="tgit/ui/new_album_page.py"/>
-        <source>Cancel</source>
-        <translation>Annuler</translation>
+        <source>Select...</source>
+        <translation>Sélectionner...</translation>
     </message>
 </context>
 <context>
