@@ -12,28 +12,6 @@
   </property>
   <property name="styleSheet">
    <string notr="true">
-         QCalendarWidget QToolButton {
-         background-color: transparent;
-         }
-
-         QCalendarWidget QToolButton#qt_calendar_monthbutton {
-         padding-right: 15px;
-         }
-
-         QCalendarWidget QToolButton::menu-indicator {
-         subcontrol-position: right center;
-         top: 2px;
-         right: 2px;
-         }
-
-         QCalendarWidget QToolButton::menu-indicator {
-         image: url(:/calendar-menu-indicator);
-         }
-
-         QCalendarWidget QToolButton::menu-indicator:open {
-         top: 3px;
-         right: 1px;
-         }
      </string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -52,7 +30,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="_record_tab">
       <attribute name="title">
@@ -261,7 +239,7 @@
             <x>0</x>
             <y>0</y>
             <width>1112</width>
-            <height>418</height>
+            <height>413</height>
            </rect>
           </property>
           <property name="styleSheet">
@@ -448,7 +426,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <property name="spacing">
-           <number>5</number>
+           <number>10</number>
           </property>
           <item>
            <widget class="QLabel" name="_front_cover">
@@ -471,14 +449,14 @@
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLabel {border: 1px solid #ABADB3;}</string>
+             <string notr="true">border: 1px solid #ABADB3;</string>
             </property>
            </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="_picture_button_container" stretch="0,0,0">
             <property name="spacing">
-             <number>5</number>
+             <number>0</number>
             </property>
             <item>
              <widget class="QToolButton" name="_select_picture_button">
@@ -509,6 +487,9 @@
               </property>
               <property name="toolTip">
                <string>Remove the picture</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">margin-left: -1px;</string>
               </property>
               <property name="text">
                <string>-</string>
