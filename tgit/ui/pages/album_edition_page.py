@@ -70,7 +70,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     _isni_assign = False
     _metadata_changed = lambda: None
 
-    FRONT_COVER_SIZE = 120, 120
+    FRONT_COVER_SIZE = 150, 150
 
     def __init__(self, select_picture, select_identity, review_assignation,
                  show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed,
