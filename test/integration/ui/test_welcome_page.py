@@ -24,31 +24,31 @@ def driver(qt, prober, automaton):
     page_driver.close()
 
 
-def test_signals_when_new_album_button_clicked(driver):
-    new_album_signal = ValueMatcherProbe("new album")
+def test_signals_when_new_project_button_clicked(driver):
+    new_project_signal = ValueMatcherProbe("new project", "mp3")
     page = show_page()
-    page.on_create_project(lambda: new_album_signal.received())
+    page.on_create_project(new_project_signal.received)
 
     driver.new_project()
-    driver.check(new_album_signal)
+    driver.check(new_project_signal)
 
 
-def test_signals_when_load_album_button_clicked(driver):
-    load_album_signal = ValueMatcherProbe("load album", "album.tgit")
-    page = show_page(select_project=lambda on_select: on_select("album.tgit"))
-    page.on_load_project(load_album_signal.received)
+def test_signals_when_load_project_button_clicked(driver):
+    load_project_signal = ValueMatcherProbe("load project", "project.tgit")
+    page = show_page(select_project=lambda on_select: on_select("project.tgit"))
+    page.on_load_project(load_project_signal.received)
 
     driver.load()
-    driver.check(load_album_signal)
+    driver.check(load_project_signal)
 
 
 def test_warn_user_if_load_failed(driver):
     def load_fails(_):
         raise OSError("Load failed")
 
-    load_failed_signal = ValueMatcherProbe("load album failed", instance_of(OSError))
+    load_failed_signal = ValueMatcherProbe("load project failed", instance_of(OSError))
 
-    _ = show_page(select_project=lambda load: load("album.tgit"),
+    _ = show_page(select_project=lambda load: load("project.tgit"),
                   show_load_error=load_failed_signal.received,
                   on_load_project=load_fails)
 
