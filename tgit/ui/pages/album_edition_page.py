@@ -26,7 +26,6 @@ from tgit.album import AlbumListener
 from tgit.auth import Permission
 from tgit.cheddar import AuthenticationError, InsufficientInformationError, PermissionDeniedError
 from tgit.countries import COUNTRIES
-from tgit.platforms import windows
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image
@@ -70,7 +69,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     _isni_assign = False
     _metadata_changed = lambda: None
 
-    FRONT_COVER_SIZE = 150, 150
+    FRONT_COVER_SIZE = 200, 200
 
     def __init__(self, select_picture, select_identity, review_assignation,
                  show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed,
@@ -88,10 +87,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def _setup_ui(self):
         self._load(":/ui/album_page.ui")
         self._fill_with_countries(self._main_artist_region)
-
-        if windows:
-            self._select_picture_button.setStyleSheet("margin:0;")
-            self._remove_picture_button.setStyleSheet("margin:0;")
 
         menu = QMenu()
         menu.addAction(self._main_artist_isni_assign_action)

@@ -7,14 +7,10 @@
     <x>0</x>
     <y>0</y>
     <width>1118</width>
-    <height>690</height>
+    <height>750</height>
    </rect>
   </property>
-  <property name="styleSheet">
-   <string notr="true">
-     </string>
-  </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -27,7 +23,312 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="1" column="0">
+   <item>
+    <layout class="QHBoxLayout" name="_top_banner" stretch="0,1">
+     <item>
+      <widget class="QGroupBox" name="_picture_box">
+       <property name="title">
+        <string>Artwork</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <property name="spacing">
+           <number>10</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="_front_cover">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border: 1px solid #ABADB3;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="_picture_button_container" stretch="0,0,0">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="_select_picture_button">
+              <property name="minimumSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+              <property name="toolTip">
+               <string>Add or change the picture</string>
+              </property>
+              <property name="text">
+               <string>+</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="_remove_picture_button">
+              <property name="minimumSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+              <property name="toolTip">
+               <string>Remove the picture</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">margin-left: -1px;</string>
+              </property>
+              <property name="text">
+               <string>-</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="_project_box">
+       <property name="title">
+        <string>Project</string>
+       </property>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="_title_caption">
+          <property name="text">
+           <string>Title:</string>
+          </property>
+          <property name="buddy">
+           <cstring>_title</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="_title">
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="minimumSize">
+           <size>
+            <width>75</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QCheckBox" name="_compilation">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="text">
+           <string>This project is a multi-artist compilation</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="2">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Information about the main artist:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="_main_artist_caption">
+          <property name="text">
+           <string>Name:</string>
+          </property>
+          <property name="buddy">
+           <cstring>_main_artist</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="_main_artist">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLabel" name="label_2">
+          <property name="styleSheet">
+           <string notr="true">QLabel[style=QWindowsStyle] {
+    font-size: 6px;
+}
+
+QLabel[style=QMacStyle] {
+    font-size: 11px;
+}
+</string>
+          </property>
+          <property name="text">
+           <string>The name of the individual or band as it appears on the release</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="_main_artist_isni_caption">
+          <property name="text">
+           <string>ISNI Number:</string>
+          </property>
+          <property name="buddy">
+           <cstring>_main_artist_isni</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLineEdit" name="_main_artist_isni">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="_main_artist_isni_actions_button">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="text">
+             <string>Find</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/search</normaloff>:/search</iconset>
+            </property>
+            <property name="popupMode">
+             <enum>QToolButton::MenuButtonPopup</enum>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonIconOnly</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLabel" name="label_4">
+          <property name="styleSheet">
+           <string notr="true">QLabel[style=QWindowsStyle] {
+    font-size: 6px;
+}
+
+QLabel[style=QMacStyle] {
+    font-size: 11px;
+}
+</string>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work.&lt;br/&gt;It is provided by the &lt;a href=&quot;http://isni.org&quot;&gt;&lt;span style=&quot;text-decoration: underline; color:#0000ff;&quot;&gt;International ISNI Agency&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QLabel" name="_main_artist_region_caption">
+          <property name="text">
+           <string>Origin:</string>
+          </property>
+          <property name="buddy">
+           <cstring>_main_artist_region</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
+         <widget class="QComboBox" name="_main_artist_region">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="insertPolicy">
+           <enum>QComboBox::InsertAtTop</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
       <number>0</number>
@@ -239,7 +540,7 @@
             <x>0</x>
             <y>0</y>
             <width>1112</width>
-            <height>413</height>
+            <height>409</height>
            </rect>
           </property>
           <property name="styleSheet">
@@ -415,335 +716,6 @@
      </widget>
     </widget>
    </item>
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="_top_banner" stretch="0,1">
-     <item>
-      <widget class="QGroupBox" name="_picture_box">
-       <property name="title">
-        <string>Cover Art</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
-          <property name="spacing">
-           <number>10</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="_front_cover">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>150</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>150</width>
-              <height>150</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border: 1px solid #ABADB3;</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="_picture_button_container" stretch="0,0,0">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QToolButton" name="_select_picture_button">
-              <property name="minimumSize">
-               <size>
-                <width>25</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="text">
-               <string>+</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="_remove_picture_button">
-              <property name="minimumSize">
-               <size>
-                <width>25</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="toolTip">
-               <string>Remove the picture</string>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">margin-left: -1px;</string>
-              </property>
-              <property name="text">
-               <string>-</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="_project_box">
-       <property name="title">
-        <string>Project</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="_title_caption">
-            <property name="text">
-             <string>Title</string>
-            </property>
-            <property name="buddy">
-             <cstring>_title</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="spacing">
-             <number>15</number>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="_title"/>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="_compilation">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="text">
-               <string>This project is a multi-artist compilation</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <property name="spacing">
-           <number>25</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_10">
-            <property name="spacing">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="_main_artist_caption">
-              <property name="text">
-               <string>Main Artist</string>
-              </property>
-              <property name="buddy">
-               <cstring>_main_artist</cstring>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="_main_artist">
-              <property name="placeholderText">
-               <string>Artist, Band or Various Artists</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_11">
-            <property name="spacing">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="_main_artist_isni_caption">
-              <property name="text">
-               <string>Main Artist ISNI</string>
-              </property>
-              <property name="buddy">
-               <cstring>_main_artist_isni</cstring>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <property name="spacing">
-               <number>10</number>
-              </property>
-              <item>
-               <widget class="QToolButton" name="_main_artist_isni_actions_button">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="cursor">
-                 <cursorShape>PointingHandCursor</cursorShape>
-                </property>
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-                <property name="text">
-                 <string>Find</string>
-                </property>
-                <property name="popupMode">
-                 <enum>QToolButton::MenuButtonPopup</enum>
-                </property>
-                <property name="toolButtonStyle">
-                 <enum>Qt::ToolButtonTextOnly</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="_main_artist_isni">
-                <property name="placeholderText">
-                 <string>ISNI</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QFormLayout" name="formLayout_2">
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <property name="formAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <property name="verticalSpacing">
-           <number>3</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="_main_artist_region_caption">
-            <property name="text">
-             <string>Main Artist Origin</string>
-            </property>
-            <property name="buddy">
-             <cstring>_main_artist_region</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QComboBox" name="_main_artist_region">
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="insertPolicy">
-             <enum>QComboBox::InsertAtTop</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </item>
   </layout>
   <action name="_main_artist_isni_assign_action">
    <property name="enabled">
@@ -767,6 +739,30 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <tabstops>
+  <tabstop>_title</tabstop>
+  <tabstop>_compilation</tabstop>
+  <tabstop>_main_artist</tabstop>
+  <tabstop>_main_artist_isni</tabstop>
+  <tabstop>_main_artist_isni_actions_button</tabstop>
+  <tabstop>_main_artist_region</tabstop>
+  <tabstop>_select_picture_button</tabstop>
+  <tabstop>_remove_picture_button</tabstop>
+  <tabstop>_tabs</tabstop>
+  <tabstop>_label_name</tabstop>
+  <tabstop>_catalog_number</tabstop>
+  <tabstop>_barcode</tabstop>
+  <tabstop>_media_type</tabstop>
+  <tabstop>_release_type</tabstop>
+  <tabstop>_comments</tabstop>
+  <tabstop>_musicians_input_scroll_area</tabstop>
+  <tabstop>_digital_release_time</tabstop>
+  <tabstop>_release_time</tabstop>
+  <tabstop>_original_release_time</tabstop>
+  <tabstop>_recording_time</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

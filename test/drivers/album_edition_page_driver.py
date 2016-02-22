@@ -92,10 +92,10 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.shows_picture()
 
     def add_picture(self):
-        self.button(named("_select_picture_button")).click()
+        self.tool_button(named("_select_picture_button")).click()
 
     def remove_picture(self):
-        self.button(named("_remove_picture_button")).click()
+        self.tool_button(named("_remove_picture_button")).click()
 
     def assign_isni_to_main_artist(self):
         menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()

@@ -174,13 +174,13 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Picture</source>
+        <source>Artwork</source>
         <translation>Illustration</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Select a picture</source>
-        <translation>Choisir une illustration</translation>
+        <source>Add or change the picture</source>
+        <translation>Ajouter ou changer l'illustration</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -199,8 +199,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Title</source>
-        <translation>Titre</translation>
+        <source>Title:</source>
+        <translation>Titre :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -209,23 +209,33 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Main Artist</source>
-        <translation>Artiste principal</translation>
+        <source>Information about the main artist:</source>
+        <translation>Information sur l'artiste principal :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Main Artist ISNI</source>
-        <translation>ISNI de l&apos;artiste principal</translation>
+        <source>Name:</source>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Artist, Band or Various Artists</source>
-        <translation>Prénom Nom, Nom du groupe ou Multi-interprètes</translation>
+        <source>The name of the individual or band as it appears on the release</source>
+        <translation>Le nom de l'interprète ou du groupe tel qu'affiché sur la parution</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Main Artist Origin</source>
-        <translation>Origine de l&apos;artiste principal</translation>
+        <source>ISNI Number:</source>
+        <translation>Numéro ISNI :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work.&lt;br/&gt;It is provided by the &lt;a href="http://isni.org"&gt;&lt;span style="text-decoration: underline; color:#0000ff;"&gt;International ISNI Agency&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives.&lt;br/&gt;Les attributions de numéros ISNI sont gérées par &lt;a href="http://isni.org"&gt;&lt;span style="text-decoration: underline; color:#0000ff;"&gt;l'agence internationale ISNI&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Origin:</source>
+        <translation>Origine :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -246,11 +256,6 @@
         <location filename="tgit/ui/album_edition_page.py" />
         <source>Catalog Number</source>
         <translation>Numéro de catalogue</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
-        <source>Media Type</source>
-        <translation>Type de format</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -284,18 +289,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Find</source>
-        <translation>Récupérer</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
         <source>Assign</source>
         <translation>Assigner</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
-        <source>This feature will be available soon</source>
-        <translation>Cette fonctionnalité sera bientôt disponible</translation>
     </message>
 </context>
 <context>
