@@ -274,7 +274,7 @@ class QDateTimeEditDriver(WidgetDriver):
         self.has(properties.time(), QTime.fromString(time, self.display_format()))
 
     def enter_date(self, year, month, day):
-        self.perform(gestures.mouse_double_click_at(rect.center_left(self.widget_bounds(), with_offset=1)))
+        self.perform(gestures.mouse_double_click_at(rect.center_left(self.widget_bounds(), with_offset=5)))
         self.perform(gestures.type_text(str(year) + "{0:02d}".format(month) + "{0:02d}".format(day)))
         self.perform(gestures.enter())
 
