@@ -109,7 +109,6 @@ def test_displays_track_metadata(driver):
     driver.shows_tags("Tag1 Tag2 Tag3")
     driver.shows_lyrics("Lyrics\n...\n...")
     driver.shows_language("eng")
-    driver.shows_preview_time("00:00")
     driver.shows_recording_studio("Studio A, Studio B")
     driver.shows_recording_studio_region("Canada")
     driver.shows_production_company("Initial Producer")

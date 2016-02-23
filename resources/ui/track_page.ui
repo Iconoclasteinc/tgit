@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1078</width>
-    <height>672</height>
+    <width>809</width>
+    <height>580</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
@@ -140,7 +140,7 @@
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <layout class="QHBoxLayout" name="_track_sub_informations">
             <property name="spacing">
              <number>3</number>
             </property>
@@ -195,14 +195,11 @@ color: #666666;</string>
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="_track_title_container">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <item>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
            <widget class="QLabel" name="_track_title_caption">
             <property name="text">
-             <string>Track Title</string>
+             <string>Track Title:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -212,23 +209,16 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="0" column="1">
            <widget class="QLineEdit" name="_track_title"/>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="_lead_performer_container">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <item>
+          <item row="1" column="0">
            <widget class="QLabel" name="_lead_performer_caption">
             <property name="enabled">
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>Main Artist</string>
+             <string>Main Artist:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -238,24 +228,17 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="1" column="1">
            <widget class="QLineEdit" name="_lead_performer">
             <property name="enabled">
              <bool>false</bool>
             </property>
            </widget>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="_featured_guest_container">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <item>
+          <item row="2" column="0">
            <widget class="QLabel" name="_featured_guest_caption">
             <property name="text">
-             <string>Featured Guest</string>
+             <string>Featured Guest:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -265,20 +248,13 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="2" column="1">
            <widget class="QLineEdit" name="_featured_guest"/>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="_version_container">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <item>
+          <item row="3" column="0">
            <widget class="QLabel" name="_version_caption">
             <property name="text">
-             <string>Version Information</string>
+             <string>Version:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -288,20 +264,13 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="3" column="1">
            <widget class="QLineEdit" name="_version"/>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="_isrc_container">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <item>
+          <item row="4" column="0">
            <widget class="QLabel" name="_isrc_caption">
             <property name="text">
-             <string>ISRC</string>
+             <string>ISRC:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -311,24 +280,13 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QLineEdit" name="_isrc">
-            <property name="placeholderText">
-             <string>ZZZ123456789</string>
-            </property>
-           </widget>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="_isrc"/>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="_iswc_container">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <item>
+          <item row="5" column="0">
            <widget class="QLabel" name="_iswc_caption">
             <property name="text">
-             <string>ISWC</string>
+             <string>ISWC:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -338,20 +296,13 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="5" column="1">
            <widget class="QLineEdit" name="_iswc"/>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="_tags_container">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <item>
+          <item row="6" column="0">
            <widget class="QLabel" name="_tags_caption">
             <property name="text">
-             <string>Tags</string>
+             <string>Tags:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -361,10 +312,58 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QLineEdit" name="_tags">
-            <property name="placeholderText">
-             <string>tag1, tag2, tag3 ...</string>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="_tags"/>
+          </item>
+          <item row="7" column="1">
+           <widget class="QComboBox" name="_genre">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::NoInsert</enum>
+            </property>
+            <item>
+             <property name="text">
+              <string>Blues</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Country</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Dance</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hip-Hop</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="_genre_caption">
+            <property name="text">
+             <string>Genre:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_genre</cstring>
             </property>
            </widget>
           </item>
@@ -395,417 +394,131 @@ color: #666666;</string>
         <attribute name="title">
          <string>Contributors</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <property name="spacing">
-          <number>10</number>
-         </property>
-         <item>
-          <layout class="QGridLayout" name="_lyricist_container" columnstretch="2,1,2">
-           <property name="verticalSpacing">
-            <number>3</number>
+        <layout class="QFormLayout" name="formLayout_5">
+         <item row="0" column="0" colspan="2">
+          <widget class="QLabel" name="_lyricist_header">
+           <property name="text">
+            <string>Information about the lyricist:</string>
            </property>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="_lyricist_ipi"/>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLineEdit" name="_lyricist"/>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="_lyricist_caption">
-             <property name="text">
-              <string>Lyricist</string>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="_lyricist_caption">
+           <property name="text">
+            <string>Lyricist:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_lyricist</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="_lyricist"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="_lyricist_ipi_caption">
+           <property name="text">
+            <string>IPI:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="_lyricist_ipi"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="_lyricist_isni_caption">
+           <property name="text">
+            <string>ISNI:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <layout class="QHBoxLayout" name="_lyricist_input_container">
+           <property name="spacing">
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QToolButton" name="_lyricist_isni_actions_button">
+             <property name="enabled">
+              <bool>false</bool>
              </property>
-             <property name="buddy">
-              <cstring>_lyricist</cstring>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
              </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <layout class="QHBoxLayout" name="_lyricist_input_container">
-             <property name="spacing">
-              <number>6</number>
+             <property name="focusPolicy">
+              <enum>Qt::WheelFocus</enum>
              </property>
-             <item>
-              <widget class="QToolButton" name="_lyricist_isni_actions_button">
-               <property name="minimumSize">
-                <size>
-                 <width>60</width>
-                 <height>22</height>
-                </size>
-               </property>
-               <property name="cursor">
-                <cursorShape>PointingHandCursor</cursorShape>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::ClickFocus</enum>
-               </property>
-               <property name="text">
-                <string>ISNI</string>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextOnly</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="_lyricist_isni">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="_lyricist_ipi_caption">
-             <property name="text">
-              <string>Lyricist IPI</string>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/search</normaloff>:/search</iconset>
+             </property>
+             <property name="popupMode">
+              <enum>QToolButton::MenuButtonPopup</enum>
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="_lyricist_isni_caption">
-             <property name="text">
-              <string>Lyricist ISNI</string>
+           <item>
+            <widget class="QLineEdit" name="_lyricist_isni">
+             <property name="enabled">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
           </layout>
          </item>
-         <item>
-          <layout class="QGridLayout" name="_composer_container" columnstretch="2,1,2">
-           <property name="verticalSpacing">
-            <number>2</number>
-           </property>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="_composer_ipi"/>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLineEdit" name="_composer"/>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="_composer_caption">
-             <property name="text">
-              <string>Composer</string>
-             </property>
-             <property name="buddy">
-              <cstring>_composer</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <layout class="QHBoxLayout" name="_composer_input_container">
-             <property name="spacing">
-              <number>6</number>
-             </property>
-             <item>
-              <widget class="QToolButton" name="_composer_isni_actions_button">
-               <property name="minimumSize">
-                <size>
-                 <width>60</width>
-                 <height>22</height>
-                </size>
-               </property>
-               <property name="cursor">
-                <cursorShape>PointingHandCursor</cursorShape>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::StrongFocus</enum>
-               </property>
-               <property name="text">
-                <string>ISNI</string>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextOnly</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="_composer_isni">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="_composer_ipi_caption">
-             <property name="text">
-              <string>Composer IPI</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="_composer_isni_caption">
-             <property name="text">
-              <string>Composer ISNI</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="_publisher_container" columnstretch="2,1,2">
-           <property name="verticalSpacing">
-            <number>3</number>
-           </property>
-           <item row="1" column="0">
-            <widget class="QLineEdit" name="_publisher"/>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="_publisher_caption">
-             <property name="text">
-              <string>Publisher</string>
-             </property>
-             <property name="buddy">
-              <cstring>_publisher</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="_publisher_ipi"/>
-           </item>
-           <item row="1" column="2">
-            <layout class="QHBoxLayout" name="_publisher_input_container">
-             <property name="spacing">
-              <number>6</number>
-             </property>
-             <item>
-              <widget class="QToolButton" name="_publisher_isni_actions_button">
-               <property name="minimumSize">
-                <size>
-                 <width>60</width>
-                 <height>22</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>ISNI</string>
-               </property>
-               <property name="popupMode">
-                <enum>QToolButton::InstantPopup</enum>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextOnly</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="_publisher_isni">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="_publisher_ipi_caption">
-             <property name="text">
-              <string>Publisher IPI</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="_publisher_isni_caption">
-             <property name="text">
-              <string>Publisher ISNI</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
+         <item row="4" column="0" colspan="2">
+          <widget class="Line" name="line_2">
            <property name="orientation">
-            <enum>Qt::Vertical</enum>
+            <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
+          </widget>
          </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="_recording_tab">
-        <attribute name="title">
-         <string>Recording</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <property name="spacing">
-          <number>10</number>
-         </property>
-         <item>
-          <layout class="QVBoxLayout" name="_production_company_container">
-           <property name="spacing">
-            <number>3</number>
+         <item row="5" column="0" colspan="2">
+          <widget class="QLabel" name="_composer_header">
+           <property name="text">
+            <string>Information about the composer:</string>
            </property>
-           <item>
-            <widget class="QLabel" name="_production_company_caption">
-             <property name="text">
-              <string>Production Company</string>
-             </property>
-             <property name="buddy">
-              <cstring>_production_company</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="_production_company"/>
-           </item>
-          </layout>
+          </widget>
          </item>
-         <item>
-          <layout class="QVBoxLayout" name="_production_company_region_container">
-           <property name="spacing">
-            <number>3</number>
+         <item row="6" column="0">
+          <widget class="QLabel" name="_composer_caption">
+           <property name="text">
+            <string>Composer:</string>
            </property>
-           <item>
-            <widget class="QLabel" name="_production_company_region_caption">
-             <property name="text">
-              <string>Production Location</string>
-             </property>
-             <property name="buddy">
-              <cstring>_production_company_region</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="_production_company_region">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::StrongFocus</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
+           <property name="buddy">
+            <cstring>_composer</cstring>
+           </property>
+          </widget>
          </item>
-         <item>
-          <layout class="QVBoxLayout" name="_recording_studio_container">
-           <property name="spacing">
-            <number>3</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="_recording_studio_caption">
-             <property name="text">
-              <string>Recording Studio</string>
-             </property>
-             <property name="buddy">
-              <cstring>_recording_studio</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="_recording_studio"/>
-           </item>
-          </layout>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="_composer"/>
          </item>
-         <item>
-          <layout class="QVBoxLayout" name="_recording_studio_region_container">
-           <property name="spacing">
-            <number>3</number>
+         <item row="7" column="0">
+          <widget class="QLabel" name="_composer_ipi_caption">
+           <property name="text">
+            <string>IPI:</string>
            </property>
-           <item>
-            <widget class="QLabel" name="_recording_studio_region_caption">
-             <property name="text">
-              <string>Recording Location</string>
-             </property>
-             <property name="buddy">
-              <cstring>_recording_studio_region</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="_recording_studio_region">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::StrongFocus</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          </widget>
          </item>
-         <item>
-          <layout class="QVBoxLayout" name="_music_producer_container">
-           <property name="spacing">
-            <number>3</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="_music_producer_caption">
-             <property name="text">
-              <string>Music Producer</string>
-             </property>
-             <property name="buddy">
-              <cstring>_music_producer</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="_music_producer"/>
-           </item>
-          </layout>
+         <item row="7" column="1">
+          <widget class="QLineEdit" name="_composer_ipi"/>
          </item>
-         <item>
-          <layout class="QVBoxLayout" name="_mixer_container">
-           <property name="spacing">
-            <number>3</number>
+         <item row="8" column="0">
+          <widget class="QLabel" name="_composer_isni_caption">
+           <property name="text">
+            <string>ISNI:</string>
            </property>
-           <item>
-            <widget class="QLabel" name="_mixer_caption">
-             <property name="text">
-              <string>Mixer</string>
-             </property>
-             <property name="buddy">
-              <cstring>_mixer</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="_mixer"/>
-           </item>
-          </layout>
+          </widget>
          </item>
-         <item>
-          <layout class="QVBoxLayout" name="_genre_container">
+         <item row="8" column="1">
+          <layout class="QHBoxLayout" name="_composer_input_container">
            <property name="spacing">
-            <number>3</number>
+            <number>6</number>
            </property>
            <item>
-            <widget class="QLabel" name="_genre_caption">
-             <property name="text">
-              <string>Primary Style</string>
-             </property>
-             <property name="buddy">
-              <cstring>_genre</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="_genre">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
+            <widget class="QToolButton" name="_composer_isni_actions_button">
+             <property name="enabled">
+              <bool>false</bool>
              </property>
              <property name="cursor">
               <cursorShape>PointingHandCursor</cursorShape>
@@ -813,38 +526,231 @@ color: #666666;</string>
              <property name="focusPolicy">
               <enum>Qt::StrongFocus</enum>
              </property>
-             <property name="editable">
-              <bool>true</bool>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/search</normaloff>:/search</iconset>
              </property>
-             <property name="insertPolicy">
-              <enum>QComboBox::NoInsert</enum>
+             <property name="popupMode">
+              <enum>QToolButton::MenuButtonPopup</enum>
              </property>
-             <item>
-              <property name="text">
-               <string>Blues</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Country</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Dance</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Hip-Hop</string>
-              </property>
-             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="_composer_isni">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
             </widget>
            </item>
           </layout>
          </item>
-         <item>
-          <spacer name="verticalSpacer_2">
+         <item row="9" column="0" colspan="2">
+          <widget class="Line" name="line_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0" colspan="2">
+          <widget class="QLabel" name="_publisher_caption_2">
+           <property name="text">
+            <string>Information about the publisher:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0">
+          <widget class="QLabel" name="_publisher_caption">
+           <property name="text">
+            <string>Publisher:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_publisher</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="1">
+          <widget class="QLineEdit" name="_publisher"/>
+         </item>
+         <item row="12" column="0">
+          <widget class="QLabel" name="_publisher_ipi_caption">
+           <property name="text">
+            <string>IPI:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="1">
+          <widget class="QLineEdit" name="_publisher_ipi"/>
+         </item>
+         <item row="13" column="0">
+          <widget class="QLabel" name="_publisher_isni_caption">
+           <property name="text">
+            <string>ISNI:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="13" column="1">
+          <layout class="QHBoxLayout" name="_publisher_input_container">
+           <property name="spacing">
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QToolButton" name="_publisher_isni_actions_button">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources.qrc">
+               <normaloff>:/search</normaloff>:/search</iconset>
+             </property>
+             <property name="popupMode">
+              <enum>QToolButton::MenuButtonPopup</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="_publisher_isni">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="_recording_tab">
+        <attribute name="title">
+         <string>Recording</string>
+        </attribute>
+        <layout class="QFormLayout" name="formLayout_4">
+         <item row="0" column="0" colspan="2">
+          <widget class="QLabel" name="_production_company_header">
+           <property name="text">
+            <string>Information about the production company:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="_production_company_caption">
+           <property name="text">
+            <string>Production Company:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_production_company</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="_production_company"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="_production_company_region_caption">
+           <property name="text">
+            <string>Location:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_production_company_region</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="_production_company_region">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="Line" name="line_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="QLabel" name="_recording_studio_header">
+           <property name="text">
+            <string>Information about the recording studio:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="_recording_studio_caption">
+           <property name="text">
+            <string>Recording Studio:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_recording_studio</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="_recording_studio"/>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="_recording_studio_region_caption">
+           <property name="text">
+            <string>Location:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_recording_studio_region</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QComboBox" name="_recording_studio_region">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0" colspan="2">
+          <widget class="Line" name="line_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QLabel" name="_music_producer_caption">
+           <property name="text">
+            <string>Music Producer:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_music_producer</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
+          <widget class="QLineEdit" name="_music_producer"/>
+         </item>
+         <item row="9" column="0">
+          <widget class="QLabel" name="_mixer_caption">
+           <property name="text">
+            <string>Mixer:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_mixer</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="1">
+          <widget class="QLineEdit" name="_mixer"/>
+         </item>
+         <item row="10" column="0" colspan="2">
+          <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
@@ -860,107 +766,67 @@ color: #666666;</string>
        </widget>
        <widget class="QWidget" name="_content_tab">
         <attribute name="title">
-         <string>Content</string>
+         <string>Lyrics</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_8">
-         <property name="spacing">
-          <number>10</number>
-         </property>
-         <item>
-          <layout class="QVBoxLayout" name="_language_container">
-           <property name="spacing">
-            <number>3</number>
+        <layout class="QFormLayout" name="formLayout_3">
+         <item row="0" column="0">
+          <widget class="QLabel" name="_language_caption">
+           <property name="text">
+            <string>Language:</string>
            </property>
-           <item>
-            <widget class="QLabel" name="_language_caption">
-             <property name="text">
-              <string>Language</string>
-             </property>
-             <property name="buddy">
-              <cstring>_language</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="_language">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::StrongFocus</enum>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-             <property name="insertPolicy">
-              <enum>QComboBox::NoInsert</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
+           <property name="buddy">
+            <cstring>_language</cstring>
+           </property>
+          </widget>
          </item>
-         <item>
-          <layout class="QVBoxLayout" name="_preview_container">
-           <property name="spacing">
-            <number>3</number>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="_language">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
            </property>
-           <item>
-            <widget class="QLabel" name="_preview_time_caption">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Preview Time</string>
-             </property>
-             <property name="buddy">
-              <cstring>_preview_time</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QTimeEdit" name="_preview_time">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="displayFormat">
-              <string>mm:ss</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+           <property name="insertPolicy">
+            <enum>QComboBox::NoInsert</enum>
+           </property>
+          </widget>
          </item>
-         <item>
-          <layout class="QVBoxLayout" name="_lyrics_container">
-           <property name="spacing">
-            <number>3</number>
+         <item row="1" column="0" colspan="2">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
-           <item>
-            <widget class="QLabel" name="_lyrics_caption">
-             <property name="text">
-              <string>Lyrics</string>
-             </property>
-             <property name="buddy">
-              <cstring>_lyrics</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="TextArea" name="_lyrics">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>1</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="tabChangesFocus">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QLabel" name="_lyrics_caption">
+           <property name="text">
+            <string>Text</string>
+           </property>
+           <property name="buddy">
+            <cstring>_lyrics</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="TextArea" name="_lyrics">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="tabChangesFocus">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -1015,31 +881,13 @@ color: #666666;</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>_track_title</tabstop>
-  <tabstop>_lead_performer</tabstop>
-  <tabstop>_featured_guest</tabstop>
-  <tabstop>_version</tabstop>
-  <tabstop>_isrc</tabstop>
-  <tabstop>_iswc</tabstop>
-  <tabstop>_tags</tabstop>
   <tabstop>_tabs</tabstop>
   <tabstop>_lyricist_isni_actions_button</tabstop>
-  <tabstop>_lyricist_isni</tabstop>
   <tabstop>_composer_isni_actions_button</tabstop>
-  <tabstop>_composer_isni</tabstop>
   <tabstop>_publisher_isni_actions_button</tabstop>
-  <tabstop>_publisher_isni</tabstop>
-  <tabstop>_production_company</tabstop>
-  <tabstop>_production_company_region</tabstop>
-  <tabstop>_recording_studio</tabstop>
-  <tabstop>_recording_studio_region</tabstop>
-  <tabstop>_music_producer</tabstop>
-  <tabstop>_mixer</tabstop>
-  <tabstop>_genre</tabstop>
-  <tabstop>_language</tabstop>
-  <tabstop>_preview_time</tabstop>
-  <tabstop>_lyrics</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

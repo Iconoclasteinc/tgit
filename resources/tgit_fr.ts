@@ -649,23 +649,48 @@
     <name>track_edition_page</name>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Track Title</source>
-        <translation>Titre de la piste</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
         <source>Project</source>
         <translation>Projet</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Main Artist</source>
-        <translation>Artiste principal</translation>
+        <source>Track Title:</source>
+        <translation>Titre de la piste :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Version Information</source>
-        <translation>Commentaires</translation>
+        <source>Main Artist:</source>
+        <translation>Artiste principal :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Featured Guest:</source>
+        <translation>Invité spécial :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Version:</source>
+        <translation>Version :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>ISRC:</source>
+        <translation>ISRC :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>ISWC:</source>
+        <translation>ISWC :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py"/>
+        <source>Tags:</source>
+        <translation>Tags :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py"/>
+        <source>Genre:</source>
+        <translation>Genre :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -674,58 +699,43 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Featured Guest</source>
-        <translation>Invité spécial</translation>
+        <source>Information about the lyricist:</source>
+        <translation>Informations sur l&apos;auteur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Lyricist</source>
-        <translation>Auteur</translation>
+        <source>Lyricist:</source>
+        <translation>Auteur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Lyricist IPI</source>
-        <translation>IPI de l&apos;auteur</translation>
+        <source>IPI:</source>
+        <translation>IPI :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Lyricist ISNI</source>
-        <translation>ISNI de l&apos;auteur</translation>
+        <source>ISNI:</source>
+        <translation>ISNI :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Composer</source>
-        <translation>Compositeur</translation>
+        <source>Information about the composer:</source>
+        <translation>Informations sur le compositeur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Composer IPI</source>
-        <translation>IPI du compositeur</translation>
+        <source>Composer:</source>
+        <translation>Compositeur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Composer ISNI</source>
-        <translation>ISNI du compositeur</translation>
+        <source>Information about the publisher:</source>
+        <translation>Informations sur l&apos;éditeur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Publisher</source>
-        <translation>Éditeur</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>Publisher IPI</source>
-        <translation>IPI de l&apos;éditeur</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>Publisher ISNI</source>
-        <translation>ISNI de l&apos;éditeur</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>tag1, tag2, tag3 ...</source>
-        <translation>tag1, tag2, tag3...</translation>
+        <source>Publisher:</source>
+        <translation>Éditeur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -739,18 +749,13 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Language</source>
-        <translation>Langue</translation>
+        <source>Language:</source>
+        <translation>Langue :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>Preview Time</source>
-        <translation>Pré-écoute</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>ISRC</source>
-        <translation>ISRC</translation>
+        <location filename="tgit/ui/track_edition_page.py"/>
+        <source>Text</source>
+        <translation>Texte</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
@@ -759,42 +764,42 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
-        <source>Recording Studio</source>
-        <translation>Studio d&apos;enregistrement</translation>
+        <source>Information about the production company:</source>
+        <translation>Informations sur la compagnie de production :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
-        <source>Recording Location</source>
-        <translation>Lieu d&apos;enregistrement</translation>
+        <source>Location:</source>
+        <translation>Emplacement :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Production Company</source>
-        <translation>Cie. de production</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>Production Location</source>
-        <translation>Lieu de production</translation>
+        <source>Production Company:</source>
+        <translation>Cie. de production :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
-        <source>Music Producer</source>
-        <translation>Réalisateur artistique</translation>
+        <source>Information about the recording studio:</source>
+        <translation>Informations sur le studio d&apos;enregistrement :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
-        <source>Mixer</source>
-        <translation>Mixeur</translation>
+        <source>Recording Studio:</source>
+        <translation>Studio d&apos;enregistrement :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
-        <source>Primary Style</source>
-        <translation>Genre</translation>
+        <source>Music Producer:</source>
+        <translation>Réalisateur artistique :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
-        <source>Lookup</source>
+        <source>Mixer:</source>
+        <translation>Mixeur :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py"/>
+        <source>Find</source>
         <translation>Récupérer</translation>
     </message>
     <message>

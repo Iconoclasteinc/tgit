@@ -74,7 +74,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     def _setup_ui(self):
         self._load(":/ui/track_page.ui")
-        self._disable_teaser_fields()
 
         lyricist_menu = QMenu()
         lyricist_menu.addAction(self._lyricist_isni_assign_action)
@@ -279,10 +278,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             metadata["lead_performer"] = self._lead_performer.text()
 
         return metadata
-
-    def _disable_teaser_fields(self):
-        self._preview_time.setDisabled(True)
-        self._preview_time_caption.setDisabled(True)
 
     @staticmethod
     def _fill_with_countries(combobox):

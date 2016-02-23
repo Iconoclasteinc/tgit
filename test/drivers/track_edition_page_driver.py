@@ -222,31 +222,28 @@ class TrackEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_tags")).change_text(tags)
 
     def shows_lyrics(self, lyrics):
-        self.tabs(named("_tabs")).select("Content")
+        self.tabs(named("_tabs")).select("Lyrics")
         self.label(with_buddy(named("_lyrics"))).is_showing_on_screen()
         self.textEdit(named("_lyrics")).has_plain_text(lyrics)
 
     def add_lyrics(self, *lyrics):
-        self.tabs(named("_tabs")).select("Content")
+        self.tabs(named("_tabs")).select("Lyrics")
         edit = self.textEdit(named("_lyrics"))
         for lyric in lyrics:
             edit.add_line(lyric)
         edit.clear_focus()
 
     def shows_language(self, lang):
-        self.tabs(named("_tabs")).select("Content")
+        self.tabs(named("_tabs")).select("Lyrics")
         self.label(with_buddy(named("_language"))).is_showing_on_screen()
         self.combobox(named("_language")).has_current_text(lang)
 
     def change_language(self, lang):
-        self.tabs(named("_tabs")).select("Content")
+        self.tabs(named("_tabs")).select("Lyrics")
         self.combobox(named("_language")).change_text(lang)
 
     def select_language(self, lang):
         self.combobox(named("_language")).select_option(lang)
-
-    def shows_preview_time(self, time):
-        self.dateTimeEdit(named("_preview_time")).has_time(time)
 
     def shows_bitrate(self, text):
         self.label(named("_bitrate")).has_text(text)
@@ -316,14 +313,11 @@ class TrackEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_mixer")).change_text(mixer)
 
     def shows_primary_style(self, style):
-        self.tabs(named("_tabs")).select("Recording")
         self.label(with_buddy(named("_genre"))).is_showing_on_screen()
         self.combobox(named("_genre")).has_current_text(style)
 
     def change_primary_style(self, style):
-        self.tabs(named("_tabs")).select("Recording")
         self.combobox(named("_genre")).change_text(style)
 
     def select_primary_style(self, style):
-        self.tabs(named("_tabs")).select("Recording")
         self.combobox(named("_genre")).select_option(style)
