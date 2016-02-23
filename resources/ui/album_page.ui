@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1118</width>
-    <height>750</height>
+    <width>791</width>
+    <height>745</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -32,95 +32,88 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
+         <widget class="QLabel" name="_front_cover">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>200</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border: 1px solid #ABADB3;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="_picture_button_container" stretch="0,0,0">
           <property name="spacing">
-           <number>10</number>
+           <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="_front_cover">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+           <widget class="QToolButton" name="_select_picture_button">
             <property name="minimumSize">
              <size>
-              <width>200</width>
-              <height>200</height>
+              <width>24</width>
+              <height>24</height>
              </size>
             </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>200</height>
-             </size>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
             </property>
-            <property name="styleSheet">
-             <string notr="true">border: 1px solid #ABADB3;</string>
+            <property name="toolTip">
+             <string>Add or change the picture</string>
+            </property>
+            <property name="text">
+             <string>+</string>
             </property>
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="_picture_button_container" stretch="0,0,0">
-            <property name="spacing">
-             <number>0</number>
+           <widget class="QToolButton" name="_remove_picture_button">
+            <property name="minimumSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
             </property>
-            <item>
-             <widget class="QToolButton" name="_select_picture_button">
-              <property name="minimumSize">
-               <size>
-                <width>24</width>
-                <height>24</height>
-               </size>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="toolTip">
-               <string>Add or change the picture</string>
-              </property>
-              <property name="text">
-               <string>+</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QToolButton" name="_remove_picture_button">
-              <property name="minimumSize">
-               <size>
-                <width>24</width>
-                <height>24</height>
-               </size>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-              <property name="toolTip">
-               <string>Remove the picture</string>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">margin-left: -1px;</string>
-              </property>
-              <property name="text">
-               <string>-</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="toolTip">
+             <string>Remove the picture</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">margin-left: -1px;</string>
+            </property>
+            <property name="text">
+             <string>-</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -153,35 +146,6 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="minimumSize">
-           <size>
-            <width>75</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QCheckBox" name="_compilation">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-          <property name="text">
-           <string>This project is a multi-artist compilation</string>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="0" colspan="2">
          <widget class="Line" name="line">
           <property name="orientation">
@@ -197,16 +161,45 @@
          </widget>
         </item>
         <item row="4" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="minimumSize">
+           <size>
+            <width>75</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="_compilation">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="text">
+           <string>This project is a multi-artist compilation</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
          <widget class="QLabel" name="_main_artist_caption">
           <property name="text">
-           <string>Name:</string>
+           <string>Artist:</string>
           </property>
           <property name="buddy">
            <cstring>_main_artist</cstring>
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="5" column="1">
          <widget class="QLineEdit" name="_main_artist">
           <property name="minimumSize">
            <size>
@@ -216,15 +209,20 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="6" column="1">
          <widget class="QLabel" name="label_2">
           <property name="styleSheet">
-           <string notr="true">QLabel[style=QWindowsStyle] {
-    font-size: 6px;
+           <string notr="true">
+QLabel {
+    font-size: 7pt;
+	margin-top: -2px;
+    margin-bottom: 2px;
 }
 
 QLabel[style=QMacStyle] {
-    font-size: 11px;
+    font-size: 11pt;
+	margin-top: -3px;
+    margin-bottom: 3px;
 }
 </string>
           </property>
@@ -233,7 +231,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
+        <item row="7" column="0">
          <widget class="QLabel" name="_main_artist_isni_caption">
           <property name="text">
            <string>ISNI Number:</string>
@@ -243,34 +241,24 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="7" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLineEdit" name="_main_artist_isni">
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
-           </widget>
-          </item>
           <item>
            <widget class="QToolButton" name="_main_artist_isni_actions_button">
             <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+             <bool>true</bool>
             </property>
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
+            <property name="toolTip">
+             <string>Lookup the main artist's ISNI in the global ISNI database</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <property name="text">
-             <string>Find</string>
+             <string/>
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
@@ -284,26 +272,44 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QLineEdit" name="_main_artist_isni">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
-        <item row="7" column="1">
+        <item row="8" column="1">
          <widget class="QLabel" name="label_4">
           <property name="styleSheet">
-           <string notr="true">QLabel[style=QWindowsStyle] {
-    font-size: 6px;
+           <string notr="true">
+QLabel {
+    font-size: 7pt;
+    margin-top: -2px;
+    margin-bottom: 2px;
 }
 
 QLabel[style=QMacStyle] {
-    font-size: 11px;
+    font-size: 11pt;
+    margin-top: -3px;
+    margin-bottom: 3px;
 }
 </string>
           </property>
           <property name="text">
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work.&lt;br/&gt;It is provided by the &lt;a href=&quot;http://isni.org&quot;&gt;&lt;span style=&quot;text-decoration: underline; color:#0000ff;&quot;&gt;International ISNI Agency&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item row="9" column="0">
          <widget class="QLabel" name="_main_artist_region_caption">
           <property name="text">
            <string>Origin:</string>
@@ -313,7 +319,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
+        <item row="9" column="1">
          <widget class="QComboBox" name="_main_artist_region">
           <property name="focusPolicy">
            <enum>Qt::StrongFocus</enum>
@@ -335,174 +341,123 @@ QLabel[style=QMacStyle] {
      </property>
      <widget class="QWidget" name="_record_tab">
       <attribute name="title">
-       <string>Record</string>
+       <string>Release</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="leftMargin">
-        <number>12</number>
-       </property>
-       <property name="topMargin">
-        <number>12</number>
-       </property>
-       <property name="rightMargin">
-        <number>12</number>
-       </property>
-       <item>
-        <layout class="QVBoxLayout" name="_label_name_container">
-         <property name="spacing">
-          <number>3</number>
+      <layout class="QFormLayout" name="formLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="_label_name_caption">
+         <property name="text">
+          <string>Label Name:</string>
          </property>
-         <property name="sizeConstraint">
-          <enum>QLayout::SetDefaultConstraint</enum>
+         <property name="buddy">
+          <cstring>_label_name</cstring>
          </property>
-         <item>
-          <widget class="QLabel" name="_label_name_caption">
-           <property name="text">
-            <string>Label Name</string>
-           </property>
-           <property name="buddy">
-            <cstring>_label_name</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="_label_name"/>
-         </item>
-        </layout>
+        </widget>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="_catalog_number_container">
-         <property name="spacing">
-          <number>3</number>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="_label_name">
+         <property name="minimumSize">
+          <size>
+           <width>300</width>
+           <height>0</height>
+          </size>
          </property>
-         <item>
-          <widget class="QLabel" name="_catalog_number_caption">
-           <property name="text">
-            <string>Catalog Number</string>
-           </property>
-           <property name="buddy">
-            <cstring>_catalog_number</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="_catalog_number"/>
-         </item>
-        </layout>
+        </widget>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="_barcode_container">
-         <property name="spacing">
-          <number>3</number>
+       <item row="1" column="0">
+        <widget class="QLabel" name="_catalog_number_caption">
+         <property name="text">
+          <string>Catalog Number:</string>
          </property>
-         <item>
-          <widget class="QLabel" name="_barcode_caption">
-           <property name="text">
-            <string>UPC/EAN</string>
-           </property>
-           <property name="buddy">
-            <cstring>_barcode</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="_barcode">
-           <property name="placeholderText">
-            <string>1234567899999</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+         <property name="buddy">
+          <cstring>_catalog_number</cstring>
+         </property>
+        </widget>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="_media_type_container">
-         <property name="spacing">
-          <number>3</number>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="_catalog_number">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
          </property>
-         <item>
-          <widget class="QLabel" name="_media_type_caption">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Media Type</string>
-           </property>
-           <property name="buddy">
-            <cstring>_media_type</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="_media_type">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        </widget>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="_release_type_container">
-         <property name="spacing">
-          <number>3</number>
+       <item row="2" column="0">
+        <widget class="QLabel" name="_barcode_caption">
+         <property name="text">
+          <string>Barcode:</string>
          </property>
-         <item>
-          <widget class="QLabel" name="_release_type_label">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Release Type</string>
-           </property>
-           <property name="buddy">
-            <cstring>_release_type</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="_release_type">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+         <property name="buddy">
+          <cstring>_barcode</cstring>
+         </property>
+        </widget>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="_comments_container">
-         <property name="spacing">
-          <number>3</number>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="_barcode">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
          </property>
-         <item>
-          <widget class="QLabel" name="_comments_caption">
-           <property name="text">
-            <string>Comments</string>
-           </property>
-           <property name="buddy">
-            <cstring>_comments</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="TextArea" name="_comments">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>1</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="tabChangesFocus">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
+         <property name="placeholderText">
+          <string>1234567899999</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLabel" name="label_5">
+         <property name="styleSheet">
+          <string notr="true">
+QLabel {
+    font-size: 7pt;
+    margin-top: -2px;
+    margin-bottom: 2px;
+}
+
+QLabel[style=QMacStyle] {
+    font-size: 11pt;
+    margin-top: -3px;
+    margin-bottom: 3px;
+}
+</string>
+         </property>
+         <property name="text">
+          <string>The barcode may be a UPC, EAN or JAN depending on the territory</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <widget class="QLabel" name="_comments_caption">
+         <property name="text">
+          <string>Comments:</string>
+         </property>
+         <property name="buddy">
+          <cstring>_comments</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="2">
+        <widget class="TextArea" name="_comments">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -539,8 +494,8 @@ QLabel[style=QMacStyle] {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1112</width>
-            <height>409</height>
+            <width>785</width>
+            <height>415</height>
            </rect>
           </property>
           <property name="styleSheet">
@@ -743,8 +698,8 @@ QLabel[style=QMacStyle] {
   <tabstop>_title</tabstop>
   <tabstop>_compilation</tabstop>
   <tabstop>_main_artist</tabstop>
-  <tabstop>_main_artist_isni</tabstop>
   <tabstop>_main_artist_isni_actions_button</tabstop>
+  <tabstop>_main_artist_isni</tabstop>
   <tabstop>_main_artist_region</tabstop>
   <tabstop>_select_picture_button</tabstop>
   <tabstop>_remove_picture_button</tabstop>
@@ -752,12 +707,10 @@ QLabel[style=QMacStyle] {
   <tabstop>_label_name</tabstop>
   <tabstop>_catalog_number</tabstop>
   <tabstop>_barcode</tabstop>
-  <tabstop>_media_type</tabstop>
-  <tabstop>_release_type</tabstop>
   <tabstop>_comments</tabstop>
   <tabstop>_musicians_input_scroll_area</tabstop>
-  <tabstop>_digital_release_time</tabstop>
   <tabstop>_release_time</tabstop>
+  <tabstop>_digital_release_time</tabstop>
   <tabstop>_original_release_time</tabstop>
   <tabstop>_recording_time</tabstop>
  </tabstops>

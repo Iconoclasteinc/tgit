@@ -214,8 +214,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Name:</source>
-        <translation>Nom :</translation>
+        <source>Artist:</source>
+        <translation>Artiste :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -234,6 +234,11 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
+        <source>Lookup the main artist's ISNI in the global ISNI database</source>
+        <translation>Rechercher l'ISNI de l'artiste principale dans la base de données ISNI</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
         <source>Origin:</source>
         <translation>Origine :</translation>
     </message>
@@ -244,28 +249,33 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Label Name</source>
-        <translation>Maison de disques</translation>
+        <source>Label Name:</source>
+        <translation>Maison de disques :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Record</source>
-        <translation>Disque</translation>
+        <source>Release</source>
+        <translation>Parution</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Catalog Number</source>
-        <translation>Numéro de catalogue</translation>
+        <source>Catalog Number:</source>
+        <translation>Numéro de catalogue :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Release Type</source>
-        <translation>Type de version</translation>
+        <source>Barcode:</source>
+        <translation>Code-barres :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Comments</source>
-        <translation>Commentaires</translation>
+        <source>The barcode may be a UPC, EAN or JAN depending on the territory</source>
+        <translation>Le code-barres peut-être un UPC, EAN ou JAN selon le territoire</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Comments:</source>
+        <translation>Commentaires :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />

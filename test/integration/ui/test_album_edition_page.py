@@ -100,8 +100,6 @@ def test_displays_album_metadata(driver):
     driver.shows_release_time("2009-01-01")
     driver.shows_digital_release_time("2000-01-01")
     driver.shows_comments("Comments\n...")
-    driver.shows_media_type("")
-    # self.driver.shows_release_type("")
 
 
 def test_indicates_whether_album_is_a_compilation(driver):

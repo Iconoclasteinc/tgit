@@ -179,8 +179,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._label_name.editingFinished.connect(lambda: handle("label_name"))
         self._catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
         self._barcode.editingFinished.connect(lambda: handle("upc"))
-        self._media_type.editingFinished.connect(lambda: handle("media_type"))
-        self._release_type.editingFinished.connect(lambda: handle("release_type"))
         self._comments.editingFinished.connect(lambda: handle("comments"))
 
     def albumStateChanged(self, album):
