@@ -434,14 +434,14 @@ def test_signals_when_album_metadata_edited(driver):
 
 
 def test_shows_musicians(driver):
-    _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
+    _ = show_page(album=make_album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
 
     driver.shows_only_musicians_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
 
 
 def test_removes_musicians(driver):
     metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
-    _ = show_page(album=build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]),
+    _ = show_page(album=make_album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]),
                   on_metadata_changed=metadata_changed_signal.received)
 
     metadata_changed_signal.expect(has_entries(guest_performers=[("Vocals", "Robert Plant")]))
@@ -452,7 +452,7 @@ def test_removes_musicians(driver):
 
 def test_adds_musicians(driver):
     metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
-    _ = show_page(album=build.album(), on_metadata_changed=metadata_changed_signal.received)
+    _ = show_page(album=make_album(), on_metadata_changed=metadata_changed_signal.received)
 
     metadata_changed_signal.expect(has_entries(guest_performers=[("Guitar", "Jimmy Page")]))
     driver.add_musician(instrument="Guitar", name="Jimmy Page", row=1)
@@ -464,11 +464,19 @@ def test_adds_musicians(driver):
 
 
 def test_displays_musician_table_only_once(driver):
-    album = build.album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")])
+    album = make_album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")])
     page = show_page(album=album)
     page.display(album)
 
     driver.shows_only_musicians_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
+
+
+def test_clears_main_artist_name_when_compilation_unselected(driver):
+    show_page(make_album(compilation=True))
+
+    driver.shows_main_artist("Various Artists", disabled=True)
+    driver.toggle_compilation()
+    driver.shows_main_artist("", disabled=True)
 
 
 def _load_test_image(name):

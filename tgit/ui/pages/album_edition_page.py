@@ -93,6 +93,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_isni_actions_button.setMenu(menu)
 
         self._compilation.clicked.connect(self._update_isni_menu)
+        self._compilation.clicked.connect(lambda: self._main_artist.setText(""))
         self._main_artist.textChanged.connect(self._update_isni_menu)
 
     @staticmethod

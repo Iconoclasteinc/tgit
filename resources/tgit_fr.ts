@@ -169,11 +169,6 @@
     <name>album_edition_page</name>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Various Artists</source>
-        <translation>Multi-interprètes</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
         <source>Artwork</source>
         <translation>Illustration</translation>
     </message>
@@ -314,6 +309,11 @@
         <location filename="tgit/ui/album_edition_page.py" />
         <source>Remove</source>
         <translation>Retirer</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Various Artists</source>
+        <translation>Multi-interprètes</translation>
     </message>
 </context>
 <context>
