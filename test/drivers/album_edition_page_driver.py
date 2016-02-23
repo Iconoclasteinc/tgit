@@ -162,108 +162,108 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.combobox(named("_main_artist_region")).select_option(name)
 
     def shows_only_musicians_in_table(self, *musicians):
-        self.tabs(named("_tabs")).select("Musicians")
+        self.tabs(named("_tabs")).select("2. Musicians")
         musician_table_driver(self).shows_only_musicians_in_table(*musicians)
 
     def remove_musician(self, row):
-        self.tabs(named("_tabs")).select("Musicians")
+        self.tabs(named("_tabs")).select("2. Musicians")
         musician_table_driver(self).remove_musician(row)
 
     def add_musician(self, instrument, name, row):
-        self.tabs(named("_tabs")).select("Musicians")
+        self.tabs(named("_tabs")).select("2. Musicians")
         self.button(named("_add_musician_button")).click()
         musician_table_driver(self).add_musician(instrument, name, row)
 
     def change_instrument_of_row(self, row, text):
-        self.tabs(named("_tabs")).select("Musicians")
+        self.tabs(named("_tabs")).select("2. Musicians")
         musician_table_driver(self).change_instrument_of_row(row, text)
 
     def change_musician_of_row(self, row, text):
-        self.tabs(named("_tabs")).select("Musicians")
+        self.tabs(named("_tabs")).select("2. Musicians")
         musician_table_driver(self).change_musician_of_row(row, text)
 
     def shows_label_name(self, name):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         self.label(with_buddy(named("_label_name"))).is_showing_on_screen()
         self.lineEdit(named("_label_name")).has_text(name)
 
     def change_label_name(self, name):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         self.lineEdit(named("_label_name")).change_text(name)
 
     def shows_catalog_number(self, number):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         self.label(with_buddy(named("_catalog_number"))).is_showing_on_screen()
         self.lineEdit(named("_catalog_number")).has_text(number)
 
     def change_catalog_number(self, number):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         self.lineEdit(named("_catalog_number")).change_text(number)
 
     def shows_upc(self, code):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         self.label(with_buddy(named("_barcode"))).is_showing_on_screen()
         self.lineEdit(named("_barcode")).has_text(code)
 
     def change_upc(self, code):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         self.lineEdit(named("_barcode")).change_text(code)
 
     def shows_recording_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self.tabs(named("_tabs")).select("3. Dates")
         self.label(with_buddy(named("_recording_time"))).is_showing_on_screen()
         self.dateEdit(named("_recording_time")).has_date(time)
 
     def change_recording_time(self, year, month, day):
-        self.tabs(named("_tabs")).select("Dates")
+        self.tabs(named("_tabs")).select("3. Dates")
         self.dateEdit(named("_recording_time")).enter_date(year, month, day)
 
     def shows_release_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self.tabs(named("_tabs")).select("3. Dates")
         self.label(with_buddy(named("_release_time"))).is_showing_on_screen()
         self.dateEdit(named("_release_time")).has_date(time)
 
     def change_release_time(self, year, month, day):
-        self.tabs(named("_tabs")).select("Dates")
+        self.tabs(named("_tabs")).select("3. Dates")
         self.dateEdit(named("_release_time")).enter_date(year, month, day)
 
     def shows_digital_release_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self.tabs(named("_tabs")).select("3. Dates")
         self.label(with_buddy(named("_digital_release_time"))).is_showing_on_screen()
         edit = self.dateEdit(named("_digital_release_time"))
         edit.is_disabled()
         edit.has_date(time)
 
     def shows_original_release_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self.tabs(named("_tabs")).select("3. Dates")
         self.label(with_buddy(named("_original_release_time"))).is_showing_on_screen()
         self.dateEdit(named("_original_release_time")).has_date(time)
 
     def change_original_release_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self.tabs(named("_tabs")).select("3. Dates")
         self.label(named("_original_release_time")).enter_date(time)
 
     def shows_comments(self, comments):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         self.label(with_buddy(named("_comments"))).is_showing_on_screen()
         self.textEdit(named("_comments")).has_plain_text(comments)
 
     def add_comments(self, *comments):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         edit = self.textEdit(named("_comments"))
         for comment in comments:
             edit.add_line(comment)
         edit.clear_focus()
 
     def shows_media_type(self, type_):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         self.label(with_buddy(named("_media_type"))).is_showing_on_screen()
         edit = self.lineEdit(named("_media_type"))
         edit.is_disabled()
         edit.has_text(type_)
 
     def shows_release_type(self, type_):
-        self.tabs(named("_tabs")).select("Record")
+        self.tabs(named("_tabs")).select("1. Record")
         self.label(with_buddy(named("_release_type"))).is_showing_on_screen()
         edit = self.lineEdit(named("_release_type"))
         edit.is_disabled()
