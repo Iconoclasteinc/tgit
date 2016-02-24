@@ -159,24 +159,27 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.combobox(named("_main_artist_region")).select_option(name)
 
     def shows_only_musicians_in_table(self, *musicians):
-        self.tabs(named("_tabs")).select("Musicians")
+        self._select_musicians_tab()
         musician_table_driver(self).shows_only_musicians_in_table(*musicians)
 
+    def _select_musicians_tab(self):
+        self.tabs(named("_tabs")).select("2. Musicians")
+
     def remove_musician(self, row):
-        self.tabs(named("_tabs")).select("Musicians")
+        self._select_musicians_tab()
         musician_table_driver(self).remove_musician(row)
 
     def add_musician(self, instrument, name, row):
-        self.tabs(named("_tabs")).select("Musicians")
+        self._select_musicians_tab()
         self.button(named("_add_musician_button")).click()
         musician_table_driver(self).add_musician(instrument, name, row)
 
     def change_instrument_of_row(self, row, text):
-        self.tabs(named("_tabs")).select("Musicians")
+        self._select_musicians_tab()
         musician_table_driver(self).change_instrument_of_row(row, text)
 
     def change_musician_of_row(self, row, text):
-        self.tabs(named("_tabs")).select("Musicians")
+        self._select_musicians_tab()
         musician_table_driver(self).change_musician_of_row(row, text)
 
     def shows_label_name(self, name):
@@ -185,7 +188,7 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_label_name")).has_text(name)
 
     def _select_release_tab(self):
-        self.tabs(named("_tabs")).select("Release")
+        self.tabs(named("_tabs")).select("1. Release")
 
     def change_label_name(self, name):
         self._select_release_tab()
@@ -210,12 +213,15 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_barcode")).change_text(code)
 
     def shows_recording_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self._select_dates_tab()
         self.label(with_buddy(named("_recording_time"))).is_showing_on_screen()
         self.dateEdit(named("_recording_time")).has_date(time)
 
+    def _select_dates_tab(self):
+        self.tabs(named("_tabs")).select("3. Dates")
+
     def change_recording_time(self, year, month, day):
-        self.tabs(named("_tabs")).select("Dates")
+        self._select_dates_tab()
         self.dateEdit(named("_recording_time")).enter_date(year, month, day)
 
     def shows_release_time(self, time):
@@ -228,19 +234,19 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.dateEdit(named("_release_time")).enter_date(year, month, day)
 
     def shows_digital_release_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self._select_dates_tab()
         self.label(with_buddy(named("_digital_release_time"))).is_showing_on_screen()
         edit = self.dateEdit(named("_digital_release_time"))
         edit.is_disabled()
         edit.has_date(time)
 
     def shows_original_release_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self._select_dates_tab()
         self.label(with_buddy(named("_original_release_time"))).is_showing_on_screen()
         self.dateEdit(named("_original_release_time")).has_date(time)
 
     def change_original_release_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self._select_dates_tab()
         self.label(named("_original_release_time")).enter_date(time)
 
     def shows_comments(self, comments):

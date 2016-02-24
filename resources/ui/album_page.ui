@@ -365,7 +365,7 @@ QLabel[style=QMacStyle] {
      </property>
      <widget class="QWidget" name="_release_tab">
       <attribute name="title">
-       <string>Release</string>
+       <string>1. Release</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_2">
        <item row="0" column="0">
@@ -520,7 +520,7 @@ QLabel[style=QMacStyle] {
      </widget>
      <widget class="QWidget" name="_mucisians_tab">
       <attribute name="title">
-       <string>Musicians</string>
+       <string>2. Musicians</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <property name="leftMargin">
@@ -573,7 +573,7 @@ QLabel[style=QMacStyle] {
      </widget>
      <widget class="QWidget" name="_dates_tab">
       <attribute name="title">
-       <string>Dates</string>
+       <string>3. Dates</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <property name="spacing">
