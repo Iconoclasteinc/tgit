@@ -361,9 +361,9 @@ QLabel[style=QMacStyle] {
    <item>
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="_record_tab">
+     <widget class="QWidget" name="_release_tab">
       <attribute name="title">
        <string>Release</string>
       </attribute>
@@ -408,7 +408,7 @@ QLabel[style=QMacStyle] {
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="_barcode_caption">
          <property name="text">
           <string>Barcode:</string>
@@ -418,7 +418,7 @@ QLabel[style=QMacStyle] {
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="3" column="1">
         <layout class="QHBoxLayout" name="_barcode_container">
          <property name="spacing">
           <number>5</number>
@@ -451,7 +451,7 @@ QLabel[style=QMacStyle] {
          </item>
         </layout>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QLabel" name="_barcode_help">
          <property name="styleSheet">
           <string notr="true">
@@ -473,14 +473,14 @@ QLabel[style=QMacStyle] {
          </property>
         </widget>
        </item>
-       <item row="4" column="0" colspan="2">
+       <item row="6" column="0" colspan="2">
         <widget class="Line" name="_comments_section_separator">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="7" column="0" colspan="2">
         <widget class="QLabel" name="_comments_caption">
          <property name="text">
           <string>Comments:</string>
@@ -490,7 +490,7 @@ QLabel[style=QMacStyle] {
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="2">
+       <item row="8" column="0" colspan="2">
         <widget class="TextArea" name="_comments">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -502,6 +502,19 @@ QLabel[style=QMacStyle] {
           <bool>true</bool>
          </property>
         </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="_release_time_caption">
+         <property name="text">
+          <string>Release Date:</string>
+         </property>
+         <property name="buddy">
+          <cstring>_release_time</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDateEdit" name="_release_time"/>
        </item>
       </layout>
      </widget>
@@ -572,36 +585,6 @@ QLabel[style=QMacStyle] {
        <property name="rightMargin">
         <number>12</number>
        </property>
-       <item>
-        <layout class="QVBoxLayout" name="_release_time_container">
-         <property name="spacing">
-          <number>3</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="_release_time_caption">
-           <property name="text">
-            <string>Release Time</string>
-           </property>
-           <property name="buddy">
-            <cstring>_release_time</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDateEdit" name="_release_time">
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
-           <property name="accelerated">
-            <bool>true</bool>
-           </property>
-           <property name="displayFormat">
-            <string notr="true">yyyy-MM-dd</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
        <item>
         <layout class="QVBoxLayout" name="_digital_release_time_container">
          <property name="spacing">
@@ -685,14 +668,8 @@ QLabel[style=QMacStyle] {
          </item>
          <item>
           <widget class="QDateEdit" name="_recording_time">
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
            <property name="accelerated">
             <bool>true</bool>
-           </property>
-           <property name="displayFormat">
-            <string notr="true">yyyy-MM-dd</string>
            </property>
           </widget>
          </item>
@@ -750,13 +727,13 @@ QLabel[style=QMacStyle] {
   <tabstop>_tabs</tabstop>
   <tabstop>_label_name</tabstop>
   <tabstop>_catalog_number</tabstop>
+  <tabstop>_release_time</tabstop>
   <tabstop>_barcode</tabstop>
   <tabstop>_comments</tabstop>
-  <tabstop>_musicians_input_scroll_area</tabstop>
-  <tabstop>_release_time</tabstop>
   <tabstop>_digital_release_time</tabstop>
   <tabstop>_original_release_time</tabstop>
   <tabstop>_recording_time</tabstop>
+  <tabstop>_musicians_input_scroll_area</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>

@@ -284,8 +284,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Release Time</source>
-        <translation>Mise en marché</translation>
+        <source>Release Date:</source>
+        <translation>Date de mise en marché :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />

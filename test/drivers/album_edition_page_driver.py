@@ -219,12 +219,12 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.dateEdit(named("_recording_time")).enter_date(year, month, day)
 
     def shows_release_time(self, time):
-        self.tabs(named("_tabs")).select("Dates")
+        self._select_release_tab()
         self.label(with_buddy(named("_release_time"))).is_showing_on_screen()
         self.dateEdit(named("_release_time")).has_date(time)
 
     def change_release_time(self, year, month, day):
-        self.tabs(named("_tabs")).select("Dates")
+        self._select_release_tab()
         self.dateEdit(named("_release_time")).enter_date(year, month, day)
 
     def shows_digital_release_time(self, time):
