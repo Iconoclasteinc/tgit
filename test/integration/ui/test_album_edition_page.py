@@ -148,16 +148,6 @@ def test_disables_isni_lookup_when_user_logs_out(driver):
     driver.enables_main_artist_isni_lookup(False)
 
 
-def test_displays_tooltip_on_isni_lookup_when_anonymously_connected(driver):
-    _ = show_page(session=(make_anonymous_session()), album=make_album(lead_performer="Album Artist"))
-    driver.main_artist_isni_lookup_has_tooltip("Please sign-in to activate ISNI lookup")
-
-
-def test_removes_tooltip_on_isni_lookup_when_signed_in(driver):
-    _ = show_page(session=(make_registered_session()), album=make_album(lead_performer="Album Artist"))
-    driver.main_artist_isni_lookup_has_tooltip("")
-
-
 def test_disables_isni_lookup_when_lead_performer_is_blank(driver):
     _ = show_page(make_album(lead_performer="     "))
     driver.enables_main_artist_isni_lookup(False)

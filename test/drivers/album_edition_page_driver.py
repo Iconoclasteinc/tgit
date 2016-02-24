@@ -149,9 +149,6 @@ class AlbumEditionPageDriver(ScreenDriver):
         menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()
         menu.menu_item(named("_main_artist_isni_assign_action")).is_disabled(True)
 
-    def main_artist_isni_lookup_has_tooltip(self, text):
-        self.tool_button(named("_main_artist_isni_actions_button")).has_tooltip(text)
-
     def change_main_artist(self, name):
         self.lineEdit(named("_main_artist")).change_text(name)
 

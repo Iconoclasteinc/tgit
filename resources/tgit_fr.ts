@@ -209,8 +209,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Artist:</source>
-        <translation>Artiste :</translation>
+        <source>Artist Name:</source>
+        <translation>Nom de l'artiste :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -224,13 +224,18 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work.&lt;br/&gt;It is provided by the &lt;a href="http://isni.org"&gt;&lt;span style="text-decoration: underline; color:#0000ff;"&gt;International ISNI Agency&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives.&lt;br/&gt;Les attributions de numéros ISNI sont gérées par &lt;a href="http://isni.org"&gt;&lt;span style="text-decoration: underline; color:#0000ff;"&gt;l'agence internationale ISNI&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI de l'artiste principal dans la base de données globale ISNI.&lt;/p&gt;&lt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
         <source>Lookup the main artist's ISNI in the global ISNI database</source>
-        <translation>Rechercher l'ISNI de l'artiste principale dans la base de données ISNI</translation>
+        <translation>Rechercher l'ISNI de l'artiste principal dans la base de données ISNI</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>You have to be signed in to use the lookup tool</source>
+        <translation>Vous devez vous connecter pour utiliser l'outil de recherche</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -264,8 +269,13 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>The barcode may be a UPC, EAN or JAN depending on the territory</source>
-        <translation>Le code-barres peut-être un UPC, EAN ou JAN selon le territoire</translation>
+        <source>The code without any space or dash</source>
+        <translation>Le code-barres sans tiret ni espace</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The barcode is the &lt;span style="font-style:italic;"&gt;physical product code&lt;/span&gt; and usually consists of 8 to 14 characters.&lt;/p&gt;&lt;p&gt;It will typically be either a UPC, EAN, JAN or GTIN but may have a different format depending on the country or territory covered by the album's licensing deal.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Le code-barres est le &lt;span style=" font-style:italic;"&gt;code du produit physique&lt;/span&gt; constitué habituellement de 8 to 14 caractères. &lt;/p&gt;&lt;p&gt;Le code-barres est en général soit le UPC, EAN, JAN or GTIN, cependant il peut avoir un format différent en fonction du pays ou territoire couvert par la licence sur les droits de l'album.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />

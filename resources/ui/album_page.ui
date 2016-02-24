@@ -155,21 +155,21 @@
          </widget>
         </item>
         <item row="1" column="0" colspan="2">
-         <widget class="Line" name="line">
+         <widget class="Line" name="_main_artist_section_separator">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
         <item row="2" column="0" colspan="2">
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="_main_artist_section_header">
           <property name="text">
            <string>Information about the main artist:</string>
           </property>
          </widget>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="_label_spacer">
           <property name="minimumSize">
            <size>
             <width>75</width>
@@ -200,7 +200,7 @@
         <item row="4" column="0">
          <widget class="QLabel" name="_main_artist_caption">
           <property name="text">
-           <string>Artist:</string>
+           <string>Artist Name:</string>
           </property>
           <property name="buddy">
            <cstring>_main_artist</cstring>
@@ -218,10 +218,10 @@
          </widget>
         </item>
         <item row="5" column="1">
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="_main_artist_help">
           <property name="styleSheet">
            <string notr="true">
-QLabel {
+QLabel[style=QWindowsVistaStyle] {
     font-size: 7pt;
 	margin-top: -2px;
     margin-bottom: 2px;
@@ -250,7 +250,10 @@ QLabel[style=QMacStyle] {
          </widget>
         </item>
         <item row="6" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="_main_artist_container">
+          <property name="spacing">
+           <number>5</number>
+          </property>
           <item>
            <widget class="QToolButton" name="_main_artist_isni_actions_button">
             <property name="enabled">
@@ -290,10 +293,23 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QLabel" name="_main_artist_info">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../resources.qrc">:/icons/info</pixmap>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item row="7" column="1">
-         <widget class="QLabel" name="label_4">
+         <widget class="QLabel" name="_main_artist_isni_help">
           <property name="styleSheet">
            <string notr="true">
 QLabel[style=QWindowsVistaStyle] {
@@ -310,7 +326,7 @@ QLabel[style=QMacStyle] {
 </string>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work.&lt;br/&gt;It is provided by the &lt;a href=&quot;http://isni.org&quot;&gt;&lt;span style=&quot;text-decoration: underline; color:#0000ff;&quot;&gt;International ISNI Agency&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>You have to be signed in to use the lookup tool</string>
           </property>
           <property name="openExternalLinks">
            <bool>true</bool>
@@ -345,7 +361,7 @@ QLabel[style=QMacStyle] {
    <item>
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="_record_tab">
       <attribute name="title">
@@ -403,23 +419,43 @@ QLabel[style=QMacStyle] {
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="_barcode">
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>0</height>
-          </size>
+        <layout class="QHBoxLayout" name="_barcode_container">
+         <property name="spacing">
+          <number>5</number>
          </property>
-         <property name="placeholderText">
-          <string>1234567899999</string>
-         </property>
-        </widget>
+         <item>
+          <widget class="QLineEdit" name="_barcode">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="dragEnabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The barcode is the &lt;span style=&quot;font-style:italic;&quot;&gt;physical product code&lt;/span&gt; and usually consists of 8 to 14 characters.&lt;/p&gt;&lt;p&gt;It will typically be either a UPC, EAN, JAN or GTIN but may have a different format depending on the country or territory covered by the album's licensing deal.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../resources.qrc">:/icons/info</pixmap>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item row="3" column="1">
-        <widget class="QLabel" name="label_5">
+        <widget class="QLabel" name="_barcode_help">
          <property name="styleSheet">
           <string notr="true">
-QLabel {
+QLabel[style=QWindowsVistaStyle] {
     font-size: 7pt;
     margin-top: -2px;
     margin-bottom: 2px;
@@ -433,12 +469,12 @@ QLabel[style=QMacStyle] {
 </string>
          </property>
          <property name="text">
-          <string>The barcode may be a UPC, EAN or JAN depending on the territory</string>
+          <string>The code without any space or dash</string>
          </property>
         </widget>
        </item>
        <item row="4" column="0" colspan="2">
-        <widget class="Line" name="line_2">
+        <widget class="Line" name="_comments_section_separator">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -503,7 +539,7 @@ QLabel[style=QMacStyle] {
             <x>0</x>
             <y>0</y>
             <width>785</width>
-            <height>391</height>
+            <height>419</height>
            </rect>
           </property>
           <property name="styleSheet">

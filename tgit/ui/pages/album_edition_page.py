@@ -188,10 +188,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def user_changed(self, user):
         self._isni_lookup = user.has_permission(Permission.lookup_isni)
         self._isni_assign = user.has_permission(Permission.assign_isni)
-        if not self._isni_lookup:
-            self._main_artist_isni_actions_button.setToolTip(self.tr("Please sign-in to activate ISNI lookup"))
-        else:
-            self._main_artist_isni_actions_button.setToolTip(None)
         self._update_isni_menu()
 
     def display(self, album):
