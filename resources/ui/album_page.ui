@@ -76,7 +76,11 @@
              <string>Add or change the picture</string>
             </property>
             <property name="text">
-             <string>+</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
             </property>
            </widget>
           </item>
@@ -98,7 +102,11 @@
              <string notr="true">margin-left: -1px;</string>
             </property>
             <property name="text">
-             <string>-</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources.qrc">
+              <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
             </property>
            </widget>
           </item>
@@ -146,21 +154,21 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0" colspan="2">
+        <item row="1" column="0" colspan="2">
          <widget class="Line" name="line">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="3" column="0" colspan="2">
+        <item row="2" column="0" colspan="2">
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Information about the main artist:</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="label_3">
           <property name="minimumSize">
            <size>
@@ -173,7 +181,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="3" column="1">
          <widget class="QCheckBox" name="_compilation">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -189,7 +197,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="_main_artist_caption">
           <property name="text">
            <string>Artist:</string>
@@ -199,7 +207,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="4" column="1">
          <widget class="QLineEdit" name="_main_artist">
           <property name="minimumSize">
            <size>
@@ -209,7 +217,7 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="5" column="1">
          <widget class="QLabel" name="label_2">
           <property name="styleSheet">
            <string notr="true">
@@ -231,7 +239,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="7" column="0">
+        <item row="6" column="0">
          <widget class="QLabel" name="_main_artist_isni_caption">
           <property name="text">
            <string>ISNI Number:</string>
@@ -241,7 +249,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
+        <item row="6" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QToolButton" name="_main_artist_isni_actions_button">
@@ -262,7 +270,7 @@ QLabel[style=QMacStyle] {
             </property>
             <property name="icon">
              <iconset resource="../resources.qrc">
-              <normaloff>:/search</normaloff>:/search</iconset>
+              <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
             </property>
             <property name="popupMode">
              <enum>QToolButton::MenuButtonPopup</enum>
@@ -284,11 +292,11 @@ QLabel[style=QMacStyle] {
           </item>
          </layout>
         </item>
-        <item row="8" column="1">
+        <item row="7" column="1">
          <widget class="QLabel" name="label_4">
           <property name="styleSheet">
            <string notr="true">
-QLabel {
+QLabel[style=QWindowsVistaStyle] {
     font-size: 7pt;
     margin-top: -2px;
     margin-bottom: 2px;
@@ -309,7 +317,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="9" column="0">
+        <item row="8" column="0">
          <widget class="QLabel" name="_main_artist_region_caption">
           <property name="text">
            <string>Origin:</string>
@@ -319,7 +327,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="9" column="1">
+        <item row="8" column="1">
          <widget class="QComboBox" name="_main_artist_region">
           <property name="focusPolicy">
            <enum>Qt::StrongFocus</enum>
@@ -495,7 +503,7 @@ QLabel[style=QMacStyle] {
             <x>0</x>
             <y>0</y>
             <width>785</width>
-            <height>415</height>
+            <height>391</height>
            </rect>
           </property>
           <property name="styleSheet">

@@ -67,7 +67,13 @@
         <file alias="calendar-previous">images/angle-double-left-small.png</file>
         <file alias="calendar-next">images/angle-double-right-small.png</file>
         <file alias="calendar-menu-indicator">images/chevron-down-tiny.png</file>
-        <file alias="search">images/magnifying-glass-2x.png</file>
+
+        <file alias="icons/add">images/16x16/add.png</file>
+        <file alias="icons/remove">images/16x16/remove.png</file>
+        <file alias="icons/search">images/16x16/search.png</file>
+        <file alias="icons/info">images/20x20/info_outline.png</file>
+        <file alias="tooltips/search">images/12x12/search.png</file>
+
         <file>templates/soproq.xlsx</file>
     </qresource>
 </RCC>
