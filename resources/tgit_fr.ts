@@ -649,8 +649,8 @@
     <name>track_edition_page</name>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Project</source>
-        <translation>Projet</translation>
+        <source>Name:</source>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -699,38 +699,23 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Information about the lyricist:</source>
-        <translation>Informations sur l&apos;auteur :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
         <source>Lyricist:</source>
         <translation>Auteur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>IPI:</source>
-        <translation>IPI :</translation>
+        <source>IP Base Number:</source>
+        <translation>Numéro de base IP :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>ISNI:</source>
-        <translation>ISNI :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>Information about the composer:</source>
-        <translation>Informations sur le compositeur :</translation>
+        <source>ISNI Number:</source>
+        <translation>Numéro ISNI :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
         <source>Composer:</source>
         <translation>Compositeur :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>Information about the publisher:</source>
-        <translation>Informations sur l&apos;éditeur :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -754,8 +739,8 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
-        <source>Text</source>
-        <translation>Texte</translation>
+        <source>Text:</source>
+        <translation>Texte :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>

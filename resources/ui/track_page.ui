@@ -6,11 +6,11 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>809</width>
-    <height>580</height>
+    <width>892</width>
+    <height>669</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -25,9 +25,6 @@
    </property>
    <item>
     <widget class="QGroupBox" name="_album_banner">
-     <property name="title">
-      <string>Project</string>
-     </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QLabel" name="_album_cover">
@@ -39,14 +36,14 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>50</width>
-          <height>50</height>
+          <width>75</width>
+          <height>75</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>50</width>
-          <height>50</height>
+          <width>75</width>
+          <height>75</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -78,13 +75,16 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item alignment="Qt::AlignLeft">
+         <item>
           <widget class="QLabel" name="_album_title">
            <property name="styleSheet">
             <string notr="true">QLabel{font-size: 22px;}</string>
            </property>
            <property name="text">
             <string>Honeycomb</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
            </property>
           </widget>
          </item>
@@ -96,6 +96,9 @@
            <property name="text">
             <string>Joel Miller</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+           </property>
           </widget>
          </item>
         </layout>
@@ -105,34 +108,36 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="_contents" stretch="2,3">
-     <item>
-      <widget class="QFrame" name="_track_informations">
-       <property name="styleSheet">
-        <string notr="true">#_track_informations {
-	border: 1px solid #B1B1B1;
-	background-color: #FFFFFF;
-}</string>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <property name="spacing">
-         <number>10</number>
-        </property>
+    <widget class="QGroupBox" name="_content">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,3">
+      <item>
+       <layout class="QVBoxLayout" name="_track_informations">
         <item>
-         <layout class="QVBoxLayout" name="_track_information_container">
+         <layout class="QVBoxLayout" name="_title_container">
           <property name="spacing">
            <number>0</number>
           </property>
           <item>
            <widget class="QLabel" name="_track_number">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
             <property name="styleSheet">
-             <string notr="true">font-size: 16px;</string>
+             <string notr="true">QLabel {
+	font-weight: bold;
+}
+
+QLabel[style=&quot;QWindowsVistaStyle&quot;] {
+	font-size: 12pt;
+}
+
+QLabel[style=&quot;QMacStyle&quot;] {
+	font-size: 15pt;
+}</string>
             </property>
             <property name="text">
              <string>Track 1 of 9</string>
@@ -140,63 +145,78 @@
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="_track_sub_informations">
-            <property name="spacing">
-             <number>3</number>
+           <widget class="QWidget" name="_sub_title_container" native="true">
+            <property name="styleSheet">
+             <string notr="true">QLabel {
+	color: #666666;
+}
+
+QLabel[style=&quot;QWindowsVistaStyle&quot;] {
+	font-size: 7pt;
+}
+
+QLabel[style=&quot;QMacStyle&quot;] {
+	font-size: 11pt;
+}</string>
             </property>
-            <item>
-             <widget class="QLabel" name="_duration">
-              <property name="styleSheet">
-               <string notr="true">font-size: 10px;
-color: #666666;</string>
-              </property>
-              <property name="text">
-               <string>01:36</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="_separator">
-              <property name="styleSheet">
-               <string notr="true">font-size: 10px;
-color: #666666;</string>
-              </property>
-              <property name="text">
-               <string>-</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="_bitrate">
-              <property name="styleSheet">
-               <string notr="true">font-size: 10px;
-color: #666666;</string>
-              </property>
-              <property name="text">
-               <string>192 kbps</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="_duration">
+               <property name="text">
+                <string>01:36</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="_sub_title_separator">
+               <property name="text">
+                <string>-</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="_bitrate">
+               <property name="styleSheet">
+                <string notr="true">color: #666666;</string>
+               </property>
+               <property name="text">
+                <string>192 kbps</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
           </item>
          </layout>
         </item>
         <item>
-         <layout class="QFormLayout" name="formLayout">
-          <item row="0" column="0">
+         <layout class="QFormLayout" name="_entry_form">
+          <item row="1" column="0">
            <widget class="QLabel" name="_track_title_caption">
             <property name="text">
              <string>Track Title:</string>
@@ -209,10 +229,17 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="_track_title"/>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="_track_title">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="_lead_performer_caption">
             <property name="enabled">
              <bool>false</bool>
@@ -228,14 +255,20 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QLineEdit" name="_lead_performer">
             <property name="enabled">
              <bool>false</bool>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="_featured_guest_caption">
             <property name="text">
              <string>Featured Guest:</string>
@@ -248,10 +281,17 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="_featured_guest"/>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="_featured_guest">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="_version_caption">
             <property name="text">
              <string>Version:</string>
@@ -264,10 +304,17 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="_version"/>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="_version">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="_isrc_caption">
             <property name="text">
              <string>ISRC:</string>
@@ -280,10 +327,17 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="_isrc"/>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="_isrc">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="_iswc_caption">
             <property name="text">
              <string>ISWC:</string>
@@ -296,10 +350,17 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
-           <widget class="QLineEdit" name="_iswc"/>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="_iswc">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
           </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QLabel" name="_tags_caption">
             <property name="text">
              <string>Tags:</string>
@@ -312,10 +373,27 @@ color: #666666;</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
-           <widget class="QLineEdit" name="_tags"/>
-          </item>
           <item row="7" column="1">
+           <widget class="QLineEdit" name="_tags">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="_genre_caption">
+            <property name="text">
+             <string>Genre:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_genre</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
            <widget class="QComboBox" name="_genre">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -357,20 +435,20 @@ color: #666666;</string>
             </item>
            </widget>
           </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="_genre_caption">
-            <property name="text">
-             <string>Genre:</string>
+          <item row="0" column="0" colspan="2">
+           <widget class="Line" name="_forces_alignement_on_mac">
+            <property name="lineWidth">
+             <number>0</number>
             </property>
-            <property name="buddy">
-             <cstring>_genre</cstring>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
          </layout>
         </item>
         <item>
-         <spacer name="verticalSpacer_7">
+         <spacer name="verticalSpacer_3">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
@@ -382,469 +460,567 @@ color: #666666;</string>
           </property>
          </spacer>
         </item>
+        <item>
+         <widget class="QLabel" name="_software_notice">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QLabel{font-size: 10px;}</string>
+          </property>
+          <property name="text">
+           <string>Indexé avec TGiT v1.9 le 10-05-2010</string>
+          </property>
+         </widget>
+        </item>
        </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTabWidget" name="_tabs">
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <widget class="QWidget" name="_contributors_tab">
-        <attribute name="title">
-         <string>Contributors</string>
-        </attribute>
-        <layout class="QFormLayout" name="formLayout_5">
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="_lyricist_header">
-           <property name="text">
-            <string>Information about the lyricist:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="_lyricist_caption">
-           <property name="text">
-            <string>Lyricist:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_lyricist</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="_lyricist"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="_lyricist_ipi_caption">
-           <property name="text">
-            <string>IPI:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="_lyricist_ipi"/>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="_lyricist_isni_caption">
-           <property name="text">
-            <string>ISNI:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <layout class="QHBoxLayout" name="_lyricist_input_container">
-           <property name="spacing">
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QToolButton" name="_lyricist_isni_actions_button">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::WheelFocus</enum>
-             </property>
-             <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/search</normaloff>:/search</iconset>
-             </property>
-             <property name="popupMode">
-              <enum>QToolButton::MenuButtonPopup</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="_lyricist_isni">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="4" column="0" colspan="2">
-          <widget class="Line" name="line_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0" colspan="2">
-          <widget class="QLabel" name="_composer_header">
-           <property name="text">
-            <string>Information about the composer:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="_composer_caption">
-           <property name="text">
-            <string>Composer:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_composer</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QLineEdit" name="_composer"/>
-         </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="_composer_ipi_caption">
-           <property name="text">
-            <string>IPI:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QLineEdit" name="_composer_ipi"/>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="_composer_isni_caption">
-           <property name="text">
-            <string>ISNI:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <layout class="QHBoxLayout" name="_composer_input_container">
-           <property name="spacing">
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QToolButton" name="_composer_isni_actions_button">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::StrongFocus</enum>
-             </property>
-             <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/search</normaloff>:/search</iconset>
-             </property>
-             <property name="popupMode">
-              <enum>QToolButton::MenuButtonPopup</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="_composer_isni">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="9" column="0" colspan="2">
-          <widget class="Line" name="line_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0" colspan="2">
-          <widget class="QLabel" name="_publisher_caption_2">
-           <property name="text">
-            <string>Information about the publisher:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="0">
-          <widget class="QLabel" name="_publisher_caption">
-           <property name="text">
-            <string>Publisher:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_publisher</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="1">
-          <widget class="QLineEdit" name="_publisher"/>
-         </item>
-         <item row="12" column="0">
-          <widget class="QLabel" name="_publisher_ipi_caption">
-           <property name="text">
-            <string>IPI:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="12" column="1">
-          <widget class="QLineEdit" name="_publisher_ipi"/>
-         </item>
-         <item row="13" column="0">
-          <widget class="QLabel" name="_publisher_isni_caption">
-           <property name="text">
-            <string>ISNI:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="13" column="1">
-          <layout class="QHBoxLayout" name="_publisher_input_container">
-           <property name="spacing">
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QToolButton" name="_publisher_isni_actions_button">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="icon">
-              <iconset resource="../resources.qrc">
-               <normaloff>:/search</normaloff>:/search</iconset>
-             </property>
-             <property name="popupMode">
-              <enum>QToolButton::MenuButtonPopup</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="_publisher_isni">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
+      </item>
+      <item>
+       <widget class="QTabWidget" name="_tabs">
+        <property name="styleSheet">
+         <string notr="true">QComboBox[style=&quot;QMacStyle&quot;] {
+	max-width: 250px;
+}</string>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="_contributors_tab">
+         <attribute name="title">
+          <string>Contributors</string>
+         </attribute>
+         <layout class="QFormLayout" name="formLayout_5">
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="_lyricist_header">
+            <property name="text">
+             <string>Lyricist:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="_lyricist_caption">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_lyricist</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="_lyricist">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="_lyricist_ipi_caption">
+            <property name="text">
+             <string>IP Base Number:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_lyricist_ipi</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="_lyricist_ipi">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="_lyricist_isni_caption">
+            <property name="text">
+             <string>ISNI Number:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_lyricist_isni</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <layout class="QHBoxLayout" name="_lyricist_input_container">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="_lyricist_isni_actions_button">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+              <property name="icon">
+               <iconset resource="../resources.qrc">
+                <normaloff>:/search</normaloff>:/search</iconset>
+              </property>
+              <property name="popupMode">
+               <enum>QToolButton::MenuButtonPopup</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="_lyricist_isni">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QLabel" name="_composer_name">
+            <property name="text">
+             <string>Composer:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="_composer_caption">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_composer</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="_composer">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="_composer_ipi_caption">
+            <property name="text">
+             <string>IP Base Number:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_composer_ipi</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QLineEdit" name="_composer_ipi">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="_composer_isni_caption">
+            <property name="text">
+             <string>ISNI Number:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_composer_isni</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <layout class="QHBoxLayout" name="_composer_input_container">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="_composer_isni_actions_button">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+              <property name="icon">
+               <iconset resource="../resources.qrc">
+                <normaloff>:/search</normaloff>:/search</iconset>
+              </property>
+              <property name="popupMode">
+               <enum>QToolButton::MenuButtonPopup</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="_composer_isni">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="9" column="0" colspan="2">
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <widget class="QLabel" name="_publisher_caption">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_publisher</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="1">
+           <widget class="QLineEdit" name="_publisher">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="0">
+           <widget class="QLabel" name="_publisher_ipi_caption">
+            <property name="text">
+             <string>IP Base Number:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_publisher_ipi</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="12" column="1">
+           <widget class="QLineEdit" name="_publisher_ipi">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="13" column="0">
+           <widget class="QLabel" name="_publisher_isni_caption">
+            <property name="text">
+             <string>ISNI Number:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_publisher_isni</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="13" column="1">
+           <layout class="QHBoxLayout" name="_publisher_input_container">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QToolButton" name="_publisher_isni_actions_button">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+              <property name="icon">
+               <iconset resource="../resources.qrc">
+                <normaloff>:/search</normaloff>:/search</iconset>
+              </property>
+              <property name="popupMode">
+               <enum>QToolButton::MenuButtonPopup</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="_publisher_isni">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="10" column="0" colspan="2">
+           <widget class="QLabel" name="_publisher_header">
+            <property name="text">
+             <string>Publisher:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="_recording_tab">
+         <attribute name="title">
+          <string>Recording</string>
+         </attribute>
+         <layout class="QFormLayout" name="formLayout_4">
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="_production_company_header">
+            <property name="text">
+             <string>Production Company:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="_production_company_caption">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_production_company</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="_production_company">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="_production_company_region_caption">
+            <property name="text">
+             <string>Location:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_production_company_region</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="_production_company_region">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="Line" name="line_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QLabel" name="_recording_studio_header">
+            <property name="text">
+             <string>Recording Studio:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="_recording_studio_caption">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_recording_studio</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="_recording_studio">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="_recording_studio_region_caption">
+            <property name="text">
+             <string>Location:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_recording_studio_region</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QComboBox" name="_recording_studio_region">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" colspan="2">
+           <widget class="Line" name="line_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="_music_producer_caption">
+            <property name="text">
+             <string>Music Producer:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_music_producer</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1">
+           <widget class="QLineEdit" name="_music_producer">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="_mixer_caption">
+            <property name="text">
+             <string>Mixer:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_mixer</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <widget class="QLineEdit" name="_mixer">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0" colspan="2">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="_lyrics_tab">
+         <attribute name="title">
+          <string>Lyrics</string>
+         </attribute>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="_lyrics_caption">
+            <property name="text">
+             <string>Text:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_lyrics</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="TextArea" name="_lyrics">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="_language_caption">
+            <property name="text">
+             <string>Language:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_language</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="_language">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+            <property name="insertPolicy">
+             <enum>QComboBox::NoInsert</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
-       <widget class="QWidget" name="_recording_tab">
-        <attribute name="title">
-         <string>Recording</string>
-        </attribute>
-        <layout class="QFormLayout" name="formLayout_4">
-         <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="_production_company_header">
-           <property name="text">
-            <string>Information about the production company:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="_production_company_caption">
-           <property name="text">
-            <string>Production Company:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_production_company</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="_production_company"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="_production_company_region_caption">
-           <property name="text">
-            <string>Location:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_production_company_region</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="_production_company_region">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>1</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="Line" name="line_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0" colspan="2">
-          <widget class="QLabel" name="_recording_studio_header">
-           <property name="text">
-            <string>Information about the recording studio:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="_recording_studio_caption">
-           <property name="text">
-            <string>Recording Studio:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_recording_studio</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QLineEdit" name="_recording_studio"/>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="_recording_studio_region_caption">
-           <property name="text">
-            <string>Location:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_recording_studio_region</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="1">
-          <widget class="QComboBox" name="_recording_studio_region">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>1</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0" colspan="2">
-          <widget class="Line" name="line_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="_music_producer_caption">
-           <property name="text">
-            <string>Music Producer:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_music_producer</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QLineEdit" name="_music_producer"/>
-         </item>
-         <item row="9" column="0">
-          <widget class="QLabel" name="_mixer_caption">
-           <property name="text">
-            <string>Mixer:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_mixer</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <widget class="QLineEdit" name="_mixer"/>
-         </item>
-         <item row="10" column="0" colspan="2">
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="_content_tab">
-        <attribute name="title">
-         <string>Lyrics</string>
-        </attribute>
-        <layout class="QFormLayout" name="formLayout_3">
-         <item row="0" column="0">
-          <widget class="QLabel" name="_language_caption">
-           <property name="text">
-            <string>Language:</string>
-           </property>
-           <property name="buddy">
-            <cstring>_language</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="_language">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>1</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-           <property name="insertPolicy">
-            <enum>QComboBox::NoInsert</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QLabel" name="_lyrics_caption">
-           <property name="text">
-            <string>Text</string>
-           </property>
-           <property name="buddy">
-            <cstring>_lyrics</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="TextArea" name="_lyrics">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>1</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="tabChangesFocus">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QLabel" name="_software_notice">
-     <property name="styleSheet">
-      <string notr="true">QLabel{font-size: 10px;}</string>
-     </property>
-     <property name="text">
-      <string>Indexé avec TGiT v1.9 le 10-05-2010</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -881,10 +1057,42 @@ color: #666666;</string>
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>_track_title</tabstop>
+  <tabstop>_lead_performer</tabstop>
+  <tabstop>_featured_guest</tabstop>
+  <tabstop>_version</tabstop>
+  <tabstop>_isrc</tabstop>
+  <tabstop>_iswc</tabstop>
+  <tabstop>_tags</tabstop>
+  <tabstop>_genre</tabstop>
   <tabstop>_tabs</tabstop>
+  <tabstop>_lyricist</tabstop>
+  <tabstop>_lyricist_ipi</tabstop>
   <tabstop>_lyricist_isni_actions_button</tabstop>
+  <tabstop>_lyricist_isni</tabstop>
+  <tabstop>_composer</tabstop>
+  <tabstop>_composer_ipi</tabstop>
   <tabstop>_composer_isni_actions_button</tabstop>
+  <tabstop>_composer_isni</tabstop>
+  <tabstop>_publisher</tabstop>
+  <tabstop>_publisher_ipi</tabstop>
   <tabstop>_publisher_isni_actions_button</tabstop>
+  <tabstop>_publisher_isni</tabstop>
+  <tabstop>_production_company</tabstop>
+  <tabstop>_production_company_region</tabstop>
+  <tabstop>_recording_studio</tabstop>
+  <tabstop>_recording_studio_region</tabstop>
+  <tabstop>_music_producer</tabstop>
+  <tabstop>_mixer</tabstop>
+  <tabstop>_lyrics</tabstop>
+  <tabstop>_language</tabstop>
+  <tabstop>lineEdit_3</tabstop>
+  <tabstop>lineEdit_2</tabstop>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>textEdit</tabstop>
+  <tabstop>lineEdit_4</tabstop>
+  <tabstop>tableWidget</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>

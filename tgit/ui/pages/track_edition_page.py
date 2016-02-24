@@ -58,7 +58,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     # TODO move from signal to on_metadata_changed handler
     metadata_changed = pyqtSignal(dict)
 
-    ALBUM_COVER_SIZE = 50, 50
+    ALBUM_COVER_SIZE = 75, 75
     DURATION_FORMAT = "mm:ss"
 
     _cover = None
