@@ -57,7 +57,6 @@ class Album(metaclass=tag.Taggable):
     release_time = tag.text()
     original_release_time = tag.text()
     contributors = tag.pairs()
-    comments = tag.text()
     isnis = tag.map()
     ipis = tag.map()
 

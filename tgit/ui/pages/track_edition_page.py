@@ -99,6 +99,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._lead_performer.editingFinished.connect(emit_metadata_changed)
         self._version.editingFinished.connect(emit_metadata_changed)
         self._featured_guest.editingFinished.connect(emit_metadata_changed)
+        self._comments.editingFinished.connect(emit_metadata_changed)
         self._lyricist.editingFinished.connect(emit_metadata_changed)
         self._composer.editingFinished.connect(emit_metadata_changed)
         self._publisher.editingFinished.connect(emit_metadata_changed)
@@ -196,6 +197,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._duration.setText(formatting.to_duration(track.duration))
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
         self._featured_guest.setText(track.featured_guest)
+        self._comments.setPlainText(track.comments)
         self._lyricist.setText(track.lyricist)
         self._composer.setText(track.composer)
         self._publisher.setText(track.publisher)
@@ -258,6 +260,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         metadata = dict(track_title=self._track_title.text(),
                         version_info=self._version.text(),
                         featured_guest=self._featured_guest.text(),
+                        comments=self._comments.toPlainText(),
                         composer=self._composer.text(),
                         publisher=self._publisher.text(),
                         isrc=self._isrc.text(),

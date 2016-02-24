@@ -71,13 +71,13 @@ def test_writes_track_metadata_in_columns(formatter, out):
         label_name="Label Name",
         catalog_number="Catalog Number",
         upc="Barcode",
-        comments="Comments\n...\n...",
         release_time="2014",
         recording_time="2013")
 
     track = build.track(
         track_title="Track Title",
         version_info="Version Info",
+        comments="Comments\n...\n...",
         featured_guest="Featuring",
         lyrics="Lyrics\n...\...\n...",
         language="eng",
@@ -158,7 +158,7 @@ def test_writes_one_record_per_track_in_album(formatter, out):
 
 
 def test_make_line_breaks_excel_friendly_by_converting_line_feeds_to_carriage_returns(formatter, out):
-    album = build.album(comments="Comments\nspanning\nseveral lines", tracks=[build.track()])
+    album = build.album(tracks=[build.track(comments="Comments\nspanning\nseveral lines")])
 
     formatter.write(album, out)
 

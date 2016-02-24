@@ -131,6 +131,16 @@ class TrackEditionPageDriver(ScreenDriver):
     def change_featured_guest(self, name):
         self.lineEdit(named("_featured_guest")).change_text(name)
 
+    def shows_comments(self, comments):
+        self.label(with_buddy(named("_comments"))).is_showing_on_screen()
+        self.textEdit(named("_comments")).has_plain_text(comments)
+
+    def add_comments(self, *comments):
+        edit = self.textEdit(named("_comments"))
+        for comment in comments:
+            edit.add_line(comment)
+        edit.clear_focus()
+
     def shows_lyricist(self, name):
         self.label(with_buddy(named("_lyricist"))).is_showing_on_screen()
         self.lineEdit(named("_lyricist")).has_text(name)

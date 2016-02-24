@@ -85,8 +85,7 @@ def test_displays_album_metadata(driver):
         catalog_number="XXX123456789",
         upc="123456789999",
         recording_time="2008-09-15",
-        release_time="2009-01-01",
-        comments="Comments\n..."))
+        release_time="2009-01-01"))
 
     driver.shows_title("Album")
     driver.shows_compilation(False)
@@ -99,9 +98,7 @@ def test_displays_album_metadata(driver):
     driver.shows_recording_time("2008-09-15")
     driver.shows_release_time("2009-01-01")
     driver.shows_digital_release_time("2000-01-01")
-    driver.shows_comments("Comments\n...")
     driver.shows_media_type("")
-    # self.driver.shows_release_type("")
 
 
 def test_indicates_whether_album_is_a_compilation(driver):
@@ -419,11 +416,6 @@ def test_signals_when_album_metadata_edited(driver):
 
     metadata_changed_signal.expect(has_entries(upc="123456789999"))
     driver.change_upc("123456789999")
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(comments="Comments\n...\n"))
-    driver.add_comments("Comments")
-    driver.add_comments("...")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(release_time="2009-01-01"))

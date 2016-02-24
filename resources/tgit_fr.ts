@@ -583,13 +583,13 @@
     <name>ConfirmationBox</name>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>You are about to close the current album. Are you sure you want to continue?</source>
-        <translation>Vous êtes sur le point de fermer l'album en cours. Êtes-vous sûr de vouloir continuer ?</translation>
+        <source>You are about to close the current project. Are you sure you want to continue?</source>
+        <translation>Vous êtes sur le point de fermer le projet en cours. Êtes-vous sûr de vouloir continuer ?</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Make sure to save your work before closing the album. Any unsaved work will be lost.</source>
-        <translation>Assurez-vous d'enregistrer avant de fermer l'album. Tout travail non enregistré sera perdu.</translation>
+        <source>Make sure to save your work before closing the project. Any unsaved work will be lost.</source>
+        <translation>Assurez-vous d'enregistrer avant de fermer le projet. Tout travail non enregistré sera perdu.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
@@ -666,6 +666,11 @@
         <location filename="tgit/ui/track_edition_page.py" />
         <source>Featured Guest:</source>
         <translation>Invité spécial :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Comments:</source>
+        <translation>Commentaires :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
