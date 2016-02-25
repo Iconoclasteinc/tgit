@@ -244,8 +244,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Musicians</source>
-        <translation>Musiciens</translation>
+        <source>2. Musicians</source>
+        <translation>2. Musiciens</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -254,8 +254,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Release</source>
-        <translation>Parution</translation>
+        <source>1. Release</source>
+        <translation>1. Parution</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
