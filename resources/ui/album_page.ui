@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>791</width>
-    <height>745</height>
+    <width>788</width>
+    <height>527</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -421,6 +421,19 @@ QLabel[style=QMacStyle] {
          </property>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="_release_time_caption">
+         <property name="text">
+          <string>Release Date:</string>
+         </property>
+         <property name="buddy">
+          <cstring>_release_time</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDateEdit" name="_release_time"/>
+       </item>
        <item row="3" column="0">
         <widget class="QLabel" name="_barcode_caption">
          <property name="text">
@@ -497,46 +510,13 @@ QLabel[style=QMacStyle] {
        </item>
        <item row="6" column="0" colspan="2">
         <widget class="Line" name="_comments_section_separator">
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
-       </item>
-       <item row="7" column="0" colspan="2">
-        <widget class="QLabel" name="_comments_caption">
-         <property name="text">
-          <string>Comments:</string>
-         </property>
-         <property name="buddy">
-          <cstring>_comments</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0" colspan="2">
-        <widget class="TextArea" name="_comments">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>1</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="_release_time_caption">
-         <property name="text">
-          <string>Release Date:</string>
-         </property>
-         <property name="buddy">
-          <cstring>_release_time</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QDateEdit" name="_release_time"/>
        </item>
       </layout>
      </widget>
@@ -726,11 +706,6 @@ QLabel[style=QMacStyle] {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TextArea</class>
-   <extends>QPlainTextEdit</extends>
-   <header>tgit.ui.widgets.text_area</header>
-  </customwidget>
-  <customwidget>
    <class>MusicianTable</class>
    <extends>QWidget</extends>
    <header>tgit.ui.pages.album_edition_page</header>
@@ -755,7 +730,6 @@ QLabel[style=QMacStyle] {
   <tabstop>_catalog_number</tabstop>
   <tabstop>_release_time</tabstop>
   <tabstop>_barcode</tabstop>
-  <tabstop>_comments</tabstop>
   <tabstop>_digital_release_time</tabstop>
   <tabstop>_original_release_time</tabstop>
   <tabstop>_recording_time</tabstop>

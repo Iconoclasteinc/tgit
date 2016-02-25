@@ -31,6 +31,7 @@ class Track(object, metaclass=tag.Taggable):
     lead_performer = tag.text()
     version_info = tag.text()
     featured_guest = tag.text()
+    comments = tag.text()
     publisher = tag.text()
     lyricist = tag.text()
     composer = tag.text()

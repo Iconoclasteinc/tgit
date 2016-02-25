@@ -180,7 +180,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._label_name.editingFinished.connect(lambda: handle("label_name"))
         self._catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
         self._barcode.editingFinished.connect(lambda: handle("upc"))
-        self._comments.editingFinished.connect(lambda: handle("comments"))
 
     def albumStateChanged(self, album):
         self.display(album)
@@ -201,7 +200,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._label_name.setText(album.label_name)
         self._catalog_number.setText(album.catalog_number)
         self._barcode.setText(album.upc)
-        self._comments.setPlainText(album.comments)
         self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self._recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
         self._musician_table_container.display(album.guest_performers or [])
@@ -227,7 +225,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           label_name=self._label_name.text(),
                           catalog_number=self._catalog_number.text(),
                           upc=self._barcode.text(),
-                          comments=self._comments.toPlainText(),
                           recording_time=self._recording_time.date().toString(ISO_8601_FORMAT),
                           release_time=self._release_time.date().toString(ISO_8601_FORMAT))
 

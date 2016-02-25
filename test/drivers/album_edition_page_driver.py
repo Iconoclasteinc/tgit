@@ -249,18 +249,6 @@ class AlbumEditionPageDriver(ScreenDriver):
         self._select_dates_tab()
         self.label(named("_original_release_time")).enter_date(time)
 
-    def shows_comments(self, comments):
-        self._select_release_tab()
-        self.label(with_buddy(named("_comments"))).is_showing_on_screen()
-        self.textEdit(named("_comments")).has_plain_text(comments)
-
-    def add_comments(self, *comments):
-        self._select_release_tab()
-        edit = self.textEdit(named("_comments"))
-        for comment in comments:
-            edit.add_line(comment)
-        edit.clear_focus()
-
     def shows_media_type(self, type_):
         self._select_release_tab()
         self.label(with_buddy(named("_media_type"))).is_showing_on_screen()

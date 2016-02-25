@@ -58,7 +58,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     # TODO move from signal to on_metadata_changed handler
     metadata_changed = pyqtSignal(dict)
 
-    ALBUM_COVER_SIZE = 50, 50
+    ALBUM_COVER_SIZE = 75, 75
     DURATION_FORMAT = "mm:ss"
 
     _cover = None
@@ -74,7 +74,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     def _setup_ui(self):
         self._load(":/ui/track_page.ui")
-        self._disable_teaser_fields()
 
         lyricist_menu = QMenu()
         lyricist_menu.addAction(self._lyricist_isni_assign_action)
@@ -100,6 +99,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._lead_performer.editingFinished.connect(emit_metadata_changed)
         self._version.editingFinished.connect(emit_metadata_changed)
         self._featured_guest.editingFinished.connect(emit_metadata_changed)
+        self._comments.editingFinished.connect(emit_metadata_changed)
         self._lyricist.editingFinished.connect(emit_metadata_changed)
         self._composer.editingFinished.connect(emit_metadata_changed)
         self._publisher.editingFinished.connect(emit_metadata_changed)
@@ -197,6 +197,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._duration.setText(formatting.to_duration(track.duration))
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
         self._featured_guest.setText(track.featured_guest)
+        self._comments.setPlainText(track.comments)
         self._lyricist.setText(track.lyricist)
         self._composer.setText(track.composer)
         self._publisher.setText(track.publisher)
@@ -259,6 +260,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         metadata = dict(track_title=self._track_title.text(),
                         version_info=self._version.text(),
                         featured_guest=self._featured_guest.text(),
+                        comments=self._comments.toPlainText(),
                         composer=self._composer.text(),
                         publisher=self._publisher.text(),
                         isrc=self._isrc.text(),
@@ -279,10 +281,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             metadata["lead_performer"] = self._lead_performer.text()
 
         return metadata
-
-    def _disable_teaser_fields(self):
-        self._preview_time.setDisabled(True)
-        self._preview_time_caption.setDisabled(True)
 
     @staticmethod
     def _fill_with_countries(combobox):

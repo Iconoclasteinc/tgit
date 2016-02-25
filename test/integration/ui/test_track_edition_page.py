@@ -5,6 +5,7 @@ from datetime import timedelta
 
 import pytest
 import requests
+
 from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
 
 from cute.matchers import named
@@ -71,6 +72,7 @@ def test_displays_track_metadata(driver):
                         track_title="Song",
                         version_info="Remix",
                         featured_guest="Featuring",
+                        comments="Comments\n...",
                         lyricist="Lyricist",
                         composer="Composer",
                         publisher="Publisher",
@@ -109,7 +111,6 @@ def test_displays_track_metadata(driver):
     driver.shows_tags("Tag1 Tag2 Tag3")
     driver.shows_lyrics("Lyrics\n...\n...")
     driver.shows_language("eng")
-    driver.shows_preview_time("00:00")
     driver.shows_recording_studio("Studio A, Studio B")
     driver.shows_recording_studio_region("Canada")
     driver.shows_production_company("Initial Producer")
@@ -117,6 +118,7 @@ def test_displays_track_metadata(driver):
     driver.shows_music_producer("Artistic Producer")
     driver.shows_mixer("Mixing Engineer")
     driver.shows_primary_style("Style")
+    driver.shows_comments("Comments\n...")
 
 
 def test_disables_lead_performer_edition_when_album_is_not_a_compilation(driver):
@@ -228,6 +230,11 @@ def test_signals_when_track_metadata_change(driver):
 
     metadata_changed_signal.expect(has_entries(primary_style="Custom"))
     driver.change_primary_style("Custom")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(comments="Comments\n...\n"))
+    driver.add_comments("Comments")
+    driver.add_comments("...")
     driver.check(metadata_changed_signal)
 
 
