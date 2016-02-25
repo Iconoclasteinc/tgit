@@ -218,7 +218,7 @@
          </widget>
         </item>
         <item row="5" column="1">
-         <widget class="QLabel" name="_main_artist_help">
+         <widget class="QLabel" name="_main_artist_info">
           <property name="styleSheet">
            <string notr="true">
 QLabel[style=QWindowsVistaStyle] {
@@ -250,10 +250,7 @@ QLabel[style=QMacStyle] {
          </widget>
         </item>
         <item row="6" column="1">
-         <layout class="QHBoxLayout" name="_main_artist_container">
-          <property name="spacing">
-           <number>5</number>
-          </property>
+         <layout class="QHBoxLayout" name="_main_artist_isni_container">
           <item>
            <widget class="QToolButton" name="_main_artist_isni_actions_button">
             <property name="enabled">
@@ -284,32 +281,48 @@ QLabel[style=QMacStyle] {
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="_main_artist_isni">
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
+           <layout class="QHBoxLayout" name="_main_artist_isni_edit_pane">
+            <property name="spacing">
+             <number>0</number>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="_main_artist_info">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="../resources.qrc">:/icons/info</pixmap>
-            </property>
-           </widget>
+            <item>
+             <widget class="QLineEdit" name="_main_artist_isni">
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="HelpLabel" name="_main_artist_isni_help">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
         <item row="7" column="1">
-         <widget class="QLabel" name="_main_artist_isni_help">
+         <widget class="QLabel" name="_main_artist_isni_info">
           <property name="styleSheet">
            <string notr="true">
 QLabel[style=QWindowsVistaStyle] {
@@ -419,9 +432,9 @@ QLabel[style=QMacStyle] {
         </widget>
        </item>
        <item row="3" column="1">
-        <layout class="QHBoxLayout" name="_barcode_container">
+        <layout class="QHBoxLayout" name="_barcode_edit_pane">
          <property name="spacing">
-          <number>5</number>
+          <number>0</number>
          </property>
          <item>
           <widget class="QLineEdit" name="_barcode">
@@ -437,7 +450,13 @@ QLabel[style=QMacStyle] {
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="HelpLabel" name="_barcode_help">
+           <property name="maximumSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The barcode is the &lt;span style=&quot;font-style:italic;&quot;&gt;physical product code&lt;/span&gt; and usually consists of 8 to 14 characters.&lt;/p&gt;&lt;p&gt;It will typically be either a UPC, EAN, JAN or GTIN but may have a different format depending on the country or territory covered by the album's licensing deal.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -445,14 +464,17 @@ QLabel[style=QMacStyle] {
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="../resources.qrc">:/icons/info</pixmap>
+            <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item row="4" column="1">
-        <widget class="QLabel" name="_barcode_help">
+        <widget class="QLabel" name="_barcode_info">
          <property name="styleSheet">
           <string notr="true">
 QLabel[style=QWindowsVistaStyle] {
@@ -714,13 +736,17 @@ QLabel[style=QMacStyle] {
    <header>tgit.ui.pages.album_edition_page</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>HelpLabel</class>
+   <extends>QLabel</extends>
+   <header>tgit.ui.widgets.help_label</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_title</tabstop>
   <tabstop>_compilation</tabstop>
   <tabstop>_main_artist</tabstop>
   <tabstop>_main_artist_isni_actions_button</tabstop>
-  <tabstop>_main_artist_isni</tabstop>
   <tabstop>_main_artist_region</tabstop>
   <tabstop>_select_picture_button</tabstop>
   <tabstop>_remove_picture_button</tabstop>
