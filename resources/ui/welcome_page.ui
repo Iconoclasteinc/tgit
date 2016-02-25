@@ -2,18 +2,10 @@
 <ui version="4.0">
  <class>welcome_page</class>
  <widget class="QFrame" name="welcome_page">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>1100</width>
-    <height>744</height>
-   </rect>
-  </property>
   <property name="minimumSize">
    <size>
-    <width>1100</width>
-    <height>744</height>
+    <width>1024</width>
+    <height>640</height>
    </size>
   </property>
   <property name="autoFillBackground">

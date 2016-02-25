@@ -124,7 +124,7 @@ class Column(Enum):
                 self.setToolTip(self.tr("Your platform cannot play {} audio files".format(track.type.upper())))
 
     class track_title(Cell):
-        width = Width(300, RESIZABLE)
+        width = Width(250, RESIZABLE)
 
         def __init__(self, track):
             super().__init__()
@@ -132,7 +132,7 @@ class Column(Enum):
             self.setTextAlignment(LEFT_ALIGNED)
 
     class lead_performer(Cell):
-        width = Width(245, RESIZABLE)
+        width = Width(230, RESIZABLE)
 
         def __init__(self, track):
             super().__init__()
@@ -148,7 +148,7 @@ class Column(Enum):
             self.setTextAlignment(LEFT_ALIGNED)
 
     class bitrate(Cell):
-        width = Width(90, RESIZABLE)
+        width = Width(75, RESIZABLE)
 
         def __init__(self, track):
             super().__init__()
