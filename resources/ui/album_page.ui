@@ -374,7 +374,7 @@ QLabel[style=QMacStyle] {
    <item>
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="_release_tab">
       <attribute name="title">
@@ -722,6 +722,7 @@ QLabel[style=QMacStyle] {
   <tabstop>_compilation</tabstop>
   <tabstop>_main_artist</tabstop>
   <tabstop>_main_artist_isni_actions_button</tabstop>
+  <tabstop>_main_artist_isni</tabstop>
   <tabstop>_main_artist_region</tabstop>
   <tabstop>_select_picture_button</tabstop>
   <tabstop>_remove_picture_button</tabstop>
@@ -730,10 +731,10 @@ QLabel[style=QMacStyle] {
   <tabstop>_catalog_number</tabstop>
   <tabstop>_release_time</tabstop>
   <tabstop>_barcode</tabstop>
+  <tabstop>_musicians_input_scroll_area</tabstop>
   <tabstop>_digital_release_time</tabstop>
   <tabstop>_original_release_time</tabstop>
   <tabstop>_recording_time</tabstop>
-  <tabstop>_musicians_input_scroll_area</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>
