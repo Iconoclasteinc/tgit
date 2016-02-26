@@ -97,7 +97,7 @@ def test_displays_album_metadata(driver):
     driver.shows_catalog_number("XXX123456789")
     driver.shows_upc("123456789999")
     driver.shows_release_time("2009-01-01")
-    driver.shows_digital_release_time("2000-01-01")
+
 
 def test_indicates_whether_album_is_a_compilation(driver):
     album = make_album(compilation=False)
