@@ -204,13 +204,13 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Information about the main artist:</source>
-        <translation>Information sur l'artiste principal :</translation>
+        <source>Main Artist</source>
+        <translation>Artiste principal</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Artist Name:</source>
-        <translation>Nom de l'artiste :</translation>
+        <source>Name:</source>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -240,7 +240,7 @@
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
         <source>Origin:</source>
-        <translation>Origine :</translation>
+        <translation>Lieu d&apos;origine :</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -719,13 +719,13 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Lyricist:</source>
-        <translation>Auteur :</translation>
+        <source>Lyricist</source>
+        <translation>Auteur</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>IP Base Number:</source>
-        <translation>Numéro de base IP :</translation>
+        <source>IPI Number:</source>
+        <translation>Numéro IPI :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -734,13 +734,13 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Composer:</source>
-        <translation>Compositeur :</translation>
+        <source>Composer</source>
+        <translation>Compositeur</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Publisher:</source>
-        <translation>Éditeur :</translation>
+        <source>Publisher</source>
+        <translation>Éditeur</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -769,8 +769,8 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Date:</source>
-        <translation>Date :</translation>
+        <source>Recording Date:</source>
+        <translation>Date d&apos;enregistrement :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
@@ -780,12 +780,12 @@
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
         <source>Location:</source>
-        <translation>Emplacement :</translation>
+        <translation>Lieu d&apos;établissement :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Production Company:</source>
-        <translation>Compagnie de production :</translation>
+        <source>Production Company</source>
+        <translation>Compagnie de production</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
@@ -794,8 +794,8 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
-        <source>Recording Studio:</source>
-        <translation>Studio d&apos;enregistrement :</translation>
+        <source>Recording Studio</source>
+        <translation>Studio d&apos;enregistrement</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>

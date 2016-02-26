@@ -522,7 +522,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
           <item row="0" column="0" colspan="2">
            <widget class="QLabel" name="_lyricist_header">
             <property name="text">
-             <string>Lyricist:</string>
+             <string>Lyricist</string>
             </property>
            </widget>
           </item>
@@ -549,7 +549,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
           <item row="2" column="0">
            <widget class="QLabel" name="_lyricist_ipi_caption">
             <property name="text">
-             <string>IP Base Number:</string>
+             <string>IPI Number:</string>
             </property>
             <property name="buddy">
              <cstring>_lyricist_ipi</cstring>
@@ -623,7 +623,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
           <item row="5" column="0" colspan="2">
            <widget class="QLabel" name="_composer_name">
             <property name="text">
-             <string>Composer:</string>
+             <string>Composer</string>
             </property>
            </widget>
           </item>
@@ -650,7 +650,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
           <item row="7" column="0">
            <widget class="QLabel" name="_composer_ipi_caption">
             <property name="text">
-             <string>IP Base Number:</string>
+             <string>IPI Number:</string>
             </property>
             <property name="buddy">
              <cstring>_composer_ipi</cstring>
@@ -738,7 +738,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
           <item row="12" column="0">
            <widget class="QLabel" name="_publisher_ipi_caption">
             <property name="text">
-             <string>IP Base Number:</string>
+             <string>IPI Number:</string>
             </property>
             <property name="buddy">
              <cstring>_publisher_ipi</cstring>
@@ -805,7 +805,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
           <item row="10" column="0" colspan="2">
            <widget class="QLabel" name="_publisher_header">
             <property name="text">
-             <string>Publisher:</string>
+             <string>Publisher</string>
             </property>
            </widget>
           </item>
@@ -819,7 +819,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
           <item row="0" column="0" colspan="2">
            <widget class="QLabel" name="_production_company_header">
             <property name="text">
-             <string>Production Company:</string>
+             <string>Production Company</string>
             </property>
            </widget>
           </item>
@@ -876,7 +876,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
           <item row="4" column="0" colspan="2">
            <widget class="QLabel" name="_recording_studio_header">
             <property name="text">
-             <string>Recording Studio:</string>
+             <string>Recording Studio</string>
             </property>
            </widget>
           </item>
@@ -986,7 +986,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
           <item row="7" column="0">
            <widget class="QLabel" name="_recording_time_caption">
             <property name="text">
-             <string>Date:</string>
+             <string>Recording Date:</string>
             </property>
             <property name="buddy">
              <cstring>_recording_time</cstring>
@@ -1111,6 +1111,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
   <tabstop>_iswc</tabstop>
   <tabstop>_tags</tabstop>
   <tabstop>_genre</tabstop>
+  <tabstop>_comments</tabstop>
   <tabstop>_tabs</tabstop>
   <tabstop>_lyricist</tabstop>
   <tabstop>_lyricist_ipi</tabstop>
@@ -1128,6 +1129,7 @@ QLabel[style=&quot;QMacStyle&quot;] {
   <tabstop>_production_company_region</tabstop>
   <tabstop>_recording_studio</tabstop>
   <tabstop>_recording_studio_region</tabstop>
+  <tabstop>_recording_time</tabstop>
   <tabstop>_music_producer</tabstop>
   <tabstop>_mixer</tabstop>
   <tabstop>_lyrics</tabstop>

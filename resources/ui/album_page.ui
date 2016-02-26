@@ -154,60 +154,31 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="2">
+        <item row="2" column="0" colspan="2">
          <widget class="Line" name="_main_artist_section_separator">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="2" column="0" colspan="2">
+        <item row="3" column="0" colspan="2">
          <widget class="QLabel" name="_main_artist_section_header">
           <property name="text">
-           <string>Information about the main artist:</string>
+           <string>Main Artist</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="_label_spacer">
-          <property name="minimumSize">
-           <size>
-            <width>75</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QCheckBox" name="_compilation">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-          <property name="text">
-           <string>This project is a multi-artist compilation</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
+        <item row="5" column="0">
          <widget class="QLabel" name="_main_artist_caption">
           <property name="text">
-           <string>Artist Name:</string>
+           <string>Name:</string>
           </property>
           <property name="buddy">
            <cstring>_main_artist</cstring>
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="5" column="1">
          <widget class="QLineEdit" name="_main_artist">
           <property name="minimumSize">
            <size>
@@ -217,7 +188,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="6" column="1">
          <widget class="QLabel" name="_main_artist_info">
           <property name="styleSheet">
            <string notr="true">
@@ -239,7 +210,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
+        <item row="7" column="0">
          <widget class="QLabel" name="_main_artist_isni_caption">
           <property name="text">
            <string>ISNI Number:</string>
@@ -249,7 +220,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="7" column="1">
          <layout class="QHBoxLayout" name="_main_artist_isni_container">
           <item>
            <widget class="QToolButton" name="_main_artist_isni_actions_button">
@@ -321,7 +292,7 @@ QLabel[style=QMacStyle] {
           </item>
          </layout>
         </item>
-        <item row="7" column="1">
+        <item row="8" column="1">
          <widget class="QLabel" name="_main_artist_isni_info">
           <property name="styleSheet">
            <string notr="true">
@@ -346,7 +317,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item row="9" column="0">
          <widget class="QLabel" name="_main_artist_region_caption">
           <property name="text">
            <string>Origin:</string>
@@ -356,13 +327,35 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
+        <item row="9" column="1">
          <widget class="QComboBox" name="_main_artist_region">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="focusPolicy">
            <enum>Qt::StrongFocus</enum>
           </property>
           <property name="insertPolicy">
            <enum>QComboBox::InsertAtTop</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="_compilation">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="text">
+           <string>This project is a multi-artist compilation</string>
           </property>
          </widget>
         </item>
