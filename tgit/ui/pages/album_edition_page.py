@@ -108,7 +108,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     def on_isni_changed(self, on_isni_changed):
         self._main_artist_isni.editingFinished.connect(
-                lambda: on_isni_changed(self._main_artist.text(), self._main_artist_isni.text()))
+            lambda: on_isni_changed(self._main_artist.text(), self._main_artist_isni.text()))
 
     def on_isni_local_lookup(self, on_isni_local_lookup):
         def update_main_artist_isni(main_artist):
@@ -170,8 +170,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
         self._musician_table_container.on_musician_changed(lambda musicians: handle("guest_performers", musicians))
         self._release_time.dateChanged.connect(lambda: handle("release_time"))
-        self._digital_release_time.dateChanged.connect(lambda: handle("digital_release_time"))
-        self._original_release_time.dateChanged.connect(lambda: handle("original_release_time"))
         self._title.editingFinished.connect(lambda: handle("release_name"))
         self._compilation.clicked.connect(lambda: handle("compilation"))
         self._main_artist.editingFinished.connect(lambda: handle("lead_performer"))
@@ -271,10 +269,10 @@ class MusicianTable(QWidget, UIFile):
 
     def _add_musician_row(self, musician=(None, None)):
         self._musician_table.addWidget(
-                make_musician_row(index=self._musician_table.count(),
-                                  musician=musician,
-                                  on_musician_changed=lambda: self._on_musician_changed(self._musicians),
-                                  on_musician_removed=lambda: self._on_musician_changed(self._musicians)))
+            make_musician_row(index=self._musician_table.count(),
+                              musician=musician,
+                              on_musician_changed=lambda: self._on_musician_changed(self._musicians),
+                              on_musician_removed=lambda: self._on_musician_changed(self._musicians)))
 
     @property
     def _musicians(self):

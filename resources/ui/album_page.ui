@@ -367,7 +367,7 @@ QLabel[style=QMacStyle] {
    <item>
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="_release_tab">
       <attribute name="title">
@@ -573,125 +573,6 @@ QLabel[style=QMacStyle] {
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="_dates_tab">
-      <attribute name="title">
-       <string>3. Dates</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="leftMargin">
-        <number>12</number>
-       </property>
-       <property name="rightMargin">
-        <number>12</number>
-       </property>
-       <item>
-        <layout class="QVBoxLayout" name="_digital_release_time_container">
-         <property name="spacing">
-          <number>3</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="_digital_release_time_caption">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Digital Release Time</string>
-           </property>
-           <property name="buddy">
-            <cstring>_digital_release_time</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDateEdit" name="_digital_release_time">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="accelerated">
-            <bool>true</bool>
-           </property>
-           <property name="displayFormat">
-            <string notr="true">yyyy-MM-dd</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="_original_release_time_container">
-         <property name="spacing">
-          <number>3</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="_original_release_time_caption">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Original Release Time</string>
-           </property>
-           <property name="buddy">
-            <cstring>_original_release_time</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDateEdit" name="_original_release_time">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="accelerated">
-            <bool>true</bool>
-           </property>
-           <property name="displayFormat">
-            <string notr="true">yyyy-MM-dd</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="_recording_time_container">
-         <property name="spacing">
-          <number>3</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="_recording_time_caption">
-           <property name="text">
-            <string>Recording Time</string>
-           </property>
-           <property name="buddy">
-            <cstring>_recording_time</cstring>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDateEdit" name="_recording_time">
-           <property name="accelerated">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
   </layout>
@@ -732,9 +613,6 @@ QLabel[style=QMacStyle] {
   <tabstop>_release_time</tabstop>
   <tabstop>_barcode</tabstop>
   <tabstop>_musicians_input_scroll_area</tabstop>
-  <tabstop>_digital_release_time</tabstop>
-  <tabstop>_original_release_time</tabstop>
-  <tabstop>_recording_time</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>
