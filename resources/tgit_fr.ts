@@ -1039,12 +1039,12 @@
         <translation>Se connecter</translation>
     </message>
     <message>
-        <source>Email</source>
-        <translation>Courriel</translation>
+        <source>Email:</source>
+        <translation>Courriel :</translation>
     </message>
     <message>
-        <source>Password</source>
-        <translation>Mot de passe</translation>
+        <source>Password:</source>
+        <translation>Mot de passe :</translation>
     </message>
     <message>
         <source>Incorrect username and/or password.</source>

@@ -389,7 +389,7 @@ QLabel[style=QMacStyle] {
    <item>
     <widget class="QTabWidget" name="_tabs">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="_release_tab">
       <attribute name="title">
@@ -576,7 +576,7 @@ QLabel[style=QMacStyle] {
             <x>0</x>
             <y>0</y>
             <width>782</width>
-            <height>202</height>
+            <height>235</height>
            </rect>
           </property>
           <property name="styleSheet">
