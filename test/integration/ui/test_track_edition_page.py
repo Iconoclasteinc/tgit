@@ -5,7 +5,6 @@ from datetime import timedelta
 
 import pytest
 import requests
-
 from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
 
 from cute.matchers import named
@@ -81,6 +80,7 @@ def test_displays_track_metadata(driver):
                         labels="Tag1 Tag2 Tag3",
                         lyrics="Lyrics\n...\n...",
                         language="eng",
+                        recording_time="2008-09-15",
                         production_company="Initial Producer",
                         production_company_region=("CA",),
                         recording_studio="Studio A, Studio B",
@@ -115,6 +115,7 @@ def test_displays_track_metadata(driver):
     driver.shows_recording_studio_region("Canada")
     driver.shows_production_company("Initial Producer")
     driver.shows_production_company_region("Canada")
+    driver.shows_recording_time("2008-09-15")
     driver.shows_music_producer("Artistic Producer")
     driver.shows_mixer("Mixing Engineer")
     driver.shows_primary_style("Style")
@@ -249,6 +250,10 @@ def test_signals_lead_performer_only_when_album_is_compilation(driver):
 
     metadata_changed_signal.expect(is_not(has_key("lead_performer")))
     driver.change_track_title("Title")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(recording_time="2008-09-15"))
+    driver.change_recording_time(2008, 9, 15)
     driver.check(metadata_changed_signal)
 
 

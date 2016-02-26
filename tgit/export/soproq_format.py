@@ -43,7 +43,7 @@ def _write_line(album, track, line_number, sheet):
     lead_performer_region = _to_iso_3_letters_code(album.lead_performer_region)
     recording_studio_region = _to_iso_3_letters_code(track.recording_studio_region)
     production_company_region = _to_iso_3_letters_code(track.production_company_region)
-    recording_time = album.recording_time.split("-")[0] if album.recording_time else ""
+    recording_time = track.recording_time.split("-")[0] if track.recording_time else ""
     compilation = "O" if album.compilation else "N"
 
     sheet["A" + str(line_number)] = album.release_name  # TITRE ALBUM

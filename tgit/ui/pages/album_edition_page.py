@@ -171,7 +171,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._release_time.dateChanged.connect(lambda: handle("release_time"))
         self._digital_release_time.dateChanged.connect(lambda: handle("digital_release_time"))
         self._original_release_time.dateChanged.connect(lambda: handle("original_release_time"))
-        self._recording_time.dateChanged.connect(lambda: handle("recording_time"))
         self._title.editingFinished.connect(lambda: handle("release_name"))
         self._compilation.clicked.connect(lambda: handle("compilation"))
         self._main_artist.editingFinished.connect(lambda: handle("lead_performer"))
@@ -206,7 +205,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._catalog_number.setText(album.catalog_number)
         self._barcode.setText(album.upc)
         self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
-        self._recording_time.setDate(QDate.fromString(album.recording_time, ISO_8601_FORMAT))
         self._musician_table_container.display(album.guest_performers or [])
 
         identities = album.isnis or {}
@@ -230,7 +228,6 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
                           label_name=self._label_name.text(),
                           catalog_number=self._catalog_number.text(),
                           upc=self._barcode.text(),
-                          recording_time=self._recording_time.date().toString(ISO_8601_FORMAT),
                           release_time=self._release_time.date().toString(ISO_8601_FORMAT))
 
         if len(keys) == 0:

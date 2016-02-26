@@ -284,11 +284,6 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Recording Time</source>
-        <translation>Enregistrement</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
         <source>Assign</source>
         <translation>Assigner</translation>
     </message>
@@ -751,6 +746,11 @@
         <location filename="tgit/ui/track_edition_page.py"/>
         <source>Recording</source>
         <translation>Enregistrement</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Date:</source>
+        <translation>Date :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>

@@ -15,7 +15,7 @@ from tgit.metadata import Image
 def test_defines_metadata_tags():
     assert_that(tuple(Album.tags()), contains_inanyorder(
         "release_name", "compilation", "lead_performer", "lead_performer_region", "guest_performers",
-        "label_name", "upc", "catalog_number", "recording_time", "release_time", "original_release_time",
+        "label_name", "upc", "catalog_number", "release_time", "original_release_time",
         "contributors", "isnis", "ipis"))
 
 
@@ -202,7 +202,6 @@ def test_signals_state_changes_to_listener():
     _assert_notifies_listener_on_property_change("lead_performer", "Artist")
     _assert_notifies_listener_on_property_change("guest_performers", [("Musician", "Instrument")])
     _assert_notifies_listener_on_property_change("label_name", "Label")
-    _assert_notifies_listener_on_property_change("recording_time", "Recorded")
     _assert_notifies_listener_on_property_change("release_time", "Released")
     _assert_notifies_listener_on_property_change("original_release_time", "Original Release")
     _assert_notifies_listener_on_property_change("upc", "Barcode")

@@ -53,7 +53,6 @@ class Album(metaclass=tag.Taggable):
     label_name = tag.text()
     upc = tag.text()
     catalog_number = tag.text()
-    recording_time = tag.text()
     release_time = tag.text()
     original_release_time = tag.text()
     contributors = tag.pairs()

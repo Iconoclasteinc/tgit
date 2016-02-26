@@ -5,6 +5,7 @@ import types
 import pytest
 import requests
 from PyQt5.QtCore import QByteArray
+
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -84,7 +85,6 @@ def test_displays_album_metadata(driver):
         label_name="Label",
         catalog_number="XXX123456789",
         upc="123456789999",
-        recording_time="2008-09-15",
         release_time="2009-01-01"))
 
     driver.shows_title("Album")
@@ -95,7 +95,6 @@ def test_displays_album_metadata(driver):
     driver.shows_label_name("Label")
     driver.shows_catalog_number("XXX123456789")
     driver.shows_upc("123456789999")
-    driver.shows_recording_time("2008-09-15")
     driver.shows_release_time("2009-01-01")
     driver.shows_digital_release_time("2000-01-01")
     driver.shows_media_type("")
@@ -420,10 +419,6 @@ def test_signals_when_album_metadata_edited(driver):
 
     metadata_changed_signal.expect(has_entries(release_time="2009-01-01"))
     driver.change_release_time(2009, 1, 1)
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(recording_time="2008-09-15"))
-    driver.change_recording_time(2008, 9, 15)
     driver.check(metadata_changed_signal)
 
 

@@ -19,7 +19,7 @@
 import operator
 
 import requests
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget, QMenu, QApplication
 
 from tgit.album import AlbumListener
@@ -31,6 +31,7 @@ from tgit.languages import LANGUAGES
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image, formatting
 from tgit.ui.helpers.ui_file import UIFile
+from tgit.ui.pages.album_edition_page import ISO_8601_FORMAT
 
 
 def make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
@@ -113,6 +114,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
         self._recording_studio.editingFinished.connect(emit_metadata_changed)
         self._recording_studio_region.activated.connect(emit_metadata_changed)
+        self._recording_time.dateChanged.connect(emit_metadata_changed)
         self._music_producer.editingFinished.connect(emit_metadata_changed)
         self._production_company.editingFinished.connect(emit_metadata_changed)
         self._production_company_region.activated.connect(emit_metadata_changed)
@@ -209,6 +211,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._software_notice.setText(self._compose_software_notice(track))
 
         self._recording_studio.setText(track.recording_studio)
+        self._recording_time.setDate(QDate.fromString(track.recording_time, ISO_8601_FORMAT))
         self._display_region(track.recording_studio_region, self._recording_studio_region)
         self._music_producer.setText(track.music_producer)
         self._production_company.setText(track.production_company)
@@ -271,6 +274,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         language=self._language.currentText(),
                         recording_studio=self._recording_studio.text(),
                         recording_studio_region=self._get_country_code_from_combo(self._recording_studio_region),
+                        recording_time=self._recording_time.date().toString(ISO_8601_FORMAT),
                         music_producer=self._music_producer.text(),
                         production_company=self._production_company.text(),
                         production_company_region=self._get_country_code_from_combo(self._production_company_region),
