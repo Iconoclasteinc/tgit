@@ -2,32 +2,33 @@
     <qresource prefix="/">
         <file>qtbase_fr.qm</file>
         <file>tgit_fr.qm</file>
-        <file alias="tgit.ico">tgit.ico</file>
+
+        <file>tgit.ico</file>
         <file>images/nothing.png</file>
         <file>images/previous.png</file>
         <file>images/next.png</file>
         <file>images/logo.png</file>
-        <file alias="activity-indicator.gif">images/loader_gray_512.gif</file>
         <file>images/add-picture.png</file>
-        <file>images/down-arrow.png</file>
-        <file>images/down-arrow-on.png</file>
-        <file>images/checkbox.png</file>
-        <file>images/checkbox-focus.png</file>
-        <file>images/checkbox-pressed.png</file>
-        <file>images/checkbox-checked.png</file>
-        <file>images/checkbox-checked-focus.png</file>
-        <file>images/checkbox-checked-pressed.png</file>
         <file>images/drag-handle.gif</file>
         <file alias="playing">images/volume-up-16-dark.png</file>
-        <file>images/chevron-right-white-12.png</file>
-        <file>images/chevron-left-white-12.png</file>
-        <file>images/chevron-down-white-8.png</file>
-        <file>images/chevron-down-black-8.png</file>
-        <file>images/chevron-up-black-8.png</file>
-        <file>images/question-18.png</file>
-        <file>images/add-track-30.png</file>
         <file>images/logo-vert-big.png</file>
-        <file>images/close.png</file>
+        <file>images/radio-checked.png</file>
+        <file>images/radio-checked-focus.png</file>
+        <file>images/radio-checked-pressed.png</file>
+        <file>images/radio-unchecked.png</file>
+        <file>images/radio-unchecked-focus.png</file>
+        <file>images/radio-unchecked-pressed.png</file>
+        <file>images/invalid-image-placeholder.png</file>
+        <file>images/no-image-placeholder.png</file>
+        <file>images/warning.png</file>
+        <file alias="playback-error">images/exclamation-16-dark.png</file>
+
+        <file alias="icons/add">images/16x16/add.png</file>
+        <file alias="icons/remove">images/16x16/remove.png</file>
+        <file alias="icons/search">images/16x16/search.png</file>
+        <file alias="icons/help">images/40x40/help_outline.png</file>
+        <file alias="tooltips/search">images/12x12/search.png</file>
+
         <file>ui/welcome_page.ui</file>
         <file>ui/main_window.ui</file>
         <file>ui/album_screen.ui</file>
@@ -40,39 +41,6 @@
         <file>ui/isni_assignation_review_dialog.ui</file>
         <file>ui/musician_row.ui</file>
         <file>ui/musician_table.ui</file>
-        <file>images/folder.png</file>
-        <file>images/folder-hover.png</file>
-        <file>images/folder-open.png</file>
-        <file>images/folder-open-hover.png</file>
-        <file>images/calendar.png</file>
-        <file>images/calendar-focus.png</file>
-        <file>images/calendar-disabled.png</file>
-        <file>images/radio-checked.png</file>
-        <file>images/radio-checked-focus.png</file>
-        <file>images/radio-checked-pressed.png</file>
-        <file>images/radio-unchecked.png</file>
-        <file>images/radio-unchecked-focus.png</file>
-        <file>images/radio-unchecked-pressed.png</file>
-        <file>images/invalid-image-placeholder.png</file>
-        <file>images/no-image-placeholder.png</file>
-        <file>images/warning.png</file>
-        <file alias="playback-error">images/exclamation-16-dark.png</file>
-        <file>images/add-performer-20.png</file>
-        <file>images/minus-circle-a1a1a1_20x20.png</file>
-        <file>images/minus-circle-828282_20x20.png</file>
-        <file>images/remove-hover-20.png</file>
-        <file alias="edit">images/pencil-square-o-a1a1a1_24x24.png</file>
-        <file alias="edit-hover">images/pencil-square-o-828282_24x24.png</file>
-        <file alias="edit-pressed">images/pencil-square-o-shifted-828282_24x24.png</file>
-        <file alias="calendar-previous">images/angle-double-left-small.png</file>
-        <file alias="calendar-next">images/angle-double-right-small.png</file>
-        <file alias="calendar-menu-indicator">images/chevron-down-tiny.png</file>
-
-        <file alias="icons/add">images/16x16/add.png</file>
-        <file alias="icons/remove">images/16x16/remove.png</file>
-        <file alias="icons/search">images/16x16/search.png</file>
-        <file alias="icons/help">images/40x40/help_outline.png</file>
-        <file alias="tooltips/search">images/12x12/search.png</file>
 
         <file>templates/soproq.xlsx</file>
     </qresource>
