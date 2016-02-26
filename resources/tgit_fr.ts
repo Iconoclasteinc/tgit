@@ -299,11 +299,6 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Recording Time</source>
-        <translation>Enregistrement</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
         <source>Assign</source>
         <translation>Assigner</translation>
     </message>
@@ -773,6 +768,11 @@
         <translation>Enregistrement</translation>
     </message>
     <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Date:</source>
+        <translation>Date :</translation>
+    </message>
+    <message>
         <location filename="tgit/ui/track_edition_page.py"/>
         <source>Information about the production company:</source>
         <translation>Informations sur la compagnie de production :</translation>
@@ -785,7 +785,7 @@
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
         <source>Production Company:</source>
-        <translation>Cie. de production :</translation>
+        <translation>Compagnie de production :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>

@@ -212,17 +212,8 @@ class AlbumEditionPageDriver(ScreenDriver):
         self._select_release_tab()
         self.lineEdit(named("_barcode")).change_text(code)
 
-    def shows_recording_time(self, time):
-        self._select_dates_tab()
-        self.label(with_buddy(named("_recording_time"))).is_showing_on_screen()
-        self.dateEdit(named("_recording_time")).has_date(time)
-
     def _select_dates_tab(self):
         self.tabs(named("_tabs")).select("3. Dates")
-
-    def change_recording_time(self, year, month, day):
-        self._select_dates_tab()
-        self.dateEdit(named("_recording_time")).enter_date(year, month, day)
 
     def shows_release_time(self, time):
         self._select_release_tab()

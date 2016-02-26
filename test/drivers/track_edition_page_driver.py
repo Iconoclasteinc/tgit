@@ -331,3 +331,12 @@ class TrackEditionPageDriver(ScreenDriver):
 
     def select_primary_style(self, style):
         self.combobox(named("_genre")).select_option(style)
+
+    def shows_recording_time(self, time):
+        self.tabs(named("_tabs")).select("Recording")
+        self.label(with_buddy(named("_recording_time"))).is_showing_on_screen()
+        self.dateEdit(named("_recording_time")).has_date(time)
+
+    def change_recording_time(self, year, month, day):
+        self.tabs(named("_tabs")).select("Recording")
+        self.dateEdit(named("_recording_time")).enter_date(year, month, day)

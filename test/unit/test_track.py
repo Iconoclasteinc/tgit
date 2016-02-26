@@ -13,7 +13,7 @@ def test_defines_metadata_tags():
         "track_title", "lead_performer", "version_info", "featured_guest", "publisher", "lyricist", "composer", "isrc",
         "iswc", "labels", "lyrics", "language", "tagger", "tagger_version", "tagging_time", "bitrate", "duration",
         "track_number", "total_tracks", "recording_studio", "production_company", "production_company_region",
-        "recording_studio_region", "music_producer", "mixer", "primary_style", "comments"))
+        "recording_studio_region", "music_producer", "mixer", "primary_style", "comments", "recording_time"))
 
 
 def test_announces_metadata_changes_to_listeners():
@@ -25,6 +25,7 @@ def test_announces_metadata_changes_to_listeners():
     _assert_notifies_of_metadata_change("iswc", "T-345246800-1")
     _assert_notifies_of_metadata_change("track_number", 1)
     _assert_notifies_of_metadata_change("total_tracks", 3)
+    _assert_notifies_of_metadata_change("recording_time", "Recorded")
 
 
 def _assert_notifies_of_metadata_change(prop, value):

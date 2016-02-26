@@ -46,6 +46,7 @@ class Track(object, metaclass=tag.Taggable):
     track_number = tag.numeric()
     total_tracks = tag.numeric()
 
+    recording_time = tag.text()
     recording_studio = tag.text()
     recording_studio_region = tag.pairs()
     production_company = tag.text()
