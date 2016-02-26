@@ -765,7 +765,7 @@
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
         <source>Production Company:</source>
-        <translation>Cie. de production :</translation>
+        <translation>Compagnie de production :</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
