@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>788</width>
-    <height>527</height>
+    <height>534</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -75,6 +75,14 @@
             <property name="toolTip">
              <string>Add or change the picture</string>
             </property>
+            <property name="styleSheet">
+             <string notr="true">
+QToolTip {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}
+</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -99,7 +107,16 @@
              <string>Remove the picture</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">margin-left: -1px;</string>
+             <string notr="true">
+QToolButton {
+	margin-left: -1px;
+}
+
+QToolTip {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}
+</string>
             </property>
             <property name="text">
              <string/>
@@ -234,7 +251,12 @@ QLabel[style=QMacStyle] {
              <string>Lookup the main artist's ISNI in the global ISNI database</string>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">
+QToolTip {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}
+</string>
             </property>
             <property name="text">
              <string/>
@@ -554,7 +576,7 @@ QLabel[style=QMacStyle] {
             <x>0</x>
             <y>0</y>
             <width>782</width>
-            <height>228</height>
+            <height>202</height>
            </rect>
           </property>
           <property name="styleSheet">
