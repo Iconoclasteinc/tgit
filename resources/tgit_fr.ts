@@ -839,6 +839,11 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The track's main artist is the one entered for the project unless the project is a multi-artist compilation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L&apos;artiste principal de la piste est celui saisi pour le projet sauf si le projet est une compilation multi-artiste.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>12 characters without spaces or dashes</source>
         <translation>12 caractères sans espaces et sans tirets</translation>
     </message>
@@ -846,6 +851,11 @@
         <location filename="tgit/ui/track_edition_page.py" />
         <source>Comma separated list of tags describing this track</source>
         <translation>Liste de tags décrivant cette piste, séparés par des virgules</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>The name of the individual or band as it appears on the release</source>
+        <translation>Le nom de l'interprète ou du groupe tel qu'affiché sur la parution</translation>
     </message>
 </context>
 <context>
