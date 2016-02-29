@@ -212,9 +212,6 @@ class AlbumEditionPageDriver(ScreenDriver):
         self._select_release_tab()
         self.lineEdit(named("_barcode")).change_text(code)
 
-    def _select_dates_tab(self):
-        self.tabs(named("_tabs")).select("3. Dates")
-
     def shows_release_time(self, time):
         self._select_release_tab()
         self.label(with_buddy(named("_release_time"))).is_showing_on_screen()
@@ -223,22 +220,6 @@ class AlbumEditionPageDriver(ScreenDriver):
     def change_release_time(self, year, month, day):
         self._select_release_tab()
         self.dateEdit(named("_release_time")).enter_date(year, month, day)
-
-    def shows_digital_release_time(self, time):
-        self._select_dates_tab()
-        self.label(with_buddy(named("_digital_release_time"))).is_showing_on_screen()
-        edit = self.dateEdit(named("_digital_release_time"))
-        edit.is_disabled()
-        edit.has_date(time)
-
-    def shows_original_release_time(self, time):
-        self._select_dates_tab()
-        self.label(with_buddy(named("_original_release_time"))).is_showing_on_screen()
-        self.dateEdit(named("_original_release_time")).has_date(time)
-
-    def change_original_release_time(self, time):
-        self._select_dates_tab()
-        self.label(named("_original_release_time")).enter_date(time)
 
     def shows_media_type(self, type_):
         self._select_release_tab()
