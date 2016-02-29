@@ -640,7 +640,7 @@
     </message>
 </context>
 <context>
-    <name>SettingsDialog</name>
+    <name>UserPreferencesDialog</name>
     <message>
         <location filename="tgit/ui/settings_dialog.py" line="33"/>
         <source>Settings</source>
