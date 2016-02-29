@@ -837,6 +837,11 @@
         <source>12 characters without spaces or dashes</source>
         <translation>12 caractères sans espaces et sans tirets</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Comma separated list of tags describing this track</source>
+        <translation>Liste de tags décrivant cette piste, séparés par des virgules</translation>
+    </message>
 </context>
 <context>
     <name>TrackEditionPage</name>
