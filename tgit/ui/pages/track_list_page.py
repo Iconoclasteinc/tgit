@@ -226,4 +226,4 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         return Column.at(col_index).value(self._items[row_index])
 
     def _header_item(self):
-        return QTableWidgetItem(QIcon(":/images/drag-handle.gif"), None)
+        return QTableWidgetItem(QIcon(":/icons/reorder"), None)

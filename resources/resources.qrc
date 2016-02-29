@@ -71,6 +71,7 @@
         <file alias="icons/add">images/16x16/add.png</file>
         <file alias="icons/remove">images/16x16/remove.png</file>
         <file alias="icons/search">images/16x16/search.png</file>
+        <file alias="icons/reorder">images/16x16/reorder.png</file>
         <file alias="icons/help">images/20x20/help_outline.png</file>
         <file alias="tooltips/search">images/12x12/search.png</file>
 
