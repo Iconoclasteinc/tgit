@@ -9,6 +9,7 @@ from .gestures import Automaton
 # be detected
 MINIMUM_PAUSE = 0.01 if platforms.mac else 0
 
+
 class Animatron(Automaton):
     """
     A robotic automaton that emulates a human using the keyboard and mouse.

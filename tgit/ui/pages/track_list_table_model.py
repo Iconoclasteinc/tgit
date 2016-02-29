@@ -132,7 +132,7 @@ class Column(Enum):
             self.setTextAlignment(LEFT_ALIGNED)
 
     class lead_performer(Cell):
-        width = Width(230, RESIZABLE)
+        width = Width(234, RESIZABLE)
 
         def __init__(self, track):
             super().__init__()
@@ -148,7 +148,7 @@ class Column(Enum):
             self.setTextAlignment(LEFT_ALIGNED)
 
     class bitrate(Cell):
-        width = Width(75, RESIZABLE)
+        width = Width(90, RESIZABLE)
 
         def __init__(self, track):
             super().__init__()

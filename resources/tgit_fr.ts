@@ -24,8 +24,8 @@
         <translation>Durée</translation>
     </message>
     <message>
-        <source>ADD</source>
-        <translation>AJOUTER</translation>
+        <source>Add Tracks</source>
+        <translation>Ajouter des pistes</translation>
     </message>
     <message>
         <source>Organize the project's tracks. Press [space] to play a track. Press [delete] to remove the track from the list.</source>

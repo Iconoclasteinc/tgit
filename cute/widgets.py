@@ -274,7 +274,7 @@ class QDateTimeEditDriver(WidgetDriver):
         self.has(properties.time(), QTime.fromString(time, self.display_format()))
 
     def enter_date(self, year, month, day):
-        self.perform(gestures.mouse_double_click_at(rect.center_left(self.widget_bounds(), with_offset=5)))
+        self.perform(gestures.mouse_double_click_at(rect.center_left(rect.inside_bounds(self.widget_bounds(), left=5))))
         self.perform(gestures.type_text(str(year) + "{0:02d}".format(month) + "{0:02d}".format(day)))
         self.perform(gestures.enter())
 
@@ -891,8 +891,8 @@ class TableViewDriver(WidgetDriver):
         to_header = CalculateHeaderBounds(to_position)
         self.manipulate_table("calculate bounds of header row {0}".format(to_position), to_header)
 
-        drop_target = rect.bottom_center(to_header.bounds) if (from_position < to_position) \
-            else rect.top_center(to_header.bounds)
+        drop_target = rect.bottom_center(rect.inside_bounds(to_header.bounds, bottom=1)) if (from_position < to_position) \
+            else rect.top_center(rect.inside_bounds(to_header.bounds, top=1))
         self.perform(gestures.mouse_drag(from_header.bounds.center(), drop_target))
 
 

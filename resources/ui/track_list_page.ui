@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>740</width>
+    <width>753</width>
     <height>300</height>
    </rect>
   </property>
@@ -46,348 +46,119 @@
         </property>
        </spacer>
       </item>
-      <item>
-       <widget class="QPushButton" name="_add_tracks_button">
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">* {
-    background-color: #EC2327;
-    border: 2px solid #EC2327;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: bold;
-    color: white;
-    padding: 10px 10px 7px 10px;
-}
-
-:hover {
-    background-color: #D42023;
-    border-color: #D42023;
-}
-
-:pressed {
-    border: 2px solid transparent;
-}
-
-</string>
-        </property>
-        <property name="text">
-         <string>ADD</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame">
-     <property name="palette">
-      <palette>
-       <active>
-        <colorrole role="WindowText">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>213</red>
-           <green>213</green>
-           <blue>213</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Button">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Base">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Window">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
-          </color>
-         </brush>
-        </colorrole>
-       </active>
-       <inactive>
-        <colorrole role="WindowText">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>213</red>
-           <green>213</green>
-           <blue>213</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Button">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Base">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Window">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
-          </color>
-         </brush>
-        </colorrole>
-       </inactive>
-       <disabled>
-        <colorrole role="WindowText">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>127</red>
-           <green>127</green>
-           <blue>127</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Button">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Base">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
-          </color>
-         </brush>
-        </colorrole>
-        <colorrole role="Window">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>255</red>
-           <green>255</green>
-           <blue>255</blue>
-          </color>
-         </brush>
-        </colorrole>
-       </disabled>
-      </palette>
+    <widget class="QTableWidget" name="_track_table">
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
      </property>
-     <property name="autoFillBackground">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="showGrid">
       <bool>false</bool>
      </property>
-     <property name="styleSheet">
-      <string notr="true">QFrame {
-  background-color: white;
-}</string>
+     <property name="columnCount">
+      <number>7</number>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::Panel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="lineWidth">
-      <number>1</number>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="leftMargin">
-       <number>10</number>
+     <attribute name="verticalHeaderDefaultSectionSize">
+      <number>30</number>
+     </attribute>
+     <attribute name="verticalHeaderMinimumSectionSize">
+      <number>30</number>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>#</string>
       </property>
-      <property name="topMargin">
-       <number>10</number>
+      <property name="textAlignment">
+       <set>AlignRight|AlignVCenter</set>
       </property>
-      <property name="rightMargin">
-       <number>10</number>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
       </property>
-      <property name="bottomMargin">
-       <number>10</number>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
-      <item>
-       <widget class="QTableWidget" name="_track_table">
-        <property name="contextMenuPolicy">
-         <enum>Qt::CustomContextMenu</enum>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QTableView::item {
-  border-bottom: 1px solid #F7C3B7;
-}
-
-QTableView::item::alternate {
-  background-color:#F9F7F7;
-}
-
-QTableView::item::selected {
-  background-color:#F08450;
-}
-
-QHeaderView {
-  background-color: transparent;
-}
-
-QHeaderView::section {
-  background-color: transparent;
-}
-
-QHeaderView::section:horizontal {
-  font-weight: bold;
-  font-size: 13px;
-  padding: 21px 5px 18px 5px;
-  border-top: 1px solid #F7C3B7;
-  border-bottom: 1px solid #F7C3B7;
-  border-right: 1px solid #F2F2F2;
-  min-height: 15px;
-}
-
-QHeaderView::section:vertical {
-  padding: 4px 0px;
-  border-bottom: 1px solid #F7C3B7;
-  border-left: none;
-  border-top: none;
-  max-width: 24px;
-}
-
-QTableCornerButton::section {
-  background-color: transparent;
-  border-top: 1px solid #F7C3B7;
-  border-bottom: 1px solid #F7C3B7;
-}
-
-QMenu {
-    background-color: white;
-}
-
-QMenu::item::selected {
-	color: black;
-    background-color: #DDDDDD;
-}
-
-</string>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="lineWidth">
-         <number>0</number>
-        </property>
-        <property name="editTriggers">
-         <set>QAbstractItemView::NoEditTriggers</set>
-        </property>
-        <property name="alternatingRowColors">
-         <bool>true</bool>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <property name="showGrid">
-         <bool>false</bool>
-        </property>
-        <property name="columnCount">
-         <number>7</number>
-        </property>
-        <attribute name="verticalHeaderDefaultSectionSize">
-         <number>30</number>
-        </attribute>
-        <attribute name="verticalHeaderMinimumSectionSize">
-         <number>30</number>
-        </attribute>
-        <column>
-         <property name="text">
-          <string>#</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignTrailing|AlignVCenter</set>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="textAlignment">
-          <set>AlignCenter</set>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Track Title</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignLeading|AlignVCenter</set>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Lead Performer</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignLeading|AlignVCenter</set>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Release Name</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignLeading|AlignVCenter</set>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Bitrate</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignTrailing|AlignVCenter</set>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Duration</string>
-         </property>
-         <property name="textAlignment">
-          <set>AlignTrailing|AlignVCenter</set>
-         </property>
-        </column>
-       </widget>
-      </item>
-     </layout>
+     </column>
+     <column>
+      <property name="text">
+       <string>Track Title</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignLeft|AlignVCenter</set>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Lead Performer</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignLeft|AlignVCenter</set>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Release Name</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignLeft|AlignVCenter</set>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Bitrate</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignRight|AlignVCenter</set>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Duration</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignRight|AlignVCenter</set>
+      </property>
+     </column>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="_add_tracks_button">
+       <property name="text">
+        <string>Add Tracks</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
   <action name="_remove_action">
@@ -430,10 +201,6 @@ QMenu::item::selected {
    </property>
   </action>
  </widget>
- <tabstops>
-  <tabstop>_add_tracks_button</tabstop>
-  <tabstop>_track_table</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

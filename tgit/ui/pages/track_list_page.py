@@ -24,10 +24,10 @@ from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem
 from tgit.album import AlbumListener
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
-from tgit.ui.pages.track_list_table_model import Column, RowItem
+from tgit.ui.event_filters import MovableSectionsCursor
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.observer import Observer
-from tgit.ui.event_filters import MovableSectionsCursor
+from tgit.ui.pages.track_list_table_model import Column, RowItem
 
 
 def make_track_list_page(album, player, select_tracks, **handlers):
@@ -52,7 +52,7 @@ def make_track_list_page(album, player, select_tracks, **handlers):
     return page
 
 
-VERTICAL_HEADER_WIDTH = 18
+VERTICAL_HEADER_WIDTH = 24
 
 
 @Closeable
