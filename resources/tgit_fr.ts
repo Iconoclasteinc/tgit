@@ -827,6 +827,16 @@
         <source>You have to be signed in to use the lookup tool</source>
         <translation>Vous devez vous connecter pour utiliser l'outil de recherche</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISRC is a unique identifier for sound recordings. A three character Label prefix has to be obtained from a registrar like CONNECTmusic (Canada).&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Le code ISRC est un identifiant unique pour les enregistrements sonores. Pour obtenir votre préfixe Label de trois caractères, il suffit de contacter la SOPROQ.org (Québec) ou obtenir un accès gestionnaire à la SCPP.fr (France).&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>12 characters without spaces or dashes</source>
+        <translation>12 caractères sans espaces et sans tirets</translation>
+    </message>
 </context>
 <context>
     <name>TrackEditionPage</name>
