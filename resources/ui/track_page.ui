@@ -618,19 +618,6 @@ QLabel[style=QMacStyle] {
             <property name="text">
              <string>IPI Number:</string>
             </property>
-            <property name="buddy">
-             <cstring>_lyricist_ipi</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="_lyricist_ipi">
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
            </widget>
           </item>
           <item row="3" column="0">
@@ -760,19 +747,6 @@ QLabel[style=QMacStyle] {
             <property name="text">
              <string>IPI Number:</string>
             </property>
-            <property name="buddy">
-             <cstring>_composer_ipi</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QLineEdit" name="_composer_ipi">
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
            </widget>
           </item>
           <item row="9" column="0">
@@ -896,19 +870,6 @@ QLabel[style=QMacStyle] {
             <property name="text">
              <string>IPI Number:</string>
             </property>
-            <property name="buddy">
-             <cstring>_publisher_ipi</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="1">
-           <widget class="QLineEdit" name="_publisher_ipi">
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
            </widget>
           </item>
           <item row="15" column="0">
@@ -998,6 +959,98 @@ QLabel[style=QMacStyle] {
              <string>You have to be signed in to use the lookup tool</string>
             </property>
            </widget>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLineEdit" name="_lyricist_ipi">
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="HelpLabel" name="_lyricist_ipi_help">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="8" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLineEdit" name="_composer_ipi">
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="HelpLabel" name="_composer_ipi_help">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="14" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QLineEdit" name="_publisher_ipi"/>
+            </item>
+            <item>
+             <widget class="HelpLabel" name="_publisher_ipi_help">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -1308,15 +1361,12 @@ QLabel[style=QMacStyle] {
   <tabstop>_comments</tabstop>
   <tabstop>_tabs</tabstop>
   <tabstop>_lyricist</tabstop>
-  <tabstop>_lyricist_ipi</tabstop>
   <tabstop>_lyricist_isni_actions_button</tabstop>
   <tabstop>_lyricist_isni</tabstop>
   <tabstop>_composer</tabstop>
-  <tabstop>_composer_ipi</tabstop>
   <tabstop>_composer_isni_actions_button</tabstop>
   <tabstop>_composer_isni</tabstop>
   <tabstop>_publisher</tabstop>
-  <tabstop>_publisher_ipi</tabstop>
   <tabstop>_publisher_isni_actions_button</tabstop>
   <tabstop>_publisher_isni</tabstop>
   <tabstop>_production_company</tabstop>

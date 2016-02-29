@@ -820,7 +820,7 @@
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI de l'artiste principal dans la base de données globale ISNI.&lt;/p&gt;&lt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI de l'artiste principal dans la base de données globale ISNI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -829,8 +829,13 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISRC is a unique identifier for sound recordings. A three character Label prefix has to be obtained from a registrar like CONNECTmusic (Canada).&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Le code ISRC est un identifiant unique pour les enregistrements sonores. Pour obtenir votre préfixe Label de trois caractères, il suffit de contacter la SOPROQ.org (Québec) ou obtenir un accès gestionnaire à la SCPP.fr (France).&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISRC is a unique identifier for sound recordings. A three character Label prefix has to be obtained from a registrar like CONNECTmusic (Canada).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Le code ISRC est un identifiant unique pour les enregistrements sonores. Pour obtenir votre préfixe Label de trois caractères, il suffit de contacter la SOPROQ.org (Québec) ou obtenir un accès gestionnaire à la SCPP.fr (France).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Aide Placeholder&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
