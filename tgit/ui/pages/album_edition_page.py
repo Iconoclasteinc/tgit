@@ -92,8 +92,13 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         menu.addAction(self._main_artist_isni_assign_action)
         self._main_artist_isni_actions_button.setMenu(menu)
 
+        def empty_main_artist():
+            self._main_artist.setText("")
+            self._main_artist_isni.setText("")
+            self._main_artist_region.setCurrentText("")
+
         self._compilation.clicked.connect(self._update_isni_menu)
-        self._compilation.clicked.connect(lambda: self._main_artist.setText(""))
+        self._compilation.clicked.connect(empty_main_artist)
         self._main_artist.textChanged.connect(self._update_isni_menu)
 
     @staticmethod
@@ -210,7 +215,14 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
     def _display_main_artist(self, album):
         # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
         self._main_artist.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
-        self._main_artist.setDisabled(album.compilation is True)
+
+        disable_main_artist = album.compilation is True
+        self._main_artist.setDisabled(disable_main_artist)
+        self._main_artist_caption.setDisabled(disable_main_artist)
+        self._main_artist_isni.setDisabled(disable_main_artist)
+        self._main_artist_isni_caption.setDisabled(disable_main_artist)
+        self._main_artist_region.setDisabled(disable_main_artist)
+        self._main_artist_region_caption.setDisabled(disable_main_artist)
 
     def _metadata(self, musicians, *keys):
         all_values = dict(release_name=self._title.text(),

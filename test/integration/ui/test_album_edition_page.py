@@ -4,9 +4,7 @@ import types
 
 import pytest
 import requests
-
 from PyQt5.QtCore import QByteArray
-
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -86,7 +84,7 @@ def test_displays_album_metadata(driver):
         label_name="Label",
         catalog_number="XXX123456789",
         upc="123456789999",
-        release_time="2009-01-01"))
+        release_time="2009-01-01"), make_registered_session())
 
     driver.shows_title("Album")
     driver.shows_compilation(False)
@@ -111,15 +109,22 @@ def test_indicates_whether_album_is_a_compilation(driver):
 def test_disables_lead_performer_edition_when_album_is_a_compilation(driver):
     _ = show_page(make_album(compilation=True, lead_performer="Album Artist"))
     driver.shows_main_artist("Various Artists", disabled=True)
+    driver.shows_main_artist_region("", disabled=True)
+    driver.shows_main_artist_isni("", disabled=True)
 
 
 def test_enables_isni_lookup_when_album_is_no_longer_a_compilation(driver):
-    album = make_album(compilation=True, lead_performer="Album Artist")
+    album = make_album(compilation=True)
     _ = show_page(album, make_registered_session())
-    driver.enables_main_artist_isni_lookup(False)
+    driver.shows_main_artist("Various Artists", disabled=True)
+    driver.shows_main_artist_region("", disabled=True)
+    driver.shows_main_artist_isni("", disabled=True)
 
     album.compilation = False
-    driver.enables_main_artist_isni_lookup()
+    album.lead_performer = "Joel Miller"
+    driver.shows_main_artist("Joel Miller", disabled=False)
+    driver.shows_main_artist_region("", disabled=False)
+    driver.shows_main_artist_isni("", disabled=False)
 
 
 def test_disables_isni_lookup_when_lead_performer_is_empty(driver):
@@ -186,7 +191,7 @@ def test_updates_isni_when_lead_performer_text_change(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
 
-    _ = show_page(make_album(), on_isni_local_lookup=lookup)
+    _ = show_page(make_album(), make_registered_session(), on_isni_local_lookup=lookup)
 
     driver.change_main_artist("Joel Miller")
     driver.shows_main_artist_isni("0000000123456789")
@@ -197,7 +202,7 @@ def test_clears_isni_when_lead_performer_not_found(driver):
         return "0000000123456789" if text == "Joel Miller" else None
 
     album = make_album(lead_performer="Joel Miller", isnis={"Joel Miller": "00000000123456789"})
-    _ = show_page(album, on_isni_local_lookup=lookup)
+    _ = show_page(album, make_registered_session(), on_isni_local_lookup=lookup)
 
     driver.change_main_artist("Rebecca Ann Maloy")
     driver.shows_main_artist_isni("")

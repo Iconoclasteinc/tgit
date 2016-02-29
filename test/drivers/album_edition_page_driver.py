@@ -133,14 +133,16 @@ class AlbumEditionPageDriver(ScreenDriver):
         edit.has_text(name)
         edit.is_disabled(disabled)
 
-    def shows_main_artist_region(self, name):
+    def shows_main_artist_region(self, name, disabled=False):
         self.label(with_buddy(named("_main_artist_region"))).is_showing_on_screen()
         edit = self.combobox(named("_main_artist_region"))
         edit.has_current_text(name)
+        edit.is_disabled(disabled)
 
-    def shows_main_artist_isni(self, name):
-        self.tool_button(named("_main_artist_isni_actions_button")).is_showing_on_screen()
-        self.lineEdit(named("_main_artist_isni")).has_text(name)
+    def shows_main_artist_isni(self, name, disabled=False):
+        edit = self.lineEdit(named("_main_artist_isni"))
+        edit.has_text(name)
+        edit.is_disabled(disabled)
 
     def enables_main_artist_isni_lookup(self, enabled=True):
         self.tool_button(named("_main_artist_isni_actions_button")).is_enabled(enabled)
