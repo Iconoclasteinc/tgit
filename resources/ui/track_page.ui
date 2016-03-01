@@ -316,6 +316,9 @@ QLabel[style=&quot;QMacStyle&quot;] {
           </item>
           <item row="6" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="spacing">
+             <number>3</number>
+            </property>
             <item>
              <widget class="QLineEdit" name="_isrc">
               <property name="minimumSize">
@@ -537,6 +540,9 @@ QLabel[style=QMacStyle] {
           </item>
           <item row="2" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <property name="spacing">
+             <number>3</number>
+            </property>
             <item>
              <widget class="QLineEdit" name="_lead_performer">
               <property name="enabled">
@@ -573,6 +579,9 @@ QLabel[style=QMacStyle] {
           </item>
           <item row="5" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <property name="spacing">
+             <number>3</number>
+            </property>
             <item>
              <widget class="QLineEdit" name="_version">
               <property name="minimumSize">
@@ -701,9 +710,6 @@ QLabel[style=QMacStyle] {
           </item>
           <item row="3" column="1">
            <layout class="QHBoxLayout" name="_lyricist_input_container">
-            <property name="spacing">
-             <number>6</number>
-            </property>
             <item>
              <widget class="QToolButton" name="_lyricist_isni_actions_button">
               <property name="enabled">
@@ -722,36 +728,43 @@ QLabel[style=QMacStyle] {
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="_lyricist_isni">
-              <property name="enabled">
-               <bool>false</bool>
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <property name="spacing">
+               <number>3</number>
               </property>
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>0</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="HelpLabel" name="_lyricist_isni_help">
-              <property name="maximumSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
+              <item>
+               <widget class="QLineEdit" name="_lyricist_isni">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>150</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="HelpLabel" name="_lyricist_isni_help">
+                <property name="maximumSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -832,9 +845,6 @@ QLabel[style=QMacStyle] {
           </item>
           <item row="9" column="1">
            <layout class="QHBoxLayout" name="_composer_input_container">
-            <property name="spacing">
-             <number>6</number>
-            </property>
             <item>
              <widget class="QToolButton" name="_composer_isni_actions_button">
               <property name="enabled">
@@ -853,30 +863,37 @@ QLabel[style=QMacStyle] {
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="_composer_isni">
-              <property name="enabled">
-               <bool>false</bool>
+             <layout class="QHBoxLayout" name="horizontalLayout_12">
+              <property name="spacing">
+               <number>3</number>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="HelpLabel" name="_composer_isni_help">
-              <property name="maximumSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
+              <item>
+               <widget class="QLineEdit" name="_composer_isni">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="HelpLabel" name="_composer_isni_help">
+                <property name="maximumSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -957,9 +974,6 @@ QLabel[style=QMacStyle] {
           </item>
           <item row="15" column="1">
            <layout class="QHBoxLayout" name="_publisher_input_container">
-            <property name="spacing">
-             <number>6</number>
-            </property>
             <item>
              <widget class="QToolButton" name="_publisher_isni_actions_button">
               <property name="enabled">
@@ -978,36 +992,43 @@ QLabel[style=QMacStyle] {
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="_publisher_isni">
-              <property name="enabled">
-               <bool>false</bool>
+             <layout class="QHBoxLayout" name="horizontalLayout_13">
+              <property name="spacing">
+               <number>3</number>
               </property>
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>0</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="HelpLabel" name="_publisher_isni_help">
-              <property name="maximumSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
+              <item>
+               <widget class="QLineEdit" name="_publisher_isni">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>150</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="HelpLabel" name="_publisher_isni_help">
+                <property name="maximumSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="pixmap">
+                 <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -1034,6 +1055,9 @@ QLabel[style=QMacStyle] {
           </item>
           <item row="2" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <property name="spacing">
+             <number>3</number>
+            </property>
             <item>
              <widget class="QLineEdit" name="_lyricist_ipi">
               <property name="minimumSize">
@@ -1067,6 +1091,9 @@ QLabel[style=QMacStyle] {
           </item>
           <item row="8" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <property name="spacing">
+             <number>3</number>
+            </property>
             <item>
              <widget class="QLineEdit" name="_composer_ipi">
               <property name="minimumSize">
@@ -1100,6 +1127,9 @@ QLabel[style=QMacStyle] {
           </item>
           <item row="14" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <property name="spacing">
+             <number>3</number>
+            </property>
             <item>
              <widget class="QLineEdit" name="_publisher_ipi"/>
             </item>
@@ -1432,13 +1462,10 @@ QLabel[style=QMacStyle] {
   <tabstop>_tabs</tabstop>
   <tabstop>_lyricist</tabstop>
   <tabstop>_lyricist_isni_actions_button</tabstop>
-  <tabstop>_lyricist_isni</tabstop>
   <tabstop>_composer</tabstop>
   <tabstop>_composer_isni_actions_button</tabstop>
-  <tabstop>_composer_isni</tabstop>
   <tabstop>_publisher</tabstop>
   <tabstop>_publisher_isni_actions_button</tabstop>
-  <tabstop>_publisher_isni</tabstop>
   <tabstop>_production_company</tabstop>
   <tabstop>_production_company_region</tabstop>
   <tabstop>_recording_studio</tabstop>

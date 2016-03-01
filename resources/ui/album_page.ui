@@ -275,7 +275,7 @@ QToolTip {
           <item>
            <layout class="QHBoxLayout" name="_main_artist_isni_edit_pane">
             <property name="spacing">
-             <number>0</number>
+             <number>3</number>
             </property>
             <item>
              <widget class="QLineEdit" name="_main_artist_isni">
@@ -467,7 +467,7 @@ QLabel[style=QMacStyle] {
        <item row="3" column="1">
         <layout class="QHBoxLayout" name="_barcode_edit_pane">
          <property name="spacing">
-          <number>0</number>
+          <number>3</number>
          </property>
          <item>
           <widget class="QLineEdit" name="_barcode">
