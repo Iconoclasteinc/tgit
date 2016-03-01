@@ -89,7 +89,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._publisher_isni_actions_button.setMenu(publisher_menu)
 
         self._genre.addItems(sorted(GENRES))
-        self._language.addItems(sorted(LANGUAGES))
+        self._fill_with_languages(self._language)
         self._fill_with_countries(self._production_company_region)
         self._fill_with_countries(self._recording_studio_region)
 
@@ -110,7 +110,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
         self._lyrics.editingFinished.connect(emit_metadata_changed)
         self._language.activated.connect(emit_metadata_changed)
-        self._language.lineEdit().textEdited.connect(emit_metadata_changed)
 
         self._recording_studio.editingFinished.connect(emit_metadata_changed)
         self._recording_studio_region.activated.connect(emit_metadata_changed)
@@ -211,7 +210,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._iswc.setText(track.iswc)
         self._tags.setText(track.labels)
         self._lyrics.setPlainText(track.lyrics)
-        self._language.setEditText(track.language)
+        self._display_language(track.language, self._language)
         self._software_notice.setText(self._compose_software_notice(track))
 
         self._recording_studio.setText(track.recording_studio)
@@ -237,6 +236,13 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def _display_region(region, combobox):
         if region:
             combobox.setCurrentText(COUNTRIES[region[0]])
+
+    @staticmethod
+    def _display_language(language, combobox):
+        if language:
+            combobox.setCurrentText(LANGUAGES[language])
+        else:
+            combobox.setCurrentIndex(0)
 
     def _display_album_cover(self, picture):
         # Cache the cover image to avoid recomputing the image each time the screen updates
@@ -275,7 +281,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         labels=self._tags.text(),
                         lyrics=self._lyrics.toPlainText(),
                         lyricist=self._lyricist.text(),
-                        language=self._language.currentText(),
+                        language=self._language.currentData(),
                         recording_studio=self._recording_studio.text(),
                         recording_studio_region=self._get_country_code_from_combo(self._recording_studio_region),
                         recording_time=self._recording_time.date().toString(ISO_8601_FORMAT),
@@ -293,6 +299,13 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     @staticmethod
     def _fill_with_countries(combobox):
         for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
+            combobox.addItem(name, code)
+        combobox.insertItem(0, "")
+        combobox.setCurrentIndex(0)
+
+    @staticmethod
+    def _fill_with_languages(combobox):
+        for code, name in sorted(LANGUAGES.items(), key=operator.itemgetter(1)):
             combobox.addItem(name, code)
         combobox.insertItem(0, "")
         combobox.setCurrentIndex(0)
