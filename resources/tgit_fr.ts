@@ -1090,6 +1090,10 @@
         <source>Incorrect username and/or password.</source>
         <translation>Nom d'utilisateur et/ou mot de passe incorrect</translation>
     </message>
+    <message>
+        <source>Sign in to the TGiT platform</source>
+        <translation>Se connecter à la plateforme TGiT</translation>
+    </message>
 </context>
 <context>
     <name>LoadProjectDialog</name>

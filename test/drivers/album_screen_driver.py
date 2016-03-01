@@ -44,16 +44,16 @@ class AlbumScreenDriver(ScreenDriver):
         track_list_page(self).move_track(title, to)
 
     def to_previous_page(self):
-        self.button(named("previous")).click()
+        self.button(named("_previous")).click()
 
     def to_next_page(self):
-        self.button(named("next")).click()
+        self.button(named("_next")).click()
 
     def is_missing_previous_page_button(self):
-        self.button(named("previous")).is_disabled()
+        self.button(named("_previous")).is_disabled()
 
     def is_missing_next_page_button(self):
-        self.button(named("next")).is_disabled()
+        self.button(named("_next")).is_disabled()
 
     def shows_project_contains(self, *tracks):
         track_list_page(self).shows_tracks_in_order(*tracks)

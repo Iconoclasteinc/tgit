@@ -11,16 +11,16 @@
    </rect>
   </property>
   <property name="styleSheet">
-   <string notr="true">#pages {
+   <string notr="true">#_pages {
 	margin: 5 15px 5px 15px;
 }
 
-#controls {
+#_controls {
     min-height: 48px;
     background-color: #595959;
 }
 
-#previous {
+#_previous {
 	padding: 4px 2px 2px 12px;
     color: white;
 	background-color: transparent;
@@ -33,13 +33,13 @@
     text-align: left;
 }
 
-#previous:disabled {
+#_previous:disabled {
     border-image: url(:/images/nothing.png) 1 1 1 1;
     background-color: transparent;
     color: transparent;
 }
 
-#next {
+#_next {
     padding: 4px 12px 2px 2px;
     color: #F25C0A;
     background-color: transparent;
@@ -52,7 +52,7 @@
     text-align: right;
 }
 
-#next:disabled {
+#_next:disabled {
     border-image: url(:/images/nothing.png) 1 1 1 1;
     background-color: transparent;
     color: transparent;
@@ -75,14 +75,14 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QStackedWidget" name="pages">
+    <widget class="QStackedWidget" name="_pages">
      <property name="currentIndex">
       <number>-1</number>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="controls" native="true">
+    <widget class="QWidget" name="_controls" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="leftMargin">
        <number>0</number>
@@ -97,7 +97,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="previous">
+       <widget class="QPushButton" name="_previous">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -126,7 +126,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="next">
+       <widget class="QPushButton" name="_next">
         <property name="enabled">
          <bool>false</bool>
         </property>

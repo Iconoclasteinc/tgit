@@ -54,9 +54,9 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
 
     def _setup_ui(self):
         self._load(":/ui/album_screen.ui")
-        self.pages.currentChanged.connect(self._update_navigation_controls)
-        self.previous.clicked.connect(self._to_previous_page)
-        self.next.clicked.connect(self._to_next_page)
+        self._pages.currentChanged.connect(self._update_navigation_controls)
+        self._previous.clicked.connect(self._to_previous_page)
+        self._next.clicked.connect(self._to_next_page)
 
     def display(self, album):
         self._remove_all_pages()
@@ -79,9 +79,9 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         self._remove_page(self._track_page_index(index))
 
     def track_moved(self, from_index, to_index):
-        page = self.pages.widget(self._track_page_index(from_index))
-        self.pages.removeWidget(page)
-        self.pages.insertWidget(self._track_page_index(to_index), page)
+        page = self._pages.widget(self._track_page_index(from_index))
+        self._pages.removeWidget(page)
+        self._pages.insertWidget(self._track_page_index(to_index), page)
         self._update_navigation_controls()
 
     def to_project_edition_page(self):
@@ -97,8 +97,8 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         return self._TRACK_PAGES_STARTING_INDEX + from_position
 
     def _update_navigation_controls(self):
-        self.previous.setDisabled(self._on_first_page())
-        self.next.setDisabled(self._on_last_page())
+        self._previous.setDisabled(self._on_first_page())
+        self._next.setDisabled(self._on_last_page())
 
     def _on_last_page(self):
         return self._on_page(self._page_count - 1)
@@ -110,23 +110,23 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         return self.current_page == number
 
     def _insert_page(self, widget, position):
-        self.pages.insertWidget(position, widget)
+        self._pages.insertWidget(position, widget)
         self._update_navigation_controls()
 
     def _remove_page(self, number):
-        page = self.pages.widget(number)
-        self.pages.removeWidget(page)
+        page = self._pages.widget(number)
+        self._pages.removeWidget(page)
         page.setParent(None)
         page.close()
         self._update_navigation_controls()
 
     @property
     def current_page(self):
-        return self.pages.currentIndex()
+        return self._pages.currentIndex()
 
     @property
     def _page_count(self):
-        return self.pages.count()
+        return self._pages.count()
 
     def _to_previous_page(self):
         self._to_page(self.current_page - 1)
@@ -135,7 +135,7 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         self._to_page(self.current_page + 1)
 
     def _to_page(self, number):
-        self.pages.setCurrentIndex(number)
+        self._pages.setCurrentIndex(number)
 
     def close(self):
         self._remove_all_pages()

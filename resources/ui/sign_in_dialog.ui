@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>450</width>
-    <height>143</height>
+    <height>158</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -29,49 +29,35 @@
    <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <property name="leftMargin">
-    <number>10</number>
-   </property>
-   <property name="topMargin">
-    <number>10</number>
-   </property>
-   <property name="rightMargin">
-    <number>10</number>
-   </property>
-   <property name="bottomMargin">
-    <number>10</number>
-   </property>
    <item>
-    <widget class="QGroupBox" name="_form">
-     <property name="title">
-      <string/>
+    <widget class="QLabel" name="_title">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <property name="horizontalSpacing">
-       <number>10</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>5</number>
-      </property>
+     <property name="text">
+      <string>Sign in to the TGiT platform</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="_form" native="true">
+     <layout class="QFormLayout" name="formLayout_2">
       <property name="leftMargin">
-       <number>10</number>
-      </property>
-      <property name="topMargin">
-       <number>10</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>10</number>
-      </property>
-      <property name="bottomMargin">
-       <number>10</number>
+       <number>0</number>
       </property>
       <item row="0" column="0">
        <widget class="QLabel" name="_email_caption">
         <property name="text">
          <string>Email:</string>
+        </property>
+        <property name="buddy">
+         <cstring>_email</cstring>
         </property>
        </widget>
       </item>
@@ -82,6 +68,9 @@
        <widget class="QLabel" name="_password_caption">
         <property name="text">
          <string>Password:</string>
+        </property>
+        <property name="buddy">
+         <cstring>_password</cstring>
         </property>
        </widget>
       </item>
@@ -106,42 +95,24 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="_action_buttons_container" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="spacing">
-       <number>5</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>10</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QDialogButtonBox" name="_action_buttons">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="standardButtons">
-         <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="_action_buttons">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
     </widget>
    </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>_email</tabstop>
-  <tabstop>_password</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>
