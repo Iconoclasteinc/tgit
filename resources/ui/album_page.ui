@@ -306,7 +306,7 @@ QToolTip {
                <pixmap resource="../resources.qrc">:/icons/help</pixmap>
               </property>
               <property name="scaledContents">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -502,7 +502,7 @@ QLabel[style=QMacStyle] {
             <pixmap resource="../resources.qrc">:/icons/help</pixmap>
            </property>
            <property name="scaledContents">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>
