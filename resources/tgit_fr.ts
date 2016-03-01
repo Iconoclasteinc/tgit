@@ -214,8 +214,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>The name of the individual or band as it appears on the release</source>
-        <translation>Le nom de l'interprète ou du groupe tel qu'affiché sur la parution</translation>
+        <source>The name as it appears on the release</source>
+        <translation>Le nom tel qu'affiché sur la parution</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -849,13 +849,13 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Comma separated list of tags describing this track</source>
-        <translation>Liste de tags décrivant cette piste, séparés par des virgules</translation>
+        <source>List of comma separated tags</source>
+        <translation>Liste de tags séparés par des virgules</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>The name of the individual or band as it appears on the release</source>
-        <translation>Le nom de l'interprète ou du groupe tel qu'affiché sur la parution</translation>
+        <source>The name as it appears on the release</source>
+        <translation>Le nom tel qu'affiché sur la parution</translation>
     </message>
 </context>
 <context>

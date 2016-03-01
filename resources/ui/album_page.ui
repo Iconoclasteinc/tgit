@@ -208,22 +208,21 @@ QToolTip {
         <item row="6" column="1">
          <widget class="QLabel" name="_main_artist_info">
           <property name="styleSheet">
-           <string notr="true">
-QLabel[style=QWindowsVistaStyle] {
+           <string notr="true">QLabel[style=QWindowsVistaStyle] {
     font-size: 7pt;
-	margin-top: -2px;
-    margin-bottom: 2px;
+    margin-top: -1px;
+    margin-bottom: 1px;
 }
 
 QLabel[style=QMacStyle] {
     font-size: 11pt;
-	margin-top: -3px;
+    margin-top: -3px;
     margin-bottom: 3px;
 }
 </string>
           </property>
           <property name="text">
-           <string>The name of the individual or band as it appears on the release</string>
+           <string>The name as it appears on the release</string>
           </property>
          </widget>
         </item>
@@ -306,7 +305,7 @@ QToolTip {
                <pixmap resource="../resources.qrc">:/icons/help</pixmap>
               </property>
               <property name="scaledContents">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -317,11 +316,10 @@ QToolTip {
         <item row="8" column="1">
          <widget class="QLabel" name="_main_artist_isni_info">
           <property name="styleSheet">
-           <string notr="true">
-QLabel[style=QWindowsVistaStyle] {
+           <string notr="true">QLabel[style=QWindowsVistaStyle] {
     font-size: 7pt;
-    margin-top: -2px;
-    margin-bottom: 2px;
+    margin-top: -1px;
+    margin-bottom: 1px;
 }
 
 QLabel[style=QMacStyle] {
@@ -502,7 +500,7 @@ QLabel[style=QMacStyle] {
             <pixmap resource="../resources.qrc">:/icons/help</pixmap>
            </property>
            <property name="scaledContents">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -511,11 +509,10 @@ QLabel[style=QMacStyle] {
        <item row="4" column="1">
         <widget class="QLabel" name="_barcode_info">
          <property name="styleSheet">
-          <string notr="true">
-QLabel[style=QWindowsVistaStyle] {
+          <string notr="true">QLabel[style=QWindowsVistaStyle] {
     font-size: 7pt;
-    margin-top: -2px;
-    margin-bottom: 2px;
+    margin-top: -1px;
+    margin-bottom: 1px;
 }
 
 QLabel[style=QMacStyle] {
