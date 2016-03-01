@@ -20,7 +20,7 @@ from collections import namedtuple
 from enum import Enum
 
 from PyQt5.QtCore import Qt, QCoreApplication
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QGuiApplication
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 
 from tgit.audio import MediaPlayer
@@ -34,6 +34,7 @@ class State(Enum):
 class RowItem:
     state = State.stopped
     error = MediaPlayer.Error.none
+    selected = False
 
     def __init__(self, track):
         self.track = track
@@ -103,6 +104,10 @@ class Cell(QTableWidgetItem):
         return QCoreApplication.translate("Cell", text)
 
 
+def _window_active():
+    return QGuiApplication.instance().focusWindow() is not None
+
+
 class Column(Enum):
     class track_number(Cell):
         width = Width(26, RESIZABLE)
@@ -118,10 +123,19 @@ class Column(Enum):
         def __init__(self, track):
             super().__init__()
             if track.is_playing:
-                self.setIcon(QIcon(":/playing"))
+                self._show_playing(track)
             elif track.is_invalid:
-                self.setIcon(QIcon(":/playback-error"))
-                self.setToolTip(self.tr("Your platform cannot play {} audio files".format(track.type.upper())))
+                self._show_playback_error(track)
+
+        def _show_playback_error(self, track):
+            self.setIcon(QIcon(":/playback-error"))
+            self.setToolTip(self.tr("Your platform cannot play {} audio files".format(track.type.upper())))
+
+        def _show_playing(self, track):
+            if track.selected and _window_active():
+                self.setIcon(QIcon(":/icons/inverted/playing"))
+            else:
+                self.setIcon(QIcon(":/icons/playing"))
 
     class track_title(Cell):
         width = Width(250, RESIZABLE)

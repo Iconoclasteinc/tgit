@@ -27,6 +27,8 @@
         <file alias="icons/remove">images/16x16/remove.png</file>
         <file alias="icons/search">images/16x16/search.png</file>
         <file alias="icons/reorder">images/16x16/swap_vert.png</file>
+        <file alias="icons/playing">images/16x16/volume_up.png</file>
+        <file alias="icons/inverted/playing">images/16x16/inverted/volume_up.png</file>
         <file alias="icons/help">images/20x20/help_outline.png</file>
         <file alias="tooltips/search">images/12x12/search.png</file>
 

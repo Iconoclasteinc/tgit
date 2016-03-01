@@ -2,8 +2,8 @@
 
 from datetime import timedelta
 
-from hamcrest import has_property, contains, assert_that, empty, contains_string
 import pytest
+from hamcrest import has_property, contains, assert_that, empty, contains_string
 
 from cute.matchers import with_text, named
 from cute.probes import ValueMatcherProbe
@@ -188,7 +188,7 @@ def test_makes_add_tracks_request_when_add_button_clicked(driver):
     driver.check(add_tracks_signal)
 
 
-def test_makes_move_track_requests_when_track_row_moved(driver):
+def test_makes_move_track_request_when_track_row_moved(driver):
     page = show_track_list(make_album(tracks=[make_track(track_title='Chaconne'),
                                               make_track(track_title='Choices'),
                                               make_track(track_title='Place St-Henri')]))
@@ -200,7 +200,7 @@ def test_makes_move_track_requests_when_track_row_moved(driver):
     driver.check(track_moved_signal)
 
 
-def test_moves_row_when_track_changes_position(driver):
+def test_moves_row_when_track_position_changes(driver):
     tracks = (make_track(track_title="Chevere!"),
               make_track(track_title='Zumbar'),
               make_track(track_title='Salsa Coltrane'))

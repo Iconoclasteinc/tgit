@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal
-from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtGui import QIcon, QKeySequence, QGuiApplication
 from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem
 
 from tgit.album import AlbumListener
@@ -70,7 +70,9 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._add_tracks_button.clicked.connect(lambda: self._select_tracks(add))
 
     def on_move_track(self, move):
-        move_track = lambda _, from_position, to_position: move(from_position, to_position)
+        def move_track(_, from_position, to_position):
+            move(from_position, to_position)
+
         self._track_table.verticalHeader().sectionMoved.connect(move_track)
 
     def on_play_track(self, play):
@@ -85,6 +87,7 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
     def _setup_ui(self):
         self._load(":/ui/track_list_page.ui")
         self._react_to_table_events(self._track_table)
+        self._react_to_window_events()
         self._make_context_menu(self._track_table)
         self._setup_horizontal_header(self._track_table.horizontalHeader())
         self._setup_vertical_header(self._track_table.verticalHeader())
@@ -100,7 +103,15 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
 
     def _react_to_table_events(self, table):
         table.customContextMenuRequested.connect(self._open_context_menu)
+        table.selectionModel().currentRowChanged.connect(self._current_row_changed)
         table.itemSelectionChanged.connect(self._update_actions)
+
+    def _react_to_window_events(self):
+        QGuiApplication.instance().focusWindowChanged.connect(lambda window: self._refresh_selected_item())
+
+    def _refresh_selected_item(self):
+        if self._selected_item is not None:
+            self._item_changed(self._selected_item)
 
     def _make_context_menu(self, table):
         self._context_menu = QMenu(table)
@@ -164,6 +175,15 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._remove_action.setEnabled(self._selected_item is not None)
         self._play_action.setEnabled(self._selected_item is not None)
         self._stop_action.setEnabled(self._selected_item is not None)
+
+    def _current_row_changed(self, current, previous):
+        if previous.isValid():
+            self._items[previous.row()].selected = False
+            self._item_changed(self._items[previous.row()])
+
+        if current.isValid():
+            self._items[current.row()].selected = True
+            self._item_changed(self._items[current.row()])
 
     def _item_count(self):
         return len(self._items)
