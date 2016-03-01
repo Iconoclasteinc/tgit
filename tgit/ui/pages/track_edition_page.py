@@ -97,7 +97,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             self.metadata_changed.emit(self.metadata)
 
         self._track_title.editingFinished.connect(emit_metadata_changed)
-        self._lead_performer.editingFinished.connect(emit_metadata_changed)
+        self._main_artist.editingFinished.connect(emit_metadata_changed)
         self._version.editingFinished.connect(emit_metadata_changed)
         self._featured_guest.editingFinished.connect(emit_metadata_changed)
         self._comments.editingFinished.connect(emit_metadata_changed)
@@ -175,11 +175,15 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._display_album_cover(album.main_cover)
         self._album_title.setText(album.release_name)
         if album.compilation:
-            self._album_lead_performer.setText(self.tr("Various Artists"))
+            self._album_main_artist.setText(self.tr("Various Artists"))
         else:
-            self._album_lead_performer.setText(album.lead_performer)
-        self._lead_performer.setEnabled(album.compilation is True)
-        self._lead_performer_caption.setEnabled(album.compilation is True)
+            self._album_main_artist.setText(album.lead_performer)
+
+        enable_main_artist = album.compilation is True
+        self._main_artist.setEnabled(enable_main_artist)
+        self._main_artist_caption.setEnabled(enable_main_artist)
+        self._main_artist_info.setEnabled(enable_main_artist)
+        self._main_artist_help.setEnabled(enable_main_artist)
 
         isnis = album.isnis or {}
         self._lyricist_isni.setText(isnis.get(self._lyricist.text()))
@@ -194,7 +198,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def display_track(self, track):
         self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
         self._track_title.setText(track.track_title)
-        self._lead_performer.setText(track.lead_performer)
+        self._main_artist.setText(track.lead_performer)
         self._version.setText(track.version_info)
         self._duration.setText(formatting.to_duration(track.duration))
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
@@ -281,8 +285,8 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         mixer=self._mixer.text(),
                         primary_style=self._genre.currentText())
 
-        if self._lead_performer.isEnabled():
-            metadata["lead_performer"] = self._lead_performer.text()
+        if self._main_artist.isEnabled():
+            metadata["lead_performer"] = self._main_artist.text()
 
         return metadata
 

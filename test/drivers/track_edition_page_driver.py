@@ -87,7 +87,7 @@ class TrackEditionPageDriver(ScreenDriver):
             self.change_lyricist_ipi(meta["lyricist_ipi"])
 
     def shows_album_lead_performer(self, name):
-        label = self.label(named("_album_lead_performer"))
+        label = self.label(named("_album_main_artist"))
         label.is_showing_on_screen()
         label.has_text(name)
 
@@ -109,13 +109,21 @@ class TrackEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_track_title")).change_text(title)
 
     def shows_lead_performer(self, name, disabled=False):
-        self.label(with_buddy(named("_lead_performer"))).is_showing_on_screen()
-        edit = self.lineEdit(named("_lead_performer"))
+        label = self.label(with_buddy(named("_main_artist")))
+        label.is_showing_on_screen()
+        label.is_disabled(disabled)
+        info = self.label(named("_main_artist_info"))
+        info.is_showing_on_screen()
+        info.is_disabled(disabled)
+        help_label = self.label(named("_main_artist_help"))
+        help_label.is_showing_on_screen()
+        help_label.is_disabled(disabled)
+        edit = self.lineEdit(named("_main_artist"))
         edit.has_text(name)
         edit.is_disabled(disabled)
 
     def change_lead_performer(self, name):
-        self.lineEdit(named("_lead_performer")).change_text(name)
+        self.lineEdit(named("_main_artist")).change_text(name)
 
     def shows_version_info(self, info):
         self.label(with_buddy(named("_version"))).is_showing_on_screen()
