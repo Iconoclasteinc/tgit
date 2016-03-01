@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>welcome_page</class>
  <widget class="QFrame" name="welcome_page">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>640</height>
+   </rect>
+  </property>
   <property name="minimumSize">
    <size>
     <width>1024</width>
@@ -132,7 +140,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="_content">
+        <property name="styleSheet">
+         <string notr="true">QLabel[style=&quot;QWindowsVistaStyle&quot;]{font-size: 14pt;font-weight: bold;}</string>
+        </property>
         <property name="title">
          <string/>
         </property>
@@ -144,7 +155,7 @@
           <widget class="QLabel" name="_new_project_title">
            <property name="font">
             <font>
-             <pointsize>18</pointsize>
+             <pointsize>14</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -161,7 +172,7 @@
           <widget class="QLabel" name="_recent_projects_title">
            <property name="font">
             <font>
-             <pointsize>18</pointsize>
+             <pointsize>14</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>
@@ -204,7 +215,7 @@
           <widget class="QLabel" name="_open_project_title">
            <property name="font">
             <font>
-             <pointsize>18</pointsize>
+             <pointsize>14</pointsize>
              <weight>75</weight>
              <bold>true</bold>
             </font>

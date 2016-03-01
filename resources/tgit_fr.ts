@@ -817,6 +817,46 @@
         <source>Assign</source>
         <translation>Assigner</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI de l'artiste principal dans la base de données globale ISNI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>You have to be signed in to use the lookup tool</source>
+        <translation>Vous devez vous connecter pour utiliser l'outil de recherche</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISRC is a unique identifier for sound recordings. A three character Label prefix has to be obtained from a registrar like CONNECTmusic (Canada).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Le code ISRC est un identifiant unique pour les enregistrements sonores. Pour obtenir votre préfixe Label de trois caractères, il suffit de contacter la SOPROQ.org (Québec) ou obtenir un accès gestionnaire à la SCPP.fr (France).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Aide Placeholder&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The track's main artist is the one entered for the project unless the project is a multi-artist compilation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L&apos;artiste principal de la piste est celui saisi pour le projet sauf si le projet est une compilation multi-artiste.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>12 characters without spaces or dashes</source>
+        <translation>12 caractères sans espaces et sans tirets</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Comma separated list of tags describing this track</source>
+        <translation>Liste de tags décrivant cette piste, séparés par des virgules</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>The name of the individual or band as it appears on the release</source>
+        <translation>Le nom de l'interprète ou du groupe tel qu'affiché sur la parution</translation>
+    </message>
 </context>
 <context>
     <name>TrackEditionPage</name>
@@ -1039,12 +1079,12 @@
         <translation>Se connecter</translation>
     </message>
     <message>
-        <source>Email</source>
-        <translation>Courriel</translation>
+        <source>Email:</source>
+        <translation>Courriel :</translation>
     </message>
     <message>
-        <source>Password</source>
-        <translation>Mot de passe</translation>
+        <source>Password:</source>
+        <translation>Mot de passe :</translation>
     </message>
     <message>
         <source>Incorrect username and/or password.</source>
