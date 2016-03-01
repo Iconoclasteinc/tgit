@@ -20,7 +20,7 @@ from collections import namedtuple
 from enum import Enum
 
 from PyQt5.QtCore import Qt, QCoreApplication
-from PyQt5.QtGui import QIcon, QGuiApplication
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
 
 from tgit.audio import MediaPlayer
@@ -35,6 +35,7 @@ class RowItem:
     state = State.stopped
     error = MediaPlayer.Error.none
     selected = False
+    active = True
 
     def __init__(self, track):
         self.track = track
@@ -104,10 +105,6 @@ class Cell(QTableWidgetItem):
         return QCoreApplication.translate("Cell", text)
 
 
-def _window_active():
-    return QGuiApplication.instance().focusWindow() is not None
-
-
 class Column(Enum):
     class track_number(Cell):
         width = Width(26, RESIZABLE)
@@ -132,7 +129,7 @@ class Column(Enum):
             self.setToolTip(self.tr("Your platform cannot play {} audio files".format(track.type.upper())))
 
         def _show_playing(self, track):
-            if track.selected and _window_active():
+            if track.selected and track.active:
                 self.setIcon(QIcon(":/icons/inverted/playing"))
             else:
                 self.setIcon(QIcon(":/icons/playing"))

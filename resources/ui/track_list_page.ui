@@ -55,7 +55,7 @@
       <enum>Qt::CustomContextMenu</enum>
      </property>
      <property name="styleSheet">
-       <string notr="true">QTableView[style=QMacStyle] {
+      <string notr="true">QTableView[style=QMacStyle] {
     alternate-background-color: #F2F2F2;
 }</string>
      </property>

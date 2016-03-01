@@ -18,8 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal
-from PyQt5.QtGui import QIcon, QKeySequence, QGuiApplication
-from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem
+from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem, QApplication
 
 from tgit.album import AlbumListener
 from tgit.signal import MultiSubscription
@@ -87,7 +87,7 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
     def _setup_ui(self):
         self._load(":/ui/track_list_page.ui")
         self._react_to_table_events(self._track_table)
-        self._react_to_window_events()
+        self._react_to_focus_events()
         self._make_context_menu(self._track_table)
         self._setup_horizontal_header(self._track_table.horizontalHeader())
         self._setup_vertical_header(self._track_table.verticalHeader())
@@ -106,11 +106,14 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         table.selectionModel().currentRowChanged.connect(self._current_row_changed)
         table.itemSelectionChanged.connect(self._update_actions)
 
-    def _react_to_window_events(self):
-        QGuiApplication.instance().focusWindowChanged.connect(lambda window: self._refresh_selected_item())
+    def _react_to_focus_events(self):
+        # todo we need to be more specific on which focus events we're interested in
+        # by installing an event filter on the table widget
+        QApplication.instance().focusObjectChanged.connect(self._focus_changed)
 
-    def _refresh_selected_item(self):
+    def _focus_changed(self):
         if self._selected_item is not None:
+            self._selected_item.active = self._track_table.hasFocus()
             self._item_changed(self._selected_item)
 
     def _make_context_menu(self, table):
