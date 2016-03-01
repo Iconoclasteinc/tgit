@@ -55,7 +55,9 @@
       <enum>Qt::CustomContextMenu</enum>
      </property>
      <property name="styleSheet">
-      <string notr="true">alternate-background-color: palette(midlight);</string>
+       <string notr="true">QTableView[style=QMacStyle] {
+    alternate-background-color: #F2F2F2;
+}</string>
      </property>
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
