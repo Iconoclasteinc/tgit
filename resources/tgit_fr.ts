@@ -824,8 +824,8 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>You have to be signed in to use the lookup tool</source>
-        <translation>Vous devez vous connecter pour utiliser l'outil de recherche</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You have to be signed in to use the ISNI lookup tool &lt;img src=":/tooltips/search"/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vous devez vous connecter pour utiliser l'outil de recherche &lt;img src=":/tooltips/search"/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />

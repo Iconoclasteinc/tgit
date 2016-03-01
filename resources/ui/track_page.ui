@@ -668,13 +668,37 @@ QLabel[style=QMacStyle] {
          </attribute>
          <layout class="QFormLayout" name="formLayout_5">
           <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="label">
+            <property name="styleSheet">
+             <string notr="true">QLabel[style=QWindowsVistaStyle] {
+    font-size: 7pt;
+}
+
+QLabel[style=QMacStyle] {
+    font-size: 11pt;
+}
+</string>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You have to be signed in to use the ISNI lookup tool &lt;img src=&quot;:/tooltips/search&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
            <widget class="QLabel" name="_lyricist_header">
             <property name="text">
              <string>Lyricist</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="_lyricist_caption">
             <property name="text">
              <string>Name:</string>
@@ -684,7 +708,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="3" column="1">
            <widget class="QLineEdit" name="_lyricist">
             <property name="minimumSize">
              <size>
@@ -694,7 +718,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="_lyricist_ipi_caption">
             <property name="text">
              <string>IPI Number:</string>
@@ -704,7 +728,43 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="1">
+           <layout class="QHBoxLayout" name="_lyricist_ipi_edit_pane">
+            <property name="spacing">
+             <number>3</number>
+            </property>
+            <item>
+             <widget class="QLineEdit" name="_lyricist_ipi">
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="HelpLabel" name="_lyricist_ipi_help">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="0">
            <widget class="QLabel" name="_lyricist_isni_caption">
             <property name="enabled">
              <bool>false</bool>
@@ -717,7 +777,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="5" column="1">
            <layout class="QHBoxLayout" name="_lyricist_input_container">
             <item>
              <widget class="QToolButton" name="_lyricist_isni_actions_button">
@@ -780,45 +840,21 @@ QLabel[style=QMacStyle] {
             </item>
            </layout>
           </item>
-          <item row="4" column="1">
-           <widget class="QLabel" name="_lyricist_isni_info">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QLabel[style=QWindowsVistaStyle] {
-    font-size: 7pt;
-    margin-top: -1px;
-    margin-bottom: 1px;
-}
-
-QLabel[style=QMacStyle] {
-    font-size: 11pt;
-    margin-top: -3px;
-    margin-bottom: 3px;
-}
-</string>
-            </property>
-            <property name="text">
-             <string>You have to be signed in to use the lookup tool</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="2">
+          <item row="6" column="0" colspan="2">
            <widget class="Line" name="line_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="6" column="0" colspan="2">
+          <item row="7" column="0">
            <widget class="QLabel" name="_composer_name">
             <property name="text">
              <string>Composer</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="8" column="0">
            <widget class="QLabel" name="_composer_caption">
             <property name="text">
              <string>Name:</string>
@@ -828,17 +864,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
-           <widget class="QLineEdit" name="_composer">
-            <property name="minimumSize">
-             <size>
-              <width>250</width>
-              <height>0</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
+          <item row="9" column="0">
            <widget class="QLabel" name="_composer_ipi_caption">
             <property name="text">
              <string>IPI Number:</string>
@@ -848,7 +874,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
+          <item row="10" column="0">
            <widget class="QLabel" name="_composer_isni_caption">
             <property name="enabled">
              <bool>false</bool>
@@ -861,7 +887,53 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
+          <item row="8" column="1">
+           <widget class="QLineEdit" name="_composer">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
           <item row="9" column="1">
+           <layout class="QHBoxLayout" name="_composer_ipi_edit_pane">
+            <property name="spacing">
+             <number>3</number>
+            </property>
+            <item>
+             <widget class="QLineEdit" name="_composer_ipi">
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="HelpLabel" name="_composer_ipi_help">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="10" column="1">
            <layout class="QHBoxLayout" name="_composer_input_container">
             <item>
              <widget class="QToolButton" name="_composer_isni_actions_button">
@@ -918,30 +990,6 @@ QLabel[style=QMacStyle] {
             </item>
            </layout>
           </item>
-          <item row="10" column="1">
-           <widget class="QLabel" name="_composer_isni_info">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QLabel[style=QWindowsVistaStyle] {
-    font-size: 7pt;
-    margin-top: -1px;
-    margin-bottom: 1px;
-}
-
-QLabel[style=QMacStyle] {
-    font-size: 11pt;
-    margin-top: -3px;
-    margin-bottom: 3px;
-}
-</string>
-            </property>
-            <property name="text">
-             <string>You have to be signed in to use the lookup tool</string>
-            </property>
-           </widget>
-          </item>
           <item row="11" column="0" colspan="2">
            <widget class="Line" name="line_3">
             <property name="orientation">
@@ -949,7 +997,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="12" column="0" colspan="2">
+          <item row="12" column="0">
            <widget class="QLabel" name="_publisher_header">
             <property name="text">
              <string>Publisher</string>
@@ -963,16 +1011,6 @@ QLabel[style=QMacStyle] {
             </property>
             <property name="buddy">
              <cstring>_publisher</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="13" column="1">
-           <widget class="QLineEdit" name="_publisher">
-            <property name="minimumSize">
-             <size>
-              <width>250</width>
-              <height>0</height>
-             </size>
             </property>
            </widget>
           </item>
@@ -998,6 +1036,45 @@ QLabel[style=QMacStyle] {
              <cstring>_publisher_isni</cstring>
             </property>
            </widget>
+          </item>
+          <item row="13" column="1">
+           <widget class="QLineEdit" name="_publisher">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="14" column="1">
+           <layout class="QHBoxLayout" name="_publisher_ipi_edit_pane">
+            <property name="spacing">
+             <number>3</number>
+            </property>
+            <item>
+             <widget class="QLineEdit" name="_publisher_ipi"/>
+            </item>
+            <item>
+             <widget class="HelpLabel" name="_publisher_ipi_help">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item row="15" column="1">
            <layout class="QHBoxLayout" name="_publisher_input_container">
@@ -1059,131 +1136,6 @@ QLabel[style=QMacStyle] {
                </widget>
               </item>
              </layout>
-            </item>
-           </layout>
-          </item>
-          <item row="16" column="1">
-           <widget class="QLabel" name="_publisher_isni_info">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QLabel[style=QWindowsVistaStyle] {
-    font-size: 7pt;
-    margin-top: -1px;
-    margin-bottom: 1px;
-}
-
-QLabel[style=QMacStyle] {
-    font-size: 11pt;
-    margin-top: -3px;
-    margin-bottom: 3px;
-}
-</string>
-            </property>
-            <property name="text">
-             <string>You have to be signed in to use the lookup tool</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <layout class="QHBoxLayout" name="_lyricist_ipi_edit_pane">
-            <property name="spacing">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="_lyricist_ipi">
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>0</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="HelpLabel" name="_lyricist_ipi_help">
-              <property name="maximumSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="8" column="1">
-           <layout class="QHBoxLayout" name="_composer_ipi_edit_pane">
-            <property name="spacing">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="_composer_ipi">
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>0</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="HelpLabel" name="_composer_ipi_help">
-              <property name="maximumSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="14" column="1">
-           <layout class="QHBoxLayout" name="_publisher_ipi_edit_pane">
-            <property name="spacing">
-             <number>3</number>
-            </property>
-            <item>
-             <widget class="QLineEdit" name="_publisher_ipi"/>
-            </item>
-            <item>
-             <widget class="HelpLabel" name="_publisher_ipi_help">
-              <property name="maximumSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
             </item>
            </layout>
           </item>
@@ -1495,9 +1447,7 @@ QLabel[style=QMacStyle] {
   <tabstop>_tabs</tabstop>
   <tabstop>_lyricist</tabstop>
   <tabstop>_lyricist_isni_actions_button</tabstop>
-  <tabstop>_composer</tabstop>
   <tabstop>_composer_isni_actions_button</tabstop>
-  <tabstop>_publisher</tabstop>
   <tabstop>_publisher_isni_actions_button</tabstop>
   <tabstop>_production_company</tabstop>
   <tabstop>_production_company_region</tabstop>
