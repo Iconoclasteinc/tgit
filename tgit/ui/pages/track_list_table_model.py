@@ -125,8 +125,11 @@ class Column(Enum):
                 self._show_playback_error(track)
 
         def _show_playback_error(self, track):
-            self.setIcon(QIcon(":/playback-error"))
             self.setToolTip(self.tr("Your platform cannot play {} audio files".format(track.type.upper())))
+            if track.selected and track.active:
+                self.setIcon(QIcon(":/icons/inverted/error"))
+            else:
+                self.setIcon(QIcon(":/icons/error"))
 
         def _show_playing(self, track):
             if track.selected and track.active:
