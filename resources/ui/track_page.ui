@@ -607,7 +607,7 @@ QLabel[style=QMacStyle] {
                </size>
               </property>
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to distinguish between two version of similar tracks. It is used to mention a live version, a shortened version for radio, a remix, etc... Free text as you wish it to appear in a music player.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="pixmap">
                <pixmap resource="../resources.qrc">:/icons/help</pixmap>
@@ -752,7 +752,7 @@ QLabel[style=QMacStyle] {
                </size>
               </property>
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The Interested Parties Information Code is used to identify music creators and publishers. You should retrieve this important number on your performing rights organization web portal of by searching a previously registered composition of yours on the http://iswcnet.cisac.org/ portal.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="pixmap">
                <pixmap resource="../resources.qrc">:/icons/help</pixmap>
@@ -921,7 +921,7 @@ QLabel[style=QMacStyle] {
                </size>
               </property>
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The Interested Parties Information Code is used to identify music creators and publishers. You should retrieve this important number on your performing rights organization web portal of by searching a previously registered composition of yours on the http://iswcnet.cisac.org/ portal.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="pixmap">
                <pixmap resource="../resources.qrc">:/icons/help</pixmap>
@@ -1064,7 +1064,7 @@ QLabel[style=QMacStyle] {
                </size>
               </property>
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The Interested Parties Information Code is used to identify music creators and publishers. You should retrieve this important number on your performing rights organization web portal of by searching a previously registered composition of yours on the http://iswcnet.cisac.org/ portal.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="pixmap">
                <pixmap resource="../resources.qrc">:/icons/help</pixmap>

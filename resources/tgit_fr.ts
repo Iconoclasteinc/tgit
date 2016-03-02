@@ -834,8 +834,13 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Aide Placeholder&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The Interested Parties Information Code is used to identify music creators and publishers. You should retrieve this important number on your performing rights organization web portal of by searching a previously registered composition of yours on the http://iswcnet.cisac.org/ portal.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Le Interested Parties Information Code est utilisé pour identifier les créateurs et les éditeurs.&lt;/p&gt;&lt;p&gt;Il est recommandé de visiter votre profil sur le site de votre collectif (SOCAN, SACEM, SODRAC, etc.) pour récupérer votre IPI. Vous pouvez aussi le rechercher dans la base http://iswcnet.cisac.org/ en entrant le titre de l&apos;une de vos oeuvres déclarées par le passé.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to distinguish between two version of similar tracks. It is used to mention a live version, a shortened version for radio, a remix, etc... Free text as you wish it to appear in a music player.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ce champ est important pour distinguer deux pistes concernant la même œuvre et dont la seule différence est la version originale, en concert, remix, version radio, etc... Texte libre tel qu&apos;on souhaite le voir apparaître dans un lecteur audio.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
