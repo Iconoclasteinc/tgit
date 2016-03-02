@@ -346,13 +346,13 @@
     <name>album_screen</name>
     <message>
         <location filename="tgit/ui/album_screen.py" />
-        <source>PREVIOUS</source>
-        <translation>ÉTAPE PRÉCÉDENTE</translation>
+        <source>Previous page</source>
+        <translation>Page précédente</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_screen.py" />
-        <source>NEXT</source>
-        <translation>ÉTAPE SUIVANTE</translation>
+        <source>Next page</source>
+        <translation>Page suivante</translation>
     </message>
 </context>
 <context>

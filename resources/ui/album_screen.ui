@@ -10,142 +10,68 @@
     <height>147</height>
    </rect>
   </property>
-  <property name="styleSheet">
-   <string notr="true">#_pages {
-	margin: 5 15px 5px 15px;
-}
-
-#_controls {
-    min-height: 48px;
-    background-color: #595959;
-}
-
-#_previous {
-	padding: 4px 2px 2px 12px;
-    color: white;
-	background-color: transparent;
-    border-image: url(:/images/previous.png) 1 1 1 12;
-	border-top: 1px transparent;
-    border-right: 12px transparent;
-	border-bottom: 1px transparent;
-    border-left: 12px transparent;
-	margin-left: 14px;
-    text-align: left;
-}
-
-#_previous:disabled {
-    border-image: url(:/images/nothing.png) 1 1 1 1;
-    background-color: transparent;
-    color: transparent;
-}
-
-#_next {
-    padding: 4px 12px 2px 2px;
-    color: #F25C0A;
-    background-color: transparent;
-    border-image: url(:/images/next.png) 1 12 1 1;
-    border-top: 1px transparent;
-    border-right: 12px transparent;
-    border-bottom: 1px transparent;
-    border-left: 12px transparent;
-    margin-right: 14px;
-    text-align: right;
-}
-
-#_next:disabled {
-    border-image: url(:/images/nothing.png) 1 1 1 1;
-    background-color: transparent;
-    color: transparent;
-}</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
    <item>
-    <widget class="QStackedWidget" name="_pages">
-     <property name="currentIndex">
-      <number>-1</number>
-     </property>
-    </widget>
+    <widget class="QStackedWidget" name="_pages"/>
    </item>
    <item>
-    <widget class="QWidget" name="_controls" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="_previous">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-        <property name="text">
-         <string>PREVIOUS</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="_next">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-        <property name="text">
-         <string>NEXT</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    <layout class="QHBoxLayout" name="_controls">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="_previous">
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="toolTip">
+        <string>Previous page</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="_next">
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="toolTip">
+        <string>Next page</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/icons/next</normaloff>:/icons/next</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
