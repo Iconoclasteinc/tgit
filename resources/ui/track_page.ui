@@ -787,6 +787,15 @@ QLabel[style=QMacStyle] {
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
+              <property name="toolTip">
+               <string>Look the lyricist's ISNI number up in the global ISNI database</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}</string>
+              </property>
               <property name="icon">
                <iconset resource="../resources.qrc">
                 <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
@@ -826,7 +835,7 @@ QLabel[style=QMacStyle] {
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look the lyricist's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="pixmap">
                  <pixmap resource="../resources.qrc">:/icons/help</pixmap>
@@ -943,6 +952,15 @@ QLabel[style=QMacStyle] {
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
+              <property name="toolTip">
+               <string>Look the composer's ISNI number up in the global ISNI database</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}</string>
+              </property>
               <property name="icon">
                <iconset resource="../resources.qrc">
                 <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
@@ -976,7 +994,7 @@ QLabel[style=QMacStyle] {
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look the composer's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="pixmap">
                  <pixmap resource="../resources.qrc">:/icons/help</pixmap>
@@ -1086,6 +1104,15 @@ QLabel[style=QMacStyle] {
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
+              <property name="toolTip">
+               <string>Look the publisher's ISNI number up in the global ISNI database</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}</string>
+              </property>
               <property name="icon">
                <iconset resource="../resources.qrc">
                 <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
@@ -1125,7 +1152,7 @@ QLabel[style=QMacStyle] {
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look the publisher's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="pixmap">
                  <pixmap resource="../resources.qrc">:/icons/help</pixmap>

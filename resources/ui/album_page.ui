@@ -77,7 +77,7 @@
             </property>
             <property name="styleSheet">
              <string notr="true">
-QToolTip {
+QToolTip[style=QMacStyle] {
     padding: 2px;
     background-color: palette(alternate-base);
 }
@@ -112,11 +112,10 @@ QToolButton[style=QMacStyle] {
 	margin-left: -1px;
 }
 
-QToolTip {
+QToolTip[style=QMacStyle] {
     padding: 2px;
     background-color: palette(alternate-base);
-}
-</string>
+}</string>
             </property>
             <property name="text">
              <string/>
@@ -247,15 +246,13 @@ QLabel[style=QMacStyle] {
              <enum>Qt::StrongFocus</enum>
             </property>
             <property name="toolTip">
-             <string>Lookup the main artist's ISNI in the global ISNI database</string>
+             <string>Look the main artist's ISNI number up in the global ISNI database</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">
-QToolTip {
+             <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
     background-color: palette(alternate-base);
-}
-</string>
+}</string>
             </property>
             <property name="text">
              <string/>
@@ -296,7 +293,7 @@ QToolTip {
                </size>
               </property>
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look the main artist's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string/>
@@ -572,8 +569,8 @@ QLabel[style=QMacStyle] {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>34</height>
+            <width>782</width>
+            <height>202</height>
            </rect>
           </property>
           <property name="styleSheet">

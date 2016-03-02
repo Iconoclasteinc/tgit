@@ -49,6 +49,12 @@
        <property name="toolTip">
         <string>Previous page</string>
        </property>
+       <property name="styleSheet">
+        <string notr="true">QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}</string>
+       </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
          <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
@@ -75,6 +81,11 @@
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
     margin-left: -1px;
+}
+
+QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(alternate-base);
 }</string>
        </property>
        <property name="icon">
