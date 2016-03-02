@@ -142,6 +142,7 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
 
     def _to_page(self, number):
         self._pages.setCurrentIndex(number)
+        self._pages_navigation.setCurrentIndex(number)
 
     def close(self):
         self._remove_all_pages()

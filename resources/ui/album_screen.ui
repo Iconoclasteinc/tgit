@@ -16,9 +16,6 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="_controls">
-     <property name="spacing">
-      <number>0</number>
-     </property>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -50,7 +47,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="_pages_navigation"/>
+      <widget class="QComboBox" name="_pages_navigation">
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="_next">

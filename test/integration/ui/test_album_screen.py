@@ -190,8 +190,22 @@ def test_navigates_using_the_combo_box(driver):
     driver.to_page("1 - track 1")
     driver.shows_track_edition_page(1)
 
-    driver.to_page("Project")
+    driver.to_page("Project edition")
     driver.shows_project_edition_page()
 
-    driver.to_page("Tracks")
+    driver.to_page("Track list")
     driver.shows_track_list_page()
+
+
+def test_updates_the_displayed_page_when_navigating_using_the_arrows(driver):
+    _ = display_project_screen(make_album(tracks=[make_track(track_title="track 1")]))
+
+    driver.shows_page_in_navigation_combo("Track list")
+    driver.to_next_page()
+    driver.shows_page_in_navigation_combo("Project edition")
+    driver.to_next_page()
+    driver.shows_page_in_navigation_combo("1 - track 1")
+    driver.to_previous_page()
+    driver.shows_page_in_navigation_combo("Project edition")
+    driver.to_previous_page()
+    driver.shows_page_in_navigation_combo("Track list")

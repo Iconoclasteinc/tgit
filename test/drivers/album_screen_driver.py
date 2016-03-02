@@ -53,6 +53,9 @@ class AlbumScreenDriver(ScreenDriver):
     def to_page(self, name):
         self.combobox(named("_pages_navigation")).select_option(name)
 
+    def shows_page_in_navigation_combo(self, name):
+        self.combobox(named("_pages_navigation")).has_current_text(name)
+
     def shows_previous_page_button(self, enabled=True):
         self.button(named("_previous")).is_enabled(enabled)
 
