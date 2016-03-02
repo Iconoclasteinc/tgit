@@ -57,12 +57,16 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         self._pages.currentChanged.connect(self._update_navigation_controls)
         self._previous.clicked.connect(self._to_previous_page)
         self._next.clicked.connect(self._to_next_page)
+        self._pages_navigation.currentIndexChanged.connect(
+            lambda index: self._to_page(self._pages_navigation.itemData(index)))
 
     def display(self, album):
         self._remove_all_pages()
         self._add_track_list_page(album)
         self._add_album_page(album)
 
+        self._pages_navigation.addItem(self.tr("Track list"), self._TRACK_LIST_PAGE_INDEX)
+        self._pages_navigation.addItem(self.tr("Project edition"), self._ALBUM_PAGE_INDEX)
         for index, track in enumerate(album.tracks):
             self.track_added(index, track)
 
@@ -72,8 +76,10 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
     def _add_album_page(self, album):
         self._insert_page(self._edit_album(album), self._ALBUM_PAGE_INDEX)
 
-    def track_added(self, position, track):
-        self._insert_page(self._edit_track(track), self._track_page_index(position))
+    def track_added(self, index, track):
+        self._insert_page(self._edit_track(track), self._track_page_index(index))
+        self._pages_navigation.addItem("{} - {}".format(index + 1, track.track_title),
+                                       self._TRACK_PAGES_STARTING_INDEX + index)
 
     def track_removed(self, index):
         self._remove_page(self._track_page_index(index))

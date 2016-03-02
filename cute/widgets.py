@@ -253,6 +253,12 @@ class ComboBoxDriver(AbstractEditDriver):
         self.pause(self.CHOICES_DISPLAY_DELAY)
         options_list.select_item(match.with_list_item_text(matching))
 
+    def has_options(self, *matching):
+        options_list = self._open_options_list()
+        self.pause(self.CHOICES_DISPLAY_DELAY)
+        for matcher in matching:
+            options_list.has_item(match.with_list_item_text(matcher))
+
     def _open_options_list(self):
         self.manipulate("pop up", lambda w: w.showPopup())
         return ListViewDriver.find_single(self, QListView)
@@ -891,7 +897,8 @@ class TableViewDriver(WidgetDriver):
         to_header = CalculateHeaderBounds(to_position)
         self.manipulate_table("calculate bounds of header row {0}".format(to_position), to_header)
 
-        drop_target = rect.bottom_center(rect.inside_bounds(to_header.bounds, bottom=1)) if (from_position < to_position) \
+        drop_target = rect.bottom_center(rect.inside_bounds(to_header.bounds, bottom=1)) if (
+        from_position < to_position) \
             else rect.top_center(rect.inside_bounds(to_header.bounds, top=1))
         self.perform(gestures.mouse_drag(from_header.bounds.center(), drop_target))
 

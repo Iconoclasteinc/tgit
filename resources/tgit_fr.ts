@@ -355,6 +355,19 @@
         <translation>Page suivante</translation>
     </message>
 </context>
+    <context>
+        <name>AlbumScreen</name>
+        <message>
+            <location filename="tgit/ui/album_screen.py" />
+            <source>Track list</source>
+            <translation>Liste des pistes</translation>
+        </message>
+        <message>
+            <location filename="tgit/ui/album_screen.py" />
+            <source>Project edition</source>
+            <translation>Édition du projet</translation>
+        </message>
+    </context>
 <context>
     <name>ISNILookupDialog</name>
     <message>

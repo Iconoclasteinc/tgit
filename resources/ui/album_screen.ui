@@ -50,6 +50,9 @@
       </widget>
      </item>
      <item>
+      <widget class="QComboBox" name="_pages_navigation"/>
+     </item>
+     <item>
       <widget class="QToolButton" name="_next">
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>

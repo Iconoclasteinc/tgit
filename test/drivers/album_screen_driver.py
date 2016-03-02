@@ -14,6 +14,9 @@ def album_screen(parent):
 
 
 class AlbumScreenDriver(ScreenDriver):
+    def shows_pages_in_navigation_combo(self, *pages):
+        self.combobox(named("_pages_navigation")).has_options(*pages)
+
     def shows_track_list_page(self):
         track_list_page(self).is_showing_on_screen()
 
@@ -26,10 +29,8 @@ class AlbumScreenDriver(ScreenDriver):
     def has_no_project_edition_page(self):
         no_album_edition_page(self).exists()
 
-    def shows_track_edition_page(self):
-        page = track_edition_page(self)
-        page.is_showing_on_screen()
-        return page
+    def shows_track_edition_page(self, number):
+        track_edition_page(self, number).is_showing_on_screen()
 
     def has_no_track_edition_page(self):
         no_track_edition_page(self).exists()
@@ -49,11 +50,14 @@ class AlbumScreenDriver(ScreenDriver):
     def to_next_page(self):
         self.button(named("_next")).click()
 
-    def is_missing_previous_page_button(self):
-        self.button(named("_previous")).is_disabled()
+    def to_page(self, name):
+        self.combobox(named("_pages_navigation")).select_option(name)
 
-    def is_missing_next_page_button(self):
-        self.button(named("_next")).is_disabled()
+    def shows_previous_page_button(self, enabled=True):
+        self.button(named("_previous")).is_enabled(enabled)
+
+    def shows_next_page_button(self, enabled=True):
+        self.button(named("_next")).is_enabled(enabled)
 
     def shows_project_contains(self, *tracks):
         track_list_page(self).shows_tracks_in_order(*tracks)

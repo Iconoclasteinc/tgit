@@ -70,39 +70,39 @@ def test_offers_goto_page_navigation(driver):
     driver.shows_project_edition_page()
 
     screen.to_track_page(index=0)
-    driver.shows_track_edition_page().is_(number(1))
+    driver.shows_track_edition_page(1)
 
     screen.to_track_page(index=1)
-    driver.shows_track_edition_page().is_(number(2))
+    driver.shows_track_edition_page(2)
 
     screen.to_track_page(index=2)
-    driver.shows_track_edition_page().is_(number(3))
+    driver.shows_track_edition_page(3)
 
 
 def test_offers_back_and_forth_navigation_between_pages(driver):
     _ = display_project_screen(make_album(tracks=(make_track(), make_track())))
 
-    driver.is_missing_previous_page_button()
+    driver.shows_previous_page_button(enabled=False)
 
     driver.to_next_page()
     driver.shows_project_edition_page()
 
     driver.to_next_page()
-    driver.shows_track_edition_page().is_(number(1))
+    driver.shows_track_edition_page(1)
 
     driver.to_next_page()
-    driver.shows_track_edition_page().is_(number(2))
-    driver.is_missing_next_page_button()
+    driver.shows_track_edition_page(2)
+    driver.shows_next_page_button(enabled=False)
 
     driver.to_previous_page()
-    driver.shows_track_edition_page().is_(number(1))
+    driver.shows_track_edition_page(1)
 
     driver.to_previous_page()
     driver.shows_project_edition_page()
 
     driver.to_previous_page()
     driver.shows_track_list_page()
-    driver.is_missing_previous_page_button()
+    driver.shows_previous_page_button(enabled=False)
 
     driver.to_next_page()
     driver.shows_project_edition_page()
@@ -112,32 +112,32 @@ def test_removes_track_page_when_track_removed(driver):
     screen = display_project_screen(make_album(tracks=(make_track(), make_track(), make_track())))
 
     screen.to_track_page(index=2)
-    driver.shows_track_edition_page().is_(number(3))
+    driver.shows_track_edition_page(3)
 
     screen.track_removed(index=2)
-    driver.shows_track_edition_page().is_(number(2))
+    driver.shows_track_edition_page(2)
 
     screen.to_track_page(index=0)
-    driver.shows_track_edition_page().is_(number(1))
+    driver.shows_track_edition_page(1)
 
     screen.track_removed(index=0)
-    driver.shows_track_edition_page().is_(number(2))
+    driver.shows_track_edition_page(2)
 
 
 def test_moves_track_page_when_track_moved(driver):
     screen = display_project_screen(make_album(tracks=(make_track(), make_track(), make_track())))
 
     screen.to_track_page(index=0)
-    driver.shows_track_edition_page().is_(number(1))
+    driver.shows_track_edition_page(1)
 
     screen.track_moved(from_index=0, to_index=2)
-    driver.shows_track_edition_page().is_(number(2))
+    driver.shows_track_edition_page(2)
 
     screen.to_track_page(index=1)
-    driver.shows_track_edition_page().is_(number(3))
+    driver.shows_track_edition_page(3)
 
     screen.to_track_page(index=2)
-    driver.shows_track_edition_page().is_(number(1))
+    driver.shows_track_edition_page(1)
 
 
 def test_closes_children_pages_on_close(driver):
@@ -168,3 +168,30 @@ def test_closes_children_pages_on_close(driver):
     driver.has_no_project_edition_page()
     driver.has_no_track_edition_page()
     driver.check(closed_signals)
+
+
+def test_displays_pages_in_navigation_combo(driver):
+    tracks = [make_track(track_title="track 1"), make_track(track_title="track 2"), make_track(track_title="track 3")]
+    _ = display_project_screen(make_album(tracks=tracks))
+
+    driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - track 1", "2 - track 2", "3 - track 3")
+
+
+def test_navigates_using_the_combo_box(driver):
+    tracks = [make_track(track_title="track 1"), make_track(track_title="track 2"), make_track(track_title="track 3")]
+    _ = display_project_screen(make_album(tracks=tracks))
+
+    driver.to_page("3 - track 3")
+    driver.shows_track_edition_page(3)
+
+    driver.to_page("2 - track 2")
+    driver.shows_track_edition_page(2)
+
+    driver.to_page("1 - track 1")
+    driver.shows_track_edition_page(1)
+
+    driver.to_page("Project")
+    driver.shows_project_edition_page()
+
+    driver.to_page("Tracks")
+    driver.shows_track_list_page()

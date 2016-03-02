@@ -6,8 +6,13 @@ from tgit.ui.pages.track_edition_page import TrackEditionPage
 from ._screen_driver import ScreenDriver
 
 
-def track_edition_page(parent):
-    return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named(starts_with("track_edition_page")),
+def track_edition_page(parent, number=None):
+    name_condition = starts_with("track_edition_page") if not number else "track_edition_page_" + str(number)
+    return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named(name_condition), showing_on_screen())
+
+
+def track_edition_page_numbered(parent, number):
+    return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named("track_edition_page_" + str(number)),
                                               showing_on_screen())
 
 
