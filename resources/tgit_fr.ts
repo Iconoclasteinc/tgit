@@ -28,8 +28,12 @@
         <translation>Ajouter des pistes</translation>
     </message>
     <message>
-        <source>Organize the project's tracks. Press [space] to play a track. Press [delete] to remove the track from the list.</source>
-        <translation>Organisez les pistes qui composent le projet.  Appuyez sur [espace] pour jouer la piste.  Appuyer sur [supprimer] pour retirer la piste de la liste.</translation>
+        <source>Organize the project's tracks</source>
+        <translation>Organisez les pistes qui composent le projet</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new tracks with &lt;img src=":/tooltips/add"/&gt;. Reorder tracks using &lt;img src=":/tooltips/reorder"/&gt;. Press [space] to play a track. Press [delete] to remove a track from the project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ajoutez de nouvelles pistes avec &lt;img src=":/tooltips/add"/&gt;. Reordonnez les pistes à l'aide de &lt;img src=":/tooltips/reorder"/&gt;. Appuyez sur [espace] pour jouer une piste. Appuyer sur [supprimer] pour retirer une piste.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -1039,8 +1043,12 @@
 <context>
     <name>Cell</name>
     <message>
-        <source>Your platform cannot play FLAC audio files</source>
+        <source>Your computer cannot play FLAC audio files</source>
         <translation>Votre système ne supporte pas la lecture audio FLAC</translation>
+    </message>
+    <message>
+        <source>Your computer cannot play MP3 audio files</source>
+        <translation>Votre système ne supporte pas la lecture audio MP3</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_selection_dialog.py"/>

@@ -29,7 +29,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Organize the project's tracks. Press [space] to play a track. Press [delete] to remove the track from the list.</string>
+         <string>Organize the project's tracks</string>
         </property>
        </widget>
       </item>
@@ -50,6 +50,24 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_2">
+     <property name="styleSheet">
+      <string notr="true">
+QLabel[style=QWindowsVistaStyle] {
+   font-size: 7pt;
+}
+
+QLabel[style=QMacStyle] {
+   font-size: 11pt;
+}
+</string>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new tracks with &lt;img src=&quot;:/tooltips/add&quot;/&gt;. Reorder tracks using &lt;img src=&quot;:/tooltips/reorder&quot;/&gt;. Press [space] to play a track. Press [delete] to remove a track from the project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTableWidget" name="_track_table">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
@@ -57,6 +75,11 @@
      <property name="styleSheet">
       <string notr="true">QTableView[style=QMacStyle] {
     alternate-background-color: #F2F2F2;
+}
+
+QToolTip {
+    padding: 2px;
+    background-color: palette(alternate-base);
 }</string>
      </property>
      <property name="editTriggers">
