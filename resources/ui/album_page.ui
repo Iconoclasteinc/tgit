@@ -63,12 +63,6 @@
           </property>
           <item>
            <widget class="QToolButton" name="_select_picture_button">
-            <property name="minimumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -77,7 +71,7 @@
             </property>
             <property name="styleSheet">
              <string notr="true">
-QToolTip {
+QToolTip[style=QMacStyle] {
     padding: 2px;
     background-color: palette(alternate-base);
 }
@@ -94,12 +88,6 @@ QToolTip {
           </item>
           <item>
            <widget class="QToolButton" name="_remove_picture_button">
-            <property name="minimumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -108,15 +96,14 @@ QToolTip {
             </property>
             <property name="styleSheet">
              <string notr="true">
-QToolButton {
+QToolButton[style=QMacStyle] {
 	margin-left: -1px;
 }
 
-QToolTip {
+QToolTip[style=QMacStyle] {
     padding: 2px;
     background-color: palette(alternate-base);
-}
-</string>
+}</string>
             </property>
             <property name="text">
              <string/>
@@ -208,22 +195,21 @@ QToolTip {
         <item row="6" column="1">
          <widget class="QLabel" name="_main_artist_info">
           <property name="styleSheet">
-           <string notr="true">
-QLabel[style=QWindowsVistaStyle] {
+           <string notr="true">QLabel[style=QWindowsVistaStyle] {
     font-size: 7pt;
-	margin-top: -2px;
-    margin-bottom: 2px;
+    margin-top: -1px;
+    margin-bottom: 1px;
 }
 
 QLabel[style=QMacStyle] {
     font-size: 11pt;
-	margin-top: -3px;
+    margin-top: -3px;
     margin-bottom: 3px;
 }
 </string>
           </property>
           <property name="text">
-           <string>The name of the individual or band as it appears on the release</string>
+           <string>The name as it appears on the release</string>
           </property>
          </widget>
         </item>
@@ -248,15 +234,13 @@ QLabel[style=QMacStyle] {
              <enum>Qt::StrongFocus</enum>
             </property>
             <property name="toolTip">
-             <string>Lookup the main artist's ISNI in the global ISNI database</string>
+             <string>Look the main artist's ISNI number up in the global ISNI database</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">
-QToolTip {
+             <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
     background-color: palette(alternate-base);
-}
-</string>
+}</string>
             </property>
             <property name="text">
              <string/>
@@ -276,7 +260,7 @@ QToolTip {
           <item>
            <layout class="QHBoxLayout" name="_main_artist_isni_edit_pane">
             <property name="spacing">
-             <number>0</number>
+             <number>3</number>
             </property>
             <item>
              <widget class="QLineEdit" name="_main_artist_isni">
@@ -297,7 +281,7 @@ QToolTip {
                </size>
               </property>
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=&quot;:/tooltips/search&quot;/&gt;button to look the main artist's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string/>
@@ -306,7 +290,7 @@ QToolTip {
                <pixmap resource="../resources.qrc">:/icons/help</pixmap>
               </property>
               <property name="scaledContents">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -317,11 +301,10 @@ QToolTip {
         <item row="8" column="1">
          <widget class="QLabel" name="_main_artist_isni_info">
           <property name="styleSheet">
-           <string notr="true">
-QLabel[style=QWindowsVistaStyle] {
+           <string notr="true">QLabel[style=QWindowsVistaStyle] {
     font-size: 7pt;
-    margin-top: -2px;
-    margin-bottom: 2px;
+    margin-top: -1px;
+    margin-bottom: 1px;
 }
 
 QLabel[style=QMacStyle] {
@@ -469,7 +452,7 @@ QLabel[style=QMacStyle] {
        <item row="3" column="1">
         <layout class="QHBoxLayout" name="_barcode_edit_pane">
          <property name="spacing">
-          <number>0</number>
+          <number>3</number>
          </property>
          <item>
           <widget class="QLineEdit" name="_barcode">
@@ -502,7 +485,7 @@ QLabel[style=QMacStyle] {
             <pixmap resource="../resources.qrc">:/icons/help</pixmap>
            </property>
            <property name="scaledContents">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -511,11 +494,10 @@ QLabel[style=QMacStyle] {
        <item row="4" column="1">
         <widget class="QLabel" name="_barcode_info">
          <property name="styleSheet">
-          <string notr="true">
-QLabel[style=QWindowsVistaStyle] {
+          <string notr="true">QLabel[style=QWindowsVistaStyle] {
     font-size: 7pt;
-    margin-top: -2px;
-    margin-bottom: 2px;
+    margin-top: -1px;
+    margin-bottom: 1px;
 }
 
 QLabel[style=QMacStyle] {
@@ -576,7 +558,7 @@ QLabel[style=QMacStyle] {
             <x>0</x>
             <y>0</y>
             <width>782</width>
-            <height>235</height>
+            <height>202</height>
            </rect>
           </property>
           <property name="styleSheet">
@@ -609,15 +591,15 @@ QLabel[style=QMacStyle] {
  </widget>
  <customwidgets>
   <customwidget>
+   <class>HelpLabel</class>
+   <extends>QLabel</extends>
+   <header>tgit.ui.widgets.help_label</header>
+  </customwidget>
+  <customwidget>
    <class>MusicianTable</class>
    <extends>QWidget</extends>
    <header>tgit.ui.pages.album_edition_page</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>HelpLabel</class>
-   <extends>QLabel</extends>
-   <header>tgit.ui.widgets.help_label</header>
   </customwidget>
  </customwidgets>
  <tabstops>

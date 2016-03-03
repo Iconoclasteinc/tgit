@@ -5,7 +5,6 @@ from datetime import timedelta
 
 import pytest
 import requests
-
 from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
 
 from cute.matchers import named
@@ -111,7 +110,7 @@ def test_displays_track_metadata(driver):
     driver.shows_iswc("T-345246800-1")
     driver.shows_tags("Tag1 Tag2 Tag3")
     driver.shows_lyrics("Lyrics\n...\n...")
-    driver.shows_language("eng")
+    driver.shows_language("English")
     driver.shows_recording_studio("Studio A, Studio B")
     driver.shows_recording_studio_region("Canada")
     driver.shows_production_company("Initial Producer")
@@ -187,11 +186,7 @@ def test_signals_when_track_metadata_change(driver):
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(language="fra"))
-    driver.select_language("fra")
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(language="eng"))
-    driver.change_language("eng")
+    driver.select_language("Français")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(production_company="Producer"))

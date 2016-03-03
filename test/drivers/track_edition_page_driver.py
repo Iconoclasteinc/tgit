@@ -6,8 +6,13 @@ from tgit.ui.pages.track_edition_page import TrackEditionPage
 from ._screen_driver import ScreenDriver
 
 
-def track_edition_page(parent):
-    return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named(starts_with("track_edition_page")),
+def track_edition_page(parent, number=None):
+    name_condition = starts_with("track_edition_page") if not number else "track_edition_page_" + str(number)
+    return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named(name_condition), showing_on_screen())
+
+
+def track_edition_page_numbered(parent, number):
+    return TrackEditionPageDriver.find_single(parent, TrackEditionPage, named("track_edition_page_" + str(number)),
                                               showing_on_screen())
 
 
@@ -87,7 +92,7 @@ class TrackEditionPageDriver(ScreenDriver):
             self.change_lyricist_ipi(meta["lyricist_ipi"])
 
     def shows_album_lead_performer(self, name):
-        label = self.label(named("_album_lead_performer"))
+        label = self.label(named("_album_main_artist"))
         label.is_showing_on_screen()
         label.has_text(name)
 
@@ -109,13 +114,21 @@ class TrackEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_track_title")).change_text(title)
 
     def shows_lead_performer(self, name, disabled=False):
-        self.label(with_buddy(named("_lead_performer"))).is_showing_on_screen()
-        edit = self.lineEdit(named("_lead_performer"))
+        label = self.label(with_buddy(named("_main_artist")))
+        label.is_showing_on_screen()
+        label.is_disabled(disabled)
+        info = self.label(named("_main_artist_info"))
+        info.is_showing_on_screen()
+        info.is_disabled(disabled)
+        help_label = self.label(named("_main_artist_help"))
+        help_label.is_showing_on_screen()
+        help_label.is_disabled(disabled)
+        edit = self.lineEdit(named("_main_artist"))
         edit.has_text(name)
         edit.is_disabled(disabled)
 
     def change_lead_performer(self, name):
-        self.lineEdit(named("_lead_performer")).change_text(name)
+        self.lineEdit(named("_main_artist")).change_text(name)
 
     def shows_version_info(self, info):
         self.label(with_buddy(named("_version"))).is_showing_on_screen()
@@ -142,71 +155,92 @@ class TrackEditionPageDriver(ScreenDriver):
         edit.clear_focus()
 
     def shows_lyricist(self, name):
+        self.tabs(named("_tabs")).select("Contributors")
         self.label(with_buddy(named("_lyricist"))).is_showing_on_screen()
         self.lineEdit(named("_lyricist")).has_text(name)
 
     def change_lyricist(self, name):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_lyricist")).change_text(name)
 
     def change_lyricist_ipi(self, ipi):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_lyricist_ipi")).change_text(ipi)
 
     def lyricist_ipi_enabled(self, enabled=True):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_lyricist_ipi")).is_enabled(enabled=enabled)
 
     def shows_lyricist_isni(self, isni):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_lyricist_isni")).has_text(isni)
 
     def shows_lyricist_ipi(self, ipi):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_lyricist_ipi")).has_text(ipi)
 
     def change_lyricist_isni(self, isni):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_lyricist_isni")).change_text(isni)
 
     def assign_isni_to_lyricist(self):
+        self.tabs(named("_tabs")).select("Contributors")
         menu = self.tool_button(named("_lyricist_isni_actions_button")).open_menu()
         menu.menu_item(named("_lyricist_isni_assign_action")).manipulate("enable", lambda b: b.setEnabled(True))
         menu.select_menu_item(named("_lyricist_isni_assign_action"))
 
     def confirm_lyricist_isni(self):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_lyricist_isni")).enter()
 
     def shows_composer(self, name):
+        self.tabs(named("_tabs")).select("Contributors")
         self.label(with_buddy(named("_composer"))).is_showing_on_screen()
         self.lineEdit(named("_composer")).has_text(name)
 
     def change_composer(self, name):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_composer")).change_text(name)
 
     def change_composer_ipi(self, ipi):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_composer_ipi")).change_text(ipi)
 
     def composer_ipi_enabled(self, enabled=True):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_composer_ipi")).is_enabled(enabled=enabled)
 
     def shows_composer_ipi(self, ipi):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_composer_ipi")).has_text(ipi)
 
     def shows_composer_isni(self, isni):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_composer_isni")).has_text(isni)
 
     def shows_publisher(self, name):
+        self.tabs(named("_tabs")).select("Contributors")
         self.label(with_buddy(named("_publisher"))).is_showing_on_screen()
         self.lineEdit(named("_publisher")).has_text(name)
 
     def change_publisher(self, name):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_publisher")).change_text(name)
 
     def change_publisher_ipi(self, ipi):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_publisher_ipi")).change_text(ipi)
 
     def publisher_ipi_enabled(self, enabled=True):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_publisher_ipi")).is_enabled(enabled=enabled)
 
     def shows_publisher_isni(self, isni):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_publisher_isni")).has_text(isni)
 
     def shows_publisher_ipi(self, ipi):
+        self.tabs(named("_tabs")).select("Contributors")
         self.lineEdit(named("_publisher_ipi")).has_text(ipi)
 
     def shows_isrc(self, code):
@@ -253,6 +287,7 @@ class TrackEditionPageDriver(ScreenDriver):
         self.combobox(named("_language")).change_text(lang)
 
     def select_language(self, lang):
+        self.tabs(named("_tabs")).select("Lyrics")
         self.combobox(named("_language")).select_option(lang)
 
     def shows_bitrate(self, text):

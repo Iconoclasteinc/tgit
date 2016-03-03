@@ -89,7 +89,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._publisher_isni_actions_button.setMenu(publisher_menu)
 
         self._genre.addItems(sorted(GENRES))
-        self._language.addItems(sorted(LANGUAGES))
+        self._fill_with_languages(self._language)
         self._fill_with_countries(self._production_company_region)
         self._fill_with_countries(self._recording_studio_region)
 
@@ -97,7 +97,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             self.metadata_changed.emit(self.metadata)
 
         self._track_title.editingFinished.connect(emit_metadata_changed)
-        self._lead_performer.editingFinished.connect(emit_metadata_changed)
+        self._main_artist.editingFinished.connect(emit_metadata_changed)
         self._version.editingFinished.connect(emit_metadata_changed)
         self._featured_guest.editingFinished.connect(emit_metadata_changed)
         self._comments.editingFinished.connect(emit_metadata_changed)
@@ -110,7 +110,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
         self._lyrics.editingFinished.connect(emit_metadata_changed)
         self._language.activated.connect(emit_metadata_changed)
-        self._language.lineEdit().textEdited.connect(emit_metadata_changed)
 
         self._recording_studio.editingFinished.connect(emit_metadata_changed)
         self._recording_studio_region.activated.connect(emit_metadata_changed)
@@ -175,11 +174,15 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._display_album_cover(album.main_cover)
         self._album_title.setText(album.release_name)
         if album.compilation:
-            self._album_lead_performer.setText(self.tr("Various Artists"))
+            self._album_main_artist.setText(self.tr("Various Artists"))
         else:
-            self._album_lead_performer.setText(album.lead_performer)
-        self._lead_performer.setEnabled(album.compilation is True)
-        self._lead_performer_caption.setEnabled(album.compilation is True)
+            self._album_main_artist.setText(album.lead_performer)
+
+        enable_main_artist = album.compilation is True
+        self._main_artist.setEnabled(enable_main_artist)
+        self._main_artist_caption.setEnabled(enable_main_artist)
+        self._main_artist_info.setEnabled(enable_main_artist)
+        self._main_artist_help.setEnabled(enable_main_artist)
 
         isnis = album.isnis or {}
         self._lyricist_isni.setText(isnis.get(self._lyricist.text()))
@@ -194,7 +197,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def display_track(self, track):
         self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
         self._track_title.setText(track.track_title)
-        self._lead_performer.setText(track.lead_performer)
+        self._main_artist.setText(track.lead_performer)
         self._version.setText(track.version_info)
         self._duration.setText(formatting.to_duration(track.duration))
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
@@ -207,7 +210,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._iswc.setText(track.iswc)
         self._tags.setText(track.labels)
         self._lyrics.setPlainText(track.lyrics)
-        self._language.setEditText(track.language)
+        self._display_language(track.language, self._language)
         self._software_notice.setText(self._compose_software_notice(track))
 
         self._recording_studio.setText(track.recording_studio)
@@ -233,6 +236,13 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def _display_region(region, combobox):
         if region:
             combobox.setCurrentText(COUNTRIES[region[0]])
+
+    @staticmethod
+    def _display_language(language, combobox):
+        if language:
+            combobox.setCurrentText(LANGUAGES[language])
+        else:
+            combobox.setCurrentIndex(0)
 
     def _display_album_cover(self, picture):
         # Cache the cover image to avoid recomputing the image each time the screen updates
@@ -271,7 +281,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         labels=self._tags.text(),
                         lyrics=self._lyrics.toPlainText(),
                         lyricist=self._lyricist.text(),
-                        language=self._language.currentText(),
+                        language=self._language.currentData(),
                         recording_studio=self._recording_studio.text(),
                         recording_studio_region=self._get_country_code_from_combo(self._recording_studio_region),
                         recording_time=self._recording_time.date().toString(ISO_8601_FORMAT),
@@ -281,14 +291,21 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         mixer=self._mixer.text(),
                         primary_style=self._genre.currentText())
 
-        if self._lead_performer.isEnabled():
-            metadata["lead_performer"] = self._lead_performer.text()
+        if self._main_artist.isEnabled():
+            metadata["lead_performer"] = self._main_artist.text()
 
         return metadata
 
     @staticmethod
     def _fill_with_countries(combobox):
         for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
+            combobox.addItem(name, code)
+        combobox.insertItem(0, "")
+        combobox.setCurrentIndex(0)
+
+    @staticmethod
+    def _fill_with_languages(combobox):
+        for code, name in sorted(LANGUAGES.items(), key=operator.itemgetter(1)):
             combobox.addItem(name, code)
         combobox.insertItem(0, "")
         combobox.setCurrentIndex(0)

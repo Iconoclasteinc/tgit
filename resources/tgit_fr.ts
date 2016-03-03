@@ -230,8 +230,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>The name of the individual or band as it appears on the release</source>
-        <translation>Le nom de l'interprète ou du groupe tel qu'affiché sur la parution</translation>
+        <source>The name as it appears on the release</source>
+        <translation>Le nom tel qu'affiché sur la parution</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -240,13 +240,13 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look the main artist's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI de l'artiste principal dans la base de données globale ISNI.&lt;/p&gt;&lt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Lookup the main artist's ISNI in the global ISNI database</source>
-        <translation>Rechercher l'ISNI de l'artiste principal dans la base de données ISNI</translation>
+        <source>Look the main artist's ISNI number up in the global ISNI database</source>
+        <translation>Rechercher le numéro ISNI de l'artiste principal dans la base de données ISNI</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -323,11 +323,6 @@
     <name>AlbumEditionPage</name>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>Please sign-in to activate ISNI lookup</source>
-        <translation>Veuillez vous connecter pour utiliser la recherche ISNI</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/album_edition_page.py" />
         <source>Remove</source>
         <translation>Retirer</translation>
     </message>
@@ -362,15 +357,28 @@
     <name>album_screen</name>
     <message>
         <location filename="tgit/ui/album_screen.py" />
-        <source>PREVIOUS</source>
-        <translation>ÉTAPE PRÉCÉDENTE</translation>
+        <source>Previous page</source>
+        <translation>Page précédente</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_screen.py" />
-        <source>NEXT</source>
-        <translation>ÉTAPE SUIVANTE</translation>
+        <source>Next page</source>
+        <translation>Page suivante</translation>
     </message>
 </context>
+    <context>
+        <name>AlbumScreen</name>
+        <message>
+            <location filename="tgit/ui/album_screen.py" />
+            <source>Track list</source>
+            <translation>Liste des pistes</translation>
+        </message>
+        <message>
+            <location filename="tgit/ui/album_screen.py" />
+            <source>Project edition</source>
+            <translation>Édition du projet</translation>
+        </message>
+    </context>
 <context>
     <name>ISNILookupDialog</name>
     <message>
@@ -401,7 +409,7 @@
     <message>
         <location filename="tgit/ui/isni_lookup_dialog.py" line="105"/>
         <source>Could not connect to the ISNI database. Please retry later.</source>
-        <translation>Impossible de se connecter à la base de données ISNI.  Svp ré-essayez plus tard.</translation>
+        <translation>Impossible de se connecter à la base de données ISNI. Veuillez réessayez plus tard.</translation>
     </message>
 </context>
 <context>
@@ -835,13 +843,23 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look up the main artist's ISNI from the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI de l'artiste principal dans la base de données globale ISNI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look the lyricist's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI de l'auteur dans la base de données globale ISNI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>You have to be signed in to use the lookup tool</source>
-        <translation>Vous devez vous connecter pour utiliser l'outil de recherche</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look the composer's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI du compositeur dans la base de données globale ISNI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look the publisher's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI de l'éditeur dans la base de données globale ISNI.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You have to be signed in to use the ISNI lookup tool &lt;img src=":/tooltips/search"/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Vous devez vous connecter pour utiliser l'outil de recherche &lt;img src=":/tooltips/search"/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -850,8 +868,13 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Placeholder Help&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Aide Placeholder&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The Interested Parties Information Code is used to identify music creators and publishers. You should retrieve this important number on your performing rights organization web portal of by searching a previously registered composition of yours on the http://iswcnet.cisac.org/ portal.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Le Interested Parties Information Code est utilisé pour identifier les créateurs et les éditeurs.&lt;/p&gt;&lt;p&gt;Il est recommandé de visiter votre profil sur le site de votre collectif (SOCAN, SACEM, SODRAC, etc.) pour récupérer votre IPI. Vous pouvez aussi le rechercher dans la base http://iswcnet.cisac.org/ en entrant le titre de l&apos;une de vos oeuvres déclarées par le passé.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to distinguish between two version of similar tracks. It is used to mention a live version, a shortened version for radio, a remix, etc... Free text as you wish it to appear in a music player.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ce champ est important pour distinguer deux pistes concernant la même œuvre et dont la seule différence est la version originale, en concert, remix, version radio, etc... Texte libre tel qu&apos;on souhaite le voir apparaître dans un lecteur audio.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -865,13 +888,28 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Comma separated list of tags describing this track</source>
-        <translation>Liste de tags décrivant cette piste, séparés par des virgules</translation>
+        <source>List of comma separated tags</source>
+        <translation>Liste de tags séparés par des virgules</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>The name of the individual or band as it appears on the release</source>
-        <translation>Le nom de l'interprète ou du groupe tel qu'affiché sur la parution</translation>
+        <source>The name as it appears on the release</source>
+        <translation>Le nom tel qu'affiché sur la parution</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Look the lyricist's ISNI number up in the global ISNI database</source>
+        <translation>Rechercher le numéro ISNI de l'auteur dans la base de données ISNI</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Look the composer's ISNI number up in the global ISNI database</source>
+        <translation>Rechercher le numéro ISNI du compositeur dans la base de données ISNI</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>Look the publisher's ISNI number up in the global ISNI database</source>
+        <translation>Rechercher le numéro ISNI de l'éditeur dans la base de données ISNI</translation>
     </message>
 </context>
 <context>
@@ -1109,6 +1147,10 @@
     <message>
         <source>Incorrect username and/or password.</source>
         <translation>Nom d'utilisateur et/ou mot de passe incorrect</translation>
+    </message>
+    <message>
+        <source>Sign in to the TGiT platform</source>
+        <translation>Se connecter à la plateforme TGiT</translation>
     </message>
 </context>
 <context>

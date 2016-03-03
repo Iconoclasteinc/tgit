@@ -26,7 +26,7 @@ class HelpLabel(QLabel):
         super().__init__(*__args)
         self.setMouseTracking(True)
         self.setStyleSheet("""
-            QToolTip {
+            QToolTip[style=QMacStyle] {
                 padding: 2px;
                 background-color: palette(alternate-base);
             }

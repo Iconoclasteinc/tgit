@@ -34,6 +34,8 @@
         <file alias="icons/error">images/16x16/error_outline.png</file>
         <file alias="icons/inverted/error">images/16x16/inverted/error_outline.png</file>
         <file alias="icons/help">images/20x20/help_outline.png</file>
+        <file alias="icons/back">images/16x16/back.png</file>
+        <file alias="icons/next">images/16x16/next.png</file>
         <file alias="tooltips/search">images/12x12/search.png</file>
         <file alias="tooltips/reorder">images/12x12/swap_vert.png</file>
         <file alias="tooltips/add">images/12x12/add.png</file>

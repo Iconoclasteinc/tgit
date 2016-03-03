@@ -179,3 +179,10 @@ def save():
         return holding_modifier_key(CONTROL, type_key("s"))
     else:
         return holding_modifier_key(COMMAND, type_key("s"))
+
+
+def quick_nav():
+    if platforms.windows:
+        return holding_modifier_key(CONTROL, type_key("g"))
+    else:
+        return holding_modifier_key(COMMAND, type_key("g"))
