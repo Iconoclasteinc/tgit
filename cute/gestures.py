@@ -117,7 +117,7 @@ def pause_to_avoid_double_click():
 
 
 def mouse_multi_click(button=LEFT_BUTTON):
-    return holding_modifier_key(COMMAND if platforms.mac else CONTROL, mouse_click(button))
+    return holding_control(mouse_click(button))
 
 
 def mouse_multi_click_at(pos, button=LEFT_BUTTON):
@@ -132,7 +132,7 @@ def mouse_drag(from_pos, to_pos):
 
 
 def select_all():
-    return holding_modifier_key(COMMAND if platforms.mac else CONTROL, type_key('a'))
+    return holding_control(type_key('a'))
 
 
 def enter():

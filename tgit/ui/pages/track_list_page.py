@@ -74,6 +74,7 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
             move(from_position, to_position)
 
         self._track_table.verticalHeader().sectionMoved.connect(move_track)
+        self._move_up_action.triggered.connect(lambda checked: move(self._selected_row, self._selected_row - 1))
 
     def on_play_track(self, play):
         self._play_action.triggered.connect(lambda: play(self._selected_item.track))
@@ -92,6 +93,10 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._setup_horizontal_header(self._track_table.horizontalHeader())
         self._setup_vertical_header(self._track_table.verticalHeader())
         self._remove_action.triggered.connect(self._stop_selected_track)
+        self._remove_action.changed.connect(
+                lambda: self._remove_track_button.setEnabled(self._remove_action.isEnabled()))
+        self._move_up_action.changed.connect(
+                lambda: self._move_track_up_button.setEnabled(self._move_up_action.isEnabled()))
 
     def display(self, album):
         for index, track in enumerate(album.tracks):
@@ -175,8 +180,8 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
             self._stop_action.setVisible(self._selected_item.is_playing)
             self._stop_action.setText('{0} "{1}"'.format(self.tr("Stop"), self._selected_item.track_title))
 
-        self._remove_track_button.setEnabled(self._selected_item is not None)
         self._remove_action.setEnabled(self._selected_item is not None)
+        self._move_up_action.setEnabled(self._selected_item is not None and self._selected_row > 0)
         self._play_action.setEnabled(self._selected_item is not None)
         self._stop_action.setEnabled(self._selected_item is not None)
 
@@ -231,6 +236,7 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._items.insert(to_index, item)
         self._track_table.insertRow(to_index)
         self._refresh_row(to_index)
+        self._track_table.selectRow(to_index)
 
     def album_metadata_changed(self, *_):
         for item in self._items:

@@ -6,7 +6,7 @@ import pytest
 from hamcrest import has_property, contains, assert_that, empty, contains_string
 
 from cute.matchers import with_text, named
-from cute.probes import ValueMatcherProbe
+from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers import TrackListPageDriver
 from test.integration.ui import show_widget
@@ -111,7 +111,7 @@ def test_unsubscribe_from_track_events_track_removed_from_album(driver):
 
 
 @pytest.mark.parametrize("using", ["menu", "shortcut", "button"])
-def test_makes_remove_track_request_with_selected_track_when_remove_menu_item_selected(driver, using):
+def test_makes_remove_track_request_with_selected_track_when_track_removed(driver, using):
     page = show_track_list_page(make_album(tracks=[make_track(), make_track(track_title="Chevere!")]))
 
     remove_request = ValueMatcherProbe("remove track request", 1)
@@ -214,14 +214,38 @@ def test_makes_move_track_request_when_track_row_moved(driver):
                                                    make_track(track_title='Choices'),
                                                    make_track(track_title='Place St-Henri')]))
 
-    track_moved_signal = ValueMatcherProbe('track moved', contains(2, 1))
-    page.on_move_track(lambda track, to_position: track_moved_signal.received((track, to_position)))
+    track_moved_signal = MultiValueMatcherProbe('track moved', contains(2, 1))
+    page.on_move_track(track_moved_signal.received)
 
     driver.move_track('Place St-Henri', 1)
     driver.check(track_moved_signal)
 
 
-def test_moves_row_in_table_accordingly_when_track_position_changes(driver):
+def test_makes_move_track_request_when_track_moved_up(driver):
+    page = show_track_list_page(make_album(tracks=[make_track(track_title='Chaconne'),
+                                                   make_track(track_title='Choices')]))
+
+    track_moved_signal = MultiValueMatcherProbe('track moved', contains(1, 0))
+    page.on_move_track(track_moved_signal.received)
+
+    driver.select_track("Choices")
+    driver.move_track_up()
+    driver.check(track_moved_signal)
+
+
+def test_disables_move_up_button_when_on_first_track_or_no_track_selected(driver):
+    _ = show_track_list_page(make_album(tracks=[make_track(track_title='Chaconne'), make_track(track_title='Choices')]))
+
+    driver.move_up_button.is_disabled()
+
+    driver.select_track("Choices")
+    driver.move_up_button.is_enabled()
+
+    driver.select_track("Chaconne")
+    driver.move_up_button.is_disabled()
+
+
+def test_moves_and_select_row_in_table_accordingly_when_track_position_changes(driver):
     tracks = (make_track(track_title="Chevere!"),
               make_track(track_title='Zumbar'),
               make_track(track_title='Salsa Coltrane'))
@@ -229,8 +253,10 @@ def test_moves_row_in_table_accordingly_when_track_position_changes(driver):
     _ = show_track_list_page(album)
 
     driver.shows_tracks_in_order(['Chevere!'], ['Zumbar'], ['Salsa Coltrane'])
+    driver.select_track("Salsa Coltrane")
     album.move_track(2, 1)
     driver.shows_tracks_in_order(['Chevere!'], ['Salsa Coltrane'], ["Zumbar"])
+    driver.has_selected_track("Salsa Coltrane")
 
 
 def test_unsubscribes_from_event_signals_on_close(driver):

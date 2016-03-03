@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>807</width>
+    <width>825</width>
     <height>300</height>
    </rect>
   </property>
@@ -53,14 +53,14 @@
     <widget class="QLabel" name="label_2">
      <property name="styleSheet">
       <string notr="true">
-QLabel[style=QWindowsVistaStyle] {
-   font-size: 7pt;
-}
+                            QLabel[style=QWindowsVistaStyle] {
+                            font-size: 7pt;
+                            }
 
-QLabel[style=QMacStyle] {
-   font-size: 11pt;
-}
-</string>
+                            QLabel[style=QMacStyle] {
+                            font-size: 11pt;
+                            }
+                        </string>
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new tracks with &lt;img src=&quot;:/tooltips/add&quot;/&gt;. Remove selected track with &lt;img src=&quot;:/tooltips/remove&quot;/&gt;. Reorder tracks using &lt;img src=&quot;:/tooltips/reorder&quot;/&gt;. Press [space] to play or stop the selected track.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -74,13 +74,14 @@ QLabel[style=QMacStyle] {
      </property>
      <property name="styleSheet">
       <string notr="true">QTableView[style=QMacStyle] {
-    alternate-background-color: #F2F2F2;
-}
+                            alternate-background-color: #F2F2F2;
+                            }
 
-QToolTip {
-    padding: 2px;
-    background-color: palette(alternate-base);
-}</string>
+                            QToolTip {
+                            padding: 2px;
+                            background-color: palette(alternate-base);
+                            }
+                        </string>
      </property>
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
@@ -173,10 +174,11 @@ QToolTip {
       <widget class="QToolButton" name="_add_tracks_button">
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
-    margin: 0 -1px 0 0;
-    min-height: 20px;
-    min-width: 20px;
-}</string>
+                                    margin: 0 -1px 0 0;
+                                    min-height: 20px;
+                                    min-width: 20px;
+                                    }
+                                </string>
        </property>
        <property name="text">
         <string>Add Tracks</string>
@@ -194,17 +196,40 @@ QToolTip {
        </property>
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
-    margin: 0;
-    min-height: 20px;
-    min-width: 20px;
-}</string>
+                                    margin: 0 -1px 0 0;
+                                    min-height: 20px;
+                                    min-width: 20px;
+                                    }
+                                </string>
        </property>
        <property name="text">
-        <string>Add Tracks</string>
+        <string>Remove</string>
        </property>
        <property name="icon">
         <iconset>
          <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="_move_track_up_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QToolButton[style=QMacStyle] {
+                                    margin: 0;
+                                    min-height: 20px;
+                                    min-width: 20px;
+                                    }
+                                </string>
+       </property>
+       <property name="text">
+        <string>Move Up</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/icons/move-up</normaloff>:/icons/move-up</iconset>
        </property>
       </widget>
      </item>
@@ -269,6 +294,20 @@ QToolTip {
     <bool>false</bool>
    </property>
   </action>
+  <action name="_move_up_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Move Up</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+Up</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WidgetShortcut</enum>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -283,8 +322,24 @@ QToolTip {
      <y>274</y>
     </hint>
     <hint type="destinationlabel">
-     <x>51</x>
-     <y>274</y>
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_move_track_up_button</sender>
+   <signal>clicked()</signal>
+   <receiver>_move_up_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>77</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>
