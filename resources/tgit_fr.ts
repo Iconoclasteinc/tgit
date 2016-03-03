@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr_CA" sourcelanguage="en_US">
 <context>
-    <name>track_list_page</name>
+    <name>track_list_tab</name>
     <message>
         <source>Track Title</source>
         <translation>Titre de la piste</translation>
@@ -182,144 +182,144 @@
     </message>
 </context>
 <context>
-    <name>album_edition_page</name>
+    <name>project_edition_page</name>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Artwork</source>
         <translation>Illustration</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Add or change the picture</source>
         <translation>Ajouter ou changer l'illustration</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Remove the picture</source>
         <translation>Supprimer l&apos;illustration</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Project</source>
         <translation>Projet</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>YYYY-MM-DD</source>
         <translation>AAAA-MM-JJ</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Title:</source>
         <translation>Titre :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>This project is a multi-artist compilation</source>
         <translation>Ce projet est une compilation multi-artistes</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Main Artist</source>
         <translation>Artiste principal</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>The name as it appears on the release</source>
         <translation>Le nom tel qu'affiché sur la parution</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>ISNI Number:</source>
         <translation>Numéro ISNI :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The ISNI is a global name identifier for contributors to creative work. It is provided by the International ISNI Agency.&lt;/p&gt;&lt;p&gt;Use the &lt;img src=":/tooltips/search"/&gt;button to look the main artist's ISNI number up in the global ISNI database.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L'ISNI est un identifiant global unique destiné aux contributeurs à des oeuvres créatives. Les attributions de numéros ISNI sont gérées par l'agence internationale ISNI.&lt;/p&gt;&lt;p&gt;Utilisez le bouton &lt;img src=":/tooltips/search"/&gt; pour rechercher le numéro ISNI de l'artiste principal dans la base de données globale ISNI.&lt;/p&gt;&lt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Look the main artist's ISNI number up in the global ISNI database</source>
         <translation>Rechercher le numéro ISNI de l'artiste principal dans la base de données ISNI</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>You have to be signed in to use the lookup tool</source>
         <translation>Vous devez vous connecter pour utiliser l'outil de recherche</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Origin:</source>
         <translation>Lieu d&apos;origine :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>3. Musicians</source>
         <translation>3. Musiciens</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Label Name:</source>
         <translation>Maison de disques :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>2. Release</source>
         <translation>2. Parution</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Catalog Number:</source>
         <translation>Numéro de catalogue :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Barcode:</source>
         <translation>Code-barres :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>The code without any space or dash</source>
         <translation>Le code-barres sans tiret ni espace</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The barcode is the &lt;span style="font-style:italic;"&gt;physical product code&lt;/span&gt; and usually consists of 8 to 14 characters.&lt;/p&gt;&lt;p&gt;It will typically be either a UPC, EAN, JAN or GTIN but may have a different format depending on the country or territory covered by the album's licensing deal.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Le code-barres est le &lt;span style=" font-style:italic;"&gt;code du produit physique&lt;/span&gt; constitué habituellement de 8 to 14 caractères. &lt;/p&gt;&lt;p&gt;Le code-barres est en général soit le UPC, EAN, JAN or GTIN, cependant il peut avoir un format différent en fonction du pays ou territoire couvert par la licence sur les droits de l'album.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Comments:</source>
         <translation>Commentaires :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Release Date:</source>
         <translation>Date de mise en marché :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Digital Release Time</source>
         <translation>Parution numérique</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Original Release Time</source>
         <translation>Sortie originale</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Assign</source>
         <translation>Assigner</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>1. Track List</source>
         <translation>1. Liste des pistes</translation>
     </message>
@@ -327,12 +327,12 @@
 <context>
     <name>AlbumEditionPage</name>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Remove</source>
         <translation>Retirer</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Various Artists</source>
         <translation>Multi-interprètes</translation>
     </message>
@@ -359,14 +359,14 @@
     </message>
 </context>
 <context>
-    <name>album_screen</name>
+    <name>project_screen</name>
     <message>
-        <location filename="tgit/ui/album_screen.py" />
+        <location filename="tgit/ui/project_screen.py" />
         <source>Previous page</source>
         <translation>Page précédente</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_screen.py" />
+        <location filename="tgit/ui/project_screen.py" />
         <source>Next page</source>
         <translation>Page suivante</translation>
     </message>
@@ -374,7 +374,7 @@
     <context>
         <name>AlbumScreen</name>
         <message>
-            <location filename="tgit/ui/album_screen.py" />
+            <location filename="tgit/ui/project_screen.py" />
             <source>Project edition</source>
             <translation>Édition du projet</translation>
         </message>
@@ -892,17 +892,17 @@
         <translation>Le nom tel qu'affiché sur la parution</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Look the lyricist's ISNI number up in the global ISNI database</source>
         <translation>Rechercher le numéro ISNI de l'auteur dans la base de données ISNI</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Look the composer's ISNI number up in the global ISNI database</source>
         <translation>Rechercher le numéro ISNI du compositeur dans la base de données ISNI</translation>
     </message>
     <message>
-        <location filename="tgit/ui/album_edition_page.py" />
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>Look the publisher's ISNI number up in the global ISNI database</source>
         <translation>Rechercher le numéro ISNI de l'éditeur dans la base de données ISNI</translation>
     </message>
@@ -1019,22 +1019,22 @@
 <context>
     <name>NewProjectPage</name>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
+        <location filename="tgit/ui/new_project_page.py"/>
         <source>untitled</source>
         <translation>sans titre</translation>
     </message>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
+        <location filename="tgit/ui/new_project_page.py"/>
         <source>New FLAC Project</source>
         <translation>Nouveau project FLAC</translation>
     </message>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
+        <location filename="tgit/ui/new_project_page.py"/>
         <source>New MP3 Project</source>
         <translation>Nouveau project MP3</translation>
     </message>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
+        <location filename="tgit/ui/new_project_page.py"/>
         <source>Create</source>
         <translation>Créer</translation>
     </message>
@@ -1042,27 +1042,27 @@
 <context>
     <name>new_project_page</name>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
+        <location filename="tgit/ui/new_project_page.py"/>
         <source>Name:</source>
         <translation>Nom :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
+        <location filename="tgit/ui/new_project_page.py"/>
         <source>Location:</source>
         <translation>Emplacement :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
+        <location filename="tgit/ui/new_project_page.py"/>
         <source>Reference Track:</source>
         <translation>Piste de référence :</translation>
     </message>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
+        <location filename="tgit/ui/new_project_page.py"/>
         <source>Browse...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
-        <location filename="tgit/ui/new_album_page.py"/>
+        <location filename="tgit/ui/new_project_page.py"/>
         <source>Select...</source>
         <translation>Choisir...</translation>
     </message>

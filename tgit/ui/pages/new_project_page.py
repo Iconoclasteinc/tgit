@@ -19,7 +19,6 @@
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
-
 from PyQt5.QtWidgets import QFrame, QDialogButtonBox
 
 from tgit.album import Album
@@ -49,7 +48,7 @@ class NewProjectPage(QFrame, UIFile):
         self._setup_ui(select_location, select_track)
 
     def _setup_ui(self, select_destination, select_track_location):
-        self._load(":/ui/new_album_page.ui")
+        self._load(":/ui/new_project_page.ui")
         self._create_button().setText(self.tr("Create"))
         self._create_button().setShortcut(QKeySequence(Qt.Key_Return))
         self._cancel_button().setShortcut(QKeySequence(Qt.Key_Escape))

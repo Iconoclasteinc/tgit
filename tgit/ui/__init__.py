@@ -44,7 +44,7 @@ def create_main_window(session, portfolio, player, prefs, cheddar, native, confi
                         portfolio,
                         confirm_exit=messages.confirm_exit,
                         create_startup_screen=application_pages.startup_screen,
-                        create_album_screen=application_pages.album_screen,
+                        create_project_screen=application_pages.project_screen,
                         confirm_close=messages.close_project_confirmation,
                         select_export_destination=application_dialogs.export_as_csv,
                         select_save_as_destination=application_dialogs.save_as_excel,

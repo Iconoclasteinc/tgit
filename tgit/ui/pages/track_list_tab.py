@@ -30,8 +30,8 @@ from tgit.ui.observer import Observer
 from tgit.ui.pages.track_list_table_model import Column, RowItem
 
 
-def make_track_list_page(album, player, select_tracks, **handlers):
-    page = TrackListPage(select_tracks)
+def make_track_list_tab(album, player, select_tracks, **handlers):
+    page = TrackListTab(select_tracks)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -57,7 +57,7 @@ VERTICAL_HEADER_WIDTH = 24
 
 @Closeable
 @Observer
-class TrackListPage(QWidget, UIFile, AlbumListener):
+class TrackListTab(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
 
     def __init__(self, select_tracks):
@@ -87,7 +87,7 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._remove_action.triggered.connect(lambda: remove(self._selected_row))
 
     def _setup_ui(self):
-        self._load(":/ui/track_list_page.ui")
+        self._load(":/ui/track_list_tab.ui")
         self._react_to_table_events(self._track_table)
         self._react_to_focus_events()
         self._make_context_menu(self._track_table)
@@ -95,11 +95,11 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._setup_vertical_header(self._track_table.verticalHeader())
         self._remove_action.triggered.connect(self._stop_selected_track)
         self._remove_action.changed.connect(
-                lambda: self._remove_track_button.setEnabled(self._remove_action.isEnabled()))
+            lambda: self._remove_track_button.setEnabled(self._remove_action.isEnabled()))
         self._move_up_action.changed.connect(
-                lambda: self._move_track_up_button.setEnabled(self._move_up_action.isEnabled()))
+            lambda: self._move_track_up_button.setEnabled(self._move_up_action.isEnabled()))
         self._move_down_action.changed.connect(
-                lambda: self._move_track_down_button.setEnabled(self._move_down_action.isEnabled()))
+            lambda: self._move_track_down_button.setEnabled(self._move_down_action.isEnabled()))
 
     def display(self, album):
         for index, track in enumerate(album.tracks):
@@ -135,7 +135,8 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
         self._context_menu.addAction(self._stop_action)
         table.addAction(self._stop_action)
 
-    def _setup_horizontal_header(self, header):
+    @staticmethod
+    def _setup_horizontal_header(header):
         for col in range(Column.count()):
             header.resizeSection(col, Column.at(col).width)
             header.setSectionResizeMode(col, Column.at(col).resize_mode)
@@ -260,5 +261,6 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
     def _cell_item_at(self, row_index, col_index):
         return Column.at(col_index).value(self._items[row_index])
 
-    def _header_item(self):
+    @staticmethod
+    def _header_item():
         return QTableWidgetItem(QIcon(":/icons/reorder"), None)

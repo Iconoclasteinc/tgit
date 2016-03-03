@@ -31,7 +31,7 @@ from tgit.languages import LANGUAGES
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import image, formatting
 from tgit.ui.helpers.ui_file import UIFile
-from tgit.ui.pages.album_edition_page import ISO_8601_FORMAT
+from tgit.ui.pages.project_edition_page import ISO_8601_FORMAT
 
 
 def make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,

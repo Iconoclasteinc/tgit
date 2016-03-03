@@ -19,12 +19,12 @@
 import functools
 
 from tgit import album_director as director
-from tgit.ui.pages.album_edition_page import make_album_edition_page
-from tgit.ui.pages.album_screen import make_album_screen
-from tgit.ui.pages.new_album_page import make_new_project_page
+from tgit.ui.pages.project_edition_page import make_project_edition_page
+from tgit.ui.pages.project_screen import make_project_screen
+from tgit.ui.pages.new_project_page import make_new_project_page
 from tgit.ui.pages.startup_screen import StartupScreen
 from tgit.ui.pages.track_edition_page import make_track_edition_page
-from tgit.ui.pages.track_list_page import make_track_list_page
+from tgit.ui.pages.track_list_tab import make_track_list_tab
 from tgit.ui.pages.welcome_page import make_welcome_page
 
 
@@ -41,10 +41,10 @@ class Pages:
         return StartupScreen(create_welcome_page=self._welcome_page,
                              create_new_project_page=self._new_project_page)
 
-    def album_screen(self, album):
-        return make_album_screen(album=album,
-                                 album_page=self._album_edition_page,
-                                 track_page=self._track_page_for(album))
+    def project_screen(self, album):
+        return make_project_screen(album=album,
+                                   project_page=self._project_edition_page,
+                                   track_page=self._track_page_for(album))
 
     def _new_project_page(self):
         return make_new_project_page(select_location=self._dialogs.select_project_destination,
@@ -58,20 +58,20 @@ class Pages:
                                  show_load_error=self._messages.load_project_failed,
                                  on_load_project=director.load_album_into(self._portfolio))
 
-    def _track_list_page(self, album):
-        return make_track_list_page(album=album, player=self._player,
-                                    select_tracks=functools.partial(self._dialogs.select_tracks, album.type),
-                                    on_move_track=director.move_track_of(album),
-                                    on_remove_track=director.remove_track_from(album),
-                                    on_play_track=self._player.play,
-                                    on_stop_track=self._player.stop,
-                                    on_add_tracks=director.add_tracks_to(album))
+    def _track_list_tab(self, album):
+        return make_track_list_tab(album=album, player=self._player,
+                                   select_tracks=functools.partial(self._dialogs.select_tracks, album.type),
+                                   on_move_track=director.move_track_of(album),
+                                   on_remove_track=director.remove_track_from(album),
+                                   on_play_track=self._player.play,
+                                   on_stop_track=self._player.stop,
+                                   on_add_tracks=director.add_tracks_to(album))
 
-    def _album_edition_page(self, album):
-        return make_album_edition_page(
+    def _project_edition_page(self, album):
+        return make_project_edition_page(
             album=album,
             session=self._session,
-            track_list_tab=self._track_list_page,
+            track_list_tab=self._track_list_tab,
             select_identity=self._dialogs.select_identities,
             review_assignation=self._dialogs.review_isni_assignation_in(album, True),
             show_isni_assignation_failed=self._messages.isni_assignation_failed,

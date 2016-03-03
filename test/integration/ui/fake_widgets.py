@@ -3,9 +3,9 @@ from PyQt5.QtWidgets import QWidget
 from hamcrest import assert_that
 
 STARTUP_SCREEN_NAME = "startup_screen"
-ALBUM_SCREEN_NAME = "album_screen"
-TRACK_LIST_PAGE_NAME = "track_list_page"
-ALBUM_EDITION_PAGE_NAME = "album_edition_page"
+PROJECT_SCREEN_NAME = "project_screen"
+TRACK_LIST_TAB_NAME = "track_list_tab"
+PROJECT_EDITION_PAGE_NAME = "project_edition_page"
 TRACK_EDITION_PAGE_NAME = "track_edition_page"
 
 
@@ -31,37 +31,22 @@ class FakeWidget(QWidget):
         assert_that(self.closed, "widget named '{}' still open".format(self.objectName()))
 
 
-def fake_track_list_page():
-    return fake_widget(TRACK_LIST_PAGE_NAME)
-
-
-def fake_album_edition_page():
-    return fake_widget(ALBUM_EDITION_PAGE_NAME)
-
-
-def fake_track_edition_page(track_number):
-    return fake_widget(track_edition_page_name(track_number))
-
-
 def fake_startup_screen():
     return fake_widget(STARTUP_SCREEN_NAME)
 
 
-def fake_album_screen(*_):
-    return FakeAlbumScreen()
+def fake_project_screen(*_):
+    return FakeProjectScreen()
 
 
-class FakeAlbumScreen(FakeWidget):
+class FakeProjectScreen(FakeWidget):
     current_page = None
 
     def __init__(self):
-        super().__init__(ALBUM_SCREEN_NAME)
+        super().__init__(PROJECT_SCREEN_NAME)
 
     def to_project_edition_page(self):
-        self.current_page = ALBUM_EDITION_PAGE_NAME
-
-    def to_track_list_page(self):
-        self.current_page = TRACK_LIST_PAGE_NAME
+        self.current_page = PROJECT_EDITION_PAGE_NAME
 
     def to_track_page(self, index):
         self.current_page = track_edition_page_name(index + 1)

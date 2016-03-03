@@ -3,26 +3,26 @@ from hamcrest.library.text import contains_string
 
 from cute import gestures
 from cute.matchers import named
-from tgit.ui.pages.album_screen import AlbumScreen
+from tgit.ui.pages.project_screen import ProjectScreen
 from ._screen_driver import ScreenDriver
-from .album_edition_page_driver import album_edition_page, no_album_edition_page
-from .track_list_page_driver import track_list_page
+from .project_edition_page_driver import project_edition_page, no_project_edition_page
+from .track_list_tab_driver import track_list_tab
 from .track_edition_page_driver import track_edition_page, no_track_edition_page
 
 
-def album_screen(parent):
-    return AlbumScreenDriver.find_single(parent, AlbumScreen, named("album_screen"))
+def project_screen(parent):
+    return ProjectScreenDriver.find_single(parent, ProjectScreen, named("project_screen"))
 
 
-class AlbumScreenDriver(ScreenDriver):
+class ProjectScreenDriver(ScreenDriver):
     def shows_pages_in_navigation_combo(self, *pages):
         self.combobox(named("_pages_navigation")).has_options(*pages)
 
     def shows_project_edition_page(self):
-        album_edition_page(self).is_showing_on_screen()
+        project_edition_page(self).is_showing_on_screen()
 
     def has_no_project_edition_page(self):
-        no_album_edition_page(self).exists()
+        no_project_edition_page(self).exists()
 
     def shows_track_edition_page(self, number):
         track_edition_page(self, number).is_showing_on_screen()
@@ -31,13 +31,13 @@ class AlbumScreenDriver(ScreenDriver):
         no_track_edition_page(self).exists()
 
     def add_tracks_to_project(self):
-        track_list_page(self).add_tracks()
+        track_list_tab(self).add_tracks()
 
     def remove_track(self, title):
-        track_list_page(self).remove_track(title)
+        track_list_tab(self).remove_track(title)
 
     def move_track(self, title, to):
-        track_list_page(self).move_track(title, to)
+        track_list_tab(self).move_track(title, to)
 
     def to_previous_page(self):
         self.button(named("_previous")).click()
@@ -61,13 +61,13 @@ class AlbumScreenDriver(ScreenDriver):
         self.button(named("_next")).is_enabled(enabled)
 
     def shows_project_contains(self, *tracks):
-        track_list_page(self).shows_tracks_in_order(*tracks)
+        track_list_tab(self).shows_tracks_in_order(*tracks)
 
     def shows_project_metadata(self, **tags):
-        album_edition_page(self).shows_metadata(**tags)
+        project_edition_page(self).shows_metadata(**tags)
 
     def edit_project_metadata(self, **tags):
-        album_edition_page(self).change_metadata(**tags)
+        project_edition_page(self).change_metadata(**tags)
 
     def shows_track_metadata(self, **tags):
         track_edition_page(self).shows_metadata(**tags)
@@ -82,13 +82,13 @@ class AlbumScreenDriver(ScreenDriver):
         self.label(named("feature_request_link")).has_text(contains_string("href=\"{0}".format(location)))
 
     def assign_isni_to_main_artist(self):
-        album_edition_page(self).assign_isni_to_main_artist()
+        project_edition_page(self).assign_isni_to_main_artist()
 
     def lookup_isni_of_main_artist(self):
-        album_edition_page(self).lookup_isni_of_main_artist()
+        project_edition_page(self).lookup_isni_of_main_artist()
 
     def lookup_isni_is_enabled(self, enabled=True):
-        album_edition_page(self).enables_main_artist_isni_lookup(enabled=enabled)
+        project_edition_page(self).enables_main_artist_isni_lookup(enabled=enabled)
 
     def quick_navigate_to_page(self, text):
         self.click()

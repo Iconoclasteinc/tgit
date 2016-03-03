@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>track_list_page</class>
- <widget class="QWidget" name="track_list_page">
+ <class>track_list_tab</class>
+ <widget class="QWidget" name="track_list_tab">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,7 +12,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QWidget" name="widget" native="true">
+    <widget class="QWidget" name="_title_container" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="leftMargin">
        <number>0</number>
@@ -27,7 +27,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="_title">
         <property name="text">
          <string>Organize the project's tracks</string>
         </property>
@@ -50,7 +50,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="_help">
      <property name="styleSheet">
       <string notr="true">
                             QLabel[style=QWindowsVistaStyle] {
@@ -112,7 +112,7 @@
        <string>#</string>
       </property>
       <property name="textAlignment">
-       <set>AlignRight|AlignVCenter</set>
+       <set>AlignTrailing|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -120,7 +120,7 @@
        <string/>
       </property>
       <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+       <set>AlignCenter</set>
       </property>
      </column>
      <column>
@@ -128,7 +128,7 @@
        <string>Track Title</string>
       </property>
       <property name="textAlignment">
-       <set>AlignLeft|AlignVCenter</set>
+       <set>AlignLeading|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -136,7 +136,7 @@
        <string>Lead Performer</string>
       </property>
       <property name="textAlignment">
-       <set>AlignLeft|AlignVCenter</set>
+       <set>AlignLeading|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -144,7 +144,7 @@
        <string>Release Name</string>
       </property>
       <property name="textAlignment">
-       <set>AlignLeft|AlignVCenter</set>
+       <set>AlignLeading|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -152,7 +152,7 @@
        <string>Bitrate</string>
       </property>
       <property name="textAlignment">
-       <set>AlignRight|AlignVCenter</set>
+       <set>AlignTrailing|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -160,13 +160,13 @@
        <string>Duration</string>
       </property>
       <property name="textAlignment">
-       <set>AlignRight|AlignVCenter</set>
+       <set>AlignTrailing|AlignVCenter</set>
       </property>
      </column>
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="_buttons_container">
      <property name="spacing">
       <number>0</number>
      </property>

@@ -81,9 +81,6 @@ class MenuBarDriver(QMenuBarDriver):
         def to_project_page(self):
             self._menu_driver.select_menu_item(matchers.named("_to_project_edition_action"))
 
-        def to_track_list_page(self):
-            self._menu_driver.select_menu_item(matchers.named("_to_track_list_action"))
-
         def to_track_page(self, title, track_number):
             self._menu_driver.select_menu_item(matchers.with_text(_track_menu_item(title, track_number)))
 

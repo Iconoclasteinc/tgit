@@ -5,19 +5,15 @@ from hamcrest import contains, has_items, equal_to
 from cute import gestures
 from cute.matchers import named
 from cute.widgets import MenuDriver, TableViewDriver
-from tgit.ui.pages.track_list_page import TrackListPage
+from tgit.ui.pages.track_list_tab import TrackListTab
 from ._screen_driver import ScreenDriver
 
 
-def track_list_page(parent):
-    return TrackListPageDriver.find_single(parent, TrackListPage, named("track_list_page"))
+def track_list_tab(parent):
+    return TrackListTabDriver.find_single(parent, TrackListTab, named("track_list_tab"))
 
 
-def no_track_list_page(parent):
-    return TrackListPageDriver.find_none(parent, TrackListPage, named("track_list_page"))
-
-
-class TrackListPageDriver(ScreenDriver):
+class TrackListTabDriver(ScreenDriver):
     def __init__(self, selector, prober, gesture_performer):
         super().__init__(selector, prober, gesture_performer)
 

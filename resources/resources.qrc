@@ -45,11 +45,11 @@
 
         <file>ui/welcome_page.ui</file>
         <file>ui/main_window.ui</file>
-        <file>ui/album_screen.ui</file>
-        <file>ui/album_page.ui</file>
+        <file>ui/project_screen.ui</file>
+        <file>ui/project_page.ui</file>
         <file>ui/track_page.ui</file>
-        <file>ui/new_album_page.ui</file>
-        <file>ui/track_list_page.ui</file>
+        <file>ui/new_project_page.ui</file>
+        <file>ui/track_list_tab.ui</file>
         <file>ui/about_dialog.ui</file>
         <file>ui/sign_in_dialog.ui</file>
         <file>ui/isni_assignation_review_dialog.ui</file>

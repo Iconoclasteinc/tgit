@@ -34,17 +34,17 @@ from tgit.ui.helpers.ui_file import UIFile
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_album_edition_page(album, session, track_list_tab, select_picture, select_identity, review_assignation,
-                            show_isni_assignation_failed, show_cheddar_connection_failed,
-                            show_cheddar_authentication_failed, show_permission_denied, **handlers):
-    page = AlbumEditionPage(track_list_tab=track_list_tab(album),
-                            select_picture=select_picture,
-                            select_identity=select_identity,
-                            review_assignation=review_assignation,
-                            show_isni_assignation_failed=show_isni_assignation_failed,
-                            show_cheddar_connection_failed=show_cheddar_connection_failed,
-                            show_cheddar_authentication_failed=show_cheddar_authentication_failed,
-                            show_permission_denied=show_permission_denied)
+def make_project_edition_page(album, session, track_list_tab, select_picture, select_identity, review_assignation,
+                              show_isni_assignation_failed, show_cheddar_connection_failed,
+                              show_cheddar_authentication_failed, show_permission_denied, **handlers):
+    page = ProjectEditionPage(track_list_tab=track_list_tab(album),
+                              select_picture=select_picture,
+                              select_identity=select_identity,
+                              review_assignation=review_assignation,
+                              show_isni_assignation_failed=show_isni_assignation_failed,
+                              show_cheddar_connection_failed=show_cheddar_connection_failed,
+                              show_cheddar_authentication_failed=show_cheddar_authentication_failed,
+                              show_permission_denied=show_permission_denied)
 
     for name, handler in handlers.items():
         getattr(page, name)(handler)
@@ -62,7 +62,7 @@ def make_album_edition_page(album, session, track_list_tab, select_picture, sele
 
 
 @Closeable
-class AlbumEditionPage(QWidget, UIFile, AlbumListener):
+class ProjectEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
 
     _picture = None
@@ -86,7 +86,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._setup_ui(track_list_tab)
 
     def _setup_ui(self, track_list_tab):
-        self._load(":/ui/album_page.ui")
+        self._load(":/ui/project_page.ui")
         self._fill_with_countries(self._main_artist_region)
 
         menu = QMenu()

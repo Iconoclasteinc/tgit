@@ -56,7 +56,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
     TRACK_ACTIONS_START_INDEX = 2
 
     def __init__(self, session, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
-                 create_album_screen, confirm_close, select_export_destination, select_save_as_destination,
+                 create_project_screen, confirm_close, select_export_destination, select_save_as_destination,
                  select_tracks, select_tracks_in_folder, authenticate, **handlers):
         super().__init__()
         self._authenticate = authenticate
@@ -64,7 +64,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self._show_save_error = show_save_error
         self._show_export_error = show_export_error
         self._create_startup_screen = create_startup_screen
-        self._create_album_screen = create_album_screen
+        self._create_project_screen = create_project_screen
         self._confirm_close = confirm_close
         self._select_tracks_in_folder = select_tracks_in_folder
         self._select_tracks = select_tracks
@@ -112,7 +112,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self._album = album
         self.enable_project_actions(album)
         self._create_track_actions()
-        self._change_screen(self._create_album_screen(album))
+        self._change_screen(self._create_project_screen(album))
 
         self.subscribe(album.track_inserted, self._rebuild_track_actions)
         self.subscribe(album.track_removed, self._rebuild_track_actions)
@@ -200,7 +200,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self.setStyleSheet(StyleSheet)
 
     def _setup_menu_bar(self):
-        self._to_project_edition_action.triggered.connect(self._to_album_edition_page)
+        self._to_project_edition_action.triggered.connect(self._to_project_edition_page)
         self._exit_action.triggered.connect(self.close)
         self._exit_action.setShortcut(QKeySequence.Quit)
         self._close_project_action.setShortcut(QKeySequence.Close)
@@ -248,7 +248,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
             self._navigate_menu.removeAction(action)
             action.setParent(None)
 
-    def _to_album_edition_page(self):
+    def _to_project_edition_page(self):
         self.centralWidget().to_project_edition_page()
 
     def _to_track_page(self, track):

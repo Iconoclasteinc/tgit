@@ -1,6 +1,6 @@
 from ._screen_driver import ScreenDriver
 from cute.matchers import named, with_text
-from tgit.ui.pages.album_edition_page import MusicianRow, MusicianTable
+from tgit.ui.pages.project_edition_page import MusicianRow, MusicianTable
 
 
 def musician_table_driver(parent):

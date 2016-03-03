@@ -2,20 +2,20 @@
 
 from cute.matchers import named, with_buddy, with_pixmap_size
 from test.drivers.artist_table_driver import musician_table_driver
-from tgit.ui.pages.album_edition_page import AlbumEditionPage
+from tgit.ui.pages.project_edition_page import ProjectEditionPage
 from ._screen_driver import ScreenDriver
 from .picture_selection_dialog_driver import picture_selection_dialog
 
 
-def album_edition_page(parent):
-    return AlbumEditionPageDriver.find_single(parent, AlbumEditionPage, named("album_edition_page"))
+def project_edition_page(parent):
+    return ProjectEditionPageDriver.find_single(parent, ProjectEditionPage, named("project_edition_page"))
 
 
-def no_album_edition_page(parent):
-    return AlbumEditionPageDriver.find_none(parent, AlbumEditionPage, named("album_edition_page"))
+def no_project_edition_page(parent):
+    return ProjectEditionPageDriver.find_none(parent, ProjectEditionPage, named("project_edition_page"))
 
 
-class AlbumEditionPageDriver(ScreenDriver):
+class ProjectEditionPageDriver(ScreenDriver):
     def shows_metadata(self, **meta):
         for tag, value in meta.items():
             if tag == "release_name":
@@ -24,20 +24,14 @@ class AlbumEditionPageDriver(ScreenDriver):
                 self.shows_main_artist(value)
             elif tag == "compilation":
                 self.shows_compilation(value)
-            elif tag == "guest_performers":
-                self.shows_artists(value)
             elif tag == "label_name":
                 self.shows_label_name(value)
             elif tag == "catalog_number":
                 self.shows_catalog_number(value)
             elif tag == "upc":
                 self.shows_upc(value)
-            elif tag == "recording_time":
-                self.shows_recording_time(value)
             elif tag == "release_time":
                 self.shows_release_time(value)
-            elif tag == "original_release_time":
-                self.shows_original_release_time(value)
             elif tag == "isni":
                 self.shows_main_artist_isni(value)
             else:
@@ -53,20 +47,14 @@ class AlbumEditionPageDriver(ScreenDriver):
                 self.toggle_compilation()
             elif tag == "lead_performer":
                 self.change_main_artist(value)
-            elif tag == "guestPerformers":
-                self.change_artists(value)
             elif tag == "label_name":
                 self.change_label_name(value)
             elif tag == "catalog_number":
                 self.change_catalog_number(value)
             elif tag == "upc":
                 self.change_upc(value)
-            elif tag == "recording_time":
-                self.change_recording_time(value)
             elif tag == "releaseTime":
                 self.change_release_time(value)
-            elif tag == "original_release_time":
-                self.change_original_release_time(value)
             elif tag == "isni":
                 pass
             else:
@@ -81,10 +69,10 @@ class AlbumEditionPageDriver(ScreenDriver):
         label.has_pixmap(with_pixmap_size(width, height))
 
     def shows_picture(self):
-        self._displays_picture_with_size(*AlbumEditionPage.FRONT_COVER_SIZE)
+        self._displays_picture_with_size(*ProjectEditionPage.FRONT_COVER_SIZE)
 
     def shows_picture_placeholder(self):
-        self._displays_picture_with_size(*AlbumEditionPage.FRONT_COVER_SIZE)
+        self._displays_picture_with_size(*ProjectEditionPage.FRONT_COVER_SIZE)
 
     def select_picture(self, filename):
         self.add_picture()

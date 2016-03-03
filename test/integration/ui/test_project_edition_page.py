@@ -4,13 +4,15 @@ import types
 
 import pytest
 import requests
+
 from PyQt5.QtCore import QByteArray
+
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
 from cute.widgets import window
-from test.drivers import AlbumEditionPageDriver
+from test.drivers import ProjectEditionPageDriver
 from test.integration.ui import show_widget
 from test.util import resources, builders as build
 from test.util.builders import make_album, make_anonymous_session, make_registered_session
@@ -19,13 +21,13 @@ from tgit.auth import Permission
 from tgit.cheddar import AuthenticationError, InsufficientInformationError, PermissionDeniedError
 from tgit.identity import IdentityCard
 from tgit.metadata import Image
-from tgit.ui.pages.album_edition_page import make_album_edition_page, AlbumEditionPage
-from tgit.ui.pages.track_list_page import TrackListPage
+from tgit.ui.pages.project_edition_page import make_project_edition_page, ProjectEditionPage
+from tgit.ui.pages.track_list_tab import TrackListTab
 
 
 @pytest.yield_fixture()
 def driver(qt, prober, automaton):
-    page_driver = AlbumEditionPageDriver(window(AlbumEditionPage, named("album_edition_page")), prober, automaton)
+    page_driver = ProjectEditionPageDriver(window(ProjectEditionPage, named("project_edition_page")), prober, automaton)
     yield page_driver
     page_driver.close()
 
@@ -37,8 +39,8 @@ def raise_(e):
     raise e
 
 
-def create_track_list_page(album):
-    return TrackListPage(ignore)
+def create_track_list_tab(album):
+    return TrackListTab(ignore)
 
 
 def show_page(album, session=make_anonymous_session(),
@@ -50,37 +52,37 @@ def show_page(album, session=make_anonymous_session(),
               show_cheddar_authentication_failed=ignore,
               show_permission_denied=ignore,
               **handlers):
-    page = make_album_edition_page(album, session,
-                                   track_list_tab=create_track_list_page,
-                                   select_picture=select_picture,
-                                   select_identity=select_identity,
-                                   show_isni_assignation_failed=show_isni_assignation_failed,
-                                   show_cheddar_connection_failed=show_cheddar_connection_failed,
-                                   show_cheddar_authentication_failed=show_cheddar_authentication_failed,
-                                   show_permission_denied=show_permission_denied,
-                                   review_assignation=review_assignation,
-                                   **handlers)
+    page = make_project_edition_page(album, session,
+                                     track_list_tab=create_track_list_tab,
+                                     select_picture=select_picture,
+                                     select_identity=select_identity,
+                                     show_isni_assignation_failed=show_isni_assignation_failed,
+                                     show_cheddar_connection_failed=show_cheddar_connection_failed,
+                                     show_cheddar_authentication_failed=show_cheddar_authentication_failed,
+                                     show_permission_denied=show_permission_denied,
+                                     review_assignation=review_assignation,
+                                     **handlers)
     show_widget(page)
     return page
 
 
-def test_displays_invalid_image_placeholder_when_album_has_corrupted_picture(driver):
+def test_displays_invalid_image_placeholder_when_project_has_corrupted_picture(driver):
     _ = show_page(make_album(images=[build.image("image/jpeg", QByteArray(), Image.FRONT_COVER)]))
     driver.shows_picture_placeholder()
 
 
-def test_displays_no_image_placeholder_when_album_has_no_cover(driver):
+def test_displays_no_image_placeholder_when_project_has_no_cover(driver):
     _ = show_page(make_album())
     driver.shows_picture_placeholder()
 
 
-def test_displays_main_album_cover_when_existing(driver):
+def test_displays_main_project_cover_when_existing(driver):
     _ = show_page(make_album(
         images=[build.image("image/jpeg", _load_test_image("front-cover.jpg"), Image.FRONT_COVER)]))
     driver.shows_picture()
 
 
-def test_displays_album_metadata(driver):
+def test_displays_project_metadata(driver):
     _ = show_page(make_album(
         release_name="Album",
         lead_performer="Artist",
@@ -103,7 +105,7 @@ def test_displays_album_metadata(driver):
     driver.shows_release_time("2009-01-01")
 
 
-def test_indicates_whether_album_is_a_compilation(driver):
+def test_indicates_whether_project_is_a_compilation(driver):
     album = make_album(compilation=False)
     _ = show_page(album)
     driver.shows_compilation(False)
@@ -112,14 +114,14 @@ def test_indicates_whether_album_is_a_compilation(driver):
     driver.shows_compilation(True)
 
 
-def test_disables_lead_performer_edition_when_album_is_a_compilation(driver):
+def test_disables_lead_performer_edition_when_project_is_a_compilation(driver):
     _ = show_page(make_album(compilation=True, lead_performer="Album Artist"))
     driver.shows_main_artist("Various Artists", disabled=True)
     driver.shows_main_artist_region("", disabled=True)
     driver.shows_main_artist_isni("", disabled=True)
 
 
-def test_enables_isni_lookup_when_album_is_no_longer_a_compilation(driver):
+def test_enables_isni_lookup_when_project_is_no_longer_a_compilation(driver):
     album = make_album(compilation=True)
     _ = show_page(album, make_registered_session())
     driver.shows_main_artist("Various Artists", disabled=True)
@@ -377,7 +379,7 @@ def test_signals_assigned_isni_on_isni_assignation(driver):
     driver.check(isni_changed_signal)
 
 
-def test_signals_when_album_metadata_edited(driver):
+def test_signals_when_project_metadata_edited(driver):
     metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
     _ = show_page(make_album(), on_metadata_changed=metadata_changed_signal.received)
 

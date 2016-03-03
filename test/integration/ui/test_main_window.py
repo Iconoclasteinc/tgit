@@ -7,9 +7,9 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers import MainWindowDriver
-from test.drivers.fake_drivers import no_startup_screen, no_album_screen, album_screen, startup_screen
+from test.drivers.fake_drivers import no_startup_screen, no_album_screen, project_screen, startup_screen
 from test.integration.ui import show_widget
-from test.integration.ui.fake_widgets import fake_startup_screen, fake_album_screen
+from test.integration.ui.fake_widgets import fake_startup_screen, fake_project_screen
 from test.util import builders as build
 from test.util.builders import make_album
 from tgit.album import Album
@@ -31,7 +31,7 @@ def _raise_os_error(message):
 def show_page(session=build.make_anonymous_session(),
               portfolio=build.album_portfolio(),
               create_startup_screen=fake_startup_screen,
-              create_album_screen=fake_album_screen,
+              create_project_screen=fake_project_screen,
               confirm_close=ignore,
               show_save_error=ignore,
               show_export_error=ignore,
@@ -46,7 +46,7 @@ def show_page(session=build.make_anonymous_session(),
                              portfolio=portfolio,
                              confirm_exit=confirm_exit,
                              create_startup_screen=create_startup_screen,
-                             create_album_screen=create_album_screen,
+                             create_project_screen=create_project_screen,
                              confirm_close=confirm_close,
                              show_save_error=show_save_error,
                              show_export_error=show_export_error,
@@ -230,7 +230,7 @@ def test_navigates_to_project_edition_page_item_when_menu_item_is_clicked(driver
     main_window.display_album_screen(album)
 
     driver.navigate_to_project_page()
-    album_screen(driver).is_showing_album_edition_page()
+    project_screen(driver).is_showing_project_edition_page()
 
 
 def test_adds_track_menu_item_when_adding_a_track_to_the_project(driver):
@@ -308,7 +308,7 @@ def test_navigates_to_track_page_when_menu_item_is_clicked(driver):
     album.add_track(build.track(track_title="Salsa Coltrane"))
 
     driver.navigate_to_track_page(title="Salsa Coltrane", track_number=3)
-    album_screen(driver).is_showing_track_edition_page(3)
+    project_screen(driver).is_showing_track_edition_page(3)
 
 
 def test_closes_main_widget_when_changing_page(driver):
@@ -320,7 +320,7 @@ def test_closes_main_widget_when_changing_page(driver):
     no_startup_screen(driver).exists()
     screen.is_closed()
 
-    screen = album_screen(driver).widget()
+    screen = project_screen(driver).widget()
     main_window.display_startup_screen()
     no_album_screen(driver).exists()
     screen.is_closed()

@@ -22,7 +22,7 @@ from hamcrest import ends_with
 from cute import gestures
 from cute.matchers import named
 from cute.widgets import QDialogButtonBoxDriver
-from tgit.ui.pages.new_album_page import NewProjectPage
+from tgit.ui.pages.new_project_page import NewProjectPage
 from ._screen_driver import ScreenDriver
 
 
