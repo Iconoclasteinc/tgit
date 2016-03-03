@@ -172,12 +172,20 @@
      </property>
      <item>
       <widget class="QToolButton" name="_add_tracks_button">
+       <property name="toolTip">
+        <string>Add new tracks</string>
+       </property>
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
                                     margin: 0 -1px 0 0;
                                     min-height: 20px;
                                     min-width: 20px;
                                     }
+
+QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}
                                 </string>
        </property>
        <property name="text">
@@ -194,12 +202,21 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="toolTip">
+        <string>Remove selected track</string>
+       </property>
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
                                     margin: 0 -1px 0 0;
                                     min-height: 20px;
                                     min-width: 20px;
                                     }
+
+QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}
+
                                 </string>
        </property>
        <property name="text">
@@ -216,12 +233,21 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="toolTip">
+        <string>Move selected track up</string>
+       </property>
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
                                     margin: 0 -1px 0 0;
                                     min-height: 20px;
                                     min-width: 20px;
                                     }
+
+QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}
+
                                 </string>
        </property>
        <property name="text">
@@ -238,13 +264,21 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="toolTip">
+        <string>Move selected track down</string>
+       </property>
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
          margin: 0;
          min-height: 20px;
          min-width: 20px;
          }
-        </string>
+        
+QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(alternate-base);
+}
+</string>
        </property>
        <property name="text">
         <string>Move Down</string>

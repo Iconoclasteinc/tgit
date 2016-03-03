@@ -24,8 +24,20 @@
         <translation>Durée</translation>
     </message>
     <message>
-        <source>Add Tracks</source>
+        <source>Add new tracks</source>
         <translation>Ajouter des pistes</translation>
+    </message>
+    <message>
+        <source>Remove selected track</source>
+        <translation>Retirer la piste sélectionnée</translation>
+    </message>
+    <message>
+        <source>Move selected track up</source>
+        <translation>Déplacer la piste sélectionnée vers le haut</translation>
+    </message>
+    <message>
+        <source>Move selected track down</source>
+        <translation>Déplacer la piste sélectionnée vers le bas</translation>
     </message>
     <message>
         <source>Organize the project's tracks</source>
