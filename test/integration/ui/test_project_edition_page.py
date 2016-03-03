@@ -4,9 +4,7 @@ import types
 
 import pytest
 import requests
-
 from PyQt5.QtCore import QByteArray
-
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -467,7 +465,7 @@ def test_clears_main_artist_name_when_compilation_unselected(driver):
 
     driver.shows_main_artist("Various Artists", disabled=True)
     driver.toggle_compilation()
-    driver.shows_main_artist("", disabled=True)
+    driver.shows_main_artist("Various Artists", disabled=True)
 
 
 def _load_test_image(name):

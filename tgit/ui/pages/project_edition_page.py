@@ -93,13 +93,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         menu.addAction(self._main_artist_isni_assign_action)
         self._main_artist_isni_actions_button.setMenu(menu)
 
-        def empty_main_artist():
-            self._main_artist.setText("")
-            self._main_artist_isni.setText("")
-            self._main_artist_region.setCurrentText("")
-
         self._compilation.clicked.connect(self._update_isni_menu)
-        self._compilation.clicked.connect(empty_main_artist)
         self._main_artist.textChanged.connect(self._update_isni_menu)
         self._tabs.widget(0).layout().addWidget(track_list_tab)
 
@@ -197,27 +191,17 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         if album.main_cover is not self._picture or album.main_cover is None:
             self._front_cover.setPixmap(image.scale(album.main_cover, *self.FRONT_COVER_SIZE))
             self._picture = album.main_cover
+
         self._title.setText(album.release_name)
         self._compilation.setChecked(album.compilation is True)
         self._display_main_artist(album)
-        self._display_region(album.lead_performer_region, self._main_artist_region)
         self._label_name.setText(album.label_name)
         self._catalog_number.setText(album.catalog_number)
         self._barcode.setText(album.upc)
         self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self._musician_table_container.display(album.guest_performers or [])
 
-        identities = album.isnis or {}
-        self._main_artist_isni.setText(identities[album.lead_performer] if album.lead_performer in identities else None)
-
-    @staticmethod
-    def _display_region(region, combobox):
-        combobox.setCurrentText(COUNTRIES[region[0]]) if region else combobox.setCurrentIndex(0)
-
     def _display_main_artist(self, album):
-        # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
-        self._main_artist.setText(album.compilation and self.tr("Various Artists") or album.lead_performer)
-
         disable_main_artist = album.compilation is True
         self._main_artist.setDisabled(disable_main_artist)
         self._main_artist_caption.setDisabled(disable_main_artist)
@@ -225,6 +209,23 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_isni_caption.setDisabled(disable_main_artist)
         self._main_artist_region.setDisabled(disable_main_artist)
         self._main_artist_region_caption.setDisabled(disable_main_artist)
+
+        if disable_main_artist:
+            # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
+            self._main_artist.setText(self.tr("Various Artists"))
+            self._main_artist_isni.setText("")
+            self._main_artist_region.setCurrentIndex(0)
+        else:
+            if album.lead_performer == self.tr("Various Artists"):
+                self._main_artist.setText("")
+            else:
+                self._main_artist.setText(album.lead_performer)
+
+            if album.lead_performer_region:
+                self._main_artist_region.setCurrentText(COUNTRIES[album.lead_performer_region[0]])
+
+            isnis = album.isnis or {}
+            self._main_artist_isni.setText(isnis[album.lead_performer] if album.lead_performer in isnis else None)
 
     def _metadata(self, musicians, *keys):
         all_values = dict(release_name=self._title.text(),
@@ -246,6 +247,9 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
         if "lead_performer" not in keys_to_retrieve:
             keys_to_retrieve.append("lead_performer")
+
+        if "lead_performer_region" not in keys_to_retrieve:
+            keys_to_retrieve.append("lead_performer_region")
 
         return {k: all_values.get(k, None) for k in keys_to_retrieve}
 
