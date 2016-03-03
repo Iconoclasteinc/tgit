@@ -91,3 +91,6 @@ class AlbumScreenDriver(ScreenDriver):
 
     def lookup_isni_is_enabled(self, enabled=True):
         album_edition_page(self).enables_main_artist_isni_lookup(enabled=enabled)
+
+    def change_track_title(self, title):
+        track_edition_page(self).change_track_title(title)

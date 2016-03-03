@@ -4,19 +4,18 @@ from functools import wraps
 import pytest
 from hamcrest import contains
 
-from cute.matchers import named, with_
+from cute.matchers import named
 from cute.probes import MultiValueMatcherProbe
-from cute.properties import name
 from cute.widgets import window
 from test.drivers import AlbumScreenDriver
 from test.integration.ui import show_widget
 from test.util.builders import make_track, make_album
 from tgit.ui.pages.album_edition_page import AlbumEditionPage
 from tgit.ui.pages.album_screen import AlbumScreen, make_album_screen
-from tgit.ui.pages.track_edition_page import TrackEditionPage
+from tgit.ui.pages.track_edition_page import make_track_edition_page
 from tgit.ui.pages.track_list_page import TrackListPage
 
-ignore = lambda *_: None
+ignore = lambda *args, **kwargs: None
 
 
 def create_track_list_page(album):
@@ -27,16 +26,17 @@ def create_project_page(album):
     return AlbumEditionPage(ignore, ignore, ignore, ignore, ignore, ignore, ignore)
 
 
-def create_track_page(track, review_assignation=ignore, show_isni_assignation_failed=ignore,
-                      show_cheddar_connection_failed=ignore, show_cheddar_authentication_failed=ignore):
-    page = TrackEditionPage(review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed,
-                            show_cheddar_authentication_failed)
+def create_track_page(track):
+    page = make_track_edition_page(album=make_album(), track=track,
+                                   on_track_changed=ignore,
+                                   review_assignation=ignore,
+                                   show_isni_assignation_failed=ignore,
+                                   show_cheddar_connection_failed=ignore,
+                                   show_cheddar_authentication_failed=ignore)
+
     page.setObjectName("track_edition_page_" + str(track.track_number))
+
     return page
-
-
-def number(track_number):
-    return with_(name(), "track_edition_page_" + str(track_number))
 
 
 def display_project_screen(album, list_tracks=create_track_list_page, edit_album=create_project_page,
@@ -209,3 +209,26 @@ def test_updates_the_displayed_page_when_navigating_using_the_arrows(driver):
     driver.shows_page_in_navigation_combo("Project edition")
     driver.to_previous_page()
     driver.shows_page_in_navigation_combo("Track list")
+
+
+def test_updates_the_displayed_page_when_updating_track_title(driver):
+    def update_track_metadata(**metadata):
+        track.track_title = metadata["track_title"]
+
+    def make_track_page(current_track):
+        return make_track_edition_page(album, current_track,
+                                       on_track_changed=update_track_metadata,
+                                       review_assignation=ignore,
+                                       show_isni_assignation_failed=ignore,
+                                       show_cheddar_connection_failed=ignore,
+                                       show_cheddar_authentication_failed=ignore)
+
+    track = make_track(track_title="track 1")
+    album = make_album(tracks=[track])
+    _ = display_project_screen(album, edit_track=make_track_page)
+
+    driver.to_next_page()
+    driver.to_next_page()
+    driver.shows_page_in_navigation_combo("1 - track 1")
+    driver.change_track_title("Chevere!")
+    driver.shows_page_in_navigation_combo("1 - Chevere!")

@@ -20,26 +20,26 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
-from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
+from tgit.ui.observer import Observer
 
 
 def make_album_screen(album, track_list_page, album_page, track_page):
     screen = AlbumScreen(track_list_page, album_page, track_page)
 
     album.addAlbumListener(screen)
-    subscriptions = MultiSubscription()
-    subscriptions.add(album.track_inserted.subscribe(screen.track_added))
-    subscriptions.add(album.track_removed.subscribe(lambda position, track: screen.track_removed(position)))
-    subscriptions.add(album.track_moved.subscribe(lambda track, from_, to: screen.track_moved(from_, to)))
-    screen.closed.connect(lambda: subscriptions.cancel())
+    screen.subscribe(album.track_inserted, screen.track_added)
+    screen.subscribe(album.track_removed, lambda position, track: screen.track_removed(position))
+    screen.subscribe(album.track_moved, lambda track, from_, to: screen.track_moved(from_, to))
+    screen.closed.connect(lambda: screen.subscriptions.cancel())
     screen.closed.connect(lambda: album.removeAlbumListener(screen))
     screen.display(album)
     return screen
 
 
 @Closeable
+@Observer
 class AlbumScreen(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
 
@@ -77,9 +77,17 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         self._insert_page(self._edit_album(album), self._ALBUM_PAGE_INDEX)
 
     def track_added(self, index, track):
+        def format_name(track_title):
+            return "{} - {}".format(index + 1, track_title)
+
+        def update_name(track_title):
+            self._pages_navigation.setItemText(index_in_combo, format_name(track_title))
+
+        index_in_combo = self._TRACK_PAGES_STARTING_INDEX + index
+
         self._insert_page(self._edit_track(track), self._track_page_index(index))
-        self._pages_navigation.addItem("{} - {}".format(index + 1, track.track_title),
-                                       self._TRACK_PAGES_STARTING_INDEX + index)
+        self._pages_navigation.insertItem(index_in_combo, format_name(track.track_title), index_in_combo)
+        self.subscribe(track.metadata_changed, lambda metadata: update_name(metadata.track_title))
 
     def track_removed(self, index):
         self._remove_page(self._track_page_index(index))
