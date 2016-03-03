@@ -73,7 +73,7 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.menu_item(matchers.named("_exit_action")).click()
 
     class NavigateMenuDriver:
-        BASE_TRACKS_INDEX = 2
+        BASE_TRACKS_INDEX = 1
 
         def __init__(self, menu_driver):
             self._menu_driver = menu_driver

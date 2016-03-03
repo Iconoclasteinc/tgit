@@ -5,7 +5,6 @@ import types
 import pytest
 import requests
 from PyQt5.QtCore import QByteArray
-
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -21,6 +20,7 @@ from tgit.cheddar import AuthenticationError, InsufficientInformationError, Perm
 from tgit.identity import IdentityCard
 from tgit.metadata import Image
 from tgit.ui.pages.album_edition_page import make_album_edition_page, AlbumEditionPage
+from tgit.ui.pages.track_list_page import TrackListPage
 
 
 @pytest.yield_fixture()
@@ -37,6 +37,10 @@ def raise_(e):
     raise e
 
 
+def create_track_list_page(album):
+    return TrackListPage(ignore)
+
+
 def show_page(album, session=make_anonymous_session(),
               select_picture=ignore,
               select_identity=ignore,
@@ -47,6 +51,7 @@ def show_page(album, session=make_anonymous_session(),
               show_permission_denied=ignore,
               **handlers):
     page = make_album_edition_page(album, session,
+                                   track_list_tab=create_track_list_page,
                                    select_picture=select_picture,
                                    select_identity=select_identity,
                                    show_isni_assignation_failed=show_isni_assignation_failed,

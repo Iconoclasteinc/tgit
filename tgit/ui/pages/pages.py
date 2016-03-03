@@ -43,7 +43,6 @@ class Pages:
 
     def album_screen(self, album):
         return make_album_screen(album=album,
-                                 track_list_page=self._track_list_page,
                                  album_page=self._album_edition_page,
                                  track_page=self._track_page_for(album))
 
@@ -72,6 +71,7 @@ class Pages:
         return make_album_edition_page(
             album=album,
             session=self._session,
+            track_list_tab=self._track_list_page,
             select_identity=self._dialogs.select_identities,
             review_assignation=self._dialogs.review_isni_assignation_in(album, True),
             show_isni_assignation_failed=self._messages.isni_assignation_failed,

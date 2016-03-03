@@ -374,9 +374,15 @@ QLabel[style=QMacStyle] {
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <widget class="QWidget" name="_track_list_tab">
+      <attribute name="title">
+       <string>1. Track List</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3"/>
+     </widget>
      <widget class="QWidget" name="_release_tab">
       <attribute name="title">
-       <string>1. Release</string>
+       <string>2. Release</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_2">
        <item row="0" column="0">
@@ -526,7 +532,7 @@ QLabel[style=QMacStyle] {
      </widget>
      <widget class="QWidget" name="_mucisians_tab">
       <attribute name="title">
-       <string>2. Musicians</string>
+       <string>3. Musicians</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <property name="leftMargin">
@@ -558,7 +564,7 @@ QLabel[style=QMacStyle] {
             <x>0</x>
             <y>0</y>
             <width>782</width>
-            <height>202</height>
+            <height>237</height>
            </rect>
           </property>
           <property name="styleSheet">

@@ -53,7 +53,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
     _closing = False
     _album = None
 
-    TRACK_ACTIONS_START_INDEX = 3
+    TRACK_ACTIONS_START_INDEX = 2
 
     def __init__(self, session, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
                  create_album_screen, confirm_close, select_export_destination, select_save_as_destination,
@@ -201,7 +201,6 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def _setup_menu_bar(self):
         self._to_project_edition_action.triggered.connect(self._to_album_edition_page)
-        self._to_track_list_action.triggered.connect(self._to_track_list_page)
         self._exit_action.triggered.connect(self.close)
         self._exit_action.setShortcut(QKeySequence.Quit)
         self._close_project_action.setShortcut(QKeySequence.Close)
@@ -251,9 +250,6 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def _to_album_edition_page(self):
         self.centralWidget().to_project_edition_page()
-
-    def _to_track_list_page(self):
-        self.centralWidget().to_track_list_page()
 
     def _to_track_page(self, track):
         self.centralWidget().to_track_page(track.track_number - 1)

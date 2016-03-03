@@ -23,7 +23,7 @@ def create_track_list_page(album):
 
 
 def create_project_page(album):
-    return AlbumEditionPage(ignore, ignore, ignore, ignore, ignore, ignore, ignore)
+    return AlbumEditionPage(create_track_list_page(album), ignore, ignore, ignore, ignore, ignore, ignore, ignore)
 
 
 def create_track_page(track):
@@ -39,9 +39,8 @@ def create_track_page(track):
     return page
 
 
-def display_project_screen(album, list_tracks=create_track_list_page, edit_album=create_project_page,
-                           edit_track=create_track_page):
-    screen = make_album_screen(album, list_tracks, edit_album, edit_track)
+def display_project_screen(album, edit_album=create_project_page, edit_track=create_track_page):
+    screen = make_album_screen(album, edit_album, edit_track)
     show_widget(screen)
     return screen
 
@@ -56,16 +55,13 @@ def driver(qt, prober, automaton):
 def test_has_no_track_edition_page_when_album_is_empty(driver):
     _ = display_project_screen(make_album())
 
-    driver.shows_track_list_page()
+    driver.shows_project_edition_page()
     driver.has_no_track_edition_page()
 
 
 def test_offers_goto_page_navigation(driver):
     _ = display_project_screen(make_album(tracks=(
         make_track(track_title="track 1"), make_track(track_title="track 2"), make_track(track_title="track 3"))))
-
-    driver.to_page("Track list")
-    driver.shows_track_list_page()
 
     driver.to_page("Project edition")
     driver.shows_project_edition_page()
@@ -84,8 +80,6 @@ def test_offers_back_and_forth_navigation_between_pages(driver):
     _ = display_project_screen(make_album(tracks=(make_track(), make_track())))
 
     driver.shows_previous_page_button(enabled=False)
-
-    driver.to_next_page()
     driver.shows_project_edition_page()
 
     driver.to_next_page()
@@ -100,13 +94,10 @@ def test_offers_back_and_forth_navigation_between_pages(driver):
 
     driver.to_previous_page()
     driver.shows_project_edition_page()
-
-    driver.to_previous_page()
-    driver.shows_track_list_page()
     driver.shows_previous_page_button(enabled=False)
 
     driver.to_next_page()
-    driver.shows_project_edition_page()
+    driver.shows_track_edition_page(1)
 
 
 def test_removes_track_page_when_track_removed(driver):
@@ -143,8 +134,7 @@ def test_closes_children_pages_on_close(driver):
         "track_edition_page_3",
         "track_edition_page_2",
         "track_edition_page_1",
-        "album_edition_page",
-        "track_list_page"))
+        "album_edition_page"))
 
     def record_close(create_page):
         @wraps(create_page)
@@ -156,13 +146,11 @@ def test_closes_children_pages_on_close(driver):
         return wrapper
 
     _ = display_project_screen(make_album(tracks=(make_track(), make_track(), make_track())),
-                               record_close(create_track_list_page),
                                record_close(create_project_page),
                                record_close(create_track_page))
 
     driver.close()
 
-    driver.has_no_track_list_page()
     driver.has_no_project_edition_page()
     driver.has_no_track_edition_page()
     driver.check(closed_signals)
@@ -172,7 +160,7 @@ def test_displays_pages_in_navigation_combo(driver):
     tracks = [make_track(track_title="track 1"), make_track(track_title="track 2"), make_track(track_title="track 3")]
     _ = display_project_screen(make_album(tracks=tracks))
 
-    driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - track 1", "2 - track 2", "3 - track 3")
+    driver.shows_pages_in_navigation_combo("Project edition", "1 - track 1", "2 - track 2", "3 - track 3")
 
 
 def test_navigates_using_the_combo_box(driver):
@@ -191,49 +179,42 @@ def test_navigates_using_the_combo_box(driver):
     driver.to_page("Project edition")
     driver.shows_project_edition_page()
 
-    driver.to_page("Track list")
-    driver.shows_track_list_page()
-
 
 def test_updates_the_displayed_page_when_navigating_using_the_arrows(driver):
     _ = display_project_screen(make_album(tracks=[make_track(track_title="track 1")]))
 
-    driver.shows_page_in_navigation_combo("Track list")
-    driver.to_next_page()
     driver.shows_page_in_navigation_combo("Project edition")
     driver.to_next_page()
     driver.shows_page_in_navigation_combo("1 - track 1")
     driver.to_previous_page()
     driver.shows_page_in_navigation_combo("Project edition")
-    driver.to_previous_page()
-    driver.shows_page_in_navigation_combo("Track list")
 
 
 def test_updates_the_displayed_page_when_updating_track_title(driver):
     track = make_track(track_title="track 1")
     _ = display_project_screen(make_album(tracks=[track]))
 
-    driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - track 1")
+    driver.shows_pages_in_navigation_combo("Project edition", "1 - track 1")
     track.track_title = "Chevere!"
-    driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - Chevere!")
+    driver.shows_pages_in_navigation_combo("Project edition", "1 - Chevere!")
 
 
 def test_removes_track_menu_item_when_removing_a_track_from_the_project(driver):
     album = make_album(tracks=[(make_track(track_title="Chevere!")), (make_track(track_title="That is that"))])
     _ = display_project_screen(album)
 
-    driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - Chevere!", "2 - That is that")
+    driver.shows_pages_in_navigation_combo("Project edition", "1 - Chevere!", "2 - That is that")
     album.remove_track(0)
-    driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - That is that")
+    driver.shows_pages_in_navigation_combo("Project edition", "1 - That is that")
 
 
 def test_reorders_navigation_menu_when_moving_a_track(driver):
     album = make_album(tracks=[make_track(track_title="Chevere!"), make_track(track_title="That is that")])
     _ = display_project_screen(album)
 
-    driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - Chevere!", "2 - That is that")
+    driver.shows_pages_in_navigation_combo("Project edition", "1 - Chevere!", "2 - That is that")
     album.move_track(from_position=0, to_position=1)
-    driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - That is that", "2 - Chevere!")
+    driver.shows_pages_in_navigation_combo("Project edition", "1 - That is that", "2 - Chevere!")
 
 
 def test_navigates_using_shortcut(driver):

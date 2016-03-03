@@ -165,7 +165,7 @@ class AlbumEditionPageDriver(ScreenDriver):
         musician_table_driver(self).shows_only_musicians_in_table(*musicians)
 
     def _select_musicians_tab(self):
-        self.tabs(named("_tabs")).select("2. Musicians")
+        self.tabs(named("_tabs")).select("3. Musicians")
 
     def remove_musician(self, row):
         self._select_musicians_tab()
@@ -190,7 +190,7 @@ class AlbumEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_label_name")).has_text(name)
 
     def _select_release_tab(self):
-        self.tabs(named("_tabs")).select("1. Release")
+        self.tabs(named("_tabs")).select("2. Release")
 
     def change_label_name(self, name):
         self._select_release_tab()

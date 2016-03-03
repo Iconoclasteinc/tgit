@@ -244,8 +244,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>2. Musicians</source>
-        <translation>2. Musiciens</translation>
+        <source>3. Musicians</source>
+        <translation>3. Musiciens</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -254,8 +254,8 @@
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
-        <source>1. Release</source>
-        <translation>1. Parution</translation>
+        <source>2. Release</source>
+        <translation>2. Parution</translation>
     </message>
     <message>
         <location filename="tgit/ui/album_edition_page.py" />
@@ -301,6 +301,11 @@
         <location filename="tgit/ui/album_edition_page.py" />
         <source>Assign</source>
         <translation>Assigner</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/album_edition_page.py" />
+        <source>1. Track List</source>
+        <translation>1. Liste des pistes</translation>
     </message>
 </context>
 <context>
@@ -352,11 +357,6 @@
 </context>
     <context>
         <name>AlbumScreen</name>
-        <message>
-            <location filename="tgit/ui/album_screen.py" />
-            <source>Track list</source>
-            <translation>Liste des pistes</translation>
-        </message>
         <message>
             <location filename="tgit/ui/album_screen.py" />
             <source>Project edition</source>
@@ -464,11 +464,6 @@
         <location filename="tgit/ui/main_window.py"/>
         <source>Project &amp;edition</source>
         <translation>É&amp;dition du projet</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/main_window.py"/>
-        <source>&amp;Track list</source>
-        <translation>&amp;Liste des pistes</translation>
     </message>
     <message>
         <location filename="tgit/ui/main_window.py"/>
