@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from hamcrest import contains, has_items, equal_to
 from PyQt5.QtWidgets import QMenu, QTableWidget
+from hamcrest import contains, has_items, equal_to
 
 from cute import gestures
-from cute.widgets import MenuDriver, TableViewDriver
 from cute.matchers import named
+from cute.widgets import MenuDriver, TableViewDriver
 from tgit.ui.pages.track_list_page import TrackListPage
 from ._screen_driver import ScreenDriver
 
@@ -45,6 +45,10 @@ class TrackListPageDriver(ScreenDriver):
         context_menu.has_menu_item(matching)
         context_menu.close()
 
+    @property
+    def remove_button(self):
+        return self.button(named("_remove_track_button"))
+
     def has_disabled_play_context_menu_item(self, title):
         self.select_track(title)
         self._from_context_menu().menu_item(named("_play_action")).is_disabled()
@@ -65,12 +69,19 @@ class TrackListPageDriver(ScreenDriver):
         self.select_track(title)
         self._from_context_menu().select_menu_item(named("_stop_action"))
 
-    def remove_track(self, title, using_shortcut=False):
-        self.select_track(title)
-        if using_shortcut:
+    def remove_selected_track(self, using="shortcut"):
+        if using == "shortcut":
             self.perform(gestures.delete_previous())
-        else:
+        elif using == "menu":
             self._from_context_menu().select_menu_item(named("_remove_action"))
+        elif using == "button":
+            self.remove_button.click()
+        else:
+            raise AssertionError("Don't know how to remove a track using {}", using)
+
+    def remove_track(self, title):
+        self.select_track(title)
+        self.remove_selected_track()
 
     def move_track(self, title, to):
         from_ = self.shows_track_details(title)

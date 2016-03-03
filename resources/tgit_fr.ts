@@ -32,8 +32,8 @@
         <translation>Organisez les pistes qui composent le projet</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new tracks with &lt;img src=":/tooltips/add"/&gt;. Reorder tracks using &lt;img src=":/tooltips/reorder"/&gt;. Press [space] to play a track. Press [delete] to remove a track from the project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ajoutez de nouvelles pistes avec &lt;img src=":/tooltips/add"/&gt;. Reordonnez les pistes à l'aide de &lt;img src=":/tooltips/reorder"/&gt;. Appuyez sur [espace] pour jouer une piste. Appuyer sur [supprimer] pour retirer une piste.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new tracks with &lt;img src=":/tooltips/add"/&gt;. Remove selected track with &lt;img src=":/tooltips/remove"/&gt;. Reorder tracks using &lt;img src=":/tooltips/reorder"/&gt;. Press [space] to play or stop the selected track.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ajoutez de nouvelles pistes avec &lt;img src=":/tooltips/add"/&gt;. Retirer la piste sélectionnée avec &lt;img src=":/tooltips/remove"/&gt;. Reordonnez les pistes à l'aide de &lt;img src=":/tooltips/reorder"/&gt;. Appuyez sur [espace] pour jouer ou arrêter la piste sélectionnée.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Remove</source>

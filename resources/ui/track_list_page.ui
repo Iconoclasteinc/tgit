@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>753</width>
+    <width>807</width>
     <height>300</height>
    </rect>
   </property>
@@ -63,7 +63,7 @@ QLabel[style=QMacStyle] {
 </string>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new tracks with &lt;img src=&quot;:/tooltips/add&quot;/&gt;. Reorder tracks using &lt;img src=&quot;:/tooltips/reorder&quot;/&gt;. Press [space] to play a track. Press [delete] to remove a track from the project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new tracks with &lt;img src=&quot;:/tooltips/add&quot;/&gt;. Remove selected track with &lt;img src=&quot;:/tooltips/remove&quot;/&gt;. Reorder tracks using &lt;img src=&quot;:/tooltips/reorder&quot;/&gt;. Press [space] to play or stop the selected track.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
@@ -165,15 +165,46 @@ QToolTip {
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
       <widget class="QToolButton" name="_add_tracks_button">
+       <property name="styleSheet">
+        <string notr="true">QToolButton[style=QMacStyle] {
+    margin: 0 -1px 0 0;
+    min-height: 20px;
+    min-width: 20px;
+}</string>
+       </property>
        <property name="text">
         <string>Add Tracks</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources.qrc">
+        <iconset>
          <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="_remove_track_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QToolButton[style=QMacStyle] {
+    margin: 0;
+    min-height: 20px;
+    min-width: 20px;
+}</string>
+       </property>
+       <property name="text">
+        <string>Add Tracks</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
        </property>
       </widget>
      </item>
@@ -200,8 +231,11 @@ QToolTip {
    <property name="text">
     <string>Remove</string>
    </property>
+   <property name="toolTip">
+    <string>Remove</string>
+   </property>
    <property name="shortcutContext">
-    <enum>Qt::WindowShortcut</enum>
+    <enum>Qt::WidgetWithChildrenShortcut</enum>
    </property>
   </action>
   <action name="_play_action">
@@ -215,7 +249,7 @@ QToolTip {
     <string>Space</string>
    </property>
    <property name="shortcutContext">
-    <enum>Qt::WindowShortcut</enum>
+    <enum>Qt::WidgetWithChildrenShortcut</enum>
    </property>
   </action>
   <action name="_stop_action">
@@ -228,13 +262,31 @@ QToolTip {
    <property name="shortcut">
     <string>Space</string>
    </property>
+   <property name="shortcutContext">
+    <enum>Qt::WidgetWithChildrenShortcut</enum>
+   </property>
    <property name="visible">
     <bool>false</bool>
    </property>
   </action>
  </widget>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
- <connections/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_remove_track_button</sender>
+   <signal>clicked()</signal>
+   <receiver>_remove_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>51</x>
+     <y>274</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>51</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

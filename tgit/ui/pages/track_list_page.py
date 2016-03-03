@@ -175,6 +175,7 @@ class TrackListPage(QWidget, UIFile, AlbumListener):
             self._stop_action.setVisible(self._selected_item.is_playing)
             self._stop_action.setText('{0} "{1}"'.format(self.tr("Stop"), self._selected_item.track_title))
 
+        self._remove_track_button.setEnabled(self._selected_item is not None)
         self._remove_action.setEnabled(self._selected_item is not None)
         self._play_action.setEnabled(self._selected_item is not None)
         self._stop_action.setEnabled(self._selected_item is not None)

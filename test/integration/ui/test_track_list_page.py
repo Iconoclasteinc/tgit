@@ -17,7 +17,7 @@ from tgit.ui.pages.track_list_page import TrackListPage, make_track_list_page
 ignore = lambda *_: None
 
 
-def show_track_list(album, select_tracks=ignore):
+def show_track_list_page(album, select_tracks=ignore):
     page = make_track_list_page(album, doubles.fake_audio_player(), select_tracks)
     show_widget(page)
     return page
@@ -31,24 +31,24 @@ def driver(qt, prober, automaton):
 
 
 def test_displays_column_headings(driver):
-    _ = show_track_list(make_album())
+    _ = show_track_list_page(make_album())
     driver.shows_column_headers('#', None, 'Track Title', 'Lead Performer', 'Release Name', 'Bitrate', 'Duration')
     driver.has_track_count(0)
 
 
 def test_displays_track_details_in_columns(driver):
-    _ = show_track_list(make_album(release_name="Honeycomb",
-                                   lead_performer="Joel Miller",
-                                   tracks={make_track(track_title='Chevere!',
-                                                      bitrate=192000,
-                                                      duration=timedelta(minutes=4, seconds=12).total_seconds())}))
+    _ = show_track_list_page(make_album(release_name="Honeycomb",
+                                        lead_performer="Joel Miller",
+                                        tracks={make_track(track_title='Chevere!',
+                                                           bitrate=192000,
+                                                           duration=timedelta(minutes=4, seconds=12).total_seconds())}))
 
     driver.shows_track_details("1", "Chevere!", "Joel Miller", "Honeycomb", "192 kbps", "04:12")
 
 
 def test_displays_all_tracks_in_rows(driver):
-    _ = show_track_list(make_album(tracks=[make_track(track_title='Chevere!'),
-                                           make_track(track_title='Honeycomb')]))
+    _ = show_track_list_page(make_album(tracks=[make_track(track_title='Chevere!'),
+                                                make_track(track_title='Honeycomb')]))
 
     driver.has_track_count(2)
     driver.shows_tracks_in_order(['1', 'Chevere!'],
@@ -57,7 +57,7 @@ def test_displays_all_tracks_in_rows(driver):
 
 def test_updates_track_list_when_album_metadata_change(driver):
     album = make_album(tracks=[make_track(track_title="Chevere!"), make_track(track_title="Zumbar")])
-    _ = show_track_list(album)
+    _ = show_track_list_page(album)
 
     album.release_name = "Honeycomb"
 
@@ -66,7 +66,7 @@ def test_updates_track_list_when_album_metadata_change(driver):
 
 def test_updates_track_row_when_track_metadata_change(driver):
     track = make_track()
-    _ = show_track_list(make_album(tracks=[track]))
+    _ = show_track_list_page(make_album(tracks=[track]))
 
     track.track_title = "Chevere!"
     track.lead_performer = "Joel Miller"
@@ -76,7 +76,7 @@ def test_updates_track_row_when_track_metadata_change(driver):
 
 def test_adds_row_to_table_when_track_added_to_album(driver):
     album = make_album()
-    _ = show_track_list(album)
+    _ = show_track_list_page(album)
 
     album.add_track(make_track(track_title="Chevere!"))
     album.add_track(make_track(track_title="Zumbar!"))
@@ -89,7 +89,7 @@ def test_removes_row_from_table_when_track_removed_from_album(driver):
     album = make_album(tracks=(make_track(track_title="Chevere!"),
                                make_track(track_title='Zumbar'),
                                make_track(track_title='Salsa Coltrane')))
-    _ = show_track_list(album)
+    _ = show_track_list_page(album)
 
     driver.shows_tracks_in_order(['Chevere!'], ['Zumbar'], ['Salsa Coltrane'])
     album.remove_track(1)
@@ -103,29 +103,50 @@ def test_removes_row_from_table_when_track_removed_from_album(driver):
 def test_unsubscribe_from_track_events_track_removed_from_album(driver):
     track = make_track()
     album = make_album(tracks=[track])
-    _ = show_track_list(album)
+    _ = show_track_list_page(album)
 
     album.remove_track(0)
 
     assert_that(track.metadata_changed.subscribers, empty(), "track 'metadata changed' subscribers")
 
 
-@pytest.mark.parametrize("using_shortcut", [False, True])
-def test_makes_remove_track_request_when_remove_menu_item_selected(driver, using_shortcut):
-    page = show_track_list(make_album(tracks=[make_track(), make_track(track_title="Chevere!")]))
+@pytest.mark.parametrize("using", ["menu", "shortcut", "button"])
+def test_makes_remove_track_request_with_selected_track_when_remove_menu_item_selected(driver, using):
+    page = show_track_list_page(make_album(tracks=[make_track(), make_track(track_title="Chevere!")]))
 
     remove_request = ValueMatcherProbe("remove track request", 1)
     page.on_remove_track(remove_request.received)
 
-    driver.remove_track("Chevere!", using_shortcut)
+    driver.select_track("Chevere!")
+    driver.remove_selected_track(using=using)
     driver.check(remove_request)
+
+
+def test_disables_remove_button_when_no_track_selected(driver):
+    album = make_album(tracks=[make_track(track_title="Chevere!")])
+    _ = show_track_list_page(album)
+
+    driver.remove_button.is_disabled()
+    driver.select_track("Chevere!")
+    driver.remove_button.is_enabled()
+
+    album.remove_track(position=0)
+    driver.remove_button.is_disabled()
+
+
+def test_disables_remove_shortcut_when_table_does_not_have_focus(driver):
+    album = make_album(tracks=[make_track(track_title="Chevere!")])
+    _ = show_track_list_page(album)
+
+    driver.remove_selected_track(using="shortcut")
+    driver.shows_tracks_in_order(["Chevere!"])
 
 
 def test_makes_stop_track_request_when_remove_menu_item_selected_and_track_is_playing(driver):
     spain = make_track(track_title="Spain")
     stop_request = ValueMatcherProbe("stop track request")
 
-    page = show_track_list(make_album(type="mp3", tracks=[spain]))
+    page = show_track_list_page(make_album(type="mp3", tracks=[spain]))
     page.on_stop_track(stop_request.received)
 
     page.playback_started(spain)
@@ -134,7 +155,7 @@ def test_makes_stop_track_request_when_remove_menu_item_selected_and_track_is_pl
 
 
 def test_makes_play_track_request_when_play_context_menu_item_selected(driver):
-    page = show_track_list(make_album(type='mp3', tracks=[make_track(track_title="Spain")]))
+    page = show_track_list_page(make_album(type='mp3', tracks=[make_track(track_title="Spain")]))
 
     play_request = ValueMatcherProbe("play track request", has_title("Spain"))
     page.on_play_track(play_request.received)
@@ -147,7 +168,7 @@ def test_makes_stop_track_request_when_stop_context_menu_item_selected(driver):
     spain = make_track(track_title="Spain")
     stop_request = ValueMatcherProbe("stop track request")
 
-    page = show_track_list(make_album(type='mp3', tracks=[spain]))
+    page = show_track_list_page(make_album(type='mp3', tracks=[spain]))
     page.on_stop_track(stop_request.received)
 
     page.playback_started(spain)
@@ -156,8 +177,8 @@ def test_makes_stop_track_request_when_stop_context_menu_item_selected(driver):
 
 
 def test_shows_selected_track_title_in_context_menu(driver):
-    show_track_list(make_album(tracks=[make_track(track_title="Partways"),
-                                       make_track(track_title="Rebop")]))
+    _ = show_track_list_page(make_album(tracks=[make_track(track_title="Partways"),
+                                                make_track(track_title="Rebop")]))
 
     driver.select_track("Partways")
     driver.has_context_menu_item(with_text(contains_string("Partways")))
@@ -165,9 +186,9 @@ def test_shows_selected_track_title_in_context_menu(driver):
     driver.has_context_menu_item(with_text(contains_string("Rebop")))
 
 
-def test_changes_play_context_menu_item_depending_on_playback_state(driver):
+def test_updates_context_menu_item_when_playback_state_changes(driver):
     track = make_track(track_title="Choices")
-    page = show_track_list(make_album(tracks=[track]))
+    page = show_track_list_page(make_album(tracks=[track]))
 
     driver.select_track("Choices")
     driver.has_context_menu_item(with_text('Play "Choices"'))
@@ -179,7 +200,7 @@ def test_changes_play_context_menu_item_depending_on_playback_state(driver):
 
 def test_makes_add_tracks_request_when_add_button_clicked(driver):
     album = make_album()
-    page = show_track_list(album, select_tracks=lambda on_select: on_select("track1", "track2", "track3"))
+    page = show_track_list_page(album, select_tracks=lambda on_select: on_select("track1", "track2", "track3"))
 
     add_tracks_signal = ValueMatcherProbe("add tracks", contains("track1", "track2", "track3"))
     page.on_add_tracks(lambda *track_files: add_tracks_signal.received(track_files))
@@ -189,9 +210,9 @@ def test_makes_add_tracks_request_when_add_button_clicked(driver):
 
 
 def test_makes_move_track_request_when_track_row_moved(driver):
-    page = show_track_list(make_album(tracks=[make_track(track_title='Chaconne'),
-                                              make_track(track_title='Choices'),
-                                              make_track(track_title='Place St-Henri')]))
+    page = show_track_list_page(make_album(tracks=[make_track(track_title='Chaconne'),
+                                                   make_track(track_title='Choices'),
+                                                   make_track(track_title='Place St-Henri')]))
 
     track_moved_signal = ValueMatcherProbe('track moved', contains(2, 1))
     page.on_move_track(lambda track, to_position: track_moved_signal.received((track, to_position)))
@@ -200,12 +221,12 @@ def test_makes_move_track_request_when_track_row_moved(driver):
     driver.check(track_moved_signal)
 
 
-def test_moves_row_when_track_position_changes(driver):
+def test_moves_row_in_table_accordingly_when_track_position_changes(driver):
     tracks = (make_track(track_title="Chevere!"),
               make_track(track_title='Zumbar'),
               make_track(track_title='Salsa Coltrane'))
     album = make_album(tracks=tracks)
-    _ = show_track_list(album)
+    _ = show_track_list_page(album)
 
     driver.shows_tracks_in_order(['Chevere!'], ['Zumbar'], ['Salsa Coltrane'])
     album.move_track(2, 1)
@@ -214,7 +235,7 @@ def test_moves_row_when_track_position_changes(driver):
 
 def test_unsubscribes_from_event_signals_on_close(driver):
     track = make_track()
-    page = show_track_list(make_album(tracks=[track]))
+    page = show_track_list_page(make_album(tracks=[track]))
 
     page.close()
     assert_that(track.metadata_changed.subscribers, empty(), "'track metadata changed' subscriptions")
