@@ -62,7 +62,14 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="_email"/>
+       <widget class="QLineEdit" name="_email">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="_password_caption">
@@ -76,6 +83,12 @@
       </item>
       <item row="1" column="1">
        <widget class="QLineEdit" name="_password">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="echoMode">
          <enum>QLineEdit::Password</enum>
         </property>
