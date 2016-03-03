@@ -56,6 +56,9 @@ class AlbumScreenDriver(ScreenDriver):
     def shows_page_in_navigation_combo(self, name):
         self.combobox(named("_pages_navigation")).has_current_text(name)
 
+    def does_not_show_page_in_navigation_combo(self, name):
+        self.combobox(named("_pages_navigation")).has_not_option(name)
+
     def shows_previous_page_button(self, enabled=True):
         self.button(named("_previous")).is_enabled(enabled)
 
@@ -91,6 +94,3 @@ class AlbumScreenDriver(ScreenDriver):
 
     def lookup_isni_is_enabled(self, enabled=True):
         album_edition_page(self).enables_main_artist_isni_lookup(enabled=enabled)
-
-    def change_track_title(self, title):
-        track_edition_page(self).change_track_title(title)

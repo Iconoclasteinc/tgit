@@ -31,6 +31,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="_previous">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
@@ -58,6 +61,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="_next">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
        </property>

@@ -259,6 +259,11 @@ class ComboBoxDriver(AbstractEditDriver):
         for matcher in matching:
             options_list.has_item(match.with_list_item_text(matcher))
 
+    def has_not_option(self, matching):
+        options_list = self._open_options_list()
+        self.pause(self.CHOICES_DISPLAY_DELAY)
+        options_list.has_not_item(match.with_list_item_text(matching))
+
     def _open_options_list(self):
         self.manipulate("pop up", lambda w: w.showPopup())
         return ListViewDriver.find_single(self, QListView)
@@ -548,6 +553,9 @@ class ListViewDriver(WidgetDriver):
     def has_item(self, matching):
         self._index_of_first_item(matching)
 
+    def has_not_item(self, matching):
+        self._not_contains(matching)
+
     def _select_items(self, indexes):
         self._select_item(indexes.pop(0))
         for index in indexes:
@@ -600,6 +608,30 @@ class ListViewDriver(WidgetDriver):
         containing_item = ContainingMatchingItem()
         self.is_(containing_item)
         return containing_item.at_index
+
+    def _not_contains(self, matching):
+        class NotContainingMatchingItem(BaseMatcher):
+            def _matches(self, list_view):
+                model = list_view.model()
+                root = list_view.rootIndex()
+                item_count = model.rowCount(root)
+                for i in range(item_count):
+                    index = model.index(i, 0, root)
+                    if matching.matches(index):
+                        return False
+
+                return True
+
+            def describe_to(self, description):
+                description.append_text("containing no item ")
+                matching.describe_to(description)
+
+            def describe_mismatch(self, item, mismatch_description):
+                mismatch_description.append_text("contained an item ")
+                matching.describe_to(mismatch_description)
+
+        containing_item = NotContainingMatchingItem()
+        self.is_(containing_item)
 
 
 class QMenuBarDriver(WidgetDriver):
