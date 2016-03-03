@@ -245,6 +245,30 @@ def test_disables_move_up_button_when_on_first_track_or_no_track_selected(driver
     driver.move_up_button.is_disabled()
 
 
+def test_makes_move_track_request_when_track_moved_down(driver):
+    page = show_track_list_page(make_album(tracks=[make_track(track_title='Chaconne'),
+                                                   make_track(track_title='Choices')]))
+
+    track_moved_signal = MultiValueMatcherProbe('track moved', contains(0, 1))
+    page.on_move_track(track_moved_signal.received)
+
+    driver.select_track("Chaconne")
+    driver.move_track_down()
+    driver.check(track_moved_signal)
+
+
+def test_disables_move_down_button_when_on_last_track_or_no_track_selected(driver):
+    _ = show_track_list_page(make_album(tracks=[make_track(track_title='Chaconne'), make_track(track_title='Choices')]))
+
+    driver.move_down_button.is_disabled()
+
+    driver.select_track("Chaconne")
+    driver.move_down_button.is_enabled()
+
+    driver.select_track("Choices")
+    driver.move_down_button.is_disabled()
+
+
 def test_moves_and_select_row_in_table_accordingly_when_track_position_changes(driver):
     tracks = (make_track(track_title="Chevere!"),
               make_track(track_title='Zumbar'),

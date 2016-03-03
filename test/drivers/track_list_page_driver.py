@@ -53,6 +53,10 @@ class TrackListPageDriver(ScreenDriver):
     def move_up_button(self):
         return self.button(named("_move_track_up_button"))
 
+    @property
+    def move_down_button(self):
+        return self.button(named("_move_track_down_button"))
+
     def has_disabled_play_context_menu_item(self, title):
         self.select_track(title)
         self._from_context_menu().menu_item(named("_play_action")).is_disabled()
@@ -93,6 +97,9 @@ class TrackListPageDriver(ScreenDriver):
 
     def move_track_up(self):
         self.move_up_button.click()
+
+    def move_track_down(self):
+        self.move_down_button.click()
 
     def _track_table(self):
         table = TableViewDriver.find_single(self, QTableWidget, named('_track_table'))

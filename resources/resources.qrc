@@ -28,6 +28,7 @@
         <file alias="icons/search">images/16x16/search.png</file>
         <file alias="icons/reorder">images/16x16/swap_vert.png</file>
         <file alias="icons/move-up">images/16x16/arrow_upward.png</file>
+        <file alias="icons/move-down">images/16x16/arrow_downward.png</file>
         <file alias="icons/playing">images/16x16/volume_up.png</file>
         <file alias="icons/inverted/playing">images/16x16/inverted/volume_up.png</file>
         <file alias="icons/error">images/16x16/error_outline.png</file>
@@ -38,6 +39,7 @@
         <file alias="tooltips/add">images/12x12/add.png</file>
         <file alias="tooltips/remove">images/12x12/remove.png</file>
         <file alias="tooltips/move-up">images/12x12/arrow_upward.png</file>
+        <file alias="tooltips/move-down">images/12x12/arrow_downward.png</file>
 
         <file>ui/welcome_page.ui</file>
         <file>ui/main_window.ui</file>

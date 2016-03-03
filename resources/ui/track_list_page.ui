@@ -218,7 +218,7 @@
        </property>
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
-                                    margin: 0;
+                                    margin: 0 -1px 0 0;
                                     min-height: 20px;
                                     min-width: 20px;
                                     }
@@ -230,6 +230,28 @@
        <property name="icon">
         <iconset>
          <normaloff>:/icons/move-up</normaloff>:/icons/move-up</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="_move_track_down_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QToolButton[style=QMacStyle] {
+         margin: 0;
+         min-height: 20px;
+         min-width: 20px;
+         }
+        </string>
+       </property>
+       <property name="text">
+        <string>Move Down</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/icons/move-down</normaloff>:/icons/move-down</iconset>
        </property>
       </widget>
      </item>
@@ -301,11 +323,16 @@
    <property name="text">
     <string>Move Up</string>
    </property>
-   <property name="shortcut">
-    <string>Alt+Shift+Up</string>
-   </property>
    <property name="shortcutContext">
     <enum>Qt::WidgetShortcut</enum>
+   </property>
+  </action>
+  <action name="_move_down_action">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Move Down</string>
    </property>
   </action>
  </widget>
@@ -335,6 +362,22 @@
    <hints>
     <hint type="sourcelabel">
      <x>77</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_move_track_down_button</sender>
+   <signal>clicked()</signal>
+   <receiver>_move_down_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
      <y>273</y>
     </hint>
     <hint type="destinationlabel">
