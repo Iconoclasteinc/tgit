@@ -234,3 +234,11 @@ def test_reorders_navigation_menu_when_moving_a_track(driver):
     driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - Chevere!", "2 - That is that")
     album.move_track(from_position=0, to_position=1)
     driver.shows_pages_in_navigation_combo("Track list", "Project edition", "1 - That is that", "2 - Chevere!")
+
+
+def test_navigates_using_shortcut(driver):
+    album = make_album(tracks=[make_track(track_title="Chevere!"), make_track(track_title="That is that")])
+    _ = display_project_screen(album)
+
+    driver.quick_navigate_to_page("2")
+    driver.shows_track_edition_page(2)

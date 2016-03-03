@@ -59,6 +59,9 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
         self._next.clicked.connect(self._to_next_page)
         self._pages_navigation.activated.connect(self._to_page)
 
+        self.addAction(self._quick_navigation_action)
+        self._quick_navigation_action.triggered.connect(self._quick_navigate)
+
     def display(self, album):
         self._remove_all_pages()
         self._add_track_list_page(album)
@@ -75,6 +78,11 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
 
     def _add_album_page(self, album):
         self._insert_page(self._edit_album(album), self._ALBUM_PAGE_INDEX)
+
+    def _quick_navigate(self):
+        edit = self._pages_navigation.lineEdit()
+        edit.setFocus()
+        edit.selectAll()
 
     def track_added(self, index, track, album):
         self._insert_page(self._edit_track(track), self._track_page_index(index))

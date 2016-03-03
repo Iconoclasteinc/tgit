@@ -63,6 +63,12 @@
          <height>0</height>
         </size>
        </property>
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+       <property name="insertPolicy">
+        <enum>QComboBox::NoInsert</enum>
+       </property>
       </widget>
      </item>
      <item>
@@ -98,6 +104,11 @@ QToolTip[style=QMacStyle] {
     </layout>
    </item>
   </layout>
+  <action name="_quick_navigation_action">
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../resources.qrc"/>

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from hamcrest.library.text import contains_string
 
+from cute import gestures
+
 from cute.matchers import named
 from tgit.ui.pages.album_screen import AlbumScreen
 from ._screen_driver import ScreenDriver
@@ -94,3 +96,9 @@ class AlbumScreenDriver(ScreenDriver):
 
     def lookup_isni_is_enabled(self, enabled=True):
         album_edition_page(self).enables_main_artist_isni_lookup(enabled=enabled)
+
+    def quick_navigate_to_page(self, text):
+        self.click()
+        self.perform(gestures.quick_nav())
+        self.perform(gestures.type_text(text))
+        self.enter()
