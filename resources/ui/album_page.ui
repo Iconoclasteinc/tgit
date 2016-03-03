@@ -63,12 +63,6 @@
           </property>
           <item>
            <widget class="QToolButton" name="_select_picture_button">
-            <property name="minimumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -94,12 +88,6 @@ QToolTip[style=QMacStyle] {
           </item>
           <item>
            <widget class="QToolButton" name="_remove_picture_button">
-            <property name="minimumSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -603,15 +591,15 @@ QLabel[style=QMacStyle] {
  </widget>
  <customwidgets>
   <customwidget>
+   <class>HelpLabel</class>
+   <extends>QLabel</extends>
+   <header>tgit.ui.widgets.help_label</header>
+  </customwidget>
+  <customwidget>
    <class>MusicianTable</class>
    <extends>QWidget</extends>
    <header>tgit.ui.pages.album_edition_page</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>HelpLabel</class>
-   <extends>QLabel</extends>
-   <header>tgit.ui.widgets.help_label</header>
   </customwidget>
  </customwidgets>
  <tabstops>

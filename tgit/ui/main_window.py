@@ -227,21 +227,22 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self._create_track_actions()
 
     def _create_track_actions(self):
-        for track in self._album.tracks:
-            self._navigate_menu.addAction(self._create_track_action(track))
+        def format_name(track):
+            return "{} - {}".format(track.track_number, track.track_title)
 
-    def _create_track_action(self, track):
-        def format_name(number, title):
-            return "{0} - {1}".format(number, title)
+        def update_entry(action, track):
+            action.setText(format_name(track))
 
-        def update_name(menu_item, metadata):
-            menu_item.setText("{0} - {1}".format(metadata.track_number, metadata.track_title))
+        def add_entry(track):
+            action = QAction(format_name(track), self)
+            action.triggered.connect(lambda _: self._to_track_page(track))
+            self._navigate_menu.addAction(action)
+            return action
 
-        action = QAction(format_name(track.track_number, track.track_title), self)
-        action.triggered.connect(lambda _: self._to_track_page(track.track_number - 1))
-        self.subscribe(track.metadata_changed, lambda metadata: update_name(action, metadata))
-
-        return action
+        for each_track in self._album.tracks:
+            self.unsubscribe(each_track.metadata_changed)
+            each_action = add_entry(each_track)
+            self.subscribe(each_track.metadata_changed, lambda track: update_entry(each_action, track))
 
     def _clear_track_actions(self):
         for action in self._navigate_menu.actions()[self.TRACK_ACTIONS_START_INDEX:]:
@@ -254,8 +255,8 @@ class MainWindow(QMainWindow, HandlerRegistrar):
     def _to_track_list_page(self):
         self.centralWidget().to_track_list_page()
 
-    def _to_track_page(self, track_number):
-        self.centralWidget().to_track_page(track_number)
+    def _to_track_page(self, track):
+        self.centralWidget().to_track_page(track.track_number - 1)
 
     def close(self):
         closed = super().close()

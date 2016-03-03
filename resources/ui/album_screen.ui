@@ -16,9 +16,6 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="_controls">
-     <property name="spacing">
-      <number>0</number>
-     </property>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -34,11 +31,8 @@
      </item>
      <item>
       <widget class="QToolButton" name="_previous">
-       <property name="minimumSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
+       <property name="enabled">
+        <bool>false</bool>
        </property>
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
@@ -62,12 +56,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="_next">
+      <widget class="QComboBox" name="_pages_navigation">
        <property name="minimumSize">
         <size>
-         <width>24</width>
-         <height>24</height>
+         <width>150</width>
+         <height>0</height>
         </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="_next">
+       <property name="enabled">
+        <bool>false</bool>
        </property>
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
