@@ -2,12 +2,11 @@
 from hamcrest.library.text import contains_string
 
 from cute import gestures
-
 from cute.matchers import named
 from tgit.ui.pages.album_screen import AlbumScreen
 from ._screen_driver import ScreenDriver
 from .album_edition_page_driver import album_edition_page, no_album_edition_page
-from .track_list_page_driver import track_list_page, no_track_list_page
+from .track_list_page_driver import track_list_page
 from .track_edition_page_driver import track_edition_page, no_track_edition_page
 
 
@@ -18,12 +17,6 @@ def album_screen(parent):
 class AlbumScreenDriver(ScreenDriver):
     def shows_pages_in_navigation_combo(self, *pages):
         self.combobox(named("_pages_navigation")).has_options(*pages)
-
-    def shows_track_list_page(self):
-        track_list_page(self).is_showing_on_screen()
-
-    def has_no_track_list_page(self):
-        no_track_list_page(self).exists()
 
     def shows_project_edition_page(self):
         album_edition_page(self).is_showing_on_screen()

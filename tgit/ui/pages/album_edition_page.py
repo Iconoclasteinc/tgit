@@ -34,10 +34,11 @@ from tgit.ui.helpers.ui_file import UIFile
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_album_edition_page(album, session, select_picture, select_identity, review_assignation,
+def make_album_edition_page(album, session, track_list_tab, select_picture, select_identity, review_assignation,
                             show_isni_assignation_failed, show_cheddar_connection_failed,
                             show_cheddar_authentication_failed, show_permission_denied, **handlers):
-    page = AlbumEditionPage(select_picture=select_picture,
+    page = AlbumEditionPage(track_list_tab=track_list_tab(album),
+                            select_picture=select_picture,
                             select_identity=select_identity,
                             review_assignation=review_assignation,
                             show_isni_assignation_failed=show_isni_assignation_failed,
@@ -71,7 +72,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 200, 200
 
-    def __init__(self, select_picture, select_identity, review_assignation,
+    def __init__(self, track_list_tab, select_picture, select_identity, review_assignation,
                  show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed,
                  show_permission_denied):
         super().__init__()
@@ -82,9 +83,9 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._show_permission_denied = show_permission_denied
         self._select_identity = select_identity
         self._select_picture = select_picture
-        self._setup_ui()
+        self._setup_ui(track_list_tab)
 
-    def _setup_ui(self):
+    def _setup_ui(self, track_list_tab):
         self._load(":/ui/album_page.ui")
         self._fill_with_countries(self._main_artist_region)
 
@@ -100,6 +101,7 @@ class AlbumEditionPage(QWidget, UIFile, AlbumListener):
         self._compilation.clicked.connect(self._update_isni_menu)
         self._compilation.clicked.connect(empty_main_artist)
         self._main_artist.textChanged.connect(self._update_isni_menu)
+        self._tabs.widget(0).layout().addWidget(track_list_tab)
 
     @staticmethod
     def _fill_with_countries(combobox):

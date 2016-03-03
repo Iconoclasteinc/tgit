@@ -70,7 +70,7 @@ class ApplicationRunner:
                                    import_from=from_track)
 
     def shows_track_list(self, *tracks):
-        self.tagger.navigate_to_track_list_page()
+        self.tagger.navigate_to_project_page()
         self.tagger.shows_project_contains(*tracks)
 
     def change_order_of_tracks(self, *tracks):

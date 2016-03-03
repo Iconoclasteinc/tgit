@@ -42,9 +42,6 @@ class MainWindowDriver(WidgetDriver):
     def next(self):
         album_screen(self).to_next_page()
 
-    def navigate_to_track_list_page(self):
-        menu_bar(self).navigate.to_track_list_page()
-
     def navigate_to_project_page(self):
         menu_bar(self).navigate.to_project_page()
 

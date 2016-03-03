@@ -67,7 +67,6 @@
     <property name="title">
      <string>&amp;Navigate</string>
     </property>
-    <addaction name="_to_track_list_action"/>
     <addaction name="_to_project_edition_action"/>
     <addaction name="separator"/>
    </widget>
@@ -160,14 +159,6 @@
    </property>
    <property name="iconText">
     <string>Project &amp;edition</string>
-   </property>
-  </action>
-  <action name="_to_track_list_action">
-   <property name="text">
-    <string>&amp;Track list</string>
-   </property>
-   <property name="iconText">
-    <string>&amp;Track list</string>
    </property>
   </action>
   <action name="_exit_action">

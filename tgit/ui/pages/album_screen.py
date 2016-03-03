@@ -25,8 +25,8 @@ from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.observer import Observer
 
 
-def make_album_screen(album, track_list_page, album_page, track_page):
-    screen = AlbumScreen(track_list_page, album_page, track_page)
+def make_album_screen(album, album_page, track_page):
+    screen = AlbumScreen(album_page, track_page)
 
     album.addAlbumListener(screen)
     screen.subscribe(album.track_inserted, lambda index, track: screen.track_added(index, track, album))
@@ -43,11 +43,10 @@ def make_album_screen(album, track_list_page, album_page, track_page):
 class AlbumScreen(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
 
-    _TRACK_LIST_PAGE_INDEX, _ALBUM_PAGE_INDEX, _TRACK_PAGES_STARTING_INDEX = range(3)
+    _ALBUM_PAGE_INDEX, _TRACK_PAGES_STARTING_INDEX = range(2)
 
-    def __init__(self, list_tracks, edit_album, edit_track):
+    def __init__(self, edit_album, edit_track):
         super().__init__()
-        self._list_tracks = list_tracks
         self._edit_album = edit_album
         self._edit_track = edit_track
         self._setup_ui()
@@ -64,17 +63,12 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
 
     def display(self, album):
         self._remove_all_pages()
-        self._add_track_list_page(album)
         self._add_album_page(album)
 
-        self._pages_navigation.addItem(self.tr("Track list"), self._TRACK_LIST_PAGE_INDEX)
         self._pages_navigation.addItem(self.tr("Project edition"), self._ALBUM_PAGE_INDEX)
         for index, track in enumerate(album.tracks):
             self.track_added(index, track, album)
         self._update_navigation_controls(0)
-
-    def _add_track_list_page(self, album):
-        self._insert_page(self._list_tracks(album), self._TRACK_LIST_PAGE_INDEX)
 
     def _add_album_page(self, album):
         self._insert_page(self._edit_album(album), self._ALBUM_PAGE_INDEX)
@@ -87,10 +81,12 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
     def track_added(self, index, track, album):
         self._insert_page(self._edit_track(track), self._track_page_index(index))
         self._rebuild_navigation_menu(album)
+        self._update_navigation_controls(0)
 
     def track_removed(self, index, album):
         self._remove_page(self._track_page_index(index))
         self._rebuild_navigation_menu(album)
+        self._update_navigation_controls(0)
 
     def track_moved(self, from_index, to_index, album):
         page = self._pages.widget(self._track_page_index(from_index))
@@ -118,9 +114,6 @@ class AlbumScreen(QWidget, UIFile, AlbumListener):
 
     def to_project_edition_page(self):
         self._to_page(self._ALBUM_PAGE_INDEX)
-
-    def to_track_list_page(self):
-        self._to_page(self._TRACK_LIST_PAGE_INDEX)
 
     def to_track_page(self, index):
         self._to_page(self._track_page_index(index))
