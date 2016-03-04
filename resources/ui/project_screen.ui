@@ -43,7 +43,7 @@
        <property name="styleSheet">
         <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
-    background-color: palette(alternate-base);
+    background-color: palette(midlight);
 }
 
 QToolButton[style=QMacStyle] {
@@ -107,7 +107,7 @@ QToolButton[style=QWindowsVistaStyle] {
        <property name="styleSheet">
         <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
-    background-color: palette(alternate-base);
+    background-color: palette(midlight);
 }
 
 QToolButton[style=QMacStyle] {

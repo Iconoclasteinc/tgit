@@ -793,7 +793,7 @@ QLabel[style=QMacStyle] {
               <property name="styleSheet">
                <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
-    background-color: palette(alternate-base);
+    background-color: palette(midlight);
 }</string>
               </property>
               <property name="icon">
@@ -958,7 +958,7 @@ QLabel[style=QMacStyle] {
               <property name="styleSheet">
                <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
-    background-color: palette(alternate-base);
+    background-color: palette(midlight);
 }</string>
               </property>
               <property name="icon">
@@ -1123,7 +1123,7 @@ QLabel[style=QMacStyle] {
               <property name="styleSheet">
                <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
-    background-color: palette(alternate-base);
+    background-color: palette(midlight);
 }</string>
               </property>
               <property name="icon">

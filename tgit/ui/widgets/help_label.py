@@ -28,7 +28,7 @@ class HelpLabel(QLabel):
         self.setStyleSheet("""
             QToolTip[style=QMacStyle] {
                 padding: 2px;
-                background-color: palette(alternate-base);
+                background-color: palette(midlight);
             }
         """)
 

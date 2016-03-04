@@ -83,7 +83,7 @@
 
 QToolTip[style=QMacStyle] {
     padding: 2px;
-    background-color: palette(alternate-base);
+    background-color: palette(midlight);
 }
 </string>
             </property>
@@ -116,7 +116,7 @@ QToolButton[style=QMacStyle] {
 
 QToolTip[style=QMacStyle] {
     padding: 2px;
-    background-color: palette(alternate-base);
+    background-color: palette(midlight);
 }</string>
             </property>
             <property name="text">
@@ -253,7 +253,7 @@ QLabel[style=QMacStyle] {
             <property name="styleSheet">
              <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
-    background-color: palette(alternate-base);
+    background-color: palette(midlight);
 }</string>
             </property>
             <property name="text">
