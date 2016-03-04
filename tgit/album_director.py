@@ -107,9 +107,15 @@ def update_album_from(album):
         for key, value in metadata.items():
             setattr(album, key, value)
 
-        if not metadata.get("compilation"):
+        if metadata.get("compilation") is True:
+            album.lead_performer = ""
             for track in album.tracks:
-                track.lead_performer = metadata.get("lead_performer")
+                track.lead_performer = ""
+
+        album_main_artist = metadata.get("lead_performer")
+        if album_main_artist:
+            for track in album.tracks:
+                track.lead_performer = album_main_artist
 
     return update_album
 
@@ -180,7 +186,8 @@ def assign_isni_to_main_artist_using(cheddar, session, album):
 
 def assign_isni_to_lyricist_using(cheddar, session):
     def assign_isni(track, on_assign_success):
-        _assign_isni(track.lyricist, "individual", [track.track_title], on_assign_success, cheddar, session.current_user)
+        _assign_isni(track.lyricist, "individual", [track.track_title], on_assign_success, cheddar,
+                     session.current_user)
 
     return assign_isni
 
