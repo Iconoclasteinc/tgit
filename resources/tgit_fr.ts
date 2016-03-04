@@ -60,7 +60,7 @@
     </message>
 </context>
 <context>
-    <name>TrackListPage</name>
+    <name>TrackListTab</name>
     <message>
         <source>Play</source>
         <translation>Jouer</translation>
