@@ -88,7 +88,7 @@ class ProjectScreenDriver(ScreenDriver):
         project_edition_page(self).lookup_isni_of_main_artist()
 
     def lookup_isni_is_enabled(self, enabled=True):
-        project_edition_page(self).enables_main_artist_isni_lookup(enabled=enabled)
+        project_edition_page(self).shows_main_artist_isni_lookup_button(enabled=enabled)
 
     def quick_navigate_to_page(self, text):
         self.click()

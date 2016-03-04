@@ -6,7 +6,6 @@ import pytest
 from flexmock import flexmock
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, empty, has_key, has_property,
                       match_equality)
-
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from cute.prober import PollingProber
@@ -249,14 +248,14 @@ def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
 
 def test_updates_album_metadata():
     album = build.album()
-    director.update_album_from(album)(release_name="Title", compilation=True, lead_performer="Artist",
+    director.update_album_from(album)(release_name="Title", compilation=False, lead_performer="Artist",
                                       guestPerformers=[("Guitar", "Guitarist")], label_name="Label",
                                       catalogNumber="XXX123456789", upc="123456789999", comments="Comments\n...",
                                       releaseTime="2009-01-01", recording_time="2008-09-15", recordingStudios="Studios",
                                       music_producer="Producer", mixer="Engineer", primary_style="Style")
 
     assert_that(album.release_name, equal_to("Title"), "release name")
-    assert_that(album.compilation, is_(True), "compilation")
+    assert_that(album.compilation, is_(False), "compilation")
     assert_that(album.lead_performer, equal_to("Artist"), "lead performer")
     assert_that(album.guestPerformers, equal_to([("Guitar", "Guitarist")]), "guest performers")
     assert_that(album.label_name, equal_to("Label"), "label name")
@@ -271,9 +270,17 @@ def test_updates_album_metadata():
     assert_that(album.primary_style, equal_to("Style"), "primary style")
 
 
-def test_updates_tracks_lead_performer_when_album_is_not_a_compilation():
+def test_updates_album_main_artist_when_album_is_a_compilation():
+    album = build.album()
+    director.update_album_from(album)(compilation=True, lead_performer="Artist")
+
+    assert_that(album.compilation, is_(True), "compilation")
+    assert_that(album.lead_performer, equal_to(""), "lead performer")
+
+
+def test_updates_tracks_main_artist_when_album_is_not_a_compilation():
     album = build.album(tracks=[build.track(), build.track(), build.track()])
-    director.update_album_from(album)(compilation=False, lead_performer="Album Artist")
+    director.update_album_from(album)(lead_performer="Album Artist")
 
     for track in album.tracks:
         assert_that(track.lead_performer, equal_to("Album Artist"), "track artist")

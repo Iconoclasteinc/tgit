@@ -112,58 +112,54 @@ def test_indicates_whether_project_is_a_compilation(driver):
     driver.shows_compilation(True)
 
 
-def test_disables_lead_performer_edition_when_project_is_a_compilation(driver):
-    _ = show_page(make_album(compilation=True, lead_performer="Album Artist"))
+def test_disables_main_artist_section_when_project_is_a_compilation(driver):
+    _ = show_page(make_album(compilation=True))
     driver.shows_main_artist("Various Artists", disabled=True)
     driver.shows_main_artist_region("", disabled=True)
     driver.shows_main_artist_isni("", disabled=True)
+    driver.shows_main_artist_isni_lookup_button(disabled=True)
 
 
-def test_enables_isni_lookup_when_project_is_no_longer_a_compilation(driver):
-    album = make_album(compilation=True)
+def test_enables_main_artist_section_when_project_is_no_longer_a_compilation(driver):
+    album = make_album(compilation=False)
     _ = show_page(album, make_registered_session())
-    driver.shows_main_artist("Various Artists", disabled=True)
-    driver.shows_main_artist_region("", disabled=True)
-    driver.shows_main_artist_isni("", disabled=True)
-
-    album.compilation = False
-    album.lead_performer = "Joel Miller"
-    driver.shows_main_artist("Joel Miller", disabled=False)
+    driver.shows_main_artist("", disabled=False)
     driver.shows_main_artist_region("", disabled=False)
     driver.shows_main_artist_isni("", disabled=False)
+    driver.shows_main_artist_isni_lookup_button(disabled=True)
 
 
-def test_disables_isni_lookup_when_lead_performer_is_empty(driver):
+def test_disables_isni_lookup_when_main_artist_is_empty(driver):
     _ = show_page(make_album(), make_registered_session())
-    driver.enables_main_artist_isni_lookup(False)
+    driver.shows_main_artist_isni_lookup_button(disabled=True)
 
 
 def test_enables_isni_lookup_when_user_logs_in(driver):
     session = make_anonymous_session()
     _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
-    driver.enables_main_artist_isni_lookup(False)
+    driver.shows_main_artist_isni_lookup_button(disabled=True)
 
     session.login_as("somebody@gmail.com", "api-key", [Permission.lookup_isni.value])
-    driver.enables_main_artist_isni_lookup(True)
+    driver.shows_main_artist_isni_lookup_button(disabled=False)
 
 
 def test_disables_isni_lookup_when_user_logs_out(driver):
     session = make_registered_session()
     _ = show_page(session=session, album=make_album(lead_performer="Album Artist"))
-    driver.enables_main_artist_isni_lookup(True)
+    driver.shows_main_artist_isni_lookup_button(disabled=False)
 
     session.logout()
-    driver.enables_main_artist_isni_lookup(False)
+    driver.shows_main_artist_isni_lookup_button(disabled=True)
 
 
-def test_disables_isni_lookup_when_lead_performer_is_blank(driver):
+def test_disables_isni_lookup_when_main_artist_is_blank(driver):
     _ = show_page(make_album(lead_performer="     "))
-    driver.enables_main_artist_isni_lookup(False)
+    driver.shows_main_artist_isni_lookup_button(disabled=True)
 
 
 def test_disables_isni_assign_by_default(driver):
     _ = show_page(make_album(lead_performer="     "))
-    driver.disables_main_artist_isni_assign()
+    driver.shows_main_artist_isni_assign_action(disabled=True)
 
 
 def test_signals_when_picture_selected(driver):
@@ -193,7 +189,7 @@ def test_signals_when_remove_picture_button_clicked(driver):
     driver.check(remove_picture_signal)
 
 
-def test_updates_isni_when_lead_performer_text_change(driver):
+def test_updates_isni_when_main_artist_text_change(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
 
@@ -203,7 +199,7 @@ def test_updates_isni_when_lead_performer_text_change(driver):
     driver.shows_main_artist_isni("0000000123456789")
 
 
-def test_clears_isni_when_lead_performer_not_found(driver):
+def test_clears_isni_when_main_artist_not_found(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
 
@@ -216,7 +212,7 @@ def test_clears_isni_when_lead_performer_not_found(driver):
 
 def test_signals_when_lookup_isni_action_is_triggered(driver):
     lookup_isni_signal = MultiValueMatcherProbe("lookup ISNI", contains("performer", instance_of(types.FunctionType)))
-    _ = show_page(make_album(lead_performer="performer"), make_registered_session(),
+    _ = show_page(make_album(lead_performer="performer", compilation=False), make_registered_session(),
                   on_isni_lookup=lookup_isni_signal.received)
 
     driver.lookup_isni_of_main_artist()
@@ -269,7 +265,7 @@ def test_selects_identities_on_isni_lookup(driver):
     driver.check(select_identity_signal)
 
 
-def test_updates_lead_performer_isni_on_isni_lookup(driver):
+def test_updates_main_artist_isni_on_isni_lookup(driver):
     _ = show_page(make_album(lead_performer="performer"), make_registered_session(),
                   select_identity=lambda _, callback: callback(
                       IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)),
@@ -458,14 +454,6 @@ def test_displays_musician_table_only_once(driver):
     page.display(album)
 
     driver.shows_only_musicians_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
-
-
-def test_clears_main_artist_name_when_compilation_unselected(driver):
-    show_page(make_album(compilation=True))
-
-    driver.shows_main_artist("Various Artists", disabled=True)
-    driver.toggle_compilation()
-    driver.shows_main_artist("Various Artists", disabled=True)
 
 
 def _load_test_image(name):

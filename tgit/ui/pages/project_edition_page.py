@@ -174,7 +174,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._title.editingFinished.connect(lambda: handle("release_name"))
         self._compilation.clicked.connect(lambda: handle("compilation"))
         self._main_artist.editingFinished.connect(lambda: handle("lead_performer"))
-        self._main_artist_region.activated.connect(lambda: handle("lead_performer_region"))
+        self._main_artist_region.currentIndexChanged.connect(lambda: handle("lead_performer_region"))
         self._label_name.editingFinished.connect(lambda: handle("label_name"))
         self._catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
         self._barcode.editingFinished.connect(lambda: handle("upc"))
@@ -193,7 +193,6 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
             self._picture = album.main_cover
 
         self._title.setText(album.release_name)
-        self._compilation.setChecked(album.compilation is True)
         self._display_main_artist(album)
         self._label_name.setText(album.label_name)
         self._catalog_number.setText(album.catalog_number)
@@ -202,30 +201,26 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._musician_table_container.display(album.guest_performers or [])
 
     def _display_main_artist(self, album):
-        disable_main_artist = album.compilation is True
-        self._main_artist.setDisabled(disable_main_artist)
-        self._main_artist_caption.setDisabled(disable_main_artist)
-        self._main_artist_isni.setDisabled(disable_main_artist)
-        self._main_artist_isni_caption.setDisabled(disable_main_artist)
-        self._main_artist_region.setDisabled(disable_main_artist)
-        self._main_artist_region_caption.setDisabled(disable_main_artist)
+        def displayed_main_artist():
+            return self.tr("Various Artists") if is_compilation() else album.lead_performer
 
-        if disable_main_artist:
-            # todo this should be set in the embedded metadata adapter and we should have a checkbox for various artists
-            self._main_artist.setText(self.tr("Various Artists"))
-            self._main_artist_isni.setText("")
+        def is_compilation():
+            return album.compilation is True
+
+        self._compilation.setChecked(is_compilation())
+        self._main_artist.setDisabled(is_compilation())
+        self._main_artist.setText(displayed_main_artist())
+        self._main_artist_caption.setDisabled(is_compilation())
+        self._main_artist_isni.setDisabled(is_compilation())
+        self._main_artist_isni.setText((album.isnis or {}).get(album.lead_performer))
+        self._main_artist_isni_caption.setDisabled(is_compilation())
+        self._main_artist_region.setDisabled(is_compilation())
+        self._main_artist_region_caption.setDisabled(is_compilation())
+
+        if is_compilation() or not album.lead_performer_region:
             self._main_artist_region.setCurrentIndex(0)
         else:
-            if album.lead_performer == self.tr("Various Artists"):
-                self._main_artist.setText("")
-            else:
-                self._main_artist.setText(album.lead_performer)
-
-            if album.lead_performer_region:
-                self._main_artist_region.setCurrentText(COUNTRIES[album.lead_performer_region[0]])
-
-            isnis = album.isnis or {}
-            self._main_artist_isni.setText(isnis[album.lead_performer] if album.lead_performer in isnis else None)
+            self._main_artist_region.setCurrentText(COUNTRIES[album.lead_performer_region[0]])
 
     def _metadata(self, musicians, *keys):
         all_values = dict(release_name=self._title.text(),
@@ -241,17 +236,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         if len(keys) == 0:
             return all_values
 
-        keys_to_retrieve = [k for k in keys]
-        if "compilation" not in keys_to_retrieve:
-            keys_to_retrieve.append("compilation")
-
-        if "lead_performer" not in keys_to_retrieve:
-            keys_to_retrieve.append("lead_performer")
-
-        if "lead_performer_region" not in keys_to_retrieve:
-            keys_to_retrieve.append("lead_performer_region")
-
-        return {k: all_values.get(k, None) for k in keys_to_retrieve}
+        return {k: all_values.get(k, None) for k in keys}
 
     @staticmethod
     def _get_country_code_from_combo(combo):

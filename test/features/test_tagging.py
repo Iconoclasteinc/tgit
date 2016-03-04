@@ -97,13 +97,13 @@ def test_tagging_a_compilation(app, recordings, workspace):
     app.change_project_metadata(lead_performer="???")
     app.change_project_metadata(toggle_compilation=True)
 
-    app.shows_next_track_metadata(track_title="Big Ideas", lead_performer="???")
+    app.shows_next_track_metadata(track_title="Big Ideas", lead_performer="")
     app.change_track_metadata(lead_performer="Joel Miller")
 
-    app.shows_next_track_metadata(track_title="Partways", lead_performer="???")
+    app.shows_next_track_metadata(track_title="Partways", lead_performer="")
     app.change_track_metadata(lead_performer="John Roney")
 
-    app.shows_next_track_metadata(track_title="Horse Power", lead_performer="???")
+    app.shows_next_track_metadata(track_title="Horse Power", lead_performer="")
     app.change_track_metadata(lead_performer="Joel Miller")
 
     app.save_project()
