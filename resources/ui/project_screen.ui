@@ -34,24 +34,41 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
-       <property name="cursor">
-        <cursorShape>PointingHandCursor</cursorShape>
-       </property>
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>
        <property name="toolTip">
-        <string>Previous page</string>
+        <string>Previous track</string>
        </property>
        <property name="styleSheet">
         <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
     background-color: palette(alternate-base);
+}
+
+QToolButton[style=QMacStyle] {
+    background-color: #FDFDFD;
+    border-radius: 4px;
+	border-top: 1px inset white;
+	border-bottom: 1px outset #BDBDBD;
+    min-width: 23px;
+    min-height: 21px;
+}
+
+QToolButton:pressed[style=QMacStyle] {
+    background-color: #DDDDDD;
+	border-top: 1px inset #F6F6F6;
 }</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../resources.qrc">
          <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -76,28 +93,45 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
-       <property name="cursor">
-        <cursorShape>PointingHandCursor</cursorShape>
-       </property>
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>
        <property name="toolTip">
-        <string>Next page</string>
+        <string>Next track</string>
        </property>
        <property name="styleSheet">
-        <string notr="true">QToolButton[style=QMacStyle] {
-    margin-left: -1px;
-}
-
-QToolTip[style=QMacStyle] {
+        <string notr="true">QToolTip[style=QMacStyle] {
     padding: 2px;
     background-color: palette(alternate-base);
+}
+
+QToolButton[style=QMacStyle] {
+    background-color: #FDFDFD;
+    border-radius: 4px;
+	border-top: 1px inset white;
+	border-bottom: 1px outset #BDBDBD;
+    min-width: 23px;
+    min-height: 21px;
+}
+
+QToolButton:pressed[style=QMacStyle] {
+    background-color: #DDDDDD;
+	border-top: 1px inset #F6F6F6;
+}
+
+QToolButton[style=QWindowsVistaStyle] {
+    icon-size: 16px;
 }</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../resources.qrc">
          <normaloff>:/icons/next</normaloff>:/icons/next</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
        </property>
       </widget>
      </item>
