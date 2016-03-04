@@ -112,7 +112,7 @@
        <string>#</string>
       </property>
       <property name="textAlignment">
-       <set>AlignTrailing|AlignVCenter</set>
+       <set>AlignRight|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -120,7 +120,7 @@
        <string/>
       </property>
       <property name="textAlignment">
-       <set>AlignCenter</set>
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
      </column>
      <column>
@@ -128,7 +128,7 @@
        <string>Track Title</string>
       </property>
       <property name="textAlignment">
-       <set>AlignLeading|AlignVCenter</set>
+       <set>AlignLeft|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -136,7 +136,7 @@
        <string>Lead Performer</string>
       </property>
       <property name="textAlignment">
-       <set>AlignLeading|AlignVCenter</set>
+       <set>AlignLeft|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -144,7 +144,7 @@
        <string>Release Name</string>
       </property>
       <property name="textAlignment">
-       <set>AlignLeading|AlignVCenter</set>
+       <set>AlignLeft|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -152,7 +152,7 @@
        <string>Bitrate</string>
       </property>
       <property name="textAlignment">
-       <set>AlignTrailing|AlignVCenter</set>
+       <set>AlignRight|AlignVCenter</set>
       </property>
      </column>
      <column>
@@ -160,7 +160,7 @@
        <string>Duration</string>
       </property>
       <property name="textAlignment">
-       <set>AlignTrailing|AlignVCenter</set>
+       <set>AlignRight|AlignVCenter</set>
       </property>
      </column>
     </widget>
@@ -170,6 +170,9 @@
      <property name="spacing">
       <number>0</number>
      </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
      <item>
       <widget class="QToolButton" name="_add_tracks_button">
        <property name="toolTip">
@@ -177,10 +180,10 @@
        </property>
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
-                                    margin: 0 -1px 0 0;
-                                    min-height: 20px;
-                                    min-width: 20px;
-                                    }
+    margin: 0 -1px 0 0;
+    min-height: 22px;
+    min-width: 22px;
+}
 
 QToolTip[style=QMacStyle] {
     padding: 2px;
@@ -192,7 +195,7 @@ QToolTip[style=QMacStyle] {
         <string>Add Tracks</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../resources.qrc">
          <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
        </property>
       </widget>
@@ -208,8 +211,8 @@ QToolTip[style=QMacStyle] {
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
                                     margin: 0 -1px 0 0;
-                                    min-height: 20px;
-                                    min-width: 20px;
+                                    min-height: 22px;
+                                    min-width: 22px;
                                     }
 
 QToolTip[style=QMacStyle] {
@@ -223,7 +226,7 @@ QToolTip[style=QMacStyle] {
         <string>Remove</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../resources.qrc">
          <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
        </property>
       </widget>
@@ -239,8 +242,8 @@ QToolTip[style=QMacStyle] {
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
                                     margin: 0 -1px 0 0;
-                                    min-height: 20px;
-                                    min-width: 20px;
+                                    min-height: 22px;
+                                    min-width: 22px;
                                     }
 
 QToolTip[style=QMacStyle] {
@@ -254,7 +257,7 @@ QToolTip[style=QMacStyle] {
         <string>Move Up</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../resources.qrc">
          <normaloff>:/icons/move-up</normaloff>:/icons/move-up</iconset>
        </property>
       </widget>
@@ -270,8 +273,8 @@ QToolTip[style=QMacStyle] {
        <property name="styleSheet">
         <string notr="true">QToolButton[style=QMacStyle] {
          margin: 0;
-         min-height: 20px;
-         min-width: 20px;
+         min-height: 22px;
+         min-width: 22px;
          }
         
 QToolTip[style=QMacStyle] {
@@ -284,7 +287,7 @@ QToolTip[style=QMacStyle] {
         <string>Move Down</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../resources.qrc">
          <normaloff>:/icons/move-down</normaloff>:/icons/move-down</iconset>
        </property>
       </widget>
@@ -370,7 +373,9 @@ QToolTip[style=QMacStyle] {
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>_remove_track_button</sender>

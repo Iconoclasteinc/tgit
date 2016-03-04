@@ -57,9 +57,12 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="_picture_button_container" stretch="0,0,0">
+         <layout class="QHBoxLayout" name="_picture_button_container">
           <property name="spacing">
            <number>0</number>
+          </property>
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMinimumSize</enum>
           </property>
           <item>
            <widget class="QToolButton" name="_select_picture_button">
@@ -70,7 +73,14 @@
              <string>Add or change the picture</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">
+             <string notr="true">QToolButton[style=QMacStyle] {
+  margin: 0 -1px 0 0;
+  min-width: 22px;
+  min-height: 22px;
+  max-width: 22px;
+  max-height: 22px;
+}
+
 QToolTip[style=QMacStyle] {
     padding: 2px;
     background-color: palette(alternate-base);
@@ -78,10 +88,10 @@ QToolTip[style=QMacStyle] {
 </string>
             </property>
             <property name="text">
-             <string/>
+             <string>Add</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources.qrc">
               <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
             </property>
            </widget>
@@ -97,7 +107,11 @@ QToolTip[style=QMacStyle] {
             <property name="styleSheet">
              <string notr="true">
 QToolButton[style=QMacStyle] {
-	margin-left: -1px;
+	margin: 0;
+    min-height: 22px;
+    min-width: 22px;
+    max-width: 22px;
+    max-height: 22px;
 }
 
 QToolTip[style=QMacStyle] {
@@ -106,10 +120,10 @@ QToolTip[style=QMacStyle] {
 }</string>
             </property>
             <property name="text">
-             <string/>
+             <string>Remove</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources.qrc">
               <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
             </property>
            </widget>
@@ -246,7 +260,7 @@ QLabel[style=QMacStyle] {
              <string/>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources.qrc">
               <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
             </property>
             <property name="popupMode">
@@ -287,7 +301,7 @@ QLabel[style=QMacStyle] {
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap>:/icons/help</pixmap>
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -488,7 +502,7 @@ QLabel[style=QMacStyle] {
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap>:/icons/help</pixmap>
+            <pixmap resource="../resources.qrc">:/icons/help</pixmap>
            </property>
            <property name="scaledContents">
             <bool>true</bool>
@@ -563,8 +577,8 @@ QLabel[style=QMacStyle] {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>100</width>
-            <height>30</height>
+            <width>782</width>
+            <height>202</height>
            </rect>
           </property>
           <property name="styleSheet">
