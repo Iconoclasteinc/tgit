@@ -132,12 +132,12 @@ class ProjectEditionPageDriver(ScreenDriver):
         edit.has_text(name)
         edit.is_disabled(disabled)
 
-    def enables_main_artist_isni_lookup(self, enabled=True):
-        self.tool_button(named("_main_artist_isni_actions_button")).is_enabled(enabled)
+    def shows_main_artist_isni_lookup_button(self, disabled=False):
+        self.tool_button(named("_main_artist_isni_actions_button")).is_disabled(disabled)
 
-    def disables_main_artist_isni_assign(self):
+    def shows_main_artist_isni_assign_action(self, disabled=True):
         menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()
-        menu.menu_item(named("_main_artist_isni_assign_action")).is_disabled(True)
+        menu.menu_item(named("_main_artist_isni_assign_action")).is_disabled(disabled)
 
     def change_main_artist(self, name):
         self.lineEdit(named("_main_artist")).change_text(name)
