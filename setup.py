@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from distutils.cmd import Command
 import os
+from distutils.cmd import Command
 
 import PyQt5
+import cx_Freeze
 from PyQt5.QtCore import QCoreApplication
 from cx_Freeze import setup, Executable
-import cx_Freeze
 
 from tgit import __app_name__, __version__
 from tgit.platforms import windows, mac
@@ -41,7 +41,7 @@ if windows:
 
 includes = [
     "PyQt5.QtNetwork",
-    "tgit.ui.widgets.date_picker",
+    "tgit.ui.widgets.help_label",
     "tgit.ui.widgets.text_area"
 ]
 
