@@ -184,9 +184,6 @@
          </item>
          <item row="1" column="0" colspan="2">
           <widget class="QPushButton" name="_new_flac_project_button">
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
            <property name="focusPolicy">
             <enum>Qt::TabFocus</enum>
            </property>
@@ -200,9 +197,6 @@
          </item>
          <item row="2" column="0" colspan="2">
           <widget class="QPushButton" name="_new_mp3_project_button">
-           <property name="cursor">
-            <cursorShape>PointingHandCursor</cursorShape>
-           </property>
            <property name="focusPolicy">
             <enum>Qt::TabFocus</enum>
            </property>
