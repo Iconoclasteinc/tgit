@@ -95,7 +95,7 @@ LEFT_ALIGNED = Qt.AlignLeft | Qt.AlignVCenter
 RIGHT_ALIGNED = Qt.AlignRight | Qt.AlignVCenter
 RESIZABLE = QHeaderView.Interactive
 FIXED = QHeaderView.Fixed
-AUTO_ADJUST = QHeaderView.ResizeToContents
+STRETCH = QHeaderView.Stretch
 
 Width = namedtuple('Width', ['length', 'resize_mode'])
 
@@ -146,7 +146,7 @@ class Column(Enum):
             self.setTextAlignment(LEFT_ALIGNED)
 
     class lead_performer(Cell):
-        width = Width(234, RESIZABLE)
+        width = Width(260, RESIZABLE)
 
         def __init__(self, track):
             super().__init__()
@@ -154,7 +154,7 @@ class Column(Enum):
             self.setTextAlignment(LEFT_ALIGNED)
 
     class release_name(Cell):
-        width = Width(250, RESIZABLE)
+        width = Width(275, RESIZABLE)
 
         def __init__(self, track):
             super().__init__()
@@ -170,7 +170,7 @@ class Column(Enum):
             self.setTextAlignment(RIGHT_ALIGNED)
 
     class duration(Cell):
-        width = Width(70, RESIZABLE)
+        width = Width(70, STRETCH)
 
         def __init__(self, track):
             super().__init__()

@@ -133,7 +133,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Lead Performer</string>
+       <string>Main Artist</string>
       </property>
       <property name="textAlignment">
        <set>AlignLeft|AlignVCenter</set>
@@ -141,7 +141,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Release Name</string>
+       <string>Project</string>
       </property>
       <property name="textAlignment">
        <set>AlignLeft|AlignVCenter</set>

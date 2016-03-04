@@ -8,12 +8,12 @@
         <translation>Titre de la piste</translation>
     </message>
     <message>
-        <source>Lead Performer</source>
+        <source>Main Artist</source>
         <translation>Artiste principal</translation>
     </message>
     <message>
-        <source>Title</source>
-        <translation>Titre</translation>
+        <source>Project</source>
+        <translation>Projet</translation>
     </message>
     <message>
         <source>Bitrate</source>
@@ -362,17 +362,17 @@
     <name>project_screen</name>
     <message>
         <location filename="tgit/ui/project_screen.py" />
-        <source>Previous page</source>
-        <translation>Page précédente</translation>
+        <source>Previous track</source>
+        <translation>Piste précédente</translation>
     </message>
     <message>
         <location filename="tgit/ui/project_screen.py" />
-        <source>Next page</source>
-        <translation>Page suivante</translation>
+        <source>Next track</source>
+        <translation>Piste suivante</translation>
     </message>
 </context>
     <context>
-        <name>AlbumScreen</name>
+        <name>ProjectScreen</name>
         <message>
             <location filename="tgit/ui/project_screen.py" />
             <source>Project edition</source>
