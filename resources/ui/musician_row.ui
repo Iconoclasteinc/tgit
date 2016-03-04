@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>520</width>
-    <height>39</height>
+    <width>526</width>
+    <height>49</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -94,6 +94,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>_instrument</tabstop>
+  <tabstop>_musician_name</tabstop>
+  <tabstop>_remove_musician_button</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
