@@ -32,7 +32,7 @@ def driver(qt, prober, automaton):
 
 def test_displays_column_headings(driver):
     _ = show_track_list_tab(make_album())
-    driver.shows_column_headers("#", None, "Track Title", "Lead Performer", "Release Name", "Bitrate", "Duration")
+    driver.shows_column_headers("#", None, "Track Title", "Main Artist", "Project", "Bitrate", "Duration")
     driver.has_track_count(0)
 
 
