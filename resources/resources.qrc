@@ -26,9 +26,9 @@
         <file alias="icons/inverted/playing">images/16x16/inverted/volume_up.png</file>
         <file alias="icons/error">images/16x16/error_outline.png</file>
         <file alias="icons/inverted/error">images/16x16/inverted/error_outline.png</file>
+        <file alias="icons/previous">images/16x16/keyboard_arrow_left.png</file>
+        <file alias="icons/next">images/16x16/keyboard_arrow_right.png</file>
         <file alias="icons/help">images/20x20/help_outline.png</file>
-        <file alias="icons/back">images/20x20/keyboard_arrow_left.png</file>
-        <file alias="icons/next">images/20x20/keyboard_arrow_right.png</file>
         <file alias="tooltips/search">images/12x12/search.png</file>
         <file alias="tooltips/reorder">images/12x12/swap_vert.png</file>
         <file alias="tooltips/add">images/12x12/add.png</file>

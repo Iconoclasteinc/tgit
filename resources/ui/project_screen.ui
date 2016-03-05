@@ -50,14 +50,16 @@ QToolButton[style=QMacStyle] {
     background-color: #FDFDFD;
     border-radius: 4px;
 	border-top: 1px inset white;
-	border-bottom: 1px outset #BDBDBD;
-    min-width: 23px;
-    min-height: 21px;
+    border-left: 1px solid transparent;
+	border-bottom: 1px outset rgba(205, 205, 205, .75);
+    border-right: 1px solid transparent;
+    min-width: 22px;
+    min-height: 18px;
 }
 
-QToolButton:pressed[style=QMacStyle] {
+QToolButton[style=QMacStyle]:pressed {
     background-color: #DDDDDD;
-	border-top: 1px inset #F6F6F6;
+	border-top: 1px inset rgba(246, 246, 246, .75);
 }
 
 QToolButton[style=QWindowsVistaStyle] {
@@ -67,13 +69,7 @@ QToolButton[style=QWindowsVistaStyle] {
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
+         <normaloff>:/icons/previous</normaloff>:/icons/previous</iconset>
        </property>
       </widget>
      </item>
@@ -114,14 +110,16 @@ QToolButton[style=QMacStyle] {
     background-color: #FDFDFD;
     border-radius: 4px;
 	border-top: 1px inset white;
-	border-bottom: 1px outset #BDBDBD;
-    min-width: 23px;
-    min-height: 21px;
+    border-right: 1px solid transparent;
+	border-bottom: 1px outset rgba(205, 205, 205, .75);
+    border-left: 1px solid transparent;
+    min-width: 22px;
+    min-height: 18px;
 }
 
-QToolButton:pressed[style=QMacStyle] {
+QToolButton[style=QMacStyle]:pressed {
     background-color: #DDDDDD;
-	border-top: 1px inset #F6F6F6;
+	border-top: 1px inset rgba(246, 246, 246, .75);
 }
 
 QToolButton[style=QWindowsVistaStyle] {
@@ -132,12 +130,6 @@ QToolButton[style=QWindowsVistaStyle] {
        <property name="icon">
         <iconset resource="../resources.qrc">
          <normaloff>:/icons/next</normaloff>:/icons/next</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
        </property>
       </widget>
      </item>
