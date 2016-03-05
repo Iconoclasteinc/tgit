@@ -68,7 +68,6 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
     _picture = None
     _isni_lookup = False
     _isni_assign = False
-    _metadata_changed = lambda: None
 
     FRONT_COVER_SIZE = 200, 200
 
@@ -214,6 +213,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_isni.setDisabled(is_compilation())
         self._main_artist_isni.setText((album.isnis or {}).get(album.lead_performer))
         self._main_artist_isni_caption.setDisabled(is_compilation())
+        self._main_artist_isni_help.setDisabled(is_compilation())
         self._main_artist_region.setDisabled(is_compilation())
         self._main_artist_region_caption.setDisabled(is_compilation())
 

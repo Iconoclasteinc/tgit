@@ -131,6 +131,7 @@ class ProjectEditionPageDriver(ScreenDriver):
         edit = self.lineEdit(named("_main_artist_isni"))
         edit.has_text(name)
         edit.is_disabled(disabled)
+        self.label(named("_main_artist_isni_help")).is_disabled(disabled)
 
     def shows_main_artist_isni_lookup_button(self, disabled=False):
         self.tool_button(named("_main_artist_isni_actions_button")).is_disabled(disabled)
