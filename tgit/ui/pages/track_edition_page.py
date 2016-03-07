@@ -125,6 +125,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self.display(album=album)
 
     def on_lyricist_isni_assign(self, handler):
+        # noinspection PyArgumentList
         def start_waiting():
             QApplication.setOverrideCursor(Qt.WaitCursor)
             try:
@@ -138,6 +139,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             finally:
                 QApplication.restoreOverrideCursor()
 
+        # noinspection PyArgumentList
         def on_assign_success(identity):
             self._lyricist_isni.setFocus(Qt.OtherFocusReason)
             self._lyricist_isni.setText(identity.id)
@@ -237,10 +239,9 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         if region:
             combobox.setCurrentText(COUNTRIES[region[0]])
 
-    @staticmethod
-    def _display_language(language, combobox):
+    def _display_language(self, language, combobox):
         if language:
-            combobox.setCurrentText(LANGUAGES[language])
+            combobox.setCurrentText(self.tr(LANGUAGES[language]))
         else:
             combobox.setCurrentIndex(0)
 
@@ -303,10 +304,9 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         combobox.insertItem(0, "")
         combobox.setCurrentIndex(0)
 
-    @staticmethod
-    def _fill_with_languages(combobox):
+    def _fill_with_languages(self, combobox):
         for code, name in sorted(LANGUAGES.items(), key=operator.itemgetter(1)):
-            combobox.addItem(name, code)
+            combobox.addItem(self.tr(name), code)
         combobox.insertItem(0, "")
         combobox.setCurrentIndex(0)
 

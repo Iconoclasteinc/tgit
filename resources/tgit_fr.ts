@@ -934,6 +934,26 @@
         <source> on {0} at {1}</source>
         <translation> le {0} à {1}</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>English</source>
+        <translation>Anglais</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>French</source>
+        <translation>Français</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Miscellaneous</source>
+        <translation>Divers</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Undefined</source>
+        <translation>Indéterminée</translation>
+    </message>
 </context>
 <context>
     <name>isni_assignation_review_dialog</name>
