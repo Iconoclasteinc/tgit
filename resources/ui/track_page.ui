@@ -485,8 +485,8 @@ QLabel[style=&quot;QMacStyle&quot;] {
 
 QLabel[style=QMacStyle] {
     font-size: 11pt;
-    margin-top: -3px;
-    margin-bottom: 3px;
+    margin-top: -2px;
+    margin-bottom: 2px;
 }
 </string>
             </property>
@@ -506,8 +506,8 @@ QLabel[style=QMacStyle] {
 
 QLabel[style=QMacStyle] {
     font-size: 11pt;
-    margin-top: -3px;
-    margin-bottom: 3px;
+    margin-top: -2px;
+    margin-bottom: 2px;
 }
 </string>
             </property>
@@ -531,8 +531,8 @@ QLabel[style=QWindowsVistaStyle] {
 
 QLabel[style=QMacStyle] {
     font-size: 11pt;
-	margin-top: -3px;
-    margin-bottom: 3px;
+	margin-top: -2px;
+    margin-bottom: 2px;
 }
 </string>
             </property>
@@ -607,7 +607,7 @@ QLabel[style=QMacStyle] {
                </size>
               </property>
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to distinguish between two version of similar tracks. It is used to mention a live version, a shortened version for radio, a remix, etc... Free text as you wish it to appear in a music player.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to distinguish between different versions of similar tracks. It is used to mention a live version, a shortened version for radio, a remix, etc... Free text as you wish it to appear in a music player.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="pixmap">
                <pixmap resource="../resources.qrc">:/icons/help</pixmap>

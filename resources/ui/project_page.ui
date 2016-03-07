@@ -217,8 +217,8 @@ QToolTip[style=QMacStyle] {
 
 QLabel[style=QMacStyle] {
     font-size: 11pt;
-    margin-top: -3px;
-    margin-bottom: 3px;
+    margin-top: -2px;
+    margin-bottom: 2px;
 }
 </string>
           </property>
@@ -323,8 +323,8 @@ QLabel[style=QMacStyle] {
 
 QLabel[style=QMacStyle] {
     font-size: 11pt;
-    margin-top: -3px;
-    margin-bottom: 3px;
+    margin-top: -2px;
+    margin-bottom: 2px;
 }
 </string>
           </property>
@@ -522,8 +522,8 @@ QLabel[style=QMacStyle] {
 
 QLabel[style=QMacStyle] {
     font-size: 11pt;
-    margin-top: -3px;
-    margin-bottom: 3px;
+    margin-top: -2px;
+    margin-bottom: 2px;
 }
 </string>
          </property>
