@@ -325,7 +325,7 @@
     </message>
 </context>
 <context>
-    <name>AlbumEditionPage</name>
+    <name>ProjectEditionPage</name>
     <message>
         <location filename="tgit/ui/project_edition_page.py" />
         <source>Remove</source>
