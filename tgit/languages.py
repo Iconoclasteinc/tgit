@@ -19,7 +19,7 @@
 
 LANGUAGES = {
     "eng": "English",
-    "fra": "Français",
+    "fra": "French",
     "misc": "Miscellaneous",
     "und": "Undefined"
 }

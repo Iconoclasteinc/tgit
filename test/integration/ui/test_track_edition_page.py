@@ -186,7 +186,7 @@ def test_signals_when_track_metadata_change(driver):
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(language="fra"))
-    driver.select_language("Français")
+    driver.select_language("French")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(production_company="Producer"))
