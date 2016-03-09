@@ -20,6 +20,14 @@
 LANGUAGES = {
     "eng": "English",
     "fra": "French",
-    "misc": "Miscellaneous",
-    "und": "Undefined"
+    "spa": "Spanish",
+    "deu": "German",
+    "ita": "Italian",
+    "por": "Portuguese",
+    "swe": "Swedish",
+    "mis": "Other",
+    "und": "Undetermined",
+    "mul": "Multiple",
+    "zxx": "None"
 }
+

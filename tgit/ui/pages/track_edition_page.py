@@ -212,7 +212,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._iswc.setText(track.iswc)
         self._tags.setText(track.labels)
         self._lyrics.setPlainText(track.lyrics)
-        self._display_language(track.language, self._language)
+        self._language.setCurrentText(self.tr(LANGUAGES[track.language or 'und']))
         self._software_notice.setText(self._compose_software_notice(track))
 
         self._recording_studio.setText(track.recording_studio)
@@ -238,12 +238,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
     def _display_region(region, combobox):
         if region:
             combobox.setCurrentText(COUNTRIES[region[0]])
-
-    def _display_language(self, language, combobox):
-        if language:
-            combobox.setCurrentText(self.tr(LANGUAGES[language]))
-        else:
-            combobox.setCurrentIndex(0)
 
     def _display_album_cover(self, picture):
         # Cache the cover image to avoid recomputing the image each time the screen updates
@@ -305,10 +299,8 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         combobox.setCurrentIndex(0)
 
     def _fill_with_languages(self, combobox):
-        for code, name in sorted(LANGUAGES.items(), key=operator.itemgetter(1)):
+        for code, name in sorted(LANGUAGES.items(), key=lambda item: self.tr(item[1])):
             combobox.addItem(self.tr(name), code)
-        combobox.insertItem(0, "")
-        combobox.setCurrentIndex(0)
 
     @staticmethod
     def _get_country_code_from_combo(combo):

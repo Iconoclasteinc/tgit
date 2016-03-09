@@ -946,13 +946,48 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Miscellaneous</source>
-        <translation>Divers</translation>
+        <source>Spanish</source>
+        <translation>Espagnol</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Undefined</source>
+        <source>German</source>
+        <translation>Allemand</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Italian</source>
+        <translation>Italien</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Swedish</source>
+        <translation>Suédois</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Portuguese</source>
+        <translation>Portugais</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Other</source>
+        <translation>Autre</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Undetermined</source>
         <translation>Indéterminée</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>Multiple</source>
+        <translation>Plusieurs</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>None</source>
+        <translation>Aucune</translation>
     </message>
 </context>
 <context>

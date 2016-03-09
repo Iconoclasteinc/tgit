@@ -122,6 +122,15 @@ def test_displays_track_metadata(driver):
     driver.shows_comments("Comments\n...")
 
 
+def test_displays_undefined_lyrics_language_in_case_no_language_specified(driver):
+    track = make_track()
+    album = make_album(tracks=[track])
+
+    _ = show_page(album, track)
+
+    driver.shows_language("Undetermined")
+
+
 def test_disables_lead_performer_edition_when_album_is_not_a_compilation(driver):
     track = build.track()
     album = build.album(lead_performer="Album Artist", compilation=False, tracks=[track])
