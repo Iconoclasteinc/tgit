@@ -17,20 +17,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from cute.matchers import named
-from cute.widgets import window
+from cute.widgets import window, QDialogDriver
 
 from ._screen_driver import ScreenDriver
 from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog
 
 
 def isni_lookup_dialog(parent):
-    return IsniLookupDialogDriver(window(ISNILookupDialog, named("isni-lookup-dialog")), parent.prober,
+    return IsniLookupDialogDriver(window(ISNILookupDialog, named("isni_lookup_dialog")), parent.prober,
                                   parent.gesture_performer)
 
 
-class IsniLookupDialogDriver(ScreenDriver):
+class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
     def select_first_identity(self):
-        self.radio(named("identity_radio_0")).click()
+        self.radio(named("_identity_0")).click()
 
     def accept(self):
-        self.button(named("ok-button")).click()
+        self._button_box().click_ok()

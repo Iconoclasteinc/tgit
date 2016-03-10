@@ -45,6 +45,7 @@
         <file>ui/track_list_tab.ui</file>
         <file>ui/about_dialog.ui</file>
         <file>ui/sign_in_dialog.ui</file>
+        <file>ui/isni_dialog.ui</file>
         <file>ui/isni_assignation_review_dialog.ui</file>
         <file>ui/musician_row.ui</file>
         <file>ui/musician_table.ui</file>
