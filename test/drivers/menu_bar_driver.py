@@ -14,7 +14,7 @@ def menu_bar(parent):
 class MenuBarDriver(QMenuBarDriver):
     @property
     def file(self):
-        return self.FileMenuDriver(self.open_menu(matchers.named("_file_menu")), self)
+        return self.FileMenuDriver(self.open_menu(matchers.named("_file_menu")))
 
     @property
     def navigate(self):
@@ -22,7 +22,7 @@ class MenuBarDriver(QMenuBarDriver):
 
     @property
     def account(self):
-        return self.AccountMenuDriver(self.open_menu(matchers.named("_account_menu")), self)
+        return self.AccountMenuDriver(self.open_menu(matchers.named("_account_menu")))
 
     @property
     def help(self):
@@ -38,8 +38,7 @@ class MenuBarDriver(QMenuBarDriver):
         return menu
 
     class FileMenuDriver:
-        def __init__(self, menu_driver, menu_bar_driver):
-            self._menu_bar_driver = menu_bar_driver
+        def __init__(self, menu_driver):
             self._menu_driver = menu_driver
 
         def has_disabled_project_actions(self):
@@ -61,7 +60,7 @@ class MenuBarDriver(QMenuBarDriver):
 
         def settings(self):
             self._menu_driver.select_menu_item(matchers.named("_settings_action"))
-            return user_preferences_dialog(self._menu_bar_driver)
+            return user_preferences_dialog(self._menu_driver)
 
         def close_project(self):
             self._menu_driver.menu_item(matchers.named("_close_project_action")).click()
@@ -111,8 +110,7 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.select_menu_item(matchers.named("_request_feature_action"))
 
     class AccountMenuDriver:
-        def __init__(self, menu_driver, menu_bar_driver):
-            self._menu_bar_driver = menu_bar_driver
+        def __init__(self, menu_driver):
             self._menu_driver = menu_driver
 
         def register(self):
@@ -133,7 +131,7 @@ class MenuBarDriver(QMenuBarDriver):
             self._menu_driver.close()
 
         def shows_sign_in_menu(self):
-            self._menu_bar_driver.pause(150)
+            self._menu_driver.pause(150)
             self._menu_driver.menu_item(matchers.named("_sign_in_action")).is_showing_on_screen()
             self._menu_driver.menu_item(matchers.named("_sign_out_action")).is_disabled()
             self._menu_driver.menu_item(matchers.named("_logged_user_action")).is_hidden()

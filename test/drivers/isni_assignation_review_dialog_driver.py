@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtWidgets import QListView
+from PyQt5.QtWidgets import QListView, QWidget
 
-from ._screen_driver import ScreenDriver
 from cute.matchers import named, with_list_item_text
-from cute.widgets import window, QDialogDriver, ListViewDriver
+from cute.widgets import window, QDialogDriver, ListViewDriver, WidgetDriver
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
+from ._screen_driver import ScreenDriver
 
 
 def isni_assignation_review_dialog(parent):
@@ -42,7 +42,11 @@ class IsniAssignationReviewDialogDriver(QDialogDriver, ScreenDriver):
         ListViewDriver.find_single(self, QListView).has_item(with_list_item_text(work))
 
     def shows_main_artist_section(self):
-        self.widget(named("_lead_performer_box")).is_showing_on_screen()
+        self.lead_performer_section.is_showing_on_screen()
 
     def hides_main_artist_section(self):
-        self.widget(named("_lead_performer_box")).is_hidden()
+        self.lead_performer_section.is_hidden()
+
+    @property
+    def lead_performer_section(self):
+        return WidgetDriver.find_single(self, QWidget, named("_lead_performer_box"))
