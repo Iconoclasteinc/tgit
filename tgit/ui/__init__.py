@@ -33,7 +33,8 @@ def create_main_window(session, portfolio, player, prefs, cheddar, native, confi
     application_pages = Pages(application_dialogs, messages, session, portfolio, player, cheddar)
 
     def show_settings_dialog():
-        return open_user_preferences_dialog(prefs, messages.restart_required, director.update_preferences(prefs))
+        return open_user_preferences_dialog(window, prefs, messages.restart_required,
+                                            director.update_preferences(prefs))
 
     def export_as_soproq():
         from openpyxl import load_workbook

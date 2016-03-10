@@ -43,6 +43,7 @@
         <file>ui/isni_assignation_review_dialog.ui</file>
         <file>ui/musician_row.ui</file>
         <file>ui/musician_table.ui</file>
+        <file>ui/settings_dialog.ui</file>
 
         <file>templates/soproq.xlsx</file>
     </qresource>

@@ -17,57 +17,41 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt, pyqtSignal, QLocale
-from PyQt5.QtWidgets import QDialog, QComboBox, QGridLayout, QDialogButtonBox, QLabel
+from PyQt5.QtCore import Qt, QLocale
+from PyQt5.QtWidgets import QDialog
+
+from tgit.ui.helpers.ui_file import UIFile
 
 
-def open_user_preferences_dialog(preferences, show_restart_message, on_preferences_changed):
-    dialog = UserPreferencesDialog()
+def open_user_preferences_dialog(parent, preferences, show_restart_message, on_preferences_changed):
+    dialog = UserPreferencesDialog(parent)
     dialog.on_preferences_changed(on_preferences_changed)
     dialog.on_preferences_changed(lambda prefs: show_restart_message())
     dialog.display(preferences)
     return dialog
 
 
-class UserPreferencesDialog(QDialog):
-    preferences_changed = pyqtSignal(dict)
-
+class UserPreferencesDialog(QDialog, UIFile):
     def __init__(self, parent=None):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
         self._setup_ui()
 
     def _setup_ui(self):
-        self.setObjectName('user_preferences_dialog')
+        self._load(":/ui/settings_dialog.ui")
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.setWindowTitle(self.tr('Settings'))
-        self.setModal(True)
-        layout = QGridLayout()
-        label = QLabel(self.tr('&Language:'))
-        self.languages = QComboBox()
-        self.languages.setObjectName('language')
-        label.setBuddy(self.languages)
-        layout.addWidget(label, 0, 0)
-        layout.addWidget(self.languages, 0, 1)
-        self.buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        self.buttons.accepted.connect(lambda: self.preferences_changed.emit(self.preferences))
-        self.buttons.accepted.connect(self.accept)
-        self.buttons.rejected.connect(self.reject)
-        layout.addWidget(self.buttons, 1, 0, 1, 2)
-        self.setLayout(layout)
+        self._add_language("en", "English")
+        self._add_language("fr", "Français")
 
-        self.add_language("en", "English")
-        self.add_language("fr", "Français")
-
-    def add_language(self, locale, language):
-        self.languages.addItem(language, locale)
+    def _add_language(self, locale, language):
+        self._language.addItem(language, locale)
 
     def on_preferences_changed(self, handler):
-        self.preferences_changed.connect(handler)
+        self._buttons.accepted.connect(lambda: handler(self.preferences))
 
     @property
     def preferences(self):
-        return {'locale': self.languages.itemData(self.languages.currentIndex())}
+        return {'locale': self._language.itemData(self._language.currentIndex())}
 
     def display(self, user_preferences):
-        self.languages.setCurrentText(QLocale(user_preferences.locale).nativeLanguageName().capitalize())
+        self._language.setCurrentText(QLocale(user_preferences.locale).nativeLanguageName().capitalize())
         self.show()

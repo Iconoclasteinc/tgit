@@ -7,7 +7,7 @@ from ._screen_driver import ScreenDriver
 
 
 def user_preferences_dialog(parent):
-    return UserPreferencesDialogDriver(window(QDialog, named('user_preferences_dialog'), showing_on_screen()), parent.prober,
+    return UserPreferencesDialogDriver(window(QDialog, named('settings_dialog'), showing_on_screen()), parent.prober,
                                        parent.gesture_performer)
 
 
@@ -23,9 +23,16 @@ class UserPreferencesDialogDriver(QDialogDriver, ScreenDriver):
         self.click_ok()
 
     def shows_language(self, language):
-        self.combobox(named('language')).has_current_text(language)
+        self.language.has_current_text(language)
 
     def select_language(self, language):
-        label = self.label(with_buddy(named('language')))
-        label.is_showing_on_screen()
-        self.combobox(named('language')).select_option(language)
+        self.language_caption.is_showing_on_screen()
+        self.language.select_option(language)
+
+    @property
+    def language_caption(self):
+        return self.label(with_buddy(named('_language')))
+
+    @property
+    def language(self):
+        return self.combobox(named('_language'))

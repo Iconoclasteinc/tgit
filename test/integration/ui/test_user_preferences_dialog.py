@@ -10,16 +10,18 @@ from test.drivers import UserPreferencesDialogDriver
 from test.util.builders import make_preferences
 from tgit.ui.user_preferences_dialog import open_user_preferences_dialog
 
-ignore = lambda *_, **__: None
+
+def ignore(*_, **__):
+    pass
 
 
 def show_preferences_dialog(preferences=make_preferences(), restart_message=ignore, on_preferences_changed=ignore):
-    return open_user_preferences_dialog(preferences, restart_message, on_preferences_changed)
+    return open_user_preferences_dialog(None, preferences, restart_message, on_preferences_changed)
 
 
 @pytest.fixture()
 def driver(qt, prober, automaton):
-    return UserPreferencesDialogDriver(window(QDialog, named('user_preferences_dialog')), prober, automaton)
+    return UserPreferencesDialogDriver(window(QDialog, named('settings_dialog')), prober, automaton)
 
 
 def test_offers_selection_of_available_languages(driver):

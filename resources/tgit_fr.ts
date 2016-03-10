@@ -659,16 +659,16 @@
     </message>
 </context>
 <context>
-    <name>UserPreferencesDialog</name>
+    <name>settings_dialog</name>
     <message>
         <location filename="tgit/ui/settings_dialog.py" line="33"/>
-        <source>Settings</source>
+        <source>Preferences</source>
         <translation>Préférences</translation>
     </message>
     <message>
         <location filename="tgit/ui/settings_dialog.py" line="36"/>
-        <source>&amp;Language:</source>
-        <translation>&amp;Langue :</translation>
+        <source>Language:</source>
+        <translation>Langue :</translation>
     </message>
     <message>
         <source>English</source>
