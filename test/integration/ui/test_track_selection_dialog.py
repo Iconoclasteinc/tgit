@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 import pytest
@@ -12,6 +11,8 @@ from test.drivers import TrackSelectionDialogDriver
 from test.util import resources
 from tgit.platforms import windows
 from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
+
+pytestmark = pytest.mark.ui
 
 
 @pytest.fixture()

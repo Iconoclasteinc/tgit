@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 from hamcrest import contains, instance_of
 
@@ -16,6 +14,8 @@ from tgit.album import Album
 from tgit.auth import User
 from tgit.platforms import mac
 from tgit.ui.main_window import MainWindow
+
+pytestmark = pytest.mark.ui
 
 ignore = lambda *_, **__: None
 yes = lambda: True

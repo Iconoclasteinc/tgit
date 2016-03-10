@@ -1,15 +1,16 @@
-# -*- coding: utf-8 -*-
-
 from flexmock import flexmock
 from hamcrest import (assert_that, equal_to, is_, contains, has_property, none, has_length, has_item, is_not,
                       match_equality as matching, contains_inanyorder, not_, has_key, all_of)
 from hamcrest.library.collection.is_empty import empty
+import pytest
 
 from test.test_signal import Subscriber, event
 from test.util import builders as build
 from test.util.builders import make_album, make_track
 from tgit.album import Album, AlbumListener
 from tgit.metadata import Image
+
+pytestmark = pytest.mark.unit
 
 
 def test_defines_metadata_tags():

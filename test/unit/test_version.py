@@ -3,6 +3,8 @@ import pytest
 
 from tgit.version import Version
 
+pytestmark = pytest.mark.unit
+
 
 @pytest.mark.parametrize("lower, higher", [("0.0.0", "0.0.1"),
                                            ("0.0.1", "0.1.0"),

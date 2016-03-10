@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-import unittest
-
 from hamcrest import contains
 from hamcrest import assert_that
 import pytest
@@ -9,6 +5,8 @@ import pytest
 from test.test_signal import Subscriber, event
 from test.util import builders as build
 from tgit.album_portfolio import AlbumPortfolio
+
+pytestmark = pytest.mark.unit
 
 
 @pytest.fixture
@@ -24,6 +22,7 @@ def test_notifies_when_album_is_added(portfolio):
     portfolio.add_album(album)
 
     assert_that(subscriber.events, contains(event(album)), "albums created")
+
 
 def test_notifies_when_album_is_removed(portfolio):
     album = build.album()

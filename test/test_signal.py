@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
-
 from hamcrest import assert_that, contains, empty, is_
 import pytest
 
 from tgit.signal import Signal, MultiSubscription
+
+pytestmark = pytest.mark.unit
 
 
 class Subscriber:

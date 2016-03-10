@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-
 import types
 from datetime import timedelta
 
 import pytest
 import requests
+
 from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
 
 from cute.matchers import named
@@ -18,8 +17,9 @@ from tgit.cheddar import InsufficientInformationError, AuthenticationError
 from tgit.identity import IdentityCard
 from tgit.ui.pages.track_edition_page import make_track_edition_page, TrackEditionPage
 
+pytestmark = pytest.mark.ui
 
-# noinspection PyUnusedLocal
+
 @pytest.yield_fixture()
 def driver(qt, prober, automaton):
     page_driver = TrackEditionPageDriver(window(TrackEditionPage, named("track_edition_page")), prober, automaton)

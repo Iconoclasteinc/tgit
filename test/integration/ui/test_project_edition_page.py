@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 import timeit
 import types
 
 import pytest
 import requests
-
 from PyQt5.QtCore import QByteArray
 
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
@@ -23,6 +21,8 @@ from tgit.identity import IdentityCard
 from tgit.metadata import Image
 from tgit.ui.pages.project_edition_page import make_project_edition_page, ProjectEditionPage
 from tgit.ui.pages.track_list_tab import TrackListTab
+
+pytestmark = pytest.mark.ui
 
 
 @pytest.yield_fixture()

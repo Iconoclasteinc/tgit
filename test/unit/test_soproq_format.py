@@ -2,9 +2,12 @@ from datetime import date
 
 from hamcrest import assert_that, equal_to
 from openpyxl import Workbook
+import pytest
 
 from test.util import builders as build
 from tgit.export.soproq_format import write
+
+pytestmark = pytest.mark.unit
 
 
 def test_writes_tracks_to_workbook():

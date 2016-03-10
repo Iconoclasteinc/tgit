@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from datetime import timedelta
 
 import pytest
@@ -13,6 +11,8 @@ from test.integration.ui import show_widget
 from test.util import doubles
 from test.util.builders import make_album, make_track
 from tgit.ui.pages.track_list_tab import TrackListTab, make_track_list_tab
+
+pytestmark = pytest.mark.ui
 
 ignore = lambda *_: None
 

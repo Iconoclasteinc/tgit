@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
 from hamcrest import assert_that, contains, has_properties, equal_to
+import pytest
 
 from tgit.identity import IdentityCard
+
+pytestmark = pytest.mark.unit
 
 
 def test_creates_identity():

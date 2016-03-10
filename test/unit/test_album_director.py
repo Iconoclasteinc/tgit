@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 from concurrent.futures import Future
 
@@ -20,6 +19,8 @@ from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session
 from tgit.metadata import Image, Metadata
 from tgit.user_preferences import UserPreferences
+
+pytestmark = pytest.mark.unit
 
 
 @pytest.yield_fixture
@@ -230,7 +231,8 @@ def test_returns_list_of_identities_when_isni_found_in_registry(prober):
             return future
 
     success_signal = ValueMatcherProbe("The identities", contains(has_property("id", "0000000115677274")))
-    director.lookup_isni_using(FakeCheddar(), make_registered_session(token="secret"))("Rebecca Ann Maloy", success_signal.received)
+    director.lookup_isni_using(FakeCheddar(), make_registered_session(token="secret"))("Rebecca Ann Maloy",
+                                                                                       success_signal.received)
     prober.check(success_signal)
 
 
@@ -309,7 +311,8 @@ def test_assigns_isni_to_main_artist(prober):
 
     success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
 
-    director.assign_isni_to_main_artist_using(FakeCheddar(), make_registered_session(token="secret"), album)("individual", success_signal.received)
+    director.assign_isni_to_main_artist_using(FakeCheddar(), make_registered_session(token="secret"), album)(
+        "individual", success_signal.received)
     prober.check(success_signal)
 
 
@@ -327,7 +330,8 @@ def test_assigns_isni_to_lyricist(prober):
     track = build.track(track_title="Chevere!", lyricist="Joel Miller")
     success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
 
-    director.assign_isni_to_lyricist_using(FakeCheddar(), make_registered_session(token="secret"))(track, success_signal.received)
+    director.assign_isni_to_lyricist_using(FakeCheddar(), make_registered_session(token="secret"))(track,
+                                                                                                   success_signal.received)
     prober.check(success_signal)
 
 

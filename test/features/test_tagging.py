@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
+import pytest
 
 import tgit
 from test.util import resources
+
+pytestmark = pytest.mark.feature
 
 
 def test_tagging_an_mp3_track(app, recordings, workspace):
@@ -12,7 +14,7 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
 
     app.shows_project_metadata(release_name="Honeycomb", lead_performer="")
     app.change_project_metadata(front_cover=resources.path("honeycomb.jpg"),
-                              release_name="Honeycomb", lead_performer="Joel Miller", isni="0000000121707484")
+                                release_name="Honeycomb", lead_performer="Joel Miller", isni="0000000121707484")
 
     app.shows_next_track_metadata(track_title="???")
     app.change_track_metadata(track_title="Rashers", lyricist="Rebecca Ann Maloy", lyricist_ipi="9876543210000000")
@@ -38,7 +40,7 @@ def test_tagging_a_flac_track(app, recordings, workspace):
 
     app.shows_project_metadata(release_name="St-Henri", lead_performer="")
     app.change_project_metadata(release_name="St-Henri", front_cover=resources.path("st-henri.jpg"),
-                              lead_performer="John Roney", isni="0000000121707484")
+                                lead_performer="John Roney", isni="0000000121707484")
 
     app.shows_next_track_metadata(track_title="???")
     app.change_track_metadata(track_title="Squareboy", lyricist="Rebecca Ann Maloy", lyricist_ipi="9876543210000000")

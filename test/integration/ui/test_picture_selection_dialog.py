@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 from PyQt5.QtWidgets import QFileDialog
@@ -12,6 +11,8 @@ from test.drivers import PictureSelectionDialogDriver
 from test.util import resources
 from tgit.platforms import windows
 from tgit.ui.dialogs.picture_selection_dialog import PictureSelectionDialog
+
+pytestmark = pytest.mark.ui
 
 
 def show_dialog(on_select=lambda: None):

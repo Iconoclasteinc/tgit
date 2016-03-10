@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import shutil
 
 from hamcrest import *
@@ -7,6 +6,9 @@ import pytest
 from test.util import mp3_file, flac_file
 from tgit.metadata import Metadata
 from tgit.tagging import embedded_containers
+
+
+pytestmark = pytest.mark.unit
 
 
 @pytest.yield_fixture

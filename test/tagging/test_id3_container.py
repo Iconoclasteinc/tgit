@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 from hamcrest import (assert_that, has_entry, has_key, has_length, contains, is_not, contains_inanyorder, has_entries,
                       not_, all_of)
@@ -9,12 +7,13 @@ from test.util import mp3_file
 from tgit.metadata import Metadata, Image
 from tgit.tagging.id3_container import ID3Container
 
+pytestmark = pytest.mark.unit
+
+
 BITRATE = mp3_file.Base.bitrate
 DURATION = mp3_file.Base.duration
 
 container = ID3Container()
-
-pytestmark = pytest.mark.unit
 
 
 @pytest.yield_fixture

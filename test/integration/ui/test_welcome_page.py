@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from hamcrest import instance_of
 import pytest
 
@@ -7,6 +6,8 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import WelcomePageDriver
 from tgit.ui.pages.welcome_page import WelcomePage, make_welcome_page
+
+pytestmark = pytest.mark.ui
 
 ignore = lambda: None
 

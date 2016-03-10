@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import sip
 
 import pytest
@@ -8,6 +6,8 @@ from hamcrest import assert_that, has_properties, equal_to
 
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 from tgit.tagger import SettingsBackend
+
+pytestmark = pytest.mark.unit
 
 
 @pytest.yield_fixture()

@@ -7,6 +7,8 @@ from test.util.workspace import AlbumWorkspace
 from tgit import export
 from tgit.export import exporter
 
+pytestmark = pytest.mark.unit
+
 
 @pytest.yield_fixture
 def workspace(tmpdir):

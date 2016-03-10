@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
-
 from hamcrest import equal_to, assert_that, is_, has_entry
+import pytest
 
 from tgit.user_preferences import UserPreferences
+
+pytestmark = pytest.mark.integration
 
 
 class PreferencesChangedSubscriber:

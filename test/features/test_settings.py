@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+import pytest
+
+pytestmark = pytest.mark.feature
 
 
 def test_changing_the_application_language(app, settings):

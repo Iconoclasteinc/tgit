@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
 import os
 
 from hamcrest import assert_that, equal_to, contains, empty, ends_with
+import pytest
 
 from test.util import resources
 from tgit import fs
+
+pytestmark = pytest.mark.unit
 
 
 def test_sanitization_replaces_invalid_characters_in_filename_with_underscores():

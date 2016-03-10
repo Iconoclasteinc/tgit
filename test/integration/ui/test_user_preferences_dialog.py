@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import pytest
 from PyQt5.QtWidgets import QDialog
 from hamcrest import has_entry
@@ -10,6 +9,7 @@ from test.drivers import UserPreferencesDialogDriver
 from test.util.builders import make_preferences
 from tgit.ui.user_preferences_dialog import open_user_preferences_dialog
 
+pytestmark = pytest.mark.ui
 
 def ignore(*_, **__):
     pass

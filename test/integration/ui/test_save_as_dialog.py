@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 from PyQt5.QtCore import Qt
@@ -13,6 +12,8 @@ from tgit import platforms
 from test.drivers.save_as_dialog_driver import SaveAsDialogDriver
 from test.util import resources
 from tgit.ui.dialogs.save_as_dialog import SaveAsDialog, make_save_as_excel_dialog, make_save_as_csv_dialog
+
+pytestmark = pytest.mark.ui
 
 ignore = lambda *_: None
 

@@ -4,6 +4,8 @@ import pytest
 
 from test.util import resources
 
+pytestmark = pytest.mark.unit
+
 
 @pytest.yield_fixture
 def excel_file(tmpdir):

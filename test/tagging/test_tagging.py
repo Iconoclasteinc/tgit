@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime, timezone, timedelta
 
 import pytest
@@ -8,6 +7,9 @@ import tgit
 from test.util import builders as build, mp3_file
 from tgit.metadata import Image
 from tgit.tagging import tagging
+
+pytestmark = pytest.mark.unit
+
 
 NOW = datetime(2014, 3, 23, 16, 44, 33, tzinfo=timezone(-timedelta(hours=4)))
 

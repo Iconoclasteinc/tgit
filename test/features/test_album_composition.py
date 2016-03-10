@@ -1,4 +1,6 @@
-# -*- coding: utf-8 -*-
+import pytest
+
+pytestmark = pytest.mark.feature
 
 
 def test_ordering_tracks_in_album(app, recordings):

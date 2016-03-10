@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
-
 from hamcrest import assert_that, is_, has_property, equal_to
+import pytest
 
 from test.util.builders import make_anonymous_user, make_registered_user, make_anonymous_session, \
     make_registered_session
 from tgit.auth import Permission
+
+pytestmark = pytest.mark.unit
 
 
 class SessionChangedSubscriber:

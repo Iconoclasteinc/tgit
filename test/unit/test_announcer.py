@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
-
 from flexmock import flexmock
 import pytest
 
 from tgit.announcer import Announcer
+
+pytestmark = pytest.mark.unit
 
 
 class Listener(object):

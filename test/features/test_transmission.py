@@ -1,3 +1,8 @@
+import pytest
+
+pytestmark = pytest.mark.feature
+
+
 def test_export_to_soproq_file(app, recordings, workspace):
     app.new_project("Honeycomb", of_type="mp3")
 

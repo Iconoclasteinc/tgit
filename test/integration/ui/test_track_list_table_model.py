@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
 from datetime import timedelta
 
 from hamcrest import assert_that, is_, not_none
+import pytest
 
 from test.util.builders import make_track, make_album
 from tgit.ui.pages.track_list_table_model import RowItem, Column
+
+pytestmark = pytest.mark.ui
 
 
 def test_retrieves_values_from_track_list_item():

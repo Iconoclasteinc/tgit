@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget
 from hamcrest import assert_that
 

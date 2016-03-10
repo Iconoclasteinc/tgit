@@ -1,16 +1,15 @@
-# -*- coding: utf-8 -*-
-
 import csv
 from io import StringIO
 
 import pytest
-
 from hamcrest import assert_that, contains, has_item
 
 from hamcrest.core.core.isequal import equal_to
 
 from test.util import builders as build
 from tgit.export.csv_format import CsvFormat, to_boolean
+
+pytestmark = pytest.mark.unit
 
 
 @pytest.fixture

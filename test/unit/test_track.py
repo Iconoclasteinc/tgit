@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
-
 from hamcrest import assert_that
 from hamcrest import contains_inanyorder, contains, has_property
+import pytest
 
 from test.test_signal import Subscriber
 from test.util import builders as build
 from tgit.track import Track
+
+pytestmark = pytest.mark.unit
 
 
 def test_defines_metadata_tags():

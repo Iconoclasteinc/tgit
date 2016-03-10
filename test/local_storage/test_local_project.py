@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 from hamcrest import assert_that, contains, has_property, equal_to, empty, is_, has_entry
@@ -10,6 +9,8 @@ from tgit.local_storage import local_project
 from tgit.local_storage.local_project import TRACKS_FOLDER_NAME, ARTWORK_FOLDER_NAME
 from tgit.metadata import Image
 from tgit import fs
+
+pytestmark = pytest.mark.unit
 
 sample_front_cover = "image/jpeg", fs.read(resources.path("front-cover.jpg")), Image.FRONT_COVER, "Front Cover"
 simple_naming = lambda track: track.track_title + ".mp3"

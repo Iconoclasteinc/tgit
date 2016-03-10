@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
-
 from hamcrest.library.collection.is_empty import empty
-
 from hamcrest import assert_that, equal_to, has_entries, contains, has_property, all_of, contains_inanyorder, is_not, \
     has_key, has_length, is_in, is_, none
+import pytest
 
 from tgit.metadata import Metadata, Image
+
+pytestmark = pytest.mark.unit
 
 
 def test_is_a_mutable_container():

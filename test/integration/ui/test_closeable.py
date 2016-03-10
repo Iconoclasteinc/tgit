@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 import pytest
@@ -6,6 +5,8 @@ import pytest
 from cute.probes import ValueMatcherProbe
 from cute.widgets import WidgetDriver, window
 from tgit.ui.closeable import Closeable
+
+pytestmark = pytest.mark.ui
 
 
 @pytest.fixture()

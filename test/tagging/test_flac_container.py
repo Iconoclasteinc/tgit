@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import shutil
 
 import pytest
@@ -9,6 +7,8 @@ from test.util import flac_file
 from tgit.metadata import Metadata, Image
 from tgit.tagging._pictures import PictureType
 from tgit.tagging.flac_container import FlacContainer
+
+pytestmark = pytest.mark.unit
 
 DURATION = flac_file.base.duration
 BITRATE = flac_file.base.bitrate
@@ -232,9 +232,9 @@ def test_reads_release_time_from_release_date_field(flac):
 def test_reads_guest_performers_from_performer_field(flac):
     metadata = container.load(flac(PERFORMER=["Guitarist (guitar)", "Bassist (guitar)", "Pianist (piano)"]))
     assert_that(metadata, has_entry("guest_performers", contains_inanyorder(
-            ("guitar", "Guitarist"),
-            ("guitar", "Bassist"),
-            ("piano", "Pianist"))), "metadata")
+        ("guitar", "Guitarist"),
+        ("guitar", "Bassist"),
+        ("piano", "Pianist"))), "metadata")
 
 
 def test_round_trips_metadata_to_file(flac):

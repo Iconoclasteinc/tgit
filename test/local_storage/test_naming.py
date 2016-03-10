@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
 from hamcrest import equal_to
 from hamcrest import assert_that
+import pytest
 
 from test.util import builders as build
 from tgit.local_storage import naming
 from tgit.metadata import Image
+
+pytestmark = pytest.mark.unit
 
 
 def test_names_track_file_with_lead_performer_and_track_number_and_track_title():

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import pytest
 from PyQt5.QtCore import Qt
 from hamcrest import contains
@@ -9,6 +8,8 @@ from cute.widgets import window
 from test.drivers.sign_in_dialog_driver import SignInDialogDriver
 from tgit.cheddar import AuthenticationError
 from tgit.ui.dialogs.sign_in_dialog import SignInDialog
+
+pytestmark = pytest.mark.ui
 
 ignore = lambda *_: None
 

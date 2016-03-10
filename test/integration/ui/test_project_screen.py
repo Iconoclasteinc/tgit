@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from functools import wraps
 
 import pytest
@@ -14,6 +13,8 @@ from tgit.ui.pages.project_edition_page import ProjectEditionPage
 from tgit.ui.pages.project_screen import ProjectScreen, make_project_screen
 from tgit.ui.pages.track_edition_page import make_track_edition_page
 from tgit.ui.pages.track_list_tab import TrackListTab
+
+pytestmark = pytest.mark.ui
 
 ignore = lambda *args, **kwargs: None
 
@@ -146,8 +147,8 @@ def test_closes_children_pages_on_close(driver):
         return wrapper
 
     _ = show_project_screen(make_album(tracks=(make_track(), make_track(), make_track())),
-                               record_close(create_project_page),
-                               record_close(create_track_page))
+                            record_close(create_project_page),
+                            record_close(create_track_page))
 
     driver.close()
 

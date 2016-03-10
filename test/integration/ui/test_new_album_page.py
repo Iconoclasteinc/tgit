@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-#
-# TGiT, Music Tagger for Professionals
-# Copyright (C) 2013 Iconoclaste Musique Inc.
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
 import pytest
 
 from cute.matchers import named
@@ -24,6 +5,8 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.new_project_page_driver import NewProjectPageDriver
 from tgit.ui.pages.new_project_page import NewProjectPage, make_new_project_page
+
+pytestmark = pytest.mark.ui
 
 
 @pytest.yield_fixture()
@@ -49,8 +32,8 @@ def yes(*_):
     return True
 
 
-def show_page(of_type="mp3", select_project_location=ignore, select_track=ignore, confirm_overwrite=always, project_exists=no,
-              on_create_project=ignore):
+def show_page(of_type="mp3", select_project_location=ignore, select_track=ignore, confirm_overwrite=always,
+              project_exists=no, on_create_project=ignore):
     page = make_new_project_page(select_location=select_project_location,
                                  select_track=select_track,
                                  confirm_overwrite=confirm_overwrite,

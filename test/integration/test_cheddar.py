@@ -1,9 +1,10 @@
-# -*- coding: utf-8 -*-
 import pytest
 import requests
 from hamcrest import assert_that, empty, contains, has_entries
 
 from tgit.cheddar import Cheddar, PermissionDeniedError, AuthenticationError, InsufficientInformationError
+
+pytestmark = pytest.mark.integration
 
 
 @pytest.yield_fixture
@@ -131,5 +132,3 @@ def test_raises_permission_denied_error_on_402(cheddar, platform):
     platform.allowed_bearer_token = "token"
     with pytest.raises(PermissionDeniedError):
         raise cheddar.get_identities("...", "token").exception()
-
-
