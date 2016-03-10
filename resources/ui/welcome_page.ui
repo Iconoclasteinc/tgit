@@ -60,7 +60,7 @@
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
       <property name="spacing">
        <number>15</number>
       </property>
@@ -79,11 +79,17 @@
       <item>
        <widget class="QWidget" name="_banner" native="true">
         <layout class="QGridLayout" name="gridLayout_2">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
          <property name="topMargin">
           <number>0</number>
          </property>
-         <property name="horizontalSpacing">
-          <number>25</number>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
          </property>
          <property name="verticalSpacing">
           <number>0</number>
@@ -106,33 +112,26 @@
          </item>
          <item row="0" column="1" rowspan="2" alignment="Qt::AlignLeft|Qt::AlignBottom">
           <widget class="QLabel" name="_title">
-           <property name="font">
-            <font>
-             <pointsize>28</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
+           <property name="styleSheet">
+            <string notr="true">QLabel[style=&quot;QWindowsVistaStyle&quot;]{font-size: 22pt;font-weight: bold;}
+QLabel[style=&quot;QMacStyle&quot;]{font-size: 28pt;font-weight: bold;}</string>
            </property>
            <property name="text">
             <string>Welcome to TGiT!</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
          <item row="2" column="1" alignment="Qt::AlignLeft">
           <widget class="QLabel" name="_version">
-           <property name="font">
-            <font>
-             <pointsize>16</pointsize>
-            </font>
+           <property name="styleSheet">
+            <string notr="true">QLabel[style=&quot;QWindowsVistaStyle&quot;]{font-size: 13pt;}
+QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;}</string>
            </property>
            <property name="text">
             <string>1.7.0</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <set>Qt::AlignHCenter|Qt::AlignTop</set>
            </property>
           </widget>
          </item>
@@ -142,24 +141,18 @@
       <item>
        <widget class="QGroupBox" name="_content">
         <property name="styleSheet">
-         <string notr="true">QLabel[style=&quot;QWindowsVistaStyle&quot;]{font-size: 14pt;font-weight: bold;}</string>
+         <string notr="true">QLabel[style=&quot;QWindowsVistaStyle&quot;]{font-size: 13pt;font-weight: bold;}
+QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
         </property>
         <property name="title">
          <string/>
         </property>
-        <layout class="QGridLayout" name="gridLayout_3">
+        <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0,1,0,0,1,0">
          <property name="horizontalSpacing">
           <number>25</number>
          </property>
          <item row="0" column="0" colspan="2">
           <widget class="QLabel" name="_new_project_title">
-           <property name="font">
-            <font>
-             <pointsize>14</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
            <property name="text">
             <string>New Project</string>
            </property>
@@ -170,13 +163,6 @@
          </item>
          <item row="0" column="2" colspan="3">
           <widget class="QLabel" name="_recent_projects_title">
-           <property name="font">
-            <font>
-             <pointsize>14</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
            <property name="text">
             <string>Recent Projects</string>
            </property>
@@ -207,13 +193,6 @@
          </item>
          <item row="4" column="0" colspan="2">
           <widget class="QLabel" name="_open_project_title">
-           <property name="font">
-            <font>
-             <pointsize>14</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
            <property name="text">
             <string>Open Project</string>
            </property>
@@ -221,6 +200,9 @@
          </item>
          <item row="5" column="0" colspan="2">
           <widget class="QPushButton" name="_load_project_button">
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
+           </property>
            <property name="text">
             <string>Load an existing project</string>
            </property>
@@ -236,6 +218,9 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
            </property>
            <property name="text">
             <string>Open</string>

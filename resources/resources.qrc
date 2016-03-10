@@ -6,12 +6,6 @@
         <file>tgit.ico</file>
         <file>images/logo.png</file>
         <file>images/logo-vert-big.png</file>
-        <file>images/radio-checked.png</file>
-        <file>images/radio-checked-focus.png</file>
-        <file>images/radio-checked-pressed.png</file>
-        <file>images/radio-unchecked.png</file>
-        <file>images/radio-unchecked-focus.png</file>
-        <file>images/radio-unchecked-pressed.png</file>
         <file>images/invalid-image-placeholder.png</file>
         <file>images/no-image-placeholder.png</file>
         <file>images/warning.png</file>

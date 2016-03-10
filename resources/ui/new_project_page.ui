@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
-    <height>266</height>
+    <width>530</width>
+    <height>284</height>
    </rect>
   </property>
   <property name="styleSheet">
@@ -35,6 +35,9 @@
       <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <property name="spacing">
+       <number>15</number>
+      </property>
       <property name="sizeConstraint">
        <enum>QLayout::SetFixedSize</enum>
       </property>
@@ -73,15 +76,9 @@
         </item>
         <item>
          <widget class="QLabel" name="_title">
-          <property name="font">
-           <font>
-            <pointsize>28</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
           <property name="styleSheet">
-           <string notr="true"/>
+           <string notr="true">QLabel[style=&quot;QWindowsVistaStyle&quot;]{font-size: 22pt;font-weight: bold;}
+QLabel[style=&quot;QMacStyle&quot;]{font-size: 28pt;font-weight: bold;}</string>
           </property>
           <property name="text">
            <string>New Project</string>
@@ -144,7 +141,7 @@
              <widget class="QLineEdit" name="_name">
               <property name="minimumSize">
                <size>
-                <width>200</width>
+                <width>300</width>
                 <height>0</height>
                </size>
               </property>
@@ -156,7 +153,7 @@
                <bool>false</bool>
               </property>
               <property name="text">
-               <string> </string>
+               <string/>
               </property>
               <property name="flat">
                <bool>true</bool>
@@ -195,7 +192,7 @@
              <widget class="QLineEdit" name="_location">
               <property name="minimumSize">
                <size>
-                <width>200</width>
+                <width>300</width>
                 <height>0</height>
                </size>
               </property>
@@ -240,7 +237,7 @@
              <widget class="QLineEdit" name="_reference_track">
               <property name="minimumSize">
                <size>
-                <width>200</width>
+                <width>300</width>
                 <height>0</height>
                </size>
               </property>
