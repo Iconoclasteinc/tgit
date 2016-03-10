@@ -13,6 +13,13 @@
   <property name="windowTitle">
    <string>TGiT</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">#_no_result_message,
+#_connection_error_message {
+    color: #F25C0A;
+}
+</string>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>

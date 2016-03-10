@@ -74,13 +74,13 @@ class ISNILookupDialog(QDialog, UIFile):
 
     def _build_no_result_message(self):
         no_result_label = QLabel()
-        no_result_label.setObjectName("no-result-message")
+        no_result_label.setObjectName("_no_result_message")
         no_result_label.setText(self.tr("Your query yielded no result"))
         return no_result_label
 
     def _build_connection_error_message(self):
         label = QLabel()
-        label.setObjectName("connection-error-message")
+        label.setObjectName("_connection_error_message")
         label.setText(self.tr("Could not connect to the ISNI database. Please retry later."))
         return label
 

@@ -25,12 +25,6 @@ from tgit.ui.observer import Observer
 from tgit.ui.rescue import rescue
 
 StyleSheet = """
-    #isni-lookup-dialog #results-exceeds-shown,
-    #isni-lookup-dialog #no-result-message,
-    #isni-lookup-dialog #connection-error-message {
-        color: #F25C0A;
-    }
-
     QMessageBox[style=QMacStyle] {
         messagebox-warning-icon: url(:/images/warning.png);
     }
