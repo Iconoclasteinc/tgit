@@ -19,7 +19,7 @@
 
 import os
 
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QApplication
 
 from cute.matchers import named, disabled
 from cute.widgets import window, FileDialogDriver
@@ -34,12 +34,14 @@ class LoadProjectDialogDriver(FileDialogDriver):
     def load(self, filename):
         self.is_active()
         self.show_hidden_files()
+        self.view_as_list()
         self.navigate_to_dir(os.path.dirname(filename))
         self.select_file(os.path.basename(filename))
         self.accept()
 
     def rejects_selection_of(self, filename):
         self.is_active()
+        self.view_as_list()
         self.navigate_to_dir(os.path.dirname(filename))
         self.select_file(os.path.basename(filename))
         self.has_accept_button(disabled())

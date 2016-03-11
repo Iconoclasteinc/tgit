@@ -175,14 +175,14 @@ def _keystrokes_per_minute(wpm):
 
 
 def save():
-    if platforms.windows:
+    if platforms.windows or platforms.linux:
         return holding_modifier_key(CONTROL, type_key("s"))
     else:
         return holding_modifier_key(COMMAND, type_key("s"))
 
 
 def quick_nav():
-    if platforms.windows:
+    if platforms.windows or platforms.linux:
         return holding_modifier_key(CONTROL, type_key("g"))
     else:
         return holding_modifier_key(COMMAND, type_key("g"))

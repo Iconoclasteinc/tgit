@@ -12,9 +12,9 @@ pytestmark = pytest.mark.ui
 ignore = lambda: None
 
 
-def show_page(select_project=ignore, show_load_error=ignore, **handlers):
+def show_page(page_driver, select_project=ignore, show_load_error=ignore, **handlers):
     page = make_welcome_page(select_project, show_load_error, **handlers)
-    page.show()
+    page_driver.show()
     return page
 
 
@@ -27,8 +27,7 @@ def driver(qt, prober, automaton):
 
 def test_signals_when_new_project_button_clicked(driver):
     new_project_signal = ValueMatcherProbe("new project", "mp3")
-    page = show_page()
-    page.on_create_project(new_project_signal.received)
+    _ = show_page(driver, on_create_project=new_project_signal.received)
 
     driver.new_project()
     driver.check(new_project_signal)
@@ -36,8 +35,9 @@ def test_signals_when_new_project_button_clicked(driver):
 
 def test_signals_when_load_project_button_clicked(driver):
     load_project_signal = ValueMatcherProbe("load project", "project.tgit")
-    page = show_page(select_project=lambda on_select: on_select("project.tgit"))
-    page.on_load_project(load_project_signal.received)
+    _ = show_page(driver,
+                  select_project=lambda on_select: on_select("project.tgit"),
+                  on_load_project=load_project_signal.received)
 
     driver.load()
     driver.check(load_project_signal)
@@ -49,7 +49,8 @@ def test_warn_user_if_load_failed(driver):
 
     load_failed_signal = ValueMatcherProbe("load project failed", instance_of(OSError))
 
-    _ = show_page(select_project=lambda load: load("project.tgit"),
+    _ = show_page(driver,
+                  select_project=lambda load: load("project.tgit"),
                   show_load_error=load_failed_signal.received,
                   on_load_project=load_fails)
 

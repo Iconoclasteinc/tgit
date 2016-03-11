@@ -38,6 +38,7 @@ def driver(qt, prober, automaton):
 
 
 @pytest.mark.skipif(platforms.windows, reason="not supported on Windows")
+@pytest.mark.skipif(platforms.linux, reason="not supported on Linux")
 def test_only_accepts_files_from_mime_type_filters(driver):
     _ = show_dialog("text/csv")
     driver.rejects_selection_of(resources.path("base.mp3"))

@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from cute.matchers import named, with_buddy, with_pixmap_size
+from cute.platforms import linux
 from test.drivers.artist_table_driver import musician_table_driver
 from tgit.ui.pages.project_edition_page import ProjectEditionPage
 from ._screen_driver import ScreenDriver
 from .picture_selection_dialog_driver import picture_selection_dialog
+
+PAGE_DISPLAY_DELAY = 10 if linux else 0
 
 
 def project_edition_page(parent):
@@ -69,30 +72,38 @@ class ProjectEditionPageDriver(ScreenDriver):
         label.has_pixmap(with_pixmap_size(width, height))
 
     def shows_picture(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self._displays_picture_with_size(*ProjectEditionPage.FRONT_COVER_SIZE)
 
     def shows_picture_placeholder(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self._displays_picture_with_size(*ProjectEditionPage.FRONT_COVER_SIZE)
 
     def select_picture(self, filename):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.add_picture()
         picture_selection_dialog(self).select_picture(filename)
         self.shows_picture()
 
     def add_picture(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.tool_button(named("_select_picture_button")).click()
 
     def remove_picture(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.tool_button(named("_remove_picture_button")).click()
 
     def assign_isni_to_main_artist(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()
         menu.select_menu_item(named("_main_artist_isni_assign_action"))
 
     def confirm_isni(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.lineEdit(named("_main_artist_isni")).enter()
 
     def lookup_isni_of_main_artist(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.tool_button(named("_main_artist_isni_actions_button")).click()
 
     def edit_performers(self):
@@ -100,21 +111,26 @@ class ProjectEditionPageDriver(ScreenDriver):
         self.button(named("_add_artist_button")).click()
 
     def shows_title(self, name):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.label(with_buddy(named("_title"))).is_showing_on_screen()
         self.lineEdit(named("_title")).has_text(name)
 
     def change_title(self, name):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.lineEdit(named("_title")).change_text(name)
 
     def shows_compilation(self, value):
+        self.pause(PAGE_DISPLAY_DELAY)
         compilation_checkbox = self.checkbox(named("_compilation"))
         compilation_checkbox.is_checked(value)
 
     def toggle_compilation(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         compilation_checkbox = self.checkbox(named("_compilation"))
         compilation_checkbox.click()
 
     def shows_main_artist(self, name, disabled=False):
+        self.pause(PAGE_DISPLAY_DELAY)
         label = self.label(with_buddy(named("_main_artist")))
         label.is_showing_on_screen()
         edit = self.lineEdit(named("_main_artist"))
@@ -122,31 +138,38 @@ class ProjectEditionPageDriver(ScreenDriver):
         edit.is_disabled(disabled)
 
     def shows_main_artist_region(self, name, disabled=False):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.label(with_buddy(named("_main_artist_region"))).is_showing_on_screen()
         edit = self.combobox(named("_main_artist_region"))
         edit.has_current_text(name)
         edit.is_disabled(disabled)
 
     def shows_main_artist_isni(self, name, disabled=False):
+        self.pause(PAGE_DISPLAY_DELAY)
         edit = self.lineEdit(named("_main_artist_isni"))
         edit.has_text(name)
         edit.is_disabled(disabled)
         self.label(named("_main_artist_isni_help")).is_disabled(disabled)
 
     def shows_main_artist_isni_lookup_button(self, disabled=False):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.tool_button(named("_main_artist_isni_actions_button")).is_disabled(disabled)
 
     def shows_main_artist_isni_assign_action(self, disabled=True):
+        self.pause(PAGE_DISPLAY_DELAY)
         menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()
         menu.menu_item(named("_main_artist_isni_assign_action")).is_disabled(disabled)
 
     def change_main_artist(self, name):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.lineEdit(named("_main_artist")).change_text(name)
 
     def change_main_artist_isni(self, isni):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.lineEdit(named("_main_artist_isni")).change_text(isni)
 
     def change_main_artist_region(self, name):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.combobox(named("_main_artist_region")).select_option(name)
 
     def shows_only_musicians_in_table(self, *musicians):
@@ -154,6 +177,7 @@ class ProjectEditionPageDriver(ScreenDriver):
         musician_table_driver(self).shows_only_musicians_in_table(*musicians)
 
     def _select_musicians_tab(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.tabs(named("_tabs")).select("3. Musicians")
 
     def remove_musician(self, row):
@@ -179,6 +203,7 @@ class ProjectEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_label_name")).has_text(name)
 
     def _select_release_tab(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.tabs(named("_tabs")).select("2. Release")
 
     def change_label_name(self, name):

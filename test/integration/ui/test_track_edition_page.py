@@ -34,12 +34,12 @@ def raise_(e):
     raise e
 
 
-def show_page(album, track, on_track_changed=ignore, review_assignation=ignore,
+def show_page(page_driver, album, track, on_track_changed=ignore, review_assignation=ignore,
               show_isni_assignation_failed=ignore, show_cheddar_connection_failed=ignore,
               show_cheddar_authentication_failed=ignore, **handlers):
     page = make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
                                    show_cheddar_connection_failed, show_cheddar_authentication_failed, **handlers)
-    show_widget(page)
+    show_widget(page_driver, page)
     return page
 
 
@@ -48,7 +48,7 @@ def test_displays_album_summary_in_banner(driver):
     album = build.album(release_name="Album Title", lead_performer="Artist", label_name="Record Label",
                         tracks=[build.track(), track, build.track()])
 
-    _ = show_page(album, track)
+    _ = show_page(driver, album, track)
 
     driver.shows_album_title("Album Title")
     driver.shows_album_lead_performer("Artist")
@@ -59,7 +59,7 @@ def test_indicates_when_album_performed_by_various_artists(driver):
     track = build.track()
     album = build.album(compilation=True, tracks=[track])
 
-    _ = show_page(album, track)
+    _ = show_page(driver, album, track)
 
     driver.shows_album_lead_performer("Various Artists")
 
@@ -93,7 +93,7 @@ def test_displays_track_metadata(driver):
                         isnis={"Lyricist": "0000000123456789"},
                         ipis={"Lyricist": "ABCD12345"})
 
-    _ = show_page(album, track)
+    _ = show_page(driver, album, track)
 
     driver.shows_track_title("Song")
     driver.shows_lead_performer("Artist")
@@ -126,7 +126,7 @@ def test_displays_undefined_lyrics_language_in_case_no_language_specified(driver
     track = make_track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track)
+    _ = show_page(driver, album, track)
 
     driver.shows_language("Undetermined")
 
@@ -135,7 +135,7 @@ def test_disables_lead_performer_edition_when_album_is_not_a_compilation(driver)
     track = build.track()
     album = build.album(lead_performer="Album Artist", compilation=False, tracks=[track])
 
-    _ = show_page(album, track)
+    _ = show_page(driver, album, track)
 
     driver.shows_lead_performer("Album Artist", disabled=True)
 
@@ -144,7 +144,7 @@ def test_signals_when_track_metadata_change(driver):
     track = build.track()
     album = build.album(compilation=True, tracks=[track])
 
-    page = show_page(album, track)
+    page = show_page(driver, album, track)
 
     metadata_changed_signal = ValueMatcherProbe("metadata changed")
     page.metadata_changed.connect(metadata_changed_signal.received)
@@ -248,7 +248,7 @@ def test_signals_lead_performer_only_when_album_is_compilation(driver):
     track = build.track()
     album = build.album(compilation=False, tracks=[track])
 
-    page = show_page(album, track)
+    page = show_page(driver, album, track)
 
     metadata_changed_signal = ValueMatcherProbe("metadata changed")
     page.metadata_changed.connect(metadata_changed_signal.received)
@@ -266,7 +266,7 @@ def test_displays_software_notice_in_local_time(driver):
     track = build.track(tagger="TGiT", tagger_version="1.0", tagging_time="2014-03-23 20:33:00 +0000")
     album = build.album(tracks=[track])
 
-    _ = show_page(album, track)
+    _ = show_page(driver, album, track)
 
     # This will likely fail when ran on another timezone or even when daylight savings
     # change, but I don't yet know how to best write the test
@@ -278,21 +278,21 @@ def test_displays_software_notice_in_local_time(driver):
 def test_omits_software_notice_if_unavailable(driver):
     track = build.track()
     album = build.album(tracks=[track])
-    _ = show_page(album, track)
+    _ = show_page(driver, album, track)
     driver.shows_software_notice("")
 
 
 def test_omits_tagger_information_from_software_notice_if_unavailable(driver):
     track = build.track(tagging_time="2014-03-23 20:33:00 UTC+0000")
     album = build.album(tracks=[track])
-    _ = show_page(album, track)
+    _ = show_page(driver, album, track)
     driver.shows_software_notice("Tagged on 2014-03-23 at 16:33:00")
 
 
 def test_omits_software_notice_if_tagging_date_malformed(driver):
     track = build.track(tagger="TGiT", tagger_version="1.0", tagging_time="invalid-time-format")
     album = build.album(tracks=[track])
-    _ = show_page(album, track)
+    _ = show_page(driver, album, track)
     driver.shows_software_notice("Tagged with TGiT v1.0")
 
 
@@ -302,7 +302,7 @@ def test_signals_when_assign_lyricist_isni_button_clicked(driver):
     track = build.track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album,
+    _ = show_page(driver, album,
                   track,
                   review_assignation=lambda on_review: on_review(),
                   on_lyricist_isni_assign=assign_isni_signal.received)
@@ -317,7 +317,7 @@ def test_shows_connection_failed_error_on_lyricist_isni_assignation(driver):
     track = build.track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track,
+    _ = show_page(driver, album, track,
                   show_cheddar_connection_failed=show_error_signal.received,
                   review_assignation=lambda on_review: on_review(),
                   on_lyricist_isni_assign=lambda *_: raise_(requests.ConnectionError()))
@@ -332,7 +332,7 @@ def test_shows_assignation_failed_error_on_lyricist_isni_assignation(driver):
     track = build.track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track,
+    _ = show_page(driver, album, track,
                   show_isni_assignation_failed=show_error_signal.received,
                   review_assignation=lambda on_review: on_review(),
                   on_lyricist_isni_assign=lambda *_: raise_(InsufficientInformationError("insufficient information")))
@@ -347,7 +347,7 @@ def test_shows_authentication_failed_error_on_lyricist_isni_assignation(driver):
     track = build.track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track,
+    _ = show_page(driver, album, track,
                   show_cheddar_authentication_failed=show_error_signal.received,
                   review_assignation=lambda on_review: on_review(),
                   on_lyricist_isni_assign=lambda *_: raise_(AuthenticationError()))
@@ -360,7 +360,7 @@ def test_shows_assigned_isni_on_lyricist_isni_assignation(driver):
     track = build.track()
     album = make_album(tracks=[track])
 
-    page = show_page(album, track,
+    page = show_page(driver, album, track,
                      review_assignation=lambda on_review: on_review(),
                      on_lyricist_isni_assign=lambda callback: callback(
                          IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
@@ -375,7 +375,7 @@ def test_signals_assigned_isni_on_isni_assignation(driver):
     track = build.track()
     album = make_album(tracks=[track])
 
-    page = show_page(album, track,
+    page = show_page(driver, album, track,
                      review_assignation=lambda on_review: on_review(),
                      on_lyricist_isni_assign=lambda callback: callback(
                          IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
@@ -396,7 +396,7 @@ def test_updates_isni_when_lyricist_text_change(driver):
     track = make_track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track, on_isni_local_lookup=lookup)
+    _ = show_page(driver, album, track, on_isni_local_lookup=lookup)
 
     driver.change_lyricist("Joel Miller")
     driver.shows_lyricist_isni("0000000123456789")
@@ -411,7 +411,7 @@ def test_updates_ipi_when_lyricist_text_change(driver):
     track = make_track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track, on_ipi_local_lookup=lookup)
+    _ = show_page(driver, album, track, on_ipi_local_lookup=lookup)
 
     driver.change_lyricist("Joel Miller")
     driver.shows_lyricist_ipi("0000000123456789")
@@ -426,7 +426,7 @@ def test_updates_isni_when_composer_text_change(driver):
     track = make_track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track, on_isni_local_lookup=lookup)
+    _ = show_page(driver, album, track, on_isni_local_lookup=lookup)
 
     driver.change_composer("Joel Miller")
     driver.shows_composer_isni("0000000123456789")
@@ -441,7 +441,7 @@ def test_updates_ipi_when_composer_text_change(driver):
     track = make_track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track, on_ipi_local_lookup=lookup)
+    _ = show_page(driver, album, track, on_ipi_local_lookup=lookup)
 
     driver.change_composer("Joel Miller")
     driver.shows_composer_ipi("0000000123456789")
@@ -456,7 +456,7 @@ def test_updates_isni_when_publisher_text_change(driver):
     track = make_track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track, on_isni_local_lookup=lookup)
+    _ = show_page(driver, album, track, on_isni_local_lookup=lookup)
 
     driver.change_publisher("Joel Miller")
     driver.shows_publisher_isni("0000000123456789")
@@ -471,7 +471,7 @@ def test_updates_ipi_when_publisher_text_change(driver):
     track = make_track()
     album = make_album(tracks=[track])
 
-    _ = show_page(album, track, on_ipi_local_lookup=lookup)
+    _ = show_page(driver, album, track, on_ipi_local_lookup=lookup)
 
     driver.change_publisher("Joel Miller")
     driver.shows_publisher_ipi("0000000123456789")
@@ -485,7 +485,7 @@ def test_signals_on_lyricist_ipi_changed(driver):
 
     track = make_track()
     album = make_album(tracks=[track])
-    _ = show_page(album, track, on_ipi_changed=lyricist_ipi_changed_signal.received)
+    _ = show_page(driver, album, track, on_ipi_changed=lyricist_ipi_changed_signal.received)
 
     driver.change_lyricist("Joel Miller")
     driver.change_lyricist_ipi("0000000123456789")
@@ -498,7 +498,7 @@ def test_signals_on_composer_ipi_changed(driver):
 
     track = make_track()
     album = make_album(tracks=[track])
-    _ = show_page(album, track, on_ipi_changed=composer_ipi_changed_signal.received)
+    _ = show_page(driver, album, track, on_ipi_changed=composer_ipi_changed_signal.received)
 
     driver.change_composer("Joel Miller")
     driver.change_composer_ipi("0000000123456789")
@@ -511,7 +511,7 @@ def test_signals_on_publisher_ipi_changed(driver):
 
     track = make_track()
     album = make_album(tracks=[track])
-    _ = show_page(album, track, on_ipi_changed=publisher_ipi_changed_signal.received)
+    _ = show_page(driver, album, track, on_ipi_changed=publisher_ipi_changed_signal.received)
 
     driver.change_publisher("Joel Miller")
     driver.change_publisher_ipi("0000000123456789")

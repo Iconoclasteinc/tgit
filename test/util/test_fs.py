@@ -1,6 +1,6 @@
 import os
 
-from hamcrest import assert_that, equal_to, contains, empty, ends_with
+from hamcrest import assert_that, equal_to, contains, empty, ends_with, contains_inanyorder
 import pytest
 
 from test.util import resources
@@ -44,7 +44,7 @@ def test_list_file_entries_in_folder(tmpdir):
     for folder in ("dir1", "dir2", "dir3"):
         tmpdir.mkdir(folder)
 
-    assert_that(fs.list_dir(tmpdir.strpath), contains(*entries), "file entries")
+    assert_that(fs.list_dir(tmpdir.strpath), contains_inanyorder(*entries), "file entries")
 
 
 def test_ignores_errors_that_might_occur_when_removing_files(tmpdir):

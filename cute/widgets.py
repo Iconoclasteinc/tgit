@@ -7,12 +7,15 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, 
 from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
 
+from cute.platforms import linux
 from . import gestures, properties, matchers as match, rect, platforms
 from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector,
                       WidgetIdentity, MissingWidgetFinder)
 from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
                      WidgetScreenBoundsProbe)
 from .table import TableMatcher, TableManipulation, Table
+
+CLOSE_DELAY = 50 if linux else 0
 
 
 def all_top_level_widgets():
@@ -147,12 +150,16 @@ class WidgetDriver:
 
     def close(self):
         self.manipulate("close", lambda widget: widget.close())
+        self.pause(CLOSE_DELAY)
 
     def clear_focus(self):
         self.manipulate("clear focus", lambda widget: widget.clearFocus())
 
     def pause(self, ms):
         self.perform(gestures.pause(ms))
+
+    def show(self):
+        return self.manipulate("show", lambda widget: widget.show())
 
 
 class ButtonDriver(WidgetDriver):
@@ -930,7 +937,7 @@ class TableViewDriver(WidgetDriver):
         self.manipulate_table("calculate bounds of header row {0}".format(to_position), to_header)
 
         drop_target = rect.bottom_center(rect.inside_bounds(to_header.bounds, bottom=1)) if (
-        from_position < to_position) \
+            from_position < to_position) \
             else rect.top_center(rect.inside_bounds(to_header.bounds, top=1))
         self.perform(gestures.mouse_drag(from_header.bounds.center(), drop_target))
 

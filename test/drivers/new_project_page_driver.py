@@ -21,9 +21,12 @@ from hamcrest import ends_with
 
 from cute import gestures
 from cute.matchers import named
+from cute.platforms import linux
 from cute.widgets import QDialogButtonBoxDriver
 from tgit.ui.pages.new_project_page import NewProjectPage
 from ._screen_driver import ScreenDriver
+
+PAGE_DISPLAY_DELAY = 10 if linux else 0
 
 
 def new_project_page(parent):
@@ -32,6 +35,7 @@ def new_project_page(parent):
 
 class NewProjectPageDriver(ScreenDriver):
     def create_project(self, name, location, import_from="", using_shortcut=False):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.enter_name(name)
         self.enter_location(location)
         self.enter_reference_track(import_from)
@@ -42,15 +46,19 @@ class NewProjectPageDriver(ScreenDriver):
             self._buttons().click_ok()
 
     def enter_name(self, album_name):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.lineEdit(named("_name")).replace_all_text(album_name)
 
     def enter_location(self, album_location):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.lineEdit(named("_location")).replace_all_text(album_location)
 
     def enter_reference_track(self, import_from):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.lineEdit(named("_reference_track")).replace_all_text(import_from)
 
     def cancel_creation(self, name="", location="", import_from="", using_shortcut=False):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.enter_name(name)
         self.enter_location(location)
         self.enter_reference_track(import_from)
@@ -61,9 +69,11 @@ class NewProjectPageDriver(ScreenDriver):
             self._buttons().click_cancel()
 
     def select_project(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.button(named("_browse_location_button")).click()
 
     def select_track(self):
+        self.pause(PAGE_DISPLAY_DELAY)
         self.button(named("_select_reference_track_button")).click()
 
     def has_name(self, name):

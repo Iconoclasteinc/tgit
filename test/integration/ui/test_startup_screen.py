@@ -1,6 +1,8 @@
 import pytest
 
 from cute.finders import WidgetIdentity
+from cute.matchers import named
+from cute.widgets import window
 from test.drivers.startup_screen_driver import StartupScreenDriver
 from test.integration.ui import show_widget
 from tgit.ui.pages.new_project_page import NewProjectPage
@@ -13,8 +15,7 @@ ignore = lambda: None
 no = lambda _: False
 
 
-@pytest.fixture()
-def screen(qt):
+def show_screen(page_driver):
     def create_welcome_page():
         return WelcomePage(select_project=ignore, show_load_error=ignore)
 
@@ -24,24 +25,27 @@ def screen(qt):
 
     startup_screen = StartupScreen(create_welcome_page=create_welcome_page,
                                    create_new_project_page=create_new_project_page)
-    show_widget(startup_screen)
+    show_widget(page_driver, startup_screen)
     return startup_screen
 
 
 @pytest.yield_fixture()
-def driver(screen, prober, automaton):
-    wizard_driver = StartupScreenDriver(WidgetIdentity(screen), prober, automaton)
+def driver(qt, prober, automaton):
+    wizard_driver = StartupScreenDriver(window(StartupScreen, named("startup_screen")), prober, automaton)
     yield wizard_driver
     wizard_driver.close()
 
 
 def test_initially_shows_the_welcome_page(driver):
+    show_screen(driver)
     driver.shows_welcome_page()
 
 
 def test_opens_new_project_page_to_create_a_project(driver):
+    show_screen(driver)
     driver.create_project()
 
 
 def test_returns_to_welcome_page_after_cancelling_project_creation(driver):
+    show_screen(driver)
     driver.cancel_creation()

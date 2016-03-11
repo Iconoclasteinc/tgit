@@ -5,6 +5,7 @@ from hamcrest import ends_with
 import pytest
 
 from cute.matchers import named
+from cute.platforms import linux
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import PictureSelectionDialogDriver
@@ -37,6 +38,7 @@ def test_signals_when_picture_selected(driver):
 
 
 @pytest.mark.skipif(windows, reason="not supported on Windows")
+@pytest.mark.skipif(linux, reason="not supported on Linux")
 def test_only_accepts_picture_files(driver):
     _ = show_dialog()
     driver.rejects_selection_of(resources.path("base.mp3"))

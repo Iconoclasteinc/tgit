@@ -12,10 +12,10 @@ from tgit.ui.main_window import StyleSheet
 SIZE = (1100, 745)
 
 
-def show_widget(widget):
+def show_widget(driver, widget):
     widget.setStyleSheet(StyleSheet)
     widget.setFixedSize(*SIZE)
-    widget.show()
+    driver.show()
 
 
 END_OF_TEST_PAUSE = int(os.environ.get('END_OF_TEST_PAUSE', 0))

@@ -9,7 +9,7 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.load_album_dialog_driver import LoadProjectDialogDriver
 from test.util import resources
-from tgit.platforms import windows
+from tgit.platforms import windows, linux
 from tgit.ui.dialogs.load_album_dialog import LoadProjectDialog
 
 pytestmark = pytest.mark.ui
@@ -44,6 +44,7 @@ def test_signals_when_album_selected(dialog, driver):
 
 
 @pytest.mark.skipif(windows, reason="not supported on Windows")
+@pytest.mark.skipif(linux, reason="not supported on Linux")
 def test_only_accepts_tgit_album_files(dialog, driver):
     dialog.select(ignore)
 
