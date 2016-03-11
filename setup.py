@@ -42,7 +42,8 @@ if windows:
 includes = [
     "PyQt5.QtNetwork",
     "tgit.ui.widgets.help_label",
-    "tgit.ui.widgets.text_area"
+    "tgit.ui.widgets.text_area",
+    "tgit.ui.widgets.progress_indicator",
 ]
 
 

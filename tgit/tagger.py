@@ -21,7 +21,6 @@ from traceback import format_exception
 
 from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtGui import QIcon
-
 from PyQt5.QtWidgets import QApplication
 
 from tgit import ui
@@ -88,9 +87,9 @@ def main():
     # _print_unhandled_exceptions()
 
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
-
     tagger = TGiT(MediaPlayer, cheddar)
     tagger.launch()
+    cheddar.stop()
 
 
 def _print_unhandled_exceptions():

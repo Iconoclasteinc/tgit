@@ -215,27 +215,28 @@ def _add_identifier_to_map(identifier_map, identifier, name):
     return identifier_map
 
 
-def sign_in_using(authenticate, session):
-    def sign_in(email, password):
-        user = authenticate(email, password)
-        session.login_as(user["email"], user["token"], user["permissions"])
+def sign_in_to(session, authenticator):
+    def sign_in(email, password, on_success=lambda: None, on_error=lambda error: None):
+        def logging_done(authentication):
+            if authentication.exception():
+                on_error(authentication.exception())
+            else:
+                user = authentication.result()
+                session.login_as(user["email"], user["token"], user["permissions"])
+                on_success()
+
+        authenticator(email, password).add_done_callback(logging_done)
 
     return sign_in
 
 
-def sign_out_using(session):
-    def sign_out():
-        session.logout()
-
-    return sign_out
+def sign_out_from(session):
+    return session.logout
 
 
 def _unwrap_future(f):
     @wraps(f)
     def decorated(future):
-        exception = future.exception()
-        if exception:
-            raise exception
         return f(future.result())
 
     return decorated

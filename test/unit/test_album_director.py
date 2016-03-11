@@ -2,10 +2,9 @@ import os
 from concurrent.futures import Future
 
 import pytest
-from flexmock import flexmock
+from flexmock import flexmock as mock
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, empty, has_key, has_property,
                       match_equality)
-
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from cute.prober import PollingProber
@@ -14,9 +13,9 @@ from test.util import builders as build, resources, doubles
 from test.util.builders import make_album, make_track, make_registered_session
 from test.util.workspace import AlbumWorkspace
 from tgit import fs, album_director as director
-from tgit.album import Album, AlbumListener
+from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.auth import Session
+from tgit.cheddar import AuthenticationError
 from tgit.metadata import Image, Metadata
 from tgit.user_preferences import UserPreferences
 
@@ -206,16 +205,40 @@ def test_updates_track_metadata():
     assert_that(track.language, equal_to("und"), "language")
 
 
-def test_signs_user_in():
-    session = Session()
-    authentication = {"email": "the_email", "token": "...", "permissions": []}
-    director.sign_in_using(lambda *_: authentication, session)("...", "...")
-    assert_that(session.current_user.email, equal_to("the_email"), "email")
+def test_signs_user_in_when_authentication_succeeds():
+    authentication = Future()
+    authenticator = mock()
+    session = mock()
+    success_callback = mock()
+
+    authenticator.should_receive("authenticate").with_args("email", "password").and_return(authentication).once()
+    session.should_receive("login_as").with_args("email", "token", ["permission"]).once()
+    success_callback.should_receive("called").with_args().once()
+
+    sign_in = director.sign_in_to(session, authenticator=authenticator.authenticate)
+    sign_in("email", "password", on_success=success_callback.called)
+
+    authentication.set_result({"email": "email", "token": "token", "permissions": ["permission"]})
+
+
+def test_notifies_of_authentication_error_when_authentication_fails():
+    authentication = Future()
+    authenticator = mock()
+    failure_callback = mock()
+    error = AuthenticationError()
+
+    authenticator.should_receive("authenticate").and_return(authentication)
+    failure_callback.should_receive("called").with_args(error).once()
+
+    sign_in = director.sign_in_to(session=mock(), authenticator=authenticator.authenticate)
+    sign_in("email", "password", on_error=failure_callback.called)
+
+    authentication.set_exception(error)
 
 
 def test_signs_user_out():
-    session = build.make_registered_session("...", "...")
-    director.sign_out_using(session)()
+    session = make_registered_session("...", "...")
+    director.sign_out_from(session)()
     assert_that(session.current_user.email, none())
 
 
@@ -370,7 +393,7 @@ def test_updates_preferences():
 
 
 def _listener_expecting_notification(prop, value):
-    listener = flexmock(AlbumListener())
+    listener = mock()
     listener.should_receive("albumStateChanged").with_args(match_equality(has_property(prop, value))).once()
     return listener
 

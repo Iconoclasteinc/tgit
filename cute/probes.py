@@ -187,7 +187,7 @@ class MultiValueMatcherProbe(Probe):
         else:
             description.append_text('was not received')
 
-    def received(self, *values):
+    def received(self, *values, **_):
         self._has_received_a_value = True
         self._received_values.extend(values)
 
@@ -220,7 +220,7 @@ class KeywordsValueMatcherProbe(Probe):
         else:
             description.append_text('was not received')
 
-    def received(self, **values):
+    def received(self, *_, **values):
         self._has_received_a_value = True
         self._received_values = dict(values)
 

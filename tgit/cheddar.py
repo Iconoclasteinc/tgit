@@ -59,6 +59,10 @@ class Cheddar:
         self._secure = secure
         self._port = port
         self._host = host
+        self._executor = ThreadPoolExecutor(max_workers=1)
+
+    def stop(self):
+        self._executor.shutdown()
 
     @property
     def _hostname(self):
@@ -70,14 +74,17 @@ class Cheddar:
         return "".join(fragments)
 
     def authenticate(self, email, password):
-        response = requests.post(self._hostname + "/api/authentications", auth=(email, password), verify=False)
-        if response.status_code == 401:
-            raise AuthenticationError()
+        def request_authentication():
+            response = requests.post(self._hostname + "/api/authentications", auth=(email, password), verify=False)
+            if response.status_code == 401:
+                raise AuthenticationError()
 
-        deserialized = json.loads(response.content.decode())
-        deserialized["email"] = email
+            deserialized = json.loads(response.content.decode())
+            deserialized["email"] = email
 
-        return deserialized
+            return deserialized
+
+        return self._executor.submit(request_authentication)
 
     def get_identities(self, phrase, token):
         def request_identities():

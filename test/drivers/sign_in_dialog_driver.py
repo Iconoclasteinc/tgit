@@ -16,9 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from cute.matchers import named
-from cute.widgets import window, QDialogDriver
+from cute.matchers import named, StateMatcher
+from cute.widgets import window, QDialogDriver, WidgetDriver
 from tgit.ui.dialogs.sign_in_dialog import SignInDialog
+from tgit.ui.widgets.progress_indicator import QProgressIndicator
 from ._screen_driver import ScreenDriver
 
 
@@ -33,5 +34,24 @@ class SignInDialogDriver(QDialogDriver, ScreenDriver):
         self.click_ok()
 
     def shows_authentication_failed_message(self):
-        self.label(named("_authentication_error")).is_showing_on_screen()
-        self.label(named("_authentication_error")).has_text("Incorrect username and/or password.")
+        self.progress_indicator.is_(stopped())
+        self.authentication_error.is_showing_on_screen()
+        self.authentication_error.has_text("Invalid username and/or password")
+
+    @property
+    def authentication_error(self):
+        return self.label(named("_authentication_error"))
+
+    @property
+    def progress_indicator(self):
+        return WidgetDriver.find_single(self, QProgressIndicator, named("_progress_indicator"))
+
+
+def running():
+    return StateMatcher(lambda o: o.isRunning(), "running", "stopped")
+
+
+def stopped():
+    return StateMatcher(lambda o: not o.isRunning(), "stopped", "running")
+
+

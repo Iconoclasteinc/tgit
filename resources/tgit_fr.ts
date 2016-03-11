@@ -1195,8 +1195,8 @@
         <translation>Mot de passe :</translation>
     </message>
     <message>
-        <source>Incorrect username and/or password.</source>
-        <translation>Nom d'utilisateur et/ou mot de passe incorrect</translation>
+        <source>Invalid username and/or password</source>
+        <translation>Nom d'utilisateur et/ou mot de passe invalide</translation>
     </message>
     <message>
         <source>Sign in to the TGiT platform</source>

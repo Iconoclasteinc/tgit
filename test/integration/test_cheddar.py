@@ -16,9 +16,11 @@ def platform():
     cheddar.stop(server_thread)
 
 
-@pytest.fixture
+@pytest.yield_fixture()
 def cheddar(platform):
-    return Cheddar(host=platform.host(), port=platform.port(), secure=False)
+    cheddar = Cheddar(host=platform.host(), port=platform.port(), secure=False)
+    yield cheddar
+    cheddar.stop()
 
 
 def test_authenticates_by_returning_the_token(cheddar, platform):
@@ -29,7 +31,7 @@ def test_authenticates_by_returning_the_token(cheddar, platform):
 
 def test_raises_authentication_error(cheddar):
     with pytest.raises(AuthenticationError):
-        cheddar.authenticate("test@example.com", "wrong_password")
+        wait_for_completion(cheddar.authenticate("test@example.com", "wrong_password"))
 
 
 def test_returns_unauthorized_when_getting_identities(cheddar, platform):
@@ -132,3 +134,7 @@ def test_raises_permission_denied_error_on_402(cheddar, platform):
     platform.allowed_bearer_token = "token"
     with pytest.raises(PermissionDeniedError):
         raise cheddar.get_identities("...", "token").exception()
+
+
+def wait_for_completion(future):
+    return future.result(2000)

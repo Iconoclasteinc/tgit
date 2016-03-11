@@ -11,7 +11,9 @@ from tgit.ui.dialogs.sign_in_dialog import SignInDialog
 
 pytestmark = pytest.mark.ui
 
-ignore = lambda *_: None
+
+def ignore(email, password, on_success, on_error):
+    pass
 
 
 def show_dialog(on_sign_in=ignore):
@@ -39,11 +41,22 @@ def test_calls_authenticate_with_credentials(driver):
 
 
 def test_displays_error_message_when_authentication_is_not_successful(driver):
-    def authenticate(*_):
-        raise AuthenticationError()
+    def authenticate(email, password, on_success, on_error):
+        on_error(AuthenticationError())
 
     _ = show_dialog(on_sign_in=authenticate)
 
     driver.is_active()
     driver.enter_credentials("jfalardeau@pyxis-tech.com", "passw0rd")
     driver.shows_authentication_failed_message()
+
+
+def test_accepts_dialog_when_authentication_succeeds(driver):
+    def authenticate(email, password, on_success, on_error):
+        on_success()
+
+    _ = show_dialog(on_sign_in=authenticate)
+
+    driver.is_active()
+    driver.enter_credentials("jfalardeau@pyxis-tech.com", "passw0rd")
+    driver.is_hidden()

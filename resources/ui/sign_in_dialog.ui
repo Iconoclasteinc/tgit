@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>450</width>
-    <height>158</height>
+    <height>211</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -30,17 +30,50 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="_title">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Sign in to the TGiT platform</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="_title">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Sign in to the TGiT platform</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressIndicator" name="_progress_indicator" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QWidget" name="_form" native="true">
@@ -97,10 +130,18 @@
       <item row="2" column="1">
        <widget class="QLabel" name="_authentication_error">
         <property name="styleSheet">
-         <string notr="true">color: red;</string>
+         <string notr="true">color: red;
+
+QLabel[style=QWindowsVistaStyle] {
+	margin-top: -1px;
+}
+
+QLabel[style=QMacStyle] {
+	margin-top: -2px;
+}</string>
         </property>
-        <property name="text">
-         <string>Incorrect username and/or password.</string>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
         </property>
        </widget>
       </item>
@@ -115,7 +156,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="_action_buttons">
+    <widget class="QDialogButtonBox" name="_buttons">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -126,10 +167,18 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QProgressIndicator</class>
+   <extends>QWidget</extends>
+   <header>tgit.ui.widgets.progress_indicator</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
-   <sender>_action_buttons</sender>
+   <sender>_buttons</sender>
    <signal>rejected()</signal>
    <receiver>sign_in_dialog</receiver>
    <slot>reject()</slot>
