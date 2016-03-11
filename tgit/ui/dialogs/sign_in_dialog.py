@@ -33,8 +33,6 @@ class SignInDialog(QDialog, UIFile):
         self.setAttribute(Qt.WA_DeleteOnClose)
         self._authentication_error.setVisible(False)
         self.adjustSize()
-        self._email.setAttribute(Qt.WA_MacShowFocusRect, False)
-        self._password.setAttribute(Qt.WA_MacShowFocusRect, False)
 
     def sign_in(self, on_sign_in):
         def attempt_sign_in():
