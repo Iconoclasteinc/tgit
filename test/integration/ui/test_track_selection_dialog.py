@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QFileDialog
 from hamcrest import contains, contains_inanyorder, ends_with
 
 from cute.matchers import named
+from cute.platforms import linux
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import TrackSelectionDialogDriver
@@ -77,6 +78,7 @@ def test_restricts_selection_based_on_file_type(driver, dialog):
 
 
 @pytest.mark.skipif(windows, reason="not supported on Windows")
+@pytest.mark.skipif(linux, reason="not supported on Linux")
 def test_only_accept_audio_files(driver, dialog):
     unsupported_file = resources.path('front-cover.jpg')
 

@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import QStackedWidget
 class StartupScreen(QStackedWidget):
     def __init__(self, create_welcome_page, create_new_project_page):
         super().__init__()
+        self.setObjectName("startup_screen")
         self._welcome_page = create_welcome_page()
         self._new_project_page = create_new_project_page()
 

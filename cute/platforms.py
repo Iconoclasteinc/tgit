@@ -21,3 +21,4 @@ import sys
 
 windows = sys.platform == "win32"
 mac = sys.platform == "darwin"
+linux = sys.platform == "linux"

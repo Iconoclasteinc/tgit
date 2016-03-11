@@ -23,8 +23,10 @@ from threading import Thread
 
 import requests
 from flask import Flask, request, Response
+import time
+from cute import platforms
 
-from tgit.auth import Permission
+FLASK_STARTUP_DELAY = 0.01 if platforms.linux else 0
 
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
 token_queue = iter([])
@@ -144,6 +146,7 @@ def start():
 
     server_thread = Thread(target=lambda: _app.run(port=port()))
     server_thread.start()
+    time.sleep(FLASK_STARTUP_DELAY)
     return server_thread
 
 
