@@ -34,14 +34,12 @@ from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.pages.project_edition_page import ISO_8601_FORMAT
 
 
-def make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
+def make_track_edition_page(album, track, review_assignation, show_isni_assignation_failed,
                             show_cheddar_connection_failed, show_cheddar_authentication_failed, **handlers):
     page = TrackEditionPage(review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed,
                             show_cheddar_authentication_failed)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
-
-    page.metadata_changed.connect(lambda metadata: on_track_changed(**metadata))
 
     subscription = track.metadata_changed.subscribe(page.display_track)
     page.closed.connect(lambda: subscription.cancel())
@@ -55,9 +53,6 @@ def make_track_edition_page(album, track, on_track_changed, review_assignation, 
 @Closeable
 class TrackEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
-
-    # TODO move from signal to on_metadata_changed handler
-    metadata_changed = pyqtSignal(dict)
 
     ALBUM_COVER_SIZE = 75, 75
     DURATION_FORMAT = "mm:ss"
@@ -74,55 +69,63 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._setup_ui()
 
     def _setup_ui(self):
+        def add_action_to_button(action, button):
+            menu = QMenu()
+            menu.addAction(action)
+            button.setMenu(menu)
+
+        def fill_with_countries(combobox):
+            for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
+                combobox.addItem(name, code)
+            combobox.insertItem(0, "")
+            combobox.setCurrentIndex(0)
+
+        def fill_with_languages(combobox):
+            for code, name in sorted(LANGUAGES.items(), key=lambda item: self.tr(item[1])):
+                combobox.addItem(self.tr(name), code)
+
         self._load(":/ui/track_page.ui")
 
-        lyricist_menu = QMenu()
-        lyricist_menu.addAction(self._lyricist_isni_assign_action)
-        self._lyricist_isni_actions_button.setMenu(lyricist_menu)
-
-        composer_menu = QMenu()
-        composer_menu.addAction(self._composer_isni_assign_action)
-        self._composer_isni_actions_button.setMenu(composer_menu)
-
-        publisher_menu = QMenu()
-        publisher_menu.addAction(self._publisher_isni_assign_action)
-        self._publisher_isni_actions_button.setMenu(publisher_menu)
+        add_action_to_button(self._lyricist_isni_assign_action, self._lyricist_isni_actions_button)
+        add_action_to_button(self._composer_isni_assign_action, self._composer_isni_actions_button)
+        add_action_to_button(self._publisher_isni_assign_action, self._publisher_isni_actions_button)
 
         self._genre.addItems(sorted(GENRES))
-        self._fill_with_languages(self._language)
-        self._fill_with_countries(self._production_company_region)
-        self._fill_with_countries(self._recording_studio_region)
-
-        def emit_metadata_changed():
-            self.metadata_changed.emit(self.metadata)
-
-        self._track_title.editingFinished.connect(emit_metadata_changed)
-        self._main_artist.editingFinished.connect(emit_metadata_changed)
-        self._version.editingFinished.connect(emit_metadata_changed)
-        self._featured_guest.editingFinished.connect(emit_metadata_changed)
-        self._comments.editingFinished.connect(emit_metadata_changed)
-        self._lyricist.editingFinished.connect(emit_metadata_changed)
-        self._composer.editingFinished.connect(emit_metadata_changed)
-        self._publisher.editingFinished.connect(emit_metadata_changed)
-        self._isrc.editingFinished.connect(emit_metadata_changed)
-        self._iswc.editingFinished.connect(emit_metadata_changed)
-        self._tags.editingFinished.connect(emit_metadata_changed)
-
-        self._lyrics.editingFinished.connect(emit_metadata_changed)
-        self._language.activated.connect(emit_metadata_changed)
-
-        self._recording_studio.editingFinished.connect(emit_metadata_changed)
-        self._recording_studio_region.activated.connect(emit_metadata_changed)
-        self._recording_time.dateChanged.connect(emit_metadata_changed)
-        self._music_producer.editingFinished.connect(emit_metadata_changed)
-        self._production_company.editingFinished.connect(emit_metadata_changed)
-        self._production_company_region.activated.connect(emit_metadata_changed)
-        self._mixer.editingFinished.connect(emit_metadata_changed)
-        self._genre.activated.connect(emit_metadata_changed)
-        self._genre.lineEdit().textEdited.connect(emit_metadata_changed)
+        fill_with_languages(self._language)
+        fill_with_countries(self._production_company_region)
+        fill_with_countries(self._recording_studio_region)
 
     def albumStateChanged(self, album):
         self.display(album=album)
+
+    def on_track_changed(self, handler):
+        def handle(*_):
+            handler(**self._metadata)
+
+        self._track_title.editingFinished.connect(handle)
+        self._main_artist.editingFinished.connect(handle)
+        self._version.editingFinished.connect(handle)
+        self._featured_guest.editingFinished.connect(handle)
+        self._comments.editingFinished.connect(handle)
+        self._lyricist.editingFinished.connect(handle)
+        self._composer.editingFinished.connect(handle)
+        self._publisher.editingFinished.connect(handle)
+        self._isrc.editingFinished.connect(handle)
+        self._iswc.editingFinished.connect(handle)
+        self._tags.editingFinished.connect(handle)
+
+        self._lyrics.editingFinished.connect(handle)
+        self._language.activated.connect(handle)
+
+        self._recording_studio.editingFinished.connect(handle)
+        self._recording_studio_region.activated.connect(handle)
+        self._recording_time.dateChanged.connect(handle)
+        self._music_producer.editingFinished.connect(handle)
+        self._production_company.editingFinished.connect(handle)
+        self._production_company_region.activated.connect(handle)
+        self._mixer.editingFinished.connect(handle)
+        self._genre.activated.connect(handle)
+        self._genre.lineEdit().textEdited.connect(handle)
 
     def on_lyricist_isni_assign(self, handler):
         # noinspection PyArgumentList
@@ -264,7 +267,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         return notice
 
     @property
-    def metadata(self):
+    def _metadata(self):
         metadata = dict(track_title=self._track_title.text(),
                         version_info=self._version.text(),
                         featured_guest=self._featured_guest.text(),
@@ -290,17 +293,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
             metadata["lead_performer"] = self._main_artist.text()
 
         return metadata
-
-    @staticmethod
-    def _fill_with_countries(combobox):
-        for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
-            combobox.addItem(name, code)
-        combobox.insertItem(0, "")
-        combobox.setCurrentIndex(0)
-
-    def _fill_with_languages(self, combobox):
-        for code, name in sorted(LANGUAGES.items(), key=lambda item: self.tr(item[1])):
-            combobox.addItem(self.tr(name), code)
 
     @staticmethod
     def _get_country_code_from_combo(combo):

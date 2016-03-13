@@ -7,7 +7,7 @@ import requests
 from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
 
 from cute.matchers import named
-from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
+from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
 from cute.widgets import window
 from test.drivers import TrackEditionPageDriver
 from test.integration.ui import show_widget, ignore
@@ -31,10 +31,10 @@ def raise_(e):
     raise e
 
 
-def show_page(page_driver, album, track, on_track_changed=ignore, review_assignation=ignore,
+def show_page(page_driver, album, track, review_assignation=ignore,
               show_isni_assignation_failed=ignore, show_cheddar_connection_failed=ignore,
               show_cheddar_authentication_failed=ignore, **handlers):
-    page = make_track_edition_page(album, track, on_track_changed, review_assignation, show_isni_assignation_failed,
+    page = make_track_edition_page(album, track, review_assignation, show_isni_assignation_failed,
                                    show_cheddar_connection_failed, show_cheddar_authentication_failed, **handlers)
     show_widget(page_driver, page)
     return page
@@ -141,10 +141,8 @@ def test_signals_when_track_metadata_change(driver):
     track = build.track()
     album = build.album(compilation=True, tracks=[track])
 
-    page = show_page(driver, album, track)
-
-    metadata_changed_signal = ValueMatcherProbe("metadata changed")
-    page.metadata_changed.connect(metadata_changed_signal.received)
+    metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
+    _ = show_page(driver, album, track, on_track_changed=metadata_changed_signal.received)
 
     metadata_changed_signal.expect(has_entries(track_title="Title"))
     driver.change_track_title("Title")
@@ -245,10 +243,8 @@ def test_signals_main_artist_only_when_album_is_compilation(driver):
     track = build.track()
     album = build.album(compilation=False, tracks=[track])
 
-    page = show_page(driver, album, track)
-
-    metadata_changed_signal = ValueMatcherProbe("metadata changed")
-    page.metadata_changed.connect(metadata_changed_signal.received)
+    metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
+    _ = show_page(driver, album, track, on_track_changed=metadata_changed_signal.received)
 
     metadata_changed_signal.expect(is_not(has_key("lead_performer")))
     driver.change_track_title("Title")
@@ -367,17 +363,15 @@ def test_shows_assigned_isni_on_lyricist_isni_assignation(driver):
 
 
 def test_signals_assigned_isni_on_isni_assignation(driver):
-    metadata_changed_signal = ValueMatcherProbe("metadata changed")
-
     track = build.track()
     album = make_album(tracks=[track])
 
-    page = show_page(driver, album, track,
-                     review_assignation=lambda on_review: on_review(),
-                     on_lyricist_isni_assign=lambda callback: callback(
-                         IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
-
-    page.metadata_changed.connect(metadata_changed_signal.received)
+    metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
+    _ = show_page(driver, album, track,
+                  on_track_changed=metadata_changed_signal.received,
+                  review_assignation=lambda on_review: on_review(),
+                  on_lyricist_isni_assign=lambda callback: callback(
+                      IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
 
     metadata_changed_signal.expect(has_entries(lyricist="Joel Miller"))
     driver.change_lyricist("Joel Miller")
