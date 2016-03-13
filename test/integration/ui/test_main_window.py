@@ -6,7 +6,7 @@ from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers import MainWindowDriver
 from test.drivers.fake_drivers import no_startup_screen, no_album_screen, project_screen, startup_screen
-from test.integration.ui import show_widget
+from test.integration.ui import show_widget, ignore
 from test.integration.ui.fake_widgets import fake_startup_screen, fake_project_screen
 from test.util import builders as build
 from test.util.builders import make_album
@@ -17,8 +17,9 @@ from tgit.ui.main_window import MainWindow
 
 pytestmark = pytest.mark.ui
 
-ignore = lambda *_, **__: None
-yes = lambda: True
+
+def yes():
+    return True
 
 
 def _raise_os_error(message):

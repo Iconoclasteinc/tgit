@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# noinspection PyPackageRequirements
 import sip
 from traceback import format_exception
 import sys

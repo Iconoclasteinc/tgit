@@ -1,24 +1,19 @@
-# -*- coding: utf-8 -*-
-
 from PyQt5.QtCore import QDir, QPoint, QTime, QDate
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QLineEdit, QPushButton, QListView,
-                             QToolButton, QFileDialog, QMenu, QComboBox, QTextEdit, QLabel,
-                             QAbstractButton, QSpinBox, QTableView, QDialogButtonBox)
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QListView, QToolButton, QFileDialog, \
+    QMenu, QComboBox, QTextEdit, QLabel, QAbstractButton, QSpinBox, QTableView, QDialogButtonBox
 from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
 
 from cute.platforms import linux
 from . import gestures, properties, matchers as match, rect, platforms
-from .finders import (SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, WidgetSelector,
-                      WidgetIdentity, MissingWidgetFinder)
-from .probes import (WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe,
-                     WidgetScreenBoundsProbe)
+from .finders import SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, \
+    WidgetSelector, WidgetIdentity, MissingWidgetFinder
+from .probes import WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe
 from .table import TableMatcher, TableManipulation, Table
-
-CLOSE_DELAY = 50 if linux else 0
 
 
 def all_top_level_widgets():
+    # noinspection PyArgumentList
     return TopLevelWidgetsFinder(QApplication.instance())
 
 
@@ -60,6 +55,9 @@ class QueryManipulation:
 
 
 class WidgetDriver:
+    CLOSE_DELAY = 30 if linux else 0
+    DISPLAY_DELAY = 25 if linux else 0
+
     def __init__(self, selector, prober, gesture_performer):
         self.selector = selector
         self.prober = prober
@@ -142,15 +140,15 @@ class WidgetDriver:
     def enter(self):
         self.perform(gestures.enter())
 
-    def perform(self, *gestures):
-        self.gesture_performer.perform(*gestures)
+    def perform(self, *gestures_to_perform):
+        self.gesture_performer.perform(*gestures_to_perform)
 
     def check(self, probe):
         self.prober.check(probe)
 
     def close(self):
         self.manipulate("close", lambda widget: widget.close())
-        self.pause(CLOSE_DELAY)
+        self.pause(self.CLOSE_DELAY)
 
     def clear_focus(self):
         self.manipulate("clear focus", lambda widget: widget.clearFocus())
@@ -159,7 +157,8 @@ class WidgetDriver:
         self.perform(gestures.pause(ms))
 
     def show(self):
-        return self.manipulate("show", lambda widget: widget.show())
+        self.manipulate("show", lambda widget: widget.show())
+        self.pause(self.DISPLAY_DELAY)
 
 
 class ButtonDriver(WidgetDriver):
@@ -442,9 +441,9 @@ class FileDialogDriver(QDialogDriver):
     def navigate_to_dir(self, path):
         self.pause(self.DISPLAY_DELAY)
         for folder_name in self._navigation_path_to(path):
-            if folder_name == '':
+            if folder_name == "":
                 pass
-            elif folder_name == '..':
+            elif folder_name == "..":
                 self.up_one_folder()
             else:
                 self.into_folder(folder_name)
@@ -527,7 +526,7 @@ class FileDialogDriver(QDialogDriver):
                 self.text = dialog.labelText(label)
 
         query = QueryButtonText()
-        self.manipulate('query button text', query)
+        self.manipulate("query button text", query)
         return ButtonDriver.find_single(self, QPushButton, match.with_text(query.text))
 
     def has_selected_file_type(self, matching):
@@ -852,6 +851,8 @@ class TableViewDriver(WidgetDriver):
 
     def widget_in_cell(self, row, column):
         class WidgetInCell(WidgetSelector):
+            _widget_in_cell = None
+
             def __init__(self, table_selector):
                 super(WidgetInCell, self).__init__()
                 self._table_selector = table_selector
@@ -907,7 +908,8 @@ class TableViewDriver(WidgetDriver):
 
     def has_selected_row(self, matching):
         class WithMatchingSelectedRow(BaseMatcher):
-            def _selected_row(self, table):
+            @staticmethod
+            def _selected_row(table):
                 return table.cells(table.selected_row())
 
             def _matches(self, table):

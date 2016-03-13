@@ -9,6 +9,7 @@ from cute.platforms import linux
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import PictureSelectionDialogDriver
+from test.integration.ui import ignore
 from test.util import resources
 from tgit.platforms import windows
 from tgit.ui.dialogs.picture_selection_dialog import PictureSelectionDialog
@@ -16,7 +17,7 @@ from tgit.ui.dialogs.picture_selection_dialog import PictureSelectionDialog
 pytestmark = pytest.mark.ui
 
 
-def show_dialog(on_select=lambda: None):
+def show_dialog(on_select=ignore):
     dialog = PictureSelectionDialog(native=False)
     dialog.select(on_select)
     return dialog
@@ -24,9 +25,10 @@ def show_dialog(on_select=lambda: None):
 
 @pytest.yield_fixture()
 def driver(qt, prober, automaton):
-    driver = PictureSelectionDialogDriver(window(QFileDialog, named("picture-selection-dialog")), prober, automaton)
-    yield driver
-    driver.close()
+    dialog_driver = PictureSelectionDialogDriver(window(QFileDialog, named("picture-selection-dialog")), prober,
+                                                 automaton)
+    yield dialog_driver
+    dialog_driver.close()
 
 
 def test_signals_when_picture_selected(driver):

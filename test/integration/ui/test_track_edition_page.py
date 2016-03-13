@@ -10,7 +10,7 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers import TrackEditionPageDriver
-from test.integration.ui import show_widget
+from test.integration.ui import show_widget, ignore
 from test.util import builders as build
 from test.util.builders import make_album, make_track
 from tgit.cheddar import InsufficientInformationError, AuthenticationError
@@ -25,9 +25,6 @@ def driver(qt, prober, automaton):
     page_driver = TrackEditionPageDriver(window(TrackEditionPage, named("track_edition_page")), prober, automaton)
     yield page_driver
     page_driver.close()
-
-
-ignore = lambda *_, **__: None
 
 
 def raise_(e):
@@ -244,7 +241,7 @@ def test_signals_when_track_metadata_change(driver):
     driver.check(metadata_changed_signal)
 
 
-def test_signals_lead_performer_only_when_album_is_compilation(driver):
+def test_signals_main_artist_only_when_album_is_compilation(driver):
     track = build.track()
     album = build.album(compilation=False, tracks=[track])
 

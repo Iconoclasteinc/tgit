@@ -13,6 +13,6 @@ from .project_screen_driver import project_screen, ProjectScreenDriver
 from .menu_bar_driver import menu_bar, MenuBarDriver
 from .user_preferences_dialog_driver import user_preferences_dialog, UserPreferencesDialogDriver
 from .track_edition_page_driver import track_edition_page, TrackEditionPageDriver
-from .welcome_screen_driver import welcome_page, WelcomePageDriver
+from .welcome_page_driver import welcome_page, WelcomePageDriver
 
 from .main_window_driver import MainWindowDriver

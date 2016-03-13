@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
-
 def Closeable(cls):
-    """Decorator for closeable widgets. Closeable widgets emit a closed signal on close."""
+    """Decorator for closeable widgets. Closeable widgets emit a closed signal on close.
+    :param cls: The decorated class
+    """
     widget_close = cls.close
 
     def close(self):

@@ -7,7 +7,7 @@ from cute.matchers import named
 from cute.probes import MultiValueMatcherProbe
 from cute.widgets import window
 from test.drivers import ProjectScreenDriver
-from test.integration.ui import show_widget
+from test.integration.ui import show_widget, ignore
 from test.util.builders import make_track, make_album
 from tgit.ui.pages.project_edition_page import ProjectEditionPage
 from tgit.ui.pages.project_screen import ProjectScreen, make_project_screen
@@ -16,10 +16,8 @@ from tgit.ui.pages.track_list_tab import TrackListTab
 
 pytestmark = pytest.mark.ui
 
-ignore = lambda *args, **kwargs: None
 
-
-def create_track_list_tab(album):
+def create_track_list_tab(_):
     return TrackListTab(ignore)
 
 

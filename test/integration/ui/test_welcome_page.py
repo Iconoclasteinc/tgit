@@ -5,11 +5,10 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import WelcomePageDriver
+from test.integration.ui import ignore
 from tgit.ui.pages.welcome_page import WelcomePage, make_welcome_page
 
 pytestmark = pytest.mark.ui
-
-ignore = lambda: None
 
 
 def show_page(page_driver, select_project=ignore, show_load_error=ignore, **handlers):

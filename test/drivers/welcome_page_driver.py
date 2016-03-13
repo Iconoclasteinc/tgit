@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from cute.matchers import named
 from tgit.ui.pages.welcome_page import WelcomePage
 from ._screen_driver import ScreenDriver
@@ -10,12 +8,8 @@ def welcome_page(parent):
 
 
 class WelcomePageDriver(ScreenDriver):
-    DISPLAY_DELAY = 15
-
     def new_project(self, of_type="mp3"):
-        self.pause(self.DISPLAY_DELAY)
         self.button(named("_new_{}_project_button".format(of_type))).click()
 
     def load(self):
-        self.pause(self.DISPLAY_DELAY)
         self.button(named("_load_project_button")).click()

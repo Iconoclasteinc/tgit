@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from hamcrest.library.text import contains_string
 
 from cute import gestures

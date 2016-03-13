@@ -11,7 +11,7 @@ from .menu_bar_driver import menu_bar
 from .message_box_driver import message_box
 from .new_project_page_driver import new_project_page
 from .user_preferences_dialog_driver import user_preferences_dialog
-from .welcome_screen_driver import welcome_page
+from .welcome_page_driver import welcome_page
 
 
 class MainWindowDriver(WidgetDriver):
