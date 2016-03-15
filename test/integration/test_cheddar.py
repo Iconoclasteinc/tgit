@@ -37,21 +37,21 @@ def test_raises_authentication_error(cheddar):
 def test_returns_unauthorized_when_getting_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
     with pytest.raises(AuthenticationError):
-        raise cheddar.get_identities("reb an mal", "...").exception()
+        cheddar.get_identities("reb an mal", "...")
 
 
 def test_raises_system_error_on_remote_server_error_when_getting_identities(cheddar, platform):
     platform.response_code_queue = [503]
     platform.allowed_bearer_token = "token"
     with pytest.raises(requests.exceptions.ConnectionError):
-        raise cheddar.get_identities("...", "token").exception()
+        cheddar.get_identities("...", "token")
 
 
 def test_raises_insufficient_information_error_when_getting_identities(cheddar, platform):
     platform.response_code_queue = [422]
     platform.allowed_bearer_token = "token"
     with pytest.raises(InsufficientInformationError):
-        raise cheddar.get_identities("...", "token").exception()
+        cheddar.get_identities("...", "token")
 
 
 def test_returns_empty_array_of_identities(cheddar, platform):
@@ -133,7 +133,7 @@ def test_raises_permission_denied_error_on_402(cheddar, platform):
     platform.response_code_queue = [402]
     platform.allowed_bearer_token = "token"
     with pytest.raises(PermissionDeniedError):
-        raise cheddar.get_identities("...", "token").exception()
+        cheddar.get_identities("...", "token")
 
 
 def wait_for_completion(future):

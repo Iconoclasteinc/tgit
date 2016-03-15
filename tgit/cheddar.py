@@ -18,7 +18,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import json
 from concurrent.futures import ThreadPoolExecutor
+from queue import Queue
+import threading
 
+from PyQt5.QtCore import QEventLoop
+from PyQt5.QtWidgets import QApplication
 import requests
 
 
@@ -87,11 +91,27 @@ class Cheddar:
         return self._executor.submit(request_authentication)
 
     def get_identities(self, phrase, token):
-        response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase),
-                                headers=(_build_authorization_header(token)),
-                                verify=False)
+        def poll_queue():
+            while queue.empty():
+                QApplication.processEvents(QEventLoop.AllEvents, 100)
+            item = queue.get(True)
+            if isinstance(item, Exception):
+                raise item
+            return item
 
-        return _decode_response(response)
+        def task():
+            response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase),
+                                    headers=(_build_authorization_header(token)),
+                                    verify=False)
+
+            try:
+                queue.put(_decode_response(response))
+            except Exception as e:
+                queue.put(e)
+
+        queue = Queue()
+        threading.Thread(target=task).start()
+        return poll_queue()
 
     def assign_identifier(self, name, type_, works, token):
         def assign_identifier():

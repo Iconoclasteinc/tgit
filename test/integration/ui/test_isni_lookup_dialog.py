@@ -116,6 +116,22 @@ def test_disables_ok_button_by_default(driver):
     driver.has_ok_button_disabled()
 
 
+def test_disables_ok_button_on_new_search(driver):
+    _ = show_dialog(on_isni_lookup=lambda _:
+                    [IdentityCard(id="0000000123456789",
+                                  type=IdentityCard.INDIVIDUAL,
+                                  firstName="Joel",
+                                  lastName="Miller",
+                                  dateOfBirth="1969",
+                                  dateOfDeath="2100",
+                                  works=[{"title": "Chevere! and Zumbar and This is That and Other cool songs"}])])
+
+    driver.lookup("Joel Miller")
+    driver.select_identity("Joel Miller")
+    driver.lookup("Joel Miller")
+    driver.has_ok_button_disabled()
+
+
 def test_enables_lookup_button_when_text_is_entered(driver):
     _ = show_dialog()
 

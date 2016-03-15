@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QListWidgetItem, QApplication
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QListWidgetItem
 
 from tgit.ui.helpers.ui_file import UIFile
 
@@ -42,11 +42,10 @@ class ISNILookupDialog(QDialog, UIFile):
     def _setup_ui(self):
         self._load(":ui/isni_dialog.ui")
         self.addAction(self._trigger_lookup_action)
-        self._make_new_functionalities_invisible()
         self._hide_messages()
         self._enable_ok_button(enabled=False)
 
-        self._result_container.currentRowChanged.connect(lambda _: self._enable_ok_button())
+        self._result_container.currentRowChanged.connect(lambda row: self._enable_ok_button(enabled=row > -1))
         self._lookup_criteria.textChanged.connect(self._enable_or_disable_lookup_button)
 
     def on_isni_selected(self, handler):
@@ -55,9 +54,9 @@ class ISNILookupDialog(QDialog, UIFile):
     def on_isni_lookup(self, handler):
         def lookup_isni():
             try:
-                QApplication.setOverrideCursor(Qt.WaitCursor)
+                self._progress_indicator.start()
                 identities = handler(self._lookup_criteria.text())
-                QApplication.restoreOverrideCursor()
+                self._progress_indicator.stop()
                 self._clear_results()
                 self._display_results(identities)
             except:
@@ -70,9 +69,6 @@ class ISNILookupDialog(QDialog, UIFile):
         if query:
             self._lookup_criteria.setText(query)
             self._lookup_button.click()
-
-    def _make_new_functionalities_invisible(self):
-        self._result_count.setVisible(False)
 
     def _enable_or_disable_lookup_button(self, text):
         self._lookup_button.setEnabled(len(text) > 0)
