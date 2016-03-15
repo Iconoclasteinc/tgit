@@ -87,15 +87,11 @@ class Cheddar:
         return self._executor.submit(request_authentication)
 
     def get_identities(self, phrase, token):
-        def request_identities():
-            response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase),
-                                    headers=(_build_authorization_header(token)),
-                                    verify=False)
+        response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase),
+                                headers=(_build_authorization_header(token)),
+                                verify=False)
 
-            return _decode_response(response)
-
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            return executor.submit(request_identities)
+        return _decode_response(response)
 
     def assign_identifier(self, name, type_, works, token):
         def assign_identifier():

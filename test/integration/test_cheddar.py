@@ -18,9 +18,9 @@ def platform():
 
 @pytest.yield_fixture()
 def cheddar(platform):
-    cheddar = Cheddar(host=platform.host(), port=platform.port(), secure=False)
-    yield cheddar
-    cheddar.stop()
+    cheddar_platform = Cheddar(host=platform.host(), port=platform.port(), secure=False)
+    yield cheddar_platform
+    cheddar_platform.stop()
 
 
 def test_authenticates_by_returning_the_token(cheddar, platform):
@@ -56,7 +56,7 @@ def test_raises_insufficient_information_error_when_getting_identities(cheddar, 
 
 def test_returns_empty_array_of_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    identities = cheddar.get_identities("reb an mal", "token").result()
+    identities = cheddar.get_identities("reb an mal", "token")
     assert_that(identities, empty())
 
 
@@ -74,7 +74,7 @@ def test_returns_array_of_identities(cheddar, platform):
         ]
     }
 
-    identities = cheddar.get_identities("reb an mal", "token").result()
+    identities = cheddar.get_identities("reb an mal", "token")
     assert_that(identities, contains(
         has_entries(id="0000000115677274",
                     firstName="Rebecca Ann",

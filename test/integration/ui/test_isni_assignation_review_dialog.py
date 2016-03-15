@@ -5,6 +5,7 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.isni_assignation_review_dialog_driver import IsniAssignationReviewDialogDriver
+from test.integration.ui import ignore
 from test.util import builders as build
 from tgit import platforms
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
@@ -12,10 +13,6 @@ from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReview
 pytestmark = pytest.mark.ui
 
 ANIMATION_DELAY = 200 if platforms.mac else 0
-
-
-def ignore(*_):
-    pass
 
 
 def show_dialog(*titles, main_artist_section_visible=True, on_review=ignore):

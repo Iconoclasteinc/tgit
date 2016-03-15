@@ -246,30 +246,22 @@ def test_returns_list_of_identities_when_isni_found_in_registry(prober):
     class FakeCheddar:
         @staticmethod
         def get_identities(phrase, token):
-            future = Future()
             if token == "secret" and phrase == "Rebecca Ann Maloy":
-                future.set_result([{"id": "0000000115677274", "type": "individual", "works": []}])
-            else:
-                future.set_result([])
-            return future
+                return [{"id": "0000000115677274", "type": "individual", "works": []}]
+            return []
 
-    success_signal = ValueMatcherProbe("The identities", contains(has_property("id", "0000000115677274")))
-    director.lookup_isni_using(FakeCheddar(), make_registered_session(token="secret"))("Rebecca Ann Maloy",
-                                                                                       success_signal.received)
-    prober.check(success_signal)
+    identities = director.lookup_isni_using(FakeCheddar(), make_registered_session(token="secret"))("Rebecca Ann Maloy")
+    assert_that(identities, contains(has_property("id", "0000000115677274")), "The identities")
 
 
 def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
     class FakeCheddar:
         @staticmethod
         def get_identities(*_):
-            future = Future()
-            future.set_result([])
-            return future
+            return []
 
-    success_signal = ValueMatcherProbe("The identities", empty())
-    director.lookup_isni_using(FakeCheddar(), make_registered_session())("Rebecca Ann Maloy", success_signal.received)
-    prober.check(success_signal)
+    identities = director.lookup_isni_using(FakeCheddar(), make_registered_session())("Rebecca Ann Maloy")
+    assert_that(identities, empty(), "The identities")
 
 
 def test_updates_album_metadata():

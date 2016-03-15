@@ -3,14 +3,13 @@ from datetime import timedelta
 
 import pytest
 import requests
-
 from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
 from cute.widgets import window
 from test.drivers import TrackEditionPageDriver
-from test.integration.ui import show_widget, ignore
+from test.integration.ui import show_widget, ignore, raise_
 from test.util import builders as build
 from test.util.builders import make_album, make_track
 from tgit.cheddar import InsufficientInformationError, AuthenticationError
@@ -25,10 +24,6 @@ def driver(qt, prober, automaton):
     page_driver = TrackEditionPageDriver(window(TrackEditionPage, named("track_edition_page")), prober, automaton)
     yield page_driver
     page_driver.close()
-
-
-def raise_(e):
-    raise e
 
 
 def show_page(page_driver, album, track, review_assignation=ignore,

@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import QWidget, QApplication, QMenu
 
 from tgit.album import AlbumListener
 from tgit.auth import Permission
-from tgit.cheddar import AuthenticationError, InsufficientInformationError, PermissionDeniedError
+from tgit.cheddar import AuthenticationError, InsufficientInformationError
 from tgit.countries import COUNTRIES
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
@@ -34,12 +34,11 @@ from tgit.ui.helpers.ui_file import UIFile
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_project_edition_page(album, session, track_list_tab, select_picture, select_identity, review_assignation,
+def make_project_edition_page(album, session, track_list_tab, select_picture, review_assignation,
                               show_isni_assignation_failed, show_cheddar_connection_failed,
                               show_cheddar_authentication_failed, show_permission_denied, **handlers):
     page = ProjectEditionPage(track_list_tab=track_list_tab(album),
                               select_picture=select_picture,
-                              select_identity=select_identity,
                               review_assignation=review_assignation,
                               show_isni_assignation_failed=show_isni_assignation_failed,
                               show_cheddar_connection_failed=show_cheddar_connection_failed,
@@ -71,16 +70,14 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 200, 200
 
-    def __init__(self, track_list_tab, select_picture, select_identity, review_assignation,
-                 show_isni_assignation_failed, show_cheddar_connection_failed, show_cheddar_authentication_failed,
-                 show_permission_denied):
+    def __init__(self, track_list_tab, select_picture, review_assignation, show_isni_assignation_failed,
+                 show_cheddar_connection_failed, show_cheddar_authentication_failed, show_permission_denied):
         super().__init__()
         self._show_cheddar_authentication_failed = show_cheddar_authentication_failed
         self._review_assignation = review_assignation
         self._show_cheddar_connection_failed = show_cheddar_connection_failed
         self._show_isni_assignation_failed = show_isni_assignation_failed
         self._show_permission_denied = show_permission_denied
-        self._select_identity = select_identity
         self._select_picture = select_picture
         self._setup_ui(track_list_tab)
 
@@ -116,29 +113,13 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
         self._main_artist.textEdited.connect(update_main_artist_isni)
 
-    def on_isni_lookup(self, on_isni_lookup):
-        def start_waiting():
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            try:
-                on_isni_lookup(self._main_artist.text(), on_lookup_success)
-            except requests.ConnectionError:
-                self._show_cheddar_connection_failed()
-            except AuthenticationError:
-                self._show_cheddar_authentication_failed()
-            except PermissionDeniedError:
-                self._show_permission_denied()
-            finally:
-                QApplication.restoreOverrideCursor()
-
-        def on_lookup_success(identities):
-            self._select_identity(identities, on_identity_selected)
-            QApplication.restoreOverrideCursor()
-
+    def on_identity_selection(self, on_identity_selection):
         def on_identity_selected(identity):
             self._main_artist_isni.setFocus(Qt.OtherFocusReason)
-            self._main_artist_isni.setText(identity.id)
+            self._main_artist_isni.setText(identity)
 
-        self._main_artist_isni_actions_button.clicked.connect(start_waiting)
+        self._main_artist_isni_actions_button.clicked.connect(
+            lambda _: on_identity_selection(self, self._main_artist.text(), on_identity_selected))
 
     def on_isni_assign(self, on_isni_assign):
         def start_waiting(main_artist_type):

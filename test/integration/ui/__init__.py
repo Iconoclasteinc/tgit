@@ -12,3 +12,7 @@ def show_widget(driver, widget):
 # noinspection PyUnusedLocal
 def ignore(*args, **kwargs):
     pass
+
+
+def raise_(e):
+    raise e

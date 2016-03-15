@@ -18,7 +18,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
-from tgit.ui.dialogs.isni_lookup_dialog import make_isni_lookup_dialog
 from tgit.ui.dialogs.sign_in_dialog import SignInDialog
 from tgit.ui.dialogs.save_as_dialog import make_save_as_csv_dialog, make_save_as_excel_dialog
 from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
@@ -71,6 +70,3 @@ class Dialogs:
             ISNIAssignationReviewDialog(self._parent, main_artist_section_visible).review(on_review, *album.tracks)
 
         return review_isni_assignation
-
-    def select_identities(self, identities, on_identity_selected):
-        return make_isni_lookup_dialog(self._parent, identities, on_isni_selected=on_identity_selected)

@@ -22,7 +22,7 @@ def create_track_list_tab(_):
 
 
 def create_project_page(album):
-    return ProjectEditionPage(create_track_list_tab(album), ignore, ignore, ignore, ignore, ignore, ignore, ignore)
+    return ProjectEditionPage(create_track_list_tab(album), ignore, ignore, ignore, ignore, ignore, ignore)
 
 
 def create_track_page(track):

@@ -19,53 +19,66 @@
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QLabel, QRadioButton
-import requests
 
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_isni_lookup_dialog(parent, identities, **handlers):
-    dialog = ISNILookupDialog(parent, identities)
+def make_isni_lookup_dialog(parent, **handlers):
+    dialog = ISNILookupDialog(parent)
     for name, handler in handlers.items():
         getattr(dialog, name)(handler)
 
-    dialog.open()
     return dialog
 
 
 class ISNILookupDialog(QDialog, UIFile):
     _selected_identity = None
 
-    def __init__(self, parent, identities):
+    def __init__(self, parent):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
-        self._setup_ui(identities)
+        self._setup_ui()
 
-    def _setup_ui(self, identities):
+    def _setup_ui(self):
         self._load(":ui/isni_dialog.ui")
         self.setAttribute(Qt.WA_DeleteOnClose)
         self._make_new_functionalities_invisible()
 
-        self.connection_error = type(identities) is requests.ConnectionError
-        matches = identities if not self.connection_error else []
         self._enable_ok_button(enabled=False)
-        self._build(matches)
-        self.adjustSize()
+        self._lookup_criteria.textChanged.connect(self._enable_or_disable_lookup_button)
+
+    # noinspection PyUnresolvedReferences
+    def on_isni_selected(self, handler):
+        self.accepted.connect(lambda: handler(self._selected_identity.id))
+
+    def on_isni_lookup(self, handler):
+        def lookup_isni():
+            try:
+                identities = handler(self._lookup_criteria.text())
+                self._clear_results()
+                self._display_results(identities)
+            except:
+                self._display_connection_error()
+
+        self._lookup_button.clicked.connect(lookup_isni)
+
+    def lookup(self, query):
+        self.open()
+        if query:
+            self._lookup_criteria.setText(query)
+            self._lookup_button.click()
 
     def _make_new_functionalities_invisible(self):
-        self._lookup_button.setVisible(False)
-        self._lookup_criteria.setVisible(False)
         self._result_count.setVisible(False)
         self._assignation_caption.setVisible(False)
         self._assignation_button.setVisible(False)
 
+    def _enable_or_disable_lookup_button(self, text):
+        self._lookup_button.setEnabled(len(text) > 0)
+
     def _enable_ok_button(self, enabled=True):
         self._dialog_buttons.button(QDialogButtonBox.Ok).setEnabled(enabled)
 
-    def _build(self, matches):
-        if self.connection_error:
-            self._result_container.addWidget(self._build_connection_error_message())
-            return
-
+    def _display_results(self, matches):
         if len(matches) == 0:
             self._result_container.addWidget(self._build_no_result_message())
 
@@ -77,6 +90,9 @@ class ISNILookupDialog(QDialog, UIFile):
         no_result_label.setObjectName("_no_result_message")
         no_result_label.setText(self.tr("Your query yielded no result"))
         return no_result_label
+
+    def _display_connection_error(self):
+        self._result_container.addWidget(self._build_connection_error_message())
 
     def _build_connection_error_message(self):
         label = QLabel()
@@ -96,9 +112,12 @@ class ISNILookupDialog(QDialog, UIFile):
         radio.setText(self._build_identity_caption(identity))
         return radio
 
-    # noinspection PyUnresolvedReferences
-    def on_isni_selected(self, handler):
-        self.accepted.connect(lambda: handler(self._selected_identity))
+    def _clear_results(self):
+        for index in reversed(range(self._result_container.count())):
+            if self._result_container.itemAt(index):
+                item_widget = self._result_container.takeAt(index).widget()
+                item_widget.setParent(None)
+                item_widget.close()
 
     @staticmethod
     def _build_identity_caption(identity):

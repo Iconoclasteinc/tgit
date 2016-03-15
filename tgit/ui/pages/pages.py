@@ -19,6 +19,7 @@
 import functools
 
 from tgit import album_director as director
+from tgit.ui.dialogs.isni_lookup_dialog import make_isni_lookup_dialog
 from tgit.ui.pages.project_edition_page import make_project_edition_page
 from tgit.ui.pages.project_screen import make_project_screen
 from tgit.ui.pages.new_project_page import make_new_project_page
@@ -72,7 +73,6 @@ class Pages:
             album=album,
             session=self._session,
             track_list_tab=self._track_list_tab,
-            select_identity=self._dialogs.select_identities,
             review_assignation=self._dialogs.review_isni_assignation_in(album, True),
             show_isni_assignation_failed=self._messages.isni_assignation_failed,
             show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
@@ -82,7 +82,7 @@ class Pages:
             on_select_picture=director.change_cover_of(album),
             on_isni_changed=director.add_isni_to(album),
             on_isni_local_lookup=director.lookup_isni_in(album),
-            on_isni_lookup=director.lookup_isni_using(self._cheddar, self._session),
+            on_identity_selection=self._isni_dialog,
             on_isni_assign=director.assign_isni_to_main_artist_using(self._cheddar, self._session, album),
             on_remove_picture=director.remove_album_cover_from(album),
             on_metadata_changed=director.update_album_from(album))
@@ -102,3 +102,8 @@ class Pages:
                 show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed)
 
         return track_page
+
+    def _isni_dialog(self, parent, query, on_identity_selected):
+        return make_isni_lookup_dialog(parent,
+                                       on_isni_lookup=director.lookup_isni_using(self._cheddar, self._session),
+                                       on_isni_selected=on_identity_selected).lookup(query)
