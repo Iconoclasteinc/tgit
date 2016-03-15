@@ -371,16 +371,29 @@
         <translation>Piste suivante</translation>
     </message>
 </context>
-    <context>
-        <name>ProjectScreen</name>
-        <message>
-            <location filename="tgit/ui/project_screen.py" />
-            <source>Project edition</source>
-            <translation>Édition du projet</translation>
-        </message>
-    </context>
+<context>
+    <name>ProjectScreen</name>
+    <message>
+        <location filename="tgit/ui/project_screen.py" />
+        <source>Project edition</source>
+        <translation>Édition du projet</translation>
+    </message>
+</context>
 <context>
     <name>ISNILookupDialog</name>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>If you do not find a match within this list, please refine your search (only the first 20 results are shown)</source>
+        <translation>Si vous ne trouvez pas de correspondance dans la liste suivante, veuillez rafiner votre recherche (seulement les 20 premiers résultats sont affichés)</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" line="45"/>
+        <source>Please select from the list of identities</source>
+        <translation>Sélectionnez une identité à partir de la liste suivante</translation>
+    </message>
+</context>
+<context>
+    <name>isni_lookup_dialog</name>
     <message>
         <location filename="tgit/ui/isni_lookup_dialog.py" />
         <source>&amp;OK</source>
@@ -392,19 +405,9 @@
         <translation>&amp;Annuler</translation>
     </message>
     <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" />
-        <source>If you do not find a match within this list, please refine your search (only the first 20 results are shown)</source>
-        <translation>Si vous ne trouvez pas de correspondance dans la liste suivante, veuillez rafiner votre recherche (seulement les 20 premiers résultats sont affichés)</translation>
-    </message>
-    <message>
         <location filename="tgit/ui/isni_lookup_dialog.py" line="99"/>
-        <source>Your query yielded no result</source>
-        <translation>Votre recherche n&apos;a retourné aucun résultat</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" line="45"/>
-        <source>Please select from the list of identities</source>
-        <translation>Sélectionnez une identité à partir de la liste suivante</translation>
+        <source>Your query yielded no result.</source>
+        <translation>Votre recherche n&apos;a retourné aucun résultat.</translation>
     </message>
     <message>
         <location filename="tgit/ui/isni_lookup_dialog.py" line="105"/>

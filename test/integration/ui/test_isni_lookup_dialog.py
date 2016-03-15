@@ -25,6 +25,12 @@ def driver(qt, prober, automaton):
     dialog_driver.close()
 
 
+def test_hides_error_messages_by_default(driver):
+    _ = show_dialog()
+    driver.shows_no_result_message(visible=False)
+    driver.shows_connection_error_message(visible=False)
+
+
 def test_signals_lookup_on_display(driver):
     signal = ValueMatcherProbe("lookup ISNI", "Joel Miller")
     _ = show_dialog("Joel Miller", on_isni_lookup=signal.received)
@@ -57,31 +63,33 @@ def test_displays_lookup_results(driver):
                   works=[{"title": "Zumbar"}])])
 
     driver.lookup("Joel Miller")
-    driver.displays_result(0, "Joel Miller", "1969", "2100", "Chevere!")
-    driver.displays_result(1, "John Roney", "1700", "2500", "Zumbar")
+    driver.displays_result("Joel Miller", "1969", "2100", "Chevere!")
+    driver.displays_result("John Roney", "1700", "2500", "Zumbar")
 
 
 def test_displays_only_last_lookup_results(driver):
-    _ = show_dialog(on_isni_lookup=lambda _:
-    [IdentityCard(id="0000000123456789",
-                  type=IdentityCard.INDIVIDUAL,
-                  firstName="Joel",
-                  lastName="Miller",
-                  dateOfBirth="1969",
-                  dateOfDeath="2100",
-                  works=[{"title": "Chevere!"}]),
-     IdentityCard(id="9876543210000000",
-                  type=IdentityCard.INDIVIDUAL,
-                  firstName="John",
-                  lastName="Roney",
-                  dateOfBirth="1700",
-                  dateOfDeath="2500",
-                  works=[{"title": "Zumbar"}])])
+    def on_lookup(query):
+        if query == "Joel Miller":
+            return [IdentityCard(id="0000000123456789",
+                                 type=IdentityCard.INDIVIDUAL,
+                                 firstName="Joel",
+                                 lastName="Miller",
+                                 dateOfBirth="1969",
+                                 dateOfDeath="2100",
+                                 works=[{"title": "Chevere!"}])]
+        return [IdentityCard(id="9876543210000000",
+                             type=IdentityCard.INDIVIDUAL,
+                             firstName="John",
+                             lastName="Roney",
+                             dateOfBirth="1700",
+                             dateOfDeath="2500",
+                             works=[{"title": "Zumbar"}])]
+
+    _ = show_dialog(on_isni_lookup=on_lookup)
 
     driver.lookup("Joel Miller")
     driver.lookup("John Roney")
-    driver.displays_result(0, "Joel Miller", "1969", "2100", "Chevere!")
-    driver.displays_result(1, "John Roney", "1700", "2500", "Zumbar")
+    driver.displays_result("John Roney", "1700", "2500", "Zumbar")
 
 
 def test_signals_selected_identity(driver):
@@ -120,11 +128,53 @@ def test_displays_no_result_message(driver):
     _ = show_dialog(on_isni_lookup=lambda _: [])
 
     driver.lookup("Joel Miller")
-    driver.displays_no_result_message()
+    driver.shows_no_result_message()
+    driver.lookup("John Roney")
+
+
+def test_hides_no_result_message(driver):
+    def on_isni_lookup(query):
+        if query == "Joel Miller":
+            return []
+        return [IdentityCard(id="0000000123456789",
+                             type=IdentityCard.INDIVIDUAL,
+                             firstName="Joel",
+                             lastName="Miller",
+                             dateOfBirth="1969",
+                             dateOfDeath="2100",
+                             works=[{"title": "Chevere"}])]
+
+    _ = show_dialog(on_isni_lookup=on_isni_lookup)
+
+    driver.lookup("Joel Miller")
+    driver.shows_no_result_message()
+    driver.lookup("John Roney")
+    driver.shows_no_result_message(visible=False)
 
 
 def test_displays_connection_error_message(driver):
     _ = show_dialog(on_isni_lookup=lambda _: raise_(requests.ConnectionError()))
 
     driver.lookup("Joel Miller")
-    driver.displays_connection_error_message()
+    driver.shows_connection_error_message()
+
+
+def test_hides_connection_error_message(driver):
+    def on_isni_lookup(query):
+        if query == "Joel Miller":
+            raise_(requests.ConnectionError())
+        else:
+            return [IdentityCard(id="0000000123456789",
+                                 type=IdentityCard.INDIVIDUAL,
+                                 firstName="Joel",
+                                 lastName="Miller",
+                                 dateOfBirth="1969",
+                                 dateOfDeath="2100",
+                                 works=[{"title": "Chevere"}])]
+
+    _ = show_dialog(on_isni_lookup=on_isni_lookup)
+
+    driver.lookup("Joel Miller")
+    driver.shows_connection_error_message()
+    driver.lookup("John Roney")
+    driver.shows_connection_error_message(visible=False)

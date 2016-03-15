@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QLabel, QLineEdit, QTimeEdit, QComboBox, QCheckBox, QPlainTextEdit, \
-    QTableView, QTextEdit, QRadioButton, QDateEdit, QToolButton, QTabWidget, QAbstractButton
+    QTableView, QTextEdit, QRadioButton, QDateEdit, QToolButton, QTabWidget, QAbstractButton, QListWidget
 
 from cute.widgets import LabelDriver, LineEditDriver, QDateTimeEditDriver, ComboBoxDriver, ButtonDriver, \
-    TextEditDriver, WidgetDriver, TableViewDriver, QToolButtonDriver, QTabWidgetDriver
+    TextEditDriver, WidgetDriver, TableViewDriver, QToolButtonDriver, QTabWidgetDriver, ListViewDriver
 
 
 class ScreenDriver(WidgetDriver):
@@ -44,3 +44,6 @@ class ScreenDriver(WidgetDriver):
 
     def tabs(self, matching):
         return QTabWidgetDriver.find_single(self, QTabWidget, matching)
+
+    def list_view(self, matching):
+        return ListViewDriver.find_single(self, QListWidget, matching)

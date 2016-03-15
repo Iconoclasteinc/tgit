@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from hamcrest import starts_with
 
-from cute.matchers import named, with_text
+from cute.matchers import named, with_list_item_text
 from cute.widgets import window, QDialogDriver
 from ._screen_driver import ScreenDriver
 from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog
@@ -37,12 +37,12 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         self.change_query(query)
         self.button(named("_lookup_button")).click()
 
-    def displays_result(self, index, full_name, date_of_birth, date_of_death, work):
-        self.radio(named("_identity_" + str(index))).has_text(
-            "{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work))
+    def displays_result(self, full_name, date_of_birth, date_of_death, work):
+        self.list_view(named("_result_container")).has_item(with_list_item_text(
+            "{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
 
     def select_identity(self, name):
-        self.radio(with_text(starts_with(name))).click()
+        self.list_view(named("_result_container")).select_item(with_list_item_text(starts_with(name)))
 
     def has_ok_button_disabled(self):
         self._button_box().ok_button().is_enabled(enabled=False)
@@ -56,9 +56,14 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
     def accept(self):
         self._button_box().click_ok()
 
-    def displays_no_result_message(self):
-        self.label(named("_no_result_message")).has_text("Your query yielded no result")
+    def shows_no_result_message(self, visible=True):
+        if visible:
+            self.label(named("_no_result_message")).is_showing_on_screen()
+        else:
+            self.label(named("_no_result_message")).is_hidden()
 
-    def displays_connection_error_message(self):
-        self.label(named("_connection_error_message")).has_text(
-            "Could not connect to the ISNI database. Please retry later.")
+    def shows_connection_error_message(self, visible=True):
+        if visible:
+            self.label(named("_connection_error_message")).is_showing_on_screen()
+        else:
+            self.label(named("_connection_error_message")).is_hidden()
