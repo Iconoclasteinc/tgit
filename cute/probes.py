@@ -127,6 +127,10 @@ def nothing():
 
 
 class ValueMatcherProbe(Probe):
+    """
+    A probe for callables that expect a single argument
+    """
+
     def __init__(self, message, matcher=nothing()):
         super(ValueMatcherProbe, self).__init__()
         self._message = message
@@ -160,6 +164,10 @@ class ValueMatcherProbe(Probe):
 
 
 class MultiValueMatcherProbe(Probe):
+    """
+    A probe for callables that expect multiple arguments. Use with collection matchers.
+    """
+
     def __init__(self, message, matcher=empty()):
         super().__init__()
         self._message = message
@@ -187,7 +195,7 @@ class MultiValueMatcherProbe(Probe):
         else:
             description.append_text('was not received')
 
-    def received(self, *values, **_):
+    def received(self, *values):
         self._has_received_a_value = True
         self._received_values.extend(values)
 

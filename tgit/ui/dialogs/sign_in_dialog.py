@@ -16,40 +16,38 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QDialog
 
+from tgit.signal import MultiSubscription
 from tgit.ui.helpers.ui_file import UIFile
 
 
+def open_sign_in_dialog(parent, login, on_sign_in, delete_on_close=True):
+    dialog = SignInDialog(parent, delete_on_close)
+    dialog.sign_in.connect(on_sign_in)
+    subscriptions = MultiSubscription()
+    subscriptions += login.login_successful.subscribe(lambda email: dialog.authentication_succeeded())
+    subscriptions += login.login_failed.subscribe(lambda error: dialog.authentication_failed())
+    dialog.finished.connect(lambda accepted: subscriptions.cancel())
+    dialog.open()
+    return dialog
+
+
 class SignInDialog(QDialog, UIFile):
-    def __init__(self, parent=None):
+    sign_in = pyqtSignal(str, str)
+
+    def __init__(self, parent=None, delete_on_close=True):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
+        self.setAttribute(Qt.WA_DeleteOnClose, delete_on_close)
         self._setup_ui()
 
     def _setup_ui(self):
         self._load(":ui/sign_in_dialog.ui")
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self._buttons.accepted.connect(lambda: self.sign_in.emit(self._email.text(), self._password.text()))
 
-    def sign_in(self, on_sign_in):
-        def accept():
-            self._progress_indicator.stop()
-            self._authentication_error.setText('')
-            self.accept()
+    def authentication_succeeded(self):
+        self.accept()
 
-        def display_error(error):
-            self._progress_indicator.stop()
-            self._authentication_error.setText(self.tr("Invalid username and/or password"))
-            self._ok_button().setEnabled(True)
-
-        def authenticate():
-            self._authentication_error.setText('')
-            self._progress_indicator.start()
-            self._ok_button().setDisabled(True)
-            on_sign_in(self._email.text(), self._password.text(), on_success=accept, on_error=display_error)
-
-        self._buttons.accepted.connect(authenticate)
-        self.open()
-
-    def _ok_button(self):
-        return self._buttons.button(QDialogButtonBox.Ok)
+    def authentication_failed(self):
+        self._authentication_error.setText(self.tr("Invalid username and/or password"))

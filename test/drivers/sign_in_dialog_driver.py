@@ -28,7 +28,7 @@ def sign_in_dialog(parent):
 
 
 class SignInDialogDriver(QDialogDriver, ScreenDriver):
-    def enter_credentials(self, username, password):
+    def sign_in_with(self, username, password):
         self.lineEdit(named("_email")).replace_all_text(username)
         self.lineEdit(named("_password")).replace_all_text(password)
         self.click_ok()

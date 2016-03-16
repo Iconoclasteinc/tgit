@@ -91,7 +91,7 @@ def test_restricts_selection_based_on_file_type(driver):
 def test_only_accept_audio_files(driver):
     unsupported_file = resources.path("front-cover.jpg")
 
-    _ = show_dialog()
+    _ = show_dialog(on_select_file=lambda: None)
 
     driver.rejects_selection_of(unsupported_file)
 

@@ -3,13 +3,13 @@ from cute import gestures
 from cute.widgets import WidgetDriver
 from test.drivers.save_as_dialog_driver import save_as_dialog
 from test.drivers.sign_in_dialog_driver import sign_in_dialog
-from .project_screen_driver import project_screen
 from .isni_assignation_review_dialog_driver import isni_assignation_review_dialog
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .load_album_dialog_driver import load_project_dialog
 from .menu_bar_driver import menu_bar
 from .message_box_driver import message_box
 from .new_project_page_driver import new_project_page
+from .project_screen_driver import project_screen
 from .user_preferences_dialog_driver import user_preferences_dialog
 from .welcome_page_driver import welcome_page
 
@@ -148,7 +148,7 @@ class MainWindowDriver(WidgetDriver):
 
     def sign_in_as(self, username, password):
         self.sign_in()
-        sign_in_dialog(self).enter_credentials(username, password)
+        sign_in_dialog(self).sign_in_with(username, password)
 
     def is_signed_in_as(self, email):
         menu_bar(self).account.shows_signed_in_user(email)

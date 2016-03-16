@@ -15,7 +15,6 @@ from test.util.workspace import AlbumWorkspace
 from tgit import fs, album_director as director
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.cheddar import AuthenticationError
 from tgit.metadata import Image, Metadata
 from tgit.user_preferences import UserPreferences
 
@@ -203,37 +202,6 @@ def test_updates_track_metadata():
     assert_that(track.labels, equal_to("Tags"), "tags")
     assert_that(track.lyrics, equal_to("Lyrics\nLyrics\n..."), "lyrics")
     assert_that(track.language, equal_to("und"), "language")
-
-
-def test_signs_user_in_when_authentication_succeeds():
-    authentication = Future()
-    authenticator = mock()
-    session = mock()
-    success_callback = mock()
-
-    authenticator.should_receive("authenticate").with_args("email", "password").and_return(authentication).once()
-    session.should_receive("login_as").with_args("email", "token", ["permission"]).once()
-    success_callback.should_receive("called").with_args().once()
-
-    sign_in = director.sign_in_to(session, authenticator=authenticator.authenticate)
-    sign_in("email", "password", on_success=success_callback.called)
-
-    authentication.set_result({"email": "email", "token": "token", "permissions": ["permission"]})
-
-
-def test_notifies_of_authentication_error_when_authentication_fails():
-    authentication = Future()
-    authenticator = mock()
-    failure_callback = mock()
-    error = AuthenticationError()
-
-    authenticator.should_receive("authenticate").and_return(authentication)
-    failure_callback.should_receive("called").with_args(error).once()
-
-    sign_in = director.sign_in_to(session=mock(), authenticator=authenticator.authenticate)
-    sign_in("email", "password", on_error=failure_callback.called)
-
-    authentication.set_exception(error)
 
 
 def test_signs_user_out():

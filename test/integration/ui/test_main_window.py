@@ -42,7 +42,6 @@ def show_page(page_driver,
               select_tracks=ignore,
               select_tracks_in_folder=ignore,
               confirm_exit=yes,
-              authenticate=ignore,
               **handlers):
     main_window = MainWindow(session=session,
                              portfolio=portfolio,
@@ -56,7 +55,6 @@ def show_page(page_driver,
                              select_save_as_destination=select_save_as_destination,
                              select_tracks=select_tracks,
                              select_tracks_in_folder=select_tracks_in_folder,
-                             authenticate=authenticate,
                              **handlers)
     show_widget(page_driver, main_window)
 
@@ -357,10 +355,9 @@ def test_warn_user_if_export_fails(driver):
 
 
 def test_signals_when_sign_in_menu_item_clicked(driver):
-    account = {"email": "..."}
-    sign_in_signal = ValueMatcherProbe("sign in", account)
+    sign_in_signal = ValueMatcherProbe("sign in")
 
-    _ = show_page(driver, authenticate=lambda on_sign_in: on_sign_in(account), on_sign_in=sign_in_signal.received)
+    _ = show_page(driver, on_sign_in=sign_in_signal.received)
 
     driver.sign_in()
     driver.check(sign_in_signal)

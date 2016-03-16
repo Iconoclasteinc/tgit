@@ -23,6 +23,32 @@ from tgit.signal import Observable
 from tgit.signal import signal
 
 
+def sign_in(login, authenticator):
+    def sign_in_with(email, password):
+        try:
+            user = authenticator.authenticate(email, password)
+            login.authentication_succeeded(user["email"], user["token"], user["permissions"])
+        except Exception as error:
+            login.authentication_failed(error)
+
+    return sign_in_with
+
+
+class Login(metaclass=Observable):
+    login_successful = signal(str)
+    login_failed = signal(Exception)
+
+    def __init__(self, session):
+        self._session = session
+
+    def authentication_succeeded(self, email, token, permissions):
+        self._session.login_as(email, token, permissions)
+        self.login_successful.emit(email)
+
+    def authentication_failed(self, error):
+        self.login_failed.emit(error)
+
+
 class Permission(Enum):
     lookup_isni = "isni.lookup"
     assign_isni = "isni.assign"
@@ -40,6 +66,7 @@ class User:
     def __init__(self, email=None, api_key=None, permissions=None):
         self._email = email
         self._api_key = api_key
+        # todo this should be Permissions, not their values
         self._permissions = permissions
 
     @property
@@ -68,12 +95,10 @@ class Session(metaclass=Observable):
 
     _user = None
 
-    # noinspection PyUnresolvedReferences
     def login_as(self, email, token, permissions):
         self._user = User.registered_as(email, token, permissions)
         self.user_signed_in.emit(self._user)
 
-    # noinspection PyUnresolvedReferences
     def logout(self):
         logged_out, self._user = self._user, None
         self.user_signed_out.emit(logged_out)
@@ -84,4 +109,4 @@ class Session(metaclass=Observable):
 
     @property
     def current_user(self):
-        return self.opened and self._user or User.anonymous()
+        return self._user if self.opened else User.anonymous()

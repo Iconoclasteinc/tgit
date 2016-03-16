@@ -215,21 +215,6 @@ def _add_identifier_to_map(identifier_map, identifier, name):
     return identifier_map
 
 
-def sign_in_to(session, authenticator):
-    def sign_in(email, password, on_success=lambda: None, on_error=lambda error: None):
-        def logging_done(authentication):
-            if authentication.exception():
-                on_error(authentication.exception())
-            else:
-                user = authentication.result()
-                session.login_as(user["email"], user["token"], user["permissions"])
-                on_success()
-
-        authenticator(email, password).add_done_callback(logging_done)
-
-    return sign_in
-
-
 def sign_out_from(session):
     return session.logout
 

@@ -51,9 +51,8 @@ class MainWindow(QMainWindow, HandlerRegistrar):
 
     def __init__(self, session, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
                  create_project_screen, confirm_close, select_export_destination, select_save_as_destination,
-                 select_tracks, select_tracks_in_folder, authenticate, **handlers):
+                 select_tracks, select_tracks_in_folder, **handlers):
         super().__init__()
-        self._authenticate = authenticate
         self._confirm_exit = confirm_exit
         self._show_save_error = show_save_error
         self._show_export_error = show_export_error
@@ -184,7 +183,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
             lambda _: handler(self.tr("mailto:support@tagyourmusic.com?subject=[TGiT] I want more!")))
 
     def on_sign_in(self, handler):
-        self._sign_in_action.triggered.connect(lambda _: self._authenticate(handler))
+        self._sign_in_action.triggered.connect(lambda _: handler())
 
     def on_sign_out(self, handler):
         self._sign_out_action.triggered.connect(lambda _: handler())
