@@ -91,7 +91,7 @@ class WidgetDriver:
         self.is_(match.hidden())
 
     def is_enabled(self, enabled=True):
-        self.is_(enabled and match.enabled() or match.disabled())
+        self.is_(match.enabled() if enabled else match.disabled())
 
     def is_disabled(self, disabled=True):
         self.is_enabled(not disabled)
@@ -173,7 +173,7 @@ class ButtonDriver(WidgetDriver):
         self.is_checked(not unchecked)
 
     def is_checked(self, checked=True):
-        self.is_(checked and match.checked() or match.unchecked())
+        self.is_(match.checked() if checked else match.unchecked())
 
     def has_icon_size(self, matcher):
         self.has(properties.icon_size(), matcher)

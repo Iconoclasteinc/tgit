@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import sip
+import sys
 from collections import namedtuple
 from traceback import format_exception
-import sys
 
 from cute.animatron import Animatron
 from cute.matchers import named, showing_on_screen
@@ -117,8 +117,8 @@ class ApplicationRunner:
         self.tagger.save()
         self.tagger.pause(self.SAVE_DELAY)
 
-    def find_isni_of_main_artist(self):
-        self.tagger.find_isni_of_main_artist()
+    def find_isni_of_main_artist(self, name):
+        self.tagger.find_isni_of_main_artist(name)
         # todo remove and verify in test that album metadata shows the isni
         self.tagger.pause(100)
 

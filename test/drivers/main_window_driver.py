@@ -84,9 +84,9 @@ class MainWindowDriver(WidgetDriver):
         message_box(self).is_active()
         message_box(self).click_ok()
 
-    def find_isni_of_main_artist(self):
+    def find_isni_of_main_artist(self, name):
         project_screen(self).lookup_isni_of_main_artist()
-        isni_lookup_dialog(self).select_first_identity()
+        isni_lookup_dialog(self).select_identity(name)
         isni_lookup_dialog(self).accept()
 
     def shows_welcome_screen(self):

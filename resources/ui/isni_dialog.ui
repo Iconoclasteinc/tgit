@@ -6,9 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>140</height>
+    <width>620</width>
+    <height>300</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>620</width>
+    <height>300</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>620</width>
+    <height>300</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>TGiT</string>
@@ -23,41 +41,38 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1,0">
    <item>
-    <layout class="QHBoxLayout" name="_lookup_container">
+    <layout class="QHBoxLayout" name="_title_container">
      <item>
-      <widget class="QLineEdit" name="_lookup_criteria"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="_lookup_button">
-       <property name="icon">
-        <iconset resource="../resources.qrc">
-         <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
+      <widget class="QLabel" name="_title">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
        </property>
-       <property name="autoDefault">
-        <bool>false</bool>
+       <property name="text">
+        <string>Search for the ISNI of a person or an organization</string>
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QLabel" name="_result_count">
-     <property name="text">
-      <string>Showing 10 of 1000 results</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="_result_container">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetFixedSize</enum>
-     </property>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="_assign_container">
+     <item>
+      <widget class="QProgressIndicator" name="_progress_indicator" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -71,17 +86,21 @@
        </property>
       </spacer>
      </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="_lookup_container">
      <item>
-      <widget class="QLabel" name="_assignation_caption">
-       <property name="text">
-        <string>Can't find the person you're looking for?</string>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="_lookup_criteria"/>
      </item>
      <item>
-      <widget class="QPushButton" name="_assignation_button">
-       <property name="text">
-        <string>Assign a new ISNI</string>
+      <widget class="QPushButton" name="_lookup_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -91,9 +110,32 @@
     </layout>
    </item>
    <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+    <widget class="QLabel" name="_no_result_message">
+     <property name="text">
+      <string>Your query yielded no result.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="_connection_error_message">
+     <property name="text">
+      <string>Could not connect to the ISNI database. Please retry later.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListWidget" name="_result_container">
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideRight</enum>
      </property>
     </widget>
    </item>
@@ -111,6 +153,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QProgressIndicator</class>
+   <extends>QWidget</extends>
+   <header>tgit.ui.widgets.progress_indicator</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources.qrc"/>
  </resources>
@@ -124,22 +174,6 @@
     <hint type="sourcelabel">
      <x>375</x>
      <y>21</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_lookup_criteria</sender>
-   <signal>returnPressed()</signal>
-   <receiver>_trigger_lookup_action</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>182</x>
-     <y>20</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -176,6 +210,22 @@
     <hint type="destinationlabel">
      <x>199</x>
      <y>81</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_lookup_criteria</sender>
+   <signal>returnPressed()</signal>
+   <receiver>_trigger_lookup_action</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>182</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>

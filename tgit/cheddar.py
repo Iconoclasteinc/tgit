@@ -91,8 +91,7 @@ class Cheddar:
 
             return _decode_response(response)
 
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            return executor.submit(request_identities)
+        return self._executor.submit(request_identities)
 
     def assign_identifier(self, name, type_, works, token):
         def assign_identifier():
