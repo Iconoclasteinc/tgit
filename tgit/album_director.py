@@ -145,9 +145,14 @@ def remove_track_from(album):
 
 
 def lookup_isni_using(cheddar, session):
-    def lookup_isni(lead_performer):
-        identities = cheddar.get_identities(lead_performer, session.current_user.api_key)
-        return [IdentityCard(**identity) for identity in identities]
+    def lookup_isni(lead_performer, on_success, on_error):
+        def identities_found(result):
+            try:
+                on_success([IdentityCard(**identity) for identity in result.result()])
+            except Exception as e:
+                on_error(e)
+
+        cheddar.get_identities(lead_performer, session.current_user.api_key).add_done_callback(identities_found)
 
     return lookup_isni
 

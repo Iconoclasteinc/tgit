@@ -387,7 +387,7 @@
         <translation>Si vous ne trouvez pas de correspondance dans la liste suivante, veuillez rafiner votre recherche (seulement les 20 premiers résultats sont affichés)</translation>
     </message>
     <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" line="45"/>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
         <source>Please select from the list of identities</source>
         <translation>Sélectionnez une identité à partir de la liste suivante</translation>
     </message>
@@ -405,14 +405,19 @@
         <translation>&amp;Annuler</translation>
     </message>
     <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" line="99"/>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
         <source>Your query yielded no result.</source>
         <translation>Votre recherche n&apos;a retourné aucun résultat.</translation>
     </message>
     <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" line="105"/>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
         <source>Could not connect to the ISNI database. Please retry later.</source>
         <translation>Impossible de se connecter à la base de données ISNI. Veuillez réessayez plus tard.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>Search for the ISNI of a person or an organization</source>
+        <translation>Rechercher l&apos;ISNI d&apos;une personne ou organisation</translation>
     </message>
 </context>
 <context>

@@ -83,7 +83,7 @@ class QueryResultMatcher(BaseMatcher):
         self._result_matcher = wrap_matcher(matcher)
 
     def _matches(self, widget):
-        return widget and self._result_matcher.matches(self._query(widget))
+        return widget is not None and self._result_matcher.matches(self._query(widget))
 
     def describe_to(self, description):
         description.append_text("with ") \

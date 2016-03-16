@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 from hamcrest import starts_with
 
 from cute.matchers import named, with_list_item_text
@@ -31,13 +32,17 @@ def isni_lookup_dialog(parent):
 
 class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
     def change_query(self, query):
-        self.lineEdit(named("_lookup_criteria")).change_text(query)
+        self.lineEdit(named("_lookup_criteria")).replace_all_text(query)
 
     def lookup(self, query):
         self.change_query(query)
         self.button(named("_lookup_button")).click()
 
+    def shows_results_list(self, enabled=True):
+        self.list_view(named("_result_container")).is_enabled(enabled)
+
     def displays_result(self, full_name, date_of_birth, date_of_death, work):
+        self.shows_results_list()
         self.list_view(named("_result_container")).has_item(with_list_item_text(
             "{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
 
@@ -49,9 +54,6 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
 
     def has_lookup_button_enabled(self, enabled=True):
         self.button(named("_lookup_button")).is_enabled(enabled=enabled)
-
-    def select_first_identity(self):
-        self.radio(named("_identity_0")).click()
 
     def accept(self):
         self._button_box().click_ok()

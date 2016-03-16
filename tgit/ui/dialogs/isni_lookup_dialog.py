@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QListWidgetItem
 
 from tgit.ui.helpers.ui_file import UIFile
@@ -32,7 +32,9 @@ def make_isni_lookup_dialog(parent, **handlers):
 
 
 class ISNILookupDialog(QDialog, UIFile):
-    _selected_identity = None
+    _closed = False
+    _isni_lookup_success = pyqtSignal(list)
+    _isni_lookup_error = pyqtSignal(Exception)
 
     def __init__(self, parent):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
@@ -44,6 +46,7 @@ class ISNILookupDialog(QDialog, UIFile):
         self.addAction(self._trigger_lookup_action)
         self._hide_messages()
         self._enable_ok_button(enabled=False)
+        self.finished.connect(self._finished)
 
         self._result_container.currentRowChanged.connect(lambda row: self._enable_ok_button(enabled=row > -1))
         self._lookup_criteria.textChanged.connect(self._enable_or_disable_lookup_button)
@@ -52,16 +55,31 @@ class ISNILookupDialog(QDialog, UIFile):
         self.accepted.connect(lambda: handler(self._result_container.currentItem().data(Qt.UserRole).id))
 
     def on_isni_lookup(self, handler):
-        def lookup_isni():
-            try:
-                self._progress_indicator.start()
-                identities = handler(self._lookup_criteria.text())
-                self._progress_indicator.stop()
-                self._clear_results()
-                self._display_results(identities)
-            except:
-                self._display_connection_error()
+        def isni_lookup_success(identities):
+            self._progress_indicator.stop()
+            self._result_container.setEnabled(True)
+            self._clear_results()
+            self._display_results(identities)
 
+        def isni_lookup_error(_):
+            self._display_connection_error()
+
+        def on_success(identities):
+            if not self._closed:
+                self._isni_lookup_success.emit(identities)
+
+        def on_error(error):
+            if not self._closed:
+                self._isni_lookup_error.emit(error)
+
+        def lookup_isni():
+            self._progress_indicator.start()
+            self._result_container.setDisabled(True)
+            self._result_container.setCurrentRow(-1)
+            handler(self._lookup_criteria.text(), on_success, on_error)
+
+        self._isni_lookup_success.connect(isni_lookup_success)
+        self._isni_lookup_error.connect(isni_lookup_error)
         self._trigger_lookup_action.triggered.connect(lookup_isni)
 
     def lookup(self, query):
@@ -117,3 +135,6 @@ class ISNILookupDialog(QDialog, UIFile):
         label.append(" - ")
         label.append(identity.longest_title)
         return "".join(label)
+
+    def _finished(self, *_):
+        self._closed = True
