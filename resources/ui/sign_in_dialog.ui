@@ -17,12 +17,6 @@
   <property name="windowTitle">
    <string>TGiT</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QDialog[style=QMacStyle] {
-	min-height: 215px;
-}
-</string>
-  </property>
   <property name="modal">
    <bool>true</bool>
   </property>

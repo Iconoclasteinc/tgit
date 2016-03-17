@@ -419,6 +419,11 @@
         <source>Search for the ISNI of a person or an organization</source>
         <translation>Rechercher l&apos;ISNI d&apos;une personne ou organisation</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>Lookup</source>
+        <translation>Rechercher</translation>
+    </message>
 </context>
 <context>
     <name>main_window</name>

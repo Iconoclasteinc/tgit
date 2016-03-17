@@ -32,7 +32,14 @@
    <string>TGiT</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">#_no_result_message,
+   <string notr="true">QDialog[style=QMacStyle] {
+    min-height: 385px;
+    min-width: 680px;
+    max-height: 385px;
+    max-width: 680px;
+}
+
+#_no_result_message,
 #_connection_error_message {
     color: #F25C0A;
 }
@@ -94,16 +101,22 @@
       <widget class="QLineEdit" name="_lookup_criteria"/>
      </item>
      <item>
-      <widget class="QPushButton" name="_lookup_button">
+      <widget class="QToolButton" name="_lookup_button">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Lookup</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(midlight);
+}</string>
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
          <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -125,6 +138,15 @@
    </item>
    <item>
     <widget class="QListWidget" name="_result_container">
+     <property name="styleSheet">
+      <string notr="true">QListView[style=QMacStyle] {
+    alternate-background-color: #F2F2F2;
+}
+
+QListView[style=QMacStyle]::item {
+    min-height: 24px;
+}</string>
+     </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
