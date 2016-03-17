@@ -18,13 +18,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import operator
 
-import requests
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
-from PyQt5.QtWidgets import QWidget, QApplication, QMenu
+from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
 from tgit.auth import Permission
-from tgit.cheddar import AuthenticationError, InsufficientInformationError
 from tgit.countries import COUNTRIES
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
@@ -34,16 +32,8 @@ from tgit.ui.helpers.ui_file import UIFile
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_project_edition_page(album, session, identity_lookup, track_list_tab, select_picture, review_assignation,
-                              show_isni_assignation_failed, show_cheddar_connection_failed,
-                              show_cheddar_authentication_failed, show_permission_denied, **handlers):
-    page = ProjectEditionPage(track_list_tab=track_list_tab(album),
-                              select_picture=select_picture,
-                              review_assignation=review_assignation,
-                              show_isni_assignation_failed=show_isni_assignation_failed,
-                              show_cheddar_connection_failed=show_cheddar_connection_failed,
-                              show_cheddar_authentication_failed=show_cheddar_authentication_failed,
-                              show_permission_denied=show_permission_denied)
+def make_project_edition_page(album, session, identity_lookup, track_list_tab, select_picture, **handlers):
+    page = ProjectEditionPage(track_list_tab=track_list_tab(album), select_picture=select_picture)
 
     for name, handler in handlers.items():
         getattr(page, name)(handler)
@@ -71,24 +61,14 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 200, 200
 
-    def __init__(self, track_list_tab, select_picture, review_assignation, show_isni_assignation_failed,
-                 show_cheddar_connection_failed, show_cheddar_authentication_failed, show_permission_denied):
+    def __init__(self, track_list_tab, select_picture):
         super().__init__()
-        self._show_cheddar_authentication_failed = show_cheddar_authentication_failed
-        self._review_assignation = review_assignation
-        self._show_cheddar_connection_failed = show_cheddar_connection_failed
-        self._show_isni_assignation_failed = show_isni_assignation_failed
-        self._show_permission_denied = show_permission_denied
         self._select_picture = select_picture
         self._setup_ui(track_list_tab)
 
     def _setup_ui(self, track_list_tab):
         self._load(":/ui/project_page.ui")
         self._fill_with_countries(self._main_artist_region)
-
-        menu = QMenu()
-        menu.addAction(self._main_artist_isni_assign_action)
-        self._main_artist_isni_actions_button.setMenu(menu)
 
         self._compilation.clicked.connect(self._update_isni_menu)
         self._main_artist.textChanged.connect(self._update_isni_menu)
@@ -123,27 +103,6 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
     def selected_identity(self, identity):
         self._main_artist_isni.setFocus(Qt.OtherFocusReason)
         self._main_artist_isni.setText(identity.id)
-
-    def on_isni_assign(self, on_isni_assign):
-        def start_waiting(main_artist_type):
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            try:
-                on_isni_assign(main_artist_type, on_assign_success)
-            except requests.ConnectionError:
-                self._show_cheddar_connection_failed()
-            except AuthenticationError:
-                self._show_cheddar_authentication_failed()
-            except InsufficientInformationError as e:
-                self._show_isni_assignation_failed(str(e))
-            finally:
-                QApplication.restoreOverrideCursor()
-
-        def on_assign_success(identity):
-            self._main_artist_isni.setFocus(Qt.OtherFocusReason)
-            self._main_artist_isni.setText(identity.id)
-            QApplication.restoreOverrideCursor()
-
-        self._main_artist_isni_assign_action.triggered.connect(lambda _: self._review_assignation(start_waiting))
 
     def on_remove_picture(self, on_remove_picture):
         self._remove_picture_button.clicked.connect(lambda _: on_remove_picture())
@@ -232,7 +191,6 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
         can_lookup_or_assign = not self._compilation.isChecked() and not _is_blank(self._main_artist.text())
         self._main_artist_isni_actions_button.setEnabled(self._isni_lookup and can_lookup_or_assign)
-        self._main_artist_isni_assign_action.setEnabled(self._isni_assign and can_lookup_or_assign)
 
 
 class MusicianTable(QWidget, UIFile):

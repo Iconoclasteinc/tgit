@@ -76,21 +76,16 @@ class Pages:
             session=self._session,
             identity_lookup=self._identity_lookup,
             track_list_tab=self._track_list_tab,
-            review_assignation=self._dialogs.review_isni_assignation_in(album, True),
-            show_isni_assignation_failed=self._messages.isni_assignation_failed,
-            show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
-            show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed,
-            show_permission_denied=self._messages.permission_denied,
             select_picture=self._dialogs.select_cover,
             on_select_picture=director.change_cover_of(album),
             on_isni_changed=director.add_isni_to(album),
             on_isni_local_lookup=director.lookup_isni_in(album),
             on_identity_selection=self._isni_dialog,
-            on_isni_assign=director.assign_isni_to_main_artist_using(self._cheddar, self._session, album),
             on_remove_picture=director.remove_album_cover_from(album),
             on_metadata_changed=director.update_album_from(album))
 
-    def _track_page_for(self, album):
+    @staticmethod
+    def _track_page_for(album):
         def track_page(track):
             return make_track_edition_page(
                 album=album,
@@ -98,11 +93,7 @@ class Pages:
                 on_track_changed=director.update_track(track),
                 on_isni_local_lookup=director.lookup_isni_in(album),
                 on_ipi_local_lookup=director.lookup_ipi_in(album),
-                on_ipi_changed=director.add_ipi_to(album),
-                review_assignation=self._dialogs.review_isni_assignation_in(album),
-                show_isni_assignation_failed=self._messages.isni_assignation_failed,
-                show_cheddar_connection_failed=self._messages.cheddar_connection_failed,
-                show_cheddar_authentication_failed=self._messages.cheddar_authentication_failed)
+                on_ipi_changed=director.add_ipi_to(album))
 
         return track_page
 

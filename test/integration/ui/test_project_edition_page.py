@@ -1,11 +1,10 @@
 import timeit
-import types
 
 import pytest
-import requests
+
 from PyQt5.QtCore import QByteArray
 
-from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
+from hamcrest import has_entries, assert_that, less_than, instance_of, contains
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
@@ -16,7 +15,6 @@ from test.util import resources, builders as build
 from test.util.builders import make_album, make_anonymous_session, make_registered_session
 from tgit import fs
 from tgit.auth import Permission
-from tgit.cheddar import AuthenticationError, InsufficientInformationError
 from tgit.identity import IdentityCard, IdentityLookup
 from tgit.metadata import Image
 from tgit.ui.pages.project_edition_page import make_project_edition_page, ProjectEditionPage
@@ -48,21 +46,11 @@ def show_page(page_driver,
               session=make_anonymous_session(),
               identity_lookup=IdentityLookup(),
               select_picture=ignore,
-              review_assignation=ignore,
-              show_isni_assignation_failed=ignore,
-              show_cheddar_connection_failed=ignore,
-              show_cheddar_authentication_failed=ignore,
-              show_permission_denied=ignore,
               **handlers):
     page = make_project_edition_page(album, session,
                                      identity_lookup=identity_lookup,
                                      track_list_tab=create_track_list_tab,
                                      select_picture=select_picture,
-                                     show_isni_assignation_failed=show_isni_assignation_failed,
-                                     show_cheddar_connection_failed=show_cheddar_connection_failed,
-                                     show_cheddar_authentication_failed=show_cheddar_authentication_failed,
-                                     show_permission_denied=show_permission_denied,
-                                     review_assignation=review_assignation,
                                      **handlers)
     show_widget(page_driver, page)
     return page
@@ -161,11 +149,6 @@ def test_disables_isni_lookup_when_main_artist_is_blank(driver):
     driver.shows_main_artist_isni_lookup_button(disabled=True)
 
 
-def test_disables_isni_assign_by_default(driver):
-    _ = show_page(driver, make_album(lead_performer="     "))
-    driver.shows_main_artist_isni_assign_action(disabled=True)
-
-
 def test_signals_when_picture_selected(driver):
     album = make_album()
     signal = ValueMatcherProbe("select picture", "front-cover.jpg")
@@ -240,91 +223,6 @@ def test_signals_found_isni_on_isni_lookup(driver):
                   on_isni_changed=isni_changed_signal.received)
 
     identity_lookup.identity_selected(IdentityCard(id="0000000123456789", type="individual"))
-    driver.confirm_isni()
-    driver.check(isni_changed_signal)
-
-
-def test_signals_when_assign_isni_button_clicked(driver):
-    assign_isni_signal = MultiValueMatcherProbe("assign ISNI", contains(
-        equal_to("individual"),
-        instance_of(types.FunctionType)))
-
-    _ = show_page(driver, make_album(),
-                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
-                  review_assignation=lambda on_review: on_review("individual"),
-                  on_isni_assign=assign_isni_signal.received)
-
-    driver.change_main_artist("Joel Miller")
-    driver.assign_isni_to_main_artist()
-    driver.check(assign_isni_signal)
-
-
-def test_shows_connection_failed_error_on_isni_assignation(driver):
-    show_error_signal = ValueMatcherProbe("ISNI assignation exception")
-
-    _ = show_page(driver, make_album(),
-                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
-                  show_cheddar_connection_failed=show_error_signal.received,
-                  review_assignation=lambda on_review: on_review(""),
-                  on_isni_assign=lambda *_: raise_(requests.ConnectionError()))
-
-    driver.change_main_artist("Joel Miller")
-    driver.assign_isni_to_main_artist()
-    driver.check(show_error_signal)
-
-
-def test_shows_assignation_failed_error_on_isni_assignation(driver):
-    show_error_signal = ValueMatcherProbe("ISNI assignation exception", "insufficient information")
-
-    _ = show_page(driver, make_album(),
-                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
-                  show_isni_assignation_failed=show_error_signal.received,
-                  review_assignation=lambda on_review: on_review(""),
-                  on_isni_assign=lambda *_: raise_(InsufficientInformationError("insufficient information")))
-
-    driver.change_main_artist("Joel Miller")
-    driver.assign_isni_to_main_artist()
-    driver.check(show_error_signal)
-
-
-def test_shows_authentication_failed_error_on_isni_assignation(driver):
-    show_error_signal = ValueMatcherProbe("show authentication failed")
-
-    _ = show_page(driver, make_album(),
-                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
-                  show_cheddar_authentication_failed=show_error_signal.received,
-                  review_assignation=lambda on_review: on_review(""),
-                  on_isni_assign=lambda *_: raise_(AuthenticationError()))
-
-    driver.change_main_artist("Joel Miller")
-    driver.assign_isni_to_main_artist()
-    driver.check(show_error_signal)
-
-
-def test_shows_assigned_isni_on_isni_assignation(driver):
-    _ = show_page(driver, make_album(),
-                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
-                  review_assignation=lambda on_review: on_review(""),
-                  on_isni_assign=lambda _, callback: callback(
-                      IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
-
-    driver.change_main_artist("Joel Miller")
-    driver.assign_isni_to_main_artist()
-    driver.shows_main_artist_isni("0000000123456789")
-
-
-def test_signals_assigned_isni_on_isni_assignation(driver):
-    isni_changed_signal = MultiValueMatcherProbe("isni changed", contains("Joel Miller", "0000000123456789"))
-
-    _ = show_page(driver, make_album(),
-                  session=(make_registered_session(permissions=[Permission.assign_isni.value])),
-                  on_isni_changed=isni_changed_signal.received,
-                  review_assignation=lambda on_review: on_review(""),
-                  on_isni_assign=lambda _, callback: callback(
-                      IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
-
-    driver.change_main_artist("Joel Miller")
-    driver.assign_isni_to_main_artist()
     driver.confirm_isni()
     driver.check(isni_changed_signal)
 

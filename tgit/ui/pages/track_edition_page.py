@@ -18,13 +18,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import operator
 
-import requests
-from PyQt5.QtCore import Qt, pyqtSignal, QDate
-from PyQt5.QtWidgets import QWidget, QMenu, QApplication
+from PyQt5.QtCore import pyqtSignal, QDate
+from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
-from tgit.cheddar import AuthenticationError
-from tgit.cheddar import InsufficientInformationError
 from tgit.countries import COUNTRIES
 from tgit.genres import GENRES
 from tgit.languages import LANGUAGES
@@ -34,10 +31,8 @@ from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.pages.project_edition_page import ISO_8601_FORMAT
 
 
-def make_track_edition_page(album, track, review_assignation, show_isni_assignation_failed,
-                            show_cheddar_connection_failed, show_cheddar_authentication_failed, **handlers):
-    page = TrackEditionPage(review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed,
-                            show_cheddar_authentication_failed)
+def make_track_edition_page(album, track, **handlers):
+    page = TrackEditionPage()
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -59,21 +54,11 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     _cover = None
 
-    def __init__(self, review_assignation, show_isni_assignation_failed, show_cheddar_connection_failed,
-                 show_cheddar_authentication_failed):
+    def __init__(self):
         super().__init__()
-        self._show_cheddar_authentication_failed = show_cheddar_authentication_failed
-        self._show_cheddar_connection_failed = show_cheddar_connection_failed
-        self._show_isni_assignation_failed = show_isni_assignation_failed
-        self._review_assignation = review_assignation
         self._setup_ui()
 
     def _setup_ui(self):
-        def add_action_to_button(action, button):
-            menu = QMenu()
-            menu.addAction(action)
-            button.setMenu(menu)
-
         def fill_with_countries(combobox):
             for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
                 combobox.addItem(name, code)
@@ -85,10 +70,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                 combobox.addItem(self.tr(name), code)
 
         self._load(":/ui/track_page.ui")
-
-        add_action_to_button(self._lyricist_isni_assign_action, self._lyricist_isni_actions_button)
-        add_action_to_button(self._composer_isni_assign_action, self._composer_isni_actions_button)
-        add_action_to_button(self._publisher_isni_assign_action, self._publisher_isni_actions_button)
 
         self._genre.addItems(sorted(GENRES))
         fill_with_languages(self._language)
@@ -126,29 +107,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._mixer.editingFinished.connect(handle)
         self._genre.activated.connect(handle)
         self._genre.lineEdit().textEdited.connect(handle)
-
-    def on_lyricist_isni_assign(self, handler):
-        # noinspection PyArgumentList
-        def start_waiting():
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            try:
-                handler(on_assign_success)
-            except requests.ConnectionError:
-                self._show_cheddar_connection_failed()
-            except AuthenticationError:
-                self._show_cheddar_authentication_failed()
-            except InsufficientInformationError as e:
-                self._show_isni_assignation_failed(str(e))
-            finally:
-                QApplication.restoreOverrideCursor()
-
-        # noinspection PyArgumentList
-        def on_assign_success(identity):
-            self._lyricist_isni.setFocus(Qt.OtherFocusReason)
-            self._lyricist_isni.setText(identity.id)
-            QApplication.restoreOverrideCursor()
-
-        self._lyricist_isni_assign_action.triggered.connect(lambda _: self._review_assignation(start_waiting))
 
     def on_isni_local_lookup(self, handler):
         self._lyricist.textEdited.connect(lambda text: self._lyricist_isni.setText(handler(text)))
