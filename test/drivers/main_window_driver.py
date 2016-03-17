@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from PyQt5.QtWidgets import QDialog
+
 from cute import gestures
 from cute.widgets import WidgetDriver
 from test.drivers.save_as_dialog_driver import save_as_dialog
@@ -149,6 +151,7 @@ class MainWindowDriver(WidgetDriver):
     def sign_in_as(self, username, password):
         self.sign_in()
         sign_in_dialog(self).sign_in_with(username, password)
+        WidgetDriver.find_none(self, QDialog).exists()
 
     def is_signed_in_as(self, email):
         menu_bar(self).account.shows_signed_in_user(email)

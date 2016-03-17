@@ -3,7 +3,8 @@ import pytest
 pytestmark = pytest.mark.feature
 
 
-def test_assigning_an_isni_to_the_lead_performer(app, recordings, workspace, platform):
+@pytest.mark.skip
+def test_assigning_an_isni_to_the_main_artist(app, recordings, workspace, platform):
     track = recordings.add_mp3(track_title="Salsa Coltrane", release_name="Honeycomb", lead_performer="Joel Miller")
     platform.token_queue = iter(["TheSuperToken"])
     platform.allowed_bearer_token = "TheSuperToken"

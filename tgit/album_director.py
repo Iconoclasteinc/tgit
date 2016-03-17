@@ -144,19 +144,6 @@ def remove_track_from(album):
     return album.remove_track
 
 
-def lookup_isni_using(cheddar, session):
-    def lookup_isni(lead_performer, on_success, on_error):
-        def identities_found(result):
-            try:
-                on_success([IdentityCard(**identity) for identity in result.result()])
-            except Exception as e:
-                on_error(e)
-
-        cheddar.get_identities(lead_performer, session.current_user.api_key).add_done_callback(identities_found)
-
-    return lookup_isni
-
-
 def add_isni_to(album):
     def add_isni(name, isni):
         album.isnis = _add_identifier_to_map(album.isnis, isni, name)

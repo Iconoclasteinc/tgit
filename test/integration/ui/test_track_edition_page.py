@@ -1,19 +1,16 @@
-import types
 from datetime import timedelta
 
 import pytest
-import requests
-from hamcrest import has_entries, equal_to, instance_of, assert_that, has_key, is_not, contains
+
+from hamcrest import has_entries, has_key, is_not, contains
 
 from cute.matchers import named
-from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
+from cute.probes import MultiValueMatcherProbe, KeywordsValueMatcherProbe
 from cute.widgets import window
 from test.drivers import TrackEditionPageDriver
-from test.integration.ui import show_widget, ignore, raise_
+from test.integration.ui import show_widget
 from test.util import builders as build
 from test.util.builders import make_album, make_track
-from tgit.cheddar import InsufficientInformationError, AuthenticationError
-from tgit.identity import IdentityCard
 from tgit.ui.pages.track_edition_page import make_track_edition_page, TrackEditionPage
 
 pytestmark = pytest.mark.ui
@@ -26,11 +23,8 @@ def driver(qt, prober, automaton):
     page_driver.close()
 
 
-def show_page(page_driver, album, track, review_assignation=ignore,
-              show_isni_assignation_failed=ignore, show_cheddar_connection_failed=ignore,
-              show_cheddar_authentication_failed=ignore, **handlers):
-    page = make_track_edition_page(album, track, review_assignation, show_isni_assignation_failed,
-                                   show_cheddar_connection_failed, show_cheddar_authentication_failed, **handlers)
+def show_page(page_driver, album, track, **handlers):
+    page = make_track_edition_page(album, track, **handlers)
     show_widget(page_driver, page)
     return page
 
@@ -282,97 +276,6 @@ def test_omits_software_notice_if_tagging_date_malformed(driver):
     album = build.album(tracks=[track])
     _ = show_page(driver, album, track)
     driver.shows_software_notice("Tagged with TGiT v1.0")
-
-
-def test_signals_when_assign_lyricist_isni_button_clicked(driver):
-    assign_isni_signal = ValueMatcherProbe("assign ISNI", instance_of(types.FunctionType))
-
-    track = build.track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(driver, album,
-                  track,
-                  review_assignation=lambda on_review: on_review(),
-                  on_lyricist_isni_assign=assign_isni_signal.received)
-
-    driver.assign_isni_to_lyricist()
-    driver.check(assign_isni_signal)
-
-
-def test_shows_connection_failed_error_on_lyricist_isni_assignation(driver):
-    show_error_signal = ValueMatcherProbe("ISNI assignation exception")
-
-    track = build.track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(driver, album, track,
-                  show_cheddar_connection_failed=show_error_signal.received,
-                  review_assignation=lambda on_review: on_review(),
-                  on_lyricist_isni_assign=lambda *_: raise_(requests.ConnectionError()))
-
-    driver.assign_isni_to_lyricist()
-    driver.check(show_error_signal)
-
-
-def test_shows_assignation_failed_error_on_lyricist_isni_assignation(driver):
-    show_error_signal = ValueMatcherProbe("ISNI assignation exception", "insufficient information")
-
-    track = build.track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(driver, album, track,
-                  show_isni_assignation_failed=show_error_signal.received,
-                  review_assignation=lambda on_review: on_review(),
-                  on_lyricist_isni_assign=lambda *_: raise_(InsufficientInformationError("insufficient information")))
-
-    driver.assign_isni_to_lyricist()
-    driver.check(show_error_signal)
-
-
-def test_shows_authentication_failed_error_on_lyricist_isni_assignation(driver):
-    show_error_signal = ValueMatcherProbe("ISNI authentication")
-
-    track = build.track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(driver, album, track,
-                  show_cheddar_authentication_failed=show_error_signal.received,
-                  review_assignation=lambda on_review: on_review(),
-                  on_lyricist_isni_assign=lambda *_: raise_(AuthenticationError()))
-
-    driver.assign_isni_to_lyricist()
-    driver.check(show_error_signal)
-
-
-def test_shows_assigned_isni_on_lyricist_isni_assignation(driver):
-    track = build.track()
-    album = make_album(tracks=[track])
-
-    page = show_page(driver, album, track,
-                     review_assignation=lambda on_review: on_review(),
-                     on_lyricist_isni_assign=lambda callback: callback(
-                         IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
-
-    driver.assign_isni_to_lyricist()
-    assert_that(page._lyricist_isni.text(), equal_to("0000000123456789"))
-
-
-def test_signals_assigned_isni_on_isni_assignation(driver):
-    track = build.track()
-    album = make_album(tracks=[track])
-
-    metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
-    _ = show_page(driver, album, track,
-                  on_track_changed=metadata_changed_signal.received,
-                  review_assignation=lambda on_review: on_review(),
-                  on_lyricist_isni_assign=lambda callback: callback(
-                      IdentityCard(id="0000000123456789", type=IdentityCard.INDIVIDUAL)))
-
-    metadata_changed_signal.expect(has_entries(lyricist="Joel Miller"))
-    driver.change_lyricist("Joel Miller")
-    driver.assign_isni_to_lyricist()
-    driver.confirm_lyricist_isni()
-    driver.check(metadata_changed_signal)
 
 
 def test_updates_isni_when_lyricist_text_change(driver):

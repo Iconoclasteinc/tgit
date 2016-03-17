@@ -4,12 +4,11 @@ from concurrent.futures import Future
 import pytest
 from flexmock import flexmock as mock
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, empty, has_key, has_property,
-                      match_equality, instance_of)
+                      match_equality)
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from cute.prober import PollingProber
 from cute.probes import ValueMatcherProbe
-from test.integration.ui import ignore
 from test.util import builders as build, resources, doubles
 from test.util.builders import make_album, make_track, make_registered_session
 from test.util.workspace import AlbumWorkspace
@@ -209,51 +208,6 @@ def test_signs_user_out():
     session = make_registered_session("...", "...")
     director.sign_out_from(session)()
     assert_that(session.current_user.email, none())
-
-
-def test_returns_list_of_identities_when_isni_found_in_registry(prober):
-    class FakeCheddar:
-        @staticmethod
-        def get_identities(phrase, token):
-            future = Future()
-            if token == "secret" and phrase == "Rebecca Ann Maloy":
-                future.set_result([{"id": "0000000115677274", "type": "individual", "works": []}])
-            else:
-                future.set_result([])
-            return future
-
-    success_signal = ValueMatcherProbe("The identities", contains(has_property("id", "0000000115677274")))
-    director.lookup_isni_using(FakeCheddar(), make_registered_session(token="secret"))("Rebecca Ann Maloy",
-                                                                                       success_signal.received,
-                                                                                       ignore)
-    prober.check(success_signal)
-
-
-def test_returns_empty_list_when_isni_is_not_found_in_registry(prober):
-    class FakeCheddar:
-        @staticmethod
-        def get_identities(*_):
-            future = Future()
-            future.set_result([])
-            return future
-
-    success_signal = ValueMatcherProbe("The identities", empty())
-    director.lookup_isni_using(FakeCheddar(), make_registered_session())("Rebecca Ann Maloy", success_signal.received,
-                                                                         ignore)
-    prober.check(success_signal)
-
-
-def test_calls_error_callback_when_cheddar_raises_an_exception(prober):
-    class FakeCheddar:
-        @staticmethod
-        def get_identities(*_):
-            future = Future()
-            future.set_exception(Exception())
-            return future
-
-    signal = ValueMatcherProbe("An error", instance_of(Exception))
-    director.lookup_isni_using(FakeCheddar(), make_registered_session())("Rebecca Ann Maloy", ignore, signal.received)
-    prober.check(signal)
 
 
 def test_updates_album_metadata():

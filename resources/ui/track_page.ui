@@ -800,9 +800,6 @@ QLabel[style=QMacStyle] {
                <iconset resource="../resources.qrc">
                 <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
               </property>
-              <property name="popupMode">
-               <enum>QToolButton::MenuButtonPopup</enum>
-              </property>
              </widget>
             </item>
             <item>
@@ -965,9 +962,6 @@ QLabel[style=QMacStyle] {
                <iconset resource="../resources.qrc">
                 <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
               </property>
-              <property name="popupMode">
-               <enum>QToolButton::MenuButtonPopup</enum>
-              </property>
              </widget>
             </item>
             <item>
@@ -1129,9 +1123,6 @@ QLabel[style=QMacStyle] {
               <property name="icon">
                <iconset resource="../resources.qrc">
                 <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
-              </property>
-              <property name="popupMode">
-               <enum>QToolButton::MenuButtonPopup</enum>
               </property>
              </widget>
             </item>
@@ -1434,30 +1425,6 @@ QLabel[style=QMacStyle] {
     </widget>
    </item>
   </layout>
-  <action name="_lyricist_isni_assign_action">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Assign</string>
-   </property>
-  </action>
-  <action name="_composer_isni_assign_action">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Assign</string>
-   </property>
-  </action>
-  <action name="_publisher_isni_assign_action">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Assign</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>

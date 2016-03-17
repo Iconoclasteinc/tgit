@@ -38,28 +38,40 @@ def test_raises_authentication_error_if_credentials_are_invalid(cheddar):
 
 def test_returns_unauthorized_when_getting_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    identities = cheddar.get_identities("reb an mal", "...")
-    assert_that(identities.exception(), instance_of(AuthenticationError), "Authentication error.")
+
+    class Identities:
+        def __call__(self, *args, **_):
+            assert_that(args[0], instance_of(AuthenticationError), "Authentication error.")
+    cheddar.get_identities("reb an mal", "...").failed(Identities())
 
 
 def test_raises_system_error_on_remote_server_error_when_getting_identities(cheddar, platform):
     platform.response_code_queue = [503]
     platform.allowed_bearer_token = "token"
-    identities = cheddar.get_identities("...", "token")
-    assert_that(identities.exception(), instance_of(requests.exceptions.ConnectionError), "Connection error.")
+
+    class Identities:
+        def __call__(self, *args, **_):
+            assert_that(args[0], instance_of(requests.exceptions.ConnectionError), "Connection error.")
+    cheddar.get_identities("...", "token").failed(Identities())
 
 
 def test_raises_insufficient_information_error_when_getting_identities(cheddar, platform):
     platform.response_code_queue = [422]
     platform.allowed_bearer_token = "token"
-    identities = cheddar.get_identities("...", "token")
-    assert_that(identities.exception(), instance_of(InsufficientInformationError), "Insufficient information error.")
+
+    class Identities:
+        def __call__(self, *args, **_):
+            assert_that(args[0], instance_of(InsufficientInformationError), "Insufficient information error.")
+    cheddar.get_identities("...", "token").failed(Identities())
 
 
 def test_returns_empty_array_of_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    identities = cheddar.get_identities("reb an mal", "token").result()
-    assert_that(identities, empty())
+
+    class Identities:
+        def __call__(self, *args, **_):
+            assert_that(args[0], empty())
+    cheddar.get_identities("reb an mal", "token").success(Identities())
 
 
 def test_returns_array_of_identities(cheddar, platform):
@@ -76,16 +88,19 @@ def test_returns_array_of_identities(cheddar, platform):
         ]
     }
 
-    identities = cheddar.get_identities("reb an mal", "token")
-    assert_that(identities.result(), contains(
-        has_entries(id="0000000115677274",
-                    firstName="Rebecca Ann",
-                    lastName="Maloy",
-                    dateOfBirth="1980",
-                    dateOfDeath="",
-                    works=contains(has_entries(
-                        title="Music and meaning in old Hispanic lenten chants psalmi, "
-                              "threni and the Easter vigil canticles")))))
+    class Identities:
+        def __call__(self, *args, **_):
+            assert_that(args[0], contains(
+                has_entries(id="0000000115677274",
+                            firstName="Rebecca Ann",
+                            lastName="Maloy",
+                            dateOfBirth="1980",
+                            dateOfDeath="",
+                            works=contains(has_entries(
+                                title="Music and meaning in old Hispanic lenten chants psalmi, "
+                                      "threni and the Easter vigil canticles")))))
+
+    cheddar.get_identities("reb an mal", "token").success(Identities())
 
 
 def test_returns_unauthorized_when_assigning_an_identifier(cheddar):
@@ -134,8 +149,11 @@ def test_returns_identity_of_newly_assigned_identifier(cheddar, platform):
 def test_raises_permission_denied_error_on_402(cheddar, platform):
     platform.response_code_queue = [402]
     platform.allowed_bearer_token = "token"
-    identities = cheddar.get_identities("...", "token")
-    assert_that(identities.exception(), instance_of(PermissionDeniedError), "Permission denied error.")
+
+    class Identities:
+        def __call__(self, *args, **_):
+            assert_that(args[0], instance_of(PermissionDeniedError), "Permission denied error.")
+    cheddar.get_identities("...", "token").failed(Identities())
 
 
 def wait_for_completion(future):

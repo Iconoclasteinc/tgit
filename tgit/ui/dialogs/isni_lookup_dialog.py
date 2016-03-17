@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # TGiT, Music Tagger for Professionals
 # Copyright (C) 2013 Iconoclaste Musique Inc.
 #
@@ -20,25 +18,33 @@
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QListWidgetItem
 
+from tgit.identity import IdentityCard
+from tgit.signal import MultiSubscription
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_isni_lookup_dialog(parent, **handlers):
-    dialog = ISNILookupDialog(parent)
-    for name, handler in handlers.items():
-        getattr(dialog, name)(handler)
+def make_isni_lookup_dialog(parent, identity_lookup, delete_on_close=True, **handlers):
+    dialog = ISNILookupDialog(parent, delete_on_close)
+
+    subscriptions = MultiSubscription()
+    subscriptions += identity_lookup.identities_available.subscribe(dialog.display_identities)
+    subscriptions += identity_lookup.failed.subscribe(dialog.lookup_failed)
+
+    if "on_lookup" in handlers:
+        dialog.on_lookup.connect(handlers["on_lookup"])
+    dialog.on_selected.connect(identity_lookup.identity_selected)
+    dialog.finished.connect(lambda accepted: subscriptions.cancel())
 
     return dialog
 
 
 class ISNILookupDialog(QDialog, UIFile):
-    _closed = False
-    _isni_lookup_success = pyqtSignal(list)
-    _isni_lookup_error = pyqtSignal(Exception)
+    on_lookup = pyqtSignal(str)
+    on_selected = pyqtSignal(IdentityCard)
 
-    def __init__(self, parent):
+    def __init__(self, parent, delete_on_close=True):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WA_DeleteOnClose, delete_on_close)
         self._setup_ui()
 
     def _setup_ui(self):
@@ -46,41 +52,27 @@ class ISNILookupDialog(QDialog, UIFile):
         self.addAction(self._trigger_lookup_action)
         self._hide_messages()
         self._enable_ok_button(enabled=False)
-        self.finished.connect(self._finished)
 
         self._result_container.currentRowChanged.connect(lambda row: self._enable_ok_button(enabled=row > -1))
         self._lookup_criteria.textChanged.connect(self._enable_or_disable_lookup_button)
+        self._trigger_lookup_action.triggered.connect(self._launch_isni_lookup)
+        self.accepted.connect(self._identity_selected)
 
-    def on_isni_selected(self, handler):
-        self.accepted.connect(lambda: handler(self._result_container.currentItem().data(Qt.UserRole).id))
+    def display_identities(self, identities):
+        self._progress_indicator.stop()
+        self._clear_results()
+        self._hide_messages()
 
-    def on_isni_lookup(self, handler):
-        def isni_lookup_success(identities):
-            self._progress_indicator.stop()
-            self._result_container.setEnabled(True)
-            self._clear_results()
-            self._display_results(identities)
+        if len(identities) == 0:
+            self._display_no_result_message()
+            return
 
-        def isni_lookup_error(_):
-            self._display_connection_error()
+        self._result_container.setEnabled(True)
+        for _, identity in enumerate(identities):
+            self._result_container.addItem(self._build_row(identity))
 
-        def on_success(identities):
-            if not self._closed:
-                self._isni_lookup_success.emit(identities)
-
-        def on_error(error):
-            if not self._closed:
-                self._isni_lookup_error.emit(error)
-
-        def lookup_isni():
-            self._progress_indicator.start()
-            self._result_container.setDisabled(True)
-            self._result_container.setCurrentRow(-1)
-            handler(self._lookup_criteria.text(), on_success, on_error)
-
-        self._isni_lookup_success.connect(isni_lookup_success)
-        self._isni_lookup_error.connect(isni_lookup_error)
-        self._trigger_lookup_action.triggered.connect(lookup_isni)
+    def lookup_failed(self, error):
+        self._display_connection_error()
 
     def lookup(self, query):
         self.open()
@@ -88,20 +80,23 @@ class ISNILookupDialog(QDialog, UIFile):
             self._lookup_criteria.setText(query)
             self._lookup_button.click()
 
+    def _selected_identity(self):
+        return self._result_container.currentItem().data(Qt.UserRole)
+
+    def _identity_selected(self):
+        return self.on_selected.emit(self._selected_identity())
+
+    def _launch_isni_lookup(self):
+        self._progress_indicator.start()
+        self._result_container.setDisabled(True)
+        self._result_container.setCurrentRow(-1)
+        self.on_lookup.emit(self._lookup_criteria.text())
+
     def _enable_or_disable_lookup_button(self, text):
         self._lookup_button.setEnabled(len(text) > 0)
 
     def _enable_ok_button(self, enabled=True):
         self._dialog_buttons.button(QDialogButtonBox.Ok).setEnabled(enabled)
-
-    def _display_results(self, matches):
-        if len(matches) == 0:
-            self._display_no_result_message()
-            return
-
-        self._hide_messages()
-        for _, identity in enumerate(matches):
-            self._result_container.addItem(self._build_row(identity))
 
     def _display_connection_error(self):
         self._connection_error_message.setVisible(True)
@@ -135,6 +130,3 @@ class ISNILookupDialog(QDialog, UIFile):
         label.append(" - ")
         label.append(identity.longest_title)
         return "".join(label)
-
-    def _finished(self, *_):
-        self._closed = True

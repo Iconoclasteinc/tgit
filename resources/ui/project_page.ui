@@ -263,12 +263,6 @@ QLabel[style=QMacStyle] {
              <iconset resource="../resources.qrc">
               <normaloff>:/icons/search</normaloff>:/icons/search</iconset>
             </property>
-            <property name="popupMode">
-             <enum>QToolButton::MenuButtonPopup</enum>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonIconOnly</enum>
-            </property>
            </widget>
           </item>
           <item>
@@ -577,8 +571,8 @@ QLabel[style=QMacStyle] {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>782</width>
-            <height>202</height>
+            <width>100</width>
+            <height>30</height>
            </rect>
           </property>
           <property name="styleSheet">
@@ -600,14 +594,6 @@ QLabel[style=QMacStyle] {
     </widget>
    </item>
   </layout>
-  <action name="_main_artist_isni_assign_action">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Assign</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
