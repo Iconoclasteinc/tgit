@@ -22,7 +22,6 @@ from concurrent.futures import ThreadPoolExecutor
 import requests
 
 from tgit.promise import Promise
-from tgit.identity import IdentityLookupQuery
 
 
 class AuthenticationError(Exception):
@@ -97,7 +96,7 @@ class Cheddar:
 
             return _decode_response(response)
 
-        return IdentityLookupQuery(self._executor.submit(request_identities))
+        return Promise(self._executor.submit(request_identities))
 
     def assign_identifier(self, name, type_, works, token):
         def assign_identifier():

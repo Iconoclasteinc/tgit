@@ -20,10 +20,11 @@ import json
 import logging
 from functools import wraps
 from threading import Thread
+import time
 
 import requests
 from flask import Flask, request, Response
-import time
+
 from cute import platforms
 
 FLASK_STARTUP_DELAY = 0.01 if platforms.linux else 0
@@ -42,7 +43,7 @@ def port():
 
 
 def host():
-    return "localhost"
+    return "127.0.0.1"
 
 
 def _check_auth(username, password):

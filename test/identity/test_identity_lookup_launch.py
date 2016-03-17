@@ -1,12 +1,12 @@
-from concurrent.futures import Future
+from flexmock import flexmock as mock
 
 from hamcrest import instance_of, assert_that, contains, has_entries
 import pytest
 import requests
 
-from test.util.builders import make_anonymous_session, make_registered_session
+from test.util.builders import make_registered_session
 from tgit import identity
-from tgit.identity import IdentityLookupQuery
+from tgit.promise import Promise
 
 pytestmark = pytest.mark.unit
 
@@ -26,22 +26,14 @@ class FakeIdentityLookup:
         self.identity = identity_
 
 
-class FakeCheddar:
-    def __init__(self, future_):
-        self._future = future_
-
-    def get_identities(self, *_):
-        return IdentityLookupQuery(self._future)
+@pytest.fixture
+def promise():
+    return Promise()
 
 
 @pytest.fixture
-def future():
-    return Future()
-
-
-@pytest.fixture
-def cheddar(future):
-    return FakeCheddar(future)
+def cheddar():
+    return mock()
 
 
 @pytest.fixture
@@ -49,22 +41,28 @@ def identity_lookup():
     return FakeIdentityLookup()
 
 
-def test_launches_lookup_and_reports_found_identities(future, cheddar, identity_lookup):
-    identity.launch_lookup(cheddar, make_anonymous_session(), identity_lookup)("Joel Miller")
-    future.set_result([{"id": "0000000123456789",
-                        "firstName": "Joel",
-                        "lastName": "Miller",
-                        "type": "individual",
-                        "works": [{"title": "Chevere!"}]}])
-    assert_that(identity_lookup.identities, contains(has_entries(id="0000000123456789",
-                                                                 firstName="Joel",
-                                                                 lastName="Miller",
-                                                                 type="individual",
-                                                                 works=contains(has_entries(title="Chevere!")))),
-                "The identities")
+def test_launches_lookup_and_reports_found_identities(promise, cheddar, identity_lookup):
+    cheddar.should_receive("get_identities").with_args("Joel Miller", "key").and_return(promise).once()
+
+    identity.launch_lookup(cheddar, make_registered_session(token="key"), identity_lookup)("Joel Miller")
+    promise.complete([{"id": "0000000123456789",
+                       "firstName": "Joel",
+                       "lastName": "Miller",
+                       "type": "individual",
+                       "works": [{"title": "Chevere!"}]}])
+
+    assert_that(identity_lookup.identities,
+                contains(has_entries(id="0000000123456789",
+                                     firstName="Joel",
+                                     lastName="Miller",
+                                     type="individual",
+                                     works=contains(has_entries(title="Chevere!")))), "The identities")
 
 
-def test_launches_lookup_and_report_connection_error(future, cheddar, identity_lookup):
-    identity.launch_lookup(cheddar, make_registered_session(), identity_lookup)("Joel Miller")
-    future.set_exception(requests.ConnectionError())
+def test_launches_lookup_and_report_connection_error(promise, cheddar, identity_lookup):
+    cheddar.should_receive("get_identities").with_args("Joel Miller", "key").and_return(promise).once()
+
+    identity.launch_lookup(cheddar, make_registered_session(token="key"), identity_lookup)("Joel Miller")
+    promise.error(requests.ConnectionError())
+
     assert_that(identity_lookup.error, instance_of(requests.ConnectionError), "The connection error.")
