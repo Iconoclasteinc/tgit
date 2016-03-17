@@ -25,7 +25,8 @@ def test_logs_user_in_and_reports_success_when_authentication_succeeds(session, 
     listener.should_receive("login_successful").with_args("test@example.com").once()
     login.login_successful.subscribe(listener.login_successful)
 
-    login.authentication_succeeded("test@example.com", "api-token", ("isni.lookup", "isni.assign"))
+    user_details = dict(email="test@example.com", token="api-token", permissions=("isni.lookup", "isni.assign"))
+    login.authentication_succeeded(user_details)
 
     current_user = session.current_user
     assert_that(current_user, not_none(), "current user")

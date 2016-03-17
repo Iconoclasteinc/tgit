@@ -23,13 +23,15 @@ def cheddar(platform):
     cheddar_platform.stop()
 
 
-def test_authenticates_by_returning_the_token(cheddar, platform):
+def test_authenticates_to_cheddar_and_then_returns_user_details(cheddar, platform):
     platform.token_queue = iter(["token12345"])
-    token = cheddar.authenticate("test@example.com", "passw0rd")
-    assert_that(token, "token12345", "token")
+    user_details = wait_for_completion(cheddar.authenticate("test@example.com", "passw0rd"))
+    assert_that(user_details['email'], "test@example.com", "email")
+    assert_that(user_details['token'], "token12345", "token")
+    assert_that(user_details['permissions'], contains("isni.lookup", "isni.assign"), "token")
 
 
-def test_raises_authentication_error(cheddar):
+def test_raises_authentication_error_if_credentials_are_invalid(cheddar):
     with pytest.raises(AuthenticationError):
         wait_for_completion(cheddar.authenticate("test@example.com", "wrong_password"))
 
@@ -137,4 +139,4 @@ def test_raises_permission_denied_error_on_402(cheddar, platform):
 
 
 def wait_for_completion(future):
-    return future.result(2000)
+    return future.result(2)

@@ -20,6 +20,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QDialog
 
 from tgit.signal import MultiSubscription
+from tgit.ui.event_loop_signaler import in_event_loop
 from tgit.ui.helpers.ui_file import UIFile
 
 
@@ -27,8 +28,8 @@ def open_sign_in_dialog(parent, login, on_sign_in, delete_on_close=True):
     dialog = SignInDialog(parent, delete_on_close)
     dialog.sign_in.connect(on_sign_in)
     subscriptions = MultiSubscription()
-    subscriptions += login.login_successful.subscribe(lambda email: dialog.authentication_succeeded())
-    subscriptions += login.login_failed.subscribe(lambda error: dialog.authentication_failed())
+    subscriptions += login.login_successful.subscribe(in_event_loop(lambda email: dialog.authentication_succeeded()))
+    subscriptions += login.login_failed.subscribe(in_event_loop(lambda error: dialog.authentication_failed()))
     dialog.finished.connect(lambda accepted: subscriptions.cancel())
     dialog.open()
     return dialog
@@ -50,4 +51,5 @@ class SignInDialog(QDialog, UIFile):
         self.accept()
 
     def authentication_failed(self):
+        print("Error!")
         self._authentication_error.setText(self.tr("Invalid username and/or password"))

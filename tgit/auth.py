@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
 from enum import Enum
 
 from tgit.signal import Observable
@@ -25,11 +24,9 @@ from tgit.signal import signal
 
 def sign_in(login, authenticator):
     def sign_in_with(email, password):
-        try:
-            user = authenticator.authenticate(email, password)
-            login.authentication_succeeded(user["email"], user["token"], user["permissions"])
-        except Exception as error:
-            login.authentication_failed(error)
+        auth = authenticator.authenticate(email, password)
+        auth.on_success(login.authentication_succeeded)
+        auth.on_failure(login.authentication_failed)
 
     return sign_in_with
 
@@ -41,11 +38,12 @@ class Login(metaclass=Observable):
     def __init__(self, session):
         self._session = session
 
-    def authentication_succeeded(self, email, token, permissions):
-        self._session.login_as(email, token, permissions)
-        self.login_successful.emit(email)
+    def authentication_succeeded(self, user_details):
+        self._session.login_as(user_details["email"], user_details["token"], user_details["permissions"])
+        self.login_successful.emit(user_details["email"])
 
     def authentication_failed(self, error):
+        print(error)
         self.login_failed.emit(error)
 
 

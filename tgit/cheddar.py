@@ -21,6 +21,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
+from tgit.promise import Promise
+
 
 class AuthenticationError(Exception):
     pass
@@ -74,14 +76,17 @@ class Cheddar:
         return "".join(fragments)
 
     def authenticate(self, email, password):
-        response = requests.post(self._hostname + "/api/authentications", auth=(email, password), verify=False)
-        if response.status_code == 401:
-            raise AuthenticationError()
+        def request_authentication():
+            response = requests.post(self._hostname + "/api/authentications", auth=(email, password), verify=False)
+            if response.status_code == 401:
+                raise AuthenticationError()
 
-        deserialized = json.loads(response.content.decode())
-        deserialized["email"] = email
+            deserialized = json.loads(response.content.decode())
+            deserialized["email"] = email
 
-        return deserialized
+            return deserialized
+
+        return Promise(self._executor.submit(request_authentication))
 
     def get_identities(self, phrase, token):
         def request_identities():
