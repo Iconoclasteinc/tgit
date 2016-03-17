@@ -42,9 +42,6 @@ class ISNILookupDialog(QDialog, UIFile):
     on_lookup = pyqtSignal(str)
     on_selected = pyqtSignal(IdentityCard)
 
-    _isni_lookup_success = pyqtSignal(list)
-    _isni_lookup_error = pyqtSignal(Exception)
-
     def __init__(self, parent, delete_on_close=True):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
         self.setAttribute(Qt.WA_DeleteOnClose, delete_on_close)
@@ -58,25 +55,10 @@ class ISNILookupDialog(QDialog, UIFile):
 
         self._result_container.currentRowChanged.connect(lambda row: self._enable_ok_button(enabled=row > -1))
         self._lookup_criteria.textChanged.connect(self._enable_or_disable_lookup_button)
+        self._trigger_lookup_action.triggered.connect(self._launch_isni_lookup)
         self.accepted.connect(self._identity_selected)
 
-        def lookup_isni():
-            self._progress_indicator.start()
-            self._result_container.setDisabled(True)
-            self._result_container.setCurrentRow(-1)
-            self.on_lookup.emit(self._lookup_criteria.text())
-
-        self._isni_lookup_success.connect(self._display_identities)
-        self._isni_lookup_error.connect(self._lookup_failed)
-        self._trigger_lookup_action.triggered.connect(lookup_isni)
-
-    def _identity_selected(self):
-        return self.on_selected.emit(self._selected_identity())
-
     def display_identities(self, identities):
-        self._isni_lookup_success.emit(identities)
-
-    def _display_identities(self, identities):
         self._progress_indicator.stop()
         self._clear_results()
         self._hide_messages()
@@ -90,19 +72,25 @@ class ISNILookupDialog(QDialog, UIFile):
             self._result_container.addItem(self._build_row(identity))
 
     def lookup_failed(self, error):
-        self._isni_lookup_error.emit(error)
-
-    def _lookup_failed(self, _):
         self._display_connection_error()
-
-    def _selected_identity(self):
-        return self._result_container.currentItem().data(Qt.UserRole)
 
     def lookup(self, query):
         self.open()
         if query:
             self._lookup_criteria.setText(query)
             self._lookup_button.click()
+
+    def _selected_identity(self):
+        return self._result_container.currentItem().data(Qt.UserRole)
+
+    def _identity_selected(self):
+        return self.on_selected.emit(self._selected_identity())
+
+    def _launch_isni_lookup(self):
+        self._progress_indicator.start()
+        self._result_container.setDisabled(True)
+        self._result_container.setCurrentRow(-1)
+        self.on_lookup.emit(self._lookup_criteria.text())
 
     def _enable_or_disable_lookup_button(self, text):
         self._lookup_button.setEnabled(len(text) > 0)
