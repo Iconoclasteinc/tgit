@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import functools
 
+import tgit.identity as identity
 from tgit import album_director as director
 from tgit.ui.dialogs.isni_lookup_dialog import make_isni_lookup_dialog
 from tgit.ui.pages.new_project_page import make_new_project_page
@@ -30,7 +31,8 @@ from tgit.ui.pages.welcome_page import make_welcome_page
 
 
 class Pages:
-    def __init__(self, dialogs, messages, session, portfolio, player, cheddar):
+    def __init__(self, dialogs, messages, session, portfolio, player, cheddar, identity_lookup):
+        self._identity_lookup = identity_lookup
         self._cheddar = cheddar
         self._player = player
         self._session = session
@@ -72,6 +74,7 @@ class Pages:
         return make_project_edition_page(
             album=album,
             session=self._session,
+            identity_lookup=self._identity_lookup,
             track_list_tab=self._track_list_tab,
             review_assignation=self._dialogs.review_isni_assignation_in(album, True),
             show_isni_assignation_failed=self._messages.isni_assignation_failed,
@@ -103,7 +106,8 @@ class Pages:
 
         return track_page
 
-    def _isni_dialog(self, parent, query, on_identity_selected):
+    def _isni_dialog(self, parent, query):
         return make_isni_lookup_dialog(parent,
-                                       on_isni_lookup=director.lookup_isni_using(self._cheddar, self._session),
-                                       on_isni_selected=on_identity_selected).lookup(query)
+                                       self._identity_lookup,
+                                       on_lookup=identity.launch_lookup(self._cheddar, self._session,
+                                                                        self._identity_lookup)).lookup(query)

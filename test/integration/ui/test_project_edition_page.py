@@ -4,6 +4,7 @@ import types
 import pytest
 import requests
 from PyQt5.QtCore import QByteArray
+
 from hamcrest import has_entries, assert_that, less_than, instance_of, contains, equal_to
 
 from cute.matchers import named
@@ -16,7 +17,7 @@ from test.util.builders import make_album, make_anonymous_session, make_register
 from tgit import fs
 from tgit.auth import Permission
 from tgit.cheddar import AuthenticationError, InsufficientInformationError
-from tgit.identity import IdentityCard
+from tgit.identity import IdentityCard, IdentityLookup
 from tgit.metadata import Image
 from tgit.ui.pages.project_edition_page import make_project_edition_page, ProjectEditionPage
 from tgit.ui.pages.track_list_tab import TrackListTab
@@ -42,7 +43,10 @@ def create_track_list_tab(album):
     return TrackListTab(ignore)
 
 
-def show_page(page_driver, album, session=make_anonymous_session(),
+def show_page(page_driver,
+              album,
+              session=make_anonymous_session(),
+              identity_lookup=IdentityLookup(),
               select_picture=ignore,
               review_assignation=ignore,
               show_isni_assignation_failed=ignore,
@@ -51,6 +55,7 @@ def show_page(page_driver, album, session=make_anonymous_session(),
               show_permission_denied=ignore,
               **handlers):
     page = make_project_edition_page(album, session,
+                                     identity_lookup=identity_lookup,
                                      track_list_tab=create_track_list_tab,
                                      select_picture=select_picture,
                                      show_isni_assignation_failed=show_isni_assignation_failed,
@@ -211,8 +216,7 @@ def test_clears_isni_when_main_artist_not_found(driver):
 
 def test_selects_identities_on_isni_lookup(driver):
     select_identity_signal = MultiValueMatcherProbe("select identity",
-                                                    contains(instance_of(ProjectEditionPage), "performer",
-                                                             instance_of(types.FunctionType)))
+                                                    contains(instance_of(ProjectEditionPage), "performer"))
 
     _ = show_page(driver, make_album(lead_performer="performer"), make_registered_session(),
                   on_identity_selection=select_identity_signal.received)
@@ -222,20 +226,20 @@ def test_selects_identities_on_isni_lookup(driver):
 
 
 def test_updates_main_artist_isni_on_isni_lookup(driver):
-    _ = show_page(driver, make_album(lead_performer="performer"), make_registered_session(),
-                  on_identity_selection=lambda _, __, callback: callback("0000000123456789"))
+    identity_lookup = IdentityLookup()
+    _ = show_page(driver, make_album(lead_performer="performer"), make_registered_session(), identity_lookup)
 
-    driver.lookup_isni_of_main_artist()
+    identity_lookup.identity_selected(IdentityCard(id="0000000123456789", type="individual"))
     driver.shows_main_artist_isni("0000000123456789")
 
 
 def test_signals_found_isni_on_isni_lookup(driver):
     isni_changed_signal = MultiValueMatcherProbe("isni changed", contains("Joel Miller", "0000000123456789"))
-    _ = show_page(driver, make_album(lead_performer="Joel Miller"), make_registered_session(),
-                  on_isni_changed=isni_changed_signal.received,
-                  on_identity_selection=lambda _, __, callback: callback("0000000123456789"))
+    identity_lookup = IdentityLookup()
+    _ = show_page(driver, make_album(lead_performer="Joel Miller"), make_registered_session(), identity_lookup,
+                  on_isni_changed=isni_changed_signal.received)
 
-    driver.lookup_isni_of_main_artist()
+    identity_lookup.identity_selected(IdentityCard(id="0000000123456789", type="individual"))
     driver.confirm_isni()
     driver.check(isni_changed_signal)
 

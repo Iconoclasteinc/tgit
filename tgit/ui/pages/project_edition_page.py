@@ -34,7 +34,7 @@ from tgit.ui.helpers.ui_file import UIFile
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_project_edition_page(album, session, track_list_tab, select_picture, review_assignation,
+def make_project_edition_page(album, session, identity_lookup, track_list_tab, select_picture, review_assignation,
                               show_isni_assignation_failed, show_cheddar_connection_failed,
                               show_cheddar_authentication_failed, show_permission_denied, **handlers):
     page = ProjectEditionPage(track_list_tab=track_list_tab(album),
@@ -49,8 +49,9 @@ def make_project_edition_page(album, session, track_list_tab, select_picture, re
         getattr(page, name)(handler)
 
     subscriptions = MultiSubscription()
-    subscriptions.add(session.user_signed_in.subscribe(page.user_changed))
-    subscriptions.add(session.user_signed_out.subscribe(lambda user: page.user_changed(session.current_user)))
+    subscriptions += session.user_signed_in.subscribe(page.user_changed)
+    subscriptions += session.user_signed_out.subscribe(lambda user: page.user_changed(session.current_user))
+    subscriptions += identity_lookup.success.subscribe(page.selected_identity)
     page.closed.connect(lambda: subscriptions.cancel())
 
     album.addAlbumListener(page)
@@ -114,12 +115,14 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist.textEdited.connect(update_main_artist_isni)
 
     def on_identity_selection(self, on_identity_selection):
-        def on_identity_selected(identity):
-            self._main_artist_isni.setFocus(Qt.OtherFocusReason)
-            self._main_artist_isni.setText(identity)
+        def select_identity(_):
+            on_identity_selection(self, self._main_artist.text())
 
-        self._main_artist_isni_actions_button.clicked.connect(
-            lambda _: on_identity_selection(self, self._main_artist.text(), on_identity_selected))
+        self._main_artist_isni_actions_button.clicked.connect(select_identity)
+
+    def selected_identity(self, identity):
+        self._main_artist_isni.setFocus(Qt.OtherFocusReason)
+        self._main_artist_isni.setText(identity.id)
 
     def on_isni_assign(self, on_isni_assign):
         def start_waiting(main_artist_type):

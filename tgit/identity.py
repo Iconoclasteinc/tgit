@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from tgit.signal import signal, Observable
 
 
 class Work:
@@ -52,3 +53,31 @@ class IdentityCard:
             return ""
 
         return max([work.full_title for work in self.works], key=len)
+
+
+class IdentityLookup(metaclass=Observable):
+    identities_available = signal(list)
+    failed = signal(Exception)
+    success = signal(IdentityCard)
+
+    def identities_found(self, identities):
+        self.identities_available.emit([IdentityCard(**identity) for identity in identities])
+
+    def lookup_failed(self, error):
+        self.failed.emit(error)
+
+    def identity_selected(self, identity):
+        self.success.emit(identity)
+
+
+def launch_lookup(cheddar, session, identity_lookup):
+    def launch_lookup_for(main_artist):
+        def identities_found(result):
+            if result.exception():
+                identity_lookup.lookup_failed(result.exception())
+            else:
+                identity_lookup.identities_found(result.result())
+
+        cheddar.get_identities(main_artist, session.current_user.api_key).add_done_callback(identities_found)
+
+    return launch_lookup_for

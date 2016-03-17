@@ -47,9 +47,9 @@ def show_page(page_driver, of_type="mp3", select_project_location=ignore, select
 @pytest.mark.parametrize("using_shortcut", [False, True])
 def test_signals_project_creation(driver, using_shortcut):
     show_page(driver, of_type="flac", on_create_project=lambda *args: create_project_signal.received(args))
-    create_project_signal = ValueMatcherProbe("new project", ("flac", "Honeycomb", "~Documents", "track.mp3"))
+    create_project_signal = ValueMatcherProbe("new project", ("flac", "Honeycomb", "Documents", "track.mp3"))
 
-    driver.create_project("Honeycomb", "~Documents", import_from="track.mp3", using_shortcut=using_shortcut)
+    driver.create_project("Honeycomb", "Documents", import_from="track.mp3", using_shortcut=using_shortcut)
     driver.check(create_project_signal)
 
 
@@ -59,7 +59,7 @@ def test_signals_project_creation_cancellation(driver, using_shortcut):
     page = show_page(driver)
     page.on_cancel_creation(lambda: cancel_creation_signal.received())
 
-    driver.cancel_creation("Honeycomb", "~Documents", using_shortcut=using_shortcut)
+    driver.cancel_creation("Honeycomb", "Documents", using_shortcut=using_shortcut)
     driver.check(cancel_creation_signal)
 
 
@@ -91,7 +91,7 @@ def test_resets_form_on_show(driver):
     page = show_page(driver)
 
     driver.enter_name("Honeycomb")
-    driver.enter_location("~Documents")
+    driver.enter_location("Documents")
     driver.enter_reference_track("~Music/track.mp3")
 
     page.hide()
@@ -101,16 +101,17 @@ def test_resets_form_on_show(driver):
 
 
 def test_asks_for_confirmation_when_project_file_already_exists(driver):
-    project_exists_query = ValueMatcherProbe("check project exists", ("Honeycomb", "~Documents"))
+    project_exists_query = ValueMatcherProbe("check project exists", ("Honeycomb", "Documents"))
     show_page(driver, project_exists=lambda *args: project_exists_query.received(args))
 
-    driver.create_project("Honeycomb", "~Documents")
+    driver.create_project("Honeycomb", "Documents")
     driver.check(project_exists_query)
 
 
 def test_creates_project_if_confirmed(driver):
-    create_project_signal = ValueMatcherProbe("new project", ("flac", "Honeycomb", "~Documents", "track.flac"))
-    show_page(driver, of_type="flac", project_exists=yes, on_create_project=lambda *args: create_project_signal.received(args))
+    create_project_signal = ValueMatcherProbe("new project", ("flac", "Honeycomb", "Documents", "track.flac"))
+    show_page(driver, of_type="flac", project_exists=yes,
+              on_create_project=lambda *args: create_project_signal.received(args))
 
-    driver.create_project("Honeycomb", "~Documents", "track.flac")
+    driver.create_project("Honeycomb", "Documents", "track.flac")
     driver.check(create_project_signal)

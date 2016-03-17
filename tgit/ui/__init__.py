@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit import album_director as director
-from tgit import export, auth
+from tgit import export, auth, identity
 from tgit.ui import resources, browser
 from tgit.ui.dialogs import Dialogs, MessageBoxes
 from tgit.ui.dialogs.sign_in_dialog import open_sign_in_dialog
@@ -30,10 +30,11 @@ from tgit.ui.user_preferences_dialog import open_user_preferences_dialog
 
 def create_main_window(session, portfolio, player, prefs, cheddar, native, confirm_exit):
     login = auth.Login(session)
+    identity_lookup = identity.IdentityLookup()
 
     application_dialogs = Dialogs(native, lambda: window)
     messages = MessageBoxes(confirm_exit, lambda: window)
-    application_pages = Pages(application_dialogs, messages, session, portfolio, player, cheddar)
+    application_pages = Pages(application_dialogs, messages, session, portfolio, player, cheddar, identity_lookup)
 
     def show_settings_dialog():
         return open_user_preferences_dialog(window, prefs, messages.restart_required,
