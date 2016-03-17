@@ -92,7 +92,7 @@ def test_resets_form_on_show(driver):
 
     driver.enter_name("Honeycomb")
     driver.enter_location("Documents")
-    driver.enter_reference_track("~Music/track.mp3")
+    driver.enter_reference_track("Music/track.mp3")
 
     page.hide()
     page.show()

@@ -4,7 +4,7 @@ import pytest
 
 from PyQt5.QtCore import QByteArray
 
-from hamcrest import has_entries, assert_that, less_than, instance_of, contains
+from hamcrest import has_entries, assert_that, less_than, contains
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
@@ -198,8 +198,7 @@ def test_clears_isni_when_main_artist_not_found(driver):
 
 
 def test_selects_identities_on_isni_lookup(driver):
-    select_identity_signal = MultiValueMatcherProbe("select identity",
-                                                    contains(instance_of(ProjectEditionPage), "performer"))
+    select_identity_signal = ValueMatcherProbe("select identity", "performer")
 
     _ = show_page(driver, make_album(lead_performer="performer"), make_registered_session(),
                   on_identity_selection=select_identity_signal.received)

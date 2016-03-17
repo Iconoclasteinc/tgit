@@ -22,19 +22,12 @@ def create_track_list_tab(_):
 
 
 def create_project_page(album):
-    return ProjectEditionPage(create_track_list_tab(album), ignore, ignore, ignore, ignore, ignore, ignore)
+    return ProjectEditionPage(create_track_list_tab(album), ignore)
 
 
 def create_track_page(track):
-    page = make_track_edition_page(album=make_album(), track=track,
-                                   on_track_changed=ignore,
-                                   review_assignation=ignore,
-                                   show_isni_assignation_failed=ignore,
-                                   show_cheddar_connection_failed=ignore,
-                                   show_cheddar_authentication_failed=ignore)
-
+    page = make_track_edition_page(album=make_album(), track=track, on_track_changed=ignore)
     page.setObjectName("track_edition_page_" + str(track.track_number))
-
     return page
 
 

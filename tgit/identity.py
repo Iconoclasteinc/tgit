@@ -70,14 +70,31 @@ class IdentityLookup(metaclass=Observable):
         self.success.emit(identity)
 
 
+class IdentityLookupQuery:
+    _on_success = _on_failed = lambda *_: None
+
+    def __init__(self, future):
+        future.add_done_callback(self._on_resolve)
+
+    def success(self, on_success):
+        self._on_success = on_success
+        return self
+
+    def failed(self, on_failed):
+        self._on_failed = on_failed
+        return self
+
+    def _on_resolve(self, result):
+        if result.exception():
+            self._on_failed(result.exception())
+        else:
+            self._on_success(result.result())
+
+
 def launch_lookup(cheddar, session, identity_lookup):
     def launch_lookup_for(main_artist):
-        def identities_found(result):
-            if result.exception():
-                identity_lookup.lookup_failed(result.exception())
-            else:
-                identity_lookup.identities_found(result.result())
-
-        cheddar.get_identities(main_artist, session.current_user.api_key).add_done_callback(identities_found)
+        cheddar.get_identities(main_artist, session.current_user.api_key) \
+            .success(identity_lookup.identities_found) \
+            .failed(identity_lookup.lookup_failed)
 
     return launch_lookup_for

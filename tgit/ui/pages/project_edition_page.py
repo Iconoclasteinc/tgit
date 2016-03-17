@@ -96,7 +96,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
     def on_identity_selection(self, on_identity_selection):
         def select_identity(_):
-            on_identity_selection(self, self._main_artist.text())
+            on_identity_selection(self._main_artist.text())
 
         self._main_artist_isni_actions_button.clicked.connect(select_identity)
 

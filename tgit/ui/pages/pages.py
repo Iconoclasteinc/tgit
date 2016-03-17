@@ -31,7 +31,8 @@ from tgit.ui.pages.welcome_page import make_welcome_page
 
 
 class Pages:
-    def __init__(self, dialogs, messages, session, portfolio, player, cheddar, identity_lookup):
+    def __init__(self, dialogs, messages, session, portfolio, player, cheddar, identity_lookup, get_parent):
+        self._get_parent = get_parent
         self._identity_lookup = identity_lookup
         self._cheddar = cheddar
         self._player = player
@@ -97,8 +98,8 @@ class Pages:
 
         return track_page
 
-    def _isni_dialog(self, parent, query):
-        return make_isni_lookup_dialog(parent,
+    def _isni_dialog(self, query):
+        return make_isni_lookup_dialog(self._get_parent(),
                                        self._identity_lookup,
                                        on_lookup=identity.launch_lookup(self._cheddar, self._session,
                                                                         self._identity_lookup)).lookup(query)
