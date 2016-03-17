@@ -40,18 +40,19 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         self.button(named("_lookup_button")).click()
 
     def shows_results_list(self, enabled=True):
-        self.list_view(named("_result_container")).is_enabled(enabled)
+        self.results_list.is_enabled(enabled)
 
     def displays_result(self, full_name, date_of_birth, date_of_death, work):
-        self.shows_results_list()
-        self.list_view(named("_result_container")).has_item(with_list_item_text(
-            "{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
+        self.results_list.is_enabled()
+        self.results_list.has_item(
+                with_list_item_text("{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
 
     def select_identity(self, name):
-        self.list_view(named("_result_container")).select_item(with_list_item_text(starts_with(name)))
+        self.is_active()
+        self.results_list.select_item(with_list_item_text(starts_with(name)))
 
     def has_ok_button_disabled(self):
-        self._button_box().ok_button().is_enabled(enabled=False)
+        self._button_box().ok_button().is_disabled()
 
     def has_lookup_button_enabled(self, enabled=True):
         self.button(named("_lookup_button")).is_enabled(enabled=enabled)
@@ -70,3 +71,7 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
             self.label(named("_connection_error_message")).is_showing_on_screen()
         else:
             self.label(named("_connection_error_message")).is_hidden()
+
+    @property
+    def results_list(self):
+        return self.list_view(named("_result_container"))

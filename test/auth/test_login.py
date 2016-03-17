@@ -44,3 +44,12 @@ def test_reports_failure_but_does_not_log_user_in_when_authentication_fails(sess
     login.authentication_failed(Exception("error"))
 
     assert_that(session.opened, is_(False), "session opened?")
+
+
+def test_reports_login_in_progress_when_authentication_start(session, listener):
+    login = Login(session)
+
+    listener.should_receive("login_in_progress").once()
+    login.login_in_progress.subscribe(listener.login_in_progress)
+
+    login.authentication_started()

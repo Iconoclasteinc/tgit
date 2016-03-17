@@ -12,7 +12,6 @@ class QProgressIndicator(QWidget):
     _angle = 0
     _delay = 80
     _displayedWhenStopped = False
-    _running = False
     _timerId = None
 
     def __init__(self, parent, color=None):
@@ -20,12 +19,14 @@ class QProgressIndicator(QWidget):
         self.color = self.palette().color(QPalette.Text) if not color else QColor(color)
 
     def start(self):
-        self._running = True
         self._startAnimation()
         self.show()
 
     def isRunning(self):
-        return self._running
+        return self._timerId is not None
+
+    def isStopped(self):
+        return not self.isRunning()
 
     def setDisplayedWhenStopped(self, state):
         self._displayedWhenStopped = state
@@ -35,7 +36,8 @@ class QProgressIndicator(QWidget):
         return self._displayedWhenStopped
 
     def stop(self):
-        self._running = False
+        self._stopTimer()
+        self.update()
 
     def _startAnimation(self):
         self._stopTimer()
@@ -71,11 +73,7 @@ class QProgressIndicator(QWidget):
         return width
 
     def timerEvent(self, event):
-        if self.isRunning():
-            self._advance()
-        else:
-            self._stopTimer()
-
+        self._advance()
         self.update()
 
     def _advance(self):

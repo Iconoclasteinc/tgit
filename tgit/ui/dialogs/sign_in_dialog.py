@@ -28,8 +28,9 @@ def open_sign_in_dialog(parent, login, on_sign_in, delete_on_close=True):
     dialog = SignInDialog(parent, delete_on_close)
     dialog.sign_in.connect(on_sign_in)
     subscriptions = MultiSubscription()
-    subscriptions += login.login_successful.subscribe(in_event_loop(lambda email: dialog.authentication_succeeded()))
-    subscriptions += login.login_failed.subscribe(in_event_loop(lambda error: dialog.authentication_failed()))
+    subscriptions += login.login_in_progress.subscribe(in_event_loop(dialog.login_in_progress))
+    subscriptions += login.login_successful.subscribe(in_event_loop(lambda email: dialog.login_succeeded()))
+    subscriptions += login.login_failed.subscribe(in_event_loop(lambda error: dialog.login_failed()))
     dialog.finished.connect(lambda accepted: subscriptions.cancel())
     dialog.open()
     return dialog
@@ -47,9 +48,13 @@ class SignInDialog(QDialog, UIFile):
         self._load(":ui/sign_in_dialog.ui")
         self._buttons.accepted.connect(lambda: self.sign_in.emit(self._email.text(), self._password.text()))
 
-    def authentication_succeeded(self):
+    def login_succeeded(self):
+        self._progress_indicator.stop()
         self.accept()
 
-    def authentication_failed(self):
-        print("Error!")
+    def login_in_progress(self):
+        self._progress_indicator.start()
+
+    def login_failed(self):
+        self._progress_indicator.stop()
         self._authentication_error.setText(self.tr("Invalid username and/or password"))

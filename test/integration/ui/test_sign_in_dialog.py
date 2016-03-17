@@ -37,15 +37,25 @@ def test_signals_authentication_attempt_with_credentials(driver):
     driver.check(sign_in_signal)
 
 
-def test_displays_error_message_when_authentication_fails(driver):
+def test_displays_progress_indicator_when_login_in_progress(driver):
     dialog = open_dialog()
 
-    dialog.authentication_failed()
+    driver.has_stopped_progress_indicator()
+    dialog.login_in_progress()
+    driver.has_started_progress_indicator()
+
+
+def test_stops_progress_indicator_and_displays_error_message_when_login_fails(driver):
+    dialog = open_dialog()
+
+    dialog.login_failed()
+    driver.has_stopped_progress_indicator()
     driver.shows_authentication_failed_message()
 
 
-def test_accepts_dialog_when_authentication_succeeds(driver):
+def test_stops_progress_indicator_and_accepts_dialog_when_login_succeeds(driver):
     dialog = open_dialog()
 
-    dialog.authentication_succeeded()
+    dialog.login_succeeded()
+    driver.has_stopped_progress_indicator()
     driver.is_hidden()

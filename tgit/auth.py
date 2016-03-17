@@ -27,23 +27,27 @@ def sign_in(login, authenticator):
         auth = authenticator.authenticate(email, password)
         auth.on_success(login.authentication_succeeded)
         auth.on_failure(login.authentication_failed)
+        login.authentication_started()
 
     return sign_in_with
 
 
 class Login(metaclass=Observable):
+    login_in_progress = signal()
     login_successful = signal(str)
     login_failed = signal(Exception)
 
     def __init__(self, session):
         self._session = session
 
+    def authentication_started(self):
+        self.login_in_progress.emit()
+
     def authentication_succeeded(self, user_details):
         self._session.login_as(user_details["email"], user_details["token"], user_details["permissions"])
         self.login_successful.emit(user_details["email"])
 
     def authentication_failed(self, error):
-        print(error)
         self.login_failed.emit(error)
 
 

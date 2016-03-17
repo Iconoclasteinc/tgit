@@ -1,7 +1,8 @@
-from hamcrest import has_property
 import pytest
 import requests
+from hamcrest import has_property
 
+from cute import platforms
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
@@ -10,6 +11,8 @@ from tgit.identity import IdentityCard, IdentityLookup
 from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog
 
 pytestmark = pytest.mark.ui
+
+DISPLAY_DELAY = 200 if platforms.mac else 0
 
 
 def show_dialog(query=None, identity_lookup=IdentityLookup(), **handlers):
@@ -45,6 +48,7 @@ def test_signals_lookup_on_click(driver):
     signal = ValueMatcherProbe("lookup ISNI", "Joel Miller")
     _ = show_dialog(on_lookup=signal.received)
 
+    driver.pause(DISPLAY_DELAY)
     driver.lookup("Joel Miller")
     driver.check(signal)
 
@@ -96,6 +100,7 @@ def test_signals_selected_identity(driver):
     identity_lookup.success.subscribe(signal.received)
 
     dialog = show_dialog(identity_lookup=identity_lookup)
+
     dialog.display_identities([IdentityCard(id="0000000123456789",
                                             type=IdentityCard.INDIVIDUAL,
                                             firstName="Joel",

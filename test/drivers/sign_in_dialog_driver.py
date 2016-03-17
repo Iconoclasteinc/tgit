@@ -34,9 +34,14 @@ class SignInDialogDriver(QDialogDriver, ScreenDriver):
         self.click_ok()
 
     def shows_authentication_failed_message(self):
-        self.progress_indicator.is_(stopped())
         self.authentication_error.is_showing_on_screen()
         self.authentication_error.has_text("Invalid username and/or password")
+
+    def has_started_progress_indicator(self):
+        self.progress_indicator.is_(running())
+
+    def has_stopped_progress_indicator(self):
+        self.progress_indicator.is_(stopped())
 
     @property
     def authentication_error(self):
@@ -48,10 +53,10 @@ class SignInDialogDriver(QDialogDriver, ScreenDriver):
 
 
 def running():
-    return StateMatcher(lambda o: o.isRunning(), "running", "stopped")
+    return StateMatcher(QProgressIndicator.isRunning, "running", "stopped")
 
 
 def stopped():
-    return StateMatcher(lambda o: not o.isRunning(), "stopped", "running")
+    return StateMatcher(QProgressIndicator.isStopped, "stopped", "running")
 
 
