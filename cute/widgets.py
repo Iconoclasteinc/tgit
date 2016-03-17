@@ -423,7 +423,7 @@ class QDialogDriver(WidgetDriver):
 
 
 class FileDialogDriver(QDialogDriver):
-    DISPLAY_DELAY = 250
+    DISPLAY_DELAY = 250 if platforms.mac else 60
     DISMISS_DELAY = 250 if platforms.mac else 0
 
     def show_hidden_files(self):
