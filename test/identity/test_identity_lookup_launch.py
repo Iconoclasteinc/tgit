@@ -1,6 +1,5 @@
 from flexmock import flexmock as mock
-
-from hamcrest import instance_of, assert_that, contains, has_entries
+from hamcrest import instance_of, assert_that, contains, has_entries, is_
 import pytest
 import requests
 
@@ -15,6 +14,7 @@ class FakeIdentityLookup:
     identities = []
     identity = None
     error = None
+    has_started = False
 
     def identities_found(self, identities):
         self.identities = identities
@@ -24,6 +24,9 @@ class FakeIdentityLookup:
 
     def identity_selected(self, identity_):
         self.identity = identity_
+
+    def lookup_started(self):
+        self.has_started = True
 
 
 @pytest.fixture
@@ -66,3 +69,10 @@ def test_launches_lookup_and_report_connection_error(promise, cheddar, identity_
     promise.error(requests.ConnectionError())
 
     assert_that(identity_lookup.error, instance_of(requests.ConnectionError), "The connection error.")
+
+
+def test_reports_launch_started(promise, cheddar, identity_lookup):
+    cheddar.should_receive("get_identities").with_args("Joel Miller", "key").and_return(promise).once()
+    identity.launch_lookup(cheddar, make_registered_session(token="key"), identity_lookup)("Joel Miller")
+
+    assert_that(identity_lookup.has_started, is_(True), "The lookup has started signal emitted.")

@@ -60,6 +60,9 @@ def test_stops_progress_indicator_and_displays_error_message_when_login_fails(dr
     dialog = open_dialog()
 
     driver.enter_email("test@example.com")
+    dialog.login_in_progress()
+    driver.is_showing_progress_indicator()
+
     dialog.login_failed()
     driver.has_stopped_progress_indicator()
     driver.shows_authentication_failed_message()
@@ -68,6 +71,9 @@ def test_stops_progress_indicator_and_displays_error_message_when_login_fails(dr
 
 def test_stops_progress_indicator_and_accepts_dialog_when_login_succeeds(driver):
     dialog = open_dialog()
+
+    dialog.login_in_progress()
+    driver.is_showing_progress_indicator()
 
     dialog.login_succeeded()
     driver.has_stopped_progress_indicator()

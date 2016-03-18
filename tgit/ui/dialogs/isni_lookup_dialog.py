@@ -28,8 +28,9 @@ def make_isni_lookup_dialog(parent, identity_lookup, delete_on_close=True, **han
     dialog = ISNILookupDialog(parent, delete_on_close)
 
     subscriptions = MultiSubscription()
-    subscriptions += identity_lookup.identities_available.subscribe(in_event_loop(dialog.lookup_successful))
-    subscriptions += identity_lookup.failed.subscribe(in_event_loop(dialog.lookup_failed))
+    subscriptions += identity_lookup.on_identities_available.subscribe(in_event_loop(dialog.lookup_successful))
+    subscriptions += identity_lookup.on_failed.subscribe(in_event_loop(dialog.lookup_failed))
+    subscriptions += identity_lookup.on_started.subscribe(in_event_loop(dialog.lookup_in_progress))
 
     if "on_lookup" in handlers:
         dialog.on_lookup.connect(handlers["on_lookup"])
@@ -50,14 +51,20 @@ class ISNILookupDialog(QDialog, UIFile):
 
     def _setup_ui(self):
         self._load(":ui/isni_dialog.ui")
-        self.addAction(self._trigger_lookup_action)
         self._hide_messages()
-        self._enable_ok_button(enabled=False)
+        self._ok_button.setEnabled(False)
 
-        self._result_container.currentRowChanged.connect(lambda row: self._enable_ok_button(enabled=row > -1))
+        self._result_container.currentRowChanged.connect(lambda row: self._ok_button.setEnabled(row > -1))
         self._lookup_criteria.textChanged.connect(self._enable_or_disable_lookup_button)
-        self._trigger_lookup_action.triggered.connect(self._launch_isni_lookup)
+        self._trigger_lookup_action.triggered.connect(lambda: self.on_lookup.emit(self._lookup_criteria.text()))
+
+        self.addAction(self._trigger_lookup_action)
         self.accepted.connect(lambda: self.on_selected.emit(self._selected_identity))
+
+    def lookup_in_progress(self):
+        self._progress_indicator.start()
+        self._result_container.setDisabled(True)
+        self._result_container.setCurrentRow(-1)
 
     def lookup_successful(self, identities):
         self._progress_indicator.stop()
@@ -73,6 +80,7 @@ class ISNILookupDialog(QDialog, UIFile):
             self._result_container.addItem(self._build_row(identity))
 
     def lookup_failed(self, _):
+        self._progress_indicator.stop()
         self._connection_error_message.setVisible(True)
 
     def lookup(self, query):
@@ -85,17 +93,12 @@ class ISNILookupDialog(QDialog, UIFile):
     def _selected_identity(self):
         return self._result_container.currentItem().data(Qt.UserRole)
 
-    def _launch_isni_lookup(self):
-        self._progress_indicator.start()
-        self._result_container.setDisabled(True)
-        self._result_container.setCurrentRow(-1)
-        self.on_lookup.emit(self._lookup_criteria.text())
-
     def _enable_or_disable_lookup_button(self, text):
         self._lookup_button.setEnabled(len(text) > 0)
 
-    def _enable_ok_button(self, enabled=True):
-        self._dialog_buttons.button(QDialogButtonBox.Ok).setEnabled(enabled)
+    @property
+    def _ok_button(self):
+        return self._dialog_buttons.button(QDialogButtonBox.Ok)
 
     def _hide_messages(self):
         self._no_result_message.setVisible(False)

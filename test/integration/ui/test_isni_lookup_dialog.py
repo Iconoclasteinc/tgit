@@ -40,7 +40,6 @@ def test_hides_error_messages_by_default(driver):
 def test_signals_lookup_on_display(driver):
     signal = ValueMatcherProbe("lookup ISNI", "Joel Miller")
     _ = show_dialog("Joel Miller", on_lookup=signal.received)
-    driver.shows_results_list(enabled=False)
     driver.check(signal)
 
 
@@ -97,7 +96,7 @@ def test_signals_selected_identity(driver):
     signal = ValueMatcherProbe("lookup ISNI", has_property("id", "0000000123456789"))
 
     identity_lookup = IdentityLookup()
-    identity_lookup.success.subscribe(signal.received)
+    identity_lookup.on_success.subscribe(signal.received)
 
     dialog = show_dialog(identity_lookup=identity_lookup)
 
@@ -118,19 +117,16 @@ def test_disables_ok_button_by_default(driver):
     driver.has_ok_button_disabled()
 
 
-def test_disables_ok_button_on_new_search(driver):
-    identities = [IdentityCard(id="0000000123456789",
-                               type=IdentityCard.INDIVIDUAL,
-                               firstName="Joel",
-                               lastName="Miller",
-                               dateOfBirth="1969",
-                               dateOfDeath="2100",
-                               works=[{"title": "Chevere!"}])]
-
+def test_disables_ok_button_when_lookup_in_progress(driver):
     dialog = show_dialog()
-    dialog.lookup_successful(identities)
-    driver.select_identity("Joel Miller")
-    dialog.lookup_successful(identities)
+    dialog.lookup_successful([IdentityCard(id="0000000123456789",
+                                           type=IdentityCard.INDIVIDUAL,
+                                           firstName="Joel",
+                                           lastName="Miller",
+                                           dateOfBirth="1969",
+                                           dateOfDeath="2100",
+                                           works=[{"title": "Chevere!"}])])
+    dialog.lookup_in_progress()
     driver.has_ok_button_disabled()
 
 
@@ -172,3 +168,39 @@ def test_hides_connection_error_message(driver):
                                            dateOfDeath="2100",
                                            works=[{"title": "Chevere!"}])])
     driver.shows_connection_error_message(visible=False)
+
+
+def test_displays_progress_indicator_when_lookup_in_progress(driver):
+    dialog = show_dialog()
+
+    driver.has_stopped_progress_indicator()
+    dialog.lookup_in_progress()
+    driver.is_showing_progress_indicator()
+
+
+def test_stops_progress_indicator_on_lookup_success(driver):
+    dialog = show_dialog()
+
+    dialog.lookup_in_progress()
+    driver.is_showing_progress_indicator()
+
+    dialog.lookup_successful([])
+    driver.has_stopped_progress_indicator()
+
+
+def test_stops_progress_indicator_on_lookup_failure(driver):
+    dialog = show_dialog()
+
+    dialog.lookup_in_progress()
+    driver.is_showing_progress_indicator()
+
+    dialog.lookup_failed("")
+    driver.has_stopped_progress_indicator()
+
+
+def test_disables_result_list_when_lookup_in_progress(driver):
+    dialog = show_dialog()
+
+    driver.shows_results_list()
+    dialog.lookup_in_progress()
+    driver.shows_results_list(enabled=False)

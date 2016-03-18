@@ -19,10 +19,11 @@
 
 from hamcrest import starts_with
 
-from cute.matchers import named, with_list_item_text
-from cute.widgets import window, QDialogDriver
+from cute.matchers import named, with_list_item_text, StateMatcher
+from cute.widgets import window, QDialogDriver, WidgetDriver
 from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog
 from ._screen_driver import ScreenDriver
+from tgit.ui.widgets.progress_indicator import QProgressIndicator
 
 
 def isni_lookup_dialog(parent):
@@ -45,7 +46,7 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
     def displays_result(self, full_name, date_of_birth, date_of_death, work):
         self.results_list.is_enabled()
         self.results_list.has_item(
-                with_list_item_text("{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
+            with_list_item_text("{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
 
     def select_identity(self, name):
         self.is_active()
@@ -72,6 +73,24 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         else:
             self.label(named("_connection_error_message")).is_hidden()
 
+    def is_showing_progress_indicator(self):
+        self.progress_indicator.is_(running())
+
+    def has_stopped_progress_indicator(self):
+        self.progress_indicator.is_(stopped())
+
+    @property
+    def progress_indicator(self):
+        return WidgetDriver.find_single(self, QProgressIndicator, named("_progress_indicator"))
+
     @property
     def results_list(self):
         return self.list_view(named("_result_container"))
+
+
+def running():
+    return StateMatcher(QProgressIndicator.isRunning, "running", "stopped")
+
+
+def stopped():
+    return StateMatcher(QProgressIndicator.isStopped, "stopped", "running")

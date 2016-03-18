@@ -41,7 +41,7 @@ def make_project_edition_page(album, session, identity_lookup, track_list_tab, s
     subscriptions = MultiSubscription()
     subscriptions += session.user_signed_in.subscribe(page.user_changed)
     subscriptions += session.user_signed_out.subscribe(lambda user: page.user_changed(session.current_user))
-    subscriptions += identity_lookup.success.subscribe(page.selected_identity)
+    subscriptions += identity_lookup.on_success.subscribe(page.selected_identity)
     page.closed.connect(lambda: subscriptions.cancel())
 
     album.addAlbumListener(page)

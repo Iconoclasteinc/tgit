@@ -26,7 +26,7 @@ class Work:
 
     @property
     def full_title(self):
-        return "{0} {1}".format(self.title, self.subtitle) if self.subtitle else self.title
+        return "{} {}".format(self.title, self.subtitle) if self.subtitle else self.title
 
 
 class IdentityCard:
@@ -45,7 +45,7 @@ class IdentityCard:
 
     @property
     def full_name(self):
-        return "{0} {1}".format(self.first_name, self.last_name) if self.type == self.INDIVIDUAL else self.main_name
+        return "{} {}".format(self.first_name, self.last_name) if self.type == self.INDIVIDUAL else self.main_name
 
     @property
     def longest_title(self):
@@ -56,18 +56,22 @@ class IdentityCard:
 
 
 class IdentityLookup(metaclass=Observable):
-    identities_available = signal(list)
-    failed = signal(Exception)
-    success = signal(IdentityCard)
+    on_identities_available = signal(list)
+    on_failed = signal(Exception)
+    on_success = signal(IdentityCard)
+    on_started = signal()
+
+    def lookup_started(self):
+        self.on_started.emit()
 
     def identities_found(self, identities):
-        self.identities_available.emit([IdentityCard(**identity) for identity in identities])
+        self.on_identities_available.emit([IdentityCard(**identity) for identity in identities])
 
     def lookup_failed(self, error):
-        self.failed.emit(error)
+        self.on_failed.emit(error)
 
     def identity_selected(self, identity):
-        self.success.emit(identity)
+        self.on_success.emit(identity)
 
 
 def launch_lookup(cheddar, session, identity_lookup):
@@ -75,5 +79,6 @@ def launch_lookup(cheddar, session, identity_lookup):
         lookup = cheddar.get_identities(main_artist, session.current_user.api_key)
         lookup.on_success(identity_lookup.identities_found)
         lookup.on_failure(identity_lookup.lookup_failed)
+        identity_lookup.lookup_started()
 
     return launch_lookup_for
