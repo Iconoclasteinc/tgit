@@ -27,6 +27,14 @@ def driver(qt, prober, automaton):
     dialog_driver.close()
 
 
+def test_disables_authentication_until_an_email_is_entered(driver):
+    _ = open_dialog()
+
+    driver.has_disabled_authentication()
+    driver.enter_email("email")
+    driver.has_enabled_authentication()
+
+
 def test_signals_authentication_attempt_with_credentials(driver):
     sign_in_signal = MultiValueMatcherProbe("credentials", contains("jfalardeau@pyxis-tech.com", "passw0rd"))
 
@@ -37,20 +45,25 @@ def test_signals_authentication_attempt_with_credentials(driver):
     driver.check(sign_in_signal)
 
 
-def test_displays_progress_indicator_when_login_in_progress(driver):
+def test_displays_progress_indicator_and_disable_authentication_when_login_in_progress(driver):
     dialog = open_dialog()
 
     driver.has_stopped_progress_indicator()
+
+    driver.enter_email("test@example.com")
     dialog.login_in_progress()
-    driver.has_started_progress_indicator()
+    driver.is_showing_progress_indicator()
+    driver.has_disabled_authentication()
 
 
 def test_stops_progress_indicator_and_displays_error_message_when_login_fails(driver):
     dialog = open_dialog()
 
+    driver.enter_email("test@example.com")
     dialog.login_failed()
     driver.has_stopped_progress_indicator()
     driver.shows_authentication_failed_message()
+    driver.has_enabled_authentication()
 
 
 def test_stops_progress_indicator_and_accepts_dialog_when_login_succeeds(driver):

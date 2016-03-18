@@ -22,7 +22,8 @@ RIGHT_BUTTON = 'right'
 class GesturePerformer:
     """A mixin for performing human gestures"""
     def perform(self, *gestures):
-        pass
+        for gesture in gestures:
+            gesture(self)
 
 
 class Automaton(GesturePerformer):

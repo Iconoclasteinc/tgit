@@ -71,10 +71,6 @@ class Robot(Automaton):
     def __init__(self):
         self._modifiers = Qt.NoModifier
 
-    def perform(self, *gestures):
-        for gesture in gestures:
-            gesture(self)
-
     @property
     def mouse_position(self):
         current_position = QCursor.pos()

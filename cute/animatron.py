@@ -19,10 +19,6 @@ class Animatron(Automaton):
     def __init__(self, pause=MINIMUM_PAUSE):
         pyautogui.PAUSE = pause
 
-    def perform(self, *gestures):
-        for gesture in gestures:
-            gesture(self)
-
     @property
     def mouse_position(self):
         return pyautogui.position()

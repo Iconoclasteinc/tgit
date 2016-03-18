@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 
 from tgit.signal import MultiSubscription
 from tgit.ui.event_loop_signaler import in_event_loop
@@ -46,7 +46,9 @@ class SignInDialog(QDialog, UIFile):
 
     def _setup_ui(self):
         self._load(":ui/sign_in_dialog.ui")
+        self._email.textEdited.connect(lambda text: self._ok_button.setEnabled(len(text) > 0))
         self._buttons.accepted.connect(lambda: self.sign_in.emit(self._email.text(), self._password.text()))
+        self._ok_button.setDisabled(True)
 
     def login_succeeded(self):
         self._progress_indicator.stop()
@@ -54,7 +56,13 @@ class SignInDialog(QDialog, UIFile):
 
     def login_in_progress(self):
         self._progress_indicator.start()
+        self._ok_button.setDisabled(True)
 
     def login_failed(self):
         self._progress_indicator.stop()
         self._authentication_error.setText(self.tr("Invalid username and/or password"))
+        self._ok_button.setEnabled(True)
+
+    @property
+    def _ok_button(self):
+        return self._buttons.button(QDialogButtonBox.Ok)

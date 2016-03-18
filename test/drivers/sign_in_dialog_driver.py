@@ -29,19 +29,38 @@ def sign_in_dialog(parent):
 
 class SignInDialogDriver(QDialogDriver, ScreenDriver):
     def sign_in_with(self, username, password):
-        self.lineEdit(named("_email")).replace_all_text(username)
-        self.lineEdit(named("_password")).replace_all_text(password)
+        self.enter_credentials(username, password)
         self.click_ok()
+
+    def enter_credentials(self, username, password):
+        self.enter_email(username)
+        self.enter_password(password)
+
+    def enter_email(self, username):
+        self.email.replace_all_text(username)
+
+    def enter_password(self, password):
+        self.lineEdit(named("_password")).replace_all_text(password)
 
     def shows_authentication_failed_message(self):
         self.authentication_error.is_showing_on_screen()
         self.authentication_error.has_text("Invalid username and/or password")
 
-    def has_started_progress_indicator(self):
+    def is_showing_progress_indicator(self):
         self.progress_indicator.is_(running())
 
     def has_stopped_progress_indicator(self):
         self.progress_indicator.is_(stopped())
+
+    def has_disabled_authentication(self):
+        self.ok_button().is_disabled()
+
+    def has_enabled_authentication(self):
+        self.ok_button().is_enabled()
+
+    @property
+    def email(self):
+        return self.lineEdit(named("_email"))
 
     @property
     def authentication_error(self):

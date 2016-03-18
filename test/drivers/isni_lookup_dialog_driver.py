@@ -52,13 +52,13 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         self.results_list.select_item(with_list_item_text(starts_with(name)))
 
     def has_ok_button_disabled(self):
-        self._button_box().ok_button().is_disabled()
+        self.ok_button().is_disabled()
 
     def has_lookup_button_enabled(self, enabled=True):
         self.button(named("_lookup_button")).is_enabled(enabled=enabled)
 
     def accept(self):
-        self._button_box().click_ok()
+        self.click_ok()
 
     def shows_no_result_message(self, visible=True):
         if visible:
