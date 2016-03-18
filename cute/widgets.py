@@ -197,8 +197,8 @@ class LabelDriver(WidgetDriver):
 
 
 class AbstractEditDriver(WidgetDriver):
-    FOCUS_DELAY = 100
-    EDITION_DELAY = 50
+    FOCUS_DELAY = 100 if platforms.mac else 0
+    EDITION_DELAY = 50 if platforms.mac else 0
 
     def change_text(self, text):
         self.replace_all_text(text)
@@ -252,7 +252,7 @@ class QAbstractSpinBoxDriver(AbstractEditDriver):
 
 
 class ComboBoxDriver(AbstractEditDriver):
-    CHOICES_DISPLAY_DELAY = 250
+    CHOICES_DISPLAY_DELAY = 250 if platforms.mac else 175
 
     def select_option(self, matching):
         options_list = self._open_options_list()
@@ -423,7 +423,7 @@ class QDialogDriver(WidgetDriver):
 
 
 class FileDialogDriver(QDialogDriver):
-    DISPLAY_DELAY = 250 if platforms.mac else 60
+    DISPLAY_DELAY = 250 if platforms.mac else 90
     DISMISS_DELAY = 250 if platforms.mac else 0
 
     def show_hidden_files(self):
@@ -671,7 +671,7 @@ class QMenuBarDriver(WidgetDriver):
 
 class MenuDriver(WidgetDriver):
     DISMISS_DELAY = 250 if platforms.mac else 0
-    POPUP_DELAY = 200 if platforms.windows else 0
+    POPUP_DELAY = 50 if platforms.windows else 0
 
     def popup_manually_at(self, x, y):
         # For some reason, we can't open the menu by just right clicking, so open it manually

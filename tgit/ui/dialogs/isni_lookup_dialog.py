@@ -20,6 +20,7 @@ from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QListWidgetItem
 
 from tgit.identity import IdentityCard
 from tgit.signal import MultiSubscription
+from tgit.ui.event_loop_signaler import in_event_loop
 from tgit.ui.helpers.ui_file import UIFile
 
 
@@ -27,8 +28,8 @@ def make_isni_lookup_dialog(parent, identity_lookup, delete_on_close=True, **han
     dialog = ISNILookupDialog(parent, delete_on_close)
 
     subscriptions = MultiSubscription()
-    subscriptions += identity_lookup.identities_available.subscribe(dialog.display_identities)
-    subscriptions += identity_lookup.failed.subscribe(dialog.lookup_failed)
+    subscriptions += identity_lookup.identities_available.subscribe(in_event_loop(dialog.display_identities))
+    subscriptions += identity_lookup.failed.subscribe(in_event_loop(dialog.lookup_failed))
 
     if "on_lookup" in handlers:
         dialog.on_lookup.connect(handlers["on_lookup"])

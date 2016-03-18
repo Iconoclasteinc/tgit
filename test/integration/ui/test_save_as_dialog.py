@@ -81,14 +81,18 @@ def test_shows_mime_type_filters(driver):
 
 
 def test_make_save_as_excel_dialog(driver):
-    _ = make_save_as_excel_dialog(default_file_name="album", parent=None, native=False)
+    dialog = make_save_as_excel_dialog(default_file_name="album", parent=None, native=False)
+    dialog.open()
+
     driver.has_window_title("Save As")
     driver.has_filename("album")
     driver.filter_files_of_type(contains_string("*.xlsx"))
 
 
 def test_make_save_as_csv_dialog(driver):
-    _ = make_save_as_csv_dialog(default_file_name="album", parent=None, native=False)
+    dialog = make_save_as_csv_dialog(default_file_name="album", parent=None, native=False)
+    dialog.open()
+
     driver.has_window_title("Export As")
     driver.has_filename("album")
     driver.filter_files_of_type(contains_string("*.csv"))
