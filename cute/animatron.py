@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import pyautogui
 
-from . import event_loop, platforms
+from . import event_loop
 from .gestures import Automaton
 
 
-# We need to make a little pause on OS X otherwise keys and clicks might not
-# be detected
-MINIMUM_PAUSE = 0.01 if platforms.mac else 0
+MINIMUM_PAUSE = 0
 
 
 class Animatron(Automaton):

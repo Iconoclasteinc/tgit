@@ -9,6 +9,7 @@ MEDIUM_TYPING_SPEED = 240  # in wpm
 FAST_TYPING_SPEED = 480  # in wpm
 SUPER_FAST_TYPING_SPEED = 960  # in wpm
 LIGHTNING_FAST_TYPING_SPEED = 4800  # in wpm
+LUDICROUS_FAST_TYPING_SPEED = 0  # in wpm
 
 MOUSE_CLICK_DELAY = 50  # in ms
 MOUSE_DOUBLE_CLICK_DELAY = 50  # in ms
@@ -17,6 +18,8 @@ MIN_TIME_TO_AVOID_DOUBLE_CLICK = 500  # in ms
 
 LEFT_BUTTON = 'left'
 RIGHT_BUTTON = 'right'
+
+MODIFIER_KEY_DELAY = 25  # in ms
 
 
 class GesturePerformer:
@@ -69,7 +72,7 @@ def key_release(key):
 
 
 def holding_modifier_key(key, gesture):
-    return sequence(key_press(key), gesture, key_release(key))
+    return sequence(key_press(key), pause(MODIFIER_KEY_DELAY), gesture, pause(MODIFIER_KEY_DELAY), key_release(key))
 
 
 def holding_control(gesture):
@@ -80,7 +83,7 @@ def type_key(key):
     return lambda automaton: automaton.type(key)
 
 
-def type_text(text, typing_speed=LIGHTNING_FAST_TYPING_SPEED):
+def type_text(text, typing_speed=LUDICROUS_FAST_TYPING_SPEED):
     return sequence(*[_at_speed(typing_speed, type_key(c)) for c in text])
 
 
@@ -171,7 +174,7 @@ def _at_speed(wpm, typing_gesture):
 
 
 def _keystroke_delay(wpm):
-    return ONE_MINUTE_IN_MS / _keystrokes_per_minute(wpm)
+    return ONE_MINUTE_IN_MS / _keystrokes_per_minute(wpm) if wpm > 0 else 0
 
 
 def _keystrokes_per_minute(wpm):

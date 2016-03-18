@@ -197,9 +197,6 @@ class LabelDriver(WidgetDriver):
 
 
 class AbstractEditDriver(WidgetDriver):
-    FOCUS_DELAY = 100 if platforms.mac else 0
-    EDITION_DELAY = 50 if platforms.mac else 0
-
     def change_text(self, text):
         self.replace_all_text(text)
         self.enter()
@@ -207,7 +204,6 @@ class AbstractEditDriver(WidgetDriver):
     def replace_all_text(self, text):
         self.is_enabled()
         self.focus_with_mouse()
-        self.pause(self.FOCUS_DELAY)
         self.clear_all_text()
         self.type(text)
 
@@ -216,7 +212,6 @@ class AbstractEditDriver(WidgetDriver):
 
     def clear_all_text(self):
         self.select_all_text()
-        self.pause(self.EDITION_DELAY)
         self.delete_selected_text()
 
     def select_all_text(self):
