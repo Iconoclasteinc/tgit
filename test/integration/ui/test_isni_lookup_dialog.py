@@ -55,20 +55,20 @@ def test_signals_lookup_on_click(driver):
 
 def test_displays_lookup_results(driver):
     dialog = show_dialog()
-    dialog.display_identities([IdentityCard(id="0000000123456789",
-                                            type=IdentityCard.INDIVIDUAL,
-                                            firstName="Joel",
-                                            lastName="Miller",
-                                            dateOfBirth="1969",
-                                            dateOfDeath="2100",
-                                            works=[{"title": "Chevere!"}]),
-                               IdentityCard(id="9876543210000000",
-                                            type=IdentityCard.INDIVIDUAL,
-                                            firstName="John",
-                                            lastName="Roney",
-                                            dateOfBirth="1700",
-                                            dateOfDeath="2500",
-                                            works=[{"title": "Zumbar"}])])
+    dialog.lookup_successful([IdentityCard(id="0000000123456789",
+                                           type=IdentityCard.INDIVIDUAL,
+                                           firstName="Joel",
+                                           lastName="Miller",
+                                           dateOfBirth="1969",
+                                           dateOfDeath="2100",
+                                           works=[{"title": "Chevere!"}]),
+                              IdentityCard(id="9876543210000000",
+                                           type=IdentityCard.INDIVIDUAL,
+                                           firstName="John",
+                                           lastName="Roney",
+                                           dateOfBirth="1700",
+                                           dateOfDeath="2500",
+                                           works=[{"title": "Zumbar"}])])
 
     driver.displays_result("Joel Miller", "1969", "2100", "Chevere!")
     driver.displays_result("John Roney", "1700", "2500", "Zumbar")
@@ -76,20 +76,20 @@ def test_displays_lookup_results(driver):
 
 def test_displays_only_last_lookup_results(driver):
     dialog = show_dialog()
-    dialog.display_identities([IdentityCard(id="0000000123456789",
-                                            type=IdentityCard.INDIVIDUAL,
-                                            firstName="Joel",
-                                            lastName="Miller",
-                                            dateOfBirth="1969",
-                                            dateOfDeath="2100",
-                                            works=[{"title": "Chevere!"}])])
-    dialog.display_identities([IdentityCard(id="9876543210000000",
-                                            type=IdentityCard.INDIVIDUAL,
-                                            firstName="John",
-                                            lastName="Roney",
-                                            dateOfBirth="1700",
-                                            dateOfDeath="2500",
-                                            works=[{"title": "Zumbar"}])])
+    dialog.lookup_successful([IdentityCard(id="0000000123456789",
+                                           type=IdentityCard.INDIVIDUAL,
+                                           firstName="Joel",
+                                           lastName="Miller",
+                                           dateOfBirth="1969",
+                                           dateOfDeath="2100",
+                                           works=[{"title": "Chevere!"}])])
+    dialog.lookup_successful([IdentityCard(id="9876543210000000",
+                                           type=IdentityCard.INDIVIDUAL,
+                                           firstName="John",
+                                           lastName="Roney",
+                                           dateOfBirth="1700",
+                                           dateOfDeath="2500",
+                                           works=[{"title": "Zumbar"}])])
     driver.displays_result("John Roney", "1700", "2500", "Zumbar")
 
 
@@ -101,13 +101,13 @@ def test_signals_selected_identity(driver):
 
     dialog = show_dialog(identity_lookup=identity_lookup)
 
-    dialog.display_identities([IdentityCard(id="0000000123456789",
-                                            type=IdentityCard.INDIVIDUAL,
-                                            firstName="Joel",
-                                            lastName="Miller",
-                                            dateOfBirth="1969",
-                                            dateOfDeath="2100",
-                                            works=[{"title": "Chevere!"}])])
+    dialog.lookup_successful([IdentityCard(id="0000000123456789",
+                                           type=IdentityCard.INDIVIDUAL,
+                                           firstName="Joel",
+                                           lastName="Miller",
+                                           dateOfBirth="1969",
+                                           dateOfDeath="2100",
+                                           works=[{"title": "Chevere!"}])])
     driver.select_identity("Joel Miller")
     driver.accept()
     driver.check(signal)
@@ -128,29 +128,29 @@ def test_disables_ok_button_on_new_search(driver):
                                works=[{"title": "Chevere!"}])]
 
     dialog = show_dialog()
-    dialog.display_identities(identities)
+    dialog.lookup_successful(identities)
     driver.select_identity("Joel Miller")
-    dialog.display_identities(identities)
+    dialog.lookup_successful(identities)
     driver.has_ok_button_disabled()
 
 
 def test_displays_no_result_message(driver):
     dialog = show_dialog()
-    dialog.display_identities([])
+    dialog.lookup_successful([])
     driver.shows_no_result_message()
 
 
 def test_hides_no_result_message(driver):
     dialog = show_dialog()
-    dialog.display_identities([])
+    dialog.lookup_successful([])
     driver.shows_no_result_message()
-    dialog.display_identities([IdentityCard(id="0000000123456789",
-                                            type=IdentityCard.INDIVIDUAL,
-                                            firstName="Joel",
-                                            lastName="Miller",
-                                            dateOfBirth="1969",
-                                            dateOfDeath="2100",
-                                            works=[{"title": "Chevere!"}])])
+    dialog.lookup_successful([IdentityCard(id="0000000123456789",
+                                           type=IdentityCard.INDIVIDUAL,
+                                           firstName="Joel",
+                                           lastName="Miller",
+                                           dateOfBirth="1969",
+                                           dateOfDeath="2100",
+                                           works=[{"title": "Chevere!"}])])
     driver.shows_no_result_message(visible=False)
 
 
@@ -164,11 +164,11 @@ def test_hides_connection_error_message(driver):
     dialog = show_dialog()
     dialog.lookup_failed(requests.ConnectionError())
     driver.shows_connection_error_message()
-    dialog.display_identities([IdentityCard(id="0000000123456789",
-                                            type=IdentityCard.INDIVIDUAL,
-                                            firstName="Joel",
-                                            lastName="Miller",
-                                            dateOfBirth="1969",
-                                            dateOfDeath="2100",
-                                            works=[{"title": "Chevere!"}])])
+    dialog.lookup_successful([IdentityCard(id="0000000123456789",
+                                           type=IdentityCard.INDIVIDUAL,
+                                           firstName="Joel",
+                                           lastName="Miller",
+                                           dateOfBirth="1969",
+                                           dateOfDeath="2100",
+                                           works=[{"title": "Chevere!"}])])
     driver.shows_connection_error_message(visible=False)
