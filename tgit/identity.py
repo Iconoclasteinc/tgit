@@ -57,18 +57,18 @@ class IdentityCard:
 
 class IdentityLookup(metaclass=Observable):
     on_identities_available = signal(list)
-    on_failed = signal(Exception)
+    on_failure = signal(Exception)
     on_success = signal(IdentityCard)
-    on_started = signal()
+    on_start = signal()
 
     def lookup_started(self):
-        self.on_started.emit()
+        self.on_start.emit()
 
     def identities_found(self, identities):
         self.on_identities_available.emit([IdentityCard(**identity) for identity in identities])
 
     def lookup_failed(self, error):
-        self.on_failed.emit(error)
+        self.on_failure.emit(error)
 
     def identity_selected(self, identity):
         self.on_success.emit(identity)

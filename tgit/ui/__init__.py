@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit import album_director as director
-from tgit import export, auth, identity
+from tgit import export, auth
 from tgit.ui import resources, browser
 from tgit.ui.dialogs import Dialogs, MessageBoxes
 from tgit.ui.dialogs.sign_in_dialog import open_sign_in_dialog
@@ -29,13 +29,9 @@ from tgit.ui.user_preferences_dialog import open_user_preferences_dialog
 
 
 def create_main_window(session, portfolio, player, prefs, cheddar, native, confirm_exit):
-    login = auth.Login(session)
-    identity_lookup = identity.IdentityLookup()
-
     application_dialogs = Dialogs(native, lambda: window)
     messages = MessageBoxes(confirm_exit, lambda: window)
-    application_pages = Pages(application_dialogs, messages, session, portfolio, player, cheddar, identity_lookup,
-                              lambda: window)
+    application_pages = Pages(application_dialogs, messages, session, portfolio, player, cheddar)
 
     def show_settings_dialog():
         return open_user_preferences_dialog(window, prefs, messages.restart_required,
@@ -45,9 +41,6 @@ def create_main_window(session, portfolio, player, prefs, cheddar, native, confi
         from openpyxl import load_workbook
         return export.as_soproq_using(lambda: load_workbook(templates.load(":/templates/soproq.xlsx")),
                                       messages.warn_soproq_default_values)
-
-    def show_sign_in_dialog():
-        return open_sign_in_dialog(window, login, auth.sign_in(login, authenticator=cheddar))
 
     window = MainWindow(session,
                         portfolio,
@@ -66,8 +59,8 @@ def create_main_window(session, portfolio, player, prefs, cheddar, native, confi
                         on_add_files=director.add_tracks,
                         on_export=export.as_csv,
                         on_settings=show_settings_dialog,
-                        on_sign_in=show_sign_in_dialog,
-                        on_sign_out=director.sign_out_from(session),
+                        on_sign_in=application_pages.show_sign_in_dialog,
+                        on_sign_out=auth.sign_out_from(session),
                         on_about_qt=messages.about_qt,
                         on_about=messages.about_tgit,
                         on_online_help=browser.open_,

@@ -22,7 +22,6 @@ from tgit.ui.dialogs.load_album_dialog import LoadProjectDialog
 from tgit.ui.dialogs.picture_selection_dialog import make_picture_selection_dialog
 from tgit.ui.dialogs.save_as_dialog import make_save_as_csv_dialog, make_save_as_excel_dialog
 from tgit.ui.dialogs.select_album_destination_dialog import SelectProjectDestinationDialog
-from tgit.ui.dialogs.sign_in_dialog import SignInDialog
 from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
 
 
@@ -61,9 +60,6 @@ class Dialogs:
 
     def select_project_to_load(self, on_select):
         return LoadProjectDialog(self._parent, self._native).select(on_select)
-
-    def sign_in(self, on_sign_in):
-        SignInDialog(self._parent).sign_in(on_sign_in)
 
     def review_isni_assignation_in(self, album, main_artist_section_visible=False):
         def review_isni_assignation(on_review):

@@ -204,12 +204,6 @@ def test_updates_track_metadata():
     assert_that(track.language, equal_to("und"), "language")
 
 
-def test_signs_user_out():
-    session = make_registered_session("...", "...")
-    director.sign_out_from(session)()
-    assert_that(session.current_user.email, none())
-
-
 def test_updates_album_metadata():
     album = build.album()
     director.update_album_from(album)(release_name="Title", compilation=False, lead_performer="Artist",

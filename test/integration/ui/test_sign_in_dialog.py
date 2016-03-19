@@ -14,10 +14,7 @@ pytestmark = pytest.mark.ui
 
 
 def open_dialog(on_sign_in=ignore):
-    return open_sign_in_dialog(parent=None,
-                               login=Login(make_anonymous_session()),
-                               on_sign_in=on_sign_in,
-                               delete_on_close=False)
+    return open_sign_in_dialog(Login(make_anonymous_session()), on_sign_in=on_sign_in, delete_on_close=False)
 
 
 @pytest.yield_fixture()

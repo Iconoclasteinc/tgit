@@ -1,9 +1,7 @@
 import timeit
 
 import pytest
-
 from PyQt5.QtCore import QByteArray
-
 from hamcrest import has_entries, assert_that, less_than, contains
 
 from cute.matchers import named
@@ -41,16 +39,12 @@ def create_track_list_tab(album):
     return TrackListTab(ignore)
 
 
-def show_page(page_driver,
-              album,
-              session=make_anonymous_session(),
-              identity_lookup=IdentityLookup(),
-              select_picture=ignore,
-              **handlers):
-    page = make_project_edition_page(album, session,
-                                     identity_lookup=identity_lookup,
+def show_page(page_driver, album, session=make_anonymous_session(), identity_lookup=IdentityLookup(),
+              select_picture=ignore, on_select_identity=ignore, **handlers):
+    page = make_project_edition_page(album, session, identity_lookup,
                                      track_list_tab=create_track_list_tab,
                                      select_picture=select_picture,
+                                     on_select_identity=on_select_identity,
                                      **handlers)
     show_widget(page_driver, page)
     return page
@@ -201,7 +195,7 @@ def test_selects_identities_on_isni_lookup(driver):
     select_identity_signal = ValueMatcherProbe("select identity", "performer")
 
     _ = show_page(driver, make_album(lead_performer="performer"), make_registered_session(),
-                  on_identity_selection=select_identity_signal.received)
+                  on_select_identity=select_identity_signal.received)
 
     driver.lookup_isni_of_main_artist()
     driver.check(select_identity_signal)

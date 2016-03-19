@@ -23,7 +23,7 @@ def test_logs_user_in_and_reports_success_when_authentication_succeeds(session, 
     login = Login(session)
 
     listener.should_receive("login_successful").with_args("test@example.com").once()
-    login.login_successful.subscribe(listener.login_successful)
+    login.on_success.subscribe(listener.login_successful)
 
     user_details = dict(email="test@example.com", token="api-token", permissions=("isni.lookup", "isni.assign"))
     login.authentication_succeeded(user_details)
@@ -39,7 +39,7 @@ def test_reports_failure_but_does_not_log_user_in_when_authentication_fails(sess
     login = Login(session)
 
     listener.should_receive("login_failed").with_args(exception_with_message("error")).once()
-    login.login_failed.subscribe(listener.login_failed)
+    login.on_failure.subscribe(listener.login_failed)
 
     login.authentication_failed(Exception("error"))
 
@@ -50,6 +50,6 @@ def test_reports_login_in_progress_when_authentication_start(session, listener):
     login = Login(session)
 
     listener.should_receive("login_in_progress").once()
-    login.login_in_progress.subscribe(listener.login_in_progress)
+    login.on_start.subscribe(listener.login_in_progress)
 
     login.authentication_started()

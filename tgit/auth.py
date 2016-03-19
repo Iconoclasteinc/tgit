@@ -32,23 +32,27 @@ def sign_in(login, authenticator):
     return sign_in_with
 
 
+def sign_out_from(session):
+    return session.logout
+
+
 class Login(metaclass=Observable):
-    login_in_progress = signal()
-    login_successful = signal(str)
-    login_failed = signal(Exception)
+    on_start = signal()
+    on_success = signal(str)
+    on_failure = signal(Exception)
 
     def __init__(self, session):
         self._session = session
 
     def authentication_started(self):
-        self.login_in_progress.emit()
+        self.on_start.emit()
 
     def authentication_succeeded(self, user_details):
         self._session.login_as(user_details["email"], user_details["token"], user_details["permissions"])
-        self.login_successful.emit(user_details["email"])
+        self.on_success.emit(user_details["email"])
 
     def authentication_failed(self, error):
-        self.login_failed.emit(error)
+        self.on_failure.emit(error)
 
 
 class Permission(Enum):

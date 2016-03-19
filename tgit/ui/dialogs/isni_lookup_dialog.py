@@ -24,19 +24,19 @@ from tgit.ui.event_loop_signaler import in_event_loop
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_isni_lookup_dialog(parent, identity_lookup, delete_on_close=True, **handlers):
+def open_isni_lookup_dialog(query, identity_lookup, on_lookup, parent=None, delete_on_close=True):
     dialog = ISNILookupDialog(parent, delete_on_close)
 
     subscriptions = MultiSubscription()
     subscriptions += identity_lookup.on_identities_available.subscribe(in_event_loop(dialog.lookup_successful))
-    subscriptions += identity_lookup.on_failed.subscribe(in_event_loop(dialog.lookup_failed))
-    subscriptions += identity_lookup.on_started.subscribe(in_event_loop(dialog.lookup_in_progress))
+    subscriptions += identity_lookup.on_failure.subscribe(in_event_loop(dialog.lookup_failed))
+    subscriptions += identity_lookup.on_start.subscribe(in_event_loop(dialog.lookup_in_progress))
 
-    if "on_lookup" in handlers:
-        dialog.on_lookup.connect(handlers["on_lookup"])
+    dialog.on_lookup.connect(on_lookup)
     dialog.on_selected.connect(identity_lookup.identity_selected)
     dialog.finished.connect(lambda accepted: subscriptions.cancel())
 
+    dialog.lookup(query)
     return dialog
 
 

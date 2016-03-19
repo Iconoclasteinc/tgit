@@ -1,6 +1,6 @@
-from hamcrest import instance_of, assert_that, contains, has_properties, has_property, is_
 import pytest
 import requests
+from hamcrest import instance_of, assert_that, contains, has_properties, has_property, is_
 
 from tgit.identity import IdentityLookup, IdentityCard
 
@@ -35,9 +35,9 @@ def listener():
 def identity_lookup(listener):
     lookup = IdentityLookup()
     lookup.on_identities_available.subscribe(listener.identities_available)
-    lookup.on_failed.subscribe(listener.failed)
+    lookup.on_failure.subscribe(listener.failed)
     lookup.on_success.subscribe(listener.selected)
-    lookup.on_started.subscribe(listener.started)
+    lookup.on_start.subscribe(listener.started)
     return lookup
 
 

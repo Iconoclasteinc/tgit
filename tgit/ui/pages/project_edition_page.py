@@ -32,16 +32,18 @@ from tgit.ui.helpers.ui_file import UIFile
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_project_edition_page(album, session, identity_lookup, track_list_tab, select_picture, **handlers):
+def make_project_edition_page(album, session, identity_lookup, track_list_tab, select_picture,
+                              on_select_identity, **handlers):
     page = ProjectEditionPage(track_list_tab=track_list_tab(album), select_picture=select_picture)
 
+    page.on_select_identity.connect(on_select_identity)
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
     subscriptions = MultiSubscription()
     subscriptions += session.user_signed_in.subscribe(page.user_changed)
     subscriptions += session.user_signed_out.subscribe(lambda user: page.user_changed(session.current_user))
-    subscriptions += identity_lookup.on_success.subscribe(page.selected_identity)
+    subscriptions += identity_lookup.on_success.subscribe(page.identity_selected)
     page.closed.connect(lambda: subscriptions.cancel())
 
     album.addAlbumListener(page)
@@ -54,6 +56,7 @@ def make_project_edition_page(album, session, identity_lookup, track_list_tab, s
 @Closeable
 class ProjectEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
+    on_select_identity = pyqtSignal(str)
 
     _picture = None
     _isni_lookup = False
@@ -73,6 +76,9 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._compilation.clicked.connect(self._update_isni_menu)
         self._main_artist.textChanged.connect(self._update_isni_menu)
         self._tabs.widget(0).layout().addWidget(track_list_tab)
+
+        self._main_artist_isni_actions_button.clicked.connect(
+                lambda: self.on_select_identity.emit(self._main_artist.text()))
 
     @staticmethod
     def _fill_with_countries(combobox):
@@ -94,13 +100,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
         self._main_artist.textEdited.connect(update_main_artist_isni)
 
-    def on_identity_selection(self, on_identity_selection):
-        def select_identity(_):
-            on_identity_selection(self._main_artist.text())
-
-        self._main_artist_isni_actions_button.clicked.connect(select_identity)
-
-    def selected_identity(self, identity):
+    def identity_selected(self, identity):
         self._main_artist_isni.setFocus(Qt.OtherFocusReason)
         self._main_artist_isni.setText(identity.id)
 

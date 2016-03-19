@@ -24,20 +24,20 @@ from tgit.ui.event_loop_signaler import in_event_loop
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def open_sign_in_dialog(parent, login, on_sign_in, delete_on_close=True):
+def open_sign_in_dialog(login, on_sign_in, parent=None, delete_on_close=True):
     dialog = SignInDialog(parent, delete_on_close)
-    dialog.sign_in.connect(on_sign_in)
+    dialog.on_sign_in.connect(on_sign_in)
     subscriptions = MultiSubscription()
-    subscriptions += login.login_in_progress.subscribe(in_event_loop(dialog.login_in_progress))
-    subscriptions += login.login_successful.subscribe(in_event_loop(lambda email: dialog.login_succeeded()))
-    subscriptions += login.login_failed.subscribe(in_event_loop(lambda error: dialog.login_failed()))
+    subscriptions += login.on_start.subscribe(in_event_loop(dialog.login_in_progress))
+    subscriptions += login.on_success.subscribe(in_event_loop(lambda email: dialog.login_succeeded()))
+    subscriptions += login.on_failure.subscribe(in_event_loop(lambda error: dialog.login_failed()))
     dialog.finished.connect(lambda accepted: subscriptions.cancel())
     dialog.open()
     return dialog
 
 
 class SignInDialog(QDialog, UIFile):
-    sign_in = pyqtSignal(str, str)
+    on_sign_in = pyqtSignal(str, str)
 
     def __init__(self, parent=None, delete_on_close=True):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
@@ -47,7 +47,7 @@ class SignInDialog(QDialog, UIFile):
     def _setup_ui(self):
         self._load(":ui/sign_in_dialog.ui")
         self._email.textEdited.connect(lambda text: self._ok_button.setEnabled(len(text) > 0))
-        self._buttons.accepted.connect(lambda: self.sign_in.emit(self._email.text(), self._password.text()))
+        self._buttons.accepted.connect(lambda: self.on_sign_in.emit(self._email.text(), self._password.text()))
         self._ok_button.setDisabled(True)
 
     def login_succeeded(self):

@@ -18,9 +18,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import functools
 
-import tgit.identity as identity
-from tgit import album_director as director
-from tgit.ui.dialogs.isni_lookup_dialog import make_isni_lookup_dialog
+from PyQt5.QtWidgets import QApplication
+
+from tgit import album_director as director, auth, identity
+from tgit.ui import open_sign_in_dialog
+from tgit.ui.dialogs.isni_lookup_dialog import open_isni_lookup_dialog
 from tgit.ui.pages.new_project_page import make_new_project_page
 from tgit.ui.pages.project_edition_page import make_project_edition_page
 from tgit.ui.pages.project_screen import make_project_screen
@@ -31,24 +33,21 @@ from tgit.ui.pages.welcome_page import make_welcome_page
 
 
 class Pages:
-    def __init__(self, dialogs, messages, session, portfolio, player, cheddar, identity_lookup, get_parent):
-        self._get_parent = get_parent
-        self._identity_lookup = identity_lookup
+    def __init__(self, dialogs, messages, session, portfolio, player, cheddar):
         self._cheddar = cheddar
         self._player = player
         self._session = session
         self._messages = messages
         self._dialogs = dialogs
         self._portfolio = portfolio
+        self._identity_lookup = identity.IdentityLookup()
+        self._login = auth.Login(session)
 
     def startup_screen(self):
-        return StartupScreen(create_welcome_page=self._welcome_page,
-                             create_new_project_page=self._new_project_page)
+        return StartupScreen(self._welcome_page, self._new_project_page)
 
     def project_screen(self, album):
-        return make_project_screen(album=album,
-                                   project_page=self._project_edition_page,
-                                   track_page=self._track_page_for(album))
+        return make_project_screen(album, self._project_edition_page, self._track_page_for(album))
 
     def _new_project_page(self):
         return make_new_project_page(select_location=self._dialogs.select_project_destination,
@@ -63,7 +62,8 @@ class Pages:
                                  on_load_project=director.load_album_into(self._portfolio))
 
     def _track_list_tab(self, album):
-        return make_track_list_tab(album=album, player=self._player,
+        return make_track_list_tab(album,
+                                   self._player,
                                    select_tracks=functools.partial(self._dialogs.select_tracks, album.type),
                                    on_move_track=director.move_track_of(album),
                                    on_remove_track=director.remove_track_from(album),
@@ -72,33 +72,41 @@ class Pages:
                                    on_add_tracks=director.add_tracks_to(album))
 
     def _project_edition_page(self, album):
-        return make_project_edition_page(
-            album=album,
-            session=self._session,
-            identity_lookup=self._identity_lookup,
-            track_list_tab=self._track_list_tab,
-            select_picture=self._dialogs.select_cover,
-            on_select_picture=director.change_cover_of(album),
-            on_isni_changed=director.add_isni_to(album),
-            on_isni_local_lookup=director.lookup_isni_in(album),
-            on_identity_selection=self._isni_dialog().lookup,
-            on_remove_picture=director.remove_album_cover_from(album),
-            on_metadata_changed=director.update_album_from(album))
+        return make_project_edition_page(album,
+                                         self._session,
+                                         self._identity_lookup,
+                                         track_list_tab=self._track_list_tab,
+                                         select_picture=self._dialogs.select_cover,
+                                         on_select_picture=director.change_cover_of(album),
+                                         on_isni_changed=director.add_isni_to(album),
+                                         on_isni_local_lookup=director.lookup_isni_in(album),
+                                         on_select_identity=self.show_isni_dialog,
+                                         on_remove_picture=director.remove_album_cover_from(album),
+                                         on_metadata_changed=director.update_album_from(album))
 
     @staticmethod
     def _track_page_for(album):
         def track_page(track):
-            return make_track_edition_page(
-                album=album,
-                track=track,
-                on_track_changed=director.update_track(track),
-                on_isni_local_lookup=director.lookup_isni_in(album),
-                on_ipi_local_lookup=director.lookup_ipi_in(album),
-                on_ipi_changed=director.add_ipi_to(album))
+            return make_track_edition_page(album,
+                                           track,
+                                           on_track_changed=director.update_track(track),
+                                           on_isni_local_lookup=director.lookup_isni_in(album),
+                                           on_ipi_local_lookup=director.lookup_ipi_in(album),
+                                           on_ipi_changed=director.add_ipi_to(album))
 
         return track_page
 
-    def _isni_dialog(self):
-        return make_isni_lookup_dialog(self._get_parent(), self._identity_lookup,
+    def show_isni_dialog(self, query):
+        return open_isni_lookup_dialog(query, self._identity_lookup,
                                        on_lookup=identity.launch_lookup(self._cheddar, self._session,
-                                                                        self._identity_lookup))
+                                                                        self._identity_lookup),
+                                       parent=self.active_window)
+
+    def show_sign_in_dialog(self):
+        return open_sign_in_dialog(self._login,
+                                   on_sign_in=auth.sign_in(self._login, self._cheddar),
+                                   parent=self.active_window)
+
+    @property
+    def active_window(self):
+        return QApplication.activeWindow()

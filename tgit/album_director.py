@@ -204,10 +204,6 @@ def _add_identifier_to_map(identifier_map, identifier, name):
     return identifier_map
 
 
-def sign_out_from(session):
-    return session.logout
-
-
 def _unwrap_future(f):
     @wraps(f)
     def decorated(future):
