@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from concurrent.futures import Future
 
@@ -9,13 +10,13 @@ from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from cute.prober import PollingProber
 from cute.probes import ValueMatcherProbe
-from test.util import builders as build, resources, doubles
+from test.util import builders as build, doubles
 from test.util.builders import make_album, make_track, make_registered_session
 from test.util.workspace import AlbumWorkspace
-from tgit import fs, album_director as director
+from tgit import album_director as director
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.metadata import Image, Metadata
+from tgit.metadata import Metadata
 from tgit.user_preferences import UserPreferences
 
 pytestmark = pytest.mark.unit
@@ -160,19 +161,6 @@ def test_ignores_invalid_tracks(track_catalog):
     director.add_tracks(album, "invalid.mp3", "valid.mp3", from_catalog=track_catalog)
 
     assert_that(album.tracks, contains(valid_track), "valid tracks in album")
-
-
-def test_changes_main_album_cover_to_specified_image_file():
-    album = build.album()
-    album.add_front_cover(mime="image/gif", data="old cover")
-
-    cover_file = resources.path("front-cover.jpg")
-    director.change_cover_of(album)(cover_file)
-
-    assert_that(album.images, contains(has_properties(mime="image/jpeg",
-                                                      data=fs.read(cover_file),
-                                                      type=Image.FRONT_COVER,
-                                                      desc="Front Cover")), "images")
 
 
 def test_moves_track_of_album():

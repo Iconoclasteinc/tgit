@@ -20,7 +20,7 @@
 from PyQt5.QtWidgets import QFileDialog
 
 from cute.matchers import named
-from cute.widgets import FileDialogDriver, window
+from cute.widgets import QFileDialogDriver, window
 
 
 def select_project_destination_dialog(parent):
@@ -28,7 +28,7 @@ def select_project_destination_dialog(parent):
                                                 parent.prober, parent.gesture_performer)
 
 
-class SelectProjectDestinationDialogDriver(FileDialogDriver):
+class SelectProjectDestinationDialogDriver(QFileDialogDriver):
     def select_destination(self, destination):
         self.is_active()
         self.view_as_list()

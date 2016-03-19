@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 from cute.matchers import named, with_buddy, with_pixmap_size
 from test.drivers.artist_table_driver import musician_table_driver
 from tgit.ui.pages.project_edition_page import ProjectEditionPage
 from ._screen_driver import ScreenDriver
-from .picture_selection_dialog_driver import picture_selection_dialog
+from .file_dialog_driver import file_selection_dialog
 
 
 def project_edition_page(parent):
@@ -38,7 +39,7 @@ class ProjectEditionPageDriver(ScreenDriver):
     def change_metadata(self, **meta):
         for tag, value in meta.items():
             if tag == "front_cover":
-                self.select_picture(value)
+                self.select_artwork(value)
             elif tag == "release_name":
                 self.change_title(value)
             elif tag == "toggle_compilation" and value:
@@ -72,16 +73,16 @@ class ProjectEditionPageDriver(ScreenDriver):
     def shows_picture_placeholder(self):
         self._displays_picture_with_size(*ProjectEditionPage.FRONT_COVER_SIZE)
 
-    def select_picture(self, filename):
-        self.add_picture()
-        picture_selection_dialog(self).select_picture(filename)
+    def select_artwork(self, filename):
+        self.add_artwork()
+        file_selection_dialog(self).select(filename)
         self.shows_picture()
 
-    def add_picture(self):
-        self.tool_button(named("_select_picture_button")).click()
+    def add_artwork(self):
+        self.tool_button(named("_select_artwork_button")).click()
 
-    def remove_picture(self):
-        self.tool_button(named("_remove_picture_button")).click()
+    def remove_artwork(self):
+        self.tool_button(named("_remove_artwork_button")).click()
 
     def assign_isni_to_main_artist(self):
         menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()

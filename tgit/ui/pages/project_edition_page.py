@@ -32,11 +32,12 @@ from tgit.ui.helpers.ui_file import UIFile
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_project_edition_page(album, session, identity_lookup, track_list_tab, select_picture,
-                              on_select_identity, **handlers):
-    page = ProjectEditionPage(track_list_tab=track_list_tab(album), select_picture=select_picture)
-
+def make_project_edition_page(album, session, identity_lookup, track_list_tab, on_select_artwork, on_select_identity,
+                              **handlers):
+    page = ProjectEditionPage(track_list_tab=track_list_tab(album))
+    page.on_select_artwork.connect(on_select_artwork)
     page.on_select_identity.connect(on_select_identity)
+
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -56,6 +57,7 @@ def make_project_edition_page(album, session, identity_lookup, track_list_tab, s
 @Closeable
 class ProjectEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
+    on_select_artwork = pyqtSignal()
     on_select_identity = pyqtSignal(str)
 
     _picture = None
@@ -64,9 +66,8 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
     FRONT_COVER_SIZE = 200, 200
 
-    def __init__(self, track_list_tab, select_picture):
+    def __init__(self, track_list_tab):
         super().__init__()
-        self._select_picture = select_picture
         self._setup_ui(track_list_tab)
 
     def _setup_ui(self, track_list_tab):
@@ -78,7 +79,9 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._tabs.widget(0).layout().addWidget(track_list_tab)
 
         self._main_artist_isni_actions_button.clicked.connect(
-                lambda: self.on_select_identity.emit(self._main_artist.text()))
+            lambda: self.on_select_identity.emit(self._main_artist.text()))
+
+        self._select_artwork_button.clicked.connect(lambda: self.on_select_artwork.emit())
 
     @staticmethod
     def _fill_with_countries(combobox):
@@ -86,9 +89,6 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
             combobox.addItem(name, code)
         combobox.insertItem(0, "")
         combobox.setCurrentIndex(0)
-
-    def on_select_picture(self, on_select_picture):
-        self._select_picture_button.clicked.connect(lambda: self._select_picture(on_select_picture))
 
     def on_isni_changed(self, on_isni_changed):
         self._main_artist_isni.editingFinished.connect(
@@ -104,8 +104,8 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_isni.setFocus(Qt.OtherFocusReason)
         self._main_artist_isni.setText(identity.id)
 
-    def on_remove_picture(self, on_remove_picture):
-        self._remove_picture_button.clicked.connect(lambda _: on_remove_picture())
+    def on_remove_artwork(self, on_remove_artwork):
+        self._remove_artwork_button.clicked.connect(lambda: on_remove_artwork())
 
     def on_metadata_changed(self, handler):
         def handle(entry, musicians=None):

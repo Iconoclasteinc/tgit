@@ -20,8 +20,9 @@ import functools
 
 from PyQt5.QtWidgets import QApplication
 
-from tgit import album_director as director, auth, identity
-from tgit.ui import open_sign_in_dialog
+from tgit import album_director as director, artwork, auth, identity
+from tgit.ui import open_sign_in_dialog, locations
+from tgit.ui.dialogs.file_dialog import open_artwork_selection_dialog
 from tgit.ui.dialogs.isni_lookup_dialog import open_isni_lookup_dialog
 from tgit.ui.pages.new_project_page import make_new_project_page
 from tgit.ui.pages.project_edition_page import make_project_edition_page
@@ -33,7 +34,8 @@ from tgit.ui.pages.welcome_page import make_welcome_page
 
 
 class Pages:
-    def __init__(self, dialogs, messages, session, portfolio, player, cheddar):
+    def __init__(self, dialogs, messages, session, portfolio, player, cheddar, native):
+        self._native = native
         self._cheddar = cheddar
         self._player = player
         self._session = session
@@ -42,6 +44,11 @@ class Pages:
         self._portfolio = portfolio
         self._identity_lookup = identity.IdentityLookup()
         self._login = auth.Login(session)
+        self._artwork_selection = artwork.ArtworkSelection(self._portfolio, locations.Pictures)
+
+    @property
+    def active_window(self):
+        return QApplication.activeWindow()
 
     def startup_screen(self):
         return StartupScreen(self._welcome_page, self._new_project_page)
@@ -76,12 +83,11 @@ class Pages:
                                          self._session,
                                          self._identity_lookup,
                                          track_list_tab=self._track_list_tab,
-                                         select_picture=self._dialogs.select_cover,
-                                         on_select_picture=director.change_cover_of(album),
+                                         on_select_artwork=self._show_artwork_selection_dialog,
                                          on_isni_changed=director.add_isni_to(album),
                                          on_isni_local_lookup=director.lookup_isni_in(album),
-                                         on_select_identity=self.show_isni_dialog,
-                                         on_remove_picture=director.remove_album_cover_from(album),
+                                         on_select_identity=self._show_isni_dialog,
+                                         on_remove_artwork=director.remove_album_cover_from(album),
                                          on_metadata_changed=director.update_album_from(album))
 
     @staticmethod
@@ -96,7 +102,7 @@ class Pages:
 
         return track_page
 
-    def show_isni_dialog(self, query):
+    def _show_isni_dialog(self, query):
         return open_isni_lookup_dialog(query, self._identity_lookup,
                                        on_lookup=identity.launch_lookup(self._cheddar, self._session,
                                                                         self._identity_lookup),
@@ -107,6 +113,8 @@ class Pages:
                                    on_sign_in=auth.sign_in(self._login, self._cheddar),
                                    parent=self.active_window)
 
-    @property
-    def active_window(self):
-        return QApplication.activeWindow()
+    def _show_artwork_selection_dialog(self):
+        return open_artwork_selection_dialog(self._artwork_selection,
+                                             on_file_selected=artwork.load(self._artwork_selection),
+                                             native=self._native,
+                                             parent=self.active_window)

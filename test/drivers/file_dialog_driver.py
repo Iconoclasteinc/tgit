@@ -3,17 +3,16 @@ import os
 
 from PyQt5.QtWidgets import QFileDialog
 
-from cute.matchers import named, disabled
-from cute.widgets import FileDialogDriver, window
+from cute.matchers import disabled
+from cute.widgets import QFileDialogDriver, window
 
 
-def picture_selection_dialog(parent):
-    return PictureSelectionDialogDriver(
-        window(QFileDialog, named('picture-selection-dialog')), parent.prober, parent.gesture_performer)
+def file_selection_dialog(parent):
+    return FileDialogDriver(window(QFileDialog), parent.prober, parent.gesture_performer)
 
 
-class PictureSelectionDialogDriver(FileDialogDriver):
-    def select_picture(self, filename):
+class FileDialogDriver(QFileDialogDriver):
+    def select(self, filename):
         self.is_active()
         self.view_as_list()
         self.navigate_to_dir(os.path.dirname(filename))

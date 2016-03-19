@@ -4,7 +4,7 @@ from .reference_track_selection_dialog_driver import reference_track_selection_d
     ReferenceTrackSelectionDialogDriver
 from .isni_lookup_dialog_driver import isni_lookup_dialog
 from .message_box_driver import message_box
-from .picture_selection_dialog_driver import picture_selection_dialog, PictureSelectionDialogDriver
+from .file_dialog_driver import file_selection_dialog
 from .track_selection_dialog_driver import track_selection_dialog, TrackSelectionDialogDriver
 
 from .track_list_tab_driver import track_list_tab, TrackListTabDriver

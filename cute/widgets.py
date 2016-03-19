@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QListView, QToolButton, QFileDialog, \
     QMenu, QComboBox, QTextEdit, QLabel, QAbstractButton, QSpinBox, QTableView, QDialogButtonBox
@@ -420,7 +421,7 @@ class QDialogDriver(WidgetDriver):
         return QDialogButtonBoxDriver.find_single(self, QDialogButtonBox)
 
 
-class FileDialogDriver(QDialogDriver):
+class QFileDialogDriver(QDialogDriver):
     DISPLAY_DELAY = 250 if platforms.mac else 90
     DISMISS_DELAY = 250 if platforms.mac else 0
 

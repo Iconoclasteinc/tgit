@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QFileDialog
 from hamcrest import contains_string
 
 from cute.matchers import named, disabled
-from cute.widgets import FileDialogDriver, window
+from cute.widgets import QFileDialogDriver, window
 
 
 def reference_track_selection_dialog(parent):
@@ -13,7 +13,7 @@ def reference_track_selection_dialog(parent):
         window(QFileDialog, named("import_album_from_track_dialog")), parent.prober, parent.gesture_performer)
 
 
-class ReferenceTrackSelectionDialogDriver(FileDialogDriver):
+class ReferenceTrackSelectionDialogDriver(QFileDialogDriver):
     def select_track(self, path, of_type="mp3"):
         self.is_active()
         self.view_as_list()
