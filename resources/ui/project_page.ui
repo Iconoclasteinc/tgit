@@ -65,7 +65,7 @@
            <enum>QLayout::SetMinimumSize</enum>
           </property>
           <item>
-           <widget class="QToolButton" name="_select_picture_button">
+           <widget class="QToolButton" name="_select_artwork_button">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -97,7 +97,7 @@ QToolTip[style=QMacStyle] {
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="_remove_picture_button">
+           <widget class="QToolButton" name="_remove_artwork_button">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -615,8 +615,8 @@ QLabel[style=QMacStyle] {
   <tabstop>_main_artist_isni_actions_button</tabstop>
   <tabstop>_main_artist_isni</tabstop>
   <tabstop>_main_artist_region</tabstop>
-  <tabstop>_select_picture_button</tabstop>
-  <tabstop>_remove_picture_button</tabstop>
+  <tabstop>_select_artwork_button</tabstop>
+  <tabstop>_remove_artwork_button</tabstop>
   <tabstop>_tabs</tabstop>
   <tabstop>_label_name</tabstop>
   <tabstop>_catalog_number</tabstop>

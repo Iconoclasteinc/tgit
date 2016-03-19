@@ -19,7 +19,6 @@
 
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 from tgit.ui.dialogs.load_album_dialog import LoadProjectDialog
-from tgit.ui.dialogs.picture_selection_dialog import make_picture_selection_dialog
 from tgit.ui.dialogs.save_as_dialog import make_save_as_csv_dialog, make_save_as_excel_dialog
 from tgit.ui.dialogs.select_album_destination_dialog import SelectProjectDestinationDialog
 from tgit.ui.dialogs.sign_in_dialog import SignInDialog
@@ -46,9 +45,6 @@ class Dialogs:
 
     def select_track(self, file_type, on_select):
         return self._select_tracks_dialog().select_file(file_type, on_select)
-
-    def select_cover(self, on_select):
-        return make_picture_selection_dialog(self._parent, self._native).select(on_select)
 
     def export_as_csv(self, on_select, default_file_name=""):
         return make_save_as_csv_dialog(default_file_name, self._parent, self._native).select(on_select)

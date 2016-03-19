@@ -4,14 +4,14 @@ import os
 from PyQt5.QtWidgets import QFileDialog
 
 from cute.matchers import named, disabled
-from cute.widgets import FileDialogDriver, window
+from cute.widgets import QFileDialogDriver, window
 
 
 def save_as_dialog(parent):
     return SaveAsDialogDriver(window(QFileDialog, named("save_as_dialog")), parent.prober, parent.gesture_performer)
 
 
-class SaveAsDialogDriver(FileDialogDriver):
+class SaveAsDialogDriver(QFileDialogDriver):
     def save_as(self, filename):
         self.is_active()
         self.view_as_list()

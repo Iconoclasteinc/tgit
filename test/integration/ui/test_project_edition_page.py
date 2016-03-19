@@ -1,9 +1,8 @@
+# -*- coding: utf-8 -*-
 import timeit
 
 import pytest
-
 from PyQt5.QtCore import QByteArray
-
 from hamcrest import has_entries, assert_that, less_than, contains
 
 from cute.matchers import named
@@ -45,12 +44,12 @@ def show_page(page_driver,
               album,
               session=make_anonymous_session(),
               identity_lookup=IdentityLookup(),
-              select_picture=ignore,
+              on_select_artwork=ignore,
               **handlers):
     page = make_project_edition_page(album, session,
                                      identity_lookup=identity_lookup,
                                      track_list_tab=create_track_list_tab,
-                                     select_picture=select_picture,
+                                     on_select_artwork=on_select_artwork,
                                      **handlers)
     show_widget(page_driver, page)
     return page
@@ -149,14 +148,12 @@ def test_disables_isni_lookup_when_main_artist_is_blank(driver):
     driver.shows_main_artist_isni_lookup_button(disabled=True)
 
 
-def test_signals_when_picture_selected(driver):
+def test_signals_when_artwork_selected(driver):
     album = make_album()
-    signal = ValueMatcherProbe("select picture", "front-cover.jpg")
-    _ = show_page(driver, album,
-                  select_picture=lambda callback: callback("front-cover.jpg"),
-                  on_select_picture=signal.received)
+    signal = ValueMatcherProbe("select artwork")
+    _ = show_page(driver, album, on_select_artwork=lambda: signal.received())
 
-    driver.add_picture()
+    driver.add_artwork()
     driver.check(signal)
 
 
@@ -168,12 +165,12 @@ def test_efficiently_displays_image_cover_when_it_does_not_change(driver):
     assert_that(time, less_than(1), "time to execute render 50 times")
 
 
-def test_signals_when_remove_picture_button_clicked(driver):
-    remove_picture_signal = ValueMatcherProbe("remove picture")
-    _ = show_page(driver, make_album(), on_remove_picture=remove_picture_signal.received)
+def test_signals_when_remove_artwork_button_clicked(driver):
+    signal = ValueMatcherProbe("remove artwork")
+    _ = show_page(driver, make_album(), on_remove_artwork=signal.received)
 
-    driver.remove_picture()
-    driver.check(remove_picture_signal)
+    driver.remove_artwork()
+    driver.check(signal)
 
 
 def test_updates_isni_when_main_artist_text_change(driver):

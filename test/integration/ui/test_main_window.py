@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 from hamcrest import contains, instance_of
 
@@ -9,7 +10,7 @@ from test.drivers.fake_drivers import no_startup_screen, no_album_screen, projec
 from test.integration.ui import show_widget, ignore
 from test.integration.ui.fake_widgets import fake_startup_screen, fake_project_screen
 from test.util import builders as build
-from test.util.builders import make_album
+from test.util.builders import make_album, make_portfolio, make_anonymous_session
 from tgit.album import Album
 from tgit.auth import User
 from tgit.platforms import mac
@@ -30,8 +31,8 @@ def _raise_os_error(message):
 
 
 def show_page(page_driver,
-              session=build.make_anonymous_session(),
-              portfolio=build.album_portfolio(),
+              session=make_anonymous_session(),
+              portfolio=make_portfolio(),
               create_startup_screen=fake_startup_screen,
               create_project_screen=fake_project_screen,
               confirm_close=ignore,
@@ -202,7 +203,8 @@ def test_signals_when_project_closed(driver):
     album = make_album()
     close_album_signal = ValueMatcherProbe("close", album)
 
-    main_window = show_page(driver, confirm_close=lambda on_accept: on_accept(), on_close_album=close_album_signal.received)
+    main_window = show_page(driver, confirm_close=lambda on_accept: on_accept(),
+                            on_close_album=close_album_signal.received)
     main_window.display_album_screen(album)
 
     driver.close_project()

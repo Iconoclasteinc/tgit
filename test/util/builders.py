@@ -30,6 +30,7 @@ def track(filename="track.mp3", metadata_from=None, **meta):
 
     return new_track
 
+
 make_track = track
 
 
@@ -47,11 +48,15 @@ def album(filename="album.tgit", of_type=Album.Type.FLAC, images=(), tracks=(), 
 
     return new_album
 
+
 make_album = album
 
 
-def album_portfolio():
-    return AlbumPortfolio()
+def make_portfolio(project=None):
+    portfolio = AlbumPortfolio()
+    if project is not None:
+        portfolio.add_album(project)
+    return portfolio
 
 
 def make_anonymous_user():

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from functools import wraps
 
 import pytest
@@ -22,7 +23,7 @@ def create_track_list_tab(_):
 
 
 def create_project_page(album):
-    return ProjectEditionPage(create_track_list_tab(album), ignore)
+    return ProjectEditionPage(create_track_list_tab(album))
 
 
 def create_track_page(track):

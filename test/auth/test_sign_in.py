@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 import pytest
 from flexmock import flexmock as mock
 
-from test.auth import exception_with_message
+from test import exception_with_message
 from tgit.auth import sign_in
 from tgit.cheddar import AuthenticationError
 from tgit.promise import Promise

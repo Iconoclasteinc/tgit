@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 import os
 
 from PyQt5.QtWidgets import QFileDialog
 
 from cute.matchers import named, disabled
-from cute.widgets import window, FileDialogDriver
+from cute.widgets import window, QFileDialogDriver
 
 
 def load_project_dialog(parent):
@@ -11,7 +12,7 @@ def load_project_dialog(parent):
                                    parent.gesture_performer)
 
 
-class LoadProjectDialogDriver(FileDialogDriver):
+class LoadProjectDialogDriver(QFileDialogDriver):
     def load(self, filename):
         self.is_active()
         self.show_hidden_files()

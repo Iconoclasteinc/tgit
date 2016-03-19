@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import pytest
 from flexmock import flexmock as mock
 from hamcrest import assert_that, is_, equal_to, contains_inanyorder, not_none
 
+from test import exception_with_message
 from test.util.builders import make_anonymous_session
 from tgit.auth import Login
-from . import exception_with_message
 
 pytestmark = pytest.mark.unit
 

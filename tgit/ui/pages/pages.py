@@ -18,9 +18,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import functools
 
-import tgit.identity as identity
 from tgit import album_director as director
+from tgit import artwork, identity
+from tgit.ui import locations
 from tgit.ui.dialogs.isni_lookup_dialog import make_isni_lookup_dialog
+from tgit.ui.dialogs.file_dialog import make_artwork_selection_dialog
 from tgit.ui.pages.new_project_page import make_new_project_page
 from tgit.ui.pages.project_edition_page import make_project_edition_page
 from tgit.ui.pages.project_screen import make_project_screen
@@ -31,7 +33,8 @@ from tgit.ui.pages.welcome_page import make_welcome_page
 
 
 class Pages:
-    def __init__(self, dialogs, messages, session, portfolio, player, cheddar, identity_lookup, get_parent):
+    def __init__(self, dialogs, messages, session, portfolio, player, cheddar, identity_lookup, native, get_parent):
+        self._native = native
         self._get_parent = get_parent
         self._identity_lookup = identity_lookup
         self._cheddar = cheddar
@@ -40,6 +43,7 @@ class Pages:
         self._messages = messages
         self._dialogs = dialogs
         self._portfolio = portfolio
+        self._artwork_selection = artwork.ArtworkSelection(self._portfolio, locations.Pictures)
 
     def startup_screen(self):
         return StartupScreen(create_welcome_page=self._welcome_page,
@@ -77,12 +81,11 @@ class Pages:
             session=self._session,
             identity_lookup=self._identity_lookup,
             track_list_tab=self._track_list_tab,
-            select_picture=self._dialogs.select_cover,
-            on_select_picture=director.change_cover_of(album),
+            on_select_artwork=self._artwork_selection_dialog().open,
             on_isni_changed=director.add_isni_to(album),
             on_isni_local_lookup=director.lookup_isni_in(album),
             on_identity_selection=self._isni_dialog().lookup,
-            on_remove_picture=director.remove_album_cover_from(album),
+            on_remove_artwork=director.remove_album_cover_from(album),
             on_metadata_changed=director.update_album_from(album))
 
     @staticmethod
@@ -102,3 +105,9 @@ class Pages:
         return make_isni_lookup_dialog(self._get_parent(), self._identity_lookup,
                                        on_lookup=identity.launch_lookup(self._cheddar, self._session,
                                                                         self._identity_lookup))
+
+    def _artwork_selection_dialog(self):
+        return make_artwork_selection_dialog(self._artwork_selection,
+                                             on_file_selected=artwork.load(self._artwork_selection),
+                                             native=self._native,
+                                             parent=self._get_parent())

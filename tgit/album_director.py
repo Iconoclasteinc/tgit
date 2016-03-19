@@ -19,7 +19,7 @@
 import os
 from functools import wraps
 
-from tgit import local_storage, fs
+from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
 from tgit.identity import IdentityCard
@@ -118,15 +118,6 @@ def update_album_from(album):
                 track.lead_performer = album_main_artist
 
     return update_album
-
-
-def change_cover_of(album):
-    def change_album_cover(filename):
-        album.remove_images()
-        mime, data = fs.guess_mime_type(filename), fs.read(filename)
-        album.add_front_cover(mime, data)
-
-    return change_album_cover
 
 
 def remove_album_cover_from(album):
