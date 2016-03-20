@@ -18,7 +18,7 @@ pytestmark = pytest.mark.ui
 
 
 def show_dialog(model, on_select=ignore):
-    dialog = open_artwork_selection_dialog(picture_selection=model, on_file_selected=on_select, native=False)
+    dialog = open_artwork_selection_dialog(artwork_selection=model, on_file_selected=on_select, native=False)
     dialog.open()
     return dialog
 

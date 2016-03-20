@@ -1138,9 +1138,9 @@
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="tgit/ui/picture_selection_dialog.py" line="40"/>
-        <source>Image files</source>
-        <translation>Fichiers images</translation>
+        <location filename="tgit/ui/file_dialog.py" />
+        <source>Image Files (*.png *.jpeg *.jpg *.jpe)</source>
+        <translation>Fichiers images (*.png *.jpeg *.jpg *.jpe)</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_selection_dialog.py"/>

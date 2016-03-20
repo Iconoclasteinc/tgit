@@ -21,15 +21,14 @@ from PyQt5.QtWidgets import QFileDialog
 
 
 def name_filter(mime_types, name):
-    extensions = " ".join(["*.{}".format(extension) for extension in mime_types])
-    return "{} ({})".format(name, extensions)
+    return "{} ({})".format(name, " ".join(["*.{}".format(extension) for extension in mime_types]))
 
 
-def open_artwork_selection_dialog(picture_selection, on_file_selected, parent=None, native=True):
-    dialog = make_file_dialog(name_filter(picture_selection.extensions, "Image Files"),
-                              QFileDialog.ExistingFile, picture_selection.directory, parent, native)
+def open_artwork_selection_dialog(artwork_selection, on_file_selected, parent=None, native=True):
+    dialog = make_file_dialog(name_filter(artwork_selection.extensions, "Image Files"),
+                              QFileDialog.ExistingFile, artwork_selection.directory, parent, native)
 
-    dialog.directoryEntered.connect(picture_selection.directory_changed)
+    dialog.directoryEntered.connect(artwork_selection.directory_changed)
     dialog.fileSelected.connect(on_file_selected)
     dialog.open()
     return dialog
@@ -40,5 +39,5 @@ def make_file_dialog(name_filters, file_mode, directory, parent, native):
     dialog.setOption(QFileDialog.DontUseNativeDialog, not native)
     dialog.setDirectory(directory)
     dialog.setFileMode(file_mode)
-    dialog.setNameFilter(name_filters)
+    dialog.setNameFilter(dialog.tr(name_filters))
     return dialog
