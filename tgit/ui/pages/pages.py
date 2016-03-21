@@ -81,7 +81,7 @@ class Pages:
             on_select_picture=director.change_cover_of(album),
             on_isni_changed=director.add_isni_to(album),
             on_isni_local_lookup=director.lookup_isni_in(album),
-            on_identity_selection=self._isni_dialog().lookup,
+            on_identity_selection=self._isni_dialog,
             on_remove_picture=director.remove_album_cover_from(album),
             on_metadata_changed=director.update_album_from(album))
 
@@ -98,7 +98,7 @@ class Pages:
 
         return track_page
 
-    def _isni_dialog(self):
+    def _isni_dialog(self, query):
         return make_isni_lookup_dialog(self._get_parent(), self._identity_lookup,
                                        on_lookup=identity.launch_lookup(self._cheddar, self._session,
-                                                                        self._identity_lookup))
+                                                                        self._identity_lookup)).lookup(query)
