@@ -18,8 +18,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from enum import Enum
 import shutil
+import sip
 
 from PyQt5.QtCore import QUrl
+
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 
 from tgit.platforms import windows
@@ -28,18 +30,27 @@ from tgit.track import Track
 from tgit import fs
 
 
+def open_media_player(portfolio):
+    player = MediaPlayer()
+    subscription = portfolio.album_removed.subscribe(lambda _: player.stop())
+    player.closed.subscribe(subscription.cancel)
+
+    return player
+
+
 class MediaPlayer(metaclass=Observable):
     class Error(Enum):
         none = QMediaPlayer.NoError
         unsupported_format = QMediaPlayer.FormatError
         access_denied = QMediaPlayer.AccessDeniedError
 
+    closed = signal()
     playing = signal(Track)
     stopped = signal(Track)
     error_occurred = signal(Track)
 
-    def __init__(self, media_library):
-        self._media_library = media_library
+    def __init__(self):
+        self._media_library = create_media_library()
         self._playlist = []
         self._player = QMediaPlayer()
         self._player.stateChanged.connect(self._state_changed)
@@ -72,9 +83,15 @@ class MediaPlayer(metaclass=Observable):
         elif state == QMediaPlayer.StoppedState:
             self.stopped.emit(self._playlist.pop(0))
 
-    def close(self):
+    def dispose(self):
         self._player.stop()
+        # force the deletion of the player on windows because windows
+        # doesn't release the handle and prevents further instanciations
+        sip.delete(self._player)
         self._player = None
+
+        self._media_library.dispose()
+        self.closed.emit()
 
 
 def create_media_library():
@@ -85,7 +102,7 @@ class MediaLibrary:
     def fetch(self, filename):
         return QMediaContent(QUrl.fromLocalFile(filename))
 
-    def close(self):
+    def dispose(self):
         pass
 
 
@@ -96,5 +113,5 @@ class WindowsMediaLibrary(MediaLibrary):
     def fetch(self, filename):
         return super().fetch(fs.make_temp_copy(filename, self._directory))
 
-    def close(self):
+    def dispose(self):
         shutil.rmtree(self._directory, ignore_errors=True)

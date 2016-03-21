@@ -24,26 +24,19 @@ from PyQt5.QtCore import QTranslator, QLocale
 from tgit import album_director as director, artwork, auth, identity, export, ui
 from tgit.ui.helpers import template_file as templates
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.audio import create_media_library, MediaPlayer
+from tgit.audio import open_media_player
 from tgit.cheddar import Cheddar
-from tgit.signal import MultiSubscription
 from tgit.settings_backend import SettingsBackend
 
 
 def make_tagger(app):
     settings = SettingsBackend()
-    cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
-    media_library = create_media_library()
-    player = MediaPlayer(media_library)
     portfolio = AlbumPortfolio()
-
-    subscriptions = MultiSubscription()
-    subscriptions += portfolio.album_removed.subscribe(lambda _: player.stop())
+    cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
+    player = open_media_player(portfolio)
 
     app.lastWindowClosed.connect(cheddar.stop)
-    app.lastWindowClosed.connect(player.close)
-    app.lastWindowClosed.connect(media_library.close)
-    app.lastWindowClosed.connect(subscriptions.cancel)
+    app.lastWindowClosed.connect(player.dispose)
 
     return Tagger(settings.load_session(), portfolio, player, cheddar, settings.load_user_preferences())
 
