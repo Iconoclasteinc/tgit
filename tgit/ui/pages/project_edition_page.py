@@ -34,7 +34,8 @@ ISO_8601_FORMAT = "yyyy-MM-dd"
 
 def make_project_edition_page(album, session, identity_lookup, track_list_tab, on_select_artwork, on_select_identity,
                               **handlers):
-    page = ProjectEditionPage(track_list_tab=track_list_tab(album))
+    track_list = track_list_tab(album)
+    page = ProjectEditionPage(track_list_tab=track_list)
     page.on_select_artwork.connect(on_select_artwork)
     page.on_select_identity.connect(on_select_identity)
 
@@ -46,6 +47,7 @@ def make_project_edition_page(album, session, identity_lookup, track_list_tab, o
     subscriptions += session.user_signed_out.subscribe(lambda user: page.user_changed(session.current_user))
     subscriptions += identity_lookup.on_success.subscribe(page.identity_selected)
     page.closed.connect(lambda: subscriptions.cancel())
+    page.closed.connect(track_list.close)
 
     album.addAlbumListener(page)
     page.closed.connect(lambda: album.removeAlbumListener(page))
