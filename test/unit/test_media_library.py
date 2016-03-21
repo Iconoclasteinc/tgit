@@ -13,7 +13,7 @@ pytestmark = pytest.mark.unit
 def media_library():
     library = WindowsMediaLibrary()
     yield library
-    library.close()
+    library.dispose()
 
 
 def test_creates_temp_directory(media_library):
@@ -28,7 +28,7 @@ def test_creates_temp_file_from_filename(media_library):
 
 def test_removes_all_temp_files_on_close(media_library):
     media_library.fetch(resources.path("audio", "Rolling in the Deep.mp3"))
-    media_library.close()
+    media_library.dispose()
     assert_that(os.path.exists(media_library._directory), is_(False), "the media library's temporary directory exists")
 
 
