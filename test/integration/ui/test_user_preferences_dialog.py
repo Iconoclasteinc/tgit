@@ -7,7 +7,7 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import UserPreferencesDialogDriver
 from test.util.builders import make_preferences
-from tgit.ui.user_preferences_dialog import open_user_preferences_dialog
+from tgit.ui.dialogs.user_preferences_dialog import open_user_preferences_dialog
 
 pytestmark = pytest.mark.ui
 

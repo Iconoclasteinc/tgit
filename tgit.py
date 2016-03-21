@@ -38,4 +38,4 @@ def _print_unhandled_exceptions():
 
 _disable_urllib_warnings()
 # _print_unhandled_exceptions()
-sys.exit(tgit.launch())
+tgit.launch()

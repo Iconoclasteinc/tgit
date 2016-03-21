@@ -19,3 +19,7 @@
 
 from .dialogs import Dialogs
 from .message_boxes import MessageBoxes
+from .file_dialog import open_artwork_selection_dialog
+from .isni_lookup_dialog import open_isni_lookup_dialog
+from .sign_in_dialog import open_sign_in_dialog
+from .user_preferences_dialog import open_user_preferences_dialog
