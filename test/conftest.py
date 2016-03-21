@@ -32,7 +32,6 @@ def qt():
     _print_unhandled_exceptions()
     application = QApplication([])
     yield application
-    application.quit()
     # If we don't force deletion of the C++ wrapped object, it causes the test suite to eventually crash
     # Never ever remove this!!
     sip.delete(application)
