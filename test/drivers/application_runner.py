@@ -11,7 +11,7 @@ from tgit import platforms
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.cheddar import Cheddar
 from .main_window_driver import MainWindowDriver
-from tgit.ui import make_main_window
+from tgit.tagger import Tagger
 
 
 def _make_tracks(tracks):
@@ -31,9 +31,9 @@ class ApplicationRunner:
         self._settings = settings
 
     def start(self):
-        make_main_window(self._settings.load_session(), AlbumPortfolio(), fake_audio_player(),
-                         self._settings.load_user_preferences(), Cheddar(host="localhost", port=5001, secure=False),
-                         native=False, confirm_exit=False).show()
+        Tagger(self._settings.load_session(), AlbumPortfolio(), fake_audio_player(),
+               Cheddar(host="localhost", port=5001, secure=False), self._settings.load_user_preferences(),
+               native=False, confirm_exit=False).show()
 
         self.main_window_driver = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                                    EventProcessingProber(timeout_in_ms=1000), Animatron())

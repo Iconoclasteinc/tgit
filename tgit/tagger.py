@@ -16,29 +16,38 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import sys
-from traceback import format_exception
+
+import functools
 
 from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtGui import QIcon
 
 from PyQt5.QtWidgets import QApplication
 
+from tgit import album_director as director, artwork, auth, identity, export
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.audio import MediaPlayer, create_media_library
+from tgit.audio import create_media_library, MediaPlayer
 from tgit.cheddar import Cheddar
-from tgit.settings_backend import SettingsBackend
 from tgit.signal import MultiSubscription
-from tgit.ui import make_main_window
+from tgit.settings_backend import SettingsBackend
+from tgit.ui import locations, browser
+from tgit.ui.dialogs import MessageBoxes, Dialogs
+from tgit.ui.dialogs.file_dialog import open_artwork_selection_dialog
+from tgit.ui.dialogs.isni_lookup_dialog import open_isni_lookup_dialog
+from tgit.ui.dialogs.sign_in_dialog import open_sign_in_dialog
+from tgit.ui.helpers import template_file as templates
+from tgit.ui.main_window import MainWindow
+from tgit.ui.pages.new_project_page import make_new_project_page
+from tgit.ui.pages.project_edition_page import make_project_edition_page
+from tgit.ui.pages.project_screen import make_project_screen
+from tgit.ui.pages.startup_screen import StartupScreen
+from tgit.ui.pages.track_edition_page import make_track_edition_page
+from tgit.ui.pages.track_list_tab import make_track_list_tab
+from tgit.ui.pages.welcome_page import make_welcome_page
+from tgit.ui.user_preferences_dialog import open_user_preferences_dialog
 
 
-def main():
-    _disable_urllib_warnings()
-    # _print_unhandled_exceptions()
-    sys.exit(launch_tagger())
-
-
-def launch_tagger():
+def launch():
     app = QApplication([])
     app.setApplicationName("TGiT")
     app.setOrganizationName("Iconoclaste Inc.")
@@ -47,7 +56,20 @@ def launch_tagger():
 
     # QSettings must be initialized _after_ the organization name is set on the QApplication
     settings = SettingsBackend()
+
     preferences = settings.load_user_preferences()
+    QLocale.setDefault(QLocale(preferences.locale))
+    for resource in ("qtbase", "tgit"):
+        translator = QTranslator(app)
+        if translator.load("{0}_{1}".format(resource, preferences.locale), ":/"):
+            app.installTranslator(translator)
+
+    make_tagger(app, settings, preferences).show()
+
+    return app.exec_()
+
+
+def make_tagger(app, settings, preferences):
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
     media_library = create_media_library()
     player = MediaPlayer(media_library)
@@ -61,32 +83,127 @@ def launch_tagger():
     app.lastWindowClosed.connect(media_library.close)
     app.lastWindowClosed.connect(subscriptions.cancel)
 
-    _set_locale(app, preferences.locale)
-    make_main_window(settings.load_session(), portfolio, player, preferences, cheddar).show()
-
-    return app.exec_()
+    return Tagger(settings.load_session(), portfolio, player, cheddar, preferences)
 
 
-def _set_locale(app, locale):
-    QLocale.setDefault(QLocale(locale))
-    for resource in ("qtbase", "tgit"):
-        _install_translations(app, resource, locale)
+class Tagger:
+    _main_window = None
 
+    def __init__(self, session, portfolio, player, cheddar, preferences, native=True, confirm_exit=True):
+        self._preferences = preferences
+        self._native = native
+        self._cheddar = cheddar
+        self._player = player
+        self._session = session
+        self._messages = MessageBoxes(confirm_exit)
+        self._dialogs = Dialogs(native)
+        self._portfolio = portfolio
+        self._identity_lookup = identity.IdentityLookup()
+        self._login = auth.Login(session)
+        self._artwork_selection = artwork.ArtworkSelection(self._portfolio, locations.Pictures)
 
-def _install_translations(app, resource, locale):
-    translator = QTranslator(app)
-    if translator.load("{0}_{1}".format(resource, locale), ":/"):
-        app.installTranslator(translator)
+    def show(self):
+        self._main_window = MainWindow(self._session,
+                                       self._portfolio,
+                                       confirm_exit=self._messages.confirm_exit,
+                                       create_startup_screen=self._startup_screen,
+                                       create_project_screen=self._project_screen,
+                                       confirm_close=self._messages.close_project_confirmation,
+                                       select_export_destination=self._dialogs.export_as_csv,
+                                       select_save_as_destination=self._dialogs.save_as_excel,
+                                       select_tracks=self._dialogs.select_tracks,
+                                       select_tracks_in_folder=self._dialogs.add_tracks_in_folder,
+                                       show_save_error=self._messages.save_project_failed,
+                                       show_export_error=self._messages.export_failed,
+                                       on_close_album=director.remove_album_from(self._portfolio),
+                                       on_save_album=director.save_album(),
+                                       on_add_files=director.add_tracks,
+                                       on_export=export.as_csv,
+                                       on_settings=self._show_settings_dialog,
+                                       on_sign_in=self._show_sign_in_dialog,
+                                       on_sign_out=auth.sign_out_from(self._session),
+                                       on_about_qt=self._messages.about_qt,
+                                       on_about=self._messages.about_tgit,
+                                       on_online_help=browser.open_,
+                                       on_request_feature=browser.open_,
+                                       on_register=browser.open_,
+                                       on_transmit_to_soproq=self._export_as_soproq())
+        self._main_window.show()
 
+    def _startup_screen(self):
+        return StartupScreen(self._welcome_page, self._new_project_page)
 
-def _disable_urllib_warnings():
-    from requests.packages import urllib3
-    urllib3.disable_warnings()
+    def _project_screen(self, album):
+        return make_project_screen(album, self._project_edition_page, self._track_page_for(album))
 
+    def _new_project_page(self):
+        return make_new_project_page(select_location=self._dialogs.select_project_destination,
+                                     select_track=self._dialogs.select_track,
+                                     check_project_exists=director.album_exists,
+                                     confirm_overwrite=self._messages.overwrite_project_confirmation,
+                                     on_create_project=director.create_album_into(self._portfolio))
 
-def _print_unhandled_exceptions():
-    def exception_hook(exctype, value, traceback):
-        for line in format_exception(exctype, value, traceback):
-            print(line, file=sys.stderr)
+    def _welcome_page(self):
+        return make_welcome_page(select_project=self._dialogs.select_project_to_load,
+                                 show_load_error=self._messages.load_project_failed,
+                                 on_load_project=director.load_album_into(self._portfolio))
 
-    sys.excepthook = exception_hook
+    def _track_list_tab(self, album):
+        return make_track_list_tab(album,
+                                   self._player,
+                                   select_tracks=functools.partial(self._dialogs.select_tracks, album.type),
+                                   on_move_track=director.move_track_of(album),
+                                   on_remove_track=director.remove_track_from(album),
+                                   on_play_track=self._player.play,
+                                   on_stop_track=self._player.stop,
+                                   on_add_tracks=director.add_tracks_to(album))
+
+    def _project_edition_page(self, album):
+        return make_project_edition_page(album,
+                                         self._session,
+                                         self._identity_lookup,
+                                         track_list_tab=self._track_list_tab,
+                                         on_select_artwork=self._show_artwork_selection_dialog,
+                                         on_isni_changed=director.add_isni_to(album),
+                                         on_isni_local_lookup=director.lookup_isni_in(album),
+                                         on_select_identity=self._show_isni_dialog,
+                                         on_remove_artwork=director.remove_album_cover_from(album),
+                                         on_metadata_changed=director.update_album_from(album))
+
+    @staticmethod
+    def _track_page_for(album):
+        def track_page(track):
+            return make_track_edition_page(album,
+                                           track,
+                                           on_track_changed=director.update_track(track),
+                                           on_isni_local_lookup=director.lookup_isni_in(album),
+                                           on_ipi_local_lookup=director.lookup_ipi_in(album),
+                                           on_ipi_changed=director.add_ipi_to(album))
+
+        return track_page
+
+    def _show_isni_dialog(self, query):
+        return open_isni_lookup_dialog(query, self._identity_lookup,
+                                       on_lookup=identity.launch_lookup(self._cheddar, self._session,
+                                                                        self._identity_lookup),
+                                       parent=self._main_window)
+
+    def _show_sign_in_dialog(self):
+        return open_sign_in_dialog(self._login,
+                                   on_sign_in=auth.sign_in(self._login, self._cheddar),
+                                   parent=self._main_window)
+
+    def _show_artwork_selection_dialog(self):
+        return open_artwork_selection_dialog(self._artwork_selection,
+                                             on_file_selected=artwork.load(self._artwork_selection),
+                                             native=self._native,
+                                             parent=self._main_window)
+
+    def _show_settings_dialog(self):
+        return open_user_preferences_dialog(self._main_window, self._preferences, self._messages.restart_required,
+                                            director.update_preferences(self._preferences))
+
+    def _export_as_soproq(self):
+        from openpyxl import load_workbook
+        return export.as_soproq_using(lambda: load_workbook(templates.load(":/templates/soproq.xlsx")),
+                                      self._messages.warn_soproq_default_values)

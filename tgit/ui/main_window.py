@@ -20,7 +20,7 @@
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QAction
 
-from tgit.ui.helpers import ui_file
+from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.observer import Observer
 from tgit.ui.rescue import rescue
 
@@ -36,14 +36,8 @@ StyleSheet = """
 """
 
 
-class HandlerRegistrar:
-    def _register(self, **handlers):
-        for name, handler in handlers.items():
-            getattr(self, name)(handler)
-
-
 @Observer
-class MainWindow(QMainWindow, HandlerRegistrar):
+class MainWindow(QMainWindow, UIFile):
     _closing = False
     _album = None
 
@@ -67,7 +61,8 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self._setup_ui()
         self._setup_menu_bar()
         self._setup_signals(portfolio, session)
-        self._register(**handlers)
+        for name, handler in handlers.items():
+            getattr(self, name)(handler)
 
         self._album_dependent_action = [
             self._add_files_action,
@@ -189,7 +184,7 @@ class MainWindow(QMainWindow, HandlerRegistrar):
         self._sign_out_action.triggered.connect(lambda _: handler())
 
     def _setup_ui(self):
-        ui_file.load(":/ui/main_window.ui", self)
+        self._load(":/ui/main_window.ui")
         self.setStyleSheet(StyleSheet)
 
     def _setup_menu_bar(self):

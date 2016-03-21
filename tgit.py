@@ -17,7 +17,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from traceback import format_exception
+import sys
 
-from tgit import tagger
+import tgit
 
-tagger.main()
+
+def _disable_urllib_warnings():
+    from requests.packages import urllib3
+    urllib3.disable_warnings()
+
+
+def _print_unhandled_exceptions():
+    def exception_hook(exctype, value, traceback):
+        for line in format_exception(exctype, value, traceback):
+            print(line, file=sys.stderr)
+
+    sys.excepthook = exception_hook
+
+
+_disable_urllib_warnings()
+# _print_unhandled_exceptions()
+sys.exit(tgit.launch())

@@ -19,3 +19,5 @@
 
 __app_name__ = "TGiT"
 __version__ = "2.2.1"
+
+from .tagger import launch
