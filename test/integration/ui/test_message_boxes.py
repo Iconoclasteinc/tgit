@@ -28,7 +28,7 @@ def about_tgit_driver(qt, prober, automaton):
 
 
 def messages(confirm_before_exiting=False):
-    return MessageBoxes(confirm_before_exiting, lambda: None)
+    return MessageBoxes(confirm_before_exiting)
 
 
 def test_shows_isni_assignation_failed_message_with_details(driver):

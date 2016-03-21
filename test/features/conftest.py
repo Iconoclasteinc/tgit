@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 import pytest
 
 from test.drivers.application_runner import ApplicationRunner
-from test.drivers.application_settings_driver import ApplicationSettingsDriver
 from test.util import doubles
 from test.util.workspace import AlbumWorkspace
+from tgit.settings_backend import SettingsBackend
 
 
 @pytest.yield_fixture
@@ -25,14 +26,9 @@ def settings_file(tmpdir):
     return tmpdir.join("settings.ini").strpath
 
 
-@pytest.fixture
-def settings(settings_file):
-    return ApplicationSettingsDriver(settings_file)
-
-
 @pytest.yield_fixture
-def app(workspace, settings_file):
-    runner = ApplicationRunner(workspace, settings_file)
+def app(qt, workspace, settings_file):
+    runner = ApplicationRunner(workspace, SettingsBackend(settings_file))
     runner.start()
     yield runner
     runner.stop()

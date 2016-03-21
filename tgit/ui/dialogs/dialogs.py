@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt5.QtWidgets import QApplication
 
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 from tgit.ui.dialogs.load_album_dialog import LoadProjectDialog
@@ -25,13 +26,12 @@ from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
 
 
 class Dialogs:
-    def __init__(self, native, get_parent):
-        self._get_parent = get_parent
+    def __init__(self, native):
         self._native = native
 
     @property
     def _parent(self):
-        return self._get_parent()
+        return QApplication.activeWindow()
 
     def _select_tracks_dialog(self):
         return TrackSelectionDialog(self._parent, self._native)

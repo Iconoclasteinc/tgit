@@ -21,75 +21,67 @@ from traceback import format_exception
 
 from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtGui import QIcon
+
 from PyQt5.QtWidgets import QApplication
 
-from tgit import ui
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import MediaPlayer, create_media_library
 from tgit.cheddar import Cheddar
 from tgit.settings_backend import SettingsBackend
-
-
-class TGiT(QApplication):
-    def __init__(self, create_player, cheddar, settings_file=None, native=True, confirm_exit=True):
-        super().__init__([])
-
-        self.setApplicationName("TGiT")
-        self.setOrganizationName("Iconoclaste Inc.")
-        self.setOrganizationDomain("tagyourmusic.com")
-        self.setWindowIcon(QIcon(":/tgit.ico"))
-
-        self._settings = SettingsBackend(settings_file)
-        self._cheddar = cheddar
-        self._confirm_exit = confirm_exit
-        self._native = native
-        self._media_library = create_media_library()
-        self._player = create_player(self._media_library)
-        self._album_portfolio = AlbumPortfolio()
-        self._album_portfolio.album_removed.subscribe(lambda album: self._player.stop())
-        self._translators = []
-
-    def _set_locale(self, locale):
-        QLocale.setDefault(QLocale(locale))
-        for resource in ("qtbase", "tgit"):
-            self._install_translations(resource, locale)
-
-    def _install_translations(self, resource, locale):
-        translator = QTranslator()
-        if translator.load("{0}_{1}".format(resource, locale), ":/"):
-            self.installTranslator(translator)
-            self._translators.append(translator)
-
-    def show(self):
-        preferences = self._settings.load_user_preferences()
-        self._set_locale(preferences.locale)
-        session = self._settings.load_session()
-        main_window = ui.create_main_window(session, self._album_portfolio, self._player, preferences,
-                                            self._cheddar, self._native, self._confirm_exit)
-        main_window.show()
-
-    def launch(self):
-        self.show()
-        self.run()
-
-    def run(self):
-        self.close(self.exec_())
-
-    def close(self, exit_value):
-        self._player.close()
-        self._media_library.close()
-        self.exit(exit_value)
+from tgit.signal import MultiSubscription
+from tgit.ui import make_main_window
 
 
 def main():
+    _disable_urllib_warnings()
+    # _print_unhandled_exceptions()
+    sys.exit(launch_tagger())
+
+
+def launch_tagger():
+    app = QApplication([])
+    app.setApplicationName("TGiT")
+    app.setOrganizationName("Iconoclaste Inc.")
+    app.setOrganizationDomain("tagyourmusic.com")
+    app.setWindowIcon(QIcon(":/tgit.ico"))
+
+    # QSettings must be initialized _after_ the organization name is set on the QApplication
+    settings = SettingsBackend()
+    preferences = settings.load_user_preferences()
+    cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
+    media_library = create_media_library()
+    player = MediaPlayer(media_library)
+    portfolio = AlbumPortfolio()
+
+    subscriptions = MultiSubscription()
+    subscriptions += portfolio.album_removed.subscribe(lambda _: player.stop())
+
+    app.lastWindowClosed.connect(cheddar.stop)
+    app.lastWindowClosed.connect(player.close)
+    app.lastWindowClosed.connect(media_library.close)
+    app.lastWindowClosed.connect(subscriptions.cancel)
+
+    _set_locale(app, preferences.locale)
+    make_main_window(settings.load_session(), portfolio, player, preferences, cheddar).show()
+
+    return app.exec_()
+
+
+def _set_locale(app, locale):
+    QLocale.setDefault(QLocale(locale))
+    for resource in ("qtbase", "tgit"):
+        _install_translations(app, resource, locale)
+
+
+def _install_translations(app, resource, locale):
+    translator = QTranslator(app)
+    if translator.load("{0}_{1}".format(resource, locale), ":/"):
+        app.installTranslator(translator)
+
+
+def _disable_urllib_warnings():
     from requests.packages import urllib3
     urllib3.disable_warnings()
-    # _print_unhandled_exceptions()
-
-    cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
-    tagger = TGiT(MediaPlayer, cheddar)
-    tagger.launch()
-    cheddar.stop()
 
 
 def _print_unhandled_exceptions():

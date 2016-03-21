@@ -28,9 +28,9 @@ from tgit.ui.pages import Pages
 from tgit.ui.user_preferences_dialog import open_user_preferences_dialog
 
 
-def create_main_window(session, portfolio, player, prefs, cheddar, native, confirm_exit):
-    application_dialogs = Dialogs(native, lambda: window)
-    messages = MessageBoxes(confirm_exit, lambda: window)
+def make_main_window(session, portfolio, player, prefs, cheddar, native=True, confirm_exit=True):
+    application_dialogs = Dialogs(native)
+    messages = MessageBoxes(confirm_exit)
     application_pages = Pages(application_dialogs, messages, session, portfolio, player, cheddar, native)
 
     def show_settings_dialog():
