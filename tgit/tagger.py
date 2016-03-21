@@ -20,9 +20,6 @@
 import functools
 
 from PyQt5.QtCore import QTranslator, QLocale
-from PyQt5.QtGui import QIcon
-
-from PyQt5.QtWidgets import QApplication
 
 from tgit import album_director as director, artwork, auth, identity, export
 from tgit.album_portfolio import AlbumPortfolio
@@ -47,29 +44,8 @@ from tgit.ui.pages.welcome_page import make_welcome_page
 from tgit.ui.user_preferences_dialog import open_user_preferences_dialog
 
 
-def launch():
-    app = QApplication([])
-    app.setApplicationName("TGiT")
-    app.setOrganizationName("Iconoclaste Inc.")
-    app.setOrganizationDomain("tagyourmusic.com")
-    app.setWindowIcon(QIcon(":/tgit.ico"))
-
-    # QSettings must be initialized _after_ the organization name is set on the QApplication
+def make_tagger(app):
     settings = SettingsBackend()
-
-    preferences = settings.load_user_preferences()
-    QLocale.setDefault(QLocale(preferences.locale))
-    for resource in ("qtbase", "tgit"):
-        translator = QTranslator(app)
-        if translator.load("{0}_{1}".format(resource, preferences.locale), ":/"):
-            app.installTranslator(translator)
-
-    make_tagger(app, settings, preferences).show()
-
-    return app.exec_()
-
-
-def make_tagger(app, settings, preferences):
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
     media_library = create_media_library()
     player = MediaPlayer(media_library)
@@ -83,7 +59,7 @@ def make_tagger(app, settings, preferences):
     app.lastWindowClosed.connect(media_library.close)
     app.lastWindowClosed.connect(subscriptions.cancel)
 
-    return Tagger(settings.load_session(), portfolio, player, cheddar, preferences)
+    return Tagger(settings.load_session(), portfolio, player, cheddar, settings.load_user_preferences())
 
 
 class Tagger:
@@ -129,6 +105,13 @@ class Tagger:
                                        on_register=browser.open_,
                                        on_transmit_to_soproq=self._export_as_soproq())
         self._main_window.show()
+
+    def translate(self, app):
+        QLocale.setDefault(QLocale(self._preferences.locale))
+        for resource in ("qtbase", "tgit"):
+            translator = QTranslator(app)
+            if translator.load("{0}_{1}".format(resource, self._preferences.locale), ":/"):
+                app.installTranslator(translator)
 
     def _startup_screen(self):
         return StartupScreen(self._welcome_page, self._new_project_page)

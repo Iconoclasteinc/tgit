@@ -16,8 +16,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
 __app_name__ = "TGiT"
 __version__ = "2.2.1"
 
-from .tagger import launch
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication
+
+from tgit.tagger import make_tagger
+
+
+def launch():
+    app = QApplication([])
+    app.setApplicationName("TGiT")
+    app.setOrganizationName("Iconoclaste Inc.")
+    app.setOrganizationDomain("tagyourmusic.com")
+    app.setWindowIcon(QIcon(":/tgit.ico"))
+
+    tagger = make_tagger(app)
+    tagger.translate(app)
+    tagger.show()
+
+    return app.exec_()
