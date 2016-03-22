@@ -3,7 +3,6 @@ import pytest
 
 from cute.animatron import Animatron
 from cute.prober import EventProcessingProber
-from cute.robot import Robot
 
 
 @pytest.fixture()
@@ -11,16 +10,7 @@ def prober():
     return EventProcessingProber()
 
 
+# The animatron requires a running qt event loop
 @pytest.fixture()
-def automaton():
-    return Animatron()
-
-
-@pytest.fixture()
-def robot():
-    return Robot()
-
-
-@pytest.fixture()
-def animaton():
+def automaton(qt):
     return Animatron()

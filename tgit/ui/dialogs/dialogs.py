@@ -18,10 +18,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtWidgets import QApplication
 
-from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
-from tgit.ui.dialogs.load_album_dialog import LoadProjectDialog
+from tgit.ui.dialogs.isni_assignation_review_dialog import make_isni_assignation_review_dialog
+from tgit.ui.dialogs.load_album_dialog import make_load_project_dialog
 from tgit.ui.dialogs.save_as_dialog import make_save_as_csv_dialog, make_save_as_excel_dialog
-from tgit.ui.dialogs.select_album_destination_dialog import SelectProjectDestinationDialog
+from tgit.ui.dialogs.select_album_destination_dialog import make_select_project_destination_dialog
 from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
 
 
@@ -34,7 +34,7 @@ class Dialogs:
         return QApplication.activeWindow()
 
     def _select_tracks_dialog(self):
-        return TrackSelectionDialog(self._parent, self._native)
+        return TrackSelectionDialog(self._parent, self._native, delete_on_close=True)
 
     def select_tracks(self, file_type, on_select):
         return self._select_tracks_dialog().select_files(file_type, on_select)
@@ -46,19 +46,19 @@ class Dialogs:
         return self._select_tracks_dialog().select_file(file_type, on_select)
 
     def export_as_csv(self, on_select, default_file_name=""):
-        return make_save_as_csv_dialog(default_file_name, self._parent, self._native).select(on_select)
+        return make_save_as_csv_dialog(on_select, default_file_name, self._parent, self._native).open()
 
     def save_as_excel(self, on_select, default_file_name=""):
-        return make_save_as_excel_dialog(default_file_name, self._parent, self._native).select(on_select)
+        return make_save_as_excel_dialog(on_select, default_file_name, self._parent, self._native).open()
 
     def select_project_destination(self, on_select):
-        return SelectProjectDestinationDialog(self._parent, self._native).select(on_select)
+        return make_select_project_destination_dialog(on_select, self._parent, self._native).open()
 
     def select_project_to_load(self, on_select):
-        return LoadProjectDialog(self._parent, self._native).select(on_select)
+        return make_load_project_dialog(on_select, self._parent, self._native).open()
 
     def review_isni_assignation_in(self, album, main_artist_section_visible=False):
         def review_isni_assignation(on_review):
-            ISNIAssignationReviewDialog(self._parent, main_artist_section_visible).review(on_review, *album.tracks)
+            make_isni_assignation_review_dialog(album.tracks, on_review, self._parent, main_artist_section_visible).open()
 
         return review_isni_assignation

@@ -78,13 +78,10 @@ class Cheddar:
     def authenticate(self, email, password):
         def request_authentication():
             response = requests.post(self._hostname + "/api/authentications", auth=(email, password), verify=False)
-            if response.status_code == 401:
-                raise AuthenticationError()
+            user_details = _decode_response(response)
+            user_details["email"] = email
 
-            deserialized = json.loads(response.content.decode())
-            deserialized["email"] = email
-
-            return deserialized
+            return user_details
 
         return Promise(self._executor.submit(request_authentication))
 

@@ -24,7 +24,7 @@ from tgit.ui.event_loop_signaler import in_event_loop
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def open_isni_lookup_dialog(query, identity_lookup, on_lookup, parent=None, delete_on_close=True):
+def make_isni_lookup_dialog(query, identity_lookup, on_lookup, parent=None, delete_on_close=True):
     dialog = ISNILookupDialog(parent, delete_on_close)
 
     subscriptions = MultiSubscription()
@@ -36,7 +36,9 @@ def open_isni_lookup_dialog(query, identity_lookup, on_lookup, parent=None, dele
     dialog.on_selected.connect(identity_lookup.identity_selected)
     dialog.finished.connect(lambda accepted: subscriptions.cancel())
 
-    dialog.lookup(query)
+    if query:
+        dialog.lookup(query)
+
     return dialog
 
 
@@ -84,10 +86,8 @@ class ISNILookupDialog(QDialog, UIFile):
         self._connection_error_message.setVisible(True)
 
     def lookup(self, query):
-        self.open()
-        if query:
-            self._lookup_criteria.setText(query)
-            self._lookup_button.click()
+        self._lookup_criteria.setText(query)
+        self._lookup_button.click()
 
     @property
     def _selected_identity(self):

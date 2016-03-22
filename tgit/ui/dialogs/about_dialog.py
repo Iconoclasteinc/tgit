@@ -19,9 +19,9 @@
 
 import sys
 
-from PyQt5.QtWidgets import QDialog
 import mutagen
 from PyQt5.QtCore import QT_VERSION_STR, PYQT_VERSION_STR, Qt
+from PyQt5.QtWidgets import QDialog
 
 import tgit
 from tgit.ui.helpers.ui_file import UIFile
@@ -31,14 +31,18 @@ def _python_version():
     return "{0}.{1}.{2}".format(sys.version_info[0], sys.version_info[1], sys.version_info[2])
 
 
+def make_about_dialog(parent=None, delete_on_close=True):
+    return AboutDialog(parent, delete_on_close)
+
+
 class AboutDialog(QDialog, UIFile):
-    def __init__(self, parent=None):
+    def __init__(self, parent, delete_on_close):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
+        self.setAttribute(Qt.WA_DeleteOnClose, delete_on_close)
         self._setup_ui()
 
     def _setup_ui(self):
         self._load(":/ui/about_dialog.ui")
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self._version.setText("v{0}".format(tgit.__version__))
         self._mutagen_version.setText(mutagen.version_string)
         self._python_version.setText(_python_version())

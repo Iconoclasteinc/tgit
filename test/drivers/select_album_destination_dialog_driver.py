@@ -30,7 +30,6 @@ def select_project_destination_dialog(parent):
 
 class SelectProjectDestinationDialogDriver(QFileDialogDriver):
     def select_destination(self, destination):
-        self.is_active()
         self.view_as_list()
         self.show_hidden_files()
         self.navigate_to_dir(destination)

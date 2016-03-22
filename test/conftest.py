@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 import sip
-from traceback import format_exception
 import sys
+from traceback import format_exception
 
-from PyQt5.QtWidgets import QApplication
 import pytest
+from PyQt5.QtWidgets import QApplication
+
+from cute import event_loop
+from cute.platforms import linux
+
+END_OF_TEST_PAUSE = 30 if linux else 0
 
 
 def _print_unhandled_exceptions():
@@ -32,6 +37,7 @@ def qt():
     _print_unhandled_exceptions()
     application = QApplication([])
     yield application
+    event_loop.process_events_for(END_OF_TEST_PAUSE)
     # If we don't force deletion of the C++ wrapped object, it causes the test suite to eventually crash
     # Never ever remove this!!
     sip.delete(application)

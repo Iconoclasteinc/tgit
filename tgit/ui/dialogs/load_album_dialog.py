@@ -16,23 +16,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog
 
 from tgit.ui import locations, timing
 
 
+def make_load_project_dialog(on_select, parent=None, native=True, delete_on_close=True):
+    dialog = LoadProjectDialog(parent, native, delete_on_close)
+    dialog.select(on_select)
+    return dialog
+
+
 class LoadProjectDialog(QFileDialog):
-    def __init__(self, parent=None, native=True):
+    def __init__(self, parent, native, delete_on_close):
         super().__init__(parent)
         self.setObjectName("load_project_dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
+        self.setAttribute(Qt.WA_DeleteOnClose, delete_on_close)
         self.setDirectory(locations.Documents)
         self.setFileMode(QFileDialog.ExistingFile)
         self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT project files")))
 
     def select(self, on_select):
         self.fileSelected.connect(timing.after_delay(on_select))
-        self.open()
 
     def done(self, result):
         self.fileSelected.disconnect()

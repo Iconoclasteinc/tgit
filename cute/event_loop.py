@@ -13,7 +13,7 @@ class Timeout(object):
         self._start_time = time.time()
 
     def has_expired(self):
-        return self.elapsed_time(time.time()) > self._duration
+        return self.elapsed_time(time.time()) >= self._duration
 
     def elapsed_time(self, now):
         return (now - self._start_time) * ONE_SECOND_IN_MILLIS

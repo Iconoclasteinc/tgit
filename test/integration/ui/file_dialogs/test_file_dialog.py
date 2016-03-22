@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
+import pytest
 from PyQt5.QtWidgets import QFileDialog
 from hamcrest import ends_with, assert_that, equal_to
-import pytest
+from tgit.ui.dialogs.file_dialog import make_file_dialog, name_filter
 
 from cute.widgets import QFileDialogDriver, window
+from test.integration.ui import show_
 from tgit.ui import locations
-from tgit.ui.dialogs.file_dialog import make_file_dialog, name_filter
 
 pytestmark = pytest.mark.ui
 
 
 @pytest.yield_fixture()
-def driver(qt, prober, automaton):
+def driver(prober, automaton):
     dialog_driver = QFileDialogDriver(window(QFileDialog), prober, automaton)
     yield dialog_driver
     dialog_driver.close()
@@ -19,7 +20,7 @@ def driver(qt, prober, automaton):
 
 def show_dialog(name_filters="", file_mode=QFileDialog.ExistingFile, directory="", parent=None):
     dialog = make_file_dialog(name_filters, file_mode, directory, parent, False)
-    dialog.open()
+    show_(dialog)
     return dialog
 
 

@@ -6,17 +6,17 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import UserPreferencesDialogDriver
+from test.integration.ui import ignore, show_
 from test.util.builders import make_preferences
-from tgit.ui.dialogs.user_preferences_dialog import open_user_preferences_dialog
+from tgit.ui.dialogs.user_preferences_dialog import make_user_preferences_dialog
 
 pytestmark = pytest.mark.ui
 
-def ignore(*_, **__):
-    pass
-
 
 def show_preferences_dialog(preferences=make_preferences(), restart_message=ignore, on_preferences_changed=ignore):
-    return open_user_preferences_dialog(None, preferences, restart_message, on_preferences_changed)
+    dialog = make_user_preferences_dialog(preferences, restart_message, on_preferences_changed, delete_on_close=False)
+    show_(dialog)
+    return dialog
 
 
 @pytest.fixture()

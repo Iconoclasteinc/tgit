@@ -18,8 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from .dialogs import Dialogs
-from .message_boxes import MessageBoxes
-from .file_dialog import open_artwork_selection_dialog
-from .isni_lookup_dialog import open_isni_lookup_dialog
-from .sign_in_dialog import open_sign_in_dialog
-from .user_preferences_dialog import open_user_preferences_dialog
+from .file_dialogs import make_artwork_selection_dialog
+from .isni_lookup_dialog import make_isni_lookup_dialog
+from .sign_in_dialog import make_sign_in_dialog
+from .user_preferences_dialog import make_user_preferences_dialog

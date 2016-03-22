@@ -1,6 +1,6 @@
+import pytest
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
-import pytest
 
 from cute.probes import ValueMatcherProbe
 from cute.widgets import WidgetDriver, window
@@ -10,7 +10,7 @@ pytestmark = pytest.mark.ui
 
 
 @pytest.fixture()
-def driver(qt, prober, automaton):
+def driver(prober, automaton):
     return WidgetDriver(window(QWidget), prober, automaton)
 
 

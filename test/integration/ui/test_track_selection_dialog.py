@@ -17,8 +17,9 @@ from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
 pytestmark = pytest.mark.ui
 
 
+# todo we'd like to open the dialog here like we do for all others, but it requires a significant rewrite of the dialog
 def show_dialog(of_type="mp3", on_select_file=ignore, on_select_files=ignore, on_select_files_in_folder=ignore):
-    dialog = TrackSelectionDialog(native=False)
+    dialog = TrackSelectionDialog(parent=None, native=False, delete_on_close=False)
     if on_select_file != ignore:
         dialog.select_file(of_type, on_select_file)
 
@@ -32,7 +33,7 @@ def show_dialog(of_type="mp3", on_select_file=ignore, on_select_files=ignore, on
 
 
 @pytest.fixture()
-def driver(qt, prober, automaton):
+def driver(prober, automaton):
     return TrackSelectionDialogDriver(window(QFileDialog, named('track-selection-dialog')), prober, automaton)
 
 

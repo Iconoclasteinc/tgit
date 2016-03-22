@@ -24,7 +24,7 @@ from tgit.ui.event_loop_signaler import in_event_loop
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def open_sign_in_dialog(login, on_sign_in, parent=None, delete_on_close=True):
+def make_sign_in_dialog(login, on_sign_in, parent=None, delete_on_close=True):
     dialog = SignInDialog(parent, delete_on_close)
     dialog.on_sign_in.connect(on_sign_in)
     subscriptions = MultiSubscription()
@@ -32,7 +32,6 @@ def open_sign_in_dialog(login, on_sign_in, parent=None, delete_on_close=True):
     subscriptions += login.on_success.subscribe(in_event_loop(lambda email: dialog.login_succeeded()))
     subscriptions += login.on_failure.subscribe(in_event_loop(lambda error: dialog.login_failed()))
     dialog.finished.connect(lambda accepted: subscriptions.cancel())
-    dialog.open()
     return dialog
 
 

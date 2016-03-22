@@ -26,11 +26,11 @@ from tgit.ui import locations
 class TrackSelectionDialog(QFileDialog):
     _FILTERS = {'mp3': "MP3 Files", 'flac': "FLAC files"}
 
-    def __init__(self, parent=None, native=True):
+    def __init__(self, parent, native, delete_on_close):
         super().__init__(parent)
         self.setObjectName("track-selection-dialog")
         self.setOption(QFileDialog.DontUseNativeDialog, not native)
-        self.setAttribute(Qt.WA_DeleteOnClose, True)
+        self.setAttribute(Qt.WA_DeleteOnClose, delete_on_close)
         self.setDirectory(locations.Music)
 
     def select_files_in_folder(self, file_type, on_select):

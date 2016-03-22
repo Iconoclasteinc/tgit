@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, Q
 from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
 
-from cute.platforms import linux, mac
+from cute import event_loop
 from . import gestures, properties, matchers as match, rect, platforms
 from .finders import SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, \
     WidgetSelector, WidgetIdentity, MissingWidgetFinder
@@ -56,9 +56,6 @@ class QueryManipulation:
 
 
 class WidgetDriver:
-    CLOSE_DELAY = 30 if linux else 0
-    DISPLAY_DELAY = 25 if linux else 250 if mac else 0
-
     def __init__(self, selector, prober, gesture_performer):
         self.selector = selector
         self.prober = prober
@@ -114,6 +111,7 @@ class WidgetDriver:
 
     def manipulate(self, description, manipulation):
         self.check(WidgetManipulatorProbe(self.selector, manipulation, description))
+        event_loop.process_pending_events()
 
     def query(self, description, widget_query):
         manipulation = QueryManipulation(widget_query)
@@ -149,17 +147,12 @@ class WidgetDriver:
 
     def close(self):
         self.manipulate("close", lambda widget: widget.close())
-        self.pause(self.CLOSE_DELAY)
 
     def clear_focus(self):
         self.manipulate("clear focus", lambda widget: widget.clearFocus())
 
     def pause(self, ms):
         self.perform(gestures.pause(ms))
-
-    def show(self):
-        self.manipulate("show", lambda widget: widget.show())
-        self.pause(self.DISPLAY_DELAY)
 
 
 class ButtonDriver(WidgetDriver):
@@ -393,6 +386,7 @@ class QDialogButtonBoxDriver(WidgetDriver):
     def button(self, role):
         self.is_showing_on_screen()
         button = self.query("button with role {0}".format(role), lambda button_box: button_box.button(role))
+        # todo find a way to fail with a descriptive message if button is None
         return ButtonDriver(WidgetIdentity(button), self.prober, self.gesture_performer)
 
 

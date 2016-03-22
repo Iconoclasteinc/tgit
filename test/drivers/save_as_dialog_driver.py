@@ -13,7 +13,6 @@ def save_as_dialog(parent):
 
 class SaveAsDialogDriver(QFileDialogDriver):
     def save_as(self, filename):
-        self.is_active()
         self.view_as_list()
         self.show_hidden_files()
         self.navigate_to_dir(os.path.dirname(filename))
@@ -22,7 +21,6 @@ class SaveAsDialogDriver(QFileDialogDriver):
         self.accept()
 
     def rejects_selection_of(self, path):
-        self.is_active()
         self.navigate_to_dir(os.path.dirname(path))
         self.select_file(os.path.basename(path))
         self.has_accept_button(disabled())

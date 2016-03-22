@@ -2,29 +2,26 @@ import sys
 
 import mutagen
 import pytest
-from PyQt5.QtCore import Qt, QT_VERSION_STR, PYQT_VERSION_STR
+from PyQt5.QtCore import QT_VERSION_STR, PYQT_VERSION_STR
 
 from cute.matchers import named
 from cute.widgets import window
 from test.drivers.about_dialog_driver import AboutDialogDriver
+from test.integration.ui import show_
 from tgit import __version__
-from tgit.platforms import mac
-from tgit.ui.dialogs.about_dialog import AboutDialog
+from tgit.ui.dialogs.about_dialog import AboutDialog, make_about_dialog
 
 pytestmark = pytest.mark.ui
 
-DISPLAY_DELAY = 350 if mac else 0
-
 
 def show_dialog():
-    dialog = AboutDialog()
-    dialog.setAttribute(Qt.WA_DeleteOnClose, False)
-    dialog.show()
+    dialog = make_about_dialog(delete_on_close=False)
+    show_(dialog)
     return dialog
 
 
 @pytest.yield_fixture()
-def driver(qt, prober, automaton):
+def driver(prober, automaton):
     dialog_driver = AboutDialogDriver(window(AboutDialog, named("about_tgit_dialog")), prober, automaton)
     yield dialog_driver
     dialog_driver.close()
@@ -57,6 +54,5 @@ def test_shows_pyqt_version(driver):
 
 def test_closes_dialog(driver):
     _ = show_dialog()
-    driver.pause(DISPLAY_DELAY)
     driver.click_ok()
     driver.is_hidden()
