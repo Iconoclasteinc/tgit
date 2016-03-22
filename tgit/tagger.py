@@ -27,7 +27,6 @@ from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import open_media_player
 from tgit.cheddar import Cheddar
 from tgit.settings_backend import SettingsBackend
-from tgit.ui.dialogs.about_dialog import make_about_dialog
 from tgit.ui.helpers import template_file as templates
 
 
@@ -37,8 +36,9 @@ def make_tagger(app):
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
     player = open_media_player(portfolio)
 
-    app.lastWindowClosed.connect(cheddar.stop)
-    app.lastWindowClosed.connect(player.dispose)
+    # todo this will eventually end up in tagger.close()
+    app.aboutToQuit.connect(cheddar.stop)
+    app.aboutToQuit.connect(player.dispose)
 
     return Tagger(settings.load_session(), portfolio, player, cheddar, settings.load_user_preferences())
 
@@ -175,7 +175,7 @@ class Tagger:
                                       self._show_default_values_used_for_soproq_export_message)
 
     def _show_about_dialog(self):
-        make_about_dialog(self._main_window).open()
+        ui.make_about_dialog(self._main_window).show()
 
     def _show_overwrite_project_confirmation_message(self, **handlers):
         ui.messages.overwrite_project_confirmation(self._main_window, **handlers).open()
@@ -199,7 +199,7 @@ class Tagger:
         ui.messages.restart_required(self._main_window).open()
 
     def _show_about_qt_message(self):
-        ui.messages.about_qt(self._main_window).open()
+        ui.messages.about_qt(self._main_window)
 
     def _show_exit_confirmation_message(self):
         if not self._confirm_exit:
