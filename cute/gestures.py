@@ -13,14 +13,14 @@ LIGHTNING_FAST_TYPING_SPEED = 4800  # in wpm
 LUDICROUS_FAST_TYPING_SPEED = 0  # in wpm
 
 MOUSE_CLICK_DELAY = 10 if mac else 0  # in ms
-MOUSE_DOUBLE_CLICK_DELAY = 10 # in ms
-MOUSE_DRAG_DELAY = 0 # in ms
+MOUSE_DOUBLE_CLICK_DELAY = 10  # in ms
+MOUSE_DRAG_DELAY = 0  # in ms
 MIN_TIME_TO_AVOID_DOUBLE_CLICK = 500  # in ms
 
 LEFT_BUTTON = "left"
 RIGHT_BUTTON = "right"
 
-MODIFIER_KEY_DELAY = 0 # in ms
+MODIFIER_KEY_DELAY = 0  # in ms
 
 
 class GesturePerformer:
@@ -78,6 +78,7 @@ def holding_modifier_key(key, gesture):
 
 def holding_control(gesture):
     return holding_modifier_key(COMMAND if platforms.mac else CONTROL, gesture)
+
 
 # todo make this a sequence of press then release
 def type_key(key):
