@@ -1,23 +1,10 @@
-import sip
-
 import pytest
-from PyQt5.QtWidgets import QApplication
 from hamcrest import assert_that, has_properties, equal_to
 
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 from tgit.tagger import SettingsBackend
 
 pytestmark = pytest.mark.unit
-
-
-@pytest.yield_fixture()
-def qt():
-    app = QApplication([])
-    yield app
-    app.quit()
-    # If we don't force deletion of the C++ wrapped object, it causes the test suite to eventually crash
-    # Never ever remove this!!
-    sip.delete(app)
 
 
 @pytest.fixture

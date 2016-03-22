@@ -17,11 +17,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+import mimetypes
 import os
 import re
 import shutil
 import tempfile
-import mimetypes
 import unicodedata
 
 
@@ -94,7 +94,8 @@ def remove(path):
         pass
 
 
-_all_files = lambda entry: True
+def _all_files(_):
+    return True
 
 
 def remove_files(folder, matching=_all_files):
