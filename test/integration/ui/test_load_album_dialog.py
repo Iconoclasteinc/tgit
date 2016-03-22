@@ -8,7 +8,7 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.load_album_dialog_driver import LoadProjectDialogDriver
-from test.integration.ui import ignore, show_
+from test.integration.ui import ignore, show_, close_
 from test.util import resources
 from tgit.platforms import windows, linux
 from tgit.ui.dialogs.load_album_dialog import make_load_project_dialog
@@ -26,7 +26,7 @@ def show_dialog(on_select=ignore):
 def driver(prober, automaton):
     dialog_driver = LoadProjectDialogDriver(window(QFileDialog, named("load_project_dialog")), prober, automaton)
     yield dialog_driver
-    dialog_driver.close()
+    close_(dialog_driver)
 
 
 def test_signals_when_project_selected(driver):

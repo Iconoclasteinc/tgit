@@ -5,8 +5,8 @@ from cute.matchers import named
 from tgit.ui.pages.project_screen import ProjectScreen
 from ._screen_driver import ScreenDriver
 from .project_edition_page_driver import project_edition_page, no_project_edition_page
-from .track_list_tab_driver import track_list_tab
 from .track_edition_page_driver import track_edition_page, no_track_edition_page
+from .track_list_tab_driver import track_list_tab
 
 
 def project_screen(parent):
@@ -51,7 +51,7 @@ class ProjectScreenDriver(ScreenDriver):
         self.combobox(named("_pages_navigation")).has_current_text(name)
 
     def does_not_show_page_in_navigation_combo(self, name):
-        self.combobox(named("_pages_navigation")).has_not_option(name)
+        self.combobox(named("_pages_navigation")).has_no_option(name)
 
     def shows_previous_page_button(self, enabled=True):
         self.button(named("_previous")).is_enabled(enabled)

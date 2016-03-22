@@ -14,14 +14,15 @@ def load_project_dialog(parent):
 
 class LoadProjectDialogDriver(QFileDialogDriver):
     def load(self, filename):
-        self.show_hidden_files()
         self.view_as_list()
+        self.show_hidden_files()
         self.navigate_to_dir(os.path.dirname(filename))
         self.select_file(os.path.basename(filename))
         self.accept()
 
     def rejects_selection_of(self, filename):
         self.view_as_list()
+        self.show_hidden_files()
         self.navigate_to_dir(os.path.dirname(filename))
         self.select_file(os.path.basename(filename))
         self.has_accept_button(disabled())

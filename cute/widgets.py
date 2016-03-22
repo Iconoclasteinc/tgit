@@ -111,6 +111,9 @@ class WidgetDriver:
 
     def manipulate(self, description, manipulation):
         self.check(WidgetManipulatorProbe(self.selector, manipulation, description))
+        self.refresh()
+
+    def refresh(self):
         event_loop.process_pending_events()
 
     def query(self, description, widget_query):
@@ -250,7 +253,7 @@ class ComboBoxDriver(AbstractEditDriver):
         for matcher in matching:
             options_list.has_item(match.with_list_item_text(matcher))
 
-    def has_not_option(self, matching):
+    def has_no_option(self, matching):
         options_list = self._open_options_list()
         options_list.has_no_item(match.with_list_item_text(matching))
 
@@ -411,9 +414,6 @@ class QDialogDriver(WidgetDriver):
 
 
 class QFileDialogDriver(QDialogDriver):
-    DISPLAY_DELAY = 250 if platforms.mac else 90
-    DISMISS_DELAY = 250 if platforms.mac else 0
-
     def show_hidden_files(self):
         def show_dialog_hidden_files(dialog):
             dialog.setFilter(dialog.filter() | QDir.Hidden)
@@ -427,14 +427,15 @@ class QFileDialogDriver(QDialogDriver):
         self.manipulate("set the view mode to list", set_list_view_mode)
 
     def navigate_to_dir(self, path):
-        self.pause(self.DISPLAY_DELAY)
         for folder_name in self._navigation_path_to(path):
             if folder_name == "":
                 pass
             elif folder_name == "..":
                 self.up_one_folder()
+                self.refresh()
             else:
                 self.into_folder(folder_name)
+                self.refresh()
 
     def _navigation_path_to(self, path):
         return self._current_dir().relativeFilePath(path).split('/')
@@ -452,7 +453,6 @@ class QFileDialogDriver(QDialogDriver):
         self.has(properties.current_directory(), matching)
 
     def into_folder(self, name):
-        self.pause(self.DISPLAY_DELAY)
         self.files_list.open_item(match.with_list_item_text(name))
 
     def filter_files_of_type(self, matching):
@@ -463,7 +463,6 @@ class QFileDialogDriver(QDialogDriver):
         self.select_files(name)
 
     def select_files(self, *names):
-        self.pause(self.DISPLAY_DELAY)
         self.files_list.select_items(*[match.with_list_item_text(name) for name in names])
 
     def up_one_folder(self):
@@ -478,7 +477,6 @@ class QFileDialogDriver(QDialogDriver):
 
     def accept(self):
         self._accept_button().click()
-        self.pause(self.DISMISS_DELAY)
 
     def has_accept_button(self, criteria):
         return self._accept_button().is_(criteria)
@@ -488,7 +486,6 @@ class QFileDialogDriver(QDialogDriver):
 
     def reject(self):
         self._reject_button().click()
-        self.pause(self.DISMISS_DELAY)
 
     def has_reject_button(self, criteria):
         self._reject_button().is_(criteria)
@@ -545,7 +542,7 @@ class QListViewDriver(WidgetDriver):
         self._index_of_first_item(matching)
 
     def has_no_item(self, matching):
-        self._not_contains(matching)
+        self._is_not_containing(matching)
 
     def _select_item_at(self, index):
         self._scroll_item_to_visible(index)
@@ -603,7 +600,7 @@ class QListViewDriver(WidgetDriver):
         self.is_(containing_item)
         return containing_item.at_index
 
-    def _not_contains(self, matching):
+    def _is_not_containing(self, matching):
         class NotContainingMatchingItem(BaseMatcher):
             def _matches(self, list_view):
                 model = list_view.model()

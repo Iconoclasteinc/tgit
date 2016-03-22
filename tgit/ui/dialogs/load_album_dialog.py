@@ -24,7 +24,7 @@ from tgit.ui import locations, timing
 
 def make_load_project_dialog(on_select, parent=None, native=True, delete_on_close=True):
     dialog = LoadProjectDialog(parent, native, delete_on_close)
-    dialog.select(on_select)
+    dialog.select(timing.after_delay(on_select))
     return dialog
 
 
@@ -39,8 +39,4 @@ class LoadProjectDialog(QFileDialog):
         self.setNameFilter("{0} (*.tgit)".format(self.tr("TGiT project files")))
 
     def select(self, on_select):
-        self.fileSelected.connect(timing.after_delay(on_select))
-
-    def done(self, result):
-        self.fileSelected.disconnect()
-        super().done(result)
+        self.fileSelected.connect(on_select)
