@@ -1,29 +1,29 @@
 import os
 
+import pytest
 from PyQt5.QtWidgets import QFileDialog
 from hamcrest import ends_with
-import pytest
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.load_album_dialog_driver import LoadProjectDialogDriver
-from test.integration.ui import ignore
+from test.integration.ui import ignore, show_
 from test.util import resources
 from tgit.platforms import windows, linux
-from tgit.ui.dialogs.load_album_dialog import LoadProjectDialog
+from tgit.ui.dialogs.load_album_dialog import make_load_project_dialog
 
 pytestmark = pytest.mark.ui
 
 
 def show_dialog(on_select=ignore):
-    dialog = LoadProjectDialog(native=False)
-    dialog.select(on_select)
+    dialog = make_load_project_dialog(on_select, native=False, delete_on_close=False)
+    show_(dialog)
     return dialog
 
 
 @pytest.yield_fixture()
-def driver(qt, prober, automaton):
+def driver(prober, automaton):
     dialog_driver = LoadProjectDialogDriver(window(QFileDialog, named("load_project_dialog")), prober, automaton)
     yield dialog_driver
     dialog_driver.close()

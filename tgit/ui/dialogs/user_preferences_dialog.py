@@ -23,8 +23,9 @@ from PyQt5.QtWidgets import QDialog
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def open_user_preferences_dialog(parent, preferences, show_restart_message, on_preferences_changed):
-    dialog = UserPreferencesDialog(parent)
+def make_user_preferences_dialog(preferences, show_restart_message, on_preferences_changed, parent=None,
+                                 delete_on_close=True):
+    dialog = UserPreferencesDialog(parent, delete_on_close)
     dialog.on_preferences_changed(on_preferences_changed)
     dialog.on_preferences_changed(lambda prefs: show_restart_message())
     dialog.display(preferences)
@@ -32,13 +33,13 @@ def open_user_preferences_dialog(parent, preferences, show_restart_message, on_p
 
 
 class UserPreferencesDialog(QDialog, UIFile):
-    def __init__(self, parent=None):
+    def __init__(self, parent, delete_on_close):
         super().__init__(parent, Qt.WindowCloseButtonHint | Qt.WindowTitleHint)
+        self.setAttribute(Qt.WA_DeleteOnClose, delete_on_close)
         self._setup_ui()
 
     def _setup_ui(self):
         self._load(":/ui/settings_dialog.ui")
-        self.setAttribute(Qt.WA_DeleteOnClose)
         self._add_language("en", "English")
         self._add_language("fr", "Français")
 
@@ -54,4 +55,3 @@ class UserPreferencesDialog(QDialog, UIFile):
 
     def display(self, user_preferences):
         self._language.setCurrentText(QLocale(user_preferences.locale).nativeLanguageName().capitalize())
-        self.show()

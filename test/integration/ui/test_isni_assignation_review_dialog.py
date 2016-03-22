@@ -1,29 +1,27 @@
 import pytest
-from PyQt5.QtCore import Qt
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.isni_assignation_review_dialog_driver import IsniAssignationReviewDialogDriver
-from test.integration.ui import ignore
+from test.integration.ui import ignore, show_
 from test.util import builders as build
-from tgit import platforms
-from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
+from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog, \
+    make_isni_assignation_review_dialog
 
 pytestmark = pytest.mark.ui
 
-ANIMATION_DELAY = 350 if platforms.mac else 0
 
-
-def show_dialog(*titles, main_artist_section_visible=True, on_review=ignore):
-    dialog = ISNIAssignationReviewDialog(main_artist_section_visible=main_artist_section_visible)
-    dialog.setAttribute(Qt.WA_DeleteOnClose, False)
-    dialog.review(on_review, *titles)
+def show_dialog(*titles, on_review=ignore, main_artist_section_visible=True):
+    dialog = make_isni_assignation_review_dialog(titles, on_review,
+                                                 main_artist_section_visible=main_artist_section_visible,
+                                                 delete_on_close=False)
+    show_(dialog)
     return dialog
 
 
 @pytest.yield_fixture()
-def driver(qt, prober, automaton):
+def driver(prober, automaton):
     dialog_driver = IsniAssignationReviewDialogDriver(
         window(ISNIAssignationReviewDialog, named("isni_assignation_review_dialog")), prober, automaton)
     yield dialog_driver
@@ -35,7 +33,6 @@ def test_signals_organization_type_on_accept(driver):
 
     _ = show_dialog(on_review=review_signal.received)
 
-    driver.pause(ANIMATION_DELAY)
     driver.select_organization()
     driver.click_ok()
     driver.check(review_signal)
@@ -46,7 +43,6 @@ def test_signals_individual_type_on_accept(driver):
 
     _ = show_dialog(on_review=review_signal.received)
 
-    driver.pause(ANIMATION_DELAY)
     driver.select_individual()
     driver.click_ok()
     driver.check(review_signal)

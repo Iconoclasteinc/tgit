@@ -17,26 +17,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtCore import Qt
-
 from PyQt5.QtWidgets import QFileDialog
 
 from tgit.ui import locations, timing
 
 
-def make_save_as_excel_dialog(default_file_name="", parent=None, native=True):
-    return SaveAsDialog(default_file_name, "Save As", "xlsx",
-                        ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"], parent, native)
+def make_save_as_excel_dialog(on_select, default_file_name="", parent=None, native=True, delete_on_close=True):
+    dialog = SaveAsDialog(default_file_name, "Save As", "xlsx",
+                        ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"], parent, native,
+                        delete_on_close)
+    dialog.on_select(on_select)
+    return dialog
 
 
-def make_save_as_csv_dialog(default_file_name="", parent=None, native=True):
-    return SaveAsDialog(default_file_name, "Export As", "csv", ["text/csv"], parent, native)
+def make_save_as_csv_dialog(on_select, default_file_name="", parent=None, native=True, delete_on_close=True):
+    dialog = SaveAsDialog(default_file_name, "Export As", "csv", ["text/csv"], parent, native, delete_on_close)
+    dialog.on_select(on_select)
+    return dialog
 
 
 class SaveAsDialog(QFileDialog):
-    def __init__(self, default_file_name, title, default_suffix, mime_type_filters, parent, native):
+    def __init__(self, default_file_name, title, default_suffix, mime_type_filters, parent, native, delete_on_close):
         super().__init__(parent)
         self.setObjectName("save_as_dialog")
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(Qt.WA_DeleteOnClose, delete_on_close)
         self.setAcceptMode(QFileDialog.AcceptSave)
         self.setDirectory(locations.Home)
         self.setFileMode(QFileDialog.AnyFile)
@@ -46,6 +50,5 @@ class SaveAsDialog(QFileDialog):
         self.setWindowTitle(self.tr(title))
         self.selectFile(default_file_name)
 
-    def select(self, on_select):
+    def on_select(self, on_select):
         self.fileSelected.connect(timing.after_delay(on_select))
-        self.open()

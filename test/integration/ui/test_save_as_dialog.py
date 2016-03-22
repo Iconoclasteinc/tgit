@@ -1,21 +1,19 @@
 import os
 
-from PyQt5.QtCore import Qt
+import pytest
 from PyQt5.QtWidgets import QFileDialog
 from hamcrest import contains_string
-import pytest
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from tgit import platforms
 from test.drivers.save_as_dialog_driver import SaveAsDialogDriver
+from test.integration.ui import ignore, show_
 from test.util import resources
+from tgit import platforms
 from tgit.ui.dialogs.save_as_dialog import SaveAsDialog, make_save_as_excel_dialog, make_save_as_csv_dialog
 
 pytestmark = pytest.mark.ui
-
-ignore = lambda *_: None
 
 
 def show_dialog(*mime_type_filters, on_select=ignore, default_file_name="", title="Save As", default_suffix="csv"):
@@ -24,14 +22,15 @@ def show_dialog(*mime_type_filters, on_select=ignore, default_file_name="", titl
                           default_suffix=default_suffix,
                           mime_type_filters=list(mime_type_filters),
                           parent=None,
-                          native=False)
-    dialog.setAttribute(Qt.WA_DeleteOnClose, False)
-    dialog.select(on_select)
+                          native=False,
+                          delete_on_close=False)
+    dialog.on_select(on_select)
+    show_(dialog)
     return dialog
 
 
 @pytest.yield_fixture()
-def driver(qt, prober, automaton):
+def driver(prober, automaton):
     dialog_driver = SaveAsDialogDriver(window(QFileDialog, named("save_as_dialog")), prober, automaton)
     yield dialog_driver
     dialog_driver.close()
@@ -81,8 +80,8 @@ def test_shows_mime_type_filters(driver):
 
 
 def test_make_save_as_excel_dialog(driver):
-    dialog = make_save_as_excel_dialog(default_file_name="album", parent=None, native=False)
-    dialog.open()
+    dialog = make_save_as_excel_dialog(on_select=ignore, default_file_name="album", parent=None, native=False)
+    show_(dialog)
 
     driver.has_window_title("Save As")
     driver.has_filename("album")
@@ -90,8 +89,8 @@ def test_make_save_as_excel_dialog(driver):
 
 
 def test_make_save_as_csv_dialog(driver):
-    dialog = make_save_as_csv_dialog(default_file_name="album", parent=None, native=False)
-    dialog.open()
+    dialog = make_save_as_csv_dialog(on_select=ignore, default_file_name="album", parent=None, native=False)
+    show_(dialog)
 
     driver.has_window_title("Export As")
     driver.has_filename("album")

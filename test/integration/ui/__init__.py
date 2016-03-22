@@ -1,12 +1,12 @@
-from tgit.ui.main_window import StyleSheet
+from cute import event_loop, platforms
 
-SIZE = (1100, 745)
+PAUSE_AFTER_DISPLAY = 25 if platforms.linux else 0
 
 
-def show_widget(driver, widget):
-    widget.setStyleSheet(StyleSheet)
-    widget.setFixedSize(*SIZE)
-    driver.show()
+def show_(widget, pause=PAUSE_AFTER_DISPLAY):
+    widget.adjustSize()
+    widget.show()
+    event_loop.process_events_for(pause)
 
 
 # noinspection PyUnusedLocal
@@ -16,3 +16,11 @@ def ignore(*args, **kwargs):
 
 def raise_(e):
     raise e
+
+
+def no(*_):
+    return False
+
+
+def yes(*_):
+    return True

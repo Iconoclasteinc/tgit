@@ -24,13 +24,12 @@ def name_filter(mime_types, name):
     return "{} ({})".format(name, " ".join(["*.{}".format(extension) for extension in mime_types]))
 
 
-def open_artwork_selection_dialog(artwork_selection, on_file_selected, parent=None, native=True):
+def make_artwork_selection_dialog(artwork_selection, on_file_selected, parent=None, native=True):
     dialog = make_file_dialog(name_filter(artwork_selection.extensions, "Image Files"),
                               QFileDialog.ExistingFile, artwork_selection.directory, parent, native)
 
     dialog.directoryEntered.connect(artwork_selection.directory_changed)
     dialog.fileSelected.connect(on_file_selected)
-    dialog.open()
     return dialog
 
 

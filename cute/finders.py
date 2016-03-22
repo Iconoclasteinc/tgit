@@ -153,7 +153,7 @@ class WidgetIdentity(WidgetSelector):
             .append_text(" '{0}'".format(self._description or repr(self._widget)))
 
     def describe_failure_to(self, description):
-        self.describe_to(description)
+        pass
 
 
 class NthWidgetFinder(WidgetSelector):

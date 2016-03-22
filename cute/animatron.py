@@ -5,16 +5,13 @@ from . import event_loop
 from .gestures import Automaton
 
 
-MINIMUM_PAUSE = 0
-
-
 class Animatron(Automaton):
     """
     A robotic automaton that emulates a human using the keyboard and mouse.
 
     It is more realistic although slower than the Robot.
     """
-    def __init__(self, pause=MINIMUM_PAUSE):
+    def __init__(self, pause=0):
         pyautogui.PAUSE = pause
 
     @property
