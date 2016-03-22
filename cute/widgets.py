@@ -231,7 +231,7 @@ class LineEditDriver(AbstractEditDriver):
 
 
 class TextEditDriver(AbstractEditDriver):
-    MULTILINE_DELAY = 25
+    MULTILINE_DELAY = 25 if mac else 0
 
     def has_plain_text(self, text):
         self.has(properties.plain_text(), text)
@@ -248,7 +248,7 @@ class QAbstractSpinBoxDriver(AbstractEditDriver):
 
 
 class ComboBoxDriver(AbstractEditDriver):
-    CHOICES_DISPLAY_DELAY = 250 if platforms.mac else 175
+    CHOICES_DISPLAY_DELAY = 250 if platforms.mac else 0
 
     def select_option(self, matching):
         options_list = self._open_options_list()
@@ -678,12 +678,10 @@ class QMenuBarDriver(WidgetDriver):
 
 class MenuDriver(WidgetDriver):
     DISMISS_DELAY = 250 if platforms.mac else 0
-    POPUP_DELAY = 50 if platforms.windows else 0
 
     def popup_manually_at(self, x, y):
         # For some reason, we can't open the menu by just right clicking, so open it manually
         self.manipulate("open at ({0}, {1})".format(x, y), lambda menu: menu.popup(QPoint(x, y)))
-        self.pause(self.POPUP_DELAY)
 
     def menu_item(self, matching):
         # We have to make sure the item menu actually exists in the menu

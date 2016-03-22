@@ -21,8 +21,8 @@ def _make_tracks(tracks):
 
 class ApplicationRunner:
     STARTUP_DELAY = 250 if platforms.mac else 0
-    DRAG_AND_DROP_DELAY = 100
-    SAVE_DELAY = 500
+    DRAG_AND_DROP_DELAY = 100 if platforms.mac else 0
+    SAVE_DELAY = 500 if platforms.mac else 0
 
     main_window_driver = None
 
