@@ -18,16 +18,16 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import json
 import logging
+import time
 from functools import wraps
 from threading import Thread
-import time
 
 import requests
 from flask import Flask, request, Response
 
 from cute import platforms
 
-FLASK_STARTUP_DELAY = 0.01 if platforms.linux else 0
+FLASK_STARTUP_DELAY = 0 if platforms.windows else 0.01
 
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
 token_queue = iter([])

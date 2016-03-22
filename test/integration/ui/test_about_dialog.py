@@ -13,7 +13,7 @@ from tgit.ui.dialogs.about_dialog import AboutDialog
 
 pytestmark = pytest.mark.ui
 
-DISPLAY_DELAY = 200 if mac else 0
+DISPLAY_DELAY = 350 if mac else 0
 
 
 def show_dialog():

@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, Q
 from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
 
-from cute.platforms import linux
+from cute.platforms import linux, mac
 from . import gestures, properties, matchers as match, rect, platforms
 from .finders import SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, \
     WidgetSelector, WidgetIdentity, MissingWidgetFinder
@@ -57,7 +57,7 @@ class QueryManipulation:
 
 class WidgetDriver:
     CLOSE_DELAY = 30 if linux else 0
-    DISPLAY_DELAY = 25 if linux else 0
+    DISPLAY_DELAY = 25 if linux else 250 if mac else 0
 
     def __init__(self, selector, prober, gesture_performer):
         self.selector = selector
@@ -264,11 +264,11 @@ class ComboBoxDriver(AbstractEditDriver):
     def has_not_option(self, matching):
         options_list = self._open_options_list()
         self.pause(self.CHOICES_DISPLAY_DELAY)
-        options_list.has_not_item(match.with_list_item_text(matching))
+        options_list.has_no_item(match.with_list_item_text(matching))
 
     def _open_options_list(self):
         self.manipulate("pop up", lambda w: w.showPopup())
-        return ListViewDriver.find_single(self, QListView)
+        return QListViewDriver.find_single(self, QListView)
 
     def has_current_text(self, matching):
         self.has(properties.current_text(), matching)
@@ -463,8 +463,8 @@ class QFileDialogDriver(QDialogDriver):
         self.has(properties.current_directory(), matching)
 
     def into_folder(self, name):
-        self.select_file(name)
-        self.enter()
+        self.pause(self.DISPLAY_DELAY)
+        self.files_list.open_item(match.with_list_item_text(name))
 
     def filter_files_of_type(self, matching):
         driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
@@ -475,7 +475,7 @@ class QFileDialogDriver(QDialogDriver):
 
     def select_files(self, *names):
         self.pause(self.DISPLAY_DELAY)
-        self._list_view().select_items(*[match.with_list_item_text(name) for name in names])
+        self.files_list.select_items(*[match.with_list_item_text(name) for name in names])
 
     def up_one_folder(self):
         up_button = ButtonDriver.find_single(self, QToolButton, match.named("toParentButton"))
@@ -507,8 +507,9 @@ class QFileDialogDriver(QDialogDriver):
     def has_reject_button_text(self, text):
         self._reject_button().has_text(text)
 
-    def _list_view(self):
-        return ListViewDriver.find_single(self, QListView, match.named("listView"))
+    @property
+    def files_list(self):
+        return QListViewDriver.find_single(self, QListView, match.named("listView"))
 
     def _filename_edit(self):
         return LineEditDriver.find_single(self, QLineEdit, match.named("fileNameEdit"))
@@ -546,33 +547,40 @@ class QFileDialogDriver(QDialogDriver):
         driver.has(properties.has_option_text(index), option)
 
 
-class ListViewDriver(WidgetDriver):
+class QListViewDriver(WidgetDriver):
     SCROLL_DELAY = 100 if platforms.mac else 0
 
     def select_item(self, matching):
         self.select_items(matching)
 
     def select_items(self, *matchers):
-        self._select_items([self._index_of_first_item(matching) for matching in matchers])
+        self._select_items_at([self._index_of_first_item(matching) for matching in matchers])
+
+    def open_item(self, matching):
+        self._open_item_at(self._index_of_first_item(matching))
 
     def has_item(self, matching):
         self._index_of_first_item(matching)
 
-    def has_not_item(self, matching):
+    def has_no_item(self, matching):
         self._not_contains(matching)
 
-    def _select_items(self, indexes):
-        self._select_item(indexes.pop(0))
-        for index in indexes:
-            self._multi_select_item(index)
-
-    def _multi_select_item(self, index):
-        self._scroll_item_to_visible(index)
-        self.perform(gestures.mouse_multi_click_at(self._center_of_item(index)))
-
-    def _select_item(self, index):
+    def _select_item_at(self, index):
         self._scroll_item_to_visible(index)
         self.perform(gestures.mouse_click_at(self._center_of_item(index)))
+
+    def _open_item_at(self, index):
+        self._scroll_item_to_visible(index)
+        self.perform(gestures.mouse_double_click_at(self._center_of_item(index)))
+
+    def _select_items_at(self, indexes):
+        self._select_item_at(indexes.pop(0))
+        for index in indexes:
+            self._multi_select_item_at(index)
+
+    def _multi_select_item_at(self, index):
+        self._scroll_item_to_visible(index)
+        self.perform(gestures.mouse_multi_click_at(self._center_of_item(index)))
 
     def _scroll_item_to_visible(self, index):
         self.manipulate("scroll item to visible", lambda list_view: list_view.scrollTo(index))

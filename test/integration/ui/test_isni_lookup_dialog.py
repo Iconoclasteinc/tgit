@@ -13,7 +13,7 @@ from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog, open_isni_looku
 
 pytestmark = pytest.mark.ui
 
-DISPLAY_DELAY = 200 if platforms.mac else 0
+DISPLAY_DELAY = 250 if platforms.mac else 0
 
 
 def show_dialog(query=None, identity_lookup=IdentityLookup(), on_lookup=ignore):
@@ -96,6 +96,7 @@ def test_signals_selected_identity(driver):
 
     dialog = show_dialog(identity_lookup=identity_lookup)
 
+    driver.pause(DISPLAY_DELAY)
     dialog.lookup_successful([IdentityCard(id="0000000123456789",
                                            type=IdentityCard.INDIVIDUAL,
                                            firstName="Joel",

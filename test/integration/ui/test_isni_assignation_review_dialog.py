@@ -12,7 +12,7 @@ from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReview
 
 pytestmark = pytest.mark.ui
 
-ANIMATION_DELAY = 200 if platforms.mac else 0
+ANIMATION_DELAY = 350 if platforms.mac else 0
 
 
 def show_dialog(*titles, main_artist_section_visible=True, on_review=ignore):
