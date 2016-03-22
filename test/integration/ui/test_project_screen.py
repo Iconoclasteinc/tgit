@@ -99,6 +99,7 @@ def test_removes_track_page_when_track_removed(driver):
     _ = show_project_screen(album)
 
     driver.to_page("1 - track 1")
+    driver.shows_track_edition_page(number=1)
     album.remove_track(position=1)
     driver.to_next_page()
     driver.shows_track_edition_page(number=3)

@@ -241,26 +241,21 @@ class QAbstractSpinBoxDriver(AbstractEditDriver):
 
 
 class ComboBoxDriver(AbstractEditDriver):
-    CHOICES_DISPLAY_DELAY = 250 if platforms.mac else 0
-
     def select_option(self, matching):
         options_list = self._open_options_list()
-        self.pause(self.CHOICES_DISPLAY_DELAY)
         options_list.select_item(match.with_list_item_text(matching))
 
     def has_options(self, *matching):
         options_list = self._open_options_list()
-        self.pause(self.CHOICES_DISPLAY_DELAY)
         for matcher in matching:
             options_list.has_item(match.with_list_item_text(matcher))
 
     def has_not_option(self, matching):
         options_list = self._open_options_list()
-        self.pause(self.CHOICES_DISPLAY_DELAY)
         options_list.has_no_item(match.with_list_item_text(matching))
 
     def _open_options_list(self):
-        self.manipulate("pop up", lambda w: w.showPopup())
+        self.perform(gestures.mouse_click_at(rect.center_right(rect.inside_bounds(self.widget_bounds(), right=5))))
         return QListViewDriver.find_single(self, QListView)
 
     def has_current_text(self, matching):
@@ -515,13 +510,8 @@ class QFileDialogDriver(QDialogDriver):
         return self._dialog_button(QFileDialog.Reject)
 
     def _dialog_button(self, label):
-        class QueryButtonText:
-            def __call__(self, dialog):
-                self.text = dialog.labelText(label)
-
-        query = QueryButtonText()
-        self.manipulate("query button text", query)
-        return ButtonDriver.find_single(self, QPushButton, match.with_text(query.text))
+        button_text = self.query("button text", lambda dialog: dialog.labelText(label))
+        return ButtonDriver.find_single(self, QPushButton, match.with_text(button_text))
 
     def has_selected_file_type(self, matching):
         driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
@@ -542,8 +532,6 @@ class QFileDialogDriver(QDialogDriver):
 
 
 class QListViewDriver(WidgetDriver):
-    SCROLL_DELAY = 100 if platforms.mac else 0
-
     def select_item(self, matching):
         self.select_items(matching)
 
@@ -578,7 +566,6 @@ class QListViewDriver(WidgetDriver):
 
     def _scroll_item_to_visible(self, index):
         self.manipulate("scroll item to visible", lambda list_view: list_view.scrollTo(index))
-        self.pause(self.SCROLL_DELAY)
 
     def _center_of_item(self, index):
         class CalculateCenterOfItem:
