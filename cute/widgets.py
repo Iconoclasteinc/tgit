@@ -6,7 +6,7 @@ from hamcrest import all_of, anything
 from hamcrest.core.base_matcher import BaseMatcher
 
 from cute import event_loop
-from . import gestures, properties, matchers as match, rect, platforms
+from . import gestures, properties, matchers as match, rect
 from .finders import SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, \
     WidgetSelector, WidgetIdentity, MissingWidgetFinder
 from .probes import WidgetManipulatorProbe, WidgetAssertionProbe, WidgetPropertyAssertionProbe, WidgetScreenBoundsProbe
@@ -263,8 +263,6 @@ class ComboBoxDriver(AbstractEditDriver):
 
 
 class QDateTimeEditDriver(WidgetDriver):
-    CALENDAR_DISPLAY_DELAY = 100
-
     def display_format(self):
         return self.query("display format", lambda date_time: date_time.displayFormat())
 
@@ -281,7 +279,7 @@ class QDateTimeEditDriver(WidgetDriver):
 
     def select_date(self, year, month, day):
         self._popup_calendar()
-        self.pause(self.CALENDAR_DISPLAY_DELAY)
+        self.refresh()
         self._calendar().select_date(year, month, day)
 
     def _popup_calendar(self):
@@ -293,9 +291,6 @@ class QDateTimeEditDriver(WidgetDriver):
 
 
 class QCalendarDriver(WidgetDriver):
-    MENU_DISPLAY_DELAY = 100
-    CALENDAR_UPDATE_DELAY = 100
-
     def select_date(self, year, month, day):
         self.enter_year(year)
         self.select_month(month)
@@ -305,16 +300,14 @@ class QCalendarDriver(WidgetDriver):
         self._year_button().click()
         self._year_spinner().type(str(year))
         self.perform(gestures.enter())
-        self.pause(self.CALENDAR_UPDATE_DELAY)
+        self.refresh()
 
     def select_month(self, month):
         # Clicking the toolbutton blocks the execution, so pop up menu manually
         bottom_left = self._month_button().widget_bounds().bottomLeft()
         self._month_menu().popup_manually_at(bottom_left.x(), bottom_left.y())
-
-        self.pause(self.MENU_DISPLAY_DELAY)
         self._month_menu().select_menu_item(match.with_data(month))
-        self.pause(self.CALENDAR_UPDATE_DELAY)
+        self.refresh()
 
     def select_day(self, day):
         row, col = self._find_day(day)
@@ -652,8 +645,6 @@ class QMenuBarDriver(WidgetDriver):
 
 
 class MenuDriver(WidgetDriver):
-    DISMISS_DELAY = 250 if platforms.mac else 0
-
     def popup_manually_at(self, x, y):
         # For some reason, we can't open the menu by just right clicking, so open it manually
         self.manipulate("open at ({0}, {1})".format(x, y), lambda menu: menu.popup(QPoint(x, y)))
@@ -668,7 +659,6 @@ class MenuDriver(WidgetDriver):
         self.is_showing_on_screen()
         menu_item = self.menu_item(matching)
         menu_item.click()
-        self.pause(self.DISMISS_DELAY)
 
     def has_menu_item(self, matching, track_index=None):
         class ContainingMatchingMenuItem(BaseMatcher):
