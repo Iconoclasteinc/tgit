@@ -18,18 +18,19 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMessageBox, QApplication
+from PyQt5.QtWidgets import QMessageBox
 
 from tgit.ui.dialogs.about_dialog import AboutDialog
 
 
 class MessageBoxes:
-    def __init__(self, confirm_before_exiting):
+    def __init__(self, confirm_before_exiting, get_parent):
         self._confirm_before_exiting = confirm_before_exiting
+        self._get_parent = get_parent
 
     @property
     def _parent(self):
-        return QApplication.activeWindow()
+        return self._get_parent()
 
     @staticmethod
     def _open(message):

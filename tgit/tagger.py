@@ -22,11 +22,11 @@ import functools
 from PyQt5.QtCore import QTranslator, QLocale
 
 from tgit import album_director as director, artwork, auth, identity, export, ui
-from tgit.ui.helpers import template_file as templates
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import open_media_player
 from tgit.cheddar import Cheddar
 from tgit.settings_backend import SettingsBackend
+from tgit.ui.helpers import template_file as templates
 
 
 def make_tagger(app):
@@ -50,7 +50,7 @@ class Tagger:
         self._cheddar = cheddar
         self._player = player
         self._session = session
-        self._messages = ui.MessageBoxes(confirm_exit)
+        self._messages = ui.MessageBoxes(confirm_exit, lambda: self._main_window)
         self._dialogs = ui.Dialogs(native)
         self._portfolio = portfolio
         self._identity_lookup = identity.IdentityLookup()
