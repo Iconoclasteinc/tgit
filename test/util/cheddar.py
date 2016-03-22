@@ -103,9 +103,12 @@ def _lookup():
 
     identities_to_return = []
     if phrase in identities:
-        identities_to_return.append(identities[phrase])
+        identities_to_return.extend(identities[phrase])
 
-    return json.dumps(identities_to_return)
+    response = Response(status=200)
+    response.set_data(json.dumps(identities_to_return))
+    response.headers.add_header("X-Total-Count", len(identities_to_return))
+    return response
 
 
 @_app.route("/api/identities", methods=["POST"])

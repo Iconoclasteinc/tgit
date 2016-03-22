@@ -1,6 +1,6 @@
 import pytest
 import requests
-from hamcrest import instance_of, assert_that, contains, has_properties, has_property, is_
+from hamcrest import instance_of, assert_that, contains, has_properties, has_property, is_, equal_to
 
 from tgit.identity import IdentityLookup, IdentityCard
 
@@ -42,15 +42,17 @@ def identity_lookup(listener):
 
 
 def test_maps_identities_and_signals_identities_available(identity_lookup, listener):
-    identity_lookup.identities_found([{"id": "0000000123456789",
-                                       "firstName": "Joel",
-                                       "lastName": "Miller",
-                                       "dateOfBirth": "1969",
-                                       "dateOfDeath": "2100",
-                                       "type": "individual",
-                                       "works": [{"title": "Chevere!"}]}])
+    identity_lookup.identities_found({"total_count": "1",
+                                      "identities": [{"id": "0000000123456789",
+                                                      "firstName": "Joel",
+                                                      "lastName": "Miller",
+                                                      "dateOfBirth": "1969",
+                                                      "dateOfDeath": "2100",
+                                                      "type": "individual",
+                                                      "works": [{"title": "Chevere!"}]}]})
 
-    assert_that(listener.identities,
+    assert_that(listener.identities.total_count, equal_to("1"), "The total number of results")
+    assert_that(listener.identities.identity_cards,
                 contains(has_properties(id="0000000123456789",
                                         full_name="Joel Miller",
                                         date_of_birth="1969",

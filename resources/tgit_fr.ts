@@ -391,6 +391,11 @@
         <source>Please select from the list of identities</source>
         <translation>Sélectionnez une identité à partir de la liste suivante</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>Showing results {} of {}</source>
+        <translation>Affichage de {} résultats sur {}</translation>
+    </message>
 </context>
 <context>
     <name>isni_lookup_dialog</name>

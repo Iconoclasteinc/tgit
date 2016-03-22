@@ -48,7 +48,7 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1,0,0,0">
    <item>
     <layout class="QHBoxLayout" name="_title_container">
      <item>
@@ -158,6 +158,23 @@ QListView::item {
      </property>
      <property name="textElideMode">
       <enum>Qt::ElideRight</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="_result_count">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>

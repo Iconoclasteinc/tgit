@@ -1,6 +1,6 @@
 import pytest
 import requests
-from hamcrest import assert_that, empty, contains, has_entries, instance_of
+from hamcrest import assert_that, empty, contains, has_entries, instance_of, equal_to, has_entry
 
 from tgit.cheddar import Cheddar, PermissionDeniedError, AuthenticationError, InsufficientInformationError
 
@@ -59,32 +59,45 @@ def test_raises_insufficient_information_error_when_getting_identities(cheddar, 
 def test_returns_empty_array_of_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
     identities = wait_for_completion(cheddar.get_identities("reb an mal", "token"))
-    assert_that(identities, empty(), "The identities")
+    assert_that(identities, has_entry("identities", empty()), "The identities")
 
 
 def test_returns_array_of_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    platform.identities["reb an mal"] = {
-        "id": "0000000115677274",
+    platform.identities["jo mil"] = [{
+        "id": "0000000123456789",
         "type": "individual",
-        "firstName": "Rebecca Ann",
-        "lastName": "Maloy",
-        "dateOfBirth": "1980",
+        "firstName": "Joel",
+        "lastName": "Miller",
+        "dateOfBirth": "1969",
         "dateOfDeath": "",
         "works": [
-            {"title": "Music and meaning in old Hispanic lenten chants psalmi, threni and the Easter vigil canticles"}
+            {"title": "Chevere!"}
         ]
-    }
+    }]
+
+    identities = wait_for_completion(cheddar.get_identities("jo mil", "token"))
+    assert_that(identities, has_entry("identities",
+                                      contains(has_entries(id="0000000123456789",
+                                                           firstName="Joel",
+                                                           lastName="Miller",
+                                                           dateOfBirth="1969",
+                                                           dateOfDeath="",
+                                                           works=contains(has_entries(title="Chevere!"))))))
+
+
+def test_returns_hit_count(cheddar, platform):
+    platform.allowed_bearer_token = "token"
+    platform.identities["reb an mal"] = [{
+        "id": "0000000115677274",
+        "type": "individual"
+    }, {
+        "id": "0000000123456789",
+        "type": "individual"
+    }]
 
     identities = wait_for_completion(cheddar.get_identities("reb an mal", "token"))
-    assert_that(identities, contains(has_entries(id="0000000115677274",
-                                                 firstName="Rebecca Ann",
-                                                 lastName="Maloy",
-                                                 dateOfBirth="1980",
-                                                 dateOfDeath="",
-                                                 works=contains(has_entries(
-                                                     title="Music and meaning in old Hispanic lenten chants psalmi, "
-                                                           "threni and the Easter vigil canticles")))))
+    assert_that(identities["total_count"], equal_to("2"), "The total amount of results")
 
 
 def test_returns_unauthorized_when_assigning_an_identifier(cheddar):

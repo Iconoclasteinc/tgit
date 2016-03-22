@@ -78,6 +78,7 @@ class ISNILookupDialog(QDialog, UIFile):
         self._result_container.setEnabled(True)
         for _, identity in enumerate(identities):
             self._result_container.addItem(self._build_row(identity))
+        self._result_count.setText(self.tr("Showing results {} of {}").format(len(identities), identities.total_count))
 
     def lookup_failed(self, _):
         self._progress_indicator.stop()

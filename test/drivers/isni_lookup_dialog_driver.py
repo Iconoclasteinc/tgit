@@ -48,6 +48,9 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         self.results_list.has_item(
             with_list_item_text("{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
 
+    def displays_total_result_count(self, count, total_count):
+        self.label(named("_result_count")).has_text("Showing results {} of {}".format(count, total_count))
+
     def select_identity(self, name):
         self.is_active()
         self.results_list.select_item(with_list_item_text(starts_with(name)))

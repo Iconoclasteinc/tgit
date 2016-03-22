@@ -55,8 +55,20 @@ class IdentityCard:
         return max([work.full_title for work in self.works], key=len)
 
 
+class Identities:
+    def __init__(self, total_count, identity_cards):
+        self.identity_cards = identity_cards
+        self.total_count = total_count
+
+    def __len__(self):
+        return len(self.identity_cards)
+
+    def __iter__(self):
+        return self.identity_cards.__iter__()
+
+
 class IdentityLookup(metaclass=Observable):
-    on_identities_available = signal(list)
+    on_identities_available = signal(Identities)
     on_failure = signal(Exception)
     on_success = signal(IdentityCard)
     on_start = signal()
@@ -65,7 +77,8 @@ class IdentityLookup(metaclass=Observable):
         self.on_start.emit()
 
     def identities_found(self, identities):
-        self.on_identities_available.emit([IdentityCard(**identity) for identity in identities])
+        identity_cards = [IdentityCard(**identity) for identity in identities["identities"]]
+        self.on_identities_available.emit(Identities(identities["total_count"], identity_cards))
 
     def lookup_failed(self, error):
         self.on_failure.emit(error)

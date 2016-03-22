@@ -47,7 +47,15 @@ def _check_response_code(response):
         raise requests.ConnectionError()
 
 
-def _decode_response(response):
+def _decode_lookup_response(response):
+    _check_response_code(response)
+    return {
+        "total_count": response.headers.get("X-Total-Count"),
+        "identities": json.loads(response.content.decode())
+    }
+
+
+def _decode_assign_response(response):
     _check_response_code(response)
     return json.loads(response.content.decode())
 
@@ -94,7 +102,7 @@ class Cheddar:
                                     headers=(_build_authorization_header(token)),
                                     verify=False)
 
-            return _decode_response(response)
+            return _decode_lookup_response(response)
 
         return Promise(self._executor.submit(request_identities))
 
@@ -111,7 +119,7 @@ class Cheddar:
                                      headers=(_build_authorization_header(token)),
                                      verify=False)
 
-            return _decode_response(response)
+            return _decode_assign_response(response)
 
         with ThreadPoolExecutor(max_workers=1) as executor:
             return executor.submit(assign_identifier)
