@@ -227,8 +227,6 @@ class LineEditDriver(AbstractEditDriver):
 
 
 class TextEditDriver(AbstractEditDriver):
-    MULTILINE_DELAY = 25 if platforms.mac else 0
-
     def has_plain_text(self, text):
         self.has(properties.plain_text(), text)
 
@@ -236,7 +234,6 @@ class TextEditDriver(AbstractEditDriver):
         self.focus_with_mouse()
         self.type(text)
         self.perform(gestures.enter())
-        self.pause(self.MULTILINE_DELAY)
 
 
 class QAbstractSpinBoxDriver(AbstractEditDriver):
