@@ -20,6 +20,7 @@ class AlbumWorkspace(object):
     def file(self, *paths):
         return self._local_path.join(*paths).strpath
 
+    # todo this should poll to avoid the need for pausing after save()
     def contains_track(self, album, filename, front_cover=None, **tags):
         if not exists(self.file(album, TRACKS_FOLDER_NAME, filename)):
             raise AssertionError("Track file '{}' not found in workspace".format(filename))

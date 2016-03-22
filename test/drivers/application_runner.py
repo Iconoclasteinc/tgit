@@ -10,8 +10,8 @@ from test.util.doubles import fake_audio_player
 from tgit import platforms
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.cheddar import Cheddar
-from .main_window_driver import MainWindowDriver
 from tgit.tagger import Tagger
+from .main_window_driver import MainWindowDriver
 
 
 def _make_tracks(tracks):
@@ -20,9 +20,7 @@ def _make_tracks(tracks):
 
 
 class ApplicationRunner:
-    STARTUP_DELAY = 250 if platforms.mac else 0
-    DRAG_AND_DROP_DELAY = 100 if platforms.mac else 0
-    SAVE_DELAY = 500 if platforms.mac else 0
+    SAVE_DELAY = 250 if platforms.mac else 0
 
     main_window_driver = None
 
@@ -37,7 +35,6 @@ class ApplicationRunner:
 
         self.main_window_driver = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
                                                    EventProcessingProber(timeout_in_ms=1000), Animatron())
-        self.main_window_driver.pause(self.STARTUP_DELAY)
 
     def stop(self):
         self.main_window_driver.close()
@@ -60,7 +57,6 @@ class ApplicationRunner:
     def change_order_of_tracks(self, *tracks):
         for position, track in enumerate(_make_tracks(tracks)):
             self.main_window_driver.move_track(track.title, position)
-            self.main_window_driver.pause(self.DRAG_AND_DROP_DELAY)
 
     def remove_track(self, title):
         self.main_window_driver.remove_track(title)
