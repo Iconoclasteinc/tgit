@@ -1,24 +1,32 @@
 # -*- coding: utf-8 -*-
 from tgit import fs
 from tgit.signal import signal
+from tgit.ui import locations
 
 
 class ArtworkSelection:
     on_failure = signal(Exception)
 
     extensions = ["png", "jpeg", "jpg", "jpe"]
+    initial_directory = locations.Pictures
 
-    def __init__(self, portfolio, initial_directory):
-        self._portfolio = portfolio
-        self.directory = initial_directory
+    def __init__(self, project, preferences):
+        self._preferences = preferences
+        self._project = project
+
+    @property
+    def directory(self):
+        try:
+            return self._preferences.artwork_selection_folder
+        except AttributeError:
+            return self.initial_directory
 
     def artwork_loaded(self, image):
-        project = self._portfolio[0]
-        project.remove_images()
-        project.add_front_cover(*image)
+        self._project.remove_images()
+        self._project.add_front_cover(*image)
 
     def directory_changed(self, directory):
-        self.directory = directory
+        self._preferences.artwork_selection_folder = directory
 
     def failed(self, error):
         self.on_failure.emit(error)

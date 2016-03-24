@@ -14,6 +14,9 @@ def image(mime="image/jpeg", data="...", type_=Image.OTHER, desc=""):
     return mime, data, type_, desc
 
 
+make_image = image
+
+
 def metadata(images=(), **meta):
     new_metadata = Metadata(**meta)
 

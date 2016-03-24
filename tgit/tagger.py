@@ -60,7 +60,6 @@ class Tagger:
         self._cheddar = cheddar
         self._preferences = preferences
         self._identity_lookup = identity.IdentityLookup()
-        self._artwork_selection = artwork.ArtworkSelection(self._portfolio, ui.locations.Pictures)
         self._project_studio = ProjectStudio()
 
     def translate(self, app):
@@ -168,8 +167,9 @@ class Tagger:
                                       parent=self._main_window).open()
 
     def _open_artwork_selection_dialog(self):
-        return ui.make_artwork_selection_dialog(self._artwork_selection,
-                                                on_file_selected=artwork.load(self._artwork_selection),
+        artwork_selection = artwork.ArtworkSelection(self._portfolio[0], self._preferences)
+        return ui.make_artwork_selection_dialog(artwork_selection,
+                                                on_file_selected=artwork.load(artwork_selection),
                                                 native=self._native,
                                                 parent=self._main_window).open()
 

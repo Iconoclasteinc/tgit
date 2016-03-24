@@ -5,21 +5,24 @@ from hamcrest import assert_that, equal_to, has_items, has_item, contains, has_p
 
 from test import exception_with_message
 from test.util import resources
-from test.util.builders import make_portfolio, make_album
+from test.util.builders import make_album, make_image
 from tgit import fs
 from tgit.artwork import ArtworkSelection
 from tgit.metadata import Image
+from tgit.user_preferences import UserPreferences
 
 pytestmark = pytest.mark.unit
 
 
-def make_cover_art_selection(portfolio=make_portfolio(), initial_directory=None):
-    return ArtworkSelection(portfolio, initial_directory)
+def make_cover_art_selection(project=make_album(), preferences=UserPreferences()):
+    return ArtworkSelection(project, preferences)
 
 
 def test_defaults_in_picture_directory():
-    assert_that(make_cover_art_selection(initial_directory="directory").directory, equal_to("directory"),
-                "The default directory.")
+    prefs = UserPreferences()
+    prefs.artwork_selection_folder = "directory"
+
+    assert_that(make_cover_art_selection(preferences=prefs).directory, equal_to("directory"), "The default directory.")
 
 
 def test_supports_jpeg_format():
@@ -31,11 +34,10 @@ def test_supports_png_format():
 
 
 def test_changes_project_artwork_to_specified_image_file():
-    project = make_album()
-    project.add_front_cover(mime="image/gif", data="old cover")
+    project = make_album(images=[make_image(mime="image/gif", data="old cover")])
 
     image = "image/jpeg", fs.read(resources.path("front-cover.jpg"))
-    make_cover_art_selection(portfolio=(make_portfolio(project))).artwork_loaded(image)
+    make_cover_art_selection(project=project).artwork_loaded(image)
 
     assert_that(project.images, contains(has_properties(mime="image/jpeg",
                                                         data=fs.read(resources.path("front-cover.jpg")),

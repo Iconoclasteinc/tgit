@@ -11,8 +11,8 @@ from test.ui import ignore, show_, close_
 from test.util import resources
 from test.util.builders import make_portfolio
 from tgit.artwork import ArtworkSelection
-from tgit.ui import locations
 from tgit.ui.dialogs.file_dialogs import make_artwork_selection_dialog
+from tgit.user_preferences import UserPreferences
 
 pytestmark = pytest.mark.ui
 
@@ -25,7 +25,7 @@ def show_dialog(model, on_select=ignore):
 
 @pytest.fixture()
 def artwork_selection():
-    return ArtworkSelection(make_portfolio(), locations.Pictures)
+    return ArtworkSelection(make_portfolio(), UserPreferences())
 
 
 @pytest.yield_fixture()
