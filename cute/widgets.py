@@ -2,7 +2,7 @@
 from PyQt5.QtCore import QDir, QPoint, QTime, QDate
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QListView, QToolButton, QFileDialog, \
     QMenu, QComboBox, QTextEdit, QLabel, QAbstractButton, QSpinBox, QTableView, QDialogButtonBox
-from hamcrest import all_of, anything
+from hamcrest import all_of, anything, contains
 from hamcrest.core.base_matcher import BaseMatcher
 
 from cute import event_loop
@@ -243,16 +243,16 @@ class QAbstractSpinBoxDriver(AbstractEditDriver):
 class ComboBoxDriver(AbstractEditDriver):
     def select_option(self, matching):
         options_list = self._open_options_list()
-        options_list.select_item(match.with_list_item_text(matching))
+        options_list.select_item(match.with_item_text(matching))
 
     def has_options(self, *matching):
         options_list = self._open_options_list()
         for matcher in matching:
-            options_list.has_item(match.with_list_item_text(matcher))
+            options_list.has_item(match.with_item_text(matcher))
 
     def has_no_option(self, matching):
         options_list = self._open_options_list()
-        options_list.has_no_item(match.with_list_item_text(matching))
+        options_list.has_no_item(match.with_item_text(matching))
 
     def _open_options_list(self):
         self.perform(gestures.mouse_click_at(rect.center_right(rect.inside_bounds(self.widget_bounds(), right=5))))
@@ -443,7 +443,7 @@ class QFileDialogDriver(QDialogDriver):
         self.has(properties.current_directory(), matching)
 
     def into_folder(self, name):
-        self.files_list.open_item(match.with_list_item_text(name))
+        self.files_list.open_item(match.with_item_text(name))
 
     def filter_files_of_type(self, matching):
         driver = ComboBoxDriver.find_single(self, QComboBox, match.named("fileTypeCombo"))
@@ -453,7 +453,7 @@ class QFileDialogDriver(QDialogDriver):
         self.select_files(name)
 
     def select_files(self, *names):
-        self.files_list.select_items(*[match.with_list_item_text(name) for name in names])
+        self.files_list.select_items(*[match.with_item_text(name) for name in names])
 
     def up_one_folder(self):
         up_button = ButtonDriver.find_single(self, QToolButton, match.named("toParentButton"))
@@ -533,6 +533,34 @@ class QListViewDriver(WidgetDriver):
 
     def has_no_item(self, matching):
         self._is_not_containing(matching)
+
+    def contains_items(self, *matching):
+        class ContainsItemsInOrder(BaseMatcher):
+            def __init__(self):
+                self._matcher = contains(*matching)
+
+            def _matches(self, list_view):
+                return self._matcher.matches(self._all_items_of(list_view))
+
+            @staticmethod
+            def _all_items_of(list_view):
+                model = list_view.model()
+                if model is None:
+                    return []
+                root = list_view.rootIndex()
+                row_count = model.rowCount(root)
+                return [model.index(row, 0, root) for row in range(row_count)]
+
+            def describe_to(self, description):
+                description.append_text("with items ")
+                self._matcher.describe_to(description)
+
+            def describe_mismatch(self, list_view, mismatch_description):
+                mismatch_description.append_text("items ")
+                self._matcher.describe_mismatch(self._all_items_of(list_view), mismatch_description)
+
+        containing_items = ContainsItemsInOrder()
+        self.is_(containing_items)
 
     def _select_item_at(self, index):
         self._scroll_item_to_visible(index)

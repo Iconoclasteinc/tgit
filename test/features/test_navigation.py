@@ -13,7 +13,9 @@ def test_navigating_through_the_album_non_linearly(app, recordings):
     app.add_tracks_to_project(*tracks)
 
     app.shows_track_metadata(track_number=3, track_title="Salsa Coltrane")
+    app.navigate_to_project_page()
     app.shows_track_list(["Chevere!"], ["Zumbar"], ["Salsa Coltrane"])
     app.shows_track_metadata(track_number=2, track_title="Zumbar")
+    app.navigate_to_project_page()
     app.shows_project_metadata()
     app.shows_track_metadata(track_number=1, track_title="Chevere!")

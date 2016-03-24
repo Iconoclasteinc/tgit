@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtWidgets import QListView, QWidget
 
-from cute.matchers import named, with_list_item_text
+from cute.matchers import named, with_item_text
 from cute.widgets import window, QDialogDriver, QListViewDriver, WidgetDriver
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 from ._screen_driver import ScreenDriver
@@ -39,7 +39,7 @@ class IsniAssignationReviewDialogDriver(QDialogDriver, ScreenDriver):
         self.radio(named("_organization_button")).click()
 
     def has_work(self, work):
-        QListViewDriver.find_single(self, QListView).has_item(with_list_item_text(work))
+        QListViewDriver.find_single(self, QListView).has_item(with_item_text(work))
 
     def shows_main_artist_section(self):
         self.lead_performer_section.is_showing_on_screen()

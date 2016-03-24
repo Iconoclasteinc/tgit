@@ -51,7 +51,6 @@ class ApplicationRunner:
                                                import_from=from_track)
 
     def shows_track_list(self, *tracks):
-        self.main_window_driver.navigate_to_project_page()
         self.main_window_driver.shows_project_contains(*tracks)
 
     def change_order_of_tracks(self, *tracks):
@@ -62,8 +61,10 @@ class ApplicationRunner:
         self.main_window_driver.remove_track(title)
 
     def shows_project_metadata(self, **tags):
-        self.main_window_driver.navigate_to_project_page()
         self.main_window_driver.shows_project_metadata(**tags)
+
+    def navigate_to_project_page(self):
+        self.main_window_driver.navigate_to_project_page()
 
     def change_project_metadata(self, **tags):
         self.main_window_driver.edit_project_metadata(**tags)
@@ -73,8 +74,11 @@ class ApplicationRunner:
         self.main_window_driver.shows_track_metadata(**tags)
 
     def shows_track_metadata(self, track_number, track_title, **tags):
-        self.main_window_driver.navigate_to_track_page(track_title, track_number)
+        self.navigate_to_track_page(track_number, track_title)
         self.main_window_driver.shows_track_metadata(track_number=track_number, track_title=track_title, **tags)
+
+    def navigate_to_track_page(self, track_number, track_title):
+        self.main_window_driver.navigate_to_track_page(track_title, track_number)
 
     def change_track_metadata(self, **tags):
         self.main_window_driver.edit_track_metadata(**tags)
@@ -109,7 +113,12 @@ class ApplicationRunner:
         self.main_window_driver.shows_welcome_screen()
 
     def load_project(self, album_name):
-        self.main_window_driver.load_project(self._workspace.file(album_name, album_name + ".tgit"))
+        self.main_window_driver.load_project(self._project_file_path(album_name))
+
+    def open_recent_project(self, name):
+        path = self._project_file_path(name)
+        print(path)
+        self.main_window_driver.open_recent_project(path)
 
     def save(self):
         self.main_window_driver.save()
@@ -133,3 +142,6 @@ class ApplicationRunner:
 
     def declare_project_to_soproq(self, filename):
         self.main_window_driver.declare_project_to_soproq(self._workspace.file(filename))
+
+    def _project_file_path(self, name):
+        return self._workspace.file(name, name + ".tgit")
