@@ -18,7 +18,7 @@ def studio():
     return mock(project_opened=mock())
 
 
-def test_loads_history_from_store_and_then_reports_when_project_opened_in_studio_to_history(studio, history_store):
+def test_loads_history_from_store_and_then_reports_project_opened_in_studio_to_history(studio, history_store):
     history = make_project_history()
     history_store.should_receive("load_history").and_return(history)
 

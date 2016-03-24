@@ -121,15 +121,6 @@ def test_imports_album_from_an_existing_track(portfolio, album_catalog, track_ca
                 "imported albums in portfolio")
 
 
-def test_loads_album_from_catalog_into_portfolio(portfolio, album_catalog):
-    target_album = build.album("album.tgit")
-    album_catalog.add(target_album)
-
-    director.load_album_into(portfolio, from_catalog=album_catalog)(filename="album.tgit")
-
-    assert_that(portfolio, contains(target_album), "album portfolio")
-
-
 def test_checks_if_album_exists_in_catalog(album_catalog):
     album_catalog.save_project(make_album(make_filename("workspace", "existing")))
     assert_that(director.album_exists("existing", "workspace", in_catalog=album_catalog), is_(True),

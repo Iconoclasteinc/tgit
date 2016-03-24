@@ -56,6 +56,11 @@ def album(filename="album.tgit", of_type=Album.Type.FLAC, images=(), tracks=(), 
 make_album = album
 
 
+def make_project(filename="project.tgit"):
+    # Will eventually build a project, not an album
+    return make_album(filename)
+
+
 def make_portfolio(project=None):
     portfolio = AlbumPortfolio()
     if project is not None:
@@ -66,7 +71,7 @@ def make_portfolio(project=None):
 def make_project_history(*past_projects):
     history = ProjectHistory()
     for past_project in past_projects:
-        history.project_opened(past_project)
+        history.project_opened(make_project(past_project))
 
     return history
 

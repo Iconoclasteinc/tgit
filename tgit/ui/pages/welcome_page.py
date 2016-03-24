@@ -82,6 +82,5 @@ class WelcomePage(QFrame, UIFile):
 
     def _populate_project_history(self, project_history):
         for recent_project in project_history:
-            item = QListWidgetItem(recent_project)
+            item = QListWidgetItem(recent_project.filename)
             self._recent_projects_list.addItem(item)
-
