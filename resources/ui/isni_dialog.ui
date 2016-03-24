@@ -39,7 +39,6 @@
     max-width: 680px;
 }
 
-#_no_result_message,
 #_connection_error_message {
     color: #F25C0A;
 }
@@ -48,7 +47,7 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1,0">
    <item>
     <layout class="QHBoxLayout" name="_title_container">
      <item>
@@ -123,9 +122,9 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="_no_result_message">
+    <widget class="QLabel" name="_result_message">
      <property name="text">
-      <string>Your query yielded no result.</string>
+      <string/>
      </property>
     </widget>
    </item>
@@ -158,23 +157,6 @@ QListView::item {
      </property>
      <property name="textElideMode">
       <enum>Qt::ElideRight</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="_result_count">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>

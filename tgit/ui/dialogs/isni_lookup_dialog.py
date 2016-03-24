@@ -74,13 +74,24 @@ class ISNILookupDialog(QDialog, UIFile):
         self._hide_messages()
 
         if len(identities) == 0:
-            self._no_result_message.setVisible(True)
+            self._show_no_result_message()
             return
 
         self._result_container.setEnabled(True)
         for _, identity in enumerate(identities):
             self._result_container.addItem(self._build_row(identity))
-        self._result_count.setText(self.tr("Showing results {} of {}").format(len(identities), identities.total_count))
+
+        if identities.overflows():
+            self._show_refine_search_result_message(identities.total_count)
+
+    def _show_no_result_message(self):
+        self._result_message.setVisible(True)
+        self._result_message.setText(self.tr("Your query yielded no result."))
+
+    def _show_refine_search_result_message(self, total_count):
+        self._result_message.setVisible(True)
+        self._result_message.setText(
+            self.tr("Your search yielded {} results. Please refine your search.").format(total_count))
 
     def lookup_failed(self, _):
         self._progress_indicator.stop()
@@ -102,7 +113,7 @@ class ISNILookupDialog(QDialog, UIFile):
         return self._dialog_buttons.button(QDialogButtonBox.Ok)
 
     def _hide_messages(self):
-        self._no_result_message.setVisible(False)
+        self._result_message.setVisible(False)
         self._connection_error_message.setVisible(False)
 
     def _build_row(self, identity):

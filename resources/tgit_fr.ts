@@ -393,8 +393,13 @@
     </message>
     <message>
         <location filename="tgit/ui/isni_lookup_dialog.py" />
-        <source>Showing results {} of {}</source>
-        <translation>Affichage de {} résultats sur {}</translation>
+        <source>Your search yielded {} results. Please refine your search.</source>
+        <translation>Votre recherche a retourné {} résultats.  Veuillez préciser votre recherche.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>Your query yielded no result.</source>
+        <translation>Votre recherche n&apos;a retourné aucun résultat.</translation>
     </message>
 </context>
 <context>
@@ -408,11 +413,6 @@
         <location filename="tgit/ui/isni_lookup_dialog.py" />
         <source>&amp;Cancel</source>
         <translation>&amp;Annuler</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/isni_lookup_dialog.py" />
-        <source>Your query yielded no result.</source>
-        <translation>Votre recherche n&apos;a retourné aucun résultat.</translation>
     </message>
     <message>
         <location filename="tgit/ui/isni_lookup_dialog.py" />

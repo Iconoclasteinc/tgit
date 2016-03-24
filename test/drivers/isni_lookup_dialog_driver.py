@@ -48,8 +48,16 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         self.results_list.has_item(
             with_list_item_text("{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
 
-    def displays_total_result_count(self, count, total_count):
-        self.label(named("_result_count")).has_text("Showing results {} of {}".format(count, total_count))
+    def displays_no_message(self):
+        self.label(named("_result_message")).is_hidden()
+
+    def displays_refine_query_message(self, total_count, visible=True):
+        result_message = self.label(named("_result_message"))
+        if visible:
+            result_message.is_showing_on_screen()
+            result_message.has_text("Your search yielded {} results. Please refine your search.".format(total_count))
+        else:
+            result_message.is_hidden()
 
     def select_identity(self, name):
         self.is_active()
@@ -65,10 +73,12 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         self.click_ok()
 
     def shows_no_result_message(self, visible=True):
+        result_message = self.label(named("_result_message"))
         if visible:
-            self.label(named("_no_result_message")).is_showing_on_screen()
+            result_message.is_showing_on_screen()
+            result_message.has_text("Your query yielded no result.")
         else:
-            self.label(named("_no_result_message")).is_hidden()
+            result_message.is_hidden()
 
     def shows_connection_error_message(self, visible=True):
         if visible:

@@ -66,6 +66,9 @@ class Identities:
     def __iter__(self):
         return self.identity_cards.__iter__()
 
+    def overflows(self):
+        return int(self.total_count) > len(self.identity_cards)
+
 
 class IdentityLookup(metaclass=Observable):
     on_identities_available = signal(Identities)

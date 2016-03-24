@@ -53,7 +53,14 @@ def test_displays_lookup_results(driver):
 
     driver.displays_result("Joel Miller", "1969", "2100", "Chevere!")
     driver.displays_result("John Roney", "1700", "2500", "Zumbar")
-    driver.displays_total_result_count("2", "2")
+    driver.displays_no_message()
+
+
+def test_displays_refine_query_when_returning_more_than_the_displayed_results(driver):
+    dialog = show_dialog()
+    dialog.lookup_successful(Identities("1015", [joel_miller()]))
+
+    driver.displays_refine_query_message("1015")
 
 
 def test_displays_only_last_lookup_results(driver):
