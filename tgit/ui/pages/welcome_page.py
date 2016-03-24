@@ -16,26 +16,34 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QFrame
+from PyQt5.QtWidgets import QListWidgetItem
 
 import tgit
 from tgit.album import Album
+from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.rescue import rescue
 
 
-def make_welcome_page(select_project, show_load_error, **handlers):
-    page = WelcomePage(select_project=select_project,
-                       show_load_error=show_load_error)
+def make_welcome_page(project_history, select_project, show_load_error, **handlers):
+    page = WelcomePage(select_project=select_project, show_load_error=show_load_error)
 
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
+    subscription = project_history.history_changed.subscribe(lambda: page.display_project_history(project_history))
+    page.closed.connect(subscription.cancel)
+    page.display_project_history(project_history)
     return page
 
 
+@Closeable
 class WelcomePage(QFrame, UIFile):
+    closed = pyqtSignal()
+    on_open_project = pyqtSignal(str)
+
     def __init__(self, select_project, show_load_error):
         super().__init__()
         self._select_project = select_project
@@ -45,6 +53,12 @@ class WelcomePage(QFrame, UIFile):
     def _setup_ui(self):
         self._load(":/ui/welcome_page.ui")
         self._version.setText(tgit.__version__)
+        self._recent_projects_list.currentItemChanged.connect(
+            lambda item: self._open_project_button.setEnabled(item is not None))
+
+    @property
+    def _selected_project(self):
+        return self._recent_projects_list.currentItem().text()
 
     def on_create_project(self, on_create_project):
         self._new_mp3_project_button.clicked.connect(lambda _: on_create_project(Album.Type.MP3))
@@ -56,3 +70,18 @@ class WelcomePage(QFrame, UIFile):
                 on_load_project(filename)
 
         self._load_project_button.clicked.connect(lambda: self._select_project(try_loading_project))
+        self._open_project_button.clicked.connect(lambda checked: try_loading_project(self._selected_project))
+
+    def display_project_history(self, project_history):
+        self._clear_project_history()
+        self._populate_project_history(project_history)
+
+    def _clear_project_history(self):
+        for index in reversed(range(self._recent_projects_list.count())):
+            self._recent_projects_list.takeItem(index)
+
+    def _populate_project_history(self, project_history):
+        for recent_project in project_history:
+            item = QListWidgetItem(recent_project)
+            self._recent_projects_list.addItem(item)
+

@@ -178,9 +178,6 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="2" rowspan="6" colspan="3">
-          <widget class="QListView" name="_recent_projects_list"/>
-         </item>
          <item row="2" column="0" colspan="2">
           <widget class="QPushButton" name="_new_mp3_project_button">
            <property name="focusPolicy">
@@ -209,7 +206,7 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
           </widget>
          </item>
          <item row="7" column="4">
-          <widget class="QPushButton" name="_reopen_recent_project_button">
+          <widget class="QPushButton" name="_open_project_button">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -227,6 +224,25 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
            </property>
           </widget>
          </item>
+         <item row="1" column="2" rowspan="6" colspan="3">
+          <widget class="QListWidget" name="_recent_projects_list">
+           <property name="styleSheet">
+            <string notr="true">QListView[style=QMacStyle] {
+    alternate-background-color: #F2F2F2;
+}
+
+QListView::item {
+    min-height: 24px;
+}</string>
+           </property>
+           <property name="horizontalScrollMode">
+            <enum>QAbstractItemView::ScrollPerItem</enum>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -240,7 +256,7 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
   <tabstop>_new_mp3_project_button</tabstop>
   <tabstop>_load_project_button</tabstop>
   <tabstop>_recent_projects_list</tabstop>
-  <tabstop>_reopen_recent_project_button</tabstop>
+  <tabstop>_open_project_button</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>

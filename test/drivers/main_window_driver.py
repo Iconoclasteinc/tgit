@@ -123,6 +123,10 @@ class MainWindowDriver(WidgetDriver):
         load_project_dialog(self).load(filename)
         project_screen(self).is_showing_on_screen()
 
+    def open_recent_project(self, name):
+        welcome_page(self).open_recent_project(name)
+        project_screen(self).is_showing_on_screen()
+
     def save(self, using_shortcut=False):
         if using_shortcut:
             self.click()

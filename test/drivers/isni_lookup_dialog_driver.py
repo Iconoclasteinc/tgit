@@ -19,11 +19,11 @@
 
 from hamcrest import starts_with
 
-from cute.matchers import named, with_list_item_text, StateMatcher
+from cute.matchers import named, with_item_text, StateMatcher
 from cute.widgets import window, QDialogDriver, WidgetDriver
 from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog
-from ._screen_driver import ScreenDriver
 from tgit.ui.widgets.progress_indicator import QProgressIndicator
+from ._screen_driver import ScreenDriver
 
 
 def isni_lookup_dialog(parent):
@@ -46,7 +46,7 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
     def displays_result(self, full_name, date_of_birth, date_of_death, work):
         self.results_list.is_enabled()
         self.results_list.has_item(
-            with_list_item_text("{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
+            with_item_text("{} ({}-{}) - {}".format(full_name, date_of_birth, date_of_death, work)))
 
     def displays_no_message(self):
         self.label(named("_result_message")).is_hidden()
@@ -61,7 +61,7 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
 
     def select_identity(self, name):
         self.is_active()
-        self.results_list.select_item(with_list_item_text(starts_with(name)))
+        self.results_list.select_item(with_item_text(starts_with(name)))
 
     def has_ok_button_disabled(self):
         self.ok_button().is_disabled()

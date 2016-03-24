@@ -22,25 +22,28 @@ import functools
 from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtWidgets import QMessageBox
 
-from tgit import album_director as director, artwork, auth, identity, export, ui
+from tgit import album_director as director, artwork, auth, identity, export, ui, project, project_history
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import open_media_player
 from tgit.cheddar import Cheddar
+from tgit.project_studio import ProjectStudio
 from tgit.settings_backend import SettingsBackend
 from tgit.ui.helpers import template_file as templates
 
 
 def make_tagger(app):
+    # todo this will eventually end up in Tagger
     settings = SettingsBackend()
     portfolio = AlbumPortfolio()
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
     player = open_media_player(portfolio)
-
-    # todo this will eventually end up in tagger.close()
+    # todo this will eventually end up in Tagger.close()
     app.aboutToQuit.connect(cheddar.stop)
     app.aboutToQuit.connect(player.dispose)
 
-    return Tagger(settings.load_session(), portfolio, player, cheddar, settings.load_user_preferences())
+    tagger = Tagger(settings.load_session(), portfolio, player, cheddar, settings.load_user_preferences())
+    tagger.translate(app)
+    return tagger
 
 
 class Tagger:
@@ -49,44 +52,16 @@ class Tagger:
     def __init__(self, session, portfolio, player, cheddar, preferences, native=True, confirm_exit=True):
         self._native = native
         self._confirm_exit = confirm_exit
-
-        self._preferences = preferences
-        self._cheddar = cheddar
-        self._player = player
-        self._session = session
         self._dialogs = ui.Dialogs(native)
-        self._portfolio = portfolio
-        self._identity_lookup = identity.IdentityLookup()
-        self._login = auth.Login(session)
-        self._artwork_selection = artwork.ArtworkSelection(self._portfolio, ui.locations.Pictures)
 
-    def show(self):
-        self._main_window = ui.MainWindow(self._session,
-                                          self._portfolio,
-                                          confirm_exit=self._show_exit_confirmation_message,
-                                          create_startup_screen=self._startup_screen,
-                                          create_project_screen=self._project_screen,
-                                          confirm_close=self._show_close_project_confirmation_message,
-                                          select_export_destination=self._dialogs.export_as_csv,
-                                          select_save_as_destination=self._dialogs.save_as_excel,
-                                          select_tracks=self._dialogs.select_tracks,
-                                          select_tracks_in_folder=self._dialogs.add_tracks_in_folder,
-                                          show_save_error=self._show_save_project_failed_message,
-                                          show_export_error=self._show_export_project_failed_message,
-                                          on_close_album=director.remove_album_from(self._portfolio),
-                                          on_save_album=director.save_album(),
-                                          on_add_files=director.add_tracks,
-                                          on_export=export.as_csv,
-                                          on_settings=self._show_settings_dialog,
-                                          on_sign_in=self._open_sign_in_dialog,
-                                          on_sign_out=auth.sign_out_from(self._session),
-                                          on_about_qt=self._show_about_qt_message,
-                                          on_about=self._show_about_dialog,
-                                          on_online_help=ui.browser.open_,
-                                          on_request_feature=ui.browser.open_,
-                                          on_register=ui.browser.open_,
-                                          on_transmit_to_soproq=self._export_as_soproq())
-        self._main_window.show()
+        self._portfolio = portfolio
+        self._session = session
+        self._player = player
+        self._cheddar = cheddar
+        self._preferences = preferences
+        self._identity_lookup = identity.IdentityLookup()
+        self._artwork_selection = artwork.ArtworkSelection(self._portfolio, ui.locations.Pictures)
+        self._project_studio = ProjectStudio()
 
     def translate(self, app):
         QLocale.setDefault(QLocale(self._preferences.locale))
@@ -95,8 +70,40 @@ class Tagger:
             if translator.load("{0}_{1}".format(resource, self._preferences.locale), ":/"):
                 app.installTranslator(translator)
 
+    def show(self):
+        self._project_history = project_history.load(self._project_studio)
+        self._main_window = self._make_main_window()
+        self._main_window.show()
+
+    def _make_main_window(self):
+        return ui.MainWindow(self._session,
+                             self._portfolio,
+                             confirm_exit=self._show_exit_confirmation_message,
+                             create_startup_screen=self._startup_screen,
+                             create_project_screen=self._project_screen,
+                             confirm_close=self._show_close_project_confirmation_message,
+                             select_export_destination=self._dialogs.export_as_csv,
+                             select_save_as_destination=self._dialogs.save_as_excel,
+                             select_tracks=self._dialogs.select_tracks,
+                             select_tracks_in_folder=self._dialogs.add_tracks_in_folder,
+                             show_save_error=self._show_save_project_failed_message,
+                             show_export_error=self._show_export_project_failed_message,
+                             on_close_album=director.remove_album_from(self._portfolio),
+                             on_save_album=director.save_album(),
+                             on_add_files=director.add_tracks,
+                             on_export=export.as_csv,
+                             on_settings=self._show_settings_dialog,
+                             on_sign_in=self._open_sign_in_dialog,
+                             on_sign_out=auth.sign_out_from(self._session),
+                             on_about_qt=self._show_about_qt_message,
+                             on_about=self._show_about_dialog,
+                             on_online_help=ui.browser.open_,
+                             on_request_feature=ui.browser.open_,
+                             on_register=ui.browser.open_,
+                             on_transmit_to_soproq=self._export_as_soproq())
+
     def _startup_screen(self):
-        return ui.StartupScreen(self._welcome_page, self._new_project_page)
+        return ui.StartupScreen(self._make_welcome_page, self._new_project_page)
 
     def _project_screen(self, album):
         return ui.make_project_screen(album, self._project_edition_page, self._track_page_for(album))
@@ -108,10 +115,11 @@ class Tagger:
                                         confirm_overwrite=self._show_overwrite_project_confirmation_message,
                                         on_create_project=director.create_album_into(self._portfolio))
 
-    def _welcome_page(self):
-        return ui.make_welcome_page(select_project=self._dialogs.select_project_to_load,
+    def _make_welcome_page(self):
+        return ui.make_welcome_page(self._project_history,
+                                    select_project=self._dialogs.select_project_to_load,
                                     show_load_error=self._show_load_project_failed_message,
-                                    on_load_project=director.load_album_into(self._portfolio))
+                                    on_load_project=project.load(self._project_studio, self._portfolio))
 
     def _track_list_tab(self, album):
         return ui.make_track_list_tab(album,
@@ -154,8 +162,9 @@ class Tagger:
                                           parent=self._main_window).open()
 
     def _open_sign_in_dialog(self):
-        return ui.make_sign_in_dialog(self._login,
-                                      on_sign_in=auth.sign_in(self._login, self._cheddar),
+        login = auth.Login(self._session)
+        return ui.make_sign_in_dialog(login,
+                                      on_sign_in=auth.sign_in(login, self._cheddar),
                                       parent=self._main_window).open()
 
     def _open_artwork_selection_dialog(self):

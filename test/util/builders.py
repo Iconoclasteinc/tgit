@@ -5,6 +5,7 @@ from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session, User, Permission
 from tgit.metadata import Metadata, Image
+from tgit.project_history import ProjectHistory
 from tgit.track import Track
 from tgit.user_preferences import UserPreferences
 
@@ -57,6 +58,14 @@ def make_portfolio(project=None):
     if project is not None:
         portfolio.add_album(project)
     return portfolio
+
+
+def make_project_history(*past_projects):
+    history = ProjectHistory()
+    for past_project in past_projects:
+        history.project_opened(past_project)
+
+    return history
 
 
 def make_anonymous_user():

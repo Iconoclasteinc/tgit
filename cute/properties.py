@@ -53,7 +53,7 @@ def current_text():
     return PropertyQuery("current text", QComboBox.currentText)
 
 
-def list_item_text():
+def item_text():
     return PropertyQuery("text", lambda item: item.data(Qt.DisplayRole))
 
 

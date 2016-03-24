@@ -45,3 +45,13 @@ def test_importing_an_album_from_an_existing_track(app, recordings):
     app.shows_project_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
     app.shows_next_track_metadata(track_title="Rashers")
 
+
+def test_opening_a_recent_project(app):
+    app.new_project("Honeycomb", of_type="mp3")
+    app.close_project()
+    app.load_project("Honeycomb")
+    app.close_project()
+
+    app.open_recent_project("Honeycomb")
+    app.shows_project_metadata(release_name="Honeycomb")
+

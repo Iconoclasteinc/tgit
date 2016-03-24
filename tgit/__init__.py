@@ -20,8 +20,6 @@
 __app_name__ = "TGiT"
 __version__ = "2.2.2"
 
-import sys
-
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 
@@ -35,8 +33,5 @@ def launch():
     app.setOrganizationDomain("tagyourmusic.com")
     app.setWindowIcon(QIcon(":/tgit.ico"))
 
-    tagger_ = make_tagger(app)
-    tagger_.translate(app)
-    tagger_.show()
-
-    sys.exit(app.exec_())
+    make_tagger(app).show()
+    app.exec_()

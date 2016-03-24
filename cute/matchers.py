@@ -32,8 +32,8 @@ def with_data(data):
     return with_(properties.data(), data)
 
 
-def with_list_item_text(text):
-    return with_(properties.list_item_text(), text)
+def with_item_text(text):
+    return with_(properties.item_text(), text)
 
 
 def with_(query, matcher):
