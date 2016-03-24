@@ -34,7 +34,7 @@ class ApplicationRunner:
                native=False, confirm_exit=False).show()
 
         self.main_window_driver = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
-                                                   EventProcessingProber(timeout_in_ms=1000), Animatron())
+                                                   EventProcessingProber(timeout_in_ms=2000), Animatron())
 
     def stop(self):
         self.main_window_driver.close()

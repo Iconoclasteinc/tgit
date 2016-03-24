@@ -3,6 +3,7 @@ import os
 
 from PyQt5.QtWidgets import QFileDialog
 
+from cute import platforms
 from cute.matchers import disabled
 from cute.widgets import QFileDialogDriver, window
 
@@ -12,6 +13,32 @@ def file_selection_dialog(parent):
 
 
 class FileDialogDriver(QFileDialogDriver):
+    # We need this pause to allow the Windows system event to reach the Qt event loop before the next selection
+    # Do not remove
+    FILE_LIST_DISPLAY_DELAY = 20 if platforms.windows else 0
+
+    def navigate_to_dir(self, path):
+        self.view_as_list()
+        self.show_hidden_files()
+
+        for folder_name in self._navigation_path_to(path):
+            if folder_name == "":
+                pass
+            elif folder_name == "..":
+                self.pause(self.FILE_LIST_DISPLAY_DELAY)
+                self.refresh()
+                self.up_one_folder()
+            else:
+                self.pause(self.FILE_LIST_DISPLAY_DELAY)
+                self.refresh()
+                self.into_folder(folder_name)
+
+        self.pause(self.FILE_LIST_DISPLAY_DELAY)
+        self.refresh()
+
+    def _navigation_path_to(self, path):
+        return self.current_dir.relativeFilePath(path).split('/')
+
     def select(self, filename):
         self.is_active()
         self.view_as_list()

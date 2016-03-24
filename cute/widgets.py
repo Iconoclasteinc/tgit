@@ -416,21 +416,8 @@ class QFileDialogDriver(QDialogDriver):
 
         self.manipulate("set the view mode to list", set_list_view_mode)
 
-    def navigate_to_dir(self, path):
-        for folder_name in self._navigation_path_to(path):
-            if folder_name == "":
-                pass
-            elif folder_name == "..":
-                self.up_one_folder()
-                self.refresh()
-            else:
-                self.into_folder(folder_name)
-                self.refresh()
-
-    def _navigation_path_to(self, path):
-        return self._current_dir().relativeFilePath(path).split('/')
-
-    def _current_dir(self):
+    @property
+    def current_dir(self):
         class FindOutCurrentFolder:
             def __call__(self, dialog):
                 self.name = dialog.directory()

@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from cute import platforms
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 
 pytestmark = pytest.mark.feature
-
-DISPLAY_DELAY = 200 if platforms.mac else 0
 
 
 @pytest.fixture
