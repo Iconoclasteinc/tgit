@@ -173,8 +173,7 @@ def test_signals_when_track_metadata_change(driver):
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(lyrics="Lyrics\n...\n"))
-    driver.add_lyrics("Lyrics")
-    driver.add_lyrics("...")
+    driver.change_lyrics("Lyrics", "...")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(language="fra"))
@@ -222,8 +221,7 @@ def test_signals_when_track_metadata_change(driver):
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(comments="Comments\n...\n"))
-    driver.add_comments("Comments")
-    driver.add_comments("...")
+    driver.change_comments("Comments", "...")
     driver.check(metadata_changed_signal)
 
 

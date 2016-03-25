@@ -46,9 +46,10 @@ def test_signals_authentication_attempt_with_credentials(driver):
 def test_displays_progress_indicator_and_disable_authentication_when_login_in_progress(driver):
     dialog = show_dialog()
 
-    driver.has_stopped_progress_indicator()
-
     driver.enter_email("test@example.com")
+    driver.has_stopped_progress_indicator()
+    driver.has_enabled_authentication()
+
     dialog.login_in_progress()
     driver.is_showing_progress_indicator()
     driver.has_disabled_authentication()

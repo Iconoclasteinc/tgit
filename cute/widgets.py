@@ -151,9 +151,6 @@ class WidgetDriver:
     def close(self):
         self.manipulate("close", lambda widget: widget.close())
 
-    def clear_focus(self):
-        self.manipulate("clear focus", lambda widget: widget.clearFocus())
-
     def pause(self, ms):
         self.perform(gestures.pause(ms))
 

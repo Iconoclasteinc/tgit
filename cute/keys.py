@@ -5,5 +5,6 @@ BACKSPACE = 'backspace'
 DELETE = 'delete'
 ESCAPE = 'escape'
 RETURN = 'return'
+TAB = 'tab'
 
 F4 = 'f4'
