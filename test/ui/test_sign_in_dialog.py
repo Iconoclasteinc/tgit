@@ -67,6 +67,19 @@ def test_stops_progress_indicator_and_displays_error_message_when_login_fails(dr
     driver.has_enabled_authentication()
 
 
+def test_stops_progress_indicator_and_displays_error_message_when_connection_fails(driver):
+    dialog = show_dialog()
+
+    driver.enter_email("test@example.com")
+    dialog.login_in_progress()
+    driver.is_showing_progress_indicator()
+
+    dialog.connection_failed()
+    driver.has_stopped_progress_indicator()
+    driver.shows_connection_failed_message()
+    driver.has_enabled_authentication()
+
+
 def test_stops_progress_indicator_and_accepts_dialog_when_login_succeeds(driver):
     dialog = show_dialog()
 

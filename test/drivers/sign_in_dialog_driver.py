@@ -46,6 +46,10 @@ class SignInDialogDriver(QDialogDriver, ScreenDriver):
         self.authentication_error.is_showing_on_screen()
         self.authentication_error.has_text("Invalid username and/or password")
 
+    def shows_connection_failed_message(self):
+        self.authentication_error.is_showing_on_screen()
+        self.authentication_error.has_text("Could not connect to the TGiT platform. Please retry later.")
+
     def is_showing_progress_indicator(self):
         self.progress_indicator.is_(running())
 
