@@ -76,6 +76,10 @@ class IdentityLookup(metaclass=Observable):
     on_success = signal(IdentityCard)
     on_start = signal()
 
+    def __init__(self, project, initial_query):
+        self._initial_query = initial_query
+        self._project = project
+
     def lookup_started(self):
         self.on_start.emit()
 
@@ -87,6 +91,7 @@ class IdentityLookup(metaclass=Observable):
         self.on_failure.emit(error)
 
     def identity_selected(self, identity):
+        self._project.add_isni(self._initial_query, identity.id)
         self.on_success.emit(identity)
 
 

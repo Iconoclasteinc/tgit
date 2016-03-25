@@ -88,9 +88,6 @@ class ProjectEditionPageDriver(ScreenDriver):
         menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()
         menu.select_menu_item(named("_main_artist_isni_assign_action"))
 
-    def confirm_isni(self):
-        self.lineEdit(named("_main_artist_isni")).enter()
-
     def lookup_isni_of_main_artist(self):
         self.tool_button(named("_main_artist_isni_actions_button")).click()
 

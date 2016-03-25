@@ -242,6 +242,20 @@ def test_signals_track_removal_to_listeners():
     album.remove_track(position=0)
 
 
+def test_signals_when_adding_isni_to_local_map():
+    album = make_album()
+    album.addAlbumListener(_listener_expecting_notification("isnis", {"Joel Miller": "0000000123456789"}))
+
+    album.add_isni("Joel Miller", "0000000123456789")
+
+
+def test_signals_when_updating_isni_to_local_map():
+    album = make_album(isnis={"Joel Miller": "9876543210000000"})
+    album.addAlbumListener(_listener_expecting_notification("isnis", {"Joel Miller": "0000000123456789"}))
+
+    album.add_isni("Joel Miller", "0000000123456789")
+
+
 def _assert_notifies_listener_on_property_change(prop, value):
     album = Album()
     album.addAlbumListener(_listener_expecting_notification(prop, value))

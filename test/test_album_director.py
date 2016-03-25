@@ -281,13 +281,6 @@ def test_returns_none_when_name_not_found_in_local_map():
     assert_that(director.lookup_isni_in(album)("Rebecca Ann Maloy"), none(), "isni")
 
 
-def test_signals_when_adding_isni_to_local_map():
-    album = make_album()
-    album.addAlbumListener(_listener_expecting_notification("isnis", {"Joel Miller": "0000000123456789"}))
-
-    director.add_isni_to(album)("Joel Miller", "0000000123456789")
-
-
 def test_signals_when_adding_ipi_to_local_map():
     album = make_album()
     album.addAlbumListener(_listener_expecting_notification("ipis", {"Joel Miller": "0000000123456789"}))

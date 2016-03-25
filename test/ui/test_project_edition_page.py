@@ -3,10 +3,10 @@ import timeit
 
 import pytest
 from PyQt5.QtCore import QByteArray
-from hamcrest import has_entries, assert_that, less_than, contains
+from hamcrest import has_entries, assert_that, less_than
 
 from cute.matchers import named
-from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe, KeywordsValueMatcherProbe
+from cute.probes import ValueMatcherProbe, KeywordsValueMatcherProbe
 from cute.widgets import window
 from test.drivers import ProjectEditionPageDriver
 from test.ui import ignore, show_, close_
@@ -14,7 +14,6 @@ from test.util import resources, builders as build
 from test.util.builders import make_album, make_anonymous_session, make_registered_session
 from tgit import fs
 from tgit.auth import Permission
-from tgit.identity import IdentityCard, IdentityLookup
 from tgit.metadata import Image
 from tgit.ui.pages.project_edition_page import make_project_edition_page, ProjectEditionPage
 from tgit.ui.pages.track_list_tab import TrackListTab
@@ -33,12 +32,13 @@ def create_track_list_tab(_):
     return TrackListTab(ignore)
 
 
-def show_page(album, session=make_anonymous_session(), identity_lookup=IdentityLookup(),
-              on_select_artwork=ignore, on_select_identity=ignore, **handlers):
-    page = make_project_edition_page(album, session, identity_lookup,
+def show_page(album, session=make_anonymous_session(), on_select_artwork=ignore, on_select_identity=ignore,
+              on_isni_changed=ignore, **handlers):
+    page = make_project_edition_page(album, session,
                                      track_list_tab=create_track_list_tab,
                                      on_select_artwork=on_select_artwork,
                                      on_select_identity=on_select_identity,
+                                     on_isni_changed=on_isni_changed,
                                      **handlers)
     show_(page)
     return page
@@ -184,32 +184,12 @@ def test_clears_isni_when_main_artist_not_found(driver):
 
 
 def test_selects_identities_on_isni_lookup(driver):
-    select_identity_signal = ValueMatcherProbe("select identity", "performer")
+    signal = ValueMatcherProbe("select identity", "performer")
 
-    _ = show_page(make_album(lead_performer="performer"), make_registered_session(),
-                  on_select_identity=select_identity_signal.received)
+    _ = show_page(make_album(lead_performer="performer"), make_registered_session(), on_select_identity=signal.received)
 
     driver.lookup_isni_of_main_artist()
-    driver.check(select_identity_signal)
-
-
-def test_updates_main_artist_isni_on_isni_lookup(driver):
-    identity_lookup = IdentityLookup()
-    _ = show_page(make_album(lead_performer="performer"), make_registered_session(), identity_lookup)
-
-    identity_lookup.identity_selected(IdentityCard(id="0000000123456789", type="individual"))
-    driver.shows_main_artist_isni("0000000123456789")
-
-
-def test_signals_found_isni_on_isni_lookup(driver):
-    isni_changed_signal = MultiValueMatcherProbe("isni changed", contains("Joel Miller", "0000000123456789"))
-    identity_lookup = IdentityLookup()
-    _ = show_page(make_album(lead_performer="Joel Miller"), make_registered_session(), identity_lookup,
-                  on_isni_changed=isni_changed_signal.received)
-
-    identity_lookup.identity_selected(IdentityCard(id="0000000123456789", type="individual"))
-    driver.confirm_isni()
-    driver.check(isni_changed_signal)
+    driver.check(signal)
 
 
 def test_signals_when_project_metadata_edited(driver):

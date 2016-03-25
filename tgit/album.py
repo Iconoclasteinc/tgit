@@ -104,6 +104,13 @@ class Album(metaclass=tag.Taggable):
         self.metadata.removeImages()
         self.metadataChanged()
 
+    def add_isni(self, name, id_):
+        if self.isnis is None:
+            self.isnis = {name: id_}
+        else:
+            self.isnis[name] = id_
+            self.metadataChanged()
+
     def __len__(self):
         return len(self.tracks)
 

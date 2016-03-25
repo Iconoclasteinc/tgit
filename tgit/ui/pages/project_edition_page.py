@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import operator
 
-from PyQt5.QtCore import Qt, pyqtSignal, QDate
+from PyQt5.QtCore import pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
@@ -32,12 +32,13 @@ from tgit.ui.helpers.ui_file import UIFile
 ISO_8601_FORMAT = "yyyy-MM-dd"
 
 
-def make_project_edition_page(album, session, identity_lookup, track_list_tab, on_select_artwork, on_select_identity,
+def make_project_edition_page(project, session, track_list_tab, on_select_artwork, on_select_identity, on_isni_changed,
                               **handlers):
-    track_list = track_list_tab(album)
+    track_list = track_list_tab(project)
     page = ProjectEditionPage(track_list_tab=track_list)
     page.on_select_artwork.connect(on_select_artwork)
     page.on_select_identity.connect(on_select_identity)
+    page.on_isni_edited.connect(on_isni_changed)
 
     for name, handler in handlers.items():
         getattr(page, name)(handler)
@@ -45,14 +46,13 @@ def make_project_edition_page(album, session, identity_lookup, track_list_tab, o
     subscriptions = MultiSubscription()
     subscriptions += session.user_signed_in.subscribe(page.user_changed)
     subscriptions += session.user_signed_out.subscribe(lambda user: page.user_changed(session.current_user))
-    subscriptions += identity_lookup.on_success.subscribe(page.identity_selected)
     page.closed.connect(lambda: subscriptions.cancel())
     page.closed.connect(track_list.close)
 
-    album.addAlbumListener(page)
-    page.closed.connect(lambda: album.removeAlbumListener(page))
+    project.addAlbumListener(page)
+    page.closed.connect(lambda: project.removeAlbumListener(page))
     page.user_changed(session.current_user)
-    page.display(album)
+    page.display(project)
     return page
 
 
@@ -61,6 +61,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
     closed = pyqtSignal()
     on_select_artwork = pyqtSignal()
     on_select_identity = pyqtSignal(str)
+    on_isni_edited = pyqtSignal(str, str)
 
     _picture = None
     _isni_lookup = False
@@ -83,6 +84,9 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_isni_actions_button.clicked.connect(
             lambda: self.on_select_identity.emit(self._main_artist.text()))
 
+        self._main_artist_isni.editingFinished.connect(
+            lambda: self.on_isni_edited.emit(self._main_artist.text(), self._main_artist_isni.text()))
+
         self._select_artwork_button.clicked.connect(lambda: self.on_select_artwork.emit())
 
     @staticmethod
@@ -92,19 +96,11 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         combobox.insertItem(0, "")
         combobox.setCurrentIndex(0)
 
-    def on_isni_changed(self, on_isni_changed):
-        self._main_artist_isni.editingFinished.connect(
-            lambda: on_isni_changed(self._main_artist.text(), self._main_artist_isni.text()))
-
     def on_isni_local_lookup(self, on_isni_local_lookup):
         def update_main_artist_isni(main_artist):
             self._main_artist_isni.setText(on_isni_local_lookup(main_artist))
 
         self._main_artist.textEdited.connect(update_main_artist_isni)
-
-    def identity_selected(self, identity):
-        self._main_artist_isni.setFocus(Qt.OtherFocusReason)
-        self._main_artist_isni.setText(identity.id)
 
     def on_remove_artwork(self, on_remove_artwork):
         self._remove_artwork_button.clicked.connect(lambda: on_remove_artwork())

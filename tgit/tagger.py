@@ -59,7 +59,6 @@ class Tagger:
         self._player = player
         self._cheddar = cheddar
         self._preferences = preferences
-        self._identity_lookup = identity.IdentityLookup()
         self._project_studio = ProjectStudio()
 
     def translate(self, app):
@@ -130,17 +129,16 @@ class Tagger:
                                       on_stop_track=self._player.stop,
                                       on_add_tracks=director.add_tracks_to(album))
 
-    def _project_edition_page(self, album):
-        return ui.make_project_edition_page(album,
+    def _project_edition_page(self, project_):
+        return ui.make_project_edition_page(project_,
                                             self._session,
-                                            self._identity_lookup,
                                             track_list_tab=self._track_list_tab,
                                             on_select_artwork=self._open_artwork_selection_dialog,
-                                            on_isni_changed=director.add_isni_to(album),
-                                            on_isni_local_lookup=director.lookup_isni_in(album),
+                                            on_isni_changed=project_.add_isni,
+                                            on_isni_local_lookup=director.lookup_isni_in(project_),
                                             on_select_identity=self._open_isni_dialog,
-                                            on_remove_artwork=director.remove_album_cover_from(album),
-                                            on_metadata_changed=director.update_album_from(album))
+                                            on_remove_artwork=director.remove_album_cover_from(project_),
+                                            on_metadata_changed=director.update_album_from(project_))
 
     @staticmethod
     def _track_page_for(album):
@@ -155,9 +153,9 @@ class Tagger:
         return track_page
 
     def _open_isni_dialog(self, query):
-        return ui.make_isni_lookup_dialog(query, self._identity_lookup,
-                                          on_lookup=identity.launch_lookup(self._cheddar, self._session,
-                                                                           self._identity_lookup),
+        lookup = identity.IdentityLookup(self._portfolio[0], query)
+        return ui.make_isni_lookup_dialog(query, lookup,
+                                          on_lookup=identity.launch_lookup(self._cheddar, self._session, lookup),
                                           parent=self._main_window).open()
 
     def _open_sign_in_dialog(self):

@@ -7,6 +7,7 @@ from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.isni_lookup_dialog_driver import IsniLookupDialogDriver
 from test.ui import ignore, show_, close_
+from test.util.builders import make_album
 from tgit.identity import Identities
 from tgit.identity import IdentityCard, IdentityLookup
 from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog
@@ -14,7 +15,7 @@ from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog, make_isni_looku
 pytestmark = pytest.mark.ui
 
 
-def show_dialog(query=None, identity_lookup=IdentityLookup(), on_lookup=ignore):
+def show_dialog(query=None, identity_lookup=IdentityLookup(make_album(), ""), on_lookup=ignore):
     dialog = make_isni_lookup_dialog(query, identity_lookup, on_lookup, delete_on_close=False)
     show_(dialog)
     return dialog
@@ -73,7 +74,7 @@ def test_displays_only_last_lookup_results(driver):
 def test_signals_selected_identity(driver):
     signal = ValueMatcherProbe("lookup ISNI", has_property("id", "0000000123456789"))
 
-    identity_lookup = IdentityLookup()
+    identity_lookup = IdentityLookup(make_album(), "Joel Miller")
     identity_lookup.on_success.subscribe(signal.received)
 
     dialog = show_dialog(identity_lookup=identity_lookup)

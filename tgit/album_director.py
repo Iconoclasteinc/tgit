@@ -128,13 +128,6 @@ def remove_track_from(album):
     return album.remove_track
 
 
-def add_isni_to(album):
-    def add_isni(name, isni):
-        album.isnis = _add_identifier_to_map(album.isnis, isni, name)
-
-    return add_isni
-
-
 def lookup_isni_in(album):
     def lookup_isni(name):
         return album.isnis[name] if album.isnis and name in album.isnis else None
