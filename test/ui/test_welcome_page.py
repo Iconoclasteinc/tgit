@@ -1,4 +1,7 @@
+import os
+
 import pytest
+
 from hamcrest import instance_of
 
 from cute.matchers import named
@@ -70,7 +73,7 @@ def test_clears_previous_history_on_display(driver):
 
 
 def test_signals_project_to_open_when_open_button_clicked(driver):
-    signal = ValueMatcherProbe("open project", "/path/to/project/file")
+    signal = ValueMatcherProbe("open project", os.path.normpath("/path/to/project/file"))
 
     _ = show_page(make_project_history("/path/to/project/file"), on_load_project=signal.received)
 
@@ -84,4 +87,3 @@ def test_disables_open_project_when_no_project_selected(driver):
     driver.has_disabled_open_project()
     driver.select_project("/path/to/project/file")
     driver.has_enabled_open_project()
-

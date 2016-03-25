@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+import os
+
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QFrame
 from PyQt5.QtWidgets import QListWidgetItem
@@ -82,5 +84,5 @@ class WelcomePage(QFrame, UIFile):
 
     def _populate_project_history(self, project_history):
         for recent_project in project_history:
-            item = QListWidgetItem(recent_project.filename)
+            item = QListWidgetItem(os.path.normpath(recent_project.filename))
             self._recent_projects_list.addItem(item)

@@ -1,3 +1,5 @@
+import os
+
 from PyQt5.QtWidgets import QListView, QAbstractButton
 
 from cute import matchers as match
@@ -22,7 +24,7 @@ class WelcomePageDriver(ScreenDriver):
         self._load_project_button.click()
 
     def select_project(self, path):
-        self._recent_projects_list.select_item(match.with_item_text(path))
+        self._recent_projects_list.select_item(match.with_item_text(os.path.normpath(path)))
 
     def has_disabled_open_project(self):
         self._open_project_button.is_disabled()
@@ -31,7 +33,7 @@ class WelcomePageDriver(ScreenDriver):
         self._open_project_button.is_enabled()
 
     def shows_recent_projects(self, *paths):
-        self._recent_projects_list.contains_items(*[match.with_item_text(path) for path in paths])
+        self._recent_projects_list.contains_items(*[match.with_item_text(os.path.normpath(path)) for path in paths])
 
     def open_recent_project(self, name):
         self.select_project(name)
