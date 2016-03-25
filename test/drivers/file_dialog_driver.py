@@ -13,9 +13,9 @@ def file_selection_dialog(parent):
 
 
 class FileDialogDriver(QFileDialogDriver):
-    # We need this pause to allow the Windows system event to reach the Qt event loop before the next selection
+    # We need this pause to allow system events to reach the Qt event loop before the next selection
     # Do not remove
-    FILE_LIST_DISPLAY_DELAY = 30 if platforms.windows else 0
+    FILE_LIST_DISPLAY_DELAY = 30 if platforms.windows else 20
 
     def navigate_to_dir(self, path):
         self.view_as_list()
