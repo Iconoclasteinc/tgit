@@ -39,7 +39,7 @@ StyleSheet = """
 @Observer
 class MainWindow(QMainWindow, UIFile):
     _closing = False
-    _album = None
+    _project = None
 
     TRACK_ACTIONS_START_INDEX = 2
 
@@ -64,7 +64,7 @@ class MainWindow(QMainWindow, UIFile):
         for name, handler in handlers.items():
             getattr(self, name)(handler)
 
-        self._album_dependent_action = [
+        self._project_dependent_action = [
             self._add_files_action,
             self._add_folder_action,
             self._export_action,
@@ -76,35 +76,35 @@ class MainWindow(QMainWindow, UIFile):
         if session.opened:
             self.user_signed_in(session.current_user)
 
-    def enable_project_actions(self, album):
+    def enable_project_actions(self, project):
         self._navigate_menu.setEnabled(True)
         self._transmit_menu.setEnabled(True)
-        for action in self._album_dependent_action:
+        for action in self._project_dependent_action:
             action.setEnabled(True)
-            action.setData(album)
+            action.setData(project)
 
     def disable_project_actions(self):
         self._navigate_menu.setDisabled(True)
         self._transmit_menu.setDisabled(True)
-        for action in self._album_dependent_action:
+        for action in self._project_dependent_action:
             action.setEnabled(False)
             action.setData(None)
 
     def display_startup_screen(self, *_):
-        self._album = None
+        self._project = None
         self.disable_project_actions()
         self._clear_track_actions()
         self._change_screen(self._create_startup_screen())
 
-    def display_album_screen(self, album):
-        self._album = album
-        self.enable_project_actions(album)
+    def display_project_screen(self, project):
+        self._project = project
+        self.enable_project_actions(project)
         self._create_track_actions()
-        self._change_screen(self._create_project_screen(album))
+        self._change_screen(self._create_project_screen(project))
 
-        self.subscribe(album.track_inserted, self._rebuild_track_actions)
-        self.subscribe(album.track_removed, self._rebuild_track_actions)
-        self.subscribe(album.track_moved, self._rebuild_track_actions)
+        self.subscribe(project.track_inserted, self._rebuild_track_actions)
+        self.subscribe(project.track_removed, self._rebuild_track_actions)
+        self.subscribe(project.track_moved, self._rebuild_track_actions)
 
     def user_signed_in(self, user):
         self._sign_in_action.setVisible(False)
@@ -117,47 +117,47 @@ class MainWindow(QMainWindow, UIFile):
         self._sign_in_action.setVisible(True)
         self._logged_user_action.setVisible(False)
 
-    def on_close_album(self, on_close_album):
-        def confirm_album_close():
-            self._confirm_close(on_accept=lambda: on_close_album(self._album))
+    def on_close_project(self, handler):
+        def confirm_project_close():
+            self._confirm_close(on_accept=lambda: handler(self._project))
 
-        self._close_project_action.triggered.connect(confirm_album_close)
+        self._close_project_action.triggered.connect(confirm_project_close)
 
-    def on_save_album(self, on_save_album):
-        def save_album():
+    def on_save_project(self, handler):
+        def save_project():
             if self.focusWidget() is not None:
                 self.focusWidget().clearFocus()
 
             with rescue(on_error=self._show_save_error):
-                on_save_album(self._album)
+                handler(self._project)
 
-        self._save_project_action.triggered.connect(save_album)
+        self._save_project_action.triggered.connect(save_project)
 
     def on_export(self, on_export):
         def export(destination):
             with rescue(on_error=self._show_export_error):
-                on_export(self._album, destination)
+                on_export(self._project, destination)
 
         self._export_action.triggered.connect(
-            lambda *_: self._select_export_destination(export, self._album.release_name))
+            lambda *_: self._select_export_destination(export, self._project.release_name))
 
     def on_transmit_to_soproq(self, on_transmit_to_soproq):
         def save_as(destination):
             with rescue(on_error=self._show_export_error):
-                on_transmit_to_soproq(self._album, destination)
+                on_transmit_to_soproq(self._project, destination)
 
         self._soproq_action.triggered.connect(
-            lambda _: self._select_save_as_destination(save_as, self._album.release_name))
+            lambda _: self._select_save_as_destination(save_as, self._project.release_name))
 
     def on_settings(self, on_settings):
         self._settings_action.triggered.connect(on_settings)
 
     def on_add_files(self, on_add_files):
         def add_files(*files):
-            on_add_files(self._album, *files)
+            on_add_files(self._project, *files)
 
-        self._add_files_action.triggered.connect(lambda *_: self._select_tracks(self._album.type, add_files))
-        self._add_folder_action.triggered.connect(lambda *_: self._select_tracks_in_folder(self._album.type, add_files))
+        self._add_files_action.triggered.connect(lambda *_: self._select_tracks(self._project.type, add_files))
+        self._add_folder_action.triggered.connect(lambda *_: self._select_tracks_in_folder(self._project.type, add_files))
 
     def on_about(self, handler):
         self._about_action.triggered.connect(handler)
@@ -196,7 +196,7 @@ class MainWindow(QMainWindow, UIFile):
 
     def _setup_signals(self, portfolio, session):
         self.subscribe(portfolio.album_removed, self.display_startup_screen)
-        self.subscribe(portfolio.album_created, self.display_album_screen)
+        self.subscribe(portfolio.album_created, self.display_project_screen)
         self.subscribe(session.user_signed_in, self.user_signed_in)
         self.subscribe(session.user_signed_out, self.user_signed_out)
 
@@ -226,7 +226,7 @@ class MainWindow(QMainWindow, UIFile):
             self._navigate_menu.addAction(action)
             return action
 
-        for each_track in self._album.tracks:
+        for each_track in self._project.tracks:
             self.unsubscribe(each_track.metadata_changed)
             each_action = add_entry(each_track)
             self.subscribe(each_track.metadata_changed, lambda track: update_entry(each_action, track))
@@ -261,4 +261,4 @@ class MainWindow(QMainWindow, UIFile):
 
     @property
     def _should_close_immediately(self):
-        return self._closing or self._album is None
+        return self._closing or self._project is None

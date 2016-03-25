@@ -48,6 +48,7 @@ def make_tagger(app):
 
 class Tagger:
     _main_window = None
+    _project_history = None
 
     def __init__(self, session, portfolio, player, cheddar, preferences, native=True, confirm_exit=True):
         self._native = native
@@ -86,8 +87,8 @@ class Tagger:
                              select_tracks_in_folder=self._dialogs.add_tracks_in_folder,
                              show_save_error=self._show_save_project_failed_message,
                              show_export_error=self._show_export_project_failed_message,
-                             on_close_album=director.remove_album_from(self._portfolio),
-                             on_save_album=director.save_album(),
+                             on_close_project=director.remove_album_from(self._portfolio),
+                             on_save_project=director.save_album(),
                              on_add_files=director.add_tracks,
                              on_export=export.as_csv,
                              on_settings=self._show_settings_dialog,
@@ -103,8 +104,8 @@ class Tagger:
     def _startup_screen(self):
         return ui.StartupScreen(self._make_welcome_page, self._new_project_page)
 
-    def _project_screen(self, album):
-        return ui.make_project_screen(album, self._project_edition_page, self._track_page_for(album))
+    def _project_screen(self, project_):
+        return ui.make_project_screen(project_, self._project_edition_page, self._track_page_for(project_))
 
     def _new_project_page(self):
         return ui.make_new_project_page(select_location=self._dialogs.select_project_destination,
@@ -119,15 +120,15 @@ class Tagger:
                                     show_load_error=self._show_load_project_failed_message,
                                     on_load_project=project.load(self._project_studio, self._portfolio))
 
-    def _track_list_tab(self, album):
-        return ui.make_track_list_tab(album,
+    def _track_list_tab(self, project_):
+        return ui.make_track_list_tab(project_,
                                       self._player,
-                                      select_tracks=functools.partial(self._dialogs.select_tracks, album.type),
-                                      on_move_track=director.move_track_of(album),
-                                      on_remove_track=director.remove_track_from(album),
+                                      select_tracks=functools.partial(self._dialogs.select_tracks, project_.type),
+                                      on_move_track=director.move_track_of(project_),
+                                      on_remove_track=director.remove_track_from(project_),
                                       on_play_track=self._player.play,
                                       on_stop_track=self._player.stop,
-                                      on_add_tracks=director.add_tracks_to(album))
+                                      on_add_tracks=director.add_tracks_to(project_))
 
     def _project_edition_page(self, project_):
         return ui.make_project_edition_page(project_,
@@ -141,14 +142,14 @@ class Tagger:
                                             on_metadata_changed=director.update_album_from(project_))
 
     @staticmethod
-    def _track_page_for(album):
+    def _track_page_for(project_):
         def track_page(track):
-            return ui.make_track_edition_page(album,
+            return ui.make_track_edition_page(project_,
                                               track,
                                               on_track_changed=director.update_track(track),
-                                              on_isni_local_lookup=director.lookup_isni_in(album),
-                                              on_ipi_local_lookup=director.lookup_ipi_in(album),
-                                              on_ipi_changed=director.add_ipi_to(album))
+                                              on_isni_local_lookup=director.lookup_isni_in(project_),
+                                              on_ipi_local_lookup=director.lookup_ipi_in(project_),
+                                              on_ipi_changed=director.add_ipi_to(project_))
 
         return track_page
 
