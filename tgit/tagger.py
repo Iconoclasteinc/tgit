@@ -130,10 +130,16 @@ class Tagger:
                                       on_stop_track=self._player.stop,
                                       on_add_tracks=director.add_tracks_to(project_))
 
+    @staticmethod
+    def _musician_tab(project_):
+        return ui.make_musician_tab(project_,
+                                    on_metadata_changed=director.update_album_from(project_))
+
     def _project_edition_page(self, project_):
         return ui.make_project_edition_page(project_,
                                             self._session,
                                             track_list_tab=self._track_list_tab,
+                                            musician_tab=self._musician_tab,
                                             on_select_artwork=self._open_artwork_selection_dialog,
                                             on_isni_changed=project_.add_isni,
                                             on_isni_local_lookup=director.lookup_isni_in(project_),

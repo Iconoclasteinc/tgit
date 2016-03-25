@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from cute.matchers import named, with_buddy, with_pixmap_size
-from test.drivers.artist_table_driver import musician_table_driver
 from tgit.ui.pages.project_edition_page import ProjectEditionPage
 from ._screen_driver import ScreenDriver
 from .file_dialog_driver import file_selection_dialog
@@ -140,30 +139,6 @@ class ProjectEditionPageDriver(ScreenDriver):
 
     def change_main_artist_region(self, name):
         self.combobox(named("_main_artist_region")).select_option(name)
-
-    def shows_only_musicians_in_table(self, *musicians):
-        self._select_musicians_tab()
-        musician_table_driver(self).shows_only_musicians_in_table(*musicians)
-
-    def _select_musicians_tab(self):
-        self.tabs(named("_tabs")).select("3. Musicians")
-
-    def remove_musician(self, row):
-        self._select_musicians_tab()
-        musician_table_driver(self).remove_musician(row)
-
-    def add_musician(self, instrument, name, row):
-        self._select_musicians_tab()
-        self.button(named("_add_musician_button")).click()
-        musician_table_driver(self).add_musician(instrument, name, row)
-
-    def change_instrument_of_row(self, row, text):
-        self._select_musicians_tab()
-        musician_table_driver(self).change_instrument_of_row(row, text)
-
-    def change_musician_of_row(self, row, text):
-        self._select_musicians_tab()
-        musician_table_driver(self).change_musician_of_row(row, text)
 
     def shows_label_name(self, name):
         self._select_release_tab()

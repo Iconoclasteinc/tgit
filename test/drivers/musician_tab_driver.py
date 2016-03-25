@@ -1,13 +1,9 @@
 from ._screen_driver import ScreenDriver
 from cute.matchers import named, with_text
-from tgit.ui.pages.project_edition_page import MusicianRow, MusicianTable
+from tgit.ui.pages.musician_tab import MusicianRow
 
 
-def musician_table_driver(parent):
-    return MusicianTableDriver.find_single(parent, MusicianTable, named("_musician_table_container"))
-
-
-class MusicianTableDriver(ScreenDriver):
+class MusicianTabDriver(ScreenDriver):
     def shows_only_musicians_in_table(self, *musicians):
         for index, musician in enumerate(musicians):
             instrument, name = musician
@@ -18,6 +14,7 @@ class MusicianTableDriver(ScreenDriver):
         musician_row_driver(self, row - 1).remove_musician()
 
     def add_musician(self, instrument, name, row):
+        self.button(named("_add_musician_button")).click()
         musician_row_driver(self, row - 1).change_instrument(instrument)
         musician_row_driver(self, row - 1).change_musician_name(name)
 
