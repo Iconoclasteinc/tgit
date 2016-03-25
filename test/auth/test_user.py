@@ -33,7 +33,7 @@ def test_registered_user_knows_its_email():
 
 
 def test_registered_user_knows_its_api_key():
-    registered = make_registered_user(token="0123456789")
+    registered = make_registered_user(api_key="0123456789")
     assert_that(registered.api_key, is_("0123456789"), "registered api key")
 
 

@@ -2,22 +2,19 @@
 from tgit.signal import Observable, signal
 
 
-class EmptyHistoryStore:
-    def load_history(self):
-        return ProjectHistory()
-
-
-def load(studio, from_store=EmptyHistoryStore()):
-    history = from_store.load_history()
+def load_history(studio, store):
+    history = store.load_history()
     studio.project_opened.subscribe(history.project_opened)
+    history.history_changed.subscribe(
+        lambda: store.store_history(history))
     return history
 
 
 class ProjectHistory(metaclass=Observable):
     history_changed = signal()
 
-    def __init__(self):
-        self._history = []
+    def __init__(self, *past_projects):
+        self._history = list(past_projects)
 
     def project_opened(self, project):
         self._history.insert(0, project)

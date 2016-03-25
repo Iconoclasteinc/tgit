@@ -4,6 +4,7 @@ import sys
 from traceback import format_exception
 
 import pytest
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QApplication
 
 from cute import event_loop
@@ -41,3 +42,8 @@ def qt():
     # If we don't force deletion of the C++ wrapped object, it causes the test suite to eventually crash
     # Never ever remove this!!
     sip.delete(application)
+
+
+@pytest.fixture
+def settings(qt, tmpdir):
+    return QSettings(tmpdir.join("settings.ini").strpath, QSettings.IniFormat)

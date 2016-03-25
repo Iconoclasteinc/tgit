@@ -19,21 +19,21 @@
 
 import functools
 
-from PyQt5.QtCore import QTranslator, QLocale
+from PyQt5.QtCore import QTranslator, QLocale, QSettings
 from PyQt5.QtWidgets import QMessageBox
 
-from tgit import album_director as director, artwork, auth, identity, export, ui, project, project_history
+from tgit import (album_director as director, artwork, auth, identity, export, ui, project, project_history,
+                  user_preferences as preferences)
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import open_media_player
 from tgit.cheddar import Cheddar
 from tgit.project_studio import ProjectStudio
-from tgit.settings_backend import SettingsBackend
+from tgit.settings import PreferencesDataStore, UserDataStore, HistoryDataStore
 from tgit.ui.helpers import template_file as templates
 
 
 def make_tagger(app):
     # todo this will eventually end up in Tagger
-    settings = SettingsBackend()
     portfolio = AlbumPortfolio()
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
     player = open_media_player(portfolio)
@@ -41,26 +41,28 @@ def make_tagger(app):
     app.aboutToQuit.connect(cheddar.stop)
     app.aboutToQuit.connect(player.dispose)
 
-    tagger = Tagger(settings.load_session(), portfolio, player, cheddar, settings.load_user_preferences())
+    settings = QSettings()
+    settings.setFallbacksEnabled(False)  # To avoid getting global OS X settings that apply to all applications
+    tagger = Tagger(settings, portfolio, player, cheddar)
     tagger.translate(app)
     return tagger
 
 
 class Tagger:
     _main_window = None
-    _project_history = None
 
-    def __init__(self, session, portfolio, player, cheddar, preferences, native=True, confirm_exit=True):
+    def __init__(self, settings, portfolio, player, cheddar, native=True, confirm_exit=True):
         self._native = native
         self._confirm_exit = confirm_exit
         self._dialogs = ui.Dialogs(native)
 
         self._portfolio = portfolio
-        self._session = session
         self._player = player
         self._cheddar = cheddar
-        self._preferences = preferences
         self._project_studio = ProjectStudio()
+        self._session = auth.load_session_from(UserDataStore(settings))
+        self._preferences = preferences.load_preferences_from(PreferencesDataStore(settings))
+        self._project_history = project_history.load_history(self._project_studio, HistoryDataStore(settings))
 
     def translate(self, app):
         QLocale.setDefault(QLocale(self._preferences.locale))
@@ -70,7 +72,6 @@ class Tagger:
                 app.installTranslator(translator)
 
     def show(self):
-        self._project_history = project_history.load(self._project_studio)
         self._main_window = self._make_main_window()
         self._main_window.show()
 

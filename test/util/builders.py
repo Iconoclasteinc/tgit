@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import QLocale
 
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
@@ -68,20 +67,16 @@ def make_portfolio(project=None):
     return portfolio
 
 
-def make_project_history(*past_projects):
-    history = ProjectHistory()
-    for past_project in past_projects:
-        history.project_opened(make_project(past_project))
-
-    return history
+def make_project_history(*paths):
+    return ProjectHistory(*[make_project(path) for path in paths])
 
 
 def make_anonymous_user():
     return User.anonymous()
 
 
-def make_registered_user(email="test@example.com", token="api-key", permissions=None):
-    return User.registered_as(email, token, permissions or [Permission.lookup_isni.value])
+def make_registered_user(email="test@example.com", api_key="api-key", permissions=None):
+    return User.registered_as(email, api_key, permissions or [Permission.lookup_isni.value])
 
 
 def make_anonymous_session():
@@ -96,5 +91,5 @@ def make_registered_session(email="test@example.com", token="api-key", permissio
 
 def make_preferences(locale="en"):
     preferences = UserPreferences()
-    preferences.locale = QLocale(locale)
+    preferences.locale = locale
     return preferences

@@ -29,8 +29,8 @@ class ApplicationRunner:
         self._settings = settings
 
     def start(self):
-        Tagger(self._settings.load_session(), AlbumPortfolio(), fake_audio_player(),
-               Cheddar(host="localhost", port=5001, secure=False), self._settings.load_user_preferences(),
+        Tagger(self._settings, AlbumPortfolio(), fake_audio_player(),
+               Cheddar(host="localhost", port=5001, secure=False),
                native=False, confirm_exit=False).show()
 
         self.main_window_driver = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
@@ -117,7 +117,6 @@ class ApplicationRunner:
 
     def open_recent_project(self, name):
         path = self._project_file_path(name)
-        print(path)
         self.main_window_driver.open_recent_project(path)
 
     def save(self):

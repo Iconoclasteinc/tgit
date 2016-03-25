@@ -52,6 +52,8 @@ def test_opening_a_recent_project(app):
     app.load_project("Honeycomb")
     app.close_project()
 
+    app.stop()
+    app.start()
     app.open_recent_project("Honeycomb")
     app.shows_project_metadata(release_name="Honeycomb")
 
