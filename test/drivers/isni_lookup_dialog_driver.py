@@ -86,6 +86,12 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         else:
             self.label(named("_connection_error_message")).is_hidden()
 
+    def shows_permission_denied_message(self, visible=True):
+        if visible:
+            self.label(named("_permission_denied_message")).is_showing_on_screen()
+        else:
+            self.label(named("_permission_denied_message")).is_hidden()
+
     def is_showing_progress_indicator(self):
         self.progress_indicator.is_(running())
 

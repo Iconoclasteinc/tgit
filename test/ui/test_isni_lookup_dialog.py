@@ -1,5 +1,4 @@
 import pytest
-import requests
 from hamcrest import has_property
 
 from cute.matchers import named
@@ -32,6 +31,7 @@ def test_hides_error_messages_by_default(driver):
     _ = show_dialog()
     driver.shows_no_result_message(visible=False)
     driver.shows_connection_error_message(visible=False)
+    driver.shows_permission_denied_message(visible=False)
 
 
 def test_signals_lookup_on_display(driver):
@@ -113,16 +113,30 @@ def test_hides_no_result_message(driver):
 
 def test_displays_connection_error_message(driver):
     dialog = show_dialog()
-    dialog.lookup_failed(requests.ConnectionError())
+    dialog.connection_failed()
     driver.shows_connection_error_message()
 
 
 def test_hides_connection_error_message(driver):
     dialog = show_dialog()
-    dialog.lookup_failed(requests.ConnectionError())
+    dialog.connection_failed()
     driver.shows_connection_error_message()
     dialog.lookup_successful(Identities("1", [joel_miller()]))
     driver.shows_connection_error_message(visible=False)
+
+
+def test_displays_permission_denied_message(driver):
+    dialog = show_dialog()
+    dialog.permission_denied()
+    driver.shows_permission_denied_message()
+
+
+def test_hides_permission_denied_message(driver):
+    dialog = show_dialog()
+    dialog.permission_denied()
+    driver.shows_permission_denied_message()
+    dialog.lookup_successful(Identities("1", [joel_miller()]))
+    driver.shows_permission_denied_message(visible=False)
 
 
 def test_displays_progress_indicator_when_lookup_in_progress(driver):
@@ -143,13 +157,13 @@ def test_stops_progress_indicator_on_lookup_success(driver):
     driver.has_stopped_progress_indicator()
 
 
-def test_stops_progress_indicator_on_lookup_failure(driver):
+def test_stops_progress_indicator_on_connection_failure(driver):
     dialog = show_dialog()
 
     dialog.lookup_in_progress()
     driver.is_showing_progress_indicator()
 
-    dialog.lookup_failed("")
+    dialog.connection_failed()
     driver.has_stopped_progress_indicator()
 
 

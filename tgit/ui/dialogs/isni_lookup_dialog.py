@@ -29,7 +29,8 @@ def make_isni_lookup_dialog(query, identity_lookup, on_lookup, parent=None, dele
 
     subscriptions = MultiSubscription()
     subscriptions += identity_lookup.on_identities_available.subscribe(in_event_loop(dialog.lookup_successful))
-    subscriptions += identity_lookup.on_failure.subscribe(in_event_loop(dialog.lookup_failed))
+    subscriptions += identity_lookup.on_connection_failed.subscribe(in_event_loop(dialog.connection_failed))
+    subscriptions += identity_lookup.on_permission_denied.subscribe(in_event_loop(dialog.permission_denied))
     subscriptions += identity_lookup.on_start.subscribe(in_event_loop(dialog.lookup_in_progress))
 
     dialog.on_lookup.connect(on_lookup)
@@ -93,9 +94,13 @@ class ISNILookupDialog(QDialog, UIFile):
         self._result_message.setText(
             self.tr("Your search yielded {} results. Please refine your search.").format(total_count))
 
-    def lookup_failed(self, _):
+    def connection_failed(self):
         self._progress_indicator.stop()
         self._connection_error_message.setVisible(True)
+
+    def permission_denied(self):
+        self._progress_indicator.stop()
+        self._permission_denied_message.setVisible(True)
 
     def lookup(self, query):
         self._lookup_criteria.setText(query)
@@ -115,6 +120,7 @@ class ISNILookupDialog(QDialog, UIFile):
     def _hide_messages(self):
         self._result_message.setVisible(False)
         self._connection_error_message.setVisible(False)
+        self._permission_denied_message.setVisible(False)
 
     def _build_row(self, identity):
         item = QListWidgetItem(self._build_identity_caption(identity))

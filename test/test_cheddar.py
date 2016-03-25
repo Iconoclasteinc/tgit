@@ -1,8 +1,8 @@
 import pytest
-import requests
 from hamcrest import assert_that, empty, contains, has_entries, instance_of, equal_to, has_entry
 
-from tgit.cheddar import Cheddar, PermissionDeniedError, AuthenticationError, InsufficientInformationError
+from tgit.cheddar import Cheddar, PermissionDeniedError, AuthenticationError, InsufficientInformationError, \
+    PlatformConnectionError
 
 pytestmark = pytest.mark.integration
 
@@ -45,7 +45,7 @@ def test_raises_unauthorized_when_getting_identities_and_not_signed_in(cheddar, 
 def test_raises_system_error_when_getting_identities(cheddar, platform):
     platform.response_code_queue = [503]
     platform.allowed_bearer_token = "token"
-    with pytest.raises(requests.exceptions.ConnectionError):
+    with pytest.raises(PlatformConnectionError):
         wait_for_completion(cheddar.get_identities("...", "token"))
 
 
@@ -109,7 +109,7 @@ def test_raises_system_error_on_remote_server_error_when_assigning_an_identifier
     platform.response_code_queue = [503]
     platform.allowed_bearer_token = "token"
     identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
-    assert_that(identity.exception(), instance_of(requests.exceptions.ConnectionError), "Connection error.")
+    assert_that(identity.exception(), instance_of(PlatformConnectionError), "Connection error.")
 
 
 def test_returns_empty_identity(cheddar, platform):

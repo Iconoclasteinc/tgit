@@ -429,6 +429,11 @@
         <source>Lookup</source>
         <translation>Rechercher</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>You don&apos;t have the required permission or you might have exceeded the limit of your plan.</source>
+        <translation>Vous n&apos;avez pas les permissions requises ou bien vous avez dépassé la limite permise par votre plan.</translation>
+    </message>
 </context>
 <context>
     <name>main_window</name>
@@ -614,11 +619,6 @@
         <location filename="tgit/ui/message_box.py" />
         <source>Your credentials may have changed. Please sign out then sign back in.</source>
         <translation>Veuillez essayer de vous déconnecter puis de vous reconnecter à nouveau.</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/message_box.py" />
-        <source>You don't have the required permission or you might have exceeded the limit of your plan.</source>
-        <translation>Vous n'avez pas les permissions requises ou bien vous avez dépassé la limite permise par votre plan.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />

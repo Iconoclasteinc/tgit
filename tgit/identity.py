@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from tgit.cheddar import PlatformConnectionError, PermissionDeniedError
 from tgit.signal import signal, Observable
 
 
@@ -73,6 +74,8 @@ class Identities:
 class IdentityLookup(metaclass=Observable):
     on_identities_available = signal(Identities)
     on_failure = signal(Exception)
+    on_connection_failed = signal()
+    on_permission_denied = signal()
     on_success = signal(IdentityCard)
     on_start = signal()
 
@@ -88,6 +91,12 @@ class IdentityLookup(metaclass=Observable):
         self.on_identities_available.emit(Identities(identities["total_count"], identity_cards))
 
     def lookup_failed(self, error):
+        if isinstance(error, PlatformConnectionError):
+            self.on_connection_failed.emit()
+
+        if isinstance(error, PermissionDeniedError):
+            self.on_permission_denied.emit()
+
         self.on_failure.emit(error)
 
     def identity_selected(self, identity):
