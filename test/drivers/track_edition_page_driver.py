@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from hamcrest import starts_with, any_of
 
+from cute import gestures
 from cute.matchers import named, with_buddy, showing_on_screen
 from cute.platforms import linux
 from tgit.ui.pages.track_edition_page import TrackEditionPage
@@ -151,11 +152,12 @@ class TrackEditionPageDriver(ScreenDriver):
         self.label(with_buddy(named("_comments"))).is_showing_on_screen()
         self.textEdit(named("_comments")).has_plain_text(comments)
 
-    def add_comments(self, *comments):
+    def change_comments(self, *comments):
         edit = self.textEdit(named("_comments"))
+        edit.clear_all_text()
         for comment in comments:
             edit.add_line(comment)
-        edit.clear_focus()
+        edit.perform(gestures.tab())
 
     def shows_lyricist(self, name):
         self._select_contributors_tab()
@@ -277,12 +279,13 @@ class TrackEditionPageDriver(ScreenDriver):
         self.label(with_buddy(named("_lyrics"))).is_showing_on_screen()
         self.textEdit(named("_lyrics")).has_plain_text(lyrics)
 
-    def add_lyrics(self, *lyrics):
+    def change_lyrics(self, *lyrics):
         self._select_lyrics_tab()
         edit = self.textEdit(named("_lyrics"))
+        edit.clear_all_text()
         for lyric in lyrics:
             edit.add_line(lyric)
-        edit.clear_focus()
+        edit.perform(gestures.tab())
 
     def shows_language(self, lang):
         self._select_lyrics_tab()
