@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 __app_name__ = "TGiT"
-__version__ = "2.2.2"
+__version__ = "2.2.3"
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
