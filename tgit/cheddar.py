@@ -114,5 +114,4 @@ class Cheddar:
 
             return _decode_response(response)
 
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            return executor.submit(assign_identifier)
+        return Promise(self._executor.submit(assign_identifier))

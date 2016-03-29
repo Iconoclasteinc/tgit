@@ -160,10 +160,17 @@ class Tagger:
         return track_page
 
     def _open_isni_dialog(self, query):
-        lookup = identity.IdentityLookup(self._portfolio[0], query)
-        return ui.make_isni_lookup_dialog(query, lookup,
-                                          on_lookup=identity.launch_lookup(self._cheddar, self._session, lookup),
-                                          parent=self._main_window).open()
+        selection = identity.IdentitySelection(self._portfolio[0], query)
+        ui.make_isni_lookup_dialog(query, selection,
+                                   on_lookup=identity.launch_lookup(self._cheddar, self._session, selection),
+                                   on_assign=self._open_isni_review_dialog(selection),
+                                   parent=self._main_window).open()
+
+    def _open_isni_review_dialog(self, selection):
+        return lambda: ui.make_isni_assignation_review_dialog(
+            selection,
+            on_assign=identity.launch_assignation(self._cheddar, self._session, selection),
+            parent=self._main_window).open()
 
     def _open_sign_in_dialog(self):
         login = auth.Login(self._session)

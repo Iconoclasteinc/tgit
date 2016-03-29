@@ -169,11 +169,25 @@ QListView::item {
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="_dialog_buttons">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="_buttons_container">
+     <item>
+      <widget class="QPushButton" name="_assignation_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>A&amp;ssign</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="_dialog_buttons">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
   <action name="_trigger_lookup_action">
@@ -207,22 +221,6 @@ QListView::item {
     <hint type="destinationlabel">
      <x>-1</x>
      <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_dialog_buttons</sender>
-   <signal>accepted()</signal>
-   <receiver>isni_lookup_dialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>199</x>
-     <y>143</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>81</y>
     </hint>
    </hints>
   </connection>

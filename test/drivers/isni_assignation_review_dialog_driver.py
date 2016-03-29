@@ -16,19 +16,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtWidgets import QListView, QWidget
+from PyQt5.QtWidgets import QWidget
 
-from cute.matchers import named, with_item_text
-from cute.widgets import window, QDialogDriver, QListViewDriver, WidgetDriver
+from cute.matchers import named, with_item_text, StateMatcher
+from cute.widgets import window, QDialogDriver, WidgetDriver
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
 from ._screen_driver import ScreenDriver
+from tgit.ui.widgets.progress_indicator import QProgressIndicator
 
 
 def isni_assignation_review_dialog(parent):
-    return IsniAssignationReviewDialogDriver(
-        window(ISNIAssignationReviewDialog, named("isni_assignation_review_dialog")),
-        parent.prober,
-        parent.gesture_performer)
+    return IsniAssignationReviewDialogDriver(window(ISNIAssignationReviewDialog), parent.prober,
+                                             parent.gesture_performer)
 
 
 class IsniAssignationReviewDialogDriver(QDialogDriver, ScreenDriver):
@@ -38,15 +37,41 @@ class IsniAssignationReviewDialogDriver(QDialogDriver, ScreenDriver):
     def select_organization(self):
         self.radio(named("_organization_button")).click()
 
-    def has_work(self, work):
-        QListViewDriver.find_single(self, QListView).has_item(with_item_text(work))
+    def has_works(self, *works):
+        for work in works:
+            self._works_list.has_item(with_item_text(work))
 
     def shows_main_artist_section(self):
-        self.lead_performer_section.is_showing_on_screen()
+        self._main_artist_section.is_showing_on_screen()
 
     def hides_main_artist_section(self):
-        self.lead_performer_section.is_hidden()
+        self._main_artist_section.is_hidden()
+
+    def is_showing_progress_indicator(self):
+        self.progress_indicator.is_(running())
+
+    def has_stopped_progress_indicator(self):
+        self.progress_indicator.is_(stopped())
+
+    def has_ok_button_disabled(self):
+        self.ok_button().is_disabled()
 
     @property
-    def lead_performer_section(self):
-        return WidgetDriver.find_single(self, QWidget, named("_lead_performer_box"))
+    def progress_indicator(self):
+        return WidgetDriver.find_single(self, QProgressIndicator, named("_progress_indicator"))
+
+    @property
+    def _works_list(self):
+        return self.list_view(named("_works"))
+
+    @property
+    def _main_artist_section(self):
+        return WidgetDriver.find_single(self, QWidget, named("_main_artist_box"))
+
+
+def running():
+    return StateMatcher(QProgressIndicator.isRunning, "running", "stopped")
+
+
+def stopped():
+    return StateMatcher(QProgressIndicator.isStopped, "stopped", "running")

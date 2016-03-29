@@ -78,7 +78,8 @@ class MainWindowDriver(WidgetDriver):
             dialog.close()
 
     def assign_isni_to_main_artist(self):
-        project_screen(self).assign_isni_to_main_artist()
+        project_screen(self).lookup_isni_of_main_artist()
+        isni_lookup_dialog(self).assign()
         isni_assignation_review_dialog(self).select_individual()
         isni_assignation_review_dialog(self).click_ok()
 

@@ -83,10 +83,6 @@ class ProjectEditionPageDriver(ScreenDriver):
     def remove_artwork(self):
         self.tool_button(named("_remove_artwork_button")).click()
 
-    def assign_isni_to_main_artist(self):
-        menu = self.tool_button(named("_main_artist_isni_actions_button")).open_menu()
-        menu.select_menu_item(named("_main_artist_isni_assign_action"))
-
     def lookup_isni_of_main_artist(self):
         self.tool_button(named("_main_artist_isni_actions_button")).click()
 

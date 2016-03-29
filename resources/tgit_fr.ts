@@ -416,6 +416,11 @@
     </message>
     <message>
         <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>A&amp;ssign</source>
+        <translation>A&amp;ssigner</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
         <source>Could not connect to the ISNI database. Please retry later.</source>
         <translation>Impossible de se connecter à la base de données ISNI. Veuillez réessayez plus tard.</translation>
     </message>
@@ -1012,11 +1017,6 @@
     <name>isni_assignation_review_dialog</name>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
-        <source>Lead Performer</source>
-        <translation>Artiste principal</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
         <source>Is the main artist a band, collective or ensemble?</source>
         <translation>L'artiste principal est-il un groupe, collectif ou un ensemble ?</translation>
     </message>
@@ -1042,8 +1042,8 @@
     </message>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
-        <source>Cancel</source>
-        <translation>Annuler</translation>
+        <source>Review the main artist information before assigning an ISNI</source>
+        <translation>Veuillez réviser les informations suivantes avant d'assigner un ISNI</translation>
     </message>
 </context>
 <context>

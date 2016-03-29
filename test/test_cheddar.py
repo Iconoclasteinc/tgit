@@ -1,5 +1,5 @@
 import pytest
-from hamcrest import assert_that, empty, contains, has_entries, instance_of, equal_to, has_entry
+from hamcrest import assert_that, empty, contains, has_entries, equal_to, has_entry
 
 from tgit.cheddar import Cheddar, PermissionDeniedError, AuthenticationError, InsufficientInformationError, \
     PlatformConnectionError
@@ -64,7 +64,7 @@ def test_returns_empty_array_of_identities(cheddar, platform):
 
 def test_returns_array_of_identities(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    platform.identities["jo mil"] = [{
+    platform.identities_for_lookup["jo mil"] = [{
         "id": "0000000123456789",
         "type": "individual",
         "firstName": "Joel",
@@ -88,7 +88,7 @@ def test_returns_array_of_identities(cheddar, platform):
 
 def test_returns_hit_count(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    platform.identities["reb an mal"] = [{
+    platform.identities_for_lookup["reb an mal"] = [{
         "id": "0000000115677274",
         "type": "individual"
     }, {
@@ -101,26 +101,29 @@ def test_returns_hit_count(cheddar, platform):
 
 
 def test_returns_unauthorized_when_assigning_an_identifier(cheddar):
-    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
-    assert_that(identity.exception(), instance_of(AuthenticationError), "Authentication error.")
+    with pytest.raises(AuthenticationError):
+        wait_for_completion(
+            cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token"))
 
 
 def test_raises_system_error_on_remote_server_error_when_assigning_an_identifier(cheddar, platform):
     platform.response_code_queue = [503]
     platform.allowed_bearer_token = "token"
-    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token")
-    assert_that(identity.exception(), instance_of(PlatformConnectionError), "Connection error.")
+    with pytest.raises(PlatformConnectionError):
+        wait_for_completion(
+            cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token"))
 
 
 def test_returns_empty_identity(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token").result()
+    identity = wait_for_completion(
+        cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token"))
     assert_that(identity, empty())
 
 
 def test_returns_identity_of_newly_assigned_identifier(cheddar, platform):
     platform.allowed_bearer_token = "token"
-    platform.identities["Joel Miller"] = {
+    platform.identities_for_assignation["Joel Miller"] = {
         "id": "0000000121707484",
         "type": "individual",
         "firstName": "Joel",
@@ -133,7 +136,8 @@ def test_returns_identity_of_newly_assigned_identifier(cheddar, platform):
         ]
     }
 
-    identity = cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token").result()
+    identity = wait_for_completion(
+        cheddar.assign_identifier("Joel Miller", "individual", ["Chevere!", "That is that"], "token"))
     assert_that(identity, has_entries(
         id="0000000121707484",
         firstName="Joel",

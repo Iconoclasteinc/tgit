@@ -1,5 +1,5 @@
+from flexmock import flexmock
 import pytest
-from hamcrest import has_property
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
@@ -8,14 +8,14 @@ from test.drivers.isni_lookup_dialog_driver import IsniLookupDialogDriver
 from test.ui import ignore, show_, close_
 from test.util.builders import make_album
 from tgit.identity import Identities
-from tgit.identity import IdentityCard, IdentityLookup
+from tgit.identity import IdentityCard, IdentitySelection
 from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog
 
 pytestmark = pytest.mark.ui
 
 
-def show_dialog(query=None, identity_lookup=IdentityLookup(make_album(), ""), on_lookup=ignore):
-    dialog = make_isni_lookup_dialog(query, identity_lookup, on_lookup, delete_on_close=False)
+def show_dialog(query=None, selection=IdentitySelection(make_album(), ""), on_lookup=ignore, on_assign=ignore):
+    dialog = make_isni_lookup_dialog(query, selection, on_lookup, on_assign, delete_on_close=False)
     show_(dialog)
     return dialog
 
@@ -72,22 +72,46 @@ def test_displays_only_last_lookup_results(driver):
 
 
 def test_signals_selected_identity(driver):
-    signal = ValueMatcherProbe("lookup ISNI", has_property("id", "0000000123456789"))
+    signal = ValueMatcherProbe("Selected identity")
 
-    identity_lookup = IdentityLookup(make_album(), "Joel Miller")
-    identity_lookup.on_success.subscribe(signal.received)
+    project = flexmock()
+    project.should_receive("add_isni").with_args("Joel Miller", "0000000123456789").once()
+    selection = IdentitySelection(project, "Joel Miller")
+    selection.on_success.subscribe(signal.received)
 
-    dialog = show_dialog(identity_lookup=identity_lookup)
+    dialog = show_dialog(selection=selection)
 
     dialog.lookup_successful(Identities("1", [joel_miller()]))
     driver.select_identity("Joel Miller")
-    driver.accept()
+    driver.click_ok()
     driver.check(signal)
 
 
 def test_disables_ok_button_by_default(driver):
     _ = show_dialog()
     driver.has_ok_button_disabled()
+
+
+def test_disables_assignation_button_by_default(driver):
+    _ = show_dialog()
+    driver.shows_assignation_button(enabled=False)
+
+
+def test_disables_assignation_button_after_successful_lookup(driver):
+    dialog = show_dialog()
+    driver.shows_assignation_button(enabled=False)
+    dialog.lookup_successful(Identities("1", [joel_miller()]))
+    driver.shows_assignation_button(enabled=False)
+    dialog.lookup_successful([])
+    driver.shows_assignation_button()
+
+
+def test_signals_assignation(driver):
+    signal = ValueMatcherProbe("assign ISNI")
+    dialog = show_dialog(on_assign=signal.received)
+    dialog.lookup_successful([])
+    driver.assign()
+    driver.check(signal)
 
 
 def test_disables_ok_button_when_lookup_in_progress(driver):
@@ -173,6 +197,13 @@ def test_disables_result_list_when_lookup_in_progress(driver):
     driver.shows_results_list()
     dialog.lookup_in_progress()
     driver.shows_results_list(enabled=False)
+
+
+def test_closes_dialog_on_assignation_success(driver):
+    dialog = show_dialog()
+
+    dialog.selection_successful()
+    driver.is_hidden()
 
 
 def joel_miller():
