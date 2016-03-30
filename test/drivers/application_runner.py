@@ -20,6 +20,7 @@ def _make_tracks(tracks):
 
 
 class ApplicationRunner:
+    MESSAGE_BOX_DISPLAY_DELAY = 100 if platforms.mac else 0
     SAVE_DELAY = 250 if platforms.mac else 0
 
     main_window_driver = None
@@ -94,8 +95,6 @@ class ApplicationRunner:
 
     def assign_isni_to_main_artist(self):
         self.main_window_driver.assign_isni_to_main_artist()
-        # todo remove and verify in test that album metadata shows the isni
-        self.main_window_driver.pause(100)
 
     def save_project(self):
         self.main_window_driver.save()
@@ -103,12 +102,10 @@ class ApplicationRunner:
 
     def find_isni_of_main_artist(self, name):
         self.main_window_driver.find_isni_of_main_artist(name)
-        # todo remove and verify in test that album metadata shows the isni
-        self.main_window_driver.pause(100)
 
     def close_project(self):
         self.main_window_driver.close_project()
-        self.main_window_driver.pause(100)
+        self.main_window_driver.pause(self.MESSAGE_BOX_DISPLAY_DELAY)
         message_box(self.main_window_driver).click_yes()
         self.main_window_driver.shows_welcome_screen()
 
