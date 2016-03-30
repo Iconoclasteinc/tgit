@@ -26,9 +26,8 @@ from tgit.ui.event_loop_signaler import in_event_loop
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_isni_assignation_review_dialog(selection, on_assign, main_artist_section_visible=True, parent=None,
-                                        delete_on_close=True):
-    dialog = ISNIAssignationReviewDialog(parent, main_artist_section_visible, delete_on_close)
+def make_isni_assignation_review_dialog(selection, on_assign, parent=None, delete_on_close=True):
+    dialog = ISNIAssignationReviewDialog(parent, delete_on_close)
 
     subscriptions = MultiSubscription()
     subscriptions += selection.on_assignation_start.subscribe(in_event_loop(dialog.assignation_in_progress))
@@ -46,18 +45,18 @@ def make_isni_assignation_review_dialog(selection, on_assign, main_artist_sectio
 class ISNIAssignationReviewDialog(QDialog, UIFile):
     on_assign = pyqtSignal(str)
 
-    def __init__(self, parent, main_artist_section_visible, delete_on_close):
+    def __init__(self, parent, delete_on_close):
         super().__init__(parent)
         self.setAttribute(Qt.WA_DeleteOnClose, delete_on_close)
-        self._setup_ui(main_artist_section_visible)
+        self._setup_ui()
 
-    def _setup_ui(self, main_artist_section_visible):
+    def _setup_ui(self):
         self._load(":ui/isni_assignation_review_dialog.ui")
         self._hide_messages()
-        self._main_artist_box.setVisible(main_artist_section_visible)
         self._ok_button.clicked.connect(lambda: self.on_assign.emit(self._type))
 
     def display(self, selection):
+        self._name.setText(selection.query)
         self._works.addItems(selection.works)
 
     def assignation_in_progress(self):

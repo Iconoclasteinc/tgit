@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flexmock import flexmock
 import pytest
 from hamcrest import instance_of, assert_that, contains, is_, equal_to, has_properties
@@ -25,7 +26,20 @@ def make_identity_selection(listener_, project=make_album(), name=None):
 def test_discloses_the_name(listener):
     selection = make_identity_selection(listener, name="Joel Miller")
 
-    assert_that(selection.person, equal_to("Joel Miller"), "The name used as original query.")
+    assert_that(selection.person, equal_to("Joel Miller"), "The name.")
+
+
+def test_name_is_used_as_initial_query(listener):
+    selection = make_identity_selection(listener, name="Joel Miller")
+
+    assert_that(selection.query, equal_to("Joel Miller"), "The name used as original query.")
+
+
+def test_updates_the_query(listener):
+    selection = make_identity_selection(listener, name="Joel Miller")
+    selection.query_changed("Rebecca Ann Maloy")
+
+    assert_that(selection.query, equal_to("Rebecca Ann Maloy"), "The query.")
 
 
 def test_maps_found_identities_and_signals_identities_available(listener):

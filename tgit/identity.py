@@ -82,7 +82,7 @@ class IdentitySelection(metaclass=Observable):
     on_insufficient_information = signal()
 
     def __init__(self, project, person):
-        self._person = person
+        self._person = self._query = person
         self._project = project
 
     @property
@@ -90,8 +90,15 @@ class IdentitySelection(metaclass=Observable):
         return self._person
 
     @property
+    def query(self):
+        return self._query
+
+    @property
     def works(self):
         return [track.track_title for track in self._project.tracks]
+
+    def query_changed(self, query):
+        self._query = query
 
     def lookup_started(self):
         self.on_lookup_start.emit()

@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 from flexmock import flexmock
+from hamcrest import assert_that, equal_to
 import pytest
 
-from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers.isni_lookup_dialog_driver import IsniLookupDialogDriver
@@ -22,7 +23,7 @@ def show_dialog(query=None, selection=IdentitySelection(make_album(), ""), on_lo
 
 @pytest.yield_fixture()
 def driver(prober, automaton):
-    dialog_driver = IsniLookupDialogDriver(window(ISNILookupDialog, named("isni_lookup_dialog")), prober, automaton)
+    dialog_driver = IsniLookupDialogDriver(window(ISNILookupDialog), prober, automaton)
     yield dialog_driver
     close_(dialog_driver)
 
@@ -85,6 +86,14 @@ def test_signals_selected_identity(driver):
     driver.select_identity("Joel Miller")
     driver.click_ok()
     driver.check(signal)
+
+
+def test_signals_query_changed(driver):
+    selection = IdentitySelection(make_album(), "John Roney")
+    _ = show_dialog(selection=selection)
+
+    driver.change_query("Joel Miller")
+    assert_that(selection.query, equal_to("Joel Miller"), "The new query")
 
 
 def test_disables_ok_button_by_default(driver):

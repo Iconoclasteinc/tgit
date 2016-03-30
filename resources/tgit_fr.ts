@@ -1017,8 +1017,13 @@
     <name>isni_assignation_review_dialog</name>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
-        <source>Is the main artist a band, collective or ensemble?</source>
-        <translation>L'artiste principal est-il un groupe, collectif ou un ensemble ?</translation>
+        <source>Is the artist a band, collective or ensemble?</source>
+        <translation>L&apos;artiste est-il un groupe, collectif ou un ensemble ?</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>This is the name that will be used for assignation:</source>
+        <translation>Voici le nom qui sera utilisé pour l&apos;assignation ?</translation>
     </message>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
@@ -1038,7 +1043,7 @@
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
         <source>At least one title is mandatory to assign an ISNI. The following titles will be used:</source>
-        <translation>Au moin un titre est requis pour l'assignation d'un ISNI.  Les titres suivants seront utilisés :</translation>
+        <translation>Au moins un titre est requis pour l'assignation d'un ISNI.  Les titres suivants seront utilisés :</translation>
     </message>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>

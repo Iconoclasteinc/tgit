@@ -13,10 +13,8 @@ from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReview
 pytestmark = pytest.mark.ui
 
 
-def show_dialog(isni_selection=IdentitySelection(make_album(), ""), on_assign=ignore, main_artist_section_visible=True):
-    dialog = make_isni_assignation_review_dialog(isni_selection, on_assign,
-                                                 main_artist_section_visible=main_artist_section_visible,
-                                                 delete_on_close=False)
+def show_dialog(isni_selection=IdentitySelection(make_album(), ""), on_assign=ignore):
+    dialog = make_isni_assignation_review_dialog(isni_selection, on_assign, delete_on_close=False)
     show_(dialog)
     return dialog
 
@@ -35,14 +33,10 @@ def test_displays_works(driver):
     driver.has_works("Chevere!", "Zumbar")
 
 
-def test_shows_main_artist_section(driver):
-    _ = show_dialog(main_artist_section_visible=True)
-    driver.shows_main_artist_section()
-
-
-def test_hides_main_artist_section(driver):
-    _ = show_dialog(main_artist_section_visible=False)
-    driver.hides_main_artist_section()
+def test_displays_name(driver):
+    selection = IdentitySelection(make_album(), "Joel Miller")
+    _ = show_dialog(selection)
+    driver.has_name("Joel Miller")
 
 
 def test_launches_assignation_with_type(driver):

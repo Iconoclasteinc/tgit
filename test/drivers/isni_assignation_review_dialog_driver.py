@@ -32,14 +32,17 @@ def isni_assignation_review_dialog(parent):
 
 class IsniAssignationReviewDialogDriver(QDialogDriver, ScreenDriver):
     def select_individual(self):
-        self.radio(named("_individual_button")).click()
+        self._individual_button.click()
 
     def select_organization(self):
-        self.radio(named("_organization_button")).click()
+        self._organization_button.click()
 
     def has_works(self, *works):
         for work in works:
             self._works_list.has_item(with_item_text(work))
+
+    def has_name(self, name):
+        self._name_label.has_text(name)
 
     def shows_main_artist_section(self):
         self._main_artist_section.is_showing_on_screen()
@@ -48,10 +51,10 @@ class IsniAssignationReviewDialogDriver(QDialogDriver, ScreenDriver):
         self._main_artist_section.is_hidden()
 
     def is_showing_progress_indicator(self):
-        self.progress_indicator.is_(running())
+        self._progress_indicator.is_(running())
 
     def has_stopped_progress_indicator(self):
-        self.progress_indicator.is_(stopped())
+        self._progress_indicator.is_(stopped())
 
     def has_ok_button_disabled(self):
         self.ok_button().is_disabled()
@@ -72,12 +75,24 @@ class IsniAssignationReviewDialogDriver(QDialogDriver, ScreenDriver):
             self.label(named("_insufficient_error_message")).is_hidden()
 
     @property
-    def progress_indicator(self):
+    def _individual_button(self):
+        return self.radio(named("_individual_button"))
+
+    @property
+    def _organization_button(self):
+        return self.radio(named("_organization_button"))
+
+    @property
+    def _progress_indicator(self):
         return WidgetDriver.find_single(self, QProgressIndicator, named("_progress_indicator"))
 
     @property
     def _works_list(self):
         return self.list_view(named("_works"))
+
+    @property
+    def _name_label(self):
+        return self.label(named("_name"))
 
     @property
     def _main_artist_section(self):
