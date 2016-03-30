@@ -70,12 +70,12 @@ class ISNILookupDialog(QDialog, UIFile):
 
     def lookup_in_progress(self):
         self._progress_indicator.start()
+        self._clear_results()
         self._result_container.setDisabled(True)
         self._result_container.setCurrentRow(-1)
 
     def lookup_successful(self, identities):
         self._progress_indicator.stop()
-        self._clear_results()
         self._hide_messages()
 
         if len(identities) == 0:

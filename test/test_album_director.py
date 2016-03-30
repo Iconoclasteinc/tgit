@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-from concurrent.futures import Future
 
 import pytest
 from flexmock import flexmock as mock
@@ -9,9 +8,8 @@ from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from cute.prober import PollingProber
-from cute.probes import ValueMatcherProbe
 from test.util import builders as build, doubles
-from test.util.builders import make_album, make_track, make_registered_session
+from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
 from tgit import album_director as director
 from tgit.album import Album
@@ -227,46 +225,6 @@ def test_clears_album_images():
     album = build.album(images=[build.image("image/jpeg", "image data")])
     director.remove_album_cover_from(album)()
     assert_that(album.images, equal_to([]), "images")
-
-
-def test_assigns_isni_to_main_artist(prober):
-    class FakeCheddar:
-        @staticmethod
-        def assign_identifier(name, type_, works, token):
-            future = Future()
-            if token == "secret" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
-                future.set_result(_to_joel_miller())
-            else:
-                future.set_result(None)
-            return future
-
-    album = build.album(lead_performer="Joel Miller")
-    album.add_track(build.track(track_title="Chevere!"))
-
-    success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
-
-    director.assign_isni_to_main_artist_using(FakeCheddar(), make_registered_session(token="secret"), album)(
-        "individual", success_signal.received)
-    prober.check(success_signal)
-
-
-def test_assigns_isni_to_lyricist(prober):
-    class FakeCheddar:
-        @staticmethod
-        def assign_identifier(name, type_, works, token):
-            future = Future()
-            if token == "secret" and name == "Joel Miller" and type_ == "individual" and works[0] == "Chevere!":
-                future.set_result(_to_joel_miller())
-            else:
-                future.set_result(None)
-            return future
-
-    track = build.track(track_title="Chevere!", lyricist="Joel Miller")
-    success_signal = ValueMatcherProbe("An identity", _that_is_joel_miller())
-
-    director.assign_isni_to_lyricist_using(FakeCheddar(), make_registered_session(token="secret"))(track,
-                                                                                                   success_signal.received)
-    prober.check(success_signal)
 
 
 def test_returns_isni_from_local_map():

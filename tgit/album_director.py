@@ -17,12 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 import os
-from functools import wraps
 
 from tgit import local_storage
 from tgit import tagging
 from tgit.album import Album
-from tgit.identity import IdentityCard
 
 
 def _build_filename(name, location):
@@ -142,30 +140,6 @@ def lookup_ipi_in(album):
     return lookup_ipi
 
 
-def assign_isni_to_main_artist_using(cheddar, session, album):
-    def assign_isni(type_, on_assign_success):
-        titles = [track.track_title for track in album.tracks]
-        _assign_isni(album.lead_performer, type_, titles, on_assign_success, cheddar, session.current_user)
-
-    return assign_isni
-
-
-def assign_isni_to_lyricist_using(cheddar, session):
-    def assign_isni(track, on_assign_success):
-        _assign_isni(track.lyricist, "individual", [track.track_title], on_assign_success, cheddar,
-                     session.current_user)
-
-    return assign_isni
-
-
-def _assign_isni(identity, type_, titles, on_success, cheddar, user):
-    @_unwrap_future
-    def on_assign_done(identity_details):
-        on_success(IdentityCard(**identity_details))
-
-    cheddar.assign_identifier(identity, type_, titles, user.api_key).add_done_callback(on_assign_done)
-
-
 def add_ipi_to(album):
     def add_ipi(name, ipi):
         album.ipis = _add_identifier_to_map(album.ipis, ipi, name)
@@ -179,14 +153,6 @@ def _add_identifier_to_map(identifier_map, identifier, name):
     identifier_map[name] = identifier
 
     return identifier_map
-
-
-def _unwrap_future(f):
-    @wraps(f)
-    def decorated(future):
-        return f(future.result())
-
-    return decorated
 
 
 def update_preferences(preferences):
