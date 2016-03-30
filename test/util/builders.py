@@ -4,7 +4,7 @@ from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session, User, Permission
 from tgit.metadata import Metadata, Image
-from tgit.project_history import ProjectHistory
+from tgit.project_history import ProjectHistory, ProjectSnapshot
 from tgit.track import Track
 from tgit.user_preferences import UserPreferences
 
@@ -55,9 +55,9 @@ def album(filename="album.tgit", of_type=Album.Type.FLAC, images=(), tracks=(), 
 make_album = album
 
 
-def make_project(filename="project.tgit"):
+def make_project(filename="project.tgit", type_="mp3", images=(), tracks=(), **meta):
     # Will eventually build a project, not an album
-    return make_album(filename)
+    return make_album(filename, of_type=type_, images=images, tracks=tracks, **meta)
 
 
 def make_portfolio(project=None):
@@ -67,8 +67,12 @@ def make_portfolio(project=None):
     return portfolio
 
 
-def make_project_history(*paths):
-    return ProjectHistory(*[make_project(path) for path in paths])
+def make_snapshot(name="project", path="project.tgit"):
+    return ProjectSnapshot(name=name, type_=None, path=path, cover_art=None)
+
+
+def make_project_history(*snapshots):
+    return ProjectHistory(*snapshots)
 
 
 def make_anonymous_user():

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
 
+from hamcrest import starts_with
+
 from cute.animatron import Animatron
 from cute.matchers import named, showing_on_screen
 from cute.prober import EventProcessingProber
@@ -116,8 +118,7 @@ class ApplicationRunner:
         self.main_window_driver.load_project(self._project_file_path(album_name))
 
     def open_recent_project(self, name):
-        path = self._project_file_path(name)
-        self.main_window_driver.open_recent_project(path)
+        self.main_window_driver.open_recent_project(starts_with(name))
 
     def save(self):
         self.main_window_driver.save()

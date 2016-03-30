@@ -16,7 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import pyqtSignal
+import os
+
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QFrame
 from PyQt5.QtWidgets import QListWidgetItem
 
@@ -58,7 +60,7 @@ class WelcomePage(QFrame, UIFile):
 
     @property
     def _selected_project(self):
-        return self._recent_projects_list.currentItem().text()
+        return self._recent_projects_list.currentItem().data(Qt.UserRole)
 
     def on_create_project(self, on_create_project):
         self._new_mp3_project_button.clicked.connect(lambda _: on_create_project(Album.Type.MP3))
@@ -70,7 +72,7 @@ class WelcomePage(QFrame, UIFile):
                 on_load_project(filename)
 
         self._load_project_button.clicked.connect(lambda: self._select_project(try_loading_project))
-        self._open_project_button.clicked.connect(lambda checked: try_loading_project(self._selected_project))
+        self._open_project_button.clicked.connect(lambda checked: try_loading_project(self._selected_project.path))
 
     def display_project_history(self, project_history):
         self._clear_project_history()
@@ -82,5 +84,9 @@ class WelcomePage(QFrame, UIFile):
 
     def _populate_project_history(self, project_history):
         for recent_project in project_history:
-            item = QListWidgetItem(recent_project.filename)
+            item = QListWidgetItem(self._display_name(recent_project))
+            item.setData(Qt.UserRole, recent_project)
             self._recent_projects_list.addItem(item)
+
+    def _display_name(self, recent_project):
+        return "{name} - {filename}".format(name=recent_project.name, filename=os.path.basename(recent_project.path))

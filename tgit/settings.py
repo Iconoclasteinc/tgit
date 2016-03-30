@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*
-from tgit.album import Album
 from tgit.auth import User
-from tgit.project_history import ProjectHistory
+from tgit.project_history import ProjectHistory, ProjectSnapshot
 from tgit.user_preferences import UserPreferences
 
 
@@ -90,15 +89,19 @@ class HistoryDataStore:
         size = self._settings.beginReadArray("history")
         for index in range(size):
             self._settings.setArrayIndex(index)
-            history.append(Album(filename=self._settings.value("path")))
+            name = self._settings.value("name")
+            path = self._settings.value("path")
+            history.append(ProjectSnapshot(name=name, path=path, type_="mp3", cover_art=None))
         self._settings.endArray()
         return history
 
     def _write_history(self, history):
         self._settings.beginWriteArray("history", size=len(history))
         for index in range(len(history)):
+            past_project = history[index]
             self._settings.setArrayIndex(index)
-            self._settings.setValue("path", history[index].filename)
+            self._settings.setValue("name", past_project.name)
+            self._settings.setValue("path", past_project.path)
         self._settings.endArray()
 
     def close(self):
