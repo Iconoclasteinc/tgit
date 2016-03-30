@@ -61,8 +61,8 @@ class Tagger:
         self._cheddar = cheddar
         self._project_studio = ProjectStudio()
         self._session = auth.load_session_from(UserDataStore(settings))
-        self._preferences = preferences.load_preferences_from(PreferencesDataStore(settings))
-        self._project_history = project_history.load_history(self._project_studio, HistoryDataStore(settings))
+        self._preferences = preferences.load_from(PreferencesDataStore(settings))
+        self._project_history = project_history.load_from(self._project_studio, HistoryDataStore(settings))
 
     def translate(self, app):
         QLocale.setDefault(QLocale(self._preferences.locale))
@@ -103,7 +103,7 @@ class Tagger:
                              on_transmit_to_soproq=self._export_as_soproq())
 
     def _startup_screen(self):
-        return ui.StartupScreen(self._make_welcome_page, self._new_project_page)
+        return ui.StartupScreen(self._welcome_page, self._new_project_page)
 
     def _project_screen(self, project_):
         return ui.make_project_screen(project_, self._project_edition_page, self._track_page_for(project_))
@@ -113,13 +113,13 @@ class Tagger:
                                         select_track=self._dialogs.select_track,
                                         check_project_exists=director.album_exists,
                                         confirm_overwrite=self._show_overwrite_project_confirmation_message,
-                                        on_create_project=director.create_album_into(self._portfolio))
+                                        on_create_project=project.create_in(self._project_studio, self._portfolio))
 
-    def _make_welcome_page(self):
+    def _welcome_page(self):
         return ui.make_welcome_page(self._project_history,
                                     select_project=self._dialogs.select_project_to_load,
                                     show_load_error=self._show_load_project_failed_message,
-                                    on_load_project=project.load(self._project_studio, self._portfolio))
+                                    on_load_project=project.load_to(self._project_studio, self._portfolio))
 
     def _track_list_tab(self, project_):
         return ui.make_track_list_tab(project_,

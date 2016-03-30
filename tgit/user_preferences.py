@@ -20,7 +20,7 @@
 from tgit.signal import Observable, signal
 
 
-def load_preferences_from(settings):
+def load_from(settings):
     prefs = settings.load_preferences()
     prefs.preferences_changed.subscribe(lambda change: settings.store_preferences(prefs))
     return prefs

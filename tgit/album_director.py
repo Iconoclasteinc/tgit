@@ -21,44 +21,11 @@ from functools import wraps
 
 from tgit import local_storage
 from tgit import tagging
-from tgit.album import Album
 from tgit.identity import IdentityCard
 
 
-def _build_filename(name, location):
-    return os.path.join(location, name, "{0}.tgit".format(name))
-
-
-def _must_import(filename):
-    return len(filename) > 0
-
-
-def _import(of_type, filename, reference_track_file, from_catalog):
-    reference_track = from_catalog.load_track(reference_track_file)
-    album = Album(of_type=of_type, filename=filename, metadata=reference_track.metadata)
-    add_tracks(album, reference_track_file, from_catalog=from_catalog)
-    return album
-
-
-def _create_or_import_album(of_type, filename, reference_track_file, from_catalog):
-    if _must_import(reference_track_file):
-        return _import(of_type, filename, reference_track_file, from_catalog)
-    return Album(of_type=of_type, filename=filename)
-
-
-def create_album_into(portfolio, to_catalog=local_storage, from_catalog=tagging):
-    def create_new_album(type_, name, location, reference_track_file=""):
-        album = _create_or_import_album(type_, _build_filename(name, location), reference_track_file, from_catalog)
-        album.release_name = name
-        save_album(to_catalog)(album)
-        portfolio.add_album(album)
-        return album
-
-    return create_new_album
-
-
 def album_exists(name, location, in_catalog=local_storage):
-    return in_catalog.project_exists(_build_filename(name, location))
+    return in_catalog.project_exists(os.path.join(location, name, "{0}.tgit".format(name)))
 
 
 def save_album(to_catalog=local_storage):

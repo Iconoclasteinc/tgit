@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import pytest
-from hamcrest import assert_that, empty, contains, has_property
+from hamcrest import assert_that, empty, contains
 
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
 from test.util.builders import make_project_history
+from testing.matchers import project_with_path
 from tgit.settings import HistoryDataStore
 
 pytestmark = pytest.mark.unit
@@ -61,7 +62,3 @@ def tests_deletes_history_data_from_settings_file_on_remove(store, driver):
     driver.has_no("history/1/path")
     driver.has_no("history/2/path")
     driver.has_no("history/3/path")
-
-
-def project_with_path(path):
-    return has_property("filename", path)

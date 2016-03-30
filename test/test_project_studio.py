@@ -30,10 +30,19 @@ def test_keeps_track_of_current_project(studio):
     assert_that(studio.current_project, is_(current_project), "current project")
 
 
-def test_signals_when_project_opened(studio, subscriber):
+def test_signals_project_opened_when_project_loaded(studio, subscriber):
     opened_project = make_project()
 
     subscriber.should_receive("project_opened").with_args(opened_project).once()
     studio.project_opened.subscribe(subscriber.project_opened)
 
     studio.project_loaded(opened_project)
+
+
+def test_signals_project_opened_when_project_created(studio, subscriber):
+    new_project = make_project()
+
+    subscriber.should_receive("project_opened").with_args(new_project).once()
+    studio.project_opened.subscribe(subscriber.project_opened)
+
+    studio.project_created(new_project)

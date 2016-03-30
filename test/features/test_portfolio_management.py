@@ -49,8 +49,6 @@ def test_importing_an_album_from_an_existing_track(app, recordings):
 def test_opening_a_recent_project(app):
     app.new_project("Honeycomb", of_type="mp3")
     app.close_project()
-    app.load_project("Honeycomb")
-    app.close_project()
 
     app.stop()
     app.start()

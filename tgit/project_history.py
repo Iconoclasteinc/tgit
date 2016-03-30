@@ -2,11 +2,10 @@
 from tgit.signal import Observable, signal
 
 
-def load_history(studio, store):
+def load_from(studio, store):
     history = store.load_history()
     studio.project_opened.subscribe(history.project_opened)
-    history.history_changed.subscribe(
-        lambda: store.store_history(history))
+    history.history_changed.subscribe(lambda: store.store_history(history))
     return history
 
 

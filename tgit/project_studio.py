@@ -15,3 +15,6 @@ class ProjectStudio(metaclass=Observable):
     def project_loaded(self, project):
         self._current_project = project
         self.project_opened.emit(project)
+
+    def project_created(self, project):
+        self.project_loaded(project)
