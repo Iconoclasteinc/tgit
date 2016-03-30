@@ -34,6 +34,7 @@ class FakeIdentitySelectionListener:
     is_connection_failed = False
     is_permission_denied = False
     is_success = False
+    is_insufficient_information = False
 
     def identities_available(self, identities):
         self.identities = identities
@@ -46,6 +47,9 @@ class FakeIdentitySelectionListener:
 
     def permission_denied(self):
         self.is_permission_denied = True
+
+    def insufficient_information(self):
+        self.is_insufficient_information = True
 
     def success(self):
         self.is_success = True

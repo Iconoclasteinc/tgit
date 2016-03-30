@@ -33,6 +33,8 @@ def make_isni_assignation_review_dialog(selection, on_assign, main_artist_sectio
     subscriptions = MultiSubscription()
     subscriptions += selection.on_assignation_start.subscribe(in_event_loop(dialog.assignation_in_progress))
     subscriptions += selection.on_success.subscribe(in_event_loop(dialog.assignation_succeeded))
+    subscriptions += selection.on_connection_failed.subscribe(in_event_loop(dialog.connection_failed))
+    subscriptions += selection.on_insufficient_information.subscribe(in_event_loop(dialog.insufficient_information))
 
     dialog.on_assign.connect(on_assign)
     dialog.finished.connect(lambda accepted: subscriptions.cancel())
@@ -51,6 +53,7 @@ class ISNIAssignationReviewDialog(QDialog, UIFile):
 
     def _setup_ui(self, main_artist_section_visible):
         self._load(":ui/isni_assignation_review_dialog.ui")
+        self._hide_messages()
         self._main_artist_box.setVisible(main_artist_section_visible)
         self._ok_button.clicked.connect(lambda: self.on_assign.emit(self._type))
 
@@ -64,6 +67,22 @@ class ISNIAssignationReviewDialog(QDialog, UIFile):
     def assignation_succeeded(self):
         self._progress_indicator.stop()
         self.accept()
+
+    def connection_failed(self):
+        self._stop_waiting()
+        self._connection_error_message.setVisible(True)
+
+    def insufficient_information(self):
+        self._stop_waiting()
+        self._insufficient_error_message.setVisible(True)
+
+    def _stop_waiting(self):
+        self._progress_indicator.stop()
+        self._ok_button.setEnabled(True)
+
+    def _hide_messages(self):
+        self._connection_error_message.setVisible(False)
+        self._insufficient_error_message.setVisible(False)
 
     @property
     def _type(self):

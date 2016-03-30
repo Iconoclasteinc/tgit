@@ -3,7 +3,7 @@ import pytest
 from hamcrest import instance_of, assert_that, contains, is_, equal_to, has_properties
 
 from test.util.builders import make_album
-from tgit.cheddar import PlatformConnectionError, PermissionDeniedError
+from tgit.cheddar import PlatformConnectionError, PermissionDeniedError, InsufficientInformationError
 from tgit.identity import IdentitySelection, IdentityCard
 
 pytestmark = pytest.mark.unit
@@ -15,6 +15,7 @@ def make_identity_selection(listener_, project=make_album(), name=None):
     selection.on_failure.subscribe(listener_.failed)
     selection.on_connection_failed.subscribe(listener_.connection_failed)
     selection.on_permission_denied.subscribe(listener_.permission_denied)
+    selection.on_insufficient_information.subscribe(listener_.insufficient_information)
     selection.on_success.subscribe(listener_.success)
     selection.on_lookup_start.subscribe(listener_.started)
     selection.on_assignation_start.subscribe(listener_.started)
@@ -54,6 +55,13 @@ def test_reports_permission_denied_error(listener):
     selection.failed(PermissionDeniedError())
 
     assert_that(listener.is_permission_denied, is_(True), "The permission was denied")
+
+
+def test_reports_insufficient_information_error(listener):
+    selection = make_identity_selection(listener)
+    selection.failed(InsufficientInformationError())
+
+    assert_that(listener.is_insufficient_information, is_(True), "The given information is insufficient")
 
 
 def test_adds_assigned_identity_to_project_and_signals_success(listener):

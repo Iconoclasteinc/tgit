@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from tgit.cheddar import PlatformConnectionError, PermissionDeniedError
+from tgit.cheddar import PlatformConnectionError, PermissionDeniedError, InsufficientInformationError
 from tgit.signal import signal, Observable
 
 
@@ -79,6 +79,7 @@ class IdentitySelection(metaclass=Observable):
     on_success = signal()
     on_lookup_start = signal()
     on_assignation_start = signal()
+    on_insufficient_information = signal()
 
     def __init__(self, project, person):
         self._person = person
@@ -108,6 +109,9 @@ class IdentitySelection(metaclass=Observable):
 
         if isinstance(error, PermissionDeniedError):
             self.on_permission_denied.emit()
+
+        if isinstance(error, InsufficientInformationError):
+            self.on_insufficient_information.emit()
 
         self.on_failure.emit(error)
 

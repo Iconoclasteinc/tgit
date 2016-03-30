@@ -14,12 +14,16 @@
    <string>TGiT</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">#_connection_error_message,
+#_insufficient_error_message {
+    color: red;
+}
+</string>
   </property>
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0">
    <item>
     <layout class="QHBoxLayout" name="_title_container">
      <item>
@@ -65,6 +69,20 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="_connection_error_message">
+     <property name="text">
+      <string>Could not connect to the ISNI database. Please retry later.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="_insufficient_error_message">
+     <property name="text">
+      <string>Could not assign an ISNI because of insufficient distinguishing information.</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QWidget" name="_main_artist_box" native="true">

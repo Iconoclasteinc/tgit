@@ -70,3 +70,33 @@ def test_stops_progress_indicator_and_accepts_dialog_when_assignation_succeeds(d
     dialog.assignation_succeeded()
     driver.has_stopped_progress_indicator()
     driver.is_hidden()
+
+
+def test_hides_error_messages_by_default(driver):
+    _ = show_dialog()
+    driver.shows_connection_error_message(visible=False)
+    driver.shows_insufficient_error_message(visible=False)
+
+
+def test_stops_progress_indicator_and_displays_connection_error_message(driver):
+    dialog = show_dialog()
+
+    dialog.assignation_in_progress()
+    driver.is_showing_progress_indicator()
+
+    dialog.connection_failed()
+    driver.has_stopped_progress_indicator()
+    driver.has_ok_button_enabled()
+    driver.shows_connection_error_message()
+
+
+def test_stops_progress_indicator_and_displays_insufficient_information_message(driver):
+    dialog = show_dialog()
+
+    dialog.assignation_in_progress()
+    driver.is_showing_progress_indicator()
+
+    dialog.insufficient_information()
+    driver.has_stopped_progress_indicator()
+    driver.has_ok_button_enabled()
+    driver.shows_insufficient_error_message()

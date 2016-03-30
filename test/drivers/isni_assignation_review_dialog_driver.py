@@ -56,6 +56,21 @@ class IsniAssignationReviewDialogDriver(QDialogDriver, ScreenDriver):
     def has_ok_button_disabled(self):
         self.ok_button().is_disabled()
 
+    def has_ok_button_enabled(self):
+        self.ok_button().is_enabled()
+
+    def shows_connection_error_message(self, visible=True):
+        if visible:
+            self.label(named("_connection_error_message")).is_showing_on_screen()
+        else:
+            self.label(named("_connection_error_message")).is_hidden()
+
+    def shows_insufficient_error_message(self, visible=True):
+        if visible:
+            self.label(named("_insufficient_error_message")).is_showing_on_screen()
+        else:
+            self.label(named("_insufficient_error_message")).is_hidden()
+
     @property
     def progress_indicator(self):
         return WidgetDriver.find_single(self, QProgressIndicator, named("_progress_indicator"))

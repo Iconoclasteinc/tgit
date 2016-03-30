@@ -1045,6 +1045,16 @@
         <source>Review the main artist information before assigning an ISNI</source>
         <translation>Veuillez réviser les informations suivantes avant d'assigner un ISNI</translation>
     </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Could not assign an ISNI because of insufficient distinguishing information.</source>
+        <translation>Impossible d&apos;assigner un ISNI par manque d&apos;information distinctif.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>Could not connect to the ISNI database. Please retry later.</source>
+        <translation>Impossible de se connecter à la base de données ISNI. Veuillez réessayez plus tard.</translation>
+    </message>
 </context>
 <context>
     <name>welcome_page</name>
