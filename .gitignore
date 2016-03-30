@@ -9,3 +9,4 @@ tgit.egg-info
 .coverage
 resources/*.qm
 tgit.user.pro
+.cache
