@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import pytest
 from flexmock import flexmock as mock
-from hamcrest import assert_that
-from hamcrest import equal_to
+from hamcrest import assert_that, equal_to, match_equality as matching
 
 from test.util.builders import make_project, make_image
+from testing.matchers import image_with
+from tgit.metadata import Image
 from tgit.project_history import ProjectSnapshot
 
 
@@ -30,14 +31,16 @@ def test_snapshots_project_type():
     project = make_project(type_="flac")
     snapshot = ProjectSnapshot.of(project)
     project.type = "mp3"
-    assert_that(snapshot.type_, equal_to("flac"), "snapshot's type")
+    assert_that(snapshot.type, equal_to("flac"), "snapshot's type")
 
 
 def test_snapshots_thumbnail_of_project_main_cover(scaler):
-    project = make_project(images=[make_image(data=b'<image data>')])
-    scaler.should_receive("scale").with_args(b'<image data>', 36, 36).and_return(b'<scaled image data>')
+    project = make_project(images=[make_image(mime="image/png", data=b'<image data>')])
+    scaler.should_receive("scale").with_args(
+        matching(image_with(mime="image/png", data=b'<image data>')), 36, 36).and_return(
+        Image(mime="image/png", data=b'<scaled image data>'))
 
-    snapshot = ProjectSnapshot.of(project, scaler=scaler)
+    snapshot = ProjectSnapshot.of(project, image_editor=scaler)
 
     project.remove_images()
-    assert_that(snapshot.cover_art, equal_to(b'<scaled image data>'), "snapshot's cover thumbnail")
+    assert_that(snapshot.cover_art, image_with(mime="image/png", data=b'<scaled image data>'), "snapshot's thumbnail")

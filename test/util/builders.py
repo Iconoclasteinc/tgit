@@ -67,8 +67,8 @@ def make_portfolio(project=None):
     return portfolio
 
 
-def make_snapshot(name="project", path="project.tgit"):
-    return ProjectSnapshot(name=name, type_=None, path=path, cover_art=None)
+def make_snapshot(name="project", path="project.tgit", type_="mp3", cover_art=None):
+    return ProjectSnapshot(name=name, type_=type_, path=path, cover_art=cover_art)
 
 
 def make_project_history(*snapshots):

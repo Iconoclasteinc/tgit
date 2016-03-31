@@ -61,7 +61,7 @@ def test_displays_project_history(driver):
                                        make_snapshot(name="2", path="previous.tgit"),
                                        make_snapshot(name="3", path="oldest.tgit")))
 
-    driver.shows_recent_projects("1 - last.tgit", "2 - previous.tgit", "3 - oldest.tgit")
+    driver.shows_recent_projects("1 (last.tgit)", "2 (previous.tgit)", "3 (oldest.tgit)")
 
 
 def test_clears_previous_history_on_display(driver):
@@ -69,7 +69,7 @@ def test_clears_previous_history_on_display(driver):
                                           make_snapshot(name="2", path="oldest.tgit")))
 
     page.display_project_history(make_project_history(make_snapshot(name="1", path="last.tgit")))
-    driver.shows_recent_projects("1 - last.tgit")
+    driver.shows_recent_projects(starts_with("1"))
 
 
 def test_signals_project_to_open_when_open_button_clicked(driver):

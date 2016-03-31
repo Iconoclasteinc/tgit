@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*
 from tgit.auth import User
+from tgit.metadata import Image
 from tgit.project_history import ProjectHistory, ProjectSnapshot
 from tgit.user_preferences import UserPreferences
 
@@ -91,7 +92,9 @@ class HistoryDataStore:
             self._settings.setArrayIndex(index)
             name = self._settings.value("name")
             path = self._settings.value("path")
-            history.append(ProjectSnapshot(name=name, path=path, type_="mp3", cover_art=None))
+            type_ = self._settings.value("type")
+            cover_art = self._read_cover_art() if 'thumbnail' in self._settings.childGroups() else None
+            history.append(ProjectSnapshot(name=name, path=path, type_=type_, cover_art=cover_art))
         self._settings.endArray()
         return history
 
@@ -102,7 +105,27 @@ class HistoryDataStore:
             self._settings.setArrayIndex(index)
             self._settings.setValue("name", past_project.name)
             self._settings.setValue("path", past_project.path)
+            self._settings.setValue("type", past_project.type)
+            if past_project.cover_art:
+                self._write_cover_art(past_project)
         self._settings.endArray()
+
+    def _read_cover_art(self):
+        self._settings.beginGroup("thumbnail")
+        mime = self._settings.value("mime_type")
+        data = self._settings.value("data")
+        type_= self._settings.value("type")
+        desc = self._settings.value("description")
+        self._settings.endGroup()
+        return Image(mime, data, type_, desc)
+
+    def _write_cover_art(self, past_project):
+        self._settings.beginGroup("thumbnail")
+        self._settings.setValue("mime_type", past_project.cover_art.mime)
+        self._settings.setValue("data", past_project.cover_art.data)
+        self._settings.setValue("type", past_project.cover_art.type)
+        self._settings.setValue("description", past_project.cover_art.desc)
+        self._settings.endGroup()
 
     def close(self):
         self._settings.sync()

@@ -30,8 +30,8 @@ class WelcomePageDriver(ScreenDriver):
     def has_enabled_open_project(self):
         self._open_project_button.is_enabled()
 
-    def shows_recent_projects(self, *paths):
-        self._recent_projects_list.contains_items(*[match.with_item_text(path) for path in paths])
+    def shows_recent_projects(self, *entries):
+        self._recent_projects_list.contains_items(*[match.with_item_text(entry) for entry in entries])
 
     def open_recent_project(self, name):
         self.select_project(name)

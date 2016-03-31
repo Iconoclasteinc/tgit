@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tgit import image
+from tgit import imager
 from tgit.signal import Observable, signal
 
 
@@ -14,13 +14,13 @@ class ProjectSnapshot:
     THUMBNAIL_SIZE = (36, 36)
 
     @classmethod
-    def of(cls, project, scaler=image):
-        cover_thumbnail = scaler.scale(project.main_cover.data, *cls.THUMBNAIL_SIZE) if project.main_cover else None
-        return cls(project.release_name, project.type, project.filename, cover_thumbnail)
+    def of(cls, project, image_editor=imager):
+        thumbnail = image_editor.scale(project.main_cover, *cls.THUMBNAIL_SIZE) if project.main_cover else None
+        return cls(project.release_name, project.type, project.filename, thumbnail)
 
     def __init__(self, name, type_, path, cover_art):
         self.name = name
-        self.type_ = type_
+        self.type = type_
         self.path = path
         self.cover_art = cover_art
 

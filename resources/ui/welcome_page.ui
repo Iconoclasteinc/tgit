@@ -235,6 +235,12 @@ QListView::item {
     min-height: 24px;
 }</string>
            </property>
+           <property name="iconSize">
+            <size>
+             <width>36</width>
+             <height>36</height>
+            </size>
+           </property>
            <property name="horizontalScrollMode">
             <enum>QAbstractItemView::ScrollPerItem</enum>
            </property>

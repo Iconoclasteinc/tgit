@@ -19,8 +19,8 @@
 import os
 
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QFrame
-from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtGui import QIcon, QPixmap, QImage
+from PyQt5.QtWidgets import QFrame, QListWidgetItem
 
 import tgit
 from tgit.album import Album
@@ -86,7 +86,10 @@ class WelcomePage(QFrame, UIFile):
         for recent_project in project_history:
             item = QListWidgetItem(self._display_name(recent_project))
             item.setData(Qt.UserRole, recent_project)
+            cover_art = recent_project.cover_art
+            if cover_art:
+                item.setIcon(QIcon(QPixmap(QImage.fromData(cover_art.data))))
             self._recent_projects_list.addItem(item)
 
     def _display_name(self, recent_project):
-        return "{name} - {filename}".format(name=recent_project.name, filename=os.path.basename(recent_project.path))
+        return "{name} ({filename})".format(name=recent_project.name, filename=os.path.basename(recent_project.path))
