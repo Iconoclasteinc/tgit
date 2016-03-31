@@ -19,11 +19,12 @@
 import os
 
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QIcon, QPixmap, QImage
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFrame, QListWidgetItem
 
 import tgit
 from tgit.album import Album
+from tgit.ui import pixmap
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.rescue import rescue
@@ -46,6 +47,8 @@ class WelcomePage(QFrame, UIFile):
     closed = pyqtSignal()
     on_open_project = pyqtSignal(str)
 
+    THUMBNAIL_SIZE = (36, 36)
+
     def __init__(self, select_project, show_load_error):
         super().__init__()
         self._select_project = select_project
@@ -55,6 +58,7 @@ class WelcomePage(QFrame, UIFile):
     def _setup_ui(self):
         self._load(":/ui/welcome_page.ui")
         self._version.setText(tgit.__version__)
+        self._no_cover = pixmap.none(*self.THUMBNAIL_SIZE)
         self._recent_projects_list.currentItemChanged.connect(
             lambda item: self._open_project_button.setEnabled(item is not None))
 
@@ -86,10 +90,14 @@ class WelcomePage(QFrame, UIFile):
         for recent_project in project_history:
             item = QListWidgetItem(self._display_name(recent_project))
             item.setData(Qt.UserRole, recent_project)
-            cover_art = recent_project.cover_art
-            if cover_art:
-                item.setIcon(QIcon(QPixmap(QImage.fromData(cover_art.data))))
+            item.setIcon(QIcon(self._generate_thumbnail_of(recent_project.cover_art)))
             self._recent_projects_list.addItem(item)
+
+    def _generate_thumbnail_of(self, cover_art):
+        if not cover_art:
+            return self._no_cover
+        thumbnail = pixmap.from_image(cover_art)
+        return thumbnail if not thumbnail.isNull() else self._broken_cover
 
     def _display_name(self, recent_project):
         return "{name} ({filename})".format(name=recent_project.name, filename=os.path.basename(recent_project.path))

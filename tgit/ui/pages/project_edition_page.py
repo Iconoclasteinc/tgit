@@ -144,9 +144,11 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
     def _display_cover(self, cover):
         if cover is not self._picture:
             self._picture = cover
-            self._front_cover.setPixmap(self._scale_cover(cover) if cover else self._no_cover)
+            self._front_cover.setPixmap(self._scale_cover(cover))
 
     def _scale_cover(self, cover):
+        if not cover:
+            return self._no_cover
         scaled_cover = pixmap.from_image(imager.scale(cover, *self.FRONT_COVER_SIZE))
         return self._broken_cover if scaled_cover.isNull() else scaled_cover
 

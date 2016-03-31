@@ -209,9 +209,11 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         # Cache the cover image to avoid recomputing the image each time the screen updates
         if self._cover is not picture:
             self._cover = picture
-            self._album_cover.setPixmap(self._scale_cover(picture) if picture else self._no_cover)
+            self._album_cover.setPixmap(self._scale_cover(picture))
 
     def _scale_cover(self, picture):
+        if not picture:
+            return self._no_cover
         scaled_cover = pixmap.from_image(imager.scale(picture, *self.ALBUM_COVER_SIZE))
         return self._broken_cover if scaled_cover.isNull() else scaled_cover
 
