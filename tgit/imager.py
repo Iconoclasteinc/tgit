@@ -6,7 +6,7 @@ from tgit.metadata import Image
 
 
 def scale(image, width, height):
-    edited = QImage.fromData(image.data)
+    edited = QImage.fromData(image.data, format_for(image.mime))
     if edited.isNull():
         return image
 

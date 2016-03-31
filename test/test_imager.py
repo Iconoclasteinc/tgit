@@ -31,7 +31,7 @@ def test_scales_image_to_specified_size_preserving_image_attributes():
 
 
 def null_image():
-    return Image(mime="...", data=b'')
+    return Image(mime="image/png", data=b'')
 
 
 def image_file(path):

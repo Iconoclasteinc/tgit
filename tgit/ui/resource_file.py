@@ -16,30 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from io import BytesIO
 
-from PyQt5.QtCore import Qt, QFile, QIODevice
-from PyQt5.QtGui import QPixmap, QImage
-
-
-def scale(image_to_scale, width, height):
-    image = _empty() if image_to_scale is None else QImage.fromData(image_to_scale.data)
-    if image.byteCount() == 0:
-        image = _not_found()
-
-    return QPixmap.fromImage(image.scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+from PyQt5.QtCore import QFile
+from PyQt5.QtCore import QIODevice
 
 
-def _not_found():
-    return QImage.fromData(_from_resources(":/images/invalid-image-placeholder.png"))
-
-
-def _empty():
-    return QImage.fromData(_from_resources(":/images/no-image-placeholder.png"))
-
-
-def _from_resources(path):
+def load(path):
     file = QFile(path)
     file.open(QIODevice.ReadOnly)
     bytes_ = file.readAll()
     file.close()
     return bytes_
+
+
+def stream(path):
+    return BytesIO(load(path))

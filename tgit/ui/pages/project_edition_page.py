@@ -21,12 +21,13 @@ import operator
 from PyQt5.QtCore import pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget
 
+from tgit import imager
 from tgit.album import AlbumListener
 from tgit.auth import Permission
 from tgit.countries import COUNTRIES
 from tgit.signal import MultiSubscription
+from tgit.ui import pixmap
 from tgit.ui.closeable import Closeable
-from tgit.ui.helpers import image
 from tgit.ui.helpers.ui_file import UIFile
 
 ISO_8601_FORMAT = "yyyy-MM-dd"
@@ -76,7 +77,10 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
     def _setup_ui(self, track_list_tab):
         self._load(":/ui/project_page.ui")
         self._fill_with_countries(self._main_artist_region)
-
+        # We can't use class attributes because we need Qt to be initialized
+        self._no_cover = pixmap.none(*self.FRONT_COVER_SIZE)
+        self._broken_cover = pixmap.broken(*self.FRONT_COVER_SIZE)
+        self._front_cover.setPixmap(self._no_cover)
         self._compilation.clicked.connect(self._update_isni_menu)
         self._main_artist.textChanged.connect(self._update_isni_menu)
         self._tabs.widget(0).layout().addWidget(track_list_tab)
@@ -128,10 +132,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._update_isni_menu()
 
     def display(self, album):
-        if album.main_cover is not self._picture or album.main_cover is None:
-            self._front_cover.setPixmap(image.scale(album.main_cover, *self.FRONT_COVER_SIZE))
-            self._picture = album.main_cover
-
+        self._display_cover(album.main_cover)
         self._title.setText(album.release_name)
         self._display_main_artist(album)
         self._label_name.setText(album.label_name)
@@ -139,6 +140,15 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._barcode.setText(album.upc)
         self._release_time.setDate(QDate.fromString(album.release_time, ISO_8601_FORMAT))
         self._musician_table_container.display(album.guest_performers or [])
+
+    def _display_cover(self, cover):
+        if cover is not self._picture:
+            self._picture = cover
+            self._front_cover.setPixmap(self._scale_cover(cover) if cover else self._no_cover)
+
+    def _scale_cover(self, cover):
+        scaled_cover = pixmap.from_image(imager.scale(cover, *self.FRONT_COVER_SIZE))
+        return self._broken_cover if scaled_cover.isNull() else scaled_cover
 
     def _display_main_artist(self, album):
         def displayed_main_artist():
