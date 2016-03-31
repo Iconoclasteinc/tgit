@@ -5,8 +5,9 @@ from tgit.signal import Observable, signal
 
 def load_from(studio, store):
     history = store.load_history()
-    studio.project_opened.subscribe(history.project_opened)
-    history.history_changed.subscribe(lambda: store.store_history(history))
+    studio.on_project_opened.subscribe(history.project_opened)
+    studio.on_project_saved.subscribe(history.project_saved)
+    history.on_history_changed.subscribe(lambda: store.store_history(history))
     return history
 
 
@@ -26,14 +27,26 @@ class ProjectSnapshot:
 
 
 class ProjectHistory(metaclass=Observable):
-    history_changed = signal()
+    on_history_changed = signal()
 
     def __init__(self, *past_projects):
         self._history = list(past_projects)
 
     def project_opened(self, project):
+        self._add_to_history(project)
+
+    def project_saved(self, project):
+        self._add_to_history(project)
+
+    def _add_to_history(self, project):
+        stale_entry = self._snapshot_for(project)
+        if stale_entry is not None:
+            self._history.remove(stale_entry)
         self._history.insert(0, ProjectSnapshot.of(project))
-        self.history_changed.emit()
+        self.on_history_changed.emit()
+
+    def _snapshot_for(self, project):
+        return next(filter(lambda entry: entry.path == project.filename, self._history), None)
 
     def __getitem__(self, index):
         return self._history[index]

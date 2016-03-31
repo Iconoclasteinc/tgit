@@ -117,6 +117,9 @@ class ApplicationRunner:
     def load_project(self, album_name):
         self.main_window_driver.load_project(self._project_file_path(album_name))
 
+    def shows_recent_projects(self, *names):
+        self.main_window_driver.shows_recent_projects(*(starts_with(name) for name in names))
+
     def open_recent_project(self, name):
         self.main_window_driver.open_recent_project(starts_with(name))
 

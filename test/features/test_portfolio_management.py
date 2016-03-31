@@ -47,11 +47,20 @@ def test_importing_an_album_from_an_existing_track(app, recordings):
 
 
 def test_opening_a_recent_project(app):
+    app.shows_recent_projects()
     app.new_project("Honeycomb", of_type="mp3")
     app.close_project()
-
+    app.shows_recent_projects("Honeycomb")
+    app.new_project("Miron Noir", of_type="flac")
+    app.close_project()
+    app.shows_recent_projects("Miron Noir", "Honeycomb")
     app.stop()
+
     app.start()
+    app.shows_recent_projects("Miron Noir", "Honeycomb")
     app.open_recent_project("Honeycomb")
     app.shows_project_metadata(release_name="Honeycomb")
-
+    app.change_project_metadata(release_name="Honeycomber")
+    app.save_project()
+    app.close_project()
+    app.shows_recent_projects("Honeycomber", "Miron Noir")

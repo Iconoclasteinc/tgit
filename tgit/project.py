@@ -16,6 +16,14 @@ def load_to(studio, portfolio, from_catalog=local_storage):
     return load_project
 
 
+def save_to(studio, catalog=local_storage):
+    def save_project(project):
+        catalog.save_project(project)
+        studio.project_saved(project)
+
+    return save_project
+
+
 def create_in(studio, portfolio, to_catalog=local_storage, from_catalog=tagging):
     def create_project(type_, name, location, reference_track_file=None):
         reference_track = from_catalog.load_track(reference_track_file) if reference_track_file else None

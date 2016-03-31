@@ -36,7 +36,7 @@ def make_welcome_page(project_history, select_project, show_load_error, **handle
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
-    subscription = project_history.history_changed.subscribe(lambda: page.display_project_history(project_history))
+    subscription = project_history.on_history_changed.subscribe(lambda: page.display_project_history(project_history))
     page.closed.connect(subscription.cancel)
     page.display_project_history(project_history)
     return page

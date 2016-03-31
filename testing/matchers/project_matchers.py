@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-from hamcrest import has_property, has_properties, anything
-
-
-def snapshot_with_path(path):
-    return has_property("path", path)
+from hamcrest import has_properties, anything
 
 
 def snapshot_with(name=anything(), type_=anything(), path=anything(), cover_art=anything()):

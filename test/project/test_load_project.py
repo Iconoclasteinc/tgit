@@ -25,8 +25,8 @@ def catalog():
 
 
 def test_loads_project_from_catalog_and_then_reports_load_success_to_studio(studio, portfolio, catalog):
-    project_to_load = make_project("/path/to/project.tgit")
-    catalog.should_receive("load_project").and_return(project_to_load)
+    project_to_load = make_project()
+    catalog.should_receive("load_project").with_args("/path/to/project.tgit").and_return(project_to_load)
     studio.should_receive("project_loaded").with_args(project_to_load).once()
 
     project.load_to(studio, portfolio, from_catalog=catalog)(filename="/path/to/project.tgit")

@@ -89,7 +89,7 @@ class Tagger:
                              show_save_error=self._show_save_project_failed_message,
                              show_export_error=self._show_export_project_failed_message,
                              on_close_project=director.remove_album_from(self._portfolio),
-                             on_save_project=director.save_album(),
+                             on_save_project=project.save_to(self._project_studio),
                              on_add_files=director.add_tracks,
                              on_export=export.as_csv,
                              on_settings=self._show_settings_dialog,
