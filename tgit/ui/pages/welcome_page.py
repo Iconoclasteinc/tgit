@@ -78,6 +78,8 @@ class WelcomePage(QFrame, UIFile):
 
         self._load_project_button.clicked.connect(lambda: self._select_project(try_loading_project))
         self._open_project_button.clicked.connect(lambda checked: try_loading_project(self._selected_project.path))
+        self._recent_projects_list.itemDoubleClicked.connect(
+            lambda item: try_loading_project(self._selected_project.path))
 
     def display_project_history(self, project_history):
         self._clear_project_history()

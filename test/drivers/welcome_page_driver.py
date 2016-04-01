@@ -21,8 +21,8 @@ class WelcomePageDriver(ScreenDriver):
     def load(self):
         self._load_project_button.click()
 
-    def select_project(self, path):
-        self._recent_projects_list.select_item(match.with_item_text(path))
+    def select_project(self, entry):
+        self._recent_projects_list.select_item(match.with_item_text(entry))
 
     def has_disabled_open_project(self):
         self._open_project_button.is_disabled()
@@ -33,8 +33,10 @@ class WelcomePageDriver(ScreenDriver):
     def shows_recent_projects(self, *entries):
         self._recent_projects_list.contains_items(*[match.with_item_text(entry) for entry in entries])
 
-    def open_recent_project(self, name):
-        self.select_project(name)
+    def open_recent_project(self, entry):
+        self._recent_projects_list.open_item(match.with_item_text(entry))
+
+    def click_open(self):
         self._open_project_button.click()
 
     @property

@@ -79,6 +79,18 @@ def test_signals_project_to_open_when_open_button_clicked(driver):
         make_project_history(make_snapshot(name="project", path="/path/to/project.tgit")),
         on_load_project=signal.received)
 
+    driver.select_project(starts_with("project"))
+    driver.click_open()
+    driver.check(signal)
+
+
+def test_signals_project_to_open_when_recent_project_double_clicked(driver):
+    signal = ValueMatcherProbe("open project", "/path/to/project.tgit")
+
+    _ = show_page(
+        make_project_history(make_snapshot(name="project", path="/path/to/project.tgit")),
+        on_load_project=signal.received)
+
     driver.open_recent_project(starts_with("project"))
     driver.check(signal)
 
