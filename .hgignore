@@ -11,4 +11,4 @@ resources/*.qm
 tgit.pro.user
 tgit.pro
 .cache
-**/resources.py
+**/resources_rc.py

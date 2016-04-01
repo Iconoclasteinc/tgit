@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+import os
+
 import pytest
 from flexmock import flexmock as mock
+
 from hamcrest import assert_that, contains, match_equality as matching
 
 from test.util.builders import make_portfolio, make_track
@@ -31,11 +34,13 @@ def track_catalog():
 
 
 def test_creates_and_adds_new_project_to_catalog_and_then_reports_creation_to_studio(studio, portfolio, album_catalog):
-    new_project = matching(project_with(type="mp3", filename="/workspace/Project/Project.tgit", release_name="Project"))
+    new_project = matching(
+        project_with(type="mp3", filename=os.path.normpath("/workspace/Project/Project.tgit"), release_name="Project"))
     album_catalog.should_receive("save_project").with_args(new_project).once().ordered()
     studio.should_receive("project_created").with_args(new_project).once().ordered()
 
-    project.create_in(studio, portfolio, to_catalog=album_catalog)(type_="mp3", name="Project", location="/workspace")
+    project.create_in(studio, portfolio, to_catalog=album_catalog)(type_="mp3", name="Project",
+                                                                   location=os.path.normpath("/workspace"))
 
     assert_that(portfolio, contains(new_project), "portfolio content")
 

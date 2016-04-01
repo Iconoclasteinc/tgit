@@ -38,7 +38,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QFrame" name="_welcome_dialog">
+    <widget class="QFrame" name="welcome_dialog">
      <property name="minimumSize">
       <size>
        <width>680</width>
@@ -77,7 +77,7 @@
        <number>20</number>
       </property>
       <item>
-       <widget class="QWidget" name="_banner" native="true">
+       <widget class="QWidget" name="banner" native="true">
         <layout class="QGridLayout" name="gridLayout_2">
          <property name="leftMargin">
           <number>0</number>
@@ -95,7 +95,7 @@
           <number>0</number>
          </property>
          <item row="0" column="0" rowspan="3">
-          <widget class="QLabel" name="_logo">
+          <widget class="QLabel" name="logo">
            <property name="maximumSize">
             <size>
              <width>80</width>
@@ -106,12 +106,12 @@
             <string notr="true"/>
            </property>
            <property name="pixmap">
-            <pixmap resource="../resources.qrc">:/images/logo.png</pixmap>
+            <pixmap>:/images/logo.png</pixmap>
            </property>
           </widget>
          </item>
          <item row="0" column="1" rowspan="2" alignment="Qt::AlignLeft|Qt::AlignBottom">
-          <widget class="QLabel" name="_title">
+          <widget class="QLabel" name="title">
            <property name="styleSheet">
             <string notr="true">QLabel[style=&quot;QWindowsVistaStyle&quot;]{font-size: 22pt;font-weight: bold;}
 QLabel[style=&quot;QMacStyle&quot;]{font-size: 28pt;font-weight: bold;}</string>
@@ -122,7 +122,7 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 28pt;font-weight: bold;}</string>
           </widget>
          </item>
          <item row="2" column="1" alignment="Qt::AlignLeft">
-          <widget class="QLabel" name="_version">
+          <widget class="QLabel" name="version">
            <property name="styleSheet">
             <string notr="true">QLabel[style=&quot;QWindowsVistaStyle&quot;]{font-size: 13pt;}
 QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;}</string>
@@ -139,7 +139,7 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;}</string>
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="_content">
+       <widget class="QGroupBox" name="content">
         <property name="styleSheet">
          <string notr="true">QLabel[style=&quot;QWindowsVistaStyle&quot;]{font-size: 13pt;font-weight: bold;}
 QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
@@ -152,7 +152,7 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
           <number>25</number>
          </property>
          <item row="0" column="0" colspan="2">
-          <widget class="QLabel" name="_new_project_title">
+          <widget class="QLabel" name="new_project_title">
            <property name="text">
             <string>New Project</string>
            </property>
@@ -162,14 +162,14 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
           </widget>
          </item>
          <item row="0" column="2" colspan="3">
-          <widget class="QLabel" name="_recent_projects_title">
+          <widget class="QLabel" name="recent_projects_title">
            <property name="text">
             <string>Recent Projects</string>
            </property>
           </widget>
          </item>
          <item row="1" column="0" colspan="2">
-          <widget class="QPushButton" name="_new_flac_project_button">
+          <widget class="QPushButton" name="new_flac_project_button">
            <property name="focusPolicy">
             <enum>Qt::TabFocus</enum>
            </property>
@@ -179,7 +179,7 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
           </widget>
          </item>
          <item row="2" column="0" colspan="2">
-          <widget class="QPushButton" name="_new_mp3_project_button">
+          <widget class="QPushButton" name="new_mp3_project_button">
            <property name="focusPolicy">
             <enum>Qt::TabFocus</enum>
            </property>
@@ -189,14 +189,14 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
           </widget>
          </item>
          <item row="4" column="0" colspan="2">
-          <widget class="QLabel" name="_open_project_title">
+          <widget class="QLabel" name="open_project_title">
            <property name="text">
             <string>Open Project</string>
            </property>
           </widget>
          </item>
          <item row="5" column="0" colspan="2">
-          <widget class="QPushButton" name="_load_project_button">
+          <widget class="QPushButton" name="load_project_button">
            <property name="focusPolicy">
             <enum>Qt::TabFocus</enum>
            </property>
@@ -206,7 +206,7 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
           </widget>
          </item>
          <item row="7" column="4">
-          <widget class="QPushButton" name="_open_project_button">
+          <widget class="QPushButton" name="open_project_button">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -225,7 +225,7 @@ QLabel[style=&quot;QMacStyle&quot;]{font-size: 16pt;font-weight: bold;}</string>
           </widget>
          </item>
          <item row="1" column="2" rowspan="6" colspan="3">
-          <widget class="QListWidget" name="_recent_projects_list">
+          <widget class="QListWidget" name="recent_projects_list">
            <property name="styleSheet">
             <string notr="true">QListView[style=QMacStyle] {
     alternate-background-color: #F2F2F2;
@@ -253,12 +253,9 @@ QListView::item {
     </widget>
    </item>
   </layout>
-  <action name="_open_project_action">
+  <action name="open_project_action">
    <property name="enabled">
     <bool>false</bool>
-   </property>
-   <property name="text">
-    <string/>
    </property>
    <property name="shortcut">
     <string>Return</string>
@@ -269,17 +266,18 @@ QListView::item {
   </action>
  </widget>
  <tabstops>
-  <tabstop>_new_flac_project_button</tabstop>
-  <tabstop>_new_mp3_project_button</tabstop>
-  <tabstop>_load_project_button</tabstop>
-  <tabstop>_recent_projects_list</tabstop>
-  <tabstop>_open_project_button</tabstop>
+  <tabstop>new_flac_project_button</tabstop>
+  <tabstop>new_mp3_project_button</tabstop>
+  <tabstop>load_project_button</tabstop>
+  <tabstop>recent_projects_list</tabstop>
+  <tabstop>open_project_button</tabstop>
  </tabstops>
+ <resources/>
  <connections>
   <connection>
-   <sender>_open_project_button</sender>
+   <sender>open_project_button</sender>
    <signal>clicked()</signal>
-   <receiver>_open_project_action</receiver>
+   <receiver>open_project_action</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -293,9 +291,9 @@ QListView::item {
    </hints>
   </connection>
   <connection>
-   <sender>_recent_projects_list</sender>
+   <sender>recent_projects_list</sender>
    <signal>itemDoubleClicked(QListWidgetItem*)</signal>
-   <receiver>_open_project_action</receiver>
+   <receiver>open_project_action</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -22,6 +22,9 @@ from PyQt5 import uic
 from PyQt5.QtCore import QFile
 from PyQt5.QtCore import QIODevice
 
+# noinspection PyUnresolvedReferences
+from . import resources_rc
+
 
 def load(path):
     file = QFile(path)

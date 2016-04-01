@@ -11,4 +11,4 @@ tgit.egg-info
 resources/*.qm
 tgit.user.pro
 .cache
-**/resources.py
+**/resources_rc.py

@@ -6,15 +6,16 @@ from distutils.cmd import Command
 import PyQt5
 import cx_Freeze
 from PyQt5.QtCore import QCoreApplication
+
 from cx_Freeze import setup, Executable
 
-windows = True
-mac = False
+from tgit import __app_name__, __version__
+from tgit.platforms import windows, mac
 
 app_script = "tgit.py"
 app_package = "tgit"
-app_name = "TGiT"
-app_version = "2.2.3"
+app_name = __app_name__
+app_version = __version__
 app_publisher = "Iconoclaste Musique, Inc."
 app_publisher_email = "jr@iconoclaste.ca"
 app_url = "http://www.tagyourmusic.com/"
