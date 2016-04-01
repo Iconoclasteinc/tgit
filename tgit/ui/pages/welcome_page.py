@@ -61,8 +61,10 @@ class WelcomePage(QFrame, UIFile):
         self._version.setText(tgit.__version__)
         self._no_cover = pixmap.none(*self.THUMBNAIL_SIZE)
         self._broken_cover = pixmap.broken(*self.THUMBNAIL_SIZE)
-        self._recent_projects_list.currentItemChanged.connect(
-            lambda item: self._open_project_button.setEnabled(item is not None))
+        self._open_project_action.changed.connect(
+            lambda: self._open_project_button.setEnabled(self._open_project_action.isEnabled()))
+        self._recent_projects_list.addAction(self._open_project_action)
+        self._recent_projects_list.itemSelectionChanged.connect(lambda: self._open_project_action.setEnabled(True))
 
     @property
     def _selected_project(self):
@@ -78,9 +80,7 @@ class WelcomePage(QFrame, UIFile):
                 on_load_project(filename)
 
         self._load_project_button.clicked.connect(lambda: self._select_project(try_loading_project))
-        self._open_project_button.clicked.connect(lambda checked: try_loading_project(self._selected_project.path))
-        self._recent_projects_list.itemDoubleClicked.connect(
-            lambda item: try_loading_project(self._selected_project.path))
+        self._open_project_action.triggered.connect(lambda: try_loading_project(self._selected_project.path))
 
     def display_project_history(self, project_history):
         self._clear_project_history()

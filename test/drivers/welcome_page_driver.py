@@ -33,11 +33,17 @@ class WelcomePageDriver(ScreenDriver):
     def shows_recent_projects(self, *entries):
         self._recent_projects_list.contains_items(*[match.with_item_text(entry) for entry in entries])
 
-    def open_recent_project(self, entry):
-        self._recent_projects_list.open_item(match.with_item_text(entry))
-
-    def click_open(self):
-        self._open_project_button.click()
+    def open_recent_project(self, entry, using="button"):
+        if using == "button":
+            self.select_project(entry)
+            self._open_project_button.click()
+        elif using == "enter":
+            self.select_project(entry)
+            self.enter()
+        elif using == "double-click":
+            self._recent_projects_list.open_item(match.with_item_text(entry))
+        else:
+            raise AssertionError("Don't know how to open recent project using " + using)
 
     @property
     def _recent_projects_list(self):

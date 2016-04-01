@@ -72,26 +72,14 @@ def test_clears_previous_history_on_display(driver):
     driver.shows_recent_projects(starts_with("1"))
 
 
-def test_signals_project_to_open_when_open_button_clicked(driver):
-    signal = ValueMatcherProbe("open project", "/path/to/project.tgit")
+@pytest.mark.parametrize("using", ["double-click", "button", "enter"])
+def test_signals_project_to_open_when_open_action_triggered(driver, using):
+    signal = ValueMatcherProbe("open project", "project.tgit")
 
-    _ = show_page(
-        make_project_history(make_snapshot(name="project", path="/path/to/project.tgit")),
-        on_load_project=signal.received)
+    _ = show_page(make_project_history(make_snapshot(name="project", path="project.tgit")),
+                  on_load_project=signal.received)
 
-    driver.select_project(starts_with("project"))
-    driver.click_open()
-    driver.check(signal)
-
-
-def test_signals_project_to_open_when_recent_project_double_clicked(driver):
-    signal = ValueMatcherProbe("open project", "/path/to/project.tgit")
-
-    _ = show_page(
-        make_project_history(make_snapshot(name="project", path="/path/to/project.tgit")),
-        on_load_project=signal.received)
-
-    driver.open_recent_project(starts_with("project"))
+    driver.open_recent_project(starts_with("project"), using=using)
     driver.check(signal)
 
 
@@ -101,4 +89,3 @@ def test_disables_open_project_when_no_project_selected(driver):
     driver.has_disabled_open_project()
     driver.select_project(starts_with("project"))
     driver.has_enabled_open_project()
-
