@@ -11,3 +11,4 @@ tgit.egg-info
 resources/*.qm
 tgit.pro.user
 tgit.pro
+.cache
