@@ -15,6 +15,7 @@ from test.util.builders import make_album, make_anonymous_session, make_register
 from tgit import fs
 from tgit.auth import Permission
 from tgit.metadata import Image
+from tgit.ui.pages.musician_tab import MusicianTab
 from tgit.ui.pages.project_edition_page import make_project_edition_page, ProjectEditionPage
 from tgit.ui.pages.track_list_tab import TrackListTab
 
@@ -32,10 +33,15 @@ def create_track_list_tab(_):
     return TrackListTab(ignore)
 
 
+def create_musician_tab(_):
+    return MusicianTab()
+
+
 def show_page(album, session=make_anonymous_session(), on_select_artwork=ignore, on_select_identity=ignore,
               on_isni_changed=ignore, **handlers):
     page = make_project_edition_page(album, session,
                                      track_list_tab=create_track_list_tab,
+                                     musician_tab=create_musician_tab,
                                      on_select_artwork=on_select_artwork,
                                      on_select_identity=on_select_identity,
                                      on_isni_changed=on_isni_changed,
@@ -235,44 +241,6 @@ def test_signals_when_project_metadata_edited(driver):
     metadata_changed_signal.expect(has_entries(release_time="2009-01-01"))
     driver.change_release_time(2009, 1, 1)
     driver.check(metadata_changed_signal)
-
-
-def test_shows_musicians(driver):
-    _ = show_page(album=make_album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
-
-    driver.shows_only_musicians_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
-
-
-def test_removes_musicians(driver):
-    metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
-    _ = show_page(album=make_album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]),
-                  on_metadata_changed=metadata_changed_signal.received)
-
-    metadata_changed_signal.expect(has_entries(guest_performers=[("Vocals", "Robert Plant")]))
-    driver.remove_musician(row=1)
-    driver.shows_only_musicians_in_table(("Vocals", "Robert Plant"))
-    driver.check(metadata_changed_signal)
-
-
-def test_adds_musicians(driver):
-    metadata_changed_signal = KeywordsValueMatcherProbe("metadata changed")
-    _ = show_page(album=make_album(), on_metadata_changed=metadata_changed_signal.received)
-
-    metadata_changed_signal.expect(has_entries(guest_performers=[("Guitar", "Jimmy Page")]))
-    driver.add_musician(instrument="Guitar", name="Jimmy Page", row=1)
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")]))
-    driver.add_musician(instrument="Vocals", name="Robert Plant", row=2)
-    driver.check(metadata_changed_signal)
-
-
-def test_displays_musician_table_only_once(driver):
-    album = make_album(guest_performers=[("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant")])
-    page = show_page(album=album)
-    page.display(album)
-
-    driver.shows_only_musicians_in_table(("Guitar", "Jimmy Page"), ("Vocals", "Robert Plant"))
 
 
 def _load_test_image(name):

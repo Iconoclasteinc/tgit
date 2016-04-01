@@ -61,7 +61,7 @@ def test_displays_project_history(driver):
                                        make_snapshot(name="Previous", type_="flac", path="previous.tgit"),
                                        make_snapshot(name="Oldest", type_="mp3", path="oldest.tgit")))
 
-    driver.shows_recent_projects("Last (mp3)", "Previous (flac)", "Oldest (mp3)")
+    driver.shows_recent_projects("Last (MP3)", "Previous (FLAC)", "Oldest (MP3)")
 
 
 def test_clears_previous_history_on_display(driver):

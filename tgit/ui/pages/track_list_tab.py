@@ -32,6 +32,8 @@ from tgit.ui.pages.track_list_table_model import Column, RowItem
 
 def make_track_list_tab(album, player, select_tracks, **handlers):
     page = TrackListTab(select_tracks)
+    page.display(album)
+
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -48,7 +50,6 @@ def make_track_list_tab(album, player, select_tracks, **handlers):
     album.addAlbumListener(page)
     page.closed.connect(lambda: album.removeAlbumListener(page))
 
-    page.display(album)
     return page
 
 

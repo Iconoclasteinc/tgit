@@ -42,7 +42,7 @@
         <file>ui/isni_dialog.ui</file>
         <file>ui/isni_assignation_review_dialog.ui</file>
         <file>ui/musician_row.ui</file>
-        <file>ui/musician_table.ui</file>
+        <file>ui/musician_tab.ui</file>
         <file>ui/settings_dialog.ui</file>
 
         <file>templates/soproq.xlsx</file>

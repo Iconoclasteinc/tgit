@@ -416,6 +416,11 @@
     </message>
     <message>
         <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>A&amp;ssign</source>
+        <translation>A&amp;ssigner</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
         <source>Could not connect to the ISNI database. Please retry later.</source>
         <translation>Impossible de se connecter à la base de données ISNI. Veuillez réessayez plus tard.</translation>
     </message>
@@ -428,6 +433,11 @@
         <location filename="tgit/ui/isni_lookup_dialog.py" />
         <source>Lookup</source>
         <translation>Rechercher</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>You don&apos;t have the required permission or you might have exceeded the limit of your plan.</source>
+        <translation>Vous n&apos;avez pas les permissions requises ou bien vous avez dépassé la limite permise par votre plan.</translation>
     </message>
 </context>
 <context>
@@ -614,11 +624,6 @@
         <location filename="tgit/ui/message_box.py" />
         <source>Your credentials may have changed. Please sign out then sign back in.</source>
         <translation>Veuillez essayer de vous déconnecter puis de vous reconnecter à nouveau.</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/message_box.py" />
-        <source>You don't have the required permission or you might have exceeded the limit of your plan.</source>
-        <translation>Vous n'avez pas les permissions requises ou bien vous avez dépassé la limite permise par votre plan.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
@@ -1012,13 +1017,13 @@
     <name>isni_assignation_review_dialog</name>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
-        <source>Lead Performer</source>
-        <translation>Artiste principal</translation>
+        <source>Is the artist a band, collective or ensemble?</source>
+        <translation>L&apos;artiste est-il un groupe, collectif ou un ensemble ?</translation>
     </message>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
-        <source>Is the main artist a band, collective or ensemble?</source>
-        <translation>L'artiste principal est-il un groupe, collectif ou un ensemble ?</translation>
+        <source>This is the name that will be used for assignation:</source>
+        <translation>Voici le nom qui sera utilisé pour l&apos;assignation ?</translation>
     </message>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
@@ -1038,12 +1043,22 @@
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
         <source>At least one title is mandatory to assign an ISNI. The following titles will be used:</source>
-        <translation>Au moin un titre est requis pour l'assignation d'un ISNI.  Les titres suivants seront utilisés :</translation>
+        <translation>Au moins un titre est requis pour l'assignation d'un ISNI.  Les titres suivants seront utilisés :</translation>
     </message>
     <message>
         <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
-        <source>Cancel</source>
-        <translation>Annuler</translation>
+        <source>Review the main artist information before assigning an ISNI</source>
+        <translation>Veuillez réviser les informations suivantes avant d'assigner un ISNI</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_assignation_review_dialog.py"/>
+        <source>Could not assign an ISNI because of insufficient distinguishing information.</source>
+        <translation>Impossible d&apos;assigner un ISNI par manque d&apos;information distinctif.</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/isni_lookup_dialog.py" />
+        <source>Could not connect to the ISNI database. Please retry later.</source>
+        <translation>Impossible de se connecter à la base de données ISNI. Veuillez réessayez plus tard.</translation>
     </message>
 </context>
 <context>
@@ -1213,12 +1228,19 @@
         <translation>Mot de passe :</translation>
     </message>
     <message>
+        <source>Sign in to the TGiT platform</source>
+        <translation>Se connecter à la plateforme TGiT</translation>
+    </message>
+</context>
+<context>
+    <name>SignInDialog</name>
+    <message>
         <source>Invalid username and/or password</source>
         <translation>Nom d'utilisateur et/ou mot de passe invalide</translation>
     </message>
     <message>
-        <source>Sign in to the TGiT platform</source>
-        <translation>Se connecter à la plateforme TGiT</translation>
+        <source>Could not connect to the TGiT platform. Please retry later.</source>
+        <translation>Impossible de se connecter à la plateforme TGiT. Veuillez réessayez plus tard.</translation>
     </message>
 </context>
 <context>

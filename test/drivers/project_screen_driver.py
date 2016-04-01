@@ -80,9 +80,6 @@ class ProjectScreenDriver(ScreenDriver):
     def links_feature_request_to(self, location):
         self.label(named("feature_request_link")).has_text(contains_string("href=\"{0}".format(location)))
 
-    def assign_isni_to_main_artist(self):
-        project_edition_page(self).assign_isni_to_main_artist()
-
     def lookup_isni_of_main_artist(self):
         project_edition_page(self).lookup_isni_of_main_artist()
 

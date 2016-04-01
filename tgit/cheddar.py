@@ -19,7 +19,7 @@
 import json
 from concurrent.futures import ThreadPoolExecutor
 
-import requests
+from requests import get, post
 
 from tgit.promise import Promise
 
@@ -36,6 +36,10 @@ class PermissionDeniedError(Exception):
     pass
 
 
+class PlatformConnectionError(Exception):
+    pass
+
+
 def _check_response_code(response):
     if response.status_code == 401:
         raise AuthenticationError()
@@ -44,7 +48,7 @@ def _check_response_code(response):
     if response.status_code == 422:
         raise InsufficientInformationError()
     if response.status_code >= 500:
-        raise requests.ConnectionError()
+        raise PlatformConnectionError()
 
 
 def _decode_response(response):
@@ -77,7 +81,7 @@ class Cheddar:
 
     def authenticate(self, email, password):
         def request_authentication():
-            response = requests.post(self._hostname + "/api/authentications", auth=(email, password), verify=False)
+            response = post(self._hostname + "/api/authentications", auth=(email, password), verify=False)
             user_details = _decode_response(response)
             user_details["email"] = email
 
@@ -87,9 +91,8 @@ class Cheddar:
 
     def get_identities(self, phrase, token):
         def request_identities():
-            response = requests.get("{0}/api/identities?q={1}".format(self._hostname, phrase),
-                                    headers=(_build_authorization_header(token)),
-                                    verify=False)
+            response = get("{0}/api/identities?q={1}".format(self._hostname, phrase), verify=False,
+                           headers=(_build_authorization_header(token)))
 
             return {
                 "total_count": response.headers.get("X-Total-Count"),
@@ -106,12 +109,9 @@ class Cheddar:
                 "works": [{"title": work} for work in works]
             }
 
-            response = requests.post("{0}/api/identities".format(self._hostname),
-                                     data=json.dumps(data),
-                                     headers=(_build_authorization_header(token)),
-                                     verify=False)
+            response = post("{0}/api/identities".format(self._hostname), data=json.dumps(data), verify=False,
+                            headers=(_build_authorization_header(token)))
 
             return _decode_response(response)
 
-        with ThreadPoolExecutor(max_workers=1) as executor:
-            return executor.submit(assign_identifier)
+        return Promise(self._executor.submit(assign_identifier))

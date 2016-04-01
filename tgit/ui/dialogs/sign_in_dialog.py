@@ -30,7 +30,8 @@ def make_sign_in_dialog(login, on_sign_in, parent=None, delete_on_close=True):
     subscriptions = MultiSubscription()
     subscriptions += login.on_start.subscribe(in_event_loop(dialog.login_in_progress))
     subscriptions += login.on_success.subscribe(in_event_loop(lambda email: dialog.login_succeeded()))
-    subscriptions += login.on_failure.subscribe(in_event_loop(lambda error: dialog.login_failed()))
+    subscriptions += login.on_connection_failed.subscribe(in_event_loop(dialog.connection_failed))
+    subscriptions += login.on_authentication_failed.subscribe(in_event_loop(dialog.login_failed))
     dialog.finished.connect(lambda accepted: subscriptions.cancel())
     return dialog
 
@@ -58,8 +59,14 @@ class SignInDialog(QDialog, UIFile):
         self._ok_button.setDisabled(True)
 
     def login_failed(self):
+        self._write_error(self.tr("Invalid username and/or password"))
+
+    def connection_failed(self):
+        self._write_error(self.tr("Could not connect to the TGiT platform. Please retry later."))
+
+    def _write_error(self, text):
         self._progress_indicator.stop()
-        self._authentication_error.setText(self.tr("Invalid username and/or password"))
+        self._authentication_error.setText(text)
         self._ok_button.setEnabled(True)
 
     @property

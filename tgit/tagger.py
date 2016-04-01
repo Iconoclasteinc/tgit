@@ -93,7 +93,7 @@ class Tagger:
                              on_add_files=director.add_tracks,
                              on_export=export.as_csv,
                              on_settings=self._show_settings_dialog,
-                             on_sign_in=self._open_sign_in_dialog,
+                             on_sign_in=self._show_sign_in_dialog,
                              on_sign_out=auth.sign_out_from(self._session),
                              on_about_qt=self._show_about_qt_message,
                              on_about=self._show_about_dialog,
@@ -131,10 +131,16 @@ class Tagger:
                                       on_stop_track=self._player.stop,
                                       on_add_tracks=director.add_tracks_to(project_))
 
+    @staticmethod
+    def _musician_tab(project_):
+        return ui.make_musician_tab(project_,
+                                    on_metadata_changed=director.update_album_from(project_))
+
     def _project_edition_page(self, project_):
         return ui.make_project_edition_page(project_,
                                             self._session,
                                             track_list_tab=self._track_list_tab,
+                                            musician_tab=self._musician_tab,
                                             on_select_artwork=self._open_artwork_selection_dialog,
                                             on_isni_changed=project_.add_isni,
                                             on_isni_local_lookup=director.lookup_isni_in(project_),
@@ -155,12 +161,19 @@ class Tagger:
         return track_page
 
     def _open_isni_dialog(self, query):
-        lookup = identity.IdentityLookup(self._portfolio[0], query)
-        return ui.make_isni_lookup_dialog(query, lookup,
-                                          on_lookup=identity.launch_lookup(self._cheddar, self._session, lookup),
-                                          parent=self._main_window).open()
+        selection = identity.IdentitySelection(self._portfolio[0], query)
+        ui.make_isni_lookup_dialog(query, selection,
+                                   on_lookup=identity.launch_lookup(self._cheddar, self._session, selection),
+                                   on_assign=self._show_isni_review_dialog(selection),
+                                   parent=self._main_window).show()
 
-    def _open_sign_in_dialog(self):
+    def _show_isni_review_dialog(self, selection):
+        return lambda: ui.make_isni_assignation_review_dialog(
+            selection,
+            on_assign=identity.launch_assignation(self._cheddar, self._session, selection),
+            parent=self._main_window).show()
+
+    def _show_sign_in_dialog(self):
         login = auth.Login(self._session)
         return ui.make_sign_in_dialog(login,
                                       on_sign_in=auth.sign_in(login, self._cheddar),

@@ -35,6 +35,8 @@ from tgit.ui.pages.project_edition_page import ISO_8601_FORMAT
 
 def make_track_edition_page(album, track, **handlers):
     page = TrackEditionPage()
+    page.display(album=album, track=track)
+
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
@@ -43,7 +45,6 @@ def make_track_edition_page(album, track, **handlers):
     album.addAlbumListener(page)
     page.closed.connect(lambda: album.removeAlbumListener(page))
 
-    page.display(album=album, track=track)
     return page
 
 

@@ -10,12 +10,6 @@
     <height>300</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
   <property name="minimumSize">
    <size>
     <width>620</width>
@@ -33,21 +27,22 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QDialog[style=QMacStyle] {
-    min-height: 385px;
     min-width: 680px;
-    max-height: 385px;
+    min-height: 400px;
     max-width: 680px;
+    max-height: 400px;
 }
 
-#_connection_error_message {
-    color: #F25C0A;
+#_connection_error_message,
+#_permission_denied_message {
+    color: red;
 }
 </string>
   </property>
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1,0">
    <item>
     <layout class="QHBoxLayout" name="_title_container">
      <item>
@@ -136,6 +131,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="_permission_denied_message">
+     <property name="text">
+      <string>You don't have the required permission or you might have exceeded the limit of your plan.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QListWidget" name="_result_container">
      <property name="styleSheet">
       <string notr="true">QListView[style=QMacStyle] {
@@ -161,11 +163,25 @@ QListView::item {
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="_dialog_buttons">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="_buttons_container">
+     <item>
+      <widget class="QPushButton" name="_assignation_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>A&amp;ssign</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="_dialog_buttons">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
   <action name="_trigger_lookup_action">
@@ -199,22 +215,6 @@ QListView::item {
     <hint type="destinationlabel">
      <x>-1</x>
      <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_dialog_buttons</sender>
-   <signal>accepted()</signal>
-   <receiver>isni_lookup_dialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>199</x>
-     <y>143</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>81</y>
     </hint>
    </hints>
   </connection>

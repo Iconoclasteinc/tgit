@@ -6,6 +6,7 @@ from hamcrest import assert_that, is_, equal_to, contains_inanyorder, not_none
 from test import exception_with_message
 from test.util.builders import make_anonymous_session
 from tgit.auth import Login
+from tgit.cheddar import PlatformConnectionError, AuthenticationError
 
 pytestmark = pytest.mark.unit
 
@@ -45,6 +46,24 @@ def test_reports_failure_but_does_not_log_user_in_when_authentication_fails(sess
     login.authentication_failed(Exception("error"))
 
     assert_that(session.opened, is_(False), "session opened?")
+
+
+def test_reports_authentication_failed(session, listener):
+    login = Login(session)
+
+    listener.should_receive("login_failed").once()
+    login.on_authentication_failed.subscribe(listener.login_failed)
+
+    login.authentication_failed(AuthenticationError())
+
+
+def test_reports_connection_failed(session, listener):
+    login = Login(session)
+
+    listener.should_receive("connection_failed").once()
+    login.on_connection_failed.subscribe(listener.connection_failed)
+
+    login.authentication_failed(PlatformConnectionError())
 
 
 def test_reports_login_in_progress_when_authentication_start(session, listener):

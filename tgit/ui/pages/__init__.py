@@ -17,10 +17,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from .musician_tab import make_musician_tab
 from .new_project_page import make_new_project_page
 from .project_edition_page import make_project_edition_page
 from .project_screen import make_project_screen
+from .startup_screen import StartupScreen
 from .track_edition_page import make_track_edition_page
 from .track_list_tab import make_track_list_tab
 from .welcome_page import make_welcome_page
-from .startup_screen import StartupScreen
+

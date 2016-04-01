@@ -4,10 +4,11 @@ build
 dist
 tgit.egg-info
 .idea
-*.iml
 *.pyc
 .DS_Store
 .coverage
 resources/*.qm
 tgit.pro.user
 tgit.pro
+.cache
+**/resources.py

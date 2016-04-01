@@ -20,7 +20,9 @@
 from .about_dialog import make_about_dialog
 from .dialogs import Dialogs
 from .file_dialogs import make_artwork_selection_dialog
+from .isni_assignation_review_dialog import make_isni_assignation_review_dialog
 from .isni_lookup_dialog import make_isni_lookup_dialog
 from .sign_in_dialog import make_sign_in_dialog
 from .user_preferences_dialog import make_user_preferences_dialog
+
 

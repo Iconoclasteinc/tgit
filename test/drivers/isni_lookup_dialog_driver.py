@@ -63,8 +63,14 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         self.is_active()
         self.results_list.select_item(with_item_text(starts_with(name)))
 
+    def assign(self):
+        self.assignation_button.click()
+
     def has_ok_button_disabled(self):
         self.ok_button().is_disabled()
+
+    def shows_assignation_button(self, enabled=True):
+        self.assignation_button.is_enabled(enabled)
 
     def has_lookup_button_enabled(self, enabled=True):
         self.button(named("_lookup_button")).is_enabled(enabled=enabled)
@@ -86,6 +92,12 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
         else:
             self.label(named("_connection_error_message")).is_hidden()
 
+    def shows_permission_denied_message(self, visible=True):
+        if visible:
+            self.label(named("_permission_denied_message")).is_showing_on_screen()
+        else:
+            self.label(named("_permission_denied_message")).is_hidden()
+
     def is_showing_progress_indicator(self):
         self.progress_indicator.is_(running())
 
@@ -99,6 +111,10 @@ class IsniLookupDialogDriver(QDialogDriver, ScreenDriver):
     @property
     def results_list(self):
         return self.list_view(named("_result_container"))
+
+    @property
+    def assignation_button(self):
+        return self.button(named("_assignation_button"))
 
 
 def running():

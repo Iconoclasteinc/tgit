@@ -33,7 +33,8 @@ logging.getLogger("werkzeug").setLevel(logging.ERROR)
 token_queue = iter([])
 response_code_queue = []
 allowed_bearer_token = ""
-identities = {}
+identities_for_lookup = {}
+identities_for_assignation = {}
 
 _app = Flask(__name__)
 
@@ -102,8 +103,8 @@ def _lookup():
     phrase = request.args.get("q")
 
     identities_to_return = []
-    if phrase in identities:
-        identities_to_return.extend(identities[phrase])
+    if phrase in identities_for_lookup:
+        identities_to_return.extend(identities_for_lookup[phrase])
 
     response = Response(status=200)
     response.set_data(json.dumps(identities_to_return))
@@ -119,8 +120,8 @@ def _assign():
 
     name = json.loads(request.data.decode())["name"]
 
-    if name in identities:
-        return json.dumps(identities[name])
+    if name in identities_for_assignation:
+        return json.dumps(identities_for_assignation[name])
 
     return json.dumps({})
 
@@ -142,11 +143,12 @@ def _shutdown():
 
 
 def start():
-    global token_queue, response_code_queue, allowed_bearer_token, identities
+    global token_queue, response_code_queue, allowed_bearer_token, identities_for_lookup, identities_for_assignation
     token_queue = iter([])
     response_code_queue = []
     allowed_bearer_token = ""
-    identities = {}
+    identities_for_lookup = {}
+    identities_for_assignation = {}
 
     server_thread = Thread(target=lambda: _app.run(port=port()))
     server_thread.start()

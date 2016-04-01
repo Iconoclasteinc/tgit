@@ -20,11 +20,12 @@ MIN_TIME_TO_AVOID_DOUBLE_CLICK = 500  # in ms
 LEFT_BUTTON = "left"
 RIGHT_BUTTON = "right"
 
-MODIFIER_KEY_DELAY = 0  # in ms
+MODIFIER_KEY_DELAY = 10  # in ms
 
 
 class GesturePerformer:
     """A mixin for performing human gestures"""
+
     def perform(self, *gestures):
         for gesture in gestures:
             gesture(self)
@@ -32,6 +33,7 @@ class GesturePerformer:
 
 class Automaton(GesturePerformer):
     """An automaton performs human gestures by manipulating keyboard and mouse"""
+
     def mouse_position(self):
         pass
 
@@ -73,7 +75,9 @@ def key_release(key):
 
 
 def holding_modifier_key(key, gesture):
-    return sequence(key_press(key), pause(MODIFIER_KEY_DELAY), gesture, pause(MODIFIER_KEY_DELAY), key_release(key))
+    return sequence(key_press(key), pause(MODIFIER_KEY_DELAY),
+                    gesture, pause(MODIFIER_KEY_DELAY),
+                    key_release(key), pause(MODIFIER_KEY_DELAY))
 
 
 def holding_control(gesture):
@@ -145,7 +149,7 @@ def select_all():
 
 
 def enter():
-    return type_key(RETURN)
+    return sequence(type_key(RETURN))
 
 
 def delete():
@@ -158,6 +162,10 @@ def delete_previous():
 
 def unselect():
     return type_key(ESCAPE)
+
+
+def tab():
+    return type_key(TAB)
 
 
 def close():

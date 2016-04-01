@@ -32,13 +32,13 @@ from tgit.ui.rescue import rescue
 
 def make_welcome_page(project_history, select_project, show_load_error, **handlers):
     page = WelcomePage(select_project=select_project, show_load_error=show_load_error)
+    page.display_project_history(project_history)
 
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
     subscription = project_history.on_history_changed.subscribe(lambda: page.display_project_history(project_history))
     page.closed.connect(subscription.cancel)
-    page.display_project_history(project_history)
     return page
 
 

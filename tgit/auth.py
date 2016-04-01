@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from enum import Enum
 
+from tgit.cheddar import PlatformConnectionError, AuthenticationError
 from tgit.signal import Observable
 from tgit.signal import signal
 
@@ -52,6 +53,8 @@ class Login(metaclass=Observable):
     on_start = signal()
     on_success = signal(str)
     on_failure = signal(Exception)
+    on_connection_failed = signal()
+    on_authentication_failed = signal()
 
     def __init__(self, session):
         self._session = session
@@ -64,6 +67,12 @@ class Login(metaclass=Observable):
         self.on_success.emit(user_details["email"])
 
     def authentication_failed(self, error):
+        if isinstance(error, PlatformConnectionError):
+            self.on_connection_failed.emit()
+
+        if isinstance(error, AuthenticationError):
+            self.on_authentication_failed.emit()
+
         self.on_failure.emit(error)
 
 

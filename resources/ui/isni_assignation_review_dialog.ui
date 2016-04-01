@@ -6,177 +6,224 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>409</width>
-    <height>248</height>
+    <width>620</width>
+    <height>380</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>620</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>620</width>
+    <height>380</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>TGiT</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QGroupBox {
-	border: 1px solid #DDDDDD;
-	border-bottom: 2px solid rgba(0, 0, 0, 20%);
-	background-color: white;
-	margin: 5px 0px 0px 8px;
-	font-size: 10px;
+   <string notr="true">QDialog[style=QMacStyle] {
+    min-width: 680px;
+    min-height: 400px;
+    max-width: 680px;
+    max-height: 400px;
 }
 
-QGroupBox::title {
-	subcontrol-origin: margin;
-	subcontrol-position: top left;
-	left: 1px;
-	padding: 0 3px;
-	color: #777777;
-	border: 1px solid #DFDFDF;
-	background-color: #F7F7F7;
- }
+#_connection_error_message,
+#_insufficient_error_message {
+    color: red;
+}
 </string>
   </property>
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
-   <property name="spacing">
-    <number>10</number>
-   </property>
-   <property name="leftMargin">
-    <number>10</number>
-   </property>
-   <property name="topMargin">
-    <number>10</number>
-   </property>
-   <property name="rightMargin">
-    <number>10</number>
-   </property>
-   <property name="bottomMargin">
-    <number>10</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0">
    <item>
-    <widget class="QGroupBox" name="_lead_performer_box">
-     <property name="title">
-      <string>Lead Performer</string>
+    <layout class="QHBoxLayout" name="_title_container">
+     <item>
+      <widget class="QLabel" name="_title">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Review the main artist information before assigning an ISNI</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressIndicator" name="_progress_indicator" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="_connection_error_message">
+     <property name="text">
+      <string>Could not connect to the ISNI database. Please retry later.</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="spacing">
-       <number>5</number>
-      </property>
-      <property name="leftMargin">
-       <number>10</number>
-      </property>
-      <property name="topMargin">
-       <number>10</number>
-      </property>
-      <property name="rightMargin">
-       <number>10</number>
-      </property>
-      <property name="bottomMargin">
-       <number>10</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="_lead_performer_caption">
-        <property name="text">
-         <string>Is the main artist a band, collective or ensemble?</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="_lead_performer_container" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="spacing">
-          <number>10</number>
-         </property>
-         <property name="leftMargin">
-          <number>10</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QRadioButton" name="_organization_button">
-           <property name="text">
-            <string>Yes</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="_individual_button">
-           <property name="text">
-            <string>No, it's a person</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="_works_box">
-     <property name="title">
-      <string>Works</string>
+    <widget class="QLabel" name="_insufficient_error_message">
+     <property name="text">
+      <string>Could not assign an ISNI because of insufficient distinguishing information.</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
-      <property name="spacing">
-       <number>5</number>
-      </property>
-      <property name="leftMargin">
-       <number>10</number>
-      </property>
-      <property name="topMargin">
-       <number>10</number>
-      </property>
-      <property name="rightMargin">
-       <number>10</number>
-      </property>
-      <property name="bottomMargin">
-       <number>10</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="_works_caption">
-        <property name="text">
-         <string>At least one title is mandatory to assign an ISNI. The following titles will be used:</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QListWidget" name="_works">
-        <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::NoSelection</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="_name_box">
+     <property name="spacing">
+      <number>3</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="_name_caption">
+       <property name="text">
+        <string>This is the name that will be used for assignation:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="_name">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Jonathan Falardeau</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="_main_artist_box">
+     <property name="spacing">
+      <number>3</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="_main_artist_caption">
+       <property name="text">
+        <string>Is the artist a band, collective or ensemble?</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="_main_artist_container">
+       <item>
+        <widget class="QRadioButton" name="_organization_button">
+         <property name="text">
+          <string>Yes</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="_individual_button">
+         <property name="text">
+          <string>No, it's a person</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="_works_box">
+     <property name="spacing">
+      <number>3</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="_works_caption">
+       <property name="text">
+        <string>At least one title is mandatory to assign an ISNI. The following titles will be used:</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="_works">
+       <property name="styleSheet">
+        <string notr="true">QListView[style=QMacStyle] {
+    alternate-background-color: #F2F2F2;
+}
+
+QListView::item {
+    min-height: 24px;
+}</string>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::NoSelection</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="_action_buttons">
@@ -190,24 +237,16 @@ QGroupBox::title {
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QProgressIndicator</class>
+   <extends>QWidget</extends>
+   <header>tgit.ui.widgets.progress_indicator</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>_action_buttons</sender>
-   <signal>accepted()</signal>
-   <receiver>isni_assignation_review_dialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>_action_buttons</sender>
    <signal>rejected()</signal>
