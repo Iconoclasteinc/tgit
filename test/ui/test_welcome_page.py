@@ -57,11 +57,11 @@ def test_warns_user_when_project_load_fails(driver):
 
 
 def test_displays_project_history(driver):
-    _ = show_page(make_project_history(make_snapshot(name="1", path="last.tgit"),
-                                       make_snapshot(name="2", path="previous.tgit"),
-                                       make_snapshot(name="3", path="oldest.tgit")))
+    _ = show_page(make_project_history(make_snapshot(name="Last", type_="mp3", path="last.tgit"),
+                                       make_snapshot(name="Previous", type_="flac", path="previous.tgit"),
+                                       make_snapshot(name="Oldest", type_="mp3", path="oldest.tgit")))
 
-    driver.shows_recent_projects("1 (last.tgit)", "2 (previous.tgit)", "3 (oldest.tgit)")
+    driver.shows_recent_projects("Last (mp3)", "Previous (flac)", "Oldest (mp3)")
 
 
 def test_clears_previous_history_on_display(driver):

@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
 
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QIcon
@@ -104,4 +103,4 @@ class WelcomePage(QFrame, UIFile):
         return thumbnail if not thumbnail.isNull() else self._broken_cover
 
     def _display_name(self, recent_project):
-        return "{name} ({filename})".format(name=recent_project.name, filename=os.path.basename(recent_project.path))
+        return "{name} ({type_})".format(name=recent_project.name, type_=recent_project.type.upper())
