@@ -22,7 +22,7 @@ def test_scales_image_to_specified_size_preserving_image_attributes():
 
     assert_that(scaled_image, image_with(data=not_(empty()),
                                          mime=original_image.mime,
-                                         type_=original_image.type,
+                                         type=original_image.type,
                                          desc=original_image.desc), "scaled image")
 
     picture = QImage.fromData(scaled_image.data, imager.format_for(original_image.mime))

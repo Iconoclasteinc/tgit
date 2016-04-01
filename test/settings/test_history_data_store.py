@@ -47,9 +47,9 @@ def tests_loads_history_data_from_settings_file_history_group(store, driver):
 
     history = store.load_history()
 
-    assert_that(history, contains(snapshot_with(name="Last", type_="flac", path="last.tgit"),
-                                  snapshot_with(name="Previous", type_="mp3", path="previous.tgit"),
-                                  snapshot_with(name="Oldest", type_="mp3", path="oldest.tgit")))
+    assert_that(history, contains(snapshot_with(name="Last", type="flac", path="last.tgit"),
+                                  snapshot_with(name="Previous", type="mp3", path="previous.tgit"),
+                                  snapshot_with(name="Oldest", type="mp3", path="oldest.tgit")))
 
 
 def tests_stores_history_data_under_history_group_in_settings_file(store, driver):
@@ -93,7 +93,7 @@ def test_round_trips_history_including_cover_thumbnail_to_settings_file(store):
 
     assert_that(persisted_history, contains(
         snapshot_with(name="Last", path="last.tgit", cover_art=image_with(mime=cover_art.mime, data=cover_art.data,
-                                                                          desc=cover_art.desc, type_=cover_art.type)),
+                                                                          desc=cover_art.desc, type=cover_art.type)),
         snapshot_with(name="Previous", path="previous.tgit")), "persisted history")
 
 

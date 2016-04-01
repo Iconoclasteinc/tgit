@@ -31,7 +31,7 @@ def track_catalog():
 
 
 def test_creates_and_adds_new_project_to_catalog_and_then_reports_creation_to_studio(studio, portfolio, album_catalog):
-    new_project = matching(project_with(type="mp3", path="/workspace/Project/Project.tgit", name="Project"))
+    new_project = matching(project_with(type="mp3", filename="/workspace/Project/Project.tgit", release_name="Project"))
     album_catalog.should_receive("save_project").with_args(new_project).once().ordered()
     studio.should_receive("project_created").with_args(new_project).once().ordered()
 
@@ -45,7 +45,7 @@ def test_imports_project_from_an_existing_track_if_specified(studio, portfolio, 
                                  track_title="Track Title")
     track_catalog.should_receive("load_track").with_args("track.mp3").and_return(reference_track)
 
-    imported_project = matching(project_with(name="Project", main_artist="Track Artist",
+    imported_project = matching(project_with(release_name="Project", lead_performer="Track Artist",
                                              tracks=contains(track_with(track_title="Track Title"))))
 
     album_catalog.should_receive("save_project").with_args(imported_project).once().ordered()
