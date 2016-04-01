@@ -8,13 +8,13 @@ import cx_Freeze
 from PyQt5.QtCore import QCoreApplication
 from cx_Freeze import setup, Executable
 
-from tgit import __app_name__, __version__
-from tgit.platforms import windows, mac
+windows = True
+mac = False
 
 app_script = "tgit.py"
 app_package = "tgit"
-app_name = __app_name__
-app_version = __version__
+app_name = "TGiT"
+app_version = "2.2.3"
 app_publisher = "Iconoclaste Musique, Inc."
 app_publisher_email = "jr@iconoclaste.ca"
 app_url = "http://www.tagyourmusic.com/"
@@ -62,11 +62,13 @@ class translate(Command):
         qt_binaries_path = qt_path if windows else os.path.join(qt_path, "bin")
         app_translation_file = os.path.join(app_source_path, "resources/tgit_fr.ts")
         app_compiled_translation_file = os.path.join(app_source_path, "resources/tgit_fr.qm")
-        os.system("{0}/lrelease {1} -qm {2}".format(qt_binaries_path, app_translation_file, app_compiled_translation_file))
+        os.system(
+            "{0}/lrelease {1} -qm {2}".format(qt_binaries_path, app_translation_file, app_compiled_translation_file))
 
         qt_translation_file = os.path.join(app_source_path, "resources/qtbase_fr.ts")
         qt_compiled_translation_file = os.path.join(app_source_path, "resources/qtbase_fr.qm")
-        os.system("{0}/lrelease {1} -qm {2}".format(qt_binaries_path, qt_translation_file, qt_compiled_translation_file))
+        os.system(
+            "{0}/lrelease {1} -qm {2}".format(qt_binaries_path, qt_translation_file, qt_compiled_translation_file))
 
         resources_file = os.path.join(app_source_path, "resources/resources.qrc")
         compiled_resources_file = os.path.join(app_source_path, "tgit/ui/resources_rc.py")
@@ -103,9 +105,14 @@ if windows:
                     data.append(l)
                 dst.writelines(data)
             os.environ["PATH"] += ";C:\\Program Files (x86)\\WiX Toolset v{0}\\bin".format(wix_version)
-            os.system("heat.exe dir {0} -gg -sfrag -cg TgitComponent -nologo -dr INSTALLFOLDER -sreg -srd -out {1}\\tgit-dir.wxs".format(app_build_dir, app_msi_dir))
+            os.system(
+                "heat.exe dir {0} -gg -sfrag -cg TgitComponent -nologo -dr INSTALLFOLDER -sreg -srd -out {1}\\tgit-dir.wxs".format(
+                    app_build_dir, app_msi_dir))
             os.system("candle.exe {0}\\*.wxs -nologo -out {0}\\ ".format(app_msi_dir))
-            os.system("light.exe -b {0} -nologo -ext WixUIExtension -cultures:en-us {1}\\*.wixobj -o build\\{2}-{3}.msi".format(app_build_dir, app_msi_dir, app_name, app_version))
+            os.system(
+                "light.exe -b {0} -nologo -ext WixUIExtension -cultures:en-us {1}\\*.wixobj -o build\\{2}-{3}.msi".format(
+                    app_build_dir, app_msi_dir, app_name, app_version))
+
 
     commands["bdist_wix"] = bdist_wix
 
@@ -125,8 +132,8 @@ if mac:
                 # .lproj folder needs to exist, but needn't have any content
                 os.mkdir(os.path.join(self.resourcesDir, locale + ".lproj"))
 
-    commands["bdist_mac"] = bdist_mac
 
+    commands["bdist_mac"] = bdist_mac
 
 setup(
     cmdclass=commands,

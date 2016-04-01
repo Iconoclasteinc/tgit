@@ -275,9 +275,6 @@ QListView::item {
   <tabstop>_recent_projects_list</tabstop>
   <tabstop>_open_project_button</tabstop>
  </tabstops>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
  <connections>
   <connection>
    <sender>_open_project_button</sender>

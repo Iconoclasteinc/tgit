@@ -32,18 +32,3 @@ class UIFile:
     def _load(self, path):
         load(path, self)
 
-
-class Loader:
-    def __init__(self, path):
-        file = QFile(path)
-        file.open(QIODevice.ReadOnly)
-        self._ui_factory = uic.loadUiType(file, from_imports=True)[0]
-        file.close()
-
-    def create(self, widget):
-        ui = self._ui_factory()
-        ui.setupUi(widget)
-        return ui
-
-
-welcome_page = Loader(":/ui/welcome_page.ui")

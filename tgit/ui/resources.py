@@ -18,17 +18,32 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from io import BytesIO
 
+from PyQt5 import uic
 from PyQt5.QtCore import QFile
 from PyQt5.QtCore import QIODevice
 
 
 def load(path):
     file = QFile(path)
-    file.open(QIODevice.ReadOnly)
-    bytes_ = file.readAll()
-    file.close()
-    return bytes_
+    try:
+        file.open(QIODevice.ReadOnly)
+        return file.readAll()
+    finally:
+        file.close()
 
 
 def stream(path):
     return BytesIO(load(path))
+
+
+class Loader:
+    def __init__(self, path):
+        self._ui_factory = uic.loadUiType(stream(path), from_imports=True)[0]
+
+    def create(self, widget):
+        ui = self._ui_factory()
+        ui.setupUi(widget)
+        return ui
+
+
+welcome_page = Loader(":/ui/welcome_page.ui")

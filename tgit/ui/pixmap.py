@@ -21,10 +21,10 @@ from PyQt5.QtGui import QPixmap, QImage
 
 from tgit import imager
 from tgit.metadata import Image
-from tgit.ui import resource_file
+from tgit.ui import resources
 
-INVALID_IMAGE = Image("image/png", resource_file.load(":/images/broken"))
-PLACEHOLDER_IMAGE = Image("image/png", resource_file.load(":/images/placeholder"))
+INVALID_IMAGE = Image("image/png", resources.load(":/images/broken"))
+PLACEHOLDER_IMAGE = Image("image/png", resources.load(":/images/placeholder"))
 
 
 def broken(width, height):

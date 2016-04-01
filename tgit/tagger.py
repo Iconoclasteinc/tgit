@@ -29,7 +29,7 @@ from tgit.audio import open_media_player
 from tgit.cheddar import Cheddar
 from tgit.project_studio import ProjectStudio
 from tgit.settings import PreferencesDataStore, UserDataStore, HistoryDataStore
-from tgit.ui import resource_file
+from tgit.ui import resources
 
 
 def make_tagger(app):
@@ -193,7 +193,7 @@ class Tagger:
 
     def _export_as_soproq(self):
         from openpyxl import load_workbook
-        return export.as_soproq_using(lambda: load_workbook(resource_file.stream(":/templates/soproq.xlsx")),
+        return export.as_soproq_using(lambda: load_workbook(resources.stream(":/templates/soproq.xlsx")),
                                       self._show_default_values_used_for_soproq_export_message)
 
     def _show_about_dialog(self):
