@@ -23,8 +23,8 @@ from tgit import imager
 from tgit.metadata import Image
 from tgit.ui import resource_file
 
-INVALID_IMAGE = Image("image/png", resource_file.load(":/images/invalid-image-placeholder.png"))
-PLACEHOLDER_IMAGE = Image("image/png", resource_file.load(":/images/no-image-placeholder.png"))
+INVALID_IMAGE = Image("image/png", resource_file.load(":/images/broken"))
+PLACEHOLDER_IMAGE = Image("image/png", resource_file.load(":/images/placeholder"))
 
 
 def broken(width, height):

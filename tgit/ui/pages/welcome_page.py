@@ -59,6 +59,7 @@ class WelcomePage(QFrame, UIFile):
         self._load(":/ui/welcome_page.ui")
         self._version.setText(tgit.__version__)
         self._no_cover = pixmap.none(*self.THUMBNAIL_SIZE)
+        self._broken_cover = pixmap.broken(*self.THUMBNAIL_SIZE)
         self._recent_projects_list.currentItemChanged.connect(
             lambda item: self._open_project_button.setEnabled(item is not None))
 
