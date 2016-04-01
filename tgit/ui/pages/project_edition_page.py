@@ -37,6 +37,8 @@ def make_project_edition_page(project, session, track_list_tab, musician_tab, on
     track_list = track_list_tab(project)
     musicians = musician_tab(project)
     page = ProjectEditionPage(track_list_tab=track_list, musician_tab=musicians)
+    page.display(project)
+
     page.on_select_artwork.connect(on_select_artwork)
     page.on_select_identity.connect(on_select_identity)
     page.on_isni_edited.connect(on_isni_changed)
@@ -53,7 +55,6 @@ def make_project_edition_page(project, session, track_list_tab, musician_tab, on
     project.addAlbumListener(page)
     page.closed.connect(lambda: project.removeAlbumListener(page))
     page.user_changed(session.current_user)
-    page.display(project)
     return page
 
 

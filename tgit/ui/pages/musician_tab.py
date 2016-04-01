@@ -21,19 +21,18 @@ from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
 from tgit.ui.closeable import Closeable
-
 from tgit.ui.helpers.ui_file import UIFile
 
 
 def make_musician_tab(project, on_metadata_changed):
     tab = MusicianTab()
+    tab.display(project)
     tab.on_metadata_changed.connect(lambda metadata: on_metadata_changed(**metadata))
 
     # todo when we have proper signals on album, we can get rid of that
     project.addAlbumListener(tab)
     tab.closed.connect(lambda: project.removeAlbumListener(tab))
 
-    tab.display(project)
     return tab
 
 
