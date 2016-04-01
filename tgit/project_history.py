@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from collections import deque
+
 from tgit import imager
 from tgit.signal import Observable, signal
 
@@ -25,12 +27,16 @@ class ProjectSnapshot:
         self.path = path
         self.cover_art = cover_art
 
+    def __repr__(self):
+        return "ProjectHistory(name='{name}', type_='{type}', path='{path}')".format(
+            name=self.name, type=self.type, path=self.path)
+
 
 class ProjectHistory(metaclass=Observable):
     on_history_changed = signal()
 
     def __init__(self, *past_projects):
-        self._history = list(past_projects)
+        self._history = deque(past_projects, maxlen=10)
 
     def project_opened(self, project):
         self._add_to_history(project)
@@ -42,7 +48,7 @@ class ProjectHistory(metaclass=Observable):
         stale_entry = self._snapshot_for(project)
         if stale_entry is not None:
             self._history.remove(stale_entry)
-        self._history.insert(0, ProjectSnapshot.of(project))
+        self._history.appendleft(ProjectSnapshot.of(project))
         self.on_history_changed.emit()
 
     def _snapshot_for(self, project):

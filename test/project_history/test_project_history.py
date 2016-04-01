@@ -54,3 +54,11 @@ def test_reorders_history_to_reflect_latest_updates():
     assert_that(history, contains(snapshot_with(path="2.tgit"),
                                   snapshot_with(path="1.tgit"),
                                   snapshot_with(path="3.tgit")), "updated project history")
+
+
+def test_limits_history_to_last_10_entries():
+    history = ProjectHistory()
+    for index in range(15):
+        history.project_opened(make_project(filename=str(index)))
+
+    assert_that(history, contains(*(snapshot_with(path=str(index)) for index in reversed(range(5, 15)))))
