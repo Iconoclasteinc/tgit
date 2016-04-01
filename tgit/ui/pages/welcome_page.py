@@ -23,6 +23,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFrame, QListWidgetItem
 
 import tgit
+from tgit import imager
 from tgit.album import Album
 from tgit.ui import pixmap
 from tgit.ui.closeable import Closeable
@@ -99,7 +100,7 @@ class WelcomePage(QFrame, UIFile):
     def _generate_thumbnail_of(self, cover_art):
         if not cover_art:
             return self._no_cover
-        thumbnail = pixmap.from_image(cover_art)
+        thumbnail = pixmap.from_image(imager.scale(cover_art, *self.THUMBNAIL_SIZE))
         return thumbnail if not thumbnail.isNull() else self._broken_cover
 
     def _display_name(self, recent_project):

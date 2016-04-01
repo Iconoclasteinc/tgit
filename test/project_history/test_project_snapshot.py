@@ -37,7 +37,7 @@ def test_snapshots_project_type():
 def test_snapshots_thumbnail_of_project_main_cover(scaler):
     project = make_project(images=[make_image(mime="image/png", data=b'<image data>')])
     scaler.should_receive("scale").with_args(
-        matching(image_with(mime="image/png", data=b'<image data>')), 36, 36).and_return(
+        matching(image_with(mime="image/png", data=b'<image data>')), 64, 64).and_return(
         Image(mime="image/png", data=b'<scaled image data>'))
 
     snapshot = ProjectSnapshot.of(project, image_editor=scaler)

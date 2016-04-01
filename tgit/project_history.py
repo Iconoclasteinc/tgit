@@ -14,7 +14,7 @@ def load_from(studio, store):
 
 
 class ProjectSnapshot:
-    THUMBNAIL_SIZE = (36, 36)
+    THUMBNAIL_SIZE = (64, 64)
 
     @classmethod
     def of(cls, project, image_editor=imager):
