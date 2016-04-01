@@ -69,7 +69,7 @@ class translate(Command):
         os.system("{0}/lrelease {1} -qm {2}".format(qt_binaries_path, qt_translation_file, qt_compiled_translation_file))
 
         resources_file = os.path.join(app_source_path, "resources/resources.qrc")
-        compiled_resources_file = os.path.join(app_source_path, "tgit/ui/resources.py")
+        compiled_resources_file = os.path.join(app_source_path, "tgit/ui/resources_rc.py")
         os.system("pyrcc5 -o {0} {1}".format(compiled_resources_file, resources_file))
 
 
