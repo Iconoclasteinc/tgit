@@ -1,12 +1,14 @@
+syntax: glob
+
 /tgit.pro
 build
 dist
 tgit.egg-info
 .idea
-*.iml
 *.pyc
 .DS_Store
 .coverage
 resources/*.qm
 tgit.user.pro
 .cache
+**/resources.py
