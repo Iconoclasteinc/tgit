@@ -3,6 +3,8 @@ import pytest
 from hamcrest import assert_that, empty, has_properties, contains
 
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
+from test.util.builders import make_registered_user, make_anonymous_user
+from testing.matchers import user_with
 from tgit.auth import User
 from tgit.settings import UserDataStore
 
@@ -65,3 +67,20 @@ def tests_deletes_user_data_from_settings_file_on_remove(store, driver):
     driver.has_no("user/permissions/size")
     driver.has_no("user/permissions/1/value")
     driver.has_no("user/permissions/2/value")
+
+
+def tests_round_trips_user_to_settings_file(store):
+    store.store_user(make_registered_user(email="test@example.com", api_key="token", permissions=["isni.lookup"]))
+
+    persisted_user = store.load_user()
+
+    assert_that(persisted_user, user_with(email="test@example.com", api_key="token", permissions=["isni.lookup"]))
+
+
+def tests_overwrites_user_data_on_store(store):
+    store.store_user(make_registered_user(email="test@example.com", api_key="token", permissions=["isni.lookup"]))
+    store.store_user(make_anonymous_user())
+
+    overwritten_user = store.load_user()
+
+    assert_that(overwritten_user, user_with(email=None, api_key=None, permissions=empty()), "overwritten user")

@@ -106,8 +106,7 @@ class HistoryDataStore:
             self._settings.setValue("name", past_project.name)
             self._settings.setValue("path", past_project.path)
             self._settings.setValue("type", past_project.type)
-            if past_project.cover_art:
-                self._write_cover_art(past_project)
+            self._write_cover_art(past_project.cover_art)
         self._settings.endArray()
 
     def _read_cover_art(self):
@@ -119,12 +118,16 @@ class HistoryDataStore:
         self._settings.endGroup()
         return Image(mime, data, type_, desc)
 
-    def _write_cover_art(self, past_project):
+    def _write_cover_art(self, cover_art):
+        if not cover_art:
+            self._settings.remove("thumbnail")
+            return
+
         self._settings.beginGroup("thumbnail")
-        self._settings.setValue("mime_type", past_project.cover_art.mime)
-        self._settings.setValue("data", past_project.cover_art.data)
-        self._settings.setValue("type", past_project.cover_art.type)
-        self._settings.setValue("description", past_project.cover_art.desc)
+        self._settings.setValue("mime_type", cover_art.mime)
+        self._settings.setValue("data", cover_art.data)
+        self._settings.setValue("type", cover_art.type)
+        self._settings.setValue("description", cover_art.desc)
         self._settings.endGroup()
 
     def close(self):

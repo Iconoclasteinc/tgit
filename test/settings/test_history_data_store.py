@@ -97,5 +97,16 @@ def test_round_trips_history_including_cover_thumbnail_to_settings_file(store):
         snapshot_with(name="Previous", path="previous.tgit")), "persisted history")
 
 
+def test_overwrites_previous_history_on_store(store):
+    cover_art = image_file(resources.path("front-cover.jpg"))
+    store.store_history(make_project_history(make_snapshot(name="Previous", path="previous.tgit", cover_art=cover_art)))
+    store.store_history(make_project_history(make_snapshot(name="Last", path="last.tgit")))
+
+    overwritten_history = store.load_history()
+
+    assert_that(overwritten_history, contains(snapshot_with(name="Last", path="last.tgit", cover_art=None)),
+                "overwritten history")
+
+
 def image_file(path):
     return Image(mime=fs.guess_mime_type(path), data=fs.read(path), desc=os.path.basename(path))
