@@ -23,6 +23,18 @@ from tgit.signal import Observable
 from tgit.signal import signal
 
 
+def load_session_from(store):
+    user = store.load_user()
+
+    session = Session()
+    if user.email:
+        session.login_as(user.email, user.api_key, user.permissions)
+
+    session.user_signed_out.subscribe(lambda user: store.remove_user())
+    session.user_signed_in.subscribe(lambda user: store.store_user(user))
+    return session
+
+
 def sign_in(login, authenticator):
     def sign_in_with(email, password):
         auth = authenticator.authenticate(email, password)
@@ -78,11 +90,11 @@ class User:
     def registered_as(cls, email, api_token, permissions):
         return cls(email, api_token, permissions)
 
-    def __init__(self, email=None, api_key=None, permissions=None):
+    def __init__(self, email=None, api_key=None, permissions=()):
         self._email = email
         self._api_key = api_key
         # todo this should be Permissions, not their values
-        self._permissions = permissions
+        self._permissions = list(permissions)
 
     @property
     def email(self):

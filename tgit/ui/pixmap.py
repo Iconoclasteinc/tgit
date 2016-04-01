@@ -17,29 +17,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import Qt, QFile, QIODevice
 from PyQt5.QtGui import QPixmap, QImage
 
+from tgit import imager
+from tgit.metadata import Image
+from tgit.ui import resource_file
 
-def scale(image_to_scale, width, height):
-    image = _empty() if image_to_scale is None else QImage.fromData(image_to_scale.data)
-    if image.byteCount() == 0:
-        image = _not_found()
-
-    return QPixmap.fromImage(image.scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-
-
-def _not_found():
-    return QImage.fromData(_from_resources(":/images/invalid-image-placeholder.png"))
+INVALID_IMAGE = Image("image/png", resource_file.load(":/images/broken"))
+PLACEHOLDER_IMAGE = Image("image/png", resource_file.load(":/images/placeholder"))
 
 
-def _empty():
-    return QImage.fromData(_from_resources(":/images/no-image-placeholder.png"))
+def broken(width, height):
+    return from_image(imager.scale(INVALID_IMAGE, width, height))
 
 
-def _from_resources(path):
-    file = QFile(path)
-    file.open(QIODevice.ReadOnly)
-    bytes_ = file.readAll()
-    file.close()
-    return bytes_
+def none(width, height):
+    return from_image(imager.scale(PLACEHOLDER_IMAGE, width, height))
+
+
+def from_image(image):
+    return QPixmap.fromImage(QImage.fromData(image.data))

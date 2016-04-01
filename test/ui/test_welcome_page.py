@@ -1,15 +1,12 @@
-import os
-
 import pytest
-
-from hamcrest import instance_of
+from hamcrest import instance_of, starts_with
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.drivers import WelcomePageDriver
 from test.ui import ignore, show_, close_
-from test.util.builders import make_project_history
+from test.util.builders import make_project_history, make_snapshot
 from tgit.ui.pages.welcome_page import make_welcome_page, WelcomePage
 
 pytestmark = pytest.mark.ui
@@ -60,30 +57,35 @@ def test_warns_user_when_project_load_fails(driver):
 
 
 def test_displays_project_history(driver):
-    _ = show_page(make_project_history("/path/to/oldest/project", "/path/to/previous/project", "/path/to/last/project"))
+    _ = show_page(make_project_history(make_snapshot(name="Last", type_="mp3", path="last.tgit"),
+                                       make_snapshot(name="Previous", type_="flac", path="previous.tgit"),
+                                       make_snapshot(name="Oldest", type_="mp3", path="oldest.tgit")))
 
-    driver.shows_recent_projects("/path/to/last/project", "/path/to/previous/project", "/path/to/oldest/project")
+    driver.shows_recent_projects("Last (MP3)", "Previous (FLAC)", "Oldest (MP3)")
 
 
 def test_clears_previous_history_on_display(driver):
-    page = show_page(make_project_history("/path/to/oldest/project", "/path/to/previous/project"))
+    page = show_page(make_project_history(make_snapshot(name="1", path="previous.tgit"),
+                                          make_snapshot(name="2", path="oldest.tgit")))
 
-    page.display_project_history(make_project_history("/path/to/last/project"))
-    driver.shows_recent_projects("/path/to/last/project")
+    page.display_project_history(make_project_history(make_snapshot(name="1", path="last.tgit")))
+    driver.shows_recent_projects(starts_with("1"))
 
 
-def test_signals_project_to_open_when_open_button_clicked(driver):
-    signal = ValueMatcherProbe("open project", os.path.normpath("/path/to/project/file"))
+@pytest.mark.parametrize("using", ["double-click", "button", "enter"])
+def test_signals_project_to_open_when_open_action_triggered(driver, using):
+    signal = ValueMatcherProbe("open project", "project.tgit")
 
-    _ = show_page(make_project_history("/path/to/project/file"), on_load_project=signal.received)
+    _ = show_page(make_project_history(make_snapshot(name="project", path="project.tgit")),
+                  on_load_project=signal.received)
 
-    driver.open_recent_project("/path/to/project/file")
+    driver.open_recent_project(starts_with("project"), using=using)
     driver.check(signal)
 
 
 def test_disables_open_project_when_no_project_selected(driver):
-    _ = show_page(make_project_history("/path/to/project/file"))
+    _ = show_page(make_project_history(make_snapshot(name="project")))
 
     driver.has_disabled_open_project()
-    driver.select_project("/path/to/project/file")
+    driver.select_project(starts_with("project"))
     driver.has_enabled_open_project()

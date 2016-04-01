@@ -21,8 +21,8 @@ from PyQt5.QtWidgets import QWidget
 from cute.matchers import named, with_item_text, StateMatcher
 from cute.widgets import window, QDialogDriver, WidgetDriver
 from tgit.ui.dialogs.isni_assignation_review_dialog import ISNIAssignationReviewDialog
-from ._screen_driver import ScreenDriver
 from tgit.ui.widgets.progress_indicator import QProgressIndicator
+from ._screen_driver import ScreenDriver
 
 
 def isni_assignation_review_dialog(parent):

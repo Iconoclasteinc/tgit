@@ -1,6 +1,6 @@
-from ._screen_driver import ScreenDriver
 from cute.matchers import named, with_text
 from tgit.ui.pages.musician_tab import MusicianRow
+from ._screen_driver import ScreenDriver
 
 
 class MusicianTabDriver(ScreenDriver):

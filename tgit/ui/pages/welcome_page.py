@@ -16,14 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import os
 
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QFrame
-from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QFrame, QListWidgetItem
 
 import tgit
+from tgit import imager
 from tgit.album import Album
+from tgit.ui import pixmap
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.rescue import rescue
@@ -36,7 +37,7 @@ def make_welcome_page(project_history, select_project, show_load_error, **handle
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
-    subscription = project_history.history_changed.subscribe(lambda: page.display_project_history(project_history))
+    subscription = project_history.on_history_changed.subscribe(lambda: page.display_project_history(project_history))
     page.closed.connect(subscription.cancel)
     return page
 
@@ -45,6 +46,8 @@ def make_welcome_page(project_history, select_project, show_load_error, **handle
 class WelcomePage(QFrame, UIFile):
     closed = pyqtSignal()
     on_open_project = pyqtSignal(str)
+
+    THUMBNAIL_SIZE = (36, 36)
 
     def __init__(self, select_project, show_load_error):
         super().__init__()
@@ -55,12 +58,16 @@ class WelcomePage(QFrame, UIFile):
     def _setup_ui(self):
         self._load(":/ui/welcome_page.ui")
         self._version.setText(tgit.__version__)
-        self._recent_projects_list.currentItemChanged.connect(
-            lambda item: self._open_project_button.setEnabled(item is not None))
+        self._no_cover = pixmap.none(*self.THUMBNAIL_SIZE)
+        self._broken_cover = pixmap.broken(*self.THUMBNAIL_SIZE)
+        self._open_project_action.changed.connect(
+            lambda: self._open_project_button.setEnabled(self._open_project_action.isEnabled()))
+        self._recent_projects_list.addAction(self._open_project_action)
+        self._recent_projects_list.itemSelectionChanged.connect(lambda: self._open_project_action.setEnabled(True))
 
     @property
     def _selected_project(self):
-        return self._recent_projects_list.currentItem().text()
+        return self._recent_projects_list.currentItem().data(Qt.UserRole)
 
     def on_create_project(self, on_create_project):
         self._new_mp3_project_button.clicked.connect(lambda _: on_create_project(Album.Type.MP3))
@@ -72,7 +79,7 @@ class WelcomePage(QFrame, UIFile):
                 on_load_project(filename)
 
         self._load_project_button.clicked.connect(lambda: self._select_project(try_loading_project))
-        self._open_project_button.clicked.connect(lambda checked: try_loading_project(self._selected_project))
+        self._open_project_action.triggered.connect(lambda: try_loading_project(self._selected_project.path))
 
     def display_project_history(self, project_history):
         self._clear_project_history()
@@ -84,5 +91,16 @@ class WelcomePage(QFrame, UIFile):
 
     def _populate_project_history(self, project_history):
         for recent_project in project_history:
-            item = QListWidgetItem(os.path.normpath(recent_project.filename))
+            item = QListWidgetItem(self._display_name(recent_project))
+            item.setData(Qt.UserRole, recent_project)
+            item.setIcon(QIcon(self._generate_thumbnail_of(recent_project.cover_art)))
             self._recent_projects_list.addItem(item)
+
+    def _generate_thumbnail_of(self, cover_art):
+        if not cover_art:
+            return self._no_cover
+        thumbnail = pixmap.from_image(imager.scale(cover_art, *self.THUMBNAIL_SIZE))
+        return thumbnail if not thumbnail.isNull() else self._broken_cover
+
+    def _display_name(self, recent_project):
+        return "{name} ({type_})".format(name=recent_project.name, type_=recent_project.type.upper())

@@ -21,12 +21,14 @@ import operator
 from PyQt5.QtCore import pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget
 
+from tgit import imager
 from tgit.album import AlbumListener
 from tgit.countries import COUNTRIES
 from tgit.genres import GENRES
 from tgit.languages import LANGUAGES
+from tgit.ui import pixmap
 from tgit.ui.closeable import Closeable
-from tgit.ui.helpers import image, formatting
+from tgit.ui.helpers import formatting
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.pages.project_edition_page import ISO_8601_FORMAT
 
@@ -72,6 +74,9 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
         self._load(":/ui/track_page.ui")
 
+        self._no_cover = pixmap.none(*self.ALBUM_COVER_SIZE)
+        self._broken_cover = pixmap.broken(*self.ALBUM_COVER_SIZE)
+        self._album_cover.setPixmap(self._no_cover)
         self._genre.addItems(sorted(GENRES))
         fill_with_languages(self._language)
         fill_with_countries(self._production_company_region)
@@ -205,7 +210,13 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         # Cache the cover image to avoid recomputing the image each time the screen updates
         if self._cover is not picture:
             self._cover = picture
-            self._album_cover.setPixmap(image.scale(self._cover, *self.ALBUM_COVER_SIZE))
+            self._album_cover.setPixmap(self._scale_cover(picture))
+
+    def _scale_cover(self, picture):
+        if not picture:
+            return self._no_cover
+        scaled_cover = pixmap.from_image(imager.scale(picture, *self.ALBUM_COVER_SIZE))
+        return self._broken_cover if scaled_cover.isNull() else scaled_cover
 
     def _compose_software_notice(self, track):
         # noinspection PyBroadException

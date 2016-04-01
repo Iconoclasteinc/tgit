@@ -1,5 +1,5 @@
-from hamcrest import has_entries
 import pytest
+from hamcrest import has_entries
 
 from cute.probes import KeywordsValueMatcherProbe
 from cute.widgets import window

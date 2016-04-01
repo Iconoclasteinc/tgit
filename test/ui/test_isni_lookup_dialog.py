@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import pytest
 from flexmock import flexmock
 from hamcrest import assert_that, equal_to
-import pytest
 
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window

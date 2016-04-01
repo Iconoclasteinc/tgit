@@ -6,15 +6,34 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>493</width>
-    <height>305</height>
+    <width>620</width>
+    <height>380</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>620</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>620</width>
+    <height>380</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>TGiT</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">#_connection_error_message,
+   <string notr="true">QDialog[style=QMacStyle] {
+    min-width: 680px;
+    min-height: 400px;
+    max-width: 680px;
+    max-height: 400px;
+}
+
+#_connection_error_message,
 #_insufficient_error_message {
     color: red;
 }

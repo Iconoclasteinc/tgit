@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
 
+from hamcrest import starts_with
+
 from cute.animatron import Animatron
 from cute.matchers import named, showing_on_screen
 from cute.prober import EventProcessingProber
@@ -30,8 +32,8 @@ class ApplicationRunner:
         self._settings = settings
 
     def start(self):
-        Tagger(self._settings.load_session(), AlbumPortfolio(), fake_audio_player(),
-               Cheddar(host="127.0.0.1", port=5001, secure=False), self._settings.load_user_preferences(),
+        Tagger(self._settings, AlbumPortfolio(), fake_audio_player(),
+               Cheddar(host="127.0.0.1", port=5001, secure=False),
                native=False, confirm_exit=False).show()
 
         self.main_window_driver = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
@@ -112,10 +114,11 @@ class ApplicationRunner:
     def load_project(self, album_name):
         self.main_window_driver.load_project(self._project_file_path(album_name))
 
+    def shows_recent_projects(self, *names):
+        self.main_window_driver.shows_recent_projects(*(starts_with(name) for name in names))
+
     def open_recent_project(self, name):
-        path = self._project_file_path(name)
-        print(path)
-        self.main_window_driver.open_recent_project(path)
+        self.main_window_driver.open_recent_project(starts_with(name))
 
     def save(self):
         self.main_window_driver.save()

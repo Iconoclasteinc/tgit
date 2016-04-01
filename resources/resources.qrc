@@ -6,10 +6,10 @@
         <file>tgit.ico</file>
         <file>images/logo.png</file>
         <file>images/logo-vert-big.png</file>
-        <file>images/invalid-image-placeholder.png</file>
-        <file>images/no-image-placeholder.png</file>
         <file>images/warning.png</file>
 
+        <file alias="images/placeholder">images/350x350/image-placeholder.png</file>
+        <file alias="images/broken">images/350x350/image-broken.png</file>
         <file alias="icons/add">images/16x16/add.png</file>
         <file alias="icons/remove">images/16x16/remove.png</file>
         <file alias="icons/search">images/16x16/search.png</file>

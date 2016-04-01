@@ -4,7 +4,6 @@ import pytest
 from test.drivers.application_runner import ApplicationRunner
 from test.util import doubles
 from test.util.workspace import AlbumWorkspace
-from tgit.settings_backend import SettingsBackend
 
 
 @pytest.yield_fixture
@@ -21,14 +20,9 @@ def workspace(tmpdir):
     album_workspace.delete()
 
 
-@pytest.fixture
-def settings_file(tmpdir):
-    return tmpdir.join("settings.ini").strpath
-
-
 @pytest.yield_fixture
-def app(qt, workspace, settings_file):
-    runner = ApplicationRunner(workspace, SettingsBackend(settings_file))
+def app(qt, workspace, settings):
+    runner = ApplicationRunner(workspace, settings)
     runner.start()
     yield runner
     runner.stop()

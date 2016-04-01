@@ -1,5 +1,5 @@
-from flexmock import flexmock as mock
 import pytest
+from flexmock import flexmock as mock
 
 from test.identity import FakeIdentitySelectionListener
 from tgit.promise import Promise

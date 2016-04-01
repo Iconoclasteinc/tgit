@@ -4,7 +4,8 @@ from tgit.signal import signal
 
 
 class ProjectStudio(metaclass=Observable):
-    project_opened = signal(Album)
+    on_project_opened = signal(Album)
+    on_project_saved = signal(Album)
 
     _current_project = None
 
@@ -14,4 +15,9 @@ class ProjectStudio(metaclass=Observable):
 
     def project_loaded(self, project):
         self._current_project = project
-        self.project_opened.emit(project)
+        self.on_project_opened.emit(project)
+
+    project_created = project_loaded
+
+    def project_saved(self, project):
+        self.on_project_saved.emit(project)

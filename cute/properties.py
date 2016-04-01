@@ -54,7 +54,7 @@ def current_text():
 
 
 def item_text():
-    return PropertyQuery("text", lambda item: item.data(Qt.DisplayRole))
+    return PropertyQuery("item text", lambda item: item.data(Qt.DisplayRole))
 
 
 def time():

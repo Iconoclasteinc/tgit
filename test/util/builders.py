@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import QLocale
 
 from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session, User, Permission
 from tgit.metadata import Metadata, Image
-from tgit.project_history import ProjectHistory
+from tgit.project_history import ProjectHistory, ProjectSnapshot
 from tgit.track import Track
 from tgit.user_preferences import UserPreferences
 
@@ -56,9 +55,9 @@ def album(filename="album.tgit", of_type=Album.Type.FLAC, images=(), tracks=(), 
 make_album = album
 
 
-def make_project(filename="project.tgit"):
+def make_project(filename="project.tgit", type_="mp3", images=(), tracks=(), **meta):
     # Will eventually build a project, not an album
-    return make_album(filename)
+    return make_album(filename, of_type=type_, images=images, tracks=tracks, **meta)
 
 
 def make_portfolio(project=None):
@@ -68,20 +67,20 @@ def make_portfolio(project=None):
     return portfolio
 
 
-def make_project_history(*past_projects):
-    history = ProjectHistory()
-    for past_project in past_projects:
-        history.project_opened(make_project(past_project))
+def make_snapshot(name="project", path="project.tgit", type_="mp3", cover_art=None):
+    return ProjectSnapshot(name=name, type_=type_, path=path, cover_art=cover_art)
 
-    return history
+
+def make_project_history(*snapshots):
+    return ProjectHistory(*snapshots)
 
 
 def make_anonymous_user():
     return User.anonymous()
 
 
-def make_registered_user(email="test@example.com", token="api-key", permissions=None):
-    return User.registered_as(email, token, permissions or [Permission.lookup_isni.value])
+def make_registered_user(email="test@example.com", api_key="api-key", permissions=None):
+    return User.registered_as(email, api_key, permissions or [Permission.lookup_isni.value])
 
 
 def make_anonymous_session():
@@ -96,5 +95,5 @@ def make_registered_session(email="test@example.com", token="api-key", permissio
 
 def make_preferences(locale="en"):
     preferences = UserPreferences()
-    preferences.locale = QLocale(locale)
+    preferences.locale = locale
     return preferences

@@ -19,21 +19,21 @@
 
 import functools
 
-from PyQt5.QtCore import QTranslator, QLocale
+from PyQt5.QtCore import QTranslator, QLocale, QSettings
 from PyQt5.QtWidgets import QMessageBox
 
-from tgit import album_director as director, artwork, auth, identity, export, ui, project, project_history
+from tgit import (album_director as director, artwork, auth, identity, export, ui, project, project_history,
+                  user_preferences as preferences)
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import open_media_player
 from tgit.cheddar import Cheddar
 from tgit.project_studio import ProjectStudio
-from tgit.settings_backend import SettingsBackend
-from tgit.ui.helpers import template_file as templates
+from tgit.settings import PreferencesDataStore, UserDataStore, HistoryDataStore
+from tgit.ui import resource_file
 
 
 def make_tagger(app):
     # todo this will eventually end up in Tagger
-    settings = SettingsBackend()
     portfolio = AlbumPortfolio()
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
     player = open_media_player(portfolio)
@@ -41,26 +41,28 @@ def make_tagger(app):
     app.aboutToQuit.connect(cheddar.stop)
     app.aboutToQuit.connect(player.dispose)
 
-    tagger = Tagger(settings.load_session(), portfolio, player, cheddar, settings.load_user_preferences())
+    settings = QSettings()
+    settings.setFallbacksEnabled(False)  # To avoid getting global OS X settings that apply to all applications
+    tagger = Tagger(settings, portfolio, player, cheddar)
     tagger.translate(app)
     return tagger
 
 
 class Tagger:
     _main_window = None
-    _project_history = None
 
-    def __init__(self, session, portfolio, player, cheddar, preferences, native=True, confirm_exit=True):
+    def __init__(self, settings, portfolio, player, cheddar, native=True, confirm_exit=True):
         self._native = native
         self._confirm_exit = confirm_exit
         self._dialogs = ui.Dialogs(native)
 
         self._portfolio = portfolio
-        self._session = session
         self._player = player
         self._cheddar = cheddar
-        self._preferences = preferences
         self._project_studio = ProjectStudio()
+        self._session = auth.load_session_from(UserDataStore(settings))
+        self._preferences = preferences.load_from(PreferencesDataStore(settings))
+        self._project_history = project_history.load_from(self._project_studio, HistoryDataStore(settings))
 
     def translate(self, app):
         QLocale.setDefault(QLocale(self._preferences.locale))
@@ -70,7 +72,6 @@ class Tagger:
                 app.installTranslator(translator)
 
     def show(self):
-        self._project_history = project_history.load(self._project_studio)
         self._main_window = self._make_main_window()
         self._main_window.show()
 
@@ -88,11 +89,11 @@ class Tagger:
                              show_save_error=self._show_save_project_failed_message,
                              show_export_error=self._show_export_project_failed_message,
                              on_close_project=director.remove_album_from(self._portfolio),
-                             on_save_project=director.save_album(),
+                             on_save_project=project.save_to(self._project_studio),
                              on_add_files=director.add_tracks,
                              on_export=export.as_csv,
                              on_settings=self._show_settings_dialog,
-                             on_sign_in=self._open_sign_in_dialog,
+                             on_sign_in=self._show_sign_in_dialog,
                              on_sign_out=auth.sign_out_from(self._session),
                              on_about_qt=self._show_about_qt_message,
                              on_about=self._show_about_dialog,
@@ -102,7 +103,7 @@ class Tagger:
                              on_transmit_to_soproq=self._export_as_soproq())
 
     def _startup_screen(self):
-        return ui.StartupScreen(self._make_welcome_page, self._new_project_page)
+        return ui.StartupScreen(self._welcome_page, self._new_project_page)
 
     def _project_screen(self, project_):
         return ui.make_project_screen(project_, self._project_edition_page, self._track_page_for(project_))
@@ -112,13 +113,13 @@ class Tagger:
                                         select_track=self._dialogs.select_track,
                                         check_project_exists=director.album_exists,
                                         confirm_overwrite=self._show_overwrite_project_confirmation_message,
-                                        on_create_project=director.create_album_into(self._portfolio))
+                                        on_create_project=project.create_in(self._project_studio, self._portfolio))
 
-    def _make_welcome_page(self):
+    def _welcome_page(self):
         return ui.make_welcome_page(self._project_history,
                                     select_project=self._dialogs.select_project_to_load,
                                     show_load_error=self._show_load_project_failed_message,
-                                    on_load_project=project.load(self._project_studio, self._portfolio))
+                                    on_load_project=project.load_to(self._project_studio, self._portfolio))
 
     def _track_list_tab(self, project_):
         return ui.make_track_list_tab(project_,
@@ -163,16 +164,16 @@ class Tagger:
         selection = identity.IdentitySelection(self._portfolio[0], query)
         ui.make_isni_lookup_dialog(query, selection,
                                    on_lookup=identity.launch_lookup(self._cheddar, self._session, selection),
-                                   on_assign=self._open_isni_review_dialog(selection),
-                                   parent=self._main_window).open()
+                                   on_assign=self._show_isni_review_dialog(selection),
+                                   parent=self._main_window).show()
 
-    def _open_isni_review_dialog(self, selection):
+    def _show_isni_review_dialog(self, selection):
         return lambda: ui.make_isni_assignation_review_dialog(
             selection,
             on_assign=identity.launch_assignation(self._cheddar, self._session, selection),
-            parent=self._main_window).open()
+            parent=self._main_window).show()
 
-    def _open_sign_in_dialog(self):
+    def _show_sign_in_dialog(self):
         login = auth.Login(self._session)
         return ui.make_sign_in_dialog(login,
                                       on_sign_in=auth.sign_in(login, self._cheddar),
@@ -192,7 +193,7 @@ class Tagger:
 
     def _export_as_soproq(self):
         from openpyxl import load_workbook
-        return export.as_soproq_using(lambda: load_workbook(templates.load(":/templates/soproq.xlsx")),
+        return export.as_soproq_using(lambda: load_workbook(resource_file.stream(":/templates/soproq.xlsx")),
                                       self._show_default_values_used_for_soproq_export_message)
 
     def _show_about_dialog(self):

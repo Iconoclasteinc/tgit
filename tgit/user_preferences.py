@@ -20,18 +20,20 @@
 from tgit.signal import Observable, signal
 
 
+def load_from(settings):
+    prefs = settings.load_preferences()
+    prefs.preferences_changed.subscribe(lambda change: settings.store_preferences(prefs))
+    return prefs
+
+
 class UserPreferences(metaclass=Observable):
     preferences_changed = signal(dict)
 
-    def __init__(self):
-        super().__setattr__("_data", {})
-
-    def __getattr__(self, name):
-        try:
-            return self._data[name]
-        except KeyError:
-            raise AttributeError(name)
+    locale = "en"
 
     def __setattr__(self, name, value):
-        self._data[name] = value
-        self.preferences_changed.emit(self._data)
+        super().__setattr__(name, value)
+        self.preferences_changed.emit({name: value})
+
+    def __repr__(self):
+        return "UserPreferences(locale={})".format(self.locale)

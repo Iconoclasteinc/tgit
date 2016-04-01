@@ -12,9 +12,7 @@ from test.util import builders as build, doubles
 from test.util.builders import make_album, make_track
 from test.util.workspace import AlbumWorkspace
 from tgit import album_director as director
-from tgit.album import Album
 from tgit.album_portfolio import AlbumPortfolio
-from tgit.metadata import Metadata
 from tgit.user_preferences import UserPreferences
 
 pytestmark = pytest.mark.unit
@@ -90,33 +88,6 @@ def prober():
 
 def make_filename(location, name):
     return os.path.join(location, name, "{0}.tgit".format(name))
-
-
-def test_creates_and_adds_album_to_porfolio_and_catalog(portfolio, album_catalog):
-    director.create_album_into(portfolio, to_catalog=album_catalog)(type_=Album.Type.MP3, name="album",
-                                                                    location="workspace")
-
-    assert_that(portfolio,
-                contains(has_properties(type="mp3", filename=make_filename("workspace", "album"))),
-                "albums in portfolio")
-    album_catalog.assert_contains(portfolio[0])
-
-
-def test_creates_album_using_the_name_as_release_name(portfolio, album_catalog):
-    director.create_album_into(portfolio, to_catalog=album_catalog)(type_="...", name="album", location="...")
-
-    assert_that(portfolio[0], has_property("release_name", "album"), "album with release name")
-
-
-def test_imports_album_from_an_existing_track(portfolio, album_catalog, track_catalog):
-    track_catalog.add_track(filename="smash", metadata=Metadata(release_name="Honeycomb"), track_title="Smash Smash")
-
-    director.create_album_into(portfolio, to_catalog=album_catalog, from_catalog=track_catalog)(
-        type_=Album.Type.MP3, name="album", location="workspace", reference_track_file="smash")
-
-    assert_that(portfolio, contains(has_properties(type="mp3", release_name="album",
-                                                   tracks=contains(has_properties(track_title="Smash Smash")))),
-                "imported albums in portfolio")
 
 
 def test_checks_if_album_exists_in_catalog(album_catalog):
