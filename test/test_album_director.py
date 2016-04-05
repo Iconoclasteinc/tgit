@@ -3,16 +3,15 @@ import os
 
 import pytest
 from flexmock import flexmock as mock
-from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, empty, has_key, has_property,
+from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_key, has_property,
                       match_equality)
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-from test.util import builders as build, doubles
-from test.util.builders import make_album, make_track
 
 from cute.prober import PollingProber
+from testing import builders as build, doubles
+from testing.builders import make_album, make_track
 from testing.workspace import AlbumWorkspace
 from tgit import album_director as director
-from tgit.album_portfolio import AlbumPortfolio
 from tgit.user_preferences import UserPreferences
 
 pytestmark = pytest.mark.unit
@@ -76,11 +75,6 @@ def album_catalog():
     return Catalog()
 
 
-@pytest.fixture
-def portfolio():
-    return AlbumPortfolio()
-
-
 @pytest.fixture()
 def prober():
     return PollingProber()
@@ -96,13 +90,6 @@ def test_checks_if_album_exists_in_catalog(album_catalog):
                 "found existing album")
     assert_that(director.album_exists("new", "workspace", in_catalog=album_catalog), is_(False),
                 "found brand new album")
-
-
-def test_removes_album_from_portfolio(portfolio):
-    album = build.album()
-    portfolio.add_album(album)
-    director.remove_album_from(portfolio)(album)
-    assert_that(portfolio, empty(), "album portfolio")
 
 
 def test_adds_selected_tracks_to_album_in_order(track_catalog):

@@ -4,14 +4,13 @@ import timeit
 import pytest
 from PyQt5.QtCore import QByteArray
 from hamcrest import has_entries, assert_that, less_than
-from test.util import builders as build
-from test.util.builders import make_album, make_anonymous_session, make_registered_session
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, KeywordsValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
 from testing import resources
+from testing.builders import make_album, make_anonymous_session, make_registered_session, make_image
 from testing.drivers import ProjectEditionPageDriver
 from tgit import fs
 from tgit.auth import Permission
@@ -52,7 +51,7 @@ def show_page(album, session=make_anonymous_session(), on_select_artwork=ignore,
 
 
 def test_displays_invalid_image_placeholder_when_project_has_corrupted_picture(driver):
-    _ = show_page(make_album(images=[build.image("image/jpeg", QByteArray(), Image.FRONT_COVER)]))
+    _ = show_page(make_album(images=[make_image("image/jpeg", QByteArray(), Image.FRONT_COVER)]))
     driver.shows_picture_placeholder()
 
 
@@ -63,7 +62,7 @@ def test_displays_no_image_placeholder_when_project_has_no_cover(driver):
 
 def test_displays_main_project_cover_when_existing(driver):
     _ = show_page(make_album(
-        images=[build.image("image/jpeg", _load_test_image("front-cover.jpg"), Image.FRONT_COVER)]))
+        images=[make_image("image/jpeg", _load_test_image("front-cover.jpg"), Image.FRONT_COVER)]))
     driver.shows_picture()
 
 
@@ -154,7 +153,7 @@ def test_signals_when_artwork_selected(driver):
 
 
 def test_efficiently_displays_image_cover_when_it_does_not_change(driver):
-    album = make_album(images=[build.image("image/jpeg", _load_test_image("big-image.jpg"), Image.FRONT_COVER)])
+    album = make_album(images=[make_image("image/jpeg", _load_test_image("big-image.jpg"), Image.FRONT_COVER)])
     page = show_page(album)
 
     time = timeit.timeit(lambda: page.display(album), number=50)

@@ -7,7 +7,7 @@ from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
 from testing import builders as build
-from testing.builders import make_album, make_portfolio, make_anonymous_session
+from testing.builders import make_album, make_studio, make_anonymous_session
 from testing.drivers import MainWindowDriver
 from testing.drivers.fake_drivers import no_startup_screen, no_album_screen, project_screen, startup_screen
 from testing.fake_widgets import fake_startup_screen, fake_project_screen
@@ -31,7 +31,7 @@ def _raise_os_error(message):
 
 
 def show_main_window(session=make_anonymous_session(),
-                     portfolio=make_portfolio(),
+                     studio=make_studio(),
                      create_startup_screen=fake_startup_screen,
                      create_project_screen=fake_project_screen,
                      confirm_close=ignore,
@@ -44,7 +44,7 @@ def show_main_window(session=make_anonymous_session(),
                      confirm_exit=yes,
                      **handlers):
     main_window = MainWindow(session=session,
-                             portfolio=portfolio,
+                             studio=studio,
                              confirm_exit=confirm_exit,
                              create_startup_screen=create_startup_screen,
                              create_project_screen=create_project_screen,

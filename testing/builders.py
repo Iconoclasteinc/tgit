@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from tgit.album import Album
-from tgit.album_portfolio import AlbumPortfolio
 from tgit.auth import Session, User, Permission
 from tgit.metadata import Metadata, Image
 from tgit.project_history import ProjectHistory, ProjectSnapshot
+from tgit.project_studio import ProjectStudio
 from tgit.track import Track
 from tgit.user_preferences import UserPreferences
 
@@ -60,19 +60,16 @@ def make_project(filename="project.tgit", type_="mp3", images=(), tracks=(), **m
     return make_album(filename, of_type=type_, images=images, tracks=tracks, **meta)
 
 
-def make_portfolio(project=None):
-    portfolio = AlbumPortfolio()
-    if project is not None:
-        portfolio.add_album(project)
-    return portfolio
-
-
 def make_snapshot(name="project", path="project.tgit", type_="mp3", cover_art=None):
     return ProjectSnapshot(name=name, type_=type_, path=path, cover_art=cover_art)
 
 
 def make_project_history(*snapshots):
     return ProjectHistory(*snapshots)
+
+
+def make_studio():
+    return ProjectStudio()
 
 
 def make_anonymous_user():

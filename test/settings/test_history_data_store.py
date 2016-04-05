@@ -3,10 +3,10 @@ import os
 
 import pytest
 from hamcrest import assert_that, empty, contains
-from test.drivers.application_settings_driver import ApplicationSettingsDriver
-from test.util.builders import make_project_history, make_snapshot
 
 from testing import resources
+from testing.builders import make_project_history, make_snapshot
+from testing.drivers import ApplicationSettingsDriver
 from testing.matchers import snapshot_with, image_with
 from tgit import fs
 from tgit.metadata import Image

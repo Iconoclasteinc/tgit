@@ -17,14 +17,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-import functools
+import functools as func
 
 from PyQt5.QtCore import QTranslator, QLocale, QSettings
 from PyQt5.QtWidgets import QMessageBox
 
 from tgit import (album_director as director, artwork, auth, identity, export, ui, project, project_history,
                   user_preferences as preferences)
-from tgit.album_portfolio import AlbumPortfolio
 from tgit.audio import open_media_player
 from tgit.cheddar import Cheddar
 from tgit.project_studio import ProjectStudio
@@ -34,16 +33,16 @@ from tgit.ui import resources
 
 def make_tagger(app):
     # todo this will eventually end up in Tagger
-    portfolio = AlbumPortfolio()
+    project_studio = ProjectStudio()
     cheddar = Cheddar(host="tagyourmusic.com", port=443, secure=True)
-    player = open_media_player(portfolio)
+    player = open_media_player(project_studio)
     # todo this will eventually end up in Tagger.close()
     app.aboutToQuit.connect(cheddar.stop)
     app.aboutToQuit.connect(player.dispose)
 
     settings = QSettings()
     settings.setFallbacksEnabled(False)  # To avoid getting global OS X settings that apply to all applications
-    tagger = Tagger(settings, portfolio, player, cheddar)
+    tagger = Tagger(settings, project_studio, player, cheddar)
     tagger.translate(app)
     return tagger
 
@@ -51,18 +50,17 @@ def make_tagger(app):
 class Tagger:
     _main_window = None
 
-    def __init__(self, settings, portfolio, player, cheddar, native=True, confirm_exit=True):
+    def __init__(self, settings, studio, player, cheddar, native=True, confirm_exit=True):
         self._native = native
         self._confirm_exit = confirm_exit
         self._dialogs = ui.Dialogs(native)
 
-        self._portfolio = portfolio
+        self._studio = studio
         self._player = player
         self._cheddar = cheddar
-        self._project_studio = ProjectStudio()
         self._session = auth.load_session_from(UserDataStore(settings))
         self._preferences = preferences.load_from(PreferencesDataStore(settings))
-        self._project_history = project_history.load_from(self._project_studio, HistoryDataStore(settings))
+        self._project_history = project_history.load_from(self._studio, HistoryDataStore(settings))
 
     def translate(self, app):
         QLocale.setDefault(QLocale(self._preferences.locale))
@@ -77,7 +75,7 @@ class Tagger:
 
     def _make_main_window(self):
         return ui.MainWindow(self._session,
-                             self._portfolio,
+                             self._studio,
                              confirm_exit=self._show_exit_confirmation_message,
                              create_startup_screen=self._startup_screen,
                              create_project_screen=self._project_screen,
@@ -88,8 +86,8 @@ class Tagger:
                              select_tracks_in_folder=self._dialogs.add_tracks_in_folder,
                              show_save_error=self._show_save_project_failed_message,
                              show_export_error=self._show_export_project_failed_message,
-                             on_close_project=director.remove_album_from(self._portfolio),
-                             on_save_project=project.save_to(self._project_studio),
+                             on_close_project=self._studio.project_closed,
+                             on_save_project=project.save_to(self._studio),
                              on_add_files=director.add_tracks,
                              on_export=export.as_csv,
                              on_settings=self._show_settings_dialog,
@@ -113,40 +111,41 @@ class Tagger:
                                         select_track=self._dialogs.select_track,
                                         check_project_exists=director.album_exists,
                                         confirm_overwrite=self._show_overwrite_project_confirmation_message,
-                                        on_create_project=project.create_in(self._project_studio, self._portfolio))
+                                        on_create_project=project.create_in(self._studio))
 
     def _welcome_page(self):
         return ui.make_welcome_page(self._project_history,
                                     select_project=self._dialogs.select_project_to_load,
                                     show_load_error=self._show_load_project_failed_message,
-                                    on_load_project=project.load_to(self._project_studio, self._portfolio))
+                                    on_load_project=project.load_to(self._studio))
 
-    def _track_list_tab(self, project_):
-        return ui.make_track_list_tab(project_,
+    def _track_list_tab(self, project):
+        return ui.make_track_list_tab(project,
                                       self._player,
-                                      select_tracks=functools.partial(self._dialogs.select_tracks, project_.type),
-                                      on_move_track=director.move_track_of(project_),
-                                      on_remove_track=director.remove_track_from(project_),
+                                      select_tracks=func.partial(self._dialogs.select_tracks, project.type),
+                                      on_move_track=director.move_track_of(project),
+                                      on_remove_track=director.remove_track_from(project),
                                       on_play_track=self._player.play,
                                       on_stop_track=self._player.stop,
-                                      on_add_tracks=director.add_tracks_to(project_))
+                                      on_add_tracks=director.add_tracks_to(project))
 
     @staticmethod
-    def _musician_tab(project_):
-        return ui.make_musician_tab(project_,
-                                    on_metadata_changed=director.update_album_from(project_))
+    def _musician_tab(project):
+        return ui.make_musician_tab(project,
+                                    on_metadata_changed=director.update_album_from(project))
 
-    def _project_edition_page(self, project_):
-        return ui.make_project_edition_page(project_,
+    def _project_edition_page(self, project):
+        return ui.make_project_edition_page(project,
                                             self._session,
                                             track_list_tab=self._track_list_tab,
                                             musician_tab=self._musician_tab,
-                                            on_select_artwork=self._open_artwork_selection_dialog,
-                                            on_isni_changed=project_.add_isni,
-                                            on_isni_local_lookup=director.lookup_isni_in(project_),
-                                            on_select_identity=self._open_isni_dialog,
-                                            on_remove_artwork=director.remove_album_cover_from(project_),
-                                            on_metadata_changed=director.update_album_from(project_))
+                                            on_select_artwork=func.partial(self._open_artwork_selection_dialog,
+                                                                           project),
+                                            on_isni_changed=project.add_isni,
+                                            on_isni_local_lookup=director.lookup_isni_in(project),
+                                            on_select_identity=func.partial(self._open_isni_dialog, project),
+                                            on_remove_artwork=director.remove_album_cover_from(project),
+                                            on_metadata_changed=director.update_album_from(project))
 
     @staticmethod
     def _track_page_for(project_):
@@ -160,8 +159,8 @@ class Tagger:
 
         return track_page
 
-    def _open_isni_dialog(self, query):
-        selection = identity.IdentitySelection(self._portfolio[0], query)
+    def _open_isni_dialog(self, project, query):
+        selection = identity.IdentitySelection(project, query)
         ui.make_isni_lookup_dialog(query, selection,
                                    on_lookup=identity.launch_lookup(self._cheddar, self._session, selection),
                                    on_assign=self._show_isni_review_dialog(selection),
@@ -179,8 +178,8 @@ class Tagger:
                                       on_sign_in=auth.sign_in(login, self._cheddar),
                                       parent=self._main_window).open()
 
-    def _open_artwork_selection_dialog(self):
-        artwork_selection = artwork.ArtworkSelection(self._portfolio[0], self._preferences)
+    def _open_artwork_selection_dialog(self, project):
+        artwork_selection = artwork.ArtworkSelection(project, self._preferences)
         return ui.make_artwork_selection_dialog(artwork_selection,
                                                 on_file_selected=artwork.load(artwork_selection),
                                                 native=self._native,

@@ -3,12 +3,12 @@ import os
 
 import pytest
 from PyQt5.QtWidgets import QFileDialog
-from test.util.builders import make_portfolio
 
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
 from testing import resources
+from testing.builders import make_studio
 from testing.drivers import FileDialogDriver
 from tgit.artwork import ArtworkSelection
 from tgit.ui.dialogs.file_dialogs import make_artwork_selection_dialog
@@ -25,7 +25,7 @@ def show_dialog(model, on_select=ignore):
 
 @pytest.fixture()
 def artwork_selection():
-    return ArtworkSelection(make_portfolio(), UserPreferences())
+    return ArtworkSelection(make_studio(), UserPreferences())
 
 
 @pytest.yield_fixture()

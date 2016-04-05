@@ -2,10 +2,10 @@
 import pytest
 from flexmock import flexmock
 from hamcrest import assert_that, equal_to, has_items, has_item, contains, has_properties
-from test.util.builders import make_album, make_image
 
 from test import exception_with_message
 from testing import resources
+from testing.builders import make_album, make_image
 from tgit import fs
 from tgit.artwork import ArtworkSelection
 from tgit.metadata import Image
@@ -20,7 +20,7 @@ def make_cover_art_selection(project=make_album(), preferences=UserPreferences()
 
 def test_defaults_in_picture_directory():
     prefs = UserPreferences()
-    prefs.artwork_selection_folder = "directory"
+    prefs.artwork_location = "directory"
 
     assert_that(make_cover_art_selection(preferences=prefs).directory, equal_to("directory"), "The default directory.")
 

@@ -9,8 +9,8 @@ from cute.prober import EventProcessingProber
 from cute.widgets import main_application_window
 from testing.doubles import fake_audio_player
 from tgit import platforms
-from tgit.album_portfolio import AlbumPortfolio
 from tgit.cheddar import Cheddar
+from tgit.project_studio import ProjectStudio
 from tgit.tagger import Tagger
 from .main_window_driver import MainWindowDriver
 from .message_box_driver import message_box
@@ -33,7 +33,7 @@ class ApplicationRunner:
         self._settings = settings
 
     def start(self):
-        Tagger(self._settings, AlbumPortfolio(), fake_audio_player(),
+        Tagger(self._settings, ProjectStudio(), fake_audio_player(),
                Cheddar(host="127.0.0.1", port=5001, secure=False),
                native=False, confirm_exit=False).show()
 

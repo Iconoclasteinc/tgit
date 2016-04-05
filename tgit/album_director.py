@@ -26,17 +26,6 @@ def album_exists(name, location, in_catalog=local_storage):
     return in_catalog.project_exists(os.path.join(location, name, "{0}.tgit".format(name)))
 
 
-def save_album(to_catalog=local_storage):
-    return to_catalog.save_project
-
-
-def remove_album_from(portfolio):
-    def close_album(album):
-        portfolio.remove_album(album)
-
-    return close_album
-
-
 def add_tracks(album, *filenames, from_catalog=tagging):
     def add_track(filename):
         try:

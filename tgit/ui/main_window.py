@@ -43,7 +43,7 @@ class MainWindow(QMainWindow, UIFile):
 
     TRACK_ACTIONS_START_INDEX = 2
 
-    def __init__(self, session, portfolio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
+    def __init__(self, session, studio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
                  create_project_screen, confirm_close, select_export_destination, select_save_as_destination,
                  select_tracks, select_tracks_in_folder, **handlers):
         super().__init__()
@@ -60,7 +60,7 @@ class MainWindow(QMainWindow, UIFile):
 
         self._setup_ui()
         self._setup_menu_bar()
-        self._setup_signals(portfolio, session)
+        self._setup_signals(studio, session)
         for name, handler in handlers.items():
             getattr(self, name)(handler)
 
@@ -194,9 +194,9 @@ class MainWindow(QMainWindow, UIFile):
         self._close_project_action.setShortcut(QKeySequence.Close)
         self._save_project_action.setShortcut(QKeySequence.Save)
 
-    def _setup_signals(self, portfolio, session):
-        self.subscribe(portfolio.album_removed, self.display_startup_screen)
-        self.subscribe(portfolio.album_created, self.display_project_screen)
+    def _setup_signals(self, studio, session):
+        self.subscribe(studio.on_project_closed, self.display_startup_screen)
+        self.subscribe(studio.on_project_opened, self.display_project_screen)
         self.subscribe(session.user_signed_in, self.user_signed_in)
         self.subscribe(session.user_signed_out, self.user_signed_out)
 
