@@ -2,9 +2,10 @@ from datetime import datetime, timezone, timedelta
 
 import pytest
 from hamcrest import has_properties, has_entries, contains, equal_to, assert_that
+from test.util import builders as build
 
 import tgit
-from test.util import builders as build, mp3_file
+from testing import mp3_file
 from tgit.metadata import Image
 from tgit.tagging import tagging
 

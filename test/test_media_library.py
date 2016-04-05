@@ -3,7 +3,7 @@ import os
 import pytest
 from hamcrest import assert_that, is_not, empty, is_, starts_with
 
-from test.util import resources
+from testing import resources
 from tgit.audio import WindowsMediaLibrary
 
 pytestmark = pytest.mark.unit

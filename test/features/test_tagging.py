@@ -1,7 +1,7 @@
 import pytest
 
 import tgit
-from test.util import resources
+from testing import resources
 
 pytestmark = pytest.mark.feature
 

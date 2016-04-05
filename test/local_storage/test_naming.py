@@ -1,8 +1,8 @@
-from hamcrest import equal_to
-from hamcrest import assert_that
 import pytest
+from hamcrest import assert_that
+from hamcrest import equal_to
 
-from test.util import builders as build
+from testing import builders as build
 from tgit.local_storage import naming
 from tgit.metadata import Image
 

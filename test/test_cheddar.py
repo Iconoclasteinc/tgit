@@ -9,7 +9,7 @@ pytestmark = pytest.mark.integration
 
 @pytest.yield_fixture
 def platform():
-    from test.util import cheddar
+    from testing import cheddar
 
     server_thread = cheddar.start()
     yield cheddar

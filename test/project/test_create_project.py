@@ -3,10 +3,9 @@ import os
 
 import pytest
 from flexmock import flexmock as mock
-
 from hamcrest import assert_that, contains, match_equality as matching
 
-from test.util.builders import make_portfolio, make_track
+from testing.builders import make_portfolio, make_track
 from testing.matchers import project_with, track_with
 from tgit import project
 

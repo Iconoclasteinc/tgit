@@ -8,7 +8,7 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
-from test.util import resources
+from testing import resources
 from testing.drivers import SaveAsDialogDriver
 from tgit import platforms
 from tgit.ui.dialogs.save_as_dialog import SaveAsDialog, make_save_as_excel_dialog, make_save_as_csv_dialog

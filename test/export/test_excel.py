@@ -2,7 +2,7 @@ import pytest
 from hamcrest import assert_that, equal_to
 from openpyxl import load_workbook
 
-from test.util import resources
+from testing import resources
 
 pytestmark = pytest.mark.unit
 

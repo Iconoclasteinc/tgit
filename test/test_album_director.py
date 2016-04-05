@@ -6,11 +6,11 @@ from flexmock import flexmock as mock
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, empty, has_key, has_property,
                       match_equality)
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
-
-from cute.prober import PollingProber
 from test.util import builders as build, doubles
 from test.util.builders import make_album, make_track
-from test.util.workspace import AlbumWorkspace
+
+from cute.prober import PollingProber
+from testing.workspace import AlbumWorkspace
 from tgit import album_director as director
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.user_preferences import UserPreferences

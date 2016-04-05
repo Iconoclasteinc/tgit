@@ -2,8 +2,9 @@ import os
 
 import pytest
 from hamcrest import assert_that, contains, has_property, equal_to, empty, is_, has_entry
+from test.util import builders as build, mp3_file
 
-from test.util import builders as build, mp3_file, resources
+from testing import resources
 from tgit import fs
 from tgit.album import Album
 from tgit.local_storage import local_project

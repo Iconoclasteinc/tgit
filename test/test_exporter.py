@@ -1,9 +1,9 @@
 import pytest
 from hamcrest import assert_that, equal_to, same_instance, is_, has_item, contains_string
-
 from test.util.builders import make_album, make_track
 from test.util.doubles import FakeWorkbook, FakeFormat
-from test.util.workspace import AlbumWorkspace
+
+from testing.workspace import AlbumWorkspace
 from tgit import export
 from tgit.export import exporter
 

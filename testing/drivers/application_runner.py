@@ -7,7 +7,7 @@ from cute.animatron import Animatron
 from cute.matchers import named, showing_on_screen
 from cute.prober import EventProcessingProber
 from cute.widgets import main_application_window
-from test.util.doubles import fake_audio_player
+from testing.doubles import fake_audio_player
 from tgit import platforms
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.cheddar import Cheddar

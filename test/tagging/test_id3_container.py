@@ -3,7 +3,7 @@ from hamcrest import (assert_that, has_entry, has_key, has_length, contains, is_
                       not_, all_of)
 from mutagen.mp3 import MP3
 
-from test.util import mp3_file
+from testing import mp3_file
 from tgit.metadata import Metadata, Image
 from tgit.tagging.id3_container import ID3Container
 

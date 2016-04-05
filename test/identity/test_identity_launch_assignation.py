@@ -2,7 +2,7 @@ import pytest
 from hamcrest import instance_of, assert_that, contains, has_entries, is_
 
 from test.identity import FakeIdentitySelection
-from test.util.builders import make_registered_session
+from testing.builders import make_registered_session
 from tgit import identity
 
 pytestmark = pytest.mark.unit

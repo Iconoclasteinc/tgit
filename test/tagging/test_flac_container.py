@@ -3,7 +3,7 @@ import shutil
 import pytest
 from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, has_entries, empty
 
-from test.util import flac_file
+from testing import flac_file
 from tgit.metadata import Metadata, Image
 from tgit.tagging._pictures import PictureType
 from tgit.tagging.flac_container import FlacContainer

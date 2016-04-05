@@ -7,8 +7,8 @@ from cute.matchers import named
 from cute.probes import MultiValueMatcherProbe, KeywordsValueMatcherProbe
 from cute.widgets import window
 from test.ui import show_, close_
-from test.util import builders as build
-from test.util.builders import make_album, make_track
+from testing import builders as build
+from testing.builders import make_album, make_track
 from testing.drivers import TrackEditionPageDriver
 from tgit.ui.pages.track_edition_page import make_track_edition_page, TrackEditionPage
 

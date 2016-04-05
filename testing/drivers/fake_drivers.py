@@ -2,7 +2,7 @@
 from cute.matchers import named
 from cute.properties import PropertyQuery
 from cute.widgets import WidgetDriver
-from test.ui.fake_widgets import *
+from testing.fake_widgets import *
 
 
 def current_page():

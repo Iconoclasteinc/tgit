@@ -4,7 +4,7 @@ import pytest
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
-from test.util.builders import make_album, make_track
+from testing.builders import make_album, make_track
 from testing.drivers import IsniAssignationReviewDialogDriver
 from tgit.identity import IdentitySelection
 from tgit.ui import make_isni_assignation_review_dialog

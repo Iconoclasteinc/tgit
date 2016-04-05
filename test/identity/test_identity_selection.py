@@ -3,7 +3,7 @@ import pytest
 from flexmock import flexmock
 from hamcrest import instance_of, assert_that, contains, is_, equal_to, has_properties
 
-from test.util.builders import make_album
+from testing.builders import make_album
 from tgit.cheddar import PlatformConnectionError, PermissionDeniedError, InsufficientInformationError
 from tgit.identity import IdentitySelection, IdentityCard
 

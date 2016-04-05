@@ -4,7 +4,7 @@ import pytest
 from hamcrest import assert_that, equal_to
 from openpyxl import Workbook
 
-from test.util import builders as build
+from testing import builders as build
 from tgit.export.soproq_format import write
 
 pytestmark = pytest.mark.unit

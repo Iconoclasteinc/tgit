@@ -3,7 +3,7 @@ import os
 import pytest
 from hamcrest import assert_that, equal_to, contains, empty, ends_with, contains_inanyorder
 
-from test.util import resources
+from testing import resources
 from tgit import fs
 
 pytestmark = pytest.mark.unit

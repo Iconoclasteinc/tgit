@@ -1,6 +1,6 @@
 from hamcrest import assert_that, is_
 
-from test.util.builders import make_registered_session
+from testing.builders import make_registered_session
 from tgit.auth import sign_out_from
 
 

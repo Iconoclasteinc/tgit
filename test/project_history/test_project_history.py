@@ -4,7 +4,7 @@ import pytest
 from flexmock import flexmock as mock
 from hamcrest import contains, assert_that, empty
 
-from test.util.builders import make_project, make_snapshot
+from testing.builders import make_project, make_snapshot
 from testing.matchers import snapshot_with
 from tgit.project_history import ProjectHistory
 

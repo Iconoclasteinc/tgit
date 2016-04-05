@@ -3,7 +3,7 @@ from hamcrest import assert_that
 from hamcrest import contains_inanyorder, contains, has_property
 
 from test.test_signal import Subscriber
-from test.util import builders as build
+from testing import builders as build
 from tgit.track import Track
 
 pytestmark = pytest.mark.unit

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from flexmock import flexmock
 import pytest
+from flexmock import flexmock
 from hamcrest import assert_that, equal_to, has_items, has_item, contains, has_properties
+from test.util.builders import make_album, make_image
 
 from test import exception_with_message
-from test.util import resources
-from test.util.builders import make_album, make_image
+from testing import resources
 from tgit import fs
 from tgit.artwork import ArtworkSelection
 from tgit.metadata import Image

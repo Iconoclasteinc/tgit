@@ -1,12 +1,12 @@
 import shutil
 
-from hamcrest import *
 import pytest
+from hamcrest import *
+from test.util import flac_file
 
-from test.util import mp3_file, flac_file
+from testing import mp3_file
 from tgit.metadata import Metadata
 from tgit.tagging import embedded_containers
-
 
 pytestmark = pytest.mark.unit
 

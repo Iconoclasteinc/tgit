@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 from hamcrest import assert_that, is_, not_none
 
-from test.util.builders import make_track, make_album
+from testing.builders import make_track, make_album
 from tgit.ui.pages.track_list_table_model import RowItem, Column
 
 pytestmark = pytest.mark.ui

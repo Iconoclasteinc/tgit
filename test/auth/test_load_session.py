@@ -3,7 +3,7 @@ from flexmock import flexmock as mock
 from hamcrest import assert_that, match_equality as matching, contains, is_
 from hamcrest import has_properties
 
-from test.util.builders import make_registered_user
+from testing.builders import make_registered_user
 from tgit.auth import load_session_from, User
 
 

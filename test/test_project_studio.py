@@ -3,7 +3,7 @@ import pytest
 from flexmock import flexmock as mock
 from hamcrest import assert_that, none, is_
 
-from test.util.builders import make_project
+from testing.builders import make_project
 from tgit.project_studio import ProjectStudio
 
 pytestmark = pytest.mark.unit

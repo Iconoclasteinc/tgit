@@ -3,7 +3,7 @@ from hamcrest import assert_that
 from hamcrest import contains
 
 from test.test_signal import Subscriber, event
-from test.util import builders as build
+from testing import builders as build
 from tgit.album_portfolio import AlbumPortfolio
 
 pytestmark = pytest.mark.unit

@@ -5,7 +5,7 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
-from test.util.builders import make_project_history, make_snapshot
+from testing.builders import make_project_history, make_snapshot
 from testing.drivers import WelcomePageDriver
 from tgit.ui.pages.welcome_page import make_welcome_page, WelcomePage
 

@@ -6,7 +6,7 @@ from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
-from test.util.builders import make_preferences
+from testing.builders import make_preferences
 from testing.drivers import UserPreferencesDialogDriver
 from tgit.ui.dialogs.user_preferences_dialog import make_user_preferences_dialog
 

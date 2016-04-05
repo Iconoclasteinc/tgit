@@ -4,7 +4,7 @@ from hamcrest import has_entries
 from cute.probes import KeywordsValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
-from test.util.builders import make_album
+from testing.builders import make_album
 from testing.drivers import MusicianTabDriver
 from tgit.ui import make_musician_tab
 from tgit.ui.pages.musician_tab import MusicianTab

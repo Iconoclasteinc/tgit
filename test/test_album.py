@@ -5,8 +5,8 @@ from hamcrest import (assert_that, equal_to, is_, contains, has_property, none, 
 from hamcrest.library.collection.is_empty import empty
 
 from test.test_signal import Subscriber, event
-from test.util import builders as build
-from test.util.builders import make_album, make_track
+from testing import builders as build
+from testing.builders import make_album, make_track
 from tgit.album import Album, AlbumListener
 from tgit.metadata import Image
 

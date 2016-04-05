@@ -5,7 +5,7 @@ from cute.matchers import named
 from cute.probes import MultiValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
-from test.util.builders import make_anonymous_session
+from testing.builders import make_anonymous_session
 from testing.drivers import SignInDialogDriver
 from tgit.auth import Login
 from tgit.ui.dialogs.sign_in_dialog import SignInDialog, make_sign_in_dialog

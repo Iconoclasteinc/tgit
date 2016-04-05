@@ -4,13 +4,14 @@ import timeit
 import pytest
 from PyQt5.QtCore import QByteArray
 from hamcrest import has_entries, assert_that, less_than
+from test.util import builders as build
+from test.util.builders import make_album, make_anonymous_session, make_registered_session
 
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, KeywordsValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
-from test.util import resources, builders as build
-from test.util.builders import make_album, make_anonymous_session, make_registered_session
+from testing import resources
 from testing.drivers import ProjectEditionPageDriver
 from tgit import fs
 from tgit.auth import Permission

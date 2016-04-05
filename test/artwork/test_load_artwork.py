@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+import pytest
 from flexmock import flexmock
 from hamcrest import match_equality, instance_of
-import pytest
 
-from test.util import resources
+from testing import resources
 from tgit import artwork, fs
 
 pytestmark = pytest.mark.unit

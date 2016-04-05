@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from test.util import doubles
-from test.util.workspace import AlbumWorkspace
+from testing import doubles
 from testing.drivers import ApplicationRunner
+from testing.workspace import AlbumWorkspace
 
 
 @pytest.yield_fixture
@@ -30,7 +30,7 @@ def app(qt, workspace, settings):
 
 @pytest.yield_fixture()
 def platform():
-    from test.util import cheddar
+    from testing import cheddar
     server_thread = cheddar.start()
     yield cheddar
     cheddar.stop(server_thread)

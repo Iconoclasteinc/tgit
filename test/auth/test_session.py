@@ -2,7 +2,7 @@ import pytest
 from flexmock import flexmock as mock
 from hamcrest import assert_that, is_, has_property, match_equality as matching, equal_to
 
-from test.util.builders import make_anonymous_session, make_registered_session
+from testing.builders import make_anonymous_session, make_registered_session
 
 pytestmark = pytest.mark.unit
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from test.util import mp3_file as mp3, flac_file as flac
+from testing import flac_file as flac, mp3_file as mp3
 from tgit.signal import Observable, signal
 from tgit.track import Track
 

@@ -3,7 +3,7 @@ from flexmock import flexmock as mock
 from hamcrest import assert_that, match_equality as matching
 from hamcrest import has_properties
 
-from test.util.builders import make_preferences
+from testing.builders import make_preferences
 from tgit.user_preferences import load_from
 
 

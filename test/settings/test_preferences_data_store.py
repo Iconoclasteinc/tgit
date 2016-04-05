@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import pytest
 from hamcrest import assert_that, has_properties
-
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
-from test.util.builders import make_preferences
+
+from testing.builders import make_preferences
 from testing.matchers import preferences_with
 from tgit.settings import PreferencesDataStore
 

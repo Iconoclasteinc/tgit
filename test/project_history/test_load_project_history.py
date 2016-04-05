@@ -3,7 +3,7 @@ import pytest
 from flexmock import flexmock as mock
 from hamcrest import assert_that, is_, match_equality as matching, contains
 
-from test.util.builders import make_project_history, make_project
+from testing.builders import make_project_history, make_project
 from testing.matchers import snapshot_with
 from tgit.project_history import load_from
 

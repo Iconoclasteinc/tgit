@@ -2,7 +2,7 @@
 import pytest
 from flexmock import flexmock as mock
 
-from test.util.builders import make_project
+from testing.builders import make_project
 from tgit import project
 
 pytestmark = pytest.mark.unit

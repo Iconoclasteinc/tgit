@@ -4,7 +4,7 @@ import os
 from PyQt5.QtGui import QImage
 from hamcrest import assert_that, equal_to, not_, empty
 
-from test.util import resources
+from testing import resources
 from testing.matchers import image_with
 from tgit import imager, fs
 from tgit.metadata import Image

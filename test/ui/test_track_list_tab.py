@@ -2,13 +2,13 @@ from datetime import timedelta
 
 import pytest
 from hamcrest import has_property, contains, assert_that, empty, contains_string
+from test.util import doubles
 
 from cute.matchers import with_text, named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.ui import ignore, show_, close_
-from test.util import doubles
-from test.util.builders import make_album, make_track
+from testing.builders import make_album, make_track
 from testing.drivers import TrackListTabDriver
 from tgit.ui.pages.track_list_tab import TrackListTab, make_track_list_tab
 

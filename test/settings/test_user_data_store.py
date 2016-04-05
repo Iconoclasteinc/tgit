@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import pytest
 from hamcrest import assert_that, empty, has_properties, contains
-
 from test.drivers.application_settings_driver import ApplicationSettingsDriver
-from test.util.builders import make_registered_user, make_anonymous_user
+
+from testing.builders import make_registered_user, make_anonymous_user
 from testing.matchers import user_with
 from tgit.auth import User
 from tgit.settings import UserDataStore

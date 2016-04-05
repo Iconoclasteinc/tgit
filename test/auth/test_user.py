@@ -1,7 +1,7 @@
 import pytest
 from hamcrest import assert_that, is_
 
-from test.util.builders import make_anonymous_user, make_registered_user
+from testing.builders import make_anonymous_user, make_registered_user
 from tgit.auth import Permission
 
 pytestmark = pytest.mark.unit

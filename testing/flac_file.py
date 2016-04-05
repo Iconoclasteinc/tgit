@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-
 import os
 
 from mutagen.flac import FLAC, Picture
 
-from test.util import resources
+from testing import resources
 from tgit import fs
 
 

@@ -1,7 +1,7 @@
 import pytest
 from hamcrest import assert_that, has_item, contains_string, contains, has_entry, equal_to
 
-from test.util import resources
+from testing import resources
 from tgit.local_storage import yaml
 from tgit.metadata import Image
 
