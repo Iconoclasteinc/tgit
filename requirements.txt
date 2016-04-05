@@ -1,4 +1,4 @@
-cx-Freeze==4.3.4
+cx_Freeze==4.3.4
 Flask==0.10.1
 flexmock==0.10.2
 mutagen==1.31

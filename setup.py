@@ -5,6 +5,7 @@ from distutils.cmd import Command
 
 import PyQt5
 import cx_Freeze
+
 from PyQt5.QtCore import QCoreApplication
 
 from cx_Freeze import setup, Executable
@@ -48,7 +49,7 @@ includes = [
 ]
 
 
-class translate(Command):
+class Translate(Command):
     description = "translate and compile qt resource files"
     # List of option tuples: long name, short name (None if no short name), and help string.
     user_options = []
@@ -63,23 +64,21 @@ class translate(Command):
         qt_binaries_path = qt_path if windows else os.path.join(qt_path, "bin")
         app_translation_file = os.path.join(app_source_path, "resources/tgit_fr.ts")
         app_compiled_translation_file = os.path.join(app_source_path, "resources/tgit_fr.qm")
-        os.system(
-            "{0}/lrelease {1} -qm {2}".format(qt_binaries_path, app_translation_file, app_compiled_translation_file))
+        os.system("{}/lrelease {} -qm {}".format(qt_binaries_path, app_translation_file, app_compiled_translation_file))
 
         qt_translation_file = os.path.join(app_source_path, "resources/qtbase_fr.ts")
         qt_compiled_translation_file = os.path.join(app_source_path, "resources/qtbase_fr.qm")
-        os.system(
-            "{0}/lrelease {1} -qm {2}".format(qt_binaries_path, qt_translation_file, qt_compiled_translation_file))
+        os.system("{}/lrelease {} -qm {}".format(qt_binaries_path, qt_translation_file, qt_compiled_translation_file))
 
         resources_file = os.path.join(app_source_path, "resources/resources.qrc")
         compiled_resources_file = os.path.join(app_source_path, "tgit/ui/resources_rc.py")
         os.system("pyrcc5 -o {0} {1}".format(compiled_resources_file, resources_file))
 
 
-commands = {"translate": translate}
+commands = {"translate": Translate}
 
 if windows:
-    class bdist_wix(Command):
+    class BdistWix(Command):
         description = "create a MSI (.msi) binary distribution"
         # List of option tuples: long name, short name (None if no short name), and help string.
         user_options = []
@@ -105,21 +104,20 @@ if windows:
                     l = l.replace("@APP_ICON@", app_icon)
                     data.append(l)
                 dst.writelines(data)
-            os.environ["PATH"] += ";C:\\Program Files (x86)\\WiX Toolset v{0}\\bin".format(wix_version)
-            os.system(
-                "heat.exe dir {0} -gg -sfrag -cg TgitComponent -nologo -dr INSTALLFOLDER -sreg -srd -out {1}\\tgit-dir.wxs".format(
-                    app_build_dir, app_msi_dir))
+            os.environ["PATH"] += ";C:\\Program Files (x86)\\WiX Toolset v{}\\bin".format(wix_version)
+            os.system("heat.exe dir {} -gg -sfrag -cg TgitComponent -nologo -dr INSTALLFOLDER"
+                      " -sreg -srd -out {}\\tgit-dir.wxs".format(app_build_dir, app_msi_dir))
             os.system("candle.exe {0}\\*.wxs -nologo -out {0}\\ ".format(app_msi_dir))
-            os.system(
-                "light.exe -b {0} -nologo -ext WixUIExtension -cultures:en-us {1}\\*.wixobj -o build\\{2}-{3}.msi".format(
-                    app_build_dir, app_msi_dir, app_name, app_version))
+            os.system("light.exe -b {} -nologo -ext WixUIExtension -cultures:en-us {}\\*.wixobj"
+                      " -o build\\{}-{}.msi".format(app_build_dir, app_msi_dir, app_name, app_version))
 
 
-    commands["bdist_wix"] = bdist_wix
+    commands["bdist_wix"] = BdistWix
 
 if mac:
-    class bdist_mac(cx_Freeze.bdist_mac):
-        cx_Freeze.bdist_mac.user_options.append(('locales', None, 'List of supported locales'))
+    class BdistMac(cx_Freeze.bdist_mac):
+        locales = []
+        cx_Freeze.bdist_mac.user_options.append(("locales", None, 'List of supported locales'))
 
         def initialize_options(self):
             super().initialize_options()
@@ -134,7 +132,7 @@ if mac:
                 os.mkdir(os.path.join(self.resourcesDir, locale + ".lproj"))
 
 
-    commands["bdist_mac"] = bdist_mac
+    commands["bdist_mac"] = BdistMac
 
 setup(
     cmdclass=commands,
