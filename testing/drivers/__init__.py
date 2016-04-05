@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from .about_dialog_driver import AboutDialogDriver
 from .application_runner import ApplicationRunner
+from .application_settings_driver import ApplicationSettingsDriver
 from .export_as_dialog_driver import export_as_dialog
 from .file_dialog_driver import file_selection_dialog, FileDialogDriver
 from .isni_assignation_review_dialog_driver import IsniAssignationReviewDialogDriver

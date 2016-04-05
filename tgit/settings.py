@@ -54,12 +54,15 @@ class PreferencesDataStore:
         self._settings.beginGroup("preferences")
         if self._settings.contains("locale"):
             preferences.locale = self._settings.value("locale")
+        if self._settings.contains("artwork location"):
+            preferences.artwork_location = self._settings.value("artwork location")
         self._settings.endGroup()
         return preferences
 
     def store_preferences(self, prefs):
         self._settings.beginGroup("preferences")
         self._settings.setValue("locale", prefs.locale)
+        self._settings.setValue("artwork location", prefs.artwork_location)
         self._settings.endGroup()
 
     def remove_preferences(self):

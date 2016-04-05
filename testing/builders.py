@@ -93,7 +93,9 @@ def make_registered_session(email="test@example.com", token="api-key", permissio
     return session
 
 
-def make_preferences(locale="en"):
+def make_preferences(locale="en", **prefs):
     preferences = UserPreferences()
     preferences.locale = locale
+    for pref, value in prefs.items():
+        setattr(preferences, pref, value)
     return preferences
