@@ -19,6 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from traceback import format_exception
 import sys
+import argparse
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
@@ -35,8 +36,12 @@ def _print_unhandled_exceptions():
     sys.excepthook = exception_hook
 
 
-urllib3.disable_warnings()
-# _print_unhandled_exceptions()
+parser = argparse.ArgumentParser()
+parser.add_argument("-d", "--debug", action="store_true", help="starts in debug mode")
+args = parser.parse_args()
+if args.debug:
+    _print_unhandled_exceptions()
+    urllib3.disable_warnings()
 
 app = QApplication([])
 app.setApplicationName("TGiT")
