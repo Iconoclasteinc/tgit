@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from test.drivers.application_runner import ApplicationRunner
 from test.util import doubles
 from test.util.workspace import AlbumWorkspace
+from testing.drivers import ApplicationRunner
 
 
 @pytest.yield_fixture

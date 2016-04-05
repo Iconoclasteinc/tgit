@@ -2,8 +2,8 @@ import pytest
 
 from cute.matchers import named
 from cute.widgets import window
-from test.drivers.startup_screen_driver import StartupScreenDriver
 from test.ui import ignore, no, show_, close_
+from testing.drivers import StartupScreenDriver
 from tgit.ui.pages.new_project_page import NewProjectPage
 from tgit.ui.pages.startup_screen import StartupScreen
 from tgit.ui.pages.welcome_page import WelcomePage

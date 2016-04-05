@@ -7,13 +7,14 @@ from cute.animatron import Animatron
 from cute.matchers import named, showing_on_screen
 from cute.prober import EventProcessingProber
 from cute.widgets import main_application_window
-from test.drivers import track_selection_dialog, message_box
 from test.util.doubles import fake_audio_player
 from tgit import platforms
 from tgit.album_portfolio import AlbumPortfolio
 from tgit.cheddar import Cheddar
 from tgit.tagger import Tagger
 from .main_window_driver import MainWindowDriver
+from .message_box_driver import message_box
+from .track_selection_dialog_driver import track_selection_dialog
 
 
 def _make_tracks(tracks):

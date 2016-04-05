@@ -5,12 +5,12 @@ from hamcrest import contains, instance_of
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
-from test.drivers import MainWindowDriver
-from test.drivers.fake_drivers import no_startup_screen, no_album_screen, project_screen, startup_screen
 from test.ui import ignore, show_, close_
 from test.ui.fake_widgets import fake_startup_screen, fake_project_screen
 from test.util import builders as build
 from test.util.builders import make_album, make_portfolio, make_anonymous_session
+from testing.drivers import MainWindowDriver
+from testing.drivers.fake_drivers import no_startup_screen, no_album_screen, project_screen, startup_screen
 from tgit.album import Album
 from tgit.auth import User
 from tgit.platforms import mac

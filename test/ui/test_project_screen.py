@@ -7,9 +7,9 @@ from hamcrest import contains
 from cute.matchers import named
 from cute.probes import MultiValueMatcherProbe
 from cute.widgets import window
-from test.drivers import ProjectScreenDriver
 from test.ui import ignore, show_, close_
 from test.util.builders import make_track, make_album
+from testing.drivers import ProjectScreenDriver
 from tgit.ui.pages.musician_tab import MusicianTab
 from tgit.ui.pages.project_edition_page import ProjectEditionPage
 from tgit.ui.pages.project_screen import ProjectScreen, make_project_screen

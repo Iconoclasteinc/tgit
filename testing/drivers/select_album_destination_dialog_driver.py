@@ -17,24 +17,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
+from PyQt5.QtWidgets import QFileDialog
+
 from cute.matchers import named
+from cute.widgets import window
+from .file_dialog_driver import FileDialogDriver
 
-from cute.widgets import QDialogDriver
-from ._screen_driver import ScreenDriver
+
+def select_project_destination_dialog(parent):
+    return SelectProjectDestinationDialogDriver(window(QFileDialog, named("select_project_destination_dialog")),
+                                                parent.prober, parent.gesture_performer)
 
 
-class AboutDialogDriver(QDialogDriver, ScreenDriver):
-    def shows_tgit_version(self, version):
-        self.label(named("_version")).has_text("v{0}".format(version))
-
-    def shows_mutagen_version(self, version):
-        self.label(named("_mutagen_version")).has_text(version)
-
-    def shows_python_version(self, version):
-        self.label(named("_python_version")).has_text(version)
-
-    def shows_qt_version(self, version):
-        self.label(named("_qt_version")).has_text(version)
-
-    def shows_pyqt_version(self, version):
-        self.label(named("_pyqt_version")).has_text(version)
+class SelectProjectDestinationDialogDriver(FileDialogDriver):
+    def select_destination(self, destination):
+        self.navigate_to_dir(destination)
+        self.has_accept_button_text("&Choose")
+        self.accept()

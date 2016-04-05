@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QFileDialog
 
 from cute.matchers import named, disabled
 from cute.widgets import window
-from test.drivers.file_dialog_driver import FileDialogDriver
+from .file_dialog_driver import FileDialogDriver
 
 
 def load_project_dialog(parent):

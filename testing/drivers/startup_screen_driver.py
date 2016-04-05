@@ -17,9 +17,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from test.drivers import welcome_page
-from test.drivers.new_project_page_driver import new_project_page
 from ._screen_driver import ScreenDriver
+from .new_project_page_driver import new_project_page
+from .welcome_page_driver import welcome_page
 
 
 class StartupScreenDriver(ScreenDriver):

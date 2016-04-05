@@ -5,9 +5,9 @@ from hamcrest import assert_that, equal_to
 
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from test.drivers.isni_lookup_dialog_driver import IsniLookupDialogDriver
 from test.ui import ignore, show_, close_
 from test.util.builders import make_album
+from testing.drivers import IsniLookupDialogDriver
 from tgit.identity import Identities
 from tgit.identity import IdentityCard, IdentitySelection
 from tgit.ui.dialogs.isni_lookup_dialog import ISNILookupDialog, make_isni_lookup_dialog

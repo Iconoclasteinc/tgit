@@ -6,10 +6,10 @@ from PyQt5.QtWidgets import QFileDialog
 
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from test.drivers.file_dialog_driver import FileDialogDriver
 from test.ui import ignore, show_, close_
 from test.util import resources
 from test.util.builders import make_portfolio
+from testing.drivers import FileDialogDriver
 from tgit.artwork import ArtworkSelection
 from tgit.ui.dialogs.file_dialogs import make_artwork_selection_dialog
 from tgit.user_preferences import UserPreferences

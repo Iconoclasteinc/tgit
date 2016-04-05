@@ -6,8 +6,8 @@ from PyQt5.QtCore import QT_VERSION_STR, PYQT_VERSION_STR
 
 from cute.matchers import named
 from cute.widgets import window
-from test.drivers.about_dialog_driver import AboutDialogDriver
 from test.ui import show_, close_
+from testing.drivers import AboutDialogDriver
 from tgit import __version__
 from tgit.ui.dialogs.about_dialog import AboutDialog, make_about_dialog
 

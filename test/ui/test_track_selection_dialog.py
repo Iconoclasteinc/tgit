@@ -8,9 +8,9 @@ from cute.matchers import named
 from cute.platforms import linux
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from test.drivers import TrackSelectionDialogDriver
 from test.ui import ignore
 from test.util import resources
+from testing.drivers import TrackSelectionDialogDriver
 from tgit.platforms import windows
 from tgit.ui.dialogs.track_selection_dialog import TrackSelectionDialog
 

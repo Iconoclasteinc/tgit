@@ -3,8 +3,8 @@ import pytest
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from test.drivers.new_project_page_driver import NewProjectPageDriver
 from test.ui import ignore, show_, close_, yes, no
+from testing.drivers import NewProjectPageDriver
 from tgit.ui.pages.new_project_page import NewProjectPage, make_new_project_page
 
 pytestmark = pytest.mark.ui

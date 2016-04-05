@@ -7,9 +7,9 @@ from hamcrest import ends_with
 from cute.matchers import named
 from cute.probes import ValueMatcherProbe
 from cute.widgets import window
-from test.drivers.load_album_dialog_driver import LoadProjectDialogDriver
 from test.ui import ignore, show_, close_
 from test.util import resources
+from testing.drivers import LoadProjectDialogDriver
 from tgit.platforms import windows, linux
 from tgit.ui.dialogs.load_album_dialog import make_load_project_dialog
 

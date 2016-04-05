@@ -6,7 +6,7 @@ from hamcrest import contains_string
 
 from cute.matchers import named, disabled
 from cute.widgets import window
-from test.drivers.file_dialog_driver import FileDialogDriver
+from .file_dialog_driver import FileDialogDriver
 
 
 def reference_track_selection_dialog(parent):
