@@ -20,12 +20,11 @@
 from traceback import format_exception
 import sys
 
-import tgit
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication
+from requests.packages import urllib3
 
-
-def _disable_urllib_warnings():
-    from requests.packages import urllib3
-    urllib3.disable_warnings()
+from tgit.tagger import make_tagger
 
 
 def _print_unhandled_exceptions():
@@ -36,6 +35,14 @@ def _print_unhandled_exceptions():
     sys.excepthook = exception_hook
 
 
-_disable_urllib_warnings()
+urllib3.disable_warnings()
 # _print_unhandled_exceptions()
-tgit.launch()
+
+app = QApplication([])
+app.setApplicationName("TGiT")
+app.setOrganizationName("Iconoclaste Inc.")
+app.setOrganizationDomain("tagyourmusic.com")
+app.setWindowIcon(QIcon(":/tgit.ico"))
+
+make_tagger(app).show()
+app.exec_()
