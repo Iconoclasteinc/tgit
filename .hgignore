@@ -8,8 +8,7 @@ tgit.egg-info
 .DS_Store
 .coverage
 resources/*.qm
-tgit.pro.user
-tgit.pro
+tgit.pro*
 .cache
 **/resources_rc.py
 *.iws

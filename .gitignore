@@ -1,6 +1,5 @@
 syntax: glob
 
-/tgit.pro
 build
 dist
 tgit.egg-info
@@ -9,6 +8,9 @@ tgit.egg-info
 .DS_Store
 .coverage
 resources/*.qm
-tgit.user.pro
+tgit.pro*
 .cache
 **/resources_rc.py
+*.iws
+*.iml
+*.ipr
