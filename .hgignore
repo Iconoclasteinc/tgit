@@ -12,3 +12,6 @@ tgit.pro.user
 tgit.pro
 .cache
 **/resources_rc.py
+*.iws
+*.iml
+*.ipr
