@@ -53,8 +53,8 @@
         </Feature>
 
 		<WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
-		<WixVariable Id="WixUIDialogBmp" Value="resources/msi-dialog-bg.png" />
-		<WixVariable Id="WixUIBannerBmp" Value="resources/msi-banner-bg.png" />
+		<WixVariable Id="WixUIDialogBmp" Value="resources/images/msi-dialog-bg.png" />
+		<WixVariable Id="WixUIBannerBmp" Value="resources/images/msi-banner-bg.png" />
 		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
 		<UIRef Id="WixUI_InstallDir" />
     </Product>
