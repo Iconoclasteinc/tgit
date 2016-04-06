@@ -32,7 +32,7 @@ from tgit import fs
 
 def open_media_player(portfolio):
     player = MediaPlayer()
-    subscription = portfolio.album_removed.subscribe(lambda _: player.stop())
+    subscription = portfolio.on_project_closed.subscribe(lambda _: player.stop())
     player.closed.subscribe(subscription.cancel)
 
     return player
