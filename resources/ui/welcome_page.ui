@@ -106,7 +106,7 @@
             <string notr="true"/>
            </property>
            <property name="pixmap">
-            <pixmap>:/images/logo.png</pixmap>
+            <pixmap resource="../resources.qrc">:/images/logo.png</pixmap>
            </property>
           </widget>
          </item>
@@ -272,7 +272,9 @@ QListView::item {
   <tabstop>recent_projects_list</tabstop>
   <tabstop>open_project_button</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>open_project_button</sender>

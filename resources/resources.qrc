@@ -30,7 +30,6 @@
         <file alias="tooltips/move-up">images/12x12/arrow_upward.png</file>
         <file alias="tooltips/move-down">images/12x12/arrow_downward.png</file>
 
-        <file>ui/welcome_page.ui</file>
         <file>ui/main_window.ui</file>
         <file>ui/project_screen.ui</file>
         <file>ui/project_page.ui</file>

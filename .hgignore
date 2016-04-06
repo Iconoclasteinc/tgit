@@ -10,7 +10,8 @@ tgit.egg-info
 resources/*.qm
 tgit.pro*
 .cache
-**/resources_rc.py
+**/compiled_ui/ui_*.py
+**/compiled_ui/resources_*.py
 *.iws
 *.iml
 *.ipr

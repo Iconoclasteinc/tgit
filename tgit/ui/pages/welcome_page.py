@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import QFrame, QListWidgetItem
 import tgit
 from tgit import imager
 from tgit.album import Album
-from tgit.ui import pixmap, resources
+from tgit.ui import pixmap, compiled_ui
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.rescue import rescue
@@ -56,7 +56,7 @@ class WelcomePage(QFrame, UIFile):
         self._setup_ui()
 
     def _setup_ui(self):
-        self._ui = resources.welcome_page.create(self)
+        self._ui = compiled_ui.welcome_page.create(self)
         self._ui.version.setText(tgit.__version__)
         self._no_cover = pixmap.none(*self.THUMBNAIL_SIZE)
         self._broken_cover = pixmap.broken(*self.THUMBNAIL_SIZE)

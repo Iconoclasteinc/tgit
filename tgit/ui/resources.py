@@ -18,12 +18,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from io import BytesIO
 
-from PyQt5 import uic
 from PyQt5.QtCore import QFile
 from PyQt5.QtCore import QIODevice
 
 # noinspection PyUnresolvedReferences
-from . import resources_rc
+from .compiled_ui import resources_images
 
 
 def load(path):
@@ -37,16 +36,3 @@ def load(path):
 
 def stream(path):
     return BytesIO(load(path))
-
-
-class Loader:
-    def __init__(self, path):
-        self._ui_factory = uic.loadUiType(stream(path), from_imports=True)[0]
-
-    def create(self, widget):
-        ui = self._ui_factory()
-        ui.setupUi(widget)
-        return ui
-
-
-welcome_page = Loader(":/ui/welcome_page.ui")

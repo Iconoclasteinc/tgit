@@ -71,9 +71,16 @@ class Translate(Command):
         os.system("{}/lrelease {} -qm {}".format(qt_binaries_path, qt_translation_file, qt_compiled_translation_file))
 
         resources_file = os.path.join(app_source_path, "resources/resources.qrc")
-        compiled_resources_file = os.path.join(app_source_path, "tgit/ui/resources_rc.py")
+        compiled_resources_file = os.path.join(app_source_path, "tgit/ui/compiled_ui/resources_images.py")
         os.system("pyrcc5 -o {0} {1}".format(compiled_resources_file, resources_file))
 
+        ui_dir = os.path.join(app_source_path, "resources/ui")
+        compiled_ui_dir = os.path.join(app_source_path, "tgit/ui/compiled_ui")
+        ui_files = [f for f in os.listdir(ui_dir) if os.path.isfile(os.path.join(ui_dir, f))]
+        for ui_file in ui_files:
+            input_name = os.path.join(ui_dir, ui_file)
+            output_name = os.path.join(compiled_ui_dir, "ui_{}".format(ui_file.replace(".ui", ".py")))
+            os.system("pyuic5 --from-imports --resource-suffix=_images -o {} {}".format(output_name, input_name))
 
 commands = {"translate": Translate}
 
