@@ -25,6 +25,7 @@ def _make_tracks(tracks):
 class ApplicationRunner:
     MESSAGE_BOX_DISPLAY_DELAY = 100 if platforms.mac else 0
     SAVE_DELAY = 250 if platforms.mac else 0
+    INITIAL_DISPLAY_DELAY = 30 if platforms.linux else 0
 
     main_window_driver = None
 
@@ -44,6 +45,7 @@ class ApplicationRunner:
         self.main_window_driver.close()
 
     def new_project(self, name="album", of_type="mp3"):
+        self.main_window_driver.pause(self.INITIAL_DISPLAY_DELAY)
         self.main_window_driver.create_project(of_type, name, self._workspace.root_path)
 
     def add_tracks_to_project(self, *tracks):
@@ -51,6 +53,7 @@ class ApplicationRunner:
         track_selection_dialog(self.main_window_driver).select_tracks(*tracks)
 
     def import_project(self, name, from_track, of_type="mp3"):
+        self.main_window_driver.pause(self.INITIAL_DISPLAY_DELAY)
         self.main_window_driver.create_project(of_type=of_type, name=name, location=self._workspace.root_path,
                                                import_from=from_track)
 
