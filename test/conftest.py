@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QApplication
 from cute import event_loop
 from cute.platforms import linux
 
-END_OF_TEST_PAUSE = 30 if linux else 0
+END_OF_TEST_PAUSE = 50 if linux else 0
 
 
 def _print_unhandled_exceptions():

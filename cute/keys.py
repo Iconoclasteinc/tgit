@@ -6,5 +6,6 @@ DELETE = 'delete'
 ESCAPE = 'escape'
 RETURN = 'return'
 TAB = 'tab'
+SPACE = 'space'
 
 F4 = 'f4'
