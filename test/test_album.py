@@ -15,8 +15,8 @@ pytestmark = pytest.mark.unit
 
 def test_defines_metadata_tags():
     assert_that(tuple(Album.tags()), contains_inanyorder(
-        "release_name", "compilation", "lead_performer", "lead_performer_region", "guest_performers",
-        "label_name", "upc", "catalog_number", "release_time", "original_release_time",
+        "release_name", "compilation", "lead_performer", "lead_performer_region", "guest_performers", "label_name",
+        "upc", "catalog_number", "release_time", "original_release_time", "lead_performer_date_of_birth",
         "contributors", "isnis", "ipis"))
 
 

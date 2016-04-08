@@ -186,6 +186,22 @@ QToolTip[style=QMacStyle] {
           </property>
          </widget>
         </item>
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="_compilation">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="text">
+           <string>This project is a multi-artist compilation</string>
+          </property>
+         </widget>
+        </item>
         <item row="5" column="0">
          <widget class="QLabel" name="_main_artist_caption">
           <property name="text">
@@ -227,7 +243,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="7" column="0">
+        <item row="8" column="0">
          <widget class="QLabel" name="_main_artist_isni_caption">
           <property name="text">
            <string>ISNI Number:</string>
@@ -237,7 +253,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
+        <item row="8" column="1">
          <layout class="QHBoxLayout" name="_main_artist_isni_container">
           <item>
            <widget class="QToolButton" name="_main_artist_isni_actions_button">
@@ -306,7 +322,7 @@ QLabel[style=QMacStyle] {
           </item>
          </layout>
         </item>
-        <item row="8" column="1">
+        <item row="9" column="1">
          <widget class="QLabel" name="_main_artist_isni_info">
           <property name="styleSheet">
            <string notr="true">QLabel[style=QWindowsVistaStyle] {
@@ -330,7 +346,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="9" column="0">
+        <item row="10" column="0">
          <widget class="QLabel" name="_main_artist_region_caption">
           <property name="text">
            <string>Origin:</string>
@@ -340,7 +356,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="9" column="1">
+        <item row="10" column="1">
          <widget class="QComboBox" name="_main_artist_region">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -356,19 +372,20 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="QCheckBox" name="_compilation">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
+        <item row="7" column="0">
+         <widget class="QLabel" name="_main_artist_date_of_birth_caption">
           <property name="text">
-           <string>This project is a multi-artist compilation</string>
+           <string>Date of Birth:</string>
+          </property>
+          <property name="buddy">
+           <cstring>_main_artist_date_of_birth</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QDateEdit" name="_main_artist_date_of_birth">
+          <property name="displayFormat">
+           <string>yyyy-MM-dd</string>
           </property>
          </widget>
         </item>

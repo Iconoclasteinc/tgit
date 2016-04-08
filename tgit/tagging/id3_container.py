@@ -367,6 +367,7 @@ class ID3Container:
         "TXXX:TAGGER": "tagger",
         "TXXX:TAGGER_VERSION": "tagger_version",
         "TXXX:Tags": "labels",
+        "TXXX:LEAD_PERFORMER_DATE_OF_BIRTH": "lead_performer_date_of_birth",
         "COMM::fra": "comments",
         "USLT::fra": "lyrics",
         "TCON": "primary_style"

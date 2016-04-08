@@ -131,6 +131,11 @@ def test_reads_lead_performer_region_from_lead_performer_region_field(flac):
     assert_that(metadata, has_entry('lead_performer_region', ("CA", "QC")), 'metadata')
 
 
+def test_reads_lead_performer_date_of_birth_from_lead_performer_date_of_birth_field(flac):
+    metadata = container.load(flac(LEAD_PERFORMER_DATE_OF_BIRTH="2009-05-06"))
+    assert_that(metadata, has_entry("lead_performer_date_of_birth", "2009-05-06"), "metadata")
+
+
 def test_reads_lyricist(flac):
     metadata = container.load(flac(LYRICIST="Joel Miller"))
     assert_that(metadata, has_entry("lyricist", "Joel Miller"), "metadata")

@@ -32,6 +32,7 @@ def test_includes_header_row(formatter, out):
                                   "Lead Performer",
                                   "Lead Performer ISNI",
                                   "Lead Performer Origin",
+                                  "Lead Performer Date of Birth",
                                   "Guest Performers",
                                   "Label Name",
                                   "Catalog Number",
@@ -65,6 +66,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
     album = build.album(
         release_name="Release Name",
         lead_performer="Lead Performer",
+        lead_performer_date_of_birth="2009-05-06",
         lead_performer_region=("CA",),
         isnis={"Lead Performer": "0000123456789", "Lyricist": "9876543210000000"},
         guest_performers=[("Instrument1", "Performer1"), ("Instrument2", "Performer2")],
@@ -108,6 +110,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
                                "Lead Performer",
                                "0000123456789",
                                "CA",
+                               "2009-05-06",
                                "Instrument1: Performer1; Instrument2: Performer2",
                                "Label Name",
                                "Catalog Number",

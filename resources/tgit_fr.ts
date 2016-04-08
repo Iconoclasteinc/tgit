@@ -89,6 +89,10 @@
         <translation>Origine de l'artiste principal</translation>
     </message>
     <message>
+        <source>Lead Performer Date of Birth</source>
+        <translation>Date de naissance de l'artiste principal</translation>
+    </message>
+    <message>
         <source>Guest Performers</source>
         <translation>Musiciens de l&apos;album</translation>
     </message>
@@ -237,6 +241,11 @@
         <location filename="tgit/ui/project_edition_page.py" />
         <source>ISNI Number:</source>
         <translation>Numéro ISNI :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/project_edition_page.py" />
+        <source>Date of Birth:</source>
+        <translation>Date de naissance :</translation>
     </message>
     <message>
         <location filename="tgit/ui/project_edition_page.py" />

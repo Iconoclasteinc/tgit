@@ -31,6 +31,7 @@ def test_saves_data_to_yaml_file(project_file):
                 compilation=True,
                 lead_performer=("Artist",),
                 lead_performer_region=("FR",),
+                lead_performer_date_of_birth="2009-05-06",
                 isnis={"Artist": "0000123456789"},
                 guest_performers=[("Guitar", "Guitarist"), ("Piano", "Pianist")],
                 label_name="Label",
@@ -48,10 +49,12 @@ def test_saves_data_to_yaml_file(project_file):
     assert_that(lines, has_item(contains_string("version: 1.6.0")), "version")
     assert_that(lines, has_item(contains_string("release_name: Title")), "release name")
     assert_that(lines, has_item(contains_string("compilation: true")), "compilation")
-    assert_that(lines, has_item(contains_string("lead_performer: !!python/tuple")), "lead performer")
+    assert_that(lines, has_item(contains_string("lead_performer: !!python/tuple")), "main artist")
     assert_that(lines, has_item(contains_string("- Artist")), "lead performer")
-    assert_that(lines, has_item(contains_string("lead_performer_region:")), "lead performer region")
+    assert_that(lines, has_item(contains_string("lead_performer_region:")), "main artist region")
     assert_that(lines, has_item(contains_string("- FR")), "lead performer region")
+    assert_that(lines, has_item(contains_string("lead_performer_date_of_birth: '2009-05-06'")),
+                "main artist date of birth")
     assert_that(lines, has_item(contains_string("isnis:")), "isnis")
     assert_that(lines, has_item(contains_string("  Artist: 0000123456789")), "isnis")
     assert_that(lines, has_item(contains_string("label_name: Label")), "label name")

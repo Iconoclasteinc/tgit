@@ -68,7 +68,6 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
     _picture = None
     _isni_lookup = False
-    _isni_assign = False
 
     FRONT_COVER_SIZE = 200, 200
 
@@ -121,6 +120,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._compilation.clicked.connect(lambda: handle("compilation"))
         self._main_artist.editingFinished.connect(lambda: handle("lead_performer"))
         self._main_artist_region.currentIndexChanged.connect(lambda: handle("lead_performer_region"))
+        self._main_artist_date_of_birth.dateChanged.connect(lambda: handle("lead_performer_date_of_birth"))
         self._label_name.editingFinished.connect(lambda: handle("label_name"))
         self._catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
         self._barcode.editingFinished.connect(lambda: handle("upc"))
@@ -130,7 +130,6 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
     def user_changed(self, user):
         self._isni_lookup = user.has_permission(Permission.lookup_isni)
-        self._isni_assign = user.has_permission(Permission.assign_isni)
         self._update_isni_menu()
 
     def display(self, album):
@@ -170,6 +169,9 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_isni_help.setDisabled(is_compilation())
         self._main_artist_region.setDisabled(is_compilation())
         self._main_artist_region_caption.setDisabled(is_compilation())
+        self._main_artist_date_of_birth.setDate(QDate.fromString(album.lead_performer_date_of_birth, ISO_8601_FORMAT))
+        self._main_artist_date_of_birth.setDisabled(is_compilation())
+        self._main_artist_date_of_birth_caption.setDisabled(is_compilation())
 
         if is_compilation() or not album.lead_performer_region:
             self._main_artist_region.setCurrentIndex(0)
@@ -181,6 +183,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
                           compilation=self._compilation.isChecked(),
                           lead_performer=self._main_artist.text(),
                           lead_performer_region=self._get_country_code_from_combo(self._main_artist_region),
+                          lead_performer_date_of_birth=self._main_artist_date_of_birth.date().toString(ISO_8601_FORMAT),
                           label_name=self._label_name.text(),
                           catalog_number=self._catalog_number.text(),
                           upc=self._barcode.text(),
@@ -199,5 +202,5 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         def _is_blank(text):
             return not text or text.strip() == ""
 
-        can_lookup_or_assign = not self._compilation.isChecked() and not _is_blank(self._main_artist.text())
-        self._main_artist_isni_actions_button.setEnabled(self._isni_lookup and can_lookup_or_assign)
+        can_lookup = self._isni_lookup and not self._compilation.isChecked() and not _is_blank(self._main_artist.text())
+        self._main_artist_isni_actions_button.setEnabled(can_lookup)

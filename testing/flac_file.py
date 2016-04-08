@@ -71,6 +71,8 @@ class FlacAudio(object):
                     self._add_picture(mime, type_, desc, data)
             elif tag == 'LEAD_PERFORMER_REGION':
                 self._add_tag("LEAD-PERFORMER-REGION", value)
+            elif tag == 'LEAD_PERFORMER_DATE_OF_BIRTH':
+                self._add_tag("LEAD-PERFORMER-DATE-OF-BIRTH", value)
             elif tag == 'PRODUCER':
                 self._add_tag("PRODUCER", value)
             elif tag == 'PRODUCER_REGION':

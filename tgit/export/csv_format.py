@@ -40,11 +40,11 @@ def _get_isni_of_identity(identity, isnis):
 
 class CsvFormat(QObject):
     Headers = "Release Name", "Compilation", "Lead Performer", "Lead Performer ISNI", "Lead Performer Origin", \
-              "Guest Performers", "Label Name", "Catalog Number", "UPC/EAN", "Comments", "Release Date", \
-              "Recording Date", "Recording Studio", "Recording Location", "Production Company", "Production Location", \
-              "Music Producer", "Mixer", "Primary Style", "Track Title", "Version Information", "Track Number", \
-              "Total Tracks", "Featured Guest", "Lyrics", "Language", "Publisher", "Lyricist", "Lyricist ISNI", \
-              "Composer", "ISRC", "Tags"
+              "Lead Performer Date of Birth", "Guest Performers", "Label Name", "Catalog Number", "UPC/EAN", "Comments", \
+              "Release Date", "Recording Date", "Recording Studio", "Recording Location", "Production Company", \
+              "Production Location", "Music Producer", "Mixer", "Primary Style", "Track Title", "Version Information", \
+              "Track Number", "Total Tracks", "Featured Guest", "Lyrics", "Language", "Publisher", "Lyricist", \
+              "Lyricist ISNI", "Composer", "ISRC", "Tags"
 
     def __init__(self):
         super().__init__()
@@ -70,11 +70,12 @@ class CsvFormat(QObject):
         total_tracks = str(track.total_tracks)
 
         row = (album.release_name, compilation, track.lead_performer, lead_performer_isni, lead_performer_region,
-               guest_performers, album.label_name, album.catalog_number, album.upc, track.comments, album.release_time,
-               track.recording_time, track.recording_studio, recording_studio_region, track.production_company,
-               production_company_region, track.music_producer, track.mixer, track.primary_style, track.track_title,
-               track.version_info, track_number, total_tracks, track.featured_guest, track.lyrics, track.language,
-               track.publisher, track.lyricist, lyricist_isni, track.composer, track.isrc, track.labels)
+               album.lead_performer_date_of_birth, guest_performers, album.label_name, album.catalog_number, album.upc,
+               track.comments, album.release_time, track.recording_time, track.recording_studio,
+               recording_studio_region, track.production_company, production_company_region, track.music_producer,
+               track.mixer, track.primary_style, track.track_title, track.version_info, track_number, total_tracks,
+               track.featured_guest, track.lyrics, track.language, track.publisher, track.lyricist, lyricist_isni,
+               track.composer, track.isrc, track.labels)
 
         writer.writerow(self._encode_row(row))
 

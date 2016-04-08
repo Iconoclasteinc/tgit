@@ -71,6 +71,7 @@ def test_displays_project_metadata(driver):
         release_name="Album",
         lead_performer="Artist",
         lead_performer_region=("CA",),
+        lead_performer_date_of_birth="2009-05-06",
         isnis={"Artist": "0000000123456789"},
         guest_performers=[("Guitar", "Guitarist"), ("Piano", "Pianist")],
         label_name="Label",
@@ -83,6 +84,7 @@ def test_displays_project_metadata(driver):
     driver.shows_main_artist("Artist")
     driver.shows_main_artist_region("Canada")
     driver.shows_main_artist_isni("0000000123456789")
+    driver.shows_main_artist_date_of_birth("2009-05-06")
     driver.shows_label_name("Label")
     driver.shows_catalog_number("XXX123456789")
     driver.shows_upc("123456789999")
@@ -104,6 +106,7 @@ def test_disables_main_artist_section_when_project_is_a_compilation(driver):
     driver.shows_main_artist_region("", disabled=True)
     driver.shows_main_artist_isni("", disabled=True)
     driver.shows_main_artist_isni_lookup_button(disabled=True)
+    driver.shows_main_artist_date_of_birth("2000-01-01", disabled=True)
 
 
 def test_enables_main_artist_section_when_project_is_no_longer_a_compilation(driver):
@@ -216,6 +219,10 @@ def test_signals_when_project_metadata_edited(driver):
 
     metadata_changed_signal.expect(has_entries(lead_performer="Joel Miller"))
     driver.change_main_artist("Joel Miller")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(lead_performer_date_of_birth="2009-11-21"))
+    driver.main_artist_date_of_birth(2009, 11, 21)
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(lead_performer_region=("CA",)))

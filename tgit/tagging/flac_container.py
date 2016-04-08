@@ -237,6 +237,7 @@ class FlacContainer:
         "GUEST ARTIST": "featured_guest",
         "TAG": "labels",
         "RELEASE DATE": "release_time",
+        "LEAD-PERFORMER-DATE-OF-BIRTH": "lead_performer_date_of_birth",
     }.items():
         fields.append(TextField(field_name, tag_name))
 

@@ -49,6 +49,7 @@ class Album(metaclass=tag.Taggable):
     compilation = tag.flag()
     lead_performer = tag.text()
     lead_performer_region = tag.pairs()
+    lead_performer_date_of_birth = tag.text()
     guest_performers = tag.pairs()
     label_name = tag.text()
     upc = tag.text()

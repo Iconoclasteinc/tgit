@@ -237,6 +237,11 @@ def test_reads_lead_performer_region_from_custom_frame(mp3):
     assert_that(metadata, has_entry("lead_performer_region", ("CA", "QC")), "metadata")
 
 
+def test_reads_lead_performer_date_of_birth_from_custom_frame(mp3):
+    metadata = container.load(mp3(TXXX_LEAD_PERFORMER_DATE_OF_BIRTH="2009-05-07"))
+    assert_that(metadata, has_entry("lead_performer_date_of_birth", "2009-05-07"), "metadata")
+
+
 def test_reads_production_company_from_custom_frame(mp3):
     metadata = container.load(mp3(TXXX_PRODUCTION_COMPANY="Effendi Records Inc."))
     assert_that(metadata, has_entry("production_company", "Effendi Records Inc."), "metadata")
