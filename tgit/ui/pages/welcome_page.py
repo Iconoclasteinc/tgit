@@ -19,7 +19,7 @@
 
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QFrame, QListWidgetItem
+from PyQt5.QtWidgets import QFrame, QListWidgetItem, QApplication
 
 import tgit
 from tgit import imager
@@ -76,8 +76,14 @@ class WelcomePage(QFrame, UIFile):
 
     def on_load_project(self, on_load_project):
         def try_loading_project(filename):
-            with rescue(on_error=self._show_load_error):
+            def show_load_error(error):
+                QApplication.restoreOverrideCursor()
+                self._show_load_error(error)
+
+            with rescue(on_error=show_load_error):
+                QApplication.setOverrideCursor(Qt.WaitCursor)
                 on_load_project(filename)
+                QApplication.restoreOverrideCursor()
 
         self._ui.load_project_button.clicked.connect(lambda: self._select_project(try_loading_project))
         self._ui.open_project_action.triggered.connect(lambda: try_loading_project(self._selected_project.path))
