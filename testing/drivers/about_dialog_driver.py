@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from hamcrest import contains_string
 
 from cute.matchers import named
 from cute.widgets import QDialogDriver
-
 from ._screen_driver import ScreenDriver
 
 
@@ -28,13 +28,13 @@ class AboutDialogDriver(QDialogDriver, ScreenDriver):
         self.label(named("_version")).has_text("v{0}".format(version))
 
     def shows_mutagen_version(self, version):
-        self.label(named("_mutagen_version")).has_text(version)
+        self.label(named("_about")).has_text(contains_string("Mutagen " + version))
 
     def shows_python_version(self, version):
-        self.label(named("_python_version")).has_text(version)
+        self.label(named("_about")).has_text(contains_string("Python " + version))
 
     def shows_qt_version(self, version):
-        self.label(named("_qt_version")).has_text(version)
+        self.label(named("_about")).has_text(contains_string("Qt " + version))
 
     def shows_pyqt_version(self, version):
-        self.label(named("_pyqt_version")).has_text(version)
+        self.label(named("_about")).has_text(contains_string("PyQt " + version))

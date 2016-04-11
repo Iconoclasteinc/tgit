@@ -27,10 +27,6 @@ import tgit
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def _python_version():
-    return "{0}.{1}.{2}".format(sys.version_info[0], sys.version_info[1], sys.version_info[2])
-
-
 def make_about_dialog(parent=None, delete_on_close=True):
     return AboutDialog(parent, delete_on_close)
 
@@ -43,9 +39,14 @@ class AboutDialog(QDialog, UIFile):
 
     def _setup_ui(self):
         self._load(":/ui/about_dialog.ui")
+        self._about.setText(self._about.text().format(self._python, QT_VERSION_STR, PYQT_VERSION_STR, self._mutagen))
         self._version.setText("v{0}".format(tgit.__version__))
-        self._mutagen_version.setText(mutagen.version_string)
-        self._python_version.setText(_python_version())
-        self._qt_version.setText(QT_VERSION_STR)
-        self._pyqt_version.setText(PYQT_VERSION_STR)
-        self._actions.accepted.connect(self.close)
+        self.adjustSize()
+
+    @property
+    def _python(self):
+        return "{0}.{1}.{2}".format(sys.version_info[0], sys.version_info[1], sys.version_info[2])
+
+    @property
+    def _mutagen(self):
+        return mutagen.version_string
