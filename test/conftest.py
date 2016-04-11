@@ -7,11 +7,6 @@ import pytest
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QApplication
 
-from cute import event_loop
-from cute.platforms import linux
-
-END_OF_TEST_PAUSE = 50 if linux else 0
-
 
 def _print_unhandled_exceptions():
     def exception_hook(exctype, value, traceback):
@@ -38,7 +33,7 @@ def qt():
     _print_unhandled_exceptions()
     application = QApplication([])
     yield application
-    event_loop.process_events_for(END_OF_TEST_PAUSE)
+    application.exit()
     # If we don't force deletion of the C++ wrapped object, it causes the test suite to eventually crash
     # Never ever remove this!!
     sip.delete(application)
