@@ -69,11 +69,11 @@ class TextField(SingleValueField):
 class RegionField(SingleValueField):
     @staticmethod
     def to_region(value):
-        return tuple(value.split("-"))
+        return tuple(value.split(" "))
 
     @staticmethod
     def to_value(region):
-        return "-".join(region)
+        return " ".join(region)
 
     def __init__(self, field_name, tag_name):
         super().__init__(field_name, tag_name, self.to_region, self.to_value)

@@ -110,8 +110,8 @@ class ProjectEditionPageDriver(ScreenDriver):
 
     def shows_main_artist_region(self, name, disabled=False):
         self.label(with_buddy(named("_main_artist_region"))).is_showing_on_screen()
-        edit = self.combobox(named("_main_artist_region"))
-        edit.has_current_text(name)
+        edit = self.lineEdit(named("_main_artist_region"))
+        edit.has_text(name)
         edit.is_disabled(disabled)
 
     def shows_main_artist_date_of_birth(self, date, disabled=False):
@@ -140,7 +140,7 @@ class ProjectEditionPageDriver(ScreenDriver):
         self.lineEdit(named("_main_artist_isni")).change_text(isni)
 
     def change_main_artist_region(self, name):
-        self.combobox(named("_main_artist_region")).select_option(name)
+        self.lineEdit(named("_main_artist_region")).change_text(name)
 
     def main_artist_date_of_birth(self, year, month, day):
         self.dateEdit(named("_main_artist_date_of_birth")).enter_date(year, month, day)

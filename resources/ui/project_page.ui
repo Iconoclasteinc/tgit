@@ -172,21 +172,21 @@ QToolTip[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="2" column="0" colspan="2">
+        <item row="1" column="0" colspan="2">
          <widget class="Line" name="_main_artist_section_separator">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="3" column="0" colspan="2">
+        <item row="2" column="0" colspan="2">
          <widget class="QLabel" name="_main_artist_section_header">
           <property name="text">
            <string>Main Artist</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="3" column="1">
          <widget class="QCheckBox" name="_compilation">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -202,7 +202,7 @@ QToolTip[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="_main_artist_caption">
           <property name="text">
            <string>Name:</string>
@@ -212,7 +212,7 @@ QToolTip[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="4" column="1">
          <widget class="QLineEdit" name="_main_artist">
           <property name="minimumSize">
            <size>
@@ -222,7 +222,7 @@ QToolTip[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="5" column="1">
          <widget class="QLabel" name="_main_artist_info">
           <property name="styleSheet">
            <string notr="true">QLabel[style=QWindowsVistaStyle] {
@@ -243,7 +243,24 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item row="6" column="0">
+         <widget class="QLabel" name="_main_artist_date_of_birth_caption">
+          <property name="text">
+           <string>Date of Birth:</string>
+          </property>
+          <property name="buddy">
+           <cstring>_main_artist_date_of_birth</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QDateEdit" name="_main_artist_date_of_birth">
+          <property name="displayFormat">
+           <string>yyyy-MM-dd</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
          <widget class="QLabel" name="_main_artist_isni_caption">
           <property name="text">
            <string>ISNI Number:</string>
@@ -253,7 +270,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
+        <item row="7" column="1">
          <layout class="QHBoxLayout" name="_main_artist_isni_container">
           <item>
            <widget class="QToolButton" name="_main_artist_isni_actions_button">
@@ -322,7 +339,7 @@ QLabel[style=QMacStyle] {
           </item>
          </layout>
         </item>
-        <item row="9" column="1">
+        <item row="8" column="1">
          <widget class="QLabel" name="_main_artist_isni_info">
           <property name="styleSheet">
            <string notr="true">QLabel[style=QWindowsVistaStyle] {
@@ -346,7 +363,7 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
-        <item row="10" column="0">
+        <item row="9" column="0">
          <widget class="QLabel" name="_main_artist_region_caption">
           <property name="text">
            <string>Origin:</string>
@@ -356,36 +373,57 @@ QLabel[style=QMacStyle] {
           </property>
          </widget>
         </item>
+        <item row="9" column="1">
+         <layout class="QHBoxLayout" name="_main_artist_region_container">
+          <property name="spacing">
+           <number>3</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="_main_artist_region">
+            <property name="inputMask">
+             <string>&gt;AA NNN;_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="HelpLabel" name="_main_artist_region_help">
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to tag the territory of origin of a project and its contributors. To do so, you must manually search the LOCODE in the United-Nations list. First chose your country (two letter code) and second, search the corresponding city list (three letter code) by holding CTRL + F (PC) or ⌘ + F (MAC) and typing the city name + Return.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="pixmap">
+             <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
         <item row="10" column="1">
-         <widget class="QComboBox" name="_main_artist_region">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <widget class="QLabel" name="label">
+          <property name="styleSheet">
+           <string notr="true">QLabel[style=QWindowsVistaStyle] {
+    font-size: 7pt;
+    margin-top: -1px;
+    margin-bottom: 1px;
+}
+
+QLabel[style=QMacStyle] {
+    font-size: 11pt;
+    margin-top: -2px;
+    margin-bottom: 2px;
+}
+</string>
           </property>
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-          <property name="insertPolicy">
-           <enum>QComboBox::InsertAtTop</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="0">
-         <widget class="QLabel" name="_main_artist_date_of_birth_caption">
           <property name="text">
-           <string>Date of Birth:</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please refer to the &lt;a href=&quot;http://www.unece.org/cefact/locode/service/location.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;UN/LOCODE code list&lt;/span&gt;&lt;/a&gt; for a full list of locations&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
-          <property name="buddy">
-           <cstring>_main_artist_date_of_birth</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QDateEdit" name="_main_artist_date_of_birth">
-          <property name="displayFormat">
-           <string>yyyy-MM-dd</string>
+          <property name="openExternalLinks">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -589,7 +627,7 @@ QLabel[style=QMacStyle] {
             <x>0</x>
             <y>0</y>
             <width>782</width>
-            <height>237</height>
+            <height>229</height>
            </rect>
           </property>
           <property name="styleSheet">
@@ -620,6 +658,7 @@ QLabel[style=QMacStyle] {
   <tabstop>_title</tabstop>
   <tabstop>_compilation</tabstop>
   <tabstop>_main_artist</tabstop>
+  <tabstop>_main_artist_date_of_birth</tabstop>
   <tabstop>_main_artist_isni_actions_button</tabstop>
   <tabstop>_main_artist_isni</tabstop>
   <tabstop>_main_artist_region</tabstop>

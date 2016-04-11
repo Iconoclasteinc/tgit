@@ -269,6 +269,16 @@
     </message>
     <message>
         <location filename="tgit/ui/project_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please refer to the &lt;a href="http://www.unece.org/cefact/locode/service/location.html"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;UN/LOCODE code list&lt;/span&gt;&lt;/a&gt; for a full list of locations&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reférez-vous à la &lt;a href="http://www.unece.org/cefact/locode/service/location.html"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;liste des codes UN/LOCODE&lt;/span&gt;&lt;/a&gt; pour une liste complète de lieux&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/project_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to tag the territory of origin of a project and its contributors. To do so, you must manually search the LOCODE in the United-Nations list. First chose your country (two letter code) and second, search the corresponding city list (three letter code) by holding CTRL + F (PC) or ⌘ + F (MAC) and typing the city name + Return.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ce champ est important pour savoir d'où proviennent un projet et ses contributeurs. Pour y parvenir, vous devez rechercher manuellement le LOCODE dans la liste fournie par les Nations-Unies en sélectionnant d'abord le pays (deux lettres) et ensuite en effectuant une recherche pour la ville (trois lettres) : tenir CTRL + F (PC) ou tenir ⌘ + F (MAC) / entrer le nom de la ville + Retour.&lt;/p&gt;&lt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/project_edition_page.py" />
         <source>3. Musicians</source>
         <translation>3. Musiciens</translation>
     </message>
@@ -907,6 +917,16 @@
         <location filename="tgit/ui/track_edition_page.py" />
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The track's main artist is the one entered for the project unless the project is a multi-artist compilation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;L&apos;artiste principal de la piste est celui saisi pour le projet sauf si le projet est une compilation multi-artiste.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to tag the territory of origin of a project and its contributors. To do so, you must manually search the LOCODE in the United-Nations list. First chose your country (two letter code) and second, search the corresponding city list (three letter code) by holding CTRL + F (PC) or ⌘ + F (MAC) and typing the city name + Return.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ce champ est important pour savoir d'où proviennent un projet et ses contributeurs. Pour y parvenir, vous devez rechercher manuellement le LOCODE dans la liste fournie par les Nations-Unies en sélectionnant d'abord le pays (deux lettres) et ensuite en effectuant une recherche pour la ville (trois lettres) : tenir CTRL + F (PC) ou tenir ⌘ + F (MAC) / entrer le nom de la ville + Retour.&lt;/p&gt;&lt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please refer to the &lt;a href="http://www.unece.org/cefact/locode/service/location.html"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;UN/LOCODE code list&lt;/span&gt;&lt;/a&gt; for a full list of locations&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reférez-vous à la &lt;a href="http://www.unece.org/cefact/locode/service/location.html"&gt;&lt;span style=" text-decoration: underline; color:#0000ff;"&gt;liste des codes UN/LOCODE&lt;/span&gt;&lt;/a&gt; pour une liste complète de lieux&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />

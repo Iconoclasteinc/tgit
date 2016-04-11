@@ -127,8 +127,8 @@ def test_reads_total_tracks_from_track_total_field(flac):
 
 
 def test_reads_lead_performer_region_from_lead_performer_region_field(flac):
-    metadata = container.load(flac(LEAD_PERFORMER_REGION="CA-QC"))
-    assert_that(metadata, has_entry('lead_performer_region', ("CA", "QC")), 'metadata')
+    metadata = container.load(flac(LEAD_PERFORMER_REGION="CA MTL"))
+    assert_that(metadata, has_entry('lead_performer_region', ("CA", "MTL")), "metadata")
 
 
 def test_reads_lead_performer_date_of_birth_from_lead_performer_date_of_birth_field(flac):
@@ -147,8 +147,8 @@ def test_reads_production_company_from_producer_field(flac):
 
 
 def test_reads_production_company_region_from_producer_region_field(flac):
-    metadata = container.load(flac(PRODUCER_REGION="CA-QC"))
-    assert_that(metadata, has_entry('production_company_region', ("CA", "QC")), 'metadata')
+    metadata = container.load(flac(PRODUCER_REGION="CA MTL"))
+    assert_that(metadata, has_entry('production_company_region', ("CA", "MTL")), "metadata")
 
 
 def test_reads_music_producer_from_music_producer_field(flac):
@@ -162,8 +162,8 @@ def test_reads_recording_studio_from_recording_studio_field(flac):
 
 
 def test_reads_recording_studio_region_from_recording_studio_region_field(flac):
-    metadata = container.load(flac(RECORDING_STUDIO_REGION="CA-QC"))
-    assert_that(metadata, has_entry("recording_studio_region", ("CA", "QC")), "metadata")
+    metadata = container.load(flac(RECORDING_STUDIO_REGION="CA MTL"))
+    assert_that(metadata, has_entry("recording_studio_region", ("CA", "MTL")), "metadata")
 
 
 def test_reads_catalognumber_from_catalog_number_field(flac):
@@ -247,7 +247,7 @@ def test_round_trips_metadata_to_file(flac):
     metadata.addImage("image/jpeg", b"honeycomb.jpg", Image.FRONT_COVER)
     metadata["release_name"] = "St-Henri"
     metadata["lead_performer"] = "Joel Miller"
-    metadata["lead_performer_region"] = ("CA", "QC")
+    metadata["lead_performer_region"] = ("CA", "MTL")
     metadata["isnis"] = {"Joel Miller": "0000000123456789", "Rebecca Ann Maloy": "9876543210000000"}
     metadata["ipis"] = {"Joel Miller": "0000000123456789", "Rebecca Ann Maloy": "9876543210000000"}
     metadata["label_name"] = "Effendi Records Inc."
@@ -262,9 +262,9 @@ def test_round_trips_metadata_to_file(flac):
     metadata["track_number"] = 3
     metadata["total_tracks"] = 5
     metadata["recording_studio"] = "Effendi Records Inc."
-    metadata["recording_studio_region"] = ("CA", "QC")
+    metadata["recording_studio_region"] = ("CA", "MTL")
     metadata["production_company"] = "Effendi Records Inc."
-    metadata["production_company_region"] = ("CA", "QC")
+    metadata["production_company_region"] = ("CA", "MTL")
     metadata["music_producer"] = "Joel Miller & Paul Johnston"
     metadata["lyricist"] = "Joel Miller"
     metadata["catalog_number"] = "001-002-003"

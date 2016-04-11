@@ -331,12 +331,12 @@ class TrackEditionPageDriver(ScreenDriver):
     def shows_recording_studio_region(self, name):
         self._select_recording_tab()
         self.label(with_buddy(named("_recording_studio_region"))).is_showing_on_screen()
-        edit = self.combobox(named("_recording_studio_region"))
-        edit.has_current_text(name)
+        edit = self.lineEdit(named("_recording_studio_region"))
+        edit.has_text(name)
 
     def change_recording_studio_region(self, name):
         self._select_recording_tab()
-        self.combobox(named("_recording_studio_region")).select_option(name)
+        self.lineEdit(named("_recording_studio_region")).change_text(name)
 
     def shows_production_company(self, producer):
         self._select_recording_tab()
@@ -350,12 +350,12 @@ class TrackEditionPageDriver(ScreenDriver):
     def shows_production_company_region(self, name):
         self._select_recording_tab()
         self.label(with_buddy(named("_production_company_region"))).is_showing_on_screen()
-        edit = self.combobox(named("_production_company_region"))
-        edit.has_current_text(name)
+        edit = self.lineEdit(named("_production_company_region"))
+        edit.has_text(name)
 
     def change_production_company_region(self, name):
         self._select_recording_tab()
-        self.combobox(named("_production_company_region")).select_option(name)
+        self.lineEdit(named("_production_company_region")).change_text(name)
 
     def shows_music_producer(self, producer):
         self._select_recording_tab()

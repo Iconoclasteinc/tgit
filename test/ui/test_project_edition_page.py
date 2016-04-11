@@ -70,7 +70,7 @@ def test_displays_project_metadata(driver):
     _ = show_page(make_album(
         release_name="Album",
         lead_performer="Artist",
-        lead_performer_region=("CA",),
+        lead_performer_region=("CA", "MTL"),
         lead_performer_date_of_birth="2009-05-06",
         isnis={"Artist": "0000000123456789"},
         guest_performers=[("Guitar", "Guitarist"), ("Piano", "Pianist")],
@@ -82,7 +82,7 @@ def test_displays_project_metadata(driver):
     driver.shows_title("Album")
     driver.shows_compilation(False)
     driver.shows_main_artist("Artist")
-    driver.shows_main_artist_region("Canada")
+    driver.shows_main_artist_region("CA MTL")
     driver.shows_main_artist_isni("0000000123456789")
     driver.shows_main_artist_date_of_birth("2009-05-06")
     driver.shows_label_name("Label")
@@ -103,7 +103,7 @@ def test_indicates_whether_project_is_a_compilation(driver):
 def test_disables_main_artist_section_when_project_is_a_compilation(driver):
     _ = show_page(make_album(compilation=True))
     driver.shows_main_artist("Various Artists", disabled=True)
-    driver.shows_main_artist_region("", disabled=True)
+    driver.shows_main_artist_region("__ ___", disabled=True)
     driver.shows_main_artist_isni("", disabled=True)
     driver.shows_main_artist_isni_lookup_button(disabled=True)
     driver.shows_main_artist_date_of_birth("2000-01-01", disabled=True)
@@ -113,7 +113,7 @@ def test_enables_main_artist_section_when_project_is_no_longer_a_compilation(dri
     album = make_album(compilation=False)
     _ = show_page(album, make_registered_session())
     driver.shows_main_artist("", disabled=False)
-    driver.shows_main_artist_region("", disabled=False)
+    driver.shows_main_artist_region("__ ___", disabled=False)
     driver.shows_main_artist_isni("", disabled=False)
     driver.shows_main_artist_isni_lookup_button(disabled=True)
 
@@ -225,12 +225,8 @@ def test_signals_when_project_metadata_edited(driver):
     driver.main_artist_date_of_birth(2009, 11, 21)
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(lead_performer_region=("CA",)))
-    driver.change_main_artist_region("Canada")
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(lead_performer_region=None))
-    driver.change_main_artist_region("")
+    metadata_changed_signal.expect(has_entries(lead_performer_region=("CA", "MTL")))
+    driver.change_main_artist_region("CA MTL")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(label_name="Label"))

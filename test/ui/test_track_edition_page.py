@@ -67,9 +67,9 @@ def test_displays_track_metadata(driver):
                        language="eng",
                        recording_time="2008-09-15",
                        production_company="Initial Producer",
-                       production_company_region=("CA",),
+                       production_company_region=("CA", "MTL"),
                        recording_studio="Studio A, Studio B",
-                       recording_studio_region=("CA",),
+                       recording_studio_region=("CA", "MTL"),
                        music_producer="Artistic Producer",
                        mixer="Mixing Engineer",
                        primary_style="Style")
@@ -97,9 +97,9 @@ def test_displays_track_metadata(driver):
     driver.shows_lyrics("Lyrics\n...\n...")
     driver.shows_language("English")
     driver.shows_recording_studio("Studio A, Studio B")
-    driver.shows_recording_studio_region("Canada")
+    driver.shows_recording_studio_region("CA MTL")
     driver.shows_production_company("Initial Producer")
-    driver.shows_production_company_region("Canada")
+    driver.shows_production_company_region("CA MTL")
     driver.shows_recording_time("2008-09-15")
     driver.shows_music_producer("Artistic Producer")
     driver.shows_mixer("Mixing Engineer")
@@ -184,24 +184,16 @@ def test_signals_when_track_metadata_change(driver):
     driver.change_production_company("Producer")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(production_company_region=("CA",)))
-    driver.change_production_company_region("Canada")
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(production_company_region=None))
-    driver.change_production_company_region("")
+    metadata_changed_signal.expect(has_entries(production_company_region=("CA", "MTL")))
+    driver.change_production_company_region("CA MTL")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(recording_studio="Studios"))
     driver.change_recording_studio("Studios")
     driver.check(metadata_changed_signal)
 
-    metadata_changed_signal.expect(has_entries(recording_studio_region=("CA",)))
-    driver.change_recording_studio_region("Canada")
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(recording_studio_region=None))
-    driver.change_recording_studio_region("")
+    metadata_changed_signal.expect(has_entries(recording_studio_region=("CA", "MTL")))
+    driver.change_recording_studio_region("CA MTL")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(music_producer="Producer"))

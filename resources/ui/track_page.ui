@@ -1181,13 +1181,33 @@ QLabel[style=QMacStyle] {
          </attribute>
          <layout class="QFormLayout" name="formLayout_4">
           <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="label_2">
+            <property name="styleSheet">
+             <string notr="true">QLabel[style=QWindowsVistaStyle] {
+    font-size: 7pt;
+}
+
+QLabel[style=QMacStyle] {
+    font-size: 11pt;
+}
+</string>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please refer to the &lt;a href=&quot;http://www.unece.org/cefact/locode/service/location.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;UN/LOCODE code list&lt;/span&gt;&lt;/a&gt; for a full list of locations&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="openExternalLinks">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
            <widget class="QLabel" name="_production_company_header">
             <property name="text">
              <string>Production Company</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="_production_company_caption">
             <property name="text">
              <string>Name:</string>
@@ -1197,7 +1217,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="3" column="1">
            <widget class="QLineEdit" name="_production_company">
             <property name="minimumSize">
              <size>
@@ -1207,7 +1227,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="_production_company_region_caption">
             <property name="text">
              <string>Location:</string>
@@ -1217,34 +1237,21 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="_production_company_region">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="2">
+          <item row="5" column="0" colspan="2">
            <widget class="Line" name="line_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="6" column="0" colspan="2">
            <widget class="QLabel" name="_recording_studio_header">
             <property name="text">
              <string>Recording Studio</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
+          <item row="7" column="0">
            <widget class="QLabel" name="_recording_studio_caption">
             <property name="text">
              <string>Name:</string>
@@ -1254,7 +1261,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="7" column="1">
            <widget class="QLineEdit" name="_recording_studio">
             <property name="minimumSize">
              <size>
@@ -1264,7 +1271,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="8" column="0">
            <widget class="QLabel" name="_recording_studio_region_caption">
             <property name="text">
              <string>Location:</string>
@@ -1274,27 +1281,34 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
-           <widget class="QComboBox" name="_recording_studio_region">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
-             </sizepolicy>
+          <item row="9" column="0">
+           <widget class="QLabel" name="_recording_time_caption">
+            <property name="text">
+             <string>Recording Date:</string>
             </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
+            <property name="buddy">
+             <cstring>_recording_time</cstring>
             </property>
            </widget>
           </item>
-          <item row="8" column="0" colspan="2">
+          <item row="9" column="1">
+           <widget class="QDateEdit" name="_recording_time">
+            <property name="accelerated">
+             <bool>true</bool>
+            </property>
+            <property name="displayFormat">
+             <string>yyyy-MM-dd</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0" colspan="2">
            <widget class="Line" name="line_5">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
+          <item row="11" column="0">
            <widget class="QLabel" name="_music_producer_caption">
             <property name="text">
              <string>Music Producer:</string>
@@ -1304,7 +1318,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="9" column="1">
+          <item row="11" column="1">
            <widget class="QLineEdit" name="_music_producer">
             <property name="minimumSize">
              <size>
@@ -1314,7 +1328,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="10" column="0">
+          <item row="12" column="0">
            <widget class="QLabel" name="_mixer_caption">
             <property name="text">
              <string>Mixer:</string>
@@ -1324,7 +1338,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="10" column="1">
+          <item row="12" column="1">
            <widget class="QLineEdit" name="_mixer">
             <property name="minimumSize">
              <size>
@@ -1334,7 +1348,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="11" column="0" colspan="2">
+          <item row="13" column="0" colspan="2">
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -1347,25 +1361,72 @@ QLabel[style=QMacStyle] {
             </property>
            </spacer>
           </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="_recording_time_caption">
-            <property name="text">
-             <string>Recording Date:</string>
-            </property>
-            <property name="buddy">
-             <cstring>_recording_time</cstring>
+          <item row="1" column="0" colspan="2">
+           <widget class="Line" name="line_6">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
-           <widget class="QDateEdit" name="_recording_time">
-            <property name="accelerated">
-             <bool>true</bool>
+          <item row="4" column="1">
+           <layout class="QHBoxLayout" name="_production_company_region_container">
+            <property name="spacing">
+             <number>3</number>
             </property>
-            <property name="displayFormat">
-             <string>yyyy-MM-dd</string>
+            <item>
+             <widget class="QLineEdit" name="_production_company_region">
+              <property name="inputMask">
+               <string>&gt;AA NNN;_</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="HelpLabel" name="_production_company_region_help">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to tag the territory of origin of a project and its contributors. To do so, you must manually search the LOCODE in the United-Nations list. First chose your country (two letter code) and second, search the corresponding city list (three letter code) by holding CTRL + F (PC) or ⌘ + F (MAC) and typing the city name + Return.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="8" column="1">
+           <layout class="QHBoxLayout" name="_recording_studio_region_container">
+            <property name="spacing">
+             <number>3</number>
             </property>
-           </widget>
+            <item>
+             <widget class="QLineEdit" name="_recording_studio_region">
+              <property name="inputMask">
+               <string>&gt;AA NNN;_</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="HelpLabel" name="_recording_studio_region_help">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This field is important to tag the territory of origin of a project and its contributors. To do so, you must manually search the LOCODE in the United-Nations list. First chose your country (two letter code) and second, search the corresponding city list (three letter code) by holding CTRL + F (PC) or ⌘ + F (MAC) and typing the city name + Return.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../resources.qrc">:/icons/help</pixmap>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -1443,16 +1504,27 @@ QLabel[style=QMacStyle] {
  </customwidgets>
  <tabstops>
   <tabstop>_track_title</tabstop>
+  <tabstop>_main_artist</tabstop>
   <tabstop>_featured_guest</tabstop>
+  <tabstop>_version</tabstop>
+  <tabstop>_isrc</tabstop>
   <tabstop>_iswc</tabstop>
   <tabstop>_tags</tabstop>
   <tabstop>_genre</tabstop>
   <tabstop>_comments</tabstop>
   <tabstop>_tabs</tabstop>
   <tabstop>_lyricist</tabstop>
+  <tabstop>_lyricist_ipi</tabstop>
   <tabstop>_lyricist_isni_actions_button</tabstop>
+  <tabstop>_lyricist_isni</tabstop>
+  <tabstop>_composer</tabstop>
+  <tabstop>_composer_ipi</tabstop>
   <tabstop>_composer_isni_actions_button</tabstop>
+  <tabstop>_composer_isni</tabstop>
+  <tabstop>_publisher</tabstop>
+  <tabstop>_publisher_ipi</tabstop>
   <tabstop>_publisher_isni_actions_button</tabstop>
+  <tabstop>_publisher_isni</tabstop>
   <tabstop>_production_company</tabstop>
   <tabstop>_production_company_region</tabstop>
   <tabstop>_recording_studio</tabstop>

@@ -77,11 +77,11 @@ class BooleanProcessor(TextProcessor):
 class RegionProcessor(TextProcessor):
     @staticmethod
     def to_region(frame):
-        return tuple(str(frame).split("-"))
+        return tuple(str(frame).split(" "))
 
     @staticmethod
     def to_text(value):
-        return "-".join(value)
+        return " ".join(value)
 
     def __init__(self, key, tag):
         super().__init__(key, tag, self.to_region, self.to_text)
@@ -367,7 +367,7 @@ class ID3Container:
         "TXXX:TAGGER": "tagger",
         "TXXX:TAGGER_VERSION": "tagger_version",
         "TXXX:Tags": "labels",
-        "TXXX:LEAD_PERFORMER_DATE_OF_BIRTH": "lead_performer_date_of_birth",
+        "TXXX:LEAD-PERFORMER-DATE-OF-BIRTH": "lead_performer_date_of_birth",
         "COMM::fra": "comments",
         "USLT::fra": "lyrics",
         "TCON": "primary_style"

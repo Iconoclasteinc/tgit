@@ -16,14 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-import operator
 
 from PyQt5.QtCore import pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget
 
 from tgit import imager
 from tgit.album import AlbumListener
-from tgit.countries import COUNTRIES
 from tgit.genres import GENRES
 from tgit.languages import LANGUAGES
 from tgit.ui import pixmap
@@ -62,12 +60,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._setup_ui()
 
     def _setup_ui(self):
-        def fill_with_countries(combobox):
-            for code, name in sorted(COUNTRIES.items(), key=operator.itemgetter(1)):
-                combobox.addItem(name, code)
-            combobox.insertItem(0, "")
-            combobox.setCurrentIndex(0)
-
         def fill_with_languages(combobox):
             for code, name in sorted(LANGUAGES.items(), key=lambda item: self.tr(item[1])):
                 combobox.addItem(self.tr(name), code)
@@ -79,8 +71,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._album_cover.setPixmap(self._no_cover)
         self._genre.addItems(sorted(GENRES))
         fill_with_languages(self._language)
-        fill_with_countries(self._production_company_region)
-        fill_with_countries(self._recording_studio_region)
 
     def albumStateChanged(self, album):
         self.display(album=album)
@@ -105,11 +95,11 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._language.activated.connect(handle)
 
         self._recording_studio.editingFinished.connect(handle)
-        self._recording_studio_region.activated.connect(handle)
+        self._recording_studio_region.editingFinished.connect(handle)
         self._recording_time.dateChanged.connect(handle)
         self._music_producer.editingFinished.connect(handle)
         self._production_company.editingFinished.connect(handle)
-        self._production_company_region.activated.connect(handle)
+        self._production_company_region.editingFinished.connect(handle)
         self._mixer.editingFinished.connect(handle)
         self._genre.activated.connect(handle)
         self._genre.lineEdit().textEdited.connect(handle)
@@ -202,9 +192,9 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._publisher_ipi.setText(ipis.get(track.publisher))
 
     @staticmethod
-    def _display_region(region, combobox):
-        if region:
-            combobox.setCurrentText(COUNTRIES[region[0]])
+    def _display_region(region, field):
+        if region is not None:
+            field.setText("{} {}".format(region[0], region[1]))
 
     def _display_album_cover(self, picture):
         # Cache the cover image to avoid recomputing the image each time the screen updates
@@ -251,11 +241,11 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         lyricist=self._lyricist.text(),
                         language=self._language.currentData(),
                         recording_studio=self._recording_studio.text(),
-                        recording_studio_region=self._get_country_code_from_combo(self._recording_studio_region),
+                        recording_studio_region=self._get_locode(self._recording_studio_region),
                         recording_time=self._recording_time.date().toString(ISO_8601_FORMAT),
                         music_producer=self._music_producer.text(),
                         production_company=self._production_company.text(),
-                        production_company_region=self._get_country_code_from_combo(self._production_company_region),
+                        production_company_region=self._get_locode(self._production_company_region),
                         mixer=self._mixer.text(),
                         primary_style=self._genre.currentText())
 
@@ -265,5 +255,12 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         return metadata
 
     @staticmethod
-    def _get_country_code_from_combo(combo):
-        return (combo.currentData(),) if combo.currentIndex() > 0 else None
+    def _get_locode(field):
+        locode = field.text().strip()
+        if not locode:
+            return None
+
+        fragments = locode.split(" ")
+        if len(fragments) > 1:
+            return fragments[0], fragments[1]
+        return fragments[0],

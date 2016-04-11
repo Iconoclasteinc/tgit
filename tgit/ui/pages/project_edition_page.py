@@ -77,7 +77,6 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
     def _setup_ui(self, track_list_tab, musician_tab):
         self._load(":/ui/project_page.ui")
-        self._fill_with_countries(self._main_artist_region)
         # We can't use class attributes because we need Qt to be initialized
         self._no_cover = pixmap.none(*self.FRONT_COVER_SIZE)
         self._broken_cover = pixmap.broken(*self.FRONT_COVER_SIZE)
@@ -119,7 +118,7 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._title.editingFinished.connect(lambda: handle("release_name"))
         self._compilation.clicked.connect(lambda: handle("compilation"))
         self._main_artist.editingFinished.connect(lambda: handle("lead_performer"))
-        self._main_artist_region.currentIndexChanged.connect(lambda: handle("lead_performer_region"))
+        self._main_artist_region.editingFinished.connect(lambda: handle("lead_performer_region"))
         self._main_artist_date_of_birth.dateChanged.connect(lambda: handle("lead_performer_date_of_birth"))
         self._label_name.editingFinished.connect(lambda: handle("label_name"))
         self._catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
@@ -173,16 +172,15 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_date_of_birth.setDisabled(is_compilation())
         self._main_artist_date_of_birth_caption.setDisabled(is_compilation())
 
-        if is_compilation() or not album.lead_performer_region:
-            self._main_artist_region.setCurrentIndex(0)
-        else:
-            self._main_artist_region.setCurrentText(COUNTRIES[album.lead_performer_region[0]])
+        if album.lead_performer_region is not None:
+            self._main_artist_region.setText(
+                "{} {}".format(album.lead_performer_region[0], album.lead_performer_region[1]))
 
     def _metadata(self, *keys):
         all_values = dict(release_name=self._title.text(),
                           compilation=self._compilation.isChecked(),
                           lead_performer=self._main_artist.text(),
-                          lead_performer_region=self._get_country_code_from_combo(self._main_artist_region),
+                          lead_performer_region=self._get_locode(),
                           lead_performer_date_of_birth=self._main_artist_date_of_birth.date().toString(ISO_8601_FORMAT),
                           label_name=self._label_name.text(),
                           catalog_number=self._catalog_number.text(),
@@ -194,9 +192,15 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
 
         return {k: all_values.get(k, None) for k in keys}
 
-    @staticmethod
-    def _get_country_code_from_combo(combo):
-        return (combo.currentData(),) if combo.currentIndex() > 0 else None
+    def _get_locode(self):
+        locode = self._main_artist_region.text().strip()
+        if not locode:
+            return None
+
+        fragments = locode.split(" ")
+        if len(fragments) > 1:
+            return fragments[0], fragments[1]
+        return fragments[0],
 
     def _update_isni_menu(self):
         def _is_blank(text):

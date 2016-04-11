@@ -233,8 +233,8 @@ def test_reads_total_tracks_from_trck_frame(mp3):
 
 
 def test_reads_lead_performer_region_from_custom_frame(mp3):
-    metadata = container.load(mp3(TXXX_LEAD_PERFORMER_REGION="CA-QC"))
-    assert_that(metadata, has_entry("lead_performer_region", ("CA", "QC")), "metadata")
+    metadata = container.load(mp3(TXXX_LEAD_PERFORMER_REGION="CA MTL"))
+    assert_that(metadata, has_entry("lead_performer_region", ("CA", "MTL")), "metadata")
 
 
 def test_reads_lead_performer_date_of_birth_from_custom_frame(mp3):
@@ -248,13 +248,13 @@ def test_reads_production_company_from_custom_frame(mp3):
 
 
 def test_reads_production_company_region_from_custom_frame(mp3):
-    metadata = container.load(mp3(TXXX_PRODUCTION_COMPANY_REGION="CA-QC"))
-    assert_that(metadata, has_entry("production_company_region", ("CA", "QC")), "metadata")
+    metadata = container.load(mp3(TXXX_PRODUCTION_COMPANY_REGION="CA MTL"))
+    assert_that(metadata, has_entry("production_company_region", ("CA", "MTL")), "metadata")
 
 
 def test_reads_recording_studio_region_from_custom_frame(mp3):
-    metadata = container.load(mp3(TXXX_RECORDING_STUDIO_REGION="CA-QC"))
-    assert_that(metadata, has_entry("recording_studio_region", ("CA", "QC")), "metadata")
+    metadata = container.load(mp3(TXXX_RECORDING_STUDIO_REGION="CA MTL"))
+    assert_that(metadata, has_entry("recording_studio_region", ("CA", "MTL")), "metadata")
 
 
 def test_round_trips_empty_metadata_to_file(mp3):
@@ -267,7 +267,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["release_name"] = "Album"
     metadata["compilation"] = True
     metadata["lead_performer"] = "Lead Performer"
-    metadata["lead_performer_region"] = ("CA", "QC")
+    metadata["lead_performer_region"] = ("CA", "MTL")
     metadata["isnis"] = {"Lead Performer": "0000123456789",
                          "Lyricist": "0000123456789"}
     metadata["ipis"] = {"Lyricist": "0000123456789"}
@@ -275,14 +275,14 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["guest_performers"] = [("Guitar", "Guitarist"), ("Guitar", "Bassist"), ("Piano", "Pianist")]
     metadata["label_name"] = "Label Name"
     metadata["production_company"] = "Production Company"
-    metadata["production_company_region"] = ("CA", "QC")
+    metadata["production_company_region"] = ("CA", "MTL")
     metadata["catalog_number"] = "123 456-1"
     metadata["upc"] = "987654321111"
     metadata["recording_time"] = "2012-07-01"
     metadata["release_time"] = "2013-12-01"
     metadata["original_release_time"] = "1999-01-01"
     metadata["recording_studio"] = "Studio Name"
-    metadata["recording_studio_region"] = ("CA", "QC")
+    metadata["recording_studio_region"] = ("CA", "MTL")
     metadata["music_producer"] = "Music Producer"
     metadata["mixer"] = "Mixing Engineer"
     metadata["contributors"] = [("recording", "Recording Eng."),
