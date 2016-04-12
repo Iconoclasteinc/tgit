@@ -37,15 +37,20 @@ def _decompose(key):
 
 
 class TextProcessor:
-    def __init__(self, key, tag, frame_to_tag, tag_to_frame):
+    def __init__(self, key, tag, frame_to_tag, tag_to_frame, optional_description=None):
+        self._optional_description = optional_description
         self._key = key
         self._tag = tag
         self._to_tag = frame_to_tag
         self._to_frame = tag_to_frame
 
     def process_frames(self, metadata, frames):
-        if self._key in frames:
-            frame = frames[self._key]
+        key = self._key
+        if self._optional_description is not None:
+            key += ":{}".format(self._optional_description)
+
+        if key in frames:
+            frame = frames[key]
             metadata[self._tag] = self._to_tag(frame)
 
     def process_metadata(self, frames, encoding, metadata):
@@ -53,7 +58,10 @@ class TextProcessor:
         text = metadata[self._tag]
         frames.delall(self._key)
         if text:
-            frames.add(getattr(id3, frame)(encoding=encoding, desc=desc, lang=lang, text=self._to_frame(text)))
+            description = desc
+            if self._optional_description is not None:
+                description += ":{}".format(self._optional_description)
+            frames.add(getattr(id3, frame)(encoding=encoding, desc=description, lang=lang, text=self._to_frame(text)))
 
 
 class UnicodeProcessor(TextProcessor):
@@ -84,7 +92,7 @@ class RegionProcessor(TextProcessor):
         return " ".join(value)
 
     def __init__(self, key, tag):
-        super().__init__(key, tag, self.to_region, self.to_text)
+        super().__init__(key, tag, self.to_region, self.to_text, optional_description="UN/LOCODE")
 
 
 class MultiValueNumericProcessor:
