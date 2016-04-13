@@ -1175,6 +1175,59 @@ QLabel[style=QMacStyle] {
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="_lyrics_tab">
+         <attribute name="title">
+          <string>Lyrics</string>
+         </attribute>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="_lyrics_caption">
+            <property name="text">
+             <string>Text:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_lyrics</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="TextArea" name="_lyrics">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="_language_caption">
+            <property name="text">
+             <string>Language:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_language</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="_language">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
         <widget class="QWidget" name="_recording_tab">
          <attribute name="title">
           <string>Recording</string>
@@ -1427,59 +1480,6 @@ QLabel[style=QMacStyle] {
              </widget>
             </item>
            </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="_lyrics_tab">
-         <attribute name="title">
-          <string>Lyrics</string>
-         </attribute>
-         <layout class="QFormLayout" name="formLayout_3">
-          <item row="1" column="0" colspan="2">
-           <widget class="QLabel" name="_lyrics_caption">
-            <property name="text">
-             <string>Text:</string>
-            </property>
-            <property name="buddy">
-             <cstring>_lyrics</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="TextArea" name="_lyrics">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="tabChangesFocus">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="_language_caption">
-            <property name="text">
-             <string>Language:</string>
-            </property>
-            <property name="buddy">
-             <cstring>_language</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QComboBox" name="_language">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
