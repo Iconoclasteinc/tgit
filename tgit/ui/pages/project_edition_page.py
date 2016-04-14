@@ -151,30 +151,30 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         scaled_cover = pixmap.from_image(imager.scale(cover, *self.FRONT_COVER_SIZE))
         return self._broken_cover if scaled_cover.isNull() else scaled_cover
 
-    def _display_main_artist(self, album):
-        def displayed_main_artist():
-            return self.tr("Various Artists") if is_compilation() else album.lead_performer
+    def _display_main_artist(self, project):
+        is_compilation = project.compilation is True
 
-        def is_compilation():
-            return album.compilation is True
+        self._compilation.setChecked(is_compilation)
+        self._main_artist.setDisabled(is_compilation)
+        self._main_artist.setText(self.tr("Various Artists") if is_compilation else project.lead_performer)
+        self._main_artist_caption.setDisabled(is_compilation)
+        self._main_artist_isni.setDisabled(is_compilation)
+        self._main_artist_isni.setText((project.isnis or {}).get(project.lead_performer))
+        self._main_artist_isni_caption.setDisabled(is_compilation)
+        self._main_artist_isni_help.setDisabled(is_compilation)
+        self._main_artist_region.setDisabled(is_compilation)
+        self._main_artist_region_caption.setDisabled(is_compilation)
+        self._main_artist_region_help.setDisabled(is_compilation)
+        self._main_artist_date_of_birth.setDisabled(is_compilation)
+        self._main_artist_date_of_birth_caption.setDisabled(is_compilation)
+        self._main_artist_date_of_birth.setDate(
+            QDate.fromString(project.lead_performer_date_of_birth, ISO_8601_FORMAT))
 
-        self._compilation.setChecked(is_compilation())
-        self._main_artist.setDisabled(is_compilation())
-        self._main_artist.setText(displayed_main_artist())
-        self._main_artist_caption.setDisabled(is_compilation())
-        self._main_artist_isni.setDisabled(is_compilation())
-        self._main_artist_isni.setText((album.isnis or {}).get(album.lead_performer))
-        self._main_artist_isni_caption.setDisabled(is_compilation())
-        self._main_artist_isni_help.setDisabled(is_compilation())
-        self._main_artist_region.setDisabled(is_compilation())
-        self._main_artist_region_caption.setDisabled(is_compilation())
-        self._main_artist_date_of_birth.setDate(QDate.fromString(album.lead_performer_date_of_birth, ISO_8601_FORMAT))
-        self._main_artist_date_of_birth.setDisabled(is_compilation())
-        self._main_artist_date_of_birth_caption.setDisabled(is_compilation())
-
-        if album.lead_performer_region is not None:
+        if project.lead_performer_region is not None:
             self._main_artist_region.setText(
-                "{} {}".format(album.lead_performer_region[0], album.lead_performer_region[1]))
+                "{} {}".format(project.lead_performer_region[0], project.lead_performer_region[1]))
+        else:
+            self._main_artist_region.setText("")
 
     def _metadata(self, *keys):
         all_values = dict(release_name=self._title.text(),

@@ -101,7 +101,7 @@ def test_indicates_whether_project_is_a_compilation(driver):
 
 
 def test_disables_main_artist_section_when_project_is_a_compilation(driver):
-    _ = show_page(make_album(compilation=True))
+    _ = show_page(make_album(compilation=True), make_registered_session())
     driver.shows_main_artist("Various Artists", disabled=True)
     driver.shows_main_artist_region("__ ___", disabled=True)
     driver.shows_main_artist_isni("", disabled=True)
@@ -110,12 +110,13 @@ def test_disables_main_artist_section_when_project_is_a_compilation(driver):
 
 
 def test_enables_main_artist_section_when_project_is_no_longer_a_compilation(driver):
-    album = make_album(compilation=False)
-    _ = show_page(album, make_registered_session())
-    driver.shows_main_artist("", disabled=False)
-    driver.shows_main_artist_region("__ ___", disabled=False)
-    driver.shows_main_artist_isni("", disabled=False)
+    _ = show_page(make_album(compilation=False), make_registered_session())
+
+    driver.shows_main_artist("")
+    driver.shows_main_artist_region("__ ___")
+    driver.shows_main_artist_isni("")
     driver.shows_main_artist_isni_lookup_button(disabled=True)
+    driver.shows_main_artist_date_of_birth("2000-01-01")
 
 
 def test_disables_isni_lookup_when_main_artist_is_empty(driver):

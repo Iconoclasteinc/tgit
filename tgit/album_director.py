@@ -56,6 +56,8 @@ def update_album_from(album):
 
         if metadata.get("compilation") is True:
             album.lead_performer = ""
+            album.lead_performer_region = None
+            album.lead_performer_date_of_birth = "2000-01-01"
             for track in album.tracks:
                 track.lead_performer = ""
 

@@ -171,6 +171,22 @@ def test_updates_album_main_artist_when_album_is_a_compilation():
     assert_that(album.lead_performer, equal_to(""), "lead performer")
 
 
+def test_updates_album_main_artist_region_when_album_is_a_compilation():
+    album = build.album()
+    director.update_album_from(album)(compilation=True, lead_performer_region=("CA", "MTL"))
+
+    assert_that(album.compilation, is_(True), "compilation")
+    assert_that(album.lead_performer_region, is_(None), "lead performer region")
+
+
+def test_updates_album_main_artist_date_of_birth_when_album_is_a_compilation():
+    album = build.album()
+    director.update_album_from(album)(compilation=True, lead_performer_date_of_birth="2009-05-06")
+
+    assert_that(album.compilation, is_(True), "compilation")
+    assert_that(album.lead_performer_date_of_birth, equal_to("2000-01-01"), "lead performer date of birth")
+
+
 def test_updates_tracks_main_artist_when_album_is_not_a_compilation():
     album = build.album(tracks=[build.track(), build.track(), build.track()])
     director.update_album_from(album)(lead_performer="Album Artist")
