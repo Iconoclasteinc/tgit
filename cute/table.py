@@ -61,6 +61,9 @@ class Table:
     def widget_at(self, row, col):
         return self.widget.indexWidget(self.index(row, col))
 
+    def item_at(self, row, col):
+        return self.widget.item(row, col)
+
     def index(self, row, col):
         return self.widget.model().index(self._logical_row(row), self._logical_col(col))
 

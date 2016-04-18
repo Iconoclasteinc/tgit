@@ -31,17 +31,18 @@ from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.pages.project_edition_page import ISO_8601_FORMAT
 
 
-def make_track_edition_page(album, track, **handlers):
-    page = TrackEditionPage()
-    page.display(album=album, track=track)
+def make_track_edition_page(project, track, contributors_tab, **handlers):
+    contributors = contributors_tab(project, track)
+    page = TrackEditionPage(contributors)
+    page.display(album=project, track=track)
 
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
     subscription = track.metadata_changed.subscribe(page.display_track)
     page.closed.connect(lambda: subscription.cancel())
-    album.addAlbumListener(page)
-    page.closed.connect(lambda: album.removeAlbumListener(page))
+    project.addAlbumListener(page)
+    page.closed.connect(lambda: project.removeAlbumListener(page))
 
     return page
 
@@ -55,11 +56,11 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     _cover = None
 
-    def __init__(self):
+    def __init__(self, contributors_tab):
         super().__init__()
-        self._setup_ui()
+        self._setup_ui(contributors_tab)
 
-    def _setup_ui(self):
+    def _setup_ui(self, contributors_tab):
         def fill_with_languages(combobox):
             for code, name in sorted(LANGUAGES.items(), key=lambda item: self.tr(item[1])):
                 combobox.addItem(self.tr(name), code)
@@ -71,6 +72,8 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._album_cover.setPixmap(self._no_cover)
         self._genre.addItems(sorted(GENRES))
         fill_with_languages(self._language)
+
+        self._tabs.widget(0).layout().addWidget(contributors_tab)
 
     def albumStateChanged(self, album):
         self.display(album=album)
@@ -84,9 +87,9 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._version.editingFinished.connect(handle)
         self._featured_guest.editingFinished.connect(handle)
         self._comments.editingFinished.connect(handle)
-        self._lyricist.editingFinished.connect(handle)
-        self._composer.editingFinished.connect(handle)
-        self._publisher.editingFinished.connect(handle)
+        # self._lyricist.editingFinished.connect(handle)
+        # self._composer.editingFinished.connect(handle)
+        # self._publisher.editingFinished.connect(handle)
         self._isrc.editingFinished.connect(handle)
         self._iswc.editingFinished.connect(handle)
         self._tags.editingFinished.connect(handle)
@@ -105,23 +108,26 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._genre.lineEdit().textEdited.connect(handle)
 
     def on_isni_local_lookup(self, handler):
-        self._lyricist.textEdited.connect(lambda text: self._lyricist_isni.setText(handler(text)))
-        self._composer.textEdited.connect(lambda text: self._composer_isni.setText(handler(text)))
-        self._publisher.textEdited.connect(lambda text: self._publisher_isni.setText(handler(text)))
+        # self._lyricist.textEdited.connect(lambda text: self._lyricist_isni.setText(handler(text)))
+        # self._composer.textEdited.connect(lambda text: self._composer_isni.setText(handler(text)))
+        # self._publisher.textEdited.connect(lambda text: self._publisher_isni.setText(handler(text)))
+        pass
 
     def on_ipi_local_lookup(self, handler):
-        self._lyricist.textEdited.connect(lambda text: self._lyricist_ipi.setText(handler(text)))
-        self._composer.textEdited.connect(lambda text: self._composer_ipi.setText(handler(text)))
-        self._publisher.textEdited.connect(lambda text: self._publisher_ipi.setText(handler(text)))
+        pass
+        # self._lyricist.textEdited.connect(lambda text: self._lyricist_ipi.setText(handler(text)))
+        # self._composer.textEdited.connect(lambda text: self._composer_ipi.setText(handler(text)))
+        # self._publisher.textEdited.connect(lambda text: self._publisher_ipi.setText(handler(text)))
 
     def on_ipi_changed(self, on_ipi_changed):
-        def handler(name, ipi):
-            if name:
-                on_ipi_changed(name, ipi)
-
-        self._lyricist_ipi.editingFinished.connect(lambda: handler(self._lyricist.text(), self._lyricist_ipi.text()))
-        self._composer_ipi.editingFinished.connect(lambda: handler(self._composer.text(), self._composer_ipi.text()))
-        self._publisher_ipi.editingFinished.connect(lambda: handler(self._publisher.text(), self._publisher_ipi.text()))
+        pass
+        # def handler(name, ipi):
+        #     if name:
+        #         on_ipi_changed(name, ipi)
+        #
+        # self._lyricist_ipi.editingFinished.connect(lambda: handler(self._lyricist.text(), self._lyricist_ipi.text()))
+        # self._composer_ipi.editingFinished.connect(lambda: handler(self._composer.text(), self._composer_ipi.text()))
+        # self._publisher_ipi.editingFinished.connect(lambda: handler(self._publisher.text(), self._publisher_ipi.text()))
 
     def display(self, album=None, track=None):
         if track:
@@ -143,15 +149,15 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_info.setEnabled(enable_main_artist)
         self._main_artist_help.setEnabled(enable_main_artist)
 
-        isnis = album.isnis or {}
-        self._lyricist_isni.setText(isnis.get(self._lyricist.text()))
-        self._composer_isni.setText(isnis.get(self._composer.text()))
-        self._publisher_isni.setText(isnis.get(self._publisher.text()))
-
-        ipis = album.ipis or {}
-        self._lyricist_ipi.setText(ipis.get(self._lyricist.text()))
-        self._composer_ipi.setText(ipis.get(self._composer.text()))
-        self._publisher_ipi.setText(ipis.get(self._publisher.text()))
+        # isnis = album.isnis or {}
+        # self._lyricist_isni.setText(isnis.get(self._lyricist.text()))
+        # self._composer_isni.setText(isnis.get(self._composer.text()))
+        # self._publisher_isni.setText(isnis.get(self._publisher.text()))
+        #
+        # ipis = album.ipis or {}
+        # self._lyricist_ipi.setText(ipis.get(self._lyricist.text()))
+        # self._composer_ipi.setText(ipis.get(self._composer.text()))
+        # self._publisher_ipi.setText(ipis.get(self._publisher.text()))
 
     def display_track(self, track):
         self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
@@ -162,9 +168,9 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
         self._featured_guest.setText(track.featured_guest)
         self._comments.setPlainText(track.comments)
-        self._lyricist.setText(track.lyricist)
-        self._composer.setText(track.composer)
-        self._publisher.setText(track.publisher)
+        # self._lyricist.setText(track.lyricist)
+        # self._composer.setText(track.composer)
+        # self._publisher.setText(track.publisher)
         self._isrc.setText(track.isrc)
         self._iswc.setText(track.iswc)
         self._tags.setText(track.labels)
@@ -181,15 +187,15 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._mixer.setText(track.mixer)
         self._genre.setEditText(track.primary_style)
 
-        isnis = track.album.isnis or {}
-        self._lyricist_isni.setText(isnis.get(track.lyricist))
-        self._composer_isni.setText(isnis.get(track.composer))
-        self._publisher_isni.setText(isnis.get(track.publisher))
-
-        ipis = track.album.ipis or {}
-        self._lyricist_ipi.setText(ipis.get(track.lyricist))
-        self._composer_ipi.setText(ipis.get(track.composer))
-        self._publisher_ipi.setText(ipis.get(track.publisher))
+        # isnis = track.album.isnis or {}
+        # self._lyricist_isni.setText(isnis.get(track.lyricist))
+        # self._composer_isni.setText(isnis.get(track.composer))
+        # self._publisher_isni.setText(isnis.get(track.publisher))
+        #
+        # ipis = track.album.ipis or {}
+        # self._lyricist_ipi.setText(ipis.get(track.lyricist))
+        # self._composer_ipi.setText(ipis.get(track.composer))
+        # self._publisher_ipi.setText(ipis.get(track.publisher))
 
     @staticmethod
     def _display_region(region, field):
@@ -232,13 +238,13 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         version_info=self._version.text(),
                         featured_guest=self._featured_guest.text(),
                         comments=self._comments.toPlainText(),
-                        composer=self._composer.text(),
-                        publisher=self._publisher.text(),
+                        # composer=self._composer.text(),
+                        # publisher=self._publisher.text(),
                         isrc=self._isrc.text(),
                         iswc=self._iswc.text(),
                         labels=self._tags.text(),
                         lyrics=self._lyrics.toPlainText(),
-                        lyricist=self._lyricist.text(),
+                        # lyricist=self._lyricist.text(),
                         language=self._language.currentData(),
                         recording_studio=self._recording_studio.text(),
                         recording_studio_region=self._get_locode(self._recording_studio_region),

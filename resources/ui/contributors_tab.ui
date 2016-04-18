@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>contributors_tab</class>
+ <widget class="QWidget" name="contributors_tab">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>643</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="_help">
+     <property name="styleSheet">
+      <string notr="true">QLabel[style=QWindowsVistaStyle] {
+    font-size: 7pt;
+}
+
+QLabel[style=QMacStyle] {
+    font-size: 11pt;
+}
+                        </string>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new contributors with &lt;img src=&quot;:/tooltips/add&quot;/&gt;. Remove selected contributors with &lt;img src=&quot;:/tooltips/remove&quot;/&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="_contributors_table">
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="horizontalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+     <property name="cornerButtonEnabled">
+      <bool>false</bool>
+     </property>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Role</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>IPI</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>ISNI</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="_buttons_container">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <item>
+      <widget class="QToolButton" name="_add_button">
+       <property name="toolTip">
+        <string>Add new contributor</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QToolButton[style=QMacStyle] {
+    margin: 0 -1px 0 0;
+    min-height: 22px;
+    min-width: 22px;
+}
+
+QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(midlight);
+}
+                                </string>
+       </property>
+       <property name="text">
+        <string>Add Tracks</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="_remove_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Remove selected contributor</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QToolButton[style=QMacStyle] {
+                                    margin: 0 -1px 0 0;
+                                    min-height: 22px;
+                                    min-width: 22px;
+                                    }
+
+QToolTip[style=QMacStyle] {
+    padding: 2px;
+    background-color: palette(midlight);
+}
+
+                                </string>
+       </property>
+       <property name="text">
+        <string>Remove</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

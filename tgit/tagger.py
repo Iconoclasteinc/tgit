@@ -119,39 +119,39 @@ class Tagger:
                                     show_load_error=self._show_load_project_failed_message,
                                     on_load_project=project.load_to(self._studio))
 
-    def _track_list_tab(self, project):
-        return ui.make_track_list_tab(project,
+    def _track_list_tab(self, project_):
+        return ui.make_track_list_tab(project_,
                                       self._player,
-                                      select_tracks=func.partial(self._dialogs.select_tracks, project.type),
-                                      on_move_track=director.move_track_of(project),
-                                      on_remove_track=director.remove_track_from(project),
+                                      select_tracks=func.partial(self._dialogs.select_tracks, project_.type),
+                                      on_move_track=director.move_track_of(project_),
+                                      on_remove_track=director.remove_track_from(project_),
                                       on_play_track=self._player.play,
                                       on_stop_track=self._player.stop,
-                                      on_add_tracks=director.add_tracks_to(project))
+                                      on_add_tracks=director.add_tracks_to(project_))
 
     @staticmethod
-    def _musician_tab(project):
-        return ui.make_musician_tab(project,
-                                    on_metadata_changed=director.update_album_from(project))
+    def _musician_tab(project_):
+        return ui.make_musician_tab(project_,
+                                    on_metadata_changed=director.update_album_from(project_))
 
-    def _project_edition_page(self, project):
-        return ui.make_project_edition_page(project,
+    def _project_edition_page(self, project_):
+        return ui.make_project_edition_page(project_,
                                             self._session,
                                             track_list_tab=self._track_list_tab,
                                             musician_tab=self._musician_tab,
                                             on_select_artwork=func.partial(self._open_artwork_selection_dialog,
-                                                                           project),
-                                            on_isni_changed=project.add_isni,
-                                            on_isni_local_lookup=director.lookup_isni_in(project),
-                                            on_select_identity=func.partial(self._open_isni_dialog, project),
-                                            on_remove_artwork=director.remove_album_cover_from(project),
-                                            on_metadata_changed=director.update_album_from(project))
+                                                                           project_),
+                                            on_isni_changed=project_.add_isni,
+                                            on_isni_local_lookup=director.lookup_isni_in(project_),
+                                            on_select_identity=func.partial(self._open_isni_dialog, project_),
+                                            on_remove_artwork=director.remove_album_cover_from(project_),
+                                            on_metadata_changed=director.update_album_from(project_))
 
-    @staticmethod
-    def _track_page_for(project_):
+    def _track_page_for(self, project_):
         def track_page(track):
             return ui.make_track_edition_page(project_,
                                               track,
+                                              contributors_tab=self._contributor_tab,
                                               on_track_changed=director.update_track(track),
                                               on_isni_local_lookup=director.lookup_isni_in(project_),
                                               on_ipi_local_lookup=director.lookup_ipi_in(project_),
@@ -159,8 +159,12 @@ class Tagger:
 
         return track_page
 
-    def _open_isni_dialog(self, project, query):
-        selection = identity.IdentitySelection(project, query)
+    @staticmethod
+    def _contributor_tab(project_, track):
+        return ui.make_contributors_tab(project_, track, on_metadata_changed=director.update_track(track))
+
+    def _open_isni_dialog(self, project_, query):
+        selection = identity.IdentitySelection(project_, query)
         ui.make_isni_lookup_dialog(query, selection,
                                    on_lookup=identity.launch_lookup(self._cheddar, self._session, selection),
                                    on_assign=self._show_isni_review_dialog(selection),
@@ -178,8 +182,8 @@ class Tagger:
                                       on_sign_in=auth.sign_in(login, self._cheddar),
                                       parent=self._main_window).open()
 
-    def _open_artwork_selection_dialog(self, project):
-        artwork_selection = artwork.ArtworkSelection(project, self._preferences)
+    def _open_artwork_selection_dialog(self, project_):
+        artwork_selection = artwork.ArtworkSelection(project_, self._preferences)
         return ui.make_artwork_selection_dialog(artwork_selection,
                                                 on_file_selected=artwork.load(artwork_selection),
                                                 native=self._native,

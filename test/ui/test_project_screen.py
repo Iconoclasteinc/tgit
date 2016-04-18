@@ -10,6 +10,7 @@ from cute.widgets import window
 from test.ui import ignore, show_, close_
 from testing.builders import make_track, make_album
 from testing.drivers import ProjectScreenDriver
+from tgit.ui.pages.contributors_tab import ContributorsTab
 from tgit.ui.pages.musician_tab import MusicianTab
 from tgit.ui.pages.project_edition_page import ProjectEditionPage
 from tgit.ui.pages.project_screen import ProjectScreen, make_project_screen
@@ -31,8 +32,12 @@ def create_project_page(project):
     return ProjectEditionPage(create_track_list_tab(project), create_musician_tab(project))
 
 
+def create_contributors_tab(*_):
+    return ContributorsTab()
+
+
 def create_track_page(track):
-    page = make_track_edition_page(album=make_album(), track=track, on_track_changed=ignore)
+    page = make_track_edition_page(make_album(), track, create_contributors_tab, on_track_changed=ignore)
     page.setObjectName("track_edition_page_" + str(track.track_number))
     return page
 

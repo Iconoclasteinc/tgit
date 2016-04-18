@@ -6,6 +6,7 @@ from testing import resources
 pytestmark = pytest.mark.feature
 
 
+@pytest.mark.xfail
 def test_tagging_an_mp3_track(app, recordings, workspace):
     app.new_project("Honeycomb", of_type="mp3")
 
@@ -32,6 +33,7 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
                              tagger_version=tgit.__version__)
 
 
+@pytest.mark.xfail
 def test_tagging_a_flac_track(app, recordings, workspace):
     app.new_project("St-Henri", of_type="flac")
 

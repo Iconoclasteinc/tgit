@@ -10,6 +10,7 @@ from test.ui import show_, close_
 from testing import builders as build
 from testing.builders import make_album, make_track
 from testing.drivers import TrackEditionPageDriver
+from tgit.ui.pages.contributors_tab import ContributorsTab
 from tgit.ui.pages.track_edition_page import make_track_edition_page, TrackEditionPage
 
 pytestmark = pytest.mark.ui
@@ -22,8 +23,12 @@ def driver(prober, automaton):
     close_(page_driver)
 
 
-def show_page(album, track, **handlers):
-    page = make_track_edition_page(album, track, **handlers)
+def create_contributors_tab(*_):
+    return ContributorsTab()
+
+
+def show_page(album, track, contributors_tab=create_contributors_tab, **handlers):
+    page = make_track_edition_page(album, track, contributors_tab, **handlers)
     show_(page)
     return page
 
@@ -57,9 +62,6 @@ def test_displays_track_metadata(driver):
                        version_info="Remix",
                        featured_guest="Featuring",
                        comments="Comments\n...",
-                       lyricist="Lyricist",
-                       composer="Composer",
-                       publisher="Publisher",
                        isrc="Code",
                        iswc="T-345246800-1",
                        labels="Tag1 Tag2 Tag3",
@@ -73,10 +75,7 @@ def test_displays_track_metadata(driver):
                        music_producer="Artistic Producer",
                        mixer="Mixing Engineer",
                        primary_style="Style")
-    album = make_album(compilation=True,
-                       tracks=[track],
-                       isnis={"Lyricist": "0000000123456789"},
-                       ipis={"Lyricist": "ABCD12345"})
+    album = make_album(compilation=True, tracks=[track])
 
     _ = show_page(album, track)
 
@@ -86,11 +85,6 @@ def test_displays_track_metadata(driver):
     driver.shows_bitrate("192 kbps")
     driver.shows_duration("04:35")
     driver.shows_featured_guest("Featuring")
-    driver.shows_lyricist("Lyricist")
-    driver.shows_composer("Composer")
-    driver.shows_publisher("Publisher")
-    driver.shows_lyricist_isni("0000000123456789")
-    driver.shows_lyricist_ipi("ABCD12345")
     driver.shows_isrc("Code")
     driver.shows_iswc("T-345246800-1")
     driver.shows_tags("Tag1 Tag2 Tag3")
@@ -146,18 +140,6 @@ def test_signals_when_track_metadata_change(driver):
 
     metadata_changed_signal.expect(has_entries(featured_guest="Featuring"))
     driver.change_featured_guest("Featuring")
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(lyricist="Lyricist"))
-    driver.change_lyricist("Lyricist")
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(composer="Composer"))
-    driver.change_composer("Composer")
-    driver.check(metadata_changed_signal)
-
-    metadata_changed_signal.expect(has_entries(publisher="Publisher"))
-    driver.change_publisher("Publisher")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(isrc="ZZZ123456789"))
@@ -267,6 +249,7 @@ def test_omits_software_notice_if_tagging_date_malformed(driver):
     driver.shows_software_notice("Tagged with TGiT v1.0")
 
 
+@pytest.mark.xfail
 def test_updates_isni_when_lyricist_text_change(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
@@ -282,6 +265,7 @@ def test_updates_isni_when_lyricist_text_change(driver):
     driver.shows_lyricist_isni("")
 
 
+@pytest.mark.xfail
 def test_updates_ipi_when_lyricist_text_change(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
@@ -297,6 +281,7 @@ def test_updates_ipi_when_lyricist_text_change(driver):
     driver.shows_lyricist_ipi("")
 
 
+@pytest.mark.xfail
 def test_updates_isni_when_composer_text_change(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
@@ -312,6 +297,7 @@ def test_updates_isni_when_composer_text_change(driver):
     driver.shows_composer_isni("")
 
 
+@pytest.mark.xfail
 def test_updates_ipi_when_composer_text_change(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
@@ -327,6 +313,7 @@ def test_updates_ipi_when_composer_text_change(driver):
     driver.shows_composer_ipi("")
 
 
+@pytest.mark.xfail
 def test_updates_isni_when_publisher_text_change(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
@@ -342,6 +329,7 @@ def test_updates_isni_when_publisher_text_change(driver):
     driver.shows_publisher_isni("")
 
 
+@pytest.mark.xfail
 def test_updates_ipi_when_publisher_text_change(driver):
     def lookup(text):
         return "0000000123456789" if text == "Joel Miller" else None
@@ -357,6 +345,7 @@ def test_updates_ipi_when_publisher_text_change(driver):
     driver.shows_publisher_ipi("")
 
 
+@pytest.mark.xfail
 def test_signals_on_lyricist_ipi_changed(driver):
     lyricist_ipi_changed_signal = MultiValueMatcherProbe("lyricist ipi changed",
                                                          contains("Joel Miller", "0000000123456789"))
@@ -370,6 +359,7 @@ def test_signals_on_lyricist_ipi_changed(driver):
     driver.check(lyricist_ipi_changed_signal)
 
 
+@pytest.mark.xfail
 def test_signals_on_composer_ipi_changed(driver):
     composer_ipi_changed_signal = MultiValueMatcherProbe("composer ipi changed",
                                                          contains("Joel Miller", "0000000123456789"))
@@ -383,6 +373,7 @@ def test_signals_on_composer_ipi_changed(driver):
     driver.check(composer_ipi_changed_signal)
 
 
+@pytest.mark.xfail
 def test_signals_on_publisher_ipi_changed(driver):
     publisher_ipi_changed_signal = MultiValueMatcherProbe("publisher ipi changed",
                                                           contains("Joel Miller", "0000000123456789"))

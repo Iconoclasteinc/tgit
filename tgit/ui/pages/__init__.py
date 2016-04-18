@@ -25,4 +25,4 @@ from .startup_screen import StartupScreen
 from .track_edition_page import make_track_edition_page
 from .track_list_tab import make_track_list_tab
 from .welcome_page import make_welcome_page
-
+from .contributors_tab import make_contributors_tab

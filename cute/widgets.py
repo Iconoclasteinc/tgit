@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import QDir, QPoint, QTime, QDate
+from PyQt5.QtCore import QDir, QPoint, QTime, QDate, Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QListView, QToolButton, QFileDialog, \
     QMenu, QComboBox, QTextEdit, QLabel, QAbstractButton, QSpinBox, QTableView, QDialogButtonBox
 from hamcrest import all_of, anything, contains
@@ -924,6 +924,29 @@ class TableViewDriver(WidgetDriver):
             from_position < to_position) \
             else rect.top_center(rect.inside_bounds(to_header.bounds, top=1))
         self.perform(gestures.mouse_drag(from_header.bounds.center(), drop_target))
+
+    def cell_is_readonly(self, row, col):
+        class WithMatchingCellReadonly(BaseMatcher):
+            def _matches(self, table):
+                item = table.item_at(row, col)
+                if item:
+                    flags = item.flags()
+                    if (Qt.ItemIsEnabled & flags) == Qt.ItemIsEnabled:
+                        return True
+                return False
+
+            def describe_to(self, description):
+                description.append_text("with readonly cell at {} x {}".format(row, col))
+
+            def describe_mismatch(self, table, mismatch_description):
+                mismatch_description.append_text("cell at {} x {} was not readonly".format(row, col))
+
+        self.is_table(WithMatchingCellReadonly())
+
+    def edit_cell(self, row, col, text):
+        self.click_on_cell(row, col)
+        self.perform(gestures.type_text(text))
+        self.perform(gestures.enter())
 
 
 class QTabWidgetDriver(WidgetDriver):
