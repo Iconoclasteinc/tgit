@@ -153,15 +153,16 @@ class Tagger:
                                               track,
                                               contributors_tab=self._contributor_tab,
                                               on_track_changed=director.update_track(track),
-                                              on_isni_local_lookup=director.lookup_isni_in(project_),
-                                              on_ipi_local_lookup=director.lookup_ipi_in(project_),
                                               on_ipi_changed=director.add_ipi_to(project_))
 
         return track_page
 
     @staticmethod
     def _contributor_tab(project_, track):
-        return ui.make_contributors_tab(project_, track, on_metadata_changed=director.update_track(track))
+        return ui.make_contributors_tab(project_, track,
+                                        on_metadata_changed=director.update_track(track),
+                                        on_isni_local_lookup=director.lookup_isni_in(project_),
+                                        on_ipi_local_lookup=director.lookup_ipi_in(project_))
 
     def _open_isni_dialog(self, project_, query):
         selection = identity.IdentitySelection(project_, query)

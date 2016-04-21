@@ -8,6 +8,11 @@ from cute.widgets import TableViewDriver, ComboBoxDriver
 
 
 class ContributorsTabDriver(ScreenDriver):
+    NAME_CELL_INDEX = 0
+    ROLE_CELL_INDEX = 1
+    IPI_CELL_INDEX = 2
+    ISNI_CELL_INDEX = 3
+
     def shows_column_headers(self, *headers):
         self._table.has_headers(contains(*headers))
 
@@ -18,11 +23,12 @@ class ContributorsTabDriver(ScreenDriver):
         self._add_button.click()
 
     def has_added_empty_row(self):
-        self._table.cell_is_readonly(self._empty_row_index, 3)
-        self._combo_in_cell(self._empty_row_index, 1).has_options("", "Author", "Composer", "Publisher")
+        self._table.cell_is_readonly(self._empty_row_index, self.ISNI_CELL_INDEX)
+        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).has_options("", "Author", "Composer",
+                                                                                     "Publisher")
 
     def remove_contributor_at(self, row):
-        self._table.click_on_cell(row, 0)
+        self._table.click_on_cell(row, self.NAME_CELL_INDEX)
         self._remove_button.click()
 
     def shows_remove_button(self, disabled=False):
@@ -30,8 +36,17 @@ class ContributorsTabDriver(ScreenDriver):
 
     def add_lyricist(self, name):
         self._add_button.click()
-        self._table.edit_cell(self._empty_row_index, 0, name)
-        self._combo_in_cell(self._empty_row_index, 1).select_option("Author")
+        self._table.edit_cell(self._empty_row_index, self.NAME_CELL_INDEX, name)
+        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).select_option("Author")
+
+    def change_name_at_row(self, name, row):
+        self._table.edit_cell(row, self.NAME_CELL_INDEX, name)
+
+    def shows_isni_at_row(self, isni, row):
+        self._table.has_value_in_cell(equal_to(isni), row, self.ISNI_CELL_INDEX)
+
+    def shows_ipi_at_row(self, ipi, row):
+        self._table.has_value_in_cell(equal_to(ipi), row, self.IPI_CELL_INDEX)
 
     def _combo_in_cell(self, row, col):
         widget_driver = self._table.widget_in_cell(row, col)

@@ -33,7 +33,7 @@ def create_project_page(project):
 
 
 def create_contributors_tab(*_):
-    return ContributorsTab()
+    return ContributorsTab(ignore, ignore)
 
 
 def create_track_page(track):

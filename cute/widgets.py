@@ -812,6 +812,22 @@ class TableViewDriver(WidgetDriver):
 
         self.is_table(WithMatchingRows())
 
+    def has_value_in_cell(self, matching, row, column):
+        class WithMatchingCell(BaseMatcher):
+            def _matches(self, table):
+                return matching.matches(table.cell_text(row, column))
+
+            def describe_to(self, description):
+                description.append_text("displaying ")
+                matching.describe_to(description)
+                description.append_text(" in the cell located at {} x {}".format(row, column))
+
+            def describe_mismatch(self, table, mismatch_description):
+                mismatch_description.append_text("value of cell at {} x {} ".format(row, column))
+                matching.describe_mismatch(table.cell_text(row, column), mismatch_description)
+
+        self.is_table(WithMatchingCell())
+
     def scroll_cell_to_visible(self, row, column):
         def scroll_cell_to_visible(table):
             table.scroll_to(row, column)

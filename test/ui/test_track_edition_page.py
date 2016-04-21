@@ -6,7 +6,7 @@ from hamcrest import has_entries, has_key, is_not, contains
 from cute.matchers import named
 from cute.probes import MultiValueMatcherProbe, KeywordsValueMatcherProbe
 from cute.widgets import window
-from test.ui import show_, close_
+from test.ui import show_, close_, ignore
 from testing import builders as build
 from testing.builders import make_album, make_track
 from testing.drivers import TrackEditionPageDriver
@@ -24,7 +24,7 @@ def driver(prober, automaton):
 
 
 def create_contributors_tab(*_):
-    return ContributorsTab()
+    return ContributorsTab(ignore, ignore)
 
 
 def show_page(album, track, contributors_tab=create_contributors_tab, **handlers):
@@ -247,102 +247,6 @@ def test_omits_software_notice_if_tagging_date_malformed(driver):
     album = make_album(tracks=[track])
     _ = show_page(album, track)
     driver.shows_software_notice("Tagged with TGiT v1.0")
-
-
-@pytest.mark.xfail
-def test_updates_isni_when_lyricist_text_change(driver):
-    def lookup(text):
-        return "0000000123456789" if text == "Joel Miller" else None
-
-    track = make_track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(album, track, on_isni_local_lookup=lookup)
-
-    driver.change_lyricist("Joel Miller")
-    driver.shows_lyricist_isni("0000000123456789")
-    driver.change_lyricist("Rebecca Ann Maloy")
-    driver.shows_lyricist_isni("")
-
-
-@pytest.mark.xfail
-def test_updates_ipi_when_lyricist_text_change(driver):
-    def lookup(text):
-        return "0000000123456789" if text == "Joel Miller" else None
-
-    track = make_track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(album, track, on_ipi_local_lookup=lookup)
-
-    driver.change_lyricist("Joel Miller")
-    driver.shows_lyricist_ipi("0000000123456789")
-    driver.change_lyricist("")
-    driver.shows_lyricist_ipi("")
-
-
-@pytest.mark.xfail
-def test_updates_isni_when_composer_text_change(driver):
-    def lookup(text):
-        return "0000000123456789" if text == "Joel Miller" else None
-
-    track = make_track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(album, track, on_isni_local_lookup=lookup)
-
-    driver.change_composer("Joel Miller")
-    driver.shows_composer_isni("0000000123456789")
-    driver.change_composer("Rebecca Ann Maloy")
-    driver.shows_composer_isni("")
-
-
-@pytest.mark.xfail
-def test_updates_ipi_when_composer_text_change(driver):
-    def lookup(text):
-        return "0000000123456789" if text == "Joel Miller" else None
-
-    track = make_track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(album, track, on_ipi_local_lookup=lookup)
-
-    driver.change_composer("Joel Miller")
-    driver.shows_composer_ipi("0000000123456789")
-    driver.change_composer("Rebecca Ann Maloy")
-    driver.shows_composer_ipi("")
-
-
-@pytest.mark.xfail
-def test_updates_isni_when_publisher_text_change(driver):
-    def lookup(text):
-        return "0000000123456789" if text == "Joel Miller" else None
-
-    track = make_track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(album, track, on_isni_local_lookup=lookup)
-
-    driver.change_publisher("Joel Miller")
-    driver.shows_publisher_isni("0000000123456789")
-    driver.change_publisher("Rebecca Ann Maloy")
-    driver.shows_publisher_isni("")
-
-
-@pytest.mark.xfail
-def test_updates_ipi_when_publisher_text_change(driver):
-    def lookup(text):
-        return "0000000123456789" if text == "Joel Miller" else None
-
-    track = make_track()
-    album = make_album(tracks=[track])
-
-    _ = show_page(album, track, on_ipi_local_lookup=lookup)
-
-    driver.change_publisher("Joel Miller")
-    driver.shows_publisher_ipi("0000000123456789")
-    driver.change_publisher("Rebecca Ann Maloy")
-    driver.shows_publisher_ipi("")
 
 
 @pytest.mark.xfail
