@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from hamcrest import has_entries
+from hamcrest import has_entries, contains
 import pytest
 
-from cute.probes import KeywordsValueMatcherProbe
+from cute.probes import KeywordsValueMatcherProbe, MultiValueMatcherProbe
 from cute.widgets import window
 from test.ui import show_, close_, ignore
 from testing.builders import make_album, make_track
@@ -14,11 +14,12 @@ pytestmark = pytest.mark.ui
 
 
 def show_page(project=make_album(), track=make_track(), on_metadata_changed=ignore, on_isni_local_lookup=ignore,
-              on_ipi_local_lookup=ignore):
+              on_ipi_local_lookup=ignore, on_ipi_changed=ignore):
     page = make_contributors_tab(project, track,
                                  on_metadata_changed=on_metadata_changed,
                                  on_isni_local_lookup=on_isni_local_lookup,
-                                 on_ipi_local_lookup=on_ipi_local_lookup)
+                                 on_ipi_local_lookup=on_ipi_local_lookup,
+                                 on_ipi_changed=on_ipi_changed)
     show_(page)
     return page
 
@@ -88,6 +89,8 @@ def test_updates_isni_when_name_changes(driver):
     driver.shows_isni_at_row("0000000123456789", row=0)
     driver.change_name_at_row("Rebecca Ann Maloy", row=0)
     driver.shows_isni_at_row("", row=0)
+    # Need to remove the contributor row otherwise following tests will fail...
+    driver.remove_contributor_at(0)
 
 
 def test_updates_ipi_when_name_changes(driver):
@@ -103,3 +106,19 @@ def test_updates_ipi_when_name_changes(driver):
     driver.shows_ipi_at_row("0000000123456789", row=0)
     driver.change_name_at_row("Rebecca Ann Maloy", row=0)
     driver.shows_ipi_at_row("", row=0)
+    # Need to remove the contributor row otherwise following tests will fail...
+    driver.remove_contributor_at(0)
+
+
+def test_signals_on_lyricist_ipi_changed(driver):
+    signal = MultiValueMatcherProbe("ipi changed", contains("Joel Miller", "0000000123456789"))
+
+    track = make_track()
+    album = make_album(tracks=[track])
+    _ = show_page(album, track, on_ipi_changed=signal.received)
+
+    driver.add_lyricist("Joel Miller")
+    driver.change_ipi_at_row("0000000123456789", row=0)
+    driver.check(signal)
+    # Need to remove the contributor row otherwise following tests will fail...
+    driver.remove_contributor_at(0)

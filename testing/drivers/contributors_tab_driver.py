@@ -42,6 +42,9 @@ class ContributorsTabDriver(ScreenDriver):
     def change_name_at_row(self, name, row):
         self._table.edit_cell(row, self.NAME_CELL_INDEX, name)
 
+    def change_ipi_at_row(self, ipi, row):
+        self._table.edit_cell(row, self.IPI_CELL_INDEX, ipi)
+
     def shows_isni_at_row(self, isni, row):
         self._table.has_value_in_cell(equal_to(isni), row, self.ISNI_CELL_INDEX)
 
