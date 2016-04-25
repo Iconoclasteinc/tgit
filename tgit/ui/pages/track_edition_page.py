@@ -87,9 +87,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._version.editingFinished.connect(handle)
         self._featured_guest.editingFinished.connect(handle)
         self._comments.editingFinished.connect(handle)
-        # self._lyricist.editingFinished.connect(handle)
-        # self._composer.editingFinished.connect(handle)
-        # self._publisher.editingFinished.connect(handle)
         self._isrc.editingFinished.connect(handle)
         self._iswc.editingFinished.connect(handle)
         self._tags.editingFinished.connect(handle)
@@ -106,28 +103,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._mixer.editingFinished.connect(handle)
         self._genre.activated.connect(handle)
         self._genre.lineEdit().textEdited.connect(handle)
-
-    def on_isni_local_lookup(self, handler):
-        # self._lyricist.textEdited.connect(lambda text: self._lyricist_isni.setText(handler(text)))
-        # self._composer.textEdited.connect(lambda text: self._composer_isni.setText(handler(text)))
-        # self._publisher.textEdited.connect(lambda text: self._publisher_isni.setText(handler(text)))
-        pass
-
-    def on_ipi_local_lookup(self, handler):
-        pass
-        # self._lyricist.textEdited.connect(lambda text: self._lyricist_ipi.setText(handler(text)))
-        # self._composer.textEdited.connect(lambda text: self._composer_ipi.setText(handler(text)))
-        # self._publisher.textEdited.connect(lambda text: self._publisher_ipi.setText(handler(text)))
-
-    def on_ipi_changed(self, on_ipi_changed):
-        pass
-        # def handler(name, ipi):
-        #     if name:
-        #         on_ipi_changed(name, ipi)
-        #
-        # self._lyricist_ipi.editingFinished.connect(lambda: handler(self._lyricist.text(), self._lyricist_ipi.text()))
-        # self._composer_ipi.editingFinished.connect(lambda: handler(self._composer.text(), self._composer_ipi.text()))
-        # self._publisher_ipi.editingFinished.connect(lambda: handler(self._publisher.text(), self._publisher_ipi.text()))
 
     def display(self, album=None, track=None):
         if track:
@@ -168,9 +143,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._bitrate.setText("{0} kbps".format(formatting.in_kbps(track.bitrate)))
         self._featured_guest.setText(track.featured_guest)
         self._comments.setPlainText(track.comments)
-        # self._lyricist.setText(track.lyricist)
-        # self._composer.setText(track.composer)
-        # self._publisher.setText(track.publisher)
         self._isrc.setText(track.isrc)
         self._iswc.setText(track.iswc)
         self._tags.setText(track.labels)
@@ -186,16 +158,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._display_region(track.production_company_region, self._production_company_region)
         self._mixer.setText(track.mixer)
         self._genre.setEditText(track.primary_style)
-
-        # isnis = track.album.isnis or {}
-        # self._lyricist_isni.setText(isnis.get(track.lyricist))
-        # self._composer_isni.setText(isnis.get(track.composer))
-        # self._publisher_isni.setText(isnis.get(track.publisher))
-        #
-        # ipis = track.album.ipis or {}
-        # self._lyricist_ipi.setText(ipis.get(track.lyricist))
-        # self._composer_ipi.setText(ipis.get(track.composer))
-        # self._publisher_ipi.setText(ipis.get(track.publisher))
 
     @staticmethod
     def _display_region(region, field):
@@ -238,13 +200,10 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
                         version_info=self._version.text(),
                         featured_guest=self._featured_guest.text(),
                         comments=self._comments.toPlainText(),
-                        # composer=self._composer.text(),
-                        # publisher=self._publisher.text(),
                         isrc=self._isrc.text(),
                         iswc=self._iswc.text(),
                         labels=self._tags.text(),
                         lyrics=self._lyrics.toPlainText(),
-                        # lyricist=self._lyricist.text(),
                         language=self._language.currentData(),
                         recording_studio=self._recording_studio.text(),
                         recording_studio_region=self._get_locode(self._recording_studio_region),

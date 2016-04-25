@@ -22,16 +22,18 @@ from PyQt5.QtWidgets import QTableWidgetItem, QComboBox
 
 
 class Contributor:
-    name = ""
-    role = ""
-    ipi = ""
-    isni = ""
+    def __init__(self, name="", role="", ipi="", isni=""):
+        self.isni = isni
+        self.ipi = ipi
+        self.role = role
+        self.name = name
 
 
 class Cell:
     class Name(QTableWidgetItem):
-        def __init__(self, contributor, ipi_item, isni_item, lookup_ipi, lookup_isni):
+        def __init__(self, contributor, ipi_item, isni_item, lookup_ipi, lookup_isni, on_name_changed):
             super().__init__()
+            self._on_name_changed = on_name_changed
             self._isni_item = isni_item
             self._ipi_item = ipi_item
             self._lookup_isni = lookup_isni
@@ -44,11 +46,13 @@ class Cell:
         def value_changed(self):
             name = self.text()
             contributor = self.data(Qt.UserRole)
-            contributor.name = name
-            contributor.isni = self._lookup_isni(name)
-            contributor.ipi = self._lookup_ipi(name)
-            self._isni_item.setText(contributor.isni)
-            self._ipi_item.setText(contributor.ipi)
+            if contributor.name != name:
+                contributor.name = name
+                contributor.isni = self._lookup_isni(name)
+                contributor.ipi = self._lookup_ipi(name)
+                self._isni_item.setText(contributor.isni)
+                self._ipi_item.setText(contributor.ipi)
+                self._on_name_changed()
 
     class Role(QComboBox):
         def __init__(self, contributor, on_role_changed):
@@ -74,10 +78,11 @@ class Cell:
                 self.setText(contributor.ipi)
 
         def value_changed(self):
-            ipi = self.text()
+            ipi = self.text() or None
             contributor = self.data(Qt.UserRole)
-            contributor.ipi = ipi
-            self._on_ipi_changed(contributor.name, contributor.ipi)
+            if contributor.ipi != ipi:
+                contributor.ipi = ipi
+                self._on_ipi_changed(contributor.name, ipi)
 
     class ISNI(QTableWidgetItem):
         def __init__(self, contributor):
@@ -90,4 +95,5 @@ class Cell:
         def value_changed(self):
             isni = self.text()
             contributor = self.data(Qt.UserRole)
-            contributor.isni = isni
+            if contributor.isni != isni:
+                contributor.isni = isni

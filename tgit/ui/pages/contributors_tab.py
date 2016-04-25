@@ -29,11 +29,11 @@ from tgit.ui.pages.contributors_tab_model import Cell, Contributor
 def make_contributors_tab(project, track, on_metadata_changed, on_isni_local_lookup, on_ipi_local_lookup,
                           on_ipi_changed):
     tab = ContributorsTab(on_isni_local_lookup, on_ipi_local_lookup)
-    tab.display(project, track)
+    tab.display(track)
     tab.on_metadata_changed.connect(lambda metadata: on_metadata_changed(**metadata))
     tab.on_ipi_changed.connect(on_ipi_changed)
 
-    subscription = track.metadata_changed.subscribe(tab.display_track)
+    subscription = track.metadata_changed.subscribe(tab.display)
     tab.closed.connect(lambda: subscription.cancel())
     # todo when we have proper signals on album, we can get rid of that
     project.addAlbumListener(tab)
@@ -53,12 +53,11 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
     on_metadata_changed = pyqtSignal(dict)
     on_ipi_changed = pyqtSignal(str, str)
 
-    _contributors = []
-
     def __init__(self, on_isni_local_lookup, on_ipi_local_lookup):
         super().__init__()
         self._lookup_ipi = on_ipi_local_lookup
         self._lookup_isni = on_isni_local_lookup
+        self._contributors = []
 
         self._load(":/ui/contributors_tab.ui")
         self._add_button.clicked.connect(self._add_row)
@@ -66,15 +65,28 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
         self._contributors_table.itemSelectionChanged.connect(self._update_actions)
         self._contributors_table.cellChanged.connect(self._contributor_changed)
 
-    def display(self, project, track):
-        self._display_project(project)
-        self.display_track(track)
+    def display(self, track):
+        isnis = track.album.isnis or {}
+        ipis = track.album.ipis or {}
 
-    def display_track(self, track):
-        pass
+        self._add_collaborator(track.lyricist, self.tr("Author"), ipis, isnis)
+        self._add_collaborator(track.composer, self.tr("Composer"), ipis, isnis)
+        self._add_collaborator(track.publisher, self.tr("Publisher"), ipis, isnis)
+        self._refresh_table_display()
+
+    def _add_collaborator(self, name, role, ipis, isnis):
+        if name:
+            self._contributors.append(Contributor(name, role, ipis.get(name), isnis.get(name)))
 
     def _display_project(self, project):
-        pass
+        isnis = project.isnis or {}
+        ipis = project.ipis or {}
+
+        for contributor in self._contributors:
+            contributor.ipi = ipis.get(contributor.name)
+            contributor.isni = isnis.get(contributor.name)
+
+        self._refresh_table_display()
 
     def albumStateChanged(self, project):
         self._display_project(project)
@@ -107,7 +119,7 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
     def _create_row(self, row, contributor):
         ipi = Cell.IPI(contributor, self.on_ipi_changed.emit)
         isni = Cell.ISNI(contributor)
-        name = Cell.Name(contributor, ipi, isni, self._lookup_ipi, self._lookup_isni)
+        name = Cell.Name(contributor, ipi, isni, self._lookup_ipi, self._lookup_isni, self._metadata_changed)
         role = Cell.Role(contributor, self._metadata_changed)
         self._contributors_table.insertRow(row)
         self._contributors_table.setItem(row, self.NAME_CELL_INDEX, name)
@@ -117,7 +129,6 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
 
     def _contributor_changed(self, row, column):
         self._contributors_table.item(row, column).value_changed()
-        self._metadata_changed()
 
     def _metadata_changed(self):
         lyricist = None

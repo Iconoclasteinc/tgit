@@ -16,6 +16,12 @@ class ContributorsTabDriver(ScreenDriver):
     def shows_column_headers(self, *headers):
         self._table.has_headers(contains(*headers))
 
+    def shows_row_details(self, *details):
+        return self._table.has_row(has_items(*details))
+
+    def shows_role_on_row(self, row, role):
+        self._combo_in_cell(row, self.ROLE_CELL_INDEX).has_current_text(role)
+
     def has_contributors_count(self, count):
         self._table.has_row_count(equal_to(count))
 
