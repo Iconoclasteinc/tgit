@@ -86,14 +86,14 @@ def remove_track_from(album):
 
 def lookup_isni_in(album):
     def lookup_isni(name):
-        return album.isnis[name] if album.isnis and name in album.isnis else None
+        return album.isnis[name] if album.isnis and name in album.isnis else ""
 
     return lookup_isni
 
 
 def lookup_ipi_in(album):
     def lookup_ipi(name):
-        return album.ipis[name] if album.ipis and name in album.ipis else None
+        return album.ipis[name] if album.ipis and name in album.ipis else ""
 
     return lookup_ipi
 

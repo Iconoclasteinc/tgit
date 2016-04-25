@@ -113,7 +113,7 @@ def test_disables_remove_button_when_list_is_empty(driver):
     driver.shows_remove_button(disabled=True)
 
 
-def test_signals_lyricist(driver):
+def test_signals_collaborator(driver):
     signal = KeywordsValueMatcherProbe("metadata changed")
     _ = show_page(on_metadata_changed=signal.received)
 
@@ -122,6 +122,22 @@ def test_signals_lyricist(driver):
     driver.check(signal)
 
     signal.expect(has_entries(lyricist=""))
+    driver.remove_contributor_at(0)
+    driver.check(signal)
+
+    signal.expect(has_entries(composer="Joel Miller"))
+    driver.add_composer("Joel Miller")
+    driver.check(signal)
+
+    signal.expect(has_entries(composer=""))
+    driver.remove_contributor_at(0)
+    driver.check(signal)
+
+    signal.expect(has_entries(publisher="Joel Miller"))
+    driver.add_publisher("Joel Miller")
+    driver.check(signal)
+
+    signal.expect(has_entries(publisher=""))
     driver.remove_contributor_at(0)
     driver.check(signal)
 

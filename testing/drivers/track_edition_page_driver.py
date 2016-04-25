@@ -4,6 +4,7 @@ from hamcrest import starts_with, any_of
 from cute import gestures
 from cute.matchers import named, with_buddy, showing_on_screen
 from cute.platforms import linux
+from testing.drivers.contributors_tab_driver import contributor_tab
 from tgit.ui.pages.track_edition_page import TrackEditionPage
 from ._screen_driver import ScreenDriver
 
@@ -166,37 +167,11 @@ class TrackEditionPageDriver(ScreenDriver):
 
     def change_lyricist(self, name):
         self._select_contributors_tab()
-        self.lineEdit(named("_lyricist")).change_text(name)
+        contributor_tab(self).add_lyricist(name)
 
     def change_lyricist_ipi(self, ipi):
         self._select_contributors_tab()
-        self.lineEdit(named("_lyricist_ipi")).change_text(ipi)
-
-    def lyricist_ipi_enabled(self, enabled=True):
-        self._select_contributors_tab()
-        self.lineEdit(named("_lyricist_ipi")).is_enabled(enabled=enabled)
-
-    def shows_lyricist_isni(self, isni):
-        self._select_contributors_tab()
-        self.lineEdit(named("_lyricist_isni")).has_text(isni)
-
-    def shows_lyricist_ipi(self, ipi):
-        self._select_contributors_tab()
-        self.lineEdit(named("_lyricist_ipi")).has_text(ipi)
-
-    def change_lyricist_isni(self, isni):
-        self._select_contributors_tab()
-        self.lineEdit(named("_lyricist_isni")).change_text(isni)
-
-    def assign_isni_to_lyricist(self):
-        self._select_contributors_tab()
-        menu = self.tool_button(named("_lyricist_isni_actions_button")).open_menu()
-        menu.menu_item(named("_lyricist_isni_assign_action")).manipulate("enable", lambda b: b.setEnabled(True))
-        menu.select_menu_item(named("_lyricist_isni_assign_action"))
-
-    def confirm_lyricist_isni(self):
-        self._select_contributors_tab()
-        self.lineEdit(named("_lyricist_isni")).enter()
+        contributor_tab(self).change_ipi_at_row(ipi, 0)
 
     def shows_composer(self, name):
         self._select_contributors_tab()
@@ -210,10 +185,6 @@ class TrackEditionPageDriver(ScreenDriver):
     def change_composer_ipi(self, ipi):
         self._select_contributors_tab()
         self.lineEdit(named("_composer_ipi")).change_text(ipi)
-
-    def composer_ipi_enabled(self, enabled=True):
-        self._select_contributors_tab()
-        self.lineEdit(named("_composer_ipi")).is_enabled(enabled=enabled)
 
     def shows_composer_ipi(self, ipi):
         self._select_contributors_tab()
@@ -236,9 +207,9 @@ class TrackEditionPageDriver(ScreenDriver):
         self._select_contributors_tab()
         self.lineEdit(named("_publisher_ipi")).change_text(ipi)
 
-    def publisher_ipi_enabled(self, enabled=True):
+    def shows_publisher_ipi(self, ipi):
         self._select_contributors_tab()
-        self.lineEdit(named("_publisher_ipi")).is_enabled(enabled=enabled)
+        self.lineEdit(named("_publisher_ipi")).has_text(ipi)
 
     def shows_publisher_isni(self, isni):
         self._select_contributors_tab()
@@ -247,10 +218,6 @@ class TrackEditionPageDriver(ScreenDriver):
     def _select_contributors_tab(self):
         self.pause(self.TAB_SELECTION_DELAY)
         self.tabs(named("_tabs")).select("Contributors")
-
-    def shows_publisher_ipi(self, ipi):
-        self._select_contributors_tab()
-        self.lineEdit(named("_publisher_ipi")).has_text(ipi)
 
     def shows_isrc(self, code):
         self.label(with_buddy(named("_isrc"))).is_showing_on_screen()

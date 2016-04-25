@@ -33,8 +33,6 @@ def make_contributors_tab(project, track, on_metadata_changed, on_isni_local_loo
     tab.on_metadata_changed.connect(lambda metadata: on_metadata_changed(**metadata))
     tab.on_ipi_changed.connect(on_ipi_changed)
 
-    subscription = track.metadata_changed.subscribe(tab.display)
-    tab.closed.connect(lambda: subscription.cancel())
     # todo when we have proper signals on album, we can get rid of that
     project.addAlbumListener(tab)
     tab.closed.connect(lambda: project.removeAlbumListener(tab))
@@ -69,6 +67,7 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
         isnis = track.album.isnis or {}
         ipis = track.album.ipis or {}
 
+        self._contributors = []
         self._add_collaborator(track.lyricist, self.tr("Author"), ipis, isnis)
         self._add_collaborator(track.composer, self.tr("Composer"), ipis, isnis)
         self._add_collaborator(track.publisher, self.tr("Publisher"), ipis, isnis)
@@ -131,10 +130,15 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
         self._contributors_table.item(row, column).value_changed()
 
     def _metadata_changed(self):
-        lyricist = None
+        metadata = dict(lyricist="", composer="", publisher="")
         for contributor in self._contributors:
             if contributor.role == self.tr("Author"):
-                lyricist = contributor
-                break
+                metadata["lyricist"] = contributor.name
 
-        self.on_metadata_changed.emit(dict(lyricist=lyricist.name if lyricist else ""))
+            if contributor.role == self.tr("Composer"):
+                metadata["composer"] = contributor.name
+
+            if contributor.role == self.tr("Publisher"):
+                metadata["publisher"] = contributor.name
+
+        self.on_metadata_changed.emit(metadata)

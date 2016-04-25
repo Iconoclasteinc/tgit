@@ -52,7 +52,8 @@ class Cell:
                 contributor.ipi = self._lookup_ipi(name)
                 self._isni_item.setText(contributor.isni)
                 self._ipi_item.setText(contributor.ipi)
-                self._on_name_changed()
+                if contributor.role:
+                    self._on_name_changed()
 
     class Role(QComboBox):
         def __init__(self, contributor, on_role_changed):
@@ -78,7 +79,7 @@ class Cell:
                 self.setText(contributor.ipi)
 
         def value_changed(self):
-            ipi = self.text() or None
+            ipi = self.text()
             contributor = self.data(Qt.UserRole)
             if contributor.ipi != ipi:
                 contributor.ipi = ipi

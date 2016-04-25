@@ -6,7 +6,6 @@ from testing import resources
 pytestmark = pytest.mark.feature
 
 
-@pytest.mark.xfail
 def test_tagging_an_mp3_track(app, recordings, workspace):
     app.new_project("Honeycomb", of_type="mp3")
 
@@ -26,6 +25,7 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
                              front_cover=(resources.path("honeycomb.jpg"), "Front Cover"),
                              release_name="Honeycomb",
                              lead_performer="Joel Miller",
+                             lyricist="Rebecca Ann Maloy",
                              isnis={"Joel Miller": "0000000121707484"},
                              ipis={"Rebecca Ann Maloy": "9876543210000000"},
                              track_title="Rashers",
@@ -33,7 +33,6 @@ def test_tagging_an_mp3_track(app, recordings, workspace):
                              tagger_version=tgit.__version__)
 
 
-@pytest.mark.xfail
 def test_tagging_a_flac_track(app, recordings, workspace):
     app.new_project("St-Henri", of_type="flac")
 
@@ -53,6 +52,7 @@ def test_tagging_a_flac_track(app, recordings, workspace):
                              front_cover=(resources.path("st-henri.jpg"), "Front Cover"),
                              release_name="St-Henri",
                              lead_performer="John Roney",
+                             lyricist="Rebecca Ann Maloy",
                              isnis={"John Roney": "0000000121707484"},
                              ipis={"Rebecca Ann Maloy": "9876543210000000"},
                              track_title="Squareboy",

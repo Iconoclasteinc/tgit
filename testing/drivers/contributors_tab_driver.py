@@ -3,8 +3,13 @@ from PyQt5.QtWidgets import QTableWidget
 from hamcrest import contains, equal_to, has_items
 
 from ._screen_driver import ScreenDriver
-from cute.matchers import named
+from cute.matchers import named, showing_on_screen
 from cute.widgets import TableViewDriver, ComboBoxDriver
+from tgit.ui.pages.contributors_tab import ContributorsTab
+
+
+def contributor_tab(parent):
+    return ContributorsTabDriver.find_single(parent, ContributorsTab, showing_on_screen())
 
 
 class ContributorsTabDriver(ScreenDriver):
@@ -41,9 +46,20 @@ class ContributorsTabDriver(ScreenDriver):
         self._remove_button.is_disabled(disabled=disabled)
 
     def add_lyricist(self, name):
+        self._add_collaborator(name)
+        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).select_option("Author")
+
+    def add_composer(self, name):
+        self._add_collaborator(name)
+        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).select_option("Composer")
+
+    def add_publisher(self, name):
+        self._add_collaborator(name)
+        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).select_option("Publisher")
+
+    def _add_collaborator(self, name):
         self._add_button.click()
         self._table.edit_cell(self._empty_row_index, self.NAME_CELL_INDEX, name)
-        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).select_option("Author")
 
     def change_name_at_row(self, name, row):
         self._table.edit_cell(row, self.NAME_CELL_INDEX, name)

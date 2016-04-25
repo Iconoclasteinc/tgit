@@ -89,6 +89,9 @@ QLabel[style=QMacStyle] {
      </property>
      <item>
       <widget class="QToolButton" name="_add_button">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
        <property name="toolTip">
         <string>Add new contributor</string>
        </property>
@@ -118,6 +121,9 @@ QToolTip[style=QMacStyle] {
       <widget class="QToolButton" name="_remove_button">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
        </property>
        <property name="toolTip">
         <string>Remove selected contributor</string>
