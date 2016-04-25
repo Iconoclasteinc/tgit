@@ -16,12 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from PyQt5.QtCore import pyqtSignal, Qt, QObject
-from PyQt5.QtWidgets import QWidget, QComboBox, QTableWidgetItem
+
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QWidget
 
 from tgit.album import AlbumListener
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
+from tgit.ui.pages.contributors_tab_model import Cell, Contributor
 
 
 def make_contributors_tab(project, track, on_metadata_changed, on_isni_local_lookup, on_ipi_local_lookup,
@@ -53,46 +55,10 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
 
     _contributors = []
 
-    class Contributor(QObject):
-        on_ipi_changed = pyqtSignal(str, str)
-
-        _name = ""
-        _role = ""
-        _ipi = ""
-        _isni = ""
-
-        @property
-        def name(self):
-            return self._name
-
-        @property
-        def role(self):
-            return self._role
-
-        @property
-        def ipi(self):
-            return self._ipi
-
-        @property
-        def isni(self):
-            return self._isni
-
-        def set_ipi(self, value):
-            self._ipi = value
-
-        def set_name(self, value):
-            self._name = value
-
-        def set_role(self, value):
-            self._role = value
-
-        def set_isni(self, value):
-            self._isni = value
-
     def __init__(self, on_isni_local_lookup, on_ipi_local_lookup):
         super().__init__()
-        self._on_ipi_local_lookup = on_ipi_local_lookup
-        self._on_isni_local_lookup = on_isni_local_lookup
+        self._lookup_ipi = on_ipi_local_lookup
+        self._lookup_isni = on_isni_local_lookup
 
         self._load(":/ui/contributors_tab.ui")
         self._add_button.clicked.connect(self._add_row)
@@ -114,9 +80,7 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
         self._display_project(project)
 
     def _add_row(self):
-        contributor = self.Contributor()
-        contributor.on_ipi_changed.connect(self.on_ipi_changed)
-        self._contributors.append(contributor)
+        self._contributors.append(Contributor())
         self._refresh_table_display()
 
     def _remove_row(self):
@@ -132,56 +96,27 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
         self._remove_button.setEnabled(True)
 
     def _refresh_table_display(self):
+        self._clear_table()
+        for row, contributor in enumerate(self._contributors):
+            self._create_row(row, contributor)
+
+    def _clear_table(self):
         while self._contributors_table.rowCount() > 0:
             self._contributors_table.removeRow(0)
 
-        for contributor in self._contributors:
-            index = self._contributors_table.rowCount()
-            self._contributors_table.insertRow(index)
-
-            item = QTableWidgetItem()
-            item.setText(contributor.name)
-            self._contributors_table.setItem(index, self.NAME_CELL_INDEX, item)
-
-            combo = QComboBox()
-            combo.addItems(["", self.tr("Author"), self.tr("Composer"), self.tr("Publisher")])
-            combo.setCurrentText(contributor.role)
-            combo.currentIndexChanged.connect(lambda _: self._contributor_changed(index, 1))
-            self._contributors_table.setCellWidget(index, self.ROLE_CELL_INDEX, combo)
-
-            item = QTableWidgetItem()
-            item.setText(contributor.ipi)
-            self._contributors_table.setItem(index, self.IPI_CELL_INDEX, item)
-
-            item = QTableWidgetItem()
-            item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-            item.setText(contributor.isni)
-            self._contributors_table.setItem(index, self.ISNI_CELL_INDEX, item)
+    def _create_row(self, row, contributor):
+        ipi = Cell.IPI(contributor, self.on_ipi_changed.emit)
+        isni = Cell.ISNI(contributor)
+        name = Cell.Name(contributor, ipi, isni, self._lookup_ipi, self._lookup_isni)
+        role = Cell.Role(contributor, self._metadata_changed)
+        self._contributors_table.insertRow(row)
+        self._contributors_table.setItem(row, self.NAME_CELL_INDEX, name)
+        self._contributors_table.setItem(row, self.IPI_CELL_INDEX, ipi)
+        self._contributors_table.setItem(row, self.ISNI_CELL_INDEX, isni)
+        self._contributors_table.setCellWidget(row, self.ROLE_CELL_INDEX, role)
 
     def _contributor_changed(self, row, column):
-        item = self._contributors_table.item(row, column)
-        new_value = item.text() if item else ""
-
-        if column == self.NAME_CELL_INDEX and self._contributors[row].name != new_value:
-            self._contributors[row].set_isni(self._on_isni_local_lookup(new_value))
-            self._contributors[row].set_ipi(self._on_ipi_local_lookup(new_value))
-            self._contributors[row].set_name(new_value)
-            self._contributors_table.item(row, self.ISNI_CELL_INDEX).setText(self._contributors[row].isni)
-            self._contributors_table.item(row, self.IPI_CELL_INDEX).setText(self._contributors[row].ipi)
-
-        if column == self.IPI_CELL_INDEX and self._contributors[row].ipi != new_value:
-            self.on_ipi_changed.emit(self._contributors[row].name, new_value)
-            self._contributors[row].set_ipi(new_value)
-
-        if column == self.ISNI_CELL_INDEX and self._contributors[row].isni != new_value:
-            self._contributors[row].set_isni(new_value)
-
-        if column == self.ROLE_CELL_INDEX:
-            index = self._contributors_table.model().index(row, self.ROLE_CELL_INDEX)
-            role_combo = self._contributors_table.indexWidget(index)
-            if role_combo:
-                self._contributors[row].set_role(role_combo.currentText())
-
+        self._contributors_table.item(row, column).value_changed()
         self._metadata_changed()
 
     def _metadata_changed(self):

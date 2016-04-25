@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from hamcrest import has_entries, contains
+from hamcrest import has_entries, has_items
 import pytest
 
 from cute.probes import KeywordsValueMatcherProbe, MultiValueMatcherProbe
@@ -111,7 +111,7 @@ def test_updates_ipi_when_name_changes(driver):
 
 
 def test_signals_on_lyricist_ipi_changed(driver):
-    signal = MultiValueMatcherProbe("ipi changed", contains("Joel Miller", "0000000123456789"))
+    signal = MultiValueMatcherProbe("ipi changed", has_items("Joel Miller", "0000000123456789"))
 
     track = make_track()
     album = make_album(tracks=[track])
