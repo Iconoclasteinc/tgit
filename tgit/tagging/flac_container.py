@@ -124,6 +124,27 @@ class PairField:
         flac[self._field_name] = ["{} ({})".format(value, desc) for desc, value in metadata[self._tag_name]]
 
 
+class SequenceField:
+    def __init__(self, field_name, tag_name):
+        self._field_name = field_name
+        self._tag_name = tag_name
+
+    def read(self, flac, metadata):
+        if self._field_name not in flac:
+            return
+
+        metadata[self._tag_name] = flac[self._field_name]
+
+    def write(self, metadata, flac):
+        if self._field_name in flac:
+            del flac[self._field_name]
+
+        if self._tag_name not in metadata:
+            return
+
+        flac[self._field_name] = metadata[self._tag_name]
+
+
 class PictureField:
     def __init__(self, field_name, image_types):
         self._picture_types = invert(image_types)
@@ -224,13 +245,10 @@ class FlacContainer:
         "RECORDING-STUDIO": "recording_studio",
         "PRODUCER": "production_company",
         "MUSIC-PRODUCER": "music_producer",
-        "LYRICIST": "lyricist",
         "CATALOGNUMBER": "catalog_number",
         "BARCODE": "upc",
         "MIXER": "mixer",
         "COMMENT": "comments",
-        "PUBLISHER": "publisher",
-        "COMPOSER": "composer",
         "VERSION": "version_info",
         "LYRICS": "lyrics",
         "LANGUAGE": "language",
@@ -240,6 +258,13 @@ class FlacContainer:
         "LEAD-PERFORMER-DATE-OF-BIRTH": "lead_performer_date_of_birth",
     }.items():
         fields.append(TextField(field_name, tag_name))
+
+    for field_name, tag_name in {
+        "LYRICIST": "lyricist",
+        "PUBLISHER": "publisher",
+        "COMPOSER": "composer",
+    }.items():
+        fields.append(SequenceField(field_name, tag_name))
 
     for field_name, tag_name in {
         "TAG": "labels",

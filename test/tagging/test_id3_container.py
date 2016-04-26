@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 from hamcrest import (assert_that, has_entry, has_key, has_length, contains, is_not, contains_inanyorder, has_entries,
                       not_, all_of)
@@ -130,18 +131,18 @@ def test_reads_featured_guest_from_custom_frame(mp3):
 
 
 def test_reads_lyricist_from_text_frame(mp3):
-    metadata = container.load(mp3(TEXT="Lyricist"))
-    assert_that(metadata, has_entry("lyricist", "Lyricist"), "metadata")
+    metadata = container.load(mp3(TEXT=["Lyricist1", "Lyricist2", "Lyricist3"]))
+    assert_that(metadata, has_entry("lyricist", contains("Lyricist1", "Lyricist2", "Lyricist3")), "metadata")
 
 
 def test_reads_composer_from_tcom_frame(mp3):
-    metadata = container.load(mp3(TCOM="Composer"))
-    assert_that(metadata, has_entry("composer", "Composer"), "metadata")
+    metadata = container.load(mp3(TCOM=["Composer1", "Composer2", "Composer3"]))
+    assert_that(metadata, has_entry("composer", contains("Composer1", "Composer2", "Composer3")), "metadata")
 
 
 def test_reads_publisher_from_tpub_frame(mp3):
-    metadata = container.load(mp3(TPUB="Publisher"))
-    assert_that(metadata, has_entry("publisher", "Publisher"), "metadata")
+    metadata = container.load(mp3(TPUB=["Publisher1", "Publisher2", "Publisher3"]))
+    assert_that(metadata, has_entry("publisher", contains("Publisher1", "Publisher2", "Publisher3")), "metadata")
 
 
 def test_reads_isrc_from_tsrc_frame(mp3):
@@ -293,9 +294,9 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["track_title"] = "Track Title"
     metadata["version_info"] = "Version Info"
     metadata["featured_guest"] = "Featured Guest"
-    metadata["lyricist"] = "Lyricist"
-    metadata["composer"] = "Composer"
-    metadata["publisher"] = "Publisher"
+    metadata["lyricist"] = ["Lyricist"]
+    metadata["composer"] = ["Composer"]
+    metadata["publisher"] = ["Publisher"]
     metadata["isrc"] = "ZZXX87654321"
     metadata["labels"] = "Tag1 Tag2 Tag3"
     metadata["lyrics"] = "Lyrics"

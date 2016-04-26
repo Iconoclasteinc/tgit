@@ -66,16 +66,21 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
     def display(self, track):
         isnis = track.album.isnis or {}
         ipis = track.album.ipis or {}
+        lyricists = track.lyricist or []
+        composers = track.composer or []
+        publishers = track.publisher or []
 
         self._contributors = []
-        self._add_collaborator(track.lyricist, self.tr("Author"), ipis, isnis)
-        self._add_collaborator(track.composer, self.tr("Composer"), ipis, isnis)
-        self._add_collaborator(track.publisher, self.tr("Publisher"), ipis, isnis)
-        self._refresh_table_display()
+        for name in lyricists:
+            self._contributors.append(Contributor(name, self.tr("Author"), ipis.get(name), isnis.get(name)))
 
-    def _add_collaborator(self, name, role, ipis, isnis):
-        if name:
-            self._contributors.append(Contributor(name, role, ipis.get(name), isnis.get(name)))
+        for name in composers:
+            self._contributors.append(Contributor(name, self.tr("Composer"), ipis.get(name), isnis.get(name)))
+
+        for name in publishers:
+            self._contributors.append(Contributor(name, self.tr("Publisher"), ipis.get(name), isnis.get(name)))
+
+        self._refresh_table_display()
 
     def _display_project(self, project):
         isnis = project.isnis or {}
@@ -130,15 +135,15 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
         self._contributors_table.item(row, column).value_changed()
 
     def _metadata_changed(self):
-        metadata = dict(lyricist="", composer="", publisher="")
+        metadata = dict(lyricist=[], composer=[], publisher=[])
         for contributor in self._contributors:
             if contributor.role == self.tr("Author"):
-                metadata["lyricist"] = contributor.name
+                metadata["lyricist"].append(contributor.name)
 
             if contributor.role == self.tr("Composer"):
-                metadata["composer"] = contributor.name
+                metadata["composer"].append(contributor.name)
 
             if contributor.role == self.tr("Publisher"):
-                metadata["publisher"] = contributor.name
+                metadata["publisher"].append(contributor.name)
 
         self.on_metadata_changed.emit(metadata)

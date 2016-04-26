@@ -21,7 +21,7 @@ def test_announces_metadata_changes_to_listeners():
     _assert_notifies_of_metadata_change("track_title", "Title")
     _assert_notifies_of_metadata_change("version_info", "Remix")
     _assert_notifies_of_metadata_change("featured_guest", "Featuring")
-    _assert_notifies_of_metadata_change("lyricist", "Joel Miller")
+    _assert_notifies_of_metadata_change("lyricist", ["Joel Miller"])
     _assert_notifies_of_metadata_change("isrc", "Code")
     _assert_notifies_of_metadata_change("iswc", "T-345246800-1")
     _assert_notifies_of_metadata_change("track_number", 1)

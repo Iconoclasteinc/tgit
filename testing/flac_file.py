@@ -86,7 +86,7 @@ class FlacAudio(object):
             elif tag == 'ISNI':
                 self._add_tag("ISNI", value)
             elif tag == 'LYRICIST':
-                self._add_tag("LYRICIST", value)
+                self._add_multiple_tag("LYRICIST", value)
             elif tag == 'CATALOGNUMBER':
                 self._add_tag("CATALOGNUMBER", value)
             elif tag == 'BARCODE':
@@ -96,9 +96,9 @@ class FlacAudio(object):
             elif tag == 'COMMENT':
                 self._add_tag("COMMENT", value)
             elif tag == 'PUBLISHER':
-                self._add_tag("PUBLISHER", value)
+                self._add_multiple_tag("PUBLISHER", value)
             elif tag == 'COMPOSER':
-                self._add_tag("COMPOSER", value)
+                self._add_multiple_tag("COMPOSER", value)
             elif tag == 'VERSION':
                 self._add_tag("VERSION", value)
             elif tag == 'LYRICS':
@@ -122,6 +122,10 @@ class FlacAudio(object):
 
     def _add_tag(self, key, value):
         self._flac.tags.append((key, value))
+
+    def _add_multiple_tag(self, key, values):
+        for value in values:
+            self._add_tag(key, value)
 
     def _add_picture(self, mime, type_, desc, data):
         picture = Picture()

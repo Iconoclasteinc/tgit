@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 import shutil
 
 import pytest
-from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, has_entries, empty
+from hamcrest import assert_that, has_entry, has_length, contains_inanyorder, has_entries, empty, contains
 
 from testing import flac_file
 from tgit.metadata import Metadata, Image
@@ -137,8 +138,8 @@ def test_reads_lead_performer_date_of_birth_from_lead_performer_date_of_birth_fi
 
 
 def test_reads_lyricist(flac):
-    metadata = container.load(flac(LYRICIST="Joel Miller"))
-    assert_that(metadata, has_entry("lyricist", "Joel Miller"), "metadata")
+    metadata = container.load(flac(LYRICIST=["Joel Miller", "John Roney"]))
+    assert_that(metadata, has_entry("lyricist", contains("Joel Miller", "John Roney")), "metadata")
 
 
 def test_reads_production_company_from_producer_field(flac):
@@ -187,13 +188,13 @@ def test_reads_comments_from_comment_field(flac):
 
 
 def test_reads_publisher_from_publisher_field(flac):
-    metadata = container.load(flac(PUBLISHER="who publishes the disc"))
-    assert_that(metadata, has_entry("publisher", "who publishes the disc"), "metadata")
+    metadata = container.load(flac(PUBLISHER=["Publisher1", "Publisher2", "Publisher3"]))
+    assert_that(metadata, has_entry("publisher", contains("Publisher1", "Publisher2", "Publisher3")), "metadata")
 
 
 def test_reads_composer_from_composer_field(flac):
-    metadata = container.load(flac(COMPOSER="composer of the work"))
-    assert_that(metadata, has_entry("composer", "composer of the work"), "metadata")
+    metadata = container.load(flac(COMPOSER=["Composer1", "Composer2", "Composer3"]))
+    assert_that(metadata, has_entry("composer", contains("Composer1", "Composer2", "Composer3")), "metadata")
 
 
 def test_reads_version_information_from_version_field(flac):
@@ -266,13 +267,13 @@ def test_round_trips_metadata_to_file(flac):
     metadata["production_company"] = "Effendi Records Inc."
     metadata["production_company_region"] = ("CA", "MTL")
     metadata["music_producer"] = "Joel Miller & Paul Johnston"
-    metadata["lyricist"] = "Joel Miller"
+    metadata["lyricist"] = ["Joel Miller"]
     metadata["catalog_number"] = "001-002-003"
     metadata["upc"] = "123456789999"
     metadata["mixer"] = "Mixing Engineer"
     metadata["comments"] = "Comments of any nature"
-    metadata["publisher"] = "Who publishes the disc the track came from"
-    metadata["composer"] = "Composer of the work"
+    metadata["publisher"] = ["Who publishes the disc the track came from"]
+    metadata["composer"] = ["Composer of the work"]
     metadata["version_info"] = "Specifics about that version of the track"
     metadata["lyrics"] = "Lyrics of the track"
     metadata["language"] = "Language of the lyrics"

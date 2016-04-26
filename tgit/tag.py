@@ -60,6 +60,10 @@ class pairs(Typed):
     _expected_type = (list, tuple, type(None))
 
 
+class sequence(Typed):
+    _expected_type = (list, type(None))
+
+
 class map(Typed):
     _expected_type = (dict, type(None))
 

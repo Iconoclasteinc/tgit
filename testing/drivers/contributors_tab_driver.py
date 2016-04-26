@@ -34,9 +34,9 @@ class ContributorsTabDriver(ScreenDriver):
         self._add_button.click()
 
     def has_added_empty_row(self):
-        self._table.cell_is_readonly(self._empty_row_index, self.ISNI_CELL_INDEX)
-        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).has_options("", "Author", "Composer",
-                                                                                     "Publisher")
+        row = self._has_empty_row()
+        self._table.cell_is_readonly(row, self.ISNI_CELL_INDEX)
+        self._combo_in_cell(row, self.ROLE_CELL_INDEX).has_options("", "Author", "Composer", "Publisher")
 
     def remove_contributor_at(self, row):
         self._table.click_on_cell(row, self.NAME_CELL_INDEX)
@@ -46,20 +46,22 @@ class ContributorsTabDriver(ScreenDriver):
         self._remove_button.is_disabled(disabled=disabled)
 
     def add_lyricist(self, name):
-        self._add_collaborator(name)
-        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).select_option("Author")
+        row = self._add_collaborator(name)
+        self._combo_in_cell(row, self.ROLE_CELL_INDEX).select_option("Author")
 
     def add_composer(self, name):
-        self._add_collaborator(name)
-        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).select_option("Composer")
+        row = self._add_collaborator(name)
+        self._combo_in_cell(row, self.ROLE_CELL_INDEX).select_option("Composer")
 
     def add_publisher(self, name):
-        self._add_collaborator(name)
-        self._combo_in_cell(self._empty_row_index, self.ROLE_CELL_INDEX).select_option("Publisher")
+        row = self._add_collaborator(name)
+        self._combo_in_cell(row, self.ROLE_CELL_INDEX).select_option("Publisher")
 
     def _add_collaborator(self, name):
         self._add_button.click()
-        self._table.edit_cell(self._empty_row_index, self.NAME_CELL_INDEX, name)
+        row = self._has_empty_row()
+        self._table.edit_cell(row, self.NAME_CELL_INDEX, name)
+        return row
 
     def change_name_at_row(self, name, row):
         self._table.edit_cell(row, self.NAME_CELL_INDEX, name)
@@ -77,9 +79,8 @@ class ContributorsTabDriver(ScreenDriver):
         widget_driver = self._table.widget_in_cell(row, col)
         return ComboBoxDriver(widget_driver.selector, self.prober, self.gesture_performer)
 
-    @property
-    def _empty_row_index(self):
-        return self._table.has_row(has_items(None, None, None, None))
+    def _has_empty_row(self):
+        return self._table.has_row(contains(None, None, None, None))
 
     @property
     def _table(self):

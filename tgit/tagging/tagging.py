@@ -53,31 +53,30 @@ def _all_metadata(track):
 def _clean_isnis(track_metadata):
     new_isni_map = {}
     isnis = track_metadata["isnis"] or {}
+
     lead_performer = track_metadata["lead_performer"]
-    lyricist = track_metadata["lyricist"]
-    composer = track_metadata["composer"]
-    publisher = track_metadata["publisher"]
     if lead_performer in isnis:
         new_isni_map[lead_performer] = isnis[lead_performer]
-    if lyricist in isnis:
-        new_isni_map[lyricist] = isnis[lyricist]
-    if composer in isnis:
-        new_isni_map[composer] = isnis[composer]
-    if publisher in isnis:
-        new_isni_map[publisher] = isnis[publisher]
+
+    _append_existing_identifiers(track_metadata["lyricist"] or [], isnis, new_isni_map)
+    _append_existing_identifiers(track_metadata["composer"] or [], isnis, new_isni_map)
+    _append_existing_identifiers(track_metadata["publisher"] or [], isnis, new_isni_map)
+
     return new_isni_map
 
 
 def _clean_ipis(track_metadata):
     new_ipi_map = {}
     ipis = track_metadata["ipis"] or {}
-    lyricist = track_metadata["lyricist"]
-    composer = track_metadata["composer"]
-    publisher = track_metadata["publisher"]
-    if lyricist in ipis:
-        new_ipi_map[lyricist] = ipis[lyricist]
-    if composer in ipis:
-        new_ipi_map[composer] = ipis[composer]
-    if publisher in ipis:
-        new_ipi_map[publisher] = ipis[publisher]
+
+    _append_existing_identifiers(track_metadata["lyricist"] or [], ipis, new_ipi_map)
+    _append_existing_identifiers(track_metadata["composer"] or [], ipis, new_ipi_map)
+    _append_existing_identifiers(track_metadata["publisher"] or [], ipis, new_ipi_map)
+
     return new_ipi_map
+
+
+def _append_existing_identifiers(names, old_map, new_map):
+    for name in names:
+        if name in old_map:
+            new_map[name] = old_map[name]

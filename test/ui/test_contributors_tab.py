@@ -48,7 +48,7 @@ def test_displays_collaborators(driver):
     isnis = {"Joel Miller": "000000123456789", "John Roney": "9876543210000000", "Rebecca Maloy": "0102030405060789"}
     ipis = {"Joel Miller": "0102030405060789", "John Roney": "000000123456789", "Rebecca Maloy": "9876543210000000"}
 
-    track = make_track(lyricist="Joel Miller", composer="John Roney", publisher="Rebecca Maloy")
+    track = make_track(lyricist=["Joel Miller"], composer=["John Roney"], publisher=["Rebecca Maloy"])
     album = make_album(isnis=isnis, ipis=ipis)
 
     _ = show_page(album, track, on_isni_local_lookup=isni_lookup, on_ipi_local_lookup=ipi_lookup)
@@ -71,7 +71,7 @@ def test_updates_collaborators_identifiers(driver):
     isnis = {"Joel Miller": "000000123456789", "John Roney": "9876543210000000", "Rebecca Maloy": "0102030405060789"}
     ipis = {"Joel Miller": "0102030405060789", "John Roney": "000000123456789", "Rebecca Maloy": "9876543210000000"}
 
-    track = make_track(lyricist="Joel Miller", composer="John Roney", publisher="Rebecca Maloy")
+    track = make_track(lyricist=["Joel Miller"], composer=["John Roney"], publisher=["Rebecca Maloy"])
     album = make_album(isnis=isnis, ipis=ipis)
 
     _ = show_page(album, track, on_isni_local_lookup=isni_lookup, on_ipi_local_lookup=ipi_lookup)
@@ -117,28 +117,48 @@ def test_signals_collaborator(driver):
     signal = KeywordsValueMatcherProbe("metadata changed")
     _ = show_page(on_metadata_changed=signal.received)
 
-    signal.expect(has_entries(lyricist="Joel Miller"))
+    signal.expect(has_entries(lyricist=["Joel Miller"]))
     driver.add_lyricist("Joel Miller")
     driver.check(signal)
 
-    signal.expect(has_entries(lyricist=""))
+    signal.expect(has_entries(lyricist=[]))
     driver.remove_contributor_at(0)
     driver.check(signal)
 
-    signal.expect(has_entries(composer="Joel Miller"))
+    signal.expect(has_entries(composer=["Joel Miller"]))
     driver.add_composer("Joel Miller")
     driver.check(signal)
 
-    signal.expect(has_entries(composer=""))
+    signal.expect(has_entries(composer=[]))
     driver.remove_contributor_at(0)
     driver.check(signal)
 
-    signal.expect(has_entries(publisher="Joel Miller"))
+    signal.expect(has_entries(publisher=["Joel Miller"]))
     driver.add_publisher("Joel Miller")
     driver.check(signal)
 
-    signal.expect(has_entries(publisher=""))
+    signal.expect(has_entries(publisher=[]))
     driver.remove_contributor_at(0)
+    driver.check(signal)
+
+
+def test_signals_multiple_collaborator(driver):
+    signal = KeywordsValueMatcherProbe("metadata changed")
+    _ = show_page(on_metadata_changed=signal.received)
+
+    signal.expect(has_entries(lyricist=["Joel Miller", "John Roney"]))
+    driver.add_lyricist("Joel Miller")
+    driver.add_lyricist("John Roney")
+    driver.check(signal)
+
+    signal.expect(has_entries(composer=["John Lennon", "Paul McCartney"]))
+    driver.add_composer("John Lennon")
+    driver.add_composer("Paul McCartney")
+    driver.check(signal)
+
+    signal.expect(has_entries(publisher=["David Murphy et cie", "Ad Litteram"]))
+    driver.add_publisher("David Murphy et cie")
+    driver.add_publisher("Ad Litteram")
     driver.check(signal)
 
 

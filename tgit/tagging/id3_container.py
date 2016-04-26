@@ -95,6 +95,19 @@ class RegionProcessor(TextProcessor):
         super().__init__(key, tag, self.to_region, self.to_text, optional_description="UN/LOCODE")
 
 
+class SequenceProcessor(TextProcessor):
+    @staticmethod
+    def to_sequence(frame):
+        return [str(text) for text in frame.text]
+
+    @staticmethod
+    def to_text(value):
+        return [str(current_value) for current_value in value]
+
+    def __init__(self, key, tag):
+        super().__init__(key, tag, self.to_sequence, self.to_text)
+
+
 class MultiValueNumericProcessor:
     def __init__(self, key, *tags):
         self._key = key
@@ -361,9 +374,6 @@ class ID3Container:
         "TDTG": "tagging_time",
         "TIT2": "track_title",
         "TPE4": "version_info",
-        "TEXT": "lyricist",
-        "TCOM": "composer",
-        "TPUB": "publisher",
         "TSRC": "isrc",
         "TLAN": "language",
         "TXXX:BARCODE": "upc",
@@ -381,6 +391,13 @@ class ID3Container:
         "TCON": "primary_style"
     }.items():
         _processors.append(UnicodeProcessor(key, tag))
+
+    for key, tag in {
+        "TEXT": "lyricist",
+        "TCOM": "composer",
+        "TPUB": "publisher",
+    }.items():
+        _processors.append(SequenceProcessor(key, tag))
 
     for key, tag in {
         "TXXX:LEAD-PERFORMER-REGION": "lead_performer_region",
