@@ -1273,7 +1273,7 @@
     <name>ContributorsTab</name>
     <message>
         <source>Author</source>
-        <translation>Autheur</translation>
+        <translation>Auteur</translation>
     </message>
     <message>
         <source>Composer</source>
@@ -1288,7 +1288,7 @@
     <name>Role</name>
     <message>
         <source>Author</source>
-        <translation>Autheur</translation>
+        <translation>Auteur</translation>
     </message>
     <message>
         <source>Composer</source>

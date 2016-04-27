@@ -19,6 +19,7 @@
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QHeaderView
+from tgit import platforms
 
 from tgit.album import AlbumListener
 from tgit.ui.closeable import Closeable
@@ -46,6 +47,9 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
     ROLE_CELL_INDEX = 1
     IPI_CELL_INDEX = 2
     ISNI_CELL_INDEX = 3
+    ROLE_CELL_WIDTH = 140 if platforms.mac else 120
+    IPI_CELL_WIDTH = 85 if platforms.mac else 61
+    ISNI_CELL_WIDTH = 143 if platforms.mac else 103
 
     closed = pyqtSignal()
     on_metadata_changed = pyqtSignal(dict)
@@ -70,11 +74,11 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
         header = self._contributors_table.horizontalHeader()
         header.resizeSection(self.NAME_CELL_INDEX, 200)
         header.setSectionResizeMode(self.NAME_CELL_INDEX, QHeaderView.Stretch)
-        header.resizeSection(self.ROLE_CELL_INDEX, 120)
+        header.resizeSection(self.ROLE_CELL_INDEX, self.ROLE_CELL_WIDTH)
         header.setSectionResizeMode(self.ROLE_CELL_INDEX, QHeaderView.Fixed)
-        header.resizeSection(self.IPI_CELL_INDEX, 61)
+        header.resizeSection(self.IPI_CELL_INDEX, self.IPI_CELL_WIDTH)
         header.setSectionResizeMode(self.IPI_CELL_INDEX, QHeaderView.Fixed)
-        header.resizeSection(self.ISNI_CELL_INDEX, 103)
+        header.resizeSection(self.ISNI_CELL_INDEX, self.ISNI_CELL_WIDTH)
         header.setSectionResizeMode(self.ISNI_CELL_INDEX, QHeaderView.Fixed)
 
     def display(self, track):
