@@ -18,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QHeaderView
 
 from tgit.album import AlbumListener
 from tgit.ui.closeable import Closeable
@@ -56,12 +56,26 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
         self._lookup_ipi = on_ipi_local_lookup
         self._lookup_isni = on_isni_local_lookup
         self._contributors = []
+        self._setup_ui()
 
+    def _setup_ui(self):
         self._load(":/ui/contributors_tab.ui")
         self._add_button.clicked.connect(self._add_row)
         self._remove_button.clicked.connect(self._remove_row)
         self._contributors_table.itemSelectionChanged.connect(self._update_actions)
         self._contributors_table.cellChanged.connect(self._contributor_changed)
+        self._setup_header()
+
+    def _setup_header(self):
+        header = self._contributors_table.horizontalHeader()
+        header.resizeSection(self.NAME_CELL_INDEX, 200)
+        header.setSectionResizeMode(self.NAME_CELL_INDEX, QHeaderView.Stretch)
+        header.resizeSection(self.ROLE_CELL_INDEX, 120)
+        header.setSectionResizeMode(self.ROLE_CELL_INDEX, QHeaderView.Fixed)
+        header.resizeSection(self.IPI_CELL_INDEX, 61)
+        header.setSectionResizeMode(self.IPI_CELL_INDEX, QHeaderView.Fixed)
+        header.resizeSection(self.ISNI_CELL_INDEX, 103)
+        header.setSectionResizeMode(self.ISNI_CELL_INDEX, QHeaderView.Fixed)
 
     def display(self, track):
         isnis = track.album.isnis or {}

@@ -780,31 +780,6 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
-        <source>Lyricist</source>
-        <translation>Auteur</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>IPI Number:</source>
-        <translation>Numéro IPI :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>ISNI Number:</source>
-        <translation>Numéro ISNI :</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>Composer</source>
-        <translation>Compositeur</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
-        <source>Publisher</source>
-        <translation>Éditeur</translation>
-    </message>
-    <message>
-        <location filename="tgit/ui/track_edition_page.py" />
         <source>Content</source>
         <translation>Contenu</translation>
     </message>
@@ -1269,6 +1244,59 @@
     <message>
         <source>TGiT project files</source>
         <translation>Fichiers de projet TGiT</translation>
+    </message>
+</context>
+<context>
+    <name>contributors_tab</name>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add new contributors with &lt;img src=":/tooltips/add"/&gt;. Remove selected contributors with &lt;img src=":/tooltips/remove"/&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ajouter un nouveau contributeur avec &lt;img src=":/tooltips/add"/&gt;. Retirer un contributeur avec &lt;img src=":/tooltips/remove"/&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <source>Role</source>
+        <translation>Rôle</translation>
+    </message>
+    <message>
+        <source>Add new contributor</source>
+        <translation>Ajouter un contributeur</translation>
+    </message>
+    <message>
+        <source>Remove selected contributor</source>
+        <translation>Retirer un contributeur</translation>
+    </message>
+</context>
+<context>
+    <name>ContributorsTab</name>
+    <message>
+        <source>Author</source>
+        <translation>Autheur</translation>
+    </message>
+    <message>
+        <source>Composer</source>
+        <translation>Compositeur</translation>
+    </message>
+    <message>
+        <source>Publisher</source>
+        <translation>Éditeur</translation>
+    </message>
+</context>
+<context>
+    <name>Role</name>
+    <message>
+        <source>Author</source>
+        <translation>Autheur</translation>
+    </message>
+    <message>
+        <source>Composer</source>
+        <translation>Compositeur</translation>
+    </message>
+    <message>
+        <source>Publisher</source>
+        <translation>Éditeur</translation>
     </message>
 </context>
 </TS>
