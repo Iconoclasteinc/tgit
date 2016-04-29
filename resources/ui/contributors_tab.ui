@@ -42,11 +42,25 @@ QLabel[style=QMacStyle] {
    </item>
    <item>
     <widget class="QTableWidget" name="_contributors_table">
+     <property name="styleSheet">
+      <string notr="true">QTableView[style=QMacStyle] {
+    alternate-background-color: #F2F2F2;
+}</string>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="horizontalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+     <property name="showGrid">
+      <bool>false</bool>
      </property>
      <property name="cornerButtonEnabled">
       <bool>false</bool>

@@ -13,9 +13,12 @@ from tgit.ui.pages.contributors_tab import ContributorsTab
 pytestmark = pytest.mark.ui
 
 
-def show_page(project=make_album(), track=make_track(), on_metadata_changed=ignore, on_isni_local_lookup=ignore,
+def show_page(track=make_track(), on_metadata_changed=ignore, on_isni_local_lookup=ignore,
               on_ipi_local_lookup=ignore, on_ipi_changed=ignore):
-    project.add_track(track)
+    project = track.album
+    if not project:
+        project = make_album(tracks=[track])
+
     page = make_contributors_tab(project, track,
                                  on_metadata_changed=on_metadata_changed,
                                  on_isni_local_lookup=on_isni_local_lookup,
@@ -49,9 +52,9 @@ def test_displays_collaborators(driver):
     ipis = {"Joel Miller": "0102030405060789", "John Roney": "000000123456789", "Rebecca Maloy": "9876543210000000"}
 
     track = make_track(lyricist=["Joel Miller"], composer=["John Roney"], publisher=["Rebecca Maloy"])
-    album = make_album(isnis=isnis, ipis=ipis)
+    _ = make_album(isnis=isnis, ipis=ipis, tracks=[track])
 
-    _ = show_page(album, track, on_isni_local_lookup=isni_lookup, on_ipi_local_lookup=ipi_lookup)
+    _ = show_page(track, on_isni_local_lookup=isni_lookup, on_ipi_local_lookup=ipi_lookup)
     driver.shows_row_details("Joel Miller", "0102030405060789", "000000123456789")
     driver.shows_role_on_row(0, "Author")
     driver.shows_row_details("John Roney", "000000123456789", "9876543210000000")
@@ -72,9 +75,9 @@ def test_updates_collaborators_identifiers(driver):
     ipis = {"Joel Miller": "0102030405060789", "John Roney": "000000123456789", "Rebecca Maloy": "9876543210000000"}
 
     track = make_track(lyricist=["Joel Miller"], composer=["John Roney"], publisher=["Rebecca Maloy"])
-    album = make_album(isnis=isnis, ipis=ipis)
+    album = make_album(isnis=isnis, ipis=ipis, tracks=[track])
 
-    _ = show_page(album, track, on_isni_local_lookup=isni_lookup, on_ipi_local_lookup=ipi_lookup)
+    _ = show_page(track, on_isni_local_lookup=isni_lookup, on_ipi_local_lookup=ipi_lookup)
     isnis["Joel Miller"] = "0000001234567891"
     isnis["John Roney"] = "98765432100000001"
     isnis["Rebecca Maloy"] = "01020304050607891"
@@ -100,15 +103,15 @@ def test_adds_empty_row_to_table_when_clicking_on_add_button(driver):
 
 
 def test_removes_row(driver):
-    _ = show_page()
-    driver.add_contributor()
+    track = make_track(lyricist=["Joel Miller"])
+    _ = show_page(track=track)
     driver.remove_contributor_at(0)
     driver.has_contributors_count(0)
 
 
 def test_disables_remove_button_when_list_is_empty(driver):
-    _ = show_page()
-    driver.add_contributor()
+    track = make_track(lyricist=["Joel Miller"])
+    _ = show_page(track=track)
     driver.remove_contributor_at(0)
     driver.shows_remove_button(disabled=True)
 

@@ -6,7 +6,6 @@ PAUSE_AFTER_CLOSE = 0
 
 
 def show_(widget, pause=PAUSE_AFTER_DISPLAY):
-    widget.adjustSize()
     widget.show()
     event_loop.process_events_for(pause)
 

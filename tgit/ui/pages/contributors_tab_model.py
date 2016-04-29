@@ -73,8 +73,8 @@ class Cell:
         def __init__(self, contributor, on_ipi_changed):
             super().__init__()
             self._on_ipi_changed = on_ipi_changed
-
             self.setData(Qt.UserRole, contributor)
+            self.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             if contributor.ipi:
                 self.setText(contributor.ipi)
 
@@ -90,6 +90,7 @@ class Cell:
             super().__init__()
             self.setData(Qt.UserRole, contributor)
             self.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+            self.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             if contributor.isni:
                 self.setText(contributor.isni)
 

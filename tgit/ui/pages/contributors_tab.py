@@ -47,9 +47,9 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
     ROLE_CELL_INDEX = 1
     IPI_CELL_INDEX = 2
     ISNI_CELL_INDEX = 3
-    ROLE_CELL_WIDTH = 140 if platforms.mac else 120
-    IPI_CELL_WIDTH = 85 if platforms.mac else 61
-    ISNI_CELL_WIDTH = 143 if platforms.mac else 103
+    ROLE_CELL_WIDTH = 160 if platforms.mac else 120
+    IPI_CELL_WIDTH = 105 if platforms.mac else 80
+    ISNI_CELL_WIDTH = 160 if platforms.mac else 120
 
     closed = pyqtSignal()
     on_metadata_changed = pyqtSignal(dict)
@@ -84,23 +84,19 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
     def display(self, track):
         isnis = track.album.isnis or {}
         ipis = track.album.ipis or {}
-        lyricists = track.lyricist or []
-        composers = track.composer or []
-        publishers = track.publisher or []
 
         self._contributors = []
-        for name in lyricists:
-            self._contributors.append(Contributor(name, self.tr("Author"), ipis.get(name), isnis.get(name)))
+        self._add_contributor(track.lyricist or [], self.tr("Author"), ipis, isnis)
+        self._add_contributor(track.composer or [], self.tr("Composer"), ipis, isnis)
+        self._add_contributor(track.publisher or [], self.tr("Publisher"), ipis, isnis)
 
-        for name in composers:
-            self._contributors.append(Contributor(name, self.tr("Composer"), ipis.get(name), isnis.get(name)))
+        self._display_table()
 
-        for name in publishers:
-            self._contributors.append(Contributor(name, self.tr("Publisher"), ipis.get(name), isnis.get(name)))
+    def _add_contributor(self, contributors, role, ipis, isnis):
+        for name in contributors:
+            self._contributors.append(Contributor(name, role, ipis.get(name), isnis.get(name)))
 
-        self._refresh_table_display()
-
-    def _display_project(self, project):
+    def albumStateChanged(self, project):
         isnis = project.isnis or {}
         ipis = project.ipis or {}
 
@@ -108,18 +104,19 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
             contributor.ipi = ipis.get(contributor.name)
             contributor.isni = isnis.get(contributor.name)
 
-        self._refresh_table_display()
-
-    def albumStateChanged(self, project):
-        self._display_project(project)
+        for row in range(self._contributors_table.rowCount()):
+            self._contributors_table.item(row, self.IPI_CELL_INDEX).setText(self._contributors[row].ipi)
+            self._contributors_table.item(row, self.ISNI_CELL_INDEX).setText(self._contributors[row].isni)
 
     def _add_row(self):
-        self._contributors.append(Contributor())
-        self._refresh_table_display()
+        contributor = Contributor()
+        self._contributors.append(contributor)
+        self._create_row(self._contributors_table.rowCount(), contributor)
 
     def _remove_row(self):
-        self._contributors.pop(self._contributors_table.currentRow())
-        self._refresh_table_display()
+        row = self._contributors_table.currentRow()
+        self._contributors.pop(row)
+        self._contributors_table.removeRow(row)
 
         if len(self._contributors) == 0:
             self._remove_button.setEnabled(False)
@@ -127,9 +124,9 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
         self._metadata_changed()
 
     def _update_actions(self):
-        self._remove_button.setEnabled(True)
+        self._remove_button.setEnabled(self._contributors_table.currentRow() > -1)
 
-    def _refresh_table_display(self):
+    def _display_table(self):
         self._clear_table()
         for row, contributor in enumerate(self._contributors):
             self._create_row(row, contributor)
