@@ -30,21 +30,22 @@
         <file alias="tooltips/move-up">images/12x12/arrow_upward.png</file>
         <file alias="tooltips/move-down">images/12x12/arrow_downward.png</file>
 
-        <file>ui/welcome_page.ui</file>
-        <file>ui/contributors_tab.ui</file>
-        <file>ui/main_window.ui</file>
-        <file>ui/project_screen.ui</file>
-        <file>ui/project_page.ui</file>
-        <file>ui/track_page.ui</file>
-        <file>ui/new_project_page.ui</file>
-        <file>ui/track_list_tab.ui</file>
         <file>ui/about_dialog.ui</file>
-        <file>ui/sign_in_dialog.ui</file>
-        <file>ui/isni_dialog.ui</file>
+        <file>ui/chain_of_title_tab.ui</file>
+        <file>ui/contributors_tab.ui</file>
         <file>ui/isni_assignation_review_dialog.ui</file>
+        <file>ui/isni_dialog.ui</file>
+        <file>ui/main_window.ui</file>
         <file>ui/musician_row.ui</file>
         <file>ui/musician_tab.ui</file>
+        <file>ui/new_project_page.ui</file>
+        <file>ui/project_page.ui</file>
+        <file>ui/project_screen.ui</file>
         <file>ui/settings_dialog.ui</file>
+        <file>ui/sign_in_dialog.ui</file>
+        <file>ui/track_list_tab.ui</file>
+        <file>ui/track_page.ui</file>
+        <file>ui/welcome_page.ui</file>
 
         <file>templates/soproq.xlsx</file>
     </qresource>

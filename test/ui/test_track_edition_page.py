@@ -1,15 +1,16 @@
 from datetime import timedelta
 
 import pytest
-from hamcrest import has_entries, has_key, is_not, contains
+from hamcrest import has_entries, has_key, is_not
 
 from cute.matchers import named
-from cute.probes import MultiValueMatcherProbe, KeywordsValueMatcherProbe
+from cute.probes import KeywordsValueMatcherProbe
 from cute.widgets import window
 from test.ui import show_, close_, ignore
 from testing import builders as build
 from testing.builders import make_album, make_track
 from testing.drivers import TrackEditionPageDriver
+from tgit.ui.pages.chain_of_title_tab import ChainOfTitleTab
 from tgit.ui.pages.contributors_tab import ContributorsTab
 from tgit.ui.pages.track_edition_page import make_track_edition_page, TrackEditionPage
 
@@ -27,8 +28,13 @@ def create_contributors_tab(*_):
     return ContributorsTab(ignore, ignore)
 
 
-def show_page(album, track, contributors_tab=create_contributors_tab, **handlers):
-    page = make_track_edition_page(album, track, contributors_tab, **handlers)
+def create_chain_of_title_tab(*_):
+    return ChainOfTitleTab()
+
+
+def show_page(album, track, contributors_tab=create_contributors_tab, chain_of_title_tab=create_chain_of_title_tab,
+              **handlers):
+    page = make_track_edition_page(album, track, contributors_tab, chain_of_title_tab, **handlers)
     show_(page)
     return page
 

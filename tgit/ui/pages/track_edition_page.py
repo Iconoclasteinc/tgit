@@ -31,9 +31,10 @@ from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.pages.project_edition_page import ISO_8601_FORMAT
 
 
-def make_track_edition_page(project, track, contributors_tab, **handlers):
+def make_track_edition_page(project, track, contributors_tab, chain_of_title_tab, **handlers):
     contributors = contributors_tab(project, track)
-    page = TrackEditionPage(contributors)
+    chain_of_title = chain_of_title_tab(track)
+    page = TrackEditionPage(contributors, chain_of_title)
     page.display(album=project, track=track)
 
     for name, handler in handlers.items():
@@ -56,11 +57,11 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     _cover = None
 
-    def __init__(self, contributors_tab):
+    def __init__(self, contributors_tab, chain_of_title_tab):
         super().__init__()
-        self._setup_ui(contributors_tab)
+        self._setup_ui(contributors_tab, chain_of_title_tab)
 
-    def _setup_ui(self, contributors_tab):
+    def _setup_ui(self, contributors_tab, chain_of_title_tab):
         def fill_with_languages(combobox):
             for code, name in sorted(LANGUAGES.items(), key=lambda item: self.tr(item[1])):
                 combobox.addItem(self.tr(name), code)
@@ -74,6 +75,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         fill_with_languages(self._language)
 
         self._tabs.widget(0).layout().addWidget(contributors_tab)
+        self._tabs.widget(3).layout().addWidget(chain_of_title_tab)
 
     def albumStateChanged(self, album):
         self.display(album=album)
