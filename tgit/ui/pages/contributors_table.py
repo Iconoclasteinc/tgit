@@ -16,35 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from collections import namedtuple
-from enum import Enum
-
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from PyQt5.QtWidgets import QHeaderView
-
-from tgit import platforms
-from tgit.ui.pages.contributors_table_model import Contributor, Cell
-
-Column = namedtuple("Column", ["position", "length", "resize_mode"])
-
-
-class Columns(Enum):
-    name = Column(0, 200, QHeaderView.Stretch)
-    role = Column(1, 160 if platforms.mac else 120, QHeaderView.Fixed)
-    ipi = Column(2, 105 if platforms.mac else 80, QHeaderView.Fixed)
-    isni = Column(3, 160 if platforms.mac else 140, QHeaderView.Fixed)
-
-    @classmethod
-    def at(cls, col):
-        return list([column.value for _, column in cls.__members__.items()])[col]
-
-    @classmethod
-    def position(cls, col):
-        return cls(col).value.position
-
-    def __len__(self):
-        return self.__members__.items()
+from tgit.ui.pages.contributors_table_model import Contributor, Cell, Columns
 
 
 class ContributorsTable(QObject):
@@ -85,9 +59,9 @@ class ContributorsTable(QObject):
         ipis = track.album.ipis or {}
 
         self._contributors = []
-        self._add_contributor(track.lyricist or [], self.tr("Author"), ipis, isnis)
-        self._add_contributor(track.composer or [], self.tr("Composer"), ipis, isnis)
-        self._add_contributor(track.publisher or [], self.tr("Publisher"), ipis, isnis)
+        self._add_contributor(track.lyricist or [], Contributor.AUTHOR, ipis, isnis)
+        self._add_contributor(track.composer or [], Contributor.COMPOSER, ipis, isnis)
+        self._add_contributor(track.publisher or [], Contributor.PUBLISHER, ipis, isnis)
 
         self._display_table()
 
@@ -97,15 +71,15 @@ class ContributorsTable(QObject):
             contributor.isni = isnis.get(contributor.name)
 
         for row in range(self._table.rowCount()):
-            self._table.item(row, Columns.position(Columns.ipi)).setText(self._contributors[row].ipi)
-            self._table.item(row, Columns.position(Columns.isni)).setText(self._contributors[row].isni)
+            self._table.item(row, Columns.ipi.position).setText(self._contributors[row].ipi)
+            self._table.item(row, Columns.isni.position).setText(self._contributors[row].isni)
 
     def _contributor_changed(self, row, column):
         self._table.item(row, column).value_changed()
 
     def _add_contributor(self, contributors, role, ipis, isnis):
         for name in contributors:
-            self._contributors.append(Contributor(name, role, ipis.get(name), isnis.get(name)))
+            self._contributors.append(Contributor(name, self.tr(role), ipis.get(name), isnis.get(name)))
 
     def _display_table(self):
         self._clear_table()
@@ -117,15 +91,27 @@ class ContributorsTable(QObject):
             self._table.removeRow(0)
 
     def _create_row(self, row, contributor):
-        def on_contributor_changed():
-            self.on_contributors_changed.emit(self._contributors)
+        def contributor_changed(*_):
+            if contributor.name and contributor.role:
+                self.on_contributors_changed.emit(self._contributors)
 
-        ipi = Cell.IPI(contributor, self.on_ipi_changed.emit)
-        isni = Cell.ISNI(contributor)
-        name = Cell.Name(contributor, ipi, isni, self._lookup_ipi, self._lookup_isni, on_contributor_changed)
-        role = Cell.Role(contributor, on_contributor_changed)
+        name = Cell.Name(contributor)
+        ipi = Cell.IPI(contributor, self._lookup_ipi)
+        isni = Cell.ISNI(contributor, self._lookup_isni)
+        role = Cell.Role(contributor, self._roles)
+
+        name.on_name_changed.subscribe(contributor_changed)
+        name.on_name_changed.subscribe(ipi.name_changed)
+        name.on_name_changed.subscribe(isni.name_changed)
+        ipi.on_ipi_changed.subscribe(self.on_ipi_changed.emit)
+        role.on_role_changed.connect(contributor_changed)
+
         self._table.insertRow(row)
-        self._table.setItem(row, Columns.position(Columns.name), name)
-        self._table.setItem(row, Columns.position(Columns.ipi), ipi)
-        self._table.setItem(row, Columns.position(Columns.isni), isni)
-        self._table.setCellWidget(row, Columns.position(Columns.role), role)
+        self._table.setItem(row, Columns.name.position, name)
+        self._table.setItem(row, Columns.ipi.position, ipi)
+        self._table.setItem(row, Columns.isni.position, isni)
+        self._table.setCellWidget(row, Columns.role.position, role)
+
+    @property
+    def _roles(self):
+        return ["", self.tr(Contributor.AUTHOR), self.tr(Contributor.COMPOSER), self.tr(Contributor.PUBLISHER)]

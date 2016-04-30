@@ -1299,19 +1299,4 @@
         <translation>Éditeur</translation>
     </message>
 </context>
-<context>
-    <name>Role</name>
-    <message>
-        <source>Author</source>
-        <translation>Auteur</translation>
-    </message>
-    <message>
-        <source>Composer</source>
-        <translation>Compositeur</translation>
-    </message>
-    <message>
-        <source>Publisher</source>
-        <translation>Éditeur</translation>
-    </message>
-</context>
 </TS>

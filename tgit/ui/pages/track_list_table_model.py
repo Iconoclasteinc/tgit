@@ -97,11 +97,12 @@ RESIZABLE = QHeaderView.Interactive
 FIXED = QHeaderView.Fixed
 STRETCH = QHeaderView.Stretch
 
-Width = namedtuple('Width', ['length', 'resize_mode'])
+Width = namedtuple("Width", ["length", "resize_mode"])
 
 
 class Cell(QTableWidgetItem):
-    def tr(self, text):
+    @staticmethod
+    def tr(text):
         return QCoreApplication.translate("Cell", text)
 
 
@@ -178,16 +179,16 @@ class Column(Enum):
             self.setTextAlignment(RIGHT_ALIGNED)
 
     @classmethod
-    def values(cls):
-        return list(cls)
+    def _values(cls):
+        return list([column for _, column in cls.__members__.items()])
 
     @classmethod
     def count(cls):
-        return len(cls)
+        return len(cls.__members__)
 
     @classmethod
     def at(cls, index):
-        return cls.values()[index]
+        return cls._values()[index]
 
     @property
     def width(self):

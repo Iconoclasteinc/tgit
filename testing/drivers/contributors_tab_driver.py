@@ -80,7 +80,7 @@ class ContributorsTabDriver(ScreenDriver):
         return ComboBoxDriver(widget_driver.selector, self.prober, self.gesture_performer)
 
     def _has_empty_row(self):
-        return self._table.has_row(contains(None, None, None, None))
+        return self._table.has_row(contains("", None, "", ""))
 
     @property
     def _table(self):

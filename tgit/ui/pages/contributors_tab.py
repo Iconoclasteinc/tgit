@@ -24,6 +24,7 @@ from tgit.album import AlbumListener
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.pages.contributors_table import ContributorsTable
+from tgit.ui.pages.contributors_table_model import Contributor
 
 
 def make_contributors_tab(project, track, on_metadata_changed, on_isni_local_lookup, on_ipi_local_lookup,
@@ -73,13 +74,13 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
     def _metadata_changed(self, contributors):
         metadata = dict(lyricist=[], composer=[], publisher=[])
         for contributor in contributors:
-            if contributor.role == self.tr("Author"):
+            if contributor.role == self.tr(Contributor.AUTHOR):
                 metadata["lyricist"].append(contributor.name)
 
-            if contributor.role == self.tr("Composer"):
+            if contributor.role == self.tr(Contributor.COMPOSER):
                 metadata["composer"].append(contributor.name)
 
-            if contributor.role == self.tr("Publisher"):
+            if contributor.role == self.tr(Contributor.PUBLISHER):
                 metadata["publisher"].append(contributor.name)
 
         self.on_metadata_changed.emit(metadata)

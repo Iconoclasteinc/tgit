@@ -16,12 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from collections import namedtuple
+from enum import Enum
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QTableWidgetItem, QComboBox
+from PyQt5.QtCore import Qt, pyqtSignal
+
+from PyQt5.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QApplication
+
+from tgit import platforms
+from tgit.signal import signal
 
 
 class Contributor:
+    AUTHOR = "Author"
+    COMPOSER = "Composer"
+    PUBLISHER = "Publisher"
+
     def __init__(self, name="", role="", ipi="", isni=""):
         self.isni = isni
         self.ipi = ipi
@@ -31,71 +41,105 @@ class Contributor:
 
 class Cell:
     class Name(QTableWidgetItem):
-        def __init__(self, contributor, ipi_item, isni_item, lookup_ipi, lookup_isni, on_name_changed):
-            super().__init__()
-            self._on_name_changed = on_name_changed
-            self._isni_item = isni_item
-            self._ipi_item = ipi_item
-            self._lookup_isni = lookup_isni
-            self._lookup_ipi = lookup_ipi
-            self.setData(Qt.UserRole, contributor)
+        on_name_changed = signal(str)
 
-            if contributor.name:
-                self.setText(contributor.name)
+        def __init__(self, contributor):
+            super().__init__()
+            self.setData(Qt.UserRole, contributor)
+            self.setText(contributor.name)
 
         def value_changed(self):
             name = self.text()
             contributor = self.data(Qt.UserRole)
             if contributor.name != name:
                 contributor.name = name
-                contributor.isni = self._lookup_isni(name)
-                contributor.ipi = self._lookup_ipi(name)
-                self._isni_item.setText(contributor.isni)
-                self._ipi_item.setText(contributor.ipi)
-                if contributor.role:
-                    self._on_name_changed()
+                self.on_name_changed.emit(name)
 
     class Role(QComboBox):
-        def __init__(self, contributor, on_role_changed):
-            super().__init__()
-            self._on_role_changed = on_role_changed
-            self._contributor = contributor
+        on_role_changed = pyqtSignal()
 
-            self.addItems(["", self.tr("Author"), self.tr("Composer"), self.tr("Publisher")])
+        def __init__(self, contributor, items):
+            super().__init__()
+            self._contributor = contributor
+            self.addItems(items)
             self.setCurrentText(contributor.role)
             self.currentIndexChanged.connect(lambda _: self._role_changed())
 
         def _role_changed(self):
             self._contributor.role = self.currentText()
-            self._on_role_changed()
+            self.on_role_changed.emit()
 
     class IPI(QTableWidgetItem):
-        def __init__(self, contributor, on_ipi_changed):
+        on_ipi_changed = signal(str, str)
+
+        def __init__(self, contributor, lookup_ipi):
             super().__init__()
-            self._on_ipi_changed = on_ipi_changed
+            self._lookup_ipi = lookup_ipi
             self.setData(Qt.UserRole, contributor)
             self.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            if contributor.ipi:
-                self.setText(contributor.ipi)
+            self.setText(contributor.ipi)
+
+        def name_changed(self, name):
+            contributor = self.data(Qt.UserRole)
+            contributor.ipi = self._lookup_ipi(name)
+            self.setText(contributor.ipi)
 
         def value_changed(self):
             ipi = self.text()
             contributor = self.data(Qt.UserRole)
             if contributor.ipi != ipi:
                 contributor.ipi = ipi
-                self._on_ipi_changed(contributor.name, ipi)
+                self.on_ipi_changed.emit(contributor.name, ipi)
 
     class ISNI(QTableWidgetItem):
-        def __init__(self, contributor):
+        def __init__(self, contributor, lookup_isni):
             super().__init__()
+            self._lookup_isni = lookup_isni
             self.setData(Qt.UserRole, contributor)
             self.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             self.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-            if contributor.isni:
-                self.setText(contributor.isni)
+            self.setText(contributor.isni)
+
+        def name_changed(self, name):
+            contributor = self.data(Qt.UserRole)
+            contributor.isni = self._lookup_isni(name)
+            self.setText(contributor.isni)
 
         def value_changed(self):
             isni = self.text()
             contributor = self.data(Qt.UserRole)
             if contributor.isni != isni:
                 contributor.isni = isni
+
+
+Column = namedtuple("Column", ["position", "length", "resize_mode"])
+
+
+class Columns(Enum):
+    name = Column(0, 200, QHeaderView.Stretch)
+    role = Column(1, 160 if platforms.mac else 120, QHeaderView.Fixed)
+    ipi = Column(2, 105 if platforms.mac else 80, QHeaderView.Fixed)
+    isni = Column(3, 160 if platforms.mac else 140, QHeaderView.Fixed)
+
+    @classmethod
+    def at(cls, col):
+        return cls._values()[col]
+
+    @classmethod
+    def _values(cls):
+        return list([column.value for _, column in cls.__members__.items()])
+
+    def __len__(self):
+        return len(self.__members__.items())
+
+    @property
+    def width(self):
+        return self.value.length
+
+    @property
+    def resize_mode(self):
+        return self.value.resize_mode
+
+    @property
+    def position(self):
+        return self.value.position
