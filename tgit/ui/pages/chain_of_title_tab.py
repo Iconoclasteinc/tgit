@@ -17,16 +17,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtWidgets import QWidget, QTableWidgetItem
 
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_chain_of_title_tab(track):
+def make_chain_of_title_tab(chain):
     tab = ChainOfTitleTab()
-    tab.display(track)
+    tab.display(chain)
 
     return tab
 
@@ -39,5 +39,18 @@ class ChainOfTitleTab(QWidget, UIFile):
         super().__init__()
         self._load(":/ui/chain_of_title_tab.ui")
 
-    def display(self, track):
-        pass
+    def display(self, chain):
+        for row in range(len(chain.contributors)):
+            self._create_row(row, self._contributors_table, chain.contributors[row])
+
+        for row in range(len(chain.publishers)):
+            self._create_row(row, self._publishers_table, chain.publishers[row])
+
+    @staticmethod
+    def _create_row(row, table, contributor):
+        table.insertRow(row)
+
+        item = QTableWidgetItem()
+        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+        item.setText(contributor.name)
+        table.setItem(row, 0, item)

@@ -18,6 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit import tag
+from tgit.chain_of_title import ChainOfTitle
 from tgit.metadata import Metadata
 from tgit.signal import Signal, signal
 
@@ -62,6 +63,7 @@ class Track(object, metaclass=tag.Taggable):
     def __init__(self, filename, metadata=None):
         self.filename = filename
         self.metadata = metadata or Metadata()
+        self.chain_of_title = ChainOfTitle(self.metadata)
 
     @property
     def type(self):
@@ -70,16 +72,5 @@ class Track(object, metaclass=tag.Taggable):
     def metadataChanged(self):
         self.metadata_changed.emit(self)
 
-    def isni_for(self, role):
-        if not self.isni:
-            return ""
-
-        # noinspection PyTypeChecker
-        for current_role, _, isni in self.isni:
-            if role == current_role:
-                return isni
-
-        return ""
-
     def __repr__(self):
-        return "Track(filename={0}, metadata={1})".format(self.filename, self.metadata)
+        return "Track(filename={}, metadata={})".format(self.filename, self.metadata)
