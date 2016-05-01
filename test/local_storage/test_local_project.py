@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 import os
 
 import pytest
-from hamcrest import assert_that, contains, has_property, equal_to, empty, is_, has_entry
+from hamcrest import assert_that, contains, has_property, equal_to, empty, is_, has_entry, has_entries
 
 from testing import builders as build, mp3_file
 from testing import resources
+from testing.builders import make_track, make_metadata
 from tgit import fs
 from tgit.album import Album
 from tgit.local_storage import local_project
@@ -69,6 +71,29 @@ def test_round_trips_album_metadata_and_tracks_to_disk(project_file, mp3):
                                               has_filename(project_file(TRACKS_FOLDER_NAME, "3rd.mp3")), ), "tracks")
 
 
+def test_round_trips_chain_of_title_to_disk(project_file, mp3):
+    album_file = project_file("album.tgit")
+    metadata = make_metadata(track_title="Chevere!", lyricist=["Joel Miller"], composer=["John Roney"],
+                             publisher=["Effendi Records"])
+
+    original_filename = mp3()
+    original_track = make_track(original_filename, metadata_from=metadata)
+    original_track.chain_of_title["Joel Miller"] = joel_miller()
+    original_track.chain_of_title["John Roney"] = john_roney()
+    original_track.chain_of_title["Effendi Records"] = effendi_records()
+
+    original_album = build.album(filename=album_file, version="2.4.0", type=Album.Type.FLAC,
+                                 lead_performer="Joel Miller", tracks=[original_track])
+
+    local_project.save_project(original_album, track_name=lambda current_track: current_track.track_title + ".mp3")
+    os.remove(original_filename)
+    track = local_project.load_project(album_file).tracks[0]
+
+    assert_that(track.chain_of_title, has_contributor("Joel Miller", joel_miller()), "The contributors")
+    assert_that(track.chain_of_title, has_contributor("John Roney", john_roney()), "The contributors")
+    assert_that(track.chain_of_title, has_contributor("Effendi Records", effendi_records()), "The contributors")
+
+
 def test_remove_previous_artwork_and_tracks(project_file, mp3):
     album_file = project_file("album.tgit")
     tracks = (build.track(mp3(), track_title=title) for title in ("1st", "2nd", "3rd"))
@@ -89,7 +114,7 @@ def test_remove_previous_artwork_and_tracks(project_file, mp3):
     assert_that(fs.list_dir(project_file(ARTWORK_FOLDER_NAME)), empty(), "artwork files left")
 
 
-def test_migrates_from_v1_9_to_v1_11():
+def test_migrates_to_v1_11():
     stored_album = local_project.load_project(resources.path("album-v1.9.tgit"))
 
     assert_that(stored_album.isnis, has_entry("Artist", "0000000123456789"), "lead performer identity")
@@ -111,3 +136,19 @@ def delete_from_disk(*tracks):
 def touch(filename):
     fs.mkdirs(os.path.dirname(filename))
     fs.write(filename, b"")
+
+
+def has_contributor(name, contributor):
+    return has_entry(name, has_entries(contributor))
+
+
+def joel_miller():
+    return dict(name="Joel Miller", affiliation="SOCAN", publisher="Effendi Records", share="25")
+
+
+def john_roney():
+    return dict(name="John Roney", affiliation="ASCAP", publisher="Effendi Records", share="25")
+
+
+def effendi_records():
+    return dict(name="Effendi Records", share="25")

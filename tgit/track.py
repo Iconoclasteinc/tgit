@@ -86,3 +86,6 @@ class Track(object, metaclass=tag.Taggable):
 
         return contributors
 
+    def load_chain_of_title(self, chain_of_title):
+        self.chain_of_title = chain_of_title
+

@@ -39,12 +39,20 @@ class ChainOfTitleTabDriver(ScreenDriver):
     def shows_affiliation_options_on_row(self, row, *affiliations):
         self._combo_in_cell(row, self.AFFILIATION_CELL_INDEX).has_options(*affiliations)
 
-    def shows_publisher_options_on_row(self, row, *publishers):
-        self._combo_in_cell(row, self.PUBLISHERS_CELL_INDEX).has_options(*publishers)
+    def shows_affiliation_of_contributor(self, name, affiliation):
+        row = self._contributors_table.has_row(has_item(name))
+        self._combo_in_cell(row, self.AFFILIATION_CELL_INDEX).has_current_text(affiliation)
 
     def change_affiliation_of_contributor(self, name, affiliation):
         row = self._contributors_table.has_row(has_item(name))
         self._combo_in_cell(row, self.AFFILIATION_CELL_INDEX).select_option(affiliation)
+
+    def shows_publisher_options_on_row(self, row, *publishers):
+        self._combo_in_cell(row, self.PUBLISHERS_CELL_INDEX).has_options(*publishers)
+
+    def shows_publisher_of_contributor(self, name, publisher):
+        row = self._contributors_table.has_row(has_item(name))
+        self._combo_in_cell(row, self.PUBLISHERS_CELL_INDEX).has_current_text(publisher)
 
     def change_publisher_of_contributor(self, name, publisher):
         row = self._contributors_table.has_row(has_item(name))

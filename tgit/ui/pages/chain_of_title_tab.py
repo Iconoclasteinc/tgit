@@ -69,13 +69,19 @@ class ChainOfTitleTab(QWidget, UIFile):
         combo.addItem("")
         combo.addItems(affiliations)
         combo.currentIndexChanged.connect(lambda _: self._contributor_changed(row))
+        combo.setCurrentText(contributor.get("affiliation"))
         self._contributors_table.setCellWidget(row, 1, combo)
 
         combo = QComboBox()
         combo.addItem("")
         combo.addItems(publishers)
         combo.currentIndexChanged.connect(lambda _: self._contributor_changed(row))
+        combo.setCurrentText(contributor.get("publisher"))
         self._contributors_table.setCellWidget(row, 2, combo)
+
+        item = QTableWidgetItem()
+        item.setText(contributor.get("share"))
+        self._contributors_table.setItem(row, 3, item)
 
     def _create_publisher_row(self, row, contributor):
         self._publishers_table.insertRow(row)
@@ -84,6 +90,10 @@ class ChainOfTitleTab(QWidget, UIFile):
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
         item.setText(contributor["name"])
         self._publishers_table.setItem(row, 0, item)
+
+        item = QTableWidgetItem()
+        item.setText(contributor.get("share"))
+        self._publishers_table.setItem(row, 1, item)
 
     def _contributor_changed(self, row):
         self.on_contributor_changed.emit(dict(name=(self._value_of_cell(self._contributors_table, row, 0)),

@@ -44,6 +44,21 @@ def _from_1_9_to_1_11(data):
     return data
 
 
+def _load_track(version, tracks_folder, track):
+    def _load_track_lower_than_v2_5():
+        return tagging.load_track(join(tracks_folder, track))
+
+    def _load_track_latest():
+        track_file = join(tracks_folder, track["name"])
+        loaded_track = tagging.load_track(track_file)
+        loaded_track.load_chain_of_title(track["chain_of_title"])
+        return loaded_track
+
+    if Version(version) < "2.5.0":
+        return _load_track_lower_than_v2_5()
+    return _load_track_latest()
+
+
 def load_project(filename):
     album_folder = dirname(filename)
     tracks_folder = join(album_folder, TRACKS_FOLDER_NAME)
@@ -58,9 +73,8 @@ def load_project(filename):
         mime, filename, type_, desc = image
         album.add_image(mime, fs.read(join(artwork_folder, filename)), type_, desc)
 
-    for track_filename in data["tracks"]:
-        track_file = join(tracks_folder, track_filename)
-        album.add_track(tagging.load_track(track_file))
+    for track in data["tracks"]:
+        album.add_track(_load_track(data["version"], tracks_folder, track))
 
     return album
 
@@ -75,7 +89,7 @@ def save_project(album, track_name=naming.track_scheme, track_catalog=tagging, a
         data["version"] = tgit.__version__
         data["type"] = album.type
         data["images"] = [(image.mime, artwork_name(image), image.type, image.desc) for image in album.images]
-        data["tracks"] = [track_name(track) for track in album.tracks]
+        data["tracks"] = [{"name": track_name(track), "chain_of_title": track.chain_of_title} for track in album.tracks]
 
         fs.mkdirs(album_folder)
         yaml.write_data(album.filename, data)
