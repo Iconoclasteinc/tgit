@@ -18,27 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 
-class Contributor:
-    def __init__(self, name):
-        self.name = name
-
-
 class ChainOfTitle:
-    def __init__(self, metadata):
-        self._contributors = {}
-        self._publishers = {}
+    def __init__(self, track):
+        self._track = track
 
-        contributors = set((metadata["lyricist"] or []) + (metadata["composer"] or []))
-        for name in contributors:
-            self._contributors[name] = Contributor(name)
-
-        for name in metadata["publisher"] or []:
-            self._publishers[name] = Contributor(name)
-
-    @property
-    def contributors(self):
-        return list(self._contributors.values())
-
-    @property
-    def publishers(self):
-        return list(self._publishers.values())
+    def update_contributor(self, **contributor):
+        self._track.chain_of_title[contributor["name"]] = contributor

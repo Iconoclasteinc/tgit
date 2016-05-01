@@ -63,7 +63,7 @@ class Track(object, metaclass=tag.Taggable):
     def __init__(self, filename, metadata=None):
         self.filename = filename
         self.metadata = metadata or Metadata()
-        self.chain_of_title = ChainOfTitle(self.metadata)
+        self.chain_of_title = self._create_chain_of_title()
 
     @property
     def type(self):
@@ -74,3 +74,15 @@ class Track(object, metaclass=tag.Taggable):
 
     def __repr__(self):
         return "Track(filename={}, metadata={})".format(self.filename, self.metadata)
+
+    def _create_chain_of_title(self):
+        lyricists = self.lyricist or []
+        composers = self.composer or []
+        publishers = self.publisher or []
+
+        contributors = {}
+        for name in set(lyricists + composers + publishers):
+            contributors[name] = {"name": name}
+
+        return contributors
+

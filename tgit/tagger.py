@@ -165,7 +165,9 @@ class Tagger:
 
     @staticmethod
     def _chain_of_title_tab(track):
-        return ui.make_chain_of_title_tab(track.chain_of_title)
+        chain_of_title = ChainOfTitle(track)
+        return ui.make_chain_of_title_tab(track, chain_of_title,
+                                          on_contributor_changed=chain_of_title.update_contributor)
 
     def _open_isni_dialog(self, project_, query):
         selection = identity.IdentitySelection(project_, query)

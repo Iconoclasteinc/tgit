@@ -25,6 +25,9 @@ def metadata(images=(), **meta):
     return new_metadata
 
 
+make_metadata = metadata
+
+
 def track(filename="track.mp3", metadata_from=None, **meta):
     new_track = Track(filename, metadata_from)
 
