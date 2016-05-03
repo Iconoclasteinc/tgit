@@ -30,6 +30,9 @@ def make_chain_of_title_tab(track, chain_of_title, on_contributor_changed):
 
     tab.on_contributor_changed.connect(lambda contributor: on_contributor_changed(**contributor))
 
+    subscription = track.chain_of_title_changed.subscribe(tab.display)
+    tab.closed.connect(lambda: subscription.cancel())
+
     return tab
 
 
@@ -50,12 +53,20 @@ class ChainOfTitleTab(QWidget, UIFile):
         composers = track.composer or []
         publishers = track.publisher or []
 
+        self._clear_table(self._contributors_table)
+        self._clear_table(self._publishers_table)
+
         chain_of_title = track.chain_of_title
         for name in chain_of_title.keys():
             if name in lyricists or name in composers:
                 self._create_contributor_row(self._contributors_table.rowCount(), chain_of_title[name], publishers)
             else:
                 self._create_publisher_row(self._publishers_table.rowCount(), chain_of_title[name])
+
+    @staticmethod
+    def _clear_table(table):
+        while table.rowCount() > 0:
+            table.removeRow(0)
 
     def _create_contributor_row(self, row, contributor, publishers):
         self._contributors_table.insertRow(row)

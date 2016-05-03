@@ -46,6 +46,8 @@ def update_track(track):
         for key, value in metadata.items():
             setattr(track, key, value)
 
+        track.update_chain_of_title()
+
     return update_track_metadata
 
 

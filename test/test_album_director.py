@@ -2,8 +2,8 @@
 import os
 
 import pytest
-from flexmock import flexmock as mock
-from hamcrest import (assert_that, equal_to, is_, contains, has_properties, none, has_key, has_property,
+from flexmock import flexmock as mock, flexmock
+from hamcrest import (assert_that, equal_to, is_, contains, has_properties, has_key, has_property,
                       match_equality)
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
@@ -193,6 +193,12 @@ def test_updates_tracks_main_artist_when_album_is_not_a_compilation():
 
     for track in album.tracks:
         assert_that(track.lead_performer, equal_to("Album Artist"), "track artist")
+
+
+def test_updates_the_track_chain_of_title():
+    track = make_track()
+    flexmock(track).should_receive("update_chain_of_title").once()
+    director.update_track(track)(track_title="Title")
 
 
 def test_clears_album_images():

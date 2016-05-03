@@ -97,6 +97,40 @@ def test_signals_contributor_changed(driver):
     driver.check(signal)
 
 
+def test_displays_contributors_when_track_has_been_updated(driver):
+    track = make_track(metadata_from=metadata(lyricist=["Joel Miller", "John Roney"], publisher=["Effendi Records"]))
+    page = show_page(track, ChainOfTitle(track))
+
+    driver.has_contributors_count(2)
+    driver.has_publishers_count(1)
+
+    track.chain_of_title["Joel Miller"] = joel_miller()
+    del track.chain_of_title["John Roney"]
+    track.lyricist.remove("John Roney")
+    page.display(track)
+
+    driver.has_contributors_count(1)
+    driver.has_publishers_count(1)
+    driver.shows_contributor_row_details("Joel Miller", None, None, "25")
+    driver.shows_affiliation_of_contributor("Joel Miller", "SOCAN")
+    driver.shows_publisher_of_contributor("Joel Miller", "Effendi Records")
+
+
+def test_displays_publishers_when_track_has_been_updated(driver):
+    track = make_track(metadata_from=metadata(publisher=["Effendi Records", "Universals"]))
+    page = show_page(track, ChainOfTitle(track))
+
+    driver.has_publishers_count(2)
+
+    track.chain_of_title["Effendi Records"] = effendi_records()
+    del track.chain_of_title["Universals"]
+    track.publisher.remove("Universals")
+    page.display(track)
+
+    driver.has_publishers_count(1)
+    driver.shows_publisher_row_details("Effendi Records", "50")
+
+
 def joel_miller():
     return dict(name="Joel Miller", affiliation="SOCAN", publisher="Effendi Records", share="25")
 

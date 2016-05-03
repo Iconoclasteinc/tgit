@@ -25,6 +25,7 @@ from tgit.signal import Signal, signal
 
 class Track(object, metaclass=tag.Taggable):
     metadata_changed = signal(Signal.SELF)
+    chain_of_title_changed = signal(Signal.SELF)
 
     album = None
 
@@ -89,3 +90,24 @@ class Track(object, metaclass=tag.Taggable):
     def load_chain_of_title(self, chain_of_title):
         self.chain_of_title = chain_of_title
 
+    def update_chain_of_title(self):
+        lyricists = self.lyricist or []
+        composers = self.composer or []
+        publishers = self.publisher or []
+        contributors = set(lyricists + composers + publishers)
+
+        to_remove = self.chain_of_title.keys() - contributors
+        to_add = contributors - self.chain_of_title.keys()
+        for name in to_remove:
+            del self.chain_of_title[name]
+
+        for name in to_add:
+            self.chain_of_title[name] = {"name": name}
+
+        if len(to_remove) > 0:
+            for value in self.chain_of_title.values():
+                if "publisher" in value.keys() and value["publisher"] not in publishers:
+                    value["publisher"] = ""
+
+        if len(to_remove) > 0 or len(to_add) > 0:
+            self.chain_of_title_changed.emit(self)
