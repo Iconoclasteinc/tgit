@@ -1,10 +1,10 @@
 import pytest
-from hamcrest import assert_that, has_entry, has_entries, all_of, not_, has_key, any_of, empty
+from hamcrest import assert_that, has_entry, has_entries, not_, has_key, any_of, empty, all_of
 from hamcrest import contains_inanyorder, contains, has_property
 
 from test.test_signal import Subscriber
 from testing import builders as build
-from testing.builders import make_track, metadata
+from testing.builders import make_track, metadata, make_metadata
 from tgit.track import Track
 
 pytestmark = pytest.mark.unit
@@ -34,9 +34,10 @@ def test_creates_default_chain_of_title_from_metadata():
     source_metadata = metadata(lyricist=["Joel Miller"], composer=["John Roney"], publisher=["Effendi Records"])
     track = make_track(metadata_from=source_metadata)
 
-    assert_that(track.chain_of_title, has_entries({"Joel Miller": has_entry("name", "Joel Miller"),
-                                                   "John Roney": has_entry("name", "John Roney"),
-                                                   "Effendi Records": has_entry("name", "Effendi Records")}),
+    assert_that(track.chain_of_title.contributors,
+                all_of(has_author_composer("John Roney", has_entry("name", "John Roney")),
+                       has_author_composer("Joel Miller", has_entry("name", "Joel Miller")),
+                       has_publisher("Effendi Records", has_entry("name", "Effendi Records"))),
                 "The chain of title")
 
 
@@ -61,25 +62,29 @@ def test_adds_contributor_to_chain_of_title():
     track.publisher = ["Effendi Records", "Universals"]
     track.update_chain_of_title()
 
-    assert_that(track.chain_of_title, has_entries({
-        "John Roney": has_entry("name", "John Roney"),
-        "Yoko Ono": has_entry("name", "Yoko Ono"),
-        "Universals": has_entry("name", "Universals")}), "The chain of title")
+    assert_that(track.chain_of_title.contributors,
+                all_of(has_author_composer("John Roney", has_entry("name", "John Roney")),
+                       has_author_composer("Yoko Ono", has_entry("name", "Yoko Ono")),
+                       has_publisher("Universals", has_entry("name", "Universals"))),
+                "The chain of title")
 
 
 def test_removes_linked_publisher_from_a_contributor_when_removing_a_publisher():
     track = make_track(metadata_from=metadata(lyricist=["Joel Miller"], composer=["John Roney"],
                                               publisher=["Effendi Records"]))
-    track.load_chain_of_title(
-        {"Joel Miller": joel_miller(), "John Roney": john_roney(), "Effendi Records": effendi_records()})
+    track.load_chain_of_title({
+        "authors_composers": {"Joel Miller": joel_miller(), "John Roney": john_roney()},
+        "publishers": {"Effendi Records": effendi_records()}
+    })
 
     track.publisher = []
     track.update_chain_of_title()
 
-    assert_that(track.chain_of_title, all_of(
-        has_entries({"Joel Miller": has_entry("publisher", ""),
-                     "John Roney": has_entry("publisher", "")}),
-        not_(has_key("Effendi Records"))), "The chain of title")
+    assert_that(track.chain_of_title.contributors,
+                all_of(has_author_composer("John Roney", has_entry("publisher", "")),
+                       has_author_composer("Joel Miller", has_entry("publisher", "")),
+                       has_entry("publishers", not_(has_key("Effendi Records")))),
+                "The chain of title")
 
 
 def test_signals_chain_of_value_changed_on_contributor_added():
@@ -91,9 +96,9 @@ def test_signals_chain_of_value_changed_on_contributor_added():
 
     track.update_chain_of_title()
 
-    assert_that(subscriber.events, contains(contains(has_property("chain_of_title", has_entries({
-        "John Roney": has_entry("name", "John Roney"),
-        "Joel Miller": has_entry("name", "Joel Miller")})))), "The chain of title")
+    assert_that(subscriber.events, contains(contains(has_property("contributors", all_of(
+        has_author_composer("John Roney", has_entry("name", "John Roney")),
+        has_author_composer("Joel Miller", has_entry("name", "Joel Miller")))))), "The chain of title")
 
 
 def test_does_not_signal_chain_of_value_when_contributors_have_not_changed():
@@ -107,6 +112,38 @@ def test_does_not_signal_chain_of_value_when_contributors_have_not_changed():
     assert_that(subscriber.events, empty(), "The chain of title")
 
 
+def test_signals_chain_of_value_changed_when_contributor_role_changes_from_lyricist_to_publisher():
+    track = make_track(metadata_from=metadata(lyricist=["Joel Miller"]))
+    track.load_chain_of_title({"authors_composers": {"Joel Miller": joel_miller()}, "publishers": {}})
+
+    track.publisher = ["Joel Miller"]
+    track.lyricist = []
+
+    subscriber = Subscriber()
+    track.chain_of_title_changed.subscribe(subscriber)
+
+    track.update_chain_of_title()
+
+    assert_that(subscriber.events, contains(contains(
+        has_property("contributors", has_publisher("Joel Miller", has_entry("name", "Joel Miller"))))),
+                "The chain of title")
+
+
+def test_updates_contributors():
+    track = make_track(metadata_from=make_metadata(lyricist=["Joel Miller"], composer=["John Roney"],
+                                                   publisher=["Effendi Records"]))
+    track.update_contributor(**joel_miller())
+    track.update_contributor(**john_roney())
+    track.update_contributor(**effendi_records())
+
+    assert_that(track.chain_of_title.contributors, has_author_composer("Joel Miller", has_entries(joel_miller())),
+                "The contributors")
+    assert_that(track.chain_of_title.contributors, has_author_composer("John Roney", has_entries(john_roney())),
+                "The contributors")
+    assert_that(track.chain_of_title.contributors, has_publisher("Effendi Records", has_entries(effendi_records())),
+                "The contributors")
+
+
 def _assert_notifies_of_metadata_change(prop, value):
     track = build.track()
     subscriber = Subscriber()
@@ -115,6 +152,14 @@ def _assert_notifies_of_metadata_change(prop, value):
     setattr(track, prop, value)
 
     assert_that(subscriber.events, contains(contains(has_property(prop, value))), "track changed events")
+
+
+def has_author_composer(name, matching):
+    return has_entry("authors_composers", has_entry(name, matching))
+
+
+def has_publisher(name, matching):
+    return has_entry("publishers", has_entry(name, matching))
 
 
 def joel_miller():

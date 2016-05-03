@@ -89,7 +89,8 @@ def save_project(album, track_name=naming.track_scheme, track_catalog=tagging, a
         data["version"] = tgit.__version__
         data["type"] = album.type
         data["images"] = [(image.mime, artwork_name(image), image.type, image.desc) for image in album.images]
-        data["tracks"] = [{"name": track_name(track), "chain_of_title": track.chain_of_title} for track in album.tracks]
+        data["tracks"] = [{"name": track_name(track),
+                           "chain_of_title": track.chain_of_title.contributors} for track in album.tracks]
 
         fs.mkdirs(album_folder)
         yaml.write_data(album.filename, data)

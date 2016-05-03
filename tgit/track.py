@@ -18,14 +18,76 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit import tag
-from tgit.chain_of_title import ChainOfTitle
 from tgit.metadata import Metadata
 from tgit.signal import Signal, signal
 
 
+class ChainOfTitle:
+    changed = signal(Signal.SELF)
+
+    def __init__(self, track):
+        lyricists = track.lyricist or []
+        composers = track.composer or []
+        publishers = track.publisher or []
+
+        self._authors_composers = {}
+        for name in set(lyricists + composers):
+            self._authors_composers[name] = {"name": name}
+
+        self._publishers = {}
+        for name in publishers:
+            self._publishers[name] = {"name": name}
+
+    def load(self, chain_of_title):
+        self._publishers = chain_of_title["publishers"]
+        self._authors_composers = chain_of_title["authors_composers"]
+
+    def update(self, track):
+        lyricists = track.lyricist or []
+        composers = track.composer or []
+        publishers = set(track.publisher or [])
+        authors_composers = set(lyricists + composers)
+
+        to_remove_authors_composers = self._authors_composers.keys() - authors_composers
+        to_add_authors_composers = authors_composers - self._authors_composers.keys()
+        for name in to_remove_authors_composers:
+            del self._authors_composers[name]
+
+        for name in to_add_authors_composers:
+            self._authors_composers[name] = {"name": name}
+
+        to_remove_publishers = self._publishers.keys() - publishers
+        to_add_publishers = publishers - self._publishers.keys()
+        for name in to_remove_publishers:
+            del self._publishers[name]
+
+        for name in to_add_publishers:
+            self._publishers[name] = {"name": name}
+
+        if len(to_remove_publishers) > 0:
+            for value in self._authors_composers.values():
+                if "publisher" in value.keys() and value["publisher"] not in publishers:
+                    value["publisher"] = ""
+
+        if len(to_remove_authors_composers) > 0 or len(to_add_authors_composers) > 0 or len(
+                to_remove_publishers) > 0 or len(to_add_publishers) > 0:
+            self.changed.emit(self)
+
+    @property
+    def contributors(self):
+        return {"authors_composers": self._authors_composers, "publishers": self._publishers}
+
+    def update_contributor(self, **contributor):
+        if contributor["name"] in self._authors_composers:
+            self._authors_composers[contributor["name"]] = contributor
+
+        if contributor["name"] in self._publishers:
+            self._publishers[contributor["name"]] = contributor
+
+
 class Track(object, metaclass=tag.Taggable):
     metadata_changed = signal(Signal.SELF)
-    chain_of_title_changed = signal(Signal.SELF)
+    chain_of_title_changed = signal(ChainOfTitle)
 
     album = None
 
@@ -64,7 +126,8 @@ class Track(object, metaclass=tag.Taggable):
     def __init__(self, filename, metadata=None):
         self.filename = filename
         self.metadata = metadata or Metadata()
-        self.chain_of_title = self._create_chain_of_title()
+        self.chain_of_title = ChainOfTitle(self)
+        self.chain_of_title.changed.subscribe(self.chain_of_title_changed.emit)
 
     @property
     def type(self):
@@ -76,38 +139,11 @@ class Track(object, metaclass=tag.Taggable):
     def __repr__(self):
         return "Track(filename={}, metadata={})".format(self.filename, self.metadata)
 
-    def _create_chain_of_title(self):
-        lyricists = self.lyricist or []
-        composers = self.composer or []
-        publishers = self.publisher or []
-
-        contributors = {}
-        for name in set(lyricists + composers + publishers):
-            contributors[name] = {"name": name}
-
-        return contributors
-
     def load_chain_of_title(self, chain_of_title):
-        self.chain_of_title = chain_of_title
+        self.chain_of_title.load(chain_of_title)
 
     def update_chain_of_title(self):
-        lyricists = self.lyricist or []
-        composers = self.composer or []
-        publishers = self.publisher or []
-        contributors = set(lyricists + composers + publishers)
+        self.chain_of_title.update(self)
 
-        to_remove = self.chain_of_title.keys() - contributors
-        to_add = contributors - self.chain_of_title.keys()
-        for name in to_remove:
-            del self.chain_of_title[name]
-
-        for name in to_add:
-            self.chain_of_title[name] = {"name": name}
-
-        if len(to_remove) > 0:
-            for value in self.chain_of_title.values():
-                if "publisher" in value.keys() and value["publisher"] not in publishers:
-                    value["publisher"] = ""
-
-        if len(to_remove) > 0 or len(to_add) > 0:
-            self.chain_of_title_changed.emit(self)
+    def update_contributor(self, **contributor):
+        self.chain_of_title.update_contributor(**contributor)

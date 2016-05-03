@@ -24,9 +24,9 @@ from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 
 
-def make_chain_of_title_tab(track, chain_of_title, on_contributor_changed):
+def make_chain_of_title_tab(track, on_contributor_changed):
     tab = ChainOfTitleTab()
-    tab.display(track)
+    tab.display(track.chain_of_title)
 
     tab.on_contributor_changed.connect(lambda contributor: on_contributor_changed(**contributor))
 
@@ -48,20 +48,16 @@ class ChainOfTitleTab(QWidget, UIFile):
         self._contributors_table.cellChanged.connect(lambda row, _: self._contributor_changed(row))
         self._publishers_table.cellChanged.connect(lambda row, _: self._publisher_changed(row))
 
-    def display(self, track):
-        lyricists = track.lyricist or []
-        composers = track.composer or []
-        publishers = track.publisher or []
-
+    def display(self, chain_of_title):
         self._clear_table(self._contributors_table)
         self._clear_table(self._publishers_table)
 
-        chain_of_title = track.chain_of_title
-        for name in chain_of_title.keys():
-            if name in lyricists or name in composers:
-                self._create_contributor_row(self._contributors_table.rowCount(), chain_of_title[name], publishers)
-            else:
-                self._create_publisher_row(self._publishers_table.rowCount(), chain_of_title[name])
+        publishers = [name for name in chain_of_title.contributors["publishers"].keys()]
+        for contributor in chain_of_title.contributors["authors_composers"].values():
+            self._create_contributor_row(self._contributors_table.rowCount(), contributor, publishers)
+
+        for contributor in chain_of_title.contributors["publishers"].values():
+            self._create_publisher_row(self._publishers_table.rowCount(), contributor)
 
     @staticmethod
     def _clear_table(table):

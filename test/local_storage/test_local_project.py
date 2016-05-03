@@ -78,9 +78,10 @@ def test_round_trips_chain_of_title_to_disk(project_file, mp3):
 
     original_filename = mp3()
     original_track = make_track(original_filename, metadata_from=metadata)
-    original_track.chain_of_title["Joel Miller"] = joel_miller()
-    original_track.chain_of_title["John Roney"] = john_roney()
-    original_track.chain_of_title["Effendi Records"] = effendi_records()
+    original_track.load_chain_of_title({
+        "authors_composers": {"Joel Miller": joel_miller(), "John Roney": john_roney()},
+        "publishers": {"Effendi Records": effendi_records()}
+    })
 
     original_album = build.album(filename=album_file, version="2.4.0", type=Album.Type.FLAC,
                                  lead_performer="Joel Miller", tracks=[original_track])
@@ -89,9 +90,11 @@ def test_round_trips_chain_of_title_to_disk(project_file, mp3):
     os.remove(original_filename)
     track = local_project.load_project(album_file).tracks[0]
 
-    assert_that(track.chain_of_title, has_contributor("Joel Miller", joel_miller()), "The contributors")
-    assert_that(track.chain_of_title, has_contributor("John Roney", john_roney()), "The contributors")
-    assert_that(track.chain_of_title, has_contributor("Effendi Records", effendi_records()), "The contributors")
+    assert_that(track.chain_of_title.contributors, has_author_composer("Joel Miller", joel_miller()),
+                "The contributors")
+    assert_that(track.chain_of_title.contributors, has_author_composer("John Roney", john_roney()), "The contributors")
+    assert_that(track.chain_of_title.contributors, has_publisher("Effendi Records", effendi_records()),
+                "The contributors")
 
 
 def test_remove_previous_artwork_and_tracks(project_file, mp3):
@@ -138,8 +141,12 @@ def touch(filename):
     fs.write(filename, b"")
 
 
-def has_contributor(name, contributor):
-    return has_entry(name, has_entries(contributor))
+def has_author_composer(name, contributor):
+    return has_entry("authors_composers", has_entry(name, has_entries(contributor)))
+
+
+def has_publisher(name, contributor):
+    return has_entry("publishers", has_entry(name, has_entries(contributor)))
 
 
 def joel_miller():

@@ -25,7 +25,6 @@ from PyQt5.QtWidgets import QMessageBox
 from tgit import (album_director as director, artwork, auth, identity, export, ui, project, project_history,
                   user_preferences as preferences)
 from tgit.audio import open_media_player
-from tgit.chain_of_title import ChainOfTitle
 from tgit.cheddar import Cheddar
 from tgit.project_studio import ProjectStudio
 from tgit.settings import PreferencesDataStore, UserDataStore, HistoryDataStore
@@ -165,9 +164,7 @@ class Tagger:
 
     @staticmethod
     def _chain_of_title_tab(track):
-        chain_of_title = ChainOfTitle(track)
-        return ui.make_chain_of_title_tab(track, chain_of_title,
-                                          on_contributor_changed=chain_of_title.update_contributor)
+        return ui.make_chain_of_title_tab(track, on_contributor_changed=track.update_contributor)
 
     def _open_isni_dialog(self, project_, query):
         selection = identity.IdentitySelection(project_, query)
