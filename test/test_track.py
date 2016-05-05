@@ -125,8 +125,8 @@ def test_signals_chain_of_value_changed_when_contributor_role_changes_from_lyric
     track.update_chain_of_title()
 
     assert_that(subscriber.events, contains(contains(
-        has_property("contributors", has_publisher("Joel Miller", has_entry("name", "Joel Miller"))))),
-                "The chain of title")
+        has_property("contributors",
+                     has_publisher("Joel Miller", has_entry("name", "Joel Miller"))))), "The chain of title")
 
 
 def test_updates_contributors():
