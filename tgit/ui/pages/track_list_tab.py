@@ -21,7 +21,6 @@ from PyQt5.QtCore import Qt, QPoint, pyqtSignal
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import QWidget, QHeaderView, QMenu, QTableWidgetItem, QApplication
 
-from tgit.album import AlbumListener
 from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.event_filters import MovableSectionsCursor
@@ -30,25 +29,22 @@ from tgit.ui.observer import Observer
 from tgit.ui.pages.track_list_table_model import Column, RowItem
 
 
-def make_track_list_tab(album, player, select_tracks, **handlers):
+def make_track_list_tab(project, player, select_tracks, **handlers):
     page = TrackListTab(select_tracks)
-    page.display(album)
+    page.display(project)
 
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
     subscriptions = MultiSubscription()
-    subscriptions.add(album.track_inserted.subscribe(page.track_added))
-    subscriptions.add(album.track_removed.subscribe(page.track_removed))
-    subscriptions.add(album.track_moved.subscribe(lambda _, from_, to: page.track_moved(from_, to)))
-    subscriptions.add(player.playing.subscribe(page.playback_started))
-    subscriptions.add(player.stopped.subscribe(page.playback_stopped))
-    subscriptions.add(player.error_occurred.subscribe(page.playback_error))
+    subscriptions += project.metadata_changed.subscribe(page.album_metadata_changed)
+    subscriptions += project.track_inserted.subscribe(page.track_added)
+    subscriptions += project.track_removed.subscribe(page.track_removed)
+    subscriptions += project.track_moved.subscribe(lambda _, from_, to: page.track_moved(from_, to))
+    subscriptions += player.playing.subscribe(page.playback_started)
+    subscriptions += player.stopped.subscribe(page.playback_stopped)
+    subscriptions += player.error_occurred.subscribe(page.playback_error)
     page.closed.connect(lambda: subscriptions.cancel())
-
-    # todo when we have proper signals on album, we can get rid of that
-    album.addAlbumListener(page)
-    page.closed.connect(lambda: album.removeAlbumListener(page))
 
     return page
 
@@ -58,7 +54,7 @@ VERTICAL_HEADER_WIDTH = 24
 
 @Closeable
 @Observer
-class TrackListTab(QWidget, UIFile, AlbumListener):
+class TrackListTab(QWidget, UIFile):
     closed = pyqtSignal()
 
     def __init__(self, select_tracks):
@@ -248,8 +244,6 @@ class TrackListTab(QWidget, UIFile, AlbumListener):
     def album_metadata_changed(self, *_):
         for item in self._items:
             self._item_changed(item)
-
-    albumStateChanged = album_metadata_changed
 
     def _item_changed(self, item):
         self._refresh_row(self._index_of(item))

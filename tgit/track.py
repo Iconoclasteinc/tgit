@@ -23,8 +23,7 @@ from tgit.metadata import Metadata
 from tgit.signal import Signal, signal
 
 
-class Track(object, metaclass=tag.Taggable):
-    metadata_changed = signal(Signal.SELF)
+class Track(metaclass=tag.Taggable):
     chain_of_title_changed = signal(ChainOfTitle)
 
     album = None

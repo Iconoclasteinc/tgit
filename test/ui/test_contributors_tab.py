@@ -75,7 +75,7 @@ def test_updates_collaborators_identifiers(driver):
     ipis = {"Joel Miller": "0102030405060789", "John Roney": "000000123456789", "Rebecca Maloy": "9876543210000000"}
 
     track = make_track(lyricist=["Joel Miller"], composer=["John Roney"], publisher=["Rebecca Maloy"])
-    album = make_album(isnis=isnis, ipis=ipis, tracks=[track])
+    project = make_album(isnis=isnis, ipis=ipis, tracks=[track])
 
     _ = show_page(track, on_isni_local_lookup=isni_lookup, on_ipi_local_lookup=ipi_lookup)
     isnis["Joel Miller"] = "0000001234567891"
@@ -84,7 +84,7 @@ def test_updates_collaborators_identifiers(driver):
     ipis["Joel Miller"] = "01020304050607891"
     ipis["John Roney"] = "0000001234567891"
     ipis["Rebecca Maloy"] = "98765432100000001"
-    album.metadataChanged()
+    project.metadata_changed.emit(project)
 
     driver.shows_row_details("Joel Miller", "01020304050607891", "0000001234567891")
     driver.shows_role_on_row(0, "Author")

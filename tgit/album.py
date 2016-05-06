@@ -18,21 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from tgit import tag
-from tgit.announcer import Announcer
 from tgit.metadata import Image, Metadata
 from tgit.signal import signal
 from tgit.track import Track
-
-
-class AlbumListener:
-    def albumStateChanged(self, album):
-        pass
-
-    def trackAdded(self, track, position):
-        pass
-
-    def trackRemoved(self, track, position):
-        pass
 
 
 class Album(metaclass=tag.Taggable):
@@ -63,15 +51,8 @@ class Album(metaclass=tag.Taggable):
     def __init__(self, metadata=None, of_type=Type.FLAC, filename=None):
         self.metadata = metadata.copy(*Album.tags()) if metadata is not None else Metadata()
         self.tracks = []
-        self.listeners = Announcer()
         self.type = of_type
         self.filename = filename
-
-    def addAlbumListener(self, listener):
-        self.listeners.addListener(listener)
-
-    def removeAlbumListener(self, listener):
-        self.listeners.removeListener(listener)
 
     @property
     def images(self):
@@ -96,21 +77,21 @@ class Album(metaclass=tag.Taggable):
 
     def add_image(self, mime, data, type_=Image.OTHER, desc=""):
         self.metadata.addImage(mime, data, type_, desc)
-        self.metadataChanged()
+        self.metadata_changed.emit(self)
 
     def add_front_cover(self, mime, data, desc="Front Cover"):
         self.add_image(mime, data, Image.FRONT_COVER, desc)
 
     def remove_images(self):
         self.metadata.removeImages()
-        self.metadataChanged()
+        self.metadata_changed.emit(self)
 
     def add_isni(self, name, id_):
         if self.isnis is None:
             self.isnis = {name: id_}
         else:
             self.isnis[name] = id_
-            self.metadataChanged()
+            self.metadata_changed.emit(self)
 
     def __len__(self):
         return len(self.tracks)
@@ -132,15 +113,11 @@ class Album(metaclass=tag.Taggable):
 
         self.tracks.insert(position, track)
         self._renumber_tracks()
-
-        self.listeners.trackAdded(track, position)
         self.track_inserted.emit(position, track)
 
     def remove_track(self, position):
         track = self.tracks.pop(position)
         self._renumber_tracks()
-
-        self.listeners.trackRemoved(track, position)
         self.track_removed.emit(position, track)
         return track
 
@@ -148,11 +125,7 @@ class Album(metaclass=tag.Taggable):
         track = self.tracks.pop(from_position)
         self.tracks.insert(to_position, track)
         self._renumber_tracks()
-
         self.track_moved.emit(track, from_position, to_position)
-
-    def metadataChanged(self):
-        self.listeners.albumStateChanged(self)
 
     def _renumber_tracks(self):
         for index, track in enumerate(self.tracks):

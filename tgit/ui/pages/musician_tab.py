@@ -19,7 +19,6 @@
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
-from tgit.album import AlbumListener
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 
@@ -29,15 +28,14 @@ def make_musician_tab(project, on_metadata_changed):
     tab.display(project)
     tab.on_metadata_changed.connect(lambda metadata: on_metadata_changed(**metadata))
 
-    # todo when we have proper signals on album, we can get rid of that
-    project.addAlbumListener(tab)
-    tab.closed.connect(lambda: project.removeAlbumListener(tab))
+    subscription = project.metadata_changed.subscribe(tab.display)
+    tab.closed.connect(lambda: subscription.cancel())
 
     return tab
 
 
 @Closeable
-class MusicianTab(QWidget, UIFile, AlbumListener):
+class MusicianTab(QWidget, UIFile):
     closed = pyqtSignal()
     on_metadata_changed = pyqtSignal(dict)
 
@@ -51,9 +49,6 @@ class MusicianTab(QWidget, UIFile, AlbumListener):
             musicians = project.guest_performers if project.guest_performers is not None else []
             for musician in musicians:
                 self._add_musician_row(musician)
-
-    def albumStateChanged(self, project):
-        self.display(project)
 
     def _is_empty(self):
         return self._musician_table.count() == 0

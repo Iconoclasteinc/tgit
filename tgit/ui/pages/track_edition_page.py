@@ -21,9 +21,9 @@ from PyQt5.QtCore import pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget
 
 from tgit import imager
-from tgit.album import AlbumListener
 from tgit.genres import GENRES
 from tgit.languages import LANGUAGES
+from tgit.signal import MultiSubscription
 from tgit.ui import pixmap
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers import formatting
@@ -40,16 +40,16 @@ def make_track_edition_page(project, track, contributors_tab, chain_of_title_tab
     for name, handler in handlers.items():
         getattr(page, name)(handler)
 
-    subscription = track.metadata_changed.subscribe(page.display_track)
-    page.closed.connect(lambda: subscription.cancel())
-    project.addAlbumListener(page)
-    page.closed.connect(lambda: project.removeAlbumListener(page))
+    subscriptions = MultiSubscription()
+    subscriptions += track.metadata_changed.subscribe(lambda track_: page.display(track=track_))
+    subscriptions += project.metadata_changed.subscribe(lambda project_: page.display(album=project_))
+    page.closed.connect(lambda: subscriptions.cancel())
 
     return page
 
 
 @Closeable
-class TrackEditionPage(QWidget, UIFile, AlbumListener):
+class TrackEditionPage(QWidget, UIFile):
     closed = pyqtSignal()
 
     ALBUM_COVER_SIZE = 75, 75
@@ -76,9 +76,6 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
         self._tabs.widget(0).layout().addWidget(contributors_tab)
         self._tabs.widget(3).layout().addWidget(chain_of_title_tab)
-
-    def albumStateChanged(self, album):
-        self.display(album=album)
 
     def on_track_changed(self, handler):
         def handle(*_):
@@ -108,7 +105,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
 
     def display(self, album=None, track=None):
         if track:
-            self.display_track(track)
+            self._display_track(track)
         if album:
             self._display_album(album)
 
@@ -126,17 +123,7 @@ class TrackEditionPage(QWidget, UIFile, AlbumListener):
         self._main_artist_info.setEnabled(enable_main_artist)
         self._main_artist_help.setEnabled(enable_main_artist)
 
-        # isnis = album.isnis or {}
-        # self._lyricist_isni.setText(isnis.get(self._lyricist.text()))
-        # self._composer_isni.setText(isnis.get(self._composer.text()))
-        # self._publisher_isni.setText(isnis.get(self._publisher.text()))
-        #
-        # ipis = album.ipis or {}
-        # self._lyricist_ipi.setText(ipis.get(self._lyricist.text()))
-        # self._composer_ipi.setText(ipis.get(self._composer.text()))
-        # self._publisher_ipi.setText(ipis.get(self._publisher.text()))
-
-    def display_track(self, track):
+    def _display_track(self, track):
         self._track_number.setText(self.tr("Track {0} of {1}").format(track.track_number, track.total_tracks))
         self._track_title.setText(track.track_title)
         self._main_artist.setText(track.lead_performer)

@@ -19,28 +19,28 @@
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
-from tgit.album import AlbumListener
+from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.observer import Observer
 
 
-def make_project_screen(album, project_page, track_page):
+def make_project_screen(project, project_page, track_page):
     screen = ProjectScreen(project_page, track_page)
 
-    album.addAlbumListener(screen)
-    screen.subscribe(album.track_inserted, lambda index, track: screen.track_added(index, track, album))
-    screen.subscribe(album.track_removed, lambda position, track: screen.track_removed(position, album))
-    screen.subscribe(album.track_moved, lambda track, from_, to: screen.track_moved(from_, to, album))
-    screen.closed.connect(lambda: screen.subscriptions.cancel())
-    screen.closed.connect(lambda: album.removeAlbumListener(screen))
-    screen.display(album)
+    subscriptions = MultiSubscription()
+    subscriptions += project.track_inserted.subscribe(lambda index, track: screen.track_added(index, track, project))
+    subscriptions += project.track_removed.subscribe(lambda position, track: screen.track_removed(position, project))
+    subscriptions += project.track_moved.subscribe(lambda track, from_, to: screen.track_moved(from_, to, project))
+    screen.closed.connect(lambda: subscriptions.cancel())
+
+    screen.display(project)
     return screen
 
 
 @Closeable
 @Observer
-class ProjectScreen(QWidget, UIFile, AlbumListener):
+class ProjectScreen(QWidget, UIFile):
     closed = pyqtSignal()
 
     _PROJECT_PAGE_INDEX, _TRACK_PAGES_STARTING_INDEX = range(2)
@@ -61,40 +61,40 @@ class ProjectScreen(QWidget, UIFile, AlbumListener):
         self.addAction(self._quick_navigation_action)
         self._quick_navigation_action.triggered.connect(self._quick_navigate)
 
-    def display(self, album):
+    def display(self, project):
         self._remove_all_pages()
-        self._add_project_page(album)
+        self._add_project_page(project)
 
         self._pages_navigation.addItem(self.tr("Project edition"), self._PROJECT_PAGE_INDEX)
-        for index, track in enumerate(album.tracks):
-            self.track_added(index, track, album)
+        for index, track in enumerate(project.tracks):
+            self.track_added(index, track, project)
         self._update_navigation_controls(0)
 
-    def _add_project_page(self, album):
-        self._insert_page(self._edit_project(album), self._PROJECT_PAGE_INDEX)
+    def _add_project_page(self, project):
+        self._insert_page(self._edit_project(project), self._PROJECT_PAGE_INDEX)
 
     def _quick_navigate(self):
         edit = self._pages_navigation.lineEdit()
         edit.setFocus()
         edit.selectAll()
 
-    def track_added(self, index, track, album):
+    def track_added(self, index, track, project):
         self._insert_page(self._edit_track(track), self._track_page_index(index))
-        self._rebuild_navigation_menu(album)
+        self._rebuild_navigation_menu(project)
         self._update_navigation_controls(0)
 
-    def track_removed(self, index, album):
+    def track_removed(self, index, project):
         self._remove_page(self._track_page_index(index))
-        self._rebuild_navigation_menu(album)
+        self._rebuild_navigation_menu(project)
         self._update_navigation_controls(0)
 
-    def track_moved(self, from_index, to_index, album):
+    def track_moved(self, from_index, to_index, project):
         page = self._pages.widget(self._track_page_index(from_index))
         self._pages.removeWidget(page)
         self._pages.insertWidget(self._track_page_index(to_index), page)
-        self._rebuild_navigation_menu(album)
+        self._rebuild_navigation_menu(project)
 
-    def _rebuild_navigation_menu(self, album):
+    def _rebuild_navigation_menu(self, project):
         def format_name(track):
             return "{} - {}".format(track.track_number, track.track_title)
 
@@ -107,7 +107,7 @@ class ProjectScreen(QWidget, UIFile, AlbumListener):
         for index in reversed(range(self._TRACK_PAGES_STARTING_INDEX, self._pages_navigation.count())):
             self._pages_navigation.removeItem(index)
 
-        for index, each_track in enumerate(album.tracks):
+        for index, each_track in enumerate(project.tracks):
             self.unsubscribe(each_track.metadata_changed)
             add_entry(each_track)
             self.subscribe(each_track.metadata_changed, update_entry)

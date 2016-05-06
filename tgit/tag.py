@@ -17,7 +17,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from tgit.signal import Observable
+from tgit.signal import Observable, signal, Signal
 
 
 class Tag:
@@ -27,8 +27,10 @@ class Tag:
         return instance.metadata[self.name]
 
     def __set__(self, instance, value):
-        instance.metadata[self.name] = value
-        instance.metadataChanged()
+        old_value = instance.metadata[self.name]
+        if old_value != value:
+            instance.metadata[self.name] = value
+            instance.metadata_changed.emit(instance)
 
 
 class Typed(Tag):
@@ -70,6 +72,8 @@ class map(Typed):
 
 class Taggable(Observable):
     def __new__(mcs, clsname, bases, methods):
+        methods["metadata_changed"] = signal(Signal.SELF)
+
         # Attach attribute names to the tags
         for key, value in methods.items():
             if isinstance(value, Tag):

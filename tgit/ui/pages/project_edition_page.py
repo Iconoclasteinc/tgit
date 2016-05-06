@@ -22,7 +22,6 @@ from PyQt5.QtCore import pyqtSignal, QDate
 from PyQt5.QtWidgets import QWidget
 
 from tgit import imager
-from tgit.album import AlbumListener
 from tgit.auth import Permission
 from tgit.countries import COUNTRIES
 from tgit.signal import MultiSubscription
@@ -50,17 +49,16 @@ def make_project_edition_page(project, session, track_list_tab, musician_tab, on
     subscriptions = MultiSubscription()
     subscriptions += session.user_signed_in.subscribe(page.user_changed)
     subscriptions += session.user_signed_out.subscribe(lambda user: page.user_changed(session.current_user))
+    subscriptions += project.metadata_changed.subscribe(page.display)
     page.closed.connect(lambda: subscriptions.cancel())
     page.closed.connect(track_list.close)
 
-    project.addAlbumListener(page)
-    page.closed.connect(lambda: project.removeAlbumListener(page))
     page.user_changed(session.current_user)
     return page
 
 
 @Closeable
-class ProjectEditionPage(QWidget, UIFile, AlbumListener):
+class ProjectEditionPage(QWidget, UIFile):
     closed = pyqtSignal()
     on_select_artwork = pyqtSignal()
     on_select_identity = pyqtSignal(str)
@@ -123,9 +121,6 @@ class ProjectEditionPage(QWidget, UIFile, AlbumListener):
         self._label_name.editingFinished.connect(lambda: handle("label_name"))
         self._catalog_number.editingFinished.connect(lambda: handle("catalog_number"))
         self._barcode.editingFinished.connect(lambda: handle("upc"))
-
-    def albumStateChanged(self, album):
-        self.display(album)
 
     def user_changed(self, user):
         self._isni_lookup = user.has_permission(Permission.lookup_isni)

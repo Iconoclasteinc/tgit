@@ -2,12 +2,13 @@
 import os
 
 import pytest
-from flexmock import flexmock as mock, flexmock
+from flexmock import flexmock as mock
 from hamcrest import (assert_that, equal_to, is_, contains, has_properties, has_key, has_property,
                       match_equality)
 from hamcrest.core.helpers.wrap_matcher import wrap_matcher
 
 from cute.prober import PollingProber
+from test.test_signal import Subscriber
 from testing import builders as build, doubles
 from testing.builders import make_album, make_track
 from testing.workspace import AlbumWorkspace
@@ -194,10 +195,14 @@ def test_returns_none_when_name_not_found_in_local_map():
 
 
 def test_signals_when_adding_ipi_to_local_map():
-    album = make_album()
-    album.addAlbumListener(_listener_expecting_notification("ipis", {"Joel Miller": "0000000123456789"}))
+    project = make_album()
+    subscriber = Subscriber()
+    project.metadata_changed.subscribe(subscriber)
 
-    director.add_ipi_to(album)("Joel Miller", "0000000123456789")
+    director.add_ipi_to(project)("Joel Miller", "0000000123456789")
+
+    assert_that(subscriber.events, contains(contains(has_property("ipis", {"Joel Miller": "0000000123456789"}))),
+                "project changed events")
 
 
 def test_updates_preferences():
@@ -206,12 +211,6 @@ def test_updates_preferences():
     director.update_preferences(preferences)({"locale": "fr_CA"})
 
     assert_that(preferences.locale, equal_to("fr_CA"), "preferred locale")
-
-
-def _listener_expecting_notification(prop, value):
-    listener = mock()
-    listener.should_receive("albumStateChanged").with_args(match_equality(has_property(prop, value))).once()
-    return listener
 
 
 def _to_joel_miller():

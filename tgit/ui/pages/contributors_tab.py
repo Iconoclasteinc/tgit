@@ -20,7 +20,7 @@
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
-from tgit.album import AlbumListener
+from tgit.signal import MultiSubscription
 from tgit.ui.closeable import Closeable
 from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.pages.contributors_table import ContributorsTable
@@ -34,15 +34,16 @@ def make_contributors_tab(project, track, on_metadata_changed, on_isni_local_loo
     tab.on_metadata_changed.connect(lambda metadata: on_metadata_changed(**metadata))
     tab.on_ipi_changed.connect(on_ipi_changed)
 
-    # todo when we have proper signals on album, we can get rid of that
-    project.addAlbumListener(tab)
-    tab.closed.connect(lambda: project.removeAlbumListener(tab))
+    subscriptions = MultiSubscription()
+    subscriptions += track.metadata_changed.subscribe(tab.display)
+    subscriptions += project.metadata_changed.subscribe(tab.display_project)
+    tab.closed.connect(lambda: subscriptions.cancel())
 
     return tab
 
 
 @Closeable
-class ContributorsTab(QWidget, UIFile, AlbumListener):
+class ContributorsTab(QWidget, UIFile):
     closed = pyqtSignal()
     on_metadata_changed = pyqtSignal(dict)
     on_ipi_changed = pyqtSignal(str, str)
@@ -61,7 +62,7 @@ class ContributorsTab(QWidget, UIFile, AlbumListener):
     def display(self, track):
         self._table.display(track)
 
-    def albumStateChanged(self, project):
+    def display_project(self, project):
         self._table.update_identifiers(project.ipis or {}, project.isnis or {})
 
     def _enable_remove_button(self):

@@ -1,13 +1,12 @@
 import pytest
-from flexmock import flexmock
 from hamcrest import (assert_that, equal_to, is_, contains, has_property, none, has_length, has_item, is_not,
-                      match_equality as matching, contains_inanyorder, not_, has_key, all_of)
+                      contains_inanyorder, not_, has_key, all_of)
 from hamcrest.library.collection.is_empty import empty
 
 from test.test_signal import Subscriber, event
 from testing import builders as build
 from testing.builders import make_album, make_track
-from tgit.album import Album, AlbumListener
+from tgit.album import Album
 from tgit.metadata import Image
 
 pytestmark = pytest.mark.unit
@@ -199,88 +198,55 @@ def test_has_initially_no_metadata_or_images():
 
 
 def test_signals_state_changes_to_listener():
-    _assert_notifies_listener_on_property_change("release_name", "Album")
-    _assert_notifies_listener_on_property_change("lead_performer", "Artist")
-    _assert_notifies_listener_on_property_change("guest_performers", [("Musician", "Instrument")])
-    _assert_notifies_listener_on_property_change("label_name", "Label")
-    _assert_notifies_listener_on_property_change("release_time", "Released")
-    _assert_notifies_listener_on_property_change("original_release_time", "Original Release")
-    _assert_notifies_listener_on_property_change("upc", "Barcode")
-    _assert_notifies_listener_on_property_change("isnis", {"Joel Miller": "0000000123456789"})
-    _assert_notifies_listener_on_property_change("ipis", {"Joel Miller": "0000000123456789"})
-    _assert_notifies_listener_on_images_change(Image("image/jpeg", "front-cover.jpg"))
-
-
-def test_signals_track_insertion_to_listeners():
-    album = build.album()
-    listener = flexmock(AlbumListener())
-    album.addAlbumListener(listener)
-
-    first = build.track()
-    listener.should_receive("trackAdded").with_args(first, 0).once()
-    album.add_track(first)
-
-    last = build.track()
-    listener.should_receive("trackAdded").with_args(last, 1).once()
-    album.add_track(last)
-
-    middle = build.track()
-    listener.should_receive("trackAdded").with_args(middle, 1).once()
-    album.insert_track(middle, 1)
-
-
-def test_signals_track_removal_to_listeners():
-    album = build.album(tracks=[build.track(), build.track()])
-    listener = flexmock(AlbumListener())
-    album.addAlbumListener(listener)
-
-    first, second = album.tracks[0], album.tracks[1]
-    listener.should_receive("trackRemoved").with_args(second, 1).once()
-    listener.should_receive("trackRemoved").with_args(first, 0).once()
-
-    album.remove_track(position=1)
-    album.remove_track(position=0)
+    _assert_notifies_of_metadata_change("release_name", "Album")
+    _assert_notifies_of_metadata_change("lead_performer", "Artist")
+    _assert_notifies_of_metadata_change("guest_performers", [("Musician", "Instrument")])
+    _assert_notifies_of_metadata_change("label_name", "Label")
+    _assert_notifies_of_metadata_change("release_time", "Released")
+    _assert_notifies_of_metadata_change("original_release_time", "Original Release")
+    _assert_notifies_of_metadata_change("upc", "Barcode")
+    _assert_notifies_of_metadata_change("isnis", {"Joel Miller": "0000000123456789"})
+    _assert_notifies_of_metadata_change("ipis", {"Joel Miller": "0000000123456789"})
+    _assert_notifies_of_images_change(Image("image/jpeg", "front-cover.jpg"))
 
 
 def test_signals_when_adding_isni_to_local_map():
-    album = make_album()
-    album.addAlbumListener(_listener_expecting_notification("isnis", {"Joel Miller": "0000000123456789"}))
+    project = make_album()
+    subscriber = Subscriber()
+    project.metadata_changed.subscribe(subscriber)
 
-    album.add_isni("Joel Miller", "0000000123456789")
+    project.add_isni("Joel Miller", "0000000123456789")
+
+    assert_that(subscriber.events, contains(contains(has_property("isnis", {"Joel Miller": "0000000123456789"}))),
+                "project changed events")
 
 
 def test_signals_when_updating_isni_to_local_map():
-    album = make_album(isnis={"Joel Miller": "9876543210000000"})
-    album.addAlbumListener(_listener_expecting_notification("isnis", {"Joel Miller": "0000000123456789"}))
+    project = make_album(isnis={"Joel Miller": "9876543210000000"})
+    subscriber = Subscriber()
+    project.metadata_changed.subscribe(subscriber)
 
-    album.add_isni("Joel Miller", "0000000123456789")
+    project.add_isni("Joel Miller", "0000000123456789")
 
-
-def _assert_notifies_listener_on_property_change(prop, value):
-    album = Album()
-    album.addAlbumListener(_listener_expecting_notification(prop, value))
-    setattr(album, prop, value)
+    assert_that(subscriber.events, contains(contains(has_property("isnis", {"Joel Miller": "0000000123456789"}))),
+                "project changed events")
 
 
-def _listener_expecting_notification(prop, value):
-    listener = flexmock(AlbumListener())
-    listener.should_receive("albumStateChanged").with_args(matching(has_property(prop, value))).once()
-    return listener
+def _assert_notifies_of_metadata_change(prop, value):
+    project = make_album()
+    subscriber = Subscriber()
+    project.metadata_changed.subscribe(subscriber)
+
+    setattr(project, prop, value)
+
+    assert_that(subscriber.events, contains(contains(has_property(prop, value))), "project changed events")
 
 
-def _assert_notifies_listener_on_images_change(*images):
-    _assert_notifies_listener_when_images_removed()
-    for image in images:
-        _assert_notifies_listeners_when_image_added(image)
+def _assert_notifies_of_images_change(image):
+    project = make_album()
+    subscriber = Subscriber()
+    project.metadata_changed.subscribe(subscriber)
 
+    project.add_image(image.mime, image.data, image.type, image.desc)
 
-def _assert_notifies_listener_when_images_removed():
-    album = Album()
-    album.addAlbumListener(_listener_expecting_notification("images", empty()))
-    album.remove_images()
-
-
-def _assert_notifies_listeners_when_image_added(image):
-    album = Album()
-    album.addAlbumListener(_listener_expecting_notification("images", has_item(image)))
-    album.add_image(image.mime, image.data, image.type, image.desc)
+    assert_that(subscriber.events, contains(contains(has_property("images", contains(image)))), "project changed events")
