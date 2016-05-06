@@ -19,12 +19,13 @@
 from datetime import datetime, timezone
 
 from tgit import __app_name__, __version__
+from tgit.chain_of_title import ChainOfTitle
 from tgit.track import Track
 from . import embedded_containers as containers
 
 
-def load_track(filename):
-    return Track(filename, containers.load_metadata(filename))
+def load_track(filename, chain_of_title=None):
+    return Track(filename, containers.load_metadata(filename), chain_of_title)
 
 
 def save_track(track, at_time=None):

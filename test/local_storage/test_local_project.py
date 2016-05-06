@@ -6,7 +6,7 @@ from hamcrest import assert_that, contains, has_property, equal_to, empty, is_, 
 
 from testing import builders as build, mp3_file
 from testing import resources
-from testing.builders import make_track, make_metadata
+from testing.builders import make_track, make_chain_of_title
 from tgit import fs
 from tgit.album import Album
 from tgit.local_storage import local_project
@@ -73,15 +73,10 @@ def test_round_trips_album_metadata_and_tracks_to_disk(project_file, mp3):
 
 def test_round_trips_chain_of_title_to_disk(project_file, mp3):
     album_file = project_file("album.tgit")
-    metadata = make_metadata(track_title="Chevere!", lyricist=["Joel Miller"], composer=["John Roney"],
-                             publisher=["Effendi Records"])
-
     original_filename = mp3()
-    original_track = make_track(original_filename, metadata_from=metadata)
-    original_track.load_chain_of_title({
-        "authors_composers": {"Joel Miller": joel_miller(), "John Roney": john_roney()},
-        "publishers": {"Effendi Records": effendi_records()}
-    })
+    chain_of_title = make_chain_of_title(authors_composers=[joel_miller(), john_roney()],
+                                         publishers=[effendi_records()])
+    original_track = make_track(original_filename, chain_of_title=chain_of_title, track_title="Chevere!")
 
     original_album = build.album(filename=album_file, version="2.4.0", type=Album.Type.FLAC,
                                  lead_performer="Joel Miller", tracks=[original_track])
@@ -92,7 +87,8 @@ def test_round_trips_chain_of_title_to_disk(project_file, mp3):
 
     assert_that(track.chain_of_title.contributors, has_author_composer("Joel Miller", joel_miller()),
                 "The contributors")
-    assert_that(track.chain_of_title.contributors, has_author_composer("John Roney", john_roney()), "The contributors")
+    assert_that(track.chain_of_title.contributors, has_author_composer("John Roney", john_roney()),
+                "The contributors")
     assert_that(track.chain_of_title.contributors, has_publisher("Effendi Records", effendi_records()),
                 "The contributors")
 

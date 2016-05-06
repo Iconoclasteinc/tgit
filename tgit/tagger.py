@@ -148,23 +148,23 @@ class Tagger:
                                             on_metadata_changed=director.update_album_from(project_))
 
     def _track_page_for(self, project_):
-        return lambda track: ui.make_track_edition_page(project_,
-                                                        track,
+        return lambda track: ui.make_track_edition_page(project_, track,
                                                         contributors_tab=self._contributor_tab,
                                                         chain_of_title_tab=self._chain_of_title_tab,
-                                                        on_track_changed=director.update_track(track))
+                                                        on_track_changed=track.update)
 
     @staticmethod
     def _contributor_tab(project_, track):
         return ui.make_contributors_tab(project_, track,
-                                        on_metadata_changed=director.update_track(track),
+                                        on_metadata_changed=track.update,
                                         on_isni_local_lookup=director.lookup_isni_in(project_),
                                         on_ipi_local_lookup=director.lookup_ipi_in(project_),
                                         on_ipi_changed=director.add_ipi_to(project_))
 
     @staticmethod
     def _chain_of_title_tab(track):
-        return ui.make_chain_of_title_tab(track, on_contributor_changed=track.update_contributor)
+        chain_of_title = track.chain_of_title
+        return ui.make_chain_of_title_tab(chain_of_title, on_contributor_changed=chain_of_title.update_contributor)
 
     def _open_isni_dialog(self, project_, query):
         selection = identity.IdentitySelection(project_, query)

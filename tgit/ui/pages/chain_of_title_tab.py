@@ -25,13 +25,13 @@ from tgit.ui.helpers.ui_file import UIFile
 from tgit.ui.pages.chain_of_title_tables import AuthorsComposersTable, PublishersTable
 
 
-def make_chain_of_title_tab(track, on_contributor_changed):
+def make_chain_of_title_tab(chain_of_title, on_contributor_changed):
     tab = ChainOfTitleTab()
-    tab.display(track.chain_of_title)
+    tab.display(chain_of_title)
 
     tab.on_contributor_changed.connect(lambda contributor: on_contributor_changed(**contributor))
 
-    subscription = track.chain_of_title_changed.subscribe(tab.display)
+    subscription = chain_of_title.changed.subscribe(tab.display)
     tab.closed.connect(lambda: subscription.cancel())
 
     return tab

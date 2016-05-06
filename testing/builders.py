@@ -2,6 +2,7 @@
 
 from tgit.album import Album
 from tgit.auth import Session, User, Permission
+from tgit.chain_of_title import ChainOfTitle
 from tgit.metadata import Metadata, Image
 from tgit.project_history import ProjectHistory, ProjectSnapshot
 from tgit.project_studio import ProjectStudio
@@ -28,8 +29,8 @@ def metadata(images=(), **meta):
 make_metadata = metadata
 
 
-def track(filename="track.mp3", metadata_from=None, **meta):
-    new_track = Track(filename, metadata_from)
+def track(filename="track.mp3", metadata_from=None, chain_of_title=None, **meta):
+    new_track = Track(filename, metadata_from, chain_of_title)
 
     for tag, value in meta.items():
         setattr(new_track, tag, value)
@@ -61,6 +62,12 @@ make_album = album
 def make_project(filename="project.tgit", type_="mp3", images=(), tracks=(), **meta):
     # Will eventually build a project, not an album
     return make_album(filename, of_type=type_, images=images, tracks=tracks, **meta)
+
+
+def make_chain_of_title(authors_composers=None, publishers=None):
+    auth = dict([(contributor["name"], contributor) for contributor in authors_composers or []])
+    pub = dict([(contributor["name"], contributor) for contributor in publishers or []])
+    return ChainOfTitle(authors_composers=auth, publishers=pub)
 
 
 def make_snapshot(name="project", path="project.tgit", type_="mp3", cover_art=None):

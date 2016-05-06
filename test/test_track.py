@@ -1,10 +1,11 @@
+from flexmock import flexmock
 import pytest
-from hamcrest import assert_that, has_entry, has_entries, not_, has_key, any_of, empty, all_of
+from hamcrest import assert_that, has_entry, all_of, equal_to, has_key
 from hamcrest import contains_inanyorder, contains, has_property
 
 from test.test_signal import Subscriber
 from testing import builders as build
-from testing.builders import make_track, metadata, make_metadata
+from testing.builders import make_track, metadata
 from tgit.track import Track
 
 pytestmark = pytest.mark.unit
@@ -30,6 +31,38 @@ def test_announces_metadata_changes_to_listeners():
     _assert_notifies_of_metadata_change("recording_time", "Recorded")
 
 
+def test_updates_the_track_chain_of_title():
+    track = make_track()
+    flexmock(track.chain_of_title).should_receive("update").once()
+    track.update()
+
+
+def test_returns_the_track_chain_of_title_contributors():
+    track = make_track()
+    assert_that(track.chain_of_title.contributors, all_of(has_key("authors_composers"), has_key("publishers")),
+                "The contributors")
+
+
+def test_updates_track_metadata():
+    track = make_track()
+    track.update(track_title="Title", lead_performer="Artist", version_info="Version",
+                 featured_guest="Featuring", lyricist=["Lyricist"], composer=["Composer"],
+                 publisher=["Publisher"], isrc="ZZZ123456789", labels="Tags",
+                 lyrics="Lyrics\nLyrics\n...", language="und")
+
+    assert_that(track.track_title, equal_to("Title"), "track title")
+    assert_that(track.lead_performer, equal_to("Artist"), "lead performer")
+    assert_that(track.version_info, equal_to("Version"), "version info")
+    assert_that(track.featured_guest, equal_to("Featuring"), "featured guest")
+    assert_that(track.lyricist, contains("Lyricist"), "lyricist")
+    assert_that(track.composer, contains("Composer"), "composer")
+    assert_that(track.publisher, contains("Publisher"), "publisher")
+    assert_that(track.isrc, equal_to("ZZZ123456789"), "isrc")
+    assert_that(track.labels, equal_to("Tags"), "tags")
+    assert_that(track.lyrics, equal_to("Lyrics\nLyrics\n..."), "lyrics")
+    assert_that(track.language, equal_to("und"), "language")
+
+
 def test_creates_default_chain_of_title_from_metadata():
     source_metadata = metadata(lyricist=["Joel Miller"], composer=["John Roney"], publisher=["Effendi Records"])
     track = make_track(metadata_from=source_metadata)
@@ -39,109 +72,6 @@ def test_creates_default_chain_of_title_from_metadata():
                        has_author_composer("Joel Miller", has_entry("name", "Joel Miller")),
                        has_publisher("Effendi Records", has_entry("name", "Effendi Records"))),
                 "The chain of title")
-
-
-def test_removes_contributor_from_chain_of_title():
-    track = make_track(metadata_from=metadata(lyricist=["Joel Miller", "John Roney"],
-                                              composer=["John Lennon", "Yoko Ono"],
-                                              publisher=["Effendi Records", "Universals"]))
-    track.lyricist = ["Joel Miller"]
-    track.composer = ["John Lennon"]
-    track.publisher = ["Effendi Records"]
-    track.update_chain_of_title()
-
-    assert_that(track.chain_of_title, not_(any_of(has_key("John Roney"), has_key("Yoko Ono"), has_key("Universals"))),
-                "The chain of title")
-
-
-def test_adds_contributor_to_chain_of_title():
-    track = make_track(metadata_from=metadata(lyricist=["Joel Miller"], composer=["John Lennon"],
-                                              publisher=["Effendi Records"]))
-    track.lyricist = ["Joel Miller", "John Roney"]
-    track.composer = ["John Lennon", "Yoko Ono"]
-    track.publisher = ["Effendi Records", "Universals"]
-    track.update_chain_of_title()
-
-    assert_that(track.chain_of_title.contributors,
-                all_of(has_author_composer("John Roney", has_entry("name", "John Roney")),
-                       has_author_composer("Yoko Ono", has_entry("name", "Yoko Ono")),
-                       has_publisher("Universals", has_entry("name", "Universals"))),
-                "The chain of title")
-
-
-def test_removes_linked_publisher_from_a_contributor_when_removing_a_publisher():
-    track = make_track(metadata_from=metadata(lyricist=["Joel Miller"], composer=["John Roney"],
-                                              publisher=["Effendi Records"]))
-    track.load_chain_of_title({
-        "authors_composers": {"Joel Miller": joel_miller(), "John Roney": john_roney()},
-        "publishers": {"Effendi Records": effendi_records()}
-    })
-
-    track.publisher = []
-    track.update_chain_of_title()
-
-    assert_that(track.chain_of_title.contributors,
-                all_of(has_author_composer("John Roney", has_entry("publisher", "")),
-                       has_author_composer("Joel Miller", has_entry("publisher", "")),
-                       has_entry("publishers", not_(has_key("Effendi Records")))),
-                "The chain of title")
-
-
-def test_signals_chain_of_value_changed_on_contributor_added():
-    track = make_track(metadata_from=metadata(lyricist=["Joel Miller"]))
-    track.lyricist = ["Joel Miller", "John Roney"]
-
-    subscriber = Subscriber()
-    track.chain_of_title_changed.subscribe(subscriber)
-
-    track.update_chain_of_title()
-
-    assert_that(subscriber.events, contains(contains(has_property("contributors", all_of(
-        has_author_composer("John Roney", has_entry("name", "John Roney")),
-        has_author_composer("Joel Miller", has_entry("name", "Joel Miller")))))), "The chain of title")
-
-
-def test_does_not_signal_chain_of_value_when_contributors_have_not_changed():
-    track = make_track(metadata_from=metadata(lyricist=["Joel Miller"]))
-
-    subscriber = Subscriber()
-    track.chain_of_title_changed.subscribe(subscriber)
-
-    track.update_chain_of_title()
-
-    assert_that(subscriber.events, empty(), "The chain of title")
-
-
-def test_signals_chain_of_value_changed_when_contributor_role_changes_from_lyricist_to_publisher():
-    track = make_track(metadata_from=metadata(lyricist=["Joel Miller"]))
-    track.load_chain_of_title({"authors_composers": {"Joel Miller": joel_miller()}, "publishers": {}})
-
-    track.publisher = ["Joel Miller"]
-    track.lyricist = []
-
-    subscriber = Subscriber()
-    track.chain_of_title_changed.subscribe(subscriber)
-
-    track.update_chain_of_title()
-
-    assert_that(subscriber.events, contains(contains(
-        has_property("contributors",
-                     has_publisher("Joel Miller", has_entry("name", "Joel Miller"))))), "The chain of title")
-
-
-def test_updates_contributors():
-    track = make_track(metadata_from=make_metadata(lyricist=["Joel Miller"], composer=["John Roney"],
-                                                   publisher=["Effendi Records"]))
-    track.update_contributor(**joel_miller())
-    track.update_contributor(**john_roney())
-    track.update_contributor(**effendi_records())
-
-    assert_that(track.chain_of_title.contributors, has_author_composer("Joel Miller", has_entries(joel_miller())),
-                "The contributors")
-    assert_that(track.chain_of_title.contributors, has_author_composer("John Roney", has_entries(john_roney())),
-                "The contributors")
-    assert_that(track.chain_of_title.contributors, has_publisher("Effendi Records", has_entries(effendi_records())),
-                "The contributors")
 
 
 def _assert_notifies_of_metadata_change(prop, value):

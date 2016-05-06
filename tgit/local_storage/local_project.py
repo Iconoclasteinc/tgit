@@ -22,6 +22,7 @@ from os.path import join, dirname
 import tgit
 from tgit import fs
 from tgit.album import Album
+from tgit.chain_of_title import ChainOfTitle
 from tgit.metadata import Metadata
 from tgit.tagging import tagging
 from tgit.local_storage import naming, yaml
@@ -49,9 +50,9 @@ def _load_track(version, tracks_folder, track):
         return tagging.load_track(join(tracks_folder, track))
 
     def _load_track_latest():
+        chain_of_title = ChainOfTitle(**track["chain_of_title"])
         track_file = join(tracks_folder, track["name"])
-        loaded_track = tagging.load_track(track_file)
-        loaded_track.load_chain_of_title(track["chain_of_title"])
+        loaded_track = tagging.load_track(track_file, chain_of_title)
         return loaded_track
 
     if Version(version) < "2.5.0":

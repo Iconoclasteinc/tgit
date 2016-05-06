@@ -119,26 +119,6 @@ def test_moves_track_of_album():
     assert_that(honeycomb.tracks, contains(chevere, salsa_coltrane), "reordered tracks")
 
 
-def test_updates_track_metadata():
-    track = make_track()
-    director.update_track(track)(track_title="Title", lead_performer="Artist", version_info="Version",
-                                 featured_guest="Featuring", lyricist=["Lyricist"], composer=["Composer"],
-                                 publisher=["Publisher"], isrc="ZZZ123456789", labels="Tags",
-                                 lyrics="Lyrics\nLyrics\n...", language="und")
-
-    assert_that(track.track_title, equal_to("Title"), "track title")
-    assert_that(track.lead_performer, equal_to("Artist"), "lead performer")
-    assert_that(track.version_info, equal_to("Version"), "version info")
-    assert_that(track.featured_guest, equal_to("Featuring"), "featured guest")
-    assert_that(track.lyricist, contains("Lyricist"), "lyricist")
-    assert_that(track.composer, contains("Composer"), "composer")
-    assert_that(track.publisher, contains("Publisher"), "publisher")
-    assert_that(track.isrc, equal_to("ZZZ123456789"), "isrc")
-    assert_that(track.labels, equal_to("Tags"), "tags")
-    assert_that(track.lyrics, equal_to("Lyrics\nLyrics\n..."), "lyrics")
-    assert_that(track.language, equal_to("und"), "language")
-
-
 def test_updates_album_metadata():
     album = build.album()
     director.update_album_from(album)(release_name="Title", compilation=False, lead_performer="Artist",
@@ -193,12 +173,6 @@ def test_updates_tracks_main_artist_when_album_is_not_a_compilation():
 
     for track in album.tracks:
         assert_that(track.lead_performer, equal_to("Album Artist"), "track artist")
-
-
-def test_updates_the_track_chain_of_title():
-    track = make_track()
-    flexmock(track).should_receive("update_chain_of_title").once()
-    director.update_track(track)(track_title="Title")
 
 
 def test_clears_album_images():
