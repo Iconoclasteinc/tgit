@@ -16,19 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from enum import Enum
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QTableWidgetItem, QComboBox
+
 from tgit.signal import signal
+from tgit.ui.pages.chain_of_title_tables_models import AuthorsComposersColumns, PublishersColumns, affiliations
 
-affiliations = ["SOCAN", "ASCAP", "BMI"]
 
-
-class ContributorsTable:
-    on_contributor_changed = signal(dict)
+class Table:
+    _columns = Enum
 
     def __init__(self, table):
         self._table = table
+        self._setup_header()
 
     def _value_of_cell(self, row, col):
         item = self._table.item(row, col)
@@ -41,8 +43,20 @@ class ContributorsTable:
     def _count(self):
         return self._table.rowCount()
 
+    def _setup_header(self):
+        header = self._table.horizontalHeader()
+        for column in self._columns:
+            header.resizeSection(column.position, column.width)
+            header.setSectionResizeMode(column.position, column.resize_mode)
+
+
+class ContributorsTable(Table):
+    on_contributor_changed = signal(dict)
+
 
 class AuthorsComposersTable(ContributorsTable):
+    _columns = AuthorsComposersColumns
+
     def __init__(self, table):
         super().__init__(table)
         table.cellChanged.connect(lambda row, _: self._contributor_changed(row))
@@ -94,6 +108,8 @@ class AuthorsComposersTable(ContributorsTable):
 
 
 class PublishersTable(ContributorsTable):
+    _columns = PublishersColumns
+
     def __init__(self, table):
         super().__init__(table)
         table.cellChanged.connect(lambda row, _: self._contributor_changed(row))

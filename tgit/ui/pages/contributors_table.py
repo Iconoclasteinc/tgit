@@ -16,37 +16,32 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
 from PyQt5.QtCore import QObject, pyqtSignal
+from tgit.ui.pages.chain_of_title_tables import Table
 
-from tgit.ui.pages.contributors_table_model import Contributor, Cell, Columns
+from tgit.ui.pages.contributors_table_model import Contributor, Cell, ContributorsColumns
 
 
-class ContributorsTable(QObject):
+class ContributorsTable(QObject, Table):
     on_contributors_changed = pyqtSignal(list)
     on_contributor_selected = pyqtSignal()
     on_ipi_changed = pyqtSignal(str, str)
 
     def __init__(self, table, lookup_ipi, lookup_isni):
-        super().__init__()
+        super().__init__(table=table)
         self._lookup_isni = lookup_isni
         self._lookup_ipi = lookup_ipi
-        self._table = table
         self._contributors = []
 
         self._table.itemSelectionChanged.connect(self.on_contributor_selected.emit)
         self._table.cellChanged.connect(self._contributor_changed)
         self._setup_header()
 
-    def _setup_header(self):
-        header = self._table.horizontalHeader()
-        for col in range(len(Columns)):
-            header.resizeSection(col, Columns.at(col).length)
-            header.setSectionResizeMode(col, Columns.at(col).resize_mode)
-
     def add_row(self):
         contributor = Contributor()
         self._contributors.append(contributor)
-        self._create_row(self._table.rowCount(), contributor)
+        self._create_row(self._count(), contributor)
 
     def remove_row(self):
         row = self._table.currentRow()
@@ -70,9 +65,9 @@ class ContributorsTable(QObject):
             contributor.ipi = ipis.get(contributor.name)
             contributor.isni = isnis.get(contributor.name)
 
-        for row in range(self._table.rowCount()):
-            self._table.item(row, Columns.ipi.position).setText(self._contributors[row].ipi)
-            self._table.item(row, Columns.isni.position).setText(self._contributors[row].isni)
+        for row in range(self._count()):
+            self._table.item(row, ContributorsColumns.ipi.position).setText(self._contributors[row].ipi)
+            self._table.item(row, ContributorsColumns.isni.position).setText(self._contributors[row].isni)
 
     def _contributor_changed(self, row, column):
         self._table.item(row, column).value_changed()
@@ -82,13 +77,9 @@ class ContributorsTable(QObject):
             self._contributors.append(Contributor(name, self.tr(role), ipis.get(name), isnis.get(name)))
 
     def _display_table(self):
-        self._clear_table()
+        self._clear()
         for row, contributor in enumerate(self._contributors):
             self._create_row(row, contributor)
-
-    def _clear_table(self):
-        while self._table.rowCount() > 0:
-            self._table.removeRow(0)
 
     def _create_row(self, row, contributor):
         def contributor_changed(*_):
@@ -107,10 +98,10 @@ class ContributorsTable(QObject):
         role.on_role_changed.connect(contributor_changed)
 
         self._table.insertRow(row)
-        self._table.setItem(row, Columns.name.position, name)
-        self._table.setItem(row, Columns.ipi.position, ipi)
-        self._table.setItem(row, Columns.isni.position, isni)
-        self._table.setCellWidget(row, Columns.role.position, role)
+        self._table.setItem(row, ContributorsColumns.name.position, name)
+        self._table.setItem(row, ContributorsColumns.ipi.position, ipi)
+        self._table.setItem(row, ContributorsColumns.isni.position, isni)
+        self._table.setCellWidget(row, ContributorsColumns.role.position, role)
 
     @property
     def _roles(self):

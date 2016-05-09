@@ -16,15 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-from collections import namedtuple
-from enum import Enum
 
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView
 
-from PyQt5.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QApplication
-
-from tgit import platforms
 from tgit.signal import signal
+from tgit.ui.pages.table_model import Column, Columns
 
 
 class Contributor:
@@ -112,34 +109,8 @@ class Cell:
                 contributor.isni = isni
 
 
-Column = namedtuple("Column", ["position", "length", "resize_mode"])
-
-
-class Columns(Enum):
-    name = Column(0, 200, QHeaderView.Stretch)
-    role = Column(1, 160 if platforms.mac else 120, QHeaderView.Fixed)
-    ipi = Column(2, 105 if platforms.mac else 80, QHeaderView.Fixed)
-    isni = Column(3, 160 if platforms.mac else 140, QHeaderView.Fixed)
-
-    @classmethod
-    def at(cls, col):
-        return cls._values()[col]
-
-    @classmethod
-    def _values(cls):
-        return list([column.value for _, column in cls.__members__.items()])
-
-    def __len__(self):
-        return len(self.__members__.items())
-
-    @property
-    def width(self):
-        return self.value.length
-
-    @property
-    def resize_mode(self):
-        return self.value.resize_mode
-
-    @property
-    def position(self):
-        return self.value.position
+class ContributorsColumns(Columns):
+    name = Column(position=0, resize_mode=QHeaderView.Stretch)
+    role = Column(position=1, mac_width=160, win_width=120, resize_mode=QHeaderView.Fixed)
+    ipi = Column(position=2, mac_width=105, win_width=80, resize_mode=QHeaderView.Fixed)
+    isni = Column(position=3, mac_width=160, win_width=140, resize_mode=QHeaderView.Fixed)
