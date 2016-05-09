@@ -19,11 +19,12 @@ from .track_selection_dialog_driver import track_selection_dialog
 
 
 def _make_tracks(tracks):
-    Track = namedtuple("Track", "title")
-    return map(Track._make, tracks)
+    track = namedtuple("Track", "title")
+    return map(track._make, tracks)
 
 
 class ApplicationRunner:
+    DRAG_AND_DROP_DELAY = 10 if platforms.linux else 0
     MESSAGE_BOX_DISPLAY_DELAY = 100 if platforms.mac else 0
     SAVE_DELAY = 250 if platforms.mac else 0
     PAUSE_AFTER_DISPLAY = 20 if platforms.linux else 0
@@ -64,6 +65,7 @@ class ApplicationRunner:
 
     def change_order_of_tracks(self, *tracks):
         for position, track in enumerate(_make_tracks(tracks)):
+            self.main_window_driver.pause(self.DRAG_AND_DROP_DELAY)
             self.main_window_driver.move_track(track.title, position)
 
     def remove_track(self, title):
