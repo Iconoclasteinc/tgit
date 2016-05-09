@@ -101,7 +101,7 @@ class Cell:
 
 class AuthorsComposersColumns(Columns):
     name = Column(position=0, resize_mode=QHeaderView.Stretch)
-    affiliation = Column(position=1)
+    affiliation = Column(position=1, win_width=115, mac_width=135, resize_mode=QHeaderView.Fixed)
     publisher = Column(position=2)
     share = Column(position=3)
 
