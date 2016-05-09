@@ -790,6 +790,11 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
+        <source>Chain of Title</source>
+        <translation>Chaine de titre</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py" />
         <source>Language:</source>
         <translation>Langue :</translation>
     </message>
@@ -1297,6 +1302,37 @@
     <message>
         <source>Publisher</source>
         <translation>Éditeur</translation>
+    </message>
+</context>
+<context>
+    <name>chain_of_title</name>
+    <message>
+        <source>The chain of title will be saved with this project, but will not be embedded in the recording&apos;s metadatas.</source>
+        <translation>La chaine de titre sera sauvegardé avec le projet, mais ne sera pas sauvegardé dans les métadonnées de l&apos;enregistrement.</translation>
+    </message>
+    <message>
+        <source>Authors / Composers</source>
+        <translation>Auteurs / Compositeurs</translation>
+    </message>
+    <message>
+        <source>Publisher</source>
+        <translation>Éditeur</translation>
+    </message>
+    <message>
+        <source>Publishers</source>
+        <translation>Éditeurs</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <source>Affiliation</source>
+        <translation>Affiliation</translation>
+    </message>
+    <message>
+        <source>Share (%)</source>
+        <translation>Part (%)</translation>
     </message>
 </context>
 </TS>

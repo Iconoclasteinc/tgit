@@ -24,9 +24,19 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="_help">
+     <property name="styleSheet">
+      <string notr="true">QLabel[style=QWindowsVistaStyle] {
+    font-size: 7pt;
+}
+
+QLabel[style=QMacStyle] {
+    font-size: 11pt;
+}
+</string>
+     </property>
      <property name="text">
-      <string>The chain of title will be saved with this project, but will not be embedded in the recording's metadatas</string>
+      <string>The chain of title will be saved with this project, but will not be embedded in the recording's metadatas.</string>
      </property>
     </widget>
    </item>
