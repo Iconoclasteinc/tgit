@@ -1,8 +1,7 @@
 from cute import event_loop, platforms
 
-PAUSE_AFTER_DISPLAY = 25 if platforms.linux else 0
-# todo see if we can replace the end of test pause with this one on Linux
-PAUSE_AFTER_CLOSE = 0
+PAUSE_AFTER_DISPLAY = 20 if platforms.linux else 0
+PAUSE_AFTER_CLOSE = 10 if platforms.linux else 0
 
 
 def show_(widget, pause=PAUSE_AFTER_DISPLAY):

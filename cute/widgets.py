@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, Q
 from hamcrest import all_of, anything, contains
 from hamcrest.core.base_matcher import BaseMatcher
 
-from cute import event_loop
+from cute import event_loop, keys
 from . import gestures, properties, matchers as match, rect
 from .finders import SingleWidgetFinder, TopLevelWidgetsFinder, RecursiveWidgetFinder, NthWidgetFinder, \
     WidgetSelector, WidgetIdentity, MissingWidgetFinder
@@ -437,7 +437,7 @@ class QFileDialogDriver(QDialogDriver):
         self.select_files(name)
 
     def select_files(self, *names):
-        self.files_list.select_items(*[match.with_item_text(name) for name in names])
+        self.files_list.select_items([match.with_item_text(name) for name in names], from_dialog=True)
 
     def up_one_folder(self):
         up_button = ButtonDriver.find_single(self, QToolButton, match.named("toParentButton"))
@@ -504,10 +504,10 @@ class QFileDialogDriver(QDialogDriver):
 
 class QListViewDriver(WidgetDriver):
     def select_item(self, matching):
-        self.select_items(matching)
+        self.select_items([matching])
 
-    def select_items(self, *matchers):
-        self._select_items_at([self._index_of_first_item(matching) for matching in matchers])
+    def select_items(self, matchers, from_dialog=False):
+        self._select_items_at([self._index_of_first_item(matching) for matching in matchers], from_dialog)
 
     def open_item(self, matching):
         self._open_item_at(self._index_of_first_item(matching))
@@ -546,22 +546,26 @@ class QListViewDriver(WidgetDriver):
         containing_items = ContainsItemsInOrder()
         self.is_(containing_items)
 
-    def _select_item_at(self, index):
+    def _select_item_at(self, index, from_dialog):
         self._scroll_item_to_visible(index)
         self.perform(gestures.mouse_click_at(self._center_of_item(index)))
+        if from_dialog:
+            self.perform(gestures.type_key(keys.SPACE))
 
     def _open_item_at(self, index):
         self._scroll_item_to_visible(index)
         self.perform(gestures.mouse_double_click_at(self._center_of_item(index)))
 
-    def _select_items_at(self, indexes):
-        self._select_item_at(indexes.pop(0))
+    def _select_items_at(self, indexes, from_dialog):
+        self._select_item_at(indexes.pop(0), from_dialog)
         for index in indexes:
-            self._multi_select_item_at(index)
+            self._multi_select_item_at(index, from_dialog)
 
-    def _multi_select_item_at(self, index):
+    def _multi_select_item_at(self, index, from_dialog):
         self._scroll_item_to_visible(index)
         self.perform(gestures.mouse_multi_click_at(self._center_of_item(index)))
+        if from_dialog:
+            self.perform(gestures.type_key(keys.SPACE))
 
     def _scroll_item_to_visible(self, index):
         self.manipulate("scroll item to visible", lambda list_view: list_view.scrollTo(index))

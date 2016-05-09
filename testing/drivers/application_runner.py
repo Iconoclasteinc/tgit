@@ -3,6 +3,7 @@ from collections import namedtuple
 
 from hamcrest import starts_with
 
+from cute import event_loop
 from cute.animatron import Animatron
 from cute.matchers import named, showing_on_screen
 from cute.prober import EventProcessingProber
@@ -25,6 +26,8 @@ def _make_tracks(tracks):
 class ApplicationRunner:
     MESSAGE_BOX_DISPLAY_DELAY = 100 if platforms.mac else 0
     SAVE_DELAY = 250 if platforms.mac else 0
+    PAUSE_AFTER_DISPLAY = 20 if platforms.linux else 0
+    PAUSE_AFTER_CLOSE = 0
 
     main_window_driver = None
 
@@ -32,16 +35,18 @@ class ApplicationRunner:
         self._workspace = workspace
         self._settings = settings
 
-    def start(self):
+    def start(self, pause=PAUSE_AFTER_DISPLAY):
         Tagger(self._settings, ProjectStudio(), fake_audio_player(),
                Cheddar(host="127.0.0.1", port=5001, secure=False),
                native=False, confirm_exit=False).show()
 
         self.main_window_driver = MainWindowDriver(main_application_window(named("main_window"), showing_on_screen()),
-                                                   EventProcessingProber(timeout_in_ms=2000), Animatron())
+                                                   EventProcessingProber(timeout_in_ms=3000), Animatron())
+        event_loop.process_events_for(pause)
 
-    def stop(self):
+    def stop(self, pause=PAUSE_AFTER_CLOSE):
         self.main_window_driver.close()
+        event_loop.process_events_for(pause)
 
     def new_project(self, name="album", of_type="mp3"):
         self.main_window_driver.create_project(of_type, name, self._workspace.root_path)

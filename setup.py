@@ -11,7 +11,7 @@ from PyQt5.QtCore import QCoreApplication
 from cx_Freeze import setup, Executable
 
 from tgit import __app_name__, __version__
-from tgit.platforms import windows, mac
+from tgit.platforms import windows, mac, linux
 
 app_script = "tgit.py"
 app_package = "tgit"
@@ -33,7 +33,7 @@ if windows:
     qt_path = os.path.dirname(PyQt5.__file__)
     qt_plugins_path = os.path.join(qt_path, "plugins")
 
-if mac:
+if mac or linux:
     qt_plugins_path = next(path for path in QCoreApplication.libraryPaths() if path.endswith("plugins"))
     qt_path = os.path.dirname(qt_plugins_path)
 
