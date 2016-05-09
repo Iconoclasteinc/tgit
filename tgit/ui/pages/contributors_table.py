@@ -28,6 +28,8 @@ class ContributorsTable(QObject, Table):
     on_contributor_selected = pyqtSignal()
     on_ipi_changed = pyqtSignal(str, str)
 
+    _columns = ContributorsColumns
+
     def __init__(self, table, lookup_ipi, lookup_isni):
         super().__init__(table=table)
         self._lookup_isni = lookup_isni
@@ -35,7 +37,7 @@ class ContributorsTable(QObject, Table):
         self._contributors = []
 
         self._table.itemSelectionChanged.connect(self.on_contributor_selected.emit)
-        self._table.cellChanged.connect(self._contributor_changed)
+        self._table.cellChanged.connect(lambda row, column: self._table.item(row, column).value_changed())
         self._setup_header()
 
     def add_row(self):
@@ -68,9 +70,6 @@ class ContributorsTable(QObject, Table):
         for row in range(self._count()):
             self._table.item(row, ContributorsColumns.ipi.position).setText(self._contributors[row].ipi)
             self._table.item(row, ContributorsColumns.isni.position).setText(self._contributors[row].isni)
-
-    def _contributor_changed(self, row, column):
-        self._table.item(row, column).value_changed()
 
     def _add_contributor(self, contributors, role, ipis, isnis):
         for name in contributors:

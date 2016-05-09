@@ -18,11 +18,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from enum import Enum
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QTableWidgetItem, QComboBox
-
 from tgit.signal import signal
-from tgit.ui.pages.chain_of_title_tables_models import AuthorsComposersColumns, PublishersColumns, affiliations
+from tgit.ui.pages.chain_of_title_tables_models import AuthorsComposersColumns, PublishersColumns, affiliations, \
+    AuthorComposer, Cell, Contributor
 
 
 class Table:
@@ -53,58 +51,53 @@ class Table:
 class ContributorsTable(Table):
     on_contributor_changed = signal(dict)
 
+    def __init__(self, table):
+        super().__init__(table)
+        self._contributors = []
+
+    def _emit_contributor_changed(self, contributor):
+        values = dict(name=contributor.name, share=contributor.share)
+        if isinstance(contributor, AuthorComposer):
+            values["affiliation"] = contributor.affiliation
+            values["publisher"] = contributor.publisher
+
+        self.on_contributor_changed.emit(values)
+
 
 class AuthorsComposersTable(ContributorsTable):
     _columns = AuthorsComposersColumns
 
     def __init__(self, table):
         super().__init__(table)
-        table.cellChanged.connect(lambda row, _: self._contributor_changed(row))
+        table.cellChanged.connect(lambda row, column: self._table.item(row, column).value_changed())
 
     def display(self, chain_of_title):
+        self._contributors = []
+        for contributor in chain_of_title.contributors["authors_composers"].values():
+            self._contributors.append(AuthorComposer(**contributor))
+
+        self._display_table([name for name in chain_of_title.contributors["publishers"].keys()])
+
+    def _display_table(self, publishers):
         self._clear()
-        publishers = [name for name in chain_of_title.contributors["publishers"].keys()]
-        authors_composers = chain_of_title.contributors["authors_composers"].values()
+        for row, contributor in enumerate(self._contributors):
+            self._create_row(row, contributor, publishers)
 
-        for contributor in authors_composers:
-            self._add_contributor(contributor, publishers)
+    def _create_row(self, row, contributor, publishers):
+        name = Cell.Name(contributor)
+        affiliation = Cell.Affiliation(contributor, affiliations)
+        publisher = Cell.Publisher(contributor, publishers)
+        share = Cell.Share(contributor)
 
-    def _add_contributor(self, contributor, publishers):
-        row = self._count()
-        self._table.insertRow(self._count())
+        affiliation.on_affiliation_changed.connect(self._emit_contributor_changed)
+        publisher.on_publisher_changed.connect(self._emit_contributor_changed)
+        share.on_share_changed.subscribe(self._emit_contributor_changed)
 
-        item = QTableWidgetItem()
-        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-        item.setText(contributor["name"])
-        self._table.setItem(row, 0, item)
-
-        combo = QComboBox()
-        combo.addItem("")
-        combo.addItems(affiliations)
-        combo.currentIndexChanged.connect(lambda _: self._contributor_changed(row))
-        combo.setCurrentText(contributor.get("affiliation"))
-        self._table.setCellWidget(row, 1, combo)
-
-        combo = QComboBox()
-        combo.addItem("")
-        combo.addItems(publishers)
-        combo.currentIndexChanged.connect(lambda _: self._contributor_changed(row))
-        combo.setCurrentText(contributor.get("publisher"))
-        self._table.setCellWidget(row, 2, combo)
-
-        item = QTableWidgetItem()
-        item.setText(contributor.get("share"))
-        self._table.setItem(row, 3, item)
-
-    def _contributor_changed(self, row):
-        self.on_contributor_changed.emit(dict(name=(self._value_of_cell(row, 0)),
-                                              affiliation=(self._value_of_combo_in_cell(row, 1)),
-                                              publisher=(self._value_of_combo_in_cell(row, 2)),
-                                              share=(self._value_of_cell(row, 3))))
-
-    def _value_of_combo_in_cell(self, row, col):
-        combo = self._table.cellWidget(row, col)
-        return combo.currentText() if combo else ""
+        self._table.insertRow(row)
+        self._table.setItem(row, AuthorsComposersColumns.name.position, name)
+        self._table.setCellWidget(row, AuthorsComposersColumns.affiliation.position, affiliation)
+        self._table.setCellWidget(row, AuthorsComposersColumns.publisher.position, publisher)
+        self._table.setItem(row, AuthorsComposersColumns.share.position, share)
 
 
 class PublishersTable(ContributorsTable):
@@ -112,27 +105,26 @@ class PublishersTable(ContributorsTable):
 
     def __init__(self, table):
         super().__init__(table)
-        table.cellChanged.connect(lambda row, _: self._contributor_changed(row))
+        table.cellChanged.connect(lambda row, column: self._table.item(row, column).value_changed())
 
     def display(self, chain_of_title):
-        self._clear()
-
+        self._contributors = []
         for contributor in chain_of_title.contributors["publishers"].values():
-            self._add_contributor(contributor)
+            self._contributors.append(Contributor(**contributor))
 
-    def _add_contributor(self, contributor):
-        row = self._count()
+        self._display_table()
+
+    def _display_table(self):
+        self._clear()
+        for row, contributor in enumerate(self._contributors):
+            self._create_row(row, contributor)
+
+    def _create_row(self, row, contributor):
+        name = Cell.Name(contributor)
+        share = Cell.Share(contributor)
+
+        share.on_share_changed.subscribe(self._emit_contributor_changed)
+
         self._table.insertRow(row)
-
-        item = QTableWidgetItem()
-        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-        item.setText(contributor["name"])
-        self._table.setItem(row, 0, item)
-
-        item = QTableWidgetItem()
-        item.setText(contributor.get("share"))
-        self._table.setItem(row, 1, item)
-
-    def _contributor_changed(self, row):
-        self.on_contributor_changed.emit(dict(name=(self._value_of_cell(row, 0)),
-                                              share=(self._value_of_cell(row, 1))))
+        self._table.setItem(row, PublishersColumns.name.position, name)
+        self._table.setItem(row, PublishersColumns.share.position, share)
