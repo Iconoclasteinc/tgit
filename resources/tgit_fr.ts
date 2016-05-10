@@ -611,13 +611,13 @@
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Please check that you have permission to write to the album's location.</source>
+        <source>Please check that you have permission to write to the project's location.</source>
         <translation>Vérifiez que vous avez les permissions d'écriture à l'emplacement sélectionné.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
-        <source>Could not export your album.</source>
-        <translation>L'exportation de l'album a échoué.</translation>
+        <source>Could not export your project.</source>
+        <translation>L'exportation du projet a échoué.</translation>
     </message>
     <message>
         <location filename="tgit/ui/message_box.py" />
