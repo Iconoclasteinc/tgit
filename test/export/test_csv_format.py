@@ -2,10 +2,13 @@ import csv
 from io import StringIO
 
 import pytest
+
 from hamcrest import assert_that, contains, has_item
+
 from hamcrest.core.core.isequal import equal_to
 
 from testing import builders as build
+from testing.builders import make_album, make_track
 from tgit.export.csv_format import CsvFormat, to_boolean
 
 pytestmark = pytest.mark.unit
@@ -22,8 +25,8 @@ def out():
 
 
 def test_includes_header_row(formatter, out):
-    album = build.album()
-    formatter.write(album, out)
+    project = make_album()
+    formatter.write(project, out)
 
     rows = read_csv(out)
     headers = next(rows)
@@ -41,6 +44,7 @@ def test_includes_header_row(formatter, out):
                                   "Release Date",
                                   "Recording Date",
                                   "Recording Studio",
+                                  "Recording Studio Address",
                                   "Recording Location",
                                   "Production Company",
                                   "Production Location",
@@ -64,7 +68,7 @@ def test_includes_header_row(formatter, out):
 
 @pytest.mark.xfail
 def test_writes_track_metadata_in_columns(formatter, out):
-    album = build.album(
+    project = make_album(
         release_name="Release Name",
         lead_performer="Lead Performer",
         lead_performer_date_of_birth="2009-05-06",
@@ -76,7 +80,7 @@ def test_writes_track_metadata_in_columns(formatter, out):
         upc="Barcode",
         release_time="2014")
 
-    track = build.track(
+    track = make_track(
         track_title="Track Title",
         version_info="Version Info",
         comments="Comments\n...\n...",
@@ -89,19 +93,19 @@ def test_writes_track_metadata_in_columns(formatter, out):
         isrc="ISRC",
         labels="Tag1 Tag2 Tag3",
         recording_studio="Studio",
-        recording_studio_region=("CA",),
+        recording_studio_region=("CA MTL",),
         production_company="Production Company",
-        production_company_region=("CA",),
+        production_company_region=("CA MTL",),
         music_producer="Music Producer",
         mixer="Mixing Engineer",
         primary_style="Genre",
         recording_time="2013")
 
-    album.add_track(track)
+    project.add_track(track)
     track.track_number = 3
     track.total_tracks = 9
 
-    formatter.write(album, out)
+    formatter.write(project, out)
 
     rows = read_csv(out)
     _ = next(rows)
@@ -120,9 +124,9 @@ def test_writes_track_metadata_in_columns(formatter, out):
                                "2014",
                                "2013",
                                "Studio",
-                               "CA",
+                               "CA MTL",
                                "Production Company",
-                               "CA",
+                               "CA MTL",
                                "Music Producer",
                                "Mixing Engineer",
                                "Genre",
@@ -148,11 +152,11 @@ def test_converts_booleans_to_text():
 
 
 def test_writes_one_record_per_track_in_album(formatter, out):
-    album = build.album(tracks=[build.track(track_title="Song 1"),
-                                build.track(track_title="Song 2"),
-                                build.track(track_title="Song 3")])
+    project = make_album(tracks=[build.track(track_title="Song 1"),
+                                 build.track(track_title="Song 2"),
+                                 build.track(track_title="Song 3")])
 
-    formatter.write(album, out)
+    formatter.write(project, out)
 
     rows = read_csv(out)
     _ = next(rows)
@@ -162,9 +166,9 @@ def test_writes_one_record_per_track_in_album(formatter, out):
 
 
 def test_make_line_breaks_excel_friendly_by_converting_line_feeds_to_carriage_returns(formatter, out):
-    album = build.album(tracks=[build.track(comments="Comments\nspanning\nseveral lines")])
+    project = make_album(tracks=[build.track(comments="Comments\nspanning\nseveral lines")])
 
-    formatter.write(album, out)
+    formatter.write(project, out)
 
     csv_file = read_csv(out)
     _ = next(csv_file)

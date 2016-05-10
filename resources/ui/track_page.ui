@@ -850,14 +850,14 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="10" column="0" colspan="2">
+          <item row="11" column="0" colspan="2">
            <widget class="Line" name="line_5">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="11" column="0">
+          <item row="12" column="0">
            <widget class="QLabel" name="_music_producer_caption">
             <property name="text">
              <string>Music Producer:</string>
@@ -867,7 +867,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="11" column="1">
+          <item row="12" column="1">
            <widget class="QLineEdit" name="_music_producer">
             <property name="minimumSize">
              <size>
@@ -877,7 +877,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="12" column="0">
+          <item row="13" column="0">
            <widget class="QLabel" name="_mixer_caption">
             <property name="text">
              <string>Mixer:</string>
@@ -887,7 +887,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="12" column="1">
+          <item row="13" column="1">
            <widget class="QLineEdit" name="_mixer">
             <property name="minimumSize">
              <size>
@@ -897,7 +897,7 @@ QLabel[style=QMacStyle] {
             </property>
            </widget>
           </item>
-          <item row="13" column="0" colspan="2">
+          <item row="14" column="0" colspan="2">
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -977,6 +977,19 @@ QLabel[style=QMacStyle] {
             </item>
            </layout>
           </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="_recording_studio_address_caption">
+            <property name="text">
+             <string>Address:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_recording_studio_address</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="1">
+           <widget class="QLineEdit" name="_recording_studio_address"/>
+          </item>
          </layout>
         </widget>
         <widget class="QWidget" name="_chain_of_title">
@@ -1015,15 +1028,16 @@ QLabel[style=QMacStyle] {
   <tabstop>_genre</tabstop>
   <tabstop>_comments</tabstop>
   <tabstop>_tabs</tabstop>
+  <tabstop>_lyrics</tabstop>
+  <tabstop>_language</tabstop>
   <tabstop>_production_company</tabstop>
   <tabstop>_production_company_region</tabstop>
   <tabstop>_recording_studio</tabstop>
   <tabstop>_recording_studio_region</tabstop>
   <tabstop>_recording_time</tabstop>
+  <tabstop>_recording_studio_address</tabstop>
   <tabstop>_music_producer</tabstop>
   <tabstop>_mixer</tabstop>
-  <tabstop>_lyrics</tabstop>
-  <tabstop>_language</tabstop>
  </tabstops>
  <resources>
   <include location="../resources.qrc"/>

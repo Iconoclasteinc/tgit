@@ -8,13 +8,7 @@ from testing import resources as test_resources
 from tgit import fs
 
 
-class Base(object):
-    filename = test_resources.path("base.mp3")
-    bitrate = 320000
-    duration = 9.064475
-
-
-def make(from_=Base.filename, to=None, **tags):
+def make(from_=test_resources.path("base.mp3"), to=None, **tags):
     audio = Mp3Audio(fs.make_temp_copy(from_, to))
     audio.tag(**tags)
     return audio
@@ -142,6 +136,8 @@ class Mp3Audio(object):
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="PRODUCTION-COMPANY-REGION:UN/LOCODE", text=value))
             elif tag == "TXXX_RECORDING_STUDIO_REGION":
                 self._add_tag(id3.TXXX(encoding=UTF_8, desc="RECORDING-STUDIO-REGION:UN/LOCODE", text=value))
+            elif tag == "TXXX_RECORDING_STUDIO_ADDRESS":
+                self._add_tag(id3.TXXX(encoding=UTF_8, desc="RECORDING-STUDIO-ADDRESS", text=value))
             elif tag == "TRCK":
                 self._add_tag(id3.TRCK(encoding=UTF_8, text=value))
             else:

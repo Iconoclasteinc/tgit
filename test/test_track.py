@@ -16,7 +16,8 @@ def test_defines_metadata_tags():
         "track_title", "lead_performer", "version_info", "featured_guest", "publisher", "lyricist", "composer", "isrc",
         "iswc", "labels", "lyrics", "language", "tagger", "tagger_version", "tagging_time", "bitrate", "duration",
         "track_number", "total_tracks", "recording_studio", "production_company", "production_company_region",
-        "recording_studio_region", "music_producer", "mixer", "primary_style", "comments", "recording_time"))
+        "recording_studio_region", "music_producer", "mixer", "primary_style", "comments", "recording_time",
+        "recording_studio_address"))
 
 
 def test_announces_metadata_changes_to_listeners():

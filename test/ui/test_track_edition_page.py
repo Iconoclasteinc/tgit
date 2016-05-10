@@ -78,6 +78,7 @@ def test_displays_track_metadata(driver):
                        production_company_region=("CA", "MTL"),
                        recording_studio="Studio A, Studio B",
                        recording_studio_region=("CA", "MTL"),
+                       recording_studio_address="2020 des zinzins, Montreal",
                        music_producer="Artistic Producer",
                        mixer="Mixing Engineer",
                        primary_style="Style")
@@ -98,6 +99,7 @@ def test_displays_track_metadata(driver):
     driver.shows_language("English")
     driver.shows_recording_studio("Studio A, Studio B")
     driver.shows_recording_studio_region("CA MTL")
+    driver.shows_recording_studio_address("2020 des zinzins, Montreal")
     driver.shows_production_company("Initial Producer")
     driver.shows_production_company_region("CA MTL")
     driver.shows_recording_time("2008-09-15")
@@ -182,6 +184,10 @@ def test_signals_when_track_metadata_change(driver):
 
     metadata_changed_signal.expect(has_entries(recording_studio_region=("CA", "MTL")))
     driver.change_recording_studio_region("CA MTL")
+    driver.check(metadata_changed_signal)
+
+    metadata_changed_signal.expect(has_entries(recording_studio_address="2020 des zinzins, Montreal"))
+    driver.change_recording_studio_address("2020 des zinzins, Montreal")
     driver.check(metadata_changed_signal)
 
     metadata_changed_signal.expect(has_entries(music_producer="Producer"))

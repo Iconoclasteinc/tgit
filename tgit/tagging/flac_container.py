@@ -256,6 +256,7 @@ class FlacContainer:
         "TAG": "labels",
         "RELEASE DATE": "release_time",
         "LEAD-PERFORMER-DATE-OF-BIRTH": "lead_performer_date_of_birth",
+        "RECORDING-STUDIO-ADDRESS": "recording_studio_address",
     }.items():
         fields.append(TextField(field_name, tag_name))
 

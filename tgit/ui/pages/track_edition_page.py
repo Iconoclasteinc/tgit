@@ -95,6 +95,7 @@ class TrackEditionPage(QWidget, UIFile):
 
         self._recording_studio.editingFinished.connect(handle)
         self._recording_studio_region.editingFinished.connect(handle)
+        self._recording_studio_address.editingFinished.connect(handle)
         self._recording_time.dateChanged.connect(handle)
         self._music_producer.editingFinished.connect(handle)
         self._production_company.editingFinished.connect(handle)
@@ -141,6 +142,7 @@ class TrackEditionPage(QWidget, UIFile):
 
         self._recording_studio.setText(track.recording_studio)
         self._recording_time.setDate(QDate.fromString(track.recording_time, ISO_8601_FORMAT))
+        self._recording_studio_address.setText(track.recording_studio_address)
         self._display_region(track.recording_studio_region, self._recording_studio_region)
         self._music_producer.setText(track.music_producer)
         self._production_company.setText(track.production_company)
@@ -196,6 +198,7 @@ class TrackEditionPage(QWidget, UIFile):
                         language=self._language.currentData(),
                         recording_studio=self._recording_studio.text(),
                         recording_studio_region=self._get_locode(self._recording_studio_region),
+                        recording_studio_address=self._recording_studio_address.text(),
                         recording_time=self._recording_time.date().toString(ISO_8601_FORMAT),
                         music_producer=self._music_producer.text(),
                         production_company=self._production_company.text(),

@@ -50,6 +50,7 @@ class Track(metaclass=tag.Taggable):
     recording_time = tag.text()
     recording_studio = tag.text()
     recording_studio_region = tag.pairs()
+    recording_studio_address = tag.text()
     production_company = tag.text()
     production_company_region = tag.pairs()
     music_producer = tag.text()
@@ -68,9 +69,6 @@ class Track(metaclass=tag.Taggable):
     @property
     def type(self):
         return self.album.type if self.album is not None else None
-
-    def metadataChanged(self):
-        self.metadata_changed.emit(self)
 
     def __repr__(self):
         return "Track(filename={}, metadata={})".format(self.filename, self.metadata)

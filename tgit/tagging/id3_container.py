@@ -306,7 +306,7 @@ class LocalDateTimeConverter:
     @staticmethod
     def _to_timestamp(value):
         instant = dateparser.parse(value).astimezone(timezone.utc)
-        return instant.strftime('%Y-%m-%d %H:%M:%S')
+        return instant.strftime("%Y-%m-%d %H:%M:%S")
 
     # noinspection PyUnusedLocal
     def process_metadata(self, frames, encoding, metadata):
@@ -386,6 +386,7 @@ class ID3Container:
         "TXXX:TAGGER_VERSION": "tagger_version",
         "TXXX:Tags": "labels",
         "TXXX:LEAD-PERFORMER-DATE-OF-BIRTH": "lead_performer_date_of_birth",
+        "TXXX:RECORDING-STUDIO-ADDRESS": "recording_studio_address",
         "COMM::fra": "comments",
         "USLT::fra": "lyrics",
         "TCON": "primary_style"

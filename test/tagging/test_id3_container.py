@@ -11,8 +11,8 @@ from tgit.tagging.id3_container import ID3Container
 pytestmark = pytest.mark.unit
 
 
-BITRATE = mp3_file.Base.bitrate
-DURATION = mp3_file.Base.duration
+BITRATE = 320000
+DURATION = 9.064475
 
 container = ID3Container()
 
@@ -258,6 +258,11 @@ def test_reads_recording_studio_region_from_custom_frame(mp3):
     assert_that(metadata, has_entry("recording_studio_region", ("CA", "MTL")), "metadata")
 
 
+def test_reads_recording_studio_address_from_custom_frame(mp3):
+    metadata = container.load(mp3(TXXX_RECORDING_STUDIO_ADDRESS="2020 des zinzins, Montreal"))
+    assert_that(metadata, has_entry("recording_studio_address", "2020 des zinzins, Montreal"), "metadata")
+
+
 def test_round_trips_empty_metadata_to_file(mp3):
     assert_can_be_saved_and_reloaded_with_same_state(mp3, Metadata())
 
@@ -284,6 +289,7 @@ def test_round_trips_metadata_to_file(mp3):
     metadata["original_release_time"] = "1999-01-01"
     metadata["recording_studio"] = "Studio Name"
     metadata["recording_studio_region"] = ("CA", "MTL")
+    metadata["recording_studio_address"] = "2020 des zinzins, Montreal"
     metadata["music_producer"] = "Music Producer"
     metadata["mixer"] = "Mixing Engineer"
     metadata["contributors"] = [("recording", "Recording Eng."),

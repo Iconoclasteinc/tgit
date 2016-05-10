@@ -305,6 +305,16 @@ class TrackEditionPageDriver(ScreenDriver):
         self._select_recording_tab()
         self.lineEdit(named("_recording_studio_region")).change_text(name)
 
+    def shows_recording_studio_address(self, address):
+        self._select_recording_tab()
+        self.label(with_buddy(named("_recording_studio_address"))).is_showing_on_screen()
+        edit = self.lineEdit(named("_recording_studio_address"))
+        edit.has_text(address)
+
+    def change_recording_studio_address(self, address):
+        self._select_recording_tab()
+        self.lineEdit(named("_recording_studio_address")).change_text(address)
+
     def shows_production_company(self, producer):
         self._select_recording_tab()
         self.label(with_buddy(named("_production_company"))).is_showing_on_screen()

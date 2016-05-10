@@ -41,10 +41,10 @@ def _get_isni_of_identity(identity, isnis):
 class CsvFormat(QObject):
     Headers = "Release Name", "Compilation", "Lead Performer", "Lead Performer ISNI", "Lead Performer Origin", \
               "Lead Performer Date of Birth", "Guest Performers", "Label Name", "Catalog Number", "UPC/EAN", "Comments", \
-              "Release Date", "Recording Date", "Recording Studio", "Recording Location", "Production Company", \
-              "Production Location", "Music Producer", "Mixer", "Primary Style", "Track Title", "Version Information", \
-              "Track Number", "Total Tracks", "Featured Guest", "Lyrics", "Language", "Publisher", "Lyricist", \
-              "Lyricist ISNI", "Composer", "ISRC", "Tags"
+              "Release Date", "Recording Date", "Recording Studio", "Recording Studio Address", "Recording Location", \
+              "Production Company", "Production Location", "Music Producer", "Mixer", "Primary Style", "Track Title", \
+              "Version Information", "Track Number", "Total Tracks", "Featured Guest", "Lyrics", "Language", \
+              "Publisher", "Lyricist", "Lyricist ISNI", "Composer", "ISRC", "Tags"
 
     def __init__(self):
         super().__init__()
