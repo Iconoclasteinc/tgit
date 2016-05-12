@@ -56,9 +56,8 @@ class ContributorsTable(Table):
         self._contributors = []
 
     def _emit_contributor_changed(self, contributor):
-        values = dict(name=contributor.name, share=contributor.share)
+        values = dict(name=contributor.name, share=contributor.share, affiliation=contributor.affiliation)
         if isinstance(contributor, AuthorComposer):
-            values["affiliation"] = contributor.affiliation
             values["publisher"] = contributor.publisher
 
         self.on_contributor_changed.emit(values)
@@ -121,10 +120,13 @@ class PublishersTable(ContributorsTable):
 
     def _create_row(self, row, contributor):
         name = Cell.Name(contributor)
+        affiliation = Cell.Affiliation(contributor, affiliations)
         share = Cell.Share(contributor)
 
+        affiliation.on_affiliation_changed.connect(self._emit_contributor_changed)
         share.on_share_changed.subscribe(self._emit_contributor_changed)
 
         self._table.insertRow(row)
         self._table.setItem(row, PublishersColumns.name.position, name)
+        self._table.setCellWidget(row, PublishersColumns.affiliation.position, affiliation)
         self._table.setItem(row, PublishersColumns.share.position, share)

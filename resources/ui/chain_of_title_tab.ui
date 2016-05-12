@@ -131,6 +131,11 @@ QLabel[style=QMacStyle] {
      </column>
      <column>
       <property name="text">
+       <string>Affiliation</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Share (%)</string>
       </property>
      </column>

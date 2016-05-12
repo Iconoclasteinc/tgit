@@ -30,7 +30,7 @@ def test_displays_column_headings(driver):
     _ = show_page(make_chain_of_title())
 
     driver.shows_contributors_column_headers("Name", "Affiliation", "Publisher", "Share (%)")
-    driver.shows_publishers_column_headers("Name", "Share (%)")
+    driver.shows_publishers_column_headers("Name", "Affiliation", "Share (%)")
 
 
 def test_displays_contributors(driver):
@@ -47,13 +47,15 @@ def test_displays_contributors(driver):
     driver.shows_publisher_of_contributor("John Roney", "Effendi Records")
 
     driver.has_publishers_count(1)
-    driver.shows_publisher_row_details("Effendi Records", "50")
+    driver.shows_publisher_row_details("Effendi Records", None, "50")
+    driver.shows_affiliation_of_publisher("Effendi Records", "BMI")
 
 
 def test_displays_affiliation_choices(driver):
-    _ = show_page(make_chain_of_title(authors_composers=[joel_miller()]))
+    _ = show_page(make_chain_of_title(authors_composers=[joel_miller()], publishers=[effendi_records()]))
 
-    driver.shows_affiliation_options_on_row(0, "", "SOCAN", "ASCAP", "BMI")
+    driver.shows_affiliation_options_for_contributor("Joel Miller", "", "SOCAN", "ASCAP", "BMI")
+    driver.shows_affiliation_options_for_publisher("Effendi Records", "", "SOCAN", "ASCAP", "BMI")
 
 
 def test_displays_publisher_choices(driver):
@@ -82,6 +84,10 @@ def test_signals_contributor_changed(driver):
     driver.change_share_of_contributor("Joel Miller", "50")
     driver.check(signal)
 
+    signal.expect(has_entries(affiliation="BMI"))
+    driver.change_affiliation_of_publisher("Big Deal Music", "BMI")
+    driver.check(signal)
+
     signal.expect(has_entries(share="50"))
     driver.change_share_of_publisher("Big Deal Music", "50")
     driver.check(signal)
@@ -96,7 +102,7 @@ def john_roney():
 
 
 def effendi_records():
-    return dict(name="Effendi Records", share="50")
+    return dict(name="Effendi Records", affiliation="BMI", share="50")
 
 
 def contributor(name):

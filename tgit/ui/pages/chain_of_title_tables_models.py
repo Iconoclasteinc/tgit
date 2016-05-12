@@ -17,17 +17,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 from PyQt5.QtCore import Qt, pyqtSignal
-
 from PyQt5.QtWidgets import QHeaderView, QTableWidgetItem, QComboBox
 
 from tgit.signal import signal
-
 from tgit.ui.pages.table_model import Columns, Column
 
 
 class Contributor:
     def __init__(self, **contributor):
         self.share = contributor.get("share", "")
+        self.affiliation = contributor.get("affiliation", "")
         self.name = contributor["name"]
 
 
@@ -35,7 +34,6 @@ class AuthorComposer(Contributor):
     def __init__(self, **contributor):
         super().__init__(**contributor)
         self.publisher = contributor.get("publisher", "")
-        self.affiliation = contributor.get("affiliation", "")
 
 
 class Cell:
@@ -68,7 +66,7 @@ class Cell:
             self.on_publisher_changed.emit(self._contributor)
 
     class Affiliation(QComboBox):
-        on_affiliation_changed = pyqtSignal(AuthorComposer)
+        on_affiliation_changed = pyqtSignal(Contributor)
 
         def __init__(self, contributor, items):
             super().__init__()
@@ -108,7 +106,8 @@ class AuthorsComposersColumns(Columns):
 
 class PublishersColumns(Columns):
     name = Column(position=0, resize_mode=QHeaderView.Stretch)
-    share = Column(position=1)
+    affiliation = Column(position=1, win_width=115, mac_width=135, resize_mode=QHeaderView.Fixed)
+    share = Column(position=2)
 
 
 affiliations = ["SOCAN", "ASCAP", "BMI"]
