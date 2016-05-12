@@ -2,9 +2,7 @@ import csv
 from io import StringIO
 
 import pytest
-
 from hamcrest import assert_that, contains, has_item
-
 from hamcrest.core.core.isequal import equal_to
 
 from testing import builders as build
@@ -58,15 +56,10 @@ def test_includes_header_row(formatter, out):
                                   "Featured Guest",
                                   "Lyrics",
                                   "Language",
-                                  "Publisher",
-                                  "Lyricist",
-                                  "Lyricist ISNI",
-                                  "Composer",
                                   "ISRC",
                                   "Tags"), "header")
 
 
-@pytest.mark.xfail
 def test_writes_track_metadata_in_columns(formatter, out):
     project = make_album(
         release_name="Release Name",
@@ -93,9 +86,9 @@ def test_writes_track_metadata_in_columns(formatter, out):
         isrc="ISRC",
         labels="Tag1 Tag2 Tag3",
         recording_studio="Studio",
-        recording_studio_region=("CA MTL",),
+        recording_studio_region=("CA", "MTL"),
         production_company="Production Company",
-        production_company_region=("CA MTL",),
+        production_company_region=("CA", "MTL"),
         music_producer="Music Producer",
         mixer="Mixing Engineer",
         primary_style="Genre",
@@ -137,10 +130,6 @@ def test_writes_track_metadata_in_columns(formatter, out):
                                "Featuring",
                                "Lyrics\r...\...\r...",
                                "eng",
-                               "Publisher",
-                               "Lyricist",
-                               "9876543210000000",
-                               "Composer",
                                "ISRC",
                                "Tag1 Tag2 Tag3"), "row")
 

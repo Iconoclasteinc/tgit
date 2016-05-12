@@ -31,7 +31,7 @@ def _to_people_list(people):
 
 
 def _to_standard_region_code(region):
-    return "-".join(region) if region else ""
+    return " ".join(region) if region else ""
 
 
 def _get_isni_of_identity(identity, isnis):
@@ -39,12 +39,12 @@ def _get_isni_of_identity(identity, isnis):
 
 
 class CsvFormat(QObject):
-    Headers = "Release Name", "Compilation", "Lead Performer", "Lead Performer ISNI", "Lead Performer Origin", \
-              "Lead Performer Date of Birth", "Guest Performers", "Label Name", "Catalog Number", "UPC/EAN", "Comments", \
-              "Release Date", "Recording Date", "Recording Studio", "Recording Studio Address", "Recording Location", \
-              "Production Company", "Production Location", "Music Producer", "Mixer", "Primary Style", "Track Title", \
-              "Version Information", "Track Number", "Total Tracks", "Featured Guest", "Lyrics", "Language", \
-              "Publisher", "Lyricist", "Lyricist ISNI", "Composer", "ISRC", "Tags"
+    Headers = ["Release Name", "Compilation", "Lead Performer", "Lead Performer ISNI", "Lead Performer Origin",
+               "Lead Performer Date of Birth", "Guest Performers", "Label Name", "Catalog Number", "UPC/EAN",
+               "Comments", "Release Date", "Recording Date", "Recording Studio", "Recording Studio Address",
+               "Recording Location", "Production Company", "Production Location", "Music Producer", "Mixer",
+               "Primary Style", "Track Title", "Version Information", "Track Number", "Total Tracks", "Featured Guest",
+               "Lyrics", "Language", "ISRC", "Tags"]
 
     def __init__(self):
         super().__init__()
@@ -56,38 +56,34 @@ class CsvFormat(QObject):
             self._write_record(writer, album, track)
 
     def _write_header(self, writer):
-        writer.writerow(self._encode_row(self._translate_texts(CsvFormat.Headers)))
+        writer.writerow(self._encode_row(self._headers))
 
-    def _write_record(self, writer, album, track):
-        lead_performer_isni = _get_isni_of_identity(track.lead_performer, album.isnis)
-        lyricist_isni = _get_isni_of_identity(track.lyricist, album.isnis)
-        lead_performer_region = _to_standard_region_code(album.lead_performer_region)
+    def _write_record(self, writer, project, track):
+        main_artist_isni = _get_isni_of_identity(track.lead_performer, project.isnis)
+        main_artist_region = _to_standard_region_code(project.lead_performer_region)
         production_company_region = _to_standard_region_code(track.production_company_region)
         recording_studio_region = _to_standard_region_code(track.recording_studio_region)
-        guest_performers = _to_people_list(album.guest_performers)
-        compilation = to_boolean(album.compilation)
+        guest_performers = _to_people_list(project.guest_performers)
+        compilation = to_boolean(project.compilation)
         track_number = str(track.track_number)
         total_tracks = str(track.total_tracks)
 
-        row = (album.release_name, compilation, track.lead_performer, lead_performer_isni, lead_performer_region,
-               album.lead_performer_date_of_birth, guest_performers, album.label_name, album.catalog_number, album.upc,
-               track.comments, album.release_time, track.recording_time, track.recording_studio,
+        row = [project.release_name, compilation, track.lead_performer, main_artist_isni, main_artist_region,
+               project.lead_performer_date_of_birth, guest_performers, project.label_name, project.catalog_number,
+               project.upc, track.comments, project.release_time, track.recording_time, track.recording_studio,
                recording_studio_region, track.production_company, production_company_region, track.music_producer,
                track.mixer, track.primary_style, track.track_title, track.version_info, track_number, total_tracks,
-               track.featured_guest, track.lyrics, track.language, track.publisher, track.lyricist, lyricist_isni,
-               track.composer, track.isrc, track.labels)
+               track.featured_guest, track.lyrics, track.language, track.isrc, track.labels]
 
         writer.writerow(self._encode_row(row))
 
-    def _translate(self, text):
-        return text and self.tr(text) or ""
-
-    def _translate_texts(self, texts):
-        return map(self._translate, texts)
+    @property
+    def _headers(self):
+        return [self.tr(header) for header in self.Headers]
 
     def _encode_row(self, texts):
-        return list(map(self.to_excel_new_lines, texts))
+        return [self._to_excel_new_lines(text) for text in texts]
 
     @staticmethod
-    def to_excel_new_lines(text):
+    def _to_excel_new_lines(text):
         return text and text.replace("\n", "\r") or ""
