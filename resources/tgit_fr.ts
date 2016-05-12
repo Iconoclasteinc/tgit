@@ -850,6 +850,11 @@
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py"/>
+        <source>Address:</source>
+        <translation>Adresse :</translation>
+    </message>
+    <message>
+        <location filename="tgit/ui/track_edition_page.py"/>
         <source>Find</source>
         <translation>Récupérer</translation>
     </message>
