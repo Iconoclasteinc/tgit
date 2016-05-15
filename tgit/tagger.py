@@ -74,6 +74,8 @@ class Tagger:
         self._main_window.show()
 
     def _make_main_window(self):
+        open_ddex_rin_export_selection_dialog = func.partial(self._open_ddex_rin_export_selection_dialog, self._studio)
+
         return ui.MainWindow(self._session,
                              self._studio,
                              confirm_exit=self._show_exit_confirmation_message,
@@ -86,6 +88,7 @@ class Tagger:
                              select_tracks_in_folder=self._dialogs.add_tracks_in_folder,
                              show_save_error=self._show_save_project_failed_message,
                              show_export_error=self._show_export_project_failed_message,
+                             on_export_to_ddex_rin=open_ddex_rin_export_selection_dialog,
                              on_close_project=self._studio.project_closed,
                              on_save_project=project.save_to(self._studio),
                              on_add_files=director.add_tracks,
@@ -135,12 +138,13 @@ class Tagger:
                                     on_metadata_changed=director.update_album_from(project_))
 
     def _project_edition_page(self, project_):
+        on_select_artwork = func.partial(self._open_artwork_selection_dialog, project_)
+
         return ui.make_project_edition_page(project_,
                                             self._session,
                                             track_list_tab=self._track_list_tab,
                                             musician_tab=self._musician_tab,
-                                            on_select_artwork=func.partial(self._open_artwork_selection_dialog,
-                                                                           project_),
+                                            on_select_artwork=on_select_artwork,
                                             on_isni_changed=project_.add_isni,
                                             on_isni_local_lookup=director.lookup_isni_in(project_),
                                             on_select_identity=func.partial(self._open_isni_dialog, project_),
@@ -174,10 +178,15 @@ class Tagger:
                                    parent=self._main_window).show()
 
     def _show_isni_review_dialog(self, selection):
-        return lambda: ui.make_isni_assignation_review_dialog(
-            selection,
-            on_assign=identity.launch_assignation(self._cheddar, self._session, selection),
-            parent=self._main_window).show()
+        def launch_assignation():
+            return identity.launch_assignation(self._cheddar, self._session, selection)
+
+        def open_dialog():
+            ui.make_isni_assignation_review_dialog(selection,
+                                                   on_assign=launch_assignation(),
+                                                   parent=self._main_window).show()
+
+        return open_dialog
 
     def _show_sign_in_dialog(self):
         login = auth.Login(self._session)
@@ -191,6 +200,18 @@ class Tagger:
                                                 on_file_selected=artwork.load(artwork_selection),
                                                 native=self._native,
                                                 parent=self._main_window).open()
+
+    def _open_ddex_rin_export_selection_dialog(self, studio):
+        def on_file_selected():
+            return export.as_ddex_rin(studio.current_project, export_selection)
+
+        export_selection = export.ExportLocationSelection(studio.current_project, self._preferences)
+        export_selection.on_failure.subscribe(self._show_export_project_failed_message)
+
+        return ui.make_export_location_selection_dialog(export_selection,
+                                                        on_file_selected=on_file_selected(),
+                                                        native=self._native,
+                                                        parent=self._main_window).open()
 
     def _show_settings_dialog(self):
         return ui.make_user_preferences_dialog(self._preferences, self._show_restart_required_message,

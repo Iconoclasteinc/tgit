@@ -22,3 +22,16 @@ def test_export_to_soproq_file(app, recordings, workspace):
                                                 lead_performer="Joel Miller",
                                                 isrc="CA-A01-12-00001",
                                                 duration="00:00:09")
+
+
+def test_export_to_ddex_rin_file(app, recordings, workspace):
+    app.new_project("Honeycomb", of_type="mp3")
+
+    track = recordings.add_mp3(release_name="ignore", lead_performer="ignore", track_title="ignore")
+    app.add_tracks_to_project(track)
+
+    app.shows_project_metadata(release_name="Honeycomb", lead_performer="")
+    app.change_project_metadata(release_name="Honeycomb", lead_performer="Joel Miller")
+
+    app.export_project_to_ddex_rin(filename="Honeycomb.xml")
+    workspace.contains_ddex_rin_file(filename="Honeycomb.xml")

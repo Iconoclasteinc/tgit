@@ -45,7 +45,7 @@ class MainWindow(QMainWindow, UIFile):
 
     def __init__(self, session, studio, confirm_exit, show_save_error, show_export_error, create_startup_screen,
                  create_project_screen, confirm_close, select_export_destination, select_save_as_destination,
-                 select_tracks, select_tracks_in_folder, **handlers):
+                 select_tracks, select_tracks_in_folder, on_export_to_ddex_rin, **handlers):
         super().__init__()
         self._confirm_exit = confirm_exit
         self._show_save_error = show_save_error
@@ -63,6 +63,8 @@ class MainWindow(QMainWindow, UIFile):
         self._setup_signals(studio, session)
         for name, handler in handlers.items():
             getattr(self, name)(handler)
+
+        self._ddex_rin_action.triggered.connect(lambda: on_export_to_ddex_rin())
 
         self._project_dependent_action = [
             self._add_files_action,

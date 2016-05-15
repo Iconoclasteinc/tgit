@@ -25,6 +25,12 @@ def test_defaults_artwork_selection_folder_to_pictures_location():
     assert_that(preferences.artwork_location, equal_to(locations.Pictures), "default artwork location")
 
 
+def test_defaults_export_location_selection_folder_to_documents_location():
+    preferences = UserPreferences()
+
+    assert_that(preferences.export_location, equal_to(locations.Documents), "default export location")
+
+
 def test_signals_when_preferences_changed(listener):
     preferences = UserPreferences()
     listener.should_receive("preferences_changed").once()

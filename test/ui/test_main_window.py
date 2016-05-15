@@ -42,6 +42,7 @@ def show_main_window(session=make_anonymous_session(),
                      select_tracks=ignore,
                      select_tracks_in_folder=ignore,
                      confirm_exit=yes,
+                     on_export_to_ddex_rin=ignore,
                      **handlers):
     main_window = MainWindow(session=session,
                              studio=studio,
@@ -55,6 +56,7 @@ def show_main_window(session=make_anonymous_session(),
                              select_save_as_destination=select_save_as_destination,
                              select_tracks=select_tracks,
                              select_tracks_in_folder=select_tracks_in_folder,
+                             on_export_to_ddex_rin=on_export_to_ddex_rin,
                              **handlers)
     show_(main_window)
 
@@ -397,3 +399,14 @@ def test_signals_when_transmit_to_soproq_menu_item_clicked(driver):
 
     driver.transmit_to_soproq()
     driver.check(transmit_signal)
+
+
+def test_signals_when_export_to_ddex_rin_menu_item_clicked(driver):
+    project = make_album(release_name="Honeycomb")
+    signal = ValueMatcherProbe("export to DDEX RIN")
+
+    window_ = show_main_window(on_export_to_ddex_rin=signal.received)
+    window_.display_project_screen(project)
+
+    driver.export_to_ddex_rin()
+    driver.check(signal)

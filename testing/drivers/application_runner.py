@@ -151,5 +151,8 @@ class ApplicationRunner:
     def declare_project_to_soproq(self, filename):
         self.main_window_driver.declare_project_to_soproq(self._workspace.file(filename))
 
+    def export_project_to_ddex_rin(self, filename):
+        self.main_window_driver.export_project_to_ddex_rin(self._workspace.file(filename))
+
     def _project_file_path(self, name):
         return self._workspace.file(name, name + ".tgit")

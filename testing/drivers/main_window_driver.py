@@ -12,6 +12,7 @@ from .new_project_page_driver import new_project_page
 from .project_screen_driver import project_screen
 from .save_as_dialog_driver import save_as_dialog
 from .sign_in_dialog_driver import sign_in_dialog
+from .file_dialog_driver import file_selection_dialog
 from .user_preferences_dialog_driver import user_preferences_dialog
 from .welcome_page_driver import welcome_page
 
@@ -175,5 +176,13 @@ class MainWindowDriver(WidgetDriver):
         save_as_dialog(self).save_as(filename)
         message_box(self).click_ok()
 
+    def export_project_to_ddex_rin(self, filename):
+        self.export_to_ddex_rin()
+        file_selection_dialog(self).enter_manually(filename)
+        file_selection_dialog(self).accept()
+
     def transmit_to_soproq(self):
         menu_bar(self).transmit.soproq()
+
+    def export_to_ddex_rin(self):
+        menu_bar(self).transmit.ddex_rin()

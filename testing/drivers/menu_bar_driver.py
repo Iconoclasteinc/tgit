@@ -144,6 +144,9 @@ class MenuBarDriver(QMenuBarDriver):
         def soproq(self):
             self._menu_driver.select_menu_item(matchers.named("_soproq_action"))
 
+        def ddex_rin(self):
+            self._menu_driver.select_menu_item(matchers.named("_ddex_rin_action"))
+
         def is_disabled(self):
             self._menu_driver.is_disabled()
 

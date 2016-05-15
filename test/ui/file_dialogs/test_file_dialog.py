@@ -6,7 +6,7 @@ from hamcrest import ends_with, assert_that, equal_to
 from cute.widgets import QFileDialogDriver, window
 from test.ui import show_, close_
 from tgit.ui import locations
-from tgit.ui.dialogs.file_dialogs import make_file_dialog, name_filter
+from tgit.ui.dialogs.file_dialogs import make_file_dialog, name_filter, make_save_file_dialog
 
 pytestmark = pytest.mark.ui
 
@@ -24,6 +24,13 @@ def show_dialog(name_filters="", file_mode=QFileDialog.ExistingFile, directory="
     return dialog
 
 
+def show_save_dialog(name_filters="", file_mode=QFileDialog.ExistingFile, default_file_name="", directory="",
+                     parent=None):
+    dialog = make_save_file_dialog(name_filters, file_mode, directory, default_file_name, parent, False)
+    show_(dialog)
+    return dialog
+
+
 def test_shows_name_filters(driver):
     _ = show_dialog("PNG Images (*.png)")
     driver.filter_files_of_type("PNG Images (*.png)")
@@ -32,6 +39,11 @@ def test_shows_name_filters(driver):
 def test_initially_starts_in_directory(driver):
     _ = show_dialog(directory=locations.Documents)
     driver.has_current_directory(ends_with("Documents"))
+
+
+def test_shows_default_file_name(driver):
+    _ = show_save_dialog(default_file_name="FileName")
+    driver.has_filename("FileName")
 
 
 def test_builds_name_filters():

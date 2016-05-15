@@ -98,6 +98,7 @@
      <string>&amp;Transmit</string>
     </property>
     <addaction name="_soproq_action"/>
+    <addaction name="_ddex_rin_action"/>
    </widget>
    <addaction name="_file_menu"/>
    <addaction name="_navigate_menu"/>
@@ -227,6 +228,11 @@
    </property>
    <property name="toolTip">
     <string>SOPROQ...</string>
+   </property>
+  </action>
+  <action name="_ddex_rin_action">
+   <property name="text">
+    <string>DDEX RIN...</string>
    </property>
   </action>
  </widget>

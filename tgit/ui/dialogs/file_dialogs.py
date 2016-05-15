@@ -33,6 +33,23 @@ def make_artwork_selection_dialog(artwork_selection, on_file_selected, parent=No
     return dialog
 
 
+def make_export_location_selection_dialog(export_location_selection, on_file_selected, parent=None, native=True):
+    dialog = make_save_file_dialog(name_filter(export_location_selection.extensions, "XML File"),
+                                   QFileDialog.AnyFile, export_location_selection.directory,
+                                   export_location_selection.default_file_name, parent, native)
+
+    dialog.directoryEntered.connect(export_location_selection.directory_changed)
+    dialog.fileSelected.connect(on_file_selected)
+    return dialog
+
+
+def make_save_file_dialog(name_filters, file_mode, directory, default_file_name, parent, native):
+    dialog = make_file_dialog(name_filters, file_mode, directory, parent, native)
+    dialog.selectFile(default_file_name)
+    dialog.setAcceptMode(QFileDialog.AcceptSave)
+    return dialog
+
+
 def make_file_dialog(name_filters, file_mode, directory, parent, native):
     dialog = QFileDialog(parent)
     dialog.setOption(QFileDialog.DontUseNativeDialog, not native)

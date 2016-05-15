@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from os.path import exists
+from xml.etree import ElementTree
 
-from hamcrest import assert_that, has_entries, contains_inanyorder as contains
+from hamcrest import assert_that, has_entries, contains_inanyorder as contains, contains_string
 from openpyxl import load_workbook
 
 from tgit import tagging, fs
@@ -50,3 +51,10 @@ class AlbumWorkspace(object):
         assert_that(ws["N13"].value, lead_performer, "lead performer")
         assert_that(ws["P13"].value, isrc, "isrc")
         assert_that(ws["Q13"].value, duration, "track duration")
+
+    def contains_ddex_rin_file(self, filename):
+        if not exists(self.file(filename)):
+            raise AssertionError("DDEX RIN file '{}' not found in workspace".format(filename))
+
+        tree = ElementTree.parse(self.file(filename))
+        assert_that(tree.getroot().tag, contains_string("RecordingInformationNotification"), "The outer tag")

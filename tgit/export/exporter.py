@@ -16,21 +16,58 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from xml.etree.ElementTree import ElementTree
 
 from tgit.export import soproq_format
 from tgit.export.csv_format import CsvFormat
+from tgit.export.rin_format import RinFormat
+from tgit.signal import signal
+
+
+class ExportLocationSelection:
+    on_failure = signal(Exception)
+
+    extensions = ["xml"]
+
+    def __init__(self, project, preferences):
+        self._preferences = preferences
+        self._project = project
+
+    @property
+    def directory(self):
+        return self._preferences.export_location
+
+    @property
+    def default_file_name(self):
+        return "{}.xml".format(self._project.release_name)
+
+    def directory_changed(self, directory):
+        self._preferences.export_location = directory
+
+    def failed(self, error):
+        self.on_failure.emit(error)
 
 
 def as_soproq_using(load_workbook, show_confirmation_message, formatter=soproq_format):
-    def as_soproq(album, filename):
+    def as_soproq(project, filename):
         workbook = load_workbook()
-        formatter.write(album, workbook)
+        formatter.write(project, workbook)
         workbook.save(filename)
         show_confirmation_message()
 
     return as_soproq
 
 
-def as_csv(album, destination):
+def as_csv(project, destination):
     with open(destination, "w", encoding="windows-1252") as out:
-        CsvFormat().write(album, out)
+        CsvFormat().write(project, out)
+
+
+def as_ddex_rin(project, export_location_selection):
+    def export(destination):
+        try:
+            ElementTree(RinFormat().to_xml(project)).write(destination)
+        except Exception as e:
+            export_location_selection.failed(e)
+
+    return export

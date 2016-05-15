@@ -31,6 +31,7 @@ class UserPreferences(metaclass=Observable):
     on_preferences_changed = signal(dict)
 
     artwork_location = locations.Pictures
+    export_location = locations.Documents
     locale = "en"
 
     def __setattr__(self, name, value):
