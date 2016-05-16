@@ -153,6 +153,7 @@ class ApplicationRunner:
 
     def export_project_to_ddex_rin(self, filename):
         self.main_window_driver.export_project_to_ddex_rin(self._workspace.file(filename))
+        self.main_window_driver.pause(self.SAVE_DELAY)
 
     def _project_file_path(self, name):
         return self._workspace.file(name, name + ".tgit")
