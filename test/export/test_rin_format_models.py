@@ -1,17 +1,36 @@
 # -*- coding: utf-8 -*-
-
+import os
 from xml.etree.ElementTree import Element
 
 import pytest
 from hamcrest import assert_that, none, equal_to
 
 from testing.builders import make_album, make_track
-from tgit.export.rin_format_models import Party, PartyList
+from testing.matchers import is_uuid, is_date
+from tgit.export.rin_format_models import Party, PartyList, FileHeader
 
 
 @pytest.fixture
 def root():
     return Element("root")
+
+
+def test_writes_uuid_as_file_id(root, tmpdir):
+    FileHeader(os.path.join(tmpdir.strpath, "Honeycomb.xml")).write_to(root)
+
+    assert_that(root.findtext("./FileHeader/FileId"), is_uuid(), "The file id")
+
+
+def test_writes_file_created_date(root, tmpdir):
+    FileHeader(os.path.join(tmpdir.strpath, "Honeycomb.xml")).write_to(root)
+
+    assert_that(root.findtext("./FileHeader/FileCreatedDateTime"), is_date(), "The file creation date")
+
+
+def test_writes_file_name(root, tmpdir):
+    FileHeader(os.path.join(tmpdir.strpath, "Honeycomb.xml")).write_to(root)
+
+    assert_that(root.findtext("./FileHeader/FileName"), equal_to("Honeycomb.xml"), "The file name")
 
 
 def test_writes_main_artist_as_party(root):

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from xml.etree import ElementTree
 
 from hamcrest import assert_that, equal_to, contains_string, not_none
@@ -15,9 +16,14 @@ def formatter():
     return RinFormat()
 
 
-def test_writes_xml_enveloppe(formatter):
+@pytest.fixture
+def filename(tmpdir):
+    return os.path.join(tmpdir.strpath, "Honeycomb.xml")
+
+
+def test_writes_xml_enveloppe(formatter, filename):
     project = make_album()
-    root = formatter.to_xml(project)
+    root = formatter.to_xml(project, filename)
 
     rin = ElementTree.tostring(root, encoding="unicode")
     assert_that(rin, contains_string("xmlns:rin=\"http://ddex.net/xml/rin/10\""), "The RIN namespace declaration")
@@ -34,12 +40,20 @@ def test_writes_xml_enveloppe(formatter):
     assert_that(root.attrib["LanguageAndScriptCode"], equal_to("en"), "The language code")
 
 
-def test_writes_party_list(formatter):
+def test_writes_party_list(formatter, filename):
     project = make_album(lead_performer="Joel Miller")
-    root = formatter.to_xml(project)
+    root = formatter.to_xml(project, filename)
 
     party_list = root.find("./PartyList")
     assert_that(party_list, not_none(), "The party list")
 
     party = party_list.find("./Party")
     assert_that(party, not_none(), "The party")
+
+
+def test_writes_file_header(formatter, filename):
+    project = make_album()
+    root = formatter.to_xml(project, filename)
+
+    file_header = root.find("./FileHeader")
+    assert_that(file_header, not_none(), "The file header")

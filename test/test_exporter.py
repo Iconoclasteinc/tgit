@@ -1,4 +1,4 @@
-from xml.etree.ElementTree import ElementTree
+from xml.etree import ElementTree
 
 from flexmock import flexmock
 import pytest
@@ -65,8 +65,8 @@ def test_exports_project_as_ddex_rin_xml_file(workspace, export_location_selecti
 
     export.as_ddex_rin(project, export_location_selection)(destination_file)
 
-    root = ElementTree().parse(destination_file)
-    assert_that(root.tag, contains_string("RecordingInformationNotification"), "The outer tag")
+    tree = ElementTree.parse(destination_file)
+    assert_that(tree.getroot().tag, contains_string("RecordingInformationNotification"), "The outer tag")
 
 
 def test_reports_failure_on_export_error(export_location_selection):

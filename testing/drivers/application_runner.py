@@ -26,7 +26,7 @@ def _make_tracks(tracks):
 class ApplicationRunner:
     DRAG_AND_DROP_DELAY = 10 if platforms.linux else 0
     MESSAGE_BOX_DISPLAY_DELAY = 100 if platforms.mac else 0
-    SAVE_DELAY = 250 if platforms.mac else 0
+    SAVE_DELAY = 250 if platforms.mac else 10 if platforms.windows else 0
     PAUSE_AFTER_DISPLAY = 20 if platforms.linux else 0
     PAUSE_AFTER_CLOSE = 0
 

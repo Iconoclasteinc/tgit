@@ -16,8 +16,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+from datetime import datetime
+import os
+import uuid
 
 from xml.etree import ElementTree
+
+
+class FileHeader:
+    def __init__(self, filename):
+        self._filename = filename
+
+    def write_to(self, root):
+        header_element = ElementTree.SubElement(root, "FileHeader")
+        file_id_element = ElementTree.SubElement(header_element, "FileId")
+        file_id_element.text = str(uuid.uuid4())
+        file_created_datetime_element = ElementTree.SubElement(header_element, "FileCreatedDateTime")
+        file_created_datetime_element.text = datetime.utcnow().isoformat()
+        file_name_element = ElementTree.SubElement(header_element, "FileName")
+        file_name_element.text = os.path.basename(self._filename)
 
 
 class Party:

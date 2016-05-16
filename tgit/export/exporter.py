@@ -64,9 +64,12 @@ def as_csv(project, destination):
 
 
 def as_ddex_rin(project, export_location_selection):
+    def write(root, destination):
+        ElementTree(root).write(destination, xml_declaration=True, encoding="UTF-8")
+
     def export(destination):
         try:
-            ElementTree(RinFormat().to_xml(project)).write(destination, xml_declaration=True, encoding="UTF-8")
+            write(RinFormat().to_xml(project, destination), destination)
         except Exception as e:
             export_location_selection.failed(e)
 
