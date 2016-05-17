@@ -20,7 +20,7 @@ from xml.etree.ElementTree import ElementTree
 
 from tgit.export import soproq_format
 from tgit.export.csv_format import CsvFormat
-from tgit.export.rin_format import RinFormat
+from tgit.export import ddex
 from tgit.signal import signal
 
 
@@ -69,7 +69,7 @@ def as_ddex_rin(project, export_location_selection):
 
     def export(destination):
         try:
-            write(RinFormat().to_xml(project, destination), destination)
+            write(ddex.RinFormat().to_xml(project, destination), destination)
         except Exception as e:
             export_location_selection.failed(e)
 

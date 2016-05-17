@@ -19,7 +19,9 @@
 
 from xml.etree import ElementTree
 
-from tgit.export.rin_format_models import PartyList, FileHeader, MusicalWorkList
+from tgit.export.ddex.rin.file_header import FileHeader
+from tgit.export.ddex.rin.musical_work import MusicalWorkList
+from tgit.export.ddex.rin.party import PartyList
 
 
 class RinFormat:

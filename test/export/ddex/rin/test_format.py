@@ -6,7 +6,7 @@ from hamcrest import assert_that, equal_to, contains_string, not_none
 import pytest
 
 from testing.builders import make_album, make_track
-from tgit.export.rin_format import RinFormat
+from tgit.export.ddex.rin.format import RinFormat
 
 pytestmark = pytest.mark.unit
 
