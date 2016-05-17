@@ -42,7 +42,7 @@ def test_omits_lyrics_when_not_entered(root, party_list):
 def test_writes_title(root, party_list):
     track = make_track(track_title="Chevere!")
     MusicalWork(track, party_list).write_to(root)
-    assert_that(root.find("./MusicalWork/Title").attrib["TitleType"], equal_to("DisplayTitle"), "The track title type")
+    assert_that(root.find("./MusicalWork/Title").attrib["TitleType"], equal_to("FormalTitle"), "The track title type")
     assert_that(root.findtext("./MusicalWork/Title/TitleText"), equal_to("Chevere!"), "The track title")
 
 
@@ -125,3 +125,14 @@ def test_omits_publishers_when_not_entered(root, party_list):
     track = make_track()
     MusicalWork(track, party_list).write_to(root)
     assert_that(root.find("./MusicalWork/MusicalWorkContributorReference"), none(), "The track publishers")
+
+
+def test_writes_contributor_reference_sequence(root, party_list):
+    party_list.should_receive("reference_for")
+    track = make_track(composer=["Joel Miller"], lyricist=["John Roney"], publisher=["Effendi Records inc."])
+    MusicalWork(track, party_list).write_to(root)
+
+    contributors = root.findall("./MusicalWork/MusicalWorkContributorReference")
+    assert_that(contributors[0].attrib["Sequence"], equal_to("0"), "The contributor sequence")
+    assert_that(contributors[1].attrib["Sequence"], equal_to("1"), "The contributor sequence")
+    assert_that(contributors[2].attrib["Sequence"], equal_to("2"), "The contributor sequence")
