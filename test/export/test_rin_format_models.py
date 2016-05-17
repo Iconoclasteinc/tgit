@@ -2,17 +2,23 @@
 import os
 from xml.etree.ElementTree import Element
 
+from flexmock import flexmock
 import pytest
-from hamcrest import assert_that, none, equal_to
+from hamcrest import assert_that, none, equal_to, ends_with, starts_with
 
 from testing.builders import make_album, make_track
 from testing.matchers import is_uuid, is_date
-from tgit.export.rin_format_models import Party, PartyList, FileHeader
+from tgit.export.rin_format_models import Party, PartyList, FileHeader, MusicalWork
 
 
 @pytest.fixture
 def root():
     return Element("root")
+
+
+@pytest.fixture
+def party_list():
+    return flexmock()
 
 
 def test_writes_uuid_as_file_id(root, tmpdir):
@@ -33,6 +39,19 @@ def test_writes_file_name(root, tmpdir):
     assert_that(root.findtext("./FileHeader/FileName"), equal_to("Honeycomb.xml"), "The file name")
 
 
+def test_fetch_reference_of_a_party_by_name():
+    party = flexmock(reference="P-00001")
+    party_list_ = PartyList({"Joel Miller": party})
+
+    assert_that(party_list_.reference_for("Joel Miller"), equal_to("P-00001"), "The party reference")
+
+
+def test_returns_none_reference_when_a_party_is_not_found():
+    party_list_ = PartyList({})
+
+    assert_that(party_list_.reference_for("Joel Miller"), none(), "The party reference")
+
+
 def test_writes_main_artist_as_party(root):
     project = make_album(lead_performer="Joel Miller")
     PartyList.from_(project).write_to(root)
@@ -49,9 +68,25 @@ def test_writes_party_id(root):
 
 
 def test_ommits_party_id_when_no_isni_is_given(root):
-    party = Party("...")
+    party = Party(0, "...")
     party.write_to(root)
     assert_that(root.find("./Party/PartyId"), none(), "The party ID")
+
+
+def test_generates_a_sequential_reference():
+    party = Party(13, "...")
+
+    assert_that(party.reference, starts_with("P"), "The party reference")
+    assert_that(party.reference, ends_with("13"), "The party reference")
+
+
+def test_writes_the_party_reference(root):
+    party = Party(13, "...")
+    party.write_to(root)
+
+    reference = root.findtext("./Party/PartyReference")
+    assert_that(reference, starts_with("P"), "The party reference")
+    assert_that(reference, ends_with("13"), "The party reference")
 
 
 def test_writes_record_label_as_party(root):
@@ -151,6 +186,119 @@ def test_adds_party_only_once(root):
 
     parties = root.findall("./PartyList/Party")
     assert_that(len(parties), equal_to(1), "The number of parties")
+
+
+def test_writes_iswc(root, party_list):
+    track = make_track(iswc="0000000123456789")
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.findtext("./MusicalWork/MusicalWorkId/ISWC"), equal_to("0000000123456789"), "The ISWC")
+
+
+def test_omits_iswc_when_not_entered(root, party_list):
+    track = make_track()
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.find("./MusicalWork/MusicalWorkId"), none(), "The ISWC")
+
+
+def test_writes_lyrics(root, party_list):
+    track = make_track(lyrics="lyrics...")
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.findtext("./MusicalWork/Lyrics"), equal_to("lyrics..."), "The lyrics")
+
+
+def test_omits_lyrics_when_not_entered(root, party_list):
+    track = make_track()
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.find("./MusicalWork/Lyrics"), none(), "The lyrics")
+
+
+def test_writes_title(root, party_list):
+    track = make_track(track_title="Chevere!")
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.find("./MusicalWork/Title").attrib["TitleType"], equal_to("DisplayTitle"), "The track title type")
+    assert_that(root.findtext("./MusicalWork/Title/TitleText"), equal_to("Chevere!"), "The track title")
+
+
+def test_omits_title_when_not_entered(root, party_list):
+    track = make_track()
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.find("./MusicalWork/Title"), none(), "The track title")
+
+
+def test_writes_comments(root, party_list):
+    track = make_track(comments="comments...")
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.findtext("./MusicalWork/Comment"), equal_to("comments..."), "The track comments")
+
+
+def test_omits_comments_when_not_entered(root, party_list):
+    track = make_track()
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.find("./MusicalWork/Comment"), none(), "The track comments")
+
+
+def test_writes_lyricist(root, party_list):
+    party_list.should_receive("reference_for").with_args("Joel Miller").and_return("P-00001").once()
+    track = make_track(lyricist=["Joel Miller"])
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.findtext("./MusicalWork/MusicalWorkContributorReference/MusicalWorkContributorRole"),
+                equal_to("Lyricist"), "The track lyricists")
+    assert_that(root.findtext("./MusicalWork/MusicalWorkContributorReference/MusicalWorkContributorReference"),
+                equal_to("P-00001"), "The party reference")
+
+
+def test_omits_lyricist_when_not_entered(root, party_list):
+    track = make_track()
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.find("./MusicalWork/MusicalWorkContributorReference"), none(),
+                "The track lyricists")
+
+
+def test_writes_composer(root, party_list):
+    party_list.should_receive("reference_for").with_args("Joel Miller").and_return("P-00001").once()
+    track = make_track(composer=["Joel Miller"])
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.findtext("./MusicalWork/MusicalWorkContributorReference/MusicalWorkContributorRole"),
+                equal_to("Composer"), "The track composers")
+    assert_that(root.findtext("./MusicalWork/MusicalWorkContributorReference/MusicalWorkContributorReference"),
+                equal_to("P-00001"), "The party reference")
+
+
+def test_omits_composer_when_not_entered(root, party_list):
+    track = make_track()
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.find("./MusicalWork/MusicalWorkContributorReference"), none(),
+                "The track composers")
+
+
+def test_writes_composer_lyricists_when_existing_in_both_lists(root, party_list):
+    party_list.should_receive("reference_for").with_args("Joel Miller").and_return("P-00001").once()
+    track = make_track(composer=["Joel Miller"], lyricist=["Joel Miller"])
+    MusicalWork(track, party_list).write_to(root)
+
+    assert_that(len(root.findall("./MusicalWork/MusicalWorkContributorReference")), equal_to(1),
+                "The track composers/lyricists")
+    assert_that(root.findtext("./MusicalWork/MusicalWorkContributorReference/MusicalWorkContributorRole"),
+                equal_to("ComposerLyricist"), "The track composers/lyricists")
+    assert_that(root.findtext("./MusicalWork/MusicalWorkContributorReference/MusicalWorkContributorReference"),
+                equal_to("P-00001"), "The party reference")
+
+
+def test_writes_publishers(root, party_list):
+    party_list.should_receive("reference_for").with_args("Effendi Records inc.").and_return("P-00001").once()
+    track = make_track(publisher=["Effendi Records inc."])
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.findtext("./MusicalWork/MusicalWorkContributorReference/MusicalWorkContributorRole"),
+                equal_to("OriginalPublisher"), "The track publishers")
+    assert_that(root.findtext("./MusicalWork/MusicalWorkContributorReference/MusicalWorkContributorReference"),
+                equal_to("P-00001"), "The party reference")
+
+
+def test_omits_publishers_when_not_entered(root, party_list):
+    track = make_track()
+    MusicalWork(track, party_list).write_to(root)
+    assert_that(root.find("./MusicalWork/MusicalWorkContributorReference"), none(),
+                "The track publishers")
 
 
 def assert_full_name(element, matching, description):

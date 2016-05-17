@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 from hamcrest import assert_that, equal_to, contains_string, not_none
 import pytest
 
-from testing.builders import make_album
+from testing.builders import make_album, make_track
 from tgit.export.rin_format import RinFormat
 
 pytestmark = pytest.mark.unit
@@ -57,3 +57,14 @@ def test_writes_file_header(formatter, filename):
 
     file_header = root.find("./FileHeader")
     assert_that(file_header, not_none(), "The file header")
+
+
+def test_writes_musical_work_list(formatter, filename):
+    project = make_album(tracks=[make_track(), make_track()])
+    root = formatter.to_xml(project, filename)
+
+    musical_work_list = root.find("./MusicalWorkList")
+    assert_that(musical_work_list, not_none(), "The musical work list")
+
+    musical_works = musical_work_list.findall("./MusicalWork")
+    assert_that(len(musical_works), equal_to(2), "The musical work")

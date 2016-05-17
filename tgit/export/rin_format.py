@@ -19,14 +19,18 @@
 
 from xml.etree import ElementTree
 
-from tgit.export.rin_format_models import PartyList, FileHeader
+from tgit.export.rin_format_models import PartyList, FileHeader, MusicalWorkList
 
 
 class RinFormat:
     def to_xml(self, project, destination):
         root = self._build_header()
         FileHeader(destination).write_to(root)
-        PartyList.from_(project).write_to(root)
+
+        party_list = PartyList.from_(project)
+        party_list.write_to(root)
+
+        MusicalWorkList.from_(project, party_list).write_to(root)
         return root
 
     @staticmethod
