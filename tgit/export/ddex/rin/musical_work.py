@@ -26,12 +26,21 @@ class MusicalWork:
     Not Supported : AlternateTitle, CreationDate, MusicalWorkType
     """
 
-    def __init__(self, track, party_list):
+    def __init__(self, sequence, track, party_list):
+        self._sequence = sequence
         self._party_list = party_list
         self._track = track
 
+    @property
+    def reference(self):
+        return "W-{0:05d}".format(self._sequence)
+
     def write_to(self, root):
         musical_work = ElementTree.SubElement(root, "MusicalWork")
+
+        musical_work_reference = ElementTree.SubElement(musical_work, "MusicalWorkReference")
+        musical_work_reference.text = self.reference
+
         if self._track.iswc:
             musical_work_id = ElementTree.SubElement(musical_work, "MusicalWorkId")
             iswc = ElementTree.SubElement(musical_work_id, "ISWC")
@@ -97,11 +106,18 @@ class MusicalWorkList:
     def __init__(self, works):
         self._works = works
 
+    def reference_for(self, name):
+        return self._works[name].reference if name in self._works else None
+
     def write_to(self, root):
         musical_work_list_element = ElementTree.SubElement(root, "MusicalWorkList")
-        for work in self._works:
+        for work in self._works.values():
             work.write_to(musical_work_list_element)
 
     @classmethod
     def from_(cls, project, party_list):
-        return cls([MusicalWork(track, party_list) for track in project.tracks])
+        works = {}
+        for index, track in enumerate(project.tracks):
+            works[track.track_title] = MusicalWork(index, track, party_list)
+
+        return cls(works)

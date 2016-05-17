@@ -22,6 +22,7 @@ from xml.etree import ElementTree
 from tgit.export.ddex.rin.file_header import FileHeader
 from tgit.export.ddex.rin.musical_work import MusicalWorkList
 from tgit.export.ddex.rin.party import PartyList
+from tgit.export.ddex.rin.resource import ResourceList
 
 
 class RinFormat:
@@ -32,7 +33,11 @@ class RinFormat:
         party_list = PartyList.from_(project)
         party_list.write_to(root)
 
-        MusicalWorkList.from_(project, party_list).write_to(root)
+        musical_work_list = MusicalWorkList.from_(project, party_list)
+        musical_work_list.write_to(root)
+
+        resource_list = ResourceList.from_(project, party_list, musical_work_list)
+        resource_list.write_to(root)
         return root
 
     @staticmethod

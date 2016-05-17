@@ -60,7 +60,7 @@ def test_writes_file_header(formatter, filename):
 
 
 def test_writes_musical_work_list(formatter, filename):
-    project = make_album(tracks=[make_track(), make_track()])
+    project = make_album(tracks=[make_track(track_title="Chevere!"), make_track(track_title="Zumbar")])
     root = formatter.to_xml(project, filename)
 
     musical_work_list = root.find("./MusicalWorkList")
@@ -68,3 +68,14 @@ def test_writes_musical_work_list(formatter, filename):
 
     musical_works = musical_work_list.findall("./MusicalWork")
     assert_that(len(musical_works), equal_to(2), "The musical work")
+
+
+def test_writes_resources_list(formatter, filename):
+    project = make_album(tracks=[make_track(track_title="Chevere!"), make_track(track_title="Zumbar")])
+    root = formatter.to_xml(project, filename)
+
+    resource_list = root.find("./ResourceList")
+    assert_that(resource_list, not_none(), "The resource list")
+
+    recordings = resource_list.findall("./SoundRecording")
+    assert_that(len(recordings), equal_to(2), "The recordings")
