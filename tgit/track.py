@@ -20,7 +20,7 @@
 from tgit import tag
 from tgit.chain_of_title import ChainOfTitle
 from tgit.metadata import Metadata
-from tgit.signal import Signal, signal
+from tgit.signal import signal
 
 
 class Track(metaclass=tag.Taggable):
@@ -77,6 +77,4 @@ class Track(metaclass=tag.Taggable):
         for key, value in metadata.items():
             setattr(self, key, value)
 
-        self.chain_of_title.update(lyricists=self.lyricist or [],
-                                   composers=self.composer or [],
-                                   publishers=self.publisher or [])
+        self.chain_of_title.update(lyricists=self.lyricist, composers=self.composer, publishers=self.publisher)

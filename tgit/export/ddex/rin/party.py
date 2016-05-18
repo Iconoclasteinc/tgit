@@ -71,7 +71,7 @@ class PartyList(Section):
     def from_(cls, project):
         def append_party(name, is_organization=False):
             if name and name not in parties:
-                parties[name] = Party(len(parties), name, isnis.get(name), is_organization)
+                parties[name] = Party(len(parties), name, project.isnis.get(name), is_organization)
 
         def append_track_parties(track):
             append_party(track.lead_performer)
@@ -80,22 +80,20 @@ class PartyList(Section):
             append_party(track.mixer)
             append_party(track.recording_studio, is_organization=True)
             append_party(track.production_company, is_organization=True)
-            for lyricist in track.lyricist or []:
+            for lyricist in track.lyricist:
                 append_party(lyricist)
-            for composer in track.composer or []:
+            for composer in track.composer:
                 append_party(composer)
-            for publisher in track.publisher or []:
+            for publisher in track.publisher:
                 append_party(publisher, is_organization=True)
 
         def append_project_parties():
             append_party(project.lead_performer)
             append_party(project.label_name, is_organization=True)
-            for _, musician in project.guest_performers or []:
+            for _, musician in project.guest_performers:
                 append_party(musician)
 
-        isnis = project.isnis or {}
         parties = {}
-
         append_project_parties()
         for each_track in project.tracks:
             append_track_parties(each_track)

@@ -154,7 +154,7 @@ class ProjectEditionPage(QWidget, UIFile):
         self._main_artist.setText(self.tr("Various Artists") if is_compilation else project.lead_performer)
         self._main_artist_caption.setDisabled(is_compilation)
         self._main_artist_isni.setDisabled(is_compilation)
-        self._main_artist_isni.setText((project.isnis or {}).get(project.lead_performer))
+        self._main_artist_isni.setText(project.isnis.get(project.lead_performer))
         self._main_artist_isni_caption.setDisabled(is_compilation)
         self._main_artist_isni_help.setDisabled(is_compilation)
         self._main_artist_region.setDisabled(is_compilation)
@@ -165,7 +165,7 @@ class ProjectEditionPage(QWidget, UIFile):
         self._main_artist_date_of_birth.setDate(
             QDate.fromString(project.lead_performer_date_of_birth, ISO_8601_FORMAT))
 
-        if project.lead_performer_region is not None:
+        if project.lead_performer_region:
             self._main_artist_region.setText(
                 "{} {}".format(project.lead_performer_region[0], project.lead_performer_region[1]))
         else:

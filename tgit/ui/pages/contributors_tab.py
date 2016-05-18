@@ -63,7 +63,7 @@ class ContributorsTab(QWidget, UIFile):
         self._table.display(track)
 
     def display_project(self, project):
-        self._table.update_identifiers(project.ipis or {}, project.isnis or {})
+        self._table.update_identifiers(project.ipis, project.isnis)
 
     def _enable_remove_button(self):
         self._remove_button.setEnabled(self._contributors_table.currentRow() > -1)

@@ -32,8 +32,8 @@ class Image(object):
 
     def __repr__(self):
         data = binascii.hexlify(self.data[:25] + b".." if len(self.data) > 25 else self.data)
-        return "Image(mime={0}, type_={1}, desc={2}, data={3}) ({4} bytes)".format(self.mime, self.type, self.desc,
-                                                                                   data, len(self.data))
+        return "Image(mime={}, type_={}, desc={}, data={}) ({} bytes)".format(self.mime, self.type, self.desc, data,
+                                                                              len(self.data))
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -48,7 +48,8 @@ class Image(object):
 class Metadata:
     def __init__(self, dict_=None, **meta):
         self._images = []
-        self._tags = dict(dict_ or {}, **meta)
+        self._tags = dict_.copy() if dict_ else {}
+        self._tags.update(meta)
 
     def __getattr__(self, name):
         return self[name]
@@ -90,17 +91,17 @@ class Metadata:
     def images(self):
         return list(self._images)
 
-    def imagesOfType(self, image_type):
+    def images_of_type(self, image_type):
         return [image for image in self._images if image.type == image_type]
 
     def addImage(self, mime, data, type_=Image.OTHER, desc=""):
         self._images.append(Image(mime, data, type_, desc))
 
-    def addImages(self, *images):
+    def add_images(self, *images):
         for image in images:
             self.addImage(image.mime, image.data, image.type, image.desc)
 
-    def removeImages(self):
+    def remove_images(self):
         del self._images[:]
 
     def update(self, other):
@@ -113,12 +114,15 @@ class Metadata:
             keys = self.keys()
 
         copy = Metadata({key: self[key] for key in keys if key in self})
-        copy.addImages(*self.images)
+        copy.add_images(*self.images)
         return copy
 
     def clear(self):
         self._tags.clear()
-        self.removeImages()
+        self.remove_images()
+
+    def get(self, key, default=None):
+        return self._tags.get(key, default)
 
     def __str__(self):
         return str(self._tags) + " with images " + str(self._images)

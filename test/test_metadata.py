@@ -92,7 +92,7 @@ def test_looks_up_images_by_type():
     metadata.addImage("img/png", "front-cover.png", Image.FRONT_COVER)
     metadata.addImage("img/jpeg", "back-cover.jpg", Image.BACK_COVER)
 
-    assert_that(metadata.imagesOfType(Image.FRONT_COVER),
+    assert_that(metadata.images_of_type(Image.FRONT_COVER),
                 contains_inanyorder(has_property("data", "front-cover.jpg"),
                                     has_property("data", "front-cover.png")),
                 "front cover images")

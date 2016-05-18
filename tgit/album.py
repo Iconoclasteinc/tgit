@@ -59,7 +59,7 @@ class Album(metaclass=tag.Taggable):
         return self.metadata.images
 
     def images_of_type(self, type_):
-        return self.metadata.imagesOfType(type_)
+        return self.metadata.images_of_type(type_)
 
     @property
     def main_cover(self):
@@ -83,15 +83,13 @@ class Album(metaclass=tag.Taggable):
         self.add_image(mime, data, Image.FRONT_COVER, desc)
 
     def remove_images(self):
-        self.metadata.removeImages()
+        self.metadata.remove_images()
         self.metadata_changed.emit(self)
 
     def add_isni(self, name, id_):
-        if self.isnis is None:
-            self.isnis = {name: id_}
-        else:
-            self.isnis[name] = id_
-            self.metadata_changed.emit(self)
+        isnis = self.isnis.copy()
+        isnis[name] = id_
+        self.isnis = isnis
 
     def __len__(self):
         return len(self.tracks)

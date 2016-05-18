@@ -152,7 +152,7 @@ class TrackEditionPage(QWidget, UIFile):
 
     @staticmethod
     def _display_region(region, field):
-        if region is not None:
+        if region:
             field.setText("{} {}".format(region[0], region[1]))
 
     def _display_album_cover(self, picture):

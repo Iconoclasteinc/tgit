@@ -90,19 +90,13 @@ def lookup_ipi_in(album):
     return lookup_ipi
 
 
-def add_ipi_to(album):
+def add_ipi_to(project):
     def add_ipi(name, ipi):
-        album.ipis = _add_identifier_to_map(album.ipis, ipi, name)
+        ipis = project.ipis.copy()
+        ipis[name] = ipi
+        project.ipis = ipis
 
     return add_ipi
-
-
-def _add_identifier_to_map(identifier_map, identifier, name):
-    if not identifier_map:
-        identifier_map = {}
-    identifier_map[name] = identifier
-
-    return identifier_map
 
 
 def update_preferences(preferences):

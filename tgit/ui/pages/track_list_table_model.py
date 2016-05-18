@@ -62,15 +62,15 @@ class RowItem:
 
     @property
     def track_title(self):
-        return self.track.track_title or ""
+        return self.track.track_title
 
     @property
     def lead_performer(self):
-        return self.track.lead_performer or ""
+        return self.track.lead_performer
 
     @property
     def release_name(self):
-        return self.track.album.release_name or ""
+        return self.track.album.release_name
 
     @property
     def bitrate(self):

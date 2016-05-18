@@ -45,18 +45,14 @@ class MusicalWork(Section):
         self._build_contributor_references(musical_work)
 
     def _build_contributor_references(self, musical_work):
-        track_lyricists = set(self._track.lyricist or [])
-        track_composers = set(self._track.composer or [])
-        publishers = set(self._track.publisher or [])
-
-        lyricists = track_lyricists - track_composers
-        composers = track_composers - track_lyricists
-        composer_lyricists = track_composers.intersection(track_lyricists)
+        lyricists = set(self._track.lyricist) - set(self._track.composer)
+        composers = set(self._track.composer) - set(self._track.lyricist)
+        composer_lyricists = set(self._track.composer).intersection(set(self._track.lyricist))
 
         index = self._build_contributors(lyricists, "Lyricist", musical_work, 0)
         index = self._build_contributors(composers, "Composer", musical_work, index)
         index = self._build_contributors(composer_lyricists, "ComposerLyricist", musical_work, index)
-        self._build_contributors(publishers, "OriginalPublisher", musical_work, index)
+        self._build_contributors(set(self._track.publisher), "OriginalPublisher", musical_work, index)
 
     def _build_comments(self, musical_work):
         if self._track.comments:

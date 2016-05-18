@@ -19,7 +19,6 @@
 from datetime import datetime, timezone
 
 from tgit import __app_name__, __version__
-from tgit.chain_of_title import ChainOfTitle
 from tgit.track import Track
 from . import embedded_containers as containers
 
@@ -53,26 +52,26 @@ def _all_metadata(track):
 
 def _clean_isnis(track_metadata):
     new_isni_map = {}
-    isnis = track_metadata["isnis"] or {}
+    isnis = track_metadata.get("isnis", {})
 
     lead_performer = track_metadata["lead_performer"]
     if lead_performer in isnis:
         new_isni_map[lead_performer] = isnis[lead_performer]
 
-    _append_existing_identifiers(track_metadata["lyricist"] or [], isnis, new_isni_map)
-    _append_existing_identifiers(track_metadata["composer"] or [], isnis, new_isni_map)
-    _append_existing_identifiers(track_metadata["publisher"] or [], isnis, new_isni_map)
+    _append_existing_identifiers(track_metadata.get("lyricist", []), isnis, new_isni_map)
+    _append_existing_identifiers(track_metadata.get("composer", []), isnis, new_isni_map)
+    _append_existing_identifiers(track_metadata.get("publisher", []), isnis, new_isni_map)
 
     return new_isni_map
 
 
 def _clean_ipis(track_metadata):
     new_ipi_map = {}
-    ipis = track_metadata["ipis"] or {}
+    ipis = track_metadata.get("ipis", {})
 
-    _append_existing_identifiers(track_metadata["lyricist"] or [], ipis, new_ipi_map)
-    _append_existing_identifiers(track_metadata["composer"] or [], ipis, new_ipi_map)
-    _append_existing_identifiers(track_metadata["publisher"] or [], ipis, new_ipi_map)
+    _append_existing_identifiers(track_metadata.get("lyricist", []), ipis, new_ipi_map)
+    _append_existing_identifiers(track_metadata.get("composer", []), ipis, new_ipi_map)
+    _append_existing_identifiers(track_metadata.get("publisher", []), ipis, new_ipi_map)
 
     return new_ipi_map
 

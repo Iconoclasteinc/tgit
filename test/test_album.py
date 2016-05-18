@@ -1,5 +1,5 @@
 import pytest
-from hamcrest import (assert_that, equal_to, is_, contains, has_property, none, has_length, has_item, is_not,
+from hamcrest import (assert_that, equal_to, is_, contains, has_property, has_length, has_item, is_not,
                       contains_inanyorder, not_, has_key, all_of)
 from hamcrest.library.collection.is_empty import empty
 
@@ -192,7 +192,7 @@ def test_uses_first_front_cover_or_first_image_as_main_cover():
 def test_has_initially_no_metadata_or_images():
     album = Album()
     for tag in Album.tags():
-        assert_that(getattr(album, tag), none(), tag)
+        assert_that(getattr(album, tag), equal_to(Album.__dict__.get(tag)._default_value), tag)
 
     assert_that(album.images, empty(), "images")
 
@@ -249,4 +249,5 @@ def _assert_notifies_of_images_change(image):
 
     project.add_image(image.mime, image.data, image.type, image.desc)
 
-    assert_that(subscriber.events, contains(contains(has_property("images", contains(image)))), "project changed events")
+    assert_that(subscriber.events, contains(contains(has_property("images", contains(image)))),
+                "project changed events")

@@ -11,7 +11,7 @@ class ChainOfTitle:
     @classmethod
     def from_track(cls, track):
         chain = cls()
-        chain.update(lyricists=track.lyricist or [], composers=track.composer or [], publishers=track.publisher or [])
+        chain.update(lyricists=track.lyricist, composers=track.composer, publishers=track.publisher)
         return chain
 
     @property

@@ -60,7 +60,7 @@ class SoundRecording(Section):
 
     def _build_contributors(self, sound_recording):
         contributor = self._build_sub_element(sound_recording, "SoundRecordingContributorReference")
-        for _, musician in self._track.album.guest_performers or []:
+        for _, musician in self._track.album.guest_performers:
             self._build_sub_element(contributor, "SoundRecordingContributorReference",
                                     self._parties.reference_for(musician))
         if self._track.recording_studio:

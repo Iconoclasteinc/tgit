@@ -65,8 +65,8 @@ def make_project(filename="project.tgit", type_="mp3", images=(), tracks=(), **m
 
 
 def make_chain_of_title(authors_composers=None, publishers=None):
-    auth = dict([(contributor["name"], contributor) for contributor in authors_composers or []])
-    pub = dict([(contributor["name"], contributor) for contributor in publishers or []])
+    auth = {contributor["name"]: contributor for contributor in authors_composers or []}
+    pub = {contributor["name"]: contributor for contributor in publishers or []}
     return ChainOfTitle(authors_composers=auth, publishers=pub)
 
 
