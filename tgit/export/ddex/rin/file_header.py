@@ -21,18 +21,15 @@ from datetime import datetime
 import os
 import uuid
 
-from xml.etree import ElementTree
+from tgit.export.ddex.rin.section import Section
 
 
-class FileHeader:
+class FileHeader(Section):
     def __init__(self, filename):
         self._filename = filename
 
     def write_to(self, root):
-        header_element = ElementTree.SubElement(root, "FileHeader")
-        file_id_element = ElementTree.SubElement(header_element, "FileId")
-        file_id_element.text = str(uuid.uuid4())
-        file_created_datetime_element = ElementTree.SubElement(header_element, "FileCreatedDateTime")
-        file_created_datetime_element.text = datetime.utcnow().isoformat()
-        file_name_element = ElementTree.SubElement(header_element, "FileName")
-        file_name_element.text = os.path.basename(self._filename)
+        header = self._build_sub_element(root, "FileHeader")
+        self._build_sub_element(header, "FileId", str(uuid.uuid4()))
+        self._build_sub_element(header, "FileCreatedDateTime", datetime.utcnow().isoformat())
+        self._build_sub_element(header, "FileName", os.path.basename(self._filename))

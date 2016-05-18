@@ -69,7 +69,7 @@ def as_ddex_rin(project, export_location_selection):
 
     def export(destination):
         try:
-            write(ddex.RinFormat().to_xml(project, destination), destination)
+            write(ddex.write_to_rin_format(project, destination), destination)
         except Exception as e:
             export_location_selection.failed(e)
 

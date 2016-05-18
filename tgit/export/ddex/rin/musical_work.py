@@ -17,18 +17,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from xml.etree import ElementTree
+from tgit.export.ddex.rin.section import Section
 
 
-class MusicalWork:
+class MusicalWork(Section):
     """
     Supported : ISWC, Title, Lyrics, Comment
     Not Supported : AlternateTitle, CreationDate, MusicalWorkType
     """
 
-    def __init__(self, sequence, track, party_list):
+    def __init__(self, sequence, track, parties):
         self._sequence = sequence
-        self._party_list = party_list
+        self._parties = parties
         self._track = track
 
     @property
@@ -36,73 +36,57 @@ class MusicalWork:
         return "W-{0:05d}".format(self._sequence)
 
     def write_to(self, root):
-        musical_work = ElementTree.SubElement(root, "MusicalWork")
+        musical_work = self._build_sub_element(root, "MusicalWork")
+        self._build_sub_element(musical_work, "MusicalWorkReference", self.reference)
+        self._build_musical_work_id(musical_work)
+        self._build_title(musical_work)
+        self._build_lyrics(musical_work)
+        self._build_comments(musical_work)
+        self._build_contributor_references(musical_work)
 
-        musical_work_reference = ElementTree.SubElement(musical_work, "MusicalWorkReference")
-        musical_work_reference.text = self.reference
-
-        if self._track.iswc:
-            musical_work_id = ElementTree.SubElement(musical_work, "MusicalWorkId")
-            iswc = ElementTree.SubElement(musical_work_id, "ISWC")
-            iswc.text = self._track.iswc
-
-        if self._track.track_title:
-            title = ElementTree.SubElement(musical_work, "Title")
-            title.attrib["TitleType"] = "FormalTitle"  # todo validate hypothesis
-            title_text = ElementTree.SubElement(title, "TitleText")
-            title_text.text = self._track.track_title
-
-        if self._track.lyrics:
-            lyrics = ElementTree.SubElement(musical_work, "Lyrics")
-            lyrics.text = self._track.lyrics
-
-        if self._track.comments:
-            comments = ElementTree.SubElement(musical_work, "Comment")
-            comments.text = self._track.comments
-
-        lyricists = set(self._track.lyricist or [])
-        composers = set(self._track.composer or [])
+    def _build_contributor_references(self, musical_work):
+        track_lyricists = set(self._track.lyricist or [])
+        track_composers = set(self._track.composer or [])
         publishers = set(self._track.publisher or [])
-        sequence = 0
 
-        for name in lyricists - composers:
-            contributor = ElementTree.SubElement(musical_work, "MusicalWorkContributorReference")
-            contributor.attrib["Sequence"] = str(sequence)
-            contributor_reference = ElementTree.SubElement(contributor, "MusicalWorkContributorReference")
-            contributor_reference.text = self._party_list.reference_for(name)
-            contributor_role = ElementTree.SubElement(contributor, "MusicalWorkContributorRole")
-            contributor_role.text = "Lyricist"
-            sequence += 1
+        lyricists = track_lyricists - track_composers
+        composers = track_composers - track_lyricists
+        composer_lyricists = track_composers.intersection(track_lyricists)
 
-        for name in composers - lyricists:
-            contributor = ElementTree.SubElement(musical_work, "MusicalWorkContributorReference")
-            contributor.attrib["Sequence"] = str(sequence)
-            contributor_reference = ElementTree.SubElement(contributor, "MusicalWorkContributorReference")
-            contributor_reference.text = self._party_list.reference_for(name)
-            contributor_role = ElementTree.SubElement(contributor, "MusicalWorkContributorRole")
-            contributor_role.text = "Composer"
-            sequence += 1
+        index = self._build_contributors(lyricists, "Lyricist", musical_work, 0)
+        index = self._build_contributors(composers, "Composer", musical_work, index)
+        index = self._build_contributors(composer_lyricists, "ComposerLyricist", musical_work, index)
+        self._build_contributors(publishers, "OriginalPublisher", musical_work, index)
 
-        for name in composers.intersection(lyricists):
-            contributor = ElementTree.SubElement(musical_work, "MusicalWorkContributorReference")
-            contributor.attrib["Sequence"] = str(sequence)
-            contributor_reference = ElementTree.SubElement(contributor, "MusicalWorkContributorReference")
-            contributor_reference.text = self._party_list.reference_for(name)
-            contributor_role = ElementTree.SubElement(contributor, "MusicalWorkContributorRole")
-            contributor_role.text = "ComposerLyricist"
-            sequence += 1
+    def _build_comments(self, musical_work):
+        if self._track.comments:
+            self._build_sub_element(musical_work, "Comment", self._track.comments)
 
-        for name in publishers:
-            contributor = ElementTree.SubElement(musical_work, "MusicalWorkContributorReference")
-            contributor.attrib["Sequence"] = str(sequence)
-            contributor_reference = ElementTree.SubElement(contributor, "MusicalWorkContributorReference")
-            contributor_reference.text = self._party_list.reference_for(name)
-            contributor_role = ElementTree.SubElement(contributor, "MusicalWorkContributorRole")
-            contributor_role.text = "OriginalPublisher"  # todo validate hypothesis
-            sequence += 1
+    def _build_lyrics(self, musical_work):
+        if self._track.lyrics:
+            self._build_sub_element(musical_work, "Lyrics", self._track.lyrics)
+
+    def _build_title(self, musical_work):
+        if self._track.track_title:
+            title = self._build_sub_element(musical_work, "Title", TitleType="FormalTitle")  # todo validate hypothesis
+            self._build_sub_element(title, "TitleText", self._track.track_title)
+
+    def _build_musical_work_id(self, musical_work):
+        if self._track.iswc:
+            musical_work_id = self._build_sub_element(musical_work, "MusicalWorkId")
+            self._build_sub_element(musical_work_id, "ISWC", self._track.iswc)
+
+    def _build_contributors(self, contributors, role, work, index):
+        for name in contributors:
+            contributor = self._build_sub_element(work, "MusicalWorkContributorReference", Sequence=str(index))
+            self._build_sub_element(contributor, "MusicalWorkContributorReference", self._parties.reference_for(name))
+            self._build_sub_element(contributor, "MusicalWorkContributorRole", role)
+            index += 1
+
+        return index
 
 
-class MusicalWorkList:
+class MusicalWorkList(Section):
     def __init__(self, works):
         self._works = works
 
@@ -110,14 +94,10 @@ class MusicalWorkList:
         return self._works[name].reference if name in self._works else None
 
     def write_to(self, root):
-        musical_work_list_element = ElementTree.SubElement(root, "MusicalWorkList")
+        musical_works = self._build_sub_element(root, "MusicalWorkList")
         for work in self._works.values():
-            work.write_to(musical_work_list_element)
+            work.write_to(musical_works)
 
     @classmethod
-    def from_(cls, project, party_list):
-        works = {}
-        for index, track in enumerate(project.tracks):
-            works[track.track_title] = MusicalWork(index, track, party_list)
-
-        return cls(works)
+    def from_(cls, project, parties):
+        return cls({track.track_title: MusicalWork(idx, track, parties) for idx, track in enumerate(project.tracks)})

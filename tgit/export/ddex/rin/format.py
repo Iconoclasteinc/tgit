@@ -25,29 +25,27 @@ from tgit.export.ddex.rin.party import PartyList
 from tgit.export.ddex.rin.resource import ResourceList
 
 
-class RinFormat:
-    def to_xml(self, project, destination):
-        root = self._build_header()
-        FileHeader(destination).write_to(root)
+def write(project, destination):
+    party_list = PartyList.from_(project)
+    musical_work_list = MusicalWorkList.from_(project, party_list)
+    resource_list = ResourceList.from_(project, party_list, musical_work_list)
 
-        party_list = PartyList.from_(project)
-        party_list.write_to(root)
+    root = _build_header()
+    FileHeader(destination).write_to(root)
+    party_list.write_to(root)
+    musical_work_list.write_to(root)
+    resource_list.write_to(root)
 
-        musical_work_list = MusicalWorkList.from_(project, party_list)
-        musical_work_list.write_to(root)
+    return root
 
-        resource_list = ResourceList.from_(project, party_list, musical_work_list)
-        resource_list.write_to(root)
-        return root
 
-    @staticmethod
-    def _build_header():
-        root = ElementTree.Element("rin:RecordingInformationNotification")
-        root.attrib["xmlns:rin"] = "http://ddex.net/xml/rin/10"
-        root.attrib["xmlns:avs"] = "http://ddex.net/xml/avs/avs"
-        root.attrib["xmlns:ds"] = "http://www.w3.org/2000/09/xmldsig#"
-        root.attrib["xmlns:xsi"] = "http://www.w3.org/2001/XMLSchema-instance"
-        root.attrib["xsi:schemaLocation"] = "http://ddex.net/xml/rin/10 file:recording-information-notification.xsd"
-        root.attrib["SchemaVersionId"] = "rin/10"
-        root.attrib["LanguageAndScriptCode"] = "en"
-        return root
+def _build_header():
+    root = ElementTree.Element("rin:RecordingInformationNotification")
+    root.attrib["xmlns:rin"] = "http://ddex.net/xml/rin/10"
+    root.attrib["xmlns:avs"] = "http://ddex.net/xml/avs/avs"
+    root.attrib["xmlns:ds"] = "http://www.w3.org/2000/09/xmldsig#"
+    root.attrib["xmlns:xsi"] = "http://www.w3.org/2001/XMLSchema-instance"
+    root.attrib["xsi:schemaLocation"] = "http://ddex.net/xml/rin/10 file:recording-information-notification.xsd"
+    root.attrib["SchemaVersionId"] = "rin/10"
+    root.attrib["LanguageAndScriptCode"] = "en"
+    return root

@@ -17,4 +17,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from .rin import write as write_to_rin_format
+from xml.etree import ElementTree
+
+
+class Section:
+    def write_to(self, root):
+        raise NotImplementedError("write_to")
+
+    @staticmethod
+    def _build_sub_element(parent, tag, text=None, **attributes):
+        element = ElementTree.SubElement(parent, tag, **attributes)
+        element.text = text
+
+        return element

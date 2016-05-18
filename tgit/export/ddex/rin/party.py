@@ -17,10 +17,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from xml.etree import ElementTree
+from tgit.export.ddex.rin.section import Section
 
 
-class Party:
+class Party(Section):
     """
     Supported: PartyId (ISNI), FullName, IsOrganization
     Not Supported:
@@ -39,62 +39,65 @@ class Party:
         return "P-{0:05d}".format(self._sequence)
 
     def write_to(self, root):
-        party_element = ElementTree.SubElement(root, "Party")
+        party = self._build_sub_element(root, "Party")
+        self._build_sub_element(party, "PartyReference", self.reference)
+        self._build_sub_element(party, "IsOrganization", str(self._is_organisation))
+        self._build_party_id(party)
+        self._build_party_name(party)
 
-        party_reference = ElementTree.SubElement(party_element, "PartyReference")
-        party_reference.text = self.reference
+    def _build_party_name(self, party):
+        party_name = self._build_sub_element(party, "PartyName")
+        self._build_sub_element(party_name, "FullName", self._full_name)
 
+    def _build_party_id(self, parent):
         if self._isni:
-            party_id = ElementTree.SubElement(party_element, "PartyId", IsISNI=str(True).lower())
-            isni = ElementTree.SubElement(party_id, "ISNI")
-            isni.text = self._isni
-
-        party_name = ElementTree.SubElement(party_element, "PartyName")
-        full_name = ElementTree.SubElement(party_name, "FullName")
-        full_name.text = self._full_name
-
-        is_organization = ElementTree.SubElement(party_element, "IsOrganization")
-        is_organization.text = str(self._is_organisation)
+            party_id = self._build_sub_element(parent, "PartyId", IsISNI=str(True).lower())
+            self._build_sub_element(party_id, "ISNI", self._isni)
 
 
-class PartyList:
+class PartyList(Section):
     def __init__(self, parties):
         self._parties = parties
 
     def write_to(self, root):
-        party_list_element = ElementTree.SubElement(root, "PartyList")
+        party_list = self._build_sub_element(root, "PartyList")
         for party in self._parties.values():
-            party.write_to(party_list_element)
+            party.write_to(party_list)
 
     def reference_for(self, name):
         return self._parties[name].reference if name in self._parties else None
 
     @classmethod
     def from_(cls, project):
-        def add_party(name, is_organization=False):
+        def append_party(name, is_organization=False):
             if name and name not in parties:
                 parties[name] = Party(len(parties), name, isnis.get(name), is_organization)
 
-        isnis = project.isnis or {}
-
-        parties = {}
-        add_party(project.lead_performer)
-        add_party(project.label_name, is_organization=True)
-        for _, musician in project.guest_performers or []:
-            add_party(musician)
-
-        for track in project.tracks:
-            add_party(track.lead_performer)
-            add_party(track.featured_guest)
-            add_party(track.music_producer)
-            add_party(track.mixer)
-            add_party(track.recording_studio, is_organization=True)
-            add_party(track.production_company, is_organization=True)
+        def append_track_parties(track):
+            append_party(track.lead_performer)
+            append_party(track.featured_guest)
+            append_party(track.music_producer)
+            append_party(track.mixer)
+            append_party(track.recording_studio, is_organization=True)
+            append_party(track.production_company, is_organization=True)
             for lyricist in track.lyricist or []:
-                add_party(lyricist)
+                append_party(lyricist)
             for composer in track.composer or []:
-                add_party(composer)
+                append_party(composer)
             for publisher in track.publisher or []:
-                add_party(publisher, is_organization=True)
+                append_party(publisher, is_organization=True)
+
+        def append_project_parties():
+            append_party(project.lead_performer)
+            append_party(project.label_name, is_organization=True)
+            for _, musician in project.guest_performers or []:
+                append_party(musician)
+
+        isnis = project.isnis or {}
+        parties = {}
+
+        append_project_parties()
+        for each_track in project.tracks:
+            append_track_parties(each_track)
 
         return cls(parties)
