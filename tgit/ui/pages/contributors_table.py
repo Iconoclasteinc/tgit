@@ -18,8 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from PyQt5.QtCore import QObject, pyqtSignal
-from tgit.ui.pages.chain_of_title_tables import Table
 
+from tgit.ui.pages.chain_of_title_tables import Table
 from tgit.ui.pages.contributors_table_model import Contributor, Cell, ContributorsColumns
 
 
@@ -73,7 +73,7 @@ class ContributorsTable(QObject, Table):
 
     def _add_contributor(self, contributors, role, ipis, isnis):
         for name in contributors:
-            self._contributors.append(Contributor(name, self.tr(role), ipis.get(name), isnis.get(name)))
+            self._contributors.append(Contributor(name, self.tr(role), ipis.get(name, ""), isnis.get(name, "")))
 
     def _display_table(self):
         self._clear()
