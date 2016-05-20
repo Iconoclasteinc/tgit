@@ -64,7 +64,7 @@ class MusicalWork(Section):
 
     def _build_title(self, musical_work):
         if self._track.track_title:
-            title = self._build_sub_element(musical_work, "Title", TitleType="FormalTitle")  # todo validate hypothesis
+            title = self._build_sub_element(musical_work, "Title", TitleType="OriginalTitle")
             self._build_sub_element(title, "TitleText", self._track.track_title)
 
     def _build_musical_work_id(self, musical_work):

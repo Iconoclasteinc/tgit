@@ -49,8 +49,7 @@ class SoundRecording(Section):
         sound_recording = self._build_sub_element(root, "SoundRecording")
         self._build_sub_element(sound_recording, "ResourceReference", self.reference)
         self._build_sub_element(sound_recording, "Duration", self._to_iso_8601_duration(self._track.duration))
-        self._build_sub_element(sound_recording, "SoundRecordingType",
-                                "MusicalWorkSoundRecording")  # todo validate hypothesis
+        self._build_sub_element(sound_recording, "SoundRecordingType", "MusicalWorkSoundRecording")
         self._build_main_artist(sound_recording)
         self._build_supplemental_artist(sound_recording)
         self._build_sound_recording_id(sound_recording)
@@ -89,7 +88,7 @@ class SoundRecording(Section):
     def _build_supplemental_artist(self, sound_recording):
         if self._track.featured_guest:
             self._build_sub_element(sound_recording, "SupplementalArtist", self._parties.reference_for(
-                self._track.featured_guest))  # todo validate hypothesis
+                self._track.featured_guest))
 
     def _build_main_artist(self, sound_recording):
         main_artist = self._track.lead_performer if self._track.album.compilation else self._track.album.lead_performer
@@ -98,7 +97,7 @@ class SoundRecording(Section):
 
     def _build_title(self, recording):
         if self._track.track_title:
-            title = self._build_sub_element(recording, "Title", TitleType="OriginalTitle")  # todo validate hypothesis
+            title = self._build_sub_element(recording, "Title", TitleType="OriginalTitle")
             self._build_sub_element(title, "TitleText", self._track.track_title)
 
     @staticmethod

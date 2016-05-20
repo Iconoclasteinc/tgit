@@ -52,7 +52,7 @@ def test_omits_lyrics_when_not_entered(root, party_list):
 def test_writes_title(root, party_list):
     track = make_track(track_title="Chevere!")
     MusicalWork(0, track, party_list).write_to(root)
-    assert_that(root.find("./MusicalWork/Title").attrib["TitleType"], equal_to("FormalTitle"), "The track title type")
+    assert_that(root.find("./MusicalWork/Title").attrib["TitleType"], equal_to("OriginalTitle"), "The track title type")
     assert_that(root.findtext("./MusicalWork/Title/TitleText"), equal_to("Chevere!"), "The track title")
 
 
