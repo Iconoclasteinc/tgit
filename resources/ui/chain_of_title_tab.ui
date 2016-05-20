@@ -60,7 +60,10 @@ QLabel[style=QMacStyle] {
       <bool>true</bool>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::NoSelection</enum>
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="showGrid">
       <bool>false</bool>
@@ -113,7 +116,10 @@ QLabel[style=QMacStyle] {
       <bool>true</bool>
      </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::NoSelection</enum>
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="showGrid">
       <bool>false</bool>
