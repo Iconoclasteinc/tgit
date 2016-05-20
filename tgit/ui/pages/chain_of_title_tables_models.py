@@ -110,4 +110,4 @@ class PublishersColumns(Columns):
     share = Column(position=2)
 
 
-affiliations = ["SOCAN", "ASCAP", "BMI"]
+affiliations = ["SOCAN", "ASCAP", "BMI", "SACEM", "SABAM"]

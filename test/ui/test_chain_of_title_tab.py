@@ -54,8 +54,8 @@ def test_displays_contributors(driver):
 def test_displays_affiliation_choices(driver):
     _ = show_page(make_chain_of_title(authors_composers=[joel_miller()], publishers=[effendi_records()]))
 
-    driver.shows_affiliation_options_for_contributor("Joel Miller", "", "SOCAN", "ASCAP", "BMI")
-    driver.shows_affiliation_options_for_publisher("Effendi Records", "", "SOCAN", "ASCAP", "BMI")
+    driver.shows_affiliation_options_for_contributor("Joel Miller", "", "SOCAN", "ASCAP", "BMI", "SACEM", "SABAM")
+    driver.shows_affiliation_options_for_publisher("Effendi Records", "", "SOCAN", "ASCAP", "BMI", "SACEM", "SABAM")
 
 
 def test_displays_publisher_choices(driver):
