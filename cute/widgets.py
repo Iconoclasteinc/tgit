@@ -947,6 +947,7 @@ class TableViewDriver(WidgetDriver):
         drop_target = rect.bottom_center(rect.inside_bounds(to_header.bounds, bottom=1)) if (
             from_position < to_position) \
             else rect.top_center(rect.inside_bounds(to_header.bounds, top=1))
+        self.scroll_cell_to_visible(from_position, 0)
         self.perform(gestures.mouse_drag(from_header.bounds.center(), drop_target))
 
     def cell_is_readonly(self, row, col):
