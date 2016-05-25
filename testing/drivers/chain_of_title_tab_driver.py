@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QTableWidget
+
+from PyQt5.QtWidgets import QTableWidget, QComboBox
 from hamcrest import contains, has_items, equal_to, has_item
 
-from ._screen_driver import ScreenDriver
 from cute.matchers import named, showing_on_screen
 from cute.widgets import TableViewDriver, ComboBoxDriver
 from tgit.ui.pages.chain_of_title_tab import ChainOfTitleTab
+from ._screen_driver import ScreenDriver
 
 
 def chain_of_title_tab(parent):
@@ -13,11 +14,8 @@ def chain_of_title_tab(parent):
 
 
 class ChainOfTitleTabDriver(ScreenDriver):
-    CONTRIBUTOR_AFFILIATION_CELL_INDEX = 1
-    CONTRIBUTOR_PUBLISHERS_CELL_INDEX = 2
-    CONTRIBUTOR_SHARE_CELL_INDEX = 3
-    PUBLISHER_AFFILIATION_CELL_INDEX = 1
-    PUBLISHER_SHARE_CELL_INDEX = 2
+    CONTRIBUTOR_AFFILIATION_CELL_INDEX, CONTRIBUTOR_PUBLISHERS_CELL_INDEX, CONTRIBUTOR_SHARE_CELL_INDEX = 1, 2, 3
+    PUBLISHER_AFFILIATION_CELL_INDEX, PUBLISHER_SHARE_CELL_INDEX = 1, 2
 
     def shows_contributors_column_headers(self, *headers):
         self._shows_column_headers(self._contributors_table, *headers)
@@ -101,8 +99,7 @@ class ChainOfTitleTabDriver(ScreenDriver):
         table.has_headers(contains(*headers))
 
     def _combo_in_cell(self, table, row, col):
-        widget_driver = table.widget_in_cell(row, col)
-        return ComboBoxDriver(widget_driver.selector, self.prober, self.gesture_performer)
+        return ComboBoxDriver.find_single(table.widget_in_cell(row, col), QComboBox)
 
     @property
     def _contributors_table(self):

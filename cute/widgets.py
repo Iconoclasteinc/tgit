@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from PyQt5.QtCore import QDir, QPoint, QTime, QDate, Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QListView, QToolButton, QFileDialog, \
     QMenu, QComboBox, QTextEdit, QLabel, QAbstractButton, QSpinBox, QTableView, QDialogButtonBox
@@ -238,25 +239,28 @@ class QAbstractSpinBoxDriver(AbstractEditDriver):
 
 
 class ComboBoxDriver(AbstractEditDriver):
+    def has_current_text(self, matching):
+        self.has(properties.current_text(), matching)
+
     def select_option(self, matching):
-        options_list = self._open_options_list()
-        options_list.select_item(match.with_item_text(matching))
+        self.open_options().select_item(match.with_item_text(matching))
 
     def has_options(self, *matching):
-        options_list = self._open_options_list()
+        options = self.open_options()
         for matcher in matching:
-            options_list.has_item(match.with_item_text(matcher))
+            options.has_item(match.with_item_text(matcher))
+        self.dismiss_options()
 
     def has_no_option(self, matching):
-        options_list = self._open_options_list()
-        options_list.has_no_item(match.with_item_text(matching))
+        self.open_options().has_no_item(match.with_item_text(matching))
+        self.dismiss_options()
 
-    def _open_options_list(self):
+    def open_options(self):
         self.perform(gestures.mouse_click_at(rect.center_right(rect.inside_bounds(self.widget_bounds(), right=5))))
         return QListViewDriver.find_single(self, QListView)
 
-    def has_current_text(self, matching):
-        self.has(properties.current_text(), matching)
+    def dismiss_options(self):
+        self.perform(gestures.unselect())
 
 
 class QDateTimeEditDriver(WidgetDriver):
