@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>788</width>
-    <height>534</height>
+    <height>587</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -598,18 +598,6 @@ QLabel[style=QMacStyle] {
        <string>3. Musicians</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
         <widget class="QScrollArea" name="_musicians_input_scroll_area">
          <property name="styleSheet">
@@ -626,8 +614,8 @@ QLabel[style=QMacStyle] {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>782</width>
-            <height>229</height>
+            <width>742</width>
+            <height>170</height>
            </rect>
           </property>
           <property name="styleSheet">
@@ -636,6 +624,18 @@ QLabel[style=QMacStyle] {
           <layout class="QVBoxLayout" name="verticalLayout">
            <property name="spacing">
             <number>10</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
            </property>
           </layout>
          </widget>
