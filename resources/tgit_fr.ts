@@ -916,7 +916,7 @@
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
         <source>12 characters without spaces or dashes</source>
-        <translation>12 caractères sans espaces et sans tirets</translation>
+        <translation>12 caractères sans espace ni tiret</translation>
     </message>
     <message>
         <location filename="tgit/ui/track_edition_page.py" />
@@ -1313,7 +1313,7 @@
     <name>chain_of_title</name>
     <message>
         <source>The chain of title will be saved with this project, but will not be embedded in the recording&apos;s metadatas.</source>
-        <translation>La chaine de titre sera sauvegardé avec le projet, mais ne sera pas sauvegardé dans les métadonnées de l&apos;enregistrement.</translation>
+        <translation>La chaine de titre sera sauvegardée avec le projet, mais pas dans les métadonnées de l&apos;enregistrement.</translation>
     </message>
     <message>
         <source>Authors / Composers</source>
