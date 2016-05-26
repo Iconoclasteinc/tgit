@@ -148,12 +148,6 @@ QToolTip[style=QMacStyle] {
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
          </spacer>
         </item>
        </layout>
@@ -627,8 +621,8 @@ QLabel[style=QMacStyle] {
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>742</width>
-            <height>170</height>
+            <width>764</width>
+            <height>264</height>
            </rect>
           </property>
           <property name="styleSheet">
