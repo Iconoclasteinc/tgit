@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>892</width>
+    <width>897</width>
     <height>669</height>
    </rect>
   </property>
@@ -109,7 +109,7 @@
    </item>
    <item>
     <widget class="QGroupBox" name="_content">
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,3">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
       <item>
        <layout class="QVBoxLayout" name="_track_informations">
         <item>
